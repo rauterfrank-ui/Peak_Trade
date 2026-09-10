@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 from pathlib import Path
 
@@ -10,11 +11,23 @@ import pytest
 from src.governance.economic_diagnostic_optimization_boundary_v0 import (
     CONTRACT_VERSION,
     PACKAGE_MARKER,
+    REASON_FORBIDDEN_SURFACE,
+    REASON_IMPACT_UNKNOWN,
+    REASON_TECHNICAL_WIRING_AUTHORIZED,
+    REASON_TECHNICAL_WIRING_UNAUTHORIZED_PATH,
     build_boundary_report,
     export_canonical_owner_inventory,
     forbidden_surface_changed_count,
     load_contract,
+    load_decommission_authorization,
     load_owner_map,
+)
+from src.governance.semantics_neutral_decommission_authorization_v1 import (
+    DECOMMISSION_AUTH_VERSION,
+    DECOMMISSION_MUTATION_PURPOSE,
+    REASON_DECOMMISSION_AUTHORIZED,
+    REASON_DECOMMISSION_SEMANTIC_CHANGE,
+    compute_decommission_evidence_digest,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -545,3 +558,258 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
         for field in contract["boundary_report_required_fields"]:
             assert field in payload
         json.dumps(payload)
+
+
+TEST_DIFF_BASE_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+_COMPOSITION_WIRING_PATH = "src/trading/master_v2/double_play_core_wiring_v1.py"
+_COMPOSITION_UNGRANTED_MASTER_V2_PATH = "src/trading/master_v2/survival_assessment_v1.py"
+_COMPOSITION_RESEARCH_A = "src/research/unknown_future_owner_module_v0.py"
+_COMPOSITION_RESEARCH_B = "src/research/unregistered_offline_diagnostic_owner_v0.py"
+_COMPOSITION_RESEARCH_C = "scripts/research/unknown_future_owner_materializer_v0.py"
+_COMPOSITION_RESEARCH_D = "src/research/another_unregistered_owner_v0.py"
+
+
+def _unified_diff(path: str, removed: list[str], added: list[str]) -> str:
+    lines = [
+        f"--- a/{path}",
+        f"+++ b/{path}",
+        f"@@ -1,{len(removed) or 1} +1,{len(added) or 1} @@",
+    ]
+    lines.extend(f"-{line}" for line in removed)
+    lines.extend(f"+{line}" for line in added)
+    return "\n".join(lines) + "\n"
+
+
+def _decommission_shaped_diff(path: str) -> str:
+    return _unified_diff(path, ['    "obsolete_noncanonical_literal"'], [])
+
+
+def _wiring_behavior_diff(path: str) -> str:
+    return _unified_diff(
+        path,
+        ['        "exchange": str(ccxt_cfg.get("exchange", "kraken")),'],
+        [
+            "        from src.exchange.operative_venue_boundary_v1 import assert_operative_ccxt_venue_id",
+            "        exchange_id = assert_operative_ccxt_venue_id(exchange_id)",
+        ],
+    )
+
+
+def _active_decommission_grant(
+    allowed_paths: list[str],
+    diffs: dict[str, str],
+    *,
+    surface_classes: list[str] | None = None,
+) -> dict:
+    auth = copy.deepcopy(load_decommission_authorization(REPO_ROOT))
+    assert isinstance(auth, dict)
+    auth["grant_active"] = True
+    auth["allowed_paths"] = list(allowed_paths)
+    auth["allowed_surface_classes"] = list(surface_classes or [])
+    auth["authorized_evidence_digest"] = compute_decommission_evidence_digest(
+        file_diffs=diffs,
+        diff_base_sha=TEST_DIFF_BASE_SHA,
+        paths=allowed_paths,
+    )
+    return auth
+
+
+def _composed_report(
+    changed: list[str],
+    *,
+    auth: dict | None = None,
+    diffs: dict[str, str] | None = None,
+    skip_decommission: bool = False,
+    skip_technical_wiring: bool = False,
+) -> object:
+    return build_boundary_report(
+        changed,
+        repo_root=REPO_ROOT,
+        decommission_authorization=auth,
+        skip_decommission_authorization=skip_decommission,
+        skip_technical_wiring_authorization=skip_technical_wiring,
+        skip_owner_adjudication_authorization=True,
+        skip_mapping_bind_authorization=True,
+        skip_generator_fallback_authorization=True,
+        skip_armed_identity_split_authorization=True,
+        file_diffs=diffs,
+        diff_base_sha=TEST_DIFF_BASE_SHA,
+    )
+
+
+class TestComposedDualAdmissionGuardV1:
+    def test_case1_technical_wiring_without_unclassified_passes(self) -> None:
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH],
+            skip_decommission=True,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert REASON_TECHNICAL_WIRING_AUTHORIZED in report.reason_codes
+        assert REASON_DECOMMISSION_AUTHORIZED not in report.reason_codes
+        assert report.unclassified_touch_count == 0
+        assert forbidden_surface_changed_count(report) == 0
+
+    def test_case2_wiring_then_decommission_remaining_unclassified_passes(self) -> None:
+        diffs = {_COMPOSITION_RESEARCH_A: _decommission_shaped_diff(_COMPOSITION_RESEARCH_A)}
+        auth = _active_decommission_grant([_COMPOSITION_RESEARCH_A], diffs)
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, _COMPOSITION_RESEARCH_A],
+            auth=auth,
+            diffs=diffs,
+        )
+        assert report.admissible is True
+        assert report.fail_closed is False
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is True
+        assert REASON_TECHNICAL_WIRING_AUTHORIZED in report.reason_codes
+        assert REASON_DECOMMISSION_AUTHORIZED in report.reason_codes
+        assert report.unclassified_touch_count == 0
+        assert report.decommission_admission_count == 1
+
+    def test_case3_wiring_with_remaining_unclassified_and_no_decommission_fails(self) -> None:
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, _COMPOSITION_RESEARCH_A],
+            skip_decommission=True,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.impact_unknown is True
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.unclassified_touch_count == 1
+
+    def test_case4_decommission_cannot_authorize_master_v2_wiring(self) -> None:
+        diffs = {
+            _COMPOSITION_UNGRANTED_MASTER_V2_PATH: _wiring_behavior_diff(
+                _COMPOSITION_UNGRANTED_MASTER_V2_PATH
+            )
+        }
+        auth = _active_decommission_grant(
+            [_COMPOSITION_UNGRANTED_MASTER_V2_PATH],
+            diffs,
+            surface_classes=["MASTER_V2"],
+        )
+        report = _composed_report(
+            [_COMPOSITION_UNGRANTED_MASTER_V2_PATH],
+            auth=auth,
+            diffs=diffs,
+            skip_technical_wiring=True,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.technical_wiring_authorization_applied is False
+        assert REASON_FORBIDDEN_SURFACE in report.reason_codes
+        assert (
+            REASON_DECOMMISSION_SEMANTIC_CHANGE in report.reason_codes
+            or REASON_DECOMMISSION_AUTHORIZED not in report.reason_codes
+        )
+
+    def test_case5_partial_technical_wiring_coverage_fails(self) -> None:
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, _COMPOSITION_UNGRANTED_MASTER_V2_PATH],
+            skip_decommission=True,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.technical_wiring_authorization_applied is False
+        assert REASON_TECHNICAL_WIRING_UNAUTHORIZED_PATH in report.reason_codes
+        assert forbidden_surface_changed_count(report) >= 1
+
+    def test_case6_partial_decommission_coverage_of_unclassified_fails(self) -> None:
+        diffs = {
+            _COMPOSITION_RESEARCH_A: _decommission_shaped_diff(_COMPOSITION_RESEARCH_A),
+            _COMPOSITION_RESEARCH_B: _decommission_shaped_diff(_COMPOSITION_RESEARCH_B),
+        }
+        auth = _active_decommission_grant([_COMPOSITION_RESEARCH_A], diffs)
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, _COMPOSITION_RESEARCH_A, _COMPOSITION_RESEARCH_B],
+            auth=auth,
+            diffs=diffs,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.impact_unknown is True
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.unclassified_touch_count == 1
+
+    def test_case7_unknown_fourth_unclassified_path_fails(self) -> None:
+        research_paths = [
+            _COMPOSITION_RESEARCH_A,
+            _COMPOSITION_RESEARCH_B,
+            _COMPOSITION_RESEARCH_C,
+        ]
+        diffs = {path: _decommission_shaped_diff(path) for path in research_paths}
+        auth = _active_decommission_grant(research_paths, diffs)
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, *research_paths, _COMPOSITION_RESEARCH_D],
+            auth=auth,
+            diffs=diffs,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.impact_unknown is True
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert report.unclassified_touch_count == 1
+
+    def test_case8_dual_admission_preserves_both_verdict_contributions(self) -> None:
+        diffs = {_COMPOSITION_RESEARCH_A: _decommission_shaped_diff(_COMPOSITION_RESEARCH_A)}
+        auth = _active_decommission_grant([_COMPOSITION_RESEARCH_A], diffs)
+        report = _composed_report(
+            [_COMPOSITION_WIRING_PATH, _COMPOSITION_RESEARCH_A],
+            auth=auth,
+            diffs=diffs,
+        )
+        payload = report.to_dict()
+        assert report.admissible is True
+        assert report.technical_wiring_authorization_applied is True
+        assert report.semantics_neutral_decommission_authorization_applied is True
+        assert report.technical_wiring_authorization_version is not None
+        assert report.semantics_neutral_decommission_authorization_version == (
+            DECOMMISSION_AUTH_VERSION
+        )
+        assert (
+            report.semantics_neutral_decommission_mutation_purpose_class
+            == DECOMMISSION_MUTATION_PURPOSE
+        )
+        assert report.semantics_neutral_decommission_proven_predicates
+        assert payload["technical_wiring_authorization_applied"] is True
+        assert payload["semantics_neutral_decommission_authorization_applied"] is True
+        assert REASON_TECHNICAL_WIRING_AUTHORIZED in payload["reason_codes"]
+        assert REASON_DECOMMISSION_AUTHORIZED in payload["reason_codes"]
+        wiring_index = payload["reason_codes"].index(REASON_TECHNICAL_WIRING_AUTHORIZED)
+        decommission_index = payload["reason_codes"].index(REASON_DECOMMISSION_AUTHORIZED)
+        assert wiring_index < decommission_index
+        assert payload["unclassified_touch_count"] == 0
+        assert payload["decommission_admission_count"] == 1
+
+    def test_research_decommission_cannot_use_technical_wiring(self) -> None:
+        report = _composed_report(
+            [_COMPOSITION_RESEARCH_A],
+            skip_decommission=True,
+        )
+        assert report.admissible is False
+        assert report.technical_wiring_authorization_applied is False
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes
+        assert REASON_TECHNICAL_WIRING_AUTHORIZED not in report.reason_codes
+
+    def test_unknown_third_admission_class_remains_fail_closed(self) -> None:
+        report = _composed_report(
+            [_COMPOSITION_RESEARCH_D],
+            skip_decommission=True,
+            skip_technical_wiring=True,
+        )
+        assert report.admissible is False
+        assert report.fail_closed is True
+        assert report.impact_unknown is True
+        assert report.technical_wiring_authorization_applied is False
+        assert report.semantics_neutral_decommission_authorization_applied is False
+        assert REASON_IMPACT_UNKNOWN in report.reason_codes

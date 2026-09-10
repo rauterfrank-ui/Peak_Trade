@@ -33,88 +33,6 @@ except ImportError:
 # =============================================================================
 
 
-class TestArmstrongCycleStrategy:
-    """Tests für ArmstrongCycleStrategy."""
-
-    def test_import_armstrong_strategy(self):
-        """Test: Armstrong-Strategie kann importiert werden."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        assert ArmstrongCycleStrategy is not None
-        assert ArmstrongCycleStrategy.KEY == "armstrong_cycle"
-
-    def test_armstrong_is_research_only(self):
-        """Test: Armstrong ist als Research-Only markiert."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        assert ArmstrongCycleStrategy.IS_LIVE_READY is False
-        assert ArmstrongCycleStrategy.TIER == "r_and_d"
-        assert "research" in ArmstrongCycleStrategy.ALLOWED_ENVIRONMENTS
-        assert "live" not in ArmstrongCycleStrategy.ALLOWED_ENVIRONMENTS
-
-    def test_armstrong_instantiation(self):
-        """Test: Armstrong-Strategie kann instanziiert werden."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        strategy = ArmstrongCycleStrategy()
-
-        assert strategy is not None
-        assert strategy.cycle_length_days == 3141  # ECM-Default
-        assert strategy.event_window_days == 90
-        assert "RESEARCH" in strategy.meta.description.upper()
-
-    def test_armstrong_generate_signals_phase_based(self):
-        """Test: Armstrong mappt pro Bar Datum → Phase → Position (kein Flat-Stub)."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        strategy = ArmstrongCycleStrategy()
-
-        # Test-Daten erstellen
-        dates = pd.date_range("2020-01-01", periods=100, freq="D")
-        data = pd.DataFrame(
-            {
-                "open": np.random.randn(100).cumsum() + 100,
-                "high": np.random.randn(100).cumsum() + 102,
-                "low": np.random.randn(100).cumsum() + 98,
-                "close": np.random.randn(100).cumsum() + 100,
-                "volume": np.random.randint(1000, 10000, 100),
-            },
-            index=dates,
-        )
-
-        signals = strategy.generate_signals(data)
-
-        assert isinstance(signals, pd.Series)
-        assert len(signals) == len(data)
-        assert set(signals.unique()).issubset({-1, 0, 1})
-        assert signals.attrs.get("is_research_stub") is False
-
-    def test_armstrong_cycle_info(self):
-        """Test: get_cycle_info gibt valide Informationen zurück."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        strategy = ArmstrongCycleStrategy()
-        test_date = pd.Timestamp("2024-06-15")
-
-        info = strategy.get_cycle_info(test_date)
-
-        assert "cycle_phase" in info
-        assert "cycle_position" in info
-        assert "is_near_turning_point" in info
-        assert "next_turning_point" in info
-        assert 0 <= info["cycle_position"] <= 1
-        assert isinstance(info["is_near_turning_point"], bool)
-
-    def test_armstrong_repr_shows_research_only(self):
-        """Test: __repr__ zeigt RESEARCH-ONLY an."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
-
-        strategy = ArmstrongCycleStrategy()
-        repr_str = repr(strategy)
-
-        assert "RESEARCH-ONLY" in repr_str
-
-
 class TestElKarouiVolModelStrategy:
     """Tests für ElKarouiVolModelStrategy."""
 
@@ -212,17 +130,6 @@ class TestElKarouiVolModelStrategy:
 class TestStrategyRegistry:
     """Tests für Strategy-Registry mit Research-Strategien."""
 
-    def test_armstrong_registered_in_registry(self):
-        """Test: Armstrong ist in der Registry registriert."""
-        from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
-
-        keys = get_available_strategy_keys()
-        assert "armstrong_cycle" in keys
-
-        spec = get_strategy_spec("armstrong_cycle")
-        assert spec.key == "armstrong_cycle"
-        assert "R&D" in spec.description or "Research" in spec.description
-
     def test_el_karoui_registered_in_registry(self):
         """Test: El-Karoui ist in der Registry registriert."""
         from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
@@ -249,17 +156,7 @@ class TestStrategyTiering:
 
         tiering = load_tiering_config()
 
-        assert "armstrong_cycle" in tiering
         assert "el_karoui_vol_model" in tiering
-
-    def test_armstrong_has_r_and_d_tier(self):
-        """Test: Armstrong hat Tier 'r_and_d'."""
-        from src.experiments.strategy_profiles import load_tiering_config
-
-        tiering = load_tiering_config()
-
-        assert tiering["armstrong_cycle"].tier == "r_and_d"
-        assert tiering["armstrong_cycle"].allow_live is False
 
     def test_el_karoui_has_r_and_d_tier(self):
         """Test: El-Karoui hat Tier 'r_and_d'."""
@@ -295,10 +192,6 @@ class TestAllRnDStrategiesInTiering:
 
     # Erwartete R&D-Strategien mit ihren Kategorien
     EXPECTED_RND_STRATEGIES = {
-        "armstrong_cycle": {
-            "label": "Armstrong Cycle Strategy",
-            "category": "cycles",
-        },
         "ehlers_cycle_filter": {
             "label": "Ehlers Cycle Filter",
             "category": "cycles",
@@ -471,13 +364,10 @@ class TestStrategyTieringAPI:
 
         # Prüfe, dass R&D-Strategien enthalten sind
         r_and_d_strategies = [r for r in tiering.get("rows", []) if r["tier"] == "r_and_d"]
-        assert len(r_and_d_strategies) >= 2, (
-            "Mindestens Armstrong und El-Karoui sollten vorhanden sein"
-        )
+        assert len(r_and_d_strategies) >= 1, "Mindestens El-Karoui sollte vorhanden sein"
 
         # Prüfe spezifische Strategien
         strategy_ids = [r["id"] for r in r_and_d_strategies]
-        assert "armstrong_cycle" in strategy_ids
         assert "el_karoui_vol_model" in strategy_ids
 
     def test_r_and_d_strategies_have_correct_allowed_environments(self):
@@ -547,18 +437,9 @@ class TestResearchStrategySafety:
 
     def test_research_strategy_metadata_contains_warning(self):
         """Test: Research-Strategy-Metadata enthält Warnung."""
-        from src.strategies.armstrong import ArmstrongCycleStrategy
         from src.strategies.el_karoui import ElKarouiVolModelStrategy
 
-        armstrong = ArmstrongCycleStrategy()
         el_karoui = ElKarouiVolModelStrategy()
-
-        # Prüfe Metadata
-        assert (
-            "NICHT FÜR LIVE" in armstrong.meta.description.upper()
-            or "NOT FOR LIVE" in armstrong.meta.description.upper()
-            or "RESEARCH" in armstrong.meta.description.upper()
-        )
 
         assert (
             "NICHT FÜR LIVE" in el_karoui.meta.description.upper()
@@ -613,21 +494,20 @@ class TestStrategyTieringAPIEndpoints:
         # Prüfe R&D-Strategien
         r_and_d_tier = next(t for t in data["tiers"] if t["tier"] == "r_and_d")
         strategy_ids = [s["id"] for s in r_and_d_tier["strategies"]]
-        assert "armstrong_cycle" in strategy_ids
         assert "el_karoui_vol_model" in strategy_ids
 
     def test_api_strategy_tiering_detail_blocks_research_without_flag(self, client):
         """Test: API /api/strategy_tiering/{id} blockiert R&D ohne Flag."""
-        response = client.get("/api/strategy_tiering/armstrong_cycle")
+        response = client.get("/api/strategy_tiering/el_karoui_vol_model")
         assert response.status_code == 404
 
     def test_api_strategy_tiering_detail_allows_research_with_flag(self, client):
         """Test: API /api/strategy_tiering/{id} erlaubt R&D mit Flag."""
-        response = client.get("/api/strategy_tiering/armstrong_cycle?include_research=true")
+        response = client.get("/api/strategy_tiering/el_karoui_vol_model?include_research=true")
         assert response.status_code == 200
 
         data = response.json()
-        assert data["id"] == "armstrong_cycle"
+        assert data["id"] == "el_karoui_vol_model"
         assert data["tier"] == "r_and_d"
         assert data["deployment_blocked"] is True
         assert "deployment_notice" in data

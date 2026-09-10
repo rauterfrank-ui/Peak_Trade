@@ -859,7 +859,7 @@ class TestStrategyTierSupport:
             symbol="BTC/USD",
             status="completed",
             started_at=datetime.utcnow(),
-            config={"strategy_name": "armstrong_cycle"},
+            config={"strategy_name": "el_karoui_vol_model"},
             strategy_tier="r_and_d",
         )
 
@@ -947,7 +947,7 @@ class TestStrategyTierSupport:
             status="completed",
             started_at=datetime(2024, 12, 8, 11, 0, 0),
             strategy_tier="r_and_d",
-            config={"strategy_name": "armstrong_cycle"},
+            config={"strategy_name": "el_karoui_vol_model"},
             metrics={"realized_pnl": 50.0},
         )
         register_live_session_run(record2, base_dir=temp_sessions_dir)

@@ -21,8 +21,8 @@ sys.path.insert(0, str(project_root))
 import scripts.research_cli as research_cli
 
 TARGET_MODULE = project_root / "scripts/research_cli.py"
-PRESET_ID = "armstrong_ecm_btc_longterm_v1"
-PRESET_STRATEGY_KEY = "armstrong_cycle"
+PRESET_ID = "el_karoui_stoch_vol_v1"
+PRESET_STRATEGY_KEY = "el_karoui_vol_model"
 FORBIDDEN_NAMES = ("create_strategy_from_config",)
 
 
@@ -174,8 +174,8 @@ def test_run_experiment_calls_load_strategy_and_passes_preset_parameters(
 
     assert code == 0
     load_strategy_mock.assert_called_once_with(PRESET_STRATEGY_KEY)
-    assert captured["params"]["cycle_period_days"] == 3141
-    assert captured["params"]["entry_threshold"] == 0.8
+    assert captured["params"]["vol_model"] == "heston"
+    assert captured["params"]["vol_of_vol"] == 0.3
 
 
 def test_isolated_load_strategy_binding_per_run_experiment_call(tmp_path) -> None:

@@ -104,7 +104,7 @@ def test_research_strategy_not_runtime_selectable_after_gate() -> None:
     for strategy_id in result.candidates_after:
         eligibility = evaluate_eligibility_v1(strategy_id)
         assert eligibility.runtime_authority_eligible is False
-    research = evaluate_eligibility_v1("armstrong_cycle")
+    research = evaluate_eligibility_v1("el_karoui_vol_model")
     assert research.runtime_authority_eligible is False
     assert research.classification == "RESEARCH_INFORMATION"
 

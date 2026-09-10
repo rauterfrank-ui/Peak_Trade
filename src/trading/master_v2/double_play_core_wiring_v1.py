@@ -4,7 +4,10 @@
 Registry → Suitability snapshot → Integrated Replay (compute owner)
 → Composition confirm / SideState sole writer → Decision Packet (derived handoff).
 
-Does not decide AUTH-001. Does not restore capital, live, or economic viability.
+AUTH-001 is closed: ``AUTH_001_POLICY_DECIDED=true``. ``armstrong_cycle`` is not a
+bindable active catalog identity. ``ecm_cycle`` remains legacy/deauthorized and
+gains no productive, live, order, or promotion authority. Historical peer identities
+must never collapse. Does not restore capital, live, or economic viability.
 """
 
 from __future__ import annotations
@@ -42,6 +45,10 @@ from trading.master_v2.staged_execution_enablement_v1 import (
     StagedExecutionEnablementInputV1,
 )
 from trading.master_v2.strategy_identity_binding_v1 import (
+    AUTH_001_POLICY_DECIDED,
+    AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY,
+    AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES,
+    AUTH_001_RETIRED_CATALOG_IDS,
     STRATEGY_IDENTITY_ENFORCEMENT_REGISTRY_DERIVED,
 )
 
@@ -124,5 +131,28 @@ def assert_core_wiring_authority_invariants_v1(
         raise AssertionError("derived_doubleplay_handoff_missing")
     if result.snapshot.live_authorized or result.snapshot.orders_allowed:
         raise AssertionError("snapshot_inferred_trading_authorization")
-    if result.snapshot.auth_001_policy_decided:
-        raise AssertionError("auth_001_policy_must_remain_undecided")
+    if result.snapshot.runtime_promoted:
+        raise AssertionError("snapshot_inferred_runtime_promotion")
+    if AUTH_001_POLICY_DECIDED is not True:
+        raise AssertionError("auth_001_policy_must_remain_decided")
+    if result.snapshot.auth_001_policy_decided is not True:
+        raise AssertionError("auth_001_policy_must_remain_decided")
+    retired_present = AUTH_001_RETIRED_CATALOG_IDS.intersection(
+        result.snapshot.strategy_ids_sorted
+    ) | AUTH_001_RETIRED_CATALOG_IDS.intersection(result.snapshot.eligible_strategy_ids_sorted)
+    if retired_present:
+        raise AssertionError("armstrong_cycle_must_not_be_bindable_active_catalog_identity")
+    if AUTH_001_RETIRED_CATALOG_IDS.intersection(
+        result.snapshot.production_or_live_ready_strategy_ids
+    ):
+        raise AssertionError("armstrong_cycle_must_not_gain_live_or_promotion_authority")
+    if "ecm_cycle" in result.snapshot.production_or_live_ready_strategy_ids:
+        raise AssertionError("ecm_cycle_must_not_gain_new_authority")
+    if result.snapshot.auth_001_relation == AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES:
+        raise AssertionError("auth_001_identities_must_not_collapse")
+    if "ecm_cycle" in result.snapshot.strategy_ids_sorted:
+        if (
+            result.snapshot.auth_001_relation
+            != AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
+        ):
+            raise AssertionError("auth_001_must_remain_closed_armstrong_retired_ecm_legacy")

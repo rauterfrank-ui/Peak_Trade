@@ -1,8 +1,5 @@
 import pytest
 
-from src.strategies.armstrong.armstrong_cycle_strategy import (
-    ArmstrongCycleStrategy,
-)
 from src.strategies.el_karoui.el_karoui_vol_model_strategy import (
     ElKarouiVolModelStrategy,
 )
@@ -11,14 +8,13 @@ from src.strategies.el_karoui.el_karoui_vol_model_strategy import (
 @pytest.mark.parametrize(
     "strategy_cls",
     [
-        ArmstrongCycleStrategy,
         ElKarouiVolModelStrategy,
     ],
 )
 def test_r_and_d_safety_flags(strategy_cls) -> None:
     """
-    Diese Tests stellen sicher, dass die beiden Strategien sauber im
-    R&D-Track verankert bleiben und nicht versehentlich live-fähig werden.
+    Diese Tests stellen sicher, dass El-Karoui sauber im
+    R&D-Track verankert bleibt und nicht versehentlich live-fähig wird.
     """
     assert getattr(strategy_cls, "IS_LIVE_READY") is False
     assert getattr(strategy_cls, "TIER") == "r_and_d"
@@ -31,7 +27,6 @@ def test_r_and_d_safety_flags(strategy_cls) -> None:
 @pytest.mark.parametrize(
     "strategy_cls_name",
     [
-        "ArmstrongCycleStrategy",
         "ElKarouiVolModelStrategy",
     ],
 )
@@ -42,7 +37,6 @@ def test_r_and_d_strategies_have_required_class_level_attributes(strategy_cls_na
     beim Refactoring etwas entfernt oder umbenannt wird.
     """
     mapping = {
-        "ArmstrongCycleStrategy": ArmstrongCycleStrategy,
         "ElKarouiVolModelStrategy": ElKarouiVolModelStrategy,
     }
     strategy_cls = mapping[strategy_cls_name]
@@ -57,7 +51,6 @@ def test_r_and_d_strategies_have_required_class_level_attributes(strategy_cls_na
 @pytest.mark.parametrize(
     "strategy_cls",
     [
-        ArmstrongCycleStrategy,
         ElKarouiVolModelStrategy,
     ],
 )

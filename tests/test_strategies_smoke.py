@@ -101,7 +101,6 @@ def test_strategy_generate_signals():
 
 # R&D-Strategien, die übersprungen werden (Platzhalter oder Meta-Layer)
 R_AND_D_SKIP_STRATEGIES = {
-    "armstrong_cycle",
     "bouchaud_microstructure",
     "ehlers_cycle_filter",
     "el_karoui_vol_model",

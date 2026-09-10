@@ -67,7 +67,10 @@ entities:
       Section
       11.9.1 precisifies durable execution-side kill authority
       (StatePersistence writer + FILEGATE reader) without authorizing
-      Live flatten, alias split, or auto-trip wiring. Atlas is not
+      Live flatten, alias split, or auto-trip wiring. AUTH-001 remains
+      decided existing repo semantics: Armstrong Cycle V1 is not an
+      active catalog member and not a bindable active identity;
+      El-Karoui independent surfaces stay preserved. Atlas is not
       canonical authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
@@ -4968,7 +4971,9 @@ entities:
     evidence_sources:
       - src/trading/master_v2/strategy_identity_binding_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      AUTH-001 identity binding remains fail-closed wiring, not a new
+      promotion or live authority. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_arithmetic_decimal
     kind: RUNTIME_COMPONENT
@@ -6045,4 +6050,95 @@ entities:
       admissible as full-core E2E proof. Canary role is
       HISTORICAL_AND_SCOPED_VENUE_PROOF. Not a parallel productive Live
       authority. Does not activate canary.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:strategy_switch_sanity_check
+    kind: RUNTIME_COMPONENT
+    name: Strategy switch sanity check
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/governance/strategy_switch_sanity_check.py
+    evidence_sources:
+      - src/governance/strategy_switch_sanity_check.py
+    notes: >-
+      Navigation record for the existing strategy-switch sanity surface.
+      Not a new trading, order, or promotion authority.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications
+    kind: RUNTIME_COMPONENT
+    name: Phase 9.1 strategy registry classifications
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/phase_9_1_strategy_registry_closure_v1/classifications_v1.py
+    evidence_sources:
+      - src/ops/phase_9_1_strategy_registry_closure_v1/classifications_v1.py
+    notes: >-
+      Navigation record for Phase 9.1 registry classification ownership.
+      Armstrong Cycle V1 is not an active catalog member on this surface.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:phase_9_1_strategy_registry_gates
+    kind: RUNTIME_COMPONENT
+    name: Phase 9.1 strategy registry gates
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/phase_9_1_strategy_registry_closure_v1/gates_v1.py
+    evidence_sources:
+      - src/ops/phase_9_1_strategy_registry_closure_v1/gates_v1.py
+    notes: >-
+      Navigation record for Phase 9.1 registry gate ownership.
+      Not live, order, or promotion authority.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:test_health_runner
+    kind: RUNTIME_COMPONENT
+    name: Test health runner
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/test_health_runner.py
+    evidence_sources:
+      - src/ops/test_health_runner.py
+    notes: >-
+      Navigation record for the existing test-health runner.
+      Not a trading authority. Atlas is not canonical authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: STRATEGY:armstrong_cycle_v1
+    kind: STRATEGY
+    name: Armstrong Cycle V1
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: REMOVED
+    source_paths:
+      - src/strategies/armstrong/armstrong_cycle_strategy.py
+    evidence_sources:
+      - docs/strategies/el_karoui/EL_KAROUI_VOL_STATUS_V1.md
+    notes: >-
+      Navigation record only. Armstrong Cycle V1 is not an active
+      catalog member and not a bindable active identity. ECM class is
+      legacy deauthorized. Historical evidence is not rewritten.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: STRATEGY:el_karoui_vol
+    kind: STRATEGY
+    name: El-Karoui volatility surfaces
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - docs/strategies/el_karoui/EL_KAROUI_VOL_STATUS_V1.md
+    evidence_sources:
+      - docs/strategies/el_karoui/EL_KAROUI_VOL_STATUS_V1.md
+    notes: >-
+      Independent El-Karoui surfaces remain preserved. Not Armstrong
+      identity and not a new trading authority.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

@@ -382,7 +382,6 @@ unless explicitly promoted by a later capability.
 Current default classification:
 
 ``` text
-Armstrong                 = RESEARCH_INFORMATION
 El Karoui                 = RESEARCH_INFORMATION
 Ehlers                    = RESEARCH_INFORMATION
 Bouchaud                  = RESEARCH_INFORMATION

@@ -48,7 +48,7 @@ STRATEGY_REGISTRY = {
     "rsi_strategy": "rsi",  # Strategie-Name != Modul-Name
     "bollinger_bands": "bollinger",  # Strategie-Name != Modul-Name
     "macd": "macd",
-    "ecm_cycle": "ecm",  # Strategie-Name != Modul-Name; Registry-StrategySpec: armstrong_cycle (siehe STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0)
+    "ecm_cycle": "ecm",  # Strategie-Name != Modul-Name
     # Phase 18: Research Playground Baselines
     "trend_following": "trend_following",
     "mean_reversion": "mean_reversion",
@@ -63,7 +63,6 @@ STRATEGY_REGISTRY = {
     "composite": "composite",
     "regime_aware_portfolio": "regime_aware_portfolio",
     # Research-Track: R&D-Only Strategien
-    "armstrong_cycle": "armstrong.armstrong_cycle_strategy",
     "el_karoui_vol_model": "el_karoui.el_karoui_vol_model_strategy",
     "ehlers_cycle_filter": "ehlers.ehlers_cycle_filter_strategy",
     "meta_labeling": "lopez_de_prado.meta_labeling_strategy",

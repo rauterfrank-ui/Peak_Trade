@@ -59,7 +59,6 @@ MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 # Kanonische Demo-Strategien (load_strategy()-Keys; kein direkter Registry-Import).
 REGIME_DEMO_AVAILABLE_STRATEGY_KEYS: tuple[str, ...] = (
-    "armstrong_cycle",
     "bollinger_bands",
     "bouchaud_microstructure",
     "breakout",

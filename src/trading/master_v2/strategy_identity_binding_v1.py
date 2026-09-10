@@ -5,9 +5,10 @@ Reuses the canonical catalog owner `src.strategies.registry.resolve_strategy_id`
 This is not a second registry. The R2 identity package is not imported here: its
 package ``__init__`` pulls suitability adapters that re-enter ``trading.master_v2``.
 
-AUTH-001 (`ecm_cycle` vs `armstrong_cycle`) remains an unresolved Owner-policy
-choice. Explicit canonical IDs bind independently. Nicknames, silent aliases, and
-equivalence claims fail closed. This module never collapses the two identities.
+AUTH-001 is closed: ``armstrong_cycle`` is retired from the active named research
+catalog. Historical peer provenance (``ecm_cycle`` vs ``armstrong_cycle``) remains
+distinct and must never collapse. ``ecm_cycle`` stays a legacy/deauthorized
+identity. Nicknames, silent aliases, and equivalence claims fail closed.
 """
 
 from __future__ import annotations
@@ -29,10 +30,13 @@ STRATEGY_IDENTITY_BINDING_OWNER = "trading.master_v2.strategy_identity_binding_v
 STRATEGY_IDENTITY_ENFORCEMENT_EXPLICIT_INJECTION = "EXPLICIT_INJECTION"
 STRATEGY_IDENTITY_ENFORCEMENT_REGISTRY_DERIVED = "REGISTRY_DERIVED"
 
-AUTH_001_POLICY_DECIDED = False
-AUTH_001_CANONICAL_IDS: frozenset[str] = frozenset({"ecm_cycle", "armstrong_cycle"})
+AUTH_001_POLICY_DECIDED = True
+AUTH_001_HISTORICAL_PEER_IDS: frozenset[str] = frozenset({"ecm_cycle", "armstrong_cycle"})
+AUTH_001_CANONICAL_IDS: frozenset[str] = AUTH_001_HISTORICAL_PEER_IDS
+AUTH_001_RETIRED_CATALOG_IDS: frozenset[str] = frozenset({"armstrong_cycle"})
 AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES = "UNRESOLVED_DISTINCT_IDENTITIES"
 AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER = "UNRESOLVED_DISTINCT_PEER"
+AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY = "CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY"
 AUTH_001_RELATION_NOT_APPLICABLE = "NOT_APPLICABLE"
 
 # Nicknames / collapsed tokens that cannot uniquely select AUTH-001 without policy.
@@ -94,22 +98,28 @@ def bind_strategy_identity_v1(requested_id: Optional[str]) -> StrategyIdentityBi
     normalized = _normalize_requested_id(requested_id)
     if normalized in AUTH_001_AMBIGUOUS_REQUESTS:
         raise StrategyIdentityBindingError(REASON_AMBIGUOUS_STRATEGY_BINDING)
+    if normalized in AUTH_001_RETIRED_CATALOG_IDS:
+        raise StrategyIdentityBindingError(REASON_UNKNOWN_STRATEGY_ID)
     try:
         resolution = resolve_strategy_id(normalized)
     except StrategyRegistryError as exc:
         raise StrategyIdentityBindingError(REASON_UNKNOWN_STRATEGY_ID) from exc
-    if resolution.alias_applied and resolution.canonical_strategy_id in AUTH_001_CANONICAL_IDS:
+    if resolution.canonical_strategy_id in AUTH_001_RETIRED_CATALOG_IDS:
+        raise StrategyIdentityBindingError(REASON_UNKNOWN_STRATEGY_ID)
+    if (
+        resolution.alias_applied
+        and resolution.canonical_strategy_id in AUTH_001_HISTORICAL_PEER_IDS
+    ):
         raise StrategyIdentityBindingError(REASON_AMBIGUOUS_STRATEGY_BINDING)
     if (
-        resolution.canonical_strategy_id in AUTH_001_CANONICAL_IDS
+        resolution.canonical_strategy_id in AUTH_001_HISTORICAL_PEER_IDS
         and resolution.canonical_strategy_id != normalized
     ):
         raise StrategyIdentityBindingError(REASON_AMBIGUOUS_STRATEGY_BINDING)
-    relation = (
-        AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER
-        if resolution.canonical_strategy_id in AUTH_001_CANONICAL_IDS
-        else AUTH_001_RELATION_NOT_APPLICABLE
-    )
+    if resolution.canonical_strategy_id == "ecm_cycle":
+        relation = AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
+    else:
+        relation = AUTH_001_RELATION_NOT_APPLICABLE
     identity_digest = hashlib.sha256(
         json.dumps(
             {
@@ -144,7 +154,7 @@ def assert_auth_001_not_collapsed_v1(
     if treat_as_equivalent:
         raise StrategyIdentityBindingError(REASON_AUTH_001_UNRESOLVED_IDENTITY)
     lowered = {item.strip() for item in requested_ids if isinstance(item, str)}
-    if AUTH_001_CANONICAL_IDS.issubset(lowered) and treat_as_equivalent:
+    if AUTH_001_HISTORICAL_PEER_IDS.issubset(lowered) and treat_as_equivalent:
         raise StrategyIdentityBindingError(REASON_AUTH_001_UNRESOLVED_IDENTITY)
 
 
@@ -172,11 +182,13 @@ def bind_requested_strategy_ids_v1(
 
 
 def auth_001_relation_for_ids_v1(canonical_ids: Iterable[str]) -> str:
-    present = AUTH_001_CANONICAL_IDS.intersection(canonical_ids)
-    if len(present) >= 2:
-        return AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES
-    if len(present) == 1:
-        return AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER
+    present = AUTH_001_HISTORICAL_PEER_IDS.intersection(canonical_ids)
+    if "armstrong_cycle" in present:
+        if "ecm_cycle" in present:
+            return AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES
+        return AUTH_001_RELATION_NOT_APPLICABLE
+    if "ecm_cycle" in present:
+        return AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
     return AUTH_001_RELATION_NOT_APPLICABLE
 
 

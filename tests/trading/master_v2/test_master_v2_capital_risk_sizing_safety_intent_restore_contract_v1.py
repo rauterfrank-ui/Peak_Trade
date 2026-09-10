@@ -41,6 +41,13 @@ from trading.master_v2.double_play_core_wiring_v1 import (
     assert_core_wiring_authority_invariants_v1,
     run_master_v2_double_play_core_wiring_v1,
 )
+from trading.master_v2.strategy_identity_binding_v1 import (
+    AUTH_001_POLICY_DECIDED,
+    AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY,
+    REASON_UNKNOWN_STRATEGY_ID,
+    StrategyIdentityBindingError,
+    bind_strategy_identity_v1,
+)
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DecisionOutcome,
     EntryExitDirectionState,
@@ -178,6 +185,18 @@ def test_call_order_is_29p_then_safety_then_29q(monkeypatch: pytest.MonkeyPatch)
 def test_safety_pass_path_plan_only_once() -> None:
     core, inp = _enter_long_core_and_input()
     assert_core_wiring_authority_invariants_v1(core)
+    assert core.snapshot.auth_001_policy_decided is True
+    assert AUTH_001_POLICY_DECIDED is True
+    assert "armstrong_cycle" not in core.snapshot.strategy_ids_sorted
+    assert "armstrong_cycle" not in core.snapshot.production_or_live_ready_strategy_ids
+    assert "ecm_cycle" in core.snapshot.strategy_ids_sorted
+    assert "ecm_cycle" not in core.snapshot.production_or_live_ready_strategy_ids
+    assert core.snapshot.auth_001_relation == AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
+    assert core.snapshot.live_authorized is False
+    assert core.snapshot.orders_allowed is False
+    assert core.snapshot.runtime_promoted is False
+    with pytest.raises(StrategyIdentityBindingError, match=REASON_UNKNOWN_STRATEGY_ID):
+        bind_strategy_identity_v1("armstrong_cycle")
     safety_context = safety_context_from_integrated_replay_input_v1(inp)
     composed = compose_capital_risk_sizing_safety_intent_from_core_evidence_v1(
         core, safety_context=safety_context

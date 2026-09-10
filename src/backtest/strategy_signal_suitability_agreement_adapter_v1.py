@@ -49,7 +49,6 @@ _POSITIONAL_LONG01_OWNERS = frozenset(
         "ehlers_cycle_filter",
         "bouchaud_microstructure",
         "el_karoui_vol_model",
-        "armstrong_cycle",
     }
 )
 _ENTRY_EXIT_EVENT_OWNERS = frozenset(

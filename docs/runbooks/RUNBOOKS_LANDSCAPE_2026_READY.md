@@ -19,8 +19,6 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 | **Live Alert Pipeline Runbook**                 | `docs/runbooks/LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`           | v1.0            | Betrieb und Fehlerbehandlung der Alert-Pipeline (Slack, E-Mail, Severity, Routing)                                                     | Cluster 82–83 (Alert-Pipeline & Dashboard)                 | **Alerts & Monitoring**                  | ✅ 2026-ready            |
 | **Incident Runbook Integration**                | `docs/runbooks/INCIDENT_RUNBOOK_INTEGRATION_V1.md`                      | v1.0            | Standardisiertes Incident-Handling, Mapping von Alerts & Risk-Events auf Incident-Flows und Operator-Actions                           | Cluster 84 (Incident Runbook Integration)                  | **Incident-Management, Governance**      | ✅ 2026-ready            |
 | **Go/No-Go 2026 – Live Alerts & Escalation**    | `docs/GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`                       | v1.0            | Go/No-Go-Entscheidungen für Live Alerts, Escalation-Pfade und Freigabekriterien für Live-/Shadow-/Testnet-Betrieb                      | Cluster 82–85 (Live Alerts & Escalation)                   | **Governance, On-Call, Decision-Gates**  | ✅ 2026-ready            |
-| **R&D-Runbook Armstrong & El Karoui**           | `docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`               | v1.0            | Runbook für R&D-Experimente mit Armstrong- und El-Karoui-Modellen (Set-up, Parameter, typische Fallstricke)                            | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Research Pipelines**              | ⚠️ R&D only (kein Live) |
-| **R&D-Playbook Armstrong & El Karoui**          | `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`              | v1.0            | Playbook mit Best Practices, Experiment-Design, Parameter-Sweeps und Auswertungs-Patterns für Armstrong/El-Karoui                      | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Methodik**                        | ⚠️ R&D only (kein Live) |
 | **Armstrong × El Karoui Cross-Run Findings**    | `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`             | v1.0            | Konsolidierte Findings aus Cross-Runs (State-Rankings, Vol-Regime, Limitierungen), dient als Meta-Referenz für weitere R&D-Iterationen | Phase 78 / R&D Armstrong × El Karoui                       | **R&D, Meta-Analyse**                    | ⚠️ R&D only (kein Live) |
 | **Offline-Realtime-Pipeline Runbook**           | `docs/runbooks/OFFLINE_REALTIME_PIPELINE_RUNBOOK_V1.md`                 | v1.0            | Operator-Runbook für die Offline-Realtime-Pipeline mit synthetischen Ticks (`is_synthetic=True`) und MA-Crossover-Strategie im Paper-Modus | Phase 16A / Offline-Realtime Safety Sandbox                | **Offline Testing, Execution**           | ✅ Safety-Sandbox       |
 | **Reporting Quickstart (Evidence Chain)**       | `docs/reporting/REPORTING_QUICKSTART.md`                                | v1.0            | Einstieg in Evidence-Chain Artefakte + Reporting Workflow (Quickstart)                                                                  | Reporting / Evidence Chain                                 | **Reporting, Evidence**                  | ✅ 2026-ready            |
@@ -115,25 +113,7 @@ Sie ist für **Operatoren, On-Call-Engineers und Risk Owner** gedacht, die im In
 
 ## 5. R&D & Research Runbooks (Armstrong × El Karoui)
 
-### 5.1 R&D-Runbook Armstrong & El Karoui
-
-* **Pfad:** `docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md`
-* **Rolle:** Technischer Leitfaden für:
-
-  * Setup der Strategien Armstrong-Cycle und El-Karoui-Vol-Modell
-  * Parameter-Räume und typische Konfigurationen
-  * Einbindung in R&D-Pipelines (Backtests, Sweeps, Forward-Signals)
-
-### 5.2 R&D-Playbook Armstrong & El Karoui
-
-* **Pfad:** `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`
-* **Rolle:** Methodisches Playbook:
-
-  * Wie experimentieren? (Design, Hypothesen, Auswertungen)
-  * Best Practices für Parameter-Sweeps und Cross-Run Analysen
-  * Typische Fragestellungen und Auswertungs-Muster
-
-### 5.3 Armstrong × El Karoui Cross-Run Findings
+### 5.1 Armstrong × El Karoui Cross-Run Findings
 
 * **Pfad:** `docs/runbooks/ARMSTRONG_ELKAROUI_CROSS_RUN_FINDINGS_V1.md`
 * **Rolle:** Meta-Dokument:

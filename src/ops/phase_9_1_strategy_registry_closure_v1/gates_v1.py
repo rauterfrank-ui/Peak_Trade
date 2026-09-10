@@ -141,14 +141,14 @@ def run_failure_injections_v1(
     _expect("direct_intent", reject_direct_intent, "momentum_1h")
     _expect("direct_fill", reject_direct_fill, "momentum_1h")
     _expect("direct_order", reject_direct_order, "momentum_1h")
-    _expect("master_v2_bypass", reject_master_v2_bypass, "armstrong_cycle")
-    _expect("double_play_bypass", reject_double_play_bypass, "armstrong_cycle")
+    _expect("master_v2_bypass", reject_master_v2_bypass, "el_karoui_vol_model")
+    _expect("double_play_bypass", reject_double_play_bypass, "el_karoui_vol_model")
     _expect("risk_bypass", reject_risk_bypass, "bollinger_bands")
     _expect("safety_bypass", reject_safety_bypass, "bollinger_bands")
     _expect(
         "silent_authority_promotion",
         reject_silent_authority_promotion,
-        entry_id="armstrong_cycle",
+        entry_id="el_karoui_vol_model",
         from_class=StrategyAuthorityClassV1.RESEARCH_INFORMATION,
         to_class=StrategyAuthorityClassV1.CANONICAL_AUTHORITY,
     )

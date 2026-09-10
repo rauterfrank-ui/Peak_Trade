@@ -135,8 +135,3 @@ allow_live = false
 - HIGH: 0.50 (stark reduziert)
 
 ---
-
-## Verwandte Dokumente
-
-- [R&D-Playbook Armstrong & El Karoui](../../runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md)
-- [Armstrong Cycle Strategy Status](../armstrong/ARMSTRONG_CYCLE_STATUS_V1.md)

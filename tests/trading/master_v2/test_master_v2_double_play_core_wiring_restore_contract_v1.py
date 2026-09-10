@@ -3,7 +3,9 @@
 REGISTRY → SUITABILITY SNAPSHOT → INTEGRATED REPLAY → COMPOSITION
 → CANONICAL DECISION EVIDENCE → DECISION PACKET DERIVATION
 
-No network, no live/testnet/canary/orders, AUTH-001 remains undecided.
+No network, no live/testnet/canary/orders. AUTH-001 is closed:
+``armstrong_cycle`` is not a bindable active catalog identity.
+``ecm_cycle`` remains legacy/deauthorized. Collapse remains fail-closed.
 """
 
 from __future__ import annotations
@@ -66,8 +68,7 @@ from trading.master_v2.staged_execution_enablement_v1 import (
 from trading.master_v2.strategy_identity_binding_v1 import (
     AUTH_001_CANONICAL_IDS,
     AUTH_001_POLICY_DECIDED,
-    AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES,
-    AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER,
+    AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY,
     REASON_AMBIGUOUS_STRATEGY_BINDING,
     REASON_AUTH_001_UNRESOLVED_IDENTITY,
     REASON_DUPLICATE_REGISTRY_IDENTITY,
@@ -109,6 +110,24 @@ def _enabled_entry(strategy_id: str) -> SuitabilityStrategyEntryV1:
     )
 
 
+def _assert_auth_001_closed_on_wired_core(result) -> None:
+    assert result.snapshot.auth_001_policy_decided is True
+    assert AUTH_001_POLICY_DECIDED is True
+    assert "armstrong_cycle" not in result.snapshot.strategy_ids_sorted
+    assert "armstrong_cycle" not in result.snapshot.eligible_strategy_ids_sorted
+    assert "armstrong_cycle" not in result.snapshot.production_or_live_ready_strategy_ids
+    assert "ecm_cycle" in result.snapshot.strategy_ids_sorted
+    assert "ecm_cycle" not in result.snapshot.production_or_live_ready_strategy_ids
+    assert (
+        result.snapshot.auth_001_relation == AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
+    )
+    assert result.snapshot.live_authorized is False
+    assert result.snapshot.orders_allowed is False
+    assert result.snapshot.runtime_promoted is False
+    with pytest.raises(StrategyIdentityBindingError, match=REASON_UNKNOWN_STRATEGY_ID):
+        bind_strategy_identity_v1("armstrong_cycle")
+
+
 def test_end_to_end_registry_suitability_integrated_replay_packet_wiring() -> None:
     snapshot_a = build_registry_derived_suitability_snapshot_v1()
     snapshot_b = build_registry_derived_suitability_snapshot_v1()
@@ -118,16 +137,18 @@ def test_end_to_end_registry_suitability_integrated_replay_packet_wiring() -> No
     assert snapshot_a.live_authorized is False
     assert snapshot_a.orders_allowed is False
     assert snapshot_a.runtime_promoted is False
-    assert snapshot_a.auth_001_policy_decided is False
-    assert AUTH_001_POLICY_DECIDED is False
-    assert AUTH_001_CANONICAL_IDS.issubset(set(snapshot_a.strategy_ids_sorted))
-    assert snapshot_a.auth_001_relation == AUTH_001_RELATION_UNRESOLVED_DISTINCT_IDENTITIES
+    assert snapshot_a.auth_001_policy_decided is True
+    assert AUTH_001_POLICY_DECIDED is True
+    assert "armstrong_cycle" not in snapshot_a.strategy_ids_sorted
+    assert "ecm_cycle" in snapshot_a.strategy_ids_sorted
+    assert snapshot_a.auth_001_relation == AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
     assert snapshot_a.metadata_authorization_effect == METADATA_AUTHORIZATION_EFFECT
     assert snapshot_a.production_or_live_ready_strategy_ids
     assert "ma_crossover" in snapshot_a.production_or_live_ready_strategy_ids
 
     result = run_master_v2_double_play_core_wiring_v1(_replay_input())
     assert_core_wiring_authority_invariants_v1(result)
+    _assert_auth_001_closed_on_wired_core(result)
     assert result.replay.compute_owner == INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER
     assert result.replay.compute_owner == CANONICAL_OFFLINE_ORCHESTRATOR
     assert result.replay.strategy_identity_enforcement == (
@@ -160,16 +181,46 @@ def test_end_to_end_registry_suitability_integrated_replay_packet_wiring() -> No
     assert fields["ORDERS_ENABLED"] == ORDERS_ENABLED == "false"
 
 
+def test_auth_001_closed_invariants_reject_undecided_and_retired_catalog_identity() -> None:
+    result = run_master_v2_double_play_core_wiring_v1(_replay_input())
+    assert_core_wiring_authority_invariants_v1(result)
+    undecided = replace(result, snapshot=replace(result.snapshot, auth_001_policy_decided=False))
+    with pytest.raises(AssertionError, match="auth_001_policy_must_remain_decided"):
+        assert_core_wiring_authority_invariants_v1(undecided)
+    retired = replace(
+        result,
+        snapshot=replace(
+            result.snapshot,
+            strategy_ids_sorted=result.snapshot.strategy_ids_sorted + ("armstrong_cycle",),
+        ),
+    )
+    with pytest.raises(
+        AssertionError,
+        match="armstrong_cycle_must_not_be_bindable_active_catalog_identity",
+    ):
+        assert_core_wiring_authority_invariants_v1(retired)
+    ecm_promoted = replace(
+        result,
+        snapshot=replace(
+            result.snapshot,
+            production_or_live_ready_strategy_ids=result.snapshot.production_or_live_ready_strategy_ids
+            + ("ecm_cycle",),
+        ),
+    )
+    with pytest.raises(AssertionError, match="ecm_cycle_must_not_gain_new_authority"):
+        assert_core_wiring_authority_invariants_v1(ecm_promoted)
+
+
 def test_explicit_canonical_auth_001_ids_bind_independently_without_collapse() -> None:
     ecm = bind_strategy_identity_v1("ecm_cycle")
-    armstrong = bind_strategy_identity_v1("armstrong_cycle")
     assert ecm.canonical_strategy_id == "ecm_cycle"
-    assert armstrong.canonical_strategy_id == "armstrong_cycle"
-    assert ecm.canonical_strategy_id != armstrong.canonical_strategy_id
-    assert ecm.auth_001_relation == AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER
-    assert armstrong.auth_001_relation == AUTH_001_RELATION_UNRESOLVED_DISTINCT_PEER
-    both = bind_requested_strategy_ids_v1(("ecm_cycle", "armstrong_cycle"))
-    assert {item.canonical_strategy_id for item in both} == AUTH_001_CANONICAL_IDS
+    assert ecm.auth_001_relation == AUTH_001_RELATION_CLOSED_ARMSTRONG_RETIRED_ECM_LEGACY
+    with pytest.raises(StrategyIdentityBindingError, match=REASON_UNKNOWN_STRATEGY_ID):
+        bind_strategy_identity_v1("armstrong_cycle")
+    with pytest.raises(StrategyIdentityBindingError, match=REASON_UNKNOWN_STRATEGY_ID):
+        bind_requested_strategy_ids_v1(("ecm_cycle", "armstrong_cycle"))
+    assert "armstrong_cycle" in AUTH_001_CANONICAL_IDS
+    assert "ecm_cycle" in AUTH_001_CANONICAL_IDS
 
 
 def test_unknown_strategy_id_fail_closed() -> None:

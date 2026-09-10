@@ -1,33 +1,14 @@
 {
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
   "allowed_paths": [
-    "src/governance/promotion_loop/safety.py",
-    "src/trading/master_v2/pr4985_runtime_activation_materiality_classifier_v0.py",
-    "tests/governance/promotion_loop/test_safety_manifest_era_v1.py",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/fixture_builder.py",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_btc_base.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_digest_mismatch.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_duplicate_instrument.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_insufficient_history.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_spot.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_synthetic_spot.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/invalid_xbt_base.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_multi_epoch.json",
-    "tests/research/fixtures/pit_futures_universe_manifest_v1/valid_single_epoch.json",
-    "tests/research/new_listings/test_p9_normalize_ccxt_tickers.py",
-    "tests/research/test_instrument_id_canonicalization_v1.py",
-    "tests/research/test_pit_futures_universe_manifest_generator_registry_consumer_binding_v1.py",
-    "tests/research/test_pit_futures_universe_manifest_generator_v1.py",
-    "tests/trading/master_v2/test_canonical_volatility_typed_runtime_producer_scaffold_v1.py",
-    "tests/trading/master_v2/test_pr4985_runtime_activation_materiality_classifier_v0.py"
+    "scripts/research/materialize_armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+    "src/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+    "src/research/step29m_armstrong_cycle_v1_offline_economic_baseline_materialization_v0.py"
   ],
-  "allowed_surface_classes": [
-    "MASTER_V2",
-    "PROMOTION_RUNTIME_ORDER_CREDENTIAL_SCHEDULER_AUTHORITY"
-  ],
+  "allowed_surface_classes": [],
   "authority_effect": "NONE",
   "authorization_token": "SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "7ca0623a46dad4bc9346a240bcea30a66c00fcde108ada875f8cea979f84dc81",
+  "authorized_evidence_digest": "aa9c3f3f941b64de828e9982a588ca7683c9fa3a3e7525504bdddca3250f8fde",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
   "blanket_allowlist": false,
@@ -53,7 +34,8 @@
       "NEGATIVE_TEST_TOKEN_NEUTRALIZED",
       "NONCANONICAL_LITERAL_NEUTRALIZED",
       "OBSOLETE_REFERENCE_REMOVED",
-      "REMOVED_TARGET_NO_LONGER_EXISTS"
+      "REMOVED_TARGET_NO_LONGER_EXISTS",
+      "WHOLE_FILE_RETIRED"
     ]
   },
   "directory_grant": false,

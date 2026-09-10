@@ -72,7 +72,7 @@ section_path = "live_profile.strategy_switch"
 allow_r_and_d_in_allowed = false
 require_active_in_allowed = true
 require_non_empty_allowed = true
-r_and_d_strategy_keys = ["armstrong_cycle", "el_karoui_vol_model"]
+r_and_d_strategy_keys = ["el_karoui_vol_model"]
 
 [profiles.test_profile]
 description = "Test Profile für v1-Tests"
@@ -270,7 +270,7 @@ class TestSwitchSanityConfig:
         assert config.allow_r_and_d_in_allowed is False
         assert config.require_active_in_allowed is True
         assert config.require_non_empty_allowed is True
-        assert "armstrong_cycle" in config.r_and_d_strategy_keys
+        assert "el_karoui_vol_model" in config.r_and_d_strategy_keys
 
     def test_load_from_toml(self, temp_config_v1):
         """Test: Config wird korrekt aus TOML geladen."""
@@ -278,7 +278,7 @@ class TestSwitchSanityConfig:
 
         assert config.enabled is True
         assert config.allow_r_and_d_in_allowed is False
-        assert "armstrong_cycle" in config.r_and_d_strategy_keys
+        assert "el_karoui_vol_model" in config.r_and_d_strategy_keys
 
 
 class TestRunSwitchSanityCheck:
@@ -367,7 +367,7 @@ allowed = ["ma_crossover", "rsi_reversion"]
             """
 [live_profile.strategy_switch]
 active_strategy_id = "ma_crossover"
-allowed = ["ma_crossover", "armstrong_cycle"]
+allowed = ["ma_crossover", "el_karoui_vol_model"]
 """
         )
 
@@ -375,7 +375,7 @@ allowed = ["ma_crossover", "armstrong_cycle"]
             enabled=True,
             config_path=str(config_path),
             allow_r_and_d_in_allowed=False,
-            r_and_d_strategy_keys=["armstrong_cycle"],
+            r_and_d_strategy_keys=["el_karoui_vol_model"],
         )
         result = run_switch_sanity_check(config)
 
@@ -387,7 +387,7 @@ allowed = ["ma_crossover", "armstrong_cycle"]
         config = SwitchSanityConfig(
             enabled=True,
             config_path=str(temp_live_config),
-            r_and_d_strategy_keys=["armstrong_cycle"],
+            r_and_d_strategy_keys=["el_karoui_vol_model"],
         )
         result = run_switch_sanity_check(config)
 

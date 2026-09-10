@@ -15,48 +15,8 @@
 # - allow_live = false
 #
 # Nutzung:
-#   python scripts/research_cli.py backtest --preset armstrong_ecm_btc_longterm_v1
+#   python scripts/research_cli.py backtest --preset el_karoui_stoch_vol_v1
 #
-
-# =============================================================================
-# ARMSTRONG – CYCLE & TIMING PRESETS
-# =============================================================================
-
-[preset.armstrong_ecm_btc_longterm_v1]
-description = "ECM-Zyklus auf BTC (Langfrist) – 8.6-Jahre-Zyklus-Analyse"
-strategy = "armstrong_cycle"
-tier = "r_and_d"
-enabled = false
-experimental = true
-allow_live = false
-markets = ["BTC/USDT"]
-timeframes = ["1d", "1w"]
-hypothesis = "ECM-Zyklen korrelieren mit BTC-Halving-Zyklen"
-focus_metrics = ["sharpe", "max_drawdown", "cycle_hit_rate"]
-
-[preset.armstrong_ecm_btc_longterm_v1.parameters]
-cycle_period_days = 3141  # π × 1000
-phase_offset = 0.0
-entry_threshold = 0.8
-exit_threshold = 0.2
-
-[preset.armstrong_multi_cycle_scan_v1]
-description = "Multi-Cycle-Overlay (kurz + lang) – Drawdown-Reduktion"
-strategy = "armstrong_cycle"
-tier = "r_and_d"
-enabled = false
-experimental = true
-allow_live = false
-markets = ["BTC/USDT", "ETH/USDT"]
-timeframes = ["4h", "1d"]
-hypothesis = "Multi-Cycle-Overlay reduziert Drawdown vs. Single-Cycle"
-focus_metrics = ["max_drawdown", "win_rate", "profit_factor"]
-
-[preset.armstrong_multi_cycle_scan_v1.parameters]
-short_cycle_days = 30
-long_cycle_days = 365
-overlay_mode = "intersection"
-entry_threshold = 0.7
 
 # =============================================================================
 # EHLERS – SIGNAL-PROCESSING & FILTER PRESETS

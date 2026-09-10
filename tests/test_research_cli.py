@@ -394,13 +394,13 @@ class TestMain:
         """run-experiment --preset … --dry-run beendet mit Code 0 (Preset-Load + Safety, kein Backtest).
 
         Preset-ID muss in config/r_and_d_presets.toml unter [preset.<id>] existieren
-        (aktuell: armstrong_ecm_btc_longterm_v1).
+        (aktuell: el_karoui_stoch_vol_v1).
         """
         exit_code = research_cli.main(
             [
                 "run-experiment",
                 "--preset",
-                "armstrong_ecm_btc_longterm_v1",
+                "el_karoui_stoch_vol_v1",
                 "--dry-run",
             ]
         )
@@ -459,18 +459,6 @@ class TestMain:
         mock_run_profile.assert_called_once()
         call_args = mock_run_profile.call_args[0][0]
         assert call_args.command == "strategy-profile"
-
-    @patch("scripts.research_cli.run_armstrong_elkaroui_combi")
-    def test_main_armstrong_elkaroui_combi_calls_combi_runner(self, mock_run_combi):
-        """armstrong-elkaroui-combi dispatcht auf run_armstrong_elkaroui_combi."""
-        mock_run_combi.return_value = 0
-
-        exit_code = research_cli.main(["armstrong-elkaroui-combi"])
-
-        assert exit_code == 0
-        assert mock_run_combi.called
-        call_args = mock_run_combi.call_args[0][0]
-        assert call_args.command == "armstrong-elkaroui-combi"
 
     def test_main_unknown_command_returns_error(self):
         """Unbekanntes Command gibt Fehler zurück."""
@@ -1065,7 +1053,7 @@ class TestOfflineVenueOhlcvContract:
 
     def test_run_experiment_without_dummy_fails_closed(self) -> None:
         parser = research_cli.build_parser()
-        args = parser.parse_args(["run-experiment", "--preset", "armstrong_ecm_btc_longterm_v1"])
+        args = parser.parse_args(["run-experiment", "--preset", "el_karoui_stoch_vol_v1"])
         assert args.use_dummy_data is False
         assert research_cli.run_experiment(args) == 1
 
