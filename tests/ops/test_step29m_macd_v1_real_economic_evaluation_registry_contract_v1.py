@@ -19,8 +19,8 @@ POLICY_DECISION_EVIDENCE = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning_or_validation/step29m_read_only_policy_owner_and_sizing_contract_decision_v0_20260701T235959Z"
 )
-EXPECTED_V2_FILE_SHA256 = "fe5b3ed1ea174e242f5a821971d94b47eb544c6fe4ec3eb99a8ceef06e3e094b"
-EXPECTED_V3_CONFIG_DIGEST = "e1d923de8e5f44bc873c15008bc895b8b3542a326e9c39521e4860ba091b6b82"
+EXPECTED_V2_FILE_SHA256 = "0b34ee984c7dc9380c417a2eb66086a34a6a51391318496e166d364340cea6fe"
+EXPECTED_V3_CONFIG_DIGEST = "ceabf0206a35bb5cc0f3ced4bf8fb19f18139ace59fd56a90529f79607ac9d7c"
 MACD_V3_EVIDENCE_DIR = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"

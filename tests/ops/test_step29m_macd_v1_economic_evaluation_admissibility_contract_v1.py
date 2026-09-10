@@ -28,8 +28,23 @@ V3_CONFIG_PATH = (
     ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
 )
 PROGRESS_REGISTRY = ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
-ARCHIVE_ROOT = contract.ARCHIVE_ROOT
-DATASET_ROOT = contract.DATASET_ROOT
+
+
+def _resolved_macd_v1_dataset_root() -> Path | None:
+    try:
+        root = contract.resolve_macd_v1_data_archive_root()
+    except contract.ArchiveRootError:
+        return None
+    if root is None:
+        return None
+    dataset_root = root / contract.MACD_V1_DATASET_DIR_RELPATH
+    if not dataset_root.is_dir():
+        return None
+    return dataset_root
+
+
+DATASET_ROOT = _resolved_macd_v1_dataset_root()
+DATASET_PRESENT = DATASET_ROOT is not None
 
 
 def _load_config() -> dict:
@@ -108,7 +123,7 @@ def test_cost_binding(cfg: dict) -> None:
     assert not reasons
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_dataset_digests_and_profile() -> None:
     manifest = json.loads((DATASET_ROOT / "dataset_manifest.json").read_text(encoding="utf-8"))
     assert manifest["normalized_dataset_digest"] == contract.EXPECTED_DATASET_DIGEST
@@ -120,7 +135,7 @@ def test_dataset_digests_and_profile() -> None:
     assert manifest["provenance"]["source_venue"] == "OKX"
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_dataset_columns_and_close_positive() -> None:
     bars = contract.load_admissible_okx_eth_bars_v1()
     assert "close" in bars.columns
@@ -130,7 +145,7 @@ def test_dataset_columns_and_close_positive() -> None:
     assert not bars.index.has_duplicates
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_macd_signal_admissibility_diagnostic(cfg: dict) -> None:
     bars = contract.load_admissible_okx_eth_bars_v1()
     diagnostic = contract.run_macd_v1_signal_admissibility_diagnostic_v1(bars, cfg)
@@ -150,7 +165,7 @@ def test_macd_signal_admissibility_diagnostic(cfg: dict) -> None:
     assert len(diagnostic.signal_digest) == 64
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_signal_transition_count_order_of_magnitude(cfg: dict) -> None:
     bars = contract.load_admissible_okx_eth_bars_v1()
     diagnostic = contract.run_macd_v1_signal_admissibility_diagnostic_v1(bars, cfg)
@@ -158,7 +173,7 @@ def test_signal_transition_count_order_of_magnitude(cfg: dict) -> None:
     assert 500 <= diagnostic.signal_transition_count <= 10000
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_strategy_engine_provenance_contract(cfg: dict) -> None:
     bars = contract.load_admissible_okx_eth_bars_v1()
     provenance, reasons = contract.verify_macd_v1_provenance_contract_v1(bars, cfg)
@@ -169,7 +184,7 @@ def test_strategy_engine_provenance_contract(cfg: dict) -> None:
     assert provenance.mv2_diagnostic_separation_contract == "PASS"
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_split_warmup_semantics_policy_a(cfg: dict) -> None:
     bars = contract.load_admissible_okx_eth_bars_v1()
     semantics, leakage, reasons = contract.verify_split_warmup_semantics_macd_v1(bars, cfg)
@@ -178,7 +193,7 @@ def test_split_warmup_semantics_policy_a(cfg: dict) -> None:
     assert not reasons
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_full_admissibility_contract_passes(cfg: dict) -> None:
     result = contract.evaluate_macd_v1_admissibility_contract_v1(repo_root=ROOT)
     assert result.admissibility_result.value == "PASS", result.blocking_reasons
@@ -199,7 +214,7 @@ def test_wrong_expected_dataset_digest_blocks_admissibility(cfg: dict) -> None:
         bad_cfg["real_admissible_futures_evaluation_binding_v1"]
     )
     bad_cfg["real_admissible_futures_evaluation_binding_v1"]["expected_dataset_digest"] = "0" * 64
-    if not DATASET_ROOT.is_dir():
+    if not DATASET_PRESENT:
         status, reasons = contract.verify_cost_binding_v1(bad_cfg)
         assert status == "PASS"
         return
@@ -227,7 +242,7 @@ def test_v2_config_schema_valid_but_entry_infeasible_blocks_admissibility() -> N
     assert "TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT" in result.blocking_reasons
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_v3_config_admissibility_contract_passes() -> None:
     result = contract.evaluate_macd_v1_admissibility_contract_v1(
         repo_root=ROOT,
@@ -243,7 +258,7 @@ def test_v3_config_schema_version() -> None:
     assert cfg["config_schema_version"] == "step29m_macd_v1_economic_evaluation_admissibility_v3"
 
 
-@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+@pytest.mark.skipif(not DATASET_PRESENT, reason="staged OKX dataset not present locally")
 def test_v3_runner_validate_only_accepts_config_without_evaluation() -> None:
     import importlib.util
     import sys
@@ -281,7 +296,7 @@ def test_v3_runner_validate_only_accepts_config_without_evaluation() -> None:
 
 
 def test_v2_runner_validate_only_blocks_before_evaluation() -> None:
-    if not DATASET_ROOT.is_dir():
+    if not DATASET_PRESENT:
         pytest.skip("staged OKX dataset not present locally")
     import importlib.util
     import sys
@@ -334,7 +349,7 @@ def test_registry_truth_after_macd_v1_real_evaluation() -> None:
 
 
 def test_config_validate_only_runner_accepts_macd_config(cfg: dict) -> None:
-    if not DATASET_ROOT.is_dir():
+    if not DATASET_PRESENT:
         pytest.skip("staged OKX dataset not present locally")
     import importlib.util
     import sys

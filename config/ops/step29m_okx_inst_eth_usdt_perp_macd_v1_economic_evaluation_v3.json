@@ -124,7 +124,8 @@
   "real_admissible_futures_evaluation_binding_v1": {
     "canonical_instrument_id": "inst-eth-usdt-perp",
     "canonical_trading_logic_version": "integrated_offline_trading_logic_replay_v1",
-    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_relpath": "datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_root_contract": "PEAK_TRADE_DATA_ARCHIVE_ROOT",
     "dataset_profile": "economic_research_v1",
     "effective_entry_cost_bps": 20.0,
     "effective_exit_cost_bps": 20.0,
