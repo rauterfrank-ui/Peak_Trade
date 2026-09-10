@@ -37,8 +37,13 @@ from src.backtest.economic_validity_policy_v1 import (  # noqa: E402
 from src.backtest.step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1 import (  # noqa: E402
     evaluate_ehlers_cycle_filter_v1_admissibility_contract_v1,
     load_ehlers_cycle_filter_v1_evaluation_config_v1,
+    resolve_ehlers_v1_dataset_bars_path_from_config,
+    resolve_ehlers_v1_dataset_manifest_path,
 )
 from src.core.metrics import metrics as resilience_metrics  # noqa: E402
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (  # noqa: E402
+    ArchiveRootError,
+)
 from src.research.step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0 import (  # noqa: E402
     METRICS_SUMMARY_FILENAME,
     compute_step29m_ehlers_binding_digest_v0,
@@ -135,8 +140,13 @@ def run_baseline_evaluation(
     digest_bindings = binding_section["digest_bindings"]
 
     eval_binding = cfg["real_admissible_futures_evaluation_binding_v1"]
-    dataset_path = Path(str(eval_binding["dataset_path"]))
-    manifest_path = dataset_path.parent / "dataset_manifest.json"
+    try:
+        dataset_path = resolve_ehlers_v1_dataset_bars_path_from_config(cfg)
+        manifest_path = resolve_ehlers_v1_dataset_manifest_path()
+    except FileNotFoundError as exc:
+        raise SystemExit(f"ERR:{exc}") from exc
+    except ArchiveRootError as exc:
+        raise SystemExit(f"ERR:dataset_archive_root_invalid:{exc}") from exc
     manifest = _load_json(manifest_path)
     descriptor, provenance = ds.load_dataset_admissibility_from_flat_economic_research_manifest_v1(
         manifest,
