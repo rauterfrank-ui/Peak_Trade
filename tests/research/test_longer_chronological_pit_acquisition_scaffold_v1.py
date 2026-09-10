@@ -58,6 +58,16 @@ ETH = InstrumentLifecycleV1(
 )
 
 
+def test_pit_archive_root_reexports_shared_resolver() -> None:
+    from src.research.external_data_archive_root_v1 import (
+        resolve_archive_root as shared_resolve,
+        validate_archive_root as shared_validate,
+    )
+
+    assert resolve_archive_root is shared_resolve
+    assert validate_archive_root is shared_validate
+
+
 def test_missing_archive_root_blocks_writes(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

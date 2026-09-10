@@ -38,6 +38,12 @@ from src.backtest.strategy_signal_binding_v1 import (
     execute_configured_strategy_signal_series_v1,
     resolve_effective_strategy_params_v1,
 )
+from src.research.external_data_archive_root_v1 import (
+    ENV_DATA_ARCHIVE_ROOT,
+    ArchiveRootError,
+    assert_path_under_archive,
+    resolve_archive_root,
+)
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
 
 CONTRACT_LAYER_VERSION = "v1"
@@ -52,10 +58,12 @@ MACD_V1_CANONICAL_PARAMS = {
     "signal_ema": 9,
 }
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
-DATASET_ROOT = ARCHIVE_ROOT / "datasets/admissible_futures/inst-eth-usdt-perp/v1"
-DATASET_BARS_PATH = DATASET_ROOT / "bars.parquet"
-DATASET_MANIFEST_PATH = DATASET_ROOT / "dataset_manifest.json"
+DATASET_ROOT_CONTRACT = ENV_DATA_ARCHIVE_ROOT
+MACD_V1_DATASET_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet"
+MACD_V1_DATASET_DIR_RELPATH = "datasets/admissible_futures/inst-eth-usdt-perp/v1"
+MACD_V1_DATASET_MANIFEST_RELPATH = (
+    "datasets/admissible_futures/inst-eth-usdt-perp/v1/dataset_manifest.json"
+)
 EXPECTED_DATASET_DIGEST = "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087"
 EXPECTED_MANIFEST_DIGEST = "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059"
 
@@ -193,10 +201,76 @@ def load_macd_v1_evaluation_config_v1(
     return payload
 
 
+def resolve_macd_v1_data_archive_root(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path | None:
+    """Resolve PEAK_TRADE_DATA_ARCHIVE_ROOT for MACD-v1 reads. Unset => None."""
+    return resolve_archive_root(env=env, require_for_write=False)
+
+
+def _join_macd_v1_dataset_path(root: Path, relpath: str) -> Path:
+    rel = Path(relpath)
+    if rel.is_absolute() or ".." in rel.parts:
+        raise ArchiveRootError("MACD_V1_DATASET_RELPATH_NOT_RELATIVE")
+    return assert_path_under_archive(root / rel, root)
+
+
+def resolve_macd_v1_dataset_bars_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_macd_v1_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_macd_v1_dataset_path(root, MACD_V1_DATASET_RELPATH)
+
+
+def resolve_macd_v1_dataset_manifest_path(
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    root = resolve_macd_v1_data_archive_root(env=env)
+    if root is None:
+        raise FileNotFoundError(f"dataset_archive_root_unset:{DATASET_ROOT_CONTRACT}")
+    return _join_macd_v1_dataset_path(root, MACD_V1_DATASET_MANIFEST_RELPATH)
+
+
+def verify_macd_v1_dataset_root_contract_binding_v1(
+    cfg: Mapping[str, Any],
+) -> tuple[str, ...]:
+    reasons: list[str] = []
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+    if not isinstance(binding, Mapping):
+        return ("real_binding_missing",)
+    if binding.get("dataset_root_contract") != DATASET_ROOT_CONTRACT:
+        reasons.append("dataset_root_contract_mismatch")
+    if binding.get("dataset_relpath") != MACD_V1_DATASET_RELPATH:
+        reasons.append("dataset_relpath_mismatch")
+    if "dataset_path" in binding:
+        reasons.append("legacy_absolute_dataset_path_forbidden")
+    return tuple(reasons)
+
+
+def resolve_macd_v1_dataset_bars_path_from_config(
+    cfg: Mapping[str, Any],
+    *,
+    env: dict[str, str] | None = None,
+) -> Path:
+    reasons = verify_macd_v1_dataset_root_contract_binding_v1(cfg)
+    if reasons:
+        raise ValueError("dataset_root_contract_binding_invalid:" + ",".join(reasons))
+    return resolve_macd_v1_dataset_bars_path(env=env)
+
+
 def load_admissible_okx_eth_bars_v1() -> pd.DataFrame:
-    if not DATASET_BARS_PATH.is_file():
-        raise FileNotFoundError(f"dataset_bars_missing:{DATASET_BARS_PATH}")
-    bars = pd.read_parquet(DATASET_BARS_PATH)
+    try:
+        bars_path = resolve_macd_v1_dataset_bars_path()
+    except ArchiveRootError as exc:
+        raise FileNotFoundError(f"dataset_archive_root_invalid:{exc}") from exc
+    if not bars_path.is_file():
+        raise FileNotFoundError(f"dataset_bars_missing:{bars_path}")
+    bars = pd.read_parquet(bars_path)
     if "timestamp" in bars.columns:
         bars = bars.set_index("timestamp")
     bars.index = pd.to_datetime(bars.index, utc=True)
@@ -224,11 +298,16 @@ def verify_macd_v1_strategy_identity_v1() -> tuple[str, ...]:
 
 def verify_dataset_compatibility_v1(bars: pd.DataFrame) -> tuple[str, ...]:
     reasons: list[str] = []
-    if not DATASET_MANIFEST_PATH.is_file():
+    try:
+        manifest_path = resolve_macd_v1_dataset_manifest_path()
+    except (ArchiveRootError, FileNotFoundError):
+        reasons.append("dataset_manifest_missing")
+        return tuple(reasons)
+    if not manifest_path.is_file():
         reasons.append("dataset_manifest_missing")
         return tuple(reasons)
 
-    manifest = json.loads(DATASET_MANIFEST_PATH.read_text(encoding="utf-8"))
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest.get("normalized_dataset_digest") != EXPECTED_DATASET_DIGEST:
         reasons.append("dataset_digest_mismatch")
     if manifest.get("manifest_digest") != EXPECTED_MANIFEST_DIGEST:
@@ -624,6 +703,7 @@ def evaluate_macd_v1_admissibility_contract_v1(
         )
         blocking.extend(split_reasons)
 
+    blocking.extend(verify_macd_v1_dataset_root_contract_binding_v1(cfg))
     binding_section = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
     if isinstance(binding_section, Mapping):
         if binding_section.get("expected_dataset_digest") != EXPECTED_DATASET_DIGEST:
