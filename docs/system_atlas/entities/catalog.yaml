@@ -198,7 +198,7 @@ entities:
       Docs-only isolated-domain boundary class
       NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY. HARD DOMAIN END.
       INTEGRATION_STATUS=NOT_IN_SCOPE. HOST_ADAPTER_STATUS=NOT_DESIGNED.
-      HOST_CONSUMER_STATUS=NONE. AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED.
+      HOST_CONSUMER_STATUS=NONE. AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND.
       AUTHORITY_EFFECT=NONE. Not selection. No Atlas edge to Cap 2.3 or
       Cap 2.4. N_VALUE=5 is a pointer to semantics §1.3; this catalog
       note is not the OD01 close. MF scoring absent. Rotation policy not
@@ -210,10 +210,12 @@ entities:
       semantics contract §1.10 as required durable non-authoritative
       membership-context artifact; instance existence is proven in the
       semantics contract §1.18. Schema, writer, and reader are bound
-      there. Isolated selector and membership-diff rotation are bound
+      there.       Isolated selector and membership-diff rotation are bound
       in the semantics contract §1.19. RUNTIME_AUTHORIZED remains false.
       G13 remains closed. Atlas is not runtime authority.
-      ATLAS_AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE. The single-egress definition is bound in
+      CONTRACT:mf_canonical_single_egress_authority_handoff_v1.
+      This catalog note creates no Atlas edge to Cap 2.3 or Cap 2.4.
 
   - id: CONTRACT:mf_selector_consumption_and_anti_churn_ownership_v1
     kind: CONTRACT
@@ -318,8 +320,9 @@ entities:
     notes: >-
       Docs-only persist of isolated ranking-universe family isolation
       and the single-egress invariant. AUTHORITY_EFFECT=NONE. Handoff
-      remains NOT_DESIGNED / NOT_YET_CANONICALLY_DEFINED. Downstream
-      must not re-rank. Existing execution/risk/eligibility gates may
+      definition is owned by
+      CONTRACT:mf_canonical_single_egress_authority_handoff_v1.
+      Downstream must not re-rank. Existing execution/risk/eligibility gates may
       block. N_VALUE=5 is a pointer to the semantics contract §1.3;
       this catalog note is not the OD01 close. OPEN_DECISION_04 is closed as ownership
       principle only in the semantics contract; this catalog note is a
@@ -361,7 +364,31 @@ entities:
       OD04_TO_OD07_CHANGED is not a collective close.
       CAP23_IMPORTED=false.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
-      not runtime authority. ATLAS_AUTHORITY=NONE.
+      not runtime authority. ATLAS_AUTHORITY=NONE. Handoff definition is
+      owned by CONTRACT:mf_canonical_single_egress_authority_handoff_v1;
+      this catalog note is a pointer.
+
+  - id: CONTRACT:mf_canonical_single_egress_authority_handoff_v1
+    kind: CONTRACT
+    name: Canonical single-egress authority-handoff definition
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md
+    source_paths:
+      - src/ops/mf_canonical_single_egress_authority_handoff_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md
+      - src/ops/mf_canonical_single_egress_authority_handoff_contract_v1.py
+    notes: >-
+      Typed unconsumed single-egress definition from isolated
+      non-authoritative membership context. AUTHORITY_EFFECT=NONE.
+      AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND.
+      CONSUMER_IDENTITY_STATUS=UNBOUND. No host join. No Cap 2.3 or
+      Cap 2.4 rewire. G13 remains closed. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE. No Atlas edge to Cap 2.3 or Cap 2.4.
 
   - id: CAPABILITY:cap_2_3_single_selected_future
     kind: CAPABILITY

@@ -483,7 +483,7 @@ CAP24_REWIRED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 N_RATIFIED=false
 MF_SCORING_RATIFIED=false
@@ -574,10 +574,10 @@ ratify anti-churn rules. Cardinality mode is closed as
 `AT_MOST_N` in §4.5.3. Membership order consumes Cap 2.2 origin
 ordering as specified in §4.5.3. Portfolio Selection is classified
 `P2_ALIAS_OR_PART_OF_SELECTOR` and is **not** a core-model node
-(§4.5.2). Authority handoff and host integration remain
-`NOT_DESIGNED` / `NOT_IN_SCOPE`. Isolated ranking-universe family
-isolation and the single-egress **invariant** (handoff still not
-designed; `N_VALUE` is a pointer to §4.5.3) are persisted in §4.5.4.
+(§4.5.2). Isolated ranking-universe family isolation and the
+single-egress **invariant** are persisted in §4.5.4. The
+single-egress **definition** is bound in §4.5.5 as
+`DEFINED_CONSUMER_UNBOUND`. Host integration remains `NOT_IN_SCOPE`.
 
 ### 4.5.2 Isolated MF selector consumption and anti-churn ownership (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -605,7 +605,7 @@ CAP24_REWIRED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 TOP20_ROLE=CANDIDATE_CONTEXT_ONLY
 SELECTOR_ROLE=PROPOSE_MEMBERSHIP_FROM_TOP20_CANDIDATE_CONTEXT
@@ -676,7 +676,7 @@ CAP24_REWIRED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 TOP5_VS_ACTIVE_SET_N=NOT_EQUIVALENT
 TOP5_STATUS=POSSIBLE_CONFIGURATION_ONLY
@@ -972,6 +972,12 @@ context instance. Productive integration remains incomplete. That
 persist does **not** join a host, does **not** unlock G13, and does
 **not** grant execution authority. That persist does **not** name a
 next canonical decision and does **not** start a successor slice.
+Owner-GO
+`OWNER_GO_WP_MF_05_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_DEFINITION_V1`
+closes the handoff definition in §4.5.5 as
+`DEFINED_CONSUMER_UNBOUND`. That persist does **not** join a host,
+does **not** name a consumer, does **not** unlock G13, and does
+**not** name a next canonical decision.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, cooldown or
@@ -1006,10 +1012,12 @@ Owner-GO
 `OWNER_GO_MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_V1`
 persists already-adjudicated isolation of the ranking /
 portfolio-selection **family** and the **single-egress** invariant.
-This subsection does **not** replace §4.5–§4.5.3, does **not** design
-a handoff, does **not** re-own `N_VALUE`, does **not** rewire Cap 2.3 or
-Cap 2.4, does **not** unlock G13, and does **not** create a join into
-the productive system. `OPEN_DECISION_01` is closed in §4.5.3 as
+This subsection does **not** replace §4.5–§4.5.3, does **not** re-own
+`N_VALUE`, does **not** rewire Cap 2.3 or Cap 2.4, does **not** unlock
+G13, and does **not** create a join into the productive system. The
+single-egress **definition** is bound in §4.5.5. This subsection remains
+the invariant owner (`SINGLE_EGRESS_REQUIRED=true`) and is **not** the
+handoff-definition owner. `OPEN_DECISION_01` is closed in §4.5.3 as
 Owner-policy ceiling `N_VALUE=5`. `OPEN_DECISION_04` is closed in §4.5.3 as
 ownership principle only. `OPEN_DECISION_05` is closed in §4.5.3 as
 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current isolated MF
@@ -1057,14 +1065,14 @@ CAP24_REWIRED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 ISOLATED_RANKING_UNIVERSE=true
 CALLER_AUTHORITY_SCOPE=SELECTION_DOMAIN_ONLY
 EXECUTION_AUTHORITY_INSIDE_SELECTION_DOMAIN=false
 SINGLE_EGRESS_REQUIRED=true
-CURRENT_HANDOFF_STATUS=HANDOFF_NOT_YET_CANONICALLY_DEFINED
-HANDOFF_PAYLOAD_STATUS=UNRESOLVED
+CURRENT_HANDOFF_STATUS=CANONICALLY_DEFINED
+HANDOFF_PAYLOAD_STATUS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
 HANDOFF_TO_SINGLE_EXECUTION_SELECTION=UNRESOLVED
 DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK=true
 SECOND_SELECTION_DECISION_DOWNSTREAM=FORBIDDEN
@@ -1128,9 +1136,72 @@ NEXT_STEP_IS_AUTOMATIC=false
 ```
 
 A named Top-50 stage between universe and Top-20 is **not** canonical.
-Zero isolated egress today is **not** a designed single handoff. Cap
-2.2 → Cap 2.3 remains the productive selection path and is **not** an
-MF egress.
+The productive Cap 2.2 → Cap 2.3 path remains **not** an MF egress.
+The single-egress definition is bound in §4.5.5 as
+`DEFINED_CONSUMER_UNBOUND`. Consumer identity remains unbound. Host
+join remains `NOT_IN_SCOPE`.
+
+### 4.5.5 Canonical single-egress authority-handoff definition (docs and typed contract; AUTHORITY_EFFECT=NONE)
+
+Owner-GO
+`OWNER_GO_WP_MF_05_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_DEFINITION_V1`
+closes `HANDOFF_NOT_YET_CANONICALLY_DEFINED` as a typed unconsumed
+egress definition. This subsection does **not** replace §4.5–§4.5.4,
+does **not** join a host, does **not** rewire Cap 2.3 or Cap 2.4, does
+**not** unlock G13, and does **not** create a new edge into the
+productive system.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md`.
+
+Typed validator:
+`src&#47;ops&#47;mf_canonical_single_egress_authority_handoff_contract_v1.py`.
+
+``` text
+CONTRACT_ID=MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1
+CONTRACT_CLASS=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CONTEXT_ONLY=true
+SELECTION_AUTHORITY=false
+MF_CURRENT_ROLE=NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+CAP23_REMAINS_SOLE_SELECTION_OWNER=true
+CAP23_IMPORTED=false
+CAP23_REWIRED=false
+CAP24_REWIRED=false
+INTEGRATION_STATUS=NOT_IN_SCOPE
+HOST_ADAPTER_STATUS=NOT_DESIGNED
+HOST_CONSUMER_STATUS=NONE
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
+CURRENT_HANDOFF_STATUS=CANONICALLY_DEFINED
+HANDOFF_PAYLOAD_STATUS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
+HANDOFF_TO_SINGLE_EXECUTION_SELECTION=UNRESOLVED
+CONSUMER_IDENTITY_STATUS=UNBOUND
+HANDOFF_PRODUCER=ISOLATED_MF_MEMBERSHIP_CONTEXT_ARTIFACT
+HANDOFF_CONSUMER=UNBOUND
+EGRESS_ID=MF_SINGLE_EGRESS_V1
+SINGLE_EGRESS_REQUIRED=true
+NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
+PRODUCTIVE_CONSUMER_CREATED=false
+HOST_JOIN=false
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+EXECUTION_AUTHORITY_EFFECT=NONE
+FULL_CORE_LIVE_AUTHORITY_EFFECT=NONE
+CANARY_AUTHORITY_EFFECT=NONE
+```
+
+The envelope references the already-bound membership-context artifact
+identity, Cap-2.2 provenance, and freshness. It does **not** promote
+membership context to selection authority. Execution-selection payload
+types remain `NOT_DESIGNED`. Cap 2.3 exactly-1 remains **not** the
+definition of how several handed members become one execution input.
+This persist does **not** name a next canonical decision.
 
 ## 4.6 Volatility authority
 
