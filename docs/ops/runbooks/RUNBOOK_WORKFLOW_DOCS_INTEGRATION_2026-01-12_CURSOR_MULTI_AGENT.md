@@ -192,7 +192,7 @@
 
 **Pre-Commit Validation:**
 All paths in new/modified files verified manually:
-- ✅ `..&#47;..&#47;..&#47;WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (exists, relative path from docs/ops/runbooks/)
+- ✅ `..&#47;RUNBOOK_INDEX.md` (exists, current ops runbook index; relative path from docs/ops/runbooks/)
 - ✅ `docs&#47;WORKFLOW_NOTES.md` (exists)
 - ✅ `LIVE_OPERATIONAL_RUNBOOKS.md` (exists)
 - ✅ `runbooks&#47;RUNBOOKS_LANDSCAPE_2026_READY.md` (exists)
