@@ -1,10 +1,10 @@
 ---
 docs_token: DOCS_TOKEN_MF_RANKING_UNIVERSE_AND_SINGLE_EGRESS_BOUNDARY_CONTRACT_V1
 status: active
-scope: Docs-only isolated ranking-universe family isolation and single-egress invariant; no handoff design; N_VALUE pointer to semantics §1.3; no Cap-2.3/2.4 join
+scope: Docs-only isolated ranking-universe family isolation and single-egress invariant; handoff definition owned by MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1; N_VALUE pointer to semantics §1.3; no Cap-2.3/2.4 join
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-09
+last_updated: 2026-09-10
 LIVE_AUTHORIZED: false
 ORDERS_ALLOWED: false
 RUNTIME_ACTIVATION_ALLOWED: false
@@ -41,15 +41,15 @@ RUNTIME_IMPLEMENTATION_CREATED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 ISOLATION_INVARIANT=HARD_DOMAIN_END
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 ISOLATED_RANKING_UNIVERSE=true
 CALLER_AUTHORITY_SCOPE=SELECTION_DOMAIN_ONLY
 EXECUTION_AUTHORITY_INSIDE_SELECTION_DOMAIN=false
 SINGLE_EGRESS_REQUIRED=true
-CURRENT_HANDOFF_STATUS=HANDOFF_NOT_YET_CANONICALLY_DEFINED
-HANDOFF_PAYLOAD_STATUS=UNRESOLVED
+CURRENT_HANDOFF_STATUS=CANONICALLY_DEFINED
+HANDOFF_PAYLOAD_STATUS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
 HANDOFF_TO_SINGLE_EXECUTION_SELECTION=UNRESOLVED
 DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK=true
 SECOND_SELECTION_DECISION_DOWNSTREAM=FORBIDDEN
@@ -107,8 +107,10 @@ invariant for the graph bounded by
 [`MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md`](MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1.md).
 
 It does **not** replace §4.5, §4.5.1, §4.5.2, or §4.5.3. It does **not**
-design a host adapter, a Cap-2.4-compatible DTO, a mapping into Cap 2.3
-or Cap 2.4, or an authority handoff. It does **not** re-own `N_VALUE`.
+design a host adapter, a Cap-2.4-compatible DTO, or a mapping into Cap
+2.3 or Cap 2.4. The authority-handoff **definition** is bound in
+[`MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md`](MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md);
+this file is not that close owner. It does **not** re-own `N_VALUE`.
 `N_VALUE=5` is a **pointer** to the semantics contract §1.3; this file
 is not the OD01 close owner. `OPEN_DECISION_04` is closed as ownership principle only in
 [`MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md`](MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md)
@@ -253,7 +255,7 @@ Dashboard `universe` ~50 is observation-only.
 | Cap 2.4 runtime binding | `EXECUTION_DOMAIN` | `ops.single_selected_future_runtime_binding_v1` | Cap 2.4 bind | recon / analytical host | consumes Cap 2.3 only | not MF consumer; not second ranker | `docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md` |
 | Master V2 / Double Play / host graph | `EXECUTION_DOMAIN` | existing compute/risk/safety/intent owners | Integrated Replay and bound adapters | simulated execution | existing productive gates; host does not recompute core logic | not MF ranking consumer; Top-50/Top-20 labels remain context only | host-graph SSOT spec; DP futures input read model |
 | Risk / Sizing / Safety / Eligibility / Venue / Pretrade | `EXECUTION_DOMAIN` | existing productive owners | existing gate producers | execution / intent | may block a candidate; must not rank | not second selection/ranking authority | Cap 2.4 call graph; host-graph SSOT |
-| MF → execution handoff | `HANDOFF_BOUNDARY` | none | none | none | none | not designed; not payload; not Cap 2.3 import | parent boundary `AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED` |
+| MF → execution handoff | `HANDOFF_BOUNDARY` | typed unconsumed envelope; consumer unbound | isolated membership-context artifact reference | none productive | non-authoritative membership-context reference | not Cap 2.3 import; not host join; not execution-selection payload | `docs/ops/specs/MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md` |
 | Dashboard / Landscape ranking | `OUT_OF_DOMAIN` | presentation | read-model | humans | none | not ranking authority; not membership | Cap 2.2 forensic class `DASHBOARD_CONSUMER_ONLY` |
 | `analytics.portfolio_builder.select_top_*` | `HISTORICAL_ONLY` | none | legacy | none productive | none | `LEGACY_DEAUTHORIZED` | Cap 2.2 forensic table |
 | Phase-42 sweep Top-N | `OUT_OF_DOMAIN` | research sweep export | sweep tooling | analysis | none | not this domain | ownership `PHASE42_SWEEP_TOPN_IS_NOT_THIS_DOMAIN` |
@@ -304,11 +306,13 @@ productive risk/sizing/safety decisions.
 
 ```text
 SINGLE_EGRESS_REQUIRED=true
-CURRENT_HANDOFF_STATUS=HANDOFF_NOT_YET_CANONICALLY_DEFINED
-HANDOFF_PRODUCER=NONE
-HANDOFF_CONSUMER=NONE
-HANDOFF_PAYLOAD_STATUS=UNRESOLVED
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+CURRENT_HANDOFF_STATUS=CANONICALLY_DEFINED
+HANDOFF_PRODUCER=ISOLATED_MF_MEMBERSHIP_CONTEXT_ARTIFACT
+HANDOFF_CONSUMER=UNBOUND
+HANDOFF_PAYLOAD_STATUS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
+THIS_FILE_IS_NOT_HANDOFF_DEFINITION_OWNER=true
+HANDOFF_DEFINITION_OWNER=MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1
 NEW_EDGE_TO_PRODUCTIVE_SYSTEM=false
 PARALLEL_HANDOFFS=FORBIDDEN
 SECOND_RANKING_AUTHORITY_DOWNSTREAM=FORBIDDEN
@@ -319,7 +323,7 @@ ALTERNATIVE_PRODUCTIVE_CONSUMER_OF_MF_SELECTION_SEMANTICS=FORBIDDEN
 Forensic result for the **isolated** universe → executing model join:
 
 ```text
-HANDOFF_CLASS=HANDOFF_NOT_YET_CANONICALLY_DEFINED
+HANDOFF_CLASS=CANONICALLY_DEFINED_CONSUMER_UNBOUND
 PARALLEL_RANKING_AUTHORITY_FOUND=false
 SECOND_SELECTION_DECISION_DOWNSTREAM_FOUND=false
 EXECUTION_BYPASS_FOUND=false
@@ -338,9 +342,12 @@ from Cap 2.2 into execution is proven. The productive Cap 2.2 → Cap 2.3
 → Cap 2.4 chain remains the negative-constraint productive path and is
 **not** classified as an MF handoff.
 
-Zero isolated egress today is **not** proof of a designed single
-handoff. When a later Owner-GO designs a join, that join must be the
-only authoritative egress.
+The single-egress **definition** is bound in
+[`MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md`](MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md)
+as `DEFINED_CONSUMER_UNBOUND`. This file is **not** that close owner.
+No isolated-MF path into execution is proven. When a later Owner-GO
+names a consumer or join, that join must remain the only authoritative
+egress.
 
 ## 8. Downstream responsibility
 
@@ -372,8 +379,9 @@ No mechanism that chooses among **isolated MF** membership candidates
 is implemented. Therefore no current isolated downstream chooser is
 classified as `EXECUTION_ELIGIBILITY_FILTER`,
 `DETERMINISTIC_NON_RANKING_SELECTION`, or
-`SECOND_RANKING_AUTHORITY`. Status: `UNRESOLVED` until a designed
-egress exists.
+`SECOND_RANKING_AUTHORITY`. Status: `UNRESOLVED` until a named consumer
+exists. The egress **definition** is bound in the handoff contract; that
+bind is **not** a consumer.
 
 Host-graph SSOT already records that the productive host mapper does
 not recompute core logic and does not rewrite replay decisions. That
@@ -382,7 +390,9 @@ is productive-host classification, not an MF handoff close.
 ## 9. Handoff payload
 
 ```text
-HANDOFF_PAYLOAD_STATUS=UNRESOLVED
+HANDOFF_PAYLOAD_STATUS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
+THIS_FILE_IS_NOT_HANDOFF_PAYLOAD_OWNER=true
+HANDOFF_PAYLOAD_OWNER=MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1
 ORDERED_SELECTED_MEMBERSHIP=NOT_DESIGNED
 ELIGIBLE_SELECTED_MEMBERSHIP=NOT_DESIGNED
 SELECTED_PORTFOLIO_CONTEXT=NOT_DESIGNED
@@ -575,14 +585,16 @@ LIVE_AUTHORIZED=false
 INTEGRATION_STATUS=NOT_IN_SCOPE
 HOST_ADAPTER_STATUS=NOT_DESIGNED
 HOST_CONSUMER_STATUS=NONE
-AUTHORITY_HANDOFF_STATUS=NOT_DESIGNED
+AUTHORITY_HANDOFF_STATUS=DEFINED_CONSUMER_UNBOUND
 N_VALUE=5
 NEXT_IMPLEMENTATION_AUTHORIZED=false
 NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later handoff design, payload, change to `N`, or host join requires a
-**new** Owner-GO and remains isolated until that GO. This contract does
-**not** authorize, specify, or prepare host integration. `N_VALUE=5` is
-a pointer to the semantics contract §1.3.
+Any later named consumer, host join, Cap-2.3 rewire, or execution-
+selection mapping requires a **new** Owner-GO. This contract does
+**not** authorize, specify, or prepare host integration. The handoff
+**definition** is owned by
+[`MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md`](MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1.md).
+`N_VALUE=5` is a pointer to the semantics contract §1.3.
