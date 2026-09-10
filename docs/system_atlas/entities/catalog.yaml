@@ -210,8 +210,9 @@ entities:
       semantics contract §1.10 as required durable non-authoritative
       membership-context artifact; instance existence is proven in the
       semantics contract §1.18. Schema, writer, and reader are bound
-      there. Selector runtime remains unimplemented. G13
-      remains closed. Atlas is not runtime authority.
+      there. Isolated selector and membership-diff rotation are bound
+      in the semantics contract §1.19. RUNTIME_AUTHORIZED remains false.
+      G13 remains closed. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:mf_selector_consumption_and_anti_churn_ownership_v1
@@ -248,9 +249,11 @@ entities:
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
     source_paths:
       - src/ops/mf_membership_context_artifact_contract_v1.py
+      - src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
     evidence_sources:
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
       - src/ops/mf_membership_context_artifact_contract_v1.py
+      - src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py
     notes: >-
       Docs-only persist of already-adjudicated isolated-domain selection
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
@@ -290,8 +293,9 @@ entities:
       as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY. Anti-churn POLICY_A is
       ratified in semantics §1.17. Schema, writer, reader, durability,
       provenance, and lifecycle are bound in semantics §1.18. First
-      bootstrap instance mca_bf0255a6007432e2 is proven. Selector runtime
-      and rotation runtime remain unimplemented. No second ranker.
+      bootstrap instance mca_bf0255a6007432e2 is proven. Isolated selector
+      and membership-diff rotation are bound in semantics §1.19.
+      RUNTIME_AUTHORIZED remains false. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
 

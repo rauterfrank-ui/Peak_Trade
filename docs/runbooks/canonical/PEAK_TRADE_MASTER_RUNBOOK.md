@@ -531,8 +531,8 @@ This workpackage creates **no** new edge between those graphs. It does
 2.3 or Cap 2.4, or authority handoff.
 
 Unresolved remains unresolved: cooldown/turnover **numerics**;
-PHASE-8 runtime semantics; selector runtime; rotation runtime.
-Membership-context artifact schema, writer, reader, durability,
+PHASE-8 runtime semantics. Isolated selector runtime and membership-diff
+rotation runtime are bound in §4.5.3. Membership-context artifact schema, writer, reader, durability,
 provenance, and lifecycle are bound in §4.5.3. The first bootstrap
 instance is proven there. Rotation identity is closed in
 §4.5.3 as derived. Anti-churn POLICY_A is ratified in §4.5.3. Non-authoritative membership-context artifact persistence
@@ -562,7 +562,7 @@ grant is **not** materialization, **not** artifact creation, and
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3. Schema,
 writer, reader, and the first bootstrap instance are bound in §4.5.3.
-Selector runtime and rotation runtime remain unimplemented. Permission for a non-authoritative membership-context
+Isolated selector runtime and membership-diff rotation runtime are bound in §4.5.3. Permission for a non-authoritative membership-context
 artifact to persist while G13 remains closed is `ALLOWED` in §4.5.3;
 that permission is **not** artifact existence. Isolated membership-only pending analog is closed
 in §4.5.3 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current
@@ -781,8 +781,9 @@ ARTIFACT_LIFECYCLE_BOUND=true
 ARTIFACT_INSTANCE_ID=mca_bf0255a6007432e2
 ARTIFACT_TYPE=MF_MEMBERSHIP_CONTEXT_V1
 BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
-SELECTOR_RUNTIME_IMPLEMENTED=false
-ROTATION_RUNTIME_IMPLEMENTED=false
+SELECTOR_RUNTIME_IMPLEMENTED=true
+MEMBERSHIP_DECISION_RUNTIME_IMPLEMENTED=true
+ROTATION_RUNTIME_IMPLEMENTED=true
 RUNTIME_AUTHORIZED=false
 OPEN_DECISION_07_CLOSED=true
 OPEN_DECISION_07_CLOSE_CLASS=CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY
@@ -1091,9 +1092,9 @@ READER_BOUND=true
 OD07_ROTATION_IDENTITY=CLOSED_DERIVED
 ANTI_CHURN_POLICY_STATUS=RATIFIED
 OD04_TO_OD07_CHANGED=false
-RUNTIME_IMPLEMENTATION_CREATED=false
-SELECTOR_RUNTIME_IMPLEMENTED=false
-ROTATION_RUNTIME_IMPLEMENTED=false
+RUNTIME_IMPLEMENTATION_CREATED=true
+SELECTOR_RUNTIME_IMPLEMENTED=true
+ROTATION_RUNTIME_IMPLEMENTED=true
 ```
 
 A named Top-50 stage between universe and Top-20 is **not** canonical.
