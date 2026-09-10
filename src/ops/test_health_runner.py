@@ -207,7 +207,6 @@ class SwitchSanityConfig:
     require_non_empty_allowed: bool = True
     r_and_d_strategy_keys: list[str] = field(
         default_factory=lambda: [
-            "armstrong_cycle",
             "el_karoui_vol_model",
             "ehlers_cycle_filter",
             "meta_labeling",
@@ -956,7 +955,6 @@ def load_switch_sanity_config(config_path: Path) -> SwitchSanityConfig:
         r_and_d_strategy_keys=sanity_cfg.get(
             "r_and_d_strategy_keys",
             [
-                "armstrong_cycle",
                 "el_karoui_vol_model",
                 "ehlers_cycle_filter",
                 "meta_labeling",

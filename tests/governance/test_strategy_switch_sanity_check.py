@@ -142,9 +142,9 @@ class TestRAndDStrategiesInAllowed:
         config = """
 [live_profile.strategy_switch]
 active_strategy_id = "ma_crossover"
-allowed = ["ma_crossover", "armstrong_cycle"]
+allowed = ["ma_crossover", "el_karoui_vol_model"]
 
-[strategy.armstrong_cycle]
+[strategy.el_karoui_vol_model]
 tier = "r_and_d"
 is_live_ready = false
 """
@@ -155,7 +155,7 @@ is_live_ready = false
         )
 
         assert result.status == "FAIL"
-        assert "armstrong_cycle" in result.r_and_d_strategies
+        assert "el_karoui_vol_model" in result.r_and_d_strategies
         assert any("R&D" in m for m in result.messages)
 
     def test_known_r_and_d_keys_detected(self, temp_config_dir: Path):

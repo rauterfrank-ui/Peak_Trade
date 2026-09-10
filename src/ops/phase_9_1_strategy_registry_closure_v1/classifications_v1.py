@@ -19,7 +19,6 @@ from src.ops.phase_9_1_strategy_registry_closure_v1.models_v1 import StrategyAut
 # a separate Owner-authorized composition binding exists.
 _REGISTRY_TARGET: Dict[str, StrategyAuthorityClassV1] = {
     # Research / named models (Runbook checklist — repository-proven IDs only)
-    "armstrong_cycle": StrategyAuthorityClassV1.RESEARCH_INFORMATION,
     "el_karoui_vol_model": StrategyAuthorityClassV1.RESEARCH_INFORMATION,
     "ehlers_cycle_filter": StrategyAuthorityClassV1.RESEARCH_INFORMATION,
     "bouchaud_microstructure": StrategyAuthorityClassV1.RESEARCH_INFORMATION,

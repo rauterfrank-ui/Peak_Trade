@@ -1311,19 +1311,6 @@ take_profit_pct = 0.20
 # Sie haben IS_LIVE_READY=false und dürfen nicht in Testnet/Live verwendet werden.
 # ============================================================================
 
-[strategy.armstrong_cycle]
-key = "armstrong_cycle"
-class_path = "strategies.armstrong.armstrong_cycle_strategy.ArmstrongCycleStrategy"
-tier = "r_and_d"
-is_live_ready = false
-allowed_environments = ["offline_backtest", "research"]
-description = "R&D: Armstrong-Zyklusmodell (nur Research/Backtests, nicht live)."
-tags = ["r_and_d", "cycles", "macro", "research"]
-# Default-Parameter
-cycle_length_days = 3141
-event_window_days = 90
-reference_date = "2015-10-01"
-
 [strategy.el_karoui_vol_model]
 key = "el_karoui_vol_model"
 class_path = "strategies.el_karoui.el_karoui_vol_model_strategy.ElKarouiVolModelStrategy"

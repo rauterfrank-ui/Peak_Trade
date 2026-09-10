@@ -774,27 +774,6 @@ register_predefined_sweep(
 
 
 # -----------------------------------------------------------------------------
-# R&D Sweeps: Armstrong Cycle Strategy
-# -----------------------------------------------------------------------------
-
-register_predefined_sweep(
-    StrategySweepConfig(
-        name="armstrong_cycles_v1",
-        strategy_name="armstrong_cycle",
-        param_grid={
-            # Zyklus-Länge in Tagen (Varianten um den ECM-Basiszyklus)
-            "cycle_length_days": [1570, 2355, 3141, 3927],
-            # Event-Fenster um Turning-Points (Tage)
-            "event_window_days": [30, 60, 90, 120],
-        },
-        symbols=["BTC/USD", "ETH/USD"],
-        description="R&D Sweep für Armstrong ECM Cycle-Parameter (Zyklus-Längen und Event-Fenster)",
-        tags=["r_and_d", "armstrong", "cycle", "research"],
-    )
-)
-
-
-# -----------------------------------------------------------------------------
 # R&D Sweeps: El Karoui Vol Model Strategy
 # -----------------------------------------------------------------------------
 

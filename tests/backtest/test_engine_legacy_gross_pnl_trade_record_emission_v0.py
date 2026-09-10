@@ -196,7 +196,7 @@ class TestLegacyGrossPnlTradeRecordEmission:
             trades_df=result.trades,
             evaluation_id="eval-test",
             candidate_id="candidate-test",
-            strategy_id="armstrong_cycle",
+            strategy_id="el_karoui_vol_model",
             strategy_version="v1",
             instrument_id="ETH/USDT",
             venue="okx",

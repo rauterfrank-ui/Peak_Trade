@@ -127,23 +127,6 @@ notes = "Ersetzt durch vol_regime_filter + breakout Kombination."
 # - label:          Lesbare Anzeige im Dashboard
 #
 
-[strategy.armstrong_cycle]
-tier = "r_and_d"
-label = "Armstrong Cycle Strategy"
-category = "cycles"
-risk_profile = "experimental"
-owner = "research"
-tags = ["cycles", "timing", "ecm", "long-term"]
-recommended_config_id = "armstrong_cycle_v0_research"
-allow_live = false
-notes = """
-Armstrong ECM-Zyklus-Strategie (Research-Only / Non-Authority).
-PRIMARY_ROLE=CYCLE_INFORMATION · AUTH-005.
-Basiert auf Martin Armstrongs Economic Confidence Model (8.6-Jahre-Zyklus).
-⚠️ NICHT FÜR LIVE-TRADING - Nur für Research/Backtests.
-Keine Master-V2-/Double-Play-/Scope-/Agreement-/Risk-/Sizing-Authority.
-"""
-
 [strategy.el_karoui_vol_model]
 tier = "r_and_d"
 label = "El Karoui Volatility Model"

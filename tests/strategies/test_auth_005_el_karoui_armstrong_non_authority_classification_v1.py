@@ -1,23 +1,17 @@
-"""AUTH-005: El Karoui / Armstrong Non-Authority classification contracts."""
+"""AUTH-005: El Karoui Non-Authority classification contracts."""
 
 from __future__ import annotations
 
 import pytest
 
-from src.experiments.armstrong_elkaroui_combi_experiment import (
-    ALLOWED_ENVIRONMENTS as COMBI_ALLOWED_ENVIRONMENTS,
-    RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI,
-)
-from src.strategies.armstrong.armstrong_cycle_strategy import ArmstrongCycleStrategy
 from src.strategies.el_karoui.el_karoui_vol_model_strategy import ElKarouiVolatilityStrategy
 from src.strategies.registry import (
-    _STRATEGY_REGISTRY,
     get_strategy_registry_entry,
     get_strategy_spec,
 )
 
 
-_RESEARCH_KEYS = ("armstrong_cycle", "el_karoui_vol_model")
+_RESEARCH_KEYS = ("el_karoui_vol_model",)
 
 
 @pytest.mark.parametrize("key", _RESEARCH_KEYS)
@@ -42,16 +36,11 @@ def test_auth005_canonical_entry_has_no_live_ready_capability_tag(key: str) -> N
 
 
 def test_auth005_class_level_flags_match_registry() -> None:
-    assert ArmstrongCycleStrategy.IS_LIVE_READY is False
-    assert ArmstrongCycleStrategy.TIER == "r_and_d"
     assert ElKarouiVolatilityStrategy.IS_LIVE_READY is False
     assert ElKarouiVolatilityStrategy.TIER == "r_and_d"
 
-    arm = get_strategy_spec("armstrong_cycle")
     elk = get_strategy_spec("el_karoui_vol_model")
-    assert arm.is_live_ready is ArmstrongCycleStrategy.IS_LIVE_READY
     assert elk.is_live_ready is ElKarouiVolatilityStrategy.IS_LIVE_READY
-    assert arm.tier == ArmstrongCycleStrategy.TIER
     assert elk.tier == ElKarouiVolatilityStrategy.TIER
 
 
@@ -75,9 +64,10 @@ def test_auth005_no_execution_eligible_metadata_on_research_specs() -> None:
 
 
 def test_auth005_combi_experiment_not_registered_as_strategy_producer() -> None:
-    assert RUN_TYPE_ARMSTRONG_ELKAROUI_COMBI not in _STRATEGY_REGISTRY
+    from src.strategies.registry import _STRATEGY_REGISTRY
+
     assert "armstrong_elkaroui_combi" not in _STRATEGY_REGISTRY
-    assert set(COMBI_ALLOWED_ENVIRONMENTS) <= {"offline_backtest", "research"}
+    assert "armstrong_cycle" not in _STRATEGY_REGISTRY
 
 
 def test_auth005_ecm_cycle_is_functional_only_not_oop_live_spec() -> None:

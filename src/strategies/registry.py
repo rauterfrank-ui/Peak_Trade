@@ -31,8 +31,7 @@ from .vol_regime_filter import VolRegimeFilter
 from .composite import CompositeStrategy
 from .regime_aware_portfolio import RegimeAwarePortfolioStrategy
 
-# Research-Track: Armstrong & El-Karoui Strategien (R&D-Only)
-from .armstrong import ArmstrongCycleStrategy
+# Research-Track: El-Karoui Strategien (R&D-Only)
 from .el_karoui import ElKarouiVolatilityStrategy, ElKarouiVolModelStrategy
 
 # Research-Track: Ehlers & López de Prado Strategien (R&D-Only)
@@ -159,18 +158,6 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
     # ==========================================================================
     # Research-Track: R&D-Only Strategien (NICHT FÜR LIVE-TRADING)
     # ==========================================================================
-    "armstrong_cycle": StrategySpec(
-        key="armstrong_cycle",
-        cls=ArmstrongCycleStrategy,
-        config_section="strategy.armstrong_cycle",
-        description=(
-            "Armstrong ECM Cycle Strategy (R&D-Only, Non-Authority, "
-            "CYCLE_INFORMATION research; nicht live / nicht kanonisch gebunden)"
-        ),
-        is_live_ready=False,  # AUTH-005: align class + strategy_tiering.toml
-        tier="r_and_d",
-        allowed_environments=("offline_backtest", "research"),
-    ),
     "el_karoui_vol_model": StrategySpec(
         key="el_karoui_vol_model",
         cls=ElKarouiVolModelStrategy,
@@ -253,7 +240,6 @@ _LOADER_MODULE_REFS: Dict[str, str] = {
     "vol_regime_filter": "vol_regime_filter",
     "composite": "composite",
     "regime_aware_portfolio": "regime_aware_portfolio",
-    "armstrong_cycle": "armstrong.armstrong_cycle_strategy",
     "el_karoui_vol_model": "el_karoui.el_karoui_vol_model_strategy",
     "ehlers_cycle_filter": "ehlers.ehlers_cycle_filter_strategy",
     "meta_labeling": "lopez_de_prado.meta_labeling_strategy",

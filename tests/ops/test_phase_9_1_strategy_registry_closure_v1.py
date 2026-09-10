@@ -68,7 +68,6 @@ def test_schema_and_classification_complete() -> None:
     # Named runbook models present when repository-proven
     ids = {r.STRATEGY_ID for r in rows}
     for required in (
-        "armstrong_cycle",
         "el_karoui_vol_model",
         "ehlers_cycle_filter",
         "bouchaud_microstructure",
@@ -130,9 +129,9 @@ def test_direct_intent_fill_order_forbidden() -> None:
 
 def test_master_v2_double_play_bypass_forbidden() -> None:
     with pytest.raises(Phase91GateError, match="master_v2_bypass_forbidden"):
-        reject_master_v2_bypass("armstrong_cycle")
+        reject_master_v2_bypass("el_karoui_vol_model")
     with pytest.raises(Phase91GateError, match="double_play_bypass_forbidden"):
-        reject_double_play_bypass("armstrong_cycle")
+        reject_double_play_bypass("el_karoui_vol_model")
 
 
 def test_risk_safety_bypass_forbidden() -> None:
@@ -145,7 +144,7 @@ def test_risk_safety_bypass_forbidden() -> None:
 def test_silent_authority_promotion_forbidden() -> None:
     with pytest.raises(Phase91GateError, match="silent_authority_promotion_forbidden"):
         reject_silent_authority_promotion(
-            entry_id="armstrong_cycle",
+            entry_id="el_karoui_vol_model",
             from_class=StrategyAuthorityClassV1.RESEARCH_INFORMATION,
             to_class=StrategyAuthorityClassV1.CANONICAL_AUTHORITY,
         )
@@ -195,7 +194,7 @@ def test_productive_call_graph_integration(tmp_path: Path) -> None:
     )
     assert counts["CANONICAL_AUTHORITY"] == 2
     assert counts["AUTHORIZED_COMPOSITION_INPUT"] == 1
-    assert counts["RESEARCH_INFORMATION"] >= 6
+    assert counts["RESEARCH_INFORMATION"] >= 5
     assert counts["LEGACY_DEAUTHORIZED"] >= 6
     summary = json.loads(
         (tmp_path / "capability_phase_9_1_strategy_registry_closure_v1" / "SUMMARY.json").read_text(

@@ -1,1393 +1,722 @@
 {
-  "generated_at_utc": "2026-04-07T03:48:49.337352+00:00",
-  "git_sha": "4da647a002c1e81535f3639b472f95ba801d18a0",
+  "generated_at_utc": "2026-09-10T20:56:23.549943+00:00",
+  "git_sha": "a9df51633231cb5e8fff7761d8ccd8d0ddae3230",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 1740,
-    "ignored_files": 514,
-    "scanned_files": 1226,
-    "total_references": 7293
+    "total_markdown_files": 3084,
+    "ignored_files": 509,
+    "scanned_files": 2575,
+    "total_references": 15873
   },
-  "missing_count": 230,
+  "missing_count": 118,
   "missing_items": [
     {
-      "source_file": "docs/AUTO_PORTFOLIOS.md",
-      "line_number": 44,
-      "target": "config/portfolios",
+      "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
+      "line_number": 150,
+      "target": "../tests/test_kraken_cache_loader.py",
       "link_text": null
     },
     {
-      "source_file": "docs/AUTO_PORTFOLIOS.md",
-      "line_number": 108,
-      "target": "config/portfolios/auto_portfolio_3comp_20250104_120000.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
+      "source_file": "docs/LIVE_OPERATIONAL_RUNBOOKS.md",
       "line_number": 28,
-      "target": "src/data/my_exchange.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DEV_GUIDE_ADD_EXCHANGE.md",
-      "line_number": 306,
-      "target": "docs/EXCHANGE_MY_EXCHANGE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DEV_GUIDE_ADD_STRATEGY.md",
-      "line_number": 25,
-      "target": "src/strategies/my_new_strategy.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 86,
-      "target": "docs/webui/DASHBOARD_OVERVIEW.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 318,
-      "target": "docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 319,
-      "target": "docs/ops/_archive/installation_roadmap/..._ORIGINAL.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 328,
-      "target": "scripts/query_lake.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 329,
-      "target": "scripts/generate_report.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 330,
-      "target": "scripts/ci/check_docs_reference_targets.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 339,
-      "target": "scripts/helper.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 339,
-      "target": "scripts/old_name.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 347,
-      "target": "scripts/my_script.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 348,
-      "target": "scripts/example.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
-      "line_number": 25,
-      "target": "scripts/ingest_backtest_reports.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
-      "line_number": 65,
-      "target": "scripts/ingest_strategy_docs.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
-      "line_number": 128,
-      "target": "scripts/ingest_research_paper.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/LEARNING_PROMOTION_LOOP_V1_ARCHITECTURE.md",
-      "line_number": 10,
-      "target": "config/auto/learning.override.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/PEAK_TRADE_OVERVIEW.md",
-      "line_number": 99,
-      "target": "config/my_backtest.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/PEAK_TRADE_OVERVIEW.md",
-      "line_number": 396,
-      "target": "src/data/data_loader.py",
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
       "link_text": null
     },
     {
       "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
-      "line_number": 240,
-      "target": "scripts/testnet_ping_exchange.py",
+      "line_number": 183,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
       "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
-      "line_number": 240,
-      "target": "scripts/testnet_place_smoke_order.py",
+      "line_number": 237,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
-      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
-      "line_number": 277,
-      "target": "src/monitoring/dashboard.py",
+      "source_file": "docs/PHASE_31_SHADOW_PAPER_FLOW.md",
+      "line_number": 56,
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
-      "line_number": 278,
-      "target": "scripts/run_monitoring_server.py",
+      "source_file": "docs/PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md",
+      "line_number": 26,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
       "link_text": null
     },
     {
-      "source_file": "docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md",
-      "line_number": 202,
-      "target": "docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md",
+      "source_file": "docs/PHASE_79_REAL_MARKET_DATA_QC.md",
+      "line_number": 56,
+      "target": "src/data/kraken_cache_loader.py",
       "link_text": null
     },
     {
-      "source_file": "docs/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md",
-      "line_number": 515,
-      "target": "docs/strategy_profiles/{STRATEGY_ID}_PROFILE_v1.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
-      "line_number": 138,
-      "target": "config/custom_recipes.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/PORTFOLIO_RECIPES_AND_PRESETS.md",
-      "line_number": 481,
-      "target": "docs/PHASE_53_STRATEGY_AND_PORTFOLIO_LIBRARY_PUSH.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/RELEASE_NOTES_LEARNING_PROMOTION_LOOP_V1.md",
-      "line_number": 18,
-      "target": "config/auto/learning.override.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 302,
-      "target": "docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/SWEEPS_MARKET_SCANS.md",
-      "line_number": 92,
-      "target": "config/sweeps/ma_crossover.json",
+      "source_file": "docs/PHASE_79_REAL_MARKET_DATA_QC.md",
+      "line_number": 273,
+      "target": "src/data/kraken_cache_loader.py",
       "link_text": null
     },
     {
       "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 14,
-      "target": "src/backtest/engine.py:1318",
+      "line_number": 74,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
       "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 22,
-      "target": "src/backtest/engine.py:1319",
+      "line_number": 84,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
       "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 32,
-      "target": "src/backtest/walkforward.py:387",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 42,
-      "target": "src/strategies/macd.py:232",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 47,
-      "target": "src/strategies/bollinger.py:237",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 58,
-      "target": "scripts/live_ops.py:189",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 63,
-      "target": "scripts/preview_live_orders.py:157",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 68,
-      "target": "scripts/run_portfolio_backtest.py:119",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 73,
-      "target": "scripts/preview_live_portfolio.py:96",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 78,
-      "target": "scripts/run_shadow_execution.py:502",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 92,
-      "target": "src/experiments/stress_tests.py:389",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 100,
-      "target": "src/experiments/monte_carlo.py:303",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 108,
-      "target": "scripts/run_monte_carlo_robustness.py:139",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/TECH_DEBT_BACKLOG.md",
-      "line_number": 115,
-      "target": "scripts/demo_order_pipeline_backtest.py:306",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/adr/ADR_0001_Peak_Tool_Stack.md",
-      "line_number": 17,
-      "target": "src/utils/logger.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/adr/ADR_0001_Peak_Tool_Stack.md",
-      "line_number": 19,
-      "target": "src/config/registry.py",
+      "line_number": 89,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
       "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
-      "line_number": 2,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
-      "line_number": 2,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
-      "line_number": 136,
-      "target": "src/features",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/governance/UNTRACKED_LOCAL_REPORTS_POLICY.md",
-      "line_number": 15,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/governance/UNTRACKED_LOCAL_REPORTS_POLICY.md",
-      "line_number": 16,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/governance/todos/AI_MATRIX_GATE_TODO.md",
-      "line_number": 13,
-      "target": "docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/infostream/README.md",
-      "line_number": 210,
-      "target": "scripts/register_infostream_event.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/learning_promotion/BOUNDED_AUTO_SAFETY_PLAYBOOK.md",
-      "line_number": 317,
-      "target": "scripts/check_bounded_auto_readiness.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
-      "line_number": 86,
-      "target": "../../../config/bounded_live.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
-      "line_number": 87,
-      "target": "../../../.github/workflows/ci.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
-      "line_number": 88,
-      "target": "../../../scripts/ops/run_audit.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
-      "line_number": 89,
-      "target": "../EVIDENCE_INDEX.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_ENTRY_TEMPLATE.md",
-      "line_number": 90,
-      "target": "../../../README.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_INDEX.md",
-      "line_number": 176,
-      "target": "docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_SCHEMA.md",
-      "line_number": 73,
-      "target": "../../../config/bounded_live.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/EVIDENCE_SCHEMA.md",
-      "line_number": 78,
-      "target": "../../../.github/workflows/ci.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/MERGE_LOGS_STYLE_GUIDE.md",
-      "line_number": 133,
-      "target": "scripts/old-script.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/NEXT_STEPS_WORKFLOW_DOCS.md",
-      "line_number": 5,
-      "target": "docs/ops-workflow-scripts-docs",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 147,
-      "target": "docs/evidence/phase0_baseline.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 165,
-      "target": "docs/backlog/EPICS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 166,
-      "target": "docs/backlog/STORIES.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 229,
-      "target": "scripts/evidence/make_evidence_pack.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 435,
-      "target": "docs/runbooks/PROMOTION_PIPELINE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 436,
-      "target": "scripts/ops/promote_run.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
-      "line_number": 71,
-      "target": "./reports:/reports",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
-      "line_number": 96,
-      "target": "./reports:/reports",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/PRE_PR_FULL_SCAN_CI_PARITY.md",
-      "line_number": 257,
-      "target": ".github/workflows/docs-reference-targets-gate.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/Peak_Trade_TOOLING_AND_EVIDENCE_CHAIN_RUNBOOK.md",
-      "line_number": 387,
-      "target": "scripts/cleanup_artifacts.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/STABILITY_RESILIENCE_PLAN_V1.md",
-      "line_number": 509,
-      "target": "scripts/run_smoke_tests.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
-      "line_number": 43,
-      "target": "scripts/run_smoke_tests.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/TASK_PACKET_EVIDENCE_PYTEST.md",
-      "line_number": 16,
-      "target": "docs/ops",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/WORKFLOW_SCRIPTS.md",
-      "line_number": 43,
-      "target": "docs/ops-pr203-merge-log",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/WORKFLOW_SCRIPTS.md",
-      "line_number": 46,
-      "target": "docs/ops/PR_203_MERGE_LOG.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/WORKFLOW_SCRIPTS.md",
-      "line_number": 116,
-      "target": "docs/ops-pr203-merge-log",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/WORKFLOW_SCRIPTS.md",
-      "line_number": 116,
-      "target": "docs/ops-pr999-merge-log",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/WORKFLOW_SCRIPTS.md",
-      "line_number": 585,
-      "target": "docs/ops/PR_203_MERGE_LOG.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md",
-      "line_number": 49,
-      "target": "docs/FILE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md",
-      "line_number": 54,
-      "target": "docs/FILE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXCHANGE_EXECUTION_A2Z_V1.md",
-      "line_number": 54,
-      "target": "docs/ops/ai/exchange_execution_runbook_v1.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 25,
-      "target": "src/execution/providers/http_client_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 26,
-      "target": "src/execution/providers/errors_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 27,
-      "target": "src/execution/providers/normalization_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 32,
-      "target": "src/execution/providers/okx/client_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
-      "line_number": 44,
-      "target": "scripts/ops/p119_execution_wiring_plan_snapshot_v1.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_ops_wave26_review/friction_scan.md",
       "line_number": 19,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/ci_ops_wave26_review/friction_scan.md",
-      "line_number": 19,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_ops_wave26_review/friction_scan.md",
-      "line_number": 61,
-      "target": "../../PRE_FLIGHT_CHECKLIST_RUNBOOK_OPS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_ops_wave29_review/first_safe_followup.md",
-      "line_number": 12,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_ops_wave29_review/first_safe_followup.md",
-      "line_number": 12,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 40,
-      "target": "docs/webui/observability/grafana/dashboards/overview/foo.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 41,
-      "target": "docs/foo.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 43,
-      "target": "src/foo.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 44,
-      "target": "scripts/bar.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 52,
-      "target": "docs/foo.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 52,
-      "target": "docs/webui/observability/grafana/dashboards/overview/bar.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_inventory.md",
-      "line_number": 56,
-      "target": "src/foo.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_meta_gate.md",
-      "line_number": 35,
-      "target": "docs/foo.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_meta_gate.md",
-      "line_number": 37,
-      "target": "src/foo.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_meta_gate.md",
-      "line_number": 38,
-      "target": "scripts/obs/build_foo.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_pr_body.md",
-      "line_number": 18,
-      "target": "docs/webui/observability/grafana/dashboards/.../foo.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/ci_pragmatic_flow_pr_body.md",
-      "line_number": 19,
-      "target": "docs/foo.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/cleanup/CHANGES_LOG.md",
-      "line_number": 128,
-      "target": "scripts/cleanup_repo.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/cleanup/CLEANUP_REPORT.md",
-      "line_number": 224,
-      "target": "scripts/cleanup_repo.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/audit_summary.md",
-      "line_number": 25,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/audit_summary.md",
-      "line_number": 26,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/operator_note.md",
-      "line_number": 18,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/operator_note.md",
-      "line_number": 18,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/summary.md",
-      "line_number": 38,
-      "target": "docs/GOVERNANCE_DATAFLOW_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/consolidation_wave35_snapshot/summary.md",
-      "line_number": 39,
-      "target": "docs/REPO_AUDIT_REPORT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
-      "line_number": 42,
-      "target": "./reports:/reports",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
-      "line_number": 91,
-      "target": "./reports/obs/stage1/YYYY-MM-DD_snapshot.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_BIS_FINISH_2026.md",
-      "line_number": 501,
-      "target": "config/bounded_live_testnet.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_AI_LIVE_OPS_LOCAL.md",
-      "line_number": 68,
-      "target": "docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_BRANCH_CLEANUP_RECOVERY.md",
-      "line_number": 58,
-      "target": "docs/phase9c-broken-targets-wave5",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_CURSOR_MA_FEHLENDE_FEATURES_OPEN_POINTS_2026-02-10.md",
-      "line_number": 228,
-      "target": "src/core/strategy_wrappers.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_CURSOR_MULTI_AGENT_ORCHESTRATOR_NEXT_TASKS_2026-01-18.md",
-      "line_number": 185,
-      "target": "docs/webui/observability/SHADOW_MVS_CONTRACT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCKER_STACK_FUTURES_CME_NQ_MNQ_OFFLINE.md",
-      "line_number": 37,
-      "target": "docs/markets/UEBERBLICK_FUTURES_NASDAQ100_IMPLEMENTIERT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md",
-      "line_number": 325,
-      "target": "docs/ops/runbooks/OPERATOR_GUIDE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md",
-      "line_number": 401,
-      "target": "docs/ops/runbooks/EXAMPLE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md",
-      "line_number": 402,
-      "target": "docs/ops/OPERATOR_GUIDE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md",
-      "line_number": 666,
-      "target": "docs/ops/runbooks/RUNBOOK_X.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md",
-      "line_number": 696,
-      "target": "docs/ops/runbooks/RUNBOOK_X.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md",
-      "line_number": 265,
-      "target": ".github/workflows/docs-reference-targets-gate.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md",
-      "line_number": 324,
-      "target": ".github/workflows/docs-reference-targets-gate.yml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md",
-      "line_number": 47,
-      "target": "docs/ops/graphs/snapshots/YYYY-MM-DD/docs_graph_snapshot.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md",
-      "line_number": 286,
-      "target": "docs/triage-YYYY-MM-DD-description",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md",
-      "line_number": 30,
-      "target": "config/my_custom.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md",
-      "line_number": 195,
-      "target": "config/my_example.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md",
-      "line_number": 279,
-      "target": "scripts/example.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md",
-      "line_number": 247,
-      "target": "config/example.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md",
-      "line_number": 31,
-      "target": "config/example.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md",
-      "line_number": 31,
-      "target": "scripts/fake.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md",
-      "line_number": 45,
-      "target": "scripts/example.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md",
-      "line_number": 112,
-      "target": "docs/GUIDE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md",
-      "line_number": 358,
-      "target": "scripts/example.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE_OPERATOR.md",
-      "line_number": 173,
-      "target": "scripts/fake.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_LEGACY_WORKFLOW_NOTES_REINTEGRATION_CURSOR_MULTI_AGENT.md",
-      "line_number": 41,
-      "target": "docs/ops-legacy-workflow-notes-reintegration",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_CURSOR_MULTI_AGENT.md",
-      "line_number": 318,
-      "target": "docs/branch-name",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md",
-      "line_number": 403,
-      "target": "docs/example_guide.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md",
-      "line_number": 507,
-      "target": "../../RUNBOOK_NEW.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md",
-      "line_number": 507,
-      "target": "../../RUNBOOK_OLD.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md",
-      "line_number": 900,
-      "target": "../../RUNBOOK_X.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md",
-      "line_number": 764,
-      "target": "docs/pointer-pattern-quarterly-review-YYYYMMDD",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_PR_MERGE_SQUASH_POST_VERIFY_CURSOR_MULTI_AGENT.md",
-      "line_number": 58,
-      "target": "docs/ops/runbooks/RUNBOOK_X.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_PR_MERGE_SQUASH_POST_VERIFY_CURSOR_MULTI_AGENT.md",
-      "line_number": 61,
-      "target": "docs/example/file.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 129,
-      "target": "docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 130,
-      "target": "docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 308,
-      "target": "docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 409,
-      "target": "docs/research/option_b/OPTION_B_GAP_ASSESSMENT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/RUNBOOK_TO_FINISH_MASTER.md",
-      "line_number": 410,
-      "target": "docs/research/option_b/OPTION_B_IMPLEMENTATION_ROADMAP_NO_CODE.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V3_NOTIFIER_READY_CONTRACT.md",
-      "line_number": 22,
-      "target": ".github/workflows",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/cursor_multi_agent_orchestration.md",
-      "line_number": 765,
-      "target": "docs/runbook-cursor-ma-phases-21-24",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/cursor_multi_agent_orchestration.md",
-      "line_number": 766,
-      "target": "docs/runbook-cursor-ma-fix-token-policy",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/cursor_multi_agent_orchestration.md",
-      "line_number": 989,
-      "target": "docs/runbooks",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C0_GOVERNANCE_CONTRACT.md",
-      "line_number": 98,
-      "target": "docs/ops/evidence/EV-YYYYMMDD-FINISH_C0-CONTRACT.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C1_BROKER_ADAPTER_SKELETON.md",
-      "line_number": 83,
-      "target": "src/execution/broker/mock_broker.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C1_BROKER_ADAPTER_SKELETON.md",
-      "line_number": 93,
-      "target": "docs/ops/evidence/EV-YYYYMMDD-FINISH_C1-ADAPTER-PASS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C2_LIVE_SESSION_ORCHESTRATOR_DRYRUN.md",
-      "line_number": 90,
-      "target": "docs/ops/evidence/EV-YYYYMMDD-FINISH_C2-ORCH-DRYRUN-PASS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C3_RECONCILER_SAFETY_RAILS.md",
-      "line_number": 88,
-      "target": "src/execution/live/reconcile.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C3_RECONCILER_SAFETY_RAILS.md",
-      "line_number": 89,
-      "target": "src/execution/live/safety.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C3_RECONCILER_SAFETY_RAILS.md",
-      "line_number": 96,
-      "target": "docs/ops/evidence/EV-YYYYMMDD-FINISH_C3-RECONCILE-PASS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C4_OBSERVABILITY_OPERATOR_DRYRUN.md",
-      "line_number": 100,
-      "target": "src/observability/execution_metrics.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C4_OBSERVABILITY_OPERATOR_DRYRUN.md",
-      "line_number": 101,
-      "target": "src/execution/live/status_snapshot.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 115,
-      "target": "src/live/orchestrator/state.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 116,
-      "target": "src/live/orchestrator/orchestrator.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 117,
-      "target": "src/live/orchestrator/audit.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 122,
-      "target": "src/live/reconcile/reconciler.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 123,
-      "target": "src/live/safety/rails.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 128,
-      "target": "src/observability/metrics_orders.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md",
-      "line_number": 135,
-      "target": "docs/ops/evidence/EV-YYYYMMDD-FINISH_C5-READINESS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/live_pilot_execution_plan.md",
-      "line_number": 13,
-      "target": "./scripts/ops/ops_status.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/live_pilot_execution_plan.md",
-      "line_number": 35,
-      "target": "./scripts/ops/pull_latest_prbi_scorecard.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/live_pilot_execution_plan.md",
+      "source_file": "docs/audit/VENUE_KRAKEN_LEGACY_CLARIFICATION_V0.md",
       "line_number": 36,
-      "target": "./scripts/ops/pull_latest_prbg_execution_evidence.sh",
+      "target": "scripts/demo_kraken_simple.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/runbooks/live_pilot_execution_plan.md",
-      "line_number": 38,
-      "target": "./scripts/ops/ops_status.sh",
+      "source_file": "docs/audit/evidence/snapshots/architecture_overview_20251230.md",
+      "line_number": 20,
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/runbooks/morning_one_shot.md",
-      "line_number": 12,
-      "target": "./scripts/ops/run_morning_one_shot.sh",
+      "source_file": "docs/audit/evidence/snapshots/architecture_overview_20251230.md",
+      "line_number": 157,
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/runbooks/phase16/RUNBOOK_PHASE16A_EXECUTION_PIPELINE_MVP.md",
-      "line_number": 16,
-      "target": "docs/webui/EXECUTION_WATCH_DASHBOARD.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/runbooks/phase16/RUNBOOK_PHASE16A_EXECUTION_PIPELINE_MVP.md",
-      "line_number": 25,
-      "target": "docs/ops/evidence/EV_YYYYMMDD_PHASE16A_EXECUTION_PIPELINE_MVP.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/sessions/APPENDIX_C_PR_TEMPLATE.md",
-      "line_number": 21,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/sessions/CLOSEOUT_4B_M2.md",
+      "source_file": "docs/audit/evidence/snapshots/execution_security_ops_20251230.md",
       "line_number": 79,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/sessions/PR_BODY_4B_M2.md",
-      "line_number": 13,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
+      "source_file": "docs/evidence/auth_005_el_karoui_armstrong_non_authority_classification_v1/non_authority_contract.md",
+      "line_number": 16,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/sessions/SESSION_4B_M2_20260109.md",
-      "line_number": 33,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/README.md",
+      "line_number": 27,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/sessions/SESSION_4B_M2_TASKBOARD.md",
-      "line_number": 78,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 17,
+      "target": "config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md",
-      "line_number": 25,
-      "target": "config/my_custom.toml",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 19,
+      "target": "config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md",
-      "line_number": 25,
-      "target": "scripts/my_example.py",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 20,
+      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md",
-      "line_number": 52,
-      "target": "config/my_custom.toml",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 22,
+      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/workflows/WORKFLOW_NOTES_FRONTDOOR.md",
-      "line_number": 53,
-      "target": "scripts/my_example.py",
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 112,
+      "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 113,
+      "target": "docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 114,
+      "target": "docs/strategies/armstrong/ARMSTRONG_CYCLE_STATUS_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 117,
+      "target": "docs/strategy_profiles/ARMSTRONG_CYCLE_PROFILE_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 122,
+      "target": "scripts/ops/invoke_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 123,
+      "target": "scripts/ops/invoke_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 124,
+      "target": "scripts/ops/run_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 125,
+      "target": "scripts/research/materialize_armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 126,
+      "target": "scripts/research/materialize_armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 130,
+      "target": "src/backtest/step29m_armstrong_cycle_v1_economic_evaluation_admissibility_contract_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 136,
+      "target": "src/docs/armstrong_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 147,
+      "target": "src/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 148,
+      "target": "src/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 151,
+      "target": "src/research/step29m_armstrong_cycle_v1_offline_economic_baseline_materialization_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 152,
+      "target": "src/strategies/armstrong/__init__.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 153,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 154,
+      "target": "src/strategies/armstrong/cycle_model.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 16,
+      "target": "config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 17,
+      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 18,
+      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 95,
+      "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 96,
+      "target": "docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 97,
+      "target": "docs/strategies/armstrong/ARMSTRONG_CYCLE_STATUS_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 104,
+      "target": "scripts/research/materialize_armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 105,
+      "target": "scripts/research/materialize_armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 110,
+      "target": "src/backtest/step29m_armstrong_cycle_v1_economic_evaluation_admissibility_contract_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 125,
+      "target": "src/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 126,
+      "target": "src/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 131,
+      "target": "src/strategies/armstrong/__init__.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 35,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 36,
+      "target": "src/strategies/armstrong/cycle_model.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 38,
+      "target": "src/backtest/step29m_armstrong_cycle_v1_economic_evaluation_admissibility_contract_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 39,
+      "target": "config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 40,
+      "target": "config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 41,
+      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 42,
+      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+      "line_number": 110,
+      "target": "scripts/ops/run_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+      "line_number": 812,
+      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
+      "line_number": 813,
+      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md",
+      "line_number": 222,
+      "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
+      "line_number": 136,
+      "target": "docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
+      "line_number": 143,
+      "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/architecture/LOCAL_BOUNDED_SECRET_LAUNCH_PATH_PROPOSAL.md",
+      "line_number": 109,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md",
+      "line_number": 15,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/FIFTH_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
+      "line_number": 40,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/FOURTH_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
+      "line_number": 31,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/LOCAL_BOUNDED_SECRET_LAUNCHER_VALIDATION_20260319_CLOSEOUT.md",
+      "line_number": 12,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md",
+      "line_number": 12,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/NEXT_ACTUAL_EXCHANGE_SUBMIT_TRIAL_CLOSEOUT.md",
+      "line_number": 40,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/PR_1813_EXECUTION_REVIEW.md",
+      "line_number": 11,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/PR_1813_EXECUTION_REVIEW.md",
+      "line_number": 15,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/SECOND_ACTUAL_ORDER_PLACEMENT_TRIAL_CLOSEOUT.md",
+      "line_number": 29,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/SECOND_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
+      "line_number": 29,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/SIXTH_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
+      "line_number": 40,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/THIRD_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
+      "line_number": 30,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_final_handover_note/FINAL_HANDOVER_NOTE.md",
+      "line_number": 46,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_one_page_exec_summary/EXEC_SUMMARY.md",
+      "line_number": 32,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_review_packet/REVIEW_PACKET.md",
+      "line_number": 48,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_pilot_third_trial_evidence_closeout_review/closeout_draft.md",
+      "line_number": 30,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_pilot_third_trial_evidence_closeout_review/evidence_inventory.md",
+      "line_number": 49,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md",
+      "line_number": 74,
+      "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V1.md",
+      "line_number": 73,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V2.md",
+      "line_number": 86,
+      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_5_FINAL_GENERIC_BINDING_EVIDENCE_EPHEMERAL_PERSISTENCE_ISOLATION_FIX_V1.md",
+      "line_number": 36,
+      "target": "docs/evidence/capability_phase_9_2_step_5_final_generic_binding_evidence_ephemeral_persistence_isolation_fix_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md",
+      "line_number": 86,
+      "target": "src/data/kraken_cache_loader.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md",
+      "line_number": 246,
+      "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/SESSION_ENV_NAME_AND_EXCHANGE_SURFACES_NON_AUTHORITY_V0.md",
+      "line_number": 58,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
       "source_file": "docs/project_docs/CHANGELOG.md",
-      "line_number": 70,
-      "target": "src/risk/position_sizer_old_backup.py",
+      "line_number": 75,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/project_docs/CLAUDE_NOTES.md",
-      "line_number": 40,
-      "target": "docs/…",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/project_docs/CLAUDE_NOTES.md",
+      "source_file": "docs/project_docs/CHANGELOG.md",
       "line_number": 83,
-      "target": "config/risk_conservative.toml",
+      "target": "scripts/demo_kraken_simple.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CHANGELOG.md",
+      "line_number": 115,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
       "source_file": "docs/project_docs/FILES_CHANGED.md",
-      "line_number": 8,
-      "target": "src/risk/position_sizer_old_backup.py",
+      "line_number": 11,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
-      "line_number": 23,
-      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "source_file": "docs/project_docs/FILES_CHANGED.md",
+      "line_number": 15,
+      "target": "scripts/demo_kraken_simple.py",
       "link_text": null
     },
     {
-      "source_file": "docs/risk/A0_COMPLETION_SUMMARY.md",
-      "line_number": 370,
-      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
+      "source_file": "docs/project_docs/FILES_CHANGED.md",
+      "line_number": 34,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
-      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
-      "line_number": 114,
-      "target": "docs/risk/A0_COMPLETION_SUMMARY.md",
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 54,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/risk/FILES_READY_FOR_AGENTS.md",
-      "line_number": 329,
-      "target": "docs/risk/FILES_READY_FOR_AGENTS.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 168,
-      "target": "src/strategy/models/bull.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 169,
-      "target": "src/strategy/models/bear.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
       "line_number": 187,
-      "target": "src/strategy/meta/switch_gate.py",
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 211,
-      "target": "src/risk/sizing/dynamic_leverage.py",
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 192,
+      "target": "scripts/demo_kraken_simple.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 212,
-      "target": "src/risk/sizing/__init__.py",
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 377,
+      "target": "scripts/demo_kraken_simple.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 226,
-      "target": "src/strategy/policies/double_play.py",
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 382,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 549,
-      "target": "src/core/strategy_wrappers.py",
+      "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
+      "line_number": 75,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1080,
-      "target": "src/strategy/models/bull.py",
+      "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
+      "line_number": 122,
+      "target": "scripts/demo_kraken_simple.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1081,
-      "target": "src/strategy/models/bear.py",
+      "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
+      "line_number": 276,
+      "target": "src/data/kraken_pipeline.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1099,
-      "target": "src/strategy/meta/switch_gate.py",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 593,
+      "target": "src/risk_layer/kill_switch/triggers/__init__.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1123,
-      "target": "src/risk/sizing/dynamic_leverage.py",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 594,
+      "target": "src/risk_layer/kill_switch/triggers/base.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1124,
-      "target": "src/risk/sizing/__init__.py",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 595,
+      "target": "src/risk_layer/kill_switch/triggers/threshold.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1138,
-      "target": "src/strategy/policies/double_play.py",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 596,
+      "target": "src/risk_layer/kill_switch/triggers/manual.py",
       "link_text": null
     },
     {
-      "source_file": "docs/roadmap/PeakTrade_LevelUp_Roadmap_Evidence.md",
-      "line_number": 1461,
-      "target": "src/core/strategy_wrappers.py",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 597,
+      "target": "src/risk_layer/kill_switch/triggers/watchdog.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 147,
-      "target": "docs/evidence/phase0_baseline.md",
+      "source_file": "docs/risk/roadmaps/ROADMAP_EMERGENCY_KILL_SWITCH.md",
+      "line_number": 598,
+      "target": "src/risk_layer/kill_switch/triggers/external.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 165,
-      "target": "docs/backlog/EPICS.md",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 10,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 166,
-      "target": "docs/backlog/STORIES.md",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 11,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 229,
-      "target": "scripts/evidence/make_evidence_pack.sh",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 11,
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 435,
-      "target": "docs/runbooks/PROMOTION_PIPELINE.md",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 11,
+      "target": "src/data/providers/kraken_ccxt_backend.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/PEAK_TRADE_CURSOR_MULTIAGENT_RUNBOOK.md",
-      "line_number": 436,
-      "target": "scripts/ops/promote_run.sh",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 63,
+      "target": "src/data/kraken.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md",
-      "line_number": 27,
-      "target": "docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 63,
+      "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md",
-      "line_number": 33,
-      "target": "docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 63,
+      "target": "src/data/providers/kraken_ccxt_backend.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/RUNBOOK_4B_M2_CURSOR_MULTI_AGENT.md",
-      "line_number": 294,
-      "target": "scripts/ops/setup_worktree_4b_m2.sh",
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 64,
+      "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
-      "source_file": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
-      "line_number": 197,
-      "target": "config/strategies/armstrong_cycle_default.toml",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/runbooks/peak_trade_cursor_multi_agent_runbook.md",
-      "line_number": 155,
-      "target": "scripts/ops/config_lint.sh",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/runbooks/peak_trade_cursor_multi_agent_runbook.md",
-      "line_number": 157,
-      "target": "src/ai_orchestration/model_policy.py",
+      "source_file": "docs/trigger_training/TRIGGER_TRAINING_SPEED_STATUS_V1.md",
+      "line_number": 517,
+      "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
       "link_text": null
     }
-  ],
-  "drift_safe_docs_alignment_v1": {
-    "applied_at": "2026-07-05",
-    "plan": "docs/governance/drift_cleanup_plan_v1.md Section A",
-    "deferred_targets": {
-      "src/features": "Feature-Engine placeholder deferred; not operational. ECM strategy code: src/strategies/ecm.py, src/strategies/armstrong/"
-    },
-    "canonical_ecm_strategy_targets": [
-      "src/strategies/ecm.py",
-      "src/strategies/armstrong"
-    ]
-  }
+  ]
 }

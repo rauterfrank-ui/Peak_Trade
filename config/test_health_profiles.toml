@@ -55,7 +55,6 @@ require_non_empty_allowed = true    # allowed darf nicht leer sein
 
 # R&D-Tier-Definitionen (Strategien mit diesen Keys werden als R&D betrachtet)
 r_and_d_strategy_keys = [
-    "armstrong_cycle",
     "el_karoui_vol_model",
     "ehlers_cycle_filter",
     "meta_labeling",
@@ -137,7 +136,7 @@ category = "trigger_training"
 [[profiles.weekly_core.checks]]
 id = "pytest_strategies_smoke"
 name = "Pytest Strategies Smoke"
-cmd = "python3 -m pytest -q tests/strategies/armstrong tests/strategies/el_karoui --maxfail=1 -x"
+cmd = "python3 -m pytest -q tests/strategies/el_karoui --maxfail=1 -x"
 weight = 2
 category = "tests"
 
@@ -306,16 +305,9 @@ time_window_days = 14
 
 [[profiles.r_and_d_experimental.checks]]
 id = "pytest_armstrong_el_karoui"
-name = "Armstrong + El-Karoui Tests"
-cmd = "python3 -m pytest -q tests/strategies/armstrong tests/strategies/el_karoui --maxfail=3"
+name = "El-Karoui Tests"
+cmd = "python3 -m pytest -q tests/strategies/el_karoui --maxfail=3"
 weight = 2
-category = "r_and_d"
-
-[[profiles.r_and_d_experimental.checks]]
-id = "pytest_armstrong_elkaroui_combi"
-name = "Armstrong + El-Karoui Combi Experiment"
-cmd = "python3 -m pytest -q tests/test_armstrong_elkaroui_combi_experiment.py --maxfail=2"
-weight = 1
 category = "r_and_d"
 
 [[profiles.r_and_d_experimental.checks]]

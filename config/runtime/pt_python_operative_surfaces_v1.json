@@ -58,11 +58,6 @@
       "role": "kill_switch_operator_wrapper"
     },
     {
-      "path": "scripts/ops/invoke_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.sh",
-      "class": "OPERATIVE_WRAPPER",
-      "role": "offline_eval_explicit_venv"
-    },
-    {
       "path": "scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.sh",
       "class": "OPERATIVE_WRAPPER",
       "role": "offline_eval_explicit_venv"
@@ -226,7 +221,7 @@
     },
     {
       "id": "OFFLINE_EVAL_EXPLICIT_VENV_PYTHON",
-      "summary": "Existing armstrong/ehlers invoke wrappers resolve REPO_ROOT/.venv/bin/python directly and fail closed if missing. New surfaces must use scripts/pt.",
+      "summary": "Existing ehlers invoke wrappers resolve REPO_ROOT/.venv/bin/python directly and fail closed if missing. New surfaces must use scripts/pt.",
       "mode": "explicit_canonical_interpreter"
     },
     {

@@ -200,7 +200,6 @@ def run_strategy_switch_sanity_check(
     # Default R&D-Keys
     if r_and_d_strategy_keys is None:
         r_and_d_strategy_keys = [
-            "armstrong_cycle",
             "el_karoui_vol_model",
             "ehlers_cycle_filter",
             "meta_labeling",

@@ -44,7 +44,6 @@ from src.strategies import load_strategy
 
 # Kanonische Demo-Strategien (load_strategy()-Keys; kein direkter Registry-Import).
 ORDER_PIPELINE_DEMO_AVAILABLE_STRATEGY_KEYS: tuple[str, ...] = (
-    "armstrong_cycle",
     "bollinger_bands",
     "bouchaud_microstructure",
     "breakout",
