@@ -409,7 +409,10 @@ entities:
       Set inside the ranking/selection domain. PDF Step 4 anti-churn
       census is CLOSED as inventory only
       (CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE). Census close is
-      not policy ratification and is not POLICY_A adoption. Owner is
+      not policy ratification and is not POLICY_A adoption. PDF Step 5
+      remains UNRESOLVED. Owner decision surface is
+      PREPARED_NOT_RATIFIED with three open decisions and is not
+      policy ratification. Owner is
       ops.mf_membership_rotation_controller_v1. Rotation policy remains
       fail-closed until PDF Step 5. Isolated POLICY_A is not automatic
       Active Set policy. ACTIVE_SET_POLICY_ADOPTION=UNPROVEN. Envelope
