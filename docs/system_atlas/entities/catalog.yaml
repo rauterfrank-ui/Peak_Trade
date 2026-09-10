@@ -246,8 +246,11 @@ entities:
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
+    source_paths:
+      - src/ops/mf_membership_context_artifact_contract_v1.py
     evidence_sources:
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
+      - src/ops/mf_membership_context_artifact_contract_v1.py
     notes: >-
       Docs-only persist of already-adjudicated isolated-domain selection
       and anti-churn mechanism semantics. AUTHORITY_EFFECT=NONE. Not
@@ -268,11 +271,10 @@ entities:
       existence class is bound as required durable non-authoritative
       membership-context artifact in semantics §1.10; that class bind is
       not instance existence, not schema, not writer, not prior-listing
-      existence. Instance existence remains
-      unproven. The instance-existence decision class is persisted in
-      semantics §1.11 as
-      NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED;
-      UNPROVEN is not ABSENT.
+      existence. The §1.11 class name
+      NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
+      remains historical; UNPROVEN is not ABSENT. Instance existence
+      is proven in semantics §1.18.
       Creation-authorization semantics are bound in semantics §1.12 as
       PERMISSION_BIT_ONLY; permission-bit is not materialization.
       The named decision class
