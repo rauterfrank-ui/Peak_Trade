@@ -562,7 +562,10 @@ grant is **not** materialization, **not** artifact creation, and
 closed as Owner policy in §4.5.3 under `AT_MOST_N`. Selector-state **ownership**
 for membership identity is closed as principle only in §4.5.3. Schema,
 writer, reader, and the first bootstrap instance are bound in §4.5.3.
-Isolated selector runtime and membership-diff rotation runtime are bound in §4.5.3. Permission for a non-authoritative membership-context
+Isolated selector runtime, membership-diff rotation runtime, and
+deterministic previous-to-current replay are bound in §4.5.3. The
+isolated MF target is complete. Productive integration remains
+incomplete. Permission for a non-authoritative membership-context
 artifact to persist while G13 remains closed is `ALLOWED` in §4.5.3;
 that permission is **not** artifact existence. Isolated membership-only pending analog is closed
 in §4.5.3 as `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for the current
@@ -784,6 +787,12 @@ BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
 SELECTOR_RUNTIME_IMPLEMENTED=true
 MEMBERSHIP_DECISION_RUNTIME_IMPLEMENTED=true
 ROTATION_RUNTIME_IMPLEMENTED=true
+DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+MF_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+MF_DETERMINISTIC_REPLAY_PROVEN=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
 RUNTIME_AUTHORIZED=false
 OPEN_DECISION_07_CLOSED=true
 OPEN_DECISION_07_CLOSE_CLASS=CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY
@@ -946,6 +955,23 @@ the eligible Cap-2.2 prefix of at most 5. That persist does **not**
 implement selector runtime, does **not** implement rotation runtime,
 does **not** unlock G13, and does **not** grant execution authority.
 That persist does **not** name a next canonical decision.
+Owner-GO
+`OWNER_GO_WP_MF_03_ISOLATED_SELECTOR_AND_MEMBERSHIP_DIFF_ROTATION_RUNTIME_V1`
+binds the isolated MF membership selector, POLICY_A evaluator,
+ranking-observation holding reconstruction, and membership-diff
+rotation controller in the subordinate semantics contract §1.19.
+That persist does **not** join a host, does **not** unlock G13, and
+does **not** grant execution authority. That persist does **not**
+name a next canonical decision.
+Owner-GO
+`OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF_V1`
+binds deterministic previous→current replay in the subordinate
+semantics contract §1.20 and completes the isolated MF target.
+Replay is read-only and creates **no** new canonical membership-
+context instance. Productive integration remains incomplete. That
+persist does **not** join a host, does **not** unlock G13, and does
+**not** grant execution authority. That persist does **not** name a
+next canonical decision and does **not** start a successor slice.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, cooldown or
@@ -1095,6 +1121,10 @@ OD04_TO_OD07_CHANGED=false
 RUNTIME_IMPLEMENTATION_CREATED=true
 SELECTOR_RUNTIME_IMPLEMENTED=true
 ROTATION_RUNTIME_IMPLEMENTED=true
+DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
 ```
 
 A named Top-50 stage between universe and Top-20 is **not** canonical.

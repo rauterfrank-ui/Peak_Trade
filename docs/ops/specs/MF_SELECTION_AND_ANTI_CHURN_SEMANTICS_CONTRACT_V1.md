@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; first valid bootstrap instance proven; instance existence PROVEN; isolated selector and membership-diff rotation bound in §1.19; RUNTIME_AUTHORIZED remains false; creation-authorization predicate bound as PERMISSION_BIT_ONLY; named decision class MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1 closed as SET_CREATION_AUTHORIZED_TRUE; CREATION_AUTHORIZED is true as permission-bit only; named decision class MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1 closed as SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE; MATERIALIZATION_AUTHORITY_GRANTED is true as grant only; OPEN_DECISION_07 closed as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY; rotation_deltas derived not durable canonical state; anti-churn POLICY_A ratified; this persist does not name a next canonical decision; no host adapter; no Cap-2.3/2.4 join; cooldown/turnover unratified
+scope: Docs persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; first valid bootstrap instance proven; instance existence PROVEN; isolated selector and membership-diff rotation bound in §1.19; deterministic previous-to-current replay bound in §1.20; isolated MF target complete; productive integration not complete; RUNTIME_AUTHORIZED remains false; creation-authorization predicate bound as PERMISSION_BIT_ONLY; named decision class MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1 closed as SET_CREATION_AUTHORIZED_TRUE; CREATION_AUTHORIZED is true as permission-bit only; named decision class MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1 closed as SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE; MATERIALIZATION_AUTHORITY_GRANTED is true as grant only; OPEN_DECISION_07 closed as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY; rotation_deltas derived not durable canonical state; anti-churn POLICY_A ratified; this persist does not name a next canonical decision; no host adapter; no Cap-2.3/2.4 join; cooldown/turnover unratified
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-10
@@ -31,6 +31,8 @@ OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_CLASS=OW
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1
 OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN=OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN_V1
 OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE=OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1
+OWNER_GO_WP_MF_03_ISOLATED_SELECTOR_AND_MEMBERSHIP_DIFF_ROTATION_RUNTIME=OWNER_GO_WP_MF_03_ISOLATED_SELECTOR_AND_MEMBERSHIP_DIFF_ROTATION_RUNTIME_V1
+OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF=OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF_V1
 BOUND_ORIGIN_MAIN_SHA=a430bd3837a833d56a8029d3c0d5e8c5380708a1
 BOUND_ORIGIN_MAIN_SHA_THIS_IDENTITY_SLICE=c58d8c5a8a7268af74c989aa0fb166f8f6df40b1
 BOUND_ORIGIN_MAIN_SHA_THIS_EXISTENCE_CLASS_SLICE=b364d1a26d927eeb5d143028afd687f6d3183042
@@ -42,6 +44,8 @@ BOUND_ORIGIN_MAIN_SHA_THIS_MATERIALIZATION_AUTHORITY_DECISION_CLASS_SLICE=36e74c
 BOUND_ORIGIN_MAIN_SHA_THIS_MATERIALIZATION_AUTHORITY_DECISION_SLICE=e51f1a08744bbabc8e7f911f8fc59606764f9348
 BOUND_ORIGIN_MAIN_SHA_THIS_OD07_AND_ANTI_CHURN_SLICE=0f335b4c5b0dcac41d60a1e057de946d7ab4791c
 BOUND_ORIGIN_MAIN_SHA_THIS_WP_MF_02_SLICE=1cfd2e7d70b6ae43262439e07d17851985e4701a
+BOUND_ORIGIN_MAIN_SHA_THIS_WP_MF_03_SLICE=a7182814b8dddf49e34ef1f3c408404364f0e691
+BOUND_ORIGIN_MAIN_SHA_THIS_WP_MF_04_SLICE=d7609eae1805cde68202e9a00027960c7018e804
 CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 PARENT_OWNERSHIP_CONTRACT=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
@@ -148,6 +152,12 @@ BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
 SELECTOR_RUNTIME_IMPLEMENTED=true
 MEMBERSHIP_DECISION_RUNTIME_IMPLEMENTED=true
 ROTATION_RUNTIME_IMPLEMENTED=true
+DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+MF_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+MF_DETERMINISTIC_REPLAY_PROVEN=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
 RUNTIME_AUTHORIZED=false
 ROTATION_DELTAS_STATUS=DERIVED
 ANTI_CHURN_POLICY_STATUS=RATIFIED
@@ -2053,6 +2063,71 @@ OVERREAD_AS_HOLDING_EQUALS_WALL_CLOCK=FORBIDDEN
 OVERREAD_AS_THIS_CLOSE_NAMES_A_NEXT_CANONICAL_DECISION=FORBIDDEN
 ```
 
+### 1.20 Deterministic previous-to-current replay proof
+
+Owner-GO
+`OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF_V1`
+binds the isolated previous→current replay proof over the WP-MF-03
+selector/POLICY_A path and the WP-MF-02 artifact chain. Replay
+reconstructs holding age from distinct Cap-2.2 snapshot identities,
+reuses the existing selector, and derives entered/exited/retained
+without a durable rotation-delta stage. Replay is read-only and
+creates **no** new canonical membership-context instance.
+
+This persist completes the **isolated** MF target. It does **not**
+complete productive integration, does **not** join a host, does
+**not** unlock G13, does **not** rewire Cap 2.3 or Cap 2.4, and does
+**not** authorize execution. Cooldown/turnover remain unratified and
+are **outside** the isolated target. This persist does **not** name a
+next canonical decision and does **not** start a successor slice.
+
+```text
+OWNER_GO=OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF_V1
+DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+OBSERVATION_AGE_RECONSTRUCTION_DETERMINISTIC=true
+REPLAY_RESULT_DIGEST_STABLE=true
+REPLAY_CANONICAL_MUTATION_FORBIDDEN=true
+REPLAY_CANONICAL_MUTATION_OBSERVED=false
+ROTATION_DELTAS_STATUS=DERIVED
+ROTATION_DELTAS_REPLAYABLE=true
+ROTATION_DELTAS_DURABLE_STAGE_CREATED=false
+MF_ARTIFACT_CONTRACT_COMPLETE=true
+MF_BOOTSTRAP_INSTANCE_PROVEN=true
+MF_SELECTOR_RUNTIME_IMPLEMENTED=true
+MF_ROTATION_RUNTIME_IMPLEMENTED=true
+MF_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+MF_DETERMINISTIC_REPLAY_PROVEN=true
+ROTATION_RUNTIME_TESTED=true
+ROTATION_REPLAY_PROVEN=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
+EXPECTED_REMAINING_ISOLATED_MF_WORKPACKAGES=NONE
+BOOTSTRAP_INSTANCE_ID=mca_bf0255a6007432e2
+NEW_CANONICAL_ARTIFACT_INSTANCE_CREATED=false
+RUNTIME_AUTHORIZED=false
+HOST_JOIN=false
+HANDOFF_NOT_DESIGNED=true
+G13_UNLOCK=false
+CAP23_REWIRED=false
+CAP24_REWIRED=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+FULL_CORE_LIVE_AUTHORITY_EFFECT=NONE
+CANARY_AUTHORITY_EFFECT=NONE
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+```
+
+Fail-closed after this persist:
+
+```text
+OVERREAD_AS_ISOLATED_COMPLETE_EQUALS_PRODUCTIVE_INTEGRATION=FORBIDDEN
+OVERREAD_AS_REPLAY_EQUALS_CANONICAL_WRITE=FORBIDDEN
+OVERREAD_AS_REPLAY_EQUALS_HOST_JOIN=FORBIDDEN
+OVERREAD_AS_REPLAY_EQUALS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_THIS_CLOSE_NAMES_A_NEXT_CANONICAL_DECISION=FORBIDDEN
+```
+
 ## 2. Owner by mechanism
 
 Owners below are **cited from** the parent ownership contract. This file
@@ -2586,10 +2661,11 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Hysteresis | Selector-owned POLICY_A rule: rank-improvement vs displaced incumbent; margin 1 | Ownership §5.2; this file §7 / §1.17 / §1.19 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 reminder not numeric authority; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector bound in §1.19 | Cooldown/turnover |
 | Min holding | Selector-owned POLICY_A rule: 2 ranking observations; not position holding | Ownership §5.3; this file §8 / §1.17 / §1.19 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 reminder not numeric authority | Isolated MF selector bound in §1.19 | Cooldown/turnover |
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
-| Membership-context artifact identity | Information classes bound in §1.9; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; OD07 closed as derived in §1.6 | This file §1.9 / §1.18 / §1.19 | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated selector bound in §1.19; membership-context artifact schema/writer/reader bound; bootstrap instance `mca_bf0255a6007432e2` proven | Cooldown/turnover; WP-MF-04 replay |
-| Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `PROVEN` after §1.18 | This file §1.10 / §1.18 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream provenance only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | Canonical bootstrap instance proven at `docs/ops/mf/membership_context/canonical/mca_bf0255a6007432e2.json`; empty placeholder **not** instance | Cooldown/turnover; WP-MF-04 replay |
-| Membership-context artifact instance-existence census | Historical §1.11 class remains `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; current census verdict `BOOTSTRAP_INSTANCE_PROOF_FOUND`; instance `PROVEN`; `UNPROVEN` is not `ABSENT` | This file §1.11 / §1.18 | §1.10 tracked origin/main census was no instance proof found before WP-MF-02 | Bootstrap instance proven; `CREATION_AUTHORIZED=true` remains permission-bit; isolated selector bound in §1.19 | Cooldown/turnover; WP-MF-04 replay |
-| Isolated selector and membership-diff rotation runtime | Selector, POLICY_A, holding reconstruction, and membership-diff rotation bound in §1.19; writer/reader reused from §1.18; replay of identical snapshot writes no instance | This file §1.19; `src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py` | Cap-2.2 eligible Top-20 consumed as order; Cap-2.3 **not imported** | Isolated selector/rotation implemented; `RUNTIME_AUTHORIZED=false`; no host join | Cooldown/turnover; WP-MF-04 replay |
+| Membership-context artifact identity | Information classes bound in §1.9; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; OD07 closed as derived in §1.6 | This file §1.9 / §1.18 / §1.19 / §1.20 | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated selector bound in §1.19; replay bound in §1.20; membership-context artifact schema/writer/reader bound; bootstrap instance `mca_bf0255a6007432e2` proven | Cooldown/turnover (deferred; outside isolated MF target) |
+| Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `PROVEN` after §1.18 | This file §1.10 / §1.18 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream provenance only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | Canonical bootstrap instance proven at `docs/ops/mf/membership_context/canonical/mca_bf0255a6007432e2.json`; empty placeholder **not** instance | Cooldown/turnover (deferred; outside isolated MF target) |
+| Membership-context artifact instance-existence census | Historical §1.11 class remains `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; current census verdict `BOOTSTRAP_INSTANCE_PROOF_FOUND`; instance `PROVEN`; `UNPROVEN` is not `ABSENT` | This file §1.11 / §1.18 | §1.10 tracked origin/main census was no instance proof found before WP-MF-02 | Bootstrap instance proven; `CREATION_AUTHORIZED=true` remains permission-bit; isolated selector bound in §1.19; replay bound in §1.20 | Cooldown/turnover (deferred; outside isolated MF target) |
+| Isolated selector and membership-diff rotation runtime | Selector, POLICY_A, holding reconstruction, and membership-diff rotation bound in §1.19; writer/reader reused from §1.18; replay of identical snapshot writes no instance | This file §1.19; `src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py` | Cap-2.2 eligible Top-20 consumed as order; Cap-2.3 **not imported** | Isolated selector/rotation implemented; `RUNTIME_AUTHORIZED=false`; no host join | Cooldown/turnover (deferred; outside isolated MF target) |
+| Deterministic previous-to-current replay | Replay of WP-MF-03 selector/POLICY_A over the WP-MF-02 artifact chain bound in §1.20; holding age reconstructed from distinct Cap-2.2 snapshot identities; rotation deltas derived and replayable; no canonical write | This file §1.20; `src/ops/mf_membership_previous_to_current_replay_contract_v1.py` | Cap-2.2 eligible Top-20 consumed as order; Cap-2.3 **not imported**; execution/host replay packs `OUT_OF_DOMAIN` | Isolated previous→current replay proven; canonical store unchanged; `RUNTIME_AUTHORIZED=false` | Productive integration; host join; G13; Cap-2.3 rewire (all deferred; outside isolated MF target) |
 | Membership-context artifact creation-authorization predicate | Predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; that persist left `CREATION_AUTHORIZED=false`; schema/writer/reader/OD07/anti-churn `NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE`; permission-bit is not materialization | This file §1.12 | OD06 permission **not** `CREATION_AUTHORIZED`; census persist **not** predicate | Isolated membership artifact unimplemented; no materialization | Schema; writer; reader; prior listing; OD07; materialization authority; durability/provenance semantics |
 | Membership-context artifact creation-authorized permission-bit decision class | Decision class named in §1.13 as `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`; class bind is not true/false choice; that persist left `CREATION_AUTHORIZED=false`; materialization not granted; artifact not created | This file §1.13 | §1.12 persist **not** a named next decision; this Owner-GO names it | Isolated membership artifact unimplemented | Schema; writer; reader; OD07; anti-churn; bootstrap/durability/provenance; materialization authority |
 | Membership-context artifact creation-authorized permission-bit decision | Class closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED=true` as `PERMISSION_BIT_ONLY`; true is not materialization; artifact not created; that persist did not name a next decision | This file §1.14 | §1.13 named the class and did **not** choose; this Owner-GO chooses `true` | Isolated membership artifact unimplemented; bit true; no instance | Schema; writer; reader; OD07; anti-churn; bootstrap/durability/provenance; materialization authority |
@@ -2602,6 +2678,9 @@ CURRENT_RUNTIME_EXISTENCE_ISOLATED_ANTI_CHURN=true
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_ROTATION_POLICY=true
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_CONTEXT_ARTIFACT=true
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_SELECTOR_RUNTIME=true
+CURRENT_RUNTIME_EXISTENCE_ISOLATED_PREVIOUS_TO_CURRENT_REPLAY=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
 HISTORICAL_EXISTENCE_IS_NOT_TODAYS_MF_AUTHORITY=true
 NAME_COLLISION_IS_NOT_INSTANCE_PROOF=true
 ```
@@ -2646,7 +2725,11 @@ RUNTIME_IMPLEMENTATION_CREATED=true
 SELECTOR_RUNTIME_IMPLEMENTED=true
 MEMBERSHIP_DECISION_RUNTIME_IMPLEMENTED=true
 ROTATION_RUNTIME_IMPLEMENTED=true
-SRC_PATHS_CHANGED_BY_WP_MF_03=true
+DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_IMPLEMENTED=true
+ISOLATED_MF_TARGET_COMPLETE=true
+PRODUCTIVE_MF_INTEGRATION_COMPLETE=false
+NEXT_STEP_IS_AUTOMATIC=false
+SRC_PATHS_CHANGED_BY_WP_MF_04=true
 CAP23_REWIRED=false
 CAP24_REWIRED=false
 G13_UNLOCK=false
@@ -2683,5 +2766,9 @@ in §1.18 and proves bootstrap instance `mca_bf0255a6007432e2`.
 Owner-GO
 `OWNER_GO_WP_MF_03_ISOLATED_SELECTOR_AND_MEMBERSHIP_DIFF_ROTATION_RUNTIME_V1`
 binds isolated selector, POLICY_A, and membership-diff rotation in
-§1.19. Host join, G13, Cap-2.3 rewire, and execution remain closed.
+§1.19. Owner-GO
+`OWNER_GO_WP_MF_04_DETERMINISTIC_PREVIOUS_TO_CURRENT_REPLAY_PROOF_V1`
+binds deterministic previous→current replay in §1.20 and completes
+the isolated MF target. Productive integration remains incomplete.
+Host join, G13, Cap-2.3 rewire, and execution remain closed.
 This persist does not name a next canonical decision.
