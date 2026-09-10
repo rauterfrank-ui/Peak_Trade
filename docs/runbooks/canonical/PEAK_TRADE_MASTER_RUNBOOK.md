@@ -577,7 +577,10 @@ ordering as specified in §4.5.3. Portfolio Selection is classified
 (§4.5.2). Isolated ranking-universe family isolation and the
 single-egress **invariant** are persisted in §4.5.4. The
 single-egress **definition** is bound in §4.5.5 as
-`DEFINED_CONSUMER_UNBOUND`. Host integration remains `NOT_IN_SCOPE`.
+`DEFINED_CONSUMER_UNBOUND`. Authoritative Next Active Set **ownership**
+inside the isolated ranking/selection domain is bound in §4.5.6;
+rotation policy for that Active Set remains fail-closed. Host
+integration remains `NOT_IN_SCOPE`.
 
 ### 4.5.2 Isolated MF selector consumption and anti-churn ownership (docs-only; AUTHORITY_EFFECT=NONE)
 
@@ -978,6 +981,13 @@ closes the handoff definition in §4.5.5 as
 `DEFINED_CONSUMER_UNBOUND`. That persist does **not** join a host,
 does **not** name a consumer, does **not** unlock G13, and does
 **not** name a next canonical decision.
+Owner-GO
+`OWNER_GO_PDF_STEP_3_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_V1`
+binds authoritative Next Active Set ownership in §4.5.6. That persist
+does **not** ratify anti-churn for that Active Set, does **not** apply
+isolated POLICY_A to that Active Set, does **not** re-own `N_VALUE`,
+does **not** join a host, does **not** name a consumer, does **not**
+unlock G13, and does **not** name a next canonical decision.
 
 This persist does **not** ratify a `TOP5` product, an
 MF-own scoring contract, an MF-own tie-break algorithm, cooldown or
@@ -1139,7 +1149,8 @@ A named Top-50 stage between universe and Top-20 is **not** canonical.
 The productive Cap 2.2 → Cap 2.3 path remains **not** an MF egress.
 The single-egress definition is bound in §4.5.5 as
 `DEFINED_CONSUMER_UNBOUND`. Consumer identity remains unbound. Host
-join remains `NOT_IN_SCOPE`.
+join remains `NOT_IN_SCOPE`. Authoritative Next Active Set ownership
+is bound in §4.5.6; this subsection does **not** own that bind.
 
 ### 4.5.5 Canonical single-egress authority-handoff definition (docs and typed contract; AUTHORITY_EFFECT=NONE)
 
@@ -1201,6 +1212,96 @@ identity, Cap-2.2 provenance, and freshness. It does **not** promote
 membership context to selection authority. Execution-selection payload
 types remain `NOT_DESIGNED`. Cap 2.3 exactly-1 remains **not** the
 definition of how several handed members become one execution input.
+This persist does **not** name a next canonical decision.
+The intended semantic object of this unique egress is named in §4.5.6.
+This subsection does **not** promote the envelope to an Active-Set DTO.
+
+### 4.5.6 Authoritative Next Active Set ownership (docs and typed contract; isolated domain; rotation fail-closed)
+
+Owner-GO
+`OWNER_GO_PDF_STEP_3_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_V1`
+binds Membership / Rotation Controller ownership of the authoritative
+Next Active Set inside the isolated ranking/selection domain. This
+subsection does **not** replace §4.5–§4.5.5, does **not** ratify
+anti-churn for this Active Set, does **not** apply isolated POLICY_A
+to this Active Set, does **not** re-own `N_VALUE`, does **not** join a
+host, does **not** rewire Cap 2.3 or Cap 2.4, does **not** unlock G13,
+and does **not** name a productive consumer.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md`.
+
+Typed validator:
+`src&#47;ops&#47;mf_authoritative_next_active_set_ownership_contract_v1.py`.
+
+``` text
+CONTRACT_ID=MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1
+OWNER=ops.mf_membership_rotation_controller_v1
+MEMBERSHIP_ROTATION_CONTROLLER_OWNER=ops.mf_membership_rotation_controller_v1
+MEMBERSHIP_STATE_OWNER=ops.mf_membership_rotation_controller_v1
+NEXT_ACTIVE_SET_AUTHORITY_OWNER=ops.mf_membership_rotation_controller_v1
+NEXT_ACTIVE_SET_AUTHORITY_CLASS=AUTHORITATIVE_SELECTED_MEMBERSHIP_INSIDE_RANKING_SELECTION_DOMAIN
+NEXT_ACTIVE_SET_STATUS=AUTHORITATIVE_OWNERSHIP_BOUND_ROTATION_FAIL_CLOSED
+ROTATION_DECISION_AUTHORITY_BOUND=true
+ONE_ACTIVE_SET_STATE_OWNER=true
+ACTIVE_SET_SELECTION_AUTHORITY=true
+MF_MEMBERSHIP_CONTEXT_SELECTION_AUTHORITY=false
+SELECTION_AUTHORITY=false
+PRODUCTIVE_SELECTION_AUTHORITY=false
+SELECTION_DOMAIN_AUTHORITY_EFFECT=ISOLATED_ACTIVE_SET_OWNERSHIP_ONLY
+EXECUTION_AUTHORITY_INSIDE_SELECTION_DOMAIN=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+G13_UNLOCK=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+CAP23_REMAINS_SOLE_PRODUCTIVE_SELECTION_OWNER=true
+CAP23_IMPORTED=false
+CAP23_REWIRED=false
+CAP24_REWIRED=false
+PRODUCTIVE_CONSUMER_CREATED=false
+HOST_JOIN=false
+CARDINALITY_MODE=AT_MOST_N
+N_VALUE_POINTER=5
+N_VALUE_REOWNED=false
+NO_PADDING=true
+NO_PREFIX_SELECTION=true
+NO_DOWNSTREAM_SELECTION=true
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=UNRATIFIED
+POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY=true
+COOLDOWN_RATIFIED=false
+TURNOVER_RATIFIED=false
+EGRESS_ID=MF_SINGLE_EGRESS_V1
+HANDOFF_INTENDED_SEMANTIC_OBJECT=AUTHORITATIVE_NEXT_ACTIVE_SET
+HANDOFF_CURRENT_ENVELOPE_CLASS=BOUND_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE
+HANDOFF_ENVELOPE_IS_NOT_YET_ACTIVE_SET_DTO=true
+EXECUTING_MODEL_HANDOFF_CONSUMER=UNBOUND
+PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
+PDF_STEP_4_ANTI_CHURN_CENSUS=UNRESOLVED
+PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
+PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+```
+
+These object classes remain distinct and must not collapse:
+
+``` text
+RANKED_CANDIDATE_CONTEXT
+≠ NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT
+≠ AUTHORITATIVE_NEXT_ACTIVE_SET
+```
+
+Existing `MF_MEMBERSHIP_CONTEXT_V1` artifacts are **not** this Active
+Set. Isolated POLICY_A remains the policy of the non-authoritative
+membership selector and is **not** automatically the policy of this
+Active Set. Reconciliation **authority** is bound. Reconciliation
+**behavior** remains fail-closed until a later Owner-GO ratifies
+rotation/anti-churn for this Active Set. `MF_SINGLE_EGRESS_V1` remains
+the unique egress identity. The current envelope cannot represent this
+Active Set; the smallest compatible evolution is an intended-object
+pointer without envelope-schema promotion. Consumer identity remains
+`UNBOUND`. Cap 2.3 remains the sole **productive** selection owner.
 This persist does **not** name a next canonical decision.
 
 ## 4.6 Volatility authority

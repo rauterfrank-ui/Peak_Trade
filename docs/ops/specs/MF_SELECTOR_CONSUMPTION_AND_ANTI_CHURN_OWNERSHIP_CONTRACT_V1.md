@@ -575,3 +575,10 @@ the semantics contract §1.16 as
 `SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE`; this file is not the
 decision-class close owner. `MATERIALIZATION_AUTHORITY_GRANTED` is
 `true` as grant only. Grant is not materialization.
+PDF-Step-3 authoritative Next Active Set **ownership** is bound in
+[`MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md`](MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md).
+This file remains the owner of isolated selector consumption and
+anti-churn **ownership** for the non-authoritative membership
+selector. `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY` is
+**not** rewritten. Isolated POLICY_A in the semantics contract is
+**not** automatically the policy of that Active Set.

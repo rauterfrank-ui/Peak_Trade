@@ -390,6 +390,30 @@ entities:
       Cap 2.4 rewire. G13 remains closed. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE. No Atlas edge to Cap 2.3 or Cap 2.4.
 
+  - id: CONTRACT:mf_authoritative_next_active_set_ownership_v1
+    kind: CONTRACT
+    name: Authoritative Next Active Set ownership
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md
+    source_paths:
+      - src/ops/mf_authoritative_next_active_set_ownership_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md
+      - src/ops/mf_authoritative_next_active_set_ownership_contract_v1.py
+    notes: >-
+      Isolated PDF-Step-3 ownership bind for authoritative Next Active
+      Set inside the ranking/selection domain. Owner is
+      ops.mf_membership_rotation_controller_v1. Rotation policy remains
+      fail-closed until PDF Step 5. Isolated POLICY_A is not automatic
+      Active Set policy. Envelope schema is not promoted. Consumer
+      remains UNBOUND. No host join. No Cap 2.3 or Cap 2.4 rewire. G13
+      remains closed. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE. No Atlas edge to Cap 2.3 or Cap 2.4.
+
   - id: CAPABILITY:cap_2_3_single_selected_future
     kind: CAPABILITY
     name: Single Selected Future Policy

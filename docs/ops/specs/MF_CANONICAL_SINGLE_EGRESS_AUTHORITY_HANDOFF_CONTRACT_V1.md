@@ -245,6 +245,16 @@ cap24_mapping
 isolated selector/replay contracts. They are **not** a handoff stage
 and **must not** appear on the envelope.
 
+The unique egress identity remains `MF_SINGLE_EGRESS_V1`. PDF-Step-3
+names the **intended** semantic object of this egress as
+`AUTHORITATIVE_NEXT_ACTIVE_SET` in
+[`MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md`](MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md).
+This envelope schema is **not** that object. `selection_authority`
+remains `false`. `payload_class` remains
+`NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_REFERENCE`. Consumer identity
+remains `UNBOUND`. This persist does **not** promote the envelope to
+an Active-Set DTO and does **not** create a second egress.
+
 ## 6. Failure semantics
 
 Fail closed. Do not invent a default egress.
