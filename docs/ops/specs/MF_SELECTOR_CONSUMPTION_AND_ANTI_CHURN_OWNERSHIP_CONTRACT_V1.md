@@ -439,9 +439,9 @@ identity close owner. That bind is not artifact existence.
 Artifact existence class is bound in that contract §1.10 as
 `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
 This file is not the existence-class close owner. That class bind is
-not instance existence. Instance existence remains `UNPROVEN`.
-The instance-existence decision class is persisted in that contract
-§1.11 as
+not instance existence. Instance existence is `PROVEN` in the
+semantics contract §1.18. The instance-existence decision class is
+historically persisted in that contract §1.11 as
 `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`.
 This file is not the census-persist owner. `UNPROVEN` is not `ABSENT`.
 Creation-authorization semantics are bound

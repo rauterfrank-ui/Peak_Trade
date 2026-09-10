@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 status: active
-scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; instance existence unproven; instance-existence decision class persisted as NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED; UNPROVEN is not ABSENT; creation-authorization predicate bound as PERMISSION_BIT_ONLY; named decision class MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1 closed as SET_CREATION_AUTHORIZED_TRUE; CREATION_AUTHORIZED is true as permission-bit only; true is not materialization, not artifact instance, not schema, writer, reader, G13, runtime, or execution; named decision class MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1 closed as SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE; MATERIALIZATION_AUTHORITY_GRANTED is true as grant only; grant is not materialization, not artifact creation, not instance proof, not schema, writer, reader, G13, runtime, or execution; OPEN_DECISION_07 closed as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY; rotation_deltas derived not durable canonical state; anti-churn POLICY_A ratified; this persist does not name a next canonical decision; no schema, writer, reader, or artifact instance; no host adapter; no Cap-2.3/2.4 join; cooldown/turnover unratified
+scope: Docs-only persist of adjudicated isolated MF selection and anti-churn mechanism semantics; OD01 closed as Owner-policy ceiling N=5 under AT_MOST_N; OD06 closed as ALLOW permission for non-authoritative membership-context artifact persistence while G13 remains closed; permission is not artifact existence; membership-context artifact semantic identity bound as information classes only; artifact existence class bound as required durable non-authoritative membership-context artifact; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; first valid bootstrap instance proven; instance existence PROVEN; creation-authorization predicate bound as PERMISSION_BIT_ONLY; named decision class MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1 closed as SET_CREATION_AUTHORIZED_TRUE; CREATION_AUTHORIZED is true as permission-bit only; named decision class MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1 closed as SET_MATERIALIZATION_AUTHORITY_GRANTED_TRUE; MATERIALIZATION_AUTHORITY_GRANTED is true as grant only; OPEN_DECISION_07 closed as CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY; rotation_deltas derived not durable canonical state; anti-churn POLICY_A ratified; this persist does not name a next canonical decision; no selector runtime; no rotation runtime; no host adapter; no Cap-2.3/2.4 join; cooldown/turnover unratified
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-10
@@ -30,6 +30,7 @@ OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_CLASS=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_CLASS_V1
 OWNER_GO_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION=OWNER_GO_MF_MEMBERSHIP_CONTEXT_ARTIFACT_MATERIALIZATION_AUTHORITY_DECISION_V1
 OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN=OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN_V1
+OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE=OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1
 BOUND_ORIGIN_MAIN_SHA=a430bd3837a833d56a8029d3c0d5e8c5380708a1
 BOUND_ORIGIN_MAIN_SHA_THIS_IDENTITY_SLICE=c58d8c5a8a7268af74c989aa0fb166f8f6df40b1
 BOUND_ORIGIN_MAIN_SHA_THIS_EXISTENCE_CLASS_SLICE=b364d1a26d927eeb5d143028afd687f6d3183042
@@ -40,6 +41,7 @@ BOUND_ORIGIN_MAIN_SHA_THIS_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_SLICE=874
 BOUND_ORIGIN_MAIN_SHA_THIS_MATERIALIZATION_AUTHORITY_DECISION_CLASS_SLICE=36e74cbf219d378a6f2225019a2d0589b38bb989
 BOUND_ORIGIN_MAIN_SHA_THIS_MATERIALIZATION_AUTHORITY_DECISION_SLICE=e51f1a08744bbabc8e7f911f8fc59606764f9348
 BOUND_ORIGIN_MAIN_SHA_THIS_OD07_AND_ANTI_CHURN_SLICE=0f335b4c5b0dcac41d60a1e057de946d7ab4791c
+BOUND_ORIGIN_MAIN_SHA_THIS_WP_MF_02_SLICE=1cfd2e7d70b6ae43262439e07d17851985e4701a
 CONTRACT_ID=MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 PARENT_OWNERSHIP_CONTRACT=MF_SELECTOR_CONSUMPTION_AND_ANTI_CHURN_OWNERSHIP_CONTRACT_V1
@@ -77,9 +79,9 @@ ROTATION_DELTAS_DURABLE_STAGE_FORBIDDEN=true
 MEMBERSHIP_STATE_MACHINE_RATIFIED=false
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
-ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
-INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+INSTANCE_CENSUS_VERDICT=BOOTSTRAP_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
@@ -107,10 +109,10 @@ GRANT_DOES_NOT_CLOSE_OD07=true
 GRANT_DOES_NOT_RATIFY_ANTI_CHURN=true
 GRANT_DOES_NOT_AUTHORIZE_RUNTIME=true
 GRANT_DOES_NOT_AUTHORIZE_EXECUTION=true
-ARTIFACT_INSTANCE_CREATED=false
-SCHEMA_BOUND_UNCHANGED=true
-WRITER_BOUND_UNCHANGED=true
-READER_BOUND_UNCHANGED=true
+ARTIFACT_INSTANCE_CREATED=true
+SCHEMA_BOUND_UNCHANGED=false
+WRITER_BOUND_UNCHANGED=false
+READER_BOUND_UNCHANGED=false
 OD07_STATUS_UNCHANGED=false
 ANTI_CHURN_POLICY_STATUS_UNCHANGED=false
 OD07_CLOSE_DOES_NOT_MATERIALIZE=true
@@ -124,19 +126,28 @@ WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
-MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
-INSTANCE_IDENTITY_STATUS=UNBOUND
-TEMPORAL_IDENTITY_STATUS=UNBOUND
-PRIOR_REFERENCE_STATUS=UNBOUND
-CAP22_PROVENANCE_STATUS=UNBOUND
-PRIOR_MEMBERSHIP_LISTING_STATUS=UNPROVEN
-SCHEMA_BOUND=false
-WRITER_BOUND=false
-READER_BOUND=false
-TEMPORAL_SCHEMA=UNBOUND
-INSTANCE_ID_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=PROVEN
+INSTANCE_IDENTITY_STATUS=BOUND
+TEMPORAL_IDENTITY_STATUS=BOUND
+PRIOR_REFERENCE_STATUS=BOUND
+CAP22_PROVENANCE_STATUS=BOUND
+PRIOR_MEMBERSHIP_LISTING_STATUS=BOOTSTRAP_PROVEN
+SCHEMA_BOUND=true
+WRITER_BOUND=true
+READER_BOUND=true
+TEMPORAL_SCHEMA=BOUND
+INSTANCE_ID_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=BOOTSTRAP_PROVEN
+CANONICAL_DURABILITY_BOUND=true
+CANONICAL_PROVENANCE_BOUND=true
+ARTIFACT_LIFECYCLE_BOUND=true
+ARTIFACT_INSTANCE_ID=mca_bf0255a6007432e2
+ARTIFACT_TYPE=MF_MEMBERSHIP_CONTEXT_V1
+BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
+RUNTIME_AUTHORIZED=false
 ROTATION_DELTAS_STATUS=DERIVED
 ANTI_CHURN_POLICY_STATUS=RATIFIED
 ANTI_CHURN_OWNER=SELECTOR
@@ -1883,6 +1894,94 @@ OVERREAD_AS_THIS_CLOSE_NAMES_A_NEXT_CANONICAL_DECISION=FORBIDDEN
 OVERREAD_AS_PADDING_TO_EXACTLY_5=FORBIDDEN
 ```
 
+### 1.18 Isolated membership-context artifact contract and first durable instance
+
+Owner-GO
+`OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1`
+binds the membership-context artifact **schema**, **canonical
+durability**, **provenance mapping**, **minimal lifecycle**, **writer**,
+and **reader**, and materializes the first valid bootstrap instance.
+Prior OD06 permission, existence class, creation-authorized bit,
+materialization grant, OD07 derived identity, and POLICY_A remain
+binding. Those binds are **not** re-owned here.
+
+This persist does **not** implement selector runtime, does **not**
+implement rotation runtime, does **not** apply anti-churn replacement,
+does **not** re-rank, does **not** unlock G13, and does **not** grant
+host-join, execution, or runtime authority. It does **not** name a next
+canonical decision. `rotation_deltas` remain derived and are **not**
+durable canonical state.
+
+```text
+OWNER_GO=OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1
+ARTIFACT_TYPE=MF_MEMBERSHIP_CONTEXT_V1
+ARTIFACT_SCHEMA_VERSION=mf_membership_context.v1
+INSTANCE_ID_SCHEMA=deterministic_content_addressed_mca_plus_16_hex
+TEMPORAL_IDENTITY_SCHEMA=cap22_ranking_snapshot_id_plus_event_time_plus_integrity_digest
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=null_only_for_canonical_bootstrap_else_exact_prior_instance_id
+CAP22_PROVENANCE_MAPPING=ranking_snapshot_id_schema_integrity_event_time_universe_policy_source_path_source_sha256
+POLICY_IDENTITY=AT_MOST_N_N5_OD07_DERIVED_ANTI_CHURN_POLICY_A
+ORDERED_MEMBERSHIP_RULE=CONSUME_CAP22_ORDERING_AS_MEMBERSHIP_ORDER
+CARDINALITY_RULE=0_LE_LEN_LE_5_NO_PADDING_NO_DUPLICATES
+BOOTSTRAP_RULE=PREFIX_FILL_FROM_CAP22_ELIGIBLE_NO_ANTI_CHURN_NO_PADDING
+BOOTSTRAP_DIRECT_PREFIX_FILL_IS_CANONICALLY_AUTHORIZED=true
+CANONICAL_DURABILITY_BOUND=true
+CANONICAL_PROVENANCE_BOUND=true
+ARTIFACT_LIFECYCLE_BOUND=true
+SCHEMA_BOUND=true
+WRITER_BOUND=true
+READER_BOUND=true
+CANONICAL_STORE=docs&#47;ops&#47;mf&#47;membership_context&#47;canonical
+INSTANCE_COUNTS_ONLY_IF=SCHEMA_VALID_AND_CANONICAL_LOCATION_AND_DURABLE_WRITE_COMPLETE_AND_PROVENANCE_VALID_AND_IDENTITY_VALID
+LIFECYCLE_COUNTS_ONLY_IF=DURABLE_VALID
+FIRST_VALID_INSTANCE_IS_BOOTSTRAP=true
+ARTIFACT_INSTANCE_CREATED=true
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
+ARTIFACT_INSTANCE_ID=mca_bf0255a6007432e2
+PRIOR_MEMBERSHIP_REFERENCE=null
+PRIOR_MEMBERSHIP_LISTING_STATUS=BOOTSTRAP_PROVEN
+CAP22_CONSUMED_SNAPSHOT_ID=pfr_evidence_cap22_v1
+CAP22_CONSUMED_EVENT_TIME=2023-11-14T22:13:20Z
+ROTATION_DELTAS_STATUS=DERIVED
+ROTATION_DELTAS_CANONICAL_STAGE_CREATED=false
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
+RUNTIME_AUTHORIZED=false
+G13_UNLOCK=false
+EXECUTION_AUTHORITY_EFFECT=NONE
+HOST_JOIN=NOT_DESIGNED
+HANDOFF_NOT_DESIGNED=true
+CAP23_REWIRED=false
+NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
+THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+```
+
+Bound meaning: the writer accepts an already-decided ordered membership
+payload and must **not** rank, select, or apply anti-churn. The reader
+loads by exact instance identity, validates schema, provenance, identity,
+lifecycle, and durable completeness, and fail-closes on malformed,
+missing, empty, or partial artifacts. Bootstrap membership is the
+eligible Cap-2.2 Top-20 prefix of at most 5. That prefix-fill is the
+ratified `BOOTSTRAP_RULE` and is **not** a selector runtime. The first
+canonical instance has `PRIOR_MEMBERSHIP_REFERENCE=null`. Derived
+bootstrap delta is entered=current, exited=empty, retained=empty.
+Stored `rotation_deltas` remain forbidden.
+
+Fail-closed after this persist:
+
+```text
+OVERREAD_AS_WRITER_EQUALS_SELECTOR_RUNTIME=FORBIDDEN
+OVERREAD_AS_BOOTSTRAP_EQUALS_ANTI_CHURN_REPLACEMENT=FORBIDDEN
+OVERREAD_AS_BOOTSTRAP_EQUALS_MF_RERANK=FORBIDDEN
+OVERREAD_AS_ROTATION_DELTAS_NOW_CANONICAL_STAGE=FORBIDDEN
+OVERREAD_AS_PARTIAL_OR_PLACEHOLDER_EQUALS_INSTANCE=FORBIDDEN
+OVERREAD_AS_EVIDENCE_COPY_EQUALS_CANONICAL_INSTANCE=FORBIDDEN
+OVERREAD_AS_THIS_CLOSE_NAMES_A_NEXT_CANONICAL_DECISION=FORBIDDEN
+OVERREAD_AS_G13_UNLOCK=FORBIDDEN
+OVERREAD_AS_RUNTIME_OR_EXECUTION=FORBIDDEN
+OVERREAD_AS_HOST_JOIN=FORBIDDEN
+```
+
 ## 2. Owner by mechanism
 
 Owners below are **cited from** the parent ownership contract. This file
@@ -2301,9 +2400,13 @@ only. That bind is not artifact existence, not schema, not writer,
 and not prior-listing existence. Artifact existence class is bound in
 §1.10 as
 `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
-Instance existence remains `UNPROVEN`. Schema, writer, and reader
-remain unbound. The §1.16 persist does not name a next canonical
-decision. This persist does **not** name a next canonical decision.
+Owner-GO
+`OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1`
+binds schema, writer, reader, durability, provenance, and lifecycle
+in §1.18 and proves the first bootstrap instance. Selector runtime
+and rotation runtime remain unimplemented. The §1.16 persist does not
+name a next canonical decision. This persist does **not** name a next
+canonical decision.
 
 ```text
 OPEN_DECISION_01=N_VALUE
@@ -2330,12 +2433,12 @@ OPEN_DECISION_06_CLOSED=true
 OPEN_DECISION_06_CLOSE_CLASS=CLOSED_ALLOW_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED
 NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_PERSISTENCE_WHILE_G13_CLOSED=ALLOWED
 PERMISSION_TO_PERSIST_IS_NOT_EXISTENCE_OF_PERSISTED_ARTIFACT=true
-MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN
+MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=PROVEN
 MEMBERSHIP_CONTEXT_ARTIFACT_SEMANTIC_IDENTITY=BOUND_INFORMATION_CLASSES_ONLY
 ARTIFACT_EXISTENCE_CLASS=BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT
-ARTIFACT_INSTANCE_EXISTENCE=UNPROVEN
+ARTIFACT_INSTANCE_EXISTENCE=PROVEN
 INSTANCE_DECISION_CLASS=NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED
-INSTANCE_CENSUS_VERDICT=NO_INSTANCE_PROOF_FOUND
+INSTANCE_CENSUS_VERDICT=BOOTSTRAP_INSTANCE_PROOF_FOUND
 UNPROVEN_IS_NOT_ABSENT=true
 CREATION_AUTHORIZED=true
 CREATION_AUTHORIZED_SEMANTICS=PERMISSION_BIT_ONLY
@@ -2364,18 +2467,26 @@ WRITER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 READER_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 OD07_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
 ANTI_CHURN_NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE=true
-INSTANCE_IDENTITY_STATUS=UNBOUND
-TEMPORAL_IDENTITY_STATUS=UNBOUND
-PRIOR_REFERENCE_STATUS=UNBOUND
-CAP22_PROVENANCE_STATUS=UNBOUND
-PRIOR_MEMBERSHIP_LISTING_STATUS=UNPROVEN
-TEMPORAL_SCHEMA=UNBOUND
-INSTANCE_ID_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=UNBOUND
-PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=UNPROVEN
-SCHEMA_BOUND=false
-WRITER_BOUND=false
-READER_BOUND=false
+INSTANCE_IDENTITY_STATUS=BOUND
+TEMPORAL_IDENTITY_STATUS=BOUND
+PRIOR_REFERENCE_STATUS=BOUND
+CAP22_PROVENANCE_STATUS=BOUND
+PRIOR_MEMBERSHIP_LISTING_STATUS=BOOTSTRAP_PROVEN
+TEMPORAL_SCHEMA=BOUND
+INSTANCE_ID_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_REFERENCE_SCHEMA=BOUND
+PRIOR_MEMBERSHIP_LISTING_FOR_DERIVED_READING=BOOTSTRAP_PROVEN
+SCHEMA_BOUND=true
+WRITER_BOUND=true
+READER_BOUND=true
+CANONICAL_DURABILITY_BOUND=true
+CANONICAL_PROVENANCE_BOUND=true
+ARTIFACT_LIFECYCLE_BOUND=true
+ARTIFACT_INSTANCE_CREATED=true
+ARTIFACT_INSTANCE_ID=mca_bf0255a6007432e2
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
+RUNTIME_AUTHORIZED=false
 ROTATION_DELTAS_STATUS=DERIVED
 ROTATION_DELTAS_ARE_NOT_DURABLE_CANONICAL_STATE=true
 ROTATION_DELTAS_DURABLE_STAGE_FORBIDDEN=true
@@ -2404,9 +2515,10 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 | Hysteresis | Selector-owned POLICY_A rule: rank-improvement vs displaced incumbent; margin 1 | Ownership §5.2; this file §7 / §1.17 | Cap 2.3 SSF hysteresis **not imported**; Cap 0.4 reminder not numeric authority; MV2/strategy hysteresis `OUT_OF_DOMAIN` | Isolated MF selector unimplemented | Cooldown/turnover |
 | Min holding | Selector-owned POLICY_A rule: 2 ranking observations; not position holding | Ownership §5.3; this file §8 / §1.17 | Cap 2.3 SSF min holding **not imported**; Cap 0.4 reminder not numeric authority | Isolated MF selector unimplemented | Cooldown/turnover |
 | Replacement-pending | Cap 2.3 only; **not** MF authority | Ownership §5.5 forbids SSF import; this file §9 / §1.5 | Cap 2.3 `REPLACEMENT_PENDING` state machine | Cap 2.3 producer exists **outside** this graph; no MF pending runtime | Independent MF pending class **not required** in the current isolated model (`OPEN_DECISION_05` closed); not never-needed |
-| Membership-context artifact identity | Information classes bound in §1.9; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; owner-class Active-Set composition; OD07 closed as derived in §1.6 | This file §1.9; parent boundary §8 names remain unbound schema | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated membership artifact unimplemented; `MF_MEMBERSHIP_CONTEXT_ARTIFACT_PERSISTENCE=UNPROVEN` | Instance existence, schema, writer, reader, temporal/instance/prior-reference schemas, prior listing |
-| Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `UNPROVEN` | This file §1.10 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | No durable instance on tracked origin/main; empty placeholder **not** instance | Instance existence; schema; writer; reader; prior listing; OD07 |
-| Membership-context artifact instance-existence census | Decision class persisted in §1.11 as `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; census verdict `NO_INSTANCE_PROOF_FOUND`; instance remains `UNPROVEN`; `UNPROVEN` is not `ABSENT`; census class name is not the current permission bit | This file §1.11; census table in §1.10 | §1.10 tracked origin/main census: no instance proof found | Isolated membership artifact unimplemented; `CREATION_AUTHORIZED=true` is permission-bit only in §1.14 | Schema; writer; reader; prior listing; OD07; materialization authority |
+| Membership-context artifact identity | Information classes bound in §1.9; schema, writer, reader, durability, provenance, and lifecycle bound in §1.18; class `NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT_ONLY`; OD07 closed as derived in §1.6 | This file §1.9 / §1.18 | R6 `ordered_instrument_ids` observation **not promoted**; Cap-2.3 snapshots **not imported**; docs-contract persist **not** membership artifact | Isolated selector unimplemented; membership-context artifact schema/writer/reader bound; bootstrap instance `mca_bf0255a6007432e2` proven | Selector runtime; rotation runtime; cooldown/turnover |
+| Membership-context artifact existence class | Class bound in §1.10 as `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`; instance `PROVEN` after §1.18 | This file §1.10 / §1.18 | OD06 permission **not** existence; #6373 identity **not** existence; Cap-2.2 snapshots upstream provenance only; Cap-2.3/R6 `OUT_OF_DOMAIN`; P6_5189 ledger name-collision `HISTORICAL_ONLY`; Atlas `AUTHORITY=NONE` | Canonical bootstrap instance proven at `docs/ops/mf/membership_context/canonical/mca_bf0255a6007432e2.json`; empty placeholder **not** instance | Selector runtime; rotation runtime |
+| Membership-context artifact instance-existence census | Historical §1.11 class remains `NO_INSTANCE_PROOF_FOUND_BUT_CREATION_NOT_YET_AUTHORIZED`; current census verdict `BOOTSTRAP_INSTANCE_PROOF_FOUND`; instance `PROVEN`; `UNPROVEN` is not `ABSENT` | This file §1.11 / §1.18 | §1.10 tracked origin/main census was no instance proof found before WP-MF-02 | Bootstrap instance proven; `CREATION_AUTHORIZED=true` remains permission-bit; selector runtime unimplemented | Selector runtime; rotation runtime; cooldown/turnover |
+| Membership-context artifact contract and first durable instance | Schema/writer/reader/durability/provenance/lifecycle bound in §1.18; bootstrap prefix-fill authorized; first instance `mca_bf0255a6007432e2`; `rotation_deltas` not stored | This file §1.18; `src/ops/mf_membership_context_artifact_contract_v1.py` | Cap-2.2 snapshot `pfr_evidence_cap22_v1` consumed as provenance; not membership itself | Isolated membership artifact writer/reader bound; no selector/rotation/execution runtime | Selector runtime; rotation runtime; cooldown/turnover |
 | Membership-context artifact creation-authorization predicate | Predicate bound in §1.12 as `PERMISSION_BIT_ONLY`; that persist left `CREATION_AUTHORIZED=false`; schema/writer/reader/OD07/anti-churn `NOT_REQUIRED_BEFORE_CREATION_AUTHORIZED_TRUE`; permission-bit is not materialization | This file §1.12 | OD06 permission **not** `CREATION_AUTHORIZED`; census persist **not** predicate | Isolated membership artifact unimplemented; no materialization | Schema; writer; reader; prior listing; OD07; materialization authority; durability/provenance semantics |
 | Membership-context artifact creation-authorized permission-bit decision class | Decision class named in §1.13 as `MF_CREATION_AUTHORIZED_PERMISSION_BIT_DECISION_V1`; class bind is not true/false choice; that persist left `CREATION_AUTHORIZED=false`; materialization not granted; artifact not created | This file §1.13 | §1.12 persist **not** a named next decision; this Owner-GO names it | Isolated membership artifact unimplemented | Schema; writer; reader; OD07; anti-churn; bootstrap/durability/provenance; materialization authority |
 | Membership-context artifact creation-authorized permission-bit decision | Class closed in §1.14 as `SET_CREATION_AUTHORIZED_TRUE`; `CREATION_AUTHORIZED=true` as `PERMISSION_BIT_ONLY`; true is not materialization; artifact not created; that persist did not name a next decision | This file §1.14 | §1.13 named the class and did **not** choose; this Owner-GO chooses `true` | Isolated membership artifact unimplemented; bit true; no instance | Schema; writer; reader; OD07; anti-churn; bootstrap/durability/provenance; materialization authority |
@@ -2417,7 +2529,8 @@ MF_OWN_TIE_BREAK_REQUIRED=false
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MF_SELECTOR=false
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_ANTI_CHURN=false
 CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_ROTATION_POLICY=false
-CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_CONTEXT_ARTIFACT=false
+CURRENT_RUNTIME_EXISTENCE_ISOLATED_MEMBERSHIP_CONTEXT_ARTIFACT=true
+CURRENT_RUNTIME_EXISTENCE_ISOLATED_SELECTOR_RUNTIME=false
 HISTORICAL_EXISTENCE_IS_NOT_TODAYS_MF_AUTHORITY=true
 NAME_COLLISION_IS_NOT_INSTANCE_PROOF=true
 ```
@@ -2459,7 +2572,9 @@ NO_ATLAS_EDGE_TO_CAP23_OR_CAP24=true
 
 ```text
 RUNTIME_IMPLEMENTATION_CREATED=false
-SRC_PATHS_CHANGED_BY_THIS_CONTRACT=false
+SELECTOR_RUNTIME_IMPLEMENTED=false
+ROTATION_RUNTIME_IMPLEMENTED=false
+SRC_PATHS_CHANGED_BY_WP_MF_02=true
 CAP23_REWIRED=false
 CAP24_REWIRED=false
 G13_UNLOCK=false
@@ -2474,25 +2589,24 @@ NEXT_SLICE_AUTHORIZED=false
 HARD_STOP_AFTER_THIS_CONTRACT=true
 ```
 
-Any later change to `N`, membership artifact schema, writer, cooldown
-or turnover numerics, membership-only pending-state, own MF scoring,
-or a rotation engine requires a **new** Owner-GO and remains
-isolated. This contract does **not** authorize, specify, or prepare
-host integration. OD01 is closed as Owner-policy ceiling `N_VALUE=5`.
-OD04 is closed as ownership principle only. OD06 is closed as
-permission-only `ALLOWED` while G13 remains closed. Permission is not
-artifact existence, schema, or writer. Membership-context artifact
-semantic identity is bound in §1.9 as information classes only. That
-bind is not artifact existence. Artifact existence class is bound in
-§1.10 as
+Any later change to `N`, selector runtime, cooldown or turnover
+numerics, membership-only pending-state, own MF scoring, or a rotation
+engine requires a **new** Owner-GO and remains isolated. This contract
+does **not** authorize, specify, or prepare host integration. OD01 is
+closed as Owner-policy ceiling `N_VALUE=5`. OD04 is closed as ownership
+principle only. OD06 is closed as permission-only `ALLOWED` while G13
+remains closed. Membership-context artifact semantic identity is bound
+in §1.9 as information classes only. Artifact existence class is bound
+in §1.10 as
 `BOUND_REQUIRED_NON_AUTHORITATIVE_DURABLE_MEMBERSHIP_CONTEXT_ARTIFACT`.
-Instance existence remains `UNPROVEN`. Creation-authorization
-semantics are bound in §1.12 as `PERMISSION_BIT_ONLY`.
-`CREATION_AUTHORIZED` is `true` as permission-bit only.
-`MATERIALIZATION_AUTHORITY_GRANTED` is `true` as grant only. Grant is
-not materialization. Owner-GO
-`OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN_V1` closes `OPEN_DECISION_07` in
-§1.6 as `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY` and ratifies
-anti-churn POLICY_A in §1.17. Schema, writer, reader, and artifact
-instance remain unbound / unproven. This persist does not name a next
-canonical decision.
+Creation-authorization semantics are bound in §1.12 as
+`PERMISSION_BIT_ONLY`. `CREATION_AUTHORIZED` is `true` as permission-bit
+only. `MATERIALIZATION_AUTHORITY_GRANTED` is `true` as grant only.
+Owner-GO `OWNER_GO_WP_MF_01_OD07_AND_ANTI_CHURN_V1` closes
+`OPEN_DECISION_07` in §1.6 as `CLOSED_ROTATION_DELTAS_DERIVED_IDENTITY`
+and ratifies anti-churn POLICY_A in §1.17. Owner-GO
+`OWNER_GO_WP_MF_02_ARTIFACT_CONTRACT_AND_FIRST_DURABLE_INSTANCE_V1`
+binds schema, writer, reader, durability, provenance, and lifecycle
+in §1.18 and proves bootstrap instance `mca_bf0255a6007432e2`.
+Selector runtime and rotation runtime remain unimplemented. This persist
+does not name a next canonical decision.
