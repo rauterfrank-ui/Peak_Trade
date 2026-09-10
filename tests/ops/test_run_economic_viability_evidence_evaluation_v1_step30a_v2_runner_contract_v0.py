@@ -12,17 +12,35 @@ from typing import Any
 import pandas as pd
 import pytest
 
-from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.backtest import (
+    admissible_versioned_futures_dataset_v1 as ds,
+    step30a_rsi_reversion_v1_economic_evaluation_admissibility_contract_v1 as rsi_contract,
+)
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import ArchiveRootError
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_SCRIPT = ROOT / "scripts" / "ops" / "run_economic_viability_evidence_evaluation_v1.py"
 STEP30A_CONFIG = (
     ROOT / "config/ops/step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json"
 )
-ARCHIVE_MANIFEST = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/v2/dataset_manifest.json"
-)
+_ARCHIVE_UNAVAILABLE = Path("/nonexistent/peak_trade_rsi_v2_archive_unavailable")
+
+
+def _resolve_optional_rsi_v2_bars() -> Path:
+    try:
+        return rsi_contract.resolve_rsi_v2_dataset_bars_path()
+    except (FileNotFoundError, ArchiveRootError):
+        return _ARCHIVE_UNAVAILABLE
+
+
+def _resolve_optional_rsi_v2_manifest() -> Path:
+    try:
+        return rsi_contract.resolve_rsi_v2_dataset_manifest_path()
+    except (FileNotFoundError, ArchiveRootError):
+        return _ARCHIVE_UNAVAILABLE
+
+
+ARCHIVE_MANIFEST = _resolve_optional_rsi_v2_manifest()
 
 TRAINING_PERIOD = "2026-04-02 10:07:00+00:00..2026-05-18 23:59:00+00:00"
 VALIDATION_PERIOD = "2026-05-19 00:00:00+00:00..2026-06-16 23:59:00+00:00"
@@ -60,6 +78,7 @@ def _research_bars() -> pd.DataFrame:
             "index_price": [v - 0.1 for v in close],
             "funding_rate": [0.0001 for _ in close],
             "is_final": [True for _ in close],
+            "volatility_estimate": [0.2 for _ in close],
         },
         index=idx,
     )
@@ -332,10 +351,7 @@ def test_v2_validate_only_rejects_partition_digest_mismatch(runner, tmp_path: Pa
     assert rc != 0
 
 
-ARCHIVE_BARS = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/v2/bars.parquet"
-)
+ARCHIVE_BARS = _resolve_optional_rsi_v2_bars()
 
 
 @pytest.mark.skipif(
