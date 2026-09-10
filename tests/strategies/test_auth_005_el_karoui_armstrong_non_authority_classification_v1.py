@@ -70,6 +70,13 @@ def test_auth005_combi_experiment_not_registered_as_strategy_producer() -> None:
     assert "armstrong_cycle" not in _STRATEGY_REGISTRY
 
 
+def test_auth005_combi_experiment_module_absent_from_head() -> None:
+    import importlib
+
+    with pytest.raises(ModuleNotFoundError):
+        importlib.import_module("src.experiments.armstrong_elkaroui_combi_experiment")
+
+
 def test_auth005_ecm_cycle_is_functional_only_not_oop_live_spec() -> None:
     with pytest.raises(KeyError):
         get_strategy_spec("ecm_cycle")

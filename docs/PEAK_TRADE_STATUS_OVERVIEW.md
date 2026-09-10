@@ -417,7 +417,7 @@ Mit Commit `7908106` (`feat(research): add R&D strategy modules & tests`) wurde 
 
 | Modul | Beschreibung | Kategorie |
 |-------|-------------|-----------|
-| **Armstrong** (`src/strategies/armstrong/`) | Cycle-/Timing-orientierte Strategien (ECM-Zyklen) | cycles |
+| **Armstrong** (retired from the active catalog; historical `src&#47;strategies&#47;armstrong&#47;`) | Cycle-/Timing research (ECM cycles). Not an active catalog identity after PR #6392. Joint Armstrong×El-Karoui combi producer retired from HEAD. | cycles |
 | **Ehlers** (`src/strategies/ehlers/`) | Signal-Processing & Cycle-Filter (DSP-Techniken) | cycles |
 | **El Karoui** (`src/strategies/el_karoui/`) | Stochastisches Volatilitätsmodell | volatility |
 | **Bouchaud** (`src/strategies/bouchaud/`) | Microstructure-Overlay (Orderbuch-Analyse) | microstructure |

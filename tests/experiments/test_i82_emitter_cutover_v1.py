@@ -26,6 +26,7 @@ from src.ops.i82_emitter_cutover_preparation_contract_v1 import (
     EMITTER_CUTOVER_EXECUTED,
     GET_EXPERIMENT_ID_PRE_CUTOVER_SOURCE_SHA256,
     GET_EXPERIMENT_ID_SOURCE_SHA256,
+    HISTORICAL_RETIRED_INVENTORY_FILES,
     I82EmitterCutoverPreparationError,
     I82_FULL_MIGRATION_PROVEN,
     LEGACY_MD5_REMOVED,
@@ -38,6 +39,7 @@ from src.ops.i82_emitter_cutover_preparation_contract_v1 import (
     build_i82_identity_sidecar_from_package_n_manifest_v1,
     build_i82_identity_sidecar_v1,
     canonical_join_from_legacy_alias_alone_v1,
+    load_i82_cutover_inventory_v1,
     require_canonical_identity_v1,
 )
 
@@ -173,9 +175,20 @@ def test_run_id_follows_emitter_without_independent_hash_rewrite() -> None:
     assert is_package_n_sha256_canonical_id(result.experiment_id)
 
 
-def test_armstrong_run_id_emitter_not_rewritten() -> None:
-    text = ARMSTRONG_PATH.read_text(encoding="utf-8")
-    assert "hashlib.md5(str(config.to_dict()).encode()).hexdigest()[:8]" in text
+def test_armstrong_combi_producer_retired_from_active_tree() -> None:
+    assert not ARMSTRONG_PATH.is_file()
+    assert "src/experiments/armstrong_elkaroui_combi_experiment.py" in (
+        HISTORICAL_RETIRED_INVENTORY_FILES
+    )
+    payload = load_i82_cutover_inventory_v1(REPO_ROOT)
+    entry = next(
+        item
+        for item in payload["paths"]
+        if "armstrong_elkaroui_combi_experiment.py" in str(item["file"])
+    )
+    assert entry["implemented_in_this_go"] is False
+    assert entry["current_value_format"] == "timestamp_plus_md5_hex_8"
+    assert entry["canonical_or_legacy"] == "LEGACY"
 
 
 def test_negative_invalid_legacy_inputs_still_fail_closed() -> None:

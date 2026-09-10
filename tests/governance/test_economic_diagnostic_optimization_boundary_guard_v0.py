@@ -489,7 +489,11 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
                 ],
                 "scope_entry_exit_reversal_changed",
             ),
-            (["src/governance/capital_risk_sizing_v1.py"], "risk_sizing_changed"),
+            # capital_risk_sizing_v1.py is wiring-admitted; keep an unadmitted CAPITAL_RISK_SIZING path.
+            (
+                ["src/trading/master_v2/double_play_capital_slot.py"],
+                "risk_sizing_changed",
+            ),
             (
                 [
                     "src/trading/master_v2/killswitch_boundary_backtest_state_file_binding_adapter_v0.py",

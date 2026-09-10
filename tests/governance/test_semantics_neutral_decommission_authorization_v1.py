@@ -926,6 +926,20 @@ def _deleted_file_diff(path: str, removed: list[str]) -> str:
 
 
 class TestWholeFileRetirementClassificationV1:
+    def test_experiment_producer_delete_is_whole_file_retirement(self) -> None:
+        path = "src/experiments/obsolete_combi_experiment.py"
+        evidence = classify_decommission_diff(
+            path=path,
+            diff_text=_deleted_file_diff(
+                path,
+                ["def run_obsolete_combi():", "    raise RuntimeError('retired')"],
+            ),
+            repo_root=REPO_ROOT,
+        )
+        assert "WHOLE_FILE_RETIRED" in evidence.predicates
+        assert evidence.trading_semantics_changed is False
+        assert evidence.insufficient is False
+
     def test_authorized_obsolete_research_delete_can_pass(self, tmp_path: Path) -> None:
         diffs = {
             RETIRED_RESEARCH_PATH: _deleted_file_diff(RETIRED_RESEARCH_PATH, RETIRED_RESEARCH_BODY)

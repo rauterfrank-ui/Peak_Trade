@@ -216,6 +216,14 @@ def test_contract_module_does_not_rewrite_emitter() -> None:
 def test_inventory_complete_and_files_exist() -> None:
     payload = load_i82_cutover_inventory_v1(REPO_ROOT)
     validate_inventory_files_exist_v1(payload, repo_root=REPO_ROOT)
+    retired = [
+        entry
+        for entry in payload["paths"]
+        if "armstrong_elkaroui_combi_experiment.py" in str(entry["file"])
+    ]
+    assert len(retired) == 1
+    assert retired[0]["implemented_in_this_go"] is False
+    assert not (REPO_ROOT / retired[0]["file"]).is_file()
     planes = set(payload["identity_planes"])
     required_planes = {
         "CANONICAL_SHA256_IDENTITY",

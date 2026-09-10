@@ -295,7 +295,7 @@ category = "smoke"
 # ============================================================================
 # Profile: r_and_d_experimental
 # ============================================================================
-# Experimentelle R&D-Tests (Armstrong, El-Karoui, Bouchaud, etc.)
+# Experimentelle R&D-Tests (El-Karoui, Bouchaud, etc.)
 # Diese Tests dürfen fehlschlagen ohne Core-Health zu beeinflussen.
 # ============================================================================
 
