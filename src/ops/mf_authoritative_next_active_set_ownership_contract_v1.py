@@ -1,10 +1,11 @@
 """Isolated PDF-Step-3 authoritative Next Active Set ownership contract V1.
 
 Binds Membership / Rotation Controller ownership of authoritative selected
-membership inside the ranking/selection domain. Does not ratify anti-churn,
-does not apply isolated POLICY_A to this Active Set, does not join a host,
-does not rewire Cap 2.3 or Cap 2.4, does not unlock G13, and does not name
-a productive consumer.
+membership inside the ranking/selection domain. PDF Step 4 census is closed
+as inventory only. Does not ratify anti-churn for this Active Set, does not
+apply isolated POLICY_A to this Active Set, does not join a host, does not
+rewire Cap 2.3 or Cap 2.4, does not unlock G13, and does not name a
+productive consumer.
 """
 
 from __future__ import annotations
@@ -47,6 +48,9 @@ ONE_ACTIVE_SET_STATE_OWNER = True
 ROTATION_POLICY_STATUS = "FAIL_CLOSED_UNTIL_PDF_STEP_5"
 ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET = "UNRATIFIED"
 POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY = True
+ACTIVE_SET_POLICY_ADOPTION = "UNPROVEN"
+ACTIVE_SET_POLICY_RATIFIED = False
+CENSUS_CLASS = "INVENTORY_ONLY_NO_POLICY_CHOICE"
 COOLDOWN_RATIFIED = False
 TURNOVER_RATIFIED = False
 NUMERIC_N_CHANGED = False
@@ -89,7 +93,7 @@ EGRESS_ID_REUSED = EGRESS_ID
 PARALLEL_HANDOFFS = "FORBIDDEN"
 
 PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP = "CLOSED"
-PDF_STEP_4_ANTI_CHURN_CENSUS = "UNRESOLVED"
+PDF_STEP_4_ANTI_CHURN_CENSUS = "CLOSED"
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION = "UNRESOLVED"
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED = False
 NEXT_CANONICAL_DECISION = "NOT_NAMED_HERE"

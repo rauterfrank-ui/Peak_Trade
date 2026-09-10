@@ -7,11 +7,14 @@ from pathlib import Path
 import pytest
 
 from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
+    ACTIVE_SET_POLICY_ADOPTION,
+    ACTIVE_SET_POLICY_RATIFIED,
     ACTIVE_SET_SELECTION_AUTHORITY,
     ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET,
     CAP23_REWIRED,
     CAP24_REWIRED,
     CARDINALITY_MODE,
+    CENSUS_CLASS,
     COOLDOWN_RATIFIED,
     CURRENT_ENVELOPE_CAN_REPRESENT_ACTIVE_SET,
     EGRESS_ID_REUSED,
@@ -109,14 +112,18 @@ def test_safety_and_ownership_invariants() -> None:
     assert N_VALUE_POINTER == N_VALUE == 5
     assert CARDINALITY_MODE == "AT_MOST_N"
     assert POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY is True
+    assert ACTIVE_SET_POLICY_ADOPTION == "UNPROVEN"
+    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert CENSUS_CLASS == "INVENTORY_ONLY_NO_POLICY_CHOICE"
     assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "UNRATIFIED"
     assert COOLDOWN_RATIFIED is False
     assert TURNOVER_RATIFIED is False
     assert PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP == "CLOSED"
-    assert PDF_STEP_4_ANTI_CHURN_CENSUS == "UNRESOLVED"
+    assert PDF_STEP_4_ANTI_CHURN_CENSUS == "CLOSED"
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
     assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
     assert NEXT_ACTIVE_SET_STATUS == ("AUTHORITATIVE_OWNERSHIP_BOUND_ROTATION_FAIL_CLOSED")
+    assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
 
 
 def test_object_classes_are_not_equivalent() -> None:
@@ -197,6 +204,13 @@ def test_rotation_remains_fail_closed() -> None:
     with pytest.raises(ActiveSetOwnershipError) as applied:
         validate_authoritative_next_active_set_declaration_v1(payload)
     assert applied.value.failure_code == "ROTATION_POLICY_UNRATIFIED"
+    assert PDF_STEP_4_ANTI_CHURN_CENSUS == "CLOSED"
+    assert ACTIVE_SET_POLICY_ADOPTION == "UNPROVEN"
+    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert CENSUS_CLASS == "INVENTORY_ONLY_NO_POLICY_CHOICE"
+    assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "UNRATIFIED"
+    assert POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY is True
+    assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
 
 
 def test_policy_a_does_not_become_active_set_policy() -> None:
