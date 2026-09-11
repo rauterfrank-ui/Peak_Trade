@@ -158,7 +158,8 @@ RANKING_CADENCE_RATIFIED = False
 FORWARD_LABEL_HORIZON_RATIFIED = False
 HISTORICAL_REPLAY_HORIZON_RATIFIED = False
 ECONOMIC_RANK_ACTIVATED = False
-ECONOMIC_MD_PRODUCER_IMPLEMENTED = False
+ECONOMIC_MD_PRODUCER_IMPLEMENTED = True
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED = False
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED = False
 
 CAP21_BOUNDARY_PRESERVED = True
@@ -180,7 +181,7 @@ PRODUCTIVE_MF_HOST_JOIN = False
 MULTI_FUTURE_RUNTIME_AUTHORIZED = False
 NEXT_CANONICAL_DECISION = "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
 NEXT_CAP22_DEPENDENCY = (
-    "SEPARATE_OWNER_GO_REQUIRED_TO_IMPLEMENT_ECONOMIC_MD_PRODUCER_FOR_MVR_RAW_INPUT_ONLY"
+    "SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING"
 )
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
@@ -192,7 +193,7 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "collection_skew_numeric_bound_ratified",
     "cross_sectional_normalization_ratified",
     "current_structural_ranking_is_economic_policy",
-    "economic_md_producer_implemented",
+    "economic_md_producer_productively_scheduled",
     "economic_rank_activated",
     "final_score_formula_ratified",
     "final_weights_ratified",
@@ -213,6 +214,7 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "cap21_boundary_preserved",
     "cap22_remains_ranking_owner",
     "downstream_execution_must_not_re_rank",
+    "economic_md_producer_implemented",
     "friction_sensitivity_required",
     "identical_candidate_universe_per_policy_comparison",
     "mvr_data_sufficient_for_policy_comparison",
@@ -347,6 +349,9 @@ def classify_preserved_program_invariants_v1() -> dict[str, Any]:
         "cross_sectional_normalization_ratified": (CROSS_SECTIONAL_NORMALIZATION_RATIFIED),
         "downstream_execution_must_not_re_rank": DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK,
         "economic_md_producer_implemented": ECONOMIC_MD_PRODUCER_IMPLEMENTED,
+        "economic_md_producer_productively_scheduled": (
+            ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED
+        ),
         "economic_rank_activated": ECONOMIC_RANK_ACTIVATED,
         "final_score_formula_ratified": FINAL_SCORE_FORMULA_RATIFIED,
         "final_weights_ratified": FINAL_WEIGHTS_RATIFIED,

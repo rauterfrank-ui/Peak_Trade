@@ -115,7 +115,8 @@ def _valid_payload(**overrides: object) -> dict[str, object]:
         "downstream_execution_must_not_re_rank": True,
         "economic_md_data_owner": ECONOMIC_MD_DATA_OWNER,
         "economic_md_input_capability_authorized": True,
-        "economic_md_producer_implemented": False,
+        "economic_md_producer_implemented": True,
+        "economic_md_producer_productively_scheduled": False,
         "economic_rank_activated": False,
         "final_score_formula_ratified": False,
         "final_weights_ratified": False,
@@ -163,7 +164,7 @@ def test_architecture_and_boundary_invariants() -> None:
     assert ECONOMIC_MD_NETWORK_IO_OWNER == "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
     assert ECONOMIC_MD_PERSISTENCE_OWNER == "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
     assert ECONOMIC_MD_SCHEMA_OWNER == "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
-    assert ECONOMIC_MD_PRODUCER_IMPLEMENTED is False
+    assert ECONOMIC_MD_PRODUCER_IMPLEMENTED is True
     assert REPLAY_FROM_PERSISTED_INPUT_REQUIRED is True
     assert LIBRARY_REUSE_AUTHORITY_TRANSFER is False
     assert CMC_AUTHORITY_TRANSFERRED is False
@@ -223,7 +224,8 @@ def test_declaration_validator_accepts_bound_flags() -> None:
     [
         ("cap21_ranking_authority_added", True),
         ("cap22_becomes_network_owner", True),
-        ("economic_md_producer_implemented", True),
+        ("economic_md_producer_implemented", False),
+        ("economic_md_producer_productively_scheduled", True),
         ("final_score_formula_ratified", True),
         ("runtime_authority_granted", True),
         ("multi_future_runtime_authorized", True),
@@ -244,7 +246,8 @@ def test_classifiers_preserve_hard_non_decisions() -> None:
     architecture = classify_cap22_dual_input_architecture_v1()
     assert architecture["cap21_ranking_authority_added"] is False
     assert architecture["cap22_becomes_network_owner"] is False
-    assert architecture["economic_md_producer_implemented"] is False
+    assert architecture["economic_md_producer_implemented"] is True
+    assert architecture["economic_md_producer_productively_scheduled"] is False
     mvr = classify_cap22_mvr_input_scope_v1()
     assert mvr["final_score_formula_ratified"] is False
     assert mvr["library_reuse_authority_transfer"] is False
@@ -275,7 +278,8 @@ def test_spec_persists_dual_input_and_hard_non_decisions() -> None:
     assert "CAP22_REMAINS_RANKING_OWNER=true" in spec
     assert "CAP22_BECOMES_NETWORK_OWNER=false" in spec
     assert "ECONOMIC_MD_INPUT_CAPABILITY_AUTHORIZED=true" in spec
-    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=false" in spec
+    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in spec
+    assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in spec
     assert "LIBRARY_REUSE_AUTHORITY_TRANSFER=false" in spec
     assert "CAP22_MVR_VOLATILITY_INPUT_AUTHORIZED=true" in spec
     assert "CAP22_MVR_SPREAD_INPUT_AUTHORIZED=true" in spec
@@ -311,7 +315,8 @@ def test_cap22_spec_keeps_current_input_and_future_dual_input() -> None:
     assert "CAP22_INPUT_MODEL=DUAL_AUTHORITATIVE_INPUTS_WITH_SEPARATE_ROLES" in spec
     assert "CAP22_BECOMES_NETWORK_OWNER=false" in spec
     assert "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false" in spec
-    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=false" in spec
+    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in spec
+    assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in spec
     assert "FINAL_SCORE_FORMULA_RATIFIED=false" in spec
     assert "SELECTION_AUTHORITY_ADDED: false" in spec
 
@@ -320,12 +325,14 @@ def test_runbook_and_map_persist_decision_without_unlocking_mf() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MAP_OF_TRUTH.read_text(encoding="utf-8")
     assert "### 4.5.7 Cap 2.2 economic-MD dual-input architecture" in runbook
+    assert "### 4.5.9 Cap 2.2 Economic-MD MVR raw-input producer" in runbook
     assert "CAP22_INPUT_MODEL=DUAL_AUTHORITATIVE_INPUTS_WITH_SEPARATE_ROLES" in runbook
     assert "CAP21_BOUNDARY_PRESERVED=true" in runbook
-    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=false" in runbook
+    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in runbook
+    assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in runbook
     assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED" in runbook
     assert "ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5" in runbook
     assert "PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false" in runbook
     assert "MULTI_FUTURE_RUNTIME_AUTHORIZED=false" in runbook
-    assert "CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md" in mot
+    assert "CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md" in mot
     assert "navigation only" in mot.lower() or "Navigation only" in mot

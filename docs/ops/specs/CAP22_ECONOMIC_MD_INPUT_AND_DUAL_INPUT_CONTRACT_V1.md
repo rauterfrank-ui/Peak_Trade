@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1
 status: active
-scope: Spec-only persist of Cap 2.2 dual-input architecture and separate Economic MD Input Capability authorization; no producer implementation; no productive ranking rewire; no score formula; no PDF Step 5 close
+scope: Spec persist of Cap 2.2 dual-input architecture; Economic-MD producer implemented not wired; no productive ranking rewire; no score formula; no PDF Step 5 close
 capability: CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-11
@@ -66,7 +66,8 @@ ECONOMIC_MD_DATA_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
 ECONOMIC_MD_NETWORK_IO_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
 ECONOMIC_MD_PERSISTENCE_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
 ECONOMIC_MD_SCHEMA_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
-ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 REPLAY_FROM_PERSISTED_INPUT_REQUIRED=true
 LIBRARY_REUSE_AUTHORITY_TRANSFER=false
 CMC_AUTHORITY_TRANSFERRED=false
@@ -273,7 +274,7 @@ STALE_SECONDS_RATIFIED=false
 COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
 ECONOMIC_RANK_ACTIVATED=false
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
-ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
@@ -295,7 +296,8 @@ OVERREAD_AS_CURRENT_STRUCTURAL_RANKING_EQUALS_ECONOMIC_RANKING=FORBIDDEN
 OVERREAD_AS_MVR_INPUT_KIND_EQUALS_SCORE_FORMULA=FORBIDDEN
 OVERREAD_AS_FORMULA_REUSE_TRANSFERS_AUTHORITY=FORBIDDEN
 OVERREAD_AS_ECONOMIC_RANK_ACTIVATED=FORBIDDEN
-OVERREAD_AS_ECONOMIC_MD_PRODUCER_IMPLEMENTED=FORBIDDEN
+OVERREAD_AS_IMPLEMENTED_EQUALS_WIRED=FORBIDDEN
+OVERREAD_AS_ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=FORBIDDEN
 OVERREAD_AS_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=FORBIDDEN
 OVERREAD_AS_MULTI_FUTURE_RUNTIME_AUTHORIZED=FORBIDDEN
 OVERREAD_AS_PDF_STEP_5_CLOSED=FORBIDDEN
@@ -308,7 +310,8 @@ OVERREAD_AS_POLICY_A_MAY_RECOMPUTE_ECONOMIC_SCORE=FORBIDDEN
 
 ## 8. Explicit non-claims
 
-- This contract does not implement the Economic-MD-Input producer.
+- A later Owner-GO implemented the Economic-MD-Input producer as
+  `IMPLEMENTED_NOT_WIRED`. This dual-input persist itself did not implement it.
 - This contract does not change current productive Cap 2.2 structural ranking.
 - This contract does not activate economic ranking.
 - This contract does not ratify score formula, weights, or normalization.
@@ -324,3 +327,14 @@ persists the offline challenger set and evidence contract in
 That persist does **not** ratify a score formula, does **not** implement
 the Economic-MD producer, and does **not** wire productive economic
 ranking. This dual-input contract remains the input-architecture owner.
+
+## 10. Economic-MD producer implementation is a later subordinate capability
+
+Owner-GO
+`PEAK_TRADE_CAP_2_2_ECONOMIC_MD_MVR_RAW_INPUT_PRODUCER_IMPLEMENTATION_V1`
+implements the producer as `IMPLEMENTED_NOT_WIRED` in
+`docs&#47;ops&#47;specs&#47;CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md`.
+That implementation does **not** wire productive economic ranking and
+does **not** activate economic rank. This dual-input contract remains
+the input-architecture owner.
+

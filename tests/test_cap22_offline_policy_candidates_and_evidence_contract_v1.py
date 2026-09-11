@@ -112,7 +112,8 @@ def _valid_payload(**overrides: object) -> dict[str, object]:
         "cap22_remains_ranking_owner": True,
         "current_structural_ranking_is_economic_policy": False,
         "downstream_execution_must_not_re_rank": True,
-        "economic_md_producer_implemented": False,
+        "economic_md_producer_implemented": True,
+        "economic_md_producer_productively_scheduled": False,
         "economic_rank_activated": False,
         "final_score_formula_ratified": False,
         "final_weights_ratified": False,
@@ -231,7 +232,7 @@ def test_hard_non_decisions_and_safety_remain() -> None:
     assert FORWARD_LABEL_HORIZON_RATIFIED is False
     assert HISTORICAL_REPLAY_HORIZON_RATIFIED is False
     assert ECONOMIC_RANK_ACTIVATED is False
-    assert ECONOMIC_MD_PRODUCER_IMPLEMENTED is False
+    assert ECONOMIC_MD_PRODUCER_IMPLEMENTED is True
     assert CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is False
     assert CAP21_BOUNDARY_PRESERVED is True
     assert CAP21_RANKING_AUTHORITY_ADDED is False
@@ -251,7 +252,7 @@ def test_hard_non_decisions_and_safety_remain() -> None:
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert NEXT_CANONICAL_DECISION == "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
     assert NEXT_CAP22_DEPENDENCY == (
-        "SEPARATE_OWNER_GO_REQUIRED_TO_IMPLEMENT_ECONOMIC_MD_PRODUCER_FOR_MVR_RAW_INPUT_ONLY"
+        "SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING"
     )
 
 
@@ -267,7 +268,8 @@ def test_declaration_validator_accepts_bound_flags() -> None:
     [
         ("final_score_formula_ratified", True),
         ("final_weights_ratified", True),
-        ("economic_md_producer_implemented", True),
+        ("economic_md_producer_implemented", False),
+        ("economic_md_producer_productively_scheduled", True),
         ("economic_rank_activated", True),
         ("runtime_authority_granted", True),
         ("multi_future_runtime_authorized", True),
@@ -344,7 +346,8 @@ def test_spec_persists_challengers_and_hard_non_decisions() -> None:
     assert "FINAL_SCORE_FORMULA_RATIFIED=false" in spec
     assert "FINAL_WEIGHTS_RATIFIED=false" in spec
     assert "ECONOMIC_RANK_ACTIVATED=false" in spec
-    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=false" in spec
+    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in spec
+    assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in spec
     assert "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false" in spec
     assert "PDF_STEP_5_STATUS=UNRESOLVED" in spec
     assert "ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5" in spec
@@ -363,7 +366,8 @@ def test_existing_specs_remain_unwired_and_point_to_offline_contract() -> None:
     cap22 = CAP22_SPEC.read_text(encoding="utf-8")
     assert "CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md" in dual
     assert "FINAL_SCORE_FORMULA_RATIFIED=false" in dual
-    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=false" in dual
+    assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in dual
+    assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in dual
     assert "CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md" in cap22
     assert "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false" in cap22
     assert "ECONOMIC_RANK_ACTIVATED=false" in cap22

@@ -43,7 +43,7 @@ RANKING_POLICY_PROVENANCE=Cap 2.1 instrument structural gates as equal binary sc
 PERSISTENCE=productive_futures_ranking_snapshot_v1.json + productive_futures_ranking_evidence_v1.json + MANIFEST.sha256 (atomic stage/publish; single-writer lock; snapshot-id content idempotency)
 RESTART_SEMANTICS=Produce→Persist→Restart→Load→Validate→identical ranking truth; ALPHA_ALLOWED remains false; no SINGLE_SELECTED_FUTURE
 FAILURE_SEMANTICS=missing/invalid/stale universe, digest/SHA/config mismatch, missing metadata, mark-price unsupported, no eligible candidates, duplicate writer, snapshot-id content conflict, persistence/partial/crash → fail-closed; dashboard/legacy ranker inputs rejected
-SAFETY_INVARIANTS=RANKING_AUTHORITY_OWNER_SINGLE; TOP20_IS_CONTEXT_ONLY; DASHBOARD_AUTHORITY=false; no selection/alpha/execution/multi-future authority; Cap 2.1 universe is sole CURRENT productive input; future economic dual-input authorized not wired; CAP22_BECOMES_NETWORK_OWNER=false; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false; ECONOMIC_MD_PRODUCER_IMPLEMENTED=false; FINAL_SCORE_FORMULA_RATIFIED=false
+SAFETY_INVARIANTS=RANKING_AUTHORITY_OWNER_SINGLE; TOP20_IS_CONTEXT_ONLY; DASHBOARD_AUTHORITY=false; no selection/alpha/execution/multi-future authority; Cap 2.1 universe is sole CURRENT productive input; future economic dual-input authorized; Economic-MD producer implemented not wired; CAP22_BECOMES_NETWORK_OWNER=false; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false; ECONOMIC_MD_PRODUCER_IMPLEMENTED=true; ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false; FINAL_SCORE_FORMULA_RATIFIED=false
 CORE_LOGIC_CHANGE=false
 TEST_PLAN=tests/ops/test_productive_futures_ranking_producer_v1.py
 EVIDENCE_PLAN=docs/evidence/capability_2_2_productive_futures_ranking_producer_v1/
@@ -70,7 +70,8 @@ CANONICAL_RUNTIME_ENTRYPOINT_STATUS=BOUND_NOT_ACTIVATED
 CAP22_INPUT_MODEL=DUAL_AUTHORITATIVE_INPUTS_WITH_SEPARATE_ROLES
 CAP22_BECOMES_NETWORK_OWNER=false
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
-ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 FINAL_SCORE_FORMULA_RATIFIED=false
 ```
 
@@ -117,7 +118,8 @@ CAP22_DIRECT_LIVE_VENUE_DEPENDENCY=false
 CAP22_CURRENT_PRODUCTIVE_INPUT=CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT_ONLY
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
 ECONOMIC_MD_INPUT_CAPABILITY_AUTHORIZED=true
-ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 ECONOMIC_RANK_ACTIVATED=false
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
@@ -127,8 +129,8 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 
 Cap 2.2 remains ranking owner and must not become network or venue SSOT.
 The separate Economic-MD-Input producer owns network I/O, collection,
-persistence, schema, and replay input. That producer is authorized, not
-implemented.
+persistence, schema, and replay input. That producer is implemented, not
+productively scheduled, and is not wired into Cap 2.2 ranking.
 
 ## Offline policy candidates and evidence contract (docs-only; not wired)
 
@@ -151,7 +153,8 @@ NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
 ECONOMIC_RANK_ACTIVATED=false
-ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
 ```
 
