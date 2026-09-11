@@ -129,3 +129,31 @@ Cap 2.2 remains ranking owner and must not become network or venue SSOT.
 The separate Economic-MD-Input producer owns network I/O, collection,
 persistence, schema, and replay input. That producer is authorized, not
 implemented.
+
+## Offline policy candidates and evidence contract (docs-only; not wired)
+
+Owner-GO
+`PEAK_TRADE_CAP_2_2_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_DOCS_ONLY_V1`
+persists the offline challenger set and the evidence contract required
+before any economic ranking policy may be ratified. Subordinate
+contract:
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md`.
+
+```text
+CURRENT_PRODUCTIVE_ECONOMIC_RANKING=NONE
+CURRENT_PRODUCTIVE_RANKING_POLICY=productive_futures_universe_structural_ranking_v1
+CURRENT_STRUCTURAL_RANKING_IS_ECONOMIC_POLICY=false
+RECOMMENDED_PRIMARY_BASELINE=VOLATILITY_RANK_ONLY
+VOLATILITY_RANK_ONLY_VERDICT=BASELINE_ONLY
+NEGATIVE_STATUS_QUO_BASELINE=CURRENT_STRUCTURAL_THEN_VENUE_ID_ASC
+RECOMMENDED_OFFLINE_CHALLENGERS=HARD_SPREAD_GATE_THEN_VOLATILITY_RANK;VOLATILITY_TO_SPREAD_RATIO;LEXICOGRAPHIC_SPREAD_THEN_VOL
+NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
+FINAL_SCORE_FORMULA_RATIFIED=false
+FINAL_WEIGHTS_RATIFIED=false
+ECONOMIC_RANK_ACTIVATED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+```
+
+This section does **not** rewire the productive structural ranking
+producer and does **not** ratify a score formula.
