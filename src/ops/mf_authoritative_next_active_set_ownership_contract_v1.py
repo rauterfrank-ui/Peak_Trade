@@ -4,9 +4,11 @@ Binds Membership / Rotation Controller ownership of authoritative selected
 membership inside the ranking/selection domain. PDF Step 4 census is closed
 as inventory only. AS05-D01 adopts isolated POLICY_A unchanged as the Active
 Set admission-policy rule set without transferring ownership or granting
-runtime. Does not close AS05-D02 or AS05-D03, does not close PDF Step 5,
-does not join a host, does not rewire Cap 2.3 or Cap 2.4, does not unlock
-G13, and does not name a productive consumer.
+runtime. AS05-D02 names evaluate_policy_a_v1 as the pure Active Set
+anti-churn evaluator without transferring ownership. Does not close
+AS05-D03, does not close PDF Step 5, does not join a host, does not rewire
+Cap 2.3 or Cap 2.4, does not unlock G13, and does not name a productive
+consumer.
 """
 
 from __future__ import annotations
@@ -54,8 +56,24 @@ ACTIVE_SET_POLICY_ADOPTION = "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
 ACTIVE_SET_POLICY_RATIFIED = True
 AS05_D01_STATUS = "CLOSED"
 AS05_D01_DECISION = "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
-AS05_D02_STATUS = "UNRESOLVED"
+AS05_D02_STATUS = "CLOSED"
+AS05_D02_DECISION = (
+    "NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET"
+)
 AS05_D03_STATUS = "UNRESOLVED"
+EVALUATOR_COMPONENT = (
+    "src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1"
+)
+EVALUATOR_AUTHORITY = "POLICY_A_ADMISSION_OR_NON_ADMISSION_ONLY"
+EVALUATOR_IS_NOT_ACTIVE_SET_OWNER = True
+EVALUATOR_IS_NOT_RANKING_OWNER = True
+EVALUATOR_IS_NOT_PRODUCTIVE_SELECTION_OWNER = True
+EVALUATOR_IS_NOT_EXECUTION_OWNER = True
+EVALUATOR_IS_NOT_RUNTIME_HOST_OWNER = True
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY = True
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY = True
+ROTATION_IS_NOT_ANTI_CHURN_OWNER = True
+ROTATION_ROLE_REMAINS = "MEMBERSHIP_DIFF_ONLY"
 SELECTOR_BECOMES_ACTIVE_SET_OWNER = False
 EXECUTION_BECOMES_ACTIVE_SET_OWNER = False
 PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED = False
@@ -108,8 +126,8 @@ PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP = "CLOSED"
 PDF_STEP_4_ANTI_CHURN_CENSUS = "CLOSED"
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION = "UNRESOLVED"
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED = False
-NEXT_CANONICAL_DECISION = "AS05-D02"
-OWNER_DECISION_SURFACE_STATUS = "D01_RATIFIED_D02_D03_UNRESOLVED"
+NEXT_CANONICAL_DECISION = "AS05-D03"
+OWNER_DECISION_SURFACE_STATUS = "D01_D02_RATIFIED_D03_UNRESOLVED"
 NEXT_IMPLEMENTATION_AUTHORIZED = False
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
@@ -131,12 +149,15 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
 TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "active_set_selection_authority",
     "downstream_execution_must_not_re_rank",
+    "evaluator_is_not_active_set_owner",
+    "evaluator_reuse_does_not_transfer_authority",
     "no_downstream_selection",
     "no_padding",
     "one_active_set_state_owner",
     "policy_a_is_not_automatic_active_set_policy",
     "policy_reuse_does_not_transfer_authority",
     "rotation_decision_authority_bound",
+    "selector_owner_identity_is_not_active_set_evaluator_authority",
     "single_egress_required",
 )
 
@@ -327,6 +348,12 @@ def reject_rotation_until_step_5_v1(
         raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "selector_owner_transfer")
     if raw.get("execution_becomes_active_set_owner") is True:
         raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "execution_owner_transfer")
+    if raw.get("evaluator_becomes_active_set_owner") is True:
+        raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "evaluator_owner_transfer")
+    if raw.get("selector_owner_identity_is_active_set_evaluator_authority") is True:
+        raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "selector_evaluator_authority")
+    if raw.get("rotation_is_anti_churn_owner") is True:
+        raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "rotation_anti_churn_owner")
     if raw.get("pdf_step_5_closed") is True:
         raise ActiveSetOwnershipError("STEP_5_STILL_UNRESOLVED", "pdf_step_5_closed")
     if str(raw.get("rotation_policy_status") or ROTATION_POLICY_STATUS) != (ROTATION_POLICY_STATUS):
@@ -350,6 +377,31 @@ def classify_mf_single_egress_alignment_v1() -> dict[str, Any]:
         "parallel_handoffs": PARALLEL_HANDOFFS,
         "smallest_compatible_evolution": (
             "INTENDED_OBJECT_POINTER_WITHOUT_ENVELOPE_SCHEMA_PROMOTION"
+        ),
+    }
+
+
+def classify_active_set_anti_churn_evaluator_v1() -> dict[str, Any]:
+    return {
+        "active_set_owner": OWNER,
+        "as05_d02_decision": AS05_D02_DECISION,
+        "as05_d02_status": AS05_D02_STATUS,
+        "evaluator_authority": EVALUATOR_AUTHORITY,
+        "evaluator_component": EVALUATOR_COMPONENT,
+        "evaluator_is_not_active_set_owner": EVALUATOR_IS_NOT_ACTIVE_SET_OWNER,
+        "evaluator_is_not_execution_owner": EVALUATOR_IS_NOT_EXECUTION_OWNER,
+        "evaluator_is_not_productive_selection_owner": (
+            EVALUATOR_IS_NOT_PRODUCTIVE_SELECTION_OWNER
+        ),
+        "evaluator_is_not_ranking_owner": EVALUATOR_IS_NOT_RANKING_OWNER,
+        "evaluator_is_not_runtime_host_owner": EVALUATOR_IS_NOT_RUNTIME_HOST_OWNER,
+        "evaluator_reuse_does_not_transfer_authority": (
+            EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY
+        ),
+        "rotation_is_not_anti_churn_owner": ROTATION_IS_NOT_ANTI_CHURN_OWNER,
+        "rotation_role_remains": ROTATION_ROLE_REMAINS,
+        "selector_owner_identity_is_not_active_set_evaluator_authority": (
+            SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY
         ),
     }
 
@@ -437,9 +489,12 @@ def build_authoritative_next_active_set_declaration_v1(
         "object_class": OBJECT_CLASS_AUTHORITATIVE_NEXT_ACTIVE_SET,
         "one_active_set_state_owner": True,
         "owner": OWNER,
+        "evaluator_is_not_active_set_owner": True,
+        "evaluator_reuse_does_not_transfer_authority": True,
         "policy_a_is_not_automatic_active_set_policy": True,
         "policy_reuse_does_not_transfer_authority": True,
         "rotation_decision_authority_bound": True,
+        "selector_owner_identity_is_not_active_set_evaluator_authority": True,
         "rotation_policy_status": ROTATION_POLICY_STATUS,
         "schema_version": SCHEMA_VERSION,
     }

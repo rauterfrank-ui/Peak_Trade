@@ -1273,8 +1273,16 @@ ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
 ACTIVE_SET_POLICY_RATIFIED=true
 AS05_D01_STATUS=CLOSED
 AS05_D01_DECISION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
-AS05_D02_STATUS=UNRESOLVED
+AS05_D02_STATUS=CLOSED
+AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
 AS05_D03_STATUS=UNRESOLVED
+EVALUATOR_COMPONENT=src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1
+EVALUATOR_AUTHORITY=POLICY_A_ADMISSION_OR_NON_ADMISSION_ONLY
+EVALUATOR_IS_NOT_ACTIVE_SET_OWNER=true
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
+ROTATION_ROLE_REMAINS=MEMBERSHIP_DIFF_ONLY
 SELECTOR_BECOMES_ACTIVE_SET_OWNER=false
 EXECUTION_BECOMES_ACTIVE_SET_OWNER=false
 PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED=false
@@ -1290,12 +1298,12 @@ EXECUTING_MODEL_HANDOFF_CONSUMER=UNBOUND
 PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
 PDF_STEP_4_ANTI_CHURN_CENSUS=CLOSED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
-OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED
+OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED
 OWNER_DECISION_COUNT=3
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
-NEXT_CANONICAL_DECISION=AS05-D02
+NEXT_CANONICAL_DECISION=AS05-D03
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
-THIS_PERSIST_DOES_NOT_CLOSE_AS05_D02=true
+THIS_PERSIST_CLOSES_AS05_D02=true
 THIS_PERSIST_DOES_NOT_CLOSE_AS05_D03=true
 ```
 
@@ -1318,12 +1326,23 @@ transfer ownership, ranking, selection, execution, live, wire-send, or
 runtime authority. Selector does **not** become Active Set owner.
 Execution does **not** become Active Set owner. Cap 2.3 remains the
 sole **productive** selection owner. Reconciliation **authority** is
-bound. Reconciliation **behavior** remains fail-closed because AS05-D02
-(evaluator identity) remains unresolved. `MF_SINGLE_EGRESS_V1` remains
-the unique egress identity. The current envelope cannot represent this
-Active Set; the smallest compatible evolution is an intended-object
+bound. Owner-GO
+`PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1`
+closes AS05-D02 as
+`NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET`.
+That close names
+`src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1`
+as the pure POLICY_A admission/non-admission evaluator for this Active
+Set object class. Evaluator reuse does **not** transfer ownership,
+ranking, productive selection, execution, live, wire-send, or
+runtime authority. Selector owner identity is **not** Active Set
+evaluator authority. Rotation remains membership-diff-only and is
+**not** the anti-churn owner. Reconciliation **behavior** remains
+fail-closed. `apply_rotation` remains forbidden. `MF_SINGLE_EGRESS_V1`
+remains the unique egress identity. The current envelope cannot represent
+this Active Set; the smallest compatible evolution is an intended-object
 pointer without envelope-schema promotion. Consumer identity remains
-`UNBOUND`. This D01 persist names `AS05-D02` as the next unresolved
+`UNBOUND`. This D02 persist names `AS05-D03` as the next unresolved
 Owner decision. It does **not** close PDF Step 5, does **not** close
 AS05-D03, and does **not** allow PDF Step 7.
 Owner-GO
@@ -1332,9 +1351,9 @@ closes PDF Step 4 as an inventory census only
 (`CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE`). Workpackage
 `PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION_DECISION_PACKAGE_V1`
 prepared a non-operative Owner decision surface on the subordinate
-ownership contract. AS05-D01 is now `CLOSED`; AS05-D02 and AS05-D03
-remain unresolved
-(`OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED`).
+ownership contract. AS05-D01 and AS05-D02 are now `CLOSED`; AS05-D03
+remains unresolved
+(`OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED`).
 Cooldown and turnover remain unratified. That D01 persist does
 **not** join a host, does **not** rewire Cap 2.3 or Cap 2.4, does
 **not** unlock G13, and does **not** allow PDF Step 7 runtime
