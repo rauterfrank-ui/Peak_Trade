@@ -431,7 +431,9 @@ def test_constants_and_schema_identity() -> None:
     spec = REPO / "docs/ops/specs/CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md"
     text = spec.read_text(encoding="utf-8")
     assert (
-        "docs_" + "token: DOCS_TOKEN_CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1"
+        "docs_"
+        + "token: "
+        + "DOCS_TOKEN_CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1"
         in text
     )
     assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in text

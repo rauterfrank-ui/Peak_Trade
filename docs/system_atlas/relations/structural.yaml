@@ -125,6 +125,8 @@ relations:
     notes: >
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority. Implemented not wired.
+
+  - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
     target: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1

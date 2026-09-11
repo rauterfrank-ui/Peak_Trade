@@ -266,6 +266,18 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
       - docs/ops/specs/CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md
+    source_paths:
+      - src/ops/economic_md_input_producer_v1/__init__.py
+      - src/ops/economic_md_input_producer_v1/constants_v1.py
+      - src/ops/economic_md_input_producer_v1/models_v1.py
+      - src/ops/economic_md_input_producer_v1/persistence_v1.py
+      - src/ops/economic_md_input_producer_v1/producer_v1.py
+      - src/ops/economic_md_input_producer_v1/public_md_source_v1.py
+      - src/ops/economic_md_input_producer_v1/reason_codes_v1.py
+      - src/ops/economic_md_input_producer_v1/single_writer_v1.py
+      - src/ops/economic_md_input_producer_v1/universe_gate_v1.py
+      - src/ops/economic_md_input_producer_v1/validation_v1.py
+      - scripts/ops/run_economic_md_input_producer_v1.py
     evidence_sources:
       - docs/ops/specs/CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md
       - src/ops/economic_md_input_producer_v1/producer_v1.py
