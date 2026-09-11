@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-10T22:29:18.510455+00:00",
-  "git_sha": "beafe9b5663a2e136c7f1641b4ce7509401ea72f",
+  "generated_at_utc": "2026-09-10T23:54:59.276086+00:00",
+  "git_sha": "49cc9371ffa9f80d94ae107b79e87684e85d292c",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 3084,
+    "total_markdown_files": 3082,
     "ignored_files": 509,
-    "scanned_files": 2575,
-    "total_references": 15873
+    "scanned_files": 2573,
+    "total_references": 15861
   },
-  "missing_count": 127,
+  "missing_count": 128,
   "missing_items": [
     {
       "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
@@ -152,6 +152,12 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 22,
       "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 95,
+      "target": "docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md",
       "link_text": null
     },
     {

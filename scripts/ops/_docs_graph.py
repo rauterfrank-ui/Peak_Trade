@@ -377,7 +377,7 @@ def suggest_link_points(orphan_path: str, nodes: dict[str, GraphNode]) -> list[s
     root_docs = [
         "docs/WORKFLOW_FRONTDOOR.md",
         "docs/ops/README.md",
-        "WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md",
+        "docs/ops/RUNBOOK_INDEX.md",
         "README.md",
     ]
     for root_doc in root_docs:

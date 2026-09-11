@@ -9,7 +9,7 @@ Der Ops Doctor prüft:
 - **Repository-Status**: Git-Root, uncommitted changes
 - **Dependencies**: uv.lock, requirements.txt Sync
 - **Konfiguration**: pyproject.toml, config-Files
-- **Dokumentation**: README_REGISTRY.md
+- **Dokumentation**: docs/README.md
 - **Test-Infrastruktur**: pytest.ini, tests/
 - **CI/CD**: GitHub Actions, Makefile, Policy Packs
 
@@ -104,7 +104,7 @@ python3 -m src.ops.doctor
 | `deps.requirements_sync` | warn | Prüft ob requirements.txt mit uv.lock synchronisiert ist |
 | `config.pyproject` | fail | Prüft pyproject.toml auf valide Syntax |
 | `config.files` | warn | Prüft wichtige Config-Dateien im config/ |
-| `docs.registry` | info | Prüft ob README_REGISTRY.md existiert |
+| `docs.registry` | info | Prüft ob docs/README.md existiert |
 | `tests.infrastructure` | warn | Prüft Test-Infrastruktur (pytest.ini, tests/) |
 | `ci.files` | info | Prüft CI/CD-Konfiguration |
 
@@ -200,12 +200,11 @@ python3 -m src.ops.doctor
 ### docs.registry
 
 **Severity**: `info`  
-**Was wird geprüft**: Existenz und Inhalt von `README_REGISTRY.md`
+**Was wird geprüft**: Existenz von `docs/README.md`
 
 **Mögliche Ergebnisse**:
-- ✅ **ok**: README_REGISTRY.md gefunden mit Referenzen
-- ⚠️ **warn**: Datei existiert aber ist leer
-- ⏭️ **skip**: Datei nicht gefunden
+- ✅ **ok**: docs/README.md gefunden
+- ⚠️ **warn**: Datei nicht gefunden
 
 ---
 
@@ -458,11 +457,6 @@ pip install tomli
 **Stand**: Dezember 2024  
 **Version**: v1.0
 
-## README_REGISTRY Guardrail (ops doctor)
-Der Ops-Doctor-Registry-Check erwartet, dass `README_REGISTRY.md` **mindestens eine Referenz mit dem Pattern** `*_README.md` enthält.
-Wenn `README_REGISTRY.md` auf anderen Inhalt (z.B. Strategien-Registry) zurückgesetzt wird und **keine** `*_README.md`-Referenzen enthält, resultiert das in einem dauerhaften WARN.
-
-Beispiel: Ein gültiger Minimalzustand referenziert z.B.:
-- `OPS_DOCTOR_README.md`
-- `PSYCHOLOGY_HEURISTICS_README.md`
-- `PSYCHOLOGY_HEATMAP_README.md`
+## Docs navigation Guardrail (ops doctor)
+Der Ops-Doctor-Registry-Check (`docs.registry`) erwartet, dass `docs/README.md` existiert.
+Dieser Check ist informational (`info`) und ersetzt den früheren Root-`README_REGISTRY.md`-Check.

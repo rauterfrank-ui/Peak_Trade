@@ -98,7 +98,8 @@ Policy-Dokumente für illustrative Pfade und Workflow-Konventionen (relevant fü
 
 Für eine zentrale Workflow- und Runbook-Übersicht siehe:
 
-- [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md) (Repo-Root)
+- [docs/ops/README.md](README.md) (Ops Hub)
+- [docs/WORKFLOW_FRONTDOOR.md](../WORKFLOW_FRONTDOOR.md) (Workflow-Frontdoor)
 
 ## Critical Operator Runbooks
 - [incident_stop_freeze_rollback.md](runbooks/incident_stop_freeze_rollback.md)

@@ -12,7 +12,6 @@ Dieses Dokument erklärt die Organisation des Peak_Trade Repositories.
 ```
 Peak_Trade/
 ├── README.md                    # Haupt-Dokumentation
-├── README_REGISTRY.md           # Index aller READMEs
 ├── pyproject.toml               # Python-Projekt-Konfiguration
 ├── pytest.ini                   # Test-Konfiguration
 ├── requirements.txt             # Dependencies
@@ -329,7 +328,6 @@ Diese Dinge sind in `.gitignore` und sollten NICHT committed werden:
 ## 📖 Weitere Dokumentation
 
 - **Haupt-README:** `README.md`
-- **README-Index:** `README_REGISTRY.md`
 - **Docs-Navigation:** `docs/README.md`
 - **Ops-Hub:** `docs/ops/README.md`
 - **Risk-Hub:** `docs/risk/README.md`

@@ -6177,3 +6177,19 @@ entities:
       Independent El-Karoui surfaces remain preserved. Not Armstrong
       identity and not a new trading authority.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: SCRIPT:ops_doctor
+    kind: SCRIPT
+    name: Ops Doctor repository health checks
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    source_paths:
+      - src/ops/doctor.py
+    evidence_sources:
+      - docs/ops/OPS_DOCTOR_README.md
+    notes: >-
+      Navigation record only. Informational repository health checks.
+      docs.registry is bound to docs/README.md. Not trading, live, order,
+      strategy-selection, ranking, Master V2, or promotion authority.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

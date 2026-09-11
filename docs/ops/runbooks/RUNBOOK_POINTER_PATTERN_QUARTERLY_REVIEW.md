@@ -33,7 +33,7 @@ This runbook standardizes the **quarterly review process** for the Pointer Patte
 **What This Is NOT:**
 - Real-time monitoring or watch loops (use CI gates for that)
 - Content duplication detection (use drift control runbook)
-- New pointer creation (use RUNBOOK_POINTER_PATTERN_OPERATIONS.md)
+- New pointer creation (use remaining pointer example RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md)
 
 ---
 
@@ -726,7 +726,7 @@ Quarterly review of Pointer Pattern architecture (root canonical runbooks + poin
 
 ## Related Runbook
 - docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_QUARTERLY_REVIEW.md
-- docs/ops/runbooks/RUNBOOK_POINTER_PATTERN_OPERATIONS.md
+- docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md
 
 ## Reviewers
 @ops-team
@@ -786,7 +786,7 @@ Quarterly review of Pointer Pattern architecture (root canonical runbooks + poin
 ## 10. Related Documentation
 
 ### Runbooks
-- [RUNBOOK_POINTER_PATTERN_OPERATIONS.md](RUNBOOK_POINTER_PATTERN_OPERATIONS.md) — Creating and maintaining pointer pattern
+- [RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md](RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md) — Remaining pointer-pattern example (archive SSOT body)
 - [RUNBOOK_DOCS_TOKEN_POLICY_GATE.md](RUNBOOK_DOCS_TOKEN_POLICY_GATE.md) — Token policy gate reference
 - [RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md](RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md) — Reference targets gate operator guide
 - [RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md](RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md) — Diff guard gate operator guide

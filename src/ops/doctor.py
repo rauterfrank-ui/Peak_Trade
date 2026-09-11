@@ -14,7 +14,6 @@ Usage:
 
 import json
 import os
-import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -387,38 +386,24 @@ class Doctor:
         self.report.add_check(check)
 
     def check_docs_registry(self):
-        """Prüft ob README_REGISTRY.md existiert und aktuell ist."""
+        """Prüft ob docs/README.md (Docs-Navigation) existiert."""
         check = Check(
             id="docs.registry",
             severity="info",
         )
 
-        registry = self.repo_root / "README_REGISTRY.md"
+        registry = self.repo_root / "docs" / "README.md"
 
         if not registry.exists():
             check.status = "warn"
-            check.message = "README_REGISTRY.md not found"
-            check.fix_hint = "Create README_REGISTRY.md to document all README files"
+            check.message = "docs/README.md not found"
+            check.fix_hint = "Restore docs/README.md as the docs navigation index"
             self.report.add_check(check)
             return
 
-        try:
-            content = registry.read_text()
-            # Zähle referenzierte README-Files
-            readme_refs = re.findall(r"\b\w+_README\.md\b", content)
-
-            if len(readme_refs) > 0:
-                check.status = "ok"
-                check.message = f"README_REGISTRY.md found ({len(readme_refs)} docs referenced)"
-                check.evidence.append(f"Referenced: {len(readme_refs)} docs")
-            else:
-                check.status = "warn"
-                check.message = "README_REGISTRY.md exists but appears empty"
-
-        except Exception as e:
-            check.status = "skip"
-            check.message = f"Could not read README_REGISTRY.md: {e}"
-
+        check.status = "ok"
+        check.message = "docs/README.md found (docs navigation index)"
+        check.evidence.append("docs/README.md exists")
         self.report.add_check(check)
 
     def check_test_infrastructure(self):

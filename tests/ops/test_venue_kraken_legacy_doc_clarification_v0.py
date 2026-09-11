@@ -19,7 +19,6 @@ CLARIFIED_DOC_PATHS = (
     REPO_ROOT / "docs" / "project_docs" / "IMPLEMENTATION_SUMMARY.md",
     REPO_ROOT / "docs" / "project_docs" / "NEXT_STEPS.md",
     REPO_ROOT / "docs" / "project_docs" / "CONFIG_IMPORT_GUIDE.md",
-    REPO_ROOT / "WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md",
 )
 
 
