@@ -142,7 +142,7 @@ git reset --hard ed2640ba  # (parent commit)
 **Entry Points**:
 - **Installation Quickstart**: [docs/INSTALLATION_QUICKSTART.md](../../INSTALLATION_QUICKSTART.md)
 - **Workflow Frontdoor**: [docs/WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md)
-- **Runbook Overview**: [docs/ops/RUNBOOK_INDEX.md](../../RUNBOOK_INDEX.md) (current; historical 2026-01-12 overview superseded)
+- **Runbook Overview**: [docs/ops/RUNBOOK_INDEX.md](../RUNBOOK_INDEX.md) (current; historical 2026-01-12 overview superseded)
 
 **Archive (Original Preserved)**:
 - **Archive Index**: [docs/ops/_archive/installation_roadmap/2026-01-12/README.md](../_archive/installation_roadmap/2026-01-12/README.md)

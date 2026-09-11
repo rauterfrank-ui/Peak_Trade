@@ -33,7 +33,7 @@ Do **not** use PATH `python` / `python3`, `python -m venv`, or venv activation a
 
 A 2026-01-12 installation/roadmap snapshot exists only as historical archive:
 
-[`docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`](../ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+[`docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`](ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 
 That snapshot is **not** current install, bootstrap, or product-roadmap authority.
 
@@ -134,4 +134,4 @@ Safety / policy (non-authorizing):
 
 - [`docs/README.md`](./README.md) — docs topic index
 - [`docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md`](./governance/PEAK_TRADE_MAP_OF_TRUTH.md) — navigation only
-- Historical install snapshot (archive): [`docs/ops/_archive/installation_roadmap/2026-01-12/README.md`](../ops/_archive/installation_roadmap/2026-01-12/README.md)
+- Historical install snapshot (archive): [`docs/ops/_archive/installation_roadmap/2026-01-12/README.md`](ops/_archive/installation_roadmap/2026-01-12/README.md)
