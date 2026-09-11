@@ -72,8 +72,10 @@ relations:
     evidence_sources:
       - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
     notes: >
-      Authorization of a future Economic-MD-Input capability.
-      ECONOMIC_MD_PRODUCER_IMPLEMENTED=false. Not a current runtime join.
+      Authorization of the Economic-MD-Input capability.
+      ECONOMIC_MD_PRODUCER_IMPLEMENTED=true.
+      ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false.
+      Not a current ranking runtime join.
 
   - id: REL:s_cap22_governed_by_economic_md_dual_input
     source: CAPABILITY:cap_2_2_ranking
@@ -100,7 +102,7 @@ relations:
     evidence_sources:
       - src/ops/cap22_economic_md_dual_input_contract_v1.py
     notes: >
-      Authorized not implemented. No trading or execution authority.
+      Implemented not wired. No trading or execution authority.
 
   - id: REL:s_map_navigates_cap22_economic_md_dual_input
     source: NAVIGATION_INDEX:map_of_truth
@@ -112,6 +114,17 @@ relations:
     notes: >
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority.
+
+  - id: REL:s_map_navigates_economic_md_input_producer
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CAPABILITY:cap_economic_md_input
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority. Implemented not wired.
 
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking

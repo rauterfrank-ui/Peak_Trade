@@ -50,7 +50,8 @@ ECONOMIC_MD_DATA_OWNER = "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
 ECONOMIC_MD_NETWORK_IO_OWNER = "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
 ECONOMIC_MD_PERSISTENCE_OWNER = "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
 ECONOMIC_MD_SCHEMA_OWNER = "SEPARATE_ECONOMIC_MD_INPUT_PRODUCER"
-ECONOMIC_MD_PRODUCER_IMPLEMENTED = False
+ECONOMIC_MD_PRODUCER_IMPLEMENTED = True
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED = False
 REPLAY_FROM_PERSISTED_INPUT_REQUIRED = True
 
 LIBRARY_REUSE_AUTHORITY_TRANSFER = False
@@ -134,7 +135,7 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "cmc_authority_transferred",
     "collection_skew_numeric_bound_ratified",
     "cross_sectional_normalization_ratified",
-    "economic_md_producer_implemented",
+    "economic_md_producer_productively_scheduled",
     "economic_rank_activated",
     "execution_may_recompute_economic_score",
     "execution_may_rerank",
@@ -160,6 +161,7 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "can_reuse_canonical_volatility_formula",
     "downstream_execution_must_not_re_rank",
     "economic_md_input_capability_authorized",
+    "economic_md_producer_implemented",
     "finalized_only",
     "future_leakage_forbidden",
     "no_implicit_fill",
@@ -217,6 +219,9 @@ def classify_cap22_dual_input_architecture_v1() -> dict[str, Any]:
         "economic_md_network_io_owner": ECONOMIC_MD_NETWORK_IO_OWNER,
         "economic_md_persistence_owner": ECONOMIC_MD_PERSISTENCE_OWNER,
         "economic_md_producer_implemented": ECONOMIC_MD_PRODUCER_IMPLEMENTED,
+        "economic_md_producer_productively_scheduled": (
+            ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED
+        ),
         "economic_md_schema_owner": ECONOMIC_MD_SCHEMA_OWNER,
         "productive_selection_owner": PRODUCTIVE_SELECTION_OWNER,
         "schema_version": SCHEMA_VERSION,

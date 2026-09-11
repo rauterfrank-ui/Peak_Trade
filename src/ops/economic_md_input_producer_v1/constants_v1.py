@@ -1,0 +1,128 @@
+"""Constants for CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1."""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1"
+SCHEMA_VERSION = "economic_md_input_snapshot.v1"
+SCHEMA_ID = "economic_md_input_snapshot.v1"
+PRODUCER_VERSION = "economic_md_input_producer.v1"
+PACKAGE_MARKER = "ECONOMIC_MD_INPUT_PRODUCER_V1=true"
+OWNER = "ops.economic_md_input_producer_v1"
+AUTHORITY_OWNER = OWNER
+SINGLE_WRITER_IDENTITY = "economic_md_input_snapshot_writer_v1"
+
+UNIVERSE_CAPABILITY_ID = "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1"
+UNIVERSE_SCHEMA_VERSION = "governed_futures_universe_snapshot.v1"
+UNIVERSE_PRODUCER_VERSION = "governed_futures_universe_producer.v1"
+VENUE = "okx_eea"
+
+MINIMUM_FINALIZED_PT1M_MARKS = 61
+PT1M_STEP_MS = 60_000
+NO_IMPLICIT_FILL = True
+FINALIZED_ONLY = True
+FUTURE_LEAKAGE_FORBIDDEN = True
+
+ECONOMIC_MD_PRODUCER_IMPLEMENTED = True
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED = False
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED = False
+ECONOMIC_RANK_ACTIVATED = False
+ECONOMIC_MD_PRODUCER_MAY_RANK = False
+ECONOMIC_MD_PRODUCER_MAY_SELECT = False
+ECONOMIC_MD_PRODUCER_MAY_DEFINE_TOP20 = False
+ECONOMIC_MD_PRODUCER_MAY_APPLY_POLICY_A = False
+ECONOMIC_MD_PRODUCER_MAY_DEFINE_ACTIVE_SET = False
+ECONOMIC_MD_PRODUCER_MAY_TRIGGER_EXECUTION = False
+LIBRARY_REUSE_AUTHORITY_TRANSFER = False
+CMC_AUTHORITY_TRANSFERRED = False
+SELECTED_FUTURE_MD_AUTHORITY_TRANSFERRED = False
+CAP52_AUTHORITY_TRANSFERRED = False
+CANARY_AUTHORITY_TRANSFERRED = False
+RUNTIME_ACTIVATION_ALLOWED = False
+LIVE_AUTHORIZED = False
+ORDERS_AUTHORIZED = False
+PAPER_EXECUTION_AUTHORIZED = False
+TESTNET_AUTHORIZED = False
+NETWORK_TRADING_SESSION_ALLOWED = False
+MULTI_FUTURE_RUNTIME_AUTHORIZED = False
+RUNTIME_AUTHORITY_GRANTED = False
+PRODUCTIVE_MF_HOST_JOIN = False
+ALPHA_ALLOWED_DEFAULT = False
+
+SPREAD_FORMULA_RATIFIED = False
+SPREAD_AGGREGATOR_RATIFIED = False
+STALE_SECONDS_RATIFIED = False
+COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED = False
+FINAL_SCORE_FORMULA_RATIFIED = False
+FINAL_WEIGHTS_RATIFIED = False
+
+MARK_SOURCE_CLASS = "VENUE_NATIVE_OKX_PUBLIC_HISTORY_MARK_PRICE_CANDLES_PT1M_CONFIRM_1"
+TICKER_SOURCE_CLASS = "VENUE_NATIVE_OKX_PUBLIC_TICKER"
+MARK_ENDPOINT_PATH = "/api/v5/market/history-mark-price-candles"
+TICKER_ENDPOINT_PATH = "/api/v5/market/ticker"
+PUBLIC_HTTP_HOST = "www.okx.com"
+PUBLIC_HTTP_BASE_URL = "https://www.okx.com"
+HTTP_TIMEOUT_SECONDS = 30.0
+HTTP_MAX_RESPONSE_BYTES = 2_000_000
+HTTP_MAX_RETRIES = 1
+MARK_HISTORY_LIMIT = "100"
+MARK_BAR = "1m"
+
+UNRESOLVED_LOCKED_MARKET = "RAW_OBSERVATION_UNRESOLVED"
+UNRESOLVED_NEAR_ZERO_SPREAD = "RAW_OBSERVATION_UNRESOLVED_UNRATIFIED_BOUND"
+UNRESOLVED_STALE_SECONDS = "UNRATIFIED_NUMERIC_BOUND"
+UNRESOLVED_COLLECTION_SKEW = "UNRATIFIED_NUMERIC_BOUND"
+NOT_OBSERVED = "NOT_OBSERVED"
+
+SNAPSHOT_FILENAME = "economic_md_input_snapshot_v1.json"
+EVIDENCE_FILENAME = "economic_md_input_evidence_v1.json"
+WRITER_LOCK_FILENAME = "economic_md_input_writer.lock"
+MANIFEST_FILENAME = "MANIFEST.sha256"
+STAGING_DIRNAME_PREFIX = ".economic_md_input_staging_"
+
+CALL_GRAPH = (
+    "economic_md_input_entry_point",
+    "load_governed_universe_snapshot",
+    "cap21_eligibility_gate_only",
+    "collect_public_md_raw_input",
+    "validate_finalized_pt1m_marks",
+    "validate_same_cycle_bid_ask",
+    "deterministic_raw_input_snapshot",
+    "atomic_persistence",
+    "snapshot_verification",
+    "offline_replay_from_persisted_input",
+    "evidence",
+)
+
+FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
+    {
+        "ranking",
+        "score",
+        "top20",
+        "policy_a",
+        "selected_future",
+        "active_set",
+        "master_v2",
+        "double_play",
+        "execution",
+        "cmc",
+        "dashboard_authority",
+        "live_orders",
+    }
+)
+
+ALLOWED_PUBLIC_GET_PATHS: frozenset[str] = frozenset(
+    {
+        MARK_ENDPOINT_PATH,
+        TICKER_ENDPOINT_PATH,
+    }
+)
+
+FORBIDDEN_PATH_PREFIXES: tuple[str, ...] = (
+    "/api/v5/trade/",
+    "/api/v5/account/",
+    "/api/v5/asset/",
+)
+
+FORBIDDEN_AUTH_HEADERS = frozenset(
+    {"OK-ACCESS-KEY", "OK-ACCESS-SIGN", "OK-ACCESS-TIMESTAMP", "OK-ACCESS-PASSPHRASE"}
+)
