@@ -11,6 +11,10 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     ACTIVE_SET_POLICY_RATIFIED,
     ACTIVE_SET_SELECTION_AUTHORITY,
     ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET,
+    AS05_D01_DECISION,
+    AS05_D01_STATUS,
+    AS05_D02_STATUS,
+    AS05_D03_STATUS,
     CAP23_REWIRED,
     CAP24_REWIRED,
     CARDINALITY_MODE,
@@ -21,9 +25,11 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     EXECUTING_MODEL_HANDOFF_CONSUMER,
     EXECUTION_AUTHORITY_EFFECT,
     EXECUTION_AUTHORITY_INSIDE_SELECTION_DOMAIN,
+    EXECUTION_BECOMES_ACTIVE_SET_OWNER,
     G13_UNLOCK,
     HANDOFF_ENVELOPE_IS_NOT_YET_ACTIVE_SET_DTO,
     HANDOFF_INTENDED_SEMANTIC_OBJECT,
+    LIVE_AUTHORITY_GRANTED,
     MEMBERSHIP_ROTATION_CONTROLLER_OWNER,
     MF_MEMBERSHIP_CONTEXT_SELECTION_AUTHORITY,
     MULTI_FUTURE_RUNTIME_AUTHORIZED,
@@ -32,21 +38,29 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     NEXT_ACTIVE_SET_AUTHORITY_CLASS,
     NEXT_ACTIVE_SET_AUTHORITY_OWNER,
     NEXT_ACTIVE_SET_STATUS,
+    NEXT_CANONICAL_DECISION,
+    NEXT_IMPLEMENTATION_AUTHORIZED,
     NUMERIC_N_CHANGED,
     OBJECT_CLASS_AUTHORITATIVE_NEXT_ACTIVE_SET,
     OBJECT_CLASS_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT,
     OBJECT_CLASS_RANKED_CANDIDATE_CONTEXT,
     ONE_ACTIVE_SET_STATE_OWNER,
     OWNER,
+    OWNER_DECISION_SURFACE_STATUS,
     PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP,
     PDF_STEP_4_ANTI_CHURN_CENSUS,
     PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION,
     PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED,
     POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY,
+    POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY,
+    PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED,
     ROTATION_DECISION_AUTHORITY_BOUND,
     ROTATION_POLICY_STATUS,
+    RUNTIME_AUTHORITY_GRANTED,
     SECOND_SELECTION_DECISION_DOWNSTREAM,
+    SELECTOR_BECOMES_ACTIVE_SET_OWNER,
     TURNOVER_RATIFIED,
+    WIRE_SEND_AUTHORITY_GRANTED,
     ActiveSetOwnershipError,
     build_authoritative_next_active_set_declaration_v1,
     classify_mf_single_egress_alignment_v1,
@@ -89,6 +103,7 @@ def _declaration_payload(**overrides: object) -> dict[str, object]:
         "one_active_set_state_owner": True,
         "owner": OWNER,
         "policy_a_is_not_automatic_active_set_policy": True,
+        "policy_reuse_does_not_transfer_authority": True,
         "rotation_decision_authority_bound": True,
         "rotation_policy_status": ROTATION_POLICY_STATUS,
         "schema_version": "mf_authoritative_next_active_set_ownership.v1",
@@ -116,16 +131,30 @@ def test_safety_and_ownership_invariants() -> None:
     assert N_VALUE_POINTER == N_VALUE == 5
     assert CARDINALITY_MODE == "AT_MOST_N"
     assert POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY is True
-    assert ACTIVE_SET_POLICY_ADOPTION == "UNPROVEN"
-    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY is True
+    assert ACTIVE_SET_POLICY_ADOPTION == "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
+    assert ACTIVE_SET_POLICY_RATIFIED is True
+    assert AS05_D01_STATUS == "CLOSED"
+    assert AS05_D01_DECISION == "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
+    assert AS05_D02_STATUS == "UNRESOLVED"
+    assert AS05_D03_STATUS == "UNRESOLVED"
+    assert SELECTOR_BECOMES_ACTIVE_SET_OWNER is False
+    assert EXECUTION_BECOMES_ACTIVE_SET_OWNER is False
+    assert PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED is False
+    assert RUNTIME_AUTHORITY_GRANTED is False
+    assert LIVE_AUTHORITY_GRANTED is False
+    assert WIRE_SEND_AUTHORITY_GRANTED is False
     assert CENSUS_CLASS == "INVENTORY_ONLY_NO_POLICY_CHOICE"
-    assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "UNRATIFIED"
+    assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "ADOPTED_POLICY_A_UNCHANGED"
     assert COOLDOWN_RATIFIED is False
     assert TURNOVER_RATIFIED is False
     assert PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP == "CLOSED"
     assert PDF_STEP_4_ANTI_CHURN_CENSUS == "CLOSED"
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
     assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
+    assert NEXT_IMPLEMENTATION_AUTHORIZED is False
+    assert NEXT_CANONICAL_DECISION == "AS05-D02"
+    assert OWNER_DECISION_SURFACE_STATUS == "D01_RATIFIED_D02_D03_UNRESOLVED"
     assert NEXT_ACTIVE_SET_STATUS == ("AUTHORITATIVE_OWNERSHIP_BOUND_ROTATION_FAIL_CLOSED")
     assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
 
@@ -209,19 +238,42 @@ def test_rotation_remains_fail_closed() -> None:
         validate_authoritative_next_active_set_declaration_v1(payload)
     assert applied.value.failure_code == "ROTATION_POLICY_UNRATIFIED"
     assert PDF_STEP_4_ANTI_CHURN_CENSUS == "CLOSED"
-    assert ACTIVE_SET_POLICY_ADOPTION == "UNPROVEN"
-    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert ACTIVE_SET_POLICY_ADOPTION == "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
+    assert ACTIVE_SET_POLICY_RATIFIED is True
     assert CENSUS_CLASS == "INVENTORY_ONLY_NO_POLICY_CHOICE"
-    assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "UNRATIFIED"
+    assert ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET == "ADOPTED_POLICY_A_UNCHANGED"
     assert POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY is True
+    assert POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY is True
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
+    assert AS05_D02_STATUS == "UNRESOLVED"
 
 
-def test_policy_a_does_not_become_active_set_policy() -> None:
+def test_policy_a_adoption_does_not_authorize_runtime_application() -> None:
     payload = _declaration_payload(policy_a_applied_as_active_set_policy=True)
     with pytest.raises(ActiveSetOwnershipError) as exc:
         validate_authoritative_next_active_set_declaration_v1(payload)
     assert exc.value.failure_code == "POLICY_A_LEAKAGE"
+
+
+def test_as05_d01_does_not_transfer_owner_or_close_step_5() -> None:
+    payload = _declaration_payload(selector_becomes_active_set_owner=True)
+    with pytest.raises(ActiveSetOwnershipError) as selector:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert selector.value.failure_code == "AUTHORITY_LEAKAGE"
+    payload = _declaration_payload(execution_becomes_active_set_owner=True)
+    with pytest.raises(ActiveSetOwnershipError) as execution:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert execution.value.failure_code == "AUTHORITY_LEAKAGE"
+    payload = _declaration_payload(pdf_step_5_closed=True)
+    with pytest.raises(ActiveSetOwnershipError) as step5:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert step5.value.failure_code == "STEP_5_STILL_UNRESOLVED"
+    payload = _declaration_payload(
+        owner="ops.mf_membership_selector_and_rotation_runtime_contract_v1"
+    )
+    with pytest.raises(ActiveSetOwnershipError) as forbidden:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert forbidden.value.failure_code == "ACTIVE_SET_OWNER_FORBIDDEN"
 
 
 def test_no_execution_authority_and_no_second_selector() -> None:
@@ -300,22 +352,30 @@ def test_contract_does_not_import_productive_runtime_owners() -> None:
     assert "apply_rotation_runtime" not in source
 
 
-def test_step_5_decision_package_is_prepared_not_ratified() -> None:
+def test_step_5_d01_closed_without_step_5_close() -> None:
     spec = SPEC.read_text(encoding="utf-8")
-    assert "OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED" in spec
+    assert "OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED" in spec
     assert "OWNER_DECISION_COUNT=3" in spec
     assert "DECISION_ID=AS05-D01" in spec
     assert "DECISION_ID=AS05-D02" in spec
     assert "DECISION_ID=AS05-D03" in spec
-    assert "NOT_DERIVABLE_FROM_EXISTING_AUTHORITY=true" in spec
+    assert "AS05_D01_STATUS=CLOSED" in spec
+    assert "AS05_D01_DECISION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET" in spec
+    assert "AS05_D02_STATUS=UNRESOLVED" in spec
+    assert "AS05_D03_STATUS=UNRESOLVED" in spec
+    assert "POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in spec
     assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED" in spec
-    assert "ACTIVE_SET_POLICY_RATIFIED=false" in spec
-    assert "ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=UNRATIFIED" in spec
-    assert "OVERREAD_AS_DECISION_PACKAGE_EQUALS_POLICY_RATIFICATION=FORBIDDEN" in spec
+    assert "ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=ADOPTED_POLICY_A_UNCHANGED" in spec
+    assert "OVERREAD_AS_D01_EQUALS_STEP_5_CLOSE=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_SELECTOR=FORBIDDEN" in spec
     assert "OVERREAD_AS_PDF_FIVE_MECHANISMS_ARE_REQUIRED_FIELDS=FORBIDDEN" in spec
     assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=CLOSED" not in spec
     assert "PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=true" not in spec
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
-    assert ACTIVE_SET_POLICY_RATIFIED is False
+    assert ACTIVE_SET_POLICY_RATIFIED is True
+    assert AS05_D01_STATUS == "CLOSED"
+    assert AS05_D02_STATUS == "UNRESOLVED"
+    assert AS05_D03_STATUS == "UNRESOLVED"
     assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
     assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
+    assert NEXT_CANONICAL_DECISION == "AS05-D02"
