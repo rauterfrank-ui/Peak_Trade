@@ -872,6 +872,8 @@
         "src/research/offline_final_research_fleet_signal_matrix_productive_input_join_materializer_v0.py",
         "src/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py",
         "src/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py",
+        "src/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0.py",
+        "tests/research/test_offline_panel_materialization_from_partial_tmp_no_fetch_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0.py",
         "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0.py"

@@ -102,6 +102,7 @@ REASON_PARTIAL_TMP_MISSING = "PARTIAL_TMP_MISSING"
 REASON_MEMBERSHIP_FILTER_EMPTY = "MEMBERSHIP_FILTER_EMPTY"
 REASON_FUNDING_SCOPE_DRIFT = "FUNDING_SCOPE_DRIFT"
 REASON_FETCH_GUARD_BLOCKED = "FETCH_GUARD_BLOCKED"
+RESOLVED_FROM_EXISTING_COMPLETE_OUTPUT = "existing_complete_output"
 
 
 class OfflinePanelMaterializationVerdict(str, Enum):
@@ -236,6 +237,34 @@ def _output_staging_has_materialized_panel_v0(output_staging_root: Path) -> bool
     )
 
 
+def _reuse_existing_materialized_panel_result_v0(
+    output_staging_root: Path,
+    *,
+    source_staging_root: Path | str = "",
+) -> BoundPeriodPanelSourceMaterializationResultV1:
+    """Reuse an already-complete output panel; does not read tmp/raw."""
+    output_staging_root = output_staging_root.resolve()
+    source_root = str(Path(source_staging_root).resolve()) if source_staging_root else ""
+    manifest = json.loads(
+        (output_staging_root / "panel" / "panel_dataset_manifest.json").read_text(encoding="utf-8")
+    )
+    instrument_ids = manifest.get("instrument_ids")
+    instrument_count = len(instrument_ids) if isinstance(instrument_ids, list) else 0
+    return BoundPeriodPanelSourceMaterializationResultV1(
+        status=BoundPeriodSourceMaterializationStatus.MATERIALIZED,
+        output_staging_root=str(output_staging_root),
+        source_staging_root=source_root,
+        period_start_utc=PANEL_CALENDAR_START_UTC,
+        period_end_utc=PANEL_CALENDAR_END_UTC,
+        instrument_count=instrument_count,
+        row_count_total=int(manifest.get("row_count_total", 0)),
+        data_start_time=str(manifest.get("data_start_time", "")),
+        data_end_time=str(manifest.get("data_end_time", "")),
+        source_provenance=(),
+        reason_codes=(),
+    )
+
+
 def materialize_offline_panel_from_partial_tmp_v0(
     partial_tmp_root: Path,
     output_staging_root: Path,
@@ -252,25 +281,9 @@ def materialize_offline_panel_from_partial_tmp_v0(
 
     if output_staging_root.exists() and any(output_staging_root.iterdir()):
         if _output_staging_has_materialized_panel_v0(output_staging_root):
-            manifest = json.loads(
-                (output_staging_root / "panel" / "panel_dataset_manifest.json").read_text(
-                    encoding="utf-8"
-                )
-            )
-            instrument_ids = manifest.get("instrument_ids")
-            instrument_count = len(instrument_ids) if isinstance(instrument_ids, list) else 0
-            return BoundPeriodPanelSourceMaterializationResultV1(
-                status=BoundPeriodSourceMaterializationStatus.MATERIALIZED,
-                output_staging_root=str(output_staging_root),
-                source_staging_root=str(partial_tmp_root),
-                period_start_utc=period_start,
-                period_end_utc=period_end,
-                instrument_count=instrument_count,
-                row_count_total=int(manifest.get("row_count_total", 0)),
-                data_start_time=str(manifest.get("data_start_time", "")),
-                data_end_time=str(manifest.get("data_end_time", "")),
-                source_provenance=(),
-                reason_codes=(),
+            return _reuse_existing_materialized_panel_result_v0(
+                output_staging_root,
+                source_staging_root=partial_tmp_root,
             )
         return BoundPeriodPanelSourceMaterializationResultV1(
             status=BoundPeriodSourceMaterializationStatus.BOUND_DATA_UNAVAILABLE_FAIL_CLOSED,
@@ -636,49 +649,57 @@ def run_offline_panel_materialization_scope_v0(
 ) -> OfflinePanelMaterializationScopeResultV0:
     """Run offline panel materialization, funding prep, and preflight (no fetch)."""
     config = load_offline_panel_materialization_config_v0(repo_root)
-    resolution = resolve_partial_tmp_root_v0(
-        durable_evidence_root,
-        explicit_partial_tmp_root=partial_tmp_root,
-        partial_tmp_slug=str(config.get("partial_tmp_slug", DEFAULT_PARTIAL_TMP_SLUG)),
-    )
-    if resolution.reason_codes:
-        return OfflinePanelMaterializationScopeResultV0(
-            verdict=OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP,
-            partial_tmp_resolution=resolution,
-            panel_materialization=None,
-            funding_binding=None,
-            preflight_scope=None,
-            fetch_run=False,
-            network_fetch_run=False,
-            full_universe_fetch_run=False,
-            materialization_run=False,
-            preflight_no_fetch=True,
-            economic_evaluation_run=False,
-            reason_codes=resolution.reason_codes,
-        )
-
-    partial_root = Path(resolution.partial_tmp_root)
     output_root = output_staging_root or (
         durable_evidence_root / str(config.get("output_staging_rel", DEFAULT_OUTPUT_STAGING_REL))
     )
 
-    panel_result = materialize_offline_panel_from_partial_tmp_v0(partial_root, output_root)
-    materialization_run = panel_result.status is BoundPeriodSourceMaterializationStatus.MATERIALIZED
-    if not materialization_run:
-        return OfflinePanelMaterializationScopeResultV0(
-            verdict=OfflinePanelMaterializationVerdict.FAIL_CLOSED_PANEL_MATERIALIZATION,
-            partial_tmp_resolution=resolution,
-            panel_materialization=panel_result,
-            funding_binding=None,
-            preflight_scope=None,
-            fetch_run=False,
-            network_fetch_run=False,
-            full_universe_fetch_run=False,
-            materialization_run=False,
-            preflight_no_fetch=True,
-            economic_evaluation_run=False,
-            reason_codes=panel_result.reason_codes,
+    if _output_staging_has_materialized_panel_v0(output_root):
+        resolution = PartialTmpResolutionV0(
+            partial_tmp_root="",
+            resolved_from=RESOLVED_FROM_EXISTING_COMPLETE_OUTPUT,
+            candidate_count=0,
+            reason_codes=(),
         )
+        panel_result = _reuse_existing_materialized_panel_result_v0(output_root)
+    else:
+        resolution = resolve_partial_tmp_root_v0(
+            durable_evidence_root,
+            explicit_partial_tmp_root=partial_tmp_root,
+            partial_tmp_slug=str(config.get("partial_tmp_slug", DEFAULT_PARTIAL_TMP_SLUG)),
+        )
+        if resolution.reason_codes:
+            return OfflinePanelMaterializationScopeResultV0(
+                verdict=OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP,
+                partial_tmp_resolution=resolution,
+                panel_materialization=None,
+                funding_binding=None,
+                preflight_scope=None,
+                fetch_run=False,
+                network_fetch_run=False,
+                full_universe_fetch_run=False,
+                materialization_run=False,
+                preflight_no_fetch=True,
+                economic_evaluation_run=False,
+                reason_codes=resolution.reason_codes,
+            )
+
+        partial_root = Path(resolution.partial_tmp_root)
+        panel_result = materialize_offline_panel_from_partial_tmp_v0(partial_root, output_root)
+        if panel_result.status is not BoundPeriodSourceMaterializationStatus.MATERIALIZED:
+            return OfflinePanelMaterializationScopeResultV0(
+                verdict=OfflinePanelMaterializationVerdict.FAIL_CLOSED_PANEL_MATERIALIZATION,
+                partial_tmp_resolution=resolution,
+                panel_materialization=panel_result,
+                funding_binding=None,
+                preflight_scope=None,
+                fetch_run=False,
+                network_fetch_run=False,
+                full_universe_fetch_run=False,
+                materialization_run=False,
+                preflight_no_fetch=True,
+                economic_evaluation_run=False,
+                reason_codes=panel_result.reason_codes,
+            )
 
     funding_result = prepare_funding_binding_for_panel_members_v0(
         output_root,
@@ -808,6 +829,7 @@ __all__ = [
     "REASON_EVIDENCE_AMBIGUOUS",
     "REASON_FETCH_GUARD_BLOCKED",
     "REASON_FUNDING_SCOPE_DRIFT",
+    "RESOLVED_FROM_EXISTING_COMPLETE_OUTPUT",
     "SOURCE_OWNER",
     "FundingBindingPrepResultV0",
     "PartialTmpResolutionV0",

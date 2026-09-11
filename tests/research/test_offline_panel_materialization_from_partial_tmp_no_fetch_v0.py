@@ -5,10 +5,12 @@ from __future__ import annotations
 import json
 import tempfile
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 
 from src.research.cross_sectional_bound_period_panel_source_materialization_v1 import (
+    BoundPeriodPanelSourceMaterializationResultV1,
     BoundPeriodSourceMaterializationStatus,
 )
 from src.research.cross_sectional_funding_rate_delta_momentum_v0_versioned_research_binding_v0 import (
@@ -17,6 +19,7 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_versioned_resea
 )
 from src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0 import (
     CONFIRM_GO,
+    DEFAULT_OUTPUT_STAGING_REL,
     DEFAULT_PARTIAL_TMP_SLUG,
     FUNDING_OWNER,
     PREFLIGHT_OWNER,
@@ -24,7 +27,9 @@ from src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0 imp
     REASON_FETCH_GUARD_BLOCKED,
     REASON_FUNDING_SCOPE_DRIFT,
     REASON_PARTIAL_TMP_MISSING,
+    RESOLVED_FROM_EXISTING_COMPLETE_OUTPUT,
     SOURCE_OWNER,
+    FundingBindingPrepResultV0,
     OfflinePanelMaterializationVerdict,
     load_offline_panel_materialization_config_v0,
     materialize_offline_panel_from_partial_tmp_v0,
@@ -193,6 +198,72 @@ def test_materialize_offline_panel_from_partial_tmp_live_probe() -> None:
     assert provenance["membership_filter"]["selected_count"] == result.instrument_count
 
 
+def _write_complete_panel_output(output: Path) -> None:
+    panel_dir = output / "panel"
+    panel_dir.mkdir(parents=True)
+    (panel_dir / "normalized_panel_bars.json").write_text("[]\n", encoding="utf-8")
+    (panel_dir / "panel_dataset_manifest.json").write_text(
+        json.dumps(
+            {
+                "instrument_ids": ["okx:linear_perpetual:AAA:USDT:USDT:perp"],
+                "row_count_total": 1,
+                "data_start_time": PANEL_CALENDAR_START_UTC,
+                "data_end_time": PANEL_CALENDAR_END_UTC,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
+def _fake_ready_preflight() -> MagicMock:
+    preflight = MagicMock()
+    preflight.ready_for_next_pre_evaluation_gate = True
+    preflight.verdict.value = "PREFLIGHT_GATE_PASS_READY_FOR_NEXT_PRE_EVALUATION_GATE"
+    preflight.preflight_status = "READY"
+    preflight.reason_codes = ()
+    return preflight
+
+
+def _fake_funding_ok(output: Path) -> FundingBindingPrepResultV0:
+    return FundingBindingPrepResultV0(
+        verdict="BOUND_FUNDING_PANEL_READY",
+        staging_root=str(output),
+        panel_member_count=1,
+        funding_instrument_count=1,
+        skip_fetch=True,
+        scope_drift=False,
+        payload={"verdict": "BOUND_FUNDING_PANEL_READY"},
+        reason_codes=(),
+    )
+
+
+def _patch_funding_and_preflight(monkeypatch: pytest.MonkeyPatch, output: Path) -> dict[str, int]:
+    calls = {"funding": 0, "preflight": 0}
+
+    def _funding(_staging_root: Path, **kwargs: object) -> FundingBindingPrepResultV0:
+        calls["funding"] += 1
+        assert kwargs.get("skip_fetch") is True
+        return _fake_funding_ok(output)
+
+    def _preflight(**kwargs: object) -> MagicMock:
+        calls["preflight"] += 1
+        assert kwargs.get("attempt_fetch") is False
+        return _fake_ready_preflight()
+
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.prepare_funding_binding_for_panel_members_v0",
+        _funding,
+    )
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.run_materialization_scope_v0",
+        _preflight,
+    )
+    return calls
+
+
 def test_run_scope_fails_closed_on_missing_partial_tmp() -> None:
     durable = Path(tempfile.mkdtemp(prefix="offline_scope_missing_"))
     result = run_offline_panel_materialization_scope_v0(
@@ -202,4 +273,162 @@ def test_run_scope_fails_closed_on_missing_partial_tmp() -> None:
     )
     assert result.verdict is OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP
     assert result.fetch_run is False
+    assert result.network_fetch_run is False
+    assert result.preflight_no_fetch is True
+
+
+def test_run_scope_reuses_complete_output_when_tmp_missing(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    durable = Path(tempfile.mkdtemp(prefix="offline_scope_reuse_"))
+    output = durable / DEFAULT_OUTPUT_STAGING_REL
+    _write_complete_panel_output(output)
+    calls = _patch_funding_and_preflight(monkeypatch, output)
+
+    def _resolver_must_not_run(*args: object, **kwargs: object) -> None:
+        raise AssertionError("resolve_partial_tmp_root_v0 must not run for complete output")
+
+    def _materialize_must_not_run(*args: object, **kwargs: object) -> None:
+        raise AssertionError("materialize_offline_panel_from_partial_tmp_v0 must not rematerialize")
+
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.resolve_partial_tmp_root_v0",
+        _resolver_must_not_run,
+    )
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.materialize_offline_panel_from_partial_tmp_v0",
+        _materialize_must_not_run,
+    )
+
+    result = run_offline_panel_materialization_scope_v0(
+        repo_root=_REPO_ROOT,
+        durable_evidence_root=durable,
+        partial_tmp_root=durable / "missing_partial_tmp",
+    )
+    assert result.verdict is (
+        OfflinePanelMaterializationVerdict.MATERIALIZED_PANEL_FUNDING_PREPARED_PREFLIGHT_COMPLETE
+    )
+    assert result.partial_tmp_resolution.resolved_from == RESOLVED_FROM_EXISTING_COMPLETE_OUTPUT
+    assert result.verdict is not OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP
+    assert result.fetch_run is False
+    assert result.network_fetch_run is False
+    assert result.preflight_no_fetch is True
+    assert calls["funding"] == 1
+    assert calls["preflight"] == 1
+    assert result.panel_materialization is not None
+    assert (
+        result.panel_materialization.status is BoundPeriodSourceMaterializationStatus.MATERIALIZED
+    )
+    assert result.panel_materialization.source_staging_root == ""
+
+
+def test_run_scope_fails_closed_when_output_and_tmp_missing() -> None:
+    durable = Path(tempfile.mkdtemp(prefix="offline_scope_both_missing_"))
+    result = run_offline_panel_materialization_scope_v0(
+        repo_root=_REPO_ROOT,
+        durable_evidence_root=durable,
+        partial_tmp_root=durable / "missing_partial_tmp",
+    )
+    assert result.verdict is OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP
+    assert REASON_PARTIAL_TMP_MISSING in result.reason_codes
+    assert result.fetch_run is False
+    assert result.network_fetch_run is False
+
+
+def test_run_scope_fails_closed_when_output_incomplete_and_tmp_missing() -> None:
+    durable = Path(tempfile.mkdtemp(prefix="offline_scope_incomplete_"))
+    output = durable / DEFAULT_OUTPUT_STAGING_REL
+    output.mkdir(parents=True)
+    (output / "not_a_panel.txt").write_text("incomplete\n", encoding="utf-8")
+    result = run_offline_panel_materialization_scope_v0(
+        repo_root=_REPO_ROOT,
+        durable_evidence_root=durable,
+        partial_tmp_root=durable / "missing_partial_tmp",
+        output_staging_root=output,
+    )
+    assert result.verdict is OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP
+    assert REASON_PARTIAL_TMP_MISSING in result.reason_codes
+    assert result.fetch_run is False
+    assert result.network_fetch_run is False
+
+
+def test_run_scope_preserves_materialization_when_output_missing_and_tmp_valid(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    durable = Path(tempfile.mkdtemp(prefix="offline_scope_valid_tmp_"))
+    tmp_root = durable / DEFAULT_PARTIAL_TMP_SLUG
+    tmp_root.mkdir()
+    output = durable / DEFAULT_OUTPUT_STAGING_REL
+    calls = _patch_funding_and_preflight(monkeypatch, output)
+    materialize_calls: list[tuple[Path, Path]] = []
+
+    def _materialize(
+        partial_tmp_root: Path, output_staging_root: Path, **kwargs: object
+    ) -> BoundPeriodPanelSourceMaterializationResultV1:
+        materialize_calls.append((partial_tmp_root, output_staging_root))
+        return BoundPeriodPanelSourceMaterializationResultV1(
+            status=BoundPeriodSourceMaterializationStatus.MATERIALIZED,
+            output_staging_root=str(output_staging_root),
+            source_staging_root=str(partial_tmp_root),
+            period_start_utc=PANEL_CALENDAR_START_UTC,
+            period_end_utc=PANEL_CALENDAR_END_UTC,
+            instrument_count=5,
+            row_count_total=10,
+            data_start_time=PANEL_CALENDAR_START_UTC,
+            data_end_time=PANEL_CALENDAR_END_UTC,
+            source_provenance=(),
+            reason_codes=(),
+        )
+
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.materialize_offline_panel_from_partial_tmp_v0",
+        _materialize,
+    )
+
+    result = run_offline_panel_materialization_scope_v0(
+        repo_root=_REPO_ROOT,
+        durable_evidence_root=durable,
+        partial_tmp_root=tmp_root,
+        output_staging_root=output,
+    )
+    assert result.verdict is (
+        OfflinePanelMaterializationVerdict.MATERIALIZED_PANEL_FUNDING_PREPARED_PREFLIGHT_COMPLETE
+    )
+    assert len(materialize_calls) == 1
+    assert materialize_calls[0][0] == tmp_root.resolve()
+    assert calls["funding"] == 1
+    assert calls["preflight"] == 1
+    assert result.fetch_run is False
+    assert result.network_fetch_run is False
+    assert result.preflight_no_fetch is True
+
+
+def test_run_scope_fails_closed_on_ambiguous_tmp_when_output_not_complete(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    durable = Path(tempfile.mkdtemp(prefix="offline_scope_ambiguous_"))
+    dataset_parent = (
+        durable / "datasets/admissible_futures/"
+        "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1"
+    )
+    dataset_parent.mkdir(parents=True)
+    (dataset_parent / ".tmp_historical_a").mkdir()
+    (dataset_parent / ".tmp_historical_b").mkdir()
+
+    def _materialize_must_not_run(*args: object, **kwargs: object) -> None:
+        raise AssertionError("materialize must not run when tmp resolution is ambiguous")
+
+    monkeypatch.setattr(
+        "src.research.offline_panel_materialization_from_partial_tmp_no_fetch_v0.materialize_offline_panel_from_partial_tmp_v0",
+        _materialize_must_not_run,
+    )
+
+    result = run_offline_panel_materialization_scope_v0(
+        repo_root=_REPO_ROOT,
+        durable_evidence_root=durable,
+    )
+    assert result.verdict is OfflinePanelMaterializationVerdict.FAIL_CLOSED_PARTIAL_TMP
+    assert REASON_EVIDENCE_AMBIGUOUS in result.reason_codes
+    assert result.fetch_run is False
+    assert result.network_fetch_run is False
     assert result.preflight_no_fetch is True
