@@ -5,10 +5,12 @@ membership inside the ranking/selection domain. PDF Step 4 census is closed
 as inventory only. AS05-D01 adopts isolated POLICY_A unchanged as the Active
 Set admission-policy rule set without transferring ownership or granting
 runtime. AS05-D02 names evaluate_policy_a_v1 as the pure Active Set
-anti-churn evaluator without transferring ownership. Does not close
-AS05-D03, does not close PDF Step 5, does not join a host, does not rewire
-Cap 2.3 or Cap 2.4, does not unlock G13, and does not name a productive
-consumer.
+anti-churn evaluator without transferring ownership. AS05-D03 extends OD05
+NO_INDEPENDENT_PENDING_STATE_REQUIRED onto AUTHORITATIVE_NEXT_ACTIVE_SET as
+a new scope bind, not a historical OD05 cover. Does not close PDF Step 5,
+does not authorize apply_rotation, does not allow PDF Step 7, does not
+join a host, does not rewire Cap 2.3 or Cap 2.4, does not unlock G13, and
+does not name a productive consumer.
 """
 
 from __future__ import annotations
@@ -60,7 +62,20 @@ AS05_D02_STATUS = "CLOSED"
 AS05_D02_DECISION = (
     "NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET"
 )
-AS05_D03_STATUS = "UNRESOLVED"
+AS05_D03_STATUS = "CLOSED"
+AS05_D03_DECISION = "EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET"
+AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE = False
+OD05_ACTIVE_SET_SCOPE_BINDING = "NO_INDEPENDENT_PENDING_STATE_REQUIRED"
+OD05_ORIGINAL_SCOPE_REMAINS = "CURRENT_ISOLATED_MF_MODEL"
+OD05_DID_NOT_HISTORICALLY_COVER_ACTIVE_SET = True
+OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY = True
+CAP23_REPLACEMENT_PENDING_IMPORTED = False
+NEW_PENDING_STATE_MACHINE_CREATED = False
+PENDING_STATE_OWNER_CREATED = False
+AS05_D03_TRANSFERS_ACTIVE_SET_OWNERSHIP = False
+AS05_D03_TRANSFERS_RANKING_AUTHORITY = False
+AS05_D03_TRANSFERS_PRODUCTIVE_SELECTION_AUTHORITY = False
+AS05_D03_TRANSFERS_EXECUTION_AUTHORITY = False
 EVALUATOR_COMPONENT = (
     "src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1"
 )
@@ -126,8 +141,8 @@ PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP = "CLOSED"
 PDF_STEP_4_ANTI_CHURN_CENSUS = "CLOSED"
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION = "UNRESOLVED"
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED = False
-NEXT_CANONICAL_DECISION = "AS05-D03"
-OWNER_DECISION_SURFACE_STATUS = "D01_D02_RATIFIED_D03_UNRESOLVED"
+NEXT_CANONICAL_DECISION = "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
+OWNER_DECISION_SURFACE_STATUS = "D01_D02_D03_RATIFIED_STEP_5_UNRESOLVED"
 NEXT_IMPLEMENTATION_AUTHORIZED = False
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
@@ -153,6 +168,7 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "evaluator_reuse_does_not_transfer_authority",
     "no_downstream_selection",
     "no_padding",
+    "od05_scope_reuse_does_not_transfer_authority",
     "one_active_set_state_owner",
     "policy_a_is_not_automatic_active_set_policy",
     "policy_reuse_does_not_transfer_authority",
@@ -354,6 +370,20 @@ def reject_rotation_until_step_5_v1(
         raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "selector_evaluator_authority")
     if raw.get("rotation_is_anti_churn_owner") is True:
         raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "rotation_anti_churn_owner")
+    if raw.get("requires_independent_pending_state") is True:
+        raise ActiveSetOwnershipError("INDEPENDENT_PENDING_FORBIDDEN", "pending_state")
+    if raw.get("cap23_replacement_pending_imported") is True:
+        raise ActiveSetOwnershipError("CAP23_REPLACEMENT_PENDING_IMPORT_FORBIDDEN", "cap23_pending")
+    if raw.get("new_pending_state_machine") is True:
+        raise ActiveSetOwnershipError("PENDING_STATE_MACHINE_INVENTED", "pending_machine")
+    if raw.get("pending_state_owner_created") is True:
+        raise ActiveSetOwnershipError("PENDING_STATE_OWNER_INVENTED", "pending_owner")
+    if raw.get("pdf_step_7_runtime_implementation_allowed") is True:
+        raise ActiveSetOwnershipError("STEP_7_FORBIDDEN", "pdf_step_7")
+    if raw.get("handoff_envelope_promoted_to_active_set_dto") is True:
+        raise ActiveSetOwnershipError("HANDOFF_DTO_PROMOTION_FORBIDDEN", "handoff_dto")
+    if raw.get("execution_consumer_bound") is True:
+        raise ActiveSetOwnershipError("CONSUMER_IDENTITY_INVENTED", "consumer")
     if raw.get("pdf_step_5_closed") is True:
         raise ActiveSetOwnershipError("STEP_5_STILL_UNRESOLVED", "pdf_step_5_closed")
     if str(raw.get("rotation_policy_status") or ROTATION_POLICY_STATUS) != (ROTATION_POLICY_STATUS):
@@ -378,6 +408,34 @@ def classify_mf_single_egress_alignment_v1() -> dict[str, Any]:
         "smallest_compatible_evolution": (
             "INTENDED_OBJECT_POINTER_WITHOUT_ENVELOPE_SCHEMA_PROMOTION"
         ),
+    }
+
+
+def classify_active_set_pending_scope_v1() -> dict[str, Any]:
+    return {
+        "as05_d03_decision": AS05_D03_DECISION,
+        "as05_d03_status": AS05_D03_STATUS,
+        "as05_d03_transfers_active_set_ownership": (AS05_D03_TRANSFERS_ACTIVE_SET_OWNERSHIP),
+        "as05_d03_transfers_execution_authority": AS05_D03_TRANSFERS_EXECUTION_AUTHORITY,
+        "as05_d03_transfers_productive_selection_authority": (
+            AS05_D03_TRANSFERS_PRODUCTIVE_SELECTION_AUTHORITY
+        ),
+        "as05_d03_transfers_ranking_authority": AS05_D03_TRANSFERS_RANKING_AUTHORITY,
+        "authoritative_next_active_set_requires_independent_pending_state": (
+            AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE
+        ),
+        "cap23_replacement_pending_imported": CAP23_REPLACEMENT_PENDING_IMPORTED,
+        "new_pending_state_machine_created": NEW_PENDING_STATE_MACHINE_CREATED,
+        "od05_active_set_scope_binding": OD05_ACTIVE_SET_SCOPE_BINDING,
+        "od05_did_not_historically_cover_active_set": (OD05_DID_NOT_HISTORICALLY_COVER_ACTIVE_SET),
+        "od05_original_scope_remains": OD05_ORIGINAL_SCOPE_REMAINS,
+        "od05_scope_reuse_does_not_transfer_authority": (
+            OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY
+        ),
+        "pending_state_owner_created": PENDING_STATE_OWNER_CREATED,
+        "pdf_step_5_anti_churn_owner_ratification": (PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION),
+        "pdf_step_7_runtime_implementation_allowed": (PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED),
+        "rotation_policy_status": ROTATION_POLICY_STATUS,
     }
 
 
@@ -489,10 +547,15 @@ def build_authoritative_next_active_set_declaration_v1(
         "object_class": OBJECT_CLASS_AUTHORITATIVE_NEXT_ACTIVE_SET,
         "one_active_set_state_owner": True,
         "owner": OWNER,
+        "cap23_replacement_pending_imported": False,
         "evaluator_is_not_active_set_owner": True,
         "evaluator_reuse_does_not_transfer_authority": True,
+        "new_pending_state_machine": False,
+        "od05_scope_reuse_does_not_transfer_authority": True,
+        "pending_state_owner_created": False,
         "policy_a_is_not_automatic_active_set_policy": True,
         "policy_reuse_does_not_transfer_authority": True,
+        "requires_independent_pending_state": False,
         "rotation_decision_authority_bound": True,
         "selector_owner_identity_is_not_active_set_evaluator_authority": True,
         "rotation_policy_status": ROTATION_POLICY_STATUS,
