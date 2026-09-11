@@ -1698,7 +1698,7 @@ PDF_STEP_7_STATUS=FORBIDDEN
 RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
 ```
 
@@ -1718,7 +1718,8 @@ identical PIT inputs. This subsection does **not** replace
 `apply_rotation`, does **not** allow PDF Step 7, does **not** grant
 runtime, does **not** join a host, does **not** rewire Cap 2.2 ranking,
 does **not** implement ranking code or an evidence harness, and does
-**not** activate economic ranking.
+**not** activate economic ranking. The later injected threshold set and
+offline harness are recorded in §4.5.11.
 
 Subordinate contract:
 `docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
@@ -1743,7 +1744,7 @@ OFFLINE_CHALLENGER_A_IS_NOT_ANTI_CHURN_POLICY_A=true
 VOLATILITY_RANK_ONLY_ORDER_RATIFIED=true
 VOLATILITY_RANK_ONLY_RESIDUAL_TIE_BREAK_RATIFIED=true
 HARD_SPREAD_GATE_THEN_VOL_STRUCTURE_RATIFIED=true
-POLICY_B_THRESHOLD_MODE=VERSIONED_OFFLINE_THRESHOLD_SET_REQUIRED
+POLICY_B_THRESHOLD_MODE=VERSIONED_OFFLINE_THRESHOLD_SET
 POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
 POLICY_B_THRESHOLD_SET_RATIFIED=false
 POLICY_C_RATIO_ORIENTATION_RATIFIED=true
@@ -1769,7 +1770,7 @@ RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
 THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
 THIS_PERSIST_DOES_NOT_IMPLEMENT_RANKING_CODE=true
@@ -1781,11 +1782,91 @@ Canonical same-cycle spread is relative bid/ask over mid as a
 dimensionless decimal fraction. The aggregator is identity over the
 single same-cycle quote. Exact zero spread remains a valid raw
 observation and is not rankable for the ratio challenger only.
-Near-zero threshold, Policy-B threshold set, score formula, weights,
+Near-zero threshold, Policy-B single threshold, score formula, weights,
 cadence, and label/replay horizons remain unratified. Residual
 tie-break `venue_native_id` then `canonical_instrument_id` is not an
 economic signal. Offline challenger `VOLATILITY_RANK_ONLY` is not
-anti-churn Policy A.
+anti-churn Policy A. The injected Policy-B threshold set and
+deterministic offline evidence harness are recorded in §4.5.11.
+
+This persist does **not** move productive selection ownership away from
+Cap 2.3. Downstream execution must not re-rank. Policy A remains
+anti-churn admission only. PDF Step 5 remains unresolved. Rotation
+remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
+authority remains false.
+
+### 4.5.11 Cap 2.2 offline MVR threshold set and deterministic evidence harness (offline only; AUTHORITY_EFFECT=OFFLINE_THRESHOLD_SET_AND_DETERMINISTIC_EVIDENCE_HARNESS_ONLY)
+
+Owner-GO
+`PEAK_TRADE_CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1`
+implements a typed injected Policy-B offline threshold-set contract
+and a fully deterministic, replayable offline MVR evidence harness for
+challengers A&#47;B&#47;C&#47;D plus the structural negative control. This
+subsection does **not** replace §4.5–§4.5.10, does **not** ratify any
+Policy-B threshold, does **not** close PDF Step 5, does **not**
+authorize `apply_rotation`, does **not** allow PDF Step 7, does
+**not** grant runtime, does **not** join a host, does **not** wire
+productive economic ranking, and does **not** claim historical
+walk-forward or policy-ratification evidence.
+
+Subordinate spec:
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md`.
+
+Typed contract:
+`src&#47;ops&#47;cap22_offline_mvr_threshold_set_and_evidence_harness_contract_v1.py`.
+
+Harness:
+`src&#47;ops&#47;cap22_offline_mvr_evidence_harness_v1&#47;`.
+
+Standalone entrypoint:
+`scripts&#47;ops&#47;run_cap22_offline_mvr_evidence_harness_v1.py`.
+
+``` text
+CONTRACT_ID=CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1
+AUTHORITY_EFFECT=OFFLINE_THRESHOLD_SET_AND_DETERMINISTIC_EVIDENCE_HARNESS_ONLY
+AUTHORITATIVE_POLICY_B_THRESHOLD_SCALE_FOUND=false
+POLICY_B_THRESHOLD_MODE=VERSIONED_OFFLINE_THRESHOLD_SET
+POLICY_B_THRESHOLD_SET_ID=CAP22_MVR_POLICY_B_INJECTED_THRESHOLD_SET_V1
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+POLICY_B_TEST_ONLY_VALUES_USED=true
+CHALLENGER_A=CAP22_MVR_VOLATILITY_RANK_ONLY_V1
+CHALLENGER_B=CAP22_MVR_HARD_SPREAD_GATE_THEN_VOL_V1
+CHALLENGER_C=CAP22_MVR_VOLATILITY_TO_SPREAD_RATIO_V1
+CHALLENGER_D=CAP22_MVR_LEXICOGRAPHIC_SPREAD_THEN_VOL_V1
+NEGATIVE_CONTROL=CAP22_MVR_STRUCTURAL_NEGATIVE_CONTROL_V1
+OFFLINE_CHALLENGER_A_IS_NOT_ANTI_CHURN_POLICY_A=true
+HARNESS_NETWORK_READ_REQUIRED=false
+TOP20_DIAGNOSTIC_ONLY=true
+POLICY_WINNER_OUTPUT_PRESENT=false
+FORWARD_LABEL_METRICS_PRESENT=false
+HISTORICAL_PIT_WALK_FORWARD_EVIDENCE_PRESENT=false
+NEAR_ZERO_THRESHOLD_RATIFIED=false
+FINAL_SCORE_FORMULA_RATIFIED=false
+RANKING_CADENCE_RATIFIED=false
+FORWARD_LABEL_HORIZON_RATIFIED=false
+HISTORICAL_REPLAY_HORIZON_RATIFIED=false
+POLICY_RATIFICATION_JUSTIFIED=false
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+ECONOMIC_RANK_ACTIVATED=false
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+PDF_STEP_7_STATUS=FORBIDDEN
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
+```
+
+No canonical Cap-22 MVR spread-threshold scale was found. The Policy-B
+set is an injected experimental offline grid with explicitly
+`TEST_ONLY_NON_CANONICAL` members. No threshold is economically optimal
+or productively valid. Exact zero spread remains valid raw input and is
+`NOT_RANKABLE_FOR_POLICY_C` only. The harness requires no network after
+snapshot load, binds Cap 2.1 at the same T, and enforces identical
+candidate-universe membership. TOP20 output is diagnostic only.
 
 This persist does **not** move productive selection ownership away from
 Cap 2.3. Downstream execution must not re-rank. Policy A remains
