@@ -87,7 +87,8 @@ FULL_SINGLE_FUTURE_CALL_GRAPH_PROVEN=true
 ECONOMIC_VALIDITY_OFFLINE_GATE_STATE=false
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
 NEXT_RUNTIME_RUN_ALLOWED=false
-NOTION_REPOSITORY_MIRROR_CURRENT=true
+NOTION_REPOSITORY_MIRROR_CURRENT=false
+NOTION_PEAK_TRADE_COMPONENT=false
 CYBERSECURITY_REVIEW_CURRENT=true
 STRATEGY_REGISTRY_STATUS=CLOSED
 STRATEGY_REGISTRY_CLOSED=true
@@ -95,7 +96,7 @@ CAP72_WIRING_BLOCKER=false
 PHASE_9_2_LONG_RUNNING_PUBLIC_MD_EVIDENCE_DEPENDENCY=false
 ```
 
-**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Post-Capability-7.2 cybersecurity review (`POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1`) proves physical execution separation, public-MD GET-only allowlist, credential/private-endpoint negative controls, and no plaintext secret/token exposure in Cap 7.2 evidence; evidence under `docs/evidence/post_capability_7_2_cybersecurity_review_v1/`. `CYBERSECURITY_REVIEW_CURRENT=true` and Notion repository mirror current=`true` do **not** authorize a public-MD network run: `NEXT_RUNTIME_RUN_ALLOWED=false` remains until separate explicit Owner-GO. Phase 9.1 Strategy Registry Closure (`PHASE_9_1_STRATEGY_REGISTRY_CLOSURE_V1`) sets `STRATEGY_REGISTRY_STATUS=CLOSED` / `STRATEGY_REGISTRY_CLOSED=true` with fail-closed unknown/disabled/legacy handling and no silent authority promotion (`CAP72_WIRING_BLOCKER=false`; Phase 9.2 long-running public-MD evidence dependency on registry closure cleared). Phase 9.2 remains a separate Owner-GO program and is **not** started by Phase 9.1.
+**Status note (CURRENT vs TARGET):** Capability 7.2 activates the **internal** canonical stateful no-order runtime (`FULL_CANONICAL_STATEFUL_RUNTIME_ACTIVE=true` / `SIMULATED_EXECUTION_ACTIVE=true`) with `PUBLIC_MD_RUNTIME_CAPABLE=true`, but **does not** prove an observed public-MD network run (`PUBLIC_MD_NETWORK_SESSION_OBSERVED=false`, `NETWORK_SESSION_STARTED=false`). Binding inequality: `PUBLIC_MD_RUNTIME_CAPABLE != PUBLIC_MD_NETWORK_SESSION_OBSERVED`. Forbidden remain: live/testnet/paper-exchange orders, credentials, real capital, multi-future. Post-Capability-7.2 cybersecurity review (`POST_CAPABILITY_7_2_CYBERSECURITY_REVIEW_V1`) proves physical execution separation, public-MD GET-only allowlist, credential/private-endpoint negative controls, and no plaintext secret/token exposure in Cap 7.2 evidence; evidence under `docs/evidence/post_capability_7_2_cybersecurity_review_v1/`. `CYBERSECURITY_REVIEW_CURRENT=true` does **not** authorize a public-MD network run: `NEXT_RUNTIME_RUN_ALLOWED=false` remains until separate explicit Owner-GO. Notion is not a Peak_Trade component (`NOTION_PEAK_TRADE_COMPONENT=false`; `NOTION_REPOSITORY_MIRROR_CURRENT=false`). A historical Cap-7.2 cybersecurity review that recorded a Notion repository mirror does **not** keep Notion as a current runtime, research, config, navigation, or authority surface. Phase 9.1 Strategy Registry Closure (`PHASE_9_1_STRATEGY_REGISTRY_CLOSURE_V1`) sets `STRATEGY_REGISTRY_STATUS=CLOSED` / `STRATEGY_REGISTRY_CLOSED=true` with fail-closed unknown/disabled/legacy handling and no silent authority promotion (`CAP72_WIRING_BLOCKER=false`; Phase 9.2 long-running public-MD evidence dependency on registry closure cleared). Phase 9.2 remains a separate Owner-GO program and is **not** started by Phase 9.1.
 
 ---
 
@@ -193,7 +194,7 @@ Cap 4.1/5.1 package constants and evidence still correctly record their own `REA
 - Top-20 → Top-5 productive rotation (`TOP20_TO_TOP5_PRODUCTIVE_ROTATION=false`)
 - Universe/ranking as trading authority (`UNIVERSE_RANKING_TRADING_AUTHORITY=false`)
 - Dashboard write/trading input (`DASHBOARD_TRADING_INPUT=false`)
-- Next public-MD runtime run (`NEXT_RUNTIME_RUN_ALLOWED=false`) until separate explicit Owner-GO (Notion mirror current and cybersecurity review current are satisfied; they do not alone authorize a run)
+- Next public-MD runtime run (`NEXT_RUNTIME_RUN_ALLOWED=false`) until separate explicit Owner-GO (cybersecurity review current is satisfied; Notion is not a Peak_Trade component; neither authorizes a run)
 
 ### 3.3 Authority owners by capability (documentary)
 
@@ -387,7 +388,8 @@ TESTNET_ORDERS=false
 PAPER_EXCHANGE_ORDERS=false
 NETWORK_SESSION_STARTED=false
 NEXT_RUNTIME_RUN_ALLOWED=false
-NOTION_REPOSITORY_MIRROR_CURRENT=true
+NOTION_REPOSITORY_MIRROR_CURRENT=false
+NOTION_PEAK_TRADE_COMPONENT=false
 CYBERSECURITY_REVIEW_CURRENT=true
 DASHBOARD=READ_ONLY_CONSUMER
 DASHBOARD_AUTHORITY_EFFECT=NONE

@@ -42,6 +42,7 @@ NOTION_SPEC_MARKERS = (
     "DOUBLE_PLAY_AUTHORITY=false",
     "REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED=true",
     "NOTION_PROJECTION_DEFAULT=disabled",
+    "NOTION_PEAK_TRADE_COMPONENT=false",
 )
 
 NOTION_PROJECTION_STATES = ("disabled", "post_closeout_sync", "verified_evidence_index")

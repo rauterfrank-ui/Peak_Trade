@@ -99,6 +99,8 @@ Kurz-Navigationsvertrag (keine zweite SSOT): [`PEAK_TRADE_IMPLEMENTATION_CONTRAC
 
 Ops-Drift-Registry (kein Navigations-Ersatz): [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../ops/registry/DOCS_TRUTH_MAP.md).
 
+Notion ist **keine** Peak_Trade-Komponente. Es ist weder Runtime-, Research-, Config- noch Dependency-Owner, weder Navigations-Einstieg noch Authority. Aktueller Ist-Zustand: [`PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) (`NOTION_PEAK_TRADE_COMPONENT=false`). Historische Notion-Spiegel/Attestationen im Repo bleiben historische Evidence und sind nicht aktuell.
+
 ---
 
 ## 3. Wichtigste Architektur-Domänen

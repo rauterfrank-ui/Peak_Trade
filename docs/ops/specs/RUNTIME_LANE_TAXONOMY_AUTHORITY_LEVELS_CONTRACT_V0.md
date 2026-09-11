@@ -1475,9 +1475,12 @@ BROKER_AUTHORITY=false
 DOUBLE_PLAY_AUTHORITY=false
 REGISTRY_V1_IS_SOLE_NOTION_PROJECTION_FEED=true
 NOTION_PROJECTION_DEFAULT=disabled
+NOTION_PEAK_TRADE_COMPONENT=false
 ```
 
 **Purpose:** Define how future Notion post-closeout sync may project **non-authorizing** evidence index rows from Generic Evidence Run Registry v1 — **without** creating a Notion truth layer, **without** Notion writes in this slice, and **without** parsing durable archives ad hoc.
+
+CURRENT overlay (Owner-GO `PEAK_TRADE_NOTION_FINAL_ABSORB_AND_DELETE_V1`): Notion is **ceased** as a Peak_Trade component. This v0 planning contract remains historical/disabled. Named Notion surfaces below are **not** current navigation owners. No future Notion sync implementation is implied.
 
 **Canonical feed (sole source):** [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) JSON output (`schema=peak_trade.generic_evidence_run_registry.v1`): `runs[]`, `compositions[]`, top-level `verdict`, `issues`, `blockers`, `archive_root`, and §6a metadata on each record. **Do not** walk `DURABLE_ARCHIVE_ROOT` directly for Notion projection.
 
@@ -1565,7 +1568,7 @@ NO_PARALLEL_NOTION_DB=true
 
 | Surface | Role (v0 planning) |
 |---|---|
-| **Peak_Trade Knowledge Graph (Current)** | Navigation / entry owner (external; not repo SSOT) |
+| **Peak_Trade Knowledge Graph (Current)** | CEASED — historical v0 planning target only; not a Peak_Trade component |
 | **Evidence & Closeouts** | **Primary post-closeout run index target** — extend existing database schema/views only |
 | **Peak_Trade Approval Evidence — Current** | **Orthogonal** — approvals-only; not run projection SSOT |
 | **Operator Decisions** | Decisions-only — orthogonal |

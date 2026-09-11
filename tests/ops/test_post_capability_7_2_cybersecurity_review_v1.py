@@ -74,7 +74,8 @@ def test_truth_map_cybersecurity_review_current_without_runtime_run() -> None:
     text = TRUTH_MAP.read_text(encoding="utf-8")
     assert "CYBERSECURITY_REVIEW_CURRENT=true" in text
     assert "NEXT_RUNTIME_RUN_ALLOWED=false" in text
-    assert "NOTION_REPOSITORY_MIRROR_CURRENT=true" in text
+    assert "NOTION_REPOSITORY_MIRROR_CURRENT=false" in text
+    assert "NOTION_PEAK_TRADE_COMPONENT=false" in text
     # Authority remains documentary; live/order barriers preserved.
     assert "LIVE_ORDERS=false" in text
     assert "EXCHANGE_CREDENTIAL_USE=false" in text

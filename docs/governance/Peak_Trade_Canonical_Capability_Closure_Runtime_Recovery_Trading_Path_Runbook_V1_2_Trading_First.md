@@ -1969,20 +1969,18 @@ SAFETY_MUTATION=false
 
 # 10. Notion-Synchronisation
 
-Notion ist Dokumentations- und Übersichtsfläche, nicht Runtime-SSOT.
+```text
+NOTION_PEAK_TRADE_COMPONENT=false
+NOTION_REPOSITORY_MIRROR_CURRENT=false
+NOTION_RUNTIME_AUTHORITY=false
+NOTION_TRADING_AUTHORITY=false
+```
 
-Jede Notion-Seite muss anzeigen:
+Notion ist **keine** Peak_Trade-Komponente. Es ist weder Dokumentations-/Übersichtsfläche noch Runtime-SSOT, weder Research- noch Config-Owner, weder Navigations-Einstieg noch Authority.
 
-- repository SHA
-- document class
-- runtime state
-- authority effect
-- activation state
-- evidence date
-- stale marker, falls SHA nicht aktuell
-- source file path
+Historische Notion-Sync-Regeln (Pflichtfelder auf Notion-Seiten, stale-marker, Spiegel nach Closeout) sind mit Entfernen der Notion-Komponente **obsolet**. Sie werden hier nicht als aktuelle Ops-Pflicht fortgeschrieben.
 
-Notion darf keine neuere Wahrheit vortäuschen als der Repository-Stand.
+Aktueller Ist-Zustand: [`PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md).
 
 ---
 
@@ -2000,7 +1998,7 @@ Nach jeder dritten Capability oder jedem Activation-relevanten Merge muss ein er
 - Welche besitzen keine Failure Semantics?
 - Welche besitzen keine Evidence?
 - Welche Docs übertreiben?
-- Welche Notion-Seiten sind stale?
+- Welche Notion-Seiten sind stale? *(retired: Notion is not a Peak_Trade component)*
 - Welche Configs sind dead?
 - Welche Defaults widersprechen dem SSOT?
 - Welche Legacy-Komponenten besitzen potenzielle Parallel-Authority?

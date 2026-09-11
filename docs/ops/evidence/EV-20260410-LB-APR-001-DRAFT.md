@@ -111,3 +111,11 @@ Bis dahin gilt:
 
 - Externes Originalsystem: TBD
 - Repo-Pointer unter docs/ops/evidence/: optional, nur Verweis
+
+## 11. OPEN_CONFLICT — Notion historical fields not adopted
+
+**Class:** `OPEN_CONFLICT` / forensic adjudication. Draft fields in §§1–10 of this file are **unchanged**.
+
+A Notion historical row (`[HISTORICAL SOURCE] LB-APR-001-DRAFT-2026-04-10-01`) claimed Git `1bb69dc4…` / Exchange=Kraken / Account=Spot and pointed at `out&#47;ops&#47;live_readiness_audit&#47;20260410T054633Z&#47;lb_apr_status_snapshot.md`. That snapshot path is **absent** on current `origin&#47;main`. This repo draft remains Git `6f6d7d8bf2f40fb8bb0cb40bf2cd9d158ef1ffac` / Exchange=TBD / Kontotyp=TBD.
+
+Neither artefact is live-approved (`Sign-off erteilt: No`). Notion fields were **not** adopted. No Live/Canary/order unlock is implied.
