@@ -150,8 +150,13 @@ DEFERRED_FEATURES: tuple[str, ...] = (
 FINAL_SCORE_FORMULA_RATIFIED = False
 FINAL_WEIGHTS_RATIFIED = False
 CROSS_SECTIONAL_NORMALIZATION_RATIFIED = False
-SPREAD_FORMULA_RATIFIED = False
-SPREAD_AGGREGATOR_RATIFIED = False
+SPREAD_FORMULA_RATIFIED = True
+SPREAD_FORMULA_ID = "RELATIVE_BID_ASK_SPREAD_OVER_MID_V1"
+SPREAD_FORMULA_AUTHORITY = (
+    "CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1"
+)
+SPREAD_AGGREGATOR_RATIFIED = True
+SPREAD_AGGREGATOR = "IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1"
 STALE_SECONDS_RATIFIED = False
 COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED = False
 RANKING_CADENCE_RATIFIED = False
@@ -181,7 +186,8 @@ PRODUCTIVE_MF_HOST_JOIN = False
 MULTI_FUTURE_RUNTIME_AUTHORIZED = False
 NEXT_CANONICAL_DECISION = "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
 NEXT_CAP22_DEPENDENCY = (
-    "SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING"
+    "SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_"
+    "THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING"
 )
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
@@ -205,8 +211,6 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "ranking_cadence_ratified",
     "runtime_authority_granted",
     "second_selection_decision_downstream",
-    "spread_aggregator_ratified",
-    "spread_formula_ratified",
     "stale_seconds_ratified",
 )
 
@@ -225,6 +229,8 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "pit_replay_required",
     "rank_stability_test_required",
     "ranking_objective_is_not_downstream_pnl",
+    "spread_aggregator_ratified",
+    "spread_formula_ratified",
     "spread_raw_quotes_must_be_persisted",
     "top20_turnover_test_required",
     "walk_forward_required",

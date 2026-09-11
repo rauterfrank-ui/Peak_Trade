@@ -35,6 +35,8 @@ Typed validator:
 
 Input-architecture persist remains
 `docs&#47;ops&#47;specs&#47;CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md`.
+Offline MVR spread definition and comparison keys persist remains
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
 Current productive Cap 2.2 ranking remains the structural producer in
 `docs&#47;ops&#47;specs&#47;MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md`.
 
@@ -56,7 +58,7 @@ MVR_DATA_SUFFICIENT_FOR_POLICY_COMPARISON=true
 CURRENT_PERSISTED_CAP22_ECONOMIC_MD_AVAILABLE=false
 NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
 THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
 THIS_PERSIST_DOES_NOT_IMPLEMENT_ECONOMIC_MD_PRODUCER=true
@@ -239,17 +241,33 @@ imputation is not ratified.
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
 CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
-SPREAD_FORMULA_RATIFIED=false
-SPREAD_AGGREGATOR_RATIFIED=false
 STALE_SECONDS_RATIFIED=false
 COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
 RANKING_CADENCE_RATIFIED=false
 FORWARD_LABEL_HORIZON_RATIFIED=false
 HISTORICAL_REPLAY_HORIZON_RATIFIED=false
+NEAR_ZERO_THRESHOLD_RATIFIED=false
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+POLICY_B_THRESHOLD_SET_RATIFIED=false
 ECONOMIC_RANK_ACTIVATED=false
 ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
 ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+```
+
+Offline spread formula, identity aggregator, and challenger comparison
+keys are persisted separately by
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
+That persist is offline-comparison only and does **not** activate
+economic ranking.
+
+```text
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_UNITS=DIMENSIONLESS_DECIMAL_FRACTION
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
 ```
 
 ## 10. Authority / safety unchanged
@@ -302,6 +320,9 @@ OVERREAD_AS_OFFLINE_CHALLENGER_EQUALS_PRODUCTIVE_AUTHORITY=FORBIDDEN
   `IMPLEMENTED_NOT_WIRED`. This offline-policy persist itself did not implement it.
 - This contract does not change current productive Cap 2.2 structural ranking.
 - This contract does not activate economic ranking.
-- This contract does not ratify score formula, weights, normalization, spread formula, aggregator, stale bound, or cadence.
+- This contract does not ratify score formula, weights, or normalization.
+- Offline spread formula and identity aggregator are persisted by the
+  separate comparison-keys contract; this persist does not activate them
+  productively.
 - This contract does not close PDF Step 5 and does not allow PDF Step 7.
 - This contract does not grant live, testnet, order, credential, or capital rights.

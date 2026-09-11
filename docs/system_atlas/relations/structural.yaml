@@ -141,10 +141,36 @@ relations:
       economic ranking comparison. No productive authority. Not a runtime
       CONSUMES edge. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_cap22_governed_by_offline_mvr_spread_comparison_keys
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md
+    evidence_sources:
+      - src/ops/cap22_offline_mvr_spread_challenger_order_contract_v1.py
+    notes: >
+      Offline MVR spread formula and comparison keys govern future Cap 2.2
+      economic ranking comparison. No productive authority. Not a runtime
+      CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_cap22_offline_policy_candidates_and_evidence
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO
     target: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_cap22_offline_mvr_spread_comparison_keys
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1
     epistemic_status: NAVIGATION_ONLY
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md

@@ -160,3 +160,28 @@ CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
 
 This section does **not** rewire the productive structural ranking
 producer and does **not** ratify a score formula.
+
+## Offline MVR spread definition and comparison keys (docs-only; not wired)
+
+Owner-GO
+`PEAK_TRADE_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1`
+persists the offline spread formula, identity aggregator, zero
+handling, and challenger comparison keys. Subordinate contract:
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
+
+```text
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_UNITS=DIMENSIONLESS_DECIMAL_FRACTION
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
+ECONOMIC_RANK_ACTIVATED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+```
+
+This section does **not** implement ranking code, does **not**
+implement an evidence harness, and does **not** activate economic
+ranking.

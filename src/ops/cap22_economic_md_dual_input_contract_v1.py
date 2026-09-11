@@ -75,8 +75,14 @@ FUTURE_LEAKAGE_FORBIDDEN = True
 CAP22_MVR_SPREAD_INPUT_AUTHORIZED = True
 CAP22_MVR_SPREAD_RAW_INPUT = "SAME_COLLECTION_CYCLE_BIDPX_ASKPX"
 SPREAD_MUST_BE_DERIVABLE_FROM_PERSISTED_RAW_INPUT = True
-SPREAD_FORMULA_RATIFIED = False
-SPREAD_AGGREGATOR_RATIFIED = False
+SPREAD_FORMULA_RATIFIED = True
+SPREAD_FORMULA_ID = "RELATIVE_BID_ASK_SPREAD_OVER_MID_V1"
+SPREAD_FORMULA_AUTHORITY = (
+    "CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1"
+)
+SPREAD_FORMULA_AUTHORITY_SCOPE = "OFFLINE_MVR_COMPARISON_ONLY"
+SPREAD_AGGREGATOR_RATIFIED = True
+SPREAD_AGGREGATOR = "IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1"
 SPREAD_STALE_SECONDS_RATIFIED = False
 SPREAD_MAX_COLLECTION_SKEW_RATIFIED = False
 STALE_SECONDS_RATIFIED = False
@@ -148,8 +154,6 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "productive_mf_host_join",
     "runtime_authority_granted",
     "second_selection_decision_downstream",
-    "spread_aggregator_ratified",
-    "spread_formula_ratified",
     "stale_seconds_ratified",
 )
 
@@ -166,6 +170,8 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "future_leakage_forbidden",
     "no_implicit_fill",
     "replay_from_persisted_input_required",
+    "spread_aggregator_ratified",
+    "spread_formula_ratified",
     "spread_must_be_derivable_from_persisted_raw_input",
     "structural_eligibility_is_not_economic_score",
 )

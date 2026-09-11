@@ -139,6 +139,8 @@ def _valid_payload(**overrides: object) -> dict[str, object]:
         "rotation_policy_status": ROTATION_POLICY_STATUS,
         "runtime_authority_granted": False,
         "second_selection_decision_downstream": False,
+        "spread_aggregator_ratified": True,
+        "spread_formula_ratified": True,
         "spread_raw_quotes_must_be_persisted": True,
         "top20_turnover_test_required": True,
         "volatility_rank_only_verdict": VOLATILITY_RANK_ONLY_VERDICT,
@@ -224,8 +226,8 @@ def test_hard_non_decisions_and_safety_remain() -> None:
     assert FINAL_SCORE_FORMULA_RATIFIED is False
     assert FINAL_WEIGHTS_RATIFIED is False
     assert CROSS_SECTIONAL_NORMALIZATION_RATIFIED is False
-    assert SPREAD_FORMULA_RATIFIED is False
-    assert SPREAD_AGGREGATOR_RATIFIED is False
+    assert SPREAD_FORMULA_RATIFIED is True
+    assert SPREAD_AGGREGATOR_RATIFIED is True
     assert STALE_SECONDS_RATIFIED is False
     assert COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED is False
     assert RANKING_CADENCE_RATIFIED is False
@@ -252,7 +254,8 @@ def test_hard_non_decisions_and_safety_remain() -> None:
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert NEXT_CANONICAL_DECISION == "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
     assert NEXT_CAP22_DEPENDENCY == (
-        "SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING"
+        "SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_"
+        "THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING"
     )
 
 
@@ -268,6 +271,8 @@ def test_declaration_validator_accepts_bound_flags() -> None:
     [
         ("final_score_formula_ratified", True),
         ("final_weights_ratified", True),
+        ("spread_formula_ratified", False),
+        ("spread_aggregator_ratified", False),
         ("economic_md_producer_implemented", False),
         ("economic_md_producer_productively_scheduled", True),
         ("economic_rank_activated", True),
