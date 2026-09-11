@@ -390,7 +390,15 @@ entities:
       - docs/ops/specs/CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md
     source_paths:
       - src/ops/cap22_offline_mvr_threshold_set_and_evidence_harness_contract_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/__init__.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/constants_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/evaluators_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/features_v1.py
       - src/ops/cap22_offline_mvr_evidence_harness_v1/harness_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/models_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/negative_control_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/reason_codes_v1.py
+      - src/ops/cap22_offline_mvr_evidence_harness_v1/threshold_set_v1.py
     evidence_sources:
       - docs/ops/specs/CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md
       - src/ops/cap22_offline_mvr_threshold_set_and_evidence_harness_contract_v1.py
