@@ -84,6 +84,7 @@ entities:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
       - docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md
       - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
       - docs/ops/specs/MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.md
@@ -114,7 +115,28 @@ entities:
       cursors consume Replay `_side_state_to_entry_exit_direction`;
       PENDING rows are not re-adjudicated. DDO durable evidence storage owner
       contract is a navigation pointer only; no productive host ledger_path.
+      T016 learning/blueprint family absorption index is a navigation
+      pointer only; AUTHORITY=NONE; not Master Runbook; not SSOT.
       Atlas is not trading authority.
+
+  - id: CONTRACT:t016_learning_blueprint_family_absorption_and_provenance_v1
+    kind: CONTRACT
+    name: T016 Learning Blueprint Family Absorption And Provenance V1
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    authority_sources: []
+    evidence_sources:
+      - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >-
+      Non-authoritative SHA bind and absorption index.
+      DOCUMENT_CLASS=NON_AUTHORITATIVE_PROVENANCE_AND_ABSORPTION_INDEX.
+      AUTHORITY=NONE. NOT_THE_MASTER_RUNBOOK=true. NOT_SSOT=true.
+      RUNTIME_AUTHORIZATION_EFFECT=NONE.
+      MUST_INTEGRATE_CANONICAL_COUNT=0.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE

@@ -846,3 +846,16 @@ relations:
       Package containment of the offline Core-to-Live composition root.
       Containment is not Live authorization. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_t016_learning_blueprint_provenance
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:t016_learning_blueprint_family_absorption_and_provenance_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. The T016
+      provenance index is AUTHORITY=NONE and not SSOT. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
