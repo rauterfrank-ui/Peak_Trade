@@ -185,9 +185,11 @@ Canonical spec surfaces (existing; not created by this index):
 - [`docs/ops/specs/CANONICAL_REALITY_GAP_STORE_V1.md`](CANONICAL_REALITY_GAP_STORE_V1.md)
 - [`docs/ops/specs/CANONICAL_IDENTITY_BOUND_OFFLINE_OBSERVATION_BINDING_V1.md`](CANONICAL_IDENTITY_BOUND_OFFLINE_OBSERVATION_BINDING_V1.md)
 
-Code / test owners remain under [`src/experiments`](../../../src/experiments)
-and [`tests/experiments`](../../../tests/experiments). This index does not
-restate their semantics.
+Code / test owners remain under
+[`src/experiments/canonical_experiment_identity_v1.py`](../../../src/experiments/canonical_experiment_identity_v1.py)
+and
+[`tests/experiments/test_canonical_experiment_identity_v1.py`](../../../tests/experiments/test_canonical_experiment_identity_v1.py).
+This index does not restate their semantics.
 
 ### 3.2 DDO / Double-Play vs A4 (2026-09-05) vs bound origin/main
 
@@ -197,7 +199,6 @@ is already implemented on `BOUND_ORIGIN_MAIN_SHA`.
 Canonical DDO surfaces (existing; not created by this index):
 
 - [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md)
-- [`src/learning/deterministic_decision_outcome_v0`](../../../src/learning/deterministic_decision_outcome_v0)
 - [`src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py`](../../../src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py)
 - [`src/learning/deterministic_decision_outcome_v0/capture_v0.py`](../../../src/learning/deterministic_decision_outcome_v0/capture_v0.py)
 - [`src/learning/deterministic_decision_outcome_v0/authority_v0.py`](../../../src/learning/deterministic_decision_outcome_v0/authority_v0.py)
