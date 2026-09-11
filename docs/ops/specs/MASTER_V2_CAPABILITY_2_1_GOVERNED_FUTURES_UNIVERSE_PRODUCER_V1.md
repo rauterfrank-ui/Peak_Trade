@@ -9,6 +9,7 @@ ORDERS_ALLOWED: false
 RUNTIME_ACTIVATION_ALLOWED: false
 MULTI_FUTURE_RUNTIME_AUTHORIZED: false
 RANKING_AUTHORITY_ADDED: false
+ECONOMIC_MD_AUTHORITY_ADDED: false
 SELECTION_AUTHORITY_ADDED: false
 ALPHA_AUTHORITY_ADDED: false
 CORE_LOGIC_CHANGE: false
@@ -41,7 +42,7 @@ CONFIG_KEYS=venue=okx_eea; futures_only; btc_excluded; spot_excluded; max_source
 PERSISTENCE=governed_futures_universe_snapshot_v1.json + governed_futures_universe_evidence_v1.json + MANIFEST.sha256 (atomic stage/publish; single-writer lock)
 RESTART_SEMANTICS=Produce→Persist→Restart→Load→Validate→identical canonical universe truth; ALPHA_ALLOWED remains false
 FAILURE_SEMANTICS=source unavailable/malformed/missing-invalid metadata/spot/BTC/stale/duplicates/conflicts/empty universe/persistence/schema/SHA/config/writer → fail-closed; no selection/alpha
-SAFETY_INVARIANTS=UNIVERSE_AUTHORITY_OWNER_SINGLE; DASHBOARD_AUTHORITY=false; no ranking/selection/alpha/execution authority; OKX EEA only; futures-only; BTC excluded; missing metadata never defaulted
+SAFETY_INVARIANTS=UNIVERSE_AUTHORITY_OWNER_SINGLE; DASHBOARD_AUTHORITY=false; no ranking/selection/alpha/execution authority; ROLE=STRUCTURAL_AND_SAFETY_ELIGIBILITY_ONLY; RANKING_AUTHORITY_ADDED=false; ECONOMIC_MD_AUTHORITY_ADDED=false; CAP21_BOUNDARY_PRESERVED=true; OKX EEA only; futures-only; BTC excluded; missing metadata never defaulted
 CORE_LOGIC_CHANGE=false
 TEST_PLAN=tests/ops/test_governed_futures_universe_producer_v1.py
 EVIDENCE_PLAN=docs/evidence/capability_2_1_governed_futures_universe_producer_v1/
@@ -60,11 +61,16 @@ RUNTIME_REACHABLE=true
 PERSISTED=true
 RESTART_PROVEN=true
 ACTIVATED=false
+RANKING_AUTHORITY_ADDED=false
+ECONOMIC_MD_AUTHORITY_ADDED=false
+CAP21_BOUNDARY_PRESERVED=true
+ROLE=STRUCTURAL_AND_SAFETY_ELIGIBILITY_ONLY
 ```
 
 ## Explicit non-claims
 
 - Ranking is not productively closed.
+- Economic market-data input authority is not granted to Cap 2.1.
 - `SINGLE_SELECTED_FUTURE` is not productively closed.
 - Multi-Future runtime is not authorized or closed.
 - Canonical runtime activation remains unchanged / fail-closed.
