@@ -364,6 +364,20 @@ under `DEC_RAW_INPUT_PACK_MATERIALIZATION`, bound to Owner-GO baseline
 
 Owners: [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_V1.md) and [`docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_CYBERSECURITY_MIRROR_V1.md`](docs/ops/PRODUCTIVE_PURE_STACK_STAGE2_SURFACE_B_OWNER_STA_OKX_PUBLIC_PT1M_RAW_BYTES_AND_EXCLUSIVE_TIP_PROOF_CYBERSECURITY_MIRROR_V1.md). This section records the authorized public raw-bytes/tip digest proof only. It does **not** authorize pack materialization, campaign start, partition fill, input-authority flips, runtime activation, Dashboard authority, credentials, or any order side effect.
 
+### 6.9 Notion Peak_Trade component ceased (2026-09-11)
+
+CURRENT security reading after Owner-GO `PEAK_TRADE_NOTION_FINAL_ABSORB_AND_DELETE_V1`, bound to technical SSOT `origin&#47;main@98569174624b277335870604cea5ac54a3ee271e`. Sections 6.1–6.8 remain **historical** cybersecurity mirrors; they are not re-opened and do not keep Notion as a current Peak_Trade surface.
+
+| Boundary | Required security reading |
+|----------|---------------------------|
+| Notion | Ceased as a Peak_Trade component (`NOTION_PEAK_TRADE_COMPONENT=false`) |
+| Current repository mirror | `NOTION_REPOSITORY_MIRROR_CURRENT=false` |
+| `NOTION_RUNTIME_AUTHORITY` / `NOTION_TRADING_AUTHORITY` / `NOTION_SSOT` | `false` |
+| Repository | Sole technical SSOT (`REPOSITORY_IS_SSOT=true`) |
+| Navigation / research / config / dependency | Notion is not a current owner |
+| Historical Notion attestations in this file | HISTORICAL only; not current truth |
+
+This section does **not** authorize Live, Testnet, orders, credentials, or any exchange side effect.
 
 ---
 
