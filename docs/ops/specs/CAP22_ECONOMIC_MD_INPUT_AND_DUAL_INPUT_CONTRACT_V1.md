@@ -314,3 +314,13 @@ OVERREAD_AS_POLICY_A_MAY_RECOMPUTE_ECONOMIC_SCORE=FORBIDDEN
 - This contract does not ratify score formula, weights, or normalization.
 - This contract does not close PDF Step 5 and does not allow PDF Step 7.
 - This contract does not grant live, testnet, order, credential, or capital rights.
+
+## 9. Offline policy-candidate persist is a separate subordinate contract
+
+Owner-GO
+`PEAK_TRADE_CAP_2_2_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_DOCS_ONLY_V1`
+persists the offline challenger set and evidence contract in
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md`.
+That persist does **not** ratify a score formula, does **not** implement
+the Economic-MD producer, and does **not** wire productive economic
+ranking. This dual-input contract remains the input-architecture owner.

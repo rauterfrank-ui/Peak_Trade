@@ -36,43 +36,43 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 ### CAPABILITY:cap_2_2_ranking
 
-- direct_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
+- direct_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_2_3_single_selected_future
 
 - direct_upstream: `CAPABILITY:cap_2_2_ranking, OWNER_DECISION:cap23_exclusive_selection`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `SCRIPT:run_cap23_policy`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_2_4_runtime_binding
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_3_1_futures_accounting
 
 - direct_upstream: `CAPABILITY:cap_2_4_runtime_binding`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_4_1_pre_activation_closure
 
 - direct_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting`
-- transitive_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_7_2_stateful_no_order
 
 - direct_upstream: `CAPABILITY:cap_2_4_runtime_binding`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -198,7 +198,7 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 ### OWNER_DECISION:cap23_exclusive_selection
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -331,7 +331,7 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 ### SCRIPT:run_cap23_policy
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 

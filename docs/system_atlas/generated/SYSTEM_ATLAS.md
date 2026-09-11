@@ -259,7 +259,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `98`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `100`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -725,9 +725,9 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=520
+ENTITY_TOTAL=521
 HUB_RELATION_COUNT=74
-STRUCTURAL_RELATION_COUNT=98
+STRUCTURAL_RELATION_COUNT=100
 RUNTIME_RELATION_COUNT=93
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=9
@@ -803,7 +803,7 @@ Remaining census domains:
 | BINDER | 1 |
 | CAPABILITY | 10 |
 | CHILD | 1 |
-| CONTRACT | 9 |
+| CONTRACT | 10 |
 | DATA_CONTRACT | 4 |
 | DOD | 8 |
 | EXECUTION_COMPONENT | 1 |

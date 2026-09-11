@@ -241,12 +241,16 @@ entities:
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
       - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
+      - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
     notes: >-
       Current productive ranking remains Cap-2.1-only structural ranking.
       Future economic dual-input is authorized by
       CONTRACT:cap22_economic_md_dual_input_v1 and is not wired.
+      Offline policy candidates and evidence requirements are persisted by
+      CONTRACT:cap22_offline_policy_candidates_and_evidence_v1.
+      No offline policy class has productive authority.
       CAP22_BECOMES_NETWORK_OWNER=false.
       CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
@@ -297,6 +301,34 @@ entities:
       and does not become network owner. Score formula, weights,
       activation, producer implementation, PDF Step 5, rotation apply,
       PDF Step 7, and multi-future runtime remain unratified or false.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+      No Atlas edge to Cap 2.3 or Cap 2.4.
+
+  - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
+    kind: CONTRACT
+    name: Cap 2.2 offline policy candidates and evidence contract
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
+    source_paths:
+      - src/ops/cap22_offline_policy_candidates_and_evidence_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
+      - src/ops/cap22_offline_policy_candidates_and_evidence_contract_v1.py
+    notes: >-
+      Spec-only persist of the offline challenger set and the evidence
+      contract required before any Cap 2.2 ranking policy may be ratified.
+      VOLATILITY_RANK_ONLY is baseline-only, not a productive policy.
+      Current structural then venue-id ranking remains the negative
+      status-quo baseline. Gate, ratio, and lexicographic classes are
+      offline challengers only. Multiplicative and weighted-additive
+      remain deferred. Pareto is rejected as a TOP20 owner.
+      Score formula, weights, producer implementation, economic rank
+      activation, PDF Step 5, rotation apply, PDF Step 7, and
+      multi-future runtime remain unratified or false.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
       No Atlas edge to Cap 2.3 or Cap 2.4.
 
