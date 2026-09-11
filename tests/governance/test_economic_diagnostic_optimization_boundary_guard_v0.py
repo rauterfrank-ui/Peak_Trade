@@ -543,6 +543,22 @@ class TestEconomicDiagnosticOptimizationBoundaryGuardNegativeV0:
             "REPORTING_AND_EVIDENCE_REPAIR",
         }
 
+    def test_offline_panel_materialization_from_partial_tmp_no_fetch_surfaces_classified(
+        self,
+    ) -> None:
+        changed_files = [
+            "src/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0.py",
+            "tests/research/test_offline_panel_materialization_from_partial_tmp_no_fetch_v0.py",
+            "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+        ]
+        report = build_boundary_report(changed_files, repo_root=REPO_ROOT)
+        assert report.admissible is True
+        assert report.economic_or_diagnostic_only is True
+        assert report.impact_unknown is False
+        assert "ALLOWED_OPTIMIZATION_SURFACE_ONLY" in report.reason_codes
+        assert forbidden_surface_changed_count(report) == 0
+        assert "DETERMINISTIC_MATERIALIZATION_REPAIR" in report.allowed_surface_classification
+
     def test_no_directory_wide_research_exemption(self) -> None:
         report = build_boundary_report(
             ["src/research/unregistered_offline_diagnostic_owner_v0.py"],
