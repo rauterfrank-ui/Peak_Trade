@@ -456,6 +456,13 @@ SINGLE_SELECTED_FUTURE = current trading selection authority
 TOP_N_ACTIVE_SET = future multi-future authority, currently unauthorized
 ```
 
+Future Cap 2.2 economic ranking is authorized to consume two authoritative
+inputs with separate roles (Cap 2.1 eligibility snapshot plus a
+separate persisted Economic Market Input snapshot). That architecture
+is persisted in §4.5.7. It is **not** wired, **not** activated, and does
+**not** change the current productive Cap-2.1-only structural ranking
+producer.
+
 ### 4.5.1 Non-authoritative membership context-only boundary (docs-only; isolated domain; AUTHORITY_EFFECT=NONE)
 
 Owner-GO `OWNER_GO_MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1` binds a
@@ -1381,6 +1388,121 @@ Cooldown and turnover remain unratified. That D01 persist does
 **not** join a host, does **not** rewire Cap 2.3 or Cap 2.4, does
 **not** unlock G13, and does **not** allow PDF Step 7 runtime
 implementation.
+
+### 4.5.7 Cap 2.2 economic-MD dual-input architecture (docs and typed contract; AUTHORITY_EFFECT=ARCHITECTURE_AUTHORIZATION_ONLY)
+
+Owner-GO
+`PEAK_TRADE_CAP_2_2_SEPARATE_ECONOMIC_MD_INPUT_CAPABILITY_AND_DUAL_INPUT_CONTRACT_SPEC_ONLY_V1`
+persists the already-adjudicated Cap 2.2 economic-ranking input
+architecture. This subsection does **not** replace §4.5–§4.5.6, does
+**not** close PDF Step 5, does **not** authorize `apply_rotation`, does
+**not** allow PDF Step 7, does **not** grant runtime, does **not** join
+a host, does **not** rewire Cap 2.3 or Cap 2.4, and does **not**
+implement the Economic-MD-Input producer.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md`.
+
+Typed validator:
+`src&#47;ops&#47;cap22_economic_md_dual_input_contract_v1.py`.
+
+``` text
+CONTRACT_ID=CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1
+CAP22_ECONOMIC_MD_ARCHITECTURE_DECISION=AUTHORIZE_SEPARATE_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_CAPABILITY
+CAP22_INPUT_MODEL=DUAL_AUTHORITATIVE_INPUTS_WITH_SEPARATE_ROLES
+CAP22_INPUT_1=CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT
+CAP22_INPUT_1_ROLE=STRUCTURAL_AND_SAFETY_ELIGIBILITY_ONLY
+CAP22_INPUT_2=PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MARKET_INPUT_SNAPSHOT
+CAP22_INPUT_2_ROLE=ECONOMIC_RANKING_FEATURE_INPUT_ONLY
+CAP21_BOUNDARY_PRESERVED=true
+CAP21_RANKING_AUTHORITY_ADDED=false
+CAP21_ECONOMIC_MD_AUTHORITY_ADDED=false
+CAP_2_1_ROLE=STRUCTURAL_AND_SAFETY_ELIGIBILITY_ONLY
+CAP22_REMAINS_RANKING_OWNER=true
+CAP22_BECOMES_NETWORK_OWNER=false
+CAP22_DIRECT_LIVE_VENUE_DEPENDENCY=false
+CAP22_CURRENT_PRODUCTIVE_INPUT=CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT_ONLY
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+ECONOMIC_MD_INPUT_CAPABILITY_AUTHORIZED=true
+ECONOMIC_MD_DATA_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
+ECONOMIC_MD_NETWORK_IO_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
+ECONOMIC_MD_PERSISTENCE_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
+ECONOMIC_MD_SCHEMA_OWNER=SEPARATE_ECONOMIC_MD_INPUT_PRODUCER
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=false
+REPLAY_FROM_PERSISTED_INPUT_REQUIRED=true
+LIBRARY_REUSE_AUTHORITY_TRANSFER=false
+CMC_AUTHORITY_TRANSFERRED=false
+SELECTED_FUTURE_MD_AUTHORITY_TRANSFERRED=false
+CAN_REUSE_CANONICAL_VOLATILITY_FORMULA=true
+CAP22_MVR_VOLATILITY_INPUT_AUTHORIZED=true
+CAP22_MVR_VOLATILITY_RAW_INPUT=FINALIZED_PT1M_MARK_PRICE_HISTORY
+MINIMUM_VOLATILITY_WARMUP=61_PT1M_MARKS_60_LOG_RETURNS
+NO_IMPLICIT_FILL=true
+FINALIZED_ONLY=true
+FUTURE_LEAKAGE_FORBIDDEN=true
+CAP22_MVR_SPREAD_INPUT_AUTHORIZED=true
+CAP22_MVR_SPREAD_RAW_INPUT=SAME_COLLECTION_CYCLE_BIDPX_ASKPX
+SPREAD_MUST_BE_DERIVABLE_FROM_PERSISTED_RAW_INPUT=true
+SPREAD_FORMULA_RATIFIED=false
+SPREAD_AGGREGATOR_RATIFIED=false
+STALE_SECONDS_RATIFIED=false
+COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
+CAP_2_2_TARGET_RANK_MEANING=TRADABLE_ECONOMIC_OPPORTUNITY_FOR_PEAK_TRADE
+TARGET_SEMANTICS_STATUS=ARCHITECTURALLY_ADMISSIBLE_NOT_EMPIRICALLY_PROVEN
+STRUCTURAL_ELIGIBILITY_IS_NOT_ECONOMIC_SCORE=true
+POLICY_A_MAY_RECOMPUTE_ECONOMIC_SCORE=false
+ACTIVE_SET_MAY_RECOMPUTE_ECONOMIC_SCORE=false
+EXECUTION_MAY_RECOMPUTE_ECONOMIC_SCORE=false
+EXECUTION_MAY_RERANK=false
+DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK=true
+SECOND_SELECTION_DECISION_DOWNSTREAM=FORBIDDEN
+FINAL_SCORE_FORMULA_RATIFIED=false
+FINAL_WEIGHTS_RATIFIED=false
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
+ECONOMIC_RANK_ACTIVATED=false
+PRODUCTIVE_SELECTION_OWNER=Cap_2.3
+AUTHORITATIVE_ACTIVE_SET_OWNER=ops.mf_membership_rotation_controller_v1
+POLICY_A_ROLE=ANTI_CHURN_ADMISSION_ONLY
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+APPLY_ROTATION_STATUS=FAIL_CLOSED
+PDF_STEP_7_STATUS=FORBIDDEN
+PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
+AS05_D01_STATUS=CLOSED
+AS05_D02_STATUS=CLOSED
+AS05_D03_STATUS=CLOSED
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
+THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
+THIS_PERSIST_DOES_NOT_IMPLEMENT_ECONOMIC_MD_PRODUCER=true
+THIS_PERSIST_DOES_NOT_WIRE_PRODUCTIVE_ECONOMIC_RANKING=true
+```
+
+Cap 2.1 remains eligibility-only. Cap 2.2 remains ranking owner and
+does **not** become Public-MD network or live-venue SSOT. A separate
+persisted multi-instrument Economic Market Data Input Capability is
+authorized as future input owner of network reads, collection,
+persistence, schema, and replay input. That producer is **not**
+implemented. Current productive Cap 2.2 ranking continues to consume
+Cap 2.1 as its sole current productive input.
+
+Minimum-viable ranking **input kinds** are finalized PT1M mark-price
+history and same-cycle `bidPx` + `askPx`. Canonical volatility formula
+reuse is library reuse only and transfers **no** CMC, Cap 5.2,
+selected-future, dashboard, research, canary, or Cap 2.1 authority.
+Score formula, weights, cross-sectional normalization, spread
+aggregator, stale-second bound, and collection-skew numeric bound
+remain unratified. Economic rank remains not activated.
+
+This persist does **not** move productive selection ownership away from
+Cap 2.3. Downstream execution must not re-rank. Policy A remains
+anti-churn admission only. PDF Step 5 remains unresolved. Rotation
+remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
+authority remains false.
 
 ## 4.6 Volatility authority
 

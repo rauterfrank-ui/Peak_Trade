@@ -36,43 +36,50 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 ### CAPABILITY:cap_2_2_ranking
 
-- direct_upstream: `CAPABILITY:cap_2_1_gfu`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
+- direct_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_2_3_single_selected_future
 
 - direct_upstream: `CAPABILITY:cap_2_2_ranking, OWNER_DECISION:cap23_exclusive_selection`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `SCRIPT:run_cap23_policy`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_2_4_runtime_binding
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_3_1_futures_accounting
 
 - direct_upstream: `CAPABILITY:cap_2_4_runtime_binding`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_4_1_pre_activation_closure
 
 - direct_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting`
-- transitive_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
 ### CAPABILITY:cap_7_2_stateful_no_order
 
 - direct_upstream: `CAPABILITY:cap_2_4_runtime_binding`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
+### CAPABILITY:cap_economic_md_input
+
+- direct_upstream: `CONTRACT:cap22_economic_md_dual_input_v1`
+- transitive_upstream: `CONTRACT:cap22_economic_md_dual_input_v1`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -191,7 +198,7 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 ### OWNER_DECISION:cap23_exclusive_selection
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -324,7 +331,7 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 ### SCRIPT:run_cap23_policy
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
-- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -346,8 +353,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 - direct_upstream: `(none)`
 - transitive_upstream: `(none)`
-- direct_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, SUBSYSTEM:master_v2`
-- transitive_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, FUNCTIONAL_CORE:double_play, RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_dashboard_display, RUNTIME_COMPONENT:dp_entry_exit_policy, RUNTIME_COMPONENT:dp_evaluate_authority_boundary, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_offline_scenario_replay, RUNTIME_COMPONENT:dp_sole_authority_quarantine, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival, RUNTIME_COMPONENT:dp_volatility_presence_gate, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, RUNTIME_COMPONENT:mv2_arithmetic_decimal, RUNTIME_COMPONENT:mv2_canonical_market_context, RUNTIME_COMPONENT:mv2_canonical_scope, RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence, RUNTIME_COMPONENT:mv2_canonical_volatility, RUNTIME_COMPONENT:mv2_capital_risk_sizing, RUNTIME_COMPONENT:mv2_decision_packet, RUNTIME_COMPONENT:mv2_directional_assessment, RUNTIME_COMPONENT:mv2_input_happy_path, RUNTIME_COMPONENT:mv2_integrated_replay, RUNTIME_COMPONENT:mv2_local_evaluator, RUNTIME_COMPONENT:mv2_offline_boundary_adapters, RUNTIME_COMPONENT:mv2_package_init, RUNTIME_COMPONENT:mv2_parity_gap_assessment, RUNTIME_COMPONENT:mv2_post_confirmation_ssc, RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier, RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel, RUNTIME_COMPONENT:mv2_runtime_bridge, RUNTIME_COMPONENT:mv2_scenario_matrix, RUNTIME_COMPONENT:mv2_scope_events, RUNTIME_COMPONENT:mv2_strategy_identity, RUNTIME_COMPONENT:mv2_surface_p, SUBSYSTEM:master_v2, UNIVERSE:governed_futures_universe`
+- direct_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, CAPABILITY:cap_economic_md_input, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, SUBSYSTEM:master_v2`
+- transitive_downstream: `CAPABILITY:cap_11_13_5_live_canary, CAPABILITY:cap_1_1_reconciliation, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_3_1_futures_accounting, CAPABILITY:cap_4_1_pre_activation_closure, CAPABILITY:cap_7_2_stateful_no_order, CAPABILITY:cap_economic_md_input, FUNCTIONAL_CORE:double_play, RUNTIME_COMPONENT:dp_capital_slot, RUNTIME_COMPONENT:dp_composition, RUNTIME_COMPONENT:dp_core_wiring, RUNTIME_COMPONENT:dp_dashboard_display, RUNTIME_COMPONENT:dp_entry_exit_policy, RUNTIME_COMPONENT:dp_evaluate_authority_boundary, RUNTIME_COMPONENT:dp_futures_input, RUNTIME_COMPONENT:dp_offline_scenario_replay, RUNTIME_COMPONENT:dp_sole_authority_quarantine, RUNTIME_COMPONENT:dp_state, RUNTIME_COMPONENT:dp_suitability, RUNTIME_COMPONENT:dp_survival, RUNTIME_COMPONENT:dp_volatility_presence_gate, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, RUNTIME_COMPONENT:mv2_arithmetic_decimal, RUNTIME_COMPONENT:mv2_canonical_market_context, RUNTIME_COMPONENT:mv2_canonical_scope, RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence, RUNTIME_COMPONENT:mv2_canonical_volatility, RUNTIME_COMPONENT:mv2_capital_risk_sizing, RUNTIME_COMPONENT:mv2_decision_packet, RUNTIME_COMPONENT:mv2_directional_assessment, RUNTIME_COMPONENT:mv2_input_happy_path, RUNTIME_COMPONENT:mv2_integrated_replay, RUNTIME_COMPONENT:mv2_local_evaluator, RUNTIME_COMPONENT:mv2_offline_boundary_adapters, RUNTIME_COMPONENT:mv2_package_init, RUNTIME_COMPONENT:mv2_parity_gap_assessment, RUNTIME_COMPONENT:mv2_post_confirmation_ssc, RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier, RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel, RUNTIME_COMPONENT:mv2_runtime_bridge, RUNTIME_COMPONENT:mv2_scenario_matrix, RUNTIME_COMPONENT:mv2_scope_events, RUNTIME_COMPONENT:mv2_strategy_identity, RUNTIME_COMPONENT:mv2_surface_p, SUBSYSTEM:master_v2, UNIVERSE:governed_futures_universe`
 
 ### VENUE:okx
 
