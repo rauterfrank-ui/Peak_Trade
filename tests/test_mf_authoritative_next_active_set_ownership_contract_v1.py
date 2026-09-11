@@ -16,7 +16,14 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     AS05_D01_STATUS,
     AS05_D02_DECISION,
     AS05_D02_STATUS,
+    AS05_D03_DECISION,
     AS05_D03_STATUS,
+    AS05_D03_TRANSFERS_ACTIVE_SET_OWNERSHIP,
+    AS05_D03_TRANSFERS_EXECUTION_AUTHORITY,
+    AS05_D03_TRANSFERS_PRODUCTIVE_SELECTION_AUTHORITY,
+    AS05_D03_TRANSFERS_RANKING_AUTHORITY,
+    AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE,
+    CAP23_REPLACEMENT_PENDING_IMPORTED,
     CAP23_REWIRED,
     CAP24_REWIRED,
     CARDINALITY_MODE,
@@ -45,6 +52,7 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     MULTI_FUTURE_RUNTIME_AUTHORIZED,
     N_VALUE_POINTER,
     N_VALUE_REOWNED,
+    NEW_PENDING_STATE_MACHINE_CREATED,
     NEXT_ACTIVE_SET_AUTHORITY_CLASS,
     NEXT_ACTIVE_SET_AUTHORITY_OWNER,
     NEXT_ACTIVE_SET_STATUS,
@@ -54,6 +62,10 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     OBJECT_CLASS_AUTHORITATIVE_NEXT_ACTIVE_SET,
     OBJECT_CLASS_NON_AUTHORITATIVE_MEMBERSHIP_CONTEXT,
     OBJECT_CLASS_RANKED_CANDIDATE_CONTEXT,
+    OD05_ACTIVE_SET_SCOPE_BINDING,
+    OD05_DID_NOT_HISTORICALLY_COVER_ACTIVE_SET,
+    OD05_ORIGINAL_SCOPE_REMAINS,
+    OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY,
     ONE_ACTIVE_SET_STATE_OWNER,
     OWNER,
     OWNER_DECISION_SURFACE_STATUS,
@@ -61,6 +73,7 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     PDF_STEP_4_ANTI_CHURN_CENSUS,
     PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION,
     PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED,
+    PENDING_STATE_OWNER_CREATED,
     POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY,
     POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY,
     PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED,
@@ -77,6 +90,7 @@ from src.ops.mf_authoritative_next_active_set_ownership_contract_v1 import (
     ActiveSetOwnershipError,
     build_authoritative_next_active_set_declaration_v1,
     classify_active_set_anti_churn_evaluator_v1,
+    classify_active_set_pending_scope_v1,
     classify_mf_single_egress_alignment_v1,
     classify_selection_domain_object_v1,
     reject_rotation_until_step_5_v1,
@@ -119,10 +133,15 @@ def _declaration_payload(**overrides: object) -> dict[str, object]:
         "object_class": OBJECT_CLASS_AUTHORITATIVE_NEXT_ACTIVE_SET,
         "one_active_set_state_owner": True,
         "owner": OWNER,
+        "cap23_replacement_pending_imported": False,
         "evaluator_is_not_active_set_owner": True,
         "evaluator_reuse_does_not_transfer_authority": True,
+        "new_pending_state_machine": False,
+        "od05_scope_reuse_does_not_transfer_authority": True,
+        "pending_state_owner_created": False,
         "policy_a_is_not_automatic_active_set_policy": True,
         "policy_reuse_does_not_transfer_authority": True,
+        "requires_independent_pending_state": False,
         "rotation_decision_authority_bound": True,
         "selector_owner_identity_is_not_active_set_evaluator_authority": True,
         "rotation_policy_status": ROTATION_POLICY_STATUS,
@@ -161,7 +180,20 @@ def test_safety_and_ownership_invariants() -> None:
     assert AS05_D02_DECISION == (
         "NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET"
     )
-    assert AS05_D03_STATUS == "UNRESOLVED"
+    assert AS05_D03_STATUS == "CLOSED"
+    assert AS05_D03_DECISION == "EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET"
+    assert AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE is False
+    assert OD05_ACTIVE_SET_SCOPE_BINDING == "NO_INDEPENDENT_PENDING_STATE_REQUIRED"
+    assert OD05_ORIGINAL_SCOPE_REMAINS == "CURRENT_ISOLATED_MF_MODEL"
+    assert OD05_DID_NOT_HISTORICALLY_COVER_ACTIVE_SET is True
+    assert OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY is True
+    assert CAP23_REPLACEMENT_PENDING_IMPORTED is False
+    assert NEW_PENDING_STATE_MACHINE_CREATED is False
+    assert PENDING_STATE_OWNER_CREATED is False
+    assert AS05_D03_TRANSFERS_ACTIVE_SET_OWNERSHIP is False
+    assert AS05_D03_TRANSFERS_RANKING_AUTHORITY is False
+    assert AS05_D03_TRANSFERS_PRODUCTIVE_SELECTION_AUTHORITY is False
+    assert AS05_D03_TRANSFERS_EXECUTION_AUTHORITY is False
     assert EVALUATOR_COMPONENT == (
         "src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1"
     )
@@ -189,8 +221,8 @@ def test_safety_and_ownership_invariants() -> None:
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
     assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
     assert NEXT_IMPLEMENTATION_AUTHORIZED is False
-    assert NEXT_CANONICAL_DECISION == "AS05-D03"
-    assert OWNER_DECISION_SURFACE_STATUS == "D01_D02_RATIFIED_D03_UNRESOLVED"
+    assert NEXT_CANONICAL_DECISION == "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
+    assert OWNER_DECISION_SURFACE_STATUS == "D01_D02_D03_RATIFIED_STEP_5_UNRESOLVED"
     assert NEXT_ACTIVE_SET_STATUS == ("AUTHORITATIVE_OWNERSHIP_BOUND_ROTATION_FAIL_CLOSED")
     assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
 
@@ -282,7 +314,10 @@ def test_rotation_remains_fail_closed() -> None:
     assert POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY is True
     assert PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION == "UNRESOLVED"
     assert AS05_D02_STATUS == "CLOSED"
-    assert AS05_D03_STATUS == "UNRESOLVED"
+    assert AS05_D03_STATUS == "CLOSED"
+    assert AS05_D03_DECISION == "EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET"
+    assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
+    assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
 
 
 def test_policy_a_adoption_does_not_authorize_runtime_application() -> None:
@@ -401,9 +436,9 @@ def test_contract_does_not_import_productive_runtime_owners() -> None:
     assert "apply_rotation_runtime" not in source
 
 
-def test_step_5_d01_and_d02_closed_without_step_5_close() -> None:
+def test_step_5_d01_d02_and_d03_closed_without_step_5_close() -> None:
     spec = SPEC.read_text(encoding="utf-8")
-    assert "OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED" in spec
+    assert "OWNER_DECISION_SURFACE_STATUS=D01_D02_D03_RATIFIED_STEP_5_UNRESOLVED" in spec
     assert "OWNER_DECISION_COUNT=3" in spec
     assert "DECISION_ID=AS05-D01" in spec
     assert "DECISION_ID=AS05-D02" in spec
@@ -415,7 +450,17 @@ def test_step_5_d01_and_d02_closed_without_step_5_close() -> None:
         "AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET"
         in spec
     )
-    assert "AS05_D03_STATUS=UNRESOLVED" in spec
+    assert "AS05_D03_STATUS=CLOSED" in spec
+    assert "AS05_D03_DECISION=EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET" in spec
+    assert "AS05_D03_STATUS=UNRESOLVED" not in spec
+    assert "AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE=false" in spec
+    assert "OD05_ACTIVE_SET_SCOPE_BINDING=NO_INDEPENDENT_PENDING_STATE_REQUIRED" in spec
+    assert "OD05_ORIGINAL_SCOPE_REMAINS=CURRENT_ISOLATED_MF_MODEL" in spec
+    assert "OD05_DID_NOT_HISTORICALLY_COVER_ACTIVE_SET=true" in spec
+    assert "OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in spec
+    assert "CAP23_REPLACEMENT_PENDING_IMPORTED=false" in spec
+    assert "NEW_PENDING_STATE_MACHINE_CREATED=false" in spec
+    assert "PENDING_STATE_OWNER_CREATED=false" in spec
     assert "POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in spec
     assert "EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in spec
     assert (
@@ -429,9 +474,15 @@ def test_step_5_d01_and_d02_closed_without_step_5_close() -> None:
     assert "ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=ADOPTED_POLICY_A_UNCHANGED" in spec
     assert "OVERREAD_AS_D01_EQUALS_STEP_5_CLOSE=FORBIDDEN" in spec
     assert "OVERREAD_AS_D02_EQUALS_STEP_5_CLOSE=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D03_EQUALS_STEP_5_CLOSE=FORBIDDEN" in spec
     assert "OVERREAD_AS_D02_MAKES_SELECTOR_ACTIVE_SET_OWNER=FORBIDDEN" in spec
     assert "OVERREAD_AS_D02_MAKES_ROTATION_ANTI_CHURN_OWNER=FORBIDDEN" in spec
     assert "OVERREAD_AS_D02_AUTHORIZES_APPLY_ROTATION=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D03_AUTHORIZES_APPLY_ROTATION=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D03_ALLOWS_STEP_7=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D03_IMPORTS_CAP23_REPLACEMENT_PENDING=FORBIDDEN" in spec
+    assert "OVERREAD_AS_D03_INVENTS_PENDING_STATE_MACHINE=FORBIDDEN" in spec
+    assert "OVERREAD_AS_OD05_HISTORICALLY_COVERED_ACTIVE_SET=FORBIDDEN" in spec
     assert "OVERREAD_AS_EVALUATOR_FUNCTION_EQUALS_SELECTOR_OWNER=FORBIDDEN" in spec
     assert "OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_SELECTOR=FORBIDDEN" in spec
     assert "OVERREAD_AS_PDF_FIVE_MECHANISMS_ARE_REQUIRED_FIELDS=FORBIDDEN" in spec
@@ -441,10 +492,10 @@ def test_step_5_d01_and_d02_closed_without_step_5_close() -> None:
     assert ACTIVE_SET_POLICY_RATIFIED is True
     assert AS05_D01_STATUS == "CLOSED"
     assert AS05_D02_STATUS == "CLOSED"
-    assert AS05_D03_STATUS == "UNRESOLVED"
+    assert AS05_D03_STATUS == "CLOSED"
     assert PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED is False
     assert ROTATION_POLICY_STATUS == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
-    assert NEXT_CANONICAL_DECISION == "AS05-D03"
+    assert NEXT_CANONICAL_DECISION == "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION"
 
 
 def test_named_evaluator_is_pure_policy_a_function_not_selector_owner() -> None:
@@ -486,7 +537,67 @@ def test_named_evaluator_is_pure_policy_a_function_not_selector_owner() -> None:
     assert EVALUATOR_IS_NOT_RUNTIME_HOST_OWNER is True
 
 
-def test_master_runbook_mirrors_d02_close_without_step_5() -> None:
+def test_as05_d03_extends_od05_without_step_5_pending_machine_or_rotation() -> None:
+    identity = classify_active_set_pending_scope_v1()
+    assert identity["as05_d03_status"] == "CLOSED"
+    assert identity["as05_d03_decision"] == AS05_D03_DECISION
+    assert identity["od05_active_set_scope_binding"] == OD05_ACTIVE_SET_SCOPE_BINDING
+    assert identity["od05_original_scope_remains"] == "CURRENT_ISOLATED_MF_MODEL"
+    assert identity["od05_did_not_historically_cover_active_set"] is True
+    assert identity["od05_scope_reuse_does_not_transfer_authority"] is True
+    assert identity["authoritative_next_active_set_requires_independent_pending_state"] is False
+    assert identity["cap23_replacement_pending_imported"] is False
+    assert identity["new_pending_state_machine_created"] is False
+    assert identity["pending_state_owner_created"] is False
+    assert identity["as05_d03_transfers_active_set_ownership"] is False
+    assert identity["as05_d03_transfers_ranking_authority"] is False
+    assert identity["as05_d03_transfers_productive_selection_authority"] is False
+    assert identity["as05_d03_transfers_execution_authority"] is False
+    assert identity["pdf_step_5_anti_churn_owner_ratification"] == "UNRESOLVED"
+    assert identity["pdf_step_7_runtime_implementation_allowed"] is False
+    assert identity["rotation_policy_status"] == "FAIL_CLOSED_UNTIL_PDF_STEP_5"
+    payload = _declaration_payload(requires_independent_pending_state=True)
+    with pytest.raises(ActiveSetOwnershipError) as pending:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert pending.value.failure_code == "INDEPENDENT_PENDING_FORBIDDEN"
+    payload = _declaration_payload(cap23_replacement_pending_imported=True)
+    with pytest.raises(ActiveSetOwnershipError) as cap23_pending:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert cap23_pending.value.failure_code == "CAP23_REPLACEMENT_PENDING_IMPORT_FORBIDDEN"
+    payload = _declaration_payload(new_pending_state_machine=True)
+    with pytest.raises(ActiveSetOwnershipError) as machine:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert machine.value.failure_code == "PENDING_STATE_MACHINE_INVENTED"
+    payload = _declaration_payload(pending_state_owner_created=True)
+    with pytest.raises(ActiveSetOwnershipError) as pending_owner:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert pending_owner.value.failure_code == "PENDING_STATE_OWNER_INVENTED"
+    payload = _declaration_payload(pdf_step_7_runtime_implementation_allowed=True)
+    with pytest.raises(ActiveSetOwnershipError) as step7:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert step7.value.failure_code == "STEP_7_FORBIDDEN"
+    payload = _declaration_payload(handoff_envelope_promoted_to_active_set_dto=True)
+    with pytest.raises(ActiveSetOwnershipError) as handoff:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert handoff.value.failure_code == "HANDOFF_DTO_PROMOTION_FORBIDDEN"
+    payload = _declaration_payload(execution_consumer_bound=True)
+    with pytest.raises(ActiveSetOwnershipError) as consumer:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert consumer.value.failure_code == "CONSUMER_IDENTITY_INVENTED"
+    payload = _declaration_payload(pdf_step_5_closed=True)
+    with pytest.raises(ActiveSetOwnershipError) as step5:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert step5.value.failure_code == "STEP_5_STILL_UNRESOLVED"
+    payload = _declaration_payload(apply_rotation=True)
+    with pytest.raises(ActiveSetOwnershipError) as rotation:
+        validate_authoritative_next_active_set_declaration_v1(payload)
+    assert rotation.value.failure_code == "ROTATION_POLICY_UNRATIFIED"
+    source = SOURCE.read_text(encoding="utf-8")
+    assert "STATE_REPLACEMENT_PENDING" not in source
+    assert "apply_rotation_runtime" not in source
+
+
+def test_master_runbook_mirrors_d03_close_without_step_5() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     assert "AS05_D02_STATUS=CLOSED" in runbook
     assert (
@@ -499,9 +610,15 @@ def test_master_runbook_mirrors_d02_close_without_step_5() -> None:
     )
     assert "EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in runbook
     assert "SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true" in runbook
-    assert "AS05_D03_STATUS=UNRESOLVED" in runbook
-    assert "NEXT_CANONICAL_DECISION=AS05-D03" in runbook
-    assert "OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED" in runbook
+    assert "AS05_D03_STATUS=CLOSED" in runbook
+    assert "AS05_D03_DECISION=EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET" in runbook
+    assert "AS05_D03_STATUS=UNRESOLVED" not in runbook
+    assert "AUTHORITATIVE_NEXT_ACTIVE_SET_REQUIRES_INDEPENDENT_PENDING_STATE=false" in runbook
+    assert "OD05_ACTIVE_SET_SCOPE_BINDING=NO_INDEPENDENT_PENDING_STATE_REQUIRED" in runbook
+    assert "OD05_SCOPE_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true" in runbook
+    assert "NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION" in runbook
+    assert "OWNER_DECISION_SURFACE_STATUS=D01_D02_D03_RATIFIED_STEP_5_UNRESOLVED" in runbook
     assert "PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED" in runbook
     assert "PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false" in runbook
     assert "AS05_D02_STATUS=UNRESOLVED" not in runbook
+    assert "AS05_D03_STATUS=UNRESOLVED" not in runbook

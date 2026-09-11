@@ -94,10 +94,13 @@ entities:
       active catalog member and not a bindable active identity;
       El-Karoui independent surfaces stay preserved. Section 4.5.6
       records AS05-D01 Owner ratification of isolated POLICY_A
-      unchanged for AUTHORITATIVE_NEXT_ACTIVE_SET and AS05-D02 Owner
+      unchanged for AUTHORITATIVE_NEXT_ACTIVE_SET, AS05-D02 Owner
       ratification of evaluate_policy_a_v1 as the pure POLICY_A
-      admission/non-admission evaluator without transferring Active-Set
-      ownership, without closing PDF Step 5 or AS05-D03, and without
+      admission/non-admission evaluator, and AS05-D03 Owner
+      ratification extending OD05 NO_INDEPENDENT_PENDING_STATE_REQUIRED
+      onto AUTHORITATIVE_NEXT_ACTIVE_SET as a new scope bind without
+      transferring Active-Set ownership, without closing PDF Step 5,
+      and without
       runtime, Live, or Cap-2.3 rewire. Atlas is not canonical
       authority.
 
@@ -362,7 +365,7 @@ entities:
       remains incomplete.
       RUNTIME_AUTHORIZED remains false. No second ranker.
       No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed.
-      AS05-D01 and AS05-D02 closes are owned by
+      AS05-D01, AS05-D02, and AS05-D03 closes are owned by
       CONTRACT:mf_authoritative_next_active_set_ownership_v1; this
       catalog note is a pointer only and is not those closes. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
@@ -483,7 +486,13 @@ entities:
       EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true. Selector owner
       identity is not Active Set evaluator authority. Rotation remains
       membership-diff-only and is not the anti-churn owner. AS05-D03
-      remains UNRESOLVED. Owner remains
+      is CLOSED as EXTEND_OD05_NO_INDEPENDENT_PENDING_TO_ACTIVE_SET:
+      OD05 NO_INDEPENDENT_PENDING_STATE_REQUIRED is bound onto
+      AUTHORITATIVE_NEXT_ACTIVE_SET as a new scope bind. Original OD05
+      scope remains CURRENT_ISOLATED_MF_MODEL. No independent pending
+      state class, no pending state machine, and no Cap-2.3
+      REPLACEMENT_PENDING import. PDF Step 5 remains UNRESOLVED.
+      Owner remains
       ops.mf_membership_rotation_controller_v1. Rotation policy remains
       fail-closed until PDF Step 5. Isolated POLICY_A is not automatic
       Active Set policy; D01 is an explicit Owner bind, not a leak.
