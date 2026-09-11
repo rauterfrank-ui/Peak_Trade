@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1
 status: active
-scope: Isolated PDF-Step-3 ownership bind for authoritative Next Active Set inside ranking/selection domain; AS05-D01 Owner-ratifies isolated POLICY_A unchanged as Active Set admission policy without authority transfer; rotation fail-closed until PDF Step 5; AS05-D02 and AS05-D03 remain unresolved; no Cap-2.3/2.4 join; no G13 unlock
+scope: Isolated PDF-Step-3 ownership bind for authoritative Next Active Set inside ranking/selection domain; AS05-D01 Owner-ratifies isolated POLICY_A unchanged as Active Set admission policy without authority transfer; AS05-D02 names evaluate_policy_a_v1 as pure Active Set anti-churn evaluator without transferring selector or rotation ownership; rotation fail-closed until PDF Step 5; AS05-D03 remains unresolved; no Cap-2.3/2.4 join; no G13 unlock
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-11
@@ -23,8 +23,10 @@ AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
 OWNER_GO_THIS_SLICE=OWNER_GO_PDF_STEP_3_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_V1
 OWNER_GO_PDF_STEP_4_CENSUS_CLOSE=OWNER_GO_PDF_STEP_4_ANTI_CHURN_CENSUS_CANONICAL_CLOSE_V1
 OWNER_GO_AS05_D01=PEAK_TRADE_PDF_STEP_5_AS05_D01_AUTHORITATIVE_ACTIVE_SET_POLICY_ADOPTION_DOCS_ONLY_V1
+OWNER_GO_AS05_D02=PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1
 WORKPACKAGE_PDF_STEP_5_DECISION_PACKAGE=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION_DECISION_PACKAGE_V1
 BOUND_ORIGIN_MAIN_SHA=54ae6a0a4ea11a527144efab43f7cf4a8d64bc2d
+BOUND_ORIGIN_MAIN_SHA_AS05_D02=e431dd7501f4cdea4bbf16d96f3b40b6d1255612
 CONTRACT_ID=MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1
 PARENT_BOUNDARY_CONTRACT=MF_SELECTION_CONTEXT_BOUNDARY_CONTRACT_V1
 HANDOFF_CONTRACT=MF_CANONICAL_SINGLE_EGRESS_AUTHORITY_HANDOFF_CONTRACT_V1
@@ -66,8 +68,20 @@ ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
 ACTIVE_SET_POLICY_RATIFIED=true
 AS05_D01_STATUS=CLOSED
 AS05_D01_DECISION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
-AS05_D02_STATUS=UNRESOLVED
+AS05_D02_STATUS=CLOSED
+AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
 AS05_D03_STATUS=UNRESOLVED
+EVALUATOR_COMPONENT=src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1
+EVALUATOR_AUTHORITY=POLICY_A_ADMISSION_OR_NON_ADMISSION_ONLY
+EVALUATOR_IS_NOT_ACTIVE_SET_OWNER=true
+EVALUATOR_IS_NOT_RANKING_OWNER=true
+EVALUATOR_IS_NOT_PRODUCTIVE_SELECTION_OWNER=true
+EVALUATOR_IS_NOT_EXECUTION_OWNER=true
+EVALUATOR_IS_NOT_RUNTIME_HOST_OWNER=true
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
+ROTATION_ROLE_REMAINS=MEMBERSHIP_DIFF_ONLY
 SELECTOR_BECOMES_ACTIVE_SET_OWNER=false
 EXECUTION_BECOMES_ACTIVE_SET_OWNER=false
 PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED=false
@@ -86,12 +100,12 @@ PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
 PDF_STEP_4_ANTI_CHURN_CENSUS=CLOSED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
-OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED
+OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED
 OWNER_DECISION_COUNT=3
 OWNER_DECISION_IDS=AS05-D01,AS05-D02,AS05-D03
-NEXT_CANONICAL_DECISION=AS05-D02
+NEXT_CANONICAL_DECISION=AS05-D03
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
-THIS_PERSIST_DOES_NOT_CLOSE_AS05_D02=true
+THIS_PERSIST_CLOSES_AS05_D02=true
 THIS_PERSIST_DOES_NOT_CLOSE_AS05_D03=true
 ```
 
@@ -113,8 +127,17 @@ POLICY_A **unchanged** as the admission-policy rule set of object class
 ownership, ranking, selection, execution, live, wire-send, or runtime
 authority. Selector does **not** become Active Set owner. Execution
 does **not** become Active Set owner. Cap 2.3 remains the sole
-productive selection owner. PDF Step 5 remains `UNRESOLVED`. AS05-D02
-is the next unresolved Owner decision. AS05-D03 remains unresolved.
+productive selection owner. Owner-GO
+`PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1`
+closes AS05-D02 as
+`NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET`.
+That close names the existing function
+`src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1`
+as the pure POLICY_A admission/non-admission evaluator for this Active
+Set object class. Evaluator reuse does **not** transfer ownership.
+Selector owner identity is **not** Active Set evaluator authority.
+Rotation remains membership-diff-only and is **not** the anti-churn
+owner. PDF Step 5 remains `UNRESOLVED`. AS05-D03 remains unresolved.
 Rotation behavior remains fail-closed. PDF Step 7 remains forbidden.
 
 Master Runbook SSOT pointer: §4.5 / §4.5.6.
@@ -162,13 +185,17 @@ CONTROLLER_MUST_NOT_OWN=ORDERS_POSITIONS_VENUE_RISK_SIZING_PRETRADE_LIVE_CANARY
 ```
 
 Reconciliation **authority** is bound. Reconciliation **behavior**
-remains fail-closed until PDF Step 5 ratifies rotation/anti-churn
-**evaluation** for this Active Set (AS05-D02 still unresolved). Isolated
-POLICY_A remains the policy of the non-authoritative membership
-selector **and**, by AS05-D01 only, the adopted admission-policy rule
-set of this Active Set object class. Policy reuse does **not** make
-the isolated selector the Active Set owner. Isolated selector
-anti-churn ownership is **not** Active Set evaluation authority.
+remains fail-closed until PDF Step 5; naming the evaluator does **not**
+authorize `apply_rotation`. Isolated POLICY_A remains the policy of
+the non-authoritative membership selector **and**, by AS05-D01, the
+adopted admission-policy rule set of this Active Set object class.
+AS05-D02 names `evaluate_policy_a_v1` as the pure evaluator of that
+rule set for this object class. Policy reuse does **not** make the
+isolated selector the Active Set owner. Evaluator reuse does **not**
+transfer ownership, ranking, productive selection, execution, or
+runtime authority. Isolated selector anti-churn ownership is **not**
+Active Set evaluator authority. The named surface is the function,
+not the selector owner identity.
 
 ## 4. Handoff alignment
 
@@ -201,8 +228,10 @@ POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
 ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
 ACTIVE_SET_POLICY_RATIFIED=true
 AS05_D01_STATUS=CLOSED
-AS05_D02_STATUS=UNRESOLVED
+AS05_D02_STATUS=CLOSED
+AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
 AS05_D03_STATUS=UNRESOLVED
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
 CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE
 NUMERIC_N_CHANGED=false
 CAP23_REWIRED=false
@@ -218,6 +247,13 @@ OVERREAD_AS_D01_EQUALS_AS05_D03=FORBIDDEN
 OVERREAD_AS_D01_EQUALS_RUNTIME=FORBIDDEN
 OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_SELECTOR=FORBIDDEN
 OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_EXECUTION=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_STEP_5_CLOSE=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_AS05_D03=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_RUNTIME=FORBIDDEN
+OVERREAD_AS_D02_MAKES_SELECTOR_ACTIVE_SET_OWNER=FORBIDDEN
+OVERREAD_AS_D02_MAKES_ROTATION_ANTI_CHURN_OWNER=FORBIDDEN
+OVERREAD_AS_D02_AUTHORIZES_APPLY_ROTATION=FORBIDDEN
+OVERREAD_AS_EVALUATOR_FUNCTION_EQUALS_SELECTOR_OWNER=FORBIDDEN
 OVERREAD_AS_CENSUS_CLOSE_EQUALS_POLICY_RATIFICATION=FORBIDDEN
 OVERREAD_AS_DECISION_PACKAGE_EQUALS_POLICY_RATIFICATION=FORBIDDEN
 OVERREAD_AS_MEMBERSHIP_CONTEXT_RENAME=FORBIDDEN
@@ -236,10 +272,16 @@ ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
 ACTIVE_SET_POLICY_RATIFIED=true
 ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=ADOPTED_POLICY_A_UNCHANGED
 POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
-AS05_D02_STATUS=UNRESOLVED
+AS05_D02_STATUS=CLOSED
+AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
 AS05_D03_STATUS=UNRESOLVED
+EVALUATOR_COMPONENT=src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1
+EVALUATOR_AUTHORITY=POLICY_A_ADMISSION_OR_NON_ADMISSION_ONLY
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
-OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED
+OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED
 ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
 NEXT_IMPLEMENTATION_AUTHORIZED=false
@@ -258,16 +300,21 @@ persists the **non-operative** Owner decision surface in §7. That
 package persist does **not** close PDF Step 5 and does **not** allow
 PDF Step 7 runtime implementation. Owner-GO
 `PEAK_TRADE_PDF_STEP_5_AS05_D01_AUTHORITATIVE_ACTIVE_SET_POLICY_ADOPTION_DOCS_ONLY_V1`
-closes **only** AS05-D01. It does **not** close AS05-D02, does **not**
-close AS05-D03, does **not** close PDF Step 5, does **not** name an
-evaluator, does **not** join a host, and does **not** allow PDF Step 7.
+closes **only** AS05-D01. That D01 persist did **not** close AS05-D02,
+did **not** close AS05-D03, did **not** close PDF Step 5, did **not**
+name an evaluator, did **not** join a host, and did **not** allow PDF
+Step 7. Owner-GO
+`PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1`
+closes **only** AS05-D02. It does **not** close AS05-D03, does **not**
+close PDF Step 5, does **not** authorize `apply_rotation`, does **not**
+join a host, and does **not** allow PDF Step 7.
 
 ## 7. PDF Step 5 Owner Decision Package (not ratification)
 
 ```text
 DOCUMENT_EFFECT=NON_OPERATIVE_OWNER_DECISION_SUPPORT_ON_EXISTING_OWNER_SURFACE
-EPISTEMIC_CLASS=OWNER_DECISION_SURFACE_D01_RATIFIED_D02_D03_UNRESOLVED
-OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED
+EPISTEMIC_CLASS=OWNER_DECISION_SURFACE_D01_D02_RATIFIED_D03_UNRESOLVED
+OWNER_DECISION_SURFACE_STATUS=D01_D02_RATIFIED_D03_UNRESOLVED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
 AS05_D01_STATUS=CLOSED
 AS05_D01_DECISION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
@@ -275,8 +322,10 @@ ACTIVE_SET_POLICY_RATIFIED=true
 ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=ADOPTED_POLICY_A_UNCHANGED
 POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY=true
 POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
 ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
-AS05_D02_STATUS=UNRESOLVED
+AS05_D02_STATUS=CLOSED
+AS05_D02_DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
 AS05_D03_STATUS=UNRESOLVED
 ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
@@ -286,7 +335,7 @@ NUMERIC_N_REOPENED=false
 N_VALUE_REOWNED=false
 PDF_CANONICAL_AUTHORITY=false
 PDF_DEFAULTS_IMPORTED=false
-NEXT_CANONICAL_DECISION=AS05-D02
+NEXT_CANONICAL_DECISION=AS05-D03
 ```
 
 This section names the **smallest** Owner-policy questions that the
@@ -295,7 +344,9 @@ before rotation/anti-churn for the authoritative Next Active Set can
 leave fail-closed. Isolated POLICY_A remains the policy of the
 non-authoritative membership selector. Owner-GO
 `PEAK_TRADE_PDF_STEP_5_AS05_D01_AUTHORITATIVE_ACTIVE_SET_POLICY_ADOPTION_DOCS_ONLY_V1`
-closes AS05-D01 only. AS05-D02 and AS05-D03 remain unanswered.
+closes AS05-D01 only. Owner-GO
+`PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1`
+closes AS05-D02. AS05-D03 remains unanswered.
 
 The five PDF-named mechanism titles (hysteresis, minimum holding,
 challenger margin, consecutive confirmation, replacement-pending) are
@@ -306,15 +357,15 @@ is a separate already-closed track and is **not** reopened here.
 
 | Mechanism | Canonical bind today | Historical / non-authority | PDF Leitzielbild only | Open or contradictory | Independent Step-5 field? |
 |---|---|---|---|---|---|
-| Hysteresis | Isolated POLICY_A rank-improvement vs displaced incumbent; `CHALLENGER_MARGIN_VALUE=1`; selector-owned for membership-context; AS05-D01 adopts the same rule unchanged as Active Set **admission policy**; evaluator unbound | Cap 2.3 `hysteresis_rank_improvement=1` (N=1 SSF; not imported); Master-V2 / switch-gate hysteresis `OUT_OF_DOMAIN`; pre-#6381 unratified MF numerics | Named by Owner PDF as a target-architecture concern | Active Set admission policy adopted unchanged; rotation/evaluation fail-closed until AS05-D02; R6 `MF_ROTATION_HYSTERESIS_POLICY_RATIFIED=false` is a different graph | No; consequence of AS05-D01 |
-| Minimum holding | Isolated POLICY_A `MINIMUM_HOLDING_VALUE=2` ranking observations; not position holding; AS05-D01 adopts unchanged for Active Set admission | Cap 2.3 `min_holding_period_seconds=3600.0` not imported; Cap 0.4 reminder not numeric authority | Named by Owner PDF | Active Set admission policy adopted unchanged; evaluator unbound | No; consequence of AS05-D01 |
+| Hysteresis | Isolated POLICY_A rank-improvement vs displaced incumbent; `CHALLENGER_MARGIN_VALUE=1`; selector-owned for membership-context; AS05-D01 adopts the same rule unchanged as Active Set **admission policy**; AS05-D02 names `evaluate_policy_a_v1` as pure evaluator | Cap 2.3 `hysteresis_rank_improvement=1` (N=1 SSF; not imported); Master-V2 / switch-gate hysteresis `OUT_OF_DOMAIN`; pre-#6381 unratified MF numerics | Named by Owner PDF as a target-architecture concern | Active Set admission policy adopted unchanged; evaluator named; rotation behavior fail-closed until PDF Step 5; R6 `MF_ROTATION_HYSTERESIS_POLICY_RATIFIED=false` is a different graph | No; consequence of AS05-D01 + D02 |
+| Minimum holding | Isolated POLICY_A `MINIMUM_HOLDING_VALUE=2` ranking observations; not position holding; AS05-D01 adopts unchanged for Active Set admission | Cap 2.3 `min_holding_period_seconds=3600.0` not imported; Cap 0.4 reminder not numeric authority | Named by Owner PDF | Active Set admission policy adopted unchanged; evaluator named as `evaluate_policy_a_v1` | No; consequence of AS05-D01 + D02 |
 | Challenger-vs-incumbent score/rank margin | Isolated POLICY_A rank margin 1; score-margin forbidden while consume-Cap-2.2-order holds; AS05-D01 adopts rank-margin unchanged | Cap 2.3 rank-improvement 1 is not an import proof | PDF names challenger/incumbent margin as a concern | Score-margin remains forbidden unless OD03 is separately reopened (not this package) | No; rank-margin rides with AS05-D01; score-margin is not admissible here |
-| Consecutive ranking confirmation | Isolated POLICY_A `CONSECUTIVE_CONFIRMATION_COUNT=1` (current observation sufficient; min-hold blocks one-cycle oscillation); AS05-D01 adopts unchanged | none proven as a second MF confirmation engine | Named by Owner PDF as a distinct lever | Active Set admission policy adopted unchanged; evaluator unbound | No; rides with AS05-D01 |
+| Consecutive ranking confirmation | Isolated POLICY_A `CONSECUTIVE_CONFIRMATION_COUNT=1` (current observation sufficient; min-hold blocks one-cycle oscillation); AS05-D01 adopts unchanged | none proven as a second MF confirmation engine | Named by Owner PDF as a distinct lever | Active Set admission policy adopted unchanged; evaluator named as `evaluate_policy_a_v1` | No; rides with AS05-D01 + D02 |
 | Replacement-pending state | OD05 `NO_INDEPENDENT_PENDING_STATE_REQUIRED` for `CURRENT_ISOLATED_MF_MODEL`; Cap 2.3 `REPLACEMENT_PENDING` not imported | Cap 2.3 open-position pending is productive-SSF historical/current outside this graph | Named by Owner PDF | OD05 scope does **not** automatically cover the Active Set object class | Yes; AS05-D03 (scope only, not a pending-machine design) |
 | Tie / equality | OD03: consume Cap-2.2 origin order as membership order; MF-own tie-break `NOT_REQUIRED` | Cap 2.3 tie-break order not imported | none proven as PDF-numeric default in this persist | Inventing an MF tie-break is forbidden | No; not a Step-5 field |
-| Admission / replacement ordering | Isolated POLICY_A precedence 1–7 including forced-removal bypass and underfill prefix-fill; AS05-D01 adopts unchanged as Active Set admission ordering | none as executed Active Set rotation | PDF does not become ordering authority | Admission rule set adopted; rotation behavior fail-closed until AS05-D02 names a legal evaluator | No; consequence of AS05-D01 |
+| Admission / replacement ordering | Isolated POLICY_A precedence 1–7 including forced-removal bypass and underfill prefix-fill; AS05-D01 adopts unchanged as Active Set admission ordering | none as executed Active Set rotation | PDF does not become ordering authority | Admission rule set adopted; evaluator named; rotation behavior fail-closed until PDF Step 5 | No; consequence of AS05-D01 + D02 |
 | Deterministic replay / explanation | Isolated previous→current replay proven for membership-context + POLICY_A; `RUNTIME_AUTHORIZED=false` | execution/host replay packs `OUT_OF_DOMAIN` | PDF Step 7 is later runtime | Active Set rotation has no ratified behavior to replay | Constraint on any later close; not an independent policy choice |
-| State ownership / temporal identity | Step 3: controller owns Active Set state; isolated selector `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; membership-context temporal identity bound | Isolated selector is a forbidden Active Set owner | PDF controller-owns-reconciliation is already bound as authority, not behavior | Who **evaluates** anti-churn for Active Set is not derivable from current binds | Yes; AS05-D02 |
+| State ownership / temporal identity | Step 3: controller owns Active Set state; isolated selector `SELECTOR_STATE_OWNER=NONE_FOR_MEMBERSHIP_IDENTITY`; membership-context temporal identity bound; AS05-D02 names `evaluate_policy_a_v1` as pure evaluator | Isolated selector remains a forbidden Active Set owner; function ≠ selector owner identity | PDF controller-owns-reconciliation is already bound as authority, not behavior | Evaluator identity now bound; rotation behavior still fail-closed; AS05-D03 pending-scope remains open | Closed as AS05-D02; D03 remains independent |
 | Interaction with `AT_MOST_N` | `CARDINALITY_MODE=AT_MOST_N`; `N_VALUE_POINTER=5`; `N_VALUE_REOWNED=false`; no padding; no exact-N | Cap 0.4 reminder is not this N authority | PDF N=5 is Leitzielbild only and is **not** re-adjudicated | Underfill prefix-fill is POLICY_A semantics, not an N reopen | No; pointer only; Numeric-N track stays closed |
 
 Cooldown and turnover remain an unratified selector concept-family
@@ -379,8 +430,9 @@ Chosen-row consequences (now bound; not runtime):
   **admission-policy** rule set.
 - That bind does **not** unlock G13, host join, Cap-2.3/2.4 rewire,
   execution, live, wire-send, or PDF Step 7.
-- AS05-D02 remains unresolved because selector vs controller ownership
-  must not collapse and no legal Active Set evaluator is named.
+- AS05-D02 remained unresolved after D01 because selector vs controller
+  ownership must not collapse and D01 did not name a legal Active Set
+  evaluator.
 - AS05-D03 remains unresolved either way.
 - Cooldown/turnover stay unratified unless a later separate Owner-GO
   names numerics.
@@ -406,37 +458,75 @@ Evidence pointers:
 
 ```text
 DECISION_ID=AS05-D02
-STATUS=UNRESOLVED
-NOT_DERIVABLE_FROM_EXISTING_AUTHORITY=true
+STATUS=CLOSED
+DECISION=NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET
+OWNER_GO=PEAK_TRADE_AS05_D02_PURE_POLICY_A_EVALUATOR_RATIFICATION_DOCS_ONLY_V1
+NOT_DERIVABLE_FROM_EXISTING_AUTHORITY=false
+CLOSED_BY_OWNER_GO=true
+EVALUATOR_COMPONENT=src.ops.mf_membership_selector_and_rotation_runtime_contract_v1.evaluate_policy_a_v1
+EVALUATOR_AUTHORITY=POLICY_A_ADMISSION_OR_NON_ADMISSION_ONLY
+EVALUATOR_IS_NOT_ACTIVE_SET_OWNER=true
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true
+ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
 PRECISE_SEMANTIC_QUESTION=If and only if a later Owner-GO adopts an anti-churn policy for the authoritative Next Active Set, which already-bound owner may evaluate admission or non-admission of Active Set membership changes without creating a second selection owner and without making rotation the anti-churn owner?
 ```
 
-Admissible alternatives (constraints only; no default):
+Admissible alternatives (repo-/evidence-supported only). Owner chose
+the function-surface row.
 
-| Alternative | Support | Caveat |
-|---|---|---|
-| Keep evaluation unbound while AS05-D02 remains unresolved | Current fail-closed; policy adopted but no legal evaluator named | Compatible with today after AS05-D01 |
-| Name an evaluator only by a later Owner-GO that closes AS05-D02 | Step 3 binds controller **authority**; isolated selector owns isolated anti-churn; isolated selector is a **forbidden Active Set owner**; AS05-D01 does not transfer ownership | No currently named evaluator identity is already legal for this object class |
+| Alternative | Support | Meaning | Owner choice |
+|---|---|---|---|
+| Keep evaluation unbound while AS05-D02 remains unresolved | Pre-D02 canonical state after D01 | Policy adopted but no legal evaluator named; rotation remains fail-closed | NOT_CHOSEN |
+| Name selector **owner identity** as Active Set evaluator | Isolated `ANTI_CHURN_OWNER=SELECTOR` for membership-context | Collapses selector owner into Active Set evaluator authority; forbidden Active Set owner | NOT_CHOSEN |
+| Name `ops.mf_membership_rotation_controller_v1` as evaluator | Controller owns Active Set reconciliation **authority** | Would make rotation the anti-churn owner | NOT_CHOSEN |
+| `NAME_EVALUATE_POLICY_A_V1_AS_PURE_ANTI_CHURN_EVALUATOR_FOR_AUTHORITATIVE_NEXT_ACTIVE_SET` | Function `evaluate_policy_a_v1` already implements POLICY_A admission/non-admission; persist-free; no host join; no Cap-2.3 import | Pure evaluation only; selector owner identity is not the evaluator authority; controller remains Active Set owner | CHOSEN |
 
 Canonical constraints:
 
 ```text
 ANTI_CHURN_OWNER=SELECTOR
 ROTATION_IS_NOT_ANTI_CHURN_OWNER=true
+ROTATION_ROLE_REMAINS=MEMBERSHIP_DIFF_ONLY
 NEXT_ACTIVE_SET_AUTHORITY_OWNER=ops.mf_membership_rotation_controller_v1
 ONE_ACTIVE_SET_STATE_OWNER=true
 FORBIDDEN_ACTIVE_SET_OWNER_INCLUDES=ops.mf_membership_selector_and_rotation_runtime_contract_v1
+SELECTOR_OWNER_IDENTITY_IS_NOT_ACTIVE_SET_EVALUATOR_AUTHORITY=true
+SELECTOR_BECOMES_ACTIVE_SET_OWNER=false
+EXECUTION_BECOMES_ACTIVE_SET_OWNER=false
 SECOND_SELECTION_DECISION_DOWNSTREAM=false
+EVALUATOR_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
 ```
 
-This question is **not** derivable from existing authority: the
-controller may own Active Set reconciliation authority, and the
-selector may own isolated anti-churn, but those binds do not name a
-legal Active Set anti-churn evaluator.
+Chosen-row consequences (now bound; not runtime):
 
-Forbidden implications: do not silently reuse the isolated selector
-as Active Set owner; do not make rotation an anti-churn owner; do
-not create a second ranking/selection owner; do not join execution.
+- `evaluate_policy_a_v1` may evaluate POLICY_A admission or
+  non-admission for `AUTHORITATIVE_NEXT_ACTIVE_SET`.
+- That bind does **not** make the selector module owner the Active Set
+  owner, does **not** make rotation the anti-churn owner, does **not**
+  rewire Cap 2.3, does **not** authorize `apply_rotation`, and does
+  **not** close PDF Step 5, AS05-D03, or PDF Step 7.
+- Incumbent/challenger **authority** remains with the controller.
+  Reconciliation **behavior** remains fail-closed.
+
+Forbidden implications of this close:
+
+```text
+OVERREAD_AS_D02_EQUALS_STEP_5_CLOSE=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_AS05_D03=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_RUNTIME=FORBIDDEN
+OVERREAD_AS_D02_MAKES_SELECTOR_ACTIVE_SET_OWNER=FORBIDDEN
+OVERREAD_AS_D02_MAKES_ROTATION_ANTI_CHURN_OWNER=FORBIDDEN
+OVERREAD_AS_D02_AUTHORIZES_APPLY_ROTATION=FORBIDDEN
+OVERREAD_AS_EVALUATOR_FUNCTION_EQUALS_SELECTOR_OWNER=FORBIDDEN
+```
+
+Evidence pointers:
+
+- Master Runbook §4.5.3 / §4.5.6
+- Semantics §1.17 / §1.19 / §1.22
+- `src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py` `evaluate_policy_a_v1`
+- This file header + §3 + §5
 
 #### AS05-D03 — Does OD05 pending-scope extend to the Active Set?
 
@@ -493,6 +583,13 @@ OVERREAD_AS_D01_EQUALS_AS05_D03=FORBIDDEN
 OVERREAD_AS_D01_EQUALS_RUNTIME=FORBIDDEN
 OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_SELECTOR=FORBIDDEN
 OVERREAD_AS_D01_TRANSFERS_OWNERSHIP_TO_EXECUTION=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_STEP_5_CLOSE=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_AS05_D03=FORBIDDEN
+OVERREAD_AS_D02_EQUALS_RUNTIME=FORBIDDEN
+OVERREAD_AS_D02_MAKES_SELECTOR_ACTIVE_SET_OWNER=FORBIDDEN
+OVERREAD_AS_D02_MAKES_ROTATION_ANTI_CHURN_OWNER=FORBIDDEN
+OVERREAD_AS_D02_AUTHORIZES_APPLY_ROTATION=FORBIDDEN
+OVERREAD_AS_EVALUATOR_FUNCTION_EQUALS_SELECTOR_OWNER=FORBIDDEN
 OVERREAD_AS_PDF_FIVE_MECHANISMS_ARE_REQUIRED_FIELDS=FORBIDDEN
 OVERREAD_AS_STEP_7_ALLOWED=FORBIDDEN
 ```
