@@ -129,7 +129,7 @@
   "operator_go": "GO_DEFINE_NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_AFTER_PR4936_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
   "paper_authorized": false,
   "parameter_rescue_allowed": false,
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z",
   "parent_closeout_manifest_verify_rc": 0,
   "parent_terminal_binding_digest": "88c72f352b8795d0fea5358850b0bb6a8b418eeeec3f69512191f7e8609c0784",
   "parent_terminal_strategy": "cross_sectional_funding_rate_dispersion_zscore_reversion/v0",
@@ -158,8 +158,8 @@
   "selected_next_scope": null,
   "shadow_authorized": false,
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/funding_dispersion_zscore_reversion_v0_binding_ratification_and_offline_economic_evaluation_20260706T170645Z"
+    "runtime_evidence/20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z",
+    "runtime_evidence/20260520T161443Z/research/funding_dispersion_zscore_reversion_v0_binding_ratification_and_offline_economic_evaluation_20260706T170645Z"
   ],
   "source_prs": [
     4936

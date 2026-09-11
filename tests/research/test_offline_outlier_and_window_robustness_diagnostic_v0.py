@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -412,8 +415,10 @@ def test_go_token_required_for_entry_point(tmp_path: Path) -> None:
 
 def test_cli_writes_manifestable_bundle(tmp_path: Path) -> None:
     source = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/read_only_post_drift_terminal_fail_next_economic_scope_discovery_v0_20260714T151907Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/read_only_post_drift_terminal_fail_next_economic_scope_discovery_v0_20260714T151907Z"
+        )
     )
     if not source.is_dir():
         pytest.skip("source evidence not available in this environment")

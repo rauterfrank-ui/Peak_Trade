@@ -1,6 +1,9 @@
 """Contract tests for post-no-pass metric materialization path offline economic evaluation execution v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -121,9 +124,7 @@ class TestPostNoPassMetricMaterializationPathOfflineEconomicEvaluationExecutionV
     def test_verify_execution_start_state_rejects_after_execution(self) -> None:
         result = verify_execution_start_state_v0(
             repo_root=REPO_ROOT,
-            durable_evidence_root=Path(
-                "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-            ),
+            durable_evidence_root=Path(str(located_runtime_evidence_20260520())),
             require_clean_worktree=False,
         )
         assert result.valid is False

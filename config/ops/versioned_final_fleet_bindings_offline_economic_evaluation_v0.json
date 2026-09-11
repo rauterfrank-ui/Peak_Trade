@@ -2,7 +2,7 @@
   "schema_version": "versioned_final_fleet_bindings_offline_economic_evaluation.v0",
   "go_token": "GO_BOUNDED_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_V0",
   "expected_origin_main_sha": "d7e03de515a7349b01cc4058379fcbb65c4548d8",
-  "staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
   "dataset_extension_ohlcv": "extended_chronological_v1",
   "dataset_extension_funding": "extended_chronological_with_funding_v1",

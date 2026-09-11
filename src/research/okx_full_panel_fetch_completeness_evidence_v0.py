@@ -6,6 +6,9 @@ Research-only; no dataset promotion, economic evaluation, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -58,9 +61,7 @@ FETCH_SPEC_VERSION = "v0"
 COMPLETENESS_POLICY_VERSION = "okx_full_panel_completeness.v0"
 QUARANTINE_SUBDIR = "quarantine/okx_historical_funding_archive_v0"
 ARCHIVE_CACHE_SUBDIR = "datasets/staging/okx_historical_funding_archive_v0"
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_LIFECYCLE_REGISTRY_REL = (
     "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_historical_2024_v1/v1/"

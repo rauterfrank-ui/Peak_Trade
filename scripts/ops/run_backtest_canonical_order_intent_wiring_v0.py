@@ -2,6 +2,9 @@
 """Collect durable evidence for backtest canonical order intent state-file wiring v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -13,9 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DEFAULT_REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_BASE_HEAD = "0e41339bf78d8ef65c1afd125f84bcf303a4d843"
 DEFAULT_SOURCE_EVIDENCE = (
     DEFAULT_ARCHIVE_ROOT

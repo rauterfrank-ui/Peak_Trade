@@ -23,7 +23,7 @@
   ],
   "classification_execution_authorized": false,
   "classification_executed": true,
-  "classification_execution_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
+  "classification_execution_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
   "classification_execution_manifest_verify_rc": 0,
   "classification_mapped_ratio": 1.0,
   "core_system_mutation_allowed": false,
@@ -137,7 +137,7 @@
   "scope_version": "v0",
   "selected_class": "E",
   "shadow_authorized": false,
-  "source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
+  "source_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
   "source_evidence_manifest_verify_rc": 0,
   "source_prs": [
     4881

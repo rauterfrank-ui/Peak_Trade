@@ -29,5 +29,5 @@
   "schema_version": "ehlers_cycle_filter_v1_material_difference_and_non_claim_contract.v0",
   "signal_family": "DSP_CYCLE_BANDPASS",
   "signal_family_material_difference": true,
-  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z"
+  "source_discovery_evidence_ref": "runtime_evidence/20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z"
 }

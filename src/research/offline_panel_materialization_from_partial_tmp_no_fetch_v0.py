@@ -9,6 +9,9 @@ Research-only; no network fetch, runtime, evaluation, or order effects.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from dataclasses import dataclass
@@ -78,9 +81,7 @@ MATERIALIZATION_VERSION = "offline_panel_materialization_from_partial_tmp_no_fet
 CONFIRM_GO = "GO_OFFLINE_PANEL_MATERIALIZATION_FROM_PARTIAL_TMP_NO_FETCH_V0"
 CONFIG_REL_PATH = "config/ops/offline_panel_materialization_from_partial_tmp_no_fetch_v0.json"
 
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_PARTIAL_TMP_SLUG = ".tmp_historical_20260703T181515Z"
 DEFAULT_PARTIAL_TMP_REL = (
     "datasets/admissible_futures/"

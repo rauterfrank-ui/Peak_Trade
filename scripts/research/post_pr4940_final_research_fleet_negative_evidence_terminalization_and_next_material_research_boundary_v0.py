@@ -6,6 +6,9 @@ No economic evaluation, no binding retry, no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -46,9 +49,7 @@ DEFAULT_DOC = (
     / "docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_"
     "AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "pr4940_final_fleet_terminalization_and_next_material_research_boundary"
 
 REQUIRED_CONFIG_KEYS = (

@@ -6,6 +6,9 @@ Fail-closed when required 2024 window is not covered by venue retention.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -36,14 +39,16 @@ from src.research.okx_historical_open_interest_public_fetch_v0 import (  # noqa:
 )
 
 DEFAULT_OHLCV_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    )
 )
 DEFAULT_OI_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_open_interest_panel/v0"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_open_interest_panel/v0"
+    )
 )
 
 

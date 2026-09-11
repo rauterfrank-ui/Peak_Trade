@@ -17,7 +17,14 @@ from src.research.longer_chronological_pit_acquisition_v1.adapter import (
     OkxPublicHistoryAdapterV1,
 )
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    FORENSICS_DOCUMENTS_PEAK_TRADE_REL,
+    RUNTIME_EVIDENCE_20260520_REL,
     ArchiveRootError,
+    archive_relative_locator,
+    expand_data_archive_locator,
+    join_runtime_evidence_relpath,
+    located_forensics_documents_peak_trade,
+    located_runtime_evidence_20260520,
     resolve_archive_root,
     validate_archive_root,
 )
@@ -76,6 +83,40 @@ def test_repo_path_as_archive_root_blocked(tmp_path: Path) -> None:
         validate_archive_root(Path("/"))
     with pytest.raises(ArchiveRootError, match="HOME"):
         validate_archive_root(Path.home())
+
+
+def test_d01_d03_semantic_relatives_join_external_root(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
+    assert located_forensics_documents_peak_trade() == tmp_path / FORENSICS_DOCUMENTS_PEAK_TRADE_REL
+    assert located_runtime_evidence_20260520() == tmp_path / RUNTIME_EVIDENCE_20260520_REL
+    joined = join_runtime_evidence_relpath(
+        tmp_path, "datasets/admissible_futures/x.parquet", error_code="RELPATH_NOT_RELATIVE"
+    )
+    assert (
+        joined
+        == (
+            tmp_path / RUNTIME_EVIDENCE_20260520_REL / "datasets/admissible_futures/x.parquet"
+        ).resolve()
+    )
+    relative = f"{RUNTIME_EVIDENCE_20260520_REL}/research/bundle"
+    assert expand_data_archive_locator(relative) == str(tmp_path / relative)
+    assert archive_relative_locator(located_runtime_evidence_20260520() / "research/bundle") == (
+        f"{RUNTIME_EVIDENCE_20260520_REL}/research/bundle"
+    )
+
+
+def test_unset_archive_root_uses_non_documents_sentinel(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(ENV_ARCHIVE_ROOT, raising=False)
+    forensic = located_forensics_documents_peak_trade()
+    runtime = located_runtime_evidence_20260520()
+    assert "Documents/Peak_Trade" not in str(forensic)
+    assert "Documents/Peak_Trade" not in str(runtime)
+    assert forensic.as_posix().endswith(FORENSICS_DOCUMENTS_PEAK_TRADE_REL)
+    assert runtime.as_posix().endswith(RUNTIME_EVIDENCE_20260520_REL)
 
 
 def test_btc_and_spot_excluded() -> None:

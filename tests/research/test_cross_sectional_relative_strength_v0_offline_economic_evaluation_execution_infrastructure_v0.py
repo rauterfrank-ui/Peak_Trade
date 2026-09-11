@@ -1,6 +1,9 @@
 """Contract and integration tests for cross-sectional execution infrastructure v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import tempfile
@@ -55,7 +58,7 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.staging_builde
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 FOREIGN_DATASET_ROOT = (
     ARCHIVE_ROOT / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v1"
 )

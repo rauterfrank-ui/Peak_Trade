@@ -1,6 +1,9 @@
 """Surface P final flags fail-closed contract tests (offline only)."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 from pathlib import Path
@@ -34,7 +37,7 @@ from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
     verify_evidence_dir_manifest_sha256_v0,
 )
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_SOURCE_CLOSEOUT = (
     ARCHIVE_ROOT
     / "research/pr5133_merge_closeout_full_canonical_parity_pass_eligibility_gate_v0_20260712T224903Z"

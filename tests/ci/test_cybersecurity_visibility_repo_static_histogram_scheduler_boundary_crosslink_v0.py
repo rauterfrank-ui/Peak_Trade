@@ -41,10 +41,7 @@ ACCEPTED_SUBGROUP_002_P101 = "CSC-RCHAIN-v1-002-p101"
 ACCEPTED_SUBGROUP_002_P117 = "CSC-RCHAIN-v1-002-p117"
 ACCEPTED_SUBGROUP_002_P50 = "CSC-RCHAIN-v1-002-p50"
 GOVERNED_REFLECTION_SUBGROUP_003F_A = "CSC-RCHAIN-v1-003f-A"
-OPERATOR_ACCEPT_003F_A_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003f_a_slice_1_v0_20260602T202456Z"
-)
+OPERATOR_ACCEPT_003F_A_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003f_a_slice_1_v0_20260602T202456Z"
 NARROWING_BASENAMES_003F_A: tuple[str, ...] = (
     "network_gate.py",
     "shadow_session_scheduler_v1.py",
@@ -73,10 +70,7 @@ CANDIDATE_IDS_003F_A: tuple[str, ...] = (
     "CSC-LOSSLESS-v1-000329",
 )
 GOVERNED_REFLECTION_SUBGROUP_003F_C = "CSC-RCHAIN-v1-003f-C"
-OPERATOR_ACCEPT_003F_C_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003f_c_slice_1_v0_20260602T203750Z"
-)
+OPERATOR_ACCEPT_003F_C_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003f_c_slice_1_v0_20260602T203750Z"
 NARROWING_BASENAMES_003F_C: tuple[str, ...] = (
     "live_session_registry.py",
     "armstrong_cycle_strategy.py",
@@ -101,10 +95,7 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003F_C: tuple[str, ...] = (
     "live session started",
 )
 GOVERNED_REFLECTION_SUBGROUP_003F_D = "CSC-RCHAIN-v1-003f-D"
-OPERATOR_ACCEPT_003F_D_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003f_d_slice_1_v0_20260602T204916Z"
-)
+OPERATOR_ACCEPT_003F_D_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003f_d_slice_1_v0_20260602T204916Z"
 NARROWING_BASENAMES_003F_D: tuple[str, ...] = (
     "PEAK_TRADE_PROJECT_SUMMARY.md",
     "Peak_Trade_setup_notes.md",
@@ -130,10 +121,7 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003F_D: tuple[str, ...] = (
     "docs owner changed",
 )
 GOVERNED_REFLECTION_SUBGROUP_003C = "CSC-RCHAIN-v1-003c"
-OPERATOR_ACCEPT_003C_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003c_slice_1_v0_20260602T210125Z"
-)
+OPERATOR_ACCEPT_003C_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003c_slice_1_v0_20260602T210125Z"
 NARROWING_BASENAMES_003C: tuple[str, ...] = (
     "ai_activation_gate_v1.py",
     "live_mode_gate.py",
@@ -157,10 +145,7 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003C: tuple[str, ...] = (
     "strategy switch authorized",
 )
 GOVERNED_REFLECTION_SUBGROUP_003B = "CSC-RCHAIN-v1-003b"
-OPERATOR_ACCEPT_003B_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003b_slice_1_v0_20260602T212003Z"
-)
+OPERATOR_ACCEPT_003B_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003b_slice_1_v0_20260602T212003Z"
 NARROWING_BASENAMES_003B: tuple[str, ...] = (
     "live_session.py",
     "orchestrator.py",
@@ -187,10 +172,7 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003B: tuple[str, ...] = (
     "execution enabled",
 )
 GOVERNED_REFLECTION_SUBGROUP_003F_B = "CSC-RCHAIN-v1-003f-B"
-OPERATOR_ACCEPT_003F_B_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003f_b_slice_1_v0_20260602T212936Z"
-)
+OPERATOR_ACCEPT_003F_B_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003f_b_slice_1_v0_20260602T212936Z"
 NARROWING_BASENAMES_003F_B: tuple[str, ...] = (
     "kraken_live.py",
     "kraken_testnet.py",
@@ -217,10 +199,7 @@ FORBIDDEN_AUTHORIZATION_PHRASES_003F_B: tuple[str, ...] = (
     "real order placed",
 )
 GOVERNED_REFLECTION_SUBGROUP_003D = "CSC-RCHAIN-v1-003d"
-OPERATOR_ACCEPT_003D_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/operator_accept_artifact_csc_rchain_003d_slice_1_v0_20260602T214239Z"
-)
+OPERATOR_ACCEPT_003D_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_accept_artifact_csc_rchain_003d_slice_1_v0_20260602T214239Z"
 NARROWING_BASENAMES_003D: tuple[str, ...] = (
     "base.py",
     "exchange.py",
@@ -357,10 +336,7 @@ def _csc_rchain_003d_guard_block(text: str) -> str:
 
 
 GOVERNED_REFLECTION_SUBGROUP_005C = "CSC-RCHAIN-v1-005c"
-OPERATOR_ACCEPT_005C_SLICE_1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice1_v0_20260602T220533Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice1_v0_20260602T220533Z"
 NARROWING_BASENAMES_005C: tuple[str, ...] = (
     "run_backtest.py",
     "run_donchian_realistic.py",
@@ -399,10 +375,7 @@ def _csc_rchain_005c_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_2 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice2_v0_20260602T221918Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_2 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice2_v0_20260602T221918Z"
 NARROWING_BASENAMES_005C_SLICE2: tuple[str, ...] = (
     "health_dashboard.py",
     "run_full_portfolio.py",
@@ -440,10 +413,7 @@ def _csc_rchain_005c_slice2_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_3_TESTNET = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_3_TESTNET = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice3_testnet_v0_20260602T223444Z"
 NARROWING_BASENAMES_005C_SLICE3_TESTNET: tuple[str, ...] = (
     "shadow_testnet_readiness_scorecard.py",
     "orchestrate_testnet_runs.py",
@@ -481,10 +451,7 @@ def _csc_rchain_005c_slice3_testnet_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice4_live_named_a_v0_20260602T224627Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_4_LIVE_NAMED_A = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice4_live_named_a_v0_20260602T224627Z"
 NARROWING_BASENAMES_005C_SLICE4_LIVE_NAMED_A: tuple[str, ...] = (
     "check_live_readiness.py",
     "check_docs_no_live_enable_patterns.sh",
@@ -522,10 +489,7 @@ def _csc_rchain_005c_slice4_live_named_a_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_5_LIVE_NAMED_B = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice5_live_named_b_v0_20260602T225455Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_5_LIVE_NAMED_B = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice5_live_named_b_v0_20260602T225455Z"
 NARROWING_BASENAMES_005C_SLICE5_LIVE_NAMED_B: tuple[str, ...] = (
     "live_operator_status.py",
     "live_ops.py",
@@ -565,10 +529,7 @@ def _csc_rchain_005c_slice5_live_named_b_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice6_aiops_shadow_v0_20260602T230331Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_6_AIOPS_SHADOW = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice6_aiops_shadow_v0_20260602T230331Z"
 NARROWING_BASENAMES_005C_SLICE6_AIOPS_SHADOW: tuple[str, ...] = (
     "run_paper_trading_session.py",
     "run_prj_features_smoke.py",
@@ -606,10 +567,7 @@ def _csc_rchain_005c_slice6_aiops_shadow_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005C_SLICE_7_EXECUTION_WORKFLOW = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005c_slice7_execution_workflow_v0_20260602T231105Z"
-)
+OPERATOR_ACCEPT_005C_SLICE_7_EXECUTION_WORKFLOW = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005c_slice7_execution_workflow_v0_20260602T231105Z"
 NARROWING_BASENAMES_005C_SLICE7_EXECUTION_WORKFLOW: tuple[str, ...] = (
     "run_execution_session.py",
     "run_autonomous_workflow.py",
@@ -645,26 +603,11 @@ def _csc_rchain_005c_slice7_execution_workflow_guard_block(text: str) -> str:
     return text[start:end]
 
 
-OPERATOR_ACCEPT_005A_BUNDLE_A_WF_PRB_SCORECARD = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005a_bundle_a_wf_prb_scorecard_family_v0_20260602T232911Z"
-)
-OPERATOR_ACCEPT_005A_BUNDLE_B_ACTIVE_NON_PRB = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005a_bundle_b_active_non_prb_remainder_v0_20260602T234201Z"
-)
-OPERATOR_ACCEPT_005A_BUNDLE_C_INACTIVE_PARK_MARKER = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005a_bundle_c_inactive_park_marker_v0_20260602T235307Z"
-)
-OPERATOR_ACCEPT_005C_SCHEDULER_000253_SC_G = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_000253_scheduler_governed_reflection_v0_20260603T000815Z"
-)
-OPERATOR_ACCEPT_005B_FIXTURES_SLICE1 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/create_operator_accept_artifact_bundle_005b_fixtures_remainder_v0_20260603T003057Z"
-)
+OPERATOR_ACCEPT_005A_BUNDLE_A_WF_PRB_SCORECARD = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005a_bundle_a_wf_prb_scorecard_family_v0_20260602T232911Z"
+OPERATOR_ACCEPT_005A_BUNDLE_B_ACTIVE_NON_PRB = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005a_bundle_b_active_non_prb_remainder_v0_20260602T234201Z"
+OPERATOR_ACCEPT_005A_BUNDLE_C_INACTIVE_PARK_MARKER = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005a_bundle_c_inactive_park_marker_v0_20260602T235307Z"
+OPERATOR_ACCEPT_005C_SCHEDULER_000253_SC_G = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_000253_scheduler_governed_reflection_v0_20260603T000815Z"
+OPERATOR_ACCEPT_005B_FIXTURES_SLICE1 = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/create_operator_accept_artifact_bundle_005b_fixtures_remainder_v0_20260603T003057Z"
 GOVERNED_REFLECTION_SUBGROUP_005A = "CSC-RCHAIN-v1-005a"
 GOVERNED_REFLECTION_SUBGROUP_005B = "CSC-RCHAIN-v1-005b"
 NARROWING_BASENAMES_005A_BUNDLE_A_WF_PRB_SCORECARD: tuple[str, ...] = (

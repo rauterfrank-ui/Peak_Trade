@@ -17,6 +17,9 @@ from src.backtest.strategy_signal_binding_v1 import (
     compute_required_warmup_rows_v1,
     resolve_effective_strategy_params_v1,
 )
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    RUNTIME_EVIDENCE_20260520_REL,
+)
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -37,7 +40,7 @@ def _resolved_macd_v1_dataset_root() -> Path | None:
         return None
     if root is None:
         return None
-    dataset_root = root / contract.MACD_V1_DATASET_DIR_RELPATH
+    dataset_root = root / RUNTIME_EVIDENCE_20260520_REL / contract.MACD_V1_DATASET_DIR_RELPATH
     if not dataset_root.is_dir():
         return None
     return dataset_root

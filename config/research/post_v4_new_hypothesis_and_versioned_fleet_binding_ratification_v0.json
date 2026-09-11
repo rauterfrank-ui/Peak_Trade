@@ -5,7 +5,7 @@
   "base_head": "27826eca324e88560f93d1b5993bab4b0acd0b62",
   "go_token": "GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0",
   "go_token_consumption": "CONSUME_ONCE_FOR_THIS_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_ONLY",
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4901_squash_merge_closeout_20260706T032655Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4901_squash_merge_closeout_20260706T032655Z",
   "research_hypothesis_binding": {
     "hypothesis_id": "post_v4_sparse_signal_failure_recovery_futures_fleet_hypothesis_v0",
     "hypothesis_version": "v0",

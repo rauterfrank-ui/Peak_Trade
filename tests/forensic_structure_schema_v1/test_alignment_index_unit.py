@@ -134,6 +134,7 @@ def test_historical_desktop_path_is_not_current_source_constant() -> None:
 
     assert "/Desktop/" not in BOUND_SOURCE_PATH
     assert "/Downloads/" not in BOUND_SOURCE_PATH
+    assert "/Documents/Peak_Trade/" not in BOUND_SOURCE_PATH
     assert BOUND_SOURCE_PATH.endswith(
-        "/Documents/Peak_Trade/forensics/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
+        "/forensics/documents_peak_trade/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md"
     )

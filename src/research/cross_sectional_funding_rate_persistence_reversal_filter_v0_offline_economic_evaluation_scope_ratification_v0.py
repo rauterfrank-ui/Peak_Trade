@@ -5,6 +5,9 @@ scope for cross_sectional_funding_rate_persistence_reversal_filter/v0. Does not 
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -69,13 +72,13 @@ READINESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_persistence_reversal_filter_v0_offline_economic_evaluation_infrastructure_readiness_v0.py"
 )
-PARENT_TERMINAL_SCOPE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "funding_persistence_reversal_filter_v0_scope_ratification_20260706T154648Z"
+PARENT_TERMINAL_SCOPE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/funding_persistence_reversal_filter_v0_scope_ratification_20260706T154648Z"
 )
-PARENT_SCOPE_RATIFICATION = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "funding_persistence_reversal_filter_v0_scope_ratification_20260706T154648Z"
+PARENT_SCOPE_RATIFICATION = str(
+    located_runtime_evidence_20260520()
+    / "research/funding_persistence_reversal_filter_v0_scope_ratification_20260706T154648Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

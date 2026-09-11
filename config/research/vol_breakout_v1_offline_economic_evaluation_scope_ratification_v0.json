@@ -28,7 +28,7 @@
     "canonical_instrument_id": "inst-eth-usdt-perp",
     "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "dataset_id": "inst-eth-usdt-perp_v1",
-    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_path": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
     "dataset_profile": "economic_research_v1",
     "dataset_version": "v1",
     "expected_manifest_digest": "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059",
@@ -103,7 +103,7 @@
   "schema_version": "vol_breakout_v1_offline_economic_evaluation_scope_ratification.v0",
   "scope_classification": "NARROW_NEUTRAL_REWIRE_AND_BINDING_IMPLEMENTATION_V0",
   "scope_id": "VOL_BREAKOUT_V1_NARROW_NEUTRAL_REWIRE_AND_BINDING_IMPLEMENTATION_V0",
-  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z",
+  "source_ratification_evidence_ref": "runtime_evidence/20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z",
   "strategy_id": "vol_breakout",
   "strategy_version": "v1",
   "trading_logic_mutated": false

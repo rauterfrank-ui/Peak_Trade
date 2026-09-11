@@ -7,6 +7,9 @@ owner (PR5187 pattern). Diagnostic-only — no promotion authority or runtime ef
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -76,29 +79,34 @@ TEST_MODULE = (
     "promotion_economic_gate_consumer_binding_v0.py"
 )
 PR5192_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_"
-    "economic_evidence_consumer_binding_v0_20260715T011845Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0_20260715T011845Z"
+    )
 )
 PR5192_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5192_merge_closeout_bouchaud_offline_productive_linear_diagnostics_"
-    "economic_evidence_consumer_binding_v0_20260715T011845Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5192_merge_closeout_bouchaud_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0_20260715T011845Z"
+    )
 )
 PR5191_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_"
-    "execution_and_support_evidence_v0_20260715T004424Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0_20260715T004424Z"
+    )
 )
 PR5187_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0_"
-    "20260714T232458Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0_20260714T232458Z"
+    )
 )
 PR5187_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5187_merge_closeout_offline_productive_linear_diagnostics_"
-    "promotion_economic_gate_consumer_binding_v0_20260714T233336Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5187_merge_closeout_offline_productive_linear_diagnostics_promotion_economic_gate_consumer_binding_v0_20260714T233336Z"
+    )
 )
 PRODUCTIVE_SUPPORT_BUNDLE_ARTIFACT = "productive_support_bundle.json"
 DEFAULT_STRATEGY_ID = "bouchaud_microstructure"

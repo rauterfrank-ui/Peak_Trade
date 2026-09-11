@@ -24,7 +24,7 @@ def bound_inputs_available() -> bool:
 
 
 def run_bound_transformer() -> TransformResult:
-    """Read-only cached run against the Documents locator. Caller must skip if absent."""
+    """Read-only cached run against the bound forensic locator. Caller must skip if absent."""
     global _CACHED
     if _CACHED is None:
         _CACHED = transform_read_only(

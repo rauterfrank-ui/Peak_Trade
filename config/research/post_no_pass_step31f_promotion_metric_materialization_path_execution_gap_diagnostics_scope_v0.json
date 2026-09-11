@@ -142,7 +142,7 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z"
   ],
   "source_prs": [
     4888

@@ -6,6 +6,9 @@ economic evaluation, runtime, credentials, or order effects.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from dataclasses import dataclass
@@ -43,9 +46,10 @@ CONFIG_REL_PATH = (
 )
 
 DEFAULT_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    )
 )
 
 CANONICAL_DATASET_OWNER = "scripts/ops/fetch_cross_sectional_funding_rate_delta_momentum_v0_extended_chronological_panel_v0.py"

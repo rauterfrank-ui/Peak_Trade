@@ -1,6 +1,9 @@
 """Bounded tests for full-bound-calendar panel membership filtering before validation."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -30,10 +33,10 @@ from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import (
 )
 
 PARTIAL_RAW_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/"
-    ".tmp_historical_20260703T181515Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/.tmp_historical_20260703T181515Z"
+    )
 )
 BINDING_PATH = Path(
     "config/research/cross_sectional_funding_rate_delta_momentum_v0_versioned_research_binding_v0.json"

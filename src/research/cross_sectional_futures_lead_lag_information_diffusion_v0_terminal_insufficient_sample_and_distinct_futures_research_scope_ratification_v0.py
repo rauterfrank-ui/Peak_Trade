@@ -8,6 +8,9 @@ scope. Offline-only; no economic evaluation execution in this slice.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -65,9 +68,7 @@ STRATEGY_BINDING = RESEARCH_SCOPE
 HYPOTHESIS_ID = "CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_NON_BITCOIN_PERPETUALS_V0"
 SCORE_FAMILY_POLICY = "panel_median_benchmark_lagged_return_diffusion_v0"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 CANONICAL_EVALUATION_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_"

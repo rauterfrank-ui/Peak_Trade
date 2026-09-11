@@ -13,7 +13,7 @@
   "panel_data_digest": "e14b0f2bb7723cacef259e1e1cb29b017cdaca060ff9dbb8c46a5204cb681dad",
   "panel_dataset_ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_pt1h_panel:sha256:c753c5795ab40d26237a066702cb72a06065bfce0143440ec0ccadfe249cc0e0",
   "panel_id": "pit_okx_linear_usdt_non_bitcoin_pt1h_panel",
-  "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2",
+  "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2",
   "parameter_optimization_allowed": false,
   "price_col": "close",
   "rotation_requires_reconciled_flat": true,

@@ -1,6 +1,9 @@
 """Contract tests for OKX full-panel fetch and completeness evidence v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import io
 import json
@@ -23,7 +26,7 @@ from src.research.okx_full_panel_fetch_completeness_evidence_v0 import (
 from src.research.okx_historical_funding_archive_ingest_v0 import ArchiveAccessGuardV0
 from src.research.cross_sectional_bounded_panel_fetch_v0 import compute_bounded_window_v0
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 REGISTRY_PATH = (
     ARCHIVE_ROOT / "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_historical_2024_v1/v1/"

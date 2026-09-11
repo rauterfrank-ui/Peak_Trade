@@ -1,6 +1,9 @@
 """Contract tests for offline productive point-in-time factor snapshot rematerializer v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -37,7 +40,7 @@ RUNNER_MODULE = (
     REPO_ROOT
     / "scripts/research/offline_productive_point_in_time_factor_snapshot_rematerializer_v0.py"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 LEDGER = (
     ARCHIVE_ROOT
     / "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z"

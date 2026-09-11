@@ -1,6 +1,9 @@
 """Contract tests for post-PR4937 final research fleet bindings and offline eval scope ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -50,7 +53,7 @@ BASE_HEAD = "720fc100e590fd7ac40edb0fcba0bb63026ae838"
 PARENT_CLOSEOUT_SUFFIX = (
     "pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_CLOSEOUT_DIR = ARCHIVE_ROOT / "research" / PARENT_CLOSEOUT_SUFFIX
 FLEET_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")
 FORBIDDEN_RUNTIME_ACTIONS = (

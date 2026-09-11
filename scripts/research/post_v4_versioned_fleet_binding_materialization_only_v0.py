@@ -8,6 +8,9 @@ Operator GO: GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -36,9 +39,7 @@ VERDICT = "BINDINGS_MATERIALIZED_NOT_EVALUATED"
 DEFAULT_CONFIG = (
     _REPO_ROOT / "config/research/post_v4_versioned_fleet_binding_materialization_only_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_v4_versioned_fleet_binding_materialization_only_v0"
 NEXT_ADMISSIBLE_GO = (
     "GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0"

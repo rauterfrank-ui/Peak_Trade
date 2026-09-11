@@ -5,6 +5,9 @@ profitability claims, or new strategy evaluation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import re
 from pathlib import Path
@@ -14,16 +17,22 @@ PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUN
 
 FLEET_SLICE = "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice"
 MACD_V3_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+    )
 )
 BREAKOUT_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic/step29m_breakout_donchian_v1_real_admissible_futures_economic_evaluation_v1_20260701T233425Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "economic/step29m_breakout_donchian_v1_real_admissible_futures_economic_evaluation_v1_20260701T233425Z"
+    )
 )
 FLEET_ANALYSIS_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/bounded_breakout_donchian_step29m_economic_result_root_cause_and_strategy_ranking_read_only_v0_20260701T234245Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "planning/bounded_breakout_donchian_step29m_economic_result_root_cause_and_strategy_ranking_read_only_v0_20260701T234245Z"
+    )
 )
 
 

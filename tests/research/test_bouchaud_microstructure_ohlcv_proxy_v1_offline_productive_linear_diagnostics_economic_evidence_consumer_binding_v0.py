@@ -1,6 +1,9 @@
 """Contract tests for Bouchaud OHLCV proxy v1 offline productive linear diagnostics economic evidence consumer binding v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import importlib.util
@@ -36,14 +39,16 @@ MATERIALIZER = REPO_ROOT / (
     "economic_evidence_consumer_binding_v0.py"
 )
 PR5191_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_"
-    "execution_and_support_evidence_v0_20260715T004424Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0_20260715T004424Z"
+    )
 )
 PR5191_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5191_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_"
-    "diagnostics_execution_and_support_evidence_v0_20260715T005450Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5191_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_execution_and_support_evidence_v0_20260715T005450Z"
+    )
 )
 PRODUCTIVE_SUPPORT_BUNDLE_ARTIFACT = "productive_support_bundle.json"
 

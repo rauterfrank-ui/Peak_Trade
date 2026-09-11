@@ -19,7 +19,7 @@
   "non_authorizing": true,
   "offline_only": true,
   "order_effect": "NONE",
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z",
   "parent_closeout_suffix": "post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z",
   "previous_binding_config_digest": "cfdb5d550eea4a8311981227750909c21ab1339692500bb968a92953468dcdd5",
   "process_classification": "POST_PR4922_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
@@ -35,7 +35,7 @@
   "fleet_status": "INCONCLUSIVE",
   "fleet_verdict": "FLEET_EXECUTION_BLOCKED_FAIL_CLOSED",
   "economic_validity_offline_gate_pass": false,
-  "durable_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_pr4922_offline_economic_evaluation_execution_20260706T083719Z",
+  "durable_evidence_ref": "runtime_evidence/20260520T161443Z/research/post_pr4922_offline_economic_evaluation_execution_20260706T083719Z",
   "candidate_verdicts": {
     "trend_following": "ROBUSTNESS_FAILED",
     "bollinger_bands": "BLOCKED_BINDING_OR_EVIDENCE_GAP",

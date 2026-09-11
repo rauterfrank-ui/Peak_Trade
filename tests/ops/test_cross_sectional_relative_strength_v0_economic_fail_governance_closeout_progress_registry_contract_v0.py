@@ -1,6 +1,9 @@
 """Contract tests for CS relative-strength v0 economic FAIL governance closeout registry."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import re
 
@@ -17,9 +20,9 @@ TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TER
 GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
 OPERATOR_GO = "GO_OFFLINE_ECONOMIC_EVALUATION_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
-EVALUATION_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z"
+EVALUATION_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "research/cs_relative_strength_offline_economic_evaluation_v0_20260704T184808Z"
 )
 REASON_CODES = (
     "METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;"

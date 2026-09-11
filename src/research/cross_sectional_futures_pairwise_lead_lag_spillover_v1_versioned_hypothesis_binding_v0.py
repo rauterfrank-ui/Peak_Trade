@@ -5,6 +5,9 @@ cross-sectional panel. Research-only; no runtime, authority, or economic evaluat
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -141,9 +144,7 @@ PENDING_IMPLEMENTATION_STATUS = "PENDING_SEPARATE_IMPLEMENTATION_BINDING"
 
 ADMISSIBLE_SCORE_FAMILIES: frozenset[str] = frozenset({SCORE_FAMILY_POLICY})
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PR5198_CLOSEOUT_BUNDLE = (
     DURABLE_ARCHIVE_ROOT
     / "research/pr5198_merge_closeout_cross_sectional_futures_lead_lag_information_diffusion_v0_"

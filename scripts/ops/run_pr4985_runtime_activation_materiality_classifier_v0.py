@@ -2,6 +2,9 @@
 """Collect durable evidence for PR4985 runtime activation materiality classifier v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -23,7 +26,7 @@ for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
             sys.path.insert(0, src_s)
         break
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_EVIDENCE_DIR = (
     ARCHIVE_ROOT
     / "research/post_pr4985_false_positive_corrected_runtime_activation_reassessment_v0_20260708T001554Z"

@@ -2,6 +2,9 @@
 """Materialize durable evidence for offline productive signal orthogonality interpretation v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -27,7 +30,7 @@ from src.research.linear_evidence.signal_orthogonality_results_interpretation_v0
     build_orthogonality_interpretation_artifacts_v0,
 )
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE = "OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0"
 SCOPE_OPERATOR_GO = "GO_OFFLINE_PRODUCTIVE_SIGNAL_ORTHOGONALITY_RESULTS_INTERPRETATION_V0"
 CANONICAL_OWNER = "src/research/linear_evidence/signal_orthogonality_results_interpretation_v0.py"

@@ -1,6 +1,9 @@
 """Unit tests for sparse signal inconclusive failure classification execution v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -23,8 +26,10 @@ SCOPE_CONFIG = (
     / "config/research/post_no_pass_sparse_signal_inconclusive_failure_classification_v0.json"
 )
 SOURCE_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    "/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z"
+    )
 )
 
 

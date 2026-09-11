@@ -6,6 +6,9 @@ research continuation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import re
 from pathlib import Path
@@ -20,16 +23,22 @@ CLOSEOUT_SLICE = (
     "step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice"
 )
 PLANNING_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z"
+    )
 )
 MA_CROSSOVER_EVAL_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z"
+    )
 )
 MA_CROSSOVER_CLOSEOUT_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z"
+    )
 )
 
 

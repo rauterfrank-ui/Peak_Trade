@@ -144,14 +144,14 @@
   "panel_zero_trade_refuted": true,
   "paper_authorized": false,
   "parameter_rescue_allowed": false,
-  "parent_closeout_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
+  "parent_closeout_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
   "parent_closeout_manifest_verify_rc": 0,
   "parent_decomposition_evidence_class_id": "POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0",
-  "parent_evidence_bundle_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
+  "parent_evidence_bundle_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
   "parent_evidence_manifest_verify_rc": 0,
   "parent_pr": 4905,
-  "parent_pr4905_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
-  "parent_pr4905_output_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
+  "parent_pr4905_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
+  "parent_pr4905_output_bundle": "runtime_evidence/20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
   "process_classification": "POST_PR4905_TERMINAL_FLEET_FAILURE_NEXT_SCOPE_DEFINITION_V0",
   "promotion_authority": false,
   "promotion_eligible": false,
@@ -181,8 +181,8 @@
   "selected_next_scope_class": "OFFLINE_ONLY_RESEARCH_OR_EVIDENCE_EXECUTION_REQUIRED",
   "shadow_authorized": false,
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
+    "runtime_evidence/20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z"
   ],
   "source_prs": [
     4905

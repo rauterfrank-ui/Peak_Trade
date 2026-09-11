@@ -52,7 +52,7 @@
   "offline_only": true,
   "orders_allowed": false,
   "parameter_optimization_authorized": false,
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
   "parent_closeout_manifest_verify_rc": 0,
   "parent_scope_config": "config/research/post_pr4920_new_versioned_research_scope_definition_v0.json",
   "parent_scope_doc": "docs/governance/POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
@@ -81,8 +81,8 @@
     "slippage_model_binding": "backtest_slippage_conservative_half_spread_v0"
   },
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z"
   ],
   "status": "BINDINGS_MATERIALIZED_NOT_EVALUATED",
   "stress_execution_authorized": false,
@@ -110,7 +110,7 @@
         "binding_id": "trend_following_v2_futures_dataset_bound",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
         "dataset_extension": "extended_chronological_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "period_binding": {
         "binding_id": "trend_following_v2_periods_bound",
@@ -152,7 +152,7 @@
       },
       "implementation_digest_source": "src/strategies/trend_following.py",
       "config_digest_source": "config/config.toml:[strategies.trend_following]",
-      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "data_digest_source": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
       "excluded_failed_v1_binding": "trend_following/v1",
       "evaluation_authorized": false,
       "retry_authorized": false,
@@ -177,7 +177,7 @@
         "binding_id": "bollinger_bands_v2_futures_dataset_bound",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
         "dataset_extension": "extended_chronological_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "period_binding": {
         "binding_id": "bollinger_bands_v2_periods_bound",
@@ -219,7 +219,7 @@
       },
       "implementation_digest_source": "src/strategies/bollinger.py",
       "config_digest_source": "config/config.toml:[strategy.bollinger_bands]",
-      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "data_digest_source": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
       "excluded_failed_v1_binding": "bollinger_bands/v1",
       "evaluation_authorized": false,
       "retry_authorized": false,
@@ -245,7 +245,7 @@
         "binding_id": "momentum_1h_v2_futures_dataset_bound",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
         "dataset_extension": "extended_chronological_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "period_binding": {
         "binding_id": "momentum_1h_v2_periods_bound",
@@ -287,7 +287,7 @@
       },
       "implementation_digest_source": "src/strategies/momentum.py",
       "config_digest_source": "config/config.toml:[strategy.momentum_1h]",
-      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "data_digest_source": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
       "excluded_failed_v1_binding": "momentum_1h/v1",
       "evaluation_authorized": false,
       "retry_authorized": false,

@@ -5,6 +5,9 @@ Research-only technical preflight. No economic evaluation, no promotion.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -38,9 +41,7 @@ def main() -> None:
     parser.add_argument(
         "--durable-evidence-root",
         type=Path,
-        default=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        default=Path(str(located_runtime_evidence_20260520())),
         help="Archive root for default preflight staging location",
     )
     parser.add_argument("--max-instruments", type=int, default=2)

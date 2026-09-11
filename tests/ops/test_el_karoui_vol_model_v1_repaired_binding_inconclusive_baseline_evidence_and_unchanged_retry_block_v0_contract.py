@@ -1,6 +1,9 @@
 """Contract tests for el_karoui v1 repaired-binding inconclusive baseline evidence registration v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    archive_relative_locator,
+)
 
 import json
 import re
@@ -133,7 +136,10 @@ class TestInconclusiveRegistrationConfig:
         assert payload["new_distinct_research_scope_or_new_evidence_class_required"] is True
         assert payload["trade_count"] == TRADE_COUNT
         assert payload["pre_merge_origin_main"] == PRE_MERGE_ORIGIN_MAIN
-        assert str(CANONICAL_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in payload["canonical_evaluation_bundle"]
+        )
         assert payload["registration_digest"] == compute_registration_digest(payload)
 
     def test_canonical_serialization_stable(self) -> None:
@@ -159,7 +165,10 @@ class TestInconclusiveVersionedBinding:
         assert binding["binding_changed"] is False
         assert binding["trade_count"] == TRADE_COUNT
         assert binding["canonical_evaluation_timestamp"] == CANONICAL_EVALUATION_TIMESTAMP
-        assert str(CANONICAL_EVALUATION_DIR) in binding["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in binding["canonical_evaluation_bundle"]
+        )
         assert binding["economic_viability_evidence_manifest_digest"] == CANONICAL_MANIFEST_DIGEST
         assert (
             apply_versioned_binding_registration_fields(binding, registration)["baseline_verdict"]

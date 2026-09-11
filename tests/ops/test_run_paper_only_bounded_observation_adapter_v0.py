@@ -1,6 +1,9 @@
 """Tests for scripts/ops/run_paper_only_bounded_observation_adapter_v0.py."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import io
@@ -40,7 +43,7 @@ RUN_ID_L2 = "daemon_paper_24h_test_fixture_v0"
 PROFILE_24H = "daemon_paper_shadow_24h_v0"
 PROFILE_GAP4 = "gap4_req_a_paper_bounded_v0"
 PROFILE_L2 = "paper_l2_120min_hold_binding_v0"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 def test_adapter_source_has_no_master_v2_double_play_dispatch() -> None:

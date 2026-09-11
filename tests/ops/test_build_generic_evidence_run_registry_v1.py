@@ -1,6 +1,9 @@
 """Tests for offline generic evidence run registry v1 builder."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import io
@@ -15,7 +18,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
-REAL_ARCHIVE = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+REAL_ARCHIVE = Path(str(located_runtime_evidence_20260520()))
 
 SAFE_GOVERNANCE = "\n".join(
     [

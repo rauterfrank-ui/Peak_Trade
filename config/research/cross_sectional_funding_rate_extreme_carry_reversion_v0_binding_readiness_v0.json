@@ -96,7 +96,7 @@
     "schema_version": "cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness.v0",
     "scope_name": "CROSS_SECTIONAL_FUNDING_RATE_EXTREME_CARRY_REVERSION_V0_OFFLINE_RESEARCH_SCOPE",
     "scope_readiness": false,
-    "source_operator_review_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_negative_v0_20260707T222915Z",
+    "source_operator_review_evidence_dir": "runtime_evidence/20260520T161443Z/research/operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_negative_v0_20260707T222915Z",
     "strategy_id": "cross_sectional_funding_rate_extreme_carry_reversion",
     "strategy_version": "v0",
 }

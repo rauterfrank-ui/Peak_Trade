@@ -94,7 +94,7 @@
         "status": "BOUND"
       },
       "parent_terminal_evaluation_bundle_ref": {
-        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+        "ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
         "status": "BOUND"
       },
       "pit_universe_manifest_ref": {
@@ -118,7 +118,7 @@
       "mechanism_delta": "panel_median_benchmark_lagged_return_diffusion vs pairwise_directed_spillover_graph",
       "negative_evidence_preserved": true,
       "new_score_family_policy": "pairwise_spillover_graph_v1",
-      "parent_terminal_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+      "parent_terminal_evaluation_bundle": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
       "policy_rescue": false,
       "prior_binding_not_reused_unchanged": true,
       "prior_lead_lag_binding_digest": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
@@ -484,7 +484,7 @@
         "to": "binding_digest"
       },
       {
-        "from": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+        "from": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
         "to": "material_difference_digest"
       }
     ],
@@ -547,7 +547,7 @@
     "mechanism_delta": "panel_median_benchmark_lagged_return_diffusion vs pairwise_directed_spillover_graph",
     "negative_evidence_preserved": true,
     "new_score_family_policy": "pairwise_spillover_graph_v1",
-    "parent_terminal_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+    "parent_terminal_evaluation_bundle": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
     "policy_rescue": false,
     "prior_binding_not_reused_unchanged": true,
     "prior_lead_lag_binding_digest": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",

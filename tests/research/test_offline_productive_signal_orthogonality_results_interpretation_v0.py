@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import copy
 import json
@@ -19,7 +22,10 @@ from research.linear_evidence.signal_orthogonality_results_interpretation_v0 imp
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OWNER = REPO_ROOT / "src/research/linear_evidence/signal_orthogonality_results_interpretation_v0.py"
 PRODUCTIVE_BUNDLE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/signal_orthogonality_diagnostics_scope_v0_20260714T211213Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/signal_orthogonality_diagnostics_scope_v0_20260714T211213Z"
+    )
 )
 
 

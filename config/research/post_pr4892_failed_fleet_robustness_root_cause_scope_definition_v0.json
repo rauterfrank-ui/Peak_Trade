@@ -118,7 +118,7 @@
   "panel_zero_trade_refuted": true,
   "parameter_rescue_allowed": false,
   "parent_execution_evidence_class_id": "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_WITH_STEP31F_OWNER_FIX",
-  "parent_execution_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
+  "parent_execution_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
   "parent_execution_manifest_verify_rc": 0,
   "process_classification": "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_AFTER_POST_NO_PASS_STEP31F_OWNER_FIX_OFFLINE_ECONOMIC_EVALUATION_FAIL_V0",
   "promotion_eligible": false,
@@ -148,7 +148,7 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z"
   ],
   "source_prs": [
     4892

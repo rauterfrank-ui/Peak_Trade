@@ -11,6 +11,9 @@ Operator GO (Class-D final): GO_BOUNDED_CLASS_D_FINAL_RESEARCH_FLEET_OFFLINE_ECO
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -76,9 +79,7 @@ from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0
 )
 
 CONFIRM_GO = GO_TOKEN
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_PRIMARY_WORKTREE = Path("/Users/frnkhrz/Peak_Trade")
 BINDING_COMPLETION_REL = (
     "config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json"

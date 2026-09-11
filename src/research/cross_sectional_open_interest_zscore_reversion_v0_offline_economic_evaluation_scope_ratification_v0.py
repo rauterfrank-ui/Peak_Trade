@@ -5,6 +5,9 @@ scope for cross_sectional_open_interest_zscore_reversion/v0. Does not execute ev
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -55,13 +58,13 @@ HARNESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0.py"
 )
-PARENT_DISCOVERY_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260712T172144Z"
+PARENT_DISCOVERY_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_execution_v0_20260712T172144Z"
 )
-PARENT_TERMINALIZATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5125_merge_closeout_cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding_implementation_v0_20260712T142411Z"
+PARENT_TERMINALIZATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5125_merge_closeout_cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding_implementation_v0_20260712T142411Z"
 )
 TRANSITIVE_SOURCE_REFERENCE_ATTESTATION_REF = (
     "config/research/"

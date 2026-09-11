@@ -1,6 +1,9 @@
 """Contract tests for OKX full-panel dataset promotion decision and binding v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -28,7 +31,7 @@ from src.research.pit_futures_instrument_lifecycle_registry_persistence_v1 impor
 )
 from src.research.cross_sectional_bounded_panel_fetch_v0 import compute_bounded_window_v0
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 CANDIDATE_ROOT = (
     ARCHIVE_ROOT / "datasets/candidates/okx_full_panel_fetch_completeness_v0_20260703T170453Z"
 )

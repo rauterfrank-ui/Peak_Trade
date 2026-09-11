@@ -15,23 +15,10 @@ MAPPING_GUARD_TEST = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.p
 THIS_MODULE = Path(__file__).name
 
 DERIVED_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_DERIVED_INPUT_JSONL_REFLECTION_V0=true"
-DERIVED_JSONL_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/"
-    "operator_artifacts_pending/DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl"
-)
-PRECHECK_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z"
-)
-BUILD_VALIDATE_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
-)
-CHARTER_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_lossless_jsonl_replacement_charter_readonly_v0_20260601T165515Z"
-)
+DERIVED_JSONL_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl"
+PRECHECK_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z"
+BUILD_VALIDATE_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
+CHARTER_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_lossless_jsonl_replacement_charter_readonly_v0_20260601T165515Z"
 
 FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 RISK_TABLE_ROW_RX = re.compile(

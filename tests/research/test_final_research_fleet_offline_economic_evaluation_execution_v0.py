@@ -1,6 +1,9 @@
 """Contract tests for final_research_fleet_offline_economic_evaluation_execution_v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 from pathlib import Path
 
@@ -34,7 +37,7 @@ from src.research.final_research_fleet_offline_economic_evaluation_scope_ratific
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BINDING_COMPLETION_PATH = (
     ARCHIVE_ROOT
     / "planning"

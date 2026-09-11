@@ -1,6 +1,9 @@
 """RUNBOOK STEP 29M — OKX economic research dataset staging from raw cache v1 tests."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import shutil
@@ -14,8 +17,10 @@ from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 
 
 RAW_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/.tmp_20260701T100850Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/inst-eth-usdt-perp/.tmp_20260701T100850Z"
+    )
 )
 
 

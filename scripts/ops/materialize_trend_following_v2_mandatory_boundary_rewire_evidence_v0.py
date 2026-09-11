@@ -2,6 +2,9 @@
 """Materialize durable evidence bundle for trend_following_v2 mandatory boundary rewire v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -11,9 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 BUNDLE_ID = "trend_following_v2_mandatory_boundary_rewire_canonical_plan_freeze_v0_" + datetime.now(
     timezone.utc
 ).strftime("%Y%m%dT%H%M%SZ")

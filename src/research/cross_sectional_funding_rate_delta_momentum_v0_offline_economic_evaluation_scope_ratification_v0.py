@@ -5,6 +5,9 @@ scope for cross_sectional_funding_rate_delta_momentum/v0. Does not execute evalu
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -59,13 +62,13 @@ HARNESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_execution_v0.py"
 )
-PARENT_DISCOVERY_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "new_versioned_offline_research_scope_discovery_material_difference_required_20260706T131920Z"
+PARENT_DISCOVERY_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/new_versioned_offline_research_scope_discovery_material_difference_required_20260706T131920Z"
 )
-PARENT_TERMINALIZATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "v2_fleet_terminalization_and_next_research_scope_boundary_20260706T131703Z"
+PARENT_TERMINALIZATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/v2_fleet_terminalization_and_next_research_scope_boundary_20260706T131703Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

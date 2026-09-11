@@ -7,6 +7,9 @@ authorized evaluation GO. No runtime, credentials, orders, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -426,9 +429,7 @@ def main() -> None:
     parser.add_argument(
         "--durable-evidence-root",
         type=Path,
-        default=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        default=Path(str(located_runtime_evidence_20260520())),
     )
     parser.add_argument("--admissibility-validation-only", action="store_true")
     parser.add_argument("--source-closeout-bundle", type=Path, default=None)

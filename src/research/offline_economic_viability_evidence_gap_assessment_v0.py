@@ -8,6 +8,9 @@ execution, no runtime authority, no promotion claims.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -39,13 +42,13 @@ OFFLINE_ECONOMIC_VIABILITY_EVIDENCE_GAP_ASSESSMENT_OWNER = (
 ASSESSMENT_SLICE_ID = "OFFLINE_ECONOMIC_VIABILITY_EVIDENCE_GAP_ASSESSMENT_V0"
 PACKAGE_MARKER = "OFFLINE_ECONOMIC_VIABILITY_EVIDENCE_GAP_ASSESSMENT_V0=true"
 
-DEFAULT_PARITY_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5034_pre_economics_notion_market_security_sync_v0_20260709T144613Z"
+DEFAULT_PARITY_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5034_pre_economics_notion_market_security_sync_v0_20260709T144613Z"
 )
-DEFAULT_GAP_SCAN_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/system_economic_evidence_admissibility_gap_scan_after_full_parity_v0_20260709T141726Z"
+DEFAULT_GAP_SCAN_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/system_economic_evidence_admissibility_gap_scan_after_full_parity_v0_20260709T141726Z"
 )
 
 AssessmentVerdict = Literal["PASS", "FAIL_CLOSED"]

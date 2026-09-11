@@ -1,6 +1,9 @@
 """Contract tests for lead-lag v0 terminal insufficient sample and pairwise spillover v1 scope ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    archive_relative_locator,
+)
 
 import json
 from pathlib import Path
@@ -118,7 +121,10 @@ class TestTerminalInsufficientSampleRegistrationConfig:
         assert payload["distinct_scope_ratified"] is True
         assert payload["trade_count"] == TRADE_COUNT
         assert payload["economic_evaluation_executed"] is True
-        assert str(CANONICAL_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in payload["canonical_evaluation_bundle"]
+        )
         assert payload["registration_digest"] == compute_registration_digest(payload)
 
     def test_no_economic_evaluation_authority_in_this_slice(self) -> None:

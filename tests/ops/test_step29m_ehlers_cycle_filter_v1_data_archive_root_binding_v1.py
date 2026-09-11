@@ -14,6 +14,7 @@ from src.backtest import (
 )
 from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    RUNTIME_EVIDENCE_20260520_REL,
     ArchiveRootError,
     resolve_archive_root,
 )
@@ -28,9 +29,6 @@ RUNNER_PATH = (
     ROOT / "scripts/ops/run_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py"
 )
 LEGACY_DOCUMENTS_PREFIX = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
-DURABLE_EVIDENCE_DEFAULT = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
 
@@ -83,11 +81,14 @@ def test_research_configs_rebind_dataset_path_only() -> None:
         assert LEGACY_DOCUMENTS_PREFIX not in str(binding)
 
 
-def test_research_evidence_refs_unchanged() -> None:
+def test_research_evidence_refs_use_archive_relative_locators() -> None:
     payload = json.loads((ROOT / EHLERS_RESEARCH_CONFIGS[1]).read_text(encoding="utf-8"))
-    assert payload["canonical_evaluation_bundle"].startswith(LEGACY_DOCUMENTS_PREFIX)
-    assert payload["classification_evidence_ref"].startswith(LEGACY_DOCUMENTS_PREFIX)
-    assert payload["durable_evidence_refs"].startswith(LEGACY_DOCUMENTS_PREFIX)
+    assert payload["canonical_evaluation_bundle"].startswith(RUNTIME_EVIDENCE_20260520_REL)
+    assert payload["classification_evidence_ref"].startswith(RUNTIME_EVIDENCE_20260520_REL)
+    assert payload["durable_evidence_refs"].startswith(RUNTIME_EVIDENCE_20260520_REL)
+    assert LEGACY_DOCUMENTS_PREFIX not in payload["canonical_evaluation_bundle"]
+    assert LEGACY_DOCUMENTS_PREFIX not in payload["classification_evidence_ref"]
+    assert LEGACY_DOCUMENTS_PREFIX not in payload["durable_evidence_refs"]
 
 
 def test_env_unset_does_not_open_legacy_documents(
@@ -114,8 +115,12 @@ def test_env_unset_does_not_open_legacy_documents(
 
 def test_env_valid_temp_root_relative_join(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    expected_bars = (tmp_path / contract.EHLERS_V1_DATASET_RELPATH).resolve()
-    expected_manifest = (tmp_path / contract.EHLERS_V1_DATASET_MANIFEST_RELPATH).resolve()
+    expected_bars = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.EHLERS_V1_DATASET_RELPATH
+    ).resolve()
+    expected_manifest = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.EHLERS_V1_DATASET_MANIFEST_RELPATH
+    ).resolve()
     assert contract.resolve_ehlers_v1_dataset_bars_path() == expected_bars
     assert contract.resolve_ehlers_v1_dataset_manifest_path() == expected_manifest
     cfg = contract.load_ehlers_cycle_filter_v1_evaluation_config_v1(ROOT, EHLERS_OPS_CONFIG)
@@ -129,7 +134,9 @@ def test_temp_root_existing_manifest_opens_joined_path_not_legacy(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    manifest_path = tmp_path / contract.EHLERS_V1_DATASET_MANIFEST_RELPATH
+    manifest_path = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.EHLERS_V1_DATASET_MANIFEST_RELPATH
+    )
     manifest_path.parent.mkdir(parents=True)
     manifest_path.write_text("{}", encoding="utf-8")
     cfg = contract.load_ehlers_cycle_filter_v1_evaluation_config_v1(ROOT, EHLERS_OPS_CONFIG)
@@ -183,5 +190,5 @@ def test_runner_resolves_via_contract_and_keeps_durable_evidence_default() -> No
     assert "pd.read_parquet(dataset_path)" in source
     assert "--durable-evidence-root" in source
     default_block = source.split("--durable-evidence-root", 1)[1]
-    assert DURABLE_EVIDENCE_DEFAULT in default_block
-    assert "PEAK_TRADE_DATA_ARCHIVE_ROOT" not in default_block.split("parser.add_argument", 1)[0]
+    assert "located_runtime_evidence_20260520" in default_block
+    assert LEGACY_DOCUMENTS_PREFIX not in default_block.split("parser.add_argument", 1)[0]

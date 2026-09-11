@@ -80,7 +80,7 @@
   "offline_only": true,
   "orders_allowed": false,
   "parameter_rescue_authorized": false,
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
   "parent_closeout_manifest_verify_rc": 0,
   "parent_scope_config": "config/research/post_pr4936_cross_sectional_funding_rate_research_fleet_complete_no_pass_scope_definition_v0.json",
   "parent_scope_doc": "docs/governance/POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0.md",
@@ -89,7 +89,7 @@
     "cross_sectional_funding_research_fleet_status": "COMPLETE_NO_PASS",
     "fleet_terminalization": "COMPLETE_NO_PASS",
     "merge_closeout_manifest_verify_rc": 0,
-    "merge_closeout_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
+    "merge_closeout_ref": "runtime_evidence/20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
     "selected_next_scope": "FINAL_RESEARCH_FLEET_BINDINGS_CANONICAL_RUNBOOK_PATH"
   },
   "process_classification": "VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_NO_EVAL_V0",
@@ -110,7 +110,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -118,10 +118,10 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "economic_policy_binding": {
         "policy_version": "economic_validity_policy_v1"
@@ -445,7 +445,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -453,10 +453,10 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "economic_policy_binding": {
         "policy_version": "economic_validity_policy_v1"
@@ -779,7 +779,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -787,10 +787,10 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "economic_policy_binding": {
         "policy_version": "economic_validity_policy_v1"
@@ -1134,8 +1134,8 @@
     "shared_cost_execution_dataset_period_bindings_required": true
   },
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z"
+    "runtime_evidence/20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z",
+    "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z"
   ],
   "status": "BINDINGS_AND_SCOPE_RATIFIED_NOT_EVALUATED",
   "threshold_lowering_authorized": false,

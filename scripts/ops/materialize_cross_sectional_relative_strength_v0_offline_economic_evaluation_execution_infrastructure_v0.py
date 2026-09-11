@@ -7,6 +7,9 @@ Operator GO: GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EV
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -53,18 +56,18 @@ from src.research.pit_futures_cross_sectional_research_data_digest_period_split_
 
 CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 DEFAULT_SOURCE_STAGING = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v1"
+    )
 )
 DEFAULT_BOUND_OUTPUT_REL = (
     "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
 )
-PRIOR_BLOCKER_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic_evaluation/"
-    "bounded_cross_sectional_relative_strength_v0_offline_economic_evaluation_execution_v1_"
-    "20260703T070255Z"
+PRIOR_BLOCKER_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "economic_evaluation/bounded_cross_sectional_relative_strength_v0_offline_economic_evaluation_execution_v1_20260703T070255Z"
 )
 
 

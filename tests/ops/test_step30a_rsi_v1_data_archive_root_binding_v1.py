@@ -12,6 +12,7 @@ from src.backtest import (
 )
 from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    RUNTIME_EVIDENCE_20260520_REL,
     ArchiveRootError,
     resolve_archive_root,
 )
@@ -75,8 +76,12 @@ def test_env_unset_does_not_open_legacy_documents(
 
 def test_env_valid_temp_root_relative_join(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    expected_bars = (tmp_path / contract.STEP30A_DATASET_V2_RELPATH).resolve()
-    expected_manifest = (tmp_path / contract.STEP30A_DATASET_V2_MANIFEST_RELPATH).resolve()
+    expected_bars = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.STEP30A_DATASET_V2_RELPATH
+    ).resolve()
+    expected_manifest = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.STEP30A_DATASET_V2_MANIFEST_RELPATH
+    ).resolve()
     assert contract.resolve_rsi_v2_dataset_bars_path() == expected_bars
     assert contract.resolve_rsi_v2_dataset_manifest_path() == expected_manifest
     cfg = contract.load_step30a_rsi_reversion_v1_evaluation_config_v1(ROOT, RSI_CONFIG)
@@ -90,7 +95,9 @@ def test_temp_root_existing_manifest_opens_joined_path_not_legacy(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    manifest_path = tmp_path / contract.STEP30A_DATASET_V2_MANIFEST_RELPATH
+    manifest_path = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.STEP30A_DATASET_V2_MANIFEST_RELPATH
+    )
     manifest_path.parent.mkdir(parents=True)
     manifest_path.write_text("{}", encoding="utf-8")
     opened: list[str] = []

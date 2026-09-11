@@ -8,6 +8,9 @@ activating runtime, granting order authority, or promoting final success flags.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -23,9 +26,9 @@ ASSESSMENT_SLICE_ID = "RUNTIME_BRIDGE_PRE_ACTIVATION_GATE_ASSESSMENT_V0"
 PACKAGE_MARKER = "RUNTIME_BRIDGE_PRE_ACTIVATION_GATE_ASSESSMENT_V0=true"
 PLAN_TYPE = "ASSESSMENT_ONLY"
 
-DEFAULT_PR5024_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5024_next_full_canonical_parity_surface_after_pr5023_v0_20260708T233946Z"
+DEFAULT_PR5024_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5024_next_full_canonical_parity_surface_after_pr5023_v0_20260708T233946Z"
 )
 
 AssessmentVerdict = Literal["PASS", "FAIL_CLOSED"]

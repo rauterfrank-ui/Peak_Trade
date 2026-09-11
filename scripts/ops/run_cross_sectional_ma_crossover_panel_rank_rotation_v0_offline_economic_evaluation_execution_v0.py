@@ -6,6 +6,9 @@ Operator GO: GO_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OFFLINE_ECON
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -81,19 +84,15 @@ ACCOUNTING_FIX_GO_TOKEN = (
     "ADJUDICATION_AND_REPRODUCIBILITY_FIX_V0"
 )
 ALLOWED_GO_TOKENS = frozenset({GO_TOKEN, ACCOUNTING_FIX_GO_TOKEN})
-SOURCE_EVALUATION_BUNDLE_DEFAULT = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_"
-    "20260710T101306Z"
+SOURCE_EVALUATION_BUNDLE_DEFAULT = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z"
 )
 EXPECTED_ORIGIN_MAIN_SHA = "8ea5670cda60f9eb3656ef1aa483ed6f823457b5"
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
-SOURCE_CLOSEOUT_BUNDLE_PR5079 = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5079_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_"
-    "binding_ratification_v0_20260710T100525Z"
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
+SOURCE_CLOSEOUT_BUNDLE_PR5079 = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5079_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_binding_ratification_v0_20260710T100525Z"
 )
 
 EXPECTED_BINDING_DIGEST = "89f80951dd71e43168b9b37b0d6f04d57ba7ca025fcd4923c9901d0f244f43e6"

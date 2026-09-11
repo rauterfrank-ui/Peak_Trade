@@ -8,6 +8,9 @@ Fail-closed until both bindings PASS. No economic evaluation execution or author
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -37,10 +40,9 @@ CONFIG_REL_PATH = "config/research/cross_sectional_funding_rate_extreme_carry_re
 STRATEGY_ID = "cross_sectional_funding_rate_extreme_carry_reversion"
 STRATEGY_VERSION = "v0"
 SCOPE_NAME = "CROSS_SECTIONAL_FUNDING_RATE_EXTREME_CARRY_REVERSION_V0_OFFLINE_RESEARCH_SCOPE"
-SOURCE_OPERATOR_REVIEW_EVIDENCE_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_"
-    "negative_v0_20260707T222915Z"
+SOURCE_OPERATOR_REVIEW_EVIDENCE_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_negative_v0_20260707T222915Z"
 )
 
 REUSED_PERSISTENCE_REVERSAL_FILTER_OWNER = (

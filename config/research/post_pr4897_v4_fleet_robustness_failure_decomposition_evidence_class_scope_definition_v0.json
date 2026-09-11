@@ -143,7 +143,7 @@
   "paper_authorized": false,
   "parameter_rescue_allowed": false,
   "parent_evaluation_evidence_class_id": "POST_PR4895_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
-  "parent_evaluation_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
+  "parent_evaluation_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
   "parent_evaluation_manifest_verify_rc": 0,
   "process_classification": "POST_PR4897_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0",
   "promotion_authority": false,
@@ -184,7 +184,7 @@
   "selected_next_scope_class": "NEW_EVIDENCE_CLASS_REQUIRED",
   "shadow_authorized": false,
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z"
   ],
   "source_prs": [
     4897

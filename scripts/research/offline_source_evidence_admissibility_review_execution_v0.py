@@ -6,6 +6,9 @@ no runtime authority, no EconomicViabilityEvidenceV1 emission.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -38,9 +41,7 @@ GO_TOKEN = (
 DEFAULT_CONFIG = (
     _REPO_ROOT / "config/research/offline_source_evidence_admissibility_review_execution_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "offline_source_evidence_admissibility_review_execution_v0"
 FINAL_RESEARCH_FLEET = ("trend_following", "bollinger_bands", "momentum_1h")
 STRATEGY_VERSION = "post_v4_hypothesis_v0"

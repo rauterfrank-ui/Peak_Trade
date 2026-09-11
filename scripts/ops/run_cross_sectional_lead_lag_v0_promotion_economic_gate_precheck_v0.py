@@ -2,6 +2,9 @@
 """Collect durable evidence for lead-lag v0 promotion economic gate precheck v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -18,7 +21,7 @@ if str(_SRC_ROOT) not in sys.path:
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_CLOSEOUT = (
     ARCHIVE_ROOT
     / "research/pr5140_merge_closeout_cross_sectional_lead_lag_v0_research_eval_decision_parity_contract_suite_v0_20260713T010633Z"

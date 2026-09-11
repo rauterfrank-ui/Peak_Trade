@@ -11,6 +11,9 @@ Operator GO: GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -61,14 +64,13 @@ BINDING_CLASS = "POST_PR4894_ROOT_CAUSE_DECOMPOSITION_DERIVED_FLEET_BINDING_V0"
 STRATEGY_VERSION = "v4"
 SOURCE_V3_STRATEGY_VERSION = "v3"
 FAILED_CANDIDATE_VERDICT = "ROBUSTNESS_FAILED"
-DECOMPOSITION_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0_"
-    "20260706T015337Z"
+DECOMPOSITION_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0_20260706T015337Z"
 )
-PARENT_SCOPE_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/post_pr4894_next_scope_definition_v0_20260706T020323Z"
+PARENT_SCOPE_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/post_pr4894_next_scope_definition_v0_20260706T020323Z"
 )
 
 BASELINE_HEAD = "64509cce36ec5316cbfe4f42427cf81ecf67bdae"

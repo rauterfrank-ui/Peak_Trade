@@ -2,6 +2,9 @@
 """Materialize durable evidence for offline productive factor exposure diagnostics v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -31,7 +34,7 @@ from src.research.linear_evidence.offline_productive_factor_exposure_diagnostics
     materialize_productive_inputs_from_paths,
 )
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE = "OFFLINE_PRODUCTIVE_FACTOR_EXPOSURE_DIAGNOSTICS_V0"
 SCOPE_OPERATOR_GO = "GO_OFFLINE_PRODUCTIVE_FACTOR_EXPOSURE_DIAGNOSTICS_V0"
 CANONICAL_OWNER = (

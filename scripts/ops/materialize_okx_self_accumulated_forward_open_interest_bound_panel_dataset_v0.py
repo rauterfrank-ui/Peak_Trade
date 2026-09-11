@@ -6,6 +6,9 @@ no new instrument selection, no network fetch. Operator GO required.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -37,8 +40,10 @@ from src.research.okx_self_accumulated_forward_open_interest_archive_v0 import (
 )
 
 SOURCE_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "core_system_development_self_accumulated_oi_multi_instrument_acquisition_and_orchestration_v0_20260712T002600Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/core_system_development_self_accumulated_oi_multi_instrument_acquisition_and_orchestration_v0_20260712T002600Z"
+    )
 )
 
 

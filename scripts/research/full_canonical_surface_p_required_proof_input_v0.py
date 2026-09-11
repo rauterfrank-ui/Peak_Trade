@@ -2,6 +2,9 @@
 """Collect durable evidence for Surface P required proof-input binding v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -63,7 +66,7 @@ def collect_evidence(
         durable_archive_root
         or os.environ.get(
             "PEAK_TRADE_DURABLE_ARCHIVE_ROOT",
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+            str(located_runtime_evidence_20260520()),
         )
     )
     evidence_dir = output_dir or (

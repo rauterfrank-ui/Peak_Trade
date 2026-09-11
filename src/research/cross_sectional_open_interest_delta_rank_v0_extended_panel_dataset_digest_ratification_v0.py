@@ -6,6 +6,9 @@ Research-only; no runtime or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -92,10 +95,10 @@ SUPERSESSION_MODE = "EXTENDED_PANEL_DATASET_DIGEST_REFRESH_V0"
 BINDING_CLASSIFICATION = "UNCHANGED_STRATEGY_RANKING_SEMANTICS_MATERIAL_DATASET_IDENTITY_CHANGE"
 
 DEFAULT_MATERIALIZATION_MANIFEST = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
-    "and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a/panel/"
-    "panel_open_interest_dataset_manifest.json"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a/panel/panel_open_interest_dataset_manifest.json"
+    )
 )
 
 

@@ -2,6 +2,9 @@
 """Materialize trend_following v2 offline economic evaluation baseline execution implementation v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -23,9 +26,7 @@ from src.research.trend_following_v2_offline_economic_evaluation_execution_v0 im
 )
 
 CONFIRM_GO = BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_STAGING_ROOT = runner_module.DEFAULT_STAGING_ROOT
 FOCUSED_TEST = (
     "tests/research/"

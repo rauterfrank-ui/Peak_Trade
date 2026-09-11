@@ -5,6 +5,9 @@ config, and evaluation infrastructure readiness without executing economic evalu
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -71,9 +74,7 @@ ADAPTER_OWNER_REL_PATH = "src/research/bouchaud_microstructure_ohlcv_proxy_v1_st
 RUNNER_REL_PATH = "scripts/ops/run_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py"
 INVOKE_REL_PATH = "scripts/ops/invoke_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PR5097_CLOSEOUT_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_"

@@ -6,6 +6,9 @@ no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -42,9 +45,7 @@ NEXT_EXECUTION_GO = (
 DEFAULT_CONFIG = (
     _REPO_ROOT / "config/research/post_pr4907_terminal_fleet_failure_next_scope_definition_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_pr4907_terminal_fleet_failure_next_scope_definition_v0"
 PARENT_PR4905_OUTPUT_SUFFIX = (
     "post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z"

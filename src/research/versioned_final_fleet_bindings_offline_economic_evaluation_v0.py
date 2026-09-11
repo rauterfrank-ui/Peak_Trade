@@ -10,6 +10,9 @@ Research-only. No runtime, order, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -77,9 +80,7 @@ GO_TOKEN = (  # fmt: skip
 )
 SCOPE_CLASSIFICATION = "BOUNDED_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_V0"
 EXPECTED_ORIGIN_MAIN_SHA = "d7e03de515a7349b01cc4058379fcbb65c4548d8"
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_STAGING_REL = (
     "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/"

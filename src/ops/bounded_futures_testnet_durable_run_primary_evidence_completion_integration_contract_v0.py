@@ -19,6 +19,9 @@ replay, state mutation, or authority lift.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -3493,9 +3496,7 @@ def default_minimal_completion_integration_input(
     *,
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
     run_id: str = "bounded-futures-testnet-offline-run-001",
-    durable_archive_root: str = (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    ),
+    durable_archive_root: str = (str(located_runtime_evidence_20260520())),
     run_root_identity: str = "bounded_futures_testnet_durable_run/offline-v0",
 ) -> DurableRunPrimaryEvidenceCompletionIntegrationInput:
     """Minimal valid bounded futures testnet completion integration input for offline tests."""

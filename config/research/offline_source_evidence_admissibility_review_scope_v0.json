@@ -9,7 +9,7 @@
   "parent_pre_merge_origin_main": "0b307dc027a274d0d5f0df07b96d6c593c761331",
   "parent_pr_head": "18af85cd079c87ef360a8403dede92fd300ce578",
   "parent_post_merge_head": "399cbcbc8b9d9dbd15ef7ed22da0f31e72e91081",
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/offline_source_evidence_contract_collector_materialization_merge_closeout_20260706T055534ZZ",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/offline_source_evidence_contract_collector_materialization_merge_closeout_20260706T055534ZZ",
   "required_parent_manifest_rc": 0,
   "admissibility_review_defined": true,
   "admissibility_review_executed": false,

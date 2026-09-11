@@ -1,6 +1,9 @@
 """Tests for Shadow bounded observation retention adapter and review scripts."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import io
@@ -28,7 +31,7 @@ APPROVAL_FIXTURE_24H = (
 )
 RUN_ID_24H = "daemon_paper_24h_20260524T093549Z"
 PROFILE_24H = "daemon_paper_shadow_24h_v0"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 def _load_module(script: Path, name: str):

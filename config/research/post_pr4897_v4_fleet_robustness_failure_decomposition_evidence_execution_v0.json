@@ -93,9 +93,9 @@
   "offline_only": true,
   "panel_zero_trade_refuted": true,
   "parameter_rescue_allowed": false,
-  "parent_evaluation_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
+  "parent_evaluation_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
   "parent_evaluation_manifest_verify_rc": 0,
-  "parent_scope_definition_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_next_versioned_research_scope_definition_only_v0_20260706T025026Z",
+  "parent_scope_definition_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4897_next_versioned_research_scope_definition_only_v0_20260706T025026Z",
   "parent_scope_definition_manifest_verify_rc": 0,
   "parent_scope_definition_ref": "config/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_class_scope_definition_v0.json",
   "process_classification": "POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0",
@@ -117,8 +117,8 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_next_versioned_research_scope_definition_only_v0_20260706T025026Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4897_next_versioned_research_scope_definition_only_v0_20260706T025026Z"
   ],
   "source_prs": [
     4897,

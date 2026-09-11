@@ -1,6 +1,9 @@
 """Registry contract for STEP 29M macd v1 real economic evaluation v2 reevaluation and v3 policy."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -16,22 +19,30 @@ V3_CONFIG = (
     REPO_ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
 )
 POLICY_DECISION_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning_or_validation/step29m_read_only_policy_owner_and_sizing_contract_decision_v0_20260701T235959Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "planning_or_validation/step29m_read_only_policy_owner_and_sizing_contract_decision_v0_20260701T235959Z"
+    )
 )
 EXPECTED_V2_FILE_SHA256 = "0b34ee984c7dc9380c417a2eb66086a34a6a51391318496e166d364340cea6fe"
 EXPECTED_V3_CONFIG_DIGEST = "ceabf0206a35bb5cc0f3ced4bf8fb19f18139ace59fd56a90529f79607ac9d7c"
 MACD_V3_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+    )
 )
 V2_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
+    )
 )
 INVALIDATED_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z"
+    )
 )
 
 

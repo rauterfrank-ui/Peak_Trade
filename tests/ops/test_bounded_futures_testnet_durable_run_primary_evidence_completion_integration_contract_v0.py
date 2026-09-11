@@ -6,6 +6,9 @@ completion static integration only.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 from dataclasses import replace
@@ -305,9 +308,7 @@ _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_E
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
 ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
-DURABLE_ARCHIVE_ROOT = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = str(located_runtime_evidence_20260520())
 
 PE31_DURABLE_COMPLETION_BINDING_PACKAGE_MARKER = (
     "PE31_DURABLE_COMPLETION_CANONICAL_BINDING_CONTRACT_V0=true"

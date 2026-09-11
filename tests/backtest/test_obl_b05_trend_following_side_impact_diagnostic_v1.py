@@ -4,6 +4,9 @@ Read-only diagnostic: no productive semantics mutation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -126,9 +129,10 @@ def test_runner_is_diagnostic_only_and_adapter_not_mutated_by_slice_files() -> N
 def test_eval_only_control_ratified_shift_dynamic(tmp_path: Path) -> None:
     """Dynamic smoke: eval instrument A/B shift DA -> composition."""
     archive = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_"
-        "20260716T015033Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
+        )
     )
     if not archive.is_dir():
         pytest.skip("durable archive unavailable")

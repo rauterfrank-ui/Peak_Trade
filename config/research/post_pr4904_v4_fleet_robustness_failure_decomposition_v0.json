@@ -93,9 +93,9 @@
   "non_authorizing": true,
   "offline_only": true,
   "parameter_rescue_allowed": false,
-  "parent_closeout_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z",
+  "parent_closeout_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z",
   "parent_closeout_manifest_verify_rc": 0,
-  "parent_evaluation_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
+  "parent_evaluation_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
   "parent_evaluation_manifest_verify_rc": 0,
   "process_classification": "POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0",
   "promotion_authority": false,
@@ -115,8 +115,8 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
+    "runtime_evidence/20260520T161443Z/implementation/pr4904_squash_merge_closeout_20260706T041915Z"
   ],
   "source_prs": [
     4904

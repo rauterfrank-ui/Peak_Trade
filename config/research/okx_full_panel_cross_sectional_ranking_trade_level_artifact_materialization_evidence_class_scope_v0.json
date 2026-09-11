@@ -120,7 +120,7 @@
   "scope_id": "okx_full_panel_cross_sectional_ranking_trade_level_artifact_materialization_evidence_class_scope_v0",
   "scope_version": "v0",
   "shadow_authorized": false,
-  "source_diagnostics_execution_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_execution_read_only_v0_20260705T022050Z",
+  "source_diagnostics_execution_bundle": "runtime_evidence/20260520T161443Z/okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_execution_read_only_v0_20260705T022050Z",
   "source_diagnostics_execution_manifest_verify_rc": 0,
   "source_diagnostics_execution_verdict": "DIAGNOSTICS_DECOMPOSITION_COMPLETE — INCONCLUSIVE_FIELDS_PERSIST — PRIMARY_FAILURE_UNCHANGED",
   "source_diagnostics_scope_pr": 4854,

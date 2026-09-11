@@ -2,6 +2,9 @@
 """Materialize cross-sectional MA-crossover panel rank-rotation v0 research scope ratification v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -18,10 +21,9 @@ CONFIRM_GO = (
     "GO_RATIFY_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_"
     "RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V1"
 )
-SOURCE_ADJUDICATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_"
-    "corrected_ratification_prep_v0_20260710T090302Z"
+SOURCE_ADJUDICATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "planning/cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z"
 )
 
 from src.research.cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1 import (  # noqa: E402
@@ -159,7 +161,7 @@ def main() -> None:
     parser.add_argument("--confirm", required=True)
     parser.add_argument(
         "--durable-evidence-root",
-        default="/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+        default=str(located_runtime_evidence_20260520()),
     )
     parser.add_argument("--write-repo-config", action="store_true")
     args = parser.parse_args()

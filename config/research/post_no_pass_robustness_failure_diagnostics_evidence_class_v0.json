@@ -111,7 +111,7 @@
   "scope_version": "v0",
   "selected_class": "E",
   "shadow_authorized": false,
-  "source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z",
+  "source_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z",
   "source_evidence_manifest_verify_rc": 0,
   "source_prs": [
     4873,

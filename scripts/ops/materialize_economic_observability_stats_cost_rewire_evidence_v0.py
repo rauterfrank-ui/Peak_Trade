@@ -2,6 +2,9 @@
 """Materialize durable evidence for canonical stats/cost decomposition rewire v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import csv
@@ -49,9 +52,7 @@ from src.backtest.stats import compute_backtest_stats  # noqa: E402
 
 import pandas as pd  # noqa: E402
 
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 PR5174_CLOSEOUT = ARCHIVE_ROOT / (
     "pr5174_merge_closeout_canonical_economic_observability_registry_and_contract_foundation_v0_"
     "20260714T192427Z"

@@ -72,8 +72,79 @@ TEST_DIFF_BASE_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 OTHER_DIFF_BASE_SHA = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 
 COMMITTED_OWNER_PATHS = (
-    "src/research/new_listings/collectors/ccxt_ticker.py",
-    "tests/research/new_listings/test_p8_ccxt_replay.py",
+    "scripts/research/full_canonical_backtest_boundary_chain_reassessment_v0.py",
+    "scripts/research/full_canonical_parity_closure_assessment_v0.py",
+    "scripts/research/full_canonical_parity_pass_eligibility_gate_v0.py",
+    "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py",
+    "scripts/research/full_canonical_surface_p_required_proof_input_v0.py",
+    "scripts/research/offline_source_evidence_admissibility_review_execution_v0.py",
+    "scripts/research/offline_source_evidence_admissibility_review_scope_v0.py",
+    "scripts/research/offline_source_evidence_contract_collector_materialization_v0.py",
+    "scripts/research/offline_source_evidence_parent_closeout_manifest_precondition_gap_fix_v0.py",
+    "scripts/research/post_no_pass_inconclusive_metric_materialization_path_diagnostics_v0.py",
+    "scripts/research/post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0.py",
+    "scripts/research/post_no_pass_robustness_failure_diagnostics_v0.py",
+    "scripts/research/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py",
+    "scripts/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_evidence_execution_v0.py",
+    "scripts/research/post_no_pass_step31f_promotion_metric_materialization_path_execution_gap_diagnostics_scope_v0.py",
+    "scripts/research/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0.py",
+    "scripts/research/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0.py",
+    "scripts/research/post_pr4894_next_versioned_research_scope_definition_v0.py",
+    "scripts/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_class_scope_definition_v0.py",
+    "scripts/research/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0.py",
+    "scripts/research/post_pr4900_versioned_binding_or_evaluation_execution_scope_v0.py",
+    "scripts/research/post_pr4904_v4_fleet_robustness_failure_decomposition_v0.py",
+    "scripts/research/post_pr4905_terminal_fleet_failure_next_scope_definition_v0.py",
+    "scripts/research/post_pr4906_offline_only_terminal_fleet_failure_evidence_execution_v0.py",
+    "scripts/research/post_pr4907_terminal_fleet_failure_next_scope_definition_v0.py",
+    "scripts/research/post_pr4908_offline_terminal_failure_artifact_materialization_v0.py",
+    "scripts/research/post_pr4920_new_versioned_research_scope_definition_v0.py",
+    "scripts/research/post_pr4921_versioned_research_bindings_no_eval_v0.py",
+    "scripts/research/post_pr4936_cross_sectional_funding_rate_research_fleet_complete_no_pass_scope_definition_v0.py",
+    "scripts/research/post_pr4937_final_research_fleet_bindings_and_offline_eval_scope_ratification_v0.py",
+    "scripts/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.py",
+    "scripts/research/post_pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep_v0.py",
+    "scripts/research/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_v0.py",
+    "scripts/research/post_v4_versioned_fleet_binding_materialization_only_v0.py",
+    "scripts/research/run_offline_economic_viability_evidence_gap_assessment_v0.py",
+    "src/research/bouchaud_microstructure_ohlcv_proxy_v1_failed_execution_contract_evidence_and_unchanged_retry_block_v0.py",
+    "src/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+    "src/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_v0.py",
+    "src/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1.py",
+    "src/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_terminal_negative_economic_evidence_and_supersession_registration_v0.py",
+    "src/research/cross_sectional_open_interest_delta_rank_v0_admissible_source_ratification_and_scope_parking_reopen_v0.py",
+    "src/research/cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0.py",
+    "src/research/cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification_v0.py",
+    "src/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.py",
+    "src/research/csf_rdm_v0_extended_chronological_v1_staging_funding_panel_materialization_v0.py",
+    "src/research/el_karoui_vol_model_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.py",
+    "src/research/full_canonical_core_completion_plausibility_evaluation_v0.py",
+    "src/research/okx_full_panel_fetch_completeness_evidence_v0.py",
+    "src/research/okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization_v0.py",
+    "src/research/post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0.py",
+    "src/research/post_pr4895_versioned_fleet_binding_ratification_v0.py",
+    "src/research/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0.py",
+    "tests/research/test_bounded_offline_funding_fetch_for_materialized_panel_v0.py",
+    "tests/research/test_cross_sectional_funding_rate_carry_v0_economic_failure_registry_reconciliation_v0.py",
+    "tests/research/test_cross_sectional_funding_rate_delta_momentum_v0_ops_runner_pre_eval_blocker_fix_v0.py",
+    "tests/research/test_cross_sectional_lead_lag_v0_evaluation_path_parity_flag_ratification_v1.py",
+    "tests/research/test_cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_adapter_v0_contract.py",
+    "tests/research/test_cross_sectional_open_interest_zscore_reversion_v0_offline_economic_evaluation_adapter_v0_contract.py",
+    "tests/research/test_cross_sectional_relative_strength_v0_offline_economic_evaluation_infrastructure_completion_v1.py",
+    "tests/research/test_csf_rdm_v0_dataset_funding_binding_materialization_preflight_v0.py",
+    "tests/research/test_fetch_cross_sectional_bound_period_panel_membership_filter_v0.py",
+    "tests/research/test_final_research_fleet_class_d_offline_evaluation_execution_owner_rebind_v0.py",
+    "tests/research/test_final_research_fleet_offline_economic_evaluation_execution_v0.py",
+    "tests/research/test_final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py",
+    "tests/research/test_okx_full_panel_dataset_promotion_decision_and_binding_v0.py",
+    "tests/research/test_okx_full_panel_fetch_completeness_evidence_v0.py",
+    "tests/research/test_okx_historical_funding_archive_ingest_v0.py",
+    "tests/research/test_okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization_v0_contract.py",
+    "tests/research/test_okx_self_accumulated_forward_open_interest_eth_gap_remediation_v0_contract.py",
+    "tests/research/test_okx_self_accumulated_forward_open_interest_historical_depth_sufficiency_and_materialization_admissibility_contract_v0.py",
+    "tests/research/test_okx_self_accumulated_forward_open_interest_multi_instrument_acquisition_and_orchestration_v0_contract.py",
+    "tests/research/test_post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py",
+    "tests/research/test_versioned_final_fleet_bindings_offline_economic_evaluation_v0.py",
 )
 
 
@@ -453,7 +524,7 @@ class TestOwnerAdjudicationAdmissionClassContractV1:
 
 
 class TestOwnerAdjudicationCommittedGrantV1:
-    def test_committed_artifact_is_valid_exact_two_path_grant(self) -> None:
+    def test_committed_artifact_is_valid_exact_file_grant(self) -> None:
         auth = load_owner_adjudication_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_owner_adjudication_authorization(auth, repo_root=REPO_ROOT)
@@ -467,6 +538,7 @@ class TestOwnerAdjudicationCommittedGrantV1:
         assert auth["OWNER_APPROVED_ALONE_IS_INSUFFICIENT"] is True
         assert auth["grant_active"] is True
         assert auth["allowed_paths"] == list(COMMITTED_OWNER_PATHS)
+        assert len(auth["allowed_paths"]) == 73
         assert auth["allowed_surface_classes"] == [OWNER_ADJUDICATION_SCOPE_CLASS]
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False

@@ -76,7 +76,7 @@
   "execution_model_binding_ref": "binding_config.execution_model_binding",
   "expected_output_bundle_contract": {
     "bundle_prefix": "okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_v0",
-    "durable_archive_root_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+    "durable_archive_root_ref": "runtime_evidence/20260520T161443Z",
     "manifest_policy_ref": "primary_evidence_retention_v0",
     "manifest_verify_rc_required": 0,
     "required_artifacts": [

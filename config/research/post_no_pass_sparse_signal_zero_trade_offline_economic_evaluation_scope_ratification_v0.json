@@ -22,7 +22,7 @@
       "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
       "panel_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
       "panel_member_count": 118,
-      "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+      "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
       "sequential_rotation": true,
       "substantially_differs_from_class_d_narrow_eth": true
     },
@@ -30,10 +30,10 @@
     "network_access_forbidden": true,
     "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
     "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-    "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-    "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+    "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+    "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
     "panel_member_count": 118,
-    "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
   },
   "common_instrument_policy_ref": {
     "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
@@ -219,7 +219,7 @@
   "offline_economic_evaluation_scope_ratified": true,
   "order_effect": "NONE",
   "panel_data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-  "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
   "prohibited_actions": [
     "ECONOMIC_EVALUATION_EXECUTION",
     "BACKTEST_RERUN",

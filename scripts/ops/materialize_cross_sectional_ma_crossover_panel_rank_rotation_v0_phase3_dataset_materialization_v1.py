@@ -8,6 +8,9 @@ Operator GO: GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PA
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -209,7 +212,7 @@ def main() -> None:
     parser.add_argument("--operator", default="Frank Rauter")
     parser.add_argument(
         "--durable-evidence-root",
-        default="/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+        default=str(located_runtime_evidence_20260520()),
     )
     parser.add_argument("--okx-materialization-evidence-dir", type=Path, default=None)
     parser.add_argument("--panel-staging-root", type=Path, default=None)

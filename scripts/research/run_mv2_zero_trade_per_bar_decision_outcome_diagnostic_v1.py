@@ -6,6 +6,9 @@ No economic reevaluation, no strategy/decision/sizing/runtime mutation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -58,9 +61,7 @@ CONFIRM_GO = GO_TOKEN
 DEFAULT_CONFIG = (
     _REPO_ROOT / "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1"
 
 

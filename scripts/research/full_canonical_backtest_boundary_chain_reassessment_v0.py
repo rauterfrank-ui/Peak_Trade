@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -33,9 +36,9 @@ ASSESSMENT_SLICE_ID = "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 ASSESSMENT_SCHEMA = "FullCanonicalBacktestBoundaryChainReassessmentV0"
 FEATURE_BRANCH = "core-system-completion-full-canonical-backtest-boundary-chain-reassessment-v0"
 NEXT_STEP_AFTER_PASS = "FULL_CANONICAL_PARITY_PASS_ELIGIBILITY_GATE_V0"
-DEFAULT_PR5026_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5026_runtime_bridge_boundary_rewire_or_gap_assessment_v0_20260709T001400Z"
+DEFAULT_PR5026_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5026_runtime_bridge_boundary_rewire_or_gap_assessment_v0_20260709T001400Z"
 )
 
 TOLERATED_UNTRACKED_PREFIXES = (

@@ -5,6 +5,9 @@ scope for cross_sectional_funding_rate_rank_delta/v0. Does not execute evaluatio
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -75,13 +78,13 @@ READINESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_rank_delta_v0_offline_economic_evaluation_infrastructure_readiness_v0.py"
 )
-PARENT_TERMINAL_SCOPE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "dual_leg_spread_v1_terminal_negative_evidence_and_next_material_scope_20260706T145350Z"
+PARENT_TERMINAL_SCOPE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/dual_leg_spread_v1_terminal_negative_evidence_and_next_material_scope_20260706T145350Z"
 )
-PARENT_DUAL_LEG_SPREAD_V1_EVALUATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "dual_leg_spread_v1_offline_economic_reevaluation_after_pr4929_calmar_fix_20260706T144942Z"
+PARENT_DUAL_LEG_SPREAD_V1_EVALUATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/dual_leg_spread_v1_offline_economic_reevaluation_after_pr4929_calmar_fix_20260706T144942Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -36,31 +39,40 @@ CANONICAL_ENTRY_POINT = "scripts/research/offline_rolling_linear_drift_diagnosti
 
 DEFAULT_SOURCE_EVIDENCE_REFS = {
     "PR5168_MERGE_CLOSEOUT_EVIDENCE": (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/pr5168_merge_closeout_offline_diagnostic_parameter_sensitivity_model_spec_alignment_v0_20260714T142944Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/pr5168_merge_closeout_offline_diagnostic_parameter_sensitivity_model_spec_alignment_v0_20260714T142944Z"
+        )
     ),
     "ALIGNMENT_SOURCE_EVIDENCE": (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/offline_diagnostic_parameter_sensitivity_model_spec_alignment_or_bounded_extended_sampling_v0_20260714T142100Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/offline_diagnostic_parameter_sensitivity_model_spec_alignment_or_bounded_extended_sampling_v0_20260714T142100Z"
+        )
     ),
     "PREVIOUS_REEVALUATION_EVIDENCE": (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z"
+        )
     ),
     "SAMPLE_SUFFICIENCY_DIAGNOSIS_EVIDENCE": (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/read_only_parameter_sensitivity_sample_sufficiency_diagnosis_v0_20260714T141028Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/read_only_parameter_sensitivity_sample_sufficiency_diagnosis_v0_20260714T141028Z"
+        )
     ),
     "POST_ALIGNMENT_REEVALUATION_EVIDENCE": (
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/offline_parameter_sensitivity_surface_v0_post_alignment_reevaluation_20260714T143318Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/offline_parameter_sensitivity_surface_v0_post_alignment_reevaluation_20260714T143318Z"
+        )
     ),
 }
 
-DEFAULT_SIGNAL_MATRIX = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z/"
-    "productive_signal_matrix_materialization/signal_matrix.jsonl"
+DEFAULT_SIGNAL_MATRIX = str(
+    located_runtime_evidence_20260520()
+    / "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z/productive_signal_matrix_materialization/signal_matrix.jsonl"
 )
 
 

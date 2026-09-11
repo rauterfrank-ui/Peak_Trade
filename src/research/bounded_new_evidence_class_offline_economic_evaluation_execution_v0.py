@@ -6,6 +6,9 @@ No runtime, order, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -81,9 +84,7 @@ DURABLE_EVIDENCE_BUNDLE_PREFIX = (
     "bounded_new_evidence_class_offline_economic_evaluation_execution_v0"
 )
 
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PR4845_CLOSEOUT_BUNDLE = (
     "implementation/final_research_fleet_new_evidence_class_scope_pr4845_squash_merge_closeout_v0_"
     "20260705T003158Z"

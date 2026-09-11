@@ -1,6 +1,9 @@
 """STEP30A dataset v2 promotion from verified raw staging v0 tests."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import json
@@ -15,12 +18,13 @@ STAGING_SCRIPT = (
     ROOT / "scripts/ops/stage_step30a_okx_inst_eth_usdt_perp_dataset_v2_from_raw_staging_v0.py"
 )
 RAW_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/.tmp_20260702T050638Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/inst-eth-usdt-perp/.tmp_20260702T050638Z"
+    )
 )
 V2_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/inst-eth-usdt-perp/v2"
+    str(located_runtime_evidence_20260520() / "datasets/admissible_futures/inst-eth-usdt-perp/v2")
 )
 
 

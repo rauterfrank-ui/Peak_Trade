@@ -32,7 +32,7 @@ from src.backtest.strategy_signal_binding_v1 import (
 from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
     ArchiveRootError,
-    assert_path_under_archive,
+    join_runtime_evidence_relpath,
     resolve_archive_root,
 )
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
@@ -155,10 +155,9 @@ def resolve_rsi_v2_data_archive_root(
 
 
 def _join_rsi_v2_dataset_path(root: Path, relpath: str) -> Path:
-    rel = Path(relpath)
-    if rel.is_absolute() or ".." in rel.parts:
-        raise ArchiveRootError("RSI_V2_DATASET_RELPATH_NOT_RELATIVE")
-    return assert_path_under_archive(root / rel, root)
+    return join_runtime_evidence_relpath(
+        root, relpath, error_code="RSI_V2_DATASET_RELPATH_NOT_RELATIVE"
+    )
 
 
 def resolve_rsi_v2_dataset_bars_path(

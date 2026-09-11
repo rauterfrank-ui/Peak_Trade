@@ -6,6 +6,9 @@ no runtime authority, no historical bundle mutation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -41,9 +44,7 @@ DEFAULT_CONFIG = (
     _REPO_ROOT
     / "config/research/offline_source_evidence_parent_closeout_manifest_precondition_gap_fix_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "offline_source_evidence_parent_closeout_manifest_precondition_gap_fix_v0"
 SUPERSEDING_SUBDIR = "superseding_parent_closeout"
 MISSING_SOURCE_EVIDENCE = "MISSING_SOURCE_EVIDENCE"

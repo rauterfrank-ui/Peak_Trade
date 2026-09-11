@@ -8,11 +8,11 @@
   },
   "base_head": "0ea6f857e7e16b7c96e6ffdfe2f2517e4eb11642",
   "parent_evidence": {
-    "pr4909_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
-    "offline_terminal_failure_artifact_materialization_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z",
+    "pr4909_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
+    "offline_terminal_failure_artifact_materialization_bundle": "runtime_evidence/20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z",
     "ignored_incomplete_closeout_dirs": [
-      "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051831Z",
-      "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051858Z"
+      "runtime_evidence/20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051831Z",
+      "runtime_evidence/20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051858Z"
     ]
   },
   "terminal_failure_materialization_summary": {

@@ -11,6 +11,9 @@ full offline economic evaluation execution paths. Operator GO tokens:
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -55,9 +58,7 @@ from src.research.cross_sectional_funding_rate_rank_delta_v0_offline_economic_ev
 INFRASTRUCTURE_CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 EXECUTION_CONFIRM_GO = GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_RANK_DELTA_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 )

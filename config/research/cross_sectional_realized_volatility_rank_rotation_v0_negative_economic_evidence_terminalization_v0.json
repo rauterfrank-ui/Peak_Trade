@@ -5,7 +5,7 @@
   "binding_config_ref": "config/research/cross_sectional_realized_volatility_rank_rotation_v0_versioned_bindings_and_eval_scope.json",
   "economic_evaluation_executed": true,
   "economic_validity_offline_gate_pass": false,
-  "evidence_bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_realized_volatility_rank_rotation_v0_offline_economic_evaluation_20260706T190441Z",
+  "evidence_bundle_path": "runtime_evidence/20260520T161443Z/research/cross_sectional_realized_volatility_rank_rotation_v0_offline_economic_evaluation_20260706T190441Z",
   "evidence_manifest_rc": 0,
   "excluded_failed_bindings": [
     "trend_following/v1",

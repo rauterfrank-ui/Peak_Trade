@@ -1,6 +1,9 @@
 """Contract tests for canonical economic report consumer v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 import copy
@@ -56,9 +59,7 @@ from src.research.linear_evidence.import_boundary import scan_file_import_bounda
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REPORT_MODULE = REPO_ROOT / "src/backtest/economic_observability_report_consumer_v1.py"
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 HISTORICAL_SNAPSHOT_DIR = (
     ARCHIVE_ROOT / "canonical_advanced_economic_capability_pack_v0_20260714T203146Z"
 )

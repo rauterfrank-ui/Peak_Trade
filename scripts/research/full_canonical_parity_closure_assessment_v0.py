@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -314,9 +317,7 @@ def collect_evidence(
     durable_archive_root: Path | None = None,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
-    archive_root = durable_archive_root or Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    )
+    archive_root = durable_archive_root or Path(str(located_runtime_evidence_20260520()))
     evidence_dir = output_dir or (
         archive_root
         / f"research/full_canonical_parity_closure_assessment_after_all_surfaces_bound_v0_{_utc_stamp()}"

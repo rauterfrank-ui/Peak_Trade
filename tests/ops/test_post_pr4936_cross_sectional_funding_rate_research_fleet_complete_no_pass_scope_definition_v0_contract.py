@@ -1,6 +1,9 @@
 """Contract tests for post-PR4936 cross-sectional funding rate fleet complete no-pass scope v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -38,7 +41,7 @@ EVIDENCE_CLASS_ID = (
 SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
 BASE_HEAD = "0407bfd4df8c94b797c36f5e3a796a03989e9b56"
 PARENT_CLOSEOUT_SUFFIX = "pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_CLOSEOUT_DIR = ARCHIVE_ROOT / "implementation" / PARENT_CLOSEOUT_SUFFIX
 TERMINAL_BINDINGS = (
     "cross_sectional_funding_rate_rank_delta/v0",

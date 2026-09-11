@@ -349,9 +349,9 @@
   "paper_authorized": false,
   "parameter_rescue_allowed": false,
   "parent_decomposition_evidence_class_id": "POST_PR4920_FAILURE_DECOMPOSITION_FOLLOWUP_EXECUTION_OFFLINE_ONLY_V0",
-  "parent_decomposition_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z",
+  "parent_decomposition_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z",
   "parent_decomposition_manifest_verify_rc": 0,
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4920_post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_merge_closeout_20260706T080500Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4920_post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_merge_closeout_20260706T080500Z",
   "parent_closeout_manifest_verify_rc": 0,
   "process_classification": "POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_ONLY_V0",
   "promotion_admissible": false,
@@ -394,9 +394,9 @@
   "selected_class": "D",
   "shadow_authorized": false,
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4920_post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_merge_closeout_20260706T080500Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4919_terminal_final_fleet_failure_decomposition_next_scope_merge_closeout_20260706T075014Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z",
+    "runtime_evidence/20260520T161443Z/implementation/pr4920_post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_merge_closeout_20260706T080500Z",
+    "runtime_evidence/20260520T161443Z/implementation/pr4919_terminal_final_fleet_failure_decomposition_next_scope_merge_closeout_20260706T075014Z"
   ],
   "source_prs": [
     4920

@@ -49,6 +49,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_suitability | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_suitability | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_survival | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_survival | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_volatility_presence_gate | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_volatility_presence_gate | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_arithmetic_decimal | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_arithmetic_decimal | STATUS=OPEN (not proven) |  |

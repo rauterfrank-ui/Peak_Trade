@@ -6,6 +6,9 @@ chain. Diagnostic-only — no economic evaluation, promotion authority, or runti
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -92,9 +95,10 @@ PREPARATION_OWNER = (
 )
 
 PR5189_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5189_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_research_generation_"
-    "preparation_v0_20260715T002136Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5189_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0_20260715T002136Z"
+    )
 )
 
 DEFAULT_SCALED_FEATURE = FEATURE_NAMES[0]

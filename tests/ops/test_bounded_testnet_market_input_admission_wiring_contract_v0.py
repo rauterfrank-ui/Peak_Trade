@@ -1,6 +1,9 @@
 """Static contract: bounded testnet market input admission wiring v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import subprocess
@@ -202,9 +205,7 @@ def test_adapter_forwards_validated_market_input_without_fixture_fallback() -> N
     plan = mod.build_plan(
         mode="plan-only",
         staging_root=Path("/tmp/peak_trade_testnet_market_input_plan"),
-        archive_root=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        archive_root=Path(str(located_runtime_evidence_20260520())),
         repo_root=REPO_ROOT,
         duration_minutes=10,
         max_steps=120,
@@ -223,9 +224,7 @@ def test_adapter_without_observation_still_fail_closed() -> None:
     plan = mod.build_plan(
         mode="plan-only",
         staging_root=Path("/tmp/peak_trade_testnet_market_input_missing"),
-        archive_root=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        archive_root=Path(str(located_runtime_evidence_20260520())),
         repo_root=REPO_ROOT,
         duration_minutes=10,
         max_steps=120,

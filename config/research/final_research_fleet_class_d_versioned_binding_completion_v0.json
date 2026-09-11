@@ -20,7 +20,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -28,16 +28,16 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "dataset_provenance": {
         "cross_branch_evidence_forbidden": true,
         "dataset_extension_funding": "extended_chronological_with_funding_v1",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
         "pit_safe": true
       },
       "dataset_version": "v1",
@@ -346,14 +346,14 @@
         "materialization_module": "versioned_final_fleet_bindings_offline_economic_evaluation_v0",
         "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
         "period_policy_ref": "config/research/pit_cross_sectional_research_data_digest_period_split_policy_v1.json",
-        "runtime_config_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_trend_following_v1_economic_evaluation_v1.json",
+        "runtime_config_path": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_trend_following_v1_economic_evaluation_v1.json",
         "template_config_ref": "config/ops/step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json"
       },
       "slippage_model_binding": {
         "slippage_bps": 5.0,
         "slippage_model_version": "backtest_slippage_symmetric_v0"
       },
-      "source_config_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_trend_following_v1_economic_evaluation_v1.json",
+      "source_config_ref": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_trend_following_v1_economic_evaluation_v1.json",
       "strategy_id": "trend_following",
       "strategy_params_digest": "a20b57589435b796e3d6d4b8161d2b84587b22241cbe04c29fb77a3b8e0bd082",
       "strategy_version": "v1",
@@ -385,7 +385,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -393,16 +393,16 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "dataset_provenance": {
         "cross_branch_evidence_forbidden": true,
         "dataset_extension_funding": "extended_chronological_with_funding_v1",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
         "pit_safe": true
       },
       "dataset_version": "v1",
@@ -710,14 +710,14 @@
         "materialization_module": "versioned_final_fleet_bindings_offline_economic_evaluation_v0",
         "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
         "period_policy_ref": "config/research/pit_cross_sectional_research_data_digest_period_split_policy_v1.json",
-        "runtime_config_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_bollinger_bands_v1_economic_evaluation_v1.json",
+        "runtime_config_path": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_bollinger_bands_v1_economic_evaluation_v1.json",
         "template_config_ref": "config/ops/step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json"
       },
       "slippage_model_binding": {
         "slippage_bps": 5.0,
         "slippage_model_version": "backtest_slippage_symmetric_v0"
       },
-      "source_config_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_bollinger_bands_v1_economic_evaluation_v1.json",
+      "source_config_ref": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_bollinger_bands_v1_economic_evaluation_v1.json",
       "strategy_id": "bollinger_bands",
       "strategy_params_digest": "1939cb09be984ac35e8d2051f6706acd9d10eab7647d9c901c90382b2edb249f",
       "strategy_version": "v1",
@@ -749,7 +749,7 @@
           "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
           "canonical_instrument_id": "inst-eth-usdt-perp",
           "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-          "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+          "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
           "native_instrument_id": "ETH-USDT-SWAP",
           "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
         },
@@ -757,16 +757,16 @@
         "network_access_forbidden": true,
         "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
         "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-        "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-        "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+        "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+        "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
       },
       "dataset_provenance": {
         "cross_branch_evidence_forbidden": true,
         "dataset_extension_funding": "extended_chronological_with_funding_v1",
         "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
         "pit_safe": true
       },
       "dataset_version": "v1",
@@ -1073,14 +1073,14 @@
         "materialization_module": "versioned_final_fleet_bindings_offline_economic_evaluation_v0",
         "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
         "period_policy_ref": "config/research/pit_cross_sectional_research_data_digest_period_split_policy_v1.json",
-        "runtime_config_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_momentum_1h_v1_economic_evaluation_v1.json",
+        "runtime_config_path": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_momentum_1h_v1_economic_evaluation_v1.json",
         "template_config_ref": "config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json"
       },
       "slippage_model_binding": {
         "slippage_bps": 5.0,
         "slippage_model_version": "backtest_slippage_symmetric_v0"
       },
-      "source_config_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_momentum_1h_v1_economic_evaluation_v1.json",
+      "source_config_ref": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/RUNTIME_STEP31F_CONFIGS/step31f_momentum_1h_v1_economic_evaluation_v1.json",
       "strategy_id": "momentum_1h",
       "strategy_params_digest": "cb928f7152d8aed4c44ba4300fa43bd9f9e584db59993d279d878fc170921039",
       "strategy_version": "v1",
@@ -1164,7 +1164,7 @@
         "adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
         "canonical_instrument_id": "inst-eth-usdt-perp",
         "narrow_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
-        "narrow_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
+        "narrow_dataset_root": "runtime_evidence/20260520T161443Z/implementation/bounded_final_research_fleet_class_d_versioned_bindings_and_offline_evaluation_scope_v0_20260704T205618Z/narrow_evaluation_dataset/inst-eth-usdt-perp/v1",
         "native_instrument_id": "ETH-USDT-SWAP",
         "source_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp"
       },
@@ -1172,10 +1172,10 @@
       "network_access_forbidden": true,
       "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
       "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-      "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-      "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+      "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
       "panel_member_count": 118,
-      "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+      "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
     },
     "instrument_binding": {
       "binding_mode": "extended_chronological_v1_panel_member_binding",

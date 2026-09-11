@@ -1,6 +1,9 @@
 """Contract tests for final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import copy
 from pathlib import Path
@@ -29,7 +32,7 @@ from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 @pytest.fixture(name="binding_completion")

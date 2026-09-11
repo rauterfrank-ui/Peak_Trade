@@ -7,6 +7,9 @@ and targeted parity confirmation. No runtime activation, no direct true assignme
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -15,9 +18,10 @@ from pathlib import Path
 from typing import Literal, Mapping, Tuple
 
 DEFAULT_CANONICAL_PARITY_SOURCE_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/full_canonical_system_backtest_parity_gap_assessment_and_rewire_scope_continuation_v0_"
-    "20260710T034813Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/full_canonical_system_backtest_parity_gap_assessment_and_rewire_scope_continuation_v0_20260710T034813Z"
+    )
 )
 
 SURFACE_P_FINAL_FLAGS_FAIL_CLOSED_CONTRACT_LAYER_VERSION = "v0"

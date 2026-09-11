@@ -6,6 +6,9 @@ semantics, or the runbook progress registry.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -34,7 +37,7 @@ RECONCILIATION_OWNER = (
     "and_promotion_binding_completion_reconciliation_v0"
 )
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DERIVATION_EVIDENCE_DIR = (
     ARCHIVE_ROOT
     / "research"

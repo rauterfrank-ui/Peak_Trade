@@ -17,15 +17,8 @@ STATIC_INVENTORY_GUARD_MODULE = "test_static_inventory_schema_guard_contract_v0.
 MAPPING_GUARD_MODULE = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
 RCHAIN_GUARD_MODULE = "test_csc_rchain_v1_grouping_reflection_contract_v0.py"
 
-NORMALIZED_JSONL = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "cybersecurity_lossless_pipeline/cybersecurity_lossless_pipeline_dry_run_v0_20260601T042949Z/"
-    "NORMALIZED_JSONL/CSC_LOSSLESS_V1_CANDIDATES.jsonl"
-)
-POST_EXTRACT_REVIEW = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_new_lossless_pipeline_post_extract_review_v0_20260601T043237Z"
-)
+NORMALIZED_JSONL = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/cybersecurity_lossless_pipeline/cybersecurity_lossless_pipeline_dry_run_v0_20260601T042949Z/NORMALIZED_JSONL/CSC_LOSSLESS_V1_CANDIDATES.jsonl"
+POST_EXTRACT_REVIEW = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_new_lossless_pipeline_post_extract_review_v0_20260601T043237Z"
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_CSC_LOSSLESS_V1_DATASET_REFLECTION_GUARD_V0=true"
 

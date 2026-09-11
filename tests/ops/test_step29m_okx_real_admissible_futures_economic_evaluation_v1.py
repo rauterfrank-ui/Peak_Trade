@@ -1,6 +1,9 @@
 """Contract tests for STEP 29M real OKX inst-eth-usdt-perp economic evaluation v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import importlib.util
@@ -16,7 +19,7 @@ from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_SCRIPT = ROOT / "scripts" / "ops" / "run_economic_viability_evidence_evaluation_v1.py"
 CONFIG_PATH = ROOT / "config" / "ops" / "step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DATASET_ROOT = ARCHIVE_ROOT / "datasets/admissible_futures/inst-eth-usdt-perp/v1"
 EXPECTED_DATASET_DIGEST = "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087"
 EXPECTED_MANIFEST_DIGEST = "f250627c19f59b1c3245b0a5da69a646671210a1717609367f22b94d3a2a7059"

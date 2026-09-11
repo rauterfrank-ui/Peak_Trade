@@ -21,18 +21,9 @@ ADOPTION_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_OPERATOR_ACCEPTED_ARCHIVE_FULL_LOSSLESS_ADOPTION_V0=true"
 )
 ARCHIVE_FULL_LOSSLESS_SHA256 = "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26"
-ARCHIVE_FULL_LOSSLESS_INTAKE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/"
-    "operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
-)
+ARCHIVE_FULL_LOSSLESS_INTAKE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
 
-REPO_STATIC_JSONL = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "inventory/repo_static_cybersecurity_risk_candidates/"
-    "repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/"
-    "REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl"
-)
+REPO_STATIC_JSONL = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/inventory/repo_static_cybersecurity_risk_candidates/repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl"
 
 
 def test_cybersecurity_visibility_archive_full_lossless_governance_adoption_v0() -> None:

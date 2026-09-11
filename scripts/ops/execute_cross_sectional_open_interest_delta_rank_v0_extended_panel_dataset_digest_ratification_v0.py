@@ -6,6 +6,9 @@ research binding. No economic evaluation. Operator GO required.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -44,19 +47,22 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_versioned_research
 )
 
 SOURCE_DISCOVERY = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_sample_sufficiency_and_data_depth_remediation_"
-    "contract_discovery_read_only_v0_20260712T004335Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_sample_sufficiency_and_data_depth_remediation_contract_discovery_read_only_v0_20260712T004335Z"
+    )
 )
 SOURCE_IMPLEMENTATION = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
-    "and_rematerialization_implementation_v0_20260712T004937Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z"
+    )
 )
 SOURCE_CLOSEOUT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
-    "and_rematerialization_implementation_v0_pr_merge_closeout_20260712T005547Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_pr_merge_closeout_20260712T005547Z"
+    )
 )
 ECON_EVAL_CONFIG = (
     _REPO_ROOT

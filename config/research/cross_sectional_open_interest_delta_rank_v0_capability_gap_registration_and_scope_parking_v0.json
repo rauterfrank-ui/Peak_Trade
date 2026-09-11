@@ -71,7 +71,7 @@
   "self_accumulated_archive_allowed": true,
   "source_capability_classification": "NO_ADMISSIBLE_PUBLIC_HISTORICAL_OI_SOURCE",
   "source_capability_verdict": "NO_ADMISSIBLE_PUBLIC_HISTORICAL_OI_SOURCE_FAIL_CLOSED_CAPABILITY_GAP",
-  "source_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/okx_historical_open_interest_archive_or_extended_retention_capability_slice_read_only_v0_20260710T185257Z",
+  "source_evidence_dir": "runtime_evidence/20260520T161443Z/research/okx_historical_open_interest_archive_or_extended_retention_capability_slice_read_only_v0_20260710T185257Z",
   "source_manifest_verify_rc": 0,
   "source_ratification_ref": "cross_sectional_open_interest_delta_rank_v0_admissible_source_ratification_and_scope_parking_reopen_v0",
   "speculative_fetcher_allowed": false,

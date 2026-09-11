@@ -8,6 +8,9 @@ Operator GO: GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATI
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -24,9 +27,7 @@ CONFIRM_GO = "GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RAT
 NEXT_EXECUTION_GO = (
     "GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 )
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE_DEFINITION_BUNDLE_SUFFIX = "post_no_pass_metric_materialization_diagnostics_derived_next_research_scope_definition_v0_20260705T232358Z"
 
 from src.research.post_no_pass_metric_materialization_path_activation_binding_ratification_v0 import (  # noqa: E402

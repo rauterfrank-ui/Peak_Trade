@@ -6,9 +6,12 @@ adjudicate parentage, currentness, supersession, or winners.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from scripts.ops.forensic_structure_schema_v1.constants import (
     EXPECTED_SIDECAR_SHA256,
     EXPECTED_SOURCE_SHA256,
+    EXTERNAL_RETAINED_DATASET_DIR,
 )
 from scripts.ops.forensic_structure_schema_v1.disposition_constants import (
     CROSS_RESIDUAL_PREREQUISITES,
@@ -25,9 +28,9 @@ ALIGNMENT_AUTHORITY = "NONE"
 REPO_ALIGNMENT_RELPATH = (
     "forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1"
 )
-EXTERNAL_ALIGNMENT_DATASET_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/"
-    "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1"
+EXTERNAL_ALIGNMENT_DATASET_DIR = str(
+    Path(EXTERNAL_RETAINED_DATASET_DIR).parent
+    / "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1"
 )
 
 BOUND_SOURCE_SHA256 = EXPECTED_SOURCE_SHA256

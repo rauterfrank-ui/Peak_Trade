@@ -2,6 +2,9 @@
 """Materialize durable evidence for canonical trade ledger/equity/funnel persistence v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -48,9 +51,7 @@ from src.research.cross_sectional_offline_economic_evaluation_decision_funnel_v0
     RUNBOOK_FUNNEL_FIELDS,
 )
 
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 PR5175_CLOSEOUT = ARCHIVE_ROOT / (
     "pr5175_merge_closeout_canonical_existing_stats_and_cost_decomposition_rewire_v0_"
     "20260714T194956Z"

@@ -2,6 +2,9 @@
 """Materialize pairwise spillover v1 portfolio binding implementation evidence."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -47,9 +50,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
 )
 
 CONFIRM_GO = PORTFOLIO_BINDING_GO_TOKEN
-DEFAULT_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE = Path(str(located_runtime_evidence_20260520()))
 BLOCKED_BUNDLE = DEFAULT_ARCHIVE / (
     "research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"
     "evaluation_execution_v0_complete_20260715T061448Z"

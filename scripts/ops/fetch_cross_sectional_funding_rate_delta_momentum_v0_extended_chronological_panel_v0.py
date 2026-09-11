@@ -5,6 +5,9 @@ Public OKX PT1H fetch only. No credentials. Operator GO required.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -24,13 +27,12 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_versioned_resea
 CONFIRM_GO = "GO_BOUNDED_PRE_EVALUATION_PANEL_EXTENSION_AND_IMPLEMENTATION_SCOPE_RATIFICATION_V0"
 fetch_mod.CONFIRM_TOKEN = CONFIRM_GO
 DEFAULT_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    )
 )
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 def main() -> None:

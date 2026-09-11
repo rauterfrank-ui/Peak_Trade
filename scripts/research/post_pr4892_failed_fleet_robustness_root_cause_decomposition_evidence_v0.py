@@ -6,6 +6,9 @@ No economic evaluation, no backtest/WF/MC/stress execution, no authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -44,9 +47,7 @@ DEFAULT_CONFIG = (
     _REPO_ROOT
     / "config/research/post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0"
 SUFFICIENCY_MAPPED_RATIO = 2 / 3
 

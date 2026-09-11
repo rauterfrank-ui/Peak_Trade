@@ -1,6 +1,9 @@
 """Cross-sectional MA-crossover panel rank-rotation v0 versioned research binding materializer."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -70,19 +73,17 @@ INSTRUMENT_COUNT = 399
 ROW_COUNT_TOTAL = 37905
 UNIVERSE_INSTRUMENTS_DIGEST = "ccc36aa52d9df3aa2067fbc0a75aea6ae33a458583ec8a15b08d69f54b8b9a8b"
 INSTRUMENTS_ARTIFACT_DIGEST = "e47a6bb1d7ac072ab4b87c2f8f149d590a7023abc3489e6d6be1a225921ec91d"
-SOURCE_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_"
-    "dataset_materialization_v0_20260710T094803Z"
+SOURCE_CLOSEOUT_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z"
 )
-PANEL_STAGING_ROOT = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/"
-    "admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2"
+PANEL_STAGING_ROOT = str(
+    located_runtime_evidence_20260520()
+    / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2"
 )
-PHASE3_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_"
-    "20260710T093500Z"
+PHASE3_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_20260710T093500Z"
 )
 
 PANEL_DATASET_MANIFEST_REF = (

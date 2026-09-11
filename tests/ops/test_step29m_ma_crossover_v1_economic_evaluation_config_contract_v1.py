@@ -1,6 +1,9 @@
 """Config contract for STEP 29M ma_crossover v1 economic evaluation config v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -22,8 +25,10 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 PROGRESS_REGISTRY = REPO_ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 MA_CROSSOVER_CONFIG = REPO_ROOT / contract.DEFAULT_EVALUATION_CONFIG_PATH
 RANK1_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/bounded_step29m_additional_existing_strategy_policy_ratification_candidate_decision_read_only_v0_20260702T010015Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "planning/bounded_step29m_additional_existing_strategy_policy_ratification_candidate_decision_read_only_v0_20260702T010015Z"
+    )
 )
 
 

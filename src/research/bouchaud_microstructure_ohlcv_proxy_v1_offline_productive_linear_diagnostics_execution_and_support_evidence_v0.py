@@ -6,6 +6,9 @@ support evidence. Diagnostic-only — no economic evaluation, promotion authorit
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -107,23 +110,28 @@ DEFAULT_DRIFT_WINDOW_STEP = 3
 DEFAULT_DRIFT_MIN_SAMPLES = 4
 
 PR5189_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0_20260715T001201Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0_20260715T001201Z"
+    )
 )
 PR5189_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5189_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_research_generation_"
-    "preparation_v0_20260715T002136Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5189_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_research_generation_preparation_v0_20260715T002136Z"
+    )
 )
 PR5190_IMPLEMENTATION_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_"
-    "feature_matrix_binding_v0_20260715T002940Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0_20260715T002940Z"
+    )
 )
 PR5190_CLOSEOUT_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5190_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_"
-    "diagnostics_feature_matrix_binding_v0_20260715T003858Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5190_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_feature_matrix_binding_v0_20260715T003858Z"
+    )
 )
 
 

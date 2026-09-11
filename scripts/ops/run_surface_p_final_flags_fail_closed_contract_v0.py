@@ -2,6 +2,9 @@
 """Collect durable evidence for Surface P final flags fail-closed contract v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -23,7 +26,7 @@ for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
         if src_s not in sys.path:
             sys.path.insert(0, src_s)
         break
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_EVIDENCE_DIRS = (
     ARCHIVE_ROOT / "research/pr4984_runbook_compliant_merge_closeout_v0_20260707T235544Z",
     ARCHIVE_ROOT

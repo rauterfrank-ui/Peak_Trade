@@ -23,7 +23,7 @@
     "schema_version": "downstream_admissibility_assessment.v0",
     "selection_status_after_attestation": "PROVISIONAL_UNBLOCKED_FOR_IMPLEMENTATION_SCOPE_ONLY"
   },
-  "downstream_ranking_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
+  "downstream_ranking_evidence_ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
   "downstream_ranking_manifest_verify_rc": 0,
   "downstream_ranking_operatively_admissible": true,
   "drift_classification": "MANIFEST_GENERATED_FROM_DIFFERENT_CONTENT",
@@ -51,11 +51,11 @@
   "historical_target_manifest_rewritten": false,
   "independent_source_evidence_all_rc_zero": true,
   "independent_source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_extended_panel_offline_economic_reevaluation_v0_20260712T011507Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_execution_v0_20260712T003942Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5120_merge_closeout_cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification_v0_20260712T010935Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification_v0_20260712T010258Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z"
+    "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_extended_panel_offline_economic_reevaluation_v0_20260712T011507Z",
+    "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_execution_v0_20260712T003942Z",
+    "runtime_evidence/20260520T161443Z/research/pr5120_merge_closeout_cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification_v0_20260712T010935Z",
+    "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification_v0_20260712T010258Z",
+    "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z"
   ],
   "next_operator_go": "GO_CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_VERSIONED_HYPOTHESIS_BINDING_IMPLEMENTATION_V0",
   "next_recommended_scope": "CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_VERSIONED_HYPOTHESIS_BINDING_IMPLEMENTATION_V0",
@@ -66,7 +66,7 @@
   "no_source_bundle_mutation": true,
   "offline_only": true,
   "provisional_rank1": "cross_sectional_open_interest_level_rank_v0",
-  "reconciliation_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/source_evidence_manifest_reconciliation_for_terminal_baseline_bundle_read_only_v0_20260712T032521Z",
+  "reconciliation_evidence_ref": "runtime_evidence/20260520T161443Z/research/source_evidence_manifest_reconciliation_for_terminal_baseline_bundle_read_only_v0_20260712T032521Z",
   "reconciliation_manifest_verify_rc": 0,
   "research_scope": "cross_sectional_open_interest_delta_rank/v0",
   "runtime_effect": "NONE",
@@ -82,7 +82,7 @@
   "supersession_explicit": true,
   "supersession_mode": "EXTERNAL_SUPERSEDING_INTEGRITY_ATTESTATION",
   "target_manifest_verify_rc": 1,
-  "target_source_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+  "target_source_evidence_dir": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
   "unchanged_retry_blocked": true,
   "verdict": "PASS"
 }

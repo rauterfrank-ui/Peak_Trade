@@ -1,6 +1,9 @@
 """Contract tests for post-no-pass sparse signal inconclusive failure classification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -202,9 +205,11 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
             assert phrase in body, f"missing boundary phrase: {phrase}"
 
     def test_classification_result_shape_in_durable_evidence(self) -> None:
-        result_path = Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-            f"/implementation/{NEW_EVIDENCE_SUFFIX}/CLASSIFICATION_EXECUTION_RESULT.json"
+        result_path = (
+            located_runtime_evidence_20260520()
+            / "implementation"
+            / NEW_EVIDENCE_SUFFIX
+            / "CLASSIFICATION_EXECUTION_RESULT.json"
         )
         assert result_path.is_file()
         payload = json.loads(result_path.read_text(encoding="utf-8"))

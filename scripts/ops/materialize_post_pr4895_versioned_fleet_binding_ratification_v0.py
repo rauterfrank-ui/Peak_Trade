@@ -8,6 +8,9 @@ Operator GO: GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -22,9 +25,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 CONFIRM_GO = "GO_POST_PR4894_VERSIONED_FLEET_BINDING_RATIFICATION_V0"
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_SCOPE_BUNDLE_SUFFIX = "post_pr4894_next_scope_definition_v0_20260706T020323Z"
 DECOMPOSITION_BUNDLE_SUFFIX = (
     "post_pr4892_failed_fleet_robustness_root_cause_decomposition_evidence_v0_20260706T015337Z"

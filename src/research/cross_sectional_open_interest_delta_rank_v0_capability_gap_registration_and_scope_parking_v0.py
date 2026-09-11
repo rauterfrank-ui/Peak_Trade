@@ -5,6 +5,9 @@ Preserves live/forward OI collection and self-accumulated archive path. Research
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -52,9 +55,7 @@ REUSE_DECISION = "CONSOLIDATE_TO_EXISTING_OWNER"
 REOPEN_REQUIRES = "ADMISSIBLE_SOURCE_RATIFICATION_AND_OVERLAP_VALIDATION"
 PRIMARY_FORWARD_DATA_PATH = "SELF_ACCUMULATED_HISTORY"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_EVIDENCE_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/okx_historical_open_interest_archive_or_extended_retention_capability_slice_read_only_v0_20260710T185257Z"

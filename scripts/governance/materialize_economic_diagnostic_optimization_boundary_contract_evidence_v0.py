@@ -2,6 +2,9 @@
 """Materialize durable evidence for economic/diagnostic optimization boundary contract v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -30,9 +33,7 @@ from src.governance.economic_diagnostic_optimization_boundary_v0 import (  # noq
 SCOPE_ID = (
     "ECONOMIC_DIAGNOSTIC_OPTIMIZATION_BOUNDARY_AND_CANONICAL_TRADING_LOGIC_IMMUTABILITY_CONTRACT_V0"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "economic_diagnostic_optimization_boundary_contract_v0"
 
 

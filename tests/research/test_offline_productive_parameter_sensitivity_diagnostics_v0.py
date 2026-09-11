@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -44,7 +47,7 @@ SENSITIVITY_OWNER = REPO_ROOT / "src/research/linear_evidence/sensitivity.py"
 MATERIALIZER = (
     REPO_ROOT / "scripts/ops/materialize_offline_productive_parameter_sensitivity_diagnostics_v0.py"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SIGNAL_MATRIX = (
     ARCHIVE_ROOT
     / "research/offline_final_research_fleet_signal_matrix_productive_input_join_materialization_v0_20260714T131741Z"

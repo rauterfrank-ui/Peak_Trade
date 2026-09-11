@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import json
@@ -24,7 +27,7 @@ from src.research.linear_evidence.feature_matrix import build_feature_matrix_bin
 from src.research.linear_evidence.fitters import fit_ols_lstsq
 from src.research.offline_linear_cost_diagnostic_row_materializer_v0 import TARGET_NAME
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 LEDGER_PATH = (
     ARCHIVE_ROOT
     / "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z"

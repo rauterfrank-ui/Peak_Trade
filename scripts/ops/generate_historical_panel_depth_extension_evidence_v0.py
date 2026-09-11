@@ -2,6 +2,9 @@
 """Generate durable evidence bundle for historical panel depth extension v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -37,13 +40,16 @@ from src.research.okx_self_accumulated_forward_open_interest_archive_v0 import (
 )
 
 SOURCE_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_sample_sufficiency_and_data_depth_remediation_"
-    "contract_discovery_read_only_v0_20260712T004335Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_sample_sufficiency_and_data_depth_remediation_contract_discovery_read_only_v0_20260712T004335Z"
+    )
 )
 ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    )
 )
 OLD_DATASET_DIGEST = "0f57d48c40f02c3aeec9897ae7f2a43e313c01cff50dab68c8e08f879e0f2687"
 
@@ -96,10 +102,13 @@ def _write_manifest(evidence_dir: Path) -> None:
 
 def main() -> int:
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    evidence_dir = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-        f"cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
-        f"and_rematerialization_implementation_v0_{stamp}"
+    evidence_dir = (
+        located_runtime_evidence_20260520()
+        / "research"
+        / (
+            "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
+            f"and_rematerialization_implementation_v0_{stamp}"
+        )
     )
     evidence_dir.mkdir(parents=True, exist_ok=True)
 
@@ -164,9 +173,9 @@ def main() -> int:
     )
 
     extension_result_path = sorted(
-        Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-        ).glob("cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_*")
+        Path(str(located_runtime_evidence_20260520() / "research")).glob(
+            "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_*"
+        )
     )[-1]
     for name in (
         "acquisition_window.json",

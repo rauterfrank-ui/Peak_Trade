@@ -5,6 +5,9 @@ scope for cross_sectional_funding_rate_dual_leg_spread/v1. Does not execute eval
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -62,17 +65,17 @@ FUTURE_HARNESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_dual_leg_spread_v1_offline_economic_evaluation_execution_v0.py"
 )
-PARENT_SCOPE_DEFINITION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "post_pr4925_new_material_cross_sectional_funding_rate_dual_leg_spread_v1_scope_definition_20260706T134500Z"
+PARENT_SCOPE_DEFINITION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/post_pr4925_new_material_cross_sectional_funding_rate_dual_leg_spread_v1_scope_definition_20260706T134500Z"
 )
-PARENT_PR4925_NEGATIVE_TERMINALIZATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr4925_cross_sectional_funding_rate_delta_momentum_v0_negative_evidence_terminalization_20260706T134445Z"
+PARENT_PR4925_NEGATIVE_TERMINALIZATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr4925_cross_sectional_funding_rate_delta_momentum_v0_negative_evidence_terminalization_20260706T134445Z"
 )
-PARENT_PR4925_EVALUATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr4925_cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_execution_20260706T134216Z"
+PARENT_PR4925_EVALUATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr4925_cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_execution_20260706T134216Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

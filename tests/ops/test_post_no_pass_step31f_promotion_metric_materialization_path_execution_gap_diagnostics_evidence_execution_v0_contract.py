@@ -1,6 +1,9 @@
 """Contract tests for post-no-pass STEP31F promotion metric materialization path execution gap diagnostics execution v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -121,9 +124,7 @@ class TestPostNoPassStep31fPromotionMetricMaterializationPathExecutionGapDiagnos
         assert payload["operator_input_required"] is True
 
     def test_durable_evidence_bundle_required_files(self) -> None:
-        bundle_root = Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation"
-        )
+        bundle_root = Path(str(located_runtime_evidence_20260520() / "implementation"))
         bundle_dir = bundle_root / NEW_EVIDENCE_SUFFIX
         assert bundle_dir.is_dir(), f"missing bundle: {bundle_dir}"
         for filename in REQUIRED_BUNDLE_FILES:
