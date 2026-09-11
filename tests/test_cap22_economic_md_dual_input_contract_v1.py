@@ -134,6 +134,8 @@ def _valid_payload(**overrides: object) -> dict[str, object]:
         "rotation_policy_status": ROTATION_POLICY_STATUS,
         "runtime_authority_granted": False,
         "second_selection_decision_downstream": False,
+        "spread_aggregator_ratified": True,
+        "spread_formula_ratified": True,
         "spread_must_be_derivable_from_persisted_raw_input": True,
         "structural_eligibility_is_not_economic_score": True,
     }
@@ -179,8 +181,8 @@ def test_architecture_and_boundary_invariants() -> None:
     assert CAP22_MVR_SPREAD_INPUT_AUTHORIZED is True
     assert CAP22_MVR_SPREAD_RAW_INPUT == "SAME_COLLECTION_CYCLE_BIDPX_ASKPX"
     assert SPREAD_MUST_BE_DERIVABLE_FROM_PERSISTED_RAW_INPUT is True
-    assert SPREAD_FORMULA_RATIFIED is False
-    assert SPREAD_AGGREGATOR_RATIFIED is False
+    assert SPREAD_FORMULA_RATIFIED is True
+    assert SPREAD_AGGREGATOR_RATIFIED is True
     assert STALE_SECONDS_RATIFIED is False
     assert COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED is False
     assert FINAL_SCORE_FORMULA_RATIFIED is False
@@ -227,6 +229,8 @@ def test_declaration_validator_accepts_bound_flags() -> None:
         ("economic_md_producer_implemented", False),
         ("economic_md_producer_productively_scheduled", True),
         ("final_score_formula_ratified", True),
+        ("spread_formula_ratified", False),
+        ("spread_aggregator_ratified", False),
         ("runtime_authority_granted", True),
         ("multi_future_runtime_authorized", True),
         ("cap21_boundary_preserved", False),

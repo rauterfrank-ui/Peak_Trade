@@ -1,0 +1,345 @@
+---
+docs_token: DOCS_TOKEN_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+status: active
+scope: Docs-only Owner persist of Cap 2.2 offline MVR spread definition, zero handling, and challenger comparison keys; no ranking implementation; no evidence harness; no productive activation; no PDF Step 5 close
+capability: CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-12
+LIVE_AUTHORIZED: false
+ORDERS_ALLOWED: false
+RUNTIME_ACTIVATION_ALLOWED: false
+MULTI_FUTURE_RUNTIME_AUTHORIZED: false
+SELECTION_AUTHORITY: false
+ALPHA_ALLOWED: false
+ECONOMIC_RANK_ACTIVATED: false
+HARD_STOP: true
+---
+
+# Cap 2.2 Offline MVR Spread Definition, Zero Handling, And Comparison Keys V1
+
+Owner-GO
+`PEAK_TRADE_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1`
+persists the minimum shared offline calculation semantics required to
+compute the already-authorized Cap 2.2 MVR challenger classes
+deterministically on identical PIT inputs. This document is subordinate
+to `docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md`.
+It does **not** replace §4.5–§4.5.9, does **not** close PDF Step 5,
+does **not** authorize `apply_rotation`, does **not** allow PDF Step 7,
+does **not** grant runtime, does **not** join a host, does **not**
+rewire Cap 2.2 ranking, does **not** implement an evidence harness, and
+does **not** activate economic ranking.
+
+Typed validator:
+`src&#47;ops&#47;cap22_offline_mvr_spread_challenger_order_contract_v1.py`.
+
+Candidate-set and evidence persist remains
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md`.
+Input-architecture persist remains
+`docs&#47;ops&#47;specs&#47;CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md`.
+Raw-input producer remains
+`docs&#47;ops&#47;specs&#47;CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md`.
+
+```text
+DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_CAP22_OFFLINE_MVR_SPREAD_COMPARISON_KEYS
+AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
+OWNER_GO_THIS_SLICE=PEAK_TRADE_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+BOUND_ORIGIN_MAIN_SHA=577ebca3a95f962b2d3ab388071d258170e79a5b
+DECISION_ID=CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+CONTRACT_ID=CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+SCHEMA_VERSION=cap22_offline_mvr_spread_challenger_order.v1
+DOCUMENT_PATH=docs/ops/specs/CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md
+FILENAME_AVOIDS_GITIGNORE_STAR_KEY_PATTERN=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=OFFLINE_MVR_SPREAD_AND_COMPARISON_KEYS_PERSIST_ONLY
+NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
+NO_CHALLENGER_WINS_BY_THIS_SLICE=true
+ECONOMIC_RANK_ACTIVATED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
+THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
+THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
+THIS_PERSIST_DOES_NOT_IMPLEMENT_RANKING_CODE=true
+THIS_PERSIST_DOES_NOT_IMPLEMENT_EVIDENCE_HARNESS=true
+THIS_PERSIST_DOES_NOT_WIRE_PRODUCTIVE_ECONOMIC_RANKING=true
+THIS_PERSIST_DOES_NOT_RATIFY_SCORE_FORMULA=true
+THIS_PERSIST_DOES_NOT_RATIFY_WEIGHTS=true
+THIS_PERSIST_DOES_NOT_CHANGE_ANTI_CHURN_POLICY_A=true
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
+```
+
+## 1. Naming — offline challengers are not anti-churn Policy A
+
+Shorthand A&#47;B&#47;C&#47;D in this decision names **offline challenger
+classes only**. It does **not** rename, replace, or authorize the
+existing Active-Set anti-churn `POLICY_A`.
+
+```text
+OFFLINE_CHALLENGER_A_CANDIDATE_ID=VOLATILITY_RANK_ONLY
+OFFLINE_CHALLENGER_B_CANDIDATE_ID=HARD_SPREAD_GATE_THEN_VOLATILITY_RANK
+OFFLINE_CHALLENGER_C_CANDIDATE_ID=VOLATILITY_TO_SPREAD_RATIO
+OFFLINE_CHALLENGER_D_CANDIDATE_ID=LEXICOGRAPHIC_SPREAD_THEN_VOL
+NEGATIVE_CONTROL_ID=CURRENT_STRUCTURAL_THEN_VENUE_ID_ASC
+ANTI_CHURN_POLICY_A_ROLE=ANTI_CHURN_ADMISSION_ONLY
+OFFLINE_CHALLENGER_A_IS_NOT_ANTI_CHURN_POLICY_A=true
+ANTI_CHURN_POLICY_A_UNCHANGED=true
+```
+
+## 2. Raw inputs
+
+```text
+AUTHORIZED_MVR_INPUTS=FINALIZED_PT1M_MARK_PRICE_HISTORY+SAME_COLLECTION_CYCLE_BIDPX_ASKPX
+SPREAD_RAW_FIELDS=bidPx;askPx
+SPREAD_RAW_QUOTES_MUST_BE_PERSISTED=true
+SPREAD_DERIVED_VALUE_ALONE_IS_INSUFFICIENT=true
+VOLATILITY_RAW_INPUT=FINALIZED_PT1M_MARK_PRICE_HISTORY
+AUTHORIZED_VOLATILITY_WARMUP=61_PT1M_MARKS_60_LOG_RETURNS
+VOLATILITY_UNITS=PER_BAR_DECIMAL_RETURN_VOLATILITY
+CAN_REUSE_CANONICAL_VOLATILITY_FORMULA=true
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
+```
+
+The Economic-MD producer continues to persist raw `bidPx`&#47;`askPx`.
+This persist does **not** authorize storing a derived spread in place of
+raw quotes and does **not** change the producer.
+
+## 3. Same-cycle spread formula
+
+```text
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
+SPREAD_UNITS=DIMENSIONLESS_DECIMAL_FRACTION
+SPREAD_DISPLAY_BPS_MAY_BE_DERIVED=true
+SPREAD_DISPLAY_BPS_IS_NOT_CANONICAL_FEATURE=true
+```
+
+Canonical feature:
+
+```text
+mid_px = (ask_px + bid_px) / 2
+relative_spread = (ask_px - bid_px) / mid_px
+```
+
+No percent and no bps value is the canonical stored feature. Later bps
+display is derived only.
+
+Validity domain:
+
+```text
+bid_px > 0
+ask_px > 0
+bid_px <= ask_px
+mid_px > 0
+```
+
+Outside that domain the spread feature is not rankable
+(`MISSING_OR_INVALID_INPUT_SEMANTICS=FAIL_CLOSED_NOT_RANKABLE`).
+Crossed quotes (`bid_px > ask_px`) remain invalid. This persist does not
+invent imputation.
+
+## 4. Aggregator
+
+The MVR snapshot authorizes exactly one same-collection-cycle bid&#47;ask
+quote per instrument.
+
+```text
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
+spread_feature = relative_spread of that single quote
+NO_TIME_AGGREGATION=true
+NO_MEAN_MEDIAN_EMA_SPREAD=true
+NO_ORDERBOOK_AGGREGATION=true
+```
+
+## 5. Exact zero / locked market
+
+If `bid_px == ask_px` and both are `> 0`, then `relative_spread = 0`.
+The raw observation remains valid and must be retained.
+
+```text
+ZERO_SPREAD_RAW_OBSERVATION_VALID=true
+LOCKED_MARKET_IS_EXACT_ZERO_SPREAD=true
+ZERO_SPREAD_MUST_NOT_PRODUCE_INFINITY=true
+ZERO_SPREAD_MUST_NOT_PRODUCE_ARTIFICIAL_MAX_RATIO=true
+POLICY_C_ZERO_SPREAD_RESULT=NOT_RANKABLE_FOR_POLICY_C
+ZERO_SPREAD_DOES_NOT_MAKE_INSTRUMENT_GLOBALLY_INELIGIBLE=true
+```
+
+Exact zero spread must not cause division-by-zero, infinity, or an
+artificial maximum ratio score. For
+`VOLATILITY_TO_SPREAD_RATIO` the instrument is **not rankable under that
+challenger only**. It is not globally ineligible for other challengers
+or for Cap-2.1 eligibility.
+
+## 6. Near-zero non-decision
+
+```text
+NEAR_ZERO_THRESHOLD_RATIFIED=false
+NEAR_ZERO_SPREAD_SPECIAL_HANDLING=NONE_UNTIL_SEPARATELY_RATIFIED
+```
+
+No numeric near-zero bound is invented here. Every strictly positive
+spread is treated as a positive spread. Later friction-sensitivity
+stress may test whether extra guardrails are needed.
+
+## 7. Candidate comparison keys
+
+Residual tie-break for the four offline challengers below is identical
+and is **not** an economic signal:
+
+```text
+RESIDUAL_TIE_BREAK_1=venue_native_id ASC
+RESIDUAL_TIE_BREAK_2=canonical_instrument_id ASC
+RESIDUAL_TIE_BREAK_IS_NOT_ECONOMIC_SIGNAL=true
+VOLATILITY_RANK_ONLY_RESIDUAL_TIE_BREAK_RATIFIED=true
+```
+
+### 7.1 VOLATILITY_RANK_ONLY
+
+```text
+VOLATILITY_RANK_ONLY_ORDER_RATIFIED=true
+primary_key=canonical 61 PT1M / 60 log-return population sigma
+direction=DESC
+VOLATILITY_UNITS=PER_BAR_DECIMAL_RETURN_VOLATILITY
+NO_CROSS_SECTIONAL_NORMALIZATION=true
+NO_ANNUALIZATION=true
+```
+
+### 7.2 HARD_SPREAD_GATE_THEN_VOLATILITY_RANK
+
+```text
+HARD_SPREAD_GATE_THEN_VOL_STRUCTURE_RATIFIED=true
+gate=relative_spread <= threshold
+then_key=volatility DESC
+POLICY_B_THRESHOLD_MODE=VERSIONED_OFFLINE_THRESHOLD_SET_REQUIRED
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+```
+
+The computation **structure** is ratified. The challenger is **not**
+fully evaluable until a later Owner-GO defines the versioned offline
+threshold set. No single empirically preferred threshold is ratified here.
+
+### 7.3 VOLATILITY_TO_SPREAD_RATIO
+
+For `relative_spread > 0`:
+
+```text
+POLICY_C_RATIO_ORIENTATION_RATIFIED=true
+POLICY_C_ZERO_HANDLING_RATIFIED=true
+opportunity_friction_ratio = volatility / relative_spread
+direction=DESC
+RATIO_UNITS=DIMENSIONLESS_RATIO_OF_TWO_DECIMAL_FRACTIONS
+NO_WEIGHTING=true
+NO_ADDITIVE_COMPOSITE=true
+NO_CROSS_SECTIONAL_NORMALIZATION=true
+```
+
+For `relative_spread == 0`: `NOT_RANKABLE_FOR_POLICY_C`.
+
+### 7.4 LEXICOGRAPHIC_SPREAD_THEN_VOL
+
+```text
+POLICY_D_LEXICOGRAPHIC_KEYS_RATIFIED=true
+POLICY_D_PRIMARY_SORT_DIRECTION_RATIFIED=true
+primary_key=relative_spread ASC
+secondary_key=volatility DESC
+NO_WEIGHTED_COMBINATION=true
+```
+
+### 7.5 Negative control
+
+```text
+NEGATIVE_CONTROL_ID=CURRENT_STRUCTURAL_THEN_VENUE_ID_ASC
+CURRENT_PRODUCTIVE_RANKING_POLICY=productive_futures_universe_structural_ranking_v1
+CURRENT_STRUCTURAL_RANKING_IS_ECONOMIC_POLICY=false
+NEGATIVE_CONTROL_REQUIRES_CAP21_SNAPSHOT_AT_T=true
+NEGATIVE_CONTROL_AUTHORITY_UNCHANGED=true
+```
+
+The existing structural ranking rule is unchanged. No new ranking
+authority is granted. Point-in-time evaluation still requires the
+Cap-2.1 snapshot at T.
+
+## 8. Explicitly still unratified
+
+```text
+FINAL_SCORE_FORMULA_RATIFIED=false
+FINAL_WEIGHTS_RATIFIED=false
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
+NEAR_ZERO_THRESHOLD_RATIFIED=false
+STALE_SECONDS_RATIFIED=false
+COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
+RANKING_CADENCE_RATIFIED=false
+FORWARD_LABEL_HORIZON_RATIFIED=false
+HISTORICAL_REPLAY_HORIZON_RATIFIED=false
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+ECONOMIC_RANK_ACTIVATED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+```
+
+## 9. Authority / safety unchanged
+
+```text
+CAP21_BOUNDARY_PRESERVED=true
+CAP21_RANKING_AUTHORITY_ADDED=false
+CAP21_ECONOMIC_MD_AUTHORITY_ADDED=false
+CAP22_REMAINS_RANKING_OWNER=true
+CAP22_DIRECT_LIVE_VENUE_DEPENDENCY=false
+PRODUCTIVE_SELECTION_OWNER=Cap_2.3
+POLICY_A_ROLE=ANTI_CHURN_ADMISSION_ONLY
+DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK=true
+SECOND_SELECTION_DECISION_DOWNSTREAM=FORBIDDEN
+PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+APPLY_ROTATION_STATUS=FAIL_CLOSED
+PDF_STEP_7_STATUS=FORBIDDEN
+PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+AUTHORITY_TRANSFER_NONE=true
+FORENSIC_PDF_AUTHORITY=NONE
+ATLAS_AUTHORITY=NONE
+MAP_OF_TRUTH_ROLE=NAVIGATION_ONLY
+```
+
+## 10. Forbidden overreads
+
+```text
+OVERREAD_AS_CHALLENGER_POLICY_WINS=FORBIDDEN
+OVERREAD_AS_ECONOMIC_RANK_ACTIVATED=FORBIDDEN
+OVERREAD_AS_PRODUCTIVE_TOP20=FORBIDDEN
+OVERREAD_AS_EVIDENCE_HARNESS_IMPLEMENTED=FORBIDDEN
+OVERREAD_AS_POLICY_B_THRESHOLD_RATIFIED=FORBIDDEN
+OVERREAD_AS_NEAR_ZERO_THRESHOLD_RATIFIED=FORBIDDEN
+OVERREAD_AS_OFFLINE_CHALLENGER_A_EQUALS_ANTI_CHURN_POLICY_A=FORBIDDEN
+OVERREAD_AS_ZERO_SPREAD_GLOBAL_INELIGIBILITY=FORBIDDEN
+OVERREAD_AS_BPS_DISPLAY_EQUALS_CANONICAL_FEATURE=FORBIDDEN
+OVERREAD_AS_SCORE_FORMULA_RATIFIED=FORBIDDEN
+OVERREAD_AS_WEIGHTS_RATIFIED=FORBIDDEN
+OVERREAD_AS_CROSS_SECTIONAL_NORMALIZATION_RATIFIED=FORBIDDEN
+OVERREAD_AS_IMPLEMENTED_EQUALS_WIRED=FORBIDDEN
+OVERREAD_AS_PDF_STEP_5_CLOSED=FORBIDDEN
+OVERREAD_AS_APPLY_ROTATION_AUTHORIZED=FORBIDDEN
+OVERREAD_AS_PDF_STEP_7_ALLOWED=FORBIDDEN
+OVERREAD_AS_DOWNSTREAM_MAY_RERANK=FORBIDDEN
+OVERREAD_AS_CALENDAR_HORIZON_RATIFIED=FORBIDDEN
+```
+
+## 11. Explicit non-claims
+
+- This persist does not change the Economic-MD producer, schedule it, or
+  persist derived spread instead of raw quotes.
+- This persist does not implement ranking code or an evidence harness.
+- This persist does not activate any challenger as productive ranking.
+- This persist does not produce TOP20, change Active Set, or change
+  anti-churn Policy A.
+- This persist does not close PDF Step 5 and does not allow PDF Step 7.
+- This persist does not grant live, testnet, order, credential, or
+  capital rights.
+- No challenger wins by this slice.

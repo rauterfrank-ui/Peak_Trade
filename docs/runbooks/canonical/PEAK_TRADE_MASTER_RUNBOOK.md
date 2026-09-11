@@ -1616,8 +1616,10 @@ listed in the subordinate contract is required before any later policy
 ratification. Score formula, weights, normalization, spread formula,
 aggregator, stale bound, cadence, and replay calendar horizon remain
 unratified. This persist left the Economic-MD producer unimplemented.
-Current implementation status is recorded in §4.5.9. Current
-productive Cap 2.2 ranking remains Cap-2.1-only structural ranking.
+Current implementation status is recorded in §4.5.9. Offline spread
+comparison formula and challenger comparison keys are recorded in
+§4.5.10. Current productive Cap 2.2 ranking remains Cap-2.1-only
+structural ranking.
 
 This persist does **not** move productive selection ownership away from
 Cap 2.3. Downstream execution must not re-rank. Policy A remains
@@ -1634,7 +1636,9 @@ raw input. This subsection does **not** replace §4.5–§4.5.8, does
 **not** close PDF Step 5, does **not** authorize `apply_rotation`, does
 **not** allow PDF Step 7, does **not** grant runtime, does **not** join
 a host, does **not** rewire Cap 2.2 ranking onto dual input, and does
-**not** ratify a score formula, weights, spread formula, or aggregator.
+**not** ratify a score formula or weights. Offline spread comparison
+formula and identity aggregator are later persisted in §4.5.10.
+This producer still persists raw bid/ask only.
 
 Subordinate spec:
 `docs&#47;ops&#47;specs&#47;CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md`.
@@ -1680,8 +1684,12 @@ ECONOMIC_MD_PRODUCER_MAY_DEFINE_ACTIVE_SET=false
 ECONOMIC_MD_PRODUCER_MAY_TRIGGER_EXECUTION=false
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
-SPREAD_FORMULA_RATIFIED=false
-SPREAD_AGGREGATOR_RATIFIED=false
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
+PRODUCER_DOES_NOT_COMPUTE_DERIVED_SPREAD=true
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
 STALE_SECONDS_RATIFIED=false
 COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
 PDF_STEP_5_STATUS=UNRESOLVED
@@ -1690,7 +1698,7 @@ PDF_STEP_7_STATUS=FORBIDDEN
 RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_OFFLINE_MVR_EVIDENCE_ON_PERSISTED_ECONOMIC_MD_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
 ```
 
@@ -1698,6 +1706,92 @@ The producer is standalone and explicitly invokable. It is **not**
 productively scheduled and is **not** joined to the Cap 2.2 ranking
 producer. Current productive Cap 2.2 ranking remains Cap-2.1-only
 structural ranking.
+
+### 4.5.10 Cap 2.2 offline MVR spread definition and comparison keys (docs and typed contract; AUTHORITY_EFFECT=OFFLINE_MVR_SPREAD_AND_COMPARISON_KEYS_PERSIST_ONLY)
+
+Owner-GO
+`PEAK_TRADE_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1`
+persists the minimum shared offline calculation semantics required to
+compute the already-authorized Cap 2.2 MVR challenger classes on
+identical PIT inputs. This subsection does **not** replace
+§4.5–§4.5.9, does **not** close PDF Step 5, does **not** authorize
+`apply_rotation`, does **not** allow PDF Step 7, does **not** grant
+runtime, does **not** join a host, does **not** rewire Cap 2.2 ranking,
+does **not** implement ranking code or an evidence harness, and does
+**not** activate economic ranking.
+
+Subordinate contract:
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
+
+Typed validator:
+`src&#47;ops&#47;cap22_offline_mvr_spread_challenger_order_contract_v1.py`.
+
+``` text
+CONTRACT_ID=CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+DECISION_ID=CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1
+AUTHORITY_EFFECT=OFFLINE_MVR_SPREAD_AND_COMPARISON_KEYS_PERSIST_ONLY
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_UNITS=DIMENSIONLESS_DECIMAL_FRACTION
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
+ZERO_SPREAD_RAW_OBSERVATION_VALID=true
+POLICY_C_ZERO_SPREAD_RESULT=NOT_RANKABLE_FOR_POLICY_C
+NEAR_ZERO_THRESHOLD_RATIFIED=false
+OFFLINE_CHALLENGER_A_CANDIDATE_ID=VOLATILITY_RANK_ONLY
+OFFLINE_CHALLENGER_A_IS_NOT_ANTI_CHURN_POLICY_A=true
+VOLATILITY_RANK_ONLY_ORDER_RATIFIED=true
+VOLATILITY_RANK_ONLY_RESIDUAL_TIE_BREAK_RATIFIED=true
+HARD_SPREAD_GATE_THEN_VOL_STRUCTURE_RATIFIED=true
+POLICY_B_THRESHOLD_MODE=VERSIONED_OFFLINE_THRESHOLD_SET_REQUIRED
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+POLICY_C_RATIO_ORIENTATION_RATIFIED=true
+POLICY_D_LEXICOGRAPHIC_KEYS_RATIFIED=true
+POLICY_D_PRIMARY_SORT_DIRECTION_RATIFIED=true
+NO_CHALLENGER_WINS_BY_THIS_SLICE=true
+NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
+FINAL_SCORE_FORMULA_RATIFIED=false
+FINAL_WEIGHTS_RATIFIED=false
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
+STALE_SECONDS_RATIFIED=false
+COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
+RANKING_CADENCE_RATIFIED=false
+FORWARD_LABEL_HORIZON_RATIFIED=false
+HISTORICAL_REPLAY_HORIZON_RATIFIED=false
+ECONOMIC_RANK_ACTIVATED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+POLICY_A_ROLE=ANTI_CHURN_ADMISSION_ONLY
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+PDF_STEP_7_STATUS=FORBIDDEN
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_DEFINE_POLICY_B_VERSIONED_OFFLINE_THRESHOLD_SET_THEN_RUN_OFFLINE_MVR_EVIDENCE_WITHOUT_WIRING
+THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
+THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
+THIS_PERSIST_DOES_NOT_IMPLEMENT_RANKING_CODE=true
+THIS_PERSIST_DOES_NOT_IMPLEMENT_EVIDENCE_HARNESS=true
+THIS_PERSIST_DOES_NOT_WIRE_PRODUCTIVE_ECONOMIC_RANKING=true
+```
+
+Canonical same-cycle spread is relative bid/ask over mid as a
+dimensionless decimal fraction. The aggregator is identity over the
+single same-cycle quote. Exact zero spread remains a valid raw
+observation and is not rankable for the ratio challenger only.
+Near-zero threshold, Policy-B threshold set, score formula, weights,
+cadence, and label/replay horizons remain unratified. Residual
+tie-break `venue_native_id` then `canonical_instrument_id` is not an
+economic signal. Offline challenger `VOLATILITY_RANK_ONLY` is not
+anti-churn Policy A.
+
+This persist does **not** move productive selection ownership away from
+Cap 2.3. Downstream execution must not re-rank. Policy A remains
+anti-churn admission only. PDF Step 5 remains unresolved. Rotation
+remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
+authority remains false.
 
 ## 4.6 Volatility authority
 

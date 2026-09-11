@@ -88,8 +88,11 @@ FUTURE_LEAKAGE_FORBIDDEN=true
 CAP22_MVR_SPREAD_INPUT_AUTHORIZED=true
 CAP22_MVR_SPREAD_RAW_INPUT=SAME_COLLECTION_CYCLE_BIDPX_ASKPX
 SPREAD_MUST_BE_DERIVABLE_FROM_PERSISTED_RAW_INPUT=true
-SPREAD_FORMULA_RATIFIED=false
-SPREAD_AGGREGATOR_RATIFIED=false
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
 SPREAD_STALE_SECONDS_RATIFIED=false
 SPREAD_MAX_COLLECTION_SKEW_RATIFIED=false
 STALE_SECONDS_RATIFIED=false
@@ -211,15 +214,20 @@ Raw input is finalized PT1M mark-price history per rankable instrument.
 CAP22_MVR_SPREAD_INPUT_AUTHORIZED=true
 CAP22_MVR_SPREAD_RAW_INPUT=SAME_COLLECTION_CYCLE_BIDPX_ASKPX
 SPREAD_MUST_BE_DERIVABLE_FROM_PERSISTED_RAW_INPUT=true
-SPREAD_FORMULA_RATIFIED=false
-SPREAD_AGGREGATOR_RATIFIED=false
+SPREAD_FORMULA_RATIFIED=true
+SPREAD_FORMULA_ID=RELATIVE_BID_ASK_SPREAD_OVER_MID_V1
+SPREAD_FORMULA_AUTHORITY_SCOPE=OFFLINE_MVR_COMPARISON_ONLY
+SPREAD_AGGREGATOR_RATIFIED=true
+SPREAD_AGGREGATOR=IDENTITY_SINGLE_SAME_CYCLE_QUOTE_V1
 SPREAD_STALE_SECONDS_RATIFIED=false
 SPREAD_MAX_COLLECTION_SKEW_RATIFIED=false
 ```
 
 Raw input is a same-cycle `bidPx` + `askPx` ticker observation. Spread
-must be derivable from that persisted raw input. Formula, aggregator,
-stale-second bound, and cross-instrument skew bound remain unratified.
+must be derivable from that persisted raw input. Offline comparison
+formula and identity aggregator are persisted by
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
+Stale-second bound and cross-instrument skew bound remain unratified.
 
 ## 4. Deferred MVR data kinds
 
@@ -268,8 +276,6 @@ This persist ratifies **none** of the following:
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
 CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
-SPREAD_FORMULA_RATIFIED=false
-SPREAD_AGGREGATOR_RATIFIED=false
 STALE_SECONDS_RATIFIED=false
 COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
 ECONOMIC_RANK_ACTIVATED=false
@@ -315,6 +321,9 @@ OVERREAD_AS_POLICY_A_MAY_RECOMPUTE_ECONOMIC_SCORE=FORBIDDEN
 - This contract does not change current productive Cap 2.2 structural ranking.
 - This contract does not activate economic ranking.
 - This contract does not ratify score formula, weights, or normalization.
+- Offline spread formula and identity aggregator are persisted by
+  `docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`
+  and remain offline-comparison only.
 - This contract does not close PDF Step 5 and does not allow PDF Step 7.
 - This contract does not grant live, testnet, order, credential, or capital rights.
 
@@ -328,7 +337,18 @@ That persist does **not** ratify a score formula, does **not** implement
 the Economic-MD producer, and does **not** wire productive economic
 ranking. This dual-input contract remains the input-architecture owner.
 
-## 10. Economic-MD producer implementation is a later subordinate capability
+## 10. Offline MVR spread comparison keys persist is a separate subordinate contract
+
+Owner-GO
+`PEAK_TRADE_CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_COMPARISON_KEYS_V1`
+persists the offline spread formula, identity aggregator, zero
+handling, and challenger comparison keys in
+`docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md`.
+That persist does **not** activate economic ranking, does **not**
+implement ranking code or an evidence harness, and does **not**
+ratify a Policy-B threshold set.
+
+## 11. Economic-MD producer implementation is a later subordinate capability
 
 Owner-GO
 `PEAK_TRADE_CAP_2_2_ECONOMIC_MD_MVR_RAW_INPUT_PRODUCER_IMPLEMENTATION_V1`
