@@ -65,9 +65,15 @@ Bewusst **nicht** in v1.0 enthalten:
 
 ---
 
-## 4. Roadmap „bis Finish“ (INSTALLATION_UND_ROADMAP_BIS_FINISH)
+## 4. Roadmap „bis Finish“ (HISTORICAL_JAN_2026_SNAPSHOT)
 
-Geplante Phasen mit **noch nicht umgesetzten** Features:
+Die aktuelle Closure-Sequenz und semantische Autorität ist das Canonical Master Runbook:
+
+[`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md)
+
+Die folgende Tabelle ist ein **historischer** Jan-2026-Snapshot aus dem ehemaligen Root-Install/Roadmap-Dokument. Sie ist **keine** aktuelle Produkt-/Live-Roadmap-Autorität.
+
+Geplante Phasen mit **noch nicht umgesetzten** Features (Stand 2026-01-12, historical):
 
 | Phase | Thema | Fehlende Features (Auszug) |
 |-------|--------|----------------------------|
@@ -150,7 +156,7 @@ Kanonische Docs-Klassifikation für genannte R&amp;D-Strategien. **Nicht** Live-
 |-----------|-----------|
 | **Architektur-Vision** | Feature-Engine (deferred), Sentiment, Orderbuch/Tick — in Vision/Docs genannt. ECM implementiert in Strategy layer, nicht in ``src/features/``. |
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
-| **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
+| **Roadmap 2026** | Historischer Jan-2026-Snapshot (Phasen 11–17). Aktuelle Sequenz: Master Runbook. |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
 | **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, ``src&#47;features``. R&amp;D-Strategien Ehlers&#47;Bouchaud&#47;Gatheral&#47;Meta-Labeling: siehe §5.2.1 (`research-only`, NON-OPERATIONAL). | <!-- pt:ref-target-ignore -->
 
@@ -160,7 +166,8 @@ Kanonische Docs-Klassifikation für genannte R&amp;D-Strategien. **Nicht** Live-
 
 - ``docs&#47;PEAK_TRADE_V1_RELEASE_NOTES.md`` – Kern-Features v1.0  
 - ``docs&#47;PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`` – bewusst nicht implementiert  
-- `INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md` – Roadmap Teil 4  
+- [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) – current closure sequence (not a Live unlock)
+- Historical install/roadmap snapshot: [`docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`](../ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)  
 - ``src&#47;docs&#47;trading_bot_notes.md`` – Architektur & Feature-Engine-Vision  
 - ``docs&#47;Peak_Trade_Research_Strategy_TODO_2025-12-07.md`` – Research-TODO  
 - ``docs&#47;TECH_DEBT_BACKLOG.md`` – Tech-Debt  

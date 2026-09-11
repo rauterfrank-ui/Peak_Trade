@@ -142,14 +142,14 @@ git reset --hard ed2640ba  # (parent commit)
 **Entry Points**:
 - **Installation Quickstart**: [docs/INSTALLATION_QUICKSTART.md](../../INSTALLATION_QUICKSTART.md)
 - **Workflow Frontdoor**: [docs/WORKFLOW_FRONTDOOR.md](../../WORKFLOW_FRONTDOOR.md)
-- **Runbook Overview**: [WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md](../../../WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md)
+- **Runbook Overview**: [docs/ops/RUNBOOK_INDEX.md](../RUNBOOK_INDEX.md) (current; historical 2026-01-12 overview superseded)
 
 **Archive (Original Preserved)**:
 - **Archive Index**: [docs/ops/_archive/installation_roadmap/2026-01-12/README.md](../_archive/installation_roadmap/2026-01-12/README.md)
 - **Original Document**: [docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 
 **Compatibility Targets**:
-- **Root Stub**: [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../../../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
+- **Root Stub**: superseded; historical snapshot [archive original](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 - **Runbook Stub**: [docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md)
 
 ### How to Validate Links Locally
@@ -166,7 +166,7 @@ git reset --hard ed2640ba  # (parent commit)
 2. Navigate to "Installation & Setup (2026-ready)" section
 3. Choose:
    - Quick start: [docs/INSTALLATION_QUICKSTART.md](../../INSTALLATION_QUICKSTART.md)
-   - Full snapshot: [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../../../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md) → Archive
+   - Full snapshot: [archive original](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 
 ## References
 ### PR & Commit

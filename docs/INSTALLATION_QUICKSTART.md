@@ -1,253 +1,137 @@
 # Peak_Trade – Installation Quickstart
 
-**Purpose:** Entry point for all installation, setup, and getting started resources  
-**Last Updated:** 2026-01-12  
-**Target Audience:** New users, onboarding, setup verification
+**Purpose:** Current entry point for installation, bootstrap, and first verification  
+**Target Audience:** New checkouts, onboarding, setup verification
 
----
-
-## 🎯 Quick Navigation
-
-### 📘 Comprehensive Installation & Roadmap (2026-01-12)
-
-**[INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)**
-
-**Status:** ✅ AUTHORITATIVE, COMPLETE INSTALLATION & ROADMAP GUIDE  
-**Version:** v1.0 (2026-01-12)  
-**Size:** 1161 lines  
-**Use Case:** Complete installation walkthrough (0→ready in 11 steps), verification, roadmap through 2026
-
-**Key Content:**
-- **Teil 1 (Current State):** Complete feature inventory (100+ features across 6 categories) – Phases 1-10 @ 100%
-- **Teil 2 (Installation):** 11-step setup guide (system requirements → first research session)
-- **Teil 3 (Verification):** Smoke-test matrix, troubleshooting, health checks
-- **Teil 4 (Roadmap):** Phase 11-17 (2026+), including **Phase 13 Governance-Gate** (live trading)
-- **Teil 5 (Next Steps):** Concrete action items (short/mid/long-term)
-- **Teil 6 (Success Criteria):** Definition of Done, milestone matrix, risk register
-- **Teil 7 (Resources):** Internal docs + external links (Python, Trading, Testing)
-- **Teil 8 (Checklists):** Pre-flight, post-deployment, phase-completion, **governance-gate**
-
-**When to Use:**
-- First-time installation
-- Onboarding new team members
-- Understanding project roadmap (Phase 11-17)
-- Governance-gate preparation (Phase 13 live trading)
-- System verification after updates
-
----
-
-### 📙 Quick Start (< 1 Hour)
-
-**[GETTING_STARTED.md](./GETTING_STARTED.md)**
-
-**Status:** ✅ OPERATIONAL, FAST-TRACK SETUP  
-**Use Case:** Get running in under 1 hour (skip detailed explanations)
-
----
-
-### 📕 First 7 Days Onboarding
-
-**[PEAK_TRADE_FIRST_7_DAYS.md](./PEAK_TRADE_FIRST_7_DAYS.md)**
-
-**Status:** ✅ OPERATIONAL, STRUCTURED ONBOARDING  
-**Use Case:** Week-by-week learning path (Day 1: setup, Day 7: research)
-
----
-
-## 🗺️ Related Documentation
-
-### Setup & Configuration
-- [Dev Setup Guide](./DEV_SETUP.md) – Developer-specific setup
-- [Docs overview](./README.md) – topic index for the docs tree
-- [README.md](../README.md) – Project overview + quick start
-- [CLI Cheatsheet](./CLI_CHEATSHEET.md) – Complete CLI reference (18 sections)
-
-### Architecture & Design
-- [Architecture Overview](./ARCHITECTURE_OVERVIEW.md) – System architecture
-- [Peak_Trade Overview](./PEAK_TRADE_OVERVIEW.md) – Feature overview
-- [Backtest Engine](./BACKTEST_ENGINE.md) – Engine details
-
-### Operations
-- [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks
-- [Workflow Frontdoor](./WORKFLOW_FRONTDOOR.md) – Workflow docs navigation
-
-### Governance
-- [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) – Governance framework
-- [Safety Policy Testnet and Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) – Safety policies
-
----
-
-## 📊 Installation Pathways
-
-### For New Users (Zero to Ready)
-
-**Recommended Path:**
-1. [INSTALLATION_UND_ROADMAP Teil 2](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#-teil-2-installation--setup) – 11-step complete guide
-2. Verification: Smoke tests (< 1 min)
-3. First backtest
-
-**What You Get:**
-- Complete system setup (Python 3.11+, venv, dependencies)
-- Config file creation with examples
-- Directory structure validation
-- Import verification tests
-- Health check confirmation
-
-**Estimated Time:** 30-60 minutes
-
----
-
-### For Developers (Fast Setup)
-
-**Recommended Path:**
-1. [GETTING_STARTED.md](./GETTING_STARTED.md) – Fast-track (< 1 hour)
-2. [DEV_SETUP.md](./DEV_SETUP.md) – Developer tools + workflow
-3. [CLI_CHEATSHEET.md](./CLI_CHEATSHEET.md) – Command reference
-
-**What You Get:**
-- Quick setup without detailed explanations
-- Developer-specific tools (linting, type-checking, testing)
-- CLI command reference (18 sections)
-
-**Estimated Time:** 45 minutes
-
----
-
-### For Operators (Operations Focus)
-
-**Recommended Path:**
-1. [INSTALLATION_UND_ROADMAP Teil 3](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#-teil-3-verifikation--tests) – Verification matrix
-2. [LIVE_OPERATIONAL_RUNBOOKS.md](./LIVE_OPERATIONAL_RUNBOOKS.md) – Operations guides (12+ runbooks)
-3. [WORKFLOW_FRONTDOOR.md](./WORKFLOW_FRONTDOOR.md) – Daily workflow navigation
-
-**What You Get:**
-- Smoke-test matrix (6 verification tests)
-- Troubleshooting guides (4 common problems)
-- Health check procedures
-- Live operations commands
-
-**Estimated Time:** 60 minutes (including verification)
-
----
-
-## 🚨 Governance-Gate Notice (Phase 13)
-
-**Live Trading (Phase 13) requires explicit governance approval.**
-
-See [INSTALLATION_UND_ROADMAP Teil 4 (Phase 13)](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#phase-13-production-live-trading-q2-2026--️-governance-review-erforderlich) for details.
-
-See [INSTALLATION_UND_ROADMAP Teil 8 (Governance-Gate Checklist)](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#governance-gate-checklist-für-phase-13--live-trading) for requirements.
-
-**Requirements (13-point checklist):**
-- Two-Man-Rule für Live-Aktivierung
-- Go/No-Go-Checklist vollständig abgearbeitet
-- Incident-Drills durchgeführt (min. 5x)
-- Insurance & Legal-Review abgeschlossen
-- Kill-Switch getestet (min. 3x)
-- Audit-Trail vollständig
-- Risk-Limits konservativ konfiguriert
-- Owner-Freigabe schriftlich erhalten
-- Backup-Plan & Rollback-Strategie
-- 24/7-Monitoring eingerichtet
-- On-Call-Rotation definiert
-- Incident-Response-Team bereit
-- Alle Phasen 1-12 vollständig abgeschlossen
-
-**Target Date:** Q2 2026 (estimated)
-
----
-
-## ⚡ Verification Shortcuts
-
-### Quick Health Check
-
-Run this after installation:
-
-```bash
-python3 scripts/live_ops.py health --config config/config.toml
+```text
+DOCUMENT_ROLE=CURRENT_INSTALL_NAVIGATION
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+LIVE_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ORDERS_ALLOWED=false
 ```
 
-Expected output: Overall Status: OK
+This page does **not** authorize Live, Testnet, orders, credentials, or capital movement.
 
 ---
 
-### Smoke Tests
+## Current install authority
 
-Run this to verify core functionality:
+Install and local Python runtime are defined by:
 
-```bash
-python3 -m pytest -m smoke -q
-```
+1. [`README.md`](../README.md) — Schnelleinstieg
+2. [`GETTING_STARTED.md`](./GETTING_STARTED.md) — first-hour onboarding
+3. [`DEV_SETUP.md`](./DEV_SETUP.md) — developer environment
+4. [`PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](./runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md) — launcher / interpreter contract
+5. [`PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md`](./runtime/PEAK_TRADE_WORKTREE_PYTHON_ENVIRONMENT_BOOTSTRAP_CONTRACT_V1.md) — per-checkout `.venv`
 
-Expected output: 28 passed in < 1s
+Canonical launcher: `scripts/pt`  
+Canonical bootstrap: `scripts/pt-bootstrap`  
+Canonical interpreter: repository `.venv` Python (never PATH `python` / `python3`)
+
+Do **not** use PATH `python` / `python3`, `python -m venv`, or venv activation as the supported runtime.
+
+A 2026-01-12 installation/roadmap snapshot exists only as historical archive:
+
+[`docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`](ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+
+That snapshot is **not** current install, bootstrap, or product-roadmap authority.
 
 ---
 
-### First Backtest
+## Requirements
 
-Run this to verify backtest engine:
-
-```bash
-python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/USDT --bars 100 -v
-```
-
-Expected output: Stats displayed (Return, Sharpe, Max Drawdown, Win Rate)
+- **Python floor:** `requires-python = ">=3.10"` in `pyproject.toml`. Recommended local interpreter: repository `.venv` (CPython 3.11.x) via `scripts/pt-bootstrap`.
+- **Git**
+- **uv** (used by `scripts/pt-bootstrap`)
+- **Disk:** budget on the order of 10 GB for data, reports, logs, and local caches
+- **OS:** macOS (typical), Linux, or Windows via WSL2
+- Optional: exchange credentials only when a separate Owner-authorized network session requires them (not part of install)
 
 ---
 
-## 📋 Quick Links
-
-### Most Used Commands
-
-**Health & Monitoring:**
+## Zero to ready
 
 ```bash
-python3 scripts/live_ops.py health --config config/config.toml
-python3 scripts/live_ops.py portfolio --config config/config.toml
-python3 scripts/live_monitor_cli.py overview --only-active
+# 1. Clone
+git clone <REPO_URL> Peak_Trade
+cd Peak_Trade
+
+# 2. Bootstrap (once per checkout / worktree)
+./scripts/pt-bootstrap
+
+# 3. Canonical runtime check
+./scripts/pt runtime-check
+
+# 4. Smoke / tests
+./scripts/pt -m pytest -m smoke -q
+./scripts/pt -m pytest -q
+
+# 5. Optional first backtest
+./scripts/pt scripts/run_strategy_from_config.py --strategy ma_crossover --symbol BTC/USDT
 ```
 
-**Testing:**
+Activation of the venv is not required. The launcher selects the checkout `.venv` interpreter.
+
+Worktrees: each checkout owns a real `.venv` via `scripts/pt-bootstrap`. Do not symlink another worktree `.venv`.
+
+Optional Web-UI extra:
 
 ```bash
-python3 -m pytest -m smoke -q
-python3 -m pytest -q
-python3 -m pytest --cov=src --cov-report=html
-```
-
-**Backtesting:**
-
-```bash
-python3 scripts/run_backtest.py --strategy ma_crossover --symbol BTC/EUR
-python3 scripts/run_portfolio_backtest.py
-python3 scripts/research_cli.py portfolio --portfolio-preset rsi_reversion_conservative --format both
+uv sync --extra web
+./scripts/pt -m pytest -m web
 ```
 
 ---
 
-## 📞 Support & Next Steps
+## Pathways
 
-**If Installation Fails:**
-1. Check system requirements (Python 3.11+, Git, 10GB free space)
-2. Review troubleshooting section in [INSTALLATION_UND_ROADMAP Teil 3](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#troubleshooting)
-3. Verify directory structure and permissions
+### New users
 
-**After Successful Installation:**
-1. Run smoke tests
-2. Execute first backtest
-3. Review roadmap [INSTALLATION_UND_ROADMAP Teil 4](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md#️-teil-4-roadmap-bis-finish)
-4. Explore CLI commands ([CLI_CHEATSHEET.md](./CLI_CHEATSHEET.md))
+1. This page
+2. [`README.md`](../README.md) Schnelleinstieg
+3. [`GETTING_STARTED.md`](./GETTING_STARTED.md)
 
-**For Operations:**
-- [LIVE_OPERATIONAL_RUNBOOKS.md](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks
-- [WORKFLOW_FRONTDOOR.md](./WORKFLOW_FRONTDOOR.md) – Workflow navigation
+### Developers
 
-**For Development:**
-- [DEV_SETUP.md](./DEV_SETUP.md) – Developer setup
-- [STRATEGY_DEV_GUIDE.md](./STRATEGY_DEV_GUIDE.md) – Strategy development
-- [DEV_GUIDE_ADD_STRATEGY.md](./DEV_GUIDE_ADD_STRATEGY.md) – Add new strategy
+1. [`DEV_SETUP.md`](./DEV_SETUP.md)
+2. [`CLI_CHEATSHEET.md`](./CLI_CHEATSHEET.md)
+3. [`STRATEGY_DEV_GUIDE.md`](./STRATEGY_DEV_GUIDE.md)
+
+### Operators
+
+1. [`docs/ops/README.md`](./ops/README.md)
+2. [`docs/ops/RUNBOOK_INDEX.md`](./ops/RUNBOOK_INDEX.md)
+3. [`WORKFLOW_FRONTDOOR.md`](./WORKFLOW_FRONTDOOR.md)
+4. [`LIVE_OPERATIONAL_RUNBOOKS.md`](./LIVE_OPERATIONAL_RUNBOOKS.md) (non-authorizing)
 
 ---
 
-**Last Updated:** 2026-01-12  
-**Next Review:** Q2 2026 or after Phase 11 completion
+## Governance / Live boundary
+
+Installation does not enable Live, Testnet, or orders.
+
+Current semantic authority: [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](./runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md)
+
+Safety / policy (non-authorizing):
+
+- [`SAFETY_POLICY_TESTNET_AND_LIVE.md`](./SAFETY_POLICY_TESTNET_AND_LIVE.md)
+- [`docs/risk/KILL_SWITCH.md`](./risk/KILL_SWITCH.md)
+- [`docs/ops/KILL_SWITCH_RUNBOOK.md`](./ops/KILL_SWITCH_RUNBOOK.md)
+
+---
+
+## If bootstrap fails
+
+1. Confirm `pyproject.toml`, `uv.lock`, and `scripts/pt` exist in this checkout
+2. Re-run `scripts/pt-bootstrap` (it will not unlink a foreign `.venv` symlink)
+3. Re-run `scripts&#47;pt runtime-check`
+4. Do not fall back to PATH `python3` or `PYTHONPATH`
+
+---
+
+## Related
+
+- [`docs/README.md`](./README.md) — docs topic index
+- [`docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md`](./governance/PEAK_TRADE_MAP_OF_TRUTH.md) — navigation only
+- Historical install snapshot (archive): [`docs/ops/_archive/installation_roadmap/2026-01-12/README.md`](ops/_archive/installation_roadmap/2026-01-12/README.md)

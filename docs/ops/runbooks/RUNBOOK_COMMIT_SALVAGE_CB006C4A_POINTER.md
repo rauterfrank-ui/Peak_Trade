@@ -42,7 +42,7 @@ feature branch → PR → CI validation → merge
 
 ## Why Pointer?
 
-The canonical runbook remains in the repo root for:
+The canonical runbook body is the archive SSOT:
 - **Provenance**: Preserves original context and commit reference (cb006c4a)
 - **Stability**: Minimizes risk of breaking references from merge logs, evidence index, or other docs
 - **Discoverability**: Pointer ensures visibility in ops runbooks landscape
@@ -57,7 +57,7 @@ This hybrid approach (root artifact + pointer) balances:
 ## Related
 
 - **Evidence**: PR #718 (salvage operation execution + docs gates fixes)
-- **Pattern**: Similar to `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md` (root-level operational reference)
+- **Pattern**: Pointer to archive SSOT (same pattern as other Wave-1 root-to-archive recoveries)
 - **Usage**: Documents salvage workflow for commits accidentally created on wrong branch
 
 ---
