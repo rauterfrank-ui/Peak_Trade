@@ -1220,8 +1220,8 @@ This subsection does **not** promote the envelope to an Active-Set DTO.
 Owner-GO
 `OWNER_GO_PDF_STEP_3_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_V1`
 binds Membership / Rotation Controller ownership of the authoritative
-Next Active Set inside the isolated ranking/selection domain. This
-subsection does **not** replace §4.5–§4.5.5, does **not** ratify
+Next Active Set inside the isolated ranking/selection domain. That
+Step-3 persist does **not** replace §4.5–§4.5.5, does **not** ratify
 anti-churn for this Active Set, does **not** apply isolated POLICY_A
 to this Active Set, does **not** re-own `N_VALUE`, does **not** join a
 host, does **not** rewire Cap 2.3 or Cap 2.4, does **not** unlock G13,
@@ -1266,10 +1266,19 @@ NO_PADDING=true
 NO_PREFIX_SELECTION=true
 NO_DOWNSTREAM_SELECTION=true
 ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
-ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=UNRATIFIED
+ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET=ADOPTED_POLICY_A_UNCHANGED
 POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY=true
-ACTIVE_SET_POLICY_ADOPTION=UNPROVEN
-ACTIVE_SET_POLICY_RATIFIED=false
+POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true
+ACTIVE_SET_POLICY_ADOPTION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
+ACTIVE_SET_POLICY_RATIFIED=true
+AS05_D01_STATUS=CLOSED
+AS05_D01_DECISION=ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET
+AS05_D02_STATUS=UNRESOLVED
+AS05_D03_STATUS=UNRESOLVED
+SELECTOR_BECOMES_ACTIVE_SET_OWNER=false
+EXECUTION_BECOMES_ACTIVE_SET_OWNER=false
+PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED=false
+RUNTIME_AUTHORITY_GRANTED=false
 CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE
 COOLDOWN_RATIFIED=false
 TURNOVER_RATIFIED=false
@@ -1281,12 +1290,13 @@ EXECUTING_MODEL_HANDOFF_CONSUMER=UNBOUND
 PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP=CLOSED
 PDF_STEP_4_ANTI_CHURN_CENSUS=CLOSED
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION=UNRESOLVED
-OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED
+OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED
 OWNER_DECISION_COUNT=3
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED=false
-NEXT_CANONICAL_DECISION=NOT_NAMED_HERE
-THIS_PERSIST_DOES_NOT_NAME_A_NEXT_CANONICAL_DECISION=true
+NEXT_CANONICAL_DECISION=AS05-D02
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
+THIS_PERSIST_DOES_NOT_CLOSE_AS05_D02=true
+THIS_PERSIST_DOES_NOT_CLOSE_AS05_D03=true
 ```
 
 These object classes remain distinct and must not collapse:
@@ -1299,27 +1309,33 @@ RANKED_CANDIDATE_CONTEXT
 
 Existing `MF_MEMBERSHIP_CONTEXT_V1` artifacts are **not** this Active
 Set. Isolated POLICY_A remains the policy of the non-authoritative
-membership selector and is **not** automatically the policy of this
-Active Set. Reconciliation **authority** is bound. Reconciliation
-**behavior** remains fail-closed until a later Owner-GO ratifies
-rotation/anti-churn for this Active Set. `MF_SINGLE_EGRESS_V1` remains
+membership selector. Owner-GO
+`PEAK_TRADE_PDF_STEP_5_AS05_D01_AUTHORITATIVE_ACTIVE_SET_POLICY_ADOPTION_DOCS_ONLY_V1`
+closes AS05-D01 as `ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET`. That
+close adopts isolated POLICY_A **unchanged** as the admission-policy
+rule set of `AUTHORITATIVE_NEXT_ACTIVE_SET`. Policy reuse does **not**
+transfer ownership, ranking, selection, execution, live, wire-send, or
+runtime authority. Selector does **not** become Active Set owner.
+Execution does **not** become Active Set owner. Cap 2.3 remains the
+sole **productive** selection owner. Reconciliation **authority** is
+bound. Reconciliation **behavior** remains fail-closed because AS05-D02
+(evaluator identity) remains unresolved. `MF_SINGLE_EGRESS_V1` remains
 the unique egress identity. The current envelope cannot represent this
 Active Set; the smallest compatible evolution is an intended-object
 pointer without envelope-schema promotion. Consumer identity remains
-`UNBOUND`. Cap 2.3 remains the sole **productive** selection owner.
-This persist does **not** name a next canonical decision.
+`UNBOUND`. This D01 persist names `AS05-D02` as the next unresolved
+Owner decision. It does **not** close PDF Step 5, does **not** close
+AS05-D03, and does **not** allow PDF Step 7.
 Owner-GO
 `OWNER_GO_PDF_STEP_4_ANTI_CHURN_CENSUS_CANONICAL_CLOSE_V1`
 closes PDF Step 4 as an inventory census only
-(`CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE`). Isolated POLICY_A
-adoption for this Active Set remains `UNPROVEN`. Rotation/anti-churn
-for this Active Set remains unratified. Cooldown and turnover remain
-unratified. Workpackage
+(`CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE`). Workpackage
 `PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION_DECISION_PACKAGE_V1`
-persists a non-operative Owner decision surface on the subordinate
-ownership contract (`OWNER_DECISION_SURFACE_STATUS=PREPARED_NOT_RATIFIED`;
-three open decisions AS05-D01, AS05-D02, AS05-D03). That persist does
-**not** close PDF Step 5, does **not** adopt isolated POLICY_A, does
+prepared a non-operative Owner decision surface on the subordinate
+ownership contract. AS05-D01 is now `CLOSED`; AS05-D02 and AS05-D03
+remain unresolved
+(`OWNER_DECISION_SURFACE_STATUS=D01_RATIFIED_D02_D03_UNRESOLVED`).
+Cooldown and turnover remain unratified. That D01 persist does
 **not** join a host, does **not** rewire Cap 2.3 or Cap 2.4, does
 **not** unlock G13, and does **not** allow PDF Step 7 runtime
 implementation.

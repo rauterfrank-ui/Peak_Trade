@@ -2,10 +2,11 @@
 
 Binds Membership / Rotation Controller ownership of authoritative selected
 membership inside the ranking/selection domain. PDF Step 4 census is closed
-as inventory only. Does not ratify anti-churn for this Active Set, does not
-apply isolated POLICY_A to this Active Set, does not join a host, does not
-rewire Cap 2.3 or Cap 2.4, does not unlock G13, and does not name a
-productive consumer.
+as inventory only. AS05-D01 adopts isolated POLICY_A unchanged as the Active
+Set admission-policy rule set without transferring ownership or granting
+runtime. Does not close AS05-D02 or AS05-D03, does not close PDF Step 5,
+does not join a host, does not rewire Cap 2.3 or Cap 2.4, does not unlock
+G13, and does not name a productive consumer.
 """
 
 from __future__ import annotations
@@ -46,10 +47,21 @@ NO_DOWNSTREAM_SELECTION = True
 ONE_ACTIVE_SET_STATE_OWNER = True
 
 ROTATION_POLICY_STATUS = "FAIL_CLOSED_UNTIL_PDF_STEP_5"
-ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET = "UNRATIFIED"
+ANTI_CHURN_POLICY_FOR_AUTHORITATIVE_ACTIVE_SET = "ADOPTED_POLICY_A_UNCHANGED"
 POLICY_A_IS_NOT_AUTOMATIC_ACTIVE_SET_POLICY = True
-ACTIVE_SET_POLICY_ADOPTION = "UNPROVEN"
-ACTIVE_SET_POLICY_RATIFIED = False
+POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY = True
+ACTIVE_SET_POLICY_ADOPTION = "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
+ACTIVE_SET_POLICY_RATIFIED = True
+AS05_D01_STATUS = "CLOSED"
+AS05_D01_DECISION = "ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET"
+AS05_D02_STATUS = "UNRESOLVED"
+AS05_D03_STATUS = "UNRESOLVED"
+SELECTOR_BECOMES_ACTIVE_SET_OWNER = False
+EXECUTION_BECOMES_ACTIVE_SET_OWNER = False
+PRODUCTIVE_SELECTION_AUTHORITY_TRANSFERRED = False
+RUNTIME_AUTHORITY_GRANTED = False
+LIVE_AUTHORITY_GRANTED = False
+WIRE_SEND_AUTHORITY_GRANTED = False
 CENSUS_CLASS = "INVENTORY_ONLY_NO_POLICY_CHOICE"
 COOLDOWN_RATIFIED = False
 TURNOVER_RATIFIED = False
@@ -96,7 +108,9 @@ PDF_STEP_3_MEMBERSHIP_ROTATION_OWNERSHIP = "CLOSED"
 PDF_STEP_4_ANTI_CHURN_CENSUS = "CLOSED"
 PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION = "UNRESOLVED"
 PDF_STEP_7_RUNTIME_IMPLEMENTATION_ALLOWED = False
-NEXT_CANONICAL_DECISION = "NOT_NAMED_HERE"
+NEXT_CANONICAL_DECISION = "AS05-D02"
+OWNER_DECISION_SURFACE_STATUS = "D01_RATIFIED_D02_D03_UNRESOLVED"
+NEXT_IMPLEMENTATION_AUTHORIZED = False
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "cap23_imported",
@@ -121,6 +135,7 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "no_padding",
     "one_active_set_state_owner",
     "policy_a_is_not_automatic_active_set_policy",
+    "policy_reuse_does_not_transfer_authority",
     "rotation_decision_authority_bound",
     "single_egress_required",
 )
@@ -308,6 +323,12 @@ def reject_rotation_until_step_5_v1(
         raise ActiveSetOwnershipError("ROTATION_POLICY_UNRATIFIED", "apply_rotation")
     if raw.get("policy_a_applied_as_active_set_policy") is True:
         raise ActiveSetOwnershipError("POLICY_A_LEAKAGE", "policy_a_applied")
+    if raw.get("selector_becomes_active_set_owner") is True:
+        raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "selector_owner_transfer")
+    if raw.get("execution_becomes_active_set_owner") is True:
+        raise ActiveSetOwnershipError("AUTHORITY_LEAKAGE", "execution_owner_transfer")
+    if raw.get("pdf_step_5_closed") is True:
+        raise ActiveSetOwnershipError("STEP_5_STILL_UNRESOLVED", "pdf_step_5_closed")
     if str(raw.get("rotation_policy_status") or ROTATION_POLICY_STATUS) != (ROTATION_POLICY_STATUS):
         raise ActiveSetOwnershipError("ROTATION_POLICY_UNRATIFIED", "status")
     if raw.get("prefix_selection") is True:
@@ -417,6 +438,7 @@ def build_authoritative_next_active_set_declaration_v1(
         "one_active_set_state_owner": True,
         "owner": OWNER,
         "policy_a_is_not_automatic_active_set_policy": True,
+        "policy_reuse_does_not_transfer_authority": True,
         "rotation_decision_authority_bound": True,
         "rotation_policy_status": ROTATION_POLICY_STATUS,
         "schema_version": SCHEMA_VERSION,
