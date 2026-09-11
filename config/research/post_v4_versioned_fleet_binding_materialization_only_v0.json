@@ -5,7 +5,7 @@
   "scope_classification": "VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_NO_EVALUATION_NO_RUNTIME_AUTHORITY",
   "base_head": "c534b0eafc53b38c046bc99e823eb8318a43da7f",
   "parent_pr": 4902,
-  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_scope_merge_closeout_20260706T034102Z",
+  "parent_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_scope_merge_closeout_20260706T034102Z",
   "parent_manifest_verify_required": true,
   "hypothesis_id": "post_v4_sparse_signal_failure_recovery_futures_fleet_hypothesis_v0",
   "hypothesis_status": "RATIFIED_FOR_BINDING_DEFINITION_ONLY",

@@ -6,6 +6,9 @@ effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -108,9 +111,7 @@ PRIOR_DELTA_RANK_FEATURE = "delta_or_change_in_open_interest"
 
 NEW_FEATURE = "cross_sectional_open_interest_zscore_at_lagged_observation"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_EVIDENCE_REF = (
     DURABLE_ARCHIVE_ROOT
     / "research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_"

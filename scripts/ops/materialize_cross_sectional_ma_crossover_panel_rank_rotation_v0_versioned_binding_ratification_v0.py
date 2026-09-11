@@ -8,6 +8,9 @@ Operator GO: GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BI
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -22,10 +25,9 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 CONFIRM_GO = "GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION"
-SOURCE_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_"
-    "dataset_materialization_v0_20260710T094803Z"
+SOURCE_CLOSEOUT_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z"
 )
 
 from src.research.cross_sectional_ma_crossover_panel_rank_rotation_v0_binding_ratification_v0 import (  # noqa: E402
@@ -209,7 +211,7 @@ def main() -> None:
     parser.add_argument("--confirm", required=True)
     parser.add_argument(
         "--durable-evidence-root",
-        default="/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+        default=str(located_runtime_evidence_20260520()),
     )
     parser.add_argument("--write-repo-config", action="store_true")
     args = parser.parse_args()

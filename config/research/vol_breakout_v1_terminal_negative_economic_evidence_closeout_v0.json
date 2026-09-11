@@ -22,7 +22,7 @@
   "instrument_id": "inst-eth-usdt-perp",
   "live_authorized": false,
   "manifest_verify_rc": 0,
-  "merge_closeout_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z",
+  "merge_closeout_evidence_path": "runtime_evidence/20260520T161443Z/research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z",
   "metrics": {
     "baseline_executed": true,
     "baseline_verdict": "FAIL",
@@ -69,7 +69,7 @@
   "scope_classification": "VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_V0",
   "shadow_authorized": false,
   "sizing_config_digest": "8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a",
-  "source_economic_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z",
+  "source_economic_evidence_path": "runtime_evidence/20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z",
   "source_manifest_verify_rc": 0,
   "status": "TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE",
   "strategy_id": "vol_breakout",

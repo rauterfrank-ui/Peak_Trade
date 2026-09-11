@@ -6,6 +6,9 @@ v2 binding geometry without parameter rescue. Binding ratification only.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -49,24 +52,21 @@ HYPOTHESIS_ID = "MOMENTUM_HORIZON_V2_NON_BITCOIN_FUTURES_V2"
 BINDING_GENERATION = "post_pr4921"
 EXPECTED_BINDING_DIGEST = "366f7aeb21d781a2531d477ef32943c04d5edb262b7be9e540bbfcfc2528985f"
 
-DISCOVERY_EVIDENCE_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
+DISCOVERY_EVIDENCE_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
 )
-DECISION_PACKET_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/post_trend_following_v2_terminal_fail_next_admissible_scope_decision_packet_v0_"
-    "20260715T154217Z"
+DECISION_PACKET_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/post_trend_following_v2_terminal_fail_next_admissible_scope_decision_packet_v0_20260715T154217Z"
 )
-TREND_FOLLOWING_V2_CLOSEOUT_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/pr5221_merge_closeout_trend_following_v2_post_repair_economic_fail_"
-    "governance_closeout_v0_20260715T153815Z"
+TREND_FOLLOWING_V2_CLOSEOUT_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5221_merge_closeout_trend_following_v2_post_repair_economic_fail_governance_closeout_v0_20260715T153815Z"
 )
-POST_PR4921_CLOSEOUT_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/post_pr4921_versioned_research_bindings_no_eval_merge_closeout_"
-    "20260706T083055Z"
+POST_PR4921_CLOSEOUT_DIR = str(
+    located_runtime_evidence_20260520()
+    / "implementation/post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z"
 )
 
 AUTHORITY_EFFECT = "OFFLINE_EVALUATION_AUTHORIZATION_ONLY"

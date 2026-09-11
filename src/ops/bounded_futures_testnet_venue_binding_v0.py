@@ -5,6 +5,9 @@ No network I/O, credentials, private API, orders, runtime, or promotion authorit
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 from dataclasses import dataclass
 from datetime import date
@@ -45,15 +48,13 @@ DEMO_REFERENCE_EXPIRY_DATE = "2031-03-28"
 VENUE_REPORTED_LEVERAGE_CAPABILITY = 50.0
 REGULATORY_MAX_RETAIL_LEVERAGE = 10.0
 
-QUALIFICATION_EVIDENCE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/package_e_e2_inv033_okx_europe_demo_eth_instrument_qualification_"
-    "bounded_read_only_no_account_no_runtime_v0_20260626T204649Z"
+QUALIFICATION_EVIDENCE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "planning/package_e_e2_inv033_okx_europe_demo_eth_instrument_qualification_bounded_read_only_no_account_no_runtime_v0_20260626T204649Z"
 )
-GAP_CLOSURE_EVIDENCE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/package_e_e2_inv033_okx_europe_product_demo_evidence_gap_closure_"
-    "bounded_read_only_no_account_no_credentials_no_runtime_v0_20260626T205436Z"
+GAP_CLOSURE_EVIDENCE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "planning/package_e_e2_inv033_okx_europe_product_demo_evidence_gap_closure_bounded_read_only_no_account_no_credentials_no_runtime_v0_20260626T205436Z"
 )
 
 OKX_EEA_PUBLIC_ENDPOINT_ALLOWLIST: frozenset[str] = frozenset(

@@ -1,6 +1,9 @@
 """Contract tests for post-PR4921 versioned research bindings no eval v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -37,7 +40,7 @@ BASE_HEAD = "dc6229ed32a57af4b9f3cd1f3d969cf499b6ebc5"
 PARENT_CLOSEOUT_SUFFIX = (
     "post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_CLOSEOUT_DIR = ARCHIVE_ROOT / "implementation" / PARENT_CLOSEOUT_SUFFIX
 EXCLUDED_V1 = ("trend_following/v1", "bollinger_bands/v1", "momentum_1h/v1")
 FLEET_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")

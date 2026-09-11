@@ -1,6 +1,9 @@
 """Contract tests for cross_sectional_open_interest_delta_rank/v0 offline evaluation adapter v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import tempfile
@@ -57,9 +60,10 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_pit_semantics_cont
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LATEST_PANEL_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
-    "and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a"
+    )
 )
 ADAPTER_MODULE = (
     REPO_ROOT

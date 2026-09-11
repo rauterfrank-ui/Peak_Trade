@@ -1,6 +1,9 @@
 """Tests for offline readiness evidence ledger v0 builder."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import json
@@ -14,7 +17,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts" / "ops" / "build_readiness_evidence_ledger_v0.py"
 FIXTURES = ROOT / "tests" / "fixtures" / "ops" / "readiness_evidence_ledger_v0"
-REAL_ARCHIVE = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+REAL_ARCHIVE = Path(str(located_runtime_evidence_20260520()))
 
 PLANNING_MARKERS = (
     "named_go_no_go_authority_selection_record",

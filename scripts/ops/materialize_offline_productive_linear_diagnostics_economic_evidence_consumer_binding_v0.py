@@ -2,6 +2,9 @@
 """Materialize durable evidence for offline productive linear diagnostics economic evidence consumer binding v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -55,9 +58,10 @@ MATERIALIZER = (
     "economic_evidence_consumer_binding_v0.py"
 )
 SOURCE_CLOSEOUT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/pr5185_merge_closeout_offline_productive_linear_diagnostics_support_bundle_v0_"
-    "20260714T230433Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5185_merge_closeout_offline_productive_linear_diagnostics_support_bundle_v0_20260714T230433Z"
+    )
 )
 
 

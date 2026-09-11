@@ -8,6 +8,9 @@ No runtime, order, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -105,9 +108,7 @@ ACTIVATION_EVIDENCE_BUNDLE_SUFFIX = (
     "post_no_pass_metric_materialization_path_activation_binding_ratification_v0_20260705T233631Z"
 )
 
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 REASON_EXECUTION_SCOPE_CONFIG_MISSING = "EXECUTION_SCOPE_CONFIG_MISSING"
 REASON_SCOPE_DEFINITION_MISSING = "SCOPE_DEFINITION_CONFIG_MISSING"

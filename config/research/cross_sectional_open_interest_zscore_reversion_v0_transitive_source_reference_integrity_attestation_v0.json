@@ -11,7 +11,7 @@
   "schema_version": "cross_sectional_open_interest_zscore_reversion_v0_transitive_source_reference_integrity_attestation.v0",
   "transitive_reference_cases": [
     {
-      "bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+      "bundle_path": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
       "classification": "READ_ONLY_REFERENCE_BUNDLE_WITHOUT_MANIFEST_BY_DESIGN",
       "field_class": "OBSERVED_HISTORICAL_REFERENCE",
       "historical_evidence_preserved": true,
@@ -22,7 +22,7 @@
       "status": "EXPLICITLY_ATTESTED_REFERENCE_ONLY"
     },
     {
-      "bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+      "bundle_path": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
       "classification": "HISTORICAL_TERMINAL_BASELINE_MANIFEST_DRIFT",
       "field_class": "OBSERVED_HISTORICAL_EVIDENCE",
       "historical_evidence_preserved": true,

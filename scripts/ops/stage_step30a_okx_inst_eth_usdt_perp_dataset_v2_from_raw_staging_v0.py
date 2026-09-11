@@ -7,6 +7,9 @@ No network, no economic evaluation, no runtime effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -30,7 +33,7 @@ from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 
 CONFIRM_GO = "GO_BOUNDED_STEP30A_DATASET_V2_CONTRACT_REMEDIATION_PRE_PR_AND_PR_V0"
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_DATASET_PARENT = ARCHIVE_ROOT / "datasets" / "admissible_futures" / "inst-eth-usdt-perp"
 DEFAULT_TARGET_DATASET_ROOT = DEFAULT_DATASET_PARENT / "v2"
 DEFAULT_DURABLE_EVIDENCE_ROOT = ARCHIVE_ROOT / "planning_or_validation"

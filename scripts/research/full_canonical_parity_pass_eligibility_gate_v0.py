@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -35,13 +38,13 @@ GATE_ID = "FULL_CANONICAL_PARITY_PASS_ELIGIBILITY_GATE_V0"
 NEXT_STEP_AFTER_NOT_ELIGIBLE = "FULL_CANONICAL_PARITY_PROOF_BUNDLE_ASSEMBLER_V0"
 NEXT_STEP_AFTER_ELIGIBLE = "SURFACE_P_FINAL_FLAGS_MANIFEST_VERIFIED_PROMOTION_V0"
 NEXT_OPERATOR_GO_AFTER_ELIGIBLE = "GO_SURFACE_P_FINAL_FLAGS_MANIFEST_VERIFIED_PROMOTION_V0"
-DEFAULT_PR5020_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
+DEFAULT_PR5020_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
 )
-DEFAULT_PR5027_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
+DEFAULT_PR5027_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
 )
 
 CONTEXT_PROTECTED_MARKERS = (
@@ -947,7 +950,7 @@ def collect_evidence(
         durable_archive_root
         or os.environ.get(
             "PEAK_TRADE_DURABLE_ARCHIVE_ROOT",
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+            str(located_runtime_evidence_20260520()),
         )
     )
     if output_dir is None:

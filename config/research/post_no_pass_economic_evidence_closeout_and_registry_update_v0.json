@@ -11,7 +11,7 @@
   "economic_evaluation_authorization": false,
   "economic_evaluation_executed": true,
   "economic_validity_offline_gate_pass": false,
-  "evidence_bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z",
+  "evidence_bundle_path": "runtime_evidence/20260520T161443Z/implementation/bounded_post_no_pass_futures_offline_economic_evaluation_execution_v0_20260705T192520Z",
   "evidence_class_id": "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
   "execution_scope_config_ref": "config/research/bounded_post_no_pass_futures_offline_economic_evaluation_execution_scope_v0.json",
   "execution_governance_ref": "docs/governance/BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md",

@@ -10,6 +10,9 @@ Operator GO: GO_OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELI
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import copy
@@ -54,8 +57,10 @@ from src.strategies.rsi_reversion import RsiReversionStrategy  # noqa: E402
 GO_TOKEN = "GO_OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELINE_V1"
 SLICE_ID = "OBL_B05_BOLLINGER_LONG_SEMANTIC_DECISION_AND_QUANTITATIVE_BASELINE_V1"
 DEFAULT_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
+    )
 )
 DEFAULT_BINDING = (
     _REPO_ROOT / "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json"

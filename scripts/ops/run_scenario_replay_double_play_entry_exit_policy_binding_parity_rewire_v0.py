@@ -2,6 +2,9 @@
 """Collect durable evidence for scenario replay entry/exit policy binding parity rewire v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -12,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BASE_HEAD = "eb9b1772e0d01de55a8b2c0573dd4baf8ab12615"
 NEXT_RECOMMENDED_SLICE = "CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 VERDICT = "SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PARITY_REWIRE_V0_PASS"

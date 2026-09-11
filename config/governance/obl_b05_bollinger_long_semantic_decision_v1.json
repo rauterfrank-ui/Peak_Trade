@@ -8,7 +8,7 @@
   "ORDERS_ENABLED": false,
   "OTHER_PRODUCER_SIDE_EMISSION_CHANGED": false,
   "PRODUCTIVE_SEMANTICS_CHANGED": false,
-  "archive_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z",
+  "archive_dir": "runtime_evidence/20260520T161443Z/research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z",
   "base_sha": "8ed59484959504e7d477dc9e8d4adedd2ec022b0",
   "binding": "config/research/bollinger_bands_v2_full_canonical_system_economic_binding_v1.json",
   "bollinger_eval_entry_mv2": {

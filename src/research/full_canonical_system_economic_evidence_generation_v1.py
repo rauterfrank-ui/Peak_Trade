@@ -7,6 +7,9 @@ No economic evaluation, no runtime/authority effect, no trading-logic mutation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -85,14 +88,13 @@ NEXT_OPERATOR_GO = "GO_FULL_CANONICAL_SYSTEM_ECONOMIC_BASELINE_EXECUTION_V1"
 SOURCE_INVENTORY_REF = (
     "docs/governance/STEP29M_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_V0.md"
 )
-SOURCE_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "governance/pr5240_merge_closeout_step29m_binding_admissibility_inventory_progress_sync_v0_"
-    "20260716T010826Z"
+SOURCE_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "governance/pr5240_merge_closeout_step29m_binding_admissibility_inventory_progress_sync_v0_20260716T010826Z"
 )
-DISCOVERY_EVIDENCE_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
+DISCOVERY_EVIDENCE_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
 )
 
 AUTHORITY_EFFECT = "NONE"

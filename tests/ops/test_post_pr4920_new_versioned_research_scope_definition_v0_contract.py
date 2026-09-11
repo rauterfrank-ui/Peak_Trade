@@ -1,6 +1,9 @@
 """Contract tests for post-PR4920 new versioned research scope definition v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -38,7 +41,7 @@ PARENT_DECOMPOSITION_SUFFIX = (
     "post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z"
 )
 PARENT_CLOSEOUT_SUFFIX = "pr4920_post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_merge_closeout_20260706T080500Z"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_DECOMPOSITION_DIR = ARCHIVE_ROOT / "implementation" / PARENT_DECOMPOSITION_SUFFIX
 PARENT_CLOSEOUT_DIR = ARCHIVE_ROOT / "implementation" / PARENT_CLOSEOUT_SUFFIX
 EXCLUDED_BINDINGS = ("trend_following/v1", "bollinger_bands/v1", "momentum_1h/v1")

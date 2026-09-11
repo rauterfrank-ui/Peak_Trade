@@ -7,6 +7,9 @@ Operator GO: GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EV
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -58,9 +61,7 @@ from src.research.pit_futures_cross_sectional_research_data_digest_period_split_
 )
 
 CONFIRM_GO = GO_TOKEN
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_HISTORICAL_SOURCE_REL = (
     "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_historical_2024_v1/v1"

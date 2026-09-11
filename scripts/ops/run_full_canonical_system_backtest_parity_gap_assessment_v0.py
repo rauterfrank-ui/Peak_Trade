@@ -2,6 +2,9 @@
 """Collect durable evidence for full canonical system backtest parity gap assessment v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -13,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BASE_HEAD = "aa18c875c497c4c9f30eb7e1f7ba9e59f071ec6d"
 PR4951_SOURCE_EVIDENCE = (
     ARCHIVE_ROOT

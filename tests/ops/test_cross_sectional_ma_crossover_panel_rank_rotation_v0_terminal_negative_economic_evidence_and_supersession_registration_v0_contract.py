@@ -1,6 +1,9 @@
 """Contract tests for CS MA-crossover v0 terminal-negative supersession registration v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    archive_relative_locator,
+)
 
 import json
 import re
@@ -111,9 +114,15 @@ class TestTerminalNegativeSupersessionRegistrationConfig:
         assert payload["retry_allowed_same_binding"] is False
         assert payload["terminal_negative_evidence_for_unchanged_binding"] is True
         assert payload["source_merge_commit"] == SOURCE_MERGE_COMMIT
-        assert str(CORRECTED_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]
-        assert str(ORIGINAL_EVALUATION_DIR) in payload["superseded_evaluation_bundle"]
-        assert str(PR5080_CLOSEOUT_DIR) in payload["pr5080_closeout_dir"]
+        assert (
+            archive_relative_locator(CORRECTED_EVALUATION_DIR)
+            in payload["canonical_evaluation_bundle"]
+        )
+        assert (
+            archive_relative_locator(ORIGINAL_EVALUATION_DIR)
+            in payload["superseded_evaluation_bundle"]
+        )
+        assert archive_relative_locator(PR5080_CLOSEOUT_DIR) in payload["pr5080_closeout_dir"]
         assert payload["net_return"] == NET_RETURN
         assert payload["trade_count"] == TRADE_COUNT
         assert payload["registration_digest"] == compute_registration_digest(payload)
@@ -137,7 +146,10 @@ class TestTerminalNegativeSupersessionVersionedBinding:
         assert binding["trade_count"] == TRADE_COUNT
         assert binding["canonical_evaluation_timestamp"] == CANONICAL_EVALUATION_TIMESTAMP
         assert binding["superseded_evaluation_timestamp"] == SUPERSEDED_EVALUATION_TIMESTAMP
-        assert str(CORRECTED_EVALUATION_DIR) in binding["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CORRECTED_EVALUATION_DIR)
+            in binding["canonical_evaluation_bundle"]
+        )
         assert binding["economic_viability_evidence_manifest_digest"] == CANONICAL_MANIFEST_DIGEST
         assert binding["superseded_evaluation_manifest_digest"] == SUPERSEDED_MANIFEST_DIGEST
 

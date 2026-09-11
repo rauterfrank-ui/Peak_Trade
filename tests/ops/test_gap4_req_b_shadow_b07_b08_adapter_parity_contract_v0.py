@@ -1,6 +1,9 @@
 """Static and mocked contract tests for Gap-4 REQ-B Shadow B07/B08 adapter parity v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import io
@@ -30,7 +33,7 @@ ADAPTER_PARITY_FORBIDDEN_TRUE_OUTSIDE_SCOPED_REFLECTION = (
 )
 
 APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "shadow_adapter_stage3_approval_sample.md"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 FORBIDDEN_DIFF_PREFIXES = (
     "src/strategies/",

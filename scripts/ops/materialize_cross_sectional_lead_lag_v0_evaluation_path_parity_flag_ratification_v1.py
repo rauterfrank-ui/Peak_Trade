@@ -2,6 +2,9 @@
 """Materialize lead-lag v0 evaluation-path parity flag ratification v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -44,9 +47,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     load_ops_evaluation_config_v0,
 )
 
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_SOURCE_EVIDENCE = (
     DEFAULT_ARCHIVE_ROOT
     / "planning/cross_sectional_lead_lag_v0_full_canonical_chain_and_runtime_decision_parity_"

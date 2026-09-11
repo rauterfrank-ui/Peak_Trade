@@ -32,7 +32,7 @@
     "unchanged_v0_reuse_allowed": false
   },
   "failed_execution_retry_allowed": false,
-  "failed_v0_execution_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/momentum_1h_v2_offline_economic_evaluation_execution_v0_20260715T164131Z",
+  "failed_v0_execution_bundle": "runtime_evidence/20260520T161443Z/research/momentum_1h_v2_offline_economic_evaluation_execution_v0_20260715T164131Z",
   "next_operator_go": "GO_MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V1",
   "next_recommended_scope": "MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V1",
   "offline_only": true,
@@ -50,6 +50,6 @@
   "supersession_reason": "PRIOR_TOKEN_CONSUMED_BY_FAIL_CLOSED_EXECUTION_DEFECT",
   "supersession_version": "v1",
   "unchanged_v0_reuse_allowed": false,
-  "v1_failed_start_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/momentum_1h_v2_offline_economic_evaluation_execution_v1_20260715T171245Z",
+  "v1_failed_start_bundle": "runtime_evidence/20260520T161443Z/research/momentum_1h_v2_offline_economic_evaluation_execution_v1_20260715T171245Z",
   "verdict": "PASS"
 }

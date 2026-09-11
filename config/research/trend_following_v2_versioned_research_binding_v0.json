@@ -21,7 +21,7 @@
         "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
         "panel_dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
         "panel_member_count": 118,
-        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+        "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
         "sequential_rotation": true,
         "substantially_differs_from_class_d_narrow_eth": true
       },
@@ -29,17 +29,17 @@
       "network_access_forbidden": true,
       "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
       "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
-      "panel_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
-      "panel_funding_dataset_manifest_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
+      "panel_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "panel_funding_dataset_manifest_ref": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_funding_dataset_manifest.json",
       "panel_member_count": 118,
-      "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+      "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
     },
     "dataset_provenance": {
       "binding_class": "SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0",
       "cross_branch_evidence_forbidden": true,
       "dataset_extension_funding": "extended_chronological_with_funding_v1",
       "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
-      "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+      "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
       "pit_safe": true,
       "sparse_signal_research": true
     },
@@ -281,7 +281,7 @@
   "data_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
   "dataset_digest": "0083e0502a05667f5b0ca31d374b3bef066f65aacfdb05ee020490cc1f15c638",
   "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
-  "discovery_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/new_distinct_research_scope_discovery_v0_20260715T104548Z",
+  "discovery_evidence_dir": "runtime_evidence/20260520T161443Z/research/new_distinct_research_scope_discovery_v0_20260715T104548Z",
   "economic_evaluation_authorized": false,
   "economic_evaluation_executed": false,
   "economic_policy_binding": {
@@ -447,8 +447,8 @@
   "material_difference_basis": "TREND_CONTINUATION_V2 replaces terminal trend_following/v1 with panel-sequential signal-density research binding; distinct from pairwise spillover graph lineage.",
   "module_implementation_digest": "94ef91934b56e753e6a4f4ded98ee5d8cc89e4daafbb06ba4f52df2a6352fcc9",
   "offline_only": true,
-  "pairwise_terminal_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_terminal_negative_evidence_registration_v0_20260715T104146Z",
-  "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "pairwise_terminal_evidence_dir": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_terminal_negative_evidence_registration_v0_20260715T104146Z",
+  "panel_staging_root": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
   "parameter_binding": {
     "adx_period": 14,
     "adx_threshold": 25.0,

@@ -1,6 +1,9 @@
 """Contract tests for funding-rate carry v0 economic failure registry reconciliation v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -20,25 +23,21 @@ BINDING_PATH = (
 SECTION_PREFIX = (
     "#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Funding Rate Carry Non-Bitcoin Perpetuals v0"
 )
-ECONOMIC_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
-    "bounded_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_re_run_v0_"
-    "20260703T115048Z"
+ECONOMIC_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_re_run_v0_20260703T115048Z"
 )
-EXECUTION_INFRA_CLOSEOUT_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
-    "bounded_cross_sectional_funding_rate_carry_v0_execution_infrastructure_and_bound_"
-    "funding_panel_recovery_squash_merge_closeout_v0_20260703T113900Z"
+EXECUTION_INFRA_CLOSEOUT_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_cross_sectional_funding_rate_carry_v0_execution_infrastructure_and_bound_funding_panel_recovery_squash_merge_closeout_v0_20260703T113900Z"
 )
-FULL_RUNNER_CLOSEOUT_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
-    "bounded_cross_sectional_funding_rate_carry_v0_full_offline_economic_evaluation_runner_"
-    "mainline_integration_squash_merge_closeout_v0_20260703T140100Z"
+FULL_RUNNER_CLOSEOUT_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_cross_sectional_funding_rate_carry_v0_full_offline_economic_evaluation_runner_mainline_integration_squash_merge_closeout_v0_20260703T140100Z"
 )
-EVIDENCE_REGISTRY_RECONCILIATION_CLOSEOUT_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
-    "bounded_cross_sectional_funding_rate_carry_v0_evidence_and_registry_reconciliation_"
-    "squash_merge_closeout_v0_20260703T141600Z"
+EVIDENCE_REGISTRY_RECONCILIATION_CLOSEOUT_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_cross_sectional_funding_rate_carry_v0_evidence_and_registry_reconciliation_squash_merge_closeout_v0_20260703T141600Z"
 )
 
 

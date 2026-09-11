@@ -6,6 +6,9 @@ economic evaluation or touching runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -68,9 +71,7 @@ ADMISSIBILITY_CONTRACT_REL_PATH = (
     "src/backtest/step29m_el_karoui_vol_model_v1_economic_evaluation_admissibility_contract_v1.py"
 )
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PR5087_CLOSEOUT_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/pr5087_merge_closeout_ehlers_cycle_filter_v1_terminal_inconclusive_"

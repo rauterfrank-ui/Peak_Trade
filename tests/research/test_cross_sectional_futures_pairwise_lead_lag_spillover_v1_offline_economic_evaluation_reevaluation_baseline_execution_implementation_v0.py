@@ -1,6 +1,9 @@
 """Reevaluation baseline execution implementation contract tests for pairwise spillover v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 import subprocess
@@ -49,8 +52,10 @@ _IMPL_GO = REEVALUATION_BASELINE_EXECUTION_IMPLEMENTATION_GO_TOKEN
 _BASELINE_EXEC_GO = REEVALUATION_BASELINE_EXECUTION_GO_TOKEN
 RUNNER_MODULE = REPO_ROOT / RUNNER_SCRIPT
 STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
+    )
 )
 FORBIDDEN_RUNTIME_IMPORT_PREFIXES = (
     "src.execution",

@@ -6,6 +6,9 @@ No economic reevaluation, no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -50,9 +53,7 @@ STRATEGY_VERSION = "v1"
 RESEARCH_SCOPE = "bouchaud_microstructure_ohlcv_proxy/v1"
 BINDING_CLASSIFICATION = "SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PRIOR_FAILED_ATTEMPT_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_"

@@ -5,6 +5,9 @@ defect execution. Does not execute evaluation and has no runtime effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -53,9 +56,7 @@ AUTHORIZED_SCOPE = "OFFLINE_ECONOMIC_EVALUATION_EXECUTION"
 NEXT_OPERATOR_GO = EXECUTION_GO_TOKEN
 NEXT_RECOMMENDED_SCOPE = "MOMENTUM_1H_V2_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V1"
 
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 FAILED_V0_EXECUTION_BUNDLE = (
     f"{DEFAULT_ARCHIVE_ROOT}/research/"
     "momentum_1h_v2_offline_economic_evaluation_execution_v0_20260715T164131Z"

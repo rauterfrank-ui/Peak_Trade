@@ -9,6 +9,9 @@ Operator GO: GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDI
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -40,9 +43,7 @@ DEFAULT_CONFIG = (
     _REPO_ROOT
     / "config/research/post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_v4_new_hypothesis_and_versioned_fleet_binding_ratification_v0"
 NEXT_ADMISSIBLE_GO = "GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0"
 FLEET_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")

@@ -41,8 +41,10 @@ from src.backtest.step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibili
     resolve_ehlers_v1_dataset_manifest_path,
 )
 from src.core.metrics import metrics as resilience_metrics  # noqa: E402
-from src.research.longer_chronological_pit_acquisition_v1.archive_root import (  # noqa: E402
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    # noqa: E402,
     ArchiveRootError,
+    located_runtime_evidence_20260520,
 )
 from src.research.step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0 import (  # noqa: E402
     METRICS_SUMMARY_FILENAME,
@@ -383,9 +385,7 @@ def main() -> None:
     parser.add_argument(
         "--durable-evidence-root",
         type=Path,
-        default=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        default=Path(str(located_runtime_evidence_20260520())),
     )
     parser.add_argument("--source-closeout-bundle", type=Path, default=None)
     parser.add_argument("--prior-implementation-digest", default=None)

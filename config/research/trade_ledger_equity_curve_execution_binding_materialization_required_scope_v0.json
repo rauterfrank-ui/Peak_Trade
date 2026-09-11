@@ -36,7 +36,7 @@
   "discovered_partial_binding_source": "config/research/final_research_fleet_versioned_binding_completion_v0.json",
   "evaluation_execution": false,
   "evidence_class_id": "TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0",
-  "fail_closed_preflight_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T075246Z",
+  "fail_closed_preflight_bundle": "runtime_evidence/20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T075246Z",
   "fail_closed_preflight_manifest_verify_rc": 0,
   "fail_closed_preflight_verdict": "TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_FAIL_CLOSED_BINDING_SELECTION_REQUIRED",
   "fleet_binding_completion_digest": "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1",

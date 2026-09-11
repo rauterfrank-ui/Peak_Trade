@@ -11,7 +11,7 @@
     "dataset_digest": "39286384bb5baca27c93cae04716de9d8638ac62ab7d01a64c0a74c535e8d087",
     "dataset_exists": true,
     "dataset_id": "inst-eth-usdt-perp_v1",
-    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_path": "runtime_evidence/20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
     "fabricated_fields_required": false,
     "feasibility_status": "SUFFICIENT",
     "finalized_bar_only": true,

@@ -8,6 +8,9 @@ grant order authority, or promote final success flags.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -22,13 +25,13 @@ SURFACE_P_SEMANTIC_PARITY_GAP_ASSESSMENT_OWNER = (
 ASSESSMENT_SLICE_ID = "SURFACE_P_SEMANTIC_PARITY_GAP_ASSESSMENT_V0"
 PACKAGE_MARKER = "SURFACE_P_SEMANTIC_PARITY_GAP_ASSESSMENT_V0=true"
 
-DEFAULT_PR5022_PROOF_BUNDLE_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/full_canonical_parity_proof_bundle_v0_20260708T224152Z"
+DEFAULT_PR5022_PROOF_BUNDLE_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/full_canonical_parity_proof_bundle_v0_20260708T224152Z"
 )
-DEFAULT_PR5022_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5022_full_canonical_parity_proof_bundle_assembler_v0_20260708T224613Z"
+DEFAULT_PR5022_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5022_full_canonical_parity_proof_bundle_assembler_v0_20260708T224613Z"
 )
 
 SurfacePGapAssessmentParityStatus = Literal["PASS", "PARTIAL", "GAP", "NOT_APPLICABLE"]

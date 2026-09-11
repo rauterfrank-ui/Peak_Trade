@@ -94,14 +94,14 @@
   "orders_allowed": false,
   "paper_authorized": false,
   "parameter_rescue_allowed": false,
-  "parent_evaluation_bundle_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
+  "parent_evaluation_bundle_ref": "runtime_evidence/20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
   "parent_evaluation_manifest_verify_rc": 0,
-  "parent_pr4905_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
+  "parent_pr4905_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
   "parent_pr4905_closeout_manifest_verify_rc": 0,
   "parent_pr4905_merge_commit": "87cea0b920a2e2f7ae37b9bbeeefe01d1f7d2c73",
-  "parent_pr4905_output_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
+  "parent_pr4905_output_bundle": "runtime_evidence/20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
   "parent_pr4905_output_manifest_verify_rc": 0,
-  "parent_pr4906_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4905_terminal_fleet_failure_next_scope_definition_merge_closeout_20260706T044625Z",
+  "parent_pr4906_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/post_pr4905_terminal_fleet_failure_next_scope_definition_merge_closeout_20260706T044625Z",
   "parent_pr4906_closeout_manifest_verify_rc": 0,
   "parent_pr4906_merge_commit": "4505030938f6a70391973f761fffb183443e9336",
   "parent_scope_definition_config_ref": "config/research/post_pr4905_terminal_fleet_failure_next_scope_definition_v0.json",
@@ -127,10 +127,10 @@
   "selected_class": "F",
   "shadow_authorized": false,
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4905_terminal_fleet_failure_next_scope_definition_merge_closeout_20260706T044625Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4904_v4_fleet_robustness_failure_decomposition_v0_20260706T042551Z",
+    "runtime_evidence/20260520T161443Z/implementation/pr4905_squash_merge_closeout_20260706T043541Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4905_terminal_fleet_failure_next_scope_definition_merge_closeout_20260706T044625Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z"
   ],
   "source_prs": [
     4905,

@@ -1,6 +1,9 @@
 """Contract tests for Class-D offline evaluation execution owner rebind v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -50,7 +53,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 CLASS_D_BINDING_PATH = (
     REPO_ROOT / "config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 @pytest.fixture(name="class_d_binding_completion")

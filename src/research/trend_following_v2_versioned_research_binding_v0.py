@@ -6,6 +6,9 @@ v2 binding geometry without parameter rescue. Binding ratification only.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -47,14 +50,13 @@ STRATEGY_ARCHETYPE = "TREND_CONTINUATION_V2"
 REPLACES_FAILED_BINDING = "trend_following/v1"
 HYPOTHESIS_ID = "TREND_CONTINUATION_V2_NON_BITCOIN_FUTURES_V2"
 
-DISCOVERY_EVIDENCE_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
+DISCOVERY_EVIDENCE_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/new_distinct_research_scope_discovery_v0_20260715T104548Z"
 )
-PAIRWISE_TERMINAL_EVIDENCE_DIR = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_terminal_negative_"
-    "evidence_registration_v0_20260715T104146Z"
+PAIRWISE_TERMINAL_EVIDENCE_DIR = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_terminal_negative_evidence_registration_v0_20260715T104146Z"
 )
 
 AUTHORITY_EFFECT = "NONE"

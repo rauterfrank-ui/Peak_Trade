@@ -8,6 +8,9 @@ not touch runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -72,25 +75,21 @@ UNDERLYING_SIGNAL_STRATEGY_VERSION = "v1"
 UNDERLYING_SIGNAL_BINDING = "ma_crossover/v1@inst-eth-usdt-perp"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_NON_BITCOIN_PERPETUALS_V0"
 
-SOURCE_DISCOVERY_EVIDENCE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "cross_sectional_multi_instrument_futures_panel_scope_discovery_and_ratification_prep_v0_"
-    "20260710T085834Z"
+SOURCE_DISCOVERY_EVIDENCE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "planning/cross_sectional_multi_instrument_futures_panel_scope_discovery_and_ratification_prep_v0_20260710T085834Z"
 )
-SOURCE_ADJUDICATION_EVIDENCE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_"
-    "corrected_ratification_prep_v0_20260710T090302Z"
+SOURCE_ADJUDICATION_EVIDENCE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "planning/cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z"
 )
-UNDERLYING_SINGLE_INSTRUMENT_EVALUATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_"
-    "recovery_single_run_v0_20260702T012057Z"
+UNDERLYING_SINGLE_INSTRUMENT_EVALUATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z"
 )
-UNDERLYING_SINGLE_INSTRUMENT_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_"
-    "candidate_decision_read_only_v0_20260702T012719Z"
+UNDERLYING_SINGLE_INSTRUMENT_CLOSEOUT_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z"
 )
 TERMINAL_UNDERLYING_SIGNAL_BINDING = "ma_crossover/v1@inst-eth-usdt-perp"
 TERMINAL_UNDERLYING_CONFIG_DIGEST = (

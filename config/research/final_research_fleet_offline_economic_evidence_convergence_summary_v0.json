@@ -7,7 +7,7 @@
     {
       "authority_effect": "NONE",
       "canonical_candidate_identifier": "trend_following/v1",
-      "durable_evidence_bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z",
+      "durable_evidence_bundle_path": "runtime_evidence/20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z",
       "durable_evidence_bundle_path_resolution": "exact_prefix_match",
       "economic_validity_offline_gate_pass": false,
       "evidence_status": "ROBUSTNESS_FAILED",
@@ -30,7 +30,7 @@
     {
       "authority_effect": "NONE",
       "canonical_candidate_identifier": "bollinger_bands/v1",
-      "durable_evidence_bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/bollinger_bands_v1_offline_economic_evaluation_execution_v0_20260705T143018Z",
+      "durable_evidence_bundle_path": "runtime_evidence/20260520T161443Z/bollinger_bands_v1_offline_economic_evaluation_execution_v0_20260705T143018Z",
       "durable_evidence_bundle_path_resolution": "exact_prefix_match",
       "economic_validity_offline_gate_pass": false,
       "evidence_status": "RESEARCH_ONLY",
@@ -53,7 +53,7 @@
     {
       "authority_effect": "NONE",
       "canonical_candidate_identifier": "momentum_1h/v1",
-      "durable_evidence_bundle_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/momentum_1h_v1_offline_economic_evaluation_execution_v0_20260705T145530Z",
+      "durable_evidence_bundle_path": "runtime_evidence/20260520T161443Z/momentum_1h_v1_offline_economic_evaluation_execution_v0_20260705T145530Z",
       "durable_evidence_bundle_path_resolution": "exact_prefix_match",
       "economic_validity_offline_gate_pass": false,
       "evidence_status": "ROBUSTNESS_FAILED",
@@ -74,7 +74,7 @@
       "trade_count": 2
     }
   ],
-  "durable_archive_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+  "durable_archive_root": "runtime_evidence/20260520T161443Z",
   "economic_validity_offline_gate_pass": false,
   "final_research_fleet_promotion_eligible": false,
   "fleet_id": "final_research_fleet_v0",

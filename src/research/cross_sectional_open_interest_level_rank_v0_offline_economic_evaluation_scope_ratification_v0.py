@@ -5,6 +5,9 @@ scope for cross_sectional_open_interest_level_rank/v0. Does not execute evaluati
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -59,13 +62,13 @@ HARNESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0.py"
 )
-PARENT_DISCOVERY_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0_20260712T130230Z"
+PARENT_DISCOVERY_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0_20260712T130230Z"
 )
-PARENT_TERMINALIZATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "pr5122_merge_closeout_cross_sectional_open_interest_level_rank_v0_versioned_hypothesis_binding_v0_20260712T020053Z"
+PARENT_TERMINALIZATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/pr5122_merge_closeout_cross_sectional_open_interest_level_rank_v0_versioned_hypothesis_binding_v0_20260712T020053Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

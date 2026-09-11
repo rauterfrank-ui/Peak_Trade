@@ -2,6 +2,9 @@
 """Collect durable evidence for Runtime Bridge Boundary Gap Assessment v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -24,7 +27,7 @@ for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
             sys.path.insert(0, src_s)
         break
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_PR5025_SOURCE = (
     ARCHIVE_ROOT / "research/runtime_bridge_pre_activation_gate_assessment_v0_20260708T234554Z"
 )

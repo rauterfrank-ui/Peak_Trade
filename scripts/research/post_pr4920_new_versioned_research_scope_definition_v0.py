@@ -6,6 +6,9 @@ no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -36,9 +39,7 @@ DEFAULT_CONFIG = (
 DEFAULT_DOC = (
     _REPO_ROOT / "docs/governance/POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_DECOMPOSITION_BUNDLE_SUFFIX = (
     "post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z"
 )

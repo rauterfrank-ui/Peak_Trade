@@ -1,6 +1,9 @@
 """Contract tests for post-PR4940 final research fleet negative evidence terminalization v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -47,7 +50,7 @@ EVIDENCE_CLASS_ID = (
     "NEXT_MATERIAL_RESEARCH_BOUNDARY_V0"
 )
 SCOPE_STATUS = VERDICT
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_EVALUATION_DIR = (
     ARCHIVE_ROOT
     / "research/final_research_fleet_offline_economic_evaluation_after_pr4938_20260706T180923Z"

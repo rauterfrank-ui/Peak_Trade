@@ -87,9 +87,9 @@
   "offline_only": true,
   "panel_zero_trade_refuted": true,
   "parameter_rescue_allowed": false,
-  "parent_execution_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
+  "parent_execution_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
   "parent_execution_manifest_verify_rc": 0,
-  "parent_scope_definition_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z",
+  "parent_scope_definition_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z",
   "parent_scope_definition_manifest_verify_rc": 0,
   "parent_scope_definition_ref": "config/research/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0.json",
   "process_classification": "POST_PR4892_FAILED_FLEET_ROBUSTNESS_ROOT_CAUSE_DECOMPOSITION_EVIDENCE_EXECUTION_V0",
@@ -109,8 +109,8 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0_20260706T010502Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_pr4892_failed_fleet_robustness_root_cause_scope_definition_v0_20260706T014350Z"
   ],
   "source_prs": [
     4892,

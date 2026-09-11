@@ -6,6 +6,9 @@ authorize runtime, lifts, or Testnet execution.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 from pathlib import Path
@@ -22,7 +25,7 @@ TEST_REL = "tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.
 SECTION5_REL = "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 PREFLIGHT_REL = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 
-ARCHIVE_ROOT = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+ARCHIVE_ROOT = str(located_runtime_evidence_20260520())
 
 PACKAGE_MARKER = "TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true"
 CROSSLINK_PACKAGE_MARKER = "TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_PREFLIGHT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1=true"

@@ -20,18 +20,9 @@ SCHEDULER_BOUNDARY_SPEC = (
 )
 THIS_MODULE = Path(__file__).name
 
-CHARTER_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/remote_runtime_charter_v0_20260601T120000Z"
-)
-CONSOLIDATION_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/remote_runtime_consolidation_after_cyber_input_blocked_v0_20260601T110000Z"
-)
-LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/local_dry_host_no_run_preflight_charter_v0_20260601T024302Z"
-)
+CHARTER_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/remote_runtime_charter_v0_20260601T120000Z"
+CONSOLIDATION_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/remote_runtime_consolidation_after_cyber_input_blocked_v0_20260601T110000Z"
+LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/local_dry_host_no_run_preflight_charter_v0_20260601T024302Z"
 
 GUARD_BLOCK_ANCHOR = "REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_V0=true"
 LOCAL_DRY_HOST_GUARD_BLOCK_ANCHOR = "LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_CHARTER_REFLECTION_V0=true"
@@ -39,20 +30,14 @@ PREFLIGHT_PROCESS_GATE_HYGIENE_HEADING = (
     "## Preflight Process Gate Hygiene — active-run false-positive guard v0"
 )
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_BLOCK_ANCHOR = "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1=true"
-PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_pr4153_closeout_select_single_next_safe_slice_no_run_v1_20260612T000800Z"
-)
+PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4153_closeout_select_single_next_safe_slice_no_run_v1_20260612T000800Z"
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_HEADING = (
     "## Order-Capability remaining readiness gap review — docs/tests-only visibility v1"
 )
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_GUARD_BLOCK_ANCHOR = (
     "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1=true"
 )
-ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z"
-)
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z"
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED: dict[str, str] = {
     "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1": "true",
     "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY": "true",
@@ -83,10 +68,7 @@ ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED: dict[str, str] = {
 ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_GUARD_BLOCK_ANCHOR = (
     "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
 )
-ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_caps_enforcement_session_crosslink_guard_merge_no_run_v1_20260612T220408Z"
-)
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_caps_enforcement_session_crosslink_guard_merge_no_run_v1_20260612T220408Z"
 ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_EXPECTED: dict[
     str, str
 ] = {
@@ -180,10 +162,7 @@ SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_HEADING = (
 SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_GUARD_BLOCK_ANCHOR = (
     "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1=true"
 )
-SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_order_capability_readiness_gap_review_merge_no_run_v1_20260612T003655Z"
-)
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_readiness_gap_review_merge_no_run_v1_20260612T003655Z"
 SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_EXPECTED: dict[str, str] = {
     "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1": "true",
     "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_DOCS_TESTS_ONLY": "true",
@@ -224,10 +203,7 @@ PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_HEADING = (
 PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_GUARD_BLOCK_ANCHOR = (
     "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1=true"
 )
-PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z"
-)
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z"
 PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_EXPECTED: dict[str, str] = {
     "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1": "true",
     "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_DOCS_TESTS_ONLY": "true",
@@ -1136,10 +1112,7 @@ RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING = (
 RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true"
 )
-RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_pr4174_pr4175_chain_closeout_no_auto_go_no_run_v1_20260612T115950Z"
-)
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4174_pr4175_chain_closeout_no_auto_go_no_run_v1_20260612T115950Z"
 RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
     "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY": "true",
@@ -1179,10 +1152,7 @@ SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING = 
 SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true"
 )
-SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_pr4176_runtime_lane_taxonomy_crosslink_merge_no_auto_go_no_run_v1_20260612T121555Z"
-)
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4176_runtime_lane_taxonomy_crosslink_merge_no_auto_go_no_run_v1_20260612T121555Z"
 SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
     "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY": "true",
@@ -1226,11 +1196,7 @@ P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_HEADING = (
 P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_V1=true"
 )
-P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_master_v2_non_authority_"
-    "reciprocal_crosslink_merge_no_run_v1_20260613T000828Z"
-)
+P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_master_v2_non_authority_reciprocal_crosslink_merge_no_run_v1_20260613T000828Z"
 P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_V1": "true",
     "P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_FAIL_CLOSED": "true",
@@ -1618,18 +1584,9 @@ MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_HEADING = (
 MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_GUARD_BLOCK_ANCHOR = (
     "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED=true"
 )
-MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_market_dashboard_terminal_rebuild_pass_no_run_v1_20260612T075155Z"
-)
-MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/market_dashboard_trading_app_terminal_rebuild_pr4162_squash_merge_closeout_v1_20260612T074614Z"
-)
-MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_VISUAL_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "review/market_dashboard_trading_app_terminal_rebuild_post_merge_visual_check_no_mutation_v1_20260612T074839Z"
-)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_market_dashboard_terminal_rebuild_pass_no_run_v1_20260612T075155Z"
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CLOSEOUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/market_dashboard_trading_app_terminal_rebuild_pr4162_squash_merge_closeout_v1_20260612T074614Z"
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_VISUAL_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/review/market_dashboard_trading_app_terminal_rebuild_post_merge_visual_check_no_mutation_v1_20260612T074839Z"
 MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED: dict[str, str] = {
     "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED": "true",
     "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1": "true",
@@ -1676,14 +1633,8 @@ U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_HEADING = (
 U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_GUARD_BLOCK_ANCHOR = (
     "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1=true"
 )
-U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_find_next_real_progress_scope_after_u2b_hold_no_run_v1_20260612T183833Z"
-)
-U2B_SLICE4_RUN_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "runs/u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z"
-)
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_find_next_real_progress_scope_after_u2b_hold_no_run_v1_20260612T183833Z"
+U2B_SLICE4_RUN_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z"
 U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_EXPECTED: dict[str, str] = {
     "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1": "true",
     "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TESTS_ONLY": "true",
@@ -1727,10 +1678,7 @@ DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_HEADING = (
 DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR = (
     "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1=true"
 )
-DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_order_capability_remaining_contract_surfaces_crosslink_bundle_merge_no_run_v1_20260612T221924Z"
-)
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_remaining_contract_surfaces_crosslink_bundle_merge_no_run_v1_20260612T221924Z"
 DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED: dict[str, str] = {
     "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1": "true",
     "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1": "true",
@@ -1763,10 +1711,7 @@ DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_HEADING = (
 DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR = (
     "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_V1=true"
 )
-DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_docs_token_policy_guard_standard_check_integration_merge_no_run_v1_20260612T224000Z"
-)
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_docs_token_policy_guard_standard_check_integration_merge_no_run_v1_20260612T224000Z"
 DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED: dict[str, str] = {
     "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_V1": "true",
     "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1": "true",
@@ -1803,10 +1748,7 @@ PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_HEADING = (
 PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "PT_DOCS_GATES_SNAPSHOT_AND_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
 )
-PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_docs_reference_targets_guard_standard_check_integration_merge_no_run_v1_20260613T001000Z"
-)
+PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_docs_reference_targets_guard_standard_check_integration_merge_no_run_v1_20260613T001000Z"
 PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "PT_DOCS_GATES_SNAPSHOT_AND_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
     "PT_DOCS_GATES_SNAPSHOT_GATE3_RECIPROCAL_BINDING": "true",
@@ -1843,11 +1785,7 @@ DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_HEADING = (
 DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
 )
-DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_pt_docs_gates_snapshot_and_"
-    "docs_diff_guard_policy_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T010500Z"
-)
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pt_docs_gates_snapshot_and_docs_diff_guard_policy_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T010500Z"
 DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
     "DOCS_DRIFT_GUARD_RECIPROCAL_CROSSLINK_PARITY": "true",
@@ -1887,11 +1825,7 @@ REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_HEADING = (
 REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
 )
-REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_check_docs_drift_guard_and_"
-    "sensitive_path_coupling_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T021500Z"
-)
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_check_docs_drift_guard_and_sensitive_path_coupling_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T021500Z"
 REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
     "REPO_TRUTH_CLAIMS_RECIPROCAL_CROSSLINK_PARITY": "true",
@@ -1933,11 +1867,7 @@ OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_HEADING = (
 OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_V1=true"
 )
-OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_repo_truth_claims_standard_check_"
-    "reciprocal_crosslink_bundle_merge_no_run_v1_20260613T030000Z"
-)
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_repo_truth_claims_standard_check_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T030000Z"
 OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_V1": "true",
     "OPS_COCKPIT_EVIDENCE_FRESHNESS_OBSERVATION_READ_ONLY": "true",
@@ -1978,11 +1908,7 @@ OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_HEADING = (
 OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_V1=true"
 )
-OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_v2_5_evidence_"
-    "freshness_observation_reciprocal_crosslink_merge_no_run_v1_20260613T000200Z"
-)
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_v2_5_evidence_freshness_observation_reciprocal_crosslink_merge_no_run_v1_20260613T000200Z"
 OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_V1": "true",
     "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_BOUNDARY_PRESERVED": "true",
@@ -2048,11 +1974,7 @@ OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
 OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_V1=true"
 )
-OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_p67_p72_library_scheduler_boundary_"
-    "opt_in_reciprocal_crosslink_merge_no_run_v1_20260613T002242Z"
-)
+OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_p67_p72_library_scheduler_boundary_opt_in_reciprocal_crosslink_merge_no_run_v1_20260613T002242Z"
 OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
     "OPS_COCKPIT_V2_5_CANONICAL_RUNBOOK_POINTER_PRESENT": "true",
@@ -2087,11 +2009,7 @@ PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
 PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
 )
-PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_runbook_canonical_pointer_"
-    "index_reciprocal_crosslink_merge_no_run_v1_20260613T003900Z"
-)
+PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_runbook_canonical_pointer_index_reciprocal_crosslink_merge_no_run_v1_20260613T003900Z"
 PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
     "PRIMARY_EVIDENCE_RETENTION_CANONICAL_PREFLIGHT_OWNER_INDEXED": "true",
@@ -2138,11 +2056,7 @@ PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
 PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
 )
-PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_primary_evidence_retention_"
-    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T005835Z"
-)
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_primary_evidence_retention_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T005835Z"
 PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
     "RUNTIME_LANE_TAXONOMY_CANONICAL_OWNER_INDEXED": "true",
@@ -2191,11 +2105,7 @@ SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
 SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
 )
-SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_preflight_taxonomy_runbooks_index_"
-    "reciprocal_crosslink_merge_no_run_v1_20260613T011300Z"
-)
+SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_taxonomy_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T011300Z"
 SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
     "SHADOW_247_GOVERNANCE_CHARTER_CANONICAL_OWNER_INDEXED": "true",
@@ -2245,11 +2155,7 @@ EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_
     "— docs/tests-only guard v1"
 )
 EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = "EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
-EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_"
-    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z"
-)
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z"
 EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[
     str, str
 ] = {
@@ -2304,12 +2210,7 @@ BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
 BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
 )
-BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_eer1_evidence_durable_"
-    "enforcement_readiness_runbooks_index_reciprocal_crosslink_merge_no_run_v1_"
-    "20260613T115359Z"
-)
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T115359Z"
 BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
     "BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
     "BOUNDED_PILOT_INCIDENT_CANONICAL_OWNERS_INDEXED": "true",
@@ -2375,11 +2276,7 @@ GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_HEADING = (
 GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1=true"
 )
-GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/post_evidence_continuity_closeout_systemwide_residual_gap_ranking_"
-    "bounded_read_only_no_runtime_v0_20260627T015500Z"
-)
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/post_evidence_continuity_closeout_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T015500Z"
 GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
     "GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1": "true",
     "GAP_RGB_STATIC_TEST_COUNT": "21",
@@ -2431,11 +2328,7 @@ GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_CANONICAL_PATHS = (
 TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1=true"
 )
-TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_INPUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_incident_"
-    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T160514Z"
-)
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_INPUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T160514Z"
 TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_EXPECTED: dict[str, str] = {
     "TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1": "true",
     "TECH_DEBT_TOP3_CANONICAL_OWNERS_INDEXED": "true",
@@ -2579,10 +2472,7 @@ RECIPROCAL_OWNER_TESTS = (
 OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md"
 )
-OC1_PLANNING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/ops_cockpit_operator_status_index_rc_v0_slice_oc1_docs_only_20260602T182955Z/"
-)
+OC1_PLANNING_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/ops_cockpit_operator_status_index_rc_v0_slice_oc1_docs_only_20260602T182955Z/"
 OC_RELEASE_RC_INDEX_HEADING = "## Ops Cockpit / Operator Status Index RC v0 — meta-index v0"
 OC_RELEASE_RC_BLOCK_ANCHOR = "OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0=true"
 OC_RELEASE_RC_EXPECTED: dict[str, str] = {

@@ -2,6 +2,9 @@
 """Collect durable evidence for Surface P manifest-verified final-flag promotion v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -28,7 +31,7 @@ for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
 ARCHIVE_ROOT = Path(
     os.environ.get(
         "PEAK_TRADE_DURABLE_ARCHIVE_ROOT",
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+        str(located_runtime_evidence_20260520()),
     )
 )
 DEFAULT_SOURCE_CLOSEOUT = (

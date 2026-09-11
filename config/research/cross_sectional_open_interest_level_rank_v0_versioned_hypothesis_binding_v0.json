@@ -120,11 +120,11 @@
         "status": "BOUND"
       },
       "prior_terminal_baseline_ref": {
-        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+        "ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
         "status": "BOUND"
       },
       "provisional_rank_source_ref": {
-        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
+        "ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
         "status": "BOUND"
       },
       "slippage_model_version": {
@@ -623,8 +623,8 @@
   },
   "point_in_time_semantics": "point_in_time_open_interest_level_at_lagged_observation",
   "portfolio_cap": 1.0,
-  "prior_terminal_baseline_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
-  "provisional_rank_source_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
+  "prior_terminal_baseline_ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+  "provisional_rank_source_ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z",
   "ranking_direction": "long_min_level_short_max_level_single_slot_rotation_v0",
   "ranking_formula": "rank_by_lagged_point_in_time_open_interest_level_v0",
   "ranking_policy_binding": {

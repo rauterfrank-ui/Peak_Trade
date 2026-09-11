@@ -1,6 +1,9 @@
 """Contract tests for self-accumulated OI historical depth sufficiency and materialization admissibility v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -71,8 +74,10 @@ CLI_PATH = (
     "and_materialization_admissibility_v0.py"
 )
 PRODUCTION_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    )
 )
 
 ETH_INST_ID = "okx:linear_perpetual:ETH:USDT:USDT:perp"

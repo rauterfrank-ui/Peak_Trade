@@ -6,6 +6,9 @@ no binding ratification, no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -45,9 +48,7 @@ DEFAULT_DOC = (
     _REPO_ROOT / "docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_"
     "DISCOVERY_AND_RATIFICATION_PREP_V0.md"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = (
     "pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep"
 )

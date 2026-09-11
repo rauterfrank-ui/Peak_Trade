@@ -6,6 +6,9 @@ blocks unchanged-binding retry. No economic reevaluation, no runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -59,9 +62,7 @@ RESEARCH_SCOPE = "bouchaud_microstructure_ohlcv_proxy/v1"
 STRATEGY_BINDING = RESEARCH_SCOPE
 BINDING_CLASSIFICATION = "SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 CANONICAL_EVALUATION_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_same_semantic_binding_offline_"

@@ -1,6 +1,9 @@
 """Contract and collector tests for offline source evidence contract materialization v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -51,7 +54,7 @@ PR4911_CONFIG = (
     REPO_ROOT / "config/research/offline_source_evidence_instrumentation_admissibility_gap_v0.json"
 )
 BASELINE_HEAD = "0b307dc027a274d0d5f0df07b96d6c593c761331"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_PR4911_CLOSEOUT_DIR = ARCHIVE_ROOT / "implementation" / PARENT_PR4911_CLOSEOUT_SUFFIX
 PARENT_PR4909_MATERIALIZATION_BUNDLE = (
     ARCHIVE_ROOT / "implementation" / PARENT_PR4909_MATERIALIZATION_SUFFIX

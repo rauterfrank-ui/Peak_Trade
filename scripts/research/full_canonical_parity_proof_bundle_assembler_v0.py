@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -35,21 +38,21 @@ ASSEMBLER_SCHEMA = "FullCanonicalParityProofBundleAssemblerV0"
 ASSEMBLER_ID = "FULL_CANONICAL_PARITY_PROOF_BUNDLE_ASSEMBLER_V0"
 REQUIRED_PROOF_INPUTS_SCHEMA = "FullCanonicalParityRequiredProofInputsMatrixV0"
 
-DEFAULT_PR5020_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
+DEFAULT_PR5020_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
 )
-DEFAULT_PR5027_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
+DEFAULT_PR5027_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
 )
-DEFAULT_PR5028_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5028_full_canonical_parity_pass_eligibility_gate_fixture_cache_repair_v0_20260709T012954Z"
+DEFAULT_PR5028_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5028_full_canonical_parity_pass_eligibility_gate_fixture_cache_repair_v0_20260709T012954Z"
 )
-DEFAULT_PR5028_ELIGIBILITY_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/full_canonical_parity_pass_eligibility_gate_v0_20260709T004654Z"
+DEFAULT_PR5028_ELIGIBILITY_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/full_canonical_parity_pass_eligibility_gate_v0_20260709T004654Z"
 )
 
 CONTEXT_PROTECTED_MARKERS = (
@@ -873,7 +876,7 @@ def collect_evidence(
         durable_archive_root
         or os.environ.get(
             "PEAK_TRADE_DURABLE_ARCHIVE_ROOT",
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+            str(located_runtime_evidence_20260520()),
         )
     )
     evidence_dir = output_dir or (

@@ -1,6 +1,9 @@
 """Contract tests for canonical advanced economic capability pack v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from datetime import datetime, timezone
@@ -651,8 +654,10 @@ class TestDeterminismAndBoundaries:
 
     def test_historical_negative_evidence_unchanged(self) -> None:
         archive = Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-            "pr5177_merge_closeout_canonical_derived_economic_and_trade_metrics_v0_20260714T201906Z"
+            str(
+                located_runtime_evidence_20260520()
+                / "research/pr5177_merge_closeout_canonical_derived_economic_and_trade_metrics_v0_20260714T201906Z"
+            )
         )
         assert (archive / "MANIFEST.sha256").exists()
 

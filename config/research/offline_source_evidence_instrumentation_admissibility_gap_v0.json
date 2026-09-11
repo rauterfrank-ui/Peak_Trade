@@ -9,9 +9,9 @@
   },
   "base_head": "6e756333fc0705d46598a2d77ea646f95232ff48",
   "parent_evidence": {
-    "pr4910_scope_definition_merge_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4909_terminal_failure_next_evidence_scope_definition_merge_closeout_20260706T052749Z",
-    "pr4909_artifact_materialization_merge_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
-    "pr4909_materialization_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z"
+    "pr4910_scope_definition_merge_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/post_pr4909_terminal_failure_next_evidence_scope_definition_merge_closeout_20260706T052749Z",
+    "pr4909_artifact_materialization_merge_closeout_dir": "runtime_evidence/20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
+    "pr4909_materialization_bundle": "runtime_evidence/20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z"
   },
   "source_evidence_contracts": [
     {

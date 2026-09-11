@@ -6,6 +6,9 @@ Notion, retention, runtime, or network.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import ast
 from dataclasses import asdict, dataclass
@@ -50,8 +53,10 @@ STATUS_BLOCKED_MISSING_REQUIRED_CHAIN_ARTIFACT = "blocked_missing_required_chain
 STATUS_BLOCKED_TARGET_ARCHIVE_ROOT_UNDER_TMP = "blocked_target_archive_root_under_tmp"
 
 SYNTHETIC_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    "/closeout/control_plane_offline_chain_durable_attachment_contracts_v0_synthetic"
+    str(
+        located_runtime_evidence_20260520()
+        / "/closeout/control_plane_offline_chain_durable_attachment_contracts_v0_synthetic"
+    )
 )
 
 _FORBIDDEN_SOURCE_PATTERNS: tuple[str, ...] = (

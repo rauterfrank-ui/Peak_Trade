@@ -1,6 +1,9 @@
 """Contract tests for offline panel materialization from partial tmp (no fetch) v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import tempfile
@@ -43,10 +46,10 @@ from tests.research.fixtures.cross_sectional_funding_rate_delta_momentum_v0.fixt
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _PARTIAL_TMP_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/"
-    ".tmp_historical_20260703T181515Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/.tmp_historical_20260703T181515Z"
+    )
 )
 
 

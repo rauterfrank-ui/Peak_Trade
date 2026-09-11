@@ -6,6 +6,9 @@ no economic evaluation, promotion authority, strategy selection, or runtime effe
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -20,7 +23,7 @@ DIAGNOSTIC_EVIDENCE_ID = "offline_productive_linear_diagnostics_support_bundle_v
 AUTHORITY_EFFECT = "NONE"
 RUNTIME_EFFECT = "NONE"
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 DEFAULT_COST_DIAGNOSTICS_BUNDLE = (
     ARCHIVE_ROOT / "research/offline_linear_cost_model_diagnostics_v0_20260714T125628Z"

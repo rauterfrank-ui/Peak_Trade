@@ -6,6 +6,9 @@ evidence or promotion semantics.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -35,7 +38,7 @@ CLOSEOUT_SECTION_PREFIX = (
     "#### CANONICAL_OFFLINE_LINEAR_DIAGNOSTICS_AND_PROMOTION_BINDING_COMPLETION_RECONCILIATION_V0"
 )
 
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DERIVATION_EVIDENCE_DIR = (
     ARCHIVE_ROOT
     / "research"

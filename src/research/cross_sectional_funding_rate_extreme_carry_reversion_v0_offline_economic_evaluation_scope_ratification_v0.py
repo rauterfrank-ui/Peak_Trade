@@ -5,6 +5,9 @@ scope for cross_sectional_funding_rate_extreme_carry_reversion/v0. Does not exec
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -69,17 +72,17 @@ READINESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_extreme_carry_reversion_v0_offline_economic_evaluation_infrastructure_readiness_v0.py"
 )
-PARENT_TERMINAL_SCOPE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_merge_closeout_20260707T224242Z"
+PARENT_TERMINAL_SCOPE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_merge_closeout_20260707T224242Z"
 )
-PARENT_SCOPE_RATIFICATION_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_no_eval_20260707T223422Z"
+PARENT_SCOPE_RATIFICATION_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_no_eval_20260707T223422Z"
 )
-PARENT_PR4935_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_negative_v0_20260707T222915Z"
+PARENT_PR4935_CLOSEOUT_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/operator_review_selected_material_new_research_scope_extreme_carry_reversion_v0_after_rank_delta_negative_v0_20260707T222915Z"
 )
 
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True

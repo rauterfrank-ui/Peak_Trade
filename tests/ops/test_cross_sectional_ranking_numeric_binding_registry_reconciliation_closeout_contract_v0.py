@@ -5,6 +5,9 @@ policy decision class A without authorizing economic evaluation or runtime rewir
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import re
 
@@ -24,15 +27,13 @@ NEXT_STEP = "BOUNDED_CROSS_SECTIONAL_UNIVERSE_MANIFEST_BINDING_READ_ONLY_REASSES
 POLICY_DECISION_CLASS = "EXISTING_CONTRACTS_COMPLETE_NO_NEW_POLICY_REQUIRED"
 MATERIALIZATION_PR = "4771"
 MATERIALIZATION_MERGE_COMMIT = "ef6214b56dd2294f45ca6c2fe55f05c3e09518c0"
-POLICY_DECISION_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "bounded_cross_sectional_ranking_semantics_numeric_binding_policy_decision_read_only_v0_"
-    "20260703T022401Z"
+POLICY_DECISION_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "planning/bounded_cross_sectional_ranking_semantics_numeric_binding_policy_decision_read_only_v0_20260703T022401Z"
 )
-MATERIALIZATION_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "bounded_cross_sectional_ranking_semantics_versioned_binding_materialization_pr4771_"
-    "squash_merge_and_post_merge_closeout_v1_20260703T000410Z"
+MATERIALIZATION_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "planning/bounded_cross_sectional_ranking_semantics_versioned_binding_materialization_pr4771_squash_merge_and_post_merge_closeout_v1_20260703T000410Z"
 )
 CROSS_SECTIONAL_SECTION_PREFIX = (
     "#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Relative Strength Non-Bitcoin Perpetuals v0"

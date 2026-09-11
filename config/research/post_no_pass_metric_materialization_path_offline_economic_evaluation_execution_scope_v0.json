@@ -34,5 +34,5 @@
   "fleet_verdict": "EXECUTION_FAILED_FAIL_CLOSED",
   "fleet_status": "INCONCLUSIVE",
   "economic_validity_offline_gate_pass": false,
-  "durable_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z"
+  "durable_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_metric_materialization_path_offline_economic_evaluation_execution_v0_20260705T235133Z"
 }

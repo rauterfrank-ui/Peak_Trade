@@ -7,6 +7,9 @@ economic evaluation and does not auto-start Full-Universe OKX fetch.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -35,9 +38,7 @@ from src.research.csf_rdm_v0_extended_chronological_v1_staging_funding_panel_mat
     staging_assessment_to_dict,
 )
 
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE_CLASSIFICATION = (
     "BOUNDED_CSF_RDM_V0_EXTENDED_CHRONOLOGICAL_V1_STAGING_FUNDING_PANEL_MATERIALIZATION_V0"
 )

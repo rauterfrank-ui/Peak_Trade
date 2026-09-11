@@ -2,6 +2,9 @@
 """Materialize durable evidence for canonical advanced economic capability pack v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -45,9 +48,7 @@ from src.backtest.cost_config_v0 import append_cost_accounting_fields
 
 import pandas as pd  # noqa: E402
 
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 PR5177_CLOSEOUT = ARCHIVE_ROOT / (
     "pr5177_merge_closeout_canonical_derived_economic_and_trade_metrics_v0_20260714T201906Z"
 )

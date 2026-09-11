@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -52,9 +55,10 @@ MATERIALIZER = REPO_ROOT / (
     "promotion_economic_gate_consumer_binding_v0.py"
 )
 SOURCE_CLOSEOUT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/pr5186_merge_closeout_offline_productive_linear_diagnostics_"
-    "economic_evidence_consumer_binding_v0_20260714T231652Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/pr5186_merge_closeout_offline_productive_linear_diagnostics_economic_evidence_consumer_binding_v0_20260714T231652Z"
+    )
 )
 
 PRODUCTIVE_BUNDLES = {

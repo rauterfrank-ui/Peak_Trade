@@ -9,6 +9,9 @@ No runtime, order, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -64,12 +67,12 @@ from tests.research.fixtures.cross_sectional_relative_strength_v0.fixture_builde
 INFRASTRUCTURE_GO = INFRASTRUCTURE_GO_TOKEN
 REEVALUATION_GO = REEVALUATION_GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/v1"
+    )
 )
 INFRASTRUCTURE_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_"

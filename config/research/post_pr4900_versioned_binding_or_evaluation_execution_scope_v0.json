@@ -79,7 +79,7 @@
   "non_authorizing": true,
   "offline_only": true,
   "paper_authorized": false,
-  "parent_evidence_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0_20260706T030033Z",
+  "parent_evidence_bundle": "runtime_evidence/20260520T161443Z/implementation/post_pr4897_v4_fleet_robustness_failure_decomposition_evidence_execution_v0_20260706T030033Z",
   "parent_manifest_verify_rc": 0,
   "parent_scope_file": "docs/ops/research/POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
   "parent_scope_pr": 4900,

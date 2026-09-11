@@ -7,6 +7,9 @@ GO_CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_OFFLINE_ECONOMIC_EVALUATION_ADAPT
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -30,9 +33,7 @@ from src.research.cross_sectional_open_interest_level_rank_v0_versioned_hypothes
     materialize_versioned_hypothesis_binding_v0,
 )
 
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE_CLASSIFICATION = (
     "CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_SOURCE_EVIDENCE_INTEGRITY_"
     "RECONCILIATION_AND_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0"

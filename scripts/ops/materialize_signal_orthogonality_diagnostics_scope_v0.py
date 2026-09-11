@@ -2,6 +2,9 @@
 """Materialize durable evidence for SIGNAL_ORTHOGONALITY_DIAGNOSTICS_SCOPE_V0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import csv
@@ -34,9 +37,7 @@ from src.research.linear_evidence.signal_orthogonality import (  # noqa: E402
     make_deterministic_signal_fixture,
 )
 
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 SCOPE = "SIGNAL_ORTHOGONALITY_DIAGNOSTICS_SCOPE_V0"
 GO_TOKEN = "GO_SIGNAL_ORTHOGONALITY_DIAGNOSTICS_SCOPE_V0"
 PROGRAM = "CANONICAL_ECONOMIC_OBSERVABILITY_SYSTEM_V1"

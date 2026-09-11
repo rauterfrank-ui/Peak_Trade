@@ -25,14 +25,8 @@ THIS_MODULE = Path(__file__).name
 
 CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
 CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
-CV3C_PLANNING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
-)
-CV3B_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
-)
+CV3C_PLANNING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
+CV3B_CLOSEOUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
 CV3C_EXPECTED_MACHINE_LINES: dict[str, str] = {
     "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0": "true",
     "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED": "true",

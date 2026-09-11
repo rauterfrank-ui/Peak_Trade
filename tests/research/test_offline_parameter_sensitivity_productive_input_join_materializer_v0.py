@@ -1,6 +1,9 @@
 """Contract tests for offline parameter sensitivity productive input join materializer v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -44,7 +47,7 @@ RUNNER_MODULE = (
     / "scripts/research/offline_parameter_sensitivity_productive_input_join_materializer_v0.py"
 )
 SURFACE_RUNNER_MODULE = REPO_ROOT / "scripts/research/offline_parameter_sensitivity_surface_v0.py"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 STAGING_ROOT = (
     ARCHIVE_ROOT / "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/"

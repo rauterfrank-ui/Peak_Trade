@@ -63,36 +63,14 @@ DEFINITIVE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
 }
 DERIVED_EVIDENCE_MAPPED_RISKS = DEFINITIVE_MAPPED_RISKS
 
-VALIDATION_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_artifact_validation_v0_20260610T133528Z"
-)
-MAPPING_WAVE_CHARTER_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_definitive_mapping_wave_charter_only_no_run_v0_20260610T133840Z"
-)
-OPERATOR_INPUT_JSONL_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/"
-    "operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
-)
+VALIDATION_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_artifact_validation_v0_20260610T133528Z"
+MAPPING_WAVE_CHARTER_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_definitive_mapping_wave_charter_only_no_run_v0_20260610T133840Z"
+OPERATOR_INPUT_JSONL_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
 
-WAVE1_BATCH_CLOSURE_PLAN_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
-)
-PR3894_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
-)
-DERIVED_JSONL_BUILD_VALIDATE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
-)
-WAVE1_EXECUTION_READINESS_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
-)
+WAVE1_BATCH_CLOSURE_PLAN_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
+PR3894_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
+DERIVED_JSONL_BUILD_VALIDATE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
+WAVE1_EXECUTION_READINESS_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
 
 WAVE1_BATCH_CLOSURE_EXPECTED: dict[str, str] = {
     "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0": "true",
@@ -107,14 +85,8 @@ WAVE1_BATCH_CLOSURE_EXPECTED: dict[str, str] = {
     "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
 }
 
-INTAKE_PACKET_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_intake_packet_v0_20260601T020000Z"
-)
-VALIDATION_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_input_jsonl_validation_v0_20260601T030000Z"
-)
+INTAKE_PACKET_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_intake_packet_v0_20260601T020000Z"
+VALIDATION_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_validation_v0_20260601T030000Z"
 
 EXTERNAL_VALIDATION_EXPECTED: dict[str, str] = {
     "EXTERNAL_INPUT_JSONL_INTAKE_PACKET_CREATED": "true",

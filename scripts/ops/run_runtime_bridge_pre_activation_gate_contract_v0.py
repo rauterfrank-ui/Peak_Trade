@@ -2,6 +2,9 @@
 """Collect durable evidence for RuntimeBridgePreActivationGateContractV0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -11,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BASE_HEAD = "8ab416a3c46f38b798853c306acaa21372c788b6"
 OPERATOR_GO_TOKEN = (
     "GO_IMPLEMENT_RUNTIME_BRIDGE_PRE_ACTIVATION_GATE_CONTRACT_V0_NO_ACTIVATION_NO_RUNTIME_AUTHORITY"

@@ -25,10 +25,12 @@ from scripts.ops.forensic_structure_schema_v1.serialization import dumps_canonic
 
 pytestmark = pytest.mark.skipif(not bound_inputs_available(), reason="bound forensic inputs absent")
 
-EXTERNAL_T4 = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/"
-    "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1/"
-    "blobs/t4_overlay_records.json"
+EXTERNAL_T4 = (
+    BOUND_SOURCE.parent
+    / "derived"
+    / "FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1"
+    / "blobs"
+    / "t4_overlay_records.json"
 )
 
 

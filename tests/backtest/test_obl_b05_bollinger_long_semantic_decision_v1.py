@@ -4,6 +4,9 @@ Decision C: CONTRACT_REMAINS_AMBIGUOUS — no productive side activation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -151,9 +154,10 @@ def test_no_productive_semantics_and_next_blocker_is_da() -> None:
 
 def test_eval_only_runner_smoke(tmp_path: Path) -> None:
     archive = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_"
-        "20260716T015033Z"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z"
+        )
     )
     if not archive.is_dir():
         pytest.skip("durable archive unavailable")

@@ -51,7 +51,7 @@
     "G_RUNTIME_REWIRE"
   ],
   "classification_mapped_ratio": 1.0,
-  "classification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
+  "classification_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
   "classification_manifest_verify_rc": 0,
   "diagnostic_axes": [
     "economic_viability_runner_failure_decomposition",
@@ -98,7 +98,7 @@
   "panel_zero_trade_refuted": true,
   "parent_classification_evidence_class_id": "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0",
   "parent_classification_execution_id": "post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
-  "parent_execution_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
+  "parent_execution_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
   "parent_execution_manifest_verify_rc": 0,
   "parent_fleet_status": "INCONCLUSIVE",
   "parent_fleet_verdict": "EXECUTION_FAILED_FAIL_CLOSED",
@@ -123,8 +123,8 @@
   "scope_version": "v0",
   "selected_class": "E",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z"
   ],
   "source_prs": [
     4881,

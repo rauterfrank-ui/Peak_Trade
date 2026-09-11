@@ -1,6 +1,9 @@
 """Static contract tests for future-run primary evidence retention hard gate v0 (offline)."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 from pathlib import Path
 from typing import NamedTuple
@@ -54,9 +57,10 @@ BOUNDED_REVIEW_CONTRACT_TESTS = (
 )
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 COPY_CHECK = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "retention/testnet_240min_existing_bundle_durable_copy_check_v0_20260522T081045Z/"
-    "TESTNET_240MIN_EXISTING_BUNDLE_DURABLE_COPY_CHECK_V0.md"
+    str(
+        located_runtime_evidence_20260520()
+        / "retention/testnet_240min_existing_bundle_durable_copy_check_v0_20260522T081045Z/TESTNET_240MIN_EXISTING_BUNDLE_DURABLE_COPY_CHECK_V0.md"
+    )
 )
 
 HARD_GATE_TOKENS = (

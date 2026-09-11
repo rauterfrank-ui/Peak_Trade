@@ -1,6 +1,9 @@
 """Contract tests for STEP29R economic-validity terminal blocker registry binding v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import re
 from pathlib import Path
@@ -19,13 +22,13 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SOURCE_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z"
+SOURCE_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z"
 )
-BINDING_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/"
-    "bounded_step29r_economic_validity_terminal_blocker_registry_binding_v0_20260702T210306Z"
+BINDING_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "planning/bounded_step29r_economic_validity_terminal_blocker_registry_binding_v0_20260702T210306Z"
 )
 BINDING_SECTION_PREFIX = "STEP29R_ECONOMIC_VALIDITY_TERMINAL_BLOCKER_REGISTRY_BINDING_V0"
 

@@ -2,6 +2,9 @@
 """Materialize momentum_1h v2 offline economic evaluation authorization ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -38,9 +41,7 @@ from src.research.momentum_1h_v2_versioned_research_binding_v0 import (  # noqa:
     serialize_versioned_binding_json_v0,
 )
 
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "momentum_1h_v2_offline_economic_evaluation_authorization_ratification_v0"
 FOCUSED_TEST = (
     "tests/research/"

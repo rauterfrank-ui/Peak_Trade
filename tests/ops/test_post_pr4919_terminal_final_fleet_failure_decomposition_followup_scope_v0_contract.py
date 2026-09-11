@@ -1,6 +1,9 @@
 """Contract tests for post-PR4919 terminal final fleet failure decomposition follow-up scope v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -43,7 +46,7 @@ POST_MERGE_HEAD = "6c11561db1a26893d5b318394bd78335659991e3"
 PARENT_CLOSEOUT_SUFFIX = (
     "pr4919_terminal_final_fleet_failure_decomposition_next_scope_merge_closeout_20260706T075014Z"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_CLOSEOUT_DIR = ARCHIVE_ROOT / "implementation" / PARENT_CLOSEOUT_SUFFIX
 FLEET_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")
 FOLLOWUP_TAXONOMY_CLASS_IDS = (

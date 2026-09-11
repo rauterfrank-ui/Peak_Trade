@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 
 from scripts.ops.forensic_structure_schema_v1.constants import (
-    BOUND_SOURCE_PATH,
     EXPECTED_AUTHORITY,
     EXPECTED_BOM,
     EXPECTED_ENCODING,
@@ -19,6 +18,7 @@ from scripts.ops.forensic_structure_schema_v1.constants import (
     EXPECTED_SOURCE_SHA256,
     EXPECTED_TRAILING_NEWLINE,
     GENERATOR_ID,
+    HISTORICAL_SOURCE_LOCATOR_AT_OBSERVATION,
     SCHEMA_ID,
     SCHEMA_VERSION,
 )
@@ -92,10 +92,10 @@ def run_stage_a(state: PipelineState) -> None:
         raise TransformationContractViolation("STAGE_A", "layer0 source_bytes mismatch")
     if layer0.get("source_line_count") != EXPECTED_SOURCE_LINES:
         raise TransformationContractViolation("STAGE_A", "layer0 source_line_count mismatch")
-    if layer0.get("source_locator_at_observation") != BOUND_SOURCE_PATH:
+    if layer0.get("source_locator_at_observation") != HISTORICAL_SOURCE_LOCATOR_AT_OBSERVATION:
         raise TransformationContractViolation(
             "STAGE_A",
-            "layer0 locator is not the bound Documents path",
+            "layer0 locator is not the historical observation-time locator",
         )
     if layer0.get("target_authority") != EXPECTED_AUTHORITY:
         raise TransformationContractViolation("C9", "layer0 target_authority != NONE")

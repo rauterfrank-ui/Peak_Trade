@@ -59,7 +59,7 @@
     "seven_day_holdout_narrowing_when_full_panel_claimed": true,
     "unchanged_failed_fleet_retry": false
   },
-  "forensics_source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_post_failure_forensics_and_new_evidence_class_candidate_discovery_read_only_v0_20260705T011307Z",
+  "forensics_source_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/final_research_fleet_post_failure_forensics_and_new_evidence_class_candidate_discovery_read_only_v0_20260705T011307Z",
   "forensics_source_manifest_verify_rc": 0,
   "further_same_binding_retry_allowed": false,
   "future_execution_authority": {

@@ -8,6 +8,9 @@ runtime, grant order authority, or promote final success flags.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -25,13 +28,13 @@ PACKAGE_MARKER = "NEXT_FULL_CANONICAL_PARITY_SURFACE_AFTER_SURFACE_P_ASSESSMENT_
 SELECTED_SURFACE = "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 PLAN_TYPE = "ASSESSMENT_ONLY"
 
-DEFAULT_PR5023_CLOSEOUT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5023_surface_p_semantic_parity_gap_assessment_targeted_v0_20260708T231817Z"
+DEFAULT_PR5023_CLOSEOUT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/merge_closeout_pr5023_surface_p_semantic_parity_gap_assessment_targeted_v0_20260708T231817Z"
 )
-DEFAULT_PR5022_PROOF_BUNDLE_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/full_canonical_parity_proof_bundle_v0_20260708T224152Z"
+DEFAULT_PR5022_PROOF_BUNDLE_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/full_canonical_parity_proof_bundle_v0_20260708T224152Z"
 )
 
 AssessmentVerdict = Literal["PASS", "FAIL_CLOSED"]

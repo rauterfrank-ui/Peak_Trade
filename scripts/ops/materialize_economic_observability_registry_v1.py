@@ -2,6 +2,9 @@
 """Materialize canonical economic observability metric registry v1 from discovery evidence."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import csv
@@ -22,8 +25,10 @@ from src.backtest.economic_observability_registry_v1 import (
 )
 
 DEFAULT_DISCOVERY_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/canonical_economic_observability_metric_lineage_and_reporting_gap_discovery_read_only_v0_20260714T185419Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/canonical_economic_observability_metric_lineage_and_reporting_gap_discovery_read_only_v0_20260714T185419Z"
+    )
 )
 DEFAULT_OUTPUT = (
     Path(__file__).resolve().parents[2] / "config/economic_observability_metric_registry_v1.json"

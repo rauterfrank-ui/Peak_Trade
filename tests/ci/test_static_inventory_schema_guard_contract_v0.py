@@ -18,16 +18,8 @@ INVENTORY_CHARTER_MODULE = "test_cybersecurity_visibility_r_pending_inventory_ch
 CSC_LOSSLESS_V1_GUARD_MODULE = "test_csc_lossless_v1_dataset_reflection_contract_v0.py"
 RCHAIN_GUARD_MODULE = "test_csc_rchain_v1_grouping_reflection_contract_v0.py"
 
-STATIC_INVENTORY_JSONL = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "inventory/repo_static_cybersecurity_risk_candidates/"
-    "repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/"
-    "REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl"
-)
-VALIDATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/static_inventory_schema_validation_v0_20260601T040842Z"
-)
+STATIC_INVENTORY_JSONL = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/inventory/repo_static_cybersecurity_risk_candidates/repo_static_cybersecurity_risk_candidates_jsonl_generation_v0_20260524T070050Z/REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl"
+VALIDATION_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/static_inventory_schema_validation_v0_20260601T040842Z"
 
 GUARD_BLOCK_ANCHOR = "CYBERSECURITY_STATIC_INVENTORY_SCHEMA_VALIDATION_GUARD_V0=true"
 

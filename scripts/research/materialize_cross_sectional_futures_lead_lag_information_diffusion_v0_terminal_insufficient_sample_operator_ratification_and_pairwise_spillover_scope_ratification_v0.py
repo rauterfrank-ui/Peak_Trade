@@ -2,6 +2,9 @@
 """Materialize terminal lead-lag v0 insufficient sample and pairwise spillover v1 scope ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -49,9 +52,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_researc
 )
 
 CONFIRM_GO = OPERATOR_GO_TOKEN
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = (
     "cross_sectional_futures_lead_lag_information_diffusion_v0_terminal_insufficient_sample_"
     "and_distinct_futures_research_scope_ratification_v0"

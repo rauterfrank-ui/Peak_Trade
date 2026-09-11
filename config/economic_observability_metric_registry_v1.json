@@ -1,7 +1,7 @@
 {
   "schema_version": "economic_observability_metric_registry.v1",
   "registry_owner": "backtest.economic_observability_registry_v1",
-  "discovery_source_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/canonical_economic_observability_metric_lineage_and_reporting_gap_discovery_read_only_v0_20260714T185419Z",
+  "discovery_source_ref": "runtime_evidence/20260520T161443Z/research/canonical_economic_observability_metric_lineage_and_reporting_gap_discovery_read_only_v0_20260714T185419Z",
   "metric_count": 178,
   "entries": [
     {

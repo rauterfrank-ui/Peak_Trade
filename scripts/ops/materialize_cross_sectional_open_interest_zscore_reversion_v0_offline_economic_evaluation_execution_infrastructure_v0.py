@@ -7,6 +7,9 @@ Operator GO: GO_CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_OFFLINE_ECONOM
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -37,9 +40,10 @@ from src.research.cross_sectional_open_interest_zscore_reversion_v0_offline_econ
 
 CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 DEFAULT_MATERIALIZATION_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/five_instrument_self_accumulated_oi_panel_overlap_validation_and_offline_run_v0_"
-    "20260711T235603Z/panel_output/run_1"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/five_instrument_self_accumulated_oi_panel_overlap_validation_and_offline_run_v0_20260711T235603Z/panel_output/run_1"
+    )
 )
 
 

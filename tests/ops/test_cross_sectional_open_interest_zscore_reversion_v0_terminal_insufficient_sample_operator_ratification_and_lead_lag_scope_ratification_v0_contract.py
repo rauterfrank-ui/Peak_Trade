@@ -1,6 +1,9 @@
 """Contract tests for OI zscore terminal insufficient sample operator ratification and lead-lag scope ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    archive_relative_locator,
+)
 
 import json
 from pathlib import Path
@@ -105,7 +108,10 @@ class TestTerminalInsufficientSampleRegistrationConfig:
         assert payload["material_difference_proven"] is True
         assert payload["distinct_scope_ratified"] is True
         assert payload["trade_count"] == TRADE_COUNT
-        assert str(CANONICAL_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in payload["canonical_evaluation_bundle"]
+        )
         assert payload["registration_digest"] == compute_registration_digest(payload)
 
     def test_no_economic_evaluation_authority(self) -> None:

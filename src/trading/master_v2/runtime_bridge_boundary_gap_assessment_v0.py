@@ -9,6 +9,9 @@ granting order authority, or promoting final success flags.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -23,9 +26,9 @@ RUNTIME_BRIDGE_BOUNDARY_GAP_ASSESSMENT_OWNER = (
 ASSESSMENT_SLICE_ID = "RUNTIME_BRIDGE_BOUNDARY_GAP_ASSESSMENT_V0"
 PACKAGE_MARKER = "RUNTIME_BRIDGE_BOUNDARY_GAP_ASSESSMENT_V0=true"
 
-DEFAULT_PR5025_SOURCE_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/runtime_bridge_pre_activation_gate_assessment_v0_20260708T234554Z"
+DEFAULT_PR5025_SOURCE_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/runtime_bridge_pre_activation_gate_assessment_v0_20260708T234554Z"
 )
 
 AssessmentVerdict = Literal["PASS", "FAIL_CLOSED"]

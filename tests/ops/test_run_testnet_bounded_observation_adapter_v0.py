@@ -1,6 +1,9 @@
 """Tests for Testnet bounded observation retention adapter and review scripts."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import importlib.util
@@ -42,7 +45,7 @@ ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_ada
 REVIEW_SCRIPT = ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
 STAGING_SCRIPT = ROOT / "scripts" / "ops" / "run_testnet_bounded_evidence_staging_v0.sh"
 APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "testnet_adapter_stage3_approval_sample.md"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SELECTOR = ROOT / "scripts" / "ops" / "ci_test_selection_v1.py"
 CLOSEOUT_BINDING_FILES = (
     "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",

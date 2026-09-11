@@ -28,5 +28,5 @@
   "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_material_difference_and_non_claim_contract.v0",
   "signal_family": "BAR_LEVEL_MICROSTRUCTURE_PRESSURE_PROXY",
   "signal_family_material_difference": true,
-  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z"
+  "source_discovery_evidence_ref": "runtime_evidence/20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z"
 }

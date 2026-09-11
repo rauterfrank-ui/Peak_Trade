@@ -70,7 +70,7 @@
   ],
   "core_system_mutation_allowed": false,
   "diagnostic_mapped_ratio": 1.0,
-  "diagnostics_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z",
+  "diagnostics_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z",
   "diagnostics_manifest_verify_rc": 0,
   "double_play_mutation_allowed": false,
   "economic_evaluation_authorized": false,
@@ -134,9 +134,9 @@
   "scope_version": "v0",
   "selected_class": "D",
   "source_evidence_refs": [
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z"
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z",
+    "runtime_evidence/20260520T161443Z/implementation/post_no_pass_inconclusive_metric_materialization_path_diagnostics_evidence_execution_v0_20260705T230238Z"
   ],
   "source_prs": [
     4881,

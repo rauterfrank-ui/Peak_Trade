@@ -2,6 +2,9 @@
 """Generate durable evidence bundle for extended panel dataset digest ratification v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -41,9 +44,7 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_versioned_research
     serialize_versioned_binding_artifact_json_v0,
 )
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_DISCOVERY = DURABLE_ARCHIVE_ROOT / (
     "research/cross_sectional_open_interest_delta_rank_v0_sample_sufficiency_and_data_depth_"
     "remediation_contract_discovery_read_only_v0_20260712T004335Z"

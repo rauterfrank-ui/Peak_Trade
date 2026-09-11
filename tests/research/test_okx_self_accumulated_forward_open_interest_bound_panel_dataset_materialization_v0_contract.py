@@ -1,6 +1,9 @@
 """Contract tests for self-accumulated forward OI bound panel dataset materialization v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import shutil
@@ -47,8 +50,10 @@ MODULE_PATH = (
     "okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization_v0.py"
 )
 PRODUCTION_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    )
 )
 
 PANEL_TIMESTAMPS = (

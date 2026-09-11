@@ -251,7 +251,7 @@
     "expected_rankable_epoch_count": 55,
     "history_depth_after": 60,
     "history_depth_before": 6,
-    "observed_materialization_manifest": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a/panel/panel_open_interest_dataset_manifest.json",
+    "observed_materialization_manifest": "runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a/panel/panel_open_interest_dataset_manifest.json",
     "operator_go": "GO_CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_EXTENDED_PANEL_DATASET_DIGEST_RATIFICATION_V0",
     "ratification_owner": "cross_sectional_open_interest_delta_rank_v0_extended_panel_dataset_digest_ratification.v0",
     "runtime_rewire_admissible": false,

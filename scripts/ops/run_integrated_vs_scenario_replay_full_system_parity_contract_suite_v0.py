@@ -2,6 +2,9 @@
 """Collect durable evidence for integrated vs scenario replay full-system parity suite v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -12,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BASE_HEAD = "1a7a4ef54eb68415d8371dbe1e98615c52003fe5"
 VERDICT = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_CONTRACT_SUITE_V0_PASS"
 PROCESS_CLASSIFICATION = "CANONICAL_FULL_SYSTEM_PARITY_CONTRACT_SUITE_OFFLINE_ONLY"

@@ -1,6 +1,9 @@
 """Contract tests for offline linear cost diagnostic row materializer v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -475,9 +478,7 @@ def test_simulated_fill_price_formula_long_short() -> None:
 
 
 def test_trend_following_archive_rows_remain_joinable_with_repo_binding() -> None:
-    archive_root = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-    )
+    archive_root = Path(str(located_runtime_evidence_20260520()))
     ledger_path = (
         archive_root
         / "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z"

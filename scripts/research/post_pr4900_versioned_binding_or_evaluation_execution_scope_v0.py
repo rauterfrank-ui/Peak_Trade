@@ -10,6 +10,9 @@ No runtime authority. Operator GO: GO_POST_PR4899_VERSIONED_BINDING_OR_EVALUATIO
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -41,9 +44,7 @@ DEFAULT_CONFIG = (
     _REPO_ROOT
     / "config/research/post_pr4900_versioned_binding_or_evaluation_execution_scope_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_pr4900_versioned_binding_or_evaluation_execution_scope_v0"
 PARENT_SCOPE_REL = "docs/ops/research/POST_PR4899_TERMINAL_FLEET_FAILURE_NEXT_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md"
 V4_BINDING_RATIFICATION_REL = (

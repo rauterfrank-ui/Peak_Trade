@@ -1,4 +1,7 @@
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import subprocess
@@ -10,7 +13,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNNER_MODULE = REPO_ROOT / "scripts/research/offline_linear_cost_model_diagnostics_v0.py"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 LEDGER_PATH = (
     ARCHIVE_ROOT
     / "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T083113Z"

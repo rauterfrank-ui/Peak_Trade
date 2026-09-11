@@ -93,10 +93,10 @@
       "score_family_policy": "pairwise_spillover_graph_v1"
     },
     "source_evidence": {
-      "hypothesis_binding_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_ratification_v0_20260715T040511Z",
-      "pr5200_closeout_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5200_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_implementation_v0_20260715T044248Z",
-      "pr5204_closeout_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5204_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_implementation_v0_20260715T064015Z",
-      "score_ranking_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0_20260715T041800Z"
+      "hypothesis_binding_bundle": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_binding_ratification_v0_20260715T040511Z",
+      "pr5200_closeout_bundle": "runtime_evidence/20260520T161443Z/research/pr5200_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_implementation_v0_20260715T044248Z",
+      "pr5204_closeout_bundle": "runtime_evidence/20260520T161443Z/research/pr5204_merge_closeout_cross_sectional_futures_pairwise_lead_lag_spillover_v1_portfolio_binding_implementation_v0_20260715T064015Z",
+      "score_ranking_bundle": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_score_and_ranking_contract_v0_20260715T041800Z"
     }
   },
   "canonical_serialization_version": "authorization_ratification_canonical_json_v1",

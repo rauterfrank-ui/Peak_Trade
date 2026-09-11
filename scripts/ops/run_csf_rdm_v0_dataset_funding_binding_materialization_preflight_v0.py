@@ -7,6 +7,9 @@ Does not execute economic evaluation, runtime, credentials, or order effects.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -31,13 +34,12 @@ from src.research.csf_rdm_v0_dataset_funding_binding_materialization_preflight_v
 )
 
 CONFIRM_GO = GO_TOKEN
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DEFAULT_STAGING_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/admissible_futures/"
-    "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+    )
 )
 SCOPE_CLASSIFICATION = "BOUNDED_CSF_RDM_V0_DATASET_FUNDING_BINDING_MATERIALIZATION_PREFLIGHT_V0"
 PROCESS_CLASSIFICATION = "OFFLINE_PRE_EVALUATION_PREFLIGHT_NO_EVALUATION"

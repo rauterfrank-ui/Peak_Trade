@@ -6,6 +6,9 @@ No economic evaluation, no backtest/WF/MC/stress execution, no authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -29,9 +32,7 @@ DEFAULT_CONFIG = (
     _REPO_ROOT
     / "config/research/post_no_pass_robustness_failure_diagnostics_evidence_class_v0.json"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "post_no_pass_robustness_failure_diagnostics_evidence_execution_v0"
 NEXT_STEP_RATIFICATION = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
 NEXT_STEP_GAP = "POST_NO_PASS_DIAGNOSTICS_SOURCE_EVIDENCE_GAP_REQUIRES_OPERATOR_DECISION_V0"

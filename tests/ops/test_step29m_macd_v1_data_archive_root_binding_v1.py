@@ -11,6 +11,7 @@ import pytest
 from src.backtest import step29m_macd_v1_economic_evaluation_admissibility_contract_v1 as contract
 from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    RUNTIME_EVIDENCE_20260520_REL,
     ArchiveRootError,
     resolve_archive_root,
 )
@@ -63,7 +64,9 @@ def test_env_unset_does_not_open_legacy_documents(
 
 def test_env_valid_temp_root_relative_join(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    expected = (tmp_path / contract.MACD_V1_DATASET_RELPATH).resolve()
+    expected = (
+        tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.MACD_V1_DATASET_RELPATH
+    ).resolve()
     assert contract.resolve_macd_v1_dataset_bars_path() == expected
     cfg = contract.load_macd_v1_evaluation_config_v1(ROOT, MACD_CONFIGS[0])
     assert contract.resolve_macd_v1_dataset_bars_path_from_config(cfg) == expected
@@ -85,7 +88,7 @@ def test_temp_root_existing_file_opens_joined_path_not_legacy(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
-    bars_path = tmp_path / contract.MACD_V1_DATASET_RELPATH
+    bars_path = tmp_path / RUNTIME_EVIDENCE_20260520_REL / contract.MACD_V1_DATASET_RELPATH
     bars_path.parent.mkdir(parents=True)
     bars_path.write_bytes(b"not-a-parquet")
     opened: list[str] = []

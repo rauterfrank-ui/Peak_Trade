@@ -1,6 +1,9 @@
 """Contract tests for post-PR4904 v4 fleet robustness failure decomposition v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -53,7 +56,7 @@ DECOMPOSITION_AXES = (
 NEXT_STEP = (
     "GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PARENT_EVALUATION_BUNDLE = ARCHIVE_ROOT / "implementation" / PARENT_EVALUATION_SUFFIX
 PARENT_CLOSEOUT_BUNDLE = ARCHIVE_ROOT / "implementation" / PARENT_CLOSEOUT_SUFFIX
 

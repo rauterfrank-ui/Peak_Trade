@@ -287,10 +287,7 @@ def test_pe6_cyber_er_crosslink_module_is_static_no_subprocess_v0() -> None:
 
 HISTOGRAM_DEFENSIVE_CLOSURE_HEADING = "### CSC-RCHAIN histogram defensive closure v0 (SLICE-CV-3a)"
 GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
-CV3A_PLANNING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/"
-)
+CV3A_PLANNING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/"
 HISTOGRAM_COMPLETE_CLASSIFICATIONS: tuple[str, ...] = (
     "manual_dispatch_sensitive_surface",
     "workflow_secrets_visibility",
@@ -443,18 +440,9 @@ CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink gu
 CV3_POINTER_INTEGRITY_BLOCK_ANCHOR = (
     "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_V0=true"
 )
-CV3_RANKING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/systemwide_next_safe_scope_ranking_after_market_dashboard_pr4162_crosslink_guard_merge_no_run_v1_20260612T080955Z/"
-)
-CV3_PREP_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_docs_drift_pointer_integrity_bounded_prep_no_run_v1_20260611T020817Z/"
-)
-CV3_PR15_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/csc_rchain_v1_pr15_no_safe_reaffirmation_block_stop_idle_finalization_v0_20260601T162636Z/"
-)
+CV3_RANKING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_market_dashboard_pr4162_crosslink_guard_merge_no_run_v1_20260612T080955Z/"
+CV3_PREP_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_docs_drift_pointer_integrity_bounded_prep_no_run_v1_20260611T020817Z/"
+CV3_PR15_CLOSEOUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/csc_rchain_v1_pr15_no_safe_reaffirmation_block_stop_idle_finalization_v0_20260601T162636Z/"
 DOCS_DRIFT_GUARD_SCRIPT = "scripts/ops/check_docs_drift_guard.py"
 DOCS_TRUTH_MAP_CONFIG = "config/ops/docs_truth_map.yaml"
 DOCS_DRIFT_GUARD_TEST_MODULE = "tests/ops/test_check_docs_drift_guard.py"

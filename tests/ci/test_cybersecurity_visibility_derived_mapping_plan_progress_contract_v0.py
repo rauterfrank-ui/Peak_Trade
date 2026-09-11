@@ -40,90 +40,27 @@ WAVE1_EXECUTION_GUARD_PREP_BLOCK_ANCHOR = (
 WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true"
 )
-CHARTER_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
-)
-PRECHECK_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_definitive_mapping_readiness_precheck_readonly_v0_20260601T171452Z"
-)
-PLAN_PROGRESS_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_cyber_mapping_plan_progress_pr_merge_closeout_readonly_v0_20260601T171301Z"
-)
-PLANNING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_mapping_after_derived_reflection_next_progress_readonly_v0_20260601T170753Z"
-)
-POST_MERGE_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_derived_input_artifact_repo_reflection_pr_merge_closeout_readonly_v0_20260601T170502Z"
-)
-PRECHECK_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z"
-)
-READINESS_REFRESH_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_readiness_refresh_readonly_v0_20260601T172844Z"
-)
-PR3888_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_pr3888_derived_only_mapping_contract_extension_merge_closeout_readonly_v0_20260601T172611Z"
-)
-EXECUTION_CHARTER_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_execution_charter_precheck_readonly_v0_20260601T173815Z"
-)
-PR3889_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_decision_record_pr_merge_closeout_readonly_v0_20260601T173555Z"
-)
-EXECUTION_GO_READINESS_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_execution_go_readiness_precheck_readonly_v0_20260601T174752Z"
-)
-PR3890_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_execution_charter_pr_merge_closeout_readonly_v0_20260601T174422Z"
-)
-PR3891_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_execution_go_record_pr_merge_closeout_readonly_v0_20260601T175356Z"
-)
-GUARD_EXTENSION_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_guard_extension_precheck_readonly_v0_20260601T175637Z"
-)
-DERIVED_JSONL_BUILD_VALIDATE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
-)
-WAVE_SCOPE_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_wave_scope_precheck_readonly_v0_20260601T180641Z"
-)
-PR3892_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_guard_extension_pr_merge_closeout_readonly_v0_20260601T180415Z"
-)
-WAVE1_EXECUTION_READINESS_PRECHECK_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
-)
-PR3893_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_wave1_charter_pr_merge_closeout_readonly_v0_20260601T181212Z"
-)
-WAVE1_BATCH_CLOSURE_PLAN_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
-)
-PR3894_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
-)
+CHARTER_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
+PRECHECK_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_definitive_mapping_readiness_precheck_readonly_v0_20260601T171452Z"
+PLAN_PROGRESS_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_cyber_mapping_plan_progress_pr_merge_closeout_readonly_v0_20260601T171301Z"
+PLANNING_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_mapping_after_derived_reflection_next_progress_readonly_v0_20260601T170753Z"
+POST_MERGE_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_derived_input_artifact_repo_reflection_pr_merge_closeout_readonly_v0_20260601T170502Z"
+PRECHECK_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z"
+READINESS_REFRESH_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_readiness_refresh_readonly_v0_20260601T172844Z"
+PR3888_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_pr3888_derived_only_mapping_contract_extension_merge_closeout_readonly_v0_20260601T172611Z"
+EXECUTION_CHARTER_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_execution_charter_precheck_readonly_v0_20260601T173815Z"
+PR3889_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_decision_record_pr_merge_closeout_readonly_v0_20260601T173555Z"
+EXECUTION_GO_READINESS_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_execution_go_readiness_precheck_readonly_v0_20260601T174752Z"
+PR3890_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_execution_charter_pr_merge_closeout_readonly_v0_20260601T174422Z"
+PR3891_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_execution_go_record_pr_merge_closeout_readonly_v0_20260601T175356Z"
+GUARD_EXTENSION_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_guard_extension_precheck_readonly_v0_20260601T175637Z"
+DERIVED_JSONL_BUILD_VALIDATE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
+WAVE_SCOPE_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave_scope_precheck_readonly_v0_20260601T180641Z"
+PR3892_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_guard_extension_pr_merge_closeout_readonly_v0_20260601T180415Z"
+WAVE1_EXECUTION_READINESS_PRECHECK_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
+PR3893_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_wave1_charter_pr_merge_closeout_readonly_v0_20260601T181212Z"
+WAVE1_BATCH_CLOSURE_PLAN_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
+PR3894_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
 WRITE_PERMISSIONS_OWNER_TEST = "test_workflow_write_permissions_visibility_contract_v0.py"
 SECRETS_REFERENCE_OWNER_TEST = "test_workflow_secrets_reference_visibility_contract_v0.py"
 
@@ -768,14 +705,8 @@ def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_truth
 
 RELEASE_RC_INDEX_HEADING = "## Cybersecurity Visibility Release RC v0 — index v0"
 RELEASE_RC_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true"
-CV1_PLANNING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/"
-)
-POST_OE_RANKING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/next_larger_theme_ranking_after_operator_experience_release_rc_v0_20260602T175228Z/"
-)
+CV1_PLANNING_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/"
+POST_OE_RANKING_BUNDLE_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_operator_experience_release_rc_v0_20260602T175228Z/"
 
 RELEASE_RC_EXPECTED: dict[str, str] = {
     "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0": "true",
@@ -857,14 +788,8 @@ def test_cybersecurity_visibility_release_rc_v0_slice_cv2_guard_owner_crosslink_
 
 CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
 CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
-CV3B_PLANNING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cv3b_defensive_visibility_readout_after_cv3a_v0_20260603T031905Z/"
-)
-CV3A_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_cv3a_csc_rchain_histogram_defensive_closure_merge_closeout_v0_20260603T031905Z/"
-)
+CV3B_PLANNING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cv3b_defensive_visibility_readout_after_cv3a_v0_20260603T031905Z/"
+CV3A_CLOSEOUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_cv3a_csc_rchain_histogram_defensive_closure_merge_closeout_v0_20260603T031905Z/"
 MAPPING_GUARD_MODULE = "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
 INVENTORY_CHARTER_MODULE = (
     "tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
@@ -996,14 +921,8 @@ def test_cybersecurity_visibility_cv3b_readout_slice_guard_owner_crosslink_v0() 
 
 CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
 CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
-CV3C_PLANNING_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
-)
-CV3B_CLOSEOUT_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
-)
+CV3C_PLANNING_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
+CV3B_CLOSEOUT_BUNDLE = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
 INPUT_ARTIFACT_MODULE = (
     "tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
 )
@@ -1087,10 +1006,7 @@ POST_SLICE_CV3_INDEX_SYNC_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1=true"
 )
 CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3)"
-CV3_SLICE_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/cybersecurity_visibility_cv3_csc_rchain_pr15_pointer_integrity_guard_squash_merge_closeout_v1_20260612T082018Z/"
-)
+CV3_SLICE_CLOSEOUT_PATH = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_visibility_cv3_csc_rchain_pr15_pointer_integrity_guard_squash_merge_closeout_v1_20260612T082018Z/"
 
 
 def test_cybersecurity_visibility_release_rc_v0_post_slice_cv3_release_index_sync_v1() -> None:

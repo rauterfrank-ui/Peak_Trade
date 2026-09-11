@@ -2,6 +2,9 @@
 """Materialize durable evidence for canonical economic report consumer v1."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import csv
@@ -41,9 +44,7 @@ from src.backtest.economic_observability_snapshot_v1 import (  # noqa: E402
 )
 from src.backtest.economic_viability_evidence_v1 import EconomicViabilityStatus
 
-ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research"
-)
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520() / "research"))
 SOURCE_MANIFEST_DIRS = [
     ARCHIVE_ROOT
     / "canonical_economic_observability_registry_and_contract_foundation_v0_20260714T191543Z",

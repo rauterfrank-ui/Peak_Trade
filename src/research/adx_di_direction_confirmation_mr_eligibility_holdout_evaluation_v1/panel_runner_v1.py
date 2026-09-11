@@ -7,6 +7,9 @@ binding differ from the development evaluation.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import copy
 import hashlib
@@ -142,9 +145,10 @@ def _profile() -> DatasetProfileBindingV1:
 
 def load_runtime_cfg(repo: Path, *, seed: int) -> dict[str, Any]:
     src = Path(
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-        "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z/"
-        "runtime_evaluation_config.json"
+        str(
+            located_runtime_evidence_20260520()
+            / "research/full_canonical_system_economic_evidence_generation_v1_offline_execution_v0_20260716T015033Z/runtime_evaluation_config.json"
+        )
     )
     cfg = json.loads(src.read_text(encoding="utf-8"))
     cfg = copy.deepcopy(cfg)

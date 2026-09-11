@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -64,9 +67,7 @@ def main() -> int:
     parser.add_argument(
         "--archive-root",
         type=Path,
-        default=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        default=Path(str(located_runtime_evidence_20260520())),
     )
     args = parser.parse_args()
 

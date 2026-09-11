@@ -7,6 +7,9 @@ sequential signal-density adapter. No runtime, order, or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -95,9 +98,7 @@ DURABLE_EVIDENCE_BUNDLE_PREFIX = (
     "post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0"
 )
 
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 REASON_EXECUTION_SCOPE_CONFIG_MISSING = "EXECUTION_SCOPE_CONFIG_MISSING"
 REASON_SCOPE_DEFINITION_MISSING = "SCOPE_DEFINITION_CONFIG_MISSING"

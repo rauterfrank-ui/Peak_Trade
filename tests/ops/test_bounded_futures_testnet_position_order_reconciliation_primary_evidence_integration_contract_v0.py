@@ -5,6 +5,9 @@ PE-21 static PE-12 reconciliation_review + PE-16 durable evidence binding only.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 from dataclasses import replace
 from pathlib import Path
@@ -86,9 +89,7 @@ _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_POSITION_ORDER_RECONC
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
 GENERIC_FUTURES_INSTRUMENT = "ETH-USD_UM_XPERP-310404"
-DURABLE_ARCHIVE_ROOT = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = str(located_runtime_evidence_20260520())
 
 
 def _recon_static_kwargs(integration_input, **overrides):

@@ -7,6 +7,9 @@ arming, or authority effect. Execution requires operator GO after binding materi
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -75,9 +78,7 @@ MANIFEST_POLICY_MODULE_REL = "scripts/ops/primary_evidence_retention_v0.py"
 ALLOWED_OUTPUT_ARTIFACTS = ("TRADE_LEDGER_V1.jsonl", "EQUITY_CURVE_V1.jsonl")
 NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO = True
 
-DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 DURABLE_EVIDENCE_BUNDLE_PREFIX = (
     "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0"
 )

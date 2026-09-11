@@ -7,6 +7,9 @@ Operator GO: GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_BOUNDE
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -46,9 +49,7 @@ from src.research.okx_full_panel_cross_sectional_ranking_strategy_archetype_offl
 
 CONFIRM_GO = GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SCOPE_CLASSIFICATION = (
     "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_"
     "BOUNDED_OFFLINE_ECONOMIC_EVALUATION_V0"

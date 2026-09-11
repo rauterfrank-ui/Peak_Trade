@@ -8,7 +8,7 @@
   "binding_config_ref": "config/research/ehlers_cycle_filter_v1_versioned_research_binding_v0.json",
   "binding_digest": "dc8704495c3bf08b14afd9f50890369973c7c785e0d1655ba0b5b351f06b6599",
   "bitcoin_direction_allowed": false,
-  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z",
+  "canonical_evaluation_bundle": "runtime_evidence/20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z",
   "canonical_evaluation_timestamp": "20260710T115835Z",
   "canonical_manifest_digest": "acd5a8a16e096904a1610ef3e45067488164a4c5b41a80f93de6416bb398e2b4",
   "canonical_manifest_verify_rc": 0,
@@ -16,7 +16,7 @@
   "cost_policy_changed": false,
   "data_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
   "dataset_changed": false,
-  "discovery_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z",
+  "discovery_evidence_dir": "runtime_evidence/20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z",
   "distinct_scope_candidate_inventory": {
     "candidates": [
       {
@@ -55,12 +55,12 @@
       }
     ],
     "schema_version": "distinct_scope_candidate_inventory.v0",
-    "source_discovery_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z"
+    "source_discovery_evidence_dir": "runtime_evidence/20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z"
   },
   "distinct_scope_implemented": true,
   "distinct_scope_ratified": true,
   "distinct_scope_required": true,
-  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z (MANIFEST_VERIFY_RC=0)",
+  "durable_evidence_refs": "runtime_evidence/20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z (MANIFEST_VERIFY_RC=0); runtime_evidence/20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0); runtime_evidence/20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z (MANIFEST_VERIFY_RC=0)",
   "economic_validity_offline_gate_pass": false,
   "exact_binding_retry_guard_report": {
     "binding_digest": "dc8704495c3bf08b14afd9f50890369973c7c785e0d1655ba0b5b351f06b6599",
@@ -178,15 +178,15 @@
   "offline_only": true,
   "policy_minimum_trade_count": 50,
   "post_repair_classification_timestamp": "20260710T123447Z",
-  "pr5086_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z",
+  "pr5086_closeout_dir": "runtime_evidence/20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z",
   "pre_merge_origin_main": "f1117437a0bdfac8196d0ceffadc746d0b2b367e",
-  "pre_repair_classification_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_baseline_inconclusive_cause_read_only_v0_20260710T110612Z",
+  "pre_repair_classification_evidence_dir": "runtime_evidence/20260520T161443Z/research/classify_ehlers_cycle_filter_v1_baseline_inconclusive_cause_read_only_v0_20260710T110612Z",
   "pre_repair_classification_timestamp": "20260710T110612Z",
   "primary_cause_class": "SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE",
   "prior_classification_supersession_map": {
     "entries": [
       {
-        "classification_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_baseline_inconclusive_cause_read_only_v0_20260710T110612Z",
+        "classification_bundle": "runtime_evidence/20260520T161443Z/research/classify_ehlers_cycle_filter_v1_baseline_inconclusive_cause_read_only_v0_20260710T110612Z",
         "classification_timestamp": "20260710T110612Z",
         "primary_verdict": "COMBINED_ACCOUNTING_DEFECT_AND_SAMPLE_INSUFFICIENCY",
         "still_authoritative_for_retry": false,
@@ -194,7 +194,7 @@
         "supersession_reason": "DEFECT_REPAIR_REEVALUATION_COMPLETED"
       },
       {
-        "classification_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z",
+        "classification_bundle": "runtime_evidence/20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z",
         "classification_timestamp": "20260710T123447Z",
         "primary_verdict": "SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE",
         "still_authoritative_for_retry": false,
@@ -206,7 +206,7 @@
     "schema_version": "prior_classification_supersession_map.v0"
   },
   "promotion_granted": false,
-  "registration_digest": "f27bef68c1f218899d92427977d50980c933df23ae74cc7a8c033f56a548833a",
+  "registration_digest": "a91bc4166ddcfaf9ee8132d1fa3357ebb9545c56357a94e953e609850f794bcd",
   "research_scope": "ehlers_cycle_filter/v1",
   "retry_allowed_same_binding": false,
   "runtime_authority_touched": false,
@@ -221,7 +221,7 @@
   "selected_distinct_scope": "el_karoui_vol_model/v1",
   "selected_distinct_strategy_id": "el_karoui_vol_model",
   "selected_distinct_strategy_version": "v1",
-  "source_classification_evidence_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z",
+  "source_classification_evidence_dir": "runtime_evidence/20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z",
   "source_classification_manifest_digest": "3be386861653a15b4d4174f4e09be36e9667b116f0f9574bd966371587e6d5b9",
   "source_pr": 5086,
   "spot_allowed": false,

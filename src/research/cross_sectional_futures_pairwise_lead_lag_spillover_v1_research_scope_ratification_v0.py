@@ -7,6 +7,9 @@ runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -56,10 +59,9 @@ NEW_SCORE_FAMILY = "pairwise_spillover_graph_v1"
 MATERIAL_DIFFERENCE_PRIMARY = "dyadic_spillover_graph_vs_panel_median_lagged_return_diffusion"
 
 PARENT_TERMINAL_SCOPE = "cross_sectional_futures_lead_lag_information_diffusion/v0"
-PARENT_TERMINAL_EVIDENCE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_"
-    "evaluation_execution_v0_20260715T030542Z"
+PARENT_TERMINAL_EVIDENCE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z"
 )
 PARENT_TERMINAL_BINDING_DIGEST = "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1"
 

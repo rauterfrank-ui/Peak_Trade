@@ -5,6 +5,9 @@ without OHLCV staging, 399-instrument fallback, or 2024 fixed-horizon fetch. Res
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -67,8 +70,10 @@ TARGET_INSTRUMENT_COUNT = len(CANONICAL_UNIVERSE_BINDING)
 PANEL_DATASET_SCHEMA = "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1"
 
 DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    str(
+        located_runtime_evidence_20260520()
+        / "datasets/okx_self_accumulated_forward_open_interest_archive_v0/production_snapshot"
+    )
 )
 
 AUTHORITY_EFFECT = "NONE"

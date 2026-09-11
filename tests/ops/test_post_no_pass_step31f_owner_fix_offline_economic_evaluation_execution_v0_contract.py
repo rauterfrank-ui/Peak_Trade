@@ -1,6 +1,9 @@
 """Contract tests for post-no-pass STEP31F owner-fix offline economic evaluation execution v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -53,9 +56,7 @@ RUNNER_SCRIPT = (
     REPO_ROOT
     / "scripts/ops/run_post_no_pass_step31f_owner_fix_offline_economic_evaluation_execution_v0.py"
 )
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 def _docs_token_marker(token_name: str) -> str:

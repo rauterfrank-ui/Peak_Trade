@@ -95,7 +95,7 @@
         "value": "backtest_slippage_symmetric_v0"
       },
       "source_feasibility_bundle_ref": {
-        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
+        "ref": "runtime_evidence/20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
         "status": "BOUND"
       },
       "spread_model_version": {
@@ -114,7 +114,7 @@
       "prior_relative_strength_scope": "cross_sectional_relative_strength/v0",
       "prior_relative_strength_score_family": "volatility_normalized_fixed_lookback_return",
       "same_semantic_binding": false,
-      "source_feasibility_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
+      "source_feasibility_bundle": "runtime_evidence/20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
       "temporal_structure_delta": "single_lookback_momentum vs multi_instrument_information_diffusion_lag",
       "unchanged_retry_blocked": true
     },
@@ -234,7 +234,7 @@
   "binding_classification": "NEW_DISTINCT_HYPOTHESIS_LAG_DIFFUSION_SCORE_FAMILY",
   "binding_digest": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
   "binding_digest_at_terminal_registration": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
-  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
+  "canonical_evaluation_bundle": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z",
   "canonical_evaluation_timestamp": "20260715T030542Z",
   "config_digest": "f939aefbaf2a88bfc77b6c47eac86e8eeabcbfa0f0ca9ef7a804ecdf87464089",
   "cost_execution_binding": {
@@ -328,7 +328,7 @@
         "to": "binding_digest"
       },
       {
-        "from": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
+        "from": "runtime_evidence/20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
         "to": "material_difference_digest"
       }
     ],
@@ -337,7 +337,7 @@
   "directional_candidate_count": 30,
   "directional_confirmed_count": 0,
   "distinct_scope_required": true,
-  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5197_merge_closeout_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_authorization_ratification_repair_v0_20260715T030215Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_operator_ratification_and_lead_lag_scope_ratification_v0_20260715T021447Z (MANIFEST_VERIFY_RC=0)",
+  "durable_evidence_refs": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0); runtime_evidence/20260520T161443Z/research/pr5197_merge_closeout_cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_authorization_ratification_repair_v0_20260715T030215Z (MANIFEST_VERIFY_RC=0); runtime_evidence/20260520T161443Z/research/cross_sectional_open_interest_zscore_reversion_v0_terminal_insufficient_sample_operator_ratification_and_lead_lag_scope_ratification_v0_20260715T021447Z (MANIFEST_VERIFY_RC=0)",
   "economic_and_robustness_contract": {
     "binding_version": "v0",
     "economic_policy_binding": {
@@ -369,7 +369,7 @@
   "economic_evaluation_status": "COMPLETE_FAIL_INSUFFICIENT_SAMPLE",
   "economic_validity_offline_gate_pass": false,
   "economic_viability_evidence_manifest_digest": "19b7bd182e27e143816c084555d29aca68b960e5807596a33bad4daaae34b4ce",
-  "economic_viability_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0)",
+  "economic_viability_evidence_ref": "runtime_evidence/20260520T161443Z/research/cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0_20260715T030542Z (MANIFEST_VERIFY_RC=0)",
   "evaluation_authorized": false,
   "historical_economic_result": "FAIL",
   "hypothesis_class": "CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION",
@@ -389,7 +389,7 @@
     "prior_relative_strength_scope": "cross_sectional_relative_strength/v0",
     "prior_relative_strength_score_family": "volatility_normalized_fixed_lookback_return",
     "same_semantic_binding": false,
-    "source_feasibility_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
+    "source_feasibility_bundle": "runtime_evidence/20260520T161443Z/planning/cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_dataset_feasibility_read_only_v0_20260712T195800Z",
     "temporal_structure_delta": "single_lookback_momentum vs multi_instrument_information_diffusion_lag",
     "unchanged_retry_blocked": true
   },

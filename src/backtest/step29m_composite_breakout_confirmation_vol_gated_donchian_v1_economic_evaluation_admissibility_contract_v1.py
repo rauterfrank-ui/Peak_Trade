@@ -8,6 +8,9 @@ readiness. No economic evaluation execution.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from dataclasses import dataclass
@@ -113,26 +116,21 @@ THRESHOLD_RELAXATION_ALLOWED = False
 DATASET_SUBSTITUTION_ALLOWED = False
 PERIOD_SUBSTITUTION_ALLOWED = False
 
-ARCHITECTURE_RATIFICATION_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
-    "architecture_ratification_and_binding_v0_20260702T183549Z"
+ARCHITECTURE_RATIFICATION_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_architecture_ratification_and_binding_v0_20260702T183549Z"
 )
-OFFLINE_EVALUATION_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
-    "offline_economic_validity_evaluation_v0_20260702T185926Z"
+OFFLINE_EVALUATION_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_offline_economic_validity_evaluation_v0_20260702T185926Z"
 )
-ECONOMIC_EVALUATION_MERGE_CLOSEOUT_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
-    "economic_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T191014Z"
+ECONOMIC_EVALUATION_MERGE_CLOSEOUT_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_economic_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T191014Z"
 )
-FAILURE_DECOMPOSITION_EVIDENCE_REF = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
-    "economic_validity_failure_decomposition_and_research_disposition_read_only_v0_"
-    "20260702T211530Z"
+FAILURE_DECOMPOSITION_EVIDENCE_REF = str(
+    located_runtime_evidence_20260520()
+    / "analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_economic_validity_failure_decomposition_and_research_disposition_read_only_v0_20260702T211530Z"
 )
 
 STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS_V1: tuple[str, ...] = (

@@ -7,6 +7,9 @@ No economic evaluation execution is performed.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -48,9 +51,7 @@ from src.research.cross_sectional_funding_rate_carry_v0_bound_panel_dataset_mate
 
 CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
-DEFAULT_DURABLE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_DURABLE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 def _die(msg: str, code: int = 2) -> None:

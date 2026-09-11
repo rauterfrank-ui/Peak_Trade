@@ -1,6 +1,9 @@
 """Tests for Path-B Testnet read-only connectivity adapter v1 (fake fetcher only)."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import io
@@ -21,7 +24,7 @@ HARNESS_SCRIPT = ROOT / "scripts" / "ops" / "archive_futures_testnet_harness_v0.
 APPROVAL_FIXTURE = (
     ROOT / "tests" / "fixtures" / "ops" / "testnet_path_b_read_only_connectivity_approval_sample.md"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 
 
 class _FakeFetcher:

@@ -123,8 +123,8 @@ in test serialization.
 Source and sidecar remain outside the git index. Local tests require:
 
 ```text
-SOURCE=/Users/frnkhrz/Documents/Peak_Trade/forensics/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
-SIDECAR=/Users/frnkhrz/Documents/Peak_Trade/forensics/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json
+SOURCE=$PEAK_TRADE_DATA_ARCHIVE_ROOT/forensics/documents_peak_trade/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+SIDECAR=$PEAK_TRADE_DATA_ARCHIVE_ROOT/forensics/documents_peak_trade/derived/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.structure-v1.json
 ```
 
 CI without those files skips bound integration tests and still runs

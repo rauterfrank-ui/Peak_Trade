@@ -1,6 +1,9 @@
 """Contract tests for OKX Historical Funding Archive ingest and missing policy v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import io
 import zipfile
@@ -73,14 +76,16 @@ SOL-USDT-SWAP,0.0000456789012345,1714608000000
 SOL-USDT-SWAP,0.0000567890123456,1714636800000
 """
 PROBE_ETH_ZIP = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "probes/okx_historical_funding_archive_probe_v0_20260703T160811Z/"
-    "raw/ETH-USDT_ETH-USDT-SWAP-fundingrates-2024-05.zip"
+    str(
+        located_runtime_evidence_20260520()
+        / "probes/okx_historical_funding_archive_probe_v0_20260703T160811Z/raw/ETH-USDT_ETH-USDT-SWAP-fundingrates-2024-05.zip"
+    )
 )
 PROBE_SOL_ZIP = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "probes/okx_historical_funding_archive_probe_v0_20260703T160811Z/"
-    "raw/SOL-USDT_SOL-USDT-SWAP-fundingrates-2024-05.zip"
+    str(
+        located_runtime_evidence_20260520()
+        / "probes/okx_historical_funding_archive_probe_v0_20260703T160811Z/raw/SOL-USDT_SOL-USDT-SWAP-fundingrates-2024-05.zip"
+    )
 )
 
 

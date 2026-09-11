@@ -2,6 +2,9 @@
 """Generate manifest-verified evidence for volatility_estimate source persistence v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -19,9 +22,7 @@ from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.trading.master_v2 import canonical_volatility_estimate_feature_contract_v1 as vol_contract
 from src.trading.master_v2 import canonical_volatility_estimate_materializer_v1 as materializer
 
-DEFAULT_ARCHIVE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE = Path(str(located_runtime_evidence_20260520()))
 SOURCE_EVIDENCE = (
     DEFAULT_ARCHIVE
     / "research/pr5148_merge_closeout_canonical_volatility_estimate_feature_contract_v1_20260713T043411Z"

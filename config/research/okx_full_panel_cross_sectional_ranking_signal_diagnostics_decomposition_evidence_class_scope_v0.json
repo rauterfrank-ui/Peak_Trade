@@ -82,7 +82,7 @@
   "scope_id": "okx_full_panel_cross_sectional_ranking_signal_diagnostics_decomposition_evidence_class_scope_v0",
   "scope_version": "v0",
   "shadow_authorized": false,
-  "source_autopsy_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_strategy_archetype_failure_attribution_economic_autopsy_read_only_v0_20260705T020905Z",
+  "source_autopsy_bundle": "runtime_evidence/20260520T161443Z/okx_full_panel_cross_sectional_ranking_strategy_archetype_failure_attribution_economic_autopsy_read_only_v0_20260705T020905Z",
   "source_autopsy_manifest_verify_rc": 0,
   "source_autopsy_verdict": "FAILURE_ATTRIBUTION_COMPLETE — TERMINAL_NEGATIVE_EVIDENCE_EXPLAINED",
   "source_governance_closeout_pr": 4853,

@@ -8,7 +8,7 @@
   ],
   "evidence_class_id": "POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0",
   "execution_go_token": "GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0",
-  "durable_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
+  "durable_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_v4_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T040339Z",
   "economic_validity_offline_gate_pass": false,
   "execution_completed_at_utc": "2026-07-06T04:08:26Z",
   "execution_performed": true,

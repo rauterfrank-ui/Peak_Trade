@@ -6,6 +6,9 @@ does not ratify versioned bindings, and does not touch runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -49,13 +52,13 @@ STRATEGY_ID = "cross_sectional_funding_rate_persistence_reversal_filter"
 STRATEGY_VERSION = "v0"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_FUNDING_RATE_PERSISTENCE_REVERSAL_FILTER_NON_BITCOIN_PERPETUALS_V0"
 
-PARENT_TERMINAL_SCOPE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "rank_delta_v0_terminal_negative_evidence_and_next_scope_boundary_20260706T154311Z"
+PARENT_TERMINAL_SCOPE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/rank_delta_v0_terminal_negative_evidence_and_next_scope_boundary_20260706T154311Z"
 )
-PARENT_RANK_DELTA_V0_EVALUATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "rank_delta_v0_offline_economic_evaluation_20260706T153949Z"
+PARENT_RANK_DELTA_V0_EVALUATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/rank_delta_v0_offline_economic_evaluation_20260706T153949Z"
 )
 TERMINALIZED_PARENT_STRATEGY = "cross_sectional_funding_rate_rank_delta/v0"
 

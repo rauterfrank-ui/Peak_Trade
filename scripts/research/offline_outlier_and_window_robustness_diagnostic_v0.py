@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -37,20 +40,19 @@ RUNTIME_EFFECT = "NONE"
 SCOPE = "OUTLIER_AND_WINDOW_ROBUSTNESS_DIAGNOSTIC_V0"
 CANONICAL_ENTRY_POINT = "scripts/research/offline_outlier_and_window_robustness_diagnostic_v0.py"
 
-DEFAULT_SOURCE_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/read_only_post_drift_terminal_fail_next_economic_scope_discovery_v0_20260714T151907Z"
+DEFAULT_SOURCE_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/read_only_post_drift_terminal_fail_next_economic_scope_discovery_v0_20260714T151907Z"
 )
 
-DEFAULT_DRIFT_EVIDENCE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/offline_rolling_linear_drift_interpretation_reevaluation_v0_20260714T151318Z"
+DEFAULT_DRIFT_EVIDENCE = str(
+    located_runtime_evidence_20260520()
+    / "research/offline_rolling_linear_drift_interpretation_reevaluation_v0_20260714T151318Z"
 )
 
-DEFAULT_SIGNAL_MATRIX = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z/"
-    "productive_signal_matrix_materialization/signal_matrix.jsonl"
+DEFAULT_SIGNAL_MATRIX = str(
+    located_runtime_evidence_20260520()
+    / "research/offline_parameter_sensitivity_surface_v0_reevaluation_20260714T140501Z/productive_signal_matrix_materialization/signal_matrix.jsonl"
 )
 
 

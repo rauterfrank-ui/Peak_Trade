@@ -1,6 +1,9 @@
 """Static contract: bounded Master V2 testnet completion path wiring v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import importlib.util
 import sys
@@ -197,9 +200,7 @@ def test_adapter_plan_includes_completion_path_wiring_section() -> None:
     plan = mod.build_plan(
         mode="plan-only",
         staging_root=Path("/tmp/peak_trade_testnet_wiring_plan"),
-        archive_root=Path(
-            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-        ),
+        archive_root=Path(str(located_runtime_evidence_20260520())),
         repo_root=REPO_ROOT,
         duration_minutes=10,
         max_steps=120,
@@ -220,7 +221,7 @@ def test_adapter_plan_json_emits_wiring_metadata(tmp_path: Path) -> None:
         "--staging-root",
         str(staging),
         "--archive-root",
-        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+        str(located_runtime_evidence_20260520()),
         "--repo-root",
         str(REPO_ROOT),
         "--run-id",

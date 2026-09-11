@@ -5,6 +5,9 @@ point-in-time OI level ranking hypothesis. Research-only; no runtime or authorit
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -95,9 +98,7 @@ PRIOR_BINDING_DIGEST = "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6
 PRIOR_FEATURE = "delta_or_change_in_open_interest"
 NEW_FEATURE = "point_in_time_open_interest_level"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PRIOR_TERMINAL_BASELINE_REF = (
     DURABLE_ARCHIVE_ROOT
     / "research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_"

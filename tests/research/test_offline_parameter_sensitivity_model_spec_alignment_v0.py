@@ -1,6 +1,9 @@
 """Regression tests for offline parameter sensitivity model spec alignment v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import math
@@ -41,7 +44,7 @@ from src.research.offline_parameter_sensitivity_productive_input_join_materializ
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SENSITIVITY_MODULE = REPO_ROOT / "src/research/linear_evidence/sensitivity.py"
 FITTER_MODULE = REPO_ROOT / "src/research/linear_evidence/fitters.py"
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 STAGING_ROOT = (
     ARCHIVE_ROOT / "datasets/admissible_futures/"
     "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/"

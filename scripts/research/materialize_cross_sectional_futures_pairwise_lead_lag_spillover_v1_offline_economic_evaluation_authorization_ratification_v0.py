@@ -2,6 +2,9 @@
 """Materialize pairwise spillover v1 offline economic evaluation authorization ratification."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import json
@@ -56,9 +59,7 @@ from src.research.cross_sectional_futures_pairwise_lead_lag_spillover_v1_version
 OUTPUT_PREFIX = (
     "cross_sectional_futures_pairwise_lead_lag_spillover_v1_updated_authorization_ratification_v0"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 FOCUSED_TEST = (
     "tests/research/"
     "test_cross_sectional_futures_pairwise_lead_lag_spillover_v1_offline_economic_"

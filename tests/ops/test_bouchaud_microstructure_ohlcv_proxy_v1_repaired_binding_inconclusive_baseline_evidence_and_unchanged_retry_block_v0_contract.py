@@ -1,6 +1,9 @@
 """Contract tests for bouchaud OHLCV proxy v1 inconclusive baseline adjudication registration v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    archive_relative_locator,
+)
 
 import json
 import re
@@ -177,7 +180,10 @@ class TestInconclusiveRegistrationConfig:
         assert payload["profit_factor"] == PROFIT_FACTOR
         assert tuple(payload["primary_reason_codes"]) == PRIMARY_REASON_CODES
         assert payload["pre_merge_origin_main"] == PRE_MERGE_ORIGIN_MAIN
-        assert str(CANONICAL_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in payload["canonical_evaluation_bundle"]
+        )
         assert payload["registration_digest"] == compute_registration_digest(payload)
 
     def test_canonical_serialization_stable(self) -> None:
@@ -203,7 +209,10 @@ class TestInconclusiveVersionedBinding:
         assert binding["robustness_evidence_missing"] is True
         assert binding["old_binding_digest_at_prior_failed_attempt"] == OLD_BINDING_DIGEST
         assert binding["canonical_evaluation_timestamp"] == CANONICAL_EVALUATION_TIMESTAMP
-        assert str(CANONICAL_EVALUATION_DIR) in binding["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            in binding["canonical_evaluation_bundle"]
+        )
         assert binding["economic_viability_evidence_manifest_digest"] == CANONICAL_MANIFEST_DIGEST
         assert (
             apply_versioned_binding_registration_fields(binding, registration)["baseline_verdict"]
@@ -235,7 +244,10 @@ class TestExistingReevaluationRegistration:
         payload = json.loads(REGISTRATION_CONFIG.read_text(encoding="utf-8"))
         assert payload["no_economic_reevaluation"] is True
         assert payload["canonical_evaluation_timestamp"] == "20260710T180542Z"
-        assert str(CANONICAL_EVALUATION_DIR) == payload["canonical_evaluation_bundle"]
+        assert (
+            archive_relative_locator(CANONICAL_EVALUATION_DIR)
+            == payload["canonical_evaluation_bundle"]
+        )
 
 
 class TestHistoricalEvidencePreserved:

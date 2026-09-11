@@ -2,6 +2,9 @@
 """Collect durable evidence for Surface P full bar-sequence 4-way parity completion v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -12,7 +15,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 BASE_HEAD = "ed5adb7ad5042c531d52a77f99c99996aaa61e72"
 PREVIOUS_REASSESSMENT_EVIDENCE = (
     ARCHIVE_ROOT

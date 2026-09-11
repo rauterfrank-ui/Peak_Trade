@@ -5,6 +5,9 @@ canonical PIT OHLCV cross-sectional panel. Research-only; no runtime or authorit
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -128,9 +131,7 @@ RANKING_FORMULA = "rank_by_panel_median_lagged_return_diffusion_v0"
 RANKING_DIRECTION = "symmetric_top1_long_laggard_short_leader_v0"
 DETERMINISTIC_TIE_BREAK = "score_desc_then_instrument_id_asc"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_FEASIBILITY_BUNDLE = (
     DURABLE_ARCHIVE_ROOT / "planning/"
     "cross_sectional_futures_lead_lag_information_diffusion_v0_contract_and_"

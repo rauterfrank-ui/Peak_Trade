@@ -31,5 +31,5 @@
   "fleet_verdict": "FLEET_ECONOMIC_VALIDITY_FAIL",
   "fleet_status": "FAIL",
   "economic_validity_offline_gate_pass": false,
-  "durable_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z"
+  "durable_evidence_ref": "runtime_evidence/20260520T161443Z/implementation/post_pr4895_versioned_fleet_offline_economic_evaluation_execution_v0_20260706T022228Z"
 }

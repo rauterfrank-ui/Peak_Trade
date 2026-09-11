@@ -1,6 +1,9 @@
 """Contract tests for bollinger/momentum v2 stop_pct binding surface correction v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 from pathlib import Path
@@ -26,9 +29,10 @@ BINDING_CONFIG = (
     REPO_ROOT / "config/research/post_pr4921_versioned_research_bindings_no_eval_v0.json"
 )
 PARENT_REVIEW_BUNDLE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/offline_economic_validity_evidence_and_binding_parameter_gap_decomposition_"
-    "bollinger_momentum_v2_20260706T125607Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "research/offline_economic_validity_evidence_and_binding_parameter_gap_decomposition_bollinger_momentum_v2_20260706T125607Z"
+    )
 )
 BOLLINGER_TEMPLATE = (
     REPO_ROOT

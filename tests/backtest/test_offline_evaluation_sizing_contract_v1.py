@@ -1,6 +1,9 @@
 """Contract tests for offline evaluation sizing contract v1 (STEP 29M)."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import copy
 import json
@@ -45,17 +48,22 @@ V3_CONFIG = (
 )
 PROGRESS_REGISTRY = REPO_ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 MACD_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z"
+    )
 )
 ROOT_CAUSE_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning_or_validation/"
-    "step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "planning_or_validation/step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z"
+    )
 )
 V2_EVIDENCE = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
+    str(
+        located_runtime_evidence_20260520()
+        / "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
+    )
 )
 EXPECTED_CONFIG_V2_DIGEST = "8d160444d855b39d08231858fd325415ace8d9cceaa93f5215f7d9ca76b277f9"
 EXPECTED_CONFIG_V3_DIGEST = "ceabf0206a35bb5cc0f3ced4bf8fb19f18139ace59fd56a90529f79607ac9d7c"

@@ -6,6 +6,9 @@ does not ratify versioned bindings, and does not touch runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -49,14 +52,13 @@ STRATEGY_ID = "cross_sectional_funding_rate_dispersion_zscore_reversion"
 STRATEGY_VERSION = "v0"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_FUNDING_RATE_DISPERSION_ZSCORE_REVERSION_NON_BITCOIN_PERPETUALS_V0"
 
-PARENT_TERMINAL_SCOPE_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
-    "pr4934_persistence_reversal_filter_v0_negative_evidence_merge_closeout_20260706T164420Z"
+PARENT_TERMINAL_SCOPE_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "implementation/pr4934_persistence_reversal_filter_v0_negative_evidence_merge_closeout_20260706T164420Z"
 )
-PARENT_PERSISTENCE_REVERSAL_V0_EVALUATION_BUNDLE = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
-    "funding_persistence_reversal_filter_v0_binding_ratification_and_offline_economic_evaluation_"
-    "20260706T163653Z"
+PARENT_PERSISTENCE_REVERSAL_V0_EVALUATION_BUNDLE = str(
+    located_runtime_evidence_20260520()
+    / "research/funding_persistence_reversal_filter_v0_binding_ratification_and_offline_economic_evaluation_20260706T163653Z"
 )
 TERMINALIZED_PARENT_STRATEGY = "cross_sectional_funding_rate_persistence_reversal_filter/v0"
 TERMINALIZED_PARENT_BINDING_DIGEST = (

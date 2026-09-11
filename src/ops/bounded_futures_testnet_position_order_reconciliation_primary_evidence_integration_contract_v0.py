@@ -7,6 +7,9 @@ evidence persistence, or authority lift.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -1275,7 +1278,7 @@ def _default_manifest_entries(
 
 def default_minimal_primary_evidence_binding(
     *,
-    durable_archive_root: str = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+    durable_archive_root: str = str(located_runtime_evidence_20260520()),
     archive_identity: str = "bounded_futures_testnet_reconciliation_proof/offline-v0",
     manifest_entries: tuple[ManifestEntry, ...] | None = None,
 ) -> PrimaryEvidenceBindingInput:

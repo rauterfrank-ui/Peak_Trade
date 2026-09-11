@@ -6,6 +6,9 @@ no backtest, walk-forward, Monte Carlo, stress, or runtime authority.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import argparse
 import hashlib
@@ -42,9 +45,7 @@ DEFAULT_DOC = (
     _REPO_ROOT
     / "docs/governance/FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_POST_PR4937_V0.md"
 )
-DEFAULT_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DEFAULT_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 OUTPUT_PREFIX = "final_research_fleet_bindings_and_offline_eval_scope_ratification"
 PARENT_CLOSEOUT_SUFFIX = (
     "pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z"

@@ -1,6 +1,9 @@
 """Static contract tests for primary evidence retention invariant v0 (offline, no runtime)."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import shutil
 from pathlib import Path
@@ -52,9 +55,9 @@ PE6_CYBER_ER_CROSSLINK_MARKERS: tuple[str, ...] = (
 _MARKER_TRUE = "=true"
 ER_RELEASE_RC_INDEX_HEADING = "### Evidence Durable Closeout Retention RC v0 — index v0"
 ER_RELEASE_RC_BLOCK_ANCHOR = "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0=true"
-ER_PLANNING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/evidence_durable_closeout_retention_rc_v0_planning_20260602T180921Z/"
+ER_PLANNING_BUNDLE_PATH = str(
+    located_runtime_evidence_20260520()
+    / "planning/evidence_durable_closeout_retention_rc_v0_planning_20260602T180921Z/"
 )
 MANDATORY_CLOSEOUT_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_mandatory_durable_closeout_contract_v0.py"
@@ -1003,17 +1006,17 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er2_guard_owner_crossli
     assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.is_file()
 
 
-EER1_PLANNING_BUNDLE_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "planning/next_larger_release_candidate_after_cv3_plus_core_complete_v0_20260603T033708Z/"
+EER1_PLANNING_BUNDLE_PATH = str(
+    located_runtime_evidence_20260520()
+    / "planning/next_larger_release_candidate_after_cv3_plus_core_complete_v0_20260603T033708Z/"
 )
-EER1_CV3_PLUS_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/cybersecurity_defensive_visibility_cv3_plus_rc_v0_core_complete_after_cv3c_v0_20260603T033708Z/"
+EER1_CV3_PLUS_CLOSEOUT_PATH = str(
+    located_runtime_evidence_20260520()
+    / "closeout/cybersecurity_defensive_visibility_cv3_plus_rc_v0_core_complete_after_cv3c_v0_20260603T033708Z/"
 )
-EER1_PE_CLOSEOUT_PATH = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "closeout/primary_evidence_run_completion_contract_rc_v0_core_complete_after_pe6_v0_20260603T031800Z/"
+EER1_PE_CLOSEOUT_PATH = str(
+    located_runtime_evidence_20260520()
+    / "closeout/primary_evidence_run_completion_contract_rc_v0_core_complete_after_pe6_v0_20260603T031800Z/"
 )
 EER1_CI_INDEX_HEADING = "## Evidence Durable Enforcement Readiness Review RC v0 — index v0"
 EER1_PREFLIGHT_CROSSLINK_HEADING = (

@@ -7,6 +7,9 @@ has no runtime or authority effect.
 """
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import hashlib
 import json
@@ -162,9 +165,7 @@ REASON_AUTHORIZATION_RATIFICATION_STALE = "AUTHORIZATION_RATIFICATION_STALE"
 REASON_PORTFOLIO_BINDING_REFERENCE_MISSING = "PORTFOLIO_BINDING_REFERENCE_MISSING"
 REASON_SUPERSESSION_MODE_MISMATCH = "SUPERSESSION_MODE_MISMATCH"
 
-DURABLE_ARCHIVE_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+DURABLE_ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 SOURCE_HYPOTHESIS_BINDING_BUNDLE = (
     DURABLE_ARCHIVE_ROOT
     / "research/cross_sectional_futures_pairwise_lead_lag_spillover_v1_versioned_hypothesis_"

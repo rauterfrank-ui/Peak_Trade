@@ -1,6 +1,9 @@
 """Contract tests for post-PR4941 material-different research scope discovery prep v0."""
 
 from __future__ import annotations
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
 
 import json
 import re
@@ -46,7 +49,7 @@ SCOPE_SCRIPT = (
 EVIDENCE_CLASS_ID = (
     "POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0"
 )
-ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+ARCHIVE_ROOT = Path(str(located_runtime_evidence_20260520()))
 PR4939_CLOSEOUT_DIR = (
     ARCHIVE_ROOT
     / "research/pr4939_final_research_fleet_negative_evidence_terminalization_merge_closeout_20260706T181802Z"
