@@ -71,6 +71,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -91,8 +92,12 @@ entities:
       Live flatten, alias split, or auto-trip wiring. AUTH-001 remains
       decided existing repo semantics: Armstrong Cycle V1 is not an
       active catalog member and not a bindable active identity;
-      El-Karoui independent surfaces stay preserved. Atlas is not
-      canonical authority.
+      El-Karoui independent surfaces stay preserved. Section 4.5.6
+      records AS05-D01 Owner ratification of isolated POLICY_A
+      unchanged for AUTHORITATIVE_NEXT_ACTIVE_SET without transferring
+      Active-Set ownership, without closing PDF Step 5, and without
+      runtime, Live, or Cap-2.3 rewire. Atlas is not canonical
+      authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
     kind: NAVIGATION_INDEX
@@ -101,6 +106,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
@@ -295,6 +301,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MF_SELECTION_AND_ANTI_CHURN_SEMANTICS_CONTRACT_V1.md
@@ -352,7 +359,10 @@ entities:
       §1.20. Isolated MF target is complete. Productive integration
       remains incomplete.
       RUNTIME_AUTHORIZED remains false. No second ranker.
-      No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed. Atlas is
+      No Atlas edge to Cap 2.3 or Cap 2.4. G13 remains closed.
+      AS05-D01 close is owned by
+      CONTRACT:mf_authoritative_next_active_set_ownership_v1; this
+      catalog note is a pointer only and is not that close. Atlas is
       not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:mf_ranking_universe_and_single_egress_boundary_v1
@@ -445,6 +455,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MF_AUTHORITATIVE_NEXT_ACTIVE_SET_OWNERSHIP_CONTRACT_V1.md
@@ -458,17 +469,21 @@ entities:
       Set inside the ranking/selection domain. PDF Step 4 anti-churn
       census is CLOSED as inventory only
       (CENSUS_CLASS=INVENTORY_ONLY_NO_POLICY_CHOICE). Census close is
-      not policy ratification and is not POLICY_A adoption. PDF Step 5
-      remains UNRESOLVED. Owner decision surface is
-      PREPARED_NOT_RATIFIED with three open decisions and is not
-      policy ratification. Owner is
+      not policy ratification. AS05-D01 is CLOSED as
+      ADOPT_POLICY_A_UNCHANGED_FOR_ACTIVE_SET: isolated POLICY_A is
+      adopted unchanged as Active Set admission policy only.
+      POLICY_REUSE_DOES_NOT_TRANSFER_AUTHORITY=true. Selector does not
+      become Active Set owner. Execution does not become Active Set
+      owner. PDF Step 5 remains UNRESOLVED. AS05-D02 and AS05-D03
+      remain UNRESOLVED. Owner remains
       ops.mf_membership_rotation_controller_v1. Rotation policy remains
       fail-closed until PDF Step 5. Isolated POLICY_A is not automatic
-      Active Set policy. ACTIVE_SET_POLICY_ADOPTION=UNPROVEN. Envelope
-      schema is not promoted. Consumer remains UNBOUND. No host join.
-      No Cap 2.3 or Cap 2.4 rewire. G13 remains closed. Atlas is not
-      runtime authority. ATLAS_AUTHORITY=NONE. No Atlas edge to Cap 2.3
-      or Cap 2.4.
+      Active Set policy; D01 is an explicit Owner bind, not a leak.
+      Envelope schema is not promoted. Consumer remains UNBOUND. No
+      host join. No Cap 2.3 or Cap 2.4 rewire. G13 remains closed.
+      RUNTIME_AUTHORIZED remains false. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE. No Atlas edge to Cap 2.3 or
+      Cap 2.4.
 
   - id: CAPABILITY:cap_2_3_single_selected_future
     kind: CAPABILITY
