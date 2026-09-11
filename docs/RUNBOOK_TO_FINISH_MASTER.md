@@ -36,9 +36,11 @@ Du willst verhindern, dass „Finish“ diffus bleibt. Nutze **genau eine** Defi
    **Finish = Finish‑A/B/C Tracks vollständig; C endet in „Controlled Readiness“ (ohne Live-Freischaltung).**
 
 ### SSoT-Place (wähle 1 Datei)
-- [INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md) (wenn bereits „Roadmap-Snapshot“ enthält)
+- [Canonical Master Runbook](runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) (current semantic authority; not a Live unlock)
+- [Installation Quickstart](INSTALLATION_QUICKSTART.md) (current install navigation)
 - oder [PEAK_TRADE_STATUS_OVERVIEW.md](PEAK_TRADE_STATUS_OVERVIEW.md) (falls vorhanden)
 - oder [WORKFLOW_FRONTDOOR.md](WORKFLOW_FRONTDOOR.md) (wenn du es als Frontdoor führst)
+- Historical install/roadmap snapshot only: [archive original](ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 
 **Acceptance:** In SSoT steht 1 Satz „Finish = …“ + Link auf dieses Runbook + Link auf D2/D3/D4 Runbooks.
 

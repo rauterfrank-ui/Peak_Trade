@@ -60,10 +60,13 @@
 
 ---
 
-### Installation & Setup (2026-ready)
+### Installation & Setup
 
-- [Vollständiger Installation-&-Roadmap-Snapshot (2026-01-12)](../INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12.md)
-- [Installation Quickstart](./INSTALLATION_QUICKSTART.md)
+- [Installation Quickstart](./INSTALLATION_QUICKSTART.md) — current bootstrap / canonical launcher entry
+- [README Schnelleinstieg](../README.md)
+- [Getting Started](./GETTING_STARTED.md)
+- [Python Runtime Contract](./runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
+- Historical 2026-01-12 install/roadmap snapshot (not current authority): [archive original](./ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
 
 ---
 
