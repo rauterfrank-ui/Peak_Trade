@@ -9,7 +9,9 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: Offline Core-to-Live composition root inventory plus Full-Core productive
-  Live-path identity and live-admission gap DAG. Canary / §11.14 remain
+  Live-path identity and live-admission gap DAG. 11.2.1.R persist records
+  ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED;
+  MAPPING_PROVEN=false; no equity value binding. Canary / §11.14 remain
   evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 changed_entities:
 - ACRONYM:C1
