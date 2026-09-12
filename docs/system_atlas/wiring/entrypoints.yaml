@@ -63,7 +63,8 @@ entrypoints:
       11.2.1.Q joins STEP-29P risk claim at halt without constructing a port.
       11.2.1.R does not bind typed equity and does not join LIVE_ACCOUNT_BOUND
       into the 29P claim.       11.2.1.S likewise does not bind typed equity and
-      does not join LIVE_ACCOUNT_BOUND into the 29P claim. 11.2.1.T
+      does not join LIVE_ACCOUNT_BOUND into the 29P claim.       11.2.1.T
       ratifies P01/U01-U09 policy semantics only and still does not bind
-      typed equity. Still no LiveExecutionPort construction.
+      typed equity. 11.2.1.U ratifies future architecture classes only and still
+      does not bind typed equity. Still no LiveExecutionPort construction.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.

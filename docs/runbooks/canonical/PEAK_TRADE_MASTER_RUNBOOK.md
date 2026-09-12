@@ -10852,6 +10852,222 @@ CURRENT_CANONICAL_SECTION=11.2.1.T.FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RAT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Future authority-architecture remaining after §11.2.1.T is superseded by
+§11.2.1.U. Policy-semantics pins, mapping-unproven pins, GET-pack facts,
+standing Live flags, and the forbidden-field set remain as bound in §11.2.1.T.
+Historical `EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`
+in this section is not rewritten.
+
+### 11.2.1.U FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION (BOUND; FUTURE ARCHITECTURE ONLY; NO SOURCE; NO OWNER ASSIGN; NO VALUE BINDING; NO PRODUCER IMPLEMENTATION; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.T policy semantics P01/U01–U09. Does **not**
+rewrite §11.2.1.S census, candidate reject reasons, or
+`ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE`. Does **not** rewrite
+§11.2.1.R or §11.2.1.Q standing-gate values, GET-pack facts, Capital Admission mathematics,
+§11.2.2 Treasury contracts, §11.13.5 canary facts, or §11.14 ladder fields. Does **not**
+select a source. Does **not** assign `ACCOUNT_EQUITY_AUTHORITY_OWNER`. Does **not** bind
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field or internal object.
+Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` / `availBal` / `cashBal`.
+Does **not** revive C01–C16. Does **not** construct a governed productive equity producer.
+Does **not** implement source adapters. Does **not** implement runtime value binding.
+Does **not** execute the LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not**
+construct `LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set
+`LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`. Does **not** lift Cap 11.1.
+Does **not** join Cap 7.2 to LiveExecutionPort. Does **not** set `STEP_29P_RISK_ADMISSIBLE=true`.
+Cap 22 / MF-WP3 remains PARKED. DDO/Learning have no Trading/Risk/Selection/Execution authority.
+Cap 2.3 remains sole productive Selection owner.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1`
+authorizes persist of the future normative authority architecture for
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`. Future class ratification is not productive
+runtime presence and is not owner assignment. It does **not** authorize source selection,
+owner assignment, producer implementation, source adapters, value binding, Live arming,
+or Cap 11.1 construction.
+
+``` text
+OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.U.FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION
+CURRENT_PHASE=11.2.1.U.FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER=true
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE=UNRESOLVED
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+RUNTIME_VALUE_BINDING_PRESENT=false
+RUNTIME_VALUE_BINDING_IMPLEMENTED=false
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+SOURCE_CANDIDATE_COUNT=16
+C01_C16_REMAIN_REJECTED=true
+SEMANTIC_REQUIREMENTS_COMPLETE=true
+POLICY_SEMANTICS_COMPLETE=true
+ARCHITECTURE_RATIFIED=true
+FUTURE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS=GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+FUTURE_GOVERNED_SOURCE_OBJECT_CLASS=GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1
+FUTURE_PRODUCER_CLASS=COMPOSITIONAL_RECONSTRUCTION_WITH_WITNESS_RECONCILIATION_V1
+GOVERNED_PRODUCTIVE_SOURCE_PRESENT=false
+GOVERNED_PRODUCER_CREATED=false
+RAW_VENUE_FIELD_AUTHORITY_FORBIDDEN=true
+OBSERVATION_IS_NOT_AUTHORITY=true
+LIVE_ACCOUNT_BOUND_IDENTITY_IS_NOT_CAPITAL_AUTHORITY=true
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT=false
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=true
+OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY=true
+INJECTED_EQUITY_IS_NOT_LIVE_CAPITAL_AUTHORITY=true
+P01_STATUS=DECIDED
+U01_STATUS=DECIDED
+U02_STATUS=DECIDED
+U03_STATUS=DECIDED
+U04_STATUS=DECIDED
+U05_STATUS=DECIDED
+U06_STATUS=DECIDED
+U07_STATUS=DECIDED
+U08_STATUS=DECIDED
+U09_STATUS=DECIDED
+P01_MAY_INCREASE_EQUITY=false
+USD_EQUALS_USDC=false
+U09_FRESHNESS_CLASS=FRESH_GET_PER_PRETRADE_DECISION
+U09_SAME_PRETRADE_EPOCH_REQUIRED=true
+NUMERIC_EQUITY_TTL_SECONDS=5
+U09_COPIES_AVAILABLE_MARGIN_TS_AGE_BOUND=false
+LEARNING_DDO_AUTHORITY_EFFECT=NONE
+RANKING_SELECTION_AUTHORITY_EFFECT=NONE
+CAP23_FINAL_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_AUTHORIZED=false
+CAP72_PRODUCTIVE_PORT=SimulatedExecutionPortV1
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split preserved and now Owner-ratified as future architecture. Observation is not
+authority. Venue-raw fields and venue payloads are Evidence/Witnesses only.
+`availEq` / `totalEq` / `eq` / `adjEq` / `availBal` / `cashBal` remain forbidden as
+direct Source-Authority of this dimension. C01–C16 remain rejected. STEP-29P remains the
+compute / risk-sizing consumer and does not mint equity authority. LIVE_ACCOUNT_BOUND
+proves identity/context only and never mints capital. Account-equity input authority remains
+a separate typed owner and remains `UNRESOLVED`. Future class names are not productive
+runtime presence.
+
+B. Owner-ratified future layering for this dimension:
+
+``` text
+VENUE / RAW_TRANSPORT
+→ OBSERVATION_ADAPTER
+→ NORMALIZATION / RECONCILIATION
+→ GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+→ GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1
+→ LIVE_ACCOUNT_BOUND identity/context join
+→ STEP-29P consumer
+```
+
+`GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1` is the sole future admissible source-object
+class for this dimension once producer, mapping, and binding are separately authorized and
+implemented. It is account-scoped, venue-bound, USDC-settled, immutable/frozen per
+pretrade decision epoch, and is not a venue payload. The producer, when later authorized,
+applies the already-ratified P01/U01–U09 policies. `observation_vs_authority_class=AUTHORITY`
+is admissible only for the minted governed sample. All producer inputs remain OBSERVATION /
+Evidence.
+
+C. Future authority mint conjunction (conceptual; not implemented). Mint only when all hold;
+otherwise FAIL_CLOSED / NO MINT:
+
+``` text
+bound account/venue/tdMode match
+same pretrade decision epoch
+complete classified component inputs
+inclusion semantics known for MTM/hold/liability/fee
+no double count
+P01 reduction-only
+settlement currency USDC
+non-USDC only under separately Owner-ratified conversion contract
+FRESH_GET_PER_PRETRADE_DECISION
+age <= 5s
+restart/reconciliation fresh + same epoch
+no contradiction
+input/source digest frozen
+finite value
+no optimistic fallback semantics
+```
+
+Restart: last snapshot / accounting rebuild / canary / §11.14 reconstruct no authority.
+Only a later fresh same-epoch reconstruction may mint a sample. Restart must not create a
+more optimistic equity state.
+
+D. Future sample provenance must at least carry:
+
+``` text
+dimension_id
+bound_account_identity
+bound_venue_identity
+bound_td_mode
+settlement_currency
+value
+value_semantics
+producer_identity
+authority_contract_ref
+source_revision_or_digest
+input_set_digest
+decision_epoch
+observed_at/as_of
+freshness_max_age
+freshness_policy_status
+restart_reconciliation_status
+component_completeness
+component_provenance
+inclusion_vector
+component_term_vector
+double_count_guards
+currency_conversion_status
+witness_reconciliation_status
+policy_version
+semantic_digest
+sample_id
+observation_vs_authority_class
+```
+
+E. Completing this architecture persist does **not** prove a source exists, does **not**
+prove a mapping, does **not** assign a runtime authority owner, does **not** create a
+governed producer, and does **not** authorize implementation of value binding.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.U.FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

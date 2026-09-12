@@ -111,6 +111,49 @@ DOUBLE_COUNT_CONTROL_U04_HOLD_ONCE = True
 DOUBLE_COUNT_CONTROL_U05_LIABILITY_ONCE = True
 DOUBLE_COUNT_CONTROL_U06_FEE_ONCE = True
 GOVERNED_PRODUCER_CREATED = False
+ARCHITECTURE_RATIFIED = True
+FUTURE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS = (
+    "GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER"
+)
+FUTURE_GOVERNED_SOURCE_OBJECT_CLASS = "GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1"
+FUTURE_PRODUCER_CLASS = "COMPOSITIONAL_RECONSTRUCTION_WITH_WITNESS_RECONCILIATION_V1"
+SOURCE_SELECTED = False
+RUNTIME_VALUE_BINDING_PRESENT = False
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT = False
+GOVERNED_PRODUCTIVE_SOURCE_PRESENT = False
+RAW_VENUE_FIELD_AUTHORITY_FORBIDDEN = True
+OBSERVATION_IS_NOT_AUTHORITY = True
+STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER = True
+LIVE_ACCOUNT_BOUND_IDENTITY_IS_NOT_CAPITAL_AUTHORITY = True
+SAMPLE_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "dimension_id",
+    "bound_account_identity",
+    "bound_venue_identity",
+    "bound_td_mode",
+    "settlement_currency",
+    "value",
+    "value_semantics",
+    "producer_identity",
+    "authority_contract_ref",
+    "source_revision_or_digest",
+    "input_set_digest",
+    "decision_epoch",
+    "observed_at/as_of",
+    "freshness_max_age",
+    "freshness_policy_status",
+    "restart_reconciliation_status",
+    "component_completeness",
+    "component_provenance",
+    "inclusion_vector",
+    "component_term_vector",
+    "double_count_guards",
+    "currency_conversion_status",
+    "witness_reconciliation_status",
+    "policy_version",
+    "semantic_digest",
+    "sample_id",
+    "observation_vs_authority_class",
+)
 LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE = False
 FULL_CORE_OFFLINE_E2E_PROVEN = True
 FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS = "INJECTED_NON_PRODUCTIVE"
