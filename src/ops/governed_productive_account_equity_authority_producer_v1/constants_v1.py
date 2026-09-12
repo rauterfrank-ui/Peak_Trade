@@ -5,7 +5,8 @@ observation contract, typed normalization/inclusion adjudication schema,
 and typed internal reconstruction contract schema, plus typed
 reconstruction algebra contract schema, plus typed P01
 haircut/reserve-depletion term contract schema, plus typed P01
-term-set and unit-class adjudication contract schema. No producer
+term-set and unit-class adjudication contract schema, plus typed P01
+applicability adjudication contract schema. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -63,6 +64,10 @@ P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_TERM_SET_RESOLVED = False
 P01_VALUE_UNIT_CLASS_RESOLVED = False
+P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT = True
+P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_APPLICABILITY_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -283,5 +288,34 @@ P01_TERM_SET_AND_UNIT_CLASS_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_term_set_and_unit_class_contract_authority_effect",
+    "provenance_digest",
+)
+P01_APPLICABILITY_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_applicability_contract_id",
+    "p01_applicability_contract_version",
+    "parent_p01_term_set_and_unit_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "p01_applicability_status",
+    "p01_applicability_resolved_status",
+    "p01_applicability_rule",
+    "p01_applicability_adjudication",
+    "typed_applicability_state",
+    "unknown_is_not_not_applicable",
+    "zero_is_not_not_applicable",
+    "absence_is_not_not_applicable",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "term_set_unresolved_does_not_decide_applicability",
+    "unit_unresolved_does_not_decide_applicability",
+    "rejected_applicability_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_applicability_contract_authority_effect",
     "provenance_digest",
 )
