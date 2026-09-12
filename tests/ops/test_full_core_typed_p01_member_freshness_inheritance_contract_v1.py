@@ -347,7 +347,7 @@ def test_runbook_ai_consumes_go_without_rewriting_ah() -> None:
     assert "DOCS_TOKEN_FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_V1" in spec
     assert "P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED=false" in spec
     assert "P01_MEMBER_FRESHNESS_STATUS=UNPROVEN" in spec
-    assert P01_TERM_SET_RESOLVED is False
+    assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is False
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False

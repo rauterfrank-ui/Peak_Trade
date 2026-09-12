@@ -12,7 +12,8 @@ broader embedding-state adjudication contract schema, plus typed P01
 overlap/equivalence adjudication versus U04 and U05, plus typed P01
 numeric value provenance adjudication, plus typed P01 member freshness
 inheritance adjudication, plus typed P01 haircut/reserve/depletion
-semantics adjudication. No producer implementation. No
+semantics adjudication, plus typed P01 exact member identity
+ratification. No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
 """
@@ -68,8 +69,16 @@ P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED = False
 P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT = True
 P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT = "NONE"
-P01_TERM_SET_RESOLVED = False
+P01_TERM_SET_RESOLVED = True
 P01_VALUE_UNIT_CLASS_RESOLVED = False
+P01_EXACT_MEMBER_IDENTITY_CONTRACT_SCHEMA_PRESENT = True
+P01_EXACT_MEMBER_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_EXACT_MEMBER_IDENTITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_EXACT_MEMBER_IDENTITY_SET = "P01M_GOVERNED_DEPLOYABILITY_CONSERVATISM_REDUCTION"
+P01_EXACT_MEMBER_COUNT = 1
+P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED = False
+P01_ZERO_ABSENCE_NA_RESOLVED = False
+P01_COMBINATION_PRECEDENCE_RESOLVED = False
 P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT = True
 P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
@@ -695,5 +704,70 @@ P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_REQUIRED_FIELDS: tuple[str, ...] = (
     "p01_runtime_instance_present",
     "p01_authority_effect",
     "p01_haircut_reserve_depletion_semantics_contract_authority_effect",
+    "provenance_digest",
+)
+P01_EXACT_MEMBER_IDENTITY_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_exact_member_identity_contract_id",
+    "p01_exact_member_identity_contract_version",
+    "parent_p01_haircut_reserve_depletion_semantics_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "ratification_scope",
+    "p01_term_set_resolved_status",
+    "p01_exact_member_identity_set",
+    "p01_exact_member_count",
+    "member_id",
+    "identity_level_meaning",
+    "identity_is_not_numeric_value",
+    "identity_is_not_operator",
+    "identity_is_not_formula",
+    "identity_is_not_sign",
+    "identity_is_not_unit",
+    "identity_is_not_applicability",
+    "identity_is_not_source",
+    "identity_is_not_producer",
+    "identity_is_not_freshness",
+    "identity_is_not_equity_base_inclusion",
+    "identity_is_not_embedding",
+    "identity_is_not_u04_u05_u06_overlap",
+    "identity_is_not_zero_absence_na",
+    "identity_is_not_combination",
+    "identity_is_not_precedence",
+    "identity_is_not_runtime_binding",
+    "identity_is_not_execution_effect",
+    "p01m_governed_deployability_conservatism_reduction_is_not_haircut_alias",
+    "p01m_governed_deployability_conservatism_reduction_is_not_reserve_alias",
+    "p01m_governed_deployability_conservatism_reduction_is_not_depletion_alias",
+    "p01m_governed_deployability_conservatism_reduction_is_not_u04",
+    "p01m_governed_deployability_conservatism_reduction_is_not_u05",
+    "p01m_governed_deployability_conservatism_reduction_is_not_u06",
+    "p01m_governed_deployability_conservatism_reduction_is_not_venue_raw",
+    "p01m_governed_deployability_conservatism_reduction_is_not_availeq",
+    "p01m_governed_deployability_conservatism_reduction_is_not_eq",
+    "p01m_governed_deployability_conservatism_reduction_is_not_totaleq",
+    "p01m_governed_deployability_conservatism_reduction_is_not_canary_envelope",
+    "p01m_governed_deployability_conservatism_reduction_is_not_margin_reserve_alias",
+    "p01m_governed_deployability_conservatism_reduction_is_not_future_fee_permission",
+    "p01_member_role_sign_unit_resolved_status",
+    "p01_zero_absence_na_resolved_status",
+    "p01_combination_precedence_resolved_status",
+    "p01_value_unit_class_resolved_status",
+    "p01_applicability_resolved_status",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "identity_does_not_authorize_arithmetic",
+    "identity_does_not_close_p01_term_semantics",
+    "identity_does_not_close_haircut_reserve_depletion_unspecified",
+    "rejected_member_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_runtime_instance_present",
+    "p01_authority_effect",
+    "p01_exact_member_identity_contract_authority_effect",
     "provenance_digest",
 )

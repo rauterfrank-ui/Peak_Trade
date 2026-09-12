@@ -396,7 +396,7 @@ def test_runbook_ah_consumes_go_without_rewriting_ag() -> None:
     assert "DOCS_TOKEN_FULL_CORE_TYPED_P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_V1" in spec
     assert "P01_NUMERIC_VALUE_PROVENANCE_RESOLVED=false" in spec
     assert "P01_NUMERIC_VALUE_SOURCE=UNSPECIFIED" in spec
-    assert P01_TERM_SET_RESOLVED is False
+    assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is False
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False

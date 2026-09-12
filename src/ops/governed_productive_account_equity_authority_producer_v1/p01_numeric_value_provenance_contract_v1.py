@@ -44,7 +44,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_TERM_SEMANTICS_RESOLVED,
     P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT,
     P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT,
-    P01_TERM_SET_RESOLVED,
     P01_U04_OVERLAP_RESOLVED,
     P01_U05_OVERLAP_RESOLVED,
     P01_VALUE_UNIT_CLASS_RESOLVED,
@@ -599,8 +598,6 @@ def _validate_p01_numeric_value_provenance_contract_v1(
         raise P01NumericValueProvenanceContractError("P01_TERM_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01NumericValueProvenanceContractError("P01_PARENT_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SET_RESOLVED is True:
-        raise P01NumericValueProvenanceContractError("P01_TERM_SET_RESOLVED_PIN_FORBIDDEN")
     if P01_VALUE_UNIT_CLASS_RESOLVED is True:
         raise P01NumericValueProvenanceContractError("P01_VALUE_UNIT_CLASS_RESOLVED_PIN_FORBIDDEN")
     if P01_TERM_SEMANTICS_RESOLVED is True:

@@ -229,7 +229,7 @@ def test_unresolved_term_set_applicability_and_embedding_do_not_decide_overlap()
     contract = build_p01_overlap_with_u04_u05_contract_v1(
         p01_overlap_with_u04_u05_contract_id="SYNTHETIC_P01_OVERLAP_WITH_U04_U05_CONTRACT_ID"
     )
-    assert P01_TERM_SET_RESOLVED is False
+    assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is False
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EMBEDDED_STATE_RESOLVED is False

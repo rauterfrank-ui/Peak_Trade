@@ -200,7 +200,7 @@ def test_term_set_and_unit_unresolved_do_not_decide_applicability() -> None:
     contract = build_p01_applicability_contract_v1(
         p01_applicability_contract_id="SYNTHETIC_P01_APPLICABILITY_CONTRACT_ID"
     )
-    assert P01_TERM_SET_RESOLVED is False
+    assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is False
     assert contract.term_set_unresolved_does_not_decide_applicability == "true"
     assert contract.unit_unresolved_does_not_decide_applicability == "true"
@@ -278,7 +278,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     dag = live_admission_gap_dag_v1()
     assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
     assert dag["P01_APPLICABILITY_RESOLVED"] is False
-    assert dag["P01_TERM_SET_RESOLVED"] is False
+    assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is False
     assert dag["P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
