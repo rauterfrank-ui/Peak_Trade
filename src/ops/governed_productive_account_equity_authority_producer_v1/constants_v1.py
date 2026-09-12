@@ -15,7 +15,8 @@ inheritance adjudication, plus typed P01 haircut/reserve/depletion
 semantics adjudication, plus typed P01 exact member identity
 ratification, plus typed P01 value unit class ratification, plus typed
 P01 applicability class ratification, plus typed P01 application
-predicate identity and boundary ratification.
+predicate identity and boundary ratification, plus typed P01
+application-predicate input-domain identity and boundary ratification.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
@@ -115,6 +116,26 @@ P01_APPLICABILITY_DECISION_STATE_MODEL = "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CL
 P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED = False
 P01_APPLICATION_TRUE_RULE_RESOLVED = False
 P01_APPLICATION_FALSE_RULE_RESOLVED = False
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_SCHEMA_PRESENT = True
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_PREDICATE_INPUT_DOMAIN_IDENTITY_RESOLVED = True
+P01_PREDICATE_INPUT_DOMAIN_BOUNDARY_RESOLVED = True
+P01_PREDICATE_INPUT_DOMAIN_CLASS = "TYPED_GOVERNED_P01_RECONSTRUCTION_CONTEXT_V1"
+P01_PREDICATE_INPUT_DOMAIN_TYPED = True
+P01_PREDICATE_INPUT_DOMAIN_GOVERNED = True
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_SELECTED_OPTION = (
+    "P01_OP_APPLICATION_PREDICATE_INPUT_DOMAIN_TYPED_RECONSTRUCTION_CONTEXT_V1"
+)
+P01_PREDICATE_INPUT_DOMAIN_ALLOWED_INPUT_CLASS = "TYPED_GOVERNED_P01_RECONSTRUCTION_FACTS_ONLY"
+P01_PREDICATE_INPUT_DOMAIN_IS_CLOSED_WORLD = True
+P01_PREDICATE_INPUT_DOMAIN_DEFAULT = "NO_IMPLICIT_MEMBERS"
+P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED = False
+P01_PREDICATE_REQUIRED_FIELDS_RESOLVED = False
+P01_PREDICATE_OPTIONAL_FIELDS_RESOLVED = False
+P01_INPUT_READINESS_RULE_RESOLVED = False
+P01_INPUT_FRESHNESS_RULE_RESOLVED = False
+P01_INPUT_NORMALIZATION_RULE_RESOLVED = False
 P01_APPLICABILITY_IS_DISTINCT_FROM_VALUE = True
 P01_APPLICABILITY_IS_DISTINCT_FROM_ZERO = True
 P01_APPLICABILITY_IS_DISTINCT_FROM_ABSENCE = True
@@ -1043,5 +1064,98 @@ P01_APPLICATION_PREDICATE_IDENTITY_REQUIRED_FIELDS: tuple[str, ...] = (
     "p01_runtime_instance_present",
     "p01_authority_effect",
     "p01_application_predicate_identity_contract_authority_effect",
+    "provenance_digest",
+)
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_application_predicate_input_domain_identity_contract_id",
+    "p01_application_predicate_input_domain_identity_contract_version",
+    "parent_p01_application_predicate_identity_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "member_id",
+    "ratification_scope",
+    "selected_option",
+    "p01_term_set_resolved_status",
+    "p01_value_unit_class_resolved_status",
+    "p01_value_unit_class",
+    "p01_applicability_class_resolved_status",
+    "p01_applicability_class",
+    "p01_application_predicate_identity_resolved_status",
+    "p01_application_predicate_model",
+    "p01_predicate_input_domain_identity_resolved_status",
+    "p01_predicate_input_domain_boundary_resolved_status",
+    "p01_predicate_input_domain_class",
+    "p01_predicate_input_domain_typed",
+    "p01_predicate_input_domain_governed",
+    "p01_predicate_input_domain_must_remain_inside_existing_reconstruction_boundary",
+    "p01_predicate_input_domain_is_not_account_equity_authority",
+    "p01_predicate_input_domain_is_not_parallel_producer",
+    "p01_predicate_input_domain_is_not_trading_logic_authority",
+    "allowed_input_class",
+    "input_domain_is_closed_world",
+    "input_domain_default",
+    "input_domain_authority_effect",
+    "new_authority_owner",
+    "new_parallel_producer",
+    "new_universe",
+    "cross_system_inputs_allowed",
+    "trading_logic_inputs_allowed",
+    "venue_raw_inputs_allowed",
+    "live_execution_state_inputs_allowed",
+    "unratified_fact_admission",
+    "implicit_input_promotion",
+    "foreign_system_state_promotion",
+    "missing_required_input_result",
+    "malformed_input_result",
+    "contradictory_input_result",
+    "unsupported_input_result",
+    "unratified_input_result",
+    "does_not_apply_requires_explicit_false_rule",
+    "missing_does_not_mean_does_not_apply",
+    "zero_does_not_mean_does_not_apply",
+    "absence_does_not_mean_does_not_apply",
+    "reconstruction_incomplete_does_not_mean_does_not_apply",
+    "p01_application_predicate_input_domain_resolved_status",
+    "p01_predicate_concrete_input_members_resolved_status",
+    "p01_predicate_required_fields_resolved_status",
+    "p01_predicate_optional_fields_resolved_status",
+    "p01_application_true_rule_resolved_status",
+    "p01_application_false_rule_resolved_status",
+    "p01_input_readiness_rule_resolved_status",
+    "p01_input_freshness_rule_resolved_status",
+    "p01_input_normalization_rule_resolved_status",
+    "identity_does_not_ratify_concrete_members",
+    "identity_does_not_ratify_required_fields",
+    "identity_does_not_ratify_optional_fields",
+    "identity_does_not_ratify_true_rule",
+    "identity_does_not_ratify_false_rule",
+    "identity_does_not_ratify_formula",
+    "identity_does_not_ratify_operator",
+    "identity_does_not_ratify_sign",
+    "identity_does_not_ratify_source_mapping",
+    "identity_does_not_close_p01_term_semantics",
+    "master_v2_is_not_p01_predicate_input_authority",
+    "double_play_is_not_p01_predicate_input_authority",
+    "top20_is_not_p01_predicate_input_authority",
+    "learning_is_not_p01_predicate_input_authority",
+    "full_core_autonomy_is_not_p01_predicate_input_authority",
+    "venue_raw_is_not_p01_predicate_input_authority",
+    "step_29p_is_not_p01_predicate_input_authority",
+    "live_account_bound_is_not_p01_predicate_input_authority",
+    "u04_u05_u06_input_inheritance_forbidden",
+    "risk_sizing_input_domains_are_not_p01_predicate_input",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "rejected_application_predicate_input_domain_identity_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_runtime_instance_present",
+    "p01_authority_effect",
+    "p01_application_predicate_input_domain_identity_contract_authority_effect",
     "provenance_digest",
 )
