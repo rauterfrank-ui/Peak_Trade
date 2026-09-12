@@ -5770,6 +5770,7 @@ entities:
     # 11.2.1.AM P01_APPLICABILITY_CLASS_CONTRACT persist; P01_APPLICABILITY_CLASS_RESOLVED=true; P01_APPLICABILITY_CLASS=GOVERNED_CONDITIONAL; P01_APPLICABILITY_STATE_MODEL=APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED; P01_APPLICATION_PREDICATE_RESOLVED=false.
     # 11.2.1.AN P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT persist; P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED=true; P01_APPLICATION_PREDICATE_MODEL=TYPED_GOVERNED_APPLICABILITY_DECISION_V1; P01_APPLICABILITY_DECISION_STATE_MODEL=APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED; P01_APPLICATION_PREDICATE_RESOLVED=false.
     # 11.2.1.AO P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT persist; P01_PREDICATE_INPUT_DOMAIN_IDENTITY_RESOLVED=true; P01_PREDICATE_INPUT_DOMAIN_CLASS=TYPED_GOVERNED_P01_RECONSTRUCTION_CONTEXT_V1; P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED=false.
+    # 11.2.1.AQ EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS persist; C17_CREATED=false; MAPPING_BOUNDARY_CURRENTLY_OPEN=false; C01_C16_REJECTION_STILL_BINDING=true.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5824,6 +5825,11 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_governed_reduction_directive_evaluator_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/source_candidate_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/source_acceptance_conjunction_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/source_promotion_state_machine_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/mapping_boundary_reopen_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/source_candidate_census_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5910,6 +5916,7 @@ entities:
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6308,6 +6315,16 @@ entities:
       MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
       EARLIEST_DECOMPOSED_CONTRACT_GAP remains
       U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AQ persist: typed C17+ source-candidate, acceptance
+      conjunction, promotion state machine, and mapping-reopen
+      mechanism; C01_C16_REJECTION_STILL_BINDING=true;
+      C01_C16_REVIVAL_ALLOWED=false; NEW_CANDIDATE_NAMESPACE_START=C17;
+      MAPPING_REOPEN_MECHANISM_EXISTS=true;
+      MAPPING_BOUNDARY_CURRENTLY_OPEN=false; C17_CREATED=false;
+      GENUINELY_NEW_CANDIDATE_COUNT=0; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
