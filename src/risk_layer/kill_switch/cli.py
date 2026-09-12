@@ -52,7 +52,7 @@ def resolve_exchange_connected_for_health(cli_choice: str) -> Tuple[bool, Dict[s
         ``\"true\"`` / ``\"false\"`` — explicit override.
         ``\"auto\"`` — read :envvar:`PEAK_KILL_SWITCH_EXCHANGE_CONNECTED` if set
         (1/0, true/false, yes/no). If unset, run an HTTP GET to a public exchange URL
-        (no implicit venue URL) unless :envvar:`PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED`
+        (default Kraken ``SystemStatus``) unless :envvar:`PEAK_KILL_SWITCH_EXCHANGE_PROBE_DISABLED`
         is set — then returns ``True`` (air-gapped / legacy behaviour).
     """
     if cli_choice == "true":
