@@ -244,6 +244,7 @@ entities:
       - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
       - docs/ops/specs/CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md
       - docs/ops/specs/CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md
+      - docs/ops/specs/CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1.md
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
     notes: >-
@@ -258,6 +259,8 @@ entities:
       The injected Policy-B threshold set and offline evidence harness
       are persisted by
       CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1.
+      Offline historical evidence time semantics are persisted by
+      CONTRACT:cap22_historical_evidence_time_semantics_v1.
       No offline policy class has productive authority.
       CAP22_BECOMES_NETWORK_OWNER=false.
       CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false.
@@ -408,6 +411,30 @@ entities:
       TEST_ONLY_NON_CANONICAL values only. No policy winner. No productive
       ranking activation. PDF Step 5 remains UNRESOLVED. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
+      No Atlas edge to Cap 2.3 or Cap 2.4.
+
+  - id: CONTRACT:cap22_historical_evidence_time_semantics_v1
+    kind: CONTRACT
+    name: Cap 2.2 historical evidence time semantics
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1.md
+    source_paths:
+      - src/ops/cap22_historical_evidence_time_semantics_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1.md
+      - src/ops/cap22_historical_evidence_time_semantics_contract_v1.py
+    notes: >-
+      Offline historical evidence time semantics. Ranking cadence
+      PT1M_15_MINUTE_ANCHORS_V1. Forward labels 15m/30m/60m/120m.
+      Replay floor MIN_90D_PLUS_AVAILABLE_VALID_HISTORY_V1. Walk-forward
+      modes ratified not executed. Friction-adjusted opportunity remains
+      unratified. No historical evidence generated. No productive ranking
+      activation. PDF Step 5 remains UNRESOLVED. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
       No Atlas edge to Cap 2.3 or Cap 2.4.
 
   - id: CONTRACT:mf_selection_context_boundary_v1
