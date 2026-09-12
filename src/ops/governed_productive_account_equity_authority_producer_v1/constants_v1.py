@@ -9,9 +9,10 @@ term-set and unit-class adjudication contract schema, plus typed P01
 applicability adjudication contract schema, plus typed P01
 equity-base inclusion adjudication contract schema, plus typed P01
 broader embedding-state adjudication contract schema, plus typed P01
-overlap/equivalence adjudication versus U04 and U05. No producer
-implementation. No runtime source object. No mapping. No value
-binding. No Live-account-bound join. No wire.
+overlap/equivalence adjudication versus U04 and U05, plus typed P01
+numeric value provenance adjudication. No producer implementation. No
+runtime source object. No mapping. No value binding. No
+Live-account-bound join. No wire.
 """
 
 from __future__ import annotations
@@ -84,6 +85,10 @@ P01_OVERLAP_WITH_U04_U05_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_OVERLAP_WITH_U04_U05_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_U04_OVERLAP_RESOLVED = False
 P01_U05_OVERLAP_RESOLVED = False
+P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_SCHEMA_PRESENT = True
+P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_NUMERIC_VALUE_PROVENANCE_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -476,5 +481,65 @@ P01_OVERLAP_WITH_U04_U05_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_overlap_with_u04_u05_contract_authority_effect",
+    "provenance_digest",
+)
+P01_NUMERIC_VALUE_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_numeric_value_provenance_contract_id",
+    "p01_numeric_value_provenance_contract_version",
+    "parent_p01_overlap_with_u04_u05_contract_schema_class",
+    "parent_p01_embedding_state_contract_schema_class",
+    "parent_p01_equity_base_inclusion_contract_schema_class",
+    "parent_p01_applicability_contract_schema_class",
+    "parent_p01_term_set_and_unit_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "p01_numeric_value_provenance_resolved_status",
+    "p01_numeric_value_provenance_status",
+    "p01_numeric_value_source",
+    "p01_numeric_value_transformation",
+    "typed_provenance_class",
+    "producer_state",
+    "source_object_id",
+    "source_field_id",
+    "source_contract_id",
+    "transformation_chain_state",
+    "time_semantics_state",
+    "unit_dimension_transform_state",
+    "missing_value_treatment",
+    "stale_value_treatment",
+    "unavailable_value_treatment",
+    "contradictory_value_treatment",
+    "partial_evidence_treatment",
+    "multiple_candidate_treatment",
+    "fallback_source_state",
+    "numeric_computation_rule_state",
+    "haircut_reserve_depletion_construction_state",
+    "unknown_is_not_numeric_authorization",
+    "unspecified_is_not_numeric_authorization",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "zero_is_not_p01_value",
+    "absence_is_not_p01_value",
+    "venue_field_is_not_p01_value",
+    "name_similarity_does_not_prove_source",
+    "numeric_equality_does_not_prove_source",
+    "policy_slot_is_not_numeric_source",
+    "algebra_slot_is_not_numeric_source",
+    "unspecified_haircut_cannot_construct_p01",
+    "unspecified_cannot_authorize_subtraction",
+    "unspecified_cannot_authorize_addition",
+    "unspecified_cannot_authorize_netting",
+    "unspecified_cannot_authorize_omission",
+    "unspecified_cannot_authorize_ignore",
+    "rejected_provenance_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "candidate_sources_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_numeric_value_provenance_contract_authority_effect",
     "provenance_digest",
 )
