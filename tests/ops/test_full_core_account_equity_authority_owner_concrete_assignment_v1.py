@@ -135,11 +135,16 @@ def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> N
 
 def test_slot_contains_no_producer_implementation() -> None:
     py_files = sorted(path.name for path in SLOT_DIR.glob("*.py"))
-    assert py_files == ["__init__.py", "constants_v1.py", "sample_schema_v1.py"]
+    assert py_files == [
+        "__init__.py",
+        "constants_v1.py",
+        "sample_schema_v1.py",
+        "venue_witness_observation_v1.py",
+    ]
     producer_surface = "\n".join(
         path.read_text(encoding="utf-8")
         for path in SLOT_DIR.glob("*.py")
-        if path.name != "sample_schema_v1.py"
+        if path.name not in {"sample_schema_v1.py", "venue_witness_observation_v1.py"}
     )
     for forbidden in (
         "def mint",
@@ -154,6 +159,11 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in schema
     assert "def reconstruct" not in schema
     assert "def bind_account_equity" not in schema
+    witness = (SLOT_DIR / "venue_witness_observation_v1.py").read_text(encoding="utf-8")
+    assert "def mint" not in witness
+    assert "def produce" not in witness
+    assert "def reconstruct" not in witness
+    assert "def bind_account_equity" not in witness
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:

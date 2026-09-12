@@ -1,8 +1,9 @@
 """Governed account-equity authority-owner slot.
 
-Owner assignment plus typed sample schema. No producer implementation.
-No runtime source object. No mapping. No value binding.
-No Live-account-bound join. No wire.
+Owner assignment plus typed sample schema and typed venue-witness
+observation contract. No producer implementation. No runtime source
+object. No mapping. No value binding. No Live-account-bound join.
+No wire.
 """
 
 from __future__ import annotations
@@ -25,7 +26,16 @@ GOVERNED_PRODUCER_CREATED = False
 GOVERNED_PRODUCTIVE_SOURCE_PRESENT = False
 SOURCE_OBJECT_PRESENT = False
 SOURCE_OBJECT_PRESENT_SEMANTICS = "RUNTIME_SAMPLE_INSTANCE_NOT_SCHEMA_DEFINITION"
+SOURCE_SELECTED = False
 GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_PRESENT = True
+VENUE_WITNESS_SCHEMA_PRESENT = True
+VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT = False
+VENUE_WITNESS_SELECTED = False
+WITNESS_CONTRACT_MISSING_CLOSED = True
+OBSERVATION_AUTHORITY_EFFECT = "NONE"
+EQUITY_DIMENSION_BOUND = False
+MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING = False
+RAW_TO_WITNESS_PROVEN = False
 RUNTIME_VALUE_PRESENT = False
 SAMPLE_PRESENT = False
 LIVE_ACCOUNT_BOUND_JOIN_PRESENT = False
@@ -60,4 +70,36 @@ SAMPLE_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "semantic_digest",
     "sample_id",
     "observation_vs_authority_class",
+)
+WITNESS_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "witness_id",
+    "bound_account_identity",
+    "bound_venue_identity",
+    "rest_host",
+    "bound_td_mode",
+    "account_mode",
+    "currency_domain",
+    "endpoint",
+    "method",
+    "request_identity",
+    "decision_epoch",
+    "observed_at/as_of",
+    "response_received_at",
+    "provider_timestamp",
+    "raw_field_path",
+    "observation_semantic_class",
+    "raw_value_representation",
+    "presence_state",
+    "raw_payload_state",
+    "payload_digest",
+    "raw_payload",
+    "request_provenance",
+    "response_provenance",
+    "observation_vs_authority_class",
+    "observation_authority_effect",
+    "equity_dimension_bound_status",
+    "mapping_status",
+    "freshness_evidence_status",
+    "clock_source_status",
+    "provenance_digest",
 )
