@@ -80,7 +80,7 @@ def test_p01_term_set_and_unit_class_contract_constructs() -> None:
     assert contract.p01_term_set_resolved_status == "false"
     assert contract.p01_value_unit_class_resolved_status == "false"
     assert P01_TERM_SET_RESOLVED is True
-    assert P01_VALUE_UNIT_CLASS_RESOLVED is False
+    assert P01_VALUE_UNIT_CLASS_RESOLVED is True
     assert P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT is True
     assert P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT is False
     assert P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT == "NONE"
@@ -214,7 +214,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     dag = live_admission_gap_dag_v1()
     assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
     assert dag["P01_TERM_SET_RESOLVED"] is True
-    assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is False
+    assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False

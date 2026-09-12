@@ -5766,6 +5766,7 @@ entities:
     # 11.2.1.AI P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT persist; P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED=false; P01_MEMBER_FRESHNESS_STATUS=UNPROVEN.
     # 11.2.1.AJ P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT persist; P01_HAIRCUT_SEMANTICS_RESOLVED=false; P01_RESERVE_SEMANTICS_RESOLVED=false; P01_DEPLETION_SEMANTICS_RESOLVED=false.
     # 11.2.1.AK P01_EXACT_MEMBER_IDENTITY_CONTRACT persist; P01_TERM_SET_RESOLVED=true; P01_EXACT_MEMBER_IDENTITY_SET=P01M_GOVERNED_DEPLOYABILITY_CONSERVATISM_REDUCTION; P01_EXACT_MEMBER_COUNT=1; P01_VALUE_UNIT_CLASS_RESOLVED=false.
+    # 11.2.1.AL P01_VALUE_UNIT_CLASS_CONTRACT persist; P01_TERM_SET_RESOLVED=true; P01_VALUE_UNIT_CLASS_RESOLVED=true; P01_VALUE_UNIT_CLASS=ABSOLUTE_MONETARY_REDUCTION_AMOUNT; P01_SEMANTIC_DIMENSION=PARENT_EQUITY_DIMENSION_REDUCTION_AMOUNT.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5813,6 +5814,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5860,6 +5862,7 @@ entities:
       - tests/ops/test_full_core_typed_p01_member_freshness_inheritance_contract_v1.py
       - tests/ops/test_full_core_typed_p01_haircut_reserve_depletion_semantics_contract_v1.py
       - tests/ops/test_full_core_typed_p01_exact_member_identity_contract_v1.py
+      - tests/ops/test_full_core_typed_p01_value_unit_class_contract_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5889,6 +5892,7 @@ entities:
       - docs/ops/specs/FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_TYPED_P01_VALUE_UNIT_CLASS_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6134,6 +6138,39 @@ entities:
       EARLIEST_DECOMPOSED_CONTRACT_GAP remains
       P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED;
       EARLIEST_NARROW_P01_DEPENDENCY=P01_VALUE_UNIT_CLASS_UNSPECIFIED;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AL persist: typed P01_VALUE_UNIT_CLASS_CONTRACT_V1;
+      P01_VALUE_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT=true;
+      P01_TERM_SET_RESOLVED=true;
+      P01_EXACT_MEMBER_IDENTITY_SET=P01M_GOVERNED_DEPLOYABILITY_CONSERVATISM_REDUCTION;
+      P01_EXACT_MEMBER_COUNT=1;
+      P01_VALUE_UNIT_CLASS_RESOLVED=true;
+      P01_VALUE_UNIT_CLASS=ABSOLUTE_MONETARY_REDUCTION_AMOUNT;
+      P01_SEMANTIC_DIMENSION=PARENT_EQUITY_DIMENSION_REDUCTION_AMOUNT;
+      P01_PARENT_DIMENSION_COMPATIBILITY=SAME_DIMENSION_CLASS_AS_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING;
+      P01_REQUIRES_DIMENSIONAL_TRANSFORMATION=false;
+      P01_DIRECT_ADDITIVE_SUBTRACTION_COMPATIBLE=true;
+      P01_APPLICABILITY_RESOLVED=false;
+      P01_EQUITY_BASE_INCLUSION_RESOLVED=false;
+      P01_EMBEDDED_STATE_RESOLVED=false;
+      P01_U04_OVERLAP_RESOLVED=false; P01_U05_OVERLAP_RESOLVED=false;
+      P01_NUMERIC_VALUE_PROVENANCE_RESOLVED=false;
+      P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED=false;
+      P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED=false;
+      P01_ZERO_ABSENCE_NA_RESOLVED=false;
+      P01_COMBINATION_PRECEDENCE_RESOLVED=false;
+      P01_HAIRCUT_SEMANTICS_RESOLVED=false;
+      P01_RESERVE_SEMANTICS_RESOLVED=false;
+      P01_DEPLETION_SEMANTICS_RESOLVED=false;
+      P01_TERM_SEMANTICS_RESOLVED=false;
+      P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=false;
+      P01_RUNTIME_INSTANCE_PRESENT=false; P01_AUTHORITY_EFFECT=NONE;
+      RECONSTRUCTION_ALGEBRA_COMPLETE=false; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
+      EARLIEST_DECOMPOSED_CONTRACT_GAP remains
+      P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED;
+      EARLIEST_NARROW_P01_DEPENDENCY=P01_APPLICABILITY_UNSPECIFIED;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

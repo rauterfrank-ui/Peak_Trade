@@ -348,7 +348,7 @@ def test_runbook_ai_consumes_go_without_rewriting_ah() -> None:
     assert "P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED=false" in spec
     assert "P01_MEMBER_FRESHNESS_STATUS=UNPROVEN" in spec
     assert P01_TERM_SET_RESOLVED is True
-    assert P01_VALUE_UNIT_CLASS_RESOLVED is False
+    assert P01_VALUE_UNIT_CLASS_RESOLVED is True
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
     assert P01_EMBEDDED_STATE_RESOLVED is False

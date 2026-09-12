@@ -220,7 +220,7 @@ def test_unresolved_term_set_applicability_unit_and_inclusion_do_not_decide_embe
         p01_embedding_state_contract_id="SYNTHETIC_P01_EMBEDDING_STATE_CONTRACT_ID"
     )
     assert P01_TERM_SET_RESOLVED is True
-    assert P01_VALUE_UNIT_CLASS_RESOLVED is False
+    assert P01_VALUE_UNIT_CLASS_RESOLVED is True
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
     assert INCLUSION_STATE == "UNRESOLVED"
@@ -376,7 +376,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert dag["P01_EQUITY_BASE_INCLUSION_RESOLVED"] is False
     assert dag["P01_APPLICABILITY_RESOLVED"] is False
     assert dag["P01_TERM_SET_RESOLVED"] is True
-    assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is False
+    assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert dag["P01_EMBEDDING_STATE_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_EMBEDDING_STATE_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
     assert SOURCE_SELECTED is False
