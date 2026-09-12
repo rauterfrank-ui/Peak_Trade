@@ -5755,6 +5755,7 @@ entities:
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # CHAR-3 PRE_SPLIT characterization inventoried in notes; not target architecture.
     # 11.2.1.Q STEP_29P_PRE_CONSTRUCTION inventory; GET sibling is not a Full-Core HTTP import.
+    # 11.2.1.R ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION; MAPPING_PROVEN=false.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5812,6 +5813,7 @@ entities:
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
       - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
+      - tests/ops/test_full_core_step_29p_account_equity_mapping_owner_ratification_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5821,6 +5823,7 @@ entities:
       - docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
+      - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5846,6 +5849,10 @@ entities:
       SideState.KILL_ALL OR SafetyMode.BLOCKED OR
       safety_exit_signal.triggered may emit killswitch_blocked; this is
       current alias mixing, not a canonical contract.
+      11.2.1.R persist: MAPPING_PROVEN=false;
+      IMPLEMENTATION_OF_VALUE_BINDING=false;
+      ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; no typed equity value
+      binding; LIVE_ACCOUNT_BOUND claim join not executed this slice.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:full_core_live_path_models_v1
@@ -5979,6 +5986,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_standing_live_gates_v1
+    # 11.2.1.R does not set LIVE_ENABLED, LIVE_ARMED, or WIRE_SEND_PERMITTED true.
     kind: GATE
     name: Full-core live path standing Live gates v1
     epistemic_class: FORENSIC_RAW
@@ -6009,6 +6017,7 @@ entities:
       LIVE_ARMED=false, WIRE_SEND_PERMITTED=false,
       STANDING_LIVE_AUTHORIZATION=false.
       11.2.1.Q: RISK_ADMISSIBLE does not imply these standing gates.
+      11.2.1.R: RISK_ADMISSIBLE still does not imply these standing gates.
       LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
       LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
       WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true.
@@ -6021,6 +6030,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_path_identity_v1
+    # 11.2.1.R earliest ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED.
     kind: GATE
     name: Full-core productive Live-path identity gate v1
     epistemic_class: FORENSIC_RAW
@@ -6049,7 +6059,9 @@ entities:
       Does not arm Live. Does not GET. Durable FILEGATE join is a later
       Full-Core admission seam, not this identity gate.
       LIVE_ENABLED standing admission seam is implemented with default false.
-      11.2.1.Q earliest unresolved is STEP_29P_EQUITY_DIMENSION_BINDING_MISSING.
+      11.2.1.Q remaining-gap STEP_29P_EQUITY_DIMENSION_BINDING_MISSING is historical.
+      11.2.1.R earliest unresolved is
+      ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_durable_filegate_join_v1
@@ -6137,6 +6149,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_account_bound_v1
+    # 11.2.1.R did not execute LIVE_ACCOUNT_BOUND claim join into the 29P risk claim.
     kind: GATE
     name: Full-core LIVE_ACCOUNT_BOUND seam v1
     epistemic_class: FORENSIC_RAW
@@ -6162,9 +6175,12 @@ entities:
       passthrough is not authority. Does not arm Live. Does not POST.
       Does not admit. Does not override FILEGATE, permit, or GET.
       11.2.1.Q GET execute does not mint LIVE_ACCOUNT_BOUND.
+      11.2.1.R LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false.
+      GET execute still hardcodes live_account_bound_status=MISSING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_capital_admission_v1
+    # 11.2.1.R MAPPING_PROVEN=false; ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED.
     kind: GATE
     name: Full-core Pre-Live Capital Admission seam v1
     epistemic_class: FORENSIC_RAW
@@ -6188,8 +6204,10 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
       - tests/ops/test_full_core_pre_live_capital_admission_contract_v1.py
       - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
+      - tests/ops/test_full_core_step_29p_account_equity_mapping_owner_ratification_v1.py
       - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
+      - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
       - evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z/SUMMARY.json
     notes: >-
       Joins typed Capital Admission evidence into Full-Core admission.
@@ -6197,10 +6215,13 @@ entities:
       policy. Does not arm Live. Does not POST. Does not admit. Does not
       override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND.
       11.2.1.Q STEP-29P conjunction is the sole productive risk-admissibility
-      authority. availEq is not 29P equity. Atlas is not canonical
-      authority. ATLAS_AUTHORITY=NONE.
+      authority. 11.2.1.R MAPPING_PROVEN=false;
+      ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED. GET pack re-read only;
+      still not risk-admissible. No value binding. availEq is not 29P
+      equity. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+    # 11.2.1.R producer unchanged; typed equity remains empty; observation is not authority.
     kind: RUNTIME_COMPONENT
     name: Full-core STEP-29P fresh OKX-EEA GET evidence v1
     epistemic_class: FORENSIC_RAW
@@ -6228,8 +6249,9 @@ entities:
       package import of LiveCanaryHttpClientV1. Not a second capital-
       admission authority. Empty positions data is NOT_OBSERVED.
       availEq is observation, not 29P equity. Does not POST. Does not
-      construct LiveExecutionPort. Atlas is not canonical authority.
-      ATLAS_AUTHORITY=NONE.
+      construct LiveExecutionPort.
+      11.2.1.R did not bind typed RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:treasury_phase_1_offline_contracts_v1
     kind: GATE

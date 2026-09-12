@@ -137,7 +137,9 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert WIRE_SEND_PERMITTED is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("STEP_29P_EQUITY_DIMENSION_BINDING_MISSING")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+    )
     node = gap_node_v1("CAPITAL_ADMISSION")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
     assert node.wiring_authorized is True

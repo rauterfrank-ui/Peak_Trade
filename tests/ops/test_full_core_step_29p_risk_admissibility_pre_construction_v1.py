@@ -149,9 +149,11 @@ def test_flags_and_dag_next_pointer() -> None:
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_PORT_CONSTRUCTION is True
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == "STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+    )
     assert MAX_SAFE_REPO_INTERNAL_NEXT_SLICE == (
-        "NO_FURTHER_REPO_INTERNAL_SLICE_PRE_CONSTRUCTION_BOUNDARY_REACHED"
+        "NO_FURTHER_REPO_INTERNAL_SLICE_EQUITY_SOURCE_MAPPING_OWNER_RATIFICATION_REQUIRED"
     )
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("STEP_29P_CAPITAL_RISK_ADMISSIBILITY")
@@ -440,7 +442,7 @@ def test_runbook_and_spec_bind_without_construction_lift() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.Q FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION")
-    section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    section = runbook[start : runbook.index("11.2.1.R FULL_CORE_STEP_29P", start)]
     assert "STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED=true" in section
     assert "STEP_29P_RISK_ADMISSIBLE=false" in section
     assert "CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1" in section
@@ -451,6 +453,10 @@ def test_runbook_and_spec_bind_without_construction_lift() -> None:
     assert "WIRE_SEND_PERMITTED=false" in section
     assert "FRESH_EVIDENCE_FETCHED" in section
     assert "PORT_CONSTRUCTED" in section
+    assert (
+        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
+        in section
+    )
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1" in spec
     assert CAPITAL_AUTHORITY_OBSERVED_NOT_RISK_ADMISSIBLE == "OBSERVED_NOT_RISK_ADMISSIBLE"

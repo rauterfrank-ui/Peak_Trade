@@ -61,4 +61,6 @@ entrypoints:
       Offline library entry for run_full_core_live_path_offline_v1.
       Not a productive runner. Not LiveExecutionPort. Not canary POST.
       11.2.1.Q joins STEP-29P risk claim at halt without constructing a port.
+      11.2.1.R does not bind typed equity and does not join LIVE_ACCOUNT_BOUND
+      into the 29P claim. Still no LiveExecutionPort construction.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.

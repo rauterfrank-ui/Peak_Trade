@@ -183,7 +183,9 @@ def test_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
-    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == ("STEP_29P_EQUITY_DIMENSION_BINDING_MISSING")
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
+        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+    )
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("FRESH_GET_PER_PRETRADE_DECISION")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
