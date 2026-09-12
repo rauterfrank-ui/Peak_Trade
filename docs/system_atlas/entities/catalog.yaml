@@ -5756,6 +5756,7 @@ entities:
     # CHAR-3 PRE_SPLIT characterization inventoried in notes; not target architecture.
     # 11.2.1.Q STEP_29P_PRE_CONSTRUCTION inventory; GET sibling is not a Full-Core HTTP import.
     # 11.2.1.S NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE.
+    # 11.2.1.AB P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT persist; P01_TERM_SEMANTICS_RESOLVED=false.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5793,6 +5794,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/internal_reconstruction_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/reconstruction_algebra_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_term_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5830,6 +5832,7 @@ entities:
       - tests/ops/test_full_core_typed_normalization_inclusion_contract_v1.py
       - tests/ops/test_full_core_typed_internal_reconstruction_contract_v1.py
       - tests/ops/test_full_core_typed_reconstruction_algebra_contract_v1.py
+      - tests/ops/test_full_core_typed_p01_haircut_reserve_depletion_term_contract_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5849,6 +5852,7 @@ entities:
       - docs/ops/specs/FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_RECONSTRUCTION_ALGEBRA_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5921,6 +5925,16 @@ entities:
       CANONICAL_FORMULA_PROVEN=false; SOURCE_SELECTED=false;
       MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
       EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AB persist: typed P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT_V1;
+      P01_TERM_CONTRACT_SCHEMA_PRESENT=true;
+      P01_TERM_SEMANTICS_RESOLVED=false;
+      P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=false;
+      RECONSTRUCTION_ALGEBRA_COMPLETE=false; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
+      EARLIEST_DECOMPOSED_CONTRACT_GAP remains
+      P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
