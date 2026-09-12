@@ -84,12 +84,13 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT_V1.md"
 AE_HEADING = "11.2.1.AE FULL_CORE_TYPED_P01_EQUITY_BASE_INCLUSION_CONTRACT"
 AF_HEADING = "11.2.1.AF FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT"
+AG_HEADING = "11.2.1.AG FULL_CORE_TYPED_P01_OVERLAP_WITH_U04_U05_CONTRACT"
 
 
 def _af_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     af_start = runbook.index(AF_HEADING)
-    return runbook[af_start : runbook.index("## 11.3 Autonomy state model", af_start)]
+    return runbook[af_start : runbook.index(AG_HEADING, af_start)]
 
 
 def test_p01_embedding_state_contract_constructs() -> None:
