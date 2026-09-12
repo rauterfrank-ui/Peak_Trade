@@ -107,7 +107,12 @@ def _contract() -> P01ReconstructionSemanticAndAlgebraCloseoutContractV1:
 def _ap_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ap_start = runbook.index(AP_HEADING)
-    return runbook[ap_start : runbook.index("## 11.3 Autonomy state model", ap_start)]
+    return runbook[
+        ap_start : runbook.index(
+            "11.2.1.AQ FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS",
+            ap_start,
+        )
+    ]
 
 
 def test_closeout_contract_constructs() -> None:
