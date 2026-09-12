@@ -5791,6 +5791,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/internal_reconstruction_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
