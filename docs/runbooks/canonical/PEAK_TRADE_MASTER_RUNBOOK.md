@@ -10700,6 +10700,158 @@ CURRENT_CANONICAL_SECTION=11.2.1.S.FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMA
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Policy-semantics remaining after §11.2.1.S is superseded by §11.2.1.T.
+Historical `SEMANTIC_REQUIREMENTS_COMPLETE=false` and OPEN / `FROZEN_PENDING_OWNER_POLICY`
+lines in this section are not rewritten. Mapping-unproven pins, GET-pack facts,
+standing Live flags, and the forbidden-field set remain as bound in §11.2.1.S.
+Historical `EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`
+in this section is not rewritten.
+
+### 11.2.1.T FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION (BOUND; POLICY SEMANTICS ONLY; NO SOURCE; NO OWNER ASSIGN; NO VALUE BINDING; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.S census, candidate reject reasons, or
+`ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE`. Does **not** rewrite
+§11.2.1.R or §11.2.1.Q standing-gate values, GET-pack facts, Capital Admission mathematics,
+§11.2.2 Treasury contracts, §11.13.5 canary facts, or §11.14 ladder fields. Does **not**
+select a source. Does **not** assign `ACCOUNT_EQUITY_AUTHORITY_OWNER`. Does **not** bind
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field or internal object.
+Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` / `availBal` / `cashBal`.
+Does **not** revive C01–C16. Does **not** construct a governed productive equity producer.
+Does **not** execute the LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not**
+construct `LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set
+`LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`. Does **not** lift Cap 11.1.
+Does **not** join Cap 7.2 to LiveExecutionPort. Does **not** set `STEP_29P_RISK_ADMISSIBLE=true`.
+Cap 22 / MF-WP3 remains PARKED. DDO/Learning have no Trading/Risk/Selection/Execution authority.
+Cap 2.3 remains sole productive Selection owner.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1`
+authorizes persist of the ten Owner-policy decisions P01/U01–U09 as normative Peak_Trade
+policy semantics for `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`. It does **not** authorize
+source selection, owner assignment, value binding, producer implementation, or Live arming.
+
+``` text
+OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.T.FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION
+CURRENT_PHASE=11.2.1.T.FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE=UNRESOLVED
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+SOURCE_CANDIDATE_COUNT=16
+C01_C16_REMAIN_REJECTED=true
+SEMANTIC_REQUIREMENTS_COMPLETE=true
+POLICY_SEMANTICS_COMPLETE=true
+P01_STATUS=DECIDED
+U01_STATUS=DECIDED
+U02_STATUS=DECIDED
+U03_STATUS=DECIDED
+U04_STATUS=DECIDED
+U05_STATUS=DECIDED
+U06_STATUS=DECIDED
+U07_STATUS=DECIDED
+U08_STATUS=DECIDED
+U09_STATUS=DECIDED
+P01_HAIRCUTS_RESERVE_DEPLETION=REDUCTION_ONLY_UNSPECIFIED_FAIL_CLOSED
+P01_MAY_INCREASE_EQUITY=false
+P01_ZERO_ONLY_BY_EXPLICIT_POLICY=true
+U01_ACCOUNT_MODE_ROLE=ELIGIBILITY_CONTEXT_NOT_NUMERIC_EQUITY_TERM
+U02_REALIZED_UNREALIZED_TREATMENT=IN_EQUITY_BASE_ONLY_NO_SEPARATE_ADDEND
+U03_OPEN_POSITION_TREATMENT=MTM_IN_EQUITY_BASE_ONLY_NO_NOTIONAL_ADD
+U04_PENDING_ORDER_RESERVATIONS=ENTRY_SUBTRACT_IF_NOT_IN_BASE_REDUCE_ONLY_NO_PRE_FILL_INCREASE
+U05_LIABILITIES_BORROWINGS=REDUCE_ONCE_UNKNOWN_FAIL_CLOSED
+U06_FEES=ACCRUED_ONCE_FUTURE_NOT_IN_U06
+U07_RESTART_RECONCILIATION=FAIL_CLOSED_UNTIL_FRESH_SAME_EPOCH_RECONCILED
+U08_MULTI_CURRENCY_CONVERSION=USDC_NATIVE_OR_OWNER_RATIFIED_CONTRACT_ELSE_FAIL_CLOSED
+USD_EQUALS_USDC=false
+U09_FRESHNESS_CLASS=FRESH_GET_PER_PRETRADE_DECISION
+U09_SAME_PRETRADE_EPOCH_REQUIRED=true
+NUMERIC_EQUITY_TTL_SECONDS=5
+U09_COPIES_AVAILABLE_MARGIN_TS_AGE_BOUND=false
+DOUBLE_COUNT_CONTROL_U02_U03_MTM_ONCE=true
+DOUBLE_COUNT_CONTROL_U04_HOLD_ONCE=true
+DOUBLE_COUNT_CONTROL_U05_LIABILITY_ONCE=true
+DOUBLE_COUNT_CONTROL_U06_FEE_ONCE=true
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=true
+OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY=true
+INJECTED_EQUITY_IS_NOT_LIVE_CAPITAL_AUTHORITY=true
+OBSERVATION_IS_NOT_AUTHORITY=true
+LEARNING_DDO_AUTHORITY_EFFECT=NONE
+RANKING_SELECTION_AUTHORITY_EFFECT=NONE
+CAP23_FINAL_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_AUTHORIZED=false
+CAP72_PRODUCTIVE_PORT=SimulatedExecutionPortV1
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+RUNTIME_VALUE_BINDING_IMPLEMENTED=false
+GOVERNED_PRODUCER_CREATED=false
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split preserved. STEP-29P remains the compute / risk-sizing consumer. Account-equity
+input authority remains a separate typed owner and remains `UNRESOLVED`. Observation is not
+authority. C01–C16 remain rejected. Forbidden raw fields remain forbidden. `MUST_NOT_MIX_WITH`
+remains bound.
+
+B. Owner-ratified policy semantics for this dimension (policy only; not a source mapping):
+
+``` text
+P01=Haircut, reserve, and depletion are reduction-only. Each term >= 0 and must not increase equity. Unspecified or unclear term fail closed. Zero is allowed only by explicit normative policy, never by omission. No venue-raw haircuts. No C01-C16 elevation.
+U01=Account mode is eligibility/context only, not a numeric equity term. Unknown or ineligible fail closed. GET ACCOUNT_MODE remains a separate pretrade requirement.
+U02=Realized PnL enters only if already in the same-epoch equity base. Unrealized PnL enters only as MTM inside that same base. No separate addend. Unknown inclusion fail closed.
+U03=Open positions affect this dimension only through MTM inside the equity base. Notional/exposure is not added. Open position plus unknown MTM-inclusion status fail closed.
+U04=Pending entry/new-risk reservation is counted once: subtract if the base is not already net-of-hold; unknown inclusion fail closed. Pending reduce-only/exit must not increase available equity before fill.
+U05=Liabilities/borrowings reduce equity. If the base is already net-of-liabilities, do not subtract a second time. Unknown inclusion or unknown liability value fail closed.
+U06=Accrued/already-charged fees are counted once (in the base or as a single subtraction). Unknown inclusion fail closed. Expected future fees are not U06; they may exist only as a separate P01 reserve term. No double count.
+U07=After restart, no 29P admissibility until authoritative state is freshly reconstructed for the current pretrade epoch and reconciles without contradiction. Last snapshot and accounting rebuild do not mint this dimension. Restart must not create a more optimistic equity state.
+U08=Settlement currency remains USDC. USD is not USDC. Only USDC-native components or components under a separately Owner-ratified conversion contract may enter. No implicit 1:1. Required unconvertible component fail closed.
+U09=Freshness class remains FRESH_GET_PER_PRETRADE_DECISION. The equity sample must belong to the same pretrade decision epoch. Numeric max-age <= 5 seconds. Unknown age or age > 5s fail closed. 5s is a backstop and does not replace same-epoch. AVAILABLE_MARGIN_TS_AGE_BOUND is not copied.
+```
+
+C. Global invariants for this persist: no unsafe or unproven component may increase risk capital;
+each economic effect at most once; contradiction / non-finite / missing required semantics fail
+closed. Completing these policies does **not** prove a source exists, does **not** prove a
+mapping, does **not** assign an authority owner, and does **not** authorize implementation of
+value binding.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.T.FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
