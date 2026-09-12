@@ -37,7 +37,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_OVERLAP_WITH_U04_U05_CONTRACT_AUTHORITY_EFFECT,
     P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT,
     P01_TERM_SEMANTICS_RESOLVED,
-    P01_TERM_SET_RESOLVED,
     P01_U04_OVERLAP_RESOLVED,
     P01_U05_OVERLAP_RESOLVED,
     P01_VALUE_UNIT_CLASS_RESOLVED,
@@ -466,8 +465,6 @@ def _validate_p01_member_freshness_inheritance_contract_v1(
         raise P01MemberFreshnessInheritanceContractError(
             "P01_PARENT_TERM_RUNTIME_INSTANCE_FORBIDDEN"
         )
-    if P01_TERM_SET_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError("P01_TERM_SET_RESOLVED_PIN_FORBIDDEN")
     if P01_VALUE_UNIT_CLASS_RESOLVED is True:
         raise P01MemberFreshnessInheritanceContractError(
             "P01_VALUE_UNIT_CLASS_RESOLVED_PIN_FORBIDDEN"

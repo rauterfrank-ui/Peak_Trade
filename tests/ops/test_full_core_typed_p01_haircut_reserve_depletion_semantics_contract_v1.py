@@ -88,7 +88,8 @@ def _contract() -> P01HaircutReserveDepletionSemanticsContractV1:
 def _aj_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     aj_start = runbook.index(AJ_HEADING)
-    return runbook[aj_start : runbook.index("## 11.3 Autonomy state model", aj_start)]
+    ak_heading = "11.2.1.AK FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT"
+    return runbook[aj_start : runbook.index(ak_heading, aj_start)]
 
 
 def test_p01_semantics_contract_constructs() -> None:
@@ -312,7 +313,7 @@ def test_runbook_aj_consumes_go_without_rewriting_ai() -> None:
     )
     assert "DOCS_TOKEN_FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1" in spec
     assert "P01_HAIRCUT_SEMANTICS_RESOLVED=false" in spec
-    assert P01_TERM_SET_RESOLVED is False
+    assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is False
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
