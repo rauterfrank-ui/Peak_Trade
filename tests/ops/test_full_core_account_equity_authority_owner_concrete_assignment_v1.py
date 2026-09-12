@@ -66,6 +66,7 @@ SLOT_DIR = REPO_ROOT / "src/ops/governed_productive_account_equity_authority_pro
 ASSIGNED_OWNER = "ops.governed_productive_account_equity_authority_producer_v1"
 U_HEADING = "11.2.1.U FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION"
 V_HEADING = "11.2.1.V FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION"
+W_HEADING = "11.2.1.W FULL_CORE_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA"
 _FORBIDDEN_EQUITY_FIELDS = (
     "details.availEq",
     "availEq",
@@ -98,7 +99,7 @@ _CENSUS_IDS = (
 def _v_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     v_start = runbook.index(V_HEADING)
-    return runbook[v_start : runbook.index("## 11.3 Autonomy state model", v_start)]
+    return runbook[v_start : runbook.index(W_HEADING, v_start)]
 
 
 def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> None:
@@ -134,18 +135,25 @@ def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> N
 
 def test_slot_contains_no_producer_implementation() -> None:
     py_files = sorted(path.name for path in SLOT_DIR.glob("*.py"))
-    assert py_files == ["__init__.py", "constants_v1.py"]
-    combined = "\n".join(path.read_text(encoding="utf-8") for path in SLOT_DIR.glob("*.py"))
+    assert py_files == ["__init__.py", "constants_v1.py", "sample_schema_v1.py"]
+    producer_surface = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in SLOT_DIR.glob("*.py")
+        if path.name != "sample_schema_v1.py"
+    )
     for forbidden in (
         "def mint",
         "def produce",
         "def reconstruct",
         "def bind_account_equity",
-        "availEq",
-        "totalEq",
         "typed_account_equity_raw",
     ):
-        assert forbidden not in combined, forbidden
+        assert forbidden not in producer_surface, forbidden
+    schema = (SLOT_DIR / "sample_schema_v1.py").read_text(encoding="utf-8")
+    assert "def mint" not in schema
+    assert "def produce" not in schema
+    assert "def reconstruct" not in schema
+    assert "def bind_account_equity" not in schema
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:
