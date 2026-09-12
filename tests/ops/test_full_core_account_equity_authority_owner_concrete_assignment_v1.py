@@ -138,6 +138,7 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert py_files == [
         "__init__.py",
         "constants_v1.py",
+        "internal_reconstruction_contract_v1.py",
         "normalization_inclusion_adjudication_v1.py",
         "sample_schema_v1.py",
         "venue_witness_observation_v1.py",
@@ -150,6 +151,7 @@ def test_slot_contains_no_producer_implementation() -> None:
             "sample_schema_v1.py",
             "venue_witness_observation_v1.py",
             "normalization_inclusion_adjudication_v1.py",
+            "internal_reconstruction_contract_v1.py",
         }
     )
     for forbidden in (
@@ -177,6 +179,13 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in normalization
     assert "def reconstruct" not in normalization
     assert "def bind_account_equity" not in normalization
+    reconstruction = (SLOT_DIR / "internal_reconstruction_contract_v1.py").read_text(
+        encoding="utf-8"
+    )
+    assert "def mint" not in reconstruction
+    assert "def produce" not in reconstruction
+    assert "def reconstruct" not in reconstruction
+    assert "def bind_account_equity" not in reconstruction
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:
