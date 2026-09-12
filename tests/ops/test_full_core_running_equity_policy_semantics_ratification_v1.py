@@ -179,7 +179,9 @@ def test_double_count_and_restart_guards() -> None:
 def test_mapping_owner_source_and_live_gates_unchanged() -> None:
     assert MAPPING_PROVEN is False
     assert IMPLEMENTATION_OF_VALUE_BINDING is False
-    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
+    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == (
+        "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
     assert LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE is False
     assert GOVERNED_PRODUCER_CREATED is False
@@ -193,7 +195,7 @@ def test_mapping_owner_source_and_live_gates_unchanged() -> None:
     assert WIRE_SEND_PERMITTED is False
     dag = live_admission_gap_dag_v1()
     assert dag["MAPPING_PROVEN"] is False
-    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ACCOUNT_EQUITY_AUTHORITY_OWNER
     assert dag["C01_C16_REMAIN_REJECTED"] is True
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY

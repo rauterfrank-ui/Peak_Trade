@@ -94,7 +94,8 @@ def fresh_evidence_requirement_matrix_v1() -> Tuple[dict[str, object], ...]:
             "FRESHNESS_REQUIREMENT": FRESHNESS_REQUIREMENT,
             "CONSUMER": STEP_29P_RISK_ADMISSIBILITY_AUTHORITY,
             "FAIL_CLOSED_BEHAVIOR": (
-                "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; observation fields "
+                "ACCOUNT_EQUITY_AUTHORITY_OWNER is empty governed slot; "
+                "GOVERNED_PRODUCER_CREATED=false; observation fields "
                 "availEq/totalEq/eq/adjEq/availBal/cashBal are forbidden 29P authority; "
                 "missing typed equity → RISK_ADMISSIBLE=false"
             ),

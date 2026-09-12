@@ -82,7 +82,9 @@ _FORBIDDEN_EQUITY_FIELDS = (
 
 
 def test_mapping_unproven_and_value_binding_not_implemented() -> None:
-    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
+    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == (
+        "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE == "UNRESOLVED"
     assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
     assert RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION == "NONE"
@@ -109,7 +111,7 @@ def test_mapping_unproven_and_value_binding_not_implemented() -> None:
     dag = live_admission_gap_dag_v1()
     assert dag["MAPPING_PROVEN"] is False
     assert dag["IMPLEMENTATION_OF_VALUE_BINDING"] is False
-    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ACCOUNT_EQUITY_AUTHORITY_OWNER
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
