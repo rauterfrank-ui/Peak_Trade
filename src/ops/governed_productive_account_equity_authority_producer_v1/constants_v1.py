@@ -4,7 +4,8 @@ Owner assignment plus typed sample schema, typed venue-witness
 observation contract, typed normalization/inclusion adjudication schema,
 and typed internal reconstruction contract schema, plus typed
 reconstruction algebra contract schema, plus typed P01
-haircut/reserve-depletion term contract schema. No producer
+haircut/reserve-depletion term contract schema, plus typed P01
+term-set and unit-class adjudication contract schema. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -57,6 +58,11 @@ P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_TERM_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_TERM_SEMANTICS_RESOLVED = False
 P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED = False
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT = True
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_TERM_SET_RESOLVED = False
+P01_VALUE_UNIT_CLASS_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -248,5 +254,34 @@ P01_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "contradiction_state",
     "p01_term_contract_authority_effect",
     "numeric_state",
+    "provenance_digest",
+)
+P01_TERM_SET_AND_UNIT_CLASS_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_term_set_and_unit_class_contract_id",
+    "p01_term_set_and_unit_class_contract_version",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "family_class_labels",
+    "family_labels_are_not_exact_term_set",
+    "p01_term_set",
+    "p01_term_set_resolved_status",
+    "p01_term_set_adjudication",
+    "p01_value_unit_class",
+    "p01_value_unit_class_resolved_status",
+    "p01_value_unit_class_adjudication",
+    "currency_valuation_domain",
+    "algebraic_role",
+    "sign_constraints",
+    "negative_allowed",
+    "rejected_term_set_inferences",
+    "rejected_unit_class_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_term_set_and_unit_class_contract_authority_effect",
     "provenance_digest",
 )

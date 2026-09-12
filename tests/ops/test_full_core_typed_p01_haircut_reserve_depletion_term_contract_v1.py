@@ -120,12 +120,13 @@ SCHEMA_PATH = (
 )
 AA_HEADING = "11.2.1.AA FULL_CORE_TYPED_RECONSTRUCTION_ALGEBRA_CONTRACT"
 AB_HEADING = "11.2.1.AB FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT"
+AC_HEADING = "11.2.1.AC FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT"
 
 
 def _ab_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ab_start = runbook.index(AB_HEADING)
-    return runbook[ab_start : runbook.index("## 11.3 Autonomy state model", ab_start)]
+    return runbook[ab_start : runbook.index(AC_HEADING, ab_start)]
 
 
 def test_p01_contract_constructs() -> None:
