@@ -2,14 +2,13 @@
 """
 Peak_Trade - End-to-End Registry Portfolio Backtest (legacy script)
 ====================================================================
-Vollständiger Backtest mit echten Marktdaten über Registry + Portfolio + Engine.
+Vollständiger Backtest über Registry + Portfolio + Engine.
 
-Legacy note: Kraken is not the current canonical target venue (production default:
-okx_europe_eea). Optional Kraken OHLCV below is historical/legacy data infrastructure
-only unless separately ratified. No venue reference grants runtime authority.
+Venue OHLCV fetch is not selectable on this legacy script. Dry-run remains
+config-only. Non-dry-run market-data load fail-closes via the existing
+operative venue boundary.
 
 Features:
-- Optional legacy Kraken public OHLCV über Data-Layer (mit Caching; nicht kanonisch)
 - Nutzt Portfolio-Config aus config.toml
 - Multi-Strategie-Backtest mit Registry-Integration
 - Export von Ergebnissen (CSV/JSON)
@@ -59,7 +58,7 @@ from src.core.config_registry import (
     get_strategies_by_regime,
     list_strategies,
 )
-from src.data import fetch_kraken_data, test_kraken_connection
+from src.exchange.operative_venue_boundary_v1 import reject_noncanonical_operative_surface
 from src.backtest.engine import run_portfolio_from_config, PortfolioResult
 from src.backtest.portfolio_resolver import resolve_portfolio_cfg
 from src.backtest.stats import validate_for_live_trading
@@ -74,11 +73,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 ALLOWED_TIMEFRAMES = ("1m", "5m", "15m", "1h", "4h", "1d")
-MAX_KRAKEN_LIMIT_BARS = 720
+MAX_OHLCV_LIMIT_BARS = 720
 
 
 def _limit_bars_type(value: str) -> int:
-    """argparse type: int in (1..MAX_KRAKEN_LIMIT_BARS]."""
+    """argparse type: int in (1..MAX_OHLCV_LIMIT_BARS]."""
     try:
         n = int(value)
     except ValueError as e:
@@ -88,8 +87,8 @@ def _limit_bars_type(value: str) -> int:
 
     if n <= 0:
         raise argparse.ArgumentTypeError("--limit muss > 0 sein")
-    if n > MAX_KRAKEN_LIMIT_BARS:
-        raise argparse.ArgumentTypeError(f"--limit darf max. {MAX_KRAKEN_LIMIT_BARS} sein")
+    if n > MAX_OHLCV_LIMIT_BARS:
+        raise argparse.ArgumentTypeError(f"--limit darf max. {MAX_OHLCV_LIMIT_BARS} sein")
     return n
 
 
@@ -141,7 +140,7 @@ Beispiele:
     data_group.add_argument(
         "--no-cache",
         action="store_true",
-        help="Cache deaktivieren (immer frisch von Kraken holen)",
+        help="Cache deaktivieren (no-op: venue fetch is not selectable)",
     )
 
     # === Portfolio-Parameter ===
@@ -211,7 +210,7 @@ Beispiele:
     control_group.add_argument(
         "--test-connection",
         action="store_true",
-        help="Nur Kraken-Verbindung testen und beenden",
+        help="Venue connection probe (noncanonical; fail-closed)",
     )
 
     return parser.parse_args()
@@ -275,37 +274,11 @@ def print_config_summary(args: argparse.Namespace, cfg: dict):
 
 
 def load_market_data(symbol: str, timeframe: str, limit: int, use_cache: bool) -> pd.DataFrame:
-    """
-    Lädt Marktdaten von Kraken.
-
-    Args:
-        symbol: Trading-Pair
-        timeframe: Timeframe
-        limit: Anzahl Bars
-        use_cache: Cache verwenden?
-
-    Returns:
-        OHLCV-DataFrame
-
-    Raises:
-        Exception: Bei Kraken-Fehler
-    """
-    logger.info(f"🌐 Lade Daten von Kraken: {symbol} {timeframe} (limit={limit})")
-
-    try:
-        df = fetch_kraken_data(symbol=symbol, timeframe=timeframe, limit=limit, use_cache=use_cache)
-
-        logger.info(f"✅ Daten geladen: {len(df)} Bars ({df.index[0]} bis {df.index[-1]})")
-
-        # Validierung
-        if len(df) < 100:
-            logger.warning(f"⚠️  Nur {len(df)} Bars - zu wenig für sinnvollen Backtest!")
-
-        return df
-
-    except Exception as e:
-        logger.error(f"❌ Fehler beim Laden der Daten: {e}")
-        raise
+    """Venue OHLCV is not selectable on this legacy script."""
+    del symbol, timeframe, limit, use_cache
+    reject_noncanonical_operative_surface(
+        surface="run_registry_portfolio_backtest.load_market_data"
+    )
 
 
 def run_backtest(
@@ -488,13 +461,9 @@ def main():
 
     # === Test-Connection-Mode ===
     if args.test_connection:
-        logger.info("🔌 Teste Kraken-Verbindung...")
-        if test_kraken_connection():
-            print("✅ Kraken-Verbindung OK!\n")
-            return 0
-        else:
-            print("❌ Kraken-Verbindung fehlgeschlagen!\n")
-            return 1
+        reject_noncanonical_operative_surface(
+            surface="run_registry_portfolio_backtest.test_connection"
+        )
 
     # === Config laden ===
     try:

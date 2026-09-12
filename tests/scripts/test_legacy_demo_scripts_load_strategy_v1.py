@@ -118,7 +118,7 @@ def test_demo_complete_pipeline_load_ohlcv_data_import_identity_is_canonical_own
     assert run_backtest_script.load_ohlcv_data.__module__ == "scripts.run_backtest"
 
 
-def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
+def test_demo_4_local_ohlcv_pipeline_fallback_wires_canonical_loader() -> None:
     """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; mock risk before import."""
     import types
 
@@ -142,8 +142,11 @@ def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
         "PositionSizer",
         "PositionSizerConfig",
         "RiskLimitChecker",
+        "RiskLimits",
         "RiskLimitsConfig",
+        "PositionRequest",
         "PortfolioState",
+        "calc_position_size",
     ):
         setattr(risk_mock, name, MagicMock())
 
@@ -152,7 +155,7 @@ def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
         import scripts.demo_complete_pipeline as demo_script
 
     with patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader):
-        result = demo_script.demo_4_kraken_pipeline()
+        result = demo_script.demo_4_local_ohlcv_pipeline()
 
     assert result is sample_df
     assert captured == {

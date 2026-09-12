@@ -453,7 +453,7 @@ def log_forward_signal_run(
         last_price: Schlusskurs der letzten Bar
         tag: Optionaler Tag für Filterung (z.B. "morning-scan")
         config_path: Pfad zur verwendeten Config
-        exchange_name: Name des Exchange-Clients (z.B. "kraken")
+        exchange_name: Name des Exchange-Clients (z.B. "dummy")
         bars_fetched: Anzahl der abgerufenen Bars
         extra_stats: Zusätzliche Statistiken
         extra_metadata: Zusätzliche Metadaten

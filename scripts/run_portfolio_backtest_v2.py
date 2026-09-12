@@ -145,14 +145,14 @@ def load_data_for_symbol(
     ohlcv_csv_path: Path | str | None = None,
 ) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """
-    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv_with_meta`` — dummy, Kraken oder CSV; ``cfg`` derzeit ungenutzt).
+    Lädt Marktdaten für ein Symbol (J1: ``load_ohlcv_with_meta`` — dummy oder CSV; ``cfg`` derzeit ungenutzt).
 
     Args:
         cfg: PeakConfig-Objekt
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
-        ohlcv_source: ``dummy`` | ``kraken`` | ``csv``
-        timeframe: Kraken-Timeframe; Dummy siehe Loader.
+        ohlcv_source: ``dummy`` | ``csv``
+        timeframe: OHLCV-Timeframe; Dummy siehe Loader.
         ohlcv_csv_path: CSV-Pfad bei ``csv``.
 
     Returns:

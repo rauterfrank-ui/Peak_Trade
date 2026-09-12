@@ -298,7 +298,7 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
         "--env-name",
         type=str,
         default="shadow_local",
-        help="Environment-Name (z.B. kraken_futures_testnet) (default: shadow_local)",
+        help="Environment-Name (default: shadow_local)",
     )
 
     # Flags
@@ -412,10 +412,8 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
     # Run-Type basierend auf Mode
     run_type = f"live_session_{args.mode}"
 
-    # Env-Name: bounded_pilot nutzt expliziten Namen statt shadow_local
-    effective_env_name = (
-        "bounded_pilot_kraken_live" if args.mode == "bounded_pilot" else args.env_name
-    )
+    # Env-Name: bounded_pilot uses a venue-neutral registry label, not a venue bind.
+    effective_env_name = "bounded_pilot" if args.mode == "bounded_pilot" else args.env_name
 
     # Session-ID generieren
     from src.experiments.live_session_registry import generate_session_run_id

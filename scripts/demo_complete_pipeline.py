@@ -6,7 +6,7 @@ Demonstriert die vollständige Integration:
 
 1. Risk-Layer (Position Sizing + Limits)
 2. Config-System (TOML)
-3. Local OHLCV sample (Kraken pipeline decommissioned)
+3. Local OHLCV sample
 4. Backtest mit allem zusammen
 
 Usage:
@@ -202,14 +202,14 @@ def demo_3_risk_limits():
     print("\n✅ Risk Limits funktionieren!")
 
 
-def demo_4_kraken_pipeline():
-    """Demo 4: local OHLCV sample. Kraken pipeline is not an operative surface."""
+def demo_4_local_ohlcv_pipeline():
+    """Demo 4: local OHLCV sample. Noncanonical venue pipelines are not selectable."""
     print("\n" + "=" * 70)
-    print("DEMO 4: Local OHLCV sample (Kraken pipeline decommissioned)")
+    print("DEMO 4: Local OHLCV sample")
     print("=" * 70)
 
-    print("\nKraken data adapters are absent and not selectable.")
-    print("This demo does not inject Kraken credentials or call Kraken.")
+    print("\nNoncanonical venue data adapters are not selectable.")
+    print("This demo does not inject venue credentials or call a venue.")
     print("Using local dummy OHLCV for remaining demos.")
     df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"  {len(df)} Dummy-Bars erstellt")
@@ -306,7 +306,7 @@ def main():
     print("  1. Config-System (TOML)")
     print("  2. Position Sizing (Fixed Fractional + Kelly)")
     print("  3. Portfolio Risk Limits")
-    print("  4. Local OHLCV sample (Kraken pipeline decommissioned)")
+    print("  4. Local OHLCV sample")
     print("  5. Vollständiger Backtest")
 
     try:
@@ -320,7 +320,7 @@ def main():
         demo_3_risk_limits()
 
         # Demo 4: local OHLCV sample (liefert Daten für Demo 5)
-        df = demo_4_kraken_pipeline()
+        df = demo_4_local_ohlcv_pipeline()
 
         # Demo 5: Kompletter Backtest
         demo_5_complete_backtest(df)
@@ -332,7 +332,7 @@ def main():
         print("\n📚 Weitere Infos:")
         print("  - Risk-Layer:      src/risk/position_sizer.py + limits.py")
         print("  - Config-System:   src/core/config.py + config.toml")
-        print("  - Data-Layer:      src/data/loader.py (Kraken pipeline absent)")
+        print("  - Data-Layer:      src/data/loader.py")
         print("  - Backtest-Engine: src/backtest/engine.py")
 
     except KeyboardInterrupt:

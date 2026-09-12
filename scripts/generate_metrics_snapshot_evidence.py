@@ -25,7 +25,7 @@ def generate_evidence_snapshot():
     collector.record_error(error_type="TimeoutError")
 
     # Reconnects
-    collector.record_reconnect(labels={"exchange": "kraken"})
+    collector.record_reconnect(labels={"exchange": "example"})
 
     # Latencies (simulate distribution)
     latencies = [
