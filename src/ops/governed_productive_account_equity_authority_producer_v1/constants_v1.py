@@ -13,7 +13,8 @@ overlap/equivalence adjudication versus U04 and U05, plus typed P01
 numeric value provenance adjudication, plus typed P01 member freshness
 inheritance adjudication, plus typed P01 haircut/reserve/depletion
 semantics adjudication, plus typed P01 exact member identity
-ratification, plus typed P01 value unit class ratification.
+ratification, plus typed P01 value unit class ratification, plus typed
+P01 applicability class ratification.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
@@ -92,6 +93,25 @@ P01_EXACT_MEMBER_COUNT = 1
 P01_VALUE_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT = True
 P01_VALUE_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_VALUE_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_APPLICABILITY_CLASS_CONTRACT_SCHEMA_PRESENT = True
+P01_APPLICABILITY_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_APPLICABILITY_CLASS_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_APPLICABILITY_CLASS_RESOLVED = True
+P01_APPLICABILITY_CLASS = "GOVERNED_CONDITIONAL"
+P01_APPLICABILITY_STATE_MODEL = "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED"
+P01_APPLICABILITY_CLASS_SELECTED_OPTION = "P01_OP_APPLICABILITY_GOVERNED_CONDITIONAL_V1"
+P01_APPLICATION_PREDICATE_RESOLVED = False
+P01_APPLICATION_PREDICATE = "UNSPECIFIED_FAIL_CLOSED"
+P01_APPLICABILITY_IS_DISTINCT_FROM_VALUE = True
+P01_APPLICABILITY_IS_DISTINCT_FROM_ZERO = True
+P01_APPLICABILITY_IS_DISTINCT_FROM_ABSENCE = True
+P01_APPLICABILITY_IS_DISTINCT_FROM_NOT_APPLICABLE_VALUE_ENCODING = True
+P01_REQUIREDNESS_RESOLVED = False
+P01_OPTIONALITY_RESOLVED = False
+P01_ZERO_SEMANTICS_RESOLVED = False
+P01_ABSENCE_SEMANTICS_RESOLVED = False
+P01_INPUT_PRECONDITIONS_RESOLVED = False
+P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED = False
 P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED = False
 P01_ZERO_ABSENCE_NA_RESOLVED = False
 P01_COMBINATION_PRECEDENCE_RESOLVED = False
@@ -847,5 +867,81 @@ P01_VALUE_UNIT_CLASS_REQUIRED_FIELDS: tuple[str, ...] = (
     "p01_runtime_instance_present",
     "p01_authority_effect",
     "p01_value_unit_class_contract_authority_effect",
+    "provenance_digest",
+)
+P01_APPLICABILITY_CLASS_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_applicability_class_contract_id",
+    "p01_applicability_class_contract_version",
+    "parent_p01_value_unit_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "member_id",
+    "ratification_scope",
+    "selected_option",
+    "p01_term_set_resolved_status",
+    "p01_value_unit_class_resolved_status",
+    "p01_value_unit_class",
+    "p01_applicability_class_resolved_status",
+    "p01_applicability_class",
+    "p01_applicability_state_model",
+    "p01_applicability_state_applies",
+    "p01_applicability_state_does_not_apply",
+    "p01_applicability_state_unknown_fail_closed",
+    "p01_application_predicate_resolved_status",
+    "p01_application_predicate",
+    "p01_applicability_resolved_status",
+    "p01_applicability_is_distinct_from_value",
+    "p01_applicability_is_distinct_from_zero",
+    "p01_applicability_is_distinct_from_absence",
+    "p01_applicability_is_distinct_from_not_applicable_value_encoding",
+    "class_is_not_unconditional_always_on",
+    "class_is_not_unconditional_never_on",
+    "class_does_not_ratify_predicate",
+    "class_does_not_ratify_formula",
+    "class_does_not_ratify_operator",
+    "class_does_not_ratify_sign",
+    "class_does_not_ratify_source_mapping",
+    "class_does_not_close_p01_term_semantics",
+    "class_does_not_close_haircut_reserve_depletion_unspecified",
+    "predicate_true_may_mean_applies",
+    "predicate_false_may_mean_does_not_apply",
+    "predicate_unknown_must_fail_closed",
+    "unknown_cannot_become_false",
+    "unknown_cannot_become_does_not_apply",
+    "unknown_cannot_become_not_applicable",
+    "unknown_cannot_become_zero",
+    "missing_cannot_become_zero",
+    "missing_cannot_auto_become_does_not_apply",
+    "does_not_apply_is_not_numeric_zero",
+    "applies_does_not_imply_valid_numeric_value",
+    "p01_requiredness_resolved_status",
+    "p01_optionality_resolved_status",
+    "p01_zero_semantics_resolved_status",
+    "p01_absence_semantics_resolved_status",
+    "p01_zero_absence_na_resolved_status",
+    "p01_input_preconditions_resolved_status",
+    "p01_reconstruction_state_preconditions_resolved_status",
+    "master_v2_is_not_p01_applicability_authority",
+    "double_play_is_not_p01_applicability_authority",
+    "top20_is_not_p01_applicability_authority",
+    "learning_is_not_p01_applicability_authority",
+    "full_core_autonomy_is_not_p01_applicability_authority",
+    "venue_raw_is_not_p01_applicability_authority",
+    "step_29p_is_not_p01_applicability_authority",
+    "live_account_bound_is_not_p01_applicability_authority",
+    "u04_u05_u06_applicability_inheritance_forbidden",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "rejected_applicability_class_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_runtime_instance_present",
+    "p01_authority_effect",
+    "p01_applicability_class_contract_authority_effect",
     "provenance_digest",
 )
