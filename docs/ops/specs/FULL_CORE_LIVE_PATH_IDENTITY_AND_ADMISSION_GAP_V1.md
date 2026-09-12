@@ -4,7 +4,7 @@ status: active
 scope: Full-Core productive Live-path identity and repo-internal live-admission gap DAG; no GET; no POST; no arming
 capability: FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-05
+last_updated: 2026-09-12
 ---
 
 # Full Core Live Path Identity And Admission Gap V1
@@ -160,8 +160,8 @@ The pre-wire admission closure is bound in
 [`FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md`](FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md).
 
 Current remaining gap after STEP-29P risk-admissibility pre-construction
-(canonical persist: Master Runbook §11.2.1.Q; derived spec
-[`FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md`](FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md)):
+(historical persist; superseded for equity-mapping Owner ratification by
+`FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1`):
 
 ```text
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING
@@ -176,8 +176,34 @@ STEP_29P_RISK_ADMISSIBLE=false
 ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
 ```
 
-Typed `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` remains unbound.
+Typed `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` remained unbound at Q.
 Cap 11.1 LiveExecutionPort construction-policy lift and Cap-7.2 Host-Join to
-LiveExecutionPort remain later Live-authorization layers and are not the
-next slice while this equity dimension is unbound. Cap-7.2 Host-Join is not
+LiveExecutionPort remain later Live-authorization layers. Cap-7.2 Host-Join is not
 in this DAG.
+
+Current remaining gap after STEP-29P account-equity mapping Owner ratification
+(canonical persist: Master Runbook §11.2.1.R; derived spec
+[`FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md`](FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md)):
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT=STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_EQUITY_SOURCE_MAPPING_OWNER_RATIFICATION_REQUIRED
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+No non-forbidden Source→Semantic mapping is derivable from current canonical
+contracts. Value binding is not implemented. Cap 11.1 construction-policy lift and
+Cap-7.2 Host-Join remain later tracks.

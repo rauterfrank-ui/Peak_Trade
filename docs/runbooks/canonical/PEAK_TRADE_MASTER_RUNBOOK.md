@@ -10311,6 +10311,85 @@ CURRENT_CANONICAL_SECTION=11.2.1.Q.FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CON
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Equity-mapping Owner ratification remaining after §11.2.1.Q is superseded by
+§11.2.1.R. STEP-29P conjunction, GET-pack facts, and standing Live flags remain
+as bound in §11.2.1.Q. Historical
+`EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING`
+in this section is not rewritten.
+
+### 11.2.1.R FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION (BOUND; MAPPING NOT DERIVABLE; NO VALUE BINDING; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.Q standing-gate values, GET-pack facts, Capital Admission mathematics, §11.2.2 Treasury contracts, §11.13.5 canary facts, or §11.14 ladder fields. Does **not** assign a productive `ACCOUNT_EQUITY_AUTHORITY_OWNER`. Does **not** bind `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field. Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` / `availBal` / `cashBal`. Does **not** elevate offline/default/injected equity to Live-Capital-Authority. Does **not** execute the LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not** construct `LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set `LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`.
+
+Owner-GO
+`OWNER_GO=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_AUTHORITY_BINDING_V1`
+authorized a binding persist. Current canonical contracts contain **no** explicit non-forbidden Source→Semantic mapping for `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`. Observation is not authority. The GET pack `evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z` does not carry a typed equity value. Therefore this slice consumes the GO fail-closed: `MAPPING_PROVEN=false`, `IMPLEMENTATION_OF_VALUE_BINDING=false`. No replacement semantics are invented.
+
+``` text
+OWNER_GO=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_AUTHORITY_BINDING_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.R.FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION
+CURRENT_PHASE=11.2.1.R.FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE=UNRESOLVED
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=true
+OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY=true
+INJECTED_EQUITY_IS_NOT_LIVE_CAPITAL_AUTHORITY=true
+LEARNING_DDO_AUTHORITY_EFFECT=NONE
+RANKING_SELECTION_AUTHORITY_EFFECT=NONE
+CAP23_FINAL_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_AUTHORIZED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_EQUITY_SOURCE_MAPPING_OWNER_RATIFICATION_REQUIRED
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split. STEP-29P remains the compute / risk-sizing owner. Account-equity **input** authority is a separate typed owner and remains `UNRESOLVED`. Venue/raw balance observations remain Evidence and are not automatically Authority.
+
+B. Mapping census. Freeze `RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1`, Pre-Live Capital Admission, Treasury Phase-1, and the Q GET requirement matrix name the allowed dimension and forbid `availEq` / `totalEq` / `eq` / `adjEq` / `availBal` / `cashBal`. No contract names a non-forbidden source object, field, or derivation that may fill that dimension. `MAPPING_PROVEN=false`.
+
+C. GET pack. Existing pack `20260905T212436Z` is re-read only. It does not carry typed `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`. `STEP_29P_RISK_ADMISSIBLE` remains false and is not synthesized.
+
+D. Non-execution of later mini-slices. Because mapping is unproven, typed equity-value binding and the LIVE_ACCOUNT_BOUND 29P-claim join are **not** implemented in this persist. LIVE_ACCOUNT_BOUND remains an identity seam only.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.R.FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
