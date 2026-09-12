@@ -11856,6 +11856,262 @@ CURRENT_CANONICAL_SECTION=11.2.1.Y.FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTR
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Typed internal-reconstruction-contract persist remaining after §11.2.1.Y is
+superseded by §11.2.1.Z. Normalization/inclusion-contract pins, mapping-unproven
+pins, GET-pack facts, standing Live flags, and the forbidden-field set remain
+as bound in §11.2.1.Y. Historical
+`EARLIEST_DECOMPOSED_CONTRACT_GAP=INTERNAL_RECONSTRUCTION_CONTRACT_MISSING`
+in this section is not rewritten.
+
+### 11.2.1.Z FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT (BOUND; TYPED INTERNAL RECONSTRUCTION SCHEMA ONLY; NO PRODUCTIVE RECONSTRUCTION; NO SOURCE SELECTED; NO MAPPING; NO PRODUCER IMPLEMENTATION; NO VALUE BINDING; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.Y normalization/inclusion
+contract. Does **not** rewrite §11.2.1.X witness observation contract. Does
+**not** rewrite §11.2.1.W sample schema. Does **not** rewrite §11.2.1.V owner
+assignment. Does **not** rewrite §11.2.1.U architecture classes. Does **not**
+rewrite §11.2.1.T policy semantics P01/U01–U09. Does **not** rewrite §11.2.1.S
+census, candidate reject reasons, or
+`ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE`. Does **not**
+rewrite §11.2.1.R or §11.2.1.Q standing-gate values, GET-pack facts, Capital
+Admission mathematics, §11.2.2 Treasury contracts, §11.13.5 canary facts, or
+§11.14 ladder fields. Does **not** select a source. Does **not** bind
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field or internal
+object. Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` /
+`availBal` / `cashBal` / `frozenBal` / `isoEq` / `ordFrozen` / `upl`. Does
+**not** elevate `AccountingPortfolioStateV1`, `LedgerSnapshot.equity_by_ccy`,
+or `SimulatedPortfolioStateV1`. Does **not** revive C01–C21. Does **not**
+construct a governed productive equity producer. Does **not** implement source
+adapters. Does **not** implement productive reconstruction, reconciliation,
+divergence policy, or runtime value binding. Does **not** execute the
+LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not** construct
+`LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does **not** set
+`LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`. Does **not**
+lift Cap 11.1. Does **not** join Cap 7.2 to LiveExecutionPort. Does **not** set
+`STEP_29P_RISK_ADMISSIBLE=true`. Cap 22 / MF-WP3 remains PARKED. DDO/Learning
+have no Trading/Risk/Selection/Execution authority. Cap 2.3 remains sole
+productive Selection owner.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_INTERNAL_RECONSTRUCTION_CONTRACT_SCHEMA_V1`
+authorizes persist of the typed `INTERNAL_RECONSTRUCTION_CONTRACT_V1` after
+the already-canonical `NORMALIZATION_INCLUSION_ADJUDICATION_V1`. Schema
+presence is not productive reconstruction, not a reconstructed value, not source
+selection, not mapping, and not value binding. It does **not** authorize
+source adapters, sample minting, Live arming, or Cap 11.1 construction.
+Observation is not authority. A named target dimension is not reconstruction
+proof. U02/U03 remain in-equity-base-only with no separate addend.
+
+``` text
+OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_INTERNAL_RECONSTRUCTION_CONTRACT_SCHEMA_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT_SSOT_PERSIST
+THIS_SLICE=11.2.1.Z.FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT
+CURRENT_PHASE=11.2.1.Z.FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER=true
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS=GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE=UNRESOLVED
+OWNER_ASSIGNMENT_RATIFIED=true
+SLOT_KIND=EMPTY_GOVERNED_AUTHORITY_OWNER_SLOT
+SLOT_IS_EMPTY=true
+C01_C16_NOT_ELEVATED=true
+C01_C21_NOT_ELEVATED=true
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+RUNTIME_VALUE_BINDING_PRESENT=false
+RUNTIME_VALUE_BINDING_IMPLEMENTED=false
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+SOURCE_CANDIDATE_COUNT=16
+C01_C16_REMAIN_REJECTED=true
+SEMANTIC_REQUIREMENTS_COMPLETE=true
+POLICY_SEMANTICS_COMPLETE=true
+ARCHITECTURE_RATIFIED=true
+FUTURE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS=GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+FUTURE_GOVERNED_SOURCE_OBJECT_CLASS=GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1
+FUTURE_PRODUCER_CLASS=COMPOSITIONAL_RECONSTRUCTION_WITH_WITNESS_RECONCILIATION_V1
+GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_PRESENT=true
+VENUE_WITNESS_SCHEMA_PRESENT=true
+VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false
+VENUE_WITNESS_SELECTED=false
+WITNESS_CONTRACT_MISSING_CLOSED=true
+RAW_TO_WITNESS_PROVEN=false
+OBSERVATION_AUTHORITY_EFFECT=NONE
+NORMALIZATION_SCHEMA_PRESENT=true
+NORMALIZATION_RUNTIME_INSTANCE_PRESENT=false
+NORMALIZATION_CONTRACT_MISSING_CLOSED=true
+NORMALIZATION_AUTHORITY_EFFECT=NONE
+FIELD_TO_DIMENSION_MAPPING_SCHEMA_PRESENT=true
+FIELD_TO_DIMENSION_MAPPING_PRESENT=false
+SEMANTIC_MAPPING_PROVEN=false
+INCLUSION_PROVEN=false
+INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true
+INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_CONTRACT_MISSING_CLOSED=true
+INTERNAL_RECONSTRUCTION_PROVEN=false
+INTERNAL_RECONSTRUCTION_CREATED=false
+INTERNAL_RECONSTRUCTION_AUTHORITY_EFFECT=NONE
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+LIVE_RESTART_RECONSTRUCTED=false
+EQUITY_DIMENSION_BOUND=false
+MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING=false
+SOURCE_OBJECT_PRESENT=false
+SOURCE_OBJECT_PRESENT_SEMANTICS=RUNTIME_SAMPLE_INSTANCE_NOT_SCHEMA_DEFINITION
+SAMPLE_PRESENT=false
+GOVERNED_PRODUCTIVE_SOURCE_PRESENT=false
+GOVERNED_PRODUCER_CREATED=false
+PRODUCER_IMPLEMENTATION_PRESENT=false
+RAW_VENUE_FIELD_AUTHORITY_FORBIDDEN=true
+OBSERVATION_IS_NOT_AUTHORITY=true
+INCLUSION_ELIGIBILITY_IS_NOT_SELECTION=true
+REQUESTED_TARGET_DIMENSION_IS_NOT_PROVEN_MAPPING=true
+TARGET_DIMENSION_NAMING_IS_NOT_RECONSTRUCTION_PROOF=true
+LIVE_ACCOUNT_BOUND_IDENTITY_IS_NOT_CAPITAL_AUTHORITY=true
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT=false
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+AVAILEQ_IS_NOT_29P_EQUITY_AUTHORITY=true
+OFFLINE_ALGEBRA_NOT_LIVE_CAPITAL_AUTHORITY=true
+INJECTED_EQUITY_IS_NOT_LIVE_CAPITAL_AUTHORITY=true
+SOURCE_SCHEMA_MISSING_CLOSED=true
+P01_STATUS=DECIDED
+U01_STATUS=DECIDED
+U02_STATUS=DECIDED
+U03_STATUS=DECIDED
+U04_STATUS=DECIDED
+U05_STATUS=DECIDED
+U06_STATUS=DECIDED
+U07_STATUS=DECIDED
+U08_STATUS=DECIDED
+U09_STATUS=DECIDED
+P01_MAY_INCREASE_EQUITY=false
+USD_EQUALS_USDC=false
+U09_FRESHNESS_CLASS=FRESH_GET_PER_PRETRADE_DECISION
+U09_SAME_PRETRADE_EPOCH_REQUIRED=true
+NUMERIC_EQUITY_TTL_SECONDS=5
+U09_COPIES_AVAILABLE_MARGIN_TS_AGE_BOUND=false
+MAX_WITNESS_AGE_PRESENT=false
+CLOCK_SOURCE_DEFINED=false
+MONOTONIC_OR_WALLCLOCK_DEFINED=false
+RECONCILIATION_CONTRACT_CREATED=false
+DIVERGENCE_POLICY_CREATED=false
+LEARNING_DDO_AUTHORITY_EFFECT=NONE
+RANKING_SELECTION_AUTHORITY_EFFECT=NONE
+CAP23_FINAL_SELECTION_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_AUTHORIZED=false
+CAP72_PRODUCTIVE_PORT=SimulatedExecutionPortV1
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+WIRE_SEND_OCCURRED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_DECOMPOSED_CONTRACT_GAP=RECONSTRUCTION_ALGEBRA_INCOMPLETE
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split preserved. Observation is not authority. Venue-raw fields remain
+Evidence/Witnesses only. C01–C21 remain rejected and are not elevated into this
+internal reconstruction contract. STEP-29P remains the compute / risk-sizing
+consumer and does not mint equity authority. LIVE_ACCOUNT_BOUND proves
+identity/context only and never mints capital. Schema presence is not a
+productive reconstruction runtime instance and is not a reconstructed value.
+`RAW_TO_WITNESS_PROVEN` remains false. `SEMANTIC_MAPPING_PROVEN` remains false.
+`INCLUSION_PROVEN` remains false. `SOURCE_SELECTED` remains false.
+`INTERNAL_RECONSTRUCTION_PROVEN` remains false.
+
+B. Typed internal-reconstruction persist (not producer implementation; not
+source selection; not mapping; not productive reconstruction):
+
+``` text
+INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true
+INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_CONTRACT_MISSING_CLOSED=true
+INTERNAL_RECONSTRUCTION_PROVEN=false
+INTERNAL_RECONSTRUCTION_CREATED=false
+INTERNAL_RECONSTRUCTION_AUTHORITY_EFFECT=NONE
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+LIVE_RESTART_RECONSTRUCTED=false
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/internal_reconstruction_contract_v1.py
+SCHEMA_CLASS=INTERNAL_RECONSTRUCTION_CONTRACT_V1
+RECONSTRUCTION_SEMANTIC_CLASS=COMPOSITIONAL_INTERNAL_RECONSTRUCTION_V1
+TARGET_SEMANTIC_DIMENSION=RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING
+RECONSTRUCTION_ELIGIBILITY=INELIGIBLE
+RECONSTRUCTED_VALUE_STATE=NOT_COMPUTED
+COMPONENT_REQUIREMENT_STATES=COMPONENT_REQUIRED|COMPONENT_NOT_APPLICABLE
+COMPONENT_STATES=COMPONENT_PRESENT|COMPONENT_MISSING|COMPONENT_MALFORMED|COMPONENT_STALE|COMPONENT_CONTRADICTORY|COMPONENT_NOT_APPLICABLE
+PRESENCE_STATES=MISSING|EMPTY|PRESENT_ZERO|PRESENT_NONZERO|MALFORMED|NOT_APPLICABLE
+GOVERNED_PRODUCER_CREATED=false
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+```
+
+The contract requires an explicit `source_normalization_adjudication_id`,
+preserved `bound_account_identity`, venue/host, tdMode, account mode as
+eligibility context, USDC currency domain, reconstruction epoch, and a typed
+component set. The target dimension may be named
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` as the reconstruction target only.
+U02/U03 remain `IN_EQUITY_BASE_ONLY_NO_SEPARATE_ADDEND`; a naive
+base+PnL+fee+slippage sum is not ratified. Required component slots are
+`EQUITY_BASE`, `REALIZED_PNL`, `UNREALIZED_PNL_MTM`,
+`PENDING_ORDER_RESERVATION`, `LIABILITY`, `FEE`, and
+`P01_HAIRCUT_RESERVE_DEPLETION`. `SLIPPAGE` is typed as
+`COMPONENT_NOT_APPLICABLE` because it is not a ratified U-term for this
+dimension. Presence states do not collapse. `PRESENT_ZERO` is distinct from
+`MISSING`, `EMPTY`, and `MALFORMED` and is not auto-excluded merely because the
+value is zero. `PRESENT_NONZERO` does not imply reconstruction proof. Missing
+or malformed required components are not coerced to zero. Stale required
+components are not treated as current. Same-epoch unproven, unproven
+freshness, restart-invalidated/unproven, and contradiction fail closed.
+`NUMERIC_EQUITY_TTL_SECONDS=5` is not a component TTL. `ELIGIBLE`, `PROVEN`,
+and reconstructed numeric values remain unreachable. Reconciliation is not
+created.
+
+C. Completing this internal-reconstruction-contract persist does **not** prove
+a source is selected, does **not** prove a mapping, does **not** prove
+reconstruction, does **not** create a governed producer, does **not** mint an
+authoritative sample, does **not** implement reconciliation, and does **not**
+authorize implementation of value binding. `INTERNAL_RECONSTRUCTION_CONTRACT_MISSING`
+is closed as a decomposed schema gap. The algebra schema is present and
+incomplete because U02/U03 forbid a separate-addend formula and no complete
+target-dimension algebra is ratified. The earliest unresolved Full-Core
+dependency remains `NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`. The
+earliest remaining decomposed contract gap is
+`RECONSTRUCTION_ALGEBRA_INCOMPLETE`.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.Z.FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

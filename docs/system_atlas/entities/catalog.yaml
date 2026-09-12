@@ -5826,6 +5826,7 @@ entities:
       - tests/ops/test_full_core_governed_running_account_equity_sample_schema_v1.py
       - tests/ops/test_full_core_typed_venue_witness_observation_contract_v1.py
       - tests/ops/test_full_core_typed_normalization_inclusion_contract_v1.py
+      - tests/ops/test_full_core_typed_internal_reconstruction_contract_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5843,6 +5844,7 @@ entities:
       - docs/ops/specs/FULL_CORE_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_VENUE_WITNESS_OBSERVATION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5898,6 +5900,14 @@ entities:
       FIELD_TO_DIMENSION_MAPPING_PRESENT=false; SEMANTIC_MAPPING_PROVEN=false;
       INCLUSION_PROVEN=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false;
       GOVERNED_PRODUCER_CREATED=false; INTERNAL_RECONSTRUCTION_CREATED=false;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.Z persist: INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true;
+      INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false;
+      INTERNAL_RECONSTRUCTION_PROVEN=false;
+      RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true;
+      RECONSTRUCTION_ALGEBRA_COMPLETE=false; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
@@ -6293,6 +6303,11 @@ entities:
       NORMALIZATION_RUNTIME_INSTANCE_PRESENT=false; SEMANTIC_MAPPING_PROVEN=false;
       INCLUSION_PROVEN=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false;
       GOVERNED_PRODUCER_CREATED=false; INTERNAL_RECONSTRUCTION_CREATED=false.
+      11.2.1.Z adds the typed INTERNAL_RECONSTRUCTION_CONTRACT_V1
+      reconstruction contract only;
+      INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false;
+      INTERNAL_RECONSTRUCTION_PROVEN=false; RECONSTRUCTION_ALGEBRA_COMPLETE=false;
+      SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1

@@ -1,9 +1,10 @@
 """Governed account-equity authority-owner slot.
 
 Owner assignment plus typed sample schema, typed venue-witness
-observation contract, and typed normalization/inclusion adjudication
-schema. No producer implementation. No runtime source object. No
-mapping. No value binding. No Live-account-bound join. No wire.
+observation contract, typed normalization/inclusion adjudication schema,
+and typed internal reconstruction contract schema. No producer
+implementation. No runtime source object. No mapping. No value
+binding. No Live-account-bound join. No wire.
 """
 
 from __future__ import annotations
@@ -41,6 +42,14 @@ FIELD_TO_DIMENSION_MAPPING_PRESENT = False
 SEMANTIC_MAPPING_PROVEN = False
 INCLUSION_PROVEN = False
 INTERNAL_RECONSTRUCTION_CREATED = False
+INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT = True
+INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT = False
+INTERNAL_RECONSTRUCTION_CONTRACT_MISSING_CLOSED = True
+INTERNAL_RECONSTRUCTION_PROVEN = False
+INTERNAL_RECONSTRUCTION_AUTHORITY_EFFECT = "NONE"
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT = True
+RECONSTRUCTION_ALGEBRA_COMPLETE = False
+LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
 OBSERVATION_AUTHORITY_EFFECT = "NONE"
@@ -149,5 +158,37 @@ NORMALIZATION_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "semantic_mapping_proven_status",
     "inclusion_proven_status",
     "source_selected_status",
+    "provenance_digest",
+)
+RECONSTRUCTION_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "reconstruction_id",
+    "source_normalization_adjudication_id",
+    "bound_account_identity",
+    "bound_venue_identity",
+    "rest_host",
+    "bound_td_mode",
+    "account_mode",
+    "currency_domain",
+    "reconstruction_epoch",
+    "target_semantic_dimension_id",
+    "reconstruction_semantic_class",
+    "reconstruction_semantic_class_version",
+    "inclusion_vector",
+    "component_term_vector",
+    "component_completeness",
+    "reconstruction_algebra_status",
+    "reconstruction_algebra_representation",
+    "reconstructed_value_state",
+    "reconstructed_value_representation",
+    "contradiction_status",
+    "same_epoch_status",
+    "freshness_status",
+    "freshness_evidence_ref",
+    "restart_invalidation_status",
+    "restart_provenance_class",
+    "reconstruction_eligibility",
+    "reconstruction_proven_status",
+    "observation_vs_authority_class",
+    "internal_reconstruction_authority_effect",
     "provenance_digest",
 )

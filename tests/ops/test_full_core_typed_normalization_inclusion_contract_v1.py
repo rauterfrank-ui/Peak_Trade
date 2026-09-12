@@ -116,6 +116,7 @@ SCHEMA_PATH = (
 )
 X_HEADING = "11.2.1.X FULL_CORE_TYPED_VENUE_WITNESS_OBSERVATION_CONTRACT"
 Y_HEADING = "11.2.1.Y FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTRACT"
+Z_HEADING = "11.2.1.Z FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT"
 _FORBIDDEN_FALLBACK = "totalEq|eq|adjEq|availEq"
 
 
@@ -238,7 +239,7 @@ def _synthetic_fields(
 def _y_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     y_start = runbook.index(Y_HEADING)
-    return runbook[y_start : runbook.index("## 11.3 Autonomy state model", y_start)]
+    return runbook[y_start : runbook.index(Z_HEADING, y_start)]
 
 
 def test_valid_synthetic_adjudication_can_be_constructed() -> None:
@@ -569,8 +570,8 @@ def test_schema_creation_does_not_select_source_or_mapping_or_producer() -> None
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
-    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == ("INTERNAL_RECONSTRUCTION_CONTRACT_MISSING")
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "INTERNAL_RECONSTRUCTION_CONTRACT_MISSING"
+    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == "RECONSTRUCTION_ALGEBRA_INCOMPLETE"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "RECONSTRUCTION_ALGEBRA_INCOMPLETE"
 
 
 def test_step_29p_remains_inadmissible_and_live_gates_remain_false() -> None:
