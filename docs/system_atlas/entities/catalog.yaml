@@ -5786,6 +5786,8 @@ entities:
       - src/ops/full_core_step_29p_fresh_venue_evidence_v1/__main__.py
       - src/ops/full_core_step_29p_fresh_venue_evidence_v1/requirement_matrix_v1.py
       - src/ops/full_core_step_29p_fresh_venue_evidence_v1/persist_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5817,6 +5819,7 @@ entities:
       - tests/ops/test_full_core_step_29p_account_equity_source_semantic_mapping_ratification_v1.py
       - tests/ops/test_full_core_running_equity_policy_semantics_ratification_v1.py
       - tests/ops/test_full_core_running_equity_authority_architecture_ratification_v1.py
+      - tests/ops/test_full_core_account_equity_authority_owner_concrete_assignment_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5830,6 +5833,7 @@ entities:
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1.md
+      - docs/ops/specs/FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5863,6 +5867,10 @@ entities:
       DECIDED; still no source; MAPPING_PROVEN=false.
       11.2.1.U persist: ARCHITECTURE_RATIFIED=true; future owner/source/producer
       classes only; ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; SOURCE_SELECTED=false.
+      11.2.1.V persist: ACCOUNT_EQUITY_AUTHORITY_OWNER assigned to empty
+      governed slot ops.governed_productive_account_equity_authority_producer_v1;
+      SLOT_IS_EMPTY=true; OWNER_ASSIGNMENT_RATIFIED=true; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false; no equity value binding.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:full_core_live_path_models_v1
@@ -6220,12 +6228,14 @@ entities:
       - tests/ops/test_full_core_step_29p_account_equity_source_semantic_mapping_ratification_v1.py
       - tests/ops/test_full_core_running_equity_policy_semantics_ratification_v1.py
       - tests/ops/test_full_core_running_equity_authority_architecture_ratification_v1.py
+      - tests/ops/test_full_core_account_equity_authority_owner_concrete_assignment_v1.py
       - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1.md
+      - docs/ops/specs/FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION_V1.md
       - evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z/SUMMARY.json
     notes: >-
       Joins typed Capital Admission evidence into Full-Core admission.
@@ -6240,6 +6250,8 @@ entities:
       SEMANTIC_REQUIREMENTS_COMPLETE=true; MAPPING_PROVEN=false.
       11.2.1.U ratifies future architecture classes only; SOURCE_SELECTED=false;
       GOVERNED_PRODUCER_CREATED=false.
+      11.2.1.V assigns the empty governed owner slot only; SLOT_IS_EMPTY=true;
+      SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1

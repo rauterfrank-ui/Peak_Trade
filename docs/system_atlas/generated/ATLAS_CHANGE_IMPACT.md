@@ -283,7 +283,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.U persist records ARCHITECTURE_RATIFIED=true with future owner/source/producer classes only; EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; SOURCE_SELECTED=false; MAPPING_PROVEN=false; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
+- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.V persist assigns ACCOUNT_EQUITY_AUTHORITY_OWNER to empty governed slot ops.governed_productive_account_equity_authority_producer_v1; SLOT_IS_EMPTY=true; OWNER_ASSIGNMENT_RATIFIED=true; EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
