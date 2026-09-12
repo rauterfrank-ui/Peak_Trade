@@ -3,7 +3,8 @@
 Owner assignment plus typed sample schema, typed venue-witness
 observation contract, typed normalization/inclusion adjudication schema,
 and typed internal reconstruction contract schema, plus typed
-reconstruction algebra contract schema. No producer
+reconstruction algebra contract schema, plus typed P01
+haircut/reserve-depletion term contract schema. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -51,6 +52,11 @@ INTERNAL_RECONSTRUCTION_AUTHORITY_EFFECT = "NONE"
 RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT = True
 RECONSTRUCTION_ALGEBRA_COMPLETE = False
 RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT = "NONE"
+P01_TERM_CONTRACT_SCHEMA_PRESENT = True
+P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_TERM_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_TERM_SEMANTICS_RESOLVED = False
+P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -209,5 +215,38 @@ ALGEBRA_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "valuation_dependency_status",
     "reconstruction_algebra_authority_effect",
     "term_vector",
+    "provenance_digest",
+)
+P01_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_term_contract_id",
+    "p01_term_contract_version",
+    "algebra_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "semantic_class",
+    "algebraic_role",
+    "economic_meaning",
+    "value_unit_class",
+    "currency_valuation_domain",
+    "applicability_state",
+    "provenance_requirements",
+    "origin_class",
+    "inclusion_state",
+    "embedded_state",
+    "overlap_state",
+    "double_counting_guard",
+    "sign_constraints",
+    "negative_allowed",
+    "zero_validity_semantics",
+    "freshness_epoch_requirements",
+    "completeness_resolution_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "p01_term_contract_authority_effect",
+    "numeric_state",
     "provenance_digest",
 )

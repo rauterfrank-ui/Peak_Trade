@@ -66,6 +66,7 @@ ALGEBRA_REPRESENTATION = (
 )
 ROLE_ADDITIVE = "ADDITIVE"
 ROLE_SUBTRACTIVE = "SUBTRACTIVE"
+ROLE_REDUCTION_ONLY_UNSPECIFIED = "REDUCTION_ONLY_UNSPECIFIED"
 ROLE_EMBEDDED_NOT_SEPARATE = "EMBEDDED_NOT_SEPARATE"
 ROLE_VALUATION_INPUT_ONLY = "VALUATION_INPUT_ONLY"
 ROLE_NON_ALGEBRAIC = "NON_ALGEBRAIC"
@@ -77,6 +78,7 @@ ROLE_CONDITIONAL_ONCE_IN_BASE_OR_SINGLE_SUBTRACTION = (
 )
 SIGN_ADD = "ADD"
 SIGN_SUBTRACT = "SUBTRACT"
+SIGN_REDUCTION_ONLY = "REDUCTION_ONLY"
 SIGN_NONE = "NONE"
 SIGN_CONDITIONAL = "CONDITIONAL"
 SIGN_PROHIBITED = "PROHIBITED"
@@ -87,6 +89,7 @@ INCLUSION_NOT_APPLICABLE = "NOT_APPLICABLE"
 EMBEDDED_YES = "EMBEDDED"
 EMBEDDED_NO = "NOT_EMBEDDED"
 EMBEDDED_CONDITIONAL = "CONDITIONAL"
+EMBEDDED_UNRESOLVED = "UNRESOLVED"
 EMBEDDED_NOT_APPLICABLE = "NOT_APPLICABLE"
 TERM_SET_SPECIFIED = "SPECIFIED"
 TERM_SET_UNSPECIFIED = "UNSPECIFIED"
@@ -102,6 +105,7 @@ NUMERIC_PRESENT_NONZERO = "PRESENT_NONZERO"
 CONTRADICTION_NONE = "NO_CONTRADICTION"
 CONTRADICTION_PRESENT = "CONTRADICTION_PRESENT"
 CURRENCY_DOMAIN_USDC = "USDC"
+CURRENCY_DOMAIN_UNSPECIFIED = "UNSPECIFIED"
 VALUATION_NONE = "NONE"
 VALUATION_MTM_MARK_IN_EQUITY_BASE = "MTM_MARK_IN_EQUITY_BASE"
 VALUATION_NOTIONAL_PROHIBITED_AS_ADDEND = "NOTIONAL_PROHIBITED_AS_ADDEND"
@@ -179,6 +183,7 @@ _TERM_VECTOR_FIELDS: Tuple[str, ...] = (
 ALGEBRAIC_ROLES: Tuple[str, ...] = (
     ROLE_ADDITIVE,
     ROLE_SUBTRACTIVE,
+    ROLE_REDUCTION_ONLY_UNSPECIFIED,
     ROLE_EMBEDDED_NOT_SEPARATE,
     ROLE_VALUATION_INPUT_ONLY,
     ROLE_NON_ALGEBRAIC,
@@ -197,6 +202,7 @@ EMBEDDED_STATES: Tuple[str, ...] = (
     EMBEDDED_YES,
     EMBEDDED_NO,
     EMBEDDED_CONDITIONAL,
+    EMBEDDED_UNRESOLVED,
     EMBEDDED_NOT_APPLICABLE,
 )
 NUMERIC_STATES: Tuple[str, ...] = (
@@ -482,18 +488,41 @@ def _validate_algebra_term_v1(term: AlgebraTermV1) -> None:
         raise ReconstructionAlgebraContractError(
             "RECONSTRUCTION_ALGEBRA_EMBEDDED_TERM_CANNOT_BE_INDEPENDENTLY_COUNTED"
         )
-    if role == ROLE_UNRESOLVED and participation == PARTICIPATION_PARTICIPATING:
+    if (
+        role in {ROLE_UNRESOLVED, ROLE_REDUCTION_ONLY_UNSPECIFIED}
+        and participation == PARTICIPATION_PARTICIPATING
+    ):
         raise ReconstructionAlgebraContractError(
             "RECONSTRUCTION_ALGEBRA_UNRESOLVED_TERM_CANNOT_PARTICIPATE"
         )
-    if numeric == NUMERIC_MISSING and sign in {SIGN_ADD, SIGN_SUBTRACT}:
+    participating_signs = {SIGN_ADD, SIGN_SUBTRACT, SIGN_REDUCTION_ONLY}
+    if numeric == NUMERIC_MISSING and sign in participating_signs:
         raise ReconstructionAlgebraContractError(
             "RECONSTRUCTION_ALGEBRA_MISSING_TERM_ZERO_COERCION_FORBIDDEN"
         )
-    if numeric == NUMERIC_MALFORMED and sign in {SIGN_ADD, SIGN_SUBTRACT}:
+    if numeric == NUMERIC_MALFORMED and sign in participating_signs:
         raise ReconstructionAlgebraContractError(
             "RECONSTRUCTION_ALGEBRA_MALFORMED_TERM_ZERO_COERCION_FORBIDDEN"
         )
+    if term_id == TERM_P01_HAIRCUT_RESERVE_DEPLETION:
+        if role == ROLE_SUBTRACTIVE:
+            raise ReconstructionAlgebraContractError("P01_INDEPENDENT_SUBTRACTIVE_UNPROVEN")
+        if role == ROLE_ADDITIVE or sign == SIGN_ADD:
+            raise ReconstructionAlgebraContractError("P01_MAY_INCREASE_EQUITY_FORBIDDEN")
+        if inclusion == INCLUSION_NOT_IN_BASE:
+            raise ReconstructionAlgebraContractError("P01_BASE_EXCLUSION_UNPROVEN")
+        if inclusion == INCLUSION_NOT_APPLICABLE:
+            raise ReconstructionAlgebraContractError("P01_UNKNOWN_APPLICABILITY_AUTO_NA_FORBIDDEN")
+        if embedded == EMBEDDED_NO:
+            raise ReconstructionAlgebraContractError("P01_NON_EMBEDDING_UNPROVEN")
+        if embedded == EMBEDDED_NOT_APPLICABLE:
+            raise ReconstructionAlgebraContractError("P01_UNKNOWN_APPLICABILITY_AUTO_NA_FORBIDDEN")
+        if currency == CURRENCY_DOMAIN_USDC:
+            raise ReconstructionAlgebraContractError("P01_UNIT_INFERRED_CURRENCY_FORBIDDEN")
+        if "safe" in _fold(term.double_count_guard_id):
+            raise ReconstructionAlgebraContractError("P01_UNKNOWN_OVERLAP_AUTO_SAFE_FORBIDDEN")
+        if numeric == NUMERIC_PRESENT_ZERO:
+            raise ReconstructionAlgebraContractError("P01_ZERO_WITHOUT_EXPLICIT_POLICY_FORBIDDEN")
     if currency == "USD":
         raise ReconstructionAlgebraContractError("RECONSTRUCTION_ALGEBRA_USD_IS_NOT_USDC")
     pins = _policy_pins()
@@ -567,15 +596,15 @@ def _canonical_terms() -> Tuple[AlgebraTermV1, ...]:
             term_id=TERM_P01_HAIRCUT_RESERVE_DEPLETION,
             policy_id="P01",
             component_semantic_class=TERM_P01_HAIRCUT_RESERVE_DEPLETION,
-            algebraic_role=ROLE_SUBTRACTIVE,
+            algebraic_role=ROLE_REDUCTION_ONLY_UNSPECIFIED,
             operator_semantics=P01_HAIRCUTS_RESERVE_DEPLETION,
-            sign_semantics=SIGN_SUBTRACT,
-            inclusion_state=INCLUSION_NOT_IN_BASE,
-            embedded_term_state=EMBEDDED_NO,
+            sign_semantics=SIGN_REDUCTION_ONLY,
+            inclusion_state=INCLUSION_UNRESOLVED,
+            embedded_term_state=EMBEDDED_UNRESOLVED,
             double_count_guard_id="P01_REDUCTION_ONCE",
             economic_effect_id="HAIRCUT_RESERVE_DEPLETION",
             valuation_dependency=VALUATION_NONE,
-            currency_unit_domain=CURRENCY_DOMAIN_USDC,
+            currency_unit_domain=CURRENCY_DOMAIN_UNSPECIFIED,
             term_set_status=TERM_SET_UNSPECIFIED,
             completeness_participation=PARTICIPATION_BLOCKING,
             numeric_participation_state=NUMERIC_NOT_COMPUTED,
