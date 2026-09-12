@@ -320,7 +320,7 @@ def test_a1_crash_durability_remains_unproven() -> None:
 
 def test_full_core_29p_authority_remains_unchanged() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
     assert CANARY_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False

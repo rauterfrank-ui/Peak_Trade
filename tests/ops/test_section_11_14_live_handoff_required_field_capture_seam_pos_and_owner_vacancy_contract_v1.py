@@ -373,7 +373,7 @@ def test_all_pos_derivations_are_refused() -> None:
 
 def test_no_full_core_29p_or_master_v2_mutation() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
     assert HOST_CRASH_DURABILITY == "UNPROVEN"

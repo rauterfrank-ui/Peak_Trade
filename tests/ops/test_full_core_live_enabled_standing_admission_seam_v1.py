@@ -106,7 +106,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
     assert HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is True
@@ -117,7 +117,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert dag["LIVE_ENABLED"] is False
     assert dag["LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
-        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED"
+        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
 
 
