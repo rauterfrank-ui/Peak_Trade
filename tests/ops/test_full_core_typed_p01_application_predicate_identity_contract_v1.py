@@ -96,6 +96,7 @@ SPEC_PATH = (
 )
 AM_HEADING = "11.2.1.AM FULL_CORE_TYPED_P01_APPLICABILITY_CLASS_CONTRACT"
 AN_HEADING = "11.2.1.AN FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT"
+AO_HEADING = "11.2.1.AO FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT"
 
 
 def _contract() -> P01ApplicationPredicateIdentityContractV1:
@@ -109,7 +110,7 @@ def _contract() -> P01ApplicationPredicateIdentityContractV1:
 def _an_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     an_start = runbook.index(AN_HEADING)
-    return runbook[an_start : runbook.index("## 11.3 Autonomy state model", an_start)]
+    return runbook[an_start : runbook.index(AO_HEADING, an_start)]
 
 
 def test_p01_application_predicate_identity_contract_constructs() -> None:
