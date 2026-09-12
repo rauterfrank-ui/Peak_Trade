@@ -712,3 +712,39 @@ Typed P01 term-contract presence is not P01 semantic resolution, not algebra
 completeness, not productive reconstruction, not a reconstructed value, not
 source selection, not mapping, and not producer implementation. Cap 11.1
 construction-policy lift and Cap-7.2 Host-Join remain later tracks.
+
+Current remaining gap after typed P01 term-set and unit-class adjudication
+(canonical persist: Master Runbook §11.2.1.AC; derived spec
+[`FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_V1.md`](FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_V1.md)):
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT=true
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_TERM_SET_RESOLVED=false
+P01_VALUE_UNIT_CLASS_RESOLVED=false
+P01_TERM_SEMANTICS_RESOLVED=false
+P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=false
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT=NONE
+CANONICAL_FORMULA_PROVEN=false
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+GOVERNED_PRODUCER_CREATED=false
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT=false
+STEP_29P_RISK_ADMISSIBLE=false
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+Typed P01 term-set/unit-class adjudication presence is not P01 semantic
+resolution, not exact membership, not a P01 unit class, not algebra
+completeness, not productive reconstruction, not source selection, not mapping,
+and not producer implementation. Cap 11.1 construction-policy lift and Cap-7.2
+Host-Join remain later tracks.
