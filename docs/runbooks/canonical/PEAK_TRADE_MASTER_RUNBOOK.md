@@ -13350,11 +13350,299 @@ remaining decomposed contract gap remains
 prerequisite inside that gap after this persist is broader P01 embedding-state,
 still unresolved.
 
+Typed broader P01 embedding-state adjudication persist remaining after
+§11.2.1.AE is superseded by §11.2.1.AF. P01 equity-base inclusion pins, P01
+applicability pins, P01 term-set/unit-class pins, P01 term-contract pins,
+mapping-unproven pins, GET-pack facts, standing Live flags, and the
+forbidden-field set remain as bound in §11.2.1.AE. Historical
+`EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`
+in this section is not rewritten.
+
 ``` text
 CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
 PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
 SPEC_OWNER=docs/ops/specs/FULL_CORE_TYPED_P01_EQUITY_BASE_INCLUSION_CONTRACT_V1.md
 CURRENT_CANONICAL_SECTION=11.2.1.AE.FULL_CORE_TYPED_P01_EQUITY_BASE_INCLUSION_CONTRACT
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+### 11.2.1.AF FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT (BOUND; TYPED P01 BROADER EMBEDDING-STATE ADJUDICATION ONLY; EMBEDDING REMAINS UNRESOLVED FAIL-CLOSED; EQUITY-BASE INCLUSION, APPLICABILITY, TERM SET, AND UNIT CLASS REMAIN UNSPECIFIED; ALGEBRA INCOMPLETE; NO PRODUCTIVE RECONSTRUCTION; NO SOURCE SELECTED; NO MAPPING; NO PRODUCER IMPLEMENTATION; NO VALUE BINDING; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.AE P01 equity-base inclusion pins
+except to record that the broader embedding question was forensically
+adjudicated and remains unresolved. Does **not** rewrite §11.2.1.AD P01
+applicability pins. Does **not** rewrite §11.2.1.AC P01 term-set/unit-class
+pins. Does **not** rewrite §11.2.1.AB P01 term-contract pins. Does **not**
+rewrite §11.2.1.AA reconstruction algebra contract. Does **not** rewrite
+§11.2.1.Z internal reconstruction contract. Does **not** rewrite §11.2.1.Y
+normalization/inclusion contract. Does **not** rewrite §11.2.1.X witness
+observation contract. Does **not** rewrite §11.2.1.W sample schema. Does **not**
+rewrite §11.2.1.V owner assignment. Does **not** rewrite §11.2.1.U architecture
+classes. Does **not** rewrite §11.2.1.T policy semantics P01/U01–U09. Does
+**not** rewrite §11.2.1.S census, candidate reject reasons, or
+`ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE`. Does **not**
+rewrite §11.2.1.R or §11.2.1.Q standing-gate values, GET-pack facts, Capital
+Admission mathematics, §11.2.2 Treasury contracts, §11.13.5 canary facts, or
+§11.14 ladder fields. Does **not** invent a P01 embedding rule. Does **not**
+treat unknown as `NOT_EMBEDDED`, `INDEPENDENT`, `SEPARATE`, `EMBEDDED`,
+`PARTIALLY_EMBEDDED`, `SAFE_TO_SUBTRACT`, `SAFE_TO_OMIT`, `SAFE_TO_COMBINE`,
+or `SAFE_TO_NET`. Does **not** treat zero, absence, missing, or malformed as
+embedding or non-embedding. Does **not** let unresolved term-set, unit class,
+applicability, or equity-base inclusion decide broader embedding. Does **not**
+collapse family-level embedding, member-level embedding, economic overlap,
+representational nesting, arithmetic inclusion, or semantic equivalence. Does
+**not** let U02/U03 `EMBEDDED_NOT_SEPARATE` decide P01 embedding. Does **not**
+let U04, U05, or U06 labels, conditional embedding of those terms, or
+`U06` accrued-fee distinctness decide P01 embedding. Does **not** convert
+"U06 accrued fees may be distinct" into "P01 is not embedded in U06". Does
+**not** let equal values, shared source, shared provenance, shared unit, a
+common venue field, algebraic adjacency, or a separate schema field prove
+embedding or independence. Does **not** treat absence of a nested field as
+non-embedding. Does **not** authorize a P01 subtraction. Does **not**
+authorize omission of P01. Does **not** authorize netting P01 against
+U04/U05/U06. Does **not** resolve P01 term set, unit class, applicability,
+equity-base inclusion, U04/U05 overlap/equivalence, or numeric provenance.
+Does **not** select a source. Does **not** bind
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field or internal
+object. Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` /
+`availBal` / `cashBal` / `frozenBal` / `isoEq` / `ordFrozen` / `upl`. Does
+**not** elevate `AccountingPortfolioStateV1`, `LedgerSnapshot.equity_by_ccy`,
+or `SimulatedPortfolioStateV1`. Does **not** revive C01–C21. Does **not**
+construct a governed productive equity producer. Does **not** implement
+source adapters. Does **not** implement productive reconstruction,
+reconciliation, divergence policy, or runtime value binding. Does **not**
+execute the LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not**
+construct `LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does
+**not** set `LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`.
+Does **not** lift Cap 11.1. Does **not** join Cap 7.2 to LiveExecutionPort.
+Does **not** set `STEP_29P_RISK_ADMISSIBLE=true`. Does **not** resolve U04,
+U05, or U06. Cap 22 / MF-WP3 remains PARKED. DDO/Learning have no
+Trading/Risk/Selection/Execution authority. Cap 2.3 remains sole productive
+Selection owner.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_P01_BROADER_EMBEDDING_STATE_CONTRACT_V1`
+authorizes persist of the typed `P01_EMBEDDING_STATE_CONTRACT_V1` required by
+the already-canonical `P01_EQUITY_BASE_INCLUSION_CONTRACT_V1`. Embedding schema
+presence is not P01 semantic resolution and is not an embedding rule. It does
+**not** authorize source adapters, sample minting, Live arming, or Cap 11.1
+construction. Observation is not authority. Unknown is not not-embedded,
+embedded, partial, independent, or omit-safe.
+
+``` text
+OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_P01_BROADER_EMBEDDING_STATE_CONTRACT_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT_SSOT_PERSIST
+THIS_SLICE=11.2.1.AF.FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT
+CURRENT_PHASE=11.2.1.AF.FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER=true
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS=GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+OWNER_ASSIGNMENT_RATIFIED=true
+SLOT_KIND=EMPTY_GOVERNED_AUTHORITY_OWNER_SLOT
+SLOT_IS_EMPTY=true
+C01_C16_NOT_ELEVATED=true
+C01_C21_NOT_ELEVATED=true
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+RUNTIME_VALUE_BINDING_PRESENT=false
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+SEMANTIC_REQUIREMENTS_COMPLETE=true
+POLICY_SEMANTICS_COMPLETE=true
+ARCHITECTURE_RATIFIED=true
+GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_PRESENT=true
+VENUE_WITNESS_SCHEMA_PRESENT=true
+VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false
+NORMALIZATION_SCHEMA_PRESENT=true
+NORMALIZATION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true
+INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_PROVEN=false
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT=NONE
+CANONICAL_FORMULA_PROVEN=false
+UNRESOLVED_ALGEBRA_TERMS=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED,U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED,U05_LIABILITY_INCLUSION_OR_VALUE_UNRESOLVED,U06_FEE_INCLUSION_UNRESOLVED
+P01_TERM_CONTRACT_SCHEMA_PRESENT=true
+P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_TERM_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT=true
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_TERM_SET_RESOLVED=false
+P01_VALUE_UNIT_CLASS_RESOLVED=false
+P01_TERM_SET=UNSPECIFIED
+P01_VALUE_UNIT_CLASS=UNSPECIFIED
+P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT=true
+P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_APPLICABILITY_RESOLVED=false
+P01_APPLICABILITY=UNSPECIFIED_FAIL_CLOSED
+P01_APPLICABILITY_STATUS=UNSPECIFIED_FAIL_CLOSED
+P01_APPLICABILITY_RULE=UNSPECIFIED_FAIL_CLOSED
+P01_APPLICABILITY_ADJUDICATION=UNSPECIFIED_FAIL_CLOSED
+P01_TYPED_APPLICABILITY_STATE=UNKNOWN
+P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT=true
+P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_EQUITY_BASE_INCLUSION_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_EQUITY_BASE_INCLUSION_RESOLVED=false
+P01_EQUITY_BASE_INCLUSION_STATUS=UNRESOLVED
+P01_EQUITY_BASE_INCLUSION_RULE=UNSPECIFIED_FAIL_CLOSED
+P01_EQUITY_BASE_INCLUSION_ADJUDICATION=UNKNOWN_RELATIONSHIP_FAIL_CLOSED
+P01_TYPED_INCLUSION_STATE=UNKNOWN
+P01_EMBEDDING_STATE_CONTRACT_SCHEMA_PRESENT=true
+P01_EMBEDDING_STATE_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_EMBEDDING_STATE_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_EMBEDDED_STATE_RESOLVED=false
+P01_EMBEDDED_STATE=UNRESOLVED
+P01_EMBEDDING_RULE=UNSPECIFIED_FAIL_CLOSED
+P01_EMBEDDING_ADJUDICATION=UNKNOWN_RELATIONSHIP_FAIL_CLOSED
+P01_TYPED_EMBEDDING_STATE=UNKNOWN
+P01_TERM_SEMANTICS_RESOLVED=false
+P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=false
+P01_REMAINING_UNRESOLVED_SEMANTICS=P01_TERM_SET_UNSPECIFIED,P01_VALUE_UNIT_CLASS_UNSPECIFIED,P01_APPLICABILITY_UNSPECIFIED,P01_EQUITY_BASE_INCLUSION_UNRESOLVED,P01_EMBEDDING_UNRESOLVED,P01_OVERLAP_WITH_U04_U05_UNRESOLVED,P01_NUMERIC_VALUE_PROVENANCE_UNSPECIFIED
+P01_ECONOMIC_MEANING=HAIRCUT_RESERVE_AND_DEPLETION_REDUCTION_ONLY
+P01_ALGEBRAIC_ROLE=REDUCTION_ONLY_UNSPECIFIED
+P01_SIGN_SEMANTICS=NON_NEGATIVE_REDUCTION_ONLY_MUST_NOT_INCREASE_EQUITY
+P01_NEGATIVE_ALLOWED=false
+P01_OVERLAP_STATE=U06_ACCRUED_FEES_DISTINCT_U04_U05_EQUIVALENCE_UNPROVEN_UNKNOWN_OVERLAP_FAIL_CLOSED
+P01_NUMERIC_VALUE_PROVENANCE_UNSPECIFIED=true
+P01_NUMERIC_VALUE_PROVENANCE_STATUS=UNSPECIFIED
+U04_STATUS=DECIDED
+U05_STATUS=DECIDED
+U06_STATUS=DECIDED
+U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED=true
+U05_LIABILITY_INCLUSION_OR_VALUE_UNRESOLVED=true
+U06_FEE_INCLUSION_UNRESOLVED=true
+LIVE_RESTART_RECONSTRUCTED=false
+SOURCE_OBJECT_PRESENT=false
+GOVERNED_PRODUCER_CREATED=false
+RECONCILIATION_CONTRACT_CREATED=false
+DIVERGENCE_POLICY_CREATED=false
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT=false
+STEP_29P_RISK_ADMISSIBLE=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split preserved. Observation is not authority. Venue-raw fields remain
+Evidence/Witnesses only. C01–C21 remain rejected. `P01_STATUS=DECIDED` remains
+existence of a possible P01 family, not an embedding selector.
+`P01_TERM_SET_RESOLVED` remains false. `P01_VALUE_UNIT_CLASS_RESOLVED` remains
+false. `P01_APPLICABILITY_RESOLVED` remains false.
+`P01_EQUITY_BASE_INCLUSION_RESOLVED` remains false. `P01_EMBEDDED_STATE_RESOLVED`
+remains false. `P01_EMBEDDED_STATE` remains `UNRESOLVED`.
+`P01_TERM_SEMANTICS_RESOLVED` remains false.
+`P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED` remains false.
+`RECONSTRUCTION_ALGEBRA_COMPLETE` remains false.
+
+B. Typed P01 broader embedding-state persist (not producer implementation; not
+source selection; not mapping; not productive reconstruction; not a closed-form
+target formula):
+
+``` text
+P01_EMBEDDING_STATE_CONTRACT_SCHEMA_PRESENT=true
+P01_EMBEDDING_STATE_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_EMBEDDING_STATE_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_EMBEDDED_STATE_RESOLVED=false
+P01_EMBEDDED_STATE=UNRESOLVED
+P01_EMBEDDING_RULE=UNSPECIFIED_FAIL_CLOSED
+P01_EMBEDDING_ADJUDICATION=UNKNOWN_RELATIONSHIP_FAIL_CLOSED
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/p01_embedding_state_contract_v1.py
+SCHEMA_CLASS=P01_EMBEDDING_STATE_CONTRACT_V1
+PARENT_CONTRACT=P01_EQUITY_BASE_INCLUSION_CONTRACT_V1
+TYPED_EMBEDDING_STATE=UNKNOWN
+FAMILY_LEVEL_EMBEDDING_STATE=UNRESOLVED
+MEMBER_LEVEL_EMBEDDING_STATE=UNRESOLVED
+ECONOMIC_OVERLAP_STATE=UNRESOLVED
+REPRESENTATIONAL_NESTING_STATE=UNRESOLVED
+ARITHMETIC_INCLUSION_STATE=UNRESOLVED
+SEMANTIC_EQUIVALENCE_STATE=UNRESOLVED
+GOVERNED_PRODUCER_CREATED=false
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+```
+
+Proven facts are only those already ratified in §11.2.1.T/AB/AC/AD/AE: P01 is a
+reduction-only haircut/reserve/depletion family; each term is non-negative;
+P01 must not increase equity; unspecified or unclear members fail closed;
+venue-raw haircuts and C01–C21 elevation remain forbidden; exact term set, unit
+class, applicability, and equity-base inclusion remain unspecified. U02/U03
+remain `IN_EQUITY_BASE_ONLY_NO_SEPARATE_ADDEND` and algebra-role
+`EMBEDDED_NOT_SEPARATE`; that treatment is not a P01 embedding rule. Algebra
+already rejects `P01` `EMBEDDED_NO` as `P01_NON_EMBEDDING_UNPROVEN` and keeps
+P01 `embedded_term_state=UNRESOLVED`. This slice additionally proves that
+repository evidence does **not** yield a bounded P01 embedding relationship
+into any other accounting, reconstruction, reserve, liability, fee, valuation,
+or policy object. Typed distinctions retained without ratifying a rule:
+`UNKNOWN` remains fail-closed; `NOT_EMBEDDED` is unproven; `FULLY_EMBEDDED` is
+unproven; `PARTIALLY_EMBEDDED` is unproven; `EMBEDDED_IN_EQUITY_BASE` is
+unproven; `EMBEDDED_IN_U04` is unproven; `EMBEDDED_IN_U05` is unproven;
+`EMBEDDED_IN_U06` is unproven; `EMBEDDED_IN_ANOTHER_ACCOUNTING_TERM` is
+unproven; `EMBEDDING_DEPENDS_ON_MEMBER_CLASS` is unproven;
+`EMBEDDING_DEPENDS_ON_APPLICABILITY` is unproven. Family-level embedding,
+member-level embedding, economic overlap, representational nesting, arithmetic
+inclusion, and semantic equivalence remain distinct and unresolved. Rejected
+inferences: U06 accrued-fee distinctness as P01 non-embedding in U06;
+equity-base inclusion unresolved as broader embedding; family-level as
+member-level; economic overlap as embedding; representational nesting as
+arithmetic inclusion; arithmetic adjacency as semantic equivalence; shared
+provenance as embedding; shared unit as embedding; common venue source as
+embedding; separate algebra slot as independence; absent nested field as
+non-embedding; U02/U03 embedded-not-separate as P01 embedding; U04/U05/U06
+conditional embedding as P01 embedding; equal values as embedding or
+equivalence; zero as embedding or non-embedding; absence as embedding or
+non-embedding; missing code as not-embedded; unresolved term-set, applicability,
+or unit class as an embedding rule; unknown embedding as permission to
+subtract, omit, combine, or net P01. Unproven, and therefore fail-closed,
+remain: exact P01 member term set; amount vs ratio vs percentage unit class;
+always-vs-conditional applicability; whether P01 is already inside
+EQUITY_BASE; whether P01 is independently subtractive; broader embedded-state;
+equivalence or containment with U04 or U05; numeric value provenance; and
+P01-member freshness distinct from U09.
+
+C. Completing this broader embedding-state adjudication persist does **not**
+prove P01 term semantics resolved, does **not** close
+`P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`, does **not** prove algebra
+completeness, does **not** resolve U04/U05/U06, does **not** prove a source is
+selected, does **not** prove a mapping, does **not** prove reconstruction, does
+**not** create a governed producer, does **not** mint an authoritative sample,
+does **not** implement reconciliation, and does **not** authorize
+implementation of value binding. The earliest unresolved Full-Core dependency
+remains `NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`. The earliest
+remaining decomposed contract gap remains
+`P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`. The narrower remaining P01
+prerequisite inside that gap after this persist is P01 overlap/equivalence
+with U04/U05, still unresolved.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.AF.FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
