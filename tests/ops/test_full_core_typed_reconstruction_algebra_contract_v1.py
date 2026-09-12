@@ -72,7 +72,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.reconstruc
     ROLE_ADDITIVE,
     ROLE_EMBEDDED_NOT_SEPARATE,
     ROLE_PROHIBITED,
-    ROLE_SUBTRACTIVE,
+    ROLE_REDUCTION_ONLY_UNSPECIFIED,
     ROLE_VALUATION_INPUT_ONLY,
     SCHEMA_CLASS,
     SIGN_ADD,
@@ -106,12 +106,13 @@ SCHEMA_PATH = (
 )
 Z_HEADING = "11.2.1.Z FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT"
 AA_HEADING = "11.2.1.AA FULL_CORE_TYPED_RECONSTRUCTION_ALGEBRA_CONTRACT"
+AB_HEADING = "11.2.1.AB FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT"
 
 
 def _aa_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     aa_start = runbook.index(AA_HEADING)
-    return runbook[aa_start : runbook.index("## 11.3 Autonomy state model", aa_start)]
+    return runbook[aa_start : runbook.index(AB_HEADING, aa_start)]
 
 
 def test_algebra_contract_constructs() -> None:
@@ -181,7 +182,9 @@ def test_term_identity_and_additive_subtractive_distinction() -> None:
     by_id = {term.term_id: term for term in contract.terms}
     assert by_id[TERM_EQUITY_BASE].algebraic_role == ROLE_ADDITIVE
     assert by_id[TERM_EQUITY_BASE].sign_semantics == SIGN_ADD
-    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].algebraic_role == ROLE_SUBTRACTIVE
+    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].algebraic_role == (
+        ROLE_REDUCTION_ONLY_UNSPECIFIED
+    )
     assert by_id[TERM_REALIZED_PNL].algebraic_role == ROLE_EMBEDDED_NOT_SEPARATE
     assert by_id[TERM_UNREALIZED_PNL_MTM].algebraic_role == ROLE_EMBEDDED_NOT_SEPARATE
     assert by_id[TERM_SLIPPAGE].algebraic_role == ROLE_PROHIBITED
