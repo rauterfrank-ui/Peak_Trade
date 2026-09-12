@@ -14,7 +14,8 @@ numeric value provenance adjudication, plus typed P01 member freshness
 inheritance adjudication, plus typed P01 haircut/reserve/depletion
 semantics adjudication, plus typed P01 exact member identity
 ratification, plus typed P01 value unit class ratification, plus typed
-P01 applicability class ratification.
+P01 applicability class ratification, plus typed P01 application
+predicate identity and boundary ratification.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
@@ -102,6 +103,18 @@ P01_APPLICABILITY_STATE_MODEL = "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED"
 P01_APPLICABILITY_CLASS_SELECTED_OPTION = "P01_OP_APPLICABILITY_GOVERNED_CONDITIONAL_V1"
 P01_APPLICATION_PREDICATE_RESOLVED = False
 P01_APPLICATION_PREDICATE = "UNSPECIFIED_FAIL_CLOSED"
+P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_SCHEMA_PRESENT = True
+P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED = True
+P01_APPLICATION_PREDICATE_MODEL = "TYPED_GOVERNED_APPLICABILITY_DECISION_V1"
+P01_APPLICATION_PREDICATE_IDENTITY_SELECTED_OPTION = (
+    "P01_OP_APPLICATION_PREDICATE_TYPED_GOVERNED_APPLICABILITY_DECISION_V1"
+)
+P01_APPLICABILITY_DECISION_STATE_MODEL = "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED"
+P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED = False
+P01_APPLICATION_TRUE_RULE_RESOLVED = False
+P01_APPLICATION_FALSE_RULE_RESOLVED = False
 P01_APPLICABILITY_IS_DISTINCT_FROM_VALUE = True
 P01_APPLICABILITY_IS_DISTINCT_FROM_ZERO = True
 P01_APPLICABILITY_IS_DISTINCT_FROM_ABSENCE = True
@@ -943,5 +956,92 @@ P01_APPLICABILITY_CLASS_REQUIRED_FIELDS: tuple[str, ...] = (
     "p01_runtime_instance_present",
     "p01_authority_effect",
     "p01_applicability_class_contract_authority_effect",
+    "provenance_digest",
+)
+P01_APPLICATION_PREDICATE_IDENTITY_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_application_predicate_identity_contract_id",
+    "p01_application_predicate_identity_contract_version",
+    "parent_p01_applicability_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "member_id",
+    "ratification_scope",
+    "selected_option",
+    "p01_term_set_resolved_status",
+    "p01_value_unit_class_resolved_status",
+    "p01_value_unit_class",
+    "p01_applicability_class_resolved_status",
+    "p01_applicability_class",
+    "p01_application_predicate_identity_resolved_status",
+    "p01_application_predicate_model",
+    "p01_applicability_decision_state_model",
+    "p01_applicability_decision_state_applies",
+    "p01_applicability_decision_state_does_not_apply",
+    "p01_applicability_decision_state_unknown_fail_closed",
+    "p01_applicability_decision_is_typed",
+    "p01_applicability_decision_is_governed",
+    "p01_applicability_decision_must_remain_inside_existing_reconstruction_boundary",
+    "p01_applicability_decision_is_not_account_equity_authority",
+    "p01_applicability_decision_is_not_parallel_producer",
+    "p01_applicability_decision_is_not_trading_logic_authority",
+    "p01_applicability_decision_is_distinct_from_p01_value",
+    "p01_applicability_decision_is_distinct_from_p01_zero",
+    "p01_applicability_decision_is_distinct_from_p01_absence",
+    "p01_applicability_decision_is_distinct_from_p01_requiredness",
+    "p01_applicability_decision_is_distinct_from_p01_completeness",
+    "p01_application_predicate_resolved_status",
+    "p01_application_predicate",
+    "p01_application_predicate_input_domain_resolved_status",
+    "p01_application_true_rule_resolved_status",
+    "p01_application_false_rule_resolved_status",
+    "identity_does_not_ratify_input_domain",
+    "identity_does_not_ratify_true_rule",
+    "identity_does_not_ratify_false_rule",
+    "identity_does_not_ratify_formula",
+    "identity_does_not_ratify_operator",
+    "identity_does_not_ratify_sign",
+    "identity_does_not_ratify_source_mapping",
+    "identity_does_not_close_p01_term_semantics",
+    "unknown_or_missing_decision_must_fail_closed",
+    "malformed_decision_must_fail_closed",
+    "contradictory_decision_must_fail_closed",
+    "unsupported_decision_must_fail_closed",
+    "unknown_cannot_become_false",
+    "unknown_cannot_become_does_not_apply",
+    "unknown_cannot_become_not_applicable",
+    "unknown_cannot_become_zero",
+    "missing_cannot_become_zero",
+    "missing_cannot_auto_become_does_not_apply",
+    "does_not_apply_is_not_numeric_zero",
+    "applies_does_not_imply_valid_numeric_value",
+    "p01_requiredness_resolved_status",
+    "p01_optionality_resolved_status",
+    "p01_zero_semantics_resolved_status",
+    "p01_absence_semantics_resolved_status",
+    "p01_zero_absence_na_resolved_status",
+    "p01_input_preconditions_resolved_status",
+    "p01_reconstruction_state_preconditions_resolved_status",
+    "master_v2_is_not_p01_predicate_authority",
+    "double_play_is_not_p01_predicate_authority",
+    "top20_is_not_p01_predicate_authority",
+    "learning_is_not_p01_predicate_authority",
+    "full_core_autonomy_is_not_p01_predicate_authority",
+    "venue_raw_is_not_p01_predicate_authority",
+    "step_29p_is_not_p01_predicate_authority",
+    "live_account_bound_is_not_p01_predicate_authority",
+    "u04_u05_u06_predicate_inheritance_forbidden",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "rejected_application_predicate_identity_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_runtime_instance_present",
+    "p01_authority_effect",
+    "p01_application_predicate_identity_contract_authority_effect",
     "provenance_digest",
 )
