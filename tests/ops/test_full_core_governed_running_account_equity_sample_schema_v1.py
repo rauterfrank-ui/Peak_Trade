@@ -63,6 +63,7 @@ SPEC_PATH = (
 )
 V_HEADING = "11.2.1.V FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION"
 W_HEADING = "11.2.1.W FULL_CORE_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA"
+X_HEADING = "11.2.1.X FULL_CORE_TYPED_VENUE_WITNESS_OBSERVATION_CONTRACT"
 _FORBIDDEN_EQUITY_FIELDS = (
     "details.availEq",
     "availEq",
@@ -121,7 +122,7 @@ def _synthetic_fields() -> dict[str, object]:
 def _w_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     w_start = runbook.index(W_HEADING)
-    return runbook[w_start : runbook.index("## 11.3 Autonomy state model", w_start)]
+    return runbook[w_start : runbook.index(X_HEADING, w_start)]
 
 
 def test_owner_slot_provenance_fields_match_runbook_controlling_tuple() -> None:

@@ -5789,6 +5789,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5822,6 +5823,7 @@ entities:
       - tests/ops/test_full_core_running_equity_authority_architecture_ratification_v1.py
       - tests/ops/test_full_core_account_equity_authority_owner_concrete_assignment_v1.py
       - tests/ops/test_full_core_governed_running_account_equity_sample_schema_v1.py
+      - tests/ops/test_full_core_typed_venue_witness_observation_contract_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5837,6 +5839,7 @@ entities:
       - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_V1.md
+      - docs/ops/specs/FULL_CORE_TYPED_VENUE_WITNESS_OBSERVATION_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5877,6 +5880,12 @@ entities:
       11.2.1.W persist: GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_PRESENT=true;
       SOURCE_OBJECT_PRESENT=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false;
       GOVERNED_PRODUCER_CREATED=false; SOURCE_SCHEMA_MISSING_CLOSED=true;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.X persist: VENUE_WITNESS_SCHEMA_PRESENT=true;
+      VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false; VENUE_WITNESS_SELECTED=false;
+      WITNESS_CONTRACT_MISSING_CLOSED=true; RAW_TO_WITNESS_PROVEN=false;
+      SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
@@ -6263,6 +6272,10 @@ entities:
       11.2.1.W adds the typed GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1 schema
       only; SOURCE_OBJECT_PRESENT=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false;
       GOVERNED_PRODUCER_CREATED=false.
+      11.2.1.X adds the typed VENUE_WITNESS_OBSERVATION_V1 Trading-Account
+      observation contract only; VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false;
+      VENUE_WITNESS_SELECTED=false; RAW_TO_WITNESS_PROVEN=false;
+      SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
