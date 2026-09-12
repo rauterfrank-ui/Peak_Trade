@@ -77,12 +77,13 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_TYPED_P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_V1.md"
 AG_HEADING = "11.2.1.AG FULL_CORE_TYPED_P01_OVERLAP_WITH_U04_U05_CONTRACT"
 AH_HEADING = "11.2.1.AH FULL_CORE_TYPED_P01_NUMERIC_VALUE_PROVENANCE_CONTRACT"
+AI_HEADING = "11.2.1.AI FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT"
 
 
 def _ah_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ah_start = runbook.index(AH_HEADING)
-    return runbook[ah_start : runbook.index("## 11.3 Autonomy state model", ah_start)]
+    return runbook[ah_start : runbook.index(AI_HEADING, ah_start)]
 
 
 def test_p01_numeric_provenance_contract_constructs() -> None:

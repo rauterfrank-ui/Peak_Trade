@@ -10,7 +10,8 @@ applicability adjudication contract schema, plus typed P01
 equity-base inclusion adjudication contract schema, plus typed P01
 broader embedding-state adjudication contract schema, plus typed P01
 overlap/equivalence adjudication versus U04 and U05, plus typed P01
-numeric value provenance adjudication. No producer implementation. No
+numeric value provenance adjudication, plus typed P01 member freshness
+inheritance adjudication. No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
 """
@@ -89,6 +90,10 @@ P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_SCHEMA_PRESENT = True
 P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_NUMERIC_VALUE_PROVENANCE_RESOLVED = False
+P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_SCHEMA_PRESENT = True
+P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -541,5 +546,65 @@ P01_NUMERIC_VALUE_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_numeric_value_provenance_contract_authority_effect",
+    "provenance_digest",
+)
+P01_MEMBER_FRESHNESS_INHERITANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_member_freshness_inheritance_contract_id",
+    "p01_member_freshness_inheritance_contract_version",
+    "parent_p01_numeric_value_provenance_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "p01_member_freshness_inheritance_resolved_status",
+    "p01_member_freshness_status",
+    "p01_member_freshness_rule",
+    "p01_u09_freshness_relation",
+    "p01_freshness_dimension_state",
+    "p01_timestamp_state",
+    "p01_level_freshness_metadata_state",
+    "member_level_freshness_metadata_state",
+    "inheritance_rule_state",
+    "u09_comparison_evidence_only",
+    "u09_is_not_p01_freshness_authority",
+    "p01_freshness_does_not_inherit_u09",
+    "p01_freshness_not_equivalent_to_u09",
+    "unknown_is_not_freshness_authority",
+    "unproven_is_not_freshness_authority",
+    "unspecified_is_not_freshness_authority",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "oldest_member_wins_unproven",
+    "newest_member_wins_unproven",
+    "min_freshness_unproven",
+    "max_freshness_unproven",
+    "all_members_same_epoch_unproven",
+    "weighted_composite_unproven",
+    "source_specific_freshness_unproven",
+    "independent_p01_timestamp_unproven",
+    "producer_timestamp_unproven",
+    "reconstruction_epoch_unproven",
+    "valuation_epoch_unproven",
+    "accounting_epoch_unproven",
+    "current_time_is_not_p01_freshness",
+    "missing_freshness_is_not_fresh",
+    "stale_p01_is_not_admissible",
+    "unproven_cannot_authorize_ignore",
+    "unproven_cannot_authorize_fallback",
+    "unproven_cannot_authorize_stale_filter",
+    "fallback_freshness_state",
+    "numeric_provenance_unspecified_does_not_decide_freshness",
+    "term_set_unresolved_does_not_decide_freshness",
+    "parent_time_semantics_state",
+    "parent_freshness_epoch_requirements",
+    "u09_freshness_class_comparison",
+    "rejected_freshness_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "candidate_freshness_rules_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_member_freshness_inheritance_contract_authority_effect",
     "provenance_digest",
 )
