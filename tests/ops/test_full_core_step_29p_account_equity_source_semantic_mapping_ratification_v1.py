@@ -116,7 +116,9 @@ _OPEN_SEMANTIC_REQUIREMENTS = (
 def test_adjudication_no_canonically_valid_mapping() -> None:
     assert ADJUDICATION_RESULT == "NO_CANONICALLY_VALID_MAPPING_AVAILABLE"
     assert SOURCE_CANDIDATE_COUNT == 16
-    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
+    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == (
+        "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE == "UNRESOLVED"
     assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
     assert RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION == "NONE"
@@ -145,7 +147,7 @@ def test_adjudication_no_canonically_valid_mapping() -> None:
     assert dag["SOURCE_CANDIDATE_COUNT"] == 16
     assert dag["MAPPING_PROVEN"] is False
     assert dag["IMPLEMENTATION_OF_VALUE_BINDING"] is False
-    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ACCOUNT_EQUITY_AUTHORITY_OWNER
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )

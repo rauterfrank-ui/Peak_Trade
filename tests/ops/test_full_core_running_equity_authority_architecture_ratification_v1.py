@@ -61,6 +61,7 @@ SPEC_PATH = (
 S_HEADING = "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
 T_HEADING = "11.2.1.T FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION"
 U_HEADING = "11.2.1.U FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION"
+V_HEADING = "11.2.1.V FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION"
 _FORBIDDEN_EQUITY_FIELDS = (
     "details.availEq",
     "availEq",
@@ -122,7 +123,7 @@ _REQUIRED_PROVENANCE = (
 def _u_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     u_start = runbook.index(U_HEADING)
-    return runbook[u_start : runbook.index("## 11.3 Autonomy state model", u_start)]
+    return runbook[u_start : runbook.index(V_HEADING, u_start)]
 
 
 def test_architecture_classes_ratified_without_runtime_assignment() -> None:
@@ -132,7 +133,9 @@ def test_architecture_classes_ratified_without_runtime_assignment() -> None:
     )
     assert FUTURE_GOVERNED_SOURCE_OBJECT_CLASS == "GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_V1"
     assert FUTURE_PRODUCER_CLASS == ("COMPOSITIONAL_RECONSTRUCTION_WITH_WITNESS_RECONCILIATION_V1")
-    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
+    assert ACCOUNT_EQUITY_AUTHORITY_OWNER == (
+        "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
     assert SOURCE_SELECTED is False
     assert GOVERNED_PRODUCTIVE_SOURCE_PRESENT is False
@@ -142,7 +145,7 @@ def test_architecture_classes_ratified_without_runtime_assignment() -> None:
     assert dag["FUTURE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS"] == (
         FUTURE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS
     )
-    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ACCOUNT_EQUITY_AUTHORITY_OWNER
     assert dag["SOURCE_SELECTED"] is False
 
 
