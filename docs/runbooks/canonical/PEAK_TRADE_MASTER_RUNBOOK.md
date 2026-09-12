@@ -1698,7 +1698,7 @@ PDF_STEP_7_STATUS=FORBIDDEN
 RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_HISTORICAL_PIT_WALK_FORWARD_WITHOUT_WIRING
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
 ```
 
@@ -1770,7 +1770,7 @@ RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_HISTORICAL_PIT_WALK_FORWARD_WITHOUT_WIRING
 THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
 THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
 THIS_PERSIST_DOES_NOT_IMPLEMENT_RANKING_CODE=true
@@ -1807,7 +1807,8 @@ Policy-B threshold, does **not** close PDF Step 5, does **not**
 authorize `apply_rotation`, does **not** allow PDF Step 7, does
 **not** grant runtime, does **not** join a host, does **not** wire
 productive economic ranking, and does **not** claim historical
-walk-forward or policy-ratification evidence.
+walk-forward or policy-ratification evidence. Offline historical
+evidence time semantics are later recorded in §4.5.12.
 
 Subordinate spec:
 `docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md`.
@@ -1857,7 +1858,7 @@ RUNTIME_AUTHORITY_GRANTED=false
 PRODUCTIVE_MF_HOST_JOIN=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
-NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RATIFY_RANKING_CADENCE_FORWARD_LABEL_AND_HISTORICAL_REPLAY_HORIZONS_THEN_RUN_WALK_FORWARD_WITHOUT_WIRING
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_HISTORICAL_PIT_WALK_FORWARD_WITHOUT_WIRING
 ```
 
 No canonical Cap-22 MVR spread-threshold scale was found. The Policy-B
@@ -1867,6 +1868,101 @@ or productively valid. Exact zero spread remains valid raw input and is
 `NOT_RANKABLE_FOR_POLICY_C` only. The harness requires no network after
 snapshot load, binds Cap 2.1 at the same T, and enforces identical
 candidate-universe membership. TOP20 output is diagnostic only.
+Cadence, forward-label, and replay-horizon ratification for later
+historical evidence is recorded in §4.5.12.
+
+This persist does **not** move productive selection ownership away from
+Cap 2.3. Downstream execution must not re-rank. Policy A remains
+anti-churn admission only. PDF Step 5 remains unresolved. Rotation
+remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
+authority remains false.
+
+### 4.5.12 Cap 2.2 historical evidence time semantics (docs and typed contract; AUTHORITY_EFFECT=OFFLINE_HISTORICAL_EVIDENCE_TIME_SEMANTICS_ONLY)
+
+Owner-GO
+`PEAK_TRADE_CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1`
+ratifies only the minimum offline historical evidence time semantics
+required later to use the already-implemented offline MVR harness for
+point-in-time / walk-forward evidence. This subsection does **not**
+replace §4.5–§4.5.11, does **not** collect historical data, does
+**not** run walk-forward, does **not** ratify a policy winner, does
+**not** activate ranking, does **not** schedule the Economic-MD
+producer, does **not** close PDF Step 5, does **not** authorize
+`apply_rotation`, does **not** allow PDF Step 7, does **not** grant
+runtime, and does **not** join a host.
+
+Subordinate spec:
+`docs&#47;ops&#47;specs&#47;CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1.md`.
+
+Typed contract:
+`src&#47;ops&#47;cap22_historical_evidence_time_semantics_contract_v1.py`.
+
+``` text
+CONTRACT_ID=CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1
+DECISION_ID=CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1
+AUTHORITY_EFFECT=OFFLINE_HISTORICAL_EVIDENCE_TIME_SEMANTICS_ONLY
+AUTHORITY_SCOPE=OFFLINE_HISTORICAL_EVIDENCE_ONLY
+PRODUCTIVE_RUNTIME_CADENCE_AUTHORIZED=false
+RANKING_CADENCE_RATIFIED=true
+RANKING_CADENCE_ID=PT1M_15_MINUTE_ANCHORS_V1
+FORWARD_LABEL_HORIZON_RATIFIED=true
+FORWARD_LABEL_HORIZON_SET_ID=CAP22_MVR_FORWARD_LABEL_HORIZONS_V1
+FORWARD_LABEL_HORIZONS=15m;30m;60m;120m
+FORWARD_LABEL_WINDOW_STRICTLY_AFTER_FEATURE_TIME=true
+FORWARD_ABS_RETURN_DEFINITION_RATIFIED=true
+FORWARD_REALIZED_VOL_DEFINITION_RATIFIED=true
+FRICTION_ADJUSTED_OPPORTUNITY_FORMULA_RATIFIED=false
+WALK_FORWARD_REQUIRED=true
+WALK_FORWARD_PRIMARY_MODE=ALL_VALID_15M_ANCHORS
+WALK_FORWARD_ROBUSTNESS_MODE=NON_OVERLAPPING_BY_HORIZON
+HISTORICAL_REPLAY_HORIZON_RATIFIED=true
+HISTORICAL_REPLAY_HORIZON_ID=MIN_90D_PLUS_AVAILABLE_VALID_HISTORY_V1
+MINIMUM_HISTORICAL_COVERAGE_DAYS=90
+STRONGER_CANONICAL_MINIMUM_COVERAGE_DAYS_FOUND=false
+CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT_AT_T_REQUIRED=true
+IDENTICAL_CANDIDATE_UNIVERSE_PER_POLICY_REQUIRED=true
+NEW_LISTING_WARMUP_FAIL_CLOSED=true
+STALE_SECONDS_RATIFIED=false
+COLLECTION_SKEW_NUMERIC_BOUND_RATIFIED=false
+POLICY_B_THRESHOLD_SET_RATIFIED=false
+POLICY_B_SINGLE_THRESHOLD_RATIFIED=false
+FINAL_SCORE_FORMULA_RATIFIED=false
+FINAL_WEIGHTS_RATIFIED=false
+POLICY_RATIFICATION_JUSTIFIED=false
+NO_CHALLENGER_WINS_BY_THIS_SLICE=true
+HISTORICAL_EVIDENCE_GENERATED=false
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+ECONOMIC_RANK_ACTIVATED=false
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+PDF_STEP_7_STATUS=FORBIDDEN
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_TO_RUN_HISTORICAL_PIT_WALK_FORWARD_WITHOUT_WIRING
+THIS_PERSIST_DOES_NOT_CLOSE_PDF_STEP_5=true
+THIS_PERSIST_DOES_NOT_ALLOW_PDF_STEP_7=true
+THIS_PERSIST_DOES_NOT_RUN_WALK_FORWARD=true
+THIS_PERSIST_DOES_NOT_GENERATE_HISTORICAL_EVIDENCE=true
+THIS_PERSIST_DOES_NOT_WIRE_PRODUCTIVE_ECONOMIC_RANKING=true
+```
+
+Offline historical ranking snapshots use 15-minute UTC anchors on
+finalized PT1M marks. Forward labels are the explicit set 15m / 30m /
+60m / 120m and start strictly after the feature anchor. Absolute log
+return and population realized vol (`ddof=0`) are ratified as label
+definitions. Friction-adjusted opportunity remains unratified and
+blocked. Primary walk-forward uses every valid 15-minute anchor;
+robustness requires a non-overlapping-by-horizon view. Replay
+coverage floor is 90 days plus all additional valid history; no
+stricter Cap-22 canonical floor was found. Cap 2.1 universe at T and
+identical candidate universes remain required. New listings without
+61 contiguous finalized PT1M marks are not rankable. Stale seconds,
+collection skew, Policy-B thresholds, score formula, and weights remain
+unratified. This persist does **not** authorize a productive runtime
+cadence.
 
 This persist does **not** move productive selection ownership away from
 Cap 2.3. Downstream execution must not re-rank. Policy A remains

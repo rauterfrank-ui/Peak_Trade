@@ -51,7 +51,7 @@ If you change X, inspect the listed contracts and invariants.
 - downstream: `HOST:cap72_stateful_host`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md`
 
-  - `CAPABILITY:cap_2_4_runtime_binding` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+  - `CAPABILITY:cap_2_4_runtime_binding` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
   - `BINDER:bound_instrument_v1` transitive upstream: `SELECTOR:single_selected_future_policy`
   - `DATA_CONTRACT:bound_instrument_v1` transitive upstream: `(none)`
   - `SCHEMA:runtime_binding_v1` transitive upstream: `(none)`
@@ -94,9 +94,9 @@ If you change X, inspect the listed contracts and invariants.
 - downstream: `CAPABILITY:cap_2_4_runtime_binding`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md`
 
-  - `CAPABILITY:cap_2_3_single_selected_future` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
+  - `CAPABILITY:cap_2_3_single_selected_future` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
   - `SELECTOR:single_selected_future_policy` transitive upstream: `(none)`
-  - `OWNER_DECISION:cap23_exclusive_selection` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
+  - `OWNER_DECISION:cap23_exclusive_selection` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
   - `SCHEMA:single_selected_future_selection_v1` transitive upstream: `(none)`
 
 ### CLOSURE:productive_universe — PRODUCTIVE_UNIVERSE
