@@ -90,7 +90,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.reconstruc
     NUMERIC_PRESENT_ZERO,
     ROLE_REDUCTION_ONLY_UNSPECIFIED,
     ROLE_SUBTRACTIVE,
-    SIGN_REDUCTION_ONLY,
+    SIGN_SUBTRACT,
     TERM_FEE,
     TERM_LIABILITY,
     TERM_P01_HAIRCUT_RESERVE_DEPLETION,
@@ -234,7 +234,7 @@ def test_missing_and_malformed_p01_are_not_zero() -> None:
         algebra_contract_id="SYNTHETIC_ALGEBRA_CONTRACT_ID"
     )
     p01 = next(term for term in algebra.terms if term.term_id == TERM_P01_HAIRCUT_RESERVE_DEPLETION)
-    assert p01.sign_semantics == SIGN_REDUCTION_ONLY
+    assert p01.sign_semantics == SIGN_SUBTRACT
     with pytest.raises(ReconstructionAlgebraContractError) as algebra_missing:
         build_algebra_term_v1(
             **{**p01.to_canonical_dict(), "numeric_participation_state": NUMERIC_MISSING}
@@ -292,14 +292,14 @@ def test_unresolved_overlap_does_not_become_safe_and_cannot_double_count() -> No
             **{**p01.to_canonical_dict(), "double_count_guard_id": "P01_OVERLAP_SAFE"}
         )
     assert "P01_UNKNOWN_OVERLAP_AUTO_SAFE_FORBIDDEN" in str(guard.value)
+    assert p01.embedded_term_state == EMBEDDED_NO
+    assert p01.inclusion_state == INCLUSION_NOT_IN_BASE
     with pytest.raises(ReconstructionAlgebraContractError) as embedded:
-        build_algebra_term_v1(**{**p01.to_canonical_dict(), "embedded_term_state": EMBEDDED_NO})
-    assert "P01_NON_EMBEDDING_UNPROVEN" in str(embedded.value)
+        build_algebra_term_v1(**{**p01.to_canonical_dict(), "embedded_term_state": "UNRESOLVED"})
+    assert "P01_MUST_NOT_BE_EMBEDDED_IN_BASE" in str(embedded.value)
     with pytest.raises(ReconstructionAlgebraContractError) as inclusion:
-        build_algebra_term_v1(
-            **{**p01.to_canonical_dict(), "inclusion_state": INCLUSION_NOT_IN_BASE}
-        )
-    assert "P01_BASE_EXCLUSION_UNPROVEN" in str(inclusion.value)
+        build_algebra_term_v1(**{**p01.to_canonical_dict(), "inclusion_state": "UNRESOLVED"})
+    assert "P01_MUST_BE_EXCLUDED_FROM_EQUITY_BASE" in str(inclusion.value)
 
 
 def test_unknown_provenance_blocks_inclusion_and_p01_remains_unresolved() -> None:
@@ -310,8 +310,8 @@ def test_unknown_provenance_blocks_inclusion_and_p01_remains_unresolved() -> Non
     assert contract.embedded_state == EMBEDDED_STATE
     assert contract.term_semantics_resolved_status == TERM_SEMANTICS_RESOLVED_STATUS
     assert contract.unspecified_closed_status == UNSPECIFIED_CLOSED_STATUS
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert "P01_NUMERIC_VALUE_PROVENANCE_UNSPECIFIED" in contract.provenance_requirements
     assert contract.remaining_unresolved_semantics == REMAINING_UNRESOLVED_SEMANTICS
     with pytest.raises(P01HaircutReserveDepletionTermContractError) as raised:
@@ -328,9 +328,9 @@ def test_unresolved_p01_cannot_produce_algebra_completeness() -> None:
     )
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert algebra.algebra_completeness_status == "INCOMPLETE"
-    assert "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED" in algebra.unresolved_required_terms
+    assert "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED" not in algebra.unresolved_required_terms
     p01 = next(term for term in algebra.terms if term.term_id == TERM_P01_HAIRCUT_RESERVE_DEPLETION)
-    assert p01.completeness_participation == "BLOCKING"
+    assert p01.completeness_participation == "PARTICIPATING"
     build_p01_haircut_reserve_depletion_term_contract_v1(
         p01_term_contract_id="SYNTHETIC_P01_TERM_CONTRACT_ID"
     )
@@ -415,8 +415,8 @@ def test_dag_keeps_p01_gap_without_selecting_source() -> None:
     assert dag["P01_TERM_CONTRACT_SCHEMA_PRESENT"] is True
     assert dag["P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_TERM_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
-    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is False
-    assert dag["P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED"] is False
+    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is True
+    assert dag["P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED"] is True
     assert dag["RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT"] is True
     assert dag["RECONSTRUCTION_ALGEBRA_COMPLETE"] is False
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
@@ -425,8 +425,10 @@ def test_dag_keeps_p01_gap_without_selecting_source() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
-    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == ("P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED")
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == (
+        "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
+    )
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
 
 
 def test_runbook_ab_consumes_go_without_rewriting_aa() -> None:

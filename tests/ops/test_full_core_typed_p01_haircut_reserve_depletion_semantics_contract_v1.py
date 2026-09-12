@@ -252,8 +252,8 @@ def test_missing_and_malformed_inputs_fail_closed() -> None:
 def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     contract = _contract()
     assert contract.remaining_unresolved_semantics == REMAINING_UNRESOLVED_SEMANTICS
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert contract.rejected_role_inferences == REJECTED_ROLE_INFERENCES
     assert contract.rejected_formula_inferences == REJECTED_FORMULA_INFERENCES
@@ -261,7 +261,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert "CANONICAL_AUTHORITY" in EVIDENCE_CLASSIFICATION
     assert "NO_WINNER_RATIFIED=true" in CANDIDATE_ROLES_CLASSIFICATION
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_HAIRCUT_SEMANTICS_RESOLVED"] is False
     assert dag["P01_RESERVE_SEMANTICS_RESOLVED"] is False
     assert dag["P01_DEPLETION_SEMANTICS_RESOLVED"] is False
@@ -315,10 +315,10 @@ def test_runbook_aj_consumes_go_without_rewriting_ai() -> None:
     assert "P01_HAIRCUT_SEMANTICS_RESOLVED=false" in spec
     assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is True
-    assert P01_APPLICABILITY_RESOLVED is False
-    assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
-    assert P01_EMBEDDED_STATE_RESOLVED is False
-    assert P01_U04_OVERLAP_RESOLVED is False
-    assert P01_U05_OVERLAP_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
+    assert P01_EQUITY_BASE_INCLUSION_RESOLVED is True
+    assert P01_EMBEDDED_STATE_RESOLVED is True
+    assert P01_U04_OVERLAP_RESOLVED is True
+    assert P01_U05_OVERLAP_RESOLVED is True
     assert P01_NUMERIC_VALUE_PROVENANCE_RESOLVED is False
     assert P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED is False

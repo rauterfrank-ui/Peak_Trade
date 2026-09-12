@@ -86,6 +86,7 @@ SPEC_PATH = (
 )
 AN_HEADING = "11.2.1.AN FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT"
 AO_HEADING = "11.2.1.AO FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT"
+AP_HEADING = "11.2.1.AP FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT"
 
 
 def _contract() -> P01ApplicationPredicateInputDomainIdentityContractV1:
@@ -99,7 +100,7 @@ def _contract() -> P01ApplicationPredicateInputDomainIdentityContractV1:
 def _ao_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ao_start = runbook.index(AO_HEADING)
-    return runbook[ao_start : runbook.index("## 11.3 Autonomy state model", ao_start)]
+    return runbook[ao_start : runbook.index(AP_HEADING, ao_start)]
 
 
 def test_p01_application_predicate_input_domain_identity_contract_constructs() -> None:
@@ -139,14 +140,14 @@ def test_p01_application_predicate_input_domain_identity_contract_constructs() -
     assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_SELECTED_OPTION == (
         "P01_OP_APPLICATION_PREDICATE_INPUT_DOMAIN_TYPED_RECONSTRUCTION_CONTEXT_V1"
     )
-    assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is False
-    assert P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED is False
-    assert P01_PREDICATE_REQUIRED_FIELDS_RESOLVED is False
-    assert P01_PREDICATE_OPTIONAL_FIELDS_RESOLVED is False
-    assert P01_APPLICATION_TRUE_RULE_RESOLVED is False
-    assert P01_APPLICATION_FALSE_RULE_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE == "UNSPECIFIED_FAIL_CLOSED"
+    assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is True
+    assert P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED is True
+    assert P01_PREDICATE_REQUIRED_FIELDS_RESOLVED is True
+    assert P01_PREDICATE_OPTIONAL_FIELDS_RESOLVED is True
+    assert P01_APPLICATION_TRUE_RULE_RESOLVED is True
+    assert P01_APPLICATION_FALSE_RULE_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE == "GOVERNED_P01_REDUCTION_DIRECTIVE_PREDICATE_V1"
     assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_SCHEMA_PRESENT is True
     assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT is (
         False
@@ -175,12 +176,12 @@ def test_identity_does_not_ratify_concrete_members_or_true_false_formula() -> No
     assert contract.identity_does_not_ratify_true_rule == "true"
     assert contract.identity_does_not_ratify_false_rule == "true"
     assert contract.identity_does_not_ratify_formula == "true"
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
-    assert P01_INPUT_READINESS_RULE_RESOLVED is False
+    assert P01_INPUT_READINESS_RULE_RESOLVED is True
     assert P01_INPUT_FRESHNESS_RULE_RESOLVED is False
-    assert P01_INPUT_NORMALIZATION_RULE_RESOLVED is False
+    assert P01_INPUT_NORMALIZATION_RULE_RESOLVED is True
     assert "P01_PREDICATE_CONCRETE_INPUT_MEMBERS_UNSPECIFIED" in (
         contract.remaining_unresolved_semantics
     )
@@ -268,17 +269,17 @@ def test_missing_and_malformed_inputs_fail_closed() -> None:
 
 def test_gap_dag_and_live_pins_remain_fail_closed() -> None:
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED"] is True
     assert dag["P01_PREDICATE_INPUT_DOMAIN_IDENTITY_RESOLVED"] is True
     assert dag["P01_PREDICATE_INPUT_DOMAIN_BOUNDARY_RESOLVED"] is True
     assert dag["P01_PREDICATE_INPUT_DOMAIN_CLASS"] == (
         "TYPED_GOVERNED_P01_RECONSTRUCTION_CONTEXT_V1"
     )
-    assert dag["P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED"] is False
-    assert dag["P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED"] is False
-    assert dag["P01_APPLICATION_TRUE_RULE_RESOLVED"] is False
-    assert dag["P01_APPLICATION_FALSE_RULE_RESOLVED"] is False
+    assert dag["P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED"] is True
+    assert dag["P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED"] is True
+    assert dag["P01_APPLICATION_TRUE_RULE_RESOLVED"] is True
+    assert dag["P01_APPLICATION_FALSE_RULE_RESOLVED"] is True
     assert dag[
         "P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT"
     ] is (False)

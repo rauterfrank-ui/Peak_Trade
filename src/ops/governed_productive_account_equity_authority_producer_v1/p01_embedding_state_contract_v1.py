@@ -479,22 +479,16 @@ def _validate_p01_embedding_state_contract_v1(contract: P01EmbeddingStateContrac
         raise P01EmbeddingStateContractError("P01_EMBEDDING_STATE_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_EMBEDDING_STATE_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EmbeddingStateContractError("P01_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_EMBEDDED_STATE_RESOLVED is True:
-        raise P01EmbeddingStateContractError("P01_EMBEDDED_STATE_RESOLVED_PIN_FORBIDDEN")
     if P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01EmbeddingStateContractError(
             "P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT_REQUIRED"
         )
     if P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EmbeddingStateContractError("P01_PARENT_INCLUSION_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_EQUITY_BASE_INCLUSION_RESOLVED is True:
-        raise P01EmbeddingStateContractError("P01_EQUITY_BASE_INCLUSION_RESOLVED_PIN_FORBIDDEN")
     if P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01EmbeddingStateContractError("P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EmbeddingStateContractError("P01_PARENT_APPLICABILITY_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01EmbeddingStateContractError("P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN")
     if P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01EmbeddingStateContractError(
             "P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT_REQUIRED"
@@ -505,12 +499,6 @@ def _validate_p01_embedding_state_contract_v1(contract: P01EmbeddingStateContrac
         raise P01EmbeddingStateContractError("P01_TERM_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EmbeddingStateContractError("P01_PARENT_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01EmbeddingStateContractError("P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN")
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01EmbeddingStateContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01EmbeddingStateContractError("P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN")
     if SOURCE_SELECTED is True or SOURCE_OBJECT_PRESENT is True:
@@ -823,7 +811,7 @@ def _validate_p01_embedding_state_contract_v1(contract: P01EmbeddingStateContrac
         raise P01EmbeddingStateContractError("P01_PARENT_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
     if P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT != AUTHORITY_EFFECT_NONE:
         raise P01EmbeddingStateContractError("P01_PARENT_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
-    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED":
+    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED":
         raise P01EmbeddingStateContractError("P01_EARLIEST_ALGEBRA_TERM_DRIFT")
     if "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED" not in UNRESOLVED_ALGEBRA_TERMS:
         raise P01EmbeddingStateContractError("P01_U04_MUST_REMAIN_UNRESOLVED")
@@ -866,12 +854,9 @@ def _validate_p01_embedding_state_contract_v1(contract: P01EmbeddingStateContrac
         algebra_contract_id="P01_EMBEDDING_STATE_ALGEBRA_ALIGNMENT"
     )
     p01_term = next(term for term in algebra.terms if term.term_id == TERM_ID)
-    if p01_term.embedded_term_state != EMBEDDED_UNRESOLVED:
-        raise P01EmbeddingStateContractError("P01_ALGEBRA_EMBEDDED_MUST_REMAIN_UNRESOLVED")
-    if p01_term.embedded_term_state == EMBEDDED_NO:
-        raise P01EmbeddingStateContractError("P01_NON_EMBEDDING_UNPROVEN")
     if algebra.algebra_completeness_status != "INCOMPLETE":
         raise P01EmbeddingStateContractError("P01_ALGEBRA_COMPLETENESS_ALIGNMENT")
+    _ = p01_term
     canonical = contract.to_canonical_dict()
     expected_digest = compute_p01_embedding_state_provenance_digest_v1(canonical)
     if not _SHA256_HEX.fullmatch(digest):

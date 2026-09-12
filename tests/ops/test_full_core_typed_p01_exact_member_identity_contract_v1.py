@@ -112,14 +112,14 @@ def test_identity_does_not_close_term_semantics_or_algebra() -> None:
     assert contract.identity_does_not_close_p01_term_semantics == "true"
     assert contract.identity_does_not_close_haircut_reserve_depletion_unspecified == "true"
     assert contract.identity_does_not_authorize_arithmetic == "true"
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert P01_VALUE_UNIT_CLASS_RESOLVED is True
-    assert P01_APPLICABILITY_RESOLVED is False
-    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is False
-    assert P01_ZERO_ABSENCE_NA_RESOLVED is False
-    assert P01_COMBINATION_PRECEDENCE_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
+    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True
+    assert P01_ZERO_ABSENCE_NA_RESOLVED is True
+    assert P01_COMBINATION_PRECEDENCE_RESOLVED is True
     assert "P01_TERM_SET_UNSPECIFIED" not in contract.remaining_unresolved_semantics
     assert "P01_VALUE_UNIT_CLASS_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert contract.remaining_unresolved_semantics == REMAINING_UNRESOLVED_SEMANTICS
@@ -171,13 +171,13 @@ def test_missing_and_malformed_inputs_fail_closed() -> None:
 
 def test_gap_dag_and_live_pins_remain_fail_closed() -> None:
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_EXACT_MEMBER_COUNT"] == 1
     assert dag["P01_EXACT_MEMBER_IDENTITY_SET"] == MEMBER_ID
     assert dag["P01_EXACT_MEMBER_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_EXACT_MEMBER_IDENTITY_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
-    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is False
+    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is True
     assert dag["P01_RUNTIME_INSTANCE_PRESENT"] is False
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False

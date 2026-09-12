@@ -449,57 +449,9 @@ def _validate_p01_application_predicate_input_domain_identity_contract_v1(
         raise P01ApplicationPredicateInputDomainIdentityContractError(
             "P01_PREDICATE_INPUT_DOMAIN_IS_CLOSED_WORLD_REQUIRED"
         )
-    if P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_PREDICATE_REQUIRED_FIELDS_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_PREDICATE_REQUIRED_FIELDS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_PREDICATE_OPTIONAL_FIELDS_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_PREDICATE_OPTIONAL_FIELDS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICATION_TRUE_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_APPLICATION_TRUE_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICATION_FALSE_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_APPLICATION_FALSE_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_INPUT_READINESS_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_INPUT_READINESS_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
     if P01_INPUT_FRESHNESS_RULE_RESOLVED is True:
         raise P01ApplicationPredicateInputDomainIdentityContractError(
             "P01_INPUT_FRESHNESS_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_INPUT_NORMALIZATION_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_INPUT_NORMALIZATION_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_COMBINATION_PRECEDENCE_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_COMBINATION_PRECEDENCE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01ApplicationPredicateInputDomainIdentityContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
         )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01ApplicationPredicateInputDomainIdentityContractError(

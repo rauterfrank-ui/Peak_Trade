@@ -5821,6 +5821,9 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p01_governed_reduction_directive_evaluator_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5872,6 +5875,7 @@ entities:
       - tests/ops/test_full_core_typed_p01_applicability_class_contract_v1.py
       - tests/ops/test_full_core_typed_p01_application_predicate_identity_contract_v1.py
       - tests/ops/test_full_core_typed_p01_application_predicate_input_domain_identity_contract_v1.py
+      - tests/ops/test_full_core_typed_p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5905,6 +5909,7 @@ entities:
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICABILITY_CLASS_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6283,6 +6288,26 @@ entities:
       EARLIEST_DECOMPOSED_CONTRACT_GAP remains
       P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED;
       EARLIEST_NARROW_P01_DEPENDENCY=P01_PREDICATE_CONCRETE_INPUT_MEMBERS_UNSPECIFIED;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AP persist: typed
+      P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_V1;
+      P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_SCHEMA_PRESENT=true;
+      P01_PREDICATE_INPUT_MEMBER=GOVERNED_P01_REDUCTION_DIRECTIVE_V1;
+      P01_PREDICATE_CONCRETE_INPUT_MEMBERS_RESOLVED=true;
+      P01_APPLICATION_TRUE_RULE_RESOLVED=true;
+      P01_APPLICATION_FALSE_RULE_RESOLVED=true;
+      P01_TERM_SEMANTICS_RESOLVED=true;
+      P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=true;
+      P01_PRODUCT_SEMANTICS_COMPLETE=true;
+      P01_RECONSTRUCTION_ALGEBRA_CONTRACT_COMPLETE=true;
+      P01_PRODUCTIVE_EXTERNAL_SOURCE_MAPPING_RESOLVED=false;
+      P01_INPUT_FRESHNESS_RULE_RESOLVED=false;
+      P01_RUNTIME_INSTANCE_PRESENT=false; P01_AUTHORITY_EFFECT=NONE;
+      RECONSTRUCTION_ALGEBRA_COMPLETE=false; SOURCE_SELECTED=false;
+      MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
+      EARLIEST_DECOMPOSED_CONTRACT_GAP remains
+      U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.

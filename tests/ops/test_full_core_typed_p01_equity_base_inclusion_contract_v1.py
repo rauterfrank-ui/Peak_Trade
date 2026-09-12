@@ -99,7 +99,7 @@ def test_p01_equity_base_inclusion_contract_constructs() -> None:
     assert contract.p01_equity_base_inclusion_adjudication == P01_EQUITY_BASE_INCLUSION_ADJUDICATION
     assert contract.p01_equity_base_inclusion_resolved_status == "false"
     assert contract.typed_inclusion_state == TYPED_INCLUSION_STATE_UNKNOWN
-    assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
+    assert P01_EQUITY_BASE_INCLUSION_RESOLVED is True
     assert P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT is True
     assert P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT is False
     assert P01_EQUITY_BASE_INCLUSION_CONTRACT_AUTHORITY_EFFECT == "NONE"
@@ -213,7 +213,7 @@ def test_term_set_applicability_and_unit_unresolved_do_not_decide_inclusion() ->
     )
     assert P01_TERM_SET_RESOLVED is True
     assert P01_VALUE_UNIT_CLASS_RESOLVED is True
-    assert P01_APPLICABILITY_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
     assert contract.term_set_unresolved_does_not_decide_inclusion == "true"
     assert contract.applicability_unresolved_does_not_decide_inclusion == "true"
     assert contract.unit_unresolved_does_not_decide_inclusion == "true"
@@ -313,15 +313,15 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert "P01_TERM_SET_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert "P01_VALUE_UNIT_CLASS_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert EMBEDDED_STATE == "UNRESOLVED"
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert contract.rejected_inclusion_inferences == REJECTED_INCLUSION_INFERENCES
     assert "CANONICAL_AUTHORITY" in EVIDENCE_CLASSIFICATION
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
-    assert dag["P01_EQUITY_BASE_INCLUSION_RESOLVED"] is False
-    assert dag["P01_APPLICABILITY_RESOLVED"] is False
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
+    assert dag["P01_EQUITY_BASE_INCLUSION_RESOLVED"] is True
+    assert dag["P01_APPLICABILITY_RESOLVED"] is True
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert dag["P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False

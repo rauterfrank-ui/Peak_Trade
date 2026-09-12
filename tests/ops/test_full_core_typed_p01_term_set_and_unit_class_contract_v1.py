@@ -205,14 +205,14 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert contract.remaining_unresolved_semantics == REMAINING_UNRESOLVED_SEMANTICS
     assert "P01_TERM_SET_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert "P01_VALUE_UNIT_CLASS_UNSPECIFIED" in contract.remaining_unresolved_semantics
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert contract.rejected_term_set_inferences == REJECTED_TERM_SET_INFERENCES
     assert contract.rejected_unit_class_inferences == REJECTED_UNIT_CLASS_INFERENCES
     assert "CANONICAL_AUTHORITY" in EVIDENCE_CLASSIFICATION
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert SOURCE_SELECTED is False

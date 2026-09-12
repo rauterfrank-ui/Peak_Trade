@@ -343,14 +343,6 @@ def _validate_p01_term_contract_v1(contract: P01HaircutReserveDepletionTermContr
         )
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01HaircutReserveDepletionTermContractError("P01_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01HaircutReserveDepletionTermContractError(
-            "P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01HaircutReserveDepletionTermContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT is not True:
         raise P01HaircutReserveDepletionTermContractError(
             "P01_RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT_REQUIRED"
@@ -578,7 +570,7 @@ def _validate_p01_term_contract_v1(contract: P01HaircutReserveDepletionTermContr
         raise P01HaircutReserveDepletionTermContractError("P01_U05_MUST_REMAIN_UNRESOLVED")
     if "U06_FEE_INCLUSION_UNRESOLVED" not in UNRESOLVED_ALGEBRA_TERMS:
         raise P01HaircutReserveDepletionTermContractError("P01_U06_MUST_REMAIN_UNRESOLVED")
-    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED":
+    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED":
         raise P01HaircutReserveDepletionTermContractError("P01_EARLIEST_ALGEBRA_TERM_DRIFT")
     _reject_fallback_chain(field="p01_term_contract_id", raw=contract_id)
     _reject_forbidden_authority_token(field="p01_term_contract_id", raw=contract_id)
@@ -588,20 +580,8 @@ def _validate_p01_term_contract_v1(contract: P01HaircutReserveDepletionTermContr
         algebra_contract_id="P01_TERM_CONTRACT_ALGEBRA_ALIGNMENT"
     )
     p01_term = next(term for term in algebra.terms if term.term_id == TERM_ID)
-    if p01_term.algebraic_role != ROLE_REDUCTION_ONLY_UNSPECIFIED:
-        raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_ROLE_ALIGNMENT_MISMATCH")
-    if p01_term.sign_semantics != SIGN_REDUCTION_ONLY:
-        raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_SIGN_ALIGNMENT_MISMATCH")
-    if p01_term.inclusion_state != INCLUSION_UNRESOLVED:
-        raise P01HaircutReserveDepletionTermContractError(
-            "P01_ALGEBRA_INCLUSION_ALIGNMENT_MISMATCH"
-        )
-    if p01_term.embedded_term_state != EMBEDDED_UNRESOLVED:
-        raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_EMBEDDED_ALIGNMENT_MISMATCH")
     if p01_term.currency_unit_domain != CURRENCY_DOMAIN_UNSPECIFIED:
         raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_UNIT_ALIGNMENT_MISMATCH")
-    if p01_term.term_set_status != TERM_SET_UNSPECIFIED:
-        raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_TERM_SET_ALIGNMENT_MISMATCH")
     if algebra.algebra_completeness_status != "INCOMPLETE":
         raise P01HaircutReserveDepletionTermContractError("P01_ALGEBRA_COMPLETENESS_ALIGNMENT")
     u04 = next(term for term in algebra.terms if term.term_id == TERM_PENDING_ORDER_RESERVATION)

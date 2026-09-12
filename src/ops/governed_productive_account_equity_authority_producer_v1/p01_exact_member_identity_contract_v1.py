@@ -281,24 +281,6 @@ def _validate_p01_exact_member_identity_contract_v1(
         raise P01ExactMemberIdentityContractError("P01_RUNTIME_INSTANCE_FORBIDDEN")
     if P01_TERM_SET_RESOLVED is not True:
         raise P01ExactMemberIdentityContractError("P01_TERM_SET_RESOLVED_REQUIRED")
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01ExactMemberIdentityContractError("P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN")
-    if P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True:
-        raise P01ExactMemberIdentityContractError(
-            "P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_ZERO_ABSENCE_NA_RESOLVED is True:
-        raise P01ExactMemberIdentityContractError("P01_ZERO_ABSENCE_NA_RESOLVED_PIN_FORBIDDEN")
-    if P01_COMBINATION_PRECEDENCE_RESOLVED is True:
-        raise P01ExactMemberIdentityContractError(
-            "P01_COMBINATION_PRECEDENCE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01ExactMemberIdentityContractError("P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN")
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01ExactMemberIdentityContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01ExactMemberIdentityContractError(
             "P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN"
