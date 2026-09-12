@@ -1,9 +1,9 @@
 """Governed account-equity authority-owner slot.
 
-Owner assignment plus typed sample schema and typed venue-witness
-observation contract. No producer implementation. No runtime source
-object. No mapping. No value binding. No Live-account-bound join.
-No wire.
+Owner assignment plus typed sample schema, typed venue-witness
+observation contract, and typed normalization/inclusion adjudication
+schema. No producer implementation. No runtime source object. No
+mapping. No value binding. No Live-account-bound join. No wire.
 """
 
 from __future__ import annotations
@@ -32,6 +32,17 @@ VENUE_WITNESS_SCHEMA_PRESENT = True
 VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT = False
 VENUE_WITNESS_SELECTED = False
 WITNESS_CONTRACT_MISSING_CLOSED = True
+NORMALIZATION_SCHEMA_PRESENT = True
+NORMALIZATION_RUNTIME_INSTANCE_PRESENT = False
+NORMALIZATION_CONTRACT_MISSING_CLOSED = True
+NORMALIZATION_AUTHORITY_EFFECT = "NONE"
+FIELD_TO_DIMENSION_MAPPING_SCHEMA_PRESENT = True
+FIELD_TO_DIMENSION_MAPPING_PRESENT = False
+SEMANTIC_MAPPING_PROVEN = False
+INCLUSION_PROVEN = False
+INTERNAL_RECONSTRUCTION_CREATED = False
+RECONCILIATION_CONTRACT_CREATED = False
+DIVERGENCE_POLICY_CREATED = False
 OBSERVATION_AUTHORITY_EFFECT = "NONE"
 EQUITY_DIMENSION_BOUND = False
 MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING = False
@@ -101,5 +112,42 @@ WITNESS_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "mapping_status",
     "freshness_evidence_status",
     "clock_source_status",
+    "provenance_digest",
+)
+NORMALIZATION_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "adjudication_id",
+    "source_witness_id",
+    "bound_account_identity",
+    "bound_venue_identity",
+    "rest_host",
+    "bound_td_mode",
+    "account_mode",
+    "currency_domain",
+    "decision_epoch",
+    "raw_field_path",
+    "observation_semantic_class",
+    "raw_value_representation",
+    "presence_state",
+    "requested_target_dimension_id",
+    "field_to_dimension_mapping_status",
+    "observation_participation_state",
+    "normalizable_status",
+    "semantic_mapping_status",
+    "inclusion_status",
+    "source_selection_status",
+    "observation_vs_authority_class",
+    "normalization_authority_effect",
+    "exclusion_reason_codes",
+    "account_scope_compatibility_status",
+    "currency_domain_compatibility_status",
+    "unit_compatibility_status",
+    "freshness_evidence_status",
+    "freshness_evidence_ref",
+    "provenance_status",
+    "ambiguity_status",
+    "contradiction_status",
+    "semantic_mapping_proven_status",
+    "inclusion_proven_status",
+    "source_selected_status",
     "provenance_digest",
 )

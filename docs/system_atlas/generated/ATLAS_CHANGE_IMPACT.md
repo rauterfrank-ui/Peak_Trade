@@ -283,7 +283,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.X persist adds typed VENUE_WITNESS_OBSERVATION_V1 Trading-Account observation contract; VENUE_WITNESS_SCHEMA_PRESENT=true; VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false; VENUE_WITNESS_SELECTED=false; WITNESS_CONTRACT_MISSING_CLOSED=true; RAW_TO_WITNESS_PROVEN=false; SOURCE_OBJECT_PRESENT=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false; EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
+- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.Y persist adds typed NORMALIZATION_INCLUSION_ADJUDICATION_V1 normalization/inclusion contract; NORMALIZATION_SCHEMA_PRESENT=true; NORMALIZATION_RUNTIME_INSTANCE_PRESENT=false; NORMALIZATION_CONTRACT_MISSING_CLOSED=true; FIELD_TO_DIMENSION_MAPPING_SCHEMA_PRESENT=true; FIELD_TO_DIMENSION_MAPPING_PRESENT=false; SEMANTIC_MAPPING_PROVEN=false; INCLUSION_PROVEN=false; SOURCE_OBJECT_PRESENT=false; SOURCE_SELECTED=false; MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false; INTERNAL_RECONSTRUCTION_CREATED=false; EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

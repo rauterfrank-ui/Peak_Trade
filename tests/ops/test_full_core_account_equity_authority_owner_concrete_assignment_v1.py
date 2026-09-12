@@ -138,13 +138,19 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert py_files == [
         "__init__.py",
         "constants_v1.py",
+        "normalization_inclusion_adjudication_v1.py",
         "sample_schema_v1.py",
         "venue_witness_observation_v1.py",
     ]
     producer_surface = "\n".join(
         path.read_text(encoding="utf-8")
         for path in SLOT_DIR.glob("*.py")
-        if path.name not in {"sample_schema_v1.py", "venue_witness_observation_v1.py"}
+        if path.name
+        not in {
+            "sample_schema_v1.py",
+            "venue_witness_observation_v1.py",
+            "normalization_inclusion_adjudication_v1.py",
+        }
     )
     for forbidden in (
         "def mint",
@@ -164,6 +170,13 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in witness
     assert "def reconstruct" not in witness
     assert "def bind_account_equity" not in witness
+    normalization = (SLOT_DIR / "normalization_inclusion_adjudication_v1.py").read_text(
+        encoding="utf-8"
+    )
+    assert "def mint" not in normalization
+    assert "def produce" not in normalization
+    assert "def reconstruct" not in normalization
+    assert "def bind_account_equity" not in normalization
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:
