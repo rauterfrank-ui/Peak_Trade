@@ -6,7 +6,8 @@ and typed internal reconstruction contract schema, plus typed
 reconstruction algebra contract schema, plus typed P01
 haircut/reserve-depletion term contract schema, plus typed P01
 term-set and unit-class adjudication contract schema, plus typed P01
-applicability adjudication contract schema. No producer
+applicability adjudication contract schema, plus typed P01
+equity-base inclusion adjudication contract schema. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -68,6 +69,10 @@ P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT = True
 P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_APPLICABILITY_RESOLVED = False
+P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT = True
+P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_EQUITY_BASE_INCLUSION_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_EQUITY_BASE_INCLUSION_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -317,5 +322,40 @@ P01_APPLICABILITY_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_applicability_contract_authority_effect",
+    "provenance_digest",
+)
+P01_EQUITY_BASE_INCLUSION_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_equity_base_inclusion_contract_id",
+    "p01_equity_base_inclusion_contract_version",
+    "parent_p01_applicability_contract_schema_class",
+    "parent_p01_term_set_and_unit_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "p01_equity_base_inclusion_status",
+    "p01_equity_base_inclusion_resolved_status",
+    "p01_equity_base_inclusion_rule",
+    "p01_equity_base_inclusion_adjudication",
+    "typed_inclusion_state",
+    "unknown_is_not_excluded",
+    "zero_is_not_embedded_or_excluded",
+    "absence_is_not_not_embedded",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "term_set_unresolved_does_not_decide_inclusion",
+    "applicability_unresolved_does_not_decide_inclusion",
+    "unit_unresolved_does_not_decide_inclusion",
+    "separate_schema_does_not_prove_independent_deduction",
+    "unknown_inclusion_cannot_authorize_subtraction",
+    "unknown_inclusion_cannot_authorize_omission",
+    "no_double_counting_permission",
+    "rejected_inclusion_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_equity_base_inclusion_contract_authority_effect",
     "provenance_digest",
 )
