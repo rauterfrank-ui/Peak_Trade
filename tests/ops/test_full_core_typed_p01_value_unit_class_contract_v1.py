@@ -67,6 +67,7 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_TYPED_P01_VALUE_UNIT_CLASS_CONTRACT_V1.md"
 AK_HEADING = "11.2.1.AK FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT"
 AL_HEADING = "11.2.1.AL FULL_CORE_TYPED_P01_VALUE_UNIT_CLASS_CONTRACT"
+AM_HEADING = "11.2.1.AM FULL_CORE_TYPED_P01_APPLICABILITY_CLASS_CONTRACT"
 
 
 def _contract() -> P01ValueUnitClassContractV1:
@@ -78,7 +79,7 @@ def _contract() -> P01ValueUnitClassContractV1:
 def _al_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     al_start = runbook.index(AL_HEADING)
-    return runbook[al_start : runbook.index("## 11.3 Autonomy state model", al_start)]
+    return runbook[al_start : runbook.index(AM_HEADING, al_start)]
 
 
 def test_p01_value_unit_class_contract_constructs() -> None:
