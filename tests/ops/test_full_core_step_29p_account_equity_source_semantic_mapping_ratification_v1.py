@@ -1,4 +1,4 @@
-"""STEP-29P equity-mapping Owner ratification. Mapping unproven. No value binding."""
+"""STEP-29P equity source-semantic mapping ratification. No canonical mapping."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from src.ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1.e
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
     ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE,
+    ADJUDICATION_RESULT,
     CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     IMPLEMENTATION_OF_VALUE_BINDING,
     LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE,
@@ -30,6 +31,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     RUNNING_EQUITY_SOURCE_OBJECT,
     RUNNING_EQUITY_SOURCE_SEMANTICS,
     SELECTION_OWNER,
+    SOURCE_CANDIDATE_COUNT,
     WIRE_SEND_PERMITTED,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 import (
@@ -53,10 +55,11 @@ from tests.ops.test_full_core_step_29p_risk_admissibility_pre_construction_v1 im
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = (
-    REPO_ROOT / "docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md"
+    REPO_ROOT
+    / "docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md"
 )
-Q_SPEC_PATH = (
-    REPO_ROOT / "docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md"
+R_SPEC_PATH = (
+    REPO_ROOT / "docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md"
 )
 GET_PACK_SUMMARY = (
     REPO_ROOT
@@ -79,9 +82,40 @@ _FORBIDDEN_EQUITY_FIELDS = (
     "cashBal",
     "details.totalEq",
 )
+_CANDIDATE_IDS = (
+    "C01_Q_GET_PACK_DETAILS_AVAILEQ",
+    "C02_FORBIDDEN_RAW_VENUE_EQ_FIELDS",
+    "C03_CAPITAL_ADMISSION_ENVELOPE",
+    "C04_CRS_ACCOUNT_EQUITY_CONSUMER",
+    "C05_OFFLINE_REPLAY_DEFAULT_10000",
+    "C06_INJECTED_RUNNING_ACCOUNT_EQUITY",
+    "C07_FUNDING_ACCOUNT_BALANCE_OBSERVATION",
+    "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL",
+    "C09_CAP11_3_FIXTURE_PRIVATE_ACCOUNT_STATE",
+    "C10_LEDGER_SNAPSHOT_EQUITY_BY_CCY",
+    "C11_CAP31_PRODUCTIVE_FUTURES_ACCOUNTING",
+    "C12_S1114_LIVE_ACCOUNTING_RECONSTRUCTED",
+    "C13_BACKTEST_STATE_FILE_ACCOUNT_EQUITY",
+    "C14_START_BALANCE",
+    "C15_LIVE_ACCOUNT_BOUND_IDENTITY",
+    "C16_RESTART_RECONSTRUCTION_ACCOUNTING",
+)
+_OPEN_SEMANTIC_REQUIREMENTS = (
+    "ACCOUNT_MODE=OPEN",
+    "REALIZED_UNREALIZED_TREATMENT=OPEN",
+    "OPEN_POSITION_TREATMENT=OPEN",
+    "PENDING_ORDER_RESERVATIONS=OPEN",
+    "LIABILITIES_BORROWINGS=OPEN",
+    "FEES=OPEN",
+    "HAIRCUTS_RESERVE_DEPLETION=FROZEN_PENDING_OWNER_POLICY",
+    "RESTART_RECONCILIATION_FOR_THIS_DIMENSION=OPEN",
+    "MULTI_CURRENCY_CONVERSION=OPEN",
+)
 
 
-def test_mapping_unproven_and_value_binding_not_implemented() -> None:
+def test_adjudication_no_canonically_valid_mapping() -> None:
+    assert ADJUDICATION_RESULT == "NO_CANONICALLY_VALID_MAPPING_AVAILABLE"
+    assert SOURCE_CANDIDATE_COUNT == 16
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE == "UNRESOLVED"
     assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
@@ -107,12 +141,34 @@ def test_mapping_unproven_and_value_binding_not_implemented() -> None:
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     assert NEXT_STEP_REQUIRES_OWNER_GO is True
     dag = live_admission_gap_dag_v1()
+    assert dag["ADJUDICATION_RESULT"] == "NO_CANONICALLY_VALID_MAPPING_AVAILABLE"
+    assert dag["SOURCE_CANDIDATE_COUNT"] == 16
     assert dag["MAPPING_PROVEN"] is False
     assert dag["IMPLEMENTATION_OF_VALUE_BINDING"] is False
     assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
+
+
+def test_census_candidates_are_existing_and_rejected() -> None:
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s_start = runbook.index(
+        "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
+    )
+    s_section = runbook[s_start : runbook.index("## 11.3 Autonomy state model", s_start)]
+    assert SOURCE_CANDIDATE_COUNT == len(_CANDIDATE_IDS)
+    for candidate_id in _CANDIDATE_IDS:
+        assert candidate_id in s_section, candidate_id
+    assert "ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE" in s_section
+    assert "EXACTLY_ONE_CANONICAL_MAPPING_PROVEN" in s_section
+    assert "MULTIPLE_PLAUSIBLE_BUT_OWNER_RATIFICATION_REQUIRED" in s_section
+    assert "No best-effort mapping is selected." in s_section
+    assert "GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER" in s_section
+    assert "productive_producer_present=false" in s_section
+    for requirement in _OPEN_SEMANTIC_REQUIREMENTS:
+        assert requirement in s_section, requirement
+    assert "SEMANTIC_REQUIREMENTS_COMPLETE=false" in s_section
 
 
 def test_forbidden_raw_venue_fields_remain_hard_deny() -> None:
@@ -197,47 +253,55 @@ def test_risk_admissible_does_not_construct_or_arm() -> None:
     assert WIRE_SEND_PERMITTED is False
 
 
-def test_runbook_r_consumes_go_without_rewriting_q() -> None:
+def test_runbook_s_consumes_go_without_rewriting_r() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    q_spec = Q_SPEC_PATH.read_text(encoding="utf-8")
-    q_start = runbook.index("11.2.1.Q FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION")
+    r_spec = R_SPEC_PATH.read_text(encoding="utf-8")
     r_start = runbook.index("11.2.1.R FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION")
-    q_section = runbook[q_start:r_start]
-    r_section = runbook[
-        r_start : runbook.index(
-            "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION",
-            r_start,
-        )
-    ]
-    assert "OWNER_GO=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_AUTHORITY_BINDING_V1" in r_section
-    assert "OWNER_GO_STATUS=CONSUMED" in r_section
-    assert "MAPPING_PROVEN=false" in r_section
-    assert "IMPLEMENTATION_OF_VALUE_BINDING=false" in r_section
-    assert "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED" in r_section
-    assert "RUNNING_EQUITY_SOURCE_OBJECT=NONE" in r_section
-    assert "STEP_29P_RISK_ADMISSIBLE=false" in r_section
-    assert "LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false" in r_section
+    s_start = runbook.index(
+        "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
+    )
+    r_section = runbook[r_start:s_start]
+    s_section = runbook[s_start : runbook.index("## 11.3 Autonomy state model", s_start)]
+    assert (
+        "OWNER_GO=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1"
+        in s_section
+    )
+    assert "OWNER_GO_STATUS=CONSUMED" in s_section
+    assert "ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE" in s_section
+    assert "MAPPING_PROVEN=false" in s_section
+    assert "IMPLEMENTATION_OF_VALUE_BINDING=false" in s_section
+    assert "RUNTIME_VALUE_BINDING_IMPLEMENTED=false" in s_section
+    assert "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED" in s_section
+    assert "RUNNING_EQUITY_SOURCE_OBJECT=NONE" in s_section
+    assert "STEP_29P_RISK_ADMISSIBLE=false" in s_section
+    assert "LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false" in s_section
+    assert (
+        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY="
+        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING" in s_section
+    )
+    assert "LIVE_ENABLED=false" in s_section
+    assert "LIVE_ARMED=false" in s_section
+    assert "WIRE_SEND_PERMITTED=false" in s_section
+    assert "CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1" in s_section
+    assert "CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false" in s_section
+    assert "CAP72_PRODUCTIVE_PORT=SimulatedExecutionPortV1" in s_section
     assert (
         "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY="
         "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED" in r_section
     )
-    assert "LIVE_ENABLED=false" in r_section
-    assert "LIVE_ARMED=false" in r_section
-    assert "WIRE_SEND_PERMITTED=false" in r_section
-    assert "CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1" in r_section
-    assert "CAP_11_1_CONSTRUCTION_POLICY_LIFT_AUTHORIZED=false" in r_section
-    assert (
-        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
-        in q_section
+    assert "THIS_SLICE=11.2.1.R.FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION" in (
+        r_section
     )
-    assert "THIS_SLICE=11.2.1.Q.FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION" in q_section
-    assert "DOCS_TOKEN_FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1" in spec
-    assert "MAPPING_PROVEN=false" in spec
+    assert "THIS_SLICE=11.2.1.S" not in r_section
+    assert (
+        "DOCS_TOKEN_FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1"
+        in spec
+    )
+    assert "ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE" in spec
     assert "IMPLEMENTATION_OF_VALUE_BINDING=false" in spec
     assert (
-        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=STEP_29P_EQUITY_DIMENSION_BINDING_MISSING"
-        in q_spec
+        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY="
+        "ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED" in r_spec
     )
-    assert "THIS_SLICE=11.2.1.R" not in q_section
     assert "THIS_SLICE=11.2.1.S" not in r_section

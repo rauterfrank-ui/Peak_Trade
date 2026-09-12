@@ -182,8 +182,8 @@ LiveExecutionPort remain later Live-authorization layers. Cap-7.2 Host-Join is n
 in this DAG.
 
 Current remaining gap after STEP-29P account-equity mapping Owner ratification
-(canonical persist: Master Runbook §11.2.1.R; derived spec
-[`FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md`](FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md)):
+(historical persist; superseded for source-semantic mapping ratification by
+`FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1`):
 
 ```text
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_OWNER_RATIFICATION_REQUIRED
@@ -204,6 +204,34 @@ FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
 NEXT_STEP_REQUIRES_OWNER_GO=true
 ```
 
-No non-forbidden Source→Semantic mapping is derivable from current canonical
-contracts. Value binding is not implemented. Cap 11.1 construction-policy lift and
-Cap-7.2 Host-Join remain later tracks.
+No non-forbidden Source→Semantic mapping was derivable at R. Value binding
+was not implemented. Cap 11.1 construction-policy lift and Cap-7.2 Host-Join
+remain later tracks.
+
+Current remaining gap after STEP-29P account-equity source-semantic mapping
+ratification (canonical persist: Master Runbook §11.2.1.S; derived spec
+[`FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md`](FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md)):
+
+```text
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED
+RUNNING_EQUITY_SOURCE_OBJECT=NONE
+RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION=NONE
+SOURCE_SEMANTICS=UNBOUND
+LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false
+STEP_29P_RISK_ADMISSIBLE=false
+HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT=STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+Sixteen existing candidate surfaces were inventoried. None is a canonically
+valid Source→Semantic mapping. Value binding is not implemented. Cap 11.1
+construction-policy lift and Cap-7.2 Host-Join remain later tracks.
