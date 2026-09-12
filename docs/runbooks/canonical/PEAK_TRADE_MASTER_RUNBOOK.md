@@ -14415,6 +14415,313 @@ CURRENT_CANONICAL_SECTION=11.2.1.AI.FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERIT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+Typed P01 haircut/reserve/depletion semantics adjudication persist remaining after
+§11.2.1.AI is superseded by §11.2.1.AJ. P01 member-freshness pins,
+mapping-unproven pins, GET-pack facts, standing Live flags, and the
+forbidden-field set remain as bound in §11.2.1.AI. Historical
+`EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`
+in this section is not rewritten.
+
+### 11.2.1.AJ FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT (BOUND; TYPED P01 HAIRCUT/RESERVE/DEPLETION SEMANTICS ADJUDICATION ONLY; PER-TERM ROLE/SIGN/UNIT/APPLICABILITY REMAIN UNSPECIFIED; FAMILY LABELS ARE NOT INDEPENDENT MEMBERS; ALGEBRA INCOMPLETE; NO PRODUCTIVE RECONSTRUCTION; NO SOURCE SELECTED; NO MAPPING; NO PRODUCER IMPLEMENTATION; NO VALUE BINDING; NO CONSTRUCTION LIFT; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.AI P01 member-freshness pins
+except to record that the haircut/reserve/depletion semantics question was
+forensically adjudicated and remains unspecified. Does **not** rewrite
+§11.2.1.AH numeric provenance pins. Does **not** rewrite §11.2.1.AG
+U04/U05 overlap pins. Does **not** rewrite §11.2.1.AF embedding pins. Does
+**not** rewrite §11.2.1.AE equity-base inclusion pins. Does **not** rewrite
+§11.2.1.AD applicability pins. Does **not** rewrite §11.2.1.AC term-set and
+unit-class pins except to carry the already-canonical fact that family labels
+are not an exact term set. Does **not** rewrite §11.2.1.AB P01 term-contract
+pins. Does **not** rewrite §11.2.1.AA reconstruction algebra contract. Does
+**not** rewrite §11.2.1.Z internal reconstruction contract. Does **not** rewrite
+§11.2.1.Y normalization/inclusion contract. Does **not** rewrite §11.2.1.X
+witness observation contract. Does **not** rewrite §11.2.1.W sample schema.
+Does **not** rewrite §11.2.1.V owner assignment. Does **not** rewrite
+§11.2.1.U architecture classes. Does **not** rewrite §11.2.1.T policy
+semantics P01/U01–U09. Does **not** rewrite §11.2.1.S census, candidate reject
+reasons, or `ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE`. Does
+**not** rewrite §11.2.1.R or §11.2.1.Q standing-gate values, GET-pack facts,
+Capital Admission mathematics, §11.2.2 Treasury contracts, §11.13.5 canary
+facts, or §11.14 ladder fields. Does **not** invent Haircut, Reserve, or
+Depletion numeric values. Does **not** treat UNKNOWN as 0. Does **not** infer
+subtraction, addition, netting, deduplication, or omission. Does **not**
+use U04/U05/U06/U09 as P01 term authority. Does **not** invent numeric
+provenance or freshness. Does **not** create a runtime instance or productive
+producer. Does **not** select a source. Does **not** bind
+`RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING` to any venue field or internal
+object. Does **not** elevate `availEq` / `totalEq` / `eq` / `adjEq` /
+`availBal` / `cashBal` / `frozenBal` / `isoEq` / `ordFrozen` / `upl`. Does
+**not** elevate `AccountingPortfolioStateV1`, `LedgerSnapshot.equity_by_ccy`,
+or `SimulatedPortfolioStateV1`. Does **not** revive C01–C21. Does **not**
+construct a governed productive equity producer. Does **not** implement
+source adapters. Does **not** implement productive reconstruction,
+reconciliation, divergence policy, or runtime value binding. Does **not**
+execute the LIVE_ACCOUNT_BOUND claim join. Does **not** POST. Does **not**
+construct `LiveExecutionPort`. Does **not** set `LIVE_ENABLED=true`. Does
+**not** set `LIVE_ARMED=true`. Does **not** set `WIRE_SEND_PERMITTED=true`.
+Does **not** lift Cap 11.1. Does **not** join Cap 7.2 to LiveExecutionPort.
+Does **not** set `STEP_29P_RISK_ADMISSIBLE=true`. Does **not** resolve U04,
+U05, or U06. Cap 22 / MF-WP3 remains PARKED. DDO/Learning have no
+Trading/Risk/Selection/Execution authority. Cap 2.3 remains sole productive
+Selection owner.
+
+Owner-GO
+`OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_P01_HAIRCUT_RESERVE_DEPLETION_CONTRACT_V1`
+authorizes persist of the typed `P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1`.
+Family labels are not independent members. Family reduction-only is not a
+per-term role. Unspecified semantics cannot authorize arithmetic. It does
+**not** authorize source adapters, sample minting, Live arming, or Cap 11.1
+construction. Observation is not authority. A named family is not a
+reconstruction formula.
+
+``` text
+OWNER_GO=OWNER_GO_PEAK_TRADE_FULL_CORE_P01_HAIRCUT_RESERVE_DEPLETION_CONTRACT_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_SSOT_PERSIST
+THIS_SLICE=11.2.1.AJ.FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT
+CURRENT_PHASE=11.2.1.AJ.FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT
+FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY=SECTION_11_2_1
+CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false
+FULL_CORE_SYSTEM_E2E_PROVEN=false
+CURRENT_LIVE_CORE_PATH_PROVEN=false
+FULL_CORE_OFFLINE_E2E_PROVEN=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29P_COMPUTE_OWNER=STEP_29P
+STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER=true
+ACCOUNT_EQUITY_INPUT_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS=GOVERNED_PRODUCTIVE_ACCOUNT_EQUITY_AUTHORITY_PRODUCER
+OWNER_ASSIGNMENT_RATIFIED=true
+SLOT_KIND=EMPTY_GOVERNED_AUTHORITY_OWNER_SLOT
+SLOT_IS_EMPTY=true
+C01_C16_NOT_ELEVATED=true
+C01_C21_NOT_ELEVATED=true
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+IMPLEMENTATION_OF_VALUE_BINDING=false
+RUNTIME_VALUE_BINDING_PRESENT=false
+ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE
+SEMANTIC_REQUIREMENTS_COMPLETE=true
+POLICY_SEMANTICS_COMPLETE=true
+ARCHITECTURE_RATIFIED=true
+GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_PRESENT=true
+VENUE_WITNESS_SCHEMA_PRESENT=true
+VENUE_WITNESS_RUNTIME_INSTANCE_PRESENT=false
+NORMALIZATION_SCHEMA_PRESENT=true
+NORMALIZATION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true
+INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false
+INTERNAL_RECONSTRUCTION_PROVEN=false
+RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT=true
+RECONSTRUCTION_ALGEBRA_COMPLETE=false
+RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT=NONE
+CANONICAL_FORMULA_PROVEN=false
+UNRESOLVED_ALGEBRA_TERMS=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED,U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED,U05_LIABILITY_INCLUSION_OR_VALUE_UNRESOLVED,U06_FEE_INCLUSION_UNRESOLVED
+P01_TERM_CONTRACT_SCHEMA_PRESENT=true
+P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_TERM_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT=true
+P01_TERM_SET_RESOLVED=false
+P01_VALUE_UNIT_CLASS_RESOLVED=false
+P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT=true
+P01_APPLICABILITY_RESOLVED=false
+P01_EQUITY_BASE_INCLUSION_CONTRACT_SCHEMA_PRESENT=true
+P01_EQUITY_BASE_INCLUSION_RESOLVED=false
+P01_EMBEDDING_STATE_CONTRACT_SCHEMA_PRESENT=true
+P01_EMBEDDED_STATE_RESOLVED=false
+P01_EMBEDDED_STATE=UNRESOLVED
+P01_OVERLAP_WITH_U04_U05_CONTRACT_SCHEMA_PRESENT=true
+P01_U04_OVERLAP_RESOLVED=false
+P01_U04_OVERLAP_STATE=UNRESOLVED
+P01_U05_OVERLAP_RESOLVED=false
+P01_U05_OVERLAP_STATE=UNRESOLVED
+P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_SCHEMA_PRESENT=true
+P01_NUMERIC_VALUE_PROVENANCE_RESOLVED=false
+P01_NUMERIC_VALUE_PROVENANCE_STATUS=UNSPECIFIED
+P01_NUMERIC_VALUE_SOURCE=UNSPECIFIED
+P01_NUMERIC_VALUE_TRANSFORMATION=UNSPECIFIED
+P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_SCHEMA_PRESENT=true
+P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED=false
+P01_MEMBER_FRESHNESS_STATUS=UNPROVEN
+P01_MEMBER_FRESHNESS_RULE=UNSPECIFIED
+P01_U09_FRESHNESS_RELATION=UNSPECIFIED
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_SCHEMA_PRESENT=true
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_HAIRCUT_SEMANTICS_RESOLVED=false
+P01_HAIRCUT_IDENTITY_CLASS=FAMILY_CLASS_LABEL
+P01_HAIRCUT_ROLE=UNSPECIFIED
+P01_HAIRCUT_SIGN_SEMANTICS=UNSPECIFIED
+P01_HAIRCUT_UNIT_CLASS=UNSPECIFIED
+P01_HAIRCUT_APPLICABILITY=UNSPECIFIED
+P01_HAIRCUT_POSITIVE_DEFINITION_STATE=ABSENT
+P01_RESERVE_SEMANTICS_RESOLVED=false
+P01_RESERVE_IDENTITY_CLASS=FAMILY_CLASS_LABEL
+P01_RESERVE_ROLE=UNSPECIFIED
+P01_RESERVE_SIGN_SEMANTICS=UNSPECIFIED
+P01_RESERVE_UNIT_CLASS=UNSPECIFIED
+P01_RESERVE_APPLICABILITY=UNSPECIFIED
+P01_RESERVE_POSITIVE_DEFINITION_STATE=ABSENT
+P01_DEPLETION_SEMANTICS_RESOLVED=false
+P01_DEPLETION_IDENTITY_CLASS=FAMILY_CLASS_LABEL
+P01_DEPLETION_ROLE=UNSPECIFIED
+P01_DEPLETION_SIGN_SEMANTICS=UNSPECIFIED
+P01_DEPLETION_UNIT_CLASS=UNSPECIFIED
+P01_DEPLETION_APPLICABILITY=UNSPECIFIED
+P01_DEPLETION_POSITIVE_DEFINITION_STATE=ABSENT
+P01_ZERO_ABSENCE_NA_RULE=UNSPECIFIED
+P01_HAIRCUT_RESERVE_DEPLETION_COMBINATION_RULE=UNSPECIFIED
+P01_PRECEDENCE_RULE=UNSPECIFIED
+P01_FAMILY_CLASS_LABELS=HAIRCUT,RESERVE,DEPLETION
+P01_FAMILY_LABELS_ARE_NOT_EXACT_TERM_SET=true
+P01_FAMILY_LABELS_ARE_NOT_INDEPENDENT_MEMBERS=true
+P01_FAMILY_REDUCTION_ONLY=true
+P01_FAMILY_REDUCTION_ONLY_IS_NOT_PER_TERM_ROLE=true
+P01_TERMS_INSUFFICIENTLY_DEFINED_FOR_ALGEBRAIC_ROLE=true
+P01_TERM_SEMANTICS_RESOLVED=false
+P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED=false
+P01_RUNTIME_INSTANCE_PRESENT=false
+P01_AUTHORITY_EFFECT=NONE
+P01_REMAINING_UNRESOLVED_SEMANTICS=P01_TERM_SET_UNSPECIFIED,P01_VALUE_UNIT_CLASS_UNSPECIFIED,P01_APPLICABILITY_UNSPECIFIED,P01_EQUITY_BASE_INCLUSION_UNRESOLVED,P01_EMBEDDING_UNRESOLVED,P01_OVERLAP_WITH_U04_U05_UNRESOLVED,P01_NUMERIC_VALUE_PROVENANCE_UNSPECIFIED
+P01_ECONOMIC_MEANING=HAIRCUT_RESERVE_AND_DEPLETION_REDUCTION_ONLY
+P01_ALGEBRAIC_ROLE=REDUCTION_ONLY_UNSPECIFIED
+P01_SIGN_SEMANTICS=NON_NEGATIVE_REDUCTION_ONLY_MUST_NOT_INCREASE_EQUITY
+P01_NEGATIVE_ALLOWED=false
+U04_STATUS=DECIDED
+U05_STATUS=DECIDED
+U06_STATUS=DECIDED
+U09_STATUS=DECIDED
+U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED=true
+U05_LIABILITY_INCLUSION_OR_VALUE_UNRESOLVED=true
+U06_FEE_INCLUSION_UNRESOLVED=true
+LIVE_RESTART_RECONSTRUCTED=false
+SOURCE_OBJECT_PRESENT=false
+GOVERNED_PRODUCER_CREATED=false
+RECONCILIATION_CONTRACT_CREATED=false
+DIVERGENCE_POLICY_CREATED=false
+LIVE_ACCOUNT_BOUND_JOIN_PRESENT=false
+STEP_29P_RISK_ADMISSIBLE=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+POST_PERFORMED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_DECOMPOSED_CONTRACT_GAP=P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Layer split preserved. Observation is not authority. Venue-raw fields remain
+Evidence/Witnesses only. C01–C21 remain rejected. Haircut, Reserve, and
+Depletion remain family class labels, not proven independent members.
+`P01_HAIRCUT_SEMANTICS_RESOLVED` remains false. `P01_RESERVE_SEMANTICS_RESOLVED`
+remains false. `P01_DEPLETION_SEMANTICS_RESOLVED` remains false.
+`P01_TERM_SET_RESOLVED` remains false. `P01_VALUE_UNIT_CLASS_RESOLVED` remains
+false. `P01_APPLICABILITY_RESOLVED` remains false.
+`P01_EQUITY_BASE_INCLUSION_RESOLVED` remains false. `P01_EMBEDDED_STATE_RESOLVED`
+remains false. `P01_U04_OVERLAP_RESOLVED` remains false.
+`P01_U05_OVERLAP_RESOLVED` remains false. `P01_NUMERIC_VALUE_PROVENANCE_RESOLVED`
+remains false. `P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED` remains false.
+`P01_TERM_SEMANTICS_RESOLVED` remains false.
+`P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED` remains false.
+`RECONSTRUCTION_ALGEBRA_COMPLETE` remains false. `P01_RUNTIME_INSTANCE_PRESENT`
+remains false. `P01_AUTHORITY_EFFECT` remains `NONE`.
+
+B. Typed P01 haircut/reserve/depletion semantics persist (not producer
+implementation; not source selection; not mapping; not productive
+reconstruction; not a closed-form target formula; not a numeric P01 instance):
+
+``` text
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_SCHEMA_PRESENT=true
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_RUNTIME_INSTANCE_PRESENT=false
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_AUTHORITY_EFFECT=NONE
+P01_HAIRCUT_SEMANTICS_RESOLVED=false
+P01_HAIRCUT_ROLE=UNSPECIFIED
+P01_HAIRCUT_SIGN_SEMANTICS=UNSPECIFIED
+P01_HAIRCUT_UNIT_CLASS=UNSPECIFIED
+P01_HAIRCUT_APPLICABILITY=UNSPECIFIED
+P01_RESERVE_SEMANTICS_RESOLVED=false
+P01_RESERVE_ROLE=UNSPECIFIED
+P01_RESERVE_SIGN_SEMANTICS=UNSPECIFIED
+P01_RESERVE_UNIT_CLASS=UNSPECIFIED
+P01_RESERVE_APPLICABILITY=UNSPECIFIED
+P01_DEPLETION_SEMANTICS_RESOLVED=false
+P01_DEPLETION_ROLE=UNSPECIFIED
+P01_DEPLETION_SIGN_SEMANTICS=UNSPECIFIED
+P01_DEPLETION_UNIT_CLASS=UNSPECIFIED
+P01_DEPLETION_APPLICABILITY=UNSPECIFIED
+P01_ZERO_ABSENCE_NA_RULE=UNSPECIFIED
+P01_HAIRCUT_RESERVE_DEPLETION_COMBINATION_RULE=UNSPECIFIED
+P01_RUNTIME_INSTANCE_PRESENT=false
+P01_AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py
+SCHEMA_CLASS=P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1
+PARENT_CONTRACT=P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_V1
+GOVERNED_PRODUCER_CREATED=false
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+```
+
+Proven facts are only those already ratified in §11.2.1.T/AB/AC/AD/AE/AF/AG/AH/AI:
+P01 is a reduction-only haircut/reserve/depletion family; each term is
+non-negative at family level; P01 must not increase equity; unspecified or
+unclear members fail closed; `PRESENT_ZERO` is allowed only by explicit
+normative policy; venue-raw haircuts and C01–C21 elevation remain forbidden;
+family labels `HAIRCUT,RESERVE,DEPLETION` are classification buckets, not an
+exact member set; expected future fees may exist only as a separate P01
+reserve term (permission, not membership, not a Reserve definition); U06
+accrued fees remain distinct; numeric provenance remains `UNSPECIFIED`;
+P01-member freshness remains `UNPROVEN`. This slice additionally proves that
+repository evidence does **not** yield an isolated positive definition, per-term
+algebraic role, stored-sign encoding, unit class, applicability, zero/absence/NA
+rule, or combination/precedence rule for Haircut, Reserve, or Depletion.
+Family reduction-only is not a per-term role. Family sign constraint is not
+per-term stored-value encoding. Candidate roles listed in the contract are
+classified `REJECTED` and are not promoted to authority. Rejected inferences:
+`P01 = equity_base - reserve`; `P01 = equity_base * (1-haircut)`;
+`P01 = equity_base - depletion`; `reserve = 0`; `haircut = 0`;
+`depletion = 0`; missing = zero; not-applicable = zero; embedded = omit;
+overlap = deduplicate; U04/U05/U06/U09 as P01 term authority. Unproven, and
+therefore fail-closed, remain: exact P01 member term set; amount vs ratio vs
+percentage unit class; always-vs-conditional applicability; whether P01 is
+already inside EQUITY_BASE; whether P01 is independently subtractive; broader
+embedded-state; P01↔U04 and P01↔U05 overlap/equivalence; numeric value
+provenance; P01-member freshness inheritance; and per-term Haircut, Reserve,
+and Depletion algebraic roles.
+
+C. Completing this haircut/reserve/depletion semantics adjudication persist does
+**not** prove P01 term semantics resolved, does **not** close
+`P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`, does **not** prove algebra
+completeness, does **not** resolve U04/U05 inclusion or U06 fee inclusion,
+does **not** prove numeric provenance, does **not** prove freshness, does
+**not** prove a source is selected, does **not** prove a mapping, does
+**not** prove reconstruction, does **not** create a governed producer, does
+**not** mint an authoritative sample, does **not** implement reconciliation,
+and does **not** authorize implementation of value binding. The earliest
+unresolved Full-Core dependency remains
+`NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`. The earliest remaining
+decomposed contract gap remains `P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED`.
+Completing this persist does **not** authorize a further
+haircut/reserve/depletion semantics sub-slice.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.AJ.FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

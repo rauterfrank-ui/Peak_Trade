@@ -11,7 +11,8 @@ equity-base inclusion adjudication contract schema, plus typed P01
 broader embedding-state adjudication contract schema, plus typed P01
 overlap/equivalence adjudication versus U04 and U05, plus typed P01
 numeric value provenance adjudication, plus typed P01 member freshness
-inheritance adjudication. No producer implementation. No
+inheritance adjudication, plus typed P01 haircut/reserve/depletion
+semantics adjudication. No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire.
 """
@@ -94,6 +95,13 @@ P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_SCHEMA_PRESENT = True
 P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_MEMBER_FRESHNESS_INHERITANCE_RESOLVED = False
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_SCHEMA_PRESENT = True
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_HAIRCUT_SEMANTICS_RESOLVED = False
+P01_RESERVE_SEMANTICS_RESOLVED = False
+P01_DEPLETION_SEMANTICS_RESOLVED = False
+P01_RUNTIME_INSTANCE_PRESENT = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -606,5 +614,86 @@ P01_MEMBER_FRESHNESS_INHERITANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_member_freshness_inheritance_contract_authority_effect",
+    "provenance_digest",
+)
+P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_haircut_reserve_depletion_semantics_contract_id",
+    "p01_haircut_reserve_depletion_semantics_contract_version",
+    "parent_p01_member_freshness_inheritance_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "family_class_labels",
+    "family_labels_are_not_exact_term_set",
+    "family_labels_are_not_independent_members",
+    "family_reduction_only",
+    "family_must_not_increase_equity",
+    "family_negative_allowed",
+    "family_zero_only_by_explicit_policy",
+    "family_reduction_only_is_not_per_term_role",
+    "family_sign_constraint_is_not_per_term_sign",
+    "venue_raw_haircuts_forbidden",
+    "future_fees_permission_is_not_reserve_definition",
+    "u06_accrued_distinct_is_not_p01_definition",
+    "terms_insufficiently_defined_for_algebraic_role",
+    "p01_haircut_semantics_resolved_status",
+    "p01_haircut_identity_class",
+    "p01_haircut_role",
+    "p01_haircut_sign_semantics",
+    "p01_haircut_unit_class",
+    "p01_haircut_applicability",
+    "p01_haircut_positive_definition_state",
+    "p01_reserve_semantics_resolved_status",
+    "p01_reserve_identity_class",
+    "p01_reserve_role",
+    "p01_reserve_sign_semantics",
+    "p01_reserve_unit_class",
+    "p01_reserve_applicability",
+    "p01_reserve_positive_definition_state",
+    "p01_depletion_semantics_resolved_status",
+    "p01_depletion_identity_class",
+    "p01_depletion_role",
+    "p01_depletion_sign_semantics",
+    "p01_depletion_unit_class",
+    "p01_depletion_applicability",
+    "p01_depletion_positive_definition_state",
+    "p01_zero_absence_na_rule",
+    "p01_haircut_reserve_depletion_combination_rule",
+    "p01_precedence_rule",
+    "unknown_is_not_zero",
+    "unspecified_is_not_zero",
+    "missing_is_not_zero",
+    "not_applicable_is_not_zero",
+    "absent_is_not_zero",
+    "unavailable_is_not_zero",
+    "embedded_is_not_omit",
+    "overlap_is_not_deduplicate",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "unspecified_cannot_authorize_subtraction",
+    "unspecified_cannot_authorize_multiplication",
+    "unspecified_cannot_authorize_addition",
+    "unspecified_cannot_authorize_netting",
+    "unspecified_cannot_authorize_omission",
+    "unspecified_cannot_authorize_ignore",
+    "naming_does_not_prove_algebra",
+    "separate_labels_do_not_prove_separate_numeric_effect",
+    "same_source_does_not_prove_shared_semantics",
+    "missing_implementation_is_not_zero",
+    "missing_implementation_is_not_not_applicable",
+    "u04_u05_u06_u09_are_not_p01_term_authority",
+    "rejected_role_inferences",
+    "rejected_formula_inferences",
+    "rejected_combination_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "candidate_roles_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_runtime_instance_present",
+    "p01_authority_effect",
+    "p01_haircut_reserve_depletion_semantics_contract_authority_effect",
     "provenance_digest",
 )

@@ -66,12 +66,13 @@ SPEC_PATH = (
 )
 AH_HEADING = "11.2.1.AH FULL_CORE_TYPED_P01_NUMERIC_VALUE_PROVENANCE_CONTRACT"
 AI_HEADING = "11.2.1.AI FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT"
+AJ_HEADING = "11.2.1.AJ FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT"
 
 
 def _ai_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ai_start = runbook.index(AI_HEADING)
-    return runbook[ai_start : runbook.index("## 11.3 Autonomy state model", ai_start)]
+    return runbook[ai_start : runbook.index(AJ_HEADING, ai_start)]
 
 
 def test_p01_member_freshness_contract_constructs() -> None:
