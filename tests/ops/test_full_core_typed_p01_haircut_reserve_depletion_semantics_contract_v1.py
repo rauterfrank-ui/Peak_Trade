@@ -314,7 +314,7 @@ def test_runbook_aj_consumes_go_without_rewriting_ai() -> None:
     assert "DOCS_TOKEN_FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1" in spec
     assert "P01_HAIRCUT_SEMANTICS_RESOLVED=false" in spec
     assert P01_TERM_SET_RESOLVED is True
-    assert P01_VALUE_UNIT_CLASS_RESOLVED is False
+    assert P01_VALUE_UNIT_CLASS_RESOLVED is True
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_EQUITY_BASE_INCLUSION_RESOLVED is False
     assert P01_EMBEDDED_STATE_RESOLVED is False

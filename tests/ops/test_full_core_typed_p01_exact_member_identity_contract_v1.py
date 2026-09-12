@@ -56,6 +56,7 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT_V1.md"
 AJ_HEADING = "11.2.1.AJ FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT"
 AK_HEADING = "11.2.1.AK FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT"
+AL_HEADING = "11.2.1.AL FULL_CORE_TYPED_P01_VALUE_UNIT_CLASS_CONTRACT"
 
 
 def _contract() -> P01ExactMemberIdentityContractV1:
@@ -67,7 +68,7 @@ def _contract() -> P01ExactMemberIdentityContractV1:
 def _ak_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ak_start = runbook.index(AK_HEADING)
-    return runbook[ak_start : runbook.index("## 11.3 Autonomy state model", ak_start)]
+    return runbook[ak_start : runbook.index(AL_HEADING, ak_start)]
 
 
 def test_p01_exact_member_identity_contract_constructs() -> None:
@@ -114,7 +115,7 @@ def test_identity_does_not_close_term_semantics_or_algebra() -> None:
     assert P01_TERM_SEMANTICS_RESOLVED is False
     assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
-    assert P01_VALUE_UNIT_CLASS_RESOLVED is False
+    assert P01_VALUE_UNIT_CLASS_RESOLVED is True
     assert P01_APPLICABILITY_RESOLVED is False
     assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is False
     assert P01_ZERO_ABSENCE_NA_RESOLVED is False
