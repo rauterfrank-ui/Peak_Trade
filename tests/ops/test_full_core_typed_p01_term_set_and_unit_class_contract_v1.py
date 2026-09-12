@@ -59,12 +59,13 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_V1.md"
 AB_HEADING = "11.2.1.AB FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT"
 AC_HEADING = "11.2.1.AC FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT"
+AD_HEADING = "11.2.1.AD FULL_CORE_TYPED_P01_APPLICABILITY_CONTRACT"
 
 
 def _ac_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ac_start = runbook.index(AC_HEADING)
-    return runbook[ac_start : runbook.index("## 11.3 Autonomy state model", ac_start)]
+    return runbook[ac_start : runbook.index(AD_HEADING, ac_start)]
 
 
 def test_p01_term_set_and_unit_class_contract_constructs() -> None:
