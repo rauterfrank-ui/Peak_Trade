@@ -5815,6 +5815,7 @@ entities:
       - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
       - tests/ops/test_full_core_step_29p_account_equity_mapping_owner_ratification_v1.py
       - tests/ops/test_full_core_step_29p_account_equity_source_semantic_mapping_ratification_v1.py
+      - tests/ops/test_full_core_running_equity_policy_semantics_ratification_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5826,6 +5827,7 @@ entities:
       - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md
+      - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -5855,6 +5857,8 @@ entities:
       MAPPING_PROVEN=false; IMPLEMENTATION_OF_VALUE_BINDING=false;
       ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; no typed equity value
       binding; LIVE_ACCOUNT_BOUND claim join not executed this slice.
+      11.2.1.T persist: SEMANTIC_REQUIREMENTS_COMPLETE=true; P01/U01-U09
+      DECIDED; still no source; MAPPING_PROVEN=false.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:full_core_live_path_models_v1
@@ -6210,10 +6214,12 @@ entities:
       - tests/ops/test_full_core_step_29p_risk_admissibility_pre_construction_v1.py
       - tests/ops/test_full_core_step_29p_account_equity_mapping_owner_ratification_v1.py
       - tests/ops/test_full_core_step_29p_account_equity_source_semantic_mapping_ratification_v1.py
+      - tests/ops/test_full_core_running_equity_policy_semantics_ratification_v1.py
       - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md
+      - docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md
       - evidence/ops/full_core_step_29p_fresh_venue_evidence_v1/20260905T212436Z/SUMMARY.json
     notes: >-
       Joins typed Capital Admission evidence into Full-Core admission.
@@ -6224,7 +6230,9 @@ entities:
       authority. 11.2.1.S ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE;
       ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED. GET pack re-read only;
       still not risk-admissible. No value binding. availEq is not 29P
-      equity. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+      equity. 11.2.1.T ratifies P01/U01-U09 policy semantics only;
+      SEMANTIC_REQUIREMENTS_COMPLETE=true; MAPPING_PROVEN=false.
+      Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
     # 11.2.1.S producer unchanged; typed equity remains empty; observation is not authority.

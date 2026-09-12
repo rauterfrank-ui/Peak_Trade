@@ -156,7 +156,11 @@ def test_census_candidates_are_existing_and_rejected() -> None:
     s_start = runbook.index(
         "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
     )
-    s_section = runbook[s_start : runbook.index("## 11.3 Autonomy state model", s_start)]
+    s_section = runbook[
+        s_start : runbook.index(
+            "11.2.1.T FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION", s_start
+        )
+    ]
     assert SOURCE_CANDIDATE_COUNT == len(_CANDIDATE_IDS)
     for candidate_id in _CANDIDATE_IDS:
         assert candidate_id in s_section, candidate_id
@@ -262,7 +266,11 @@ def test_runbook_s_consumes_go_without_rewriting_r() -> None:
         "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
     )
     r_section = runbook[r_start:s_start]
-    s_section = runbook[s_start : runbook.index("## 11.3 Autonomy state model", s_start)]
+    s_section = runbook[
+        s_start : runbook.index(
+            "11.2.1.T FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION", s_start
+        )
+    ]
     assert (
         "OWNER_GO=FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1"
         in s_section

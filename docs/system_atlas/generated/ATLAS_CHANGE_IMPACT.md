@@ -283,7 +283,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.S persist records NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE; MAPPING_PROVEN=false; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
+- Offline Core-to-Live composition root inventory plus Full-Core productive Live-path identity and live-admission gap DAG. 11.2.1.T persist records SEMANTIC_REQUIREMENTS_COMPLETE=true and P01/U01-U09 DECIDED; EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING; MAPPING_PROVEN=false; no equity value binding. Canary / §11.14 remain evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
