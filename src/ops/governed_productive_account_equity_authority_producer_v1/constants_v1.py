@@ -8,7 +8,8 @@ haircut/reserve-depletion term contract schema, plus typed P01
 term-set and unit-class adjudication contract schema, plus typed P01
 applicability adjudication contract schema, plus typed P01
 equity-base inclusion adjudication contract schema, plus typed P01
-broader embedding-state adjudication contract schema. No producer
+broader embedding-state adjudication contract schema, plus typed P01
+overlap/equivalence adjudication versus U04 and U05. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -78,6 +79,11 @@ P01_EMBEDDING_STATE_CONTRACT_SCHEMA_PRESENT = True
 P01_EMBEDDING_STATE_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
 P01_EMBEDDING_STATE_CONTRACT_AUTHORITY_EFFECT = "NONE"
 P01_EMBEDDED_STATE_RESOLVED = False
+P01_OVERLAP_WITH_U04_U05_CONTRACT_SCHEMA_PRESENT = True
+P01_OVERLAP_WITH_U04_U05_CONTRACT_RUNTIME_INSTANCE_PRESENT = False
+P01_OVERLAP_WITH_U04_U05_CONTRACT_AUTHORITY_EFFECT = "NONE"
+P01_U04_OVERLAP_RESOLVED = False
+P01_U05_OVERLAP_RESOLVED = False
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -411,5 +417,64 @@ P01_EMBEDDING_STATE_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "term_semantics_resolved_status",
     "unspecified_closed_status",
     "p01_embedding_state_contract_authority_effect",
+    "provenance_digest",
+)
+P01_OVERLAP_WITH_U04_U05_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "p01_overlap_with_u04_u05_contract_id",
+    "p01_overlap_with_u04_u05_contract_version",
+    "parent_p01_embedding_state_contract_schema_class",
+    "parent_p01_equity_base_inclusion_contract_schema_class",
+    "parent_p01_applicability_contract_schema_class",
+    "parent_p01_term_set_and_unit_class_contract_schema_class",
+    "parent_p01_term_contract_schema_class",
+    "target_semantic_dimension_id",
+    "policy_id",
+    "term_id",
+    "p01_u04_overlap_state",
+    "p01_u04_overlap_resolved_status",
+    "p01_u04_overlap_adjudication",
+    "typed_u04_overlap_state",
+    "p01_u05_overlap_state",
+    "p01_u05_overlap_resolved_status",
+    "p01_u05_overlap_adjudication",
+    "typed_u05_overlap_state",
+    "semantic_equivalence_state",
+    "economic_overlap_state",
+    "representational_nesting_state",
+    "shared_provenance_state",
+    "shared_numeric_value_state",
+    "shared_unit_state",
+    "simultaneous_applicability_state",
+    "arithmetic_interaction_state",
+    "p01_overlap_state",
+    "u06_accrued_fees_distinct_pin",
+    "unknown_is_not_disjoint",
+    "unknown_is_not_equivalent",
+    "unknown_is_not_non_overlapping",
+    "missing_input_fail_closed",
+    "malformed_input_fail_closed",
+    "zero_does_not_prove_non_overlap",
+    "absence_does_not_prove_disjoint",
+    "equal_values_do_not_prove_equivalence",
+    "shared_source_does_not_prove_equivalence",
+    "shared_unit_does_not_prove_equivalence",
+    "term_set_unresolved_does_not_decide_overlap",
+    "applicability_unresolved_does_not_decide_overlap",
+    "embedding_unresolved_does_not_decide_overlap",
+    "u04_u05_labels_do_not_decide_overlap",
+    "u06_distinctness_does_not_decide_p01_u06",
+    "unknown_overlap_cannot_authorize_summation",
+    "unknown_overlap_cannot_authorize_deduplication",
+    "unknown_overlap_cannot_authorize_netting",
+    "unknown_overlap_cannot_authorize_subtraction",
+    "unknown_overlap_cannot_authorize_omission",
+    "no_double_counting_permission",
+    "rejected_overlap_inferences",
+    "remaining_unresolved_semantics",
+    "evidence_classification",
+    "contradiction_state",
+    "term_semantics_resolved_status",
+    "unspecified_closed_status",
+    "p01_overlap_with_u04_u05_contract_authority_effect",
     "provenance_digest",
 )
