@@ -177,7 +177,7 @@ class ShadowPaperSession:
         ...     env_config=env_config,
         ...     shadow_cfg=shadow_cfg,
         ...     exchange_cfg=exchange_cfg,
-        ...     data_source=kraken_source,
+        ...     data_source=candle_source,
         ...     strategy=ma_strategy,
         ...     pipeline=pipeline,
         ...     risk_limits=risk_limits,

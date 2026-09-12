@@ -128,7 +128,7 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
         sf_s = "n/a (dummy)"
     else:
         sf_s = "ja" if sf else "nein"
-    tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
+    tail = f"OHLCV-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
     csv_bit = ""
     cr = meta.get("ohlcv_csv_resolved")
     if cr:
@@ -136,7 +136,7 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
-        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
+        f"geladen={meta['bars_loaded']} | OHLCV-Pagination={pag_s} | "
         f"{tail}{csv_bit}"
     )
 
@@ -164,8 +164,8 @@ def evaluate_signals_for_symbol(
 
     Args:
         n_bars: Länge der OHLCV-Preisreihe (``load_ohlcv_with_meta``).
-        ohlcv_source: ``dummy`` | ``kraken`` | ``csv`` (mit ``generate_forward_signals`` abstimmen).
-        timeframe: Kraken-Timeframe; Dummy siehe Loader.
+        ohlcv_source: ``dummy`` | ``csv`` (mit ``generate_forward_signals`` abstimmen).
+        timeframe: OHLCV-Timeframe; Dummy siehe Loader.
         ohlcv_csv_path: CSV-Pfad bei ``csv``.
 
     Returns:

@@ -223,7 +223,7 @@ def main():
 
     print("\n💡 Nächste Schritte:")
     print("  1. Risk-Parameter in config/default.toml anpassen")
-    print("  2. Mit echten Kraken-Daten testen")
+    print("  2. Mit lokalen OHLCV-Daten testen")
     print("  3. Andere Strategien ausprobieren")
 
     print("\n📝 Config anpassen:")

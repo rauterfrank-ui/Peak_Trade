@@ -213,7 +213,7 @@ def main():
         print("  ✅ Trade-Tracking mit PnL")
 
         print("\n🚀 Nächste Schritte:")
-        print("  1. Mit echten Kraken-Daten testen")
+        print("  1. Mit lokalen OHLCV-Daten testen")
         print("  2. Parameter-Optimierung")
         print("  3. Multi-Strategy-Backtests")
 

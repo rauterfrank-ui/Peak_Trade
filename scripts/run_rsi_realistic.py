@@ -146,7 +146,7 @@ price_col = "close"
 
     base_signal_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
 
-    # Daten erstellen (später: von Kraken holen)
+    # Daten erstellen (lokal / Dummy)
     print("\n📥 Lade Daten...")
     df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")

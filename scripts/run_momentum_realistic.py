@@ -107,7 +107,7 @@ stop_pct = 0.025
     # Strategie-Beschreibung anzeigen
     print(_strategy_module(MOMENTUM_STRATEGY_KEY).get_strategy_description(strategy_params))
 
-    # Daten erstellen (später: von Kraken holen)
+    # Daten erstellen (lokal / Dummy)
     print("\n📥 Lade Daten...")
     df = load_ohlcv_data(None, None, None, n_bars=300)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")

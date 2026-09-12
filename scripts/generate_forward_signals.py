@@ -136,7 +136,7 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
         sf_s = "n/a (dummy)"
     else:
         sf_s = "ja" if sf else "nein"
-    tail = f"Kraken-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
+    tail = f"OHLCV-Shortfall={sf_s}" + (f" | run_id={run_id}" if run_id else "")
     csv_bit = ""
     cr = meta.get("ohlcv_csv_resolved")
     if cr:
@@ -144,7 +144,7 @@ def _print_ohlcv_load_observability(meta: Dict[str, Any], *, run_id: str | None 
     print(
         f"  📡 OHLCV-Load: {meta['symbol']} | Quelle={meta['ohlcv_source']} | "
         f"TF={meta['timeframe']} | n_bars={meta['n_bars_requested']} | "
-        f"geladen={meta['bars_loaded']} | Kraken-Pagination={pag_s} | "
+        f"geladen={meta['bars_loaded']} | OHLCV-Pagination={pag_s} | "
         f"{tail}{csv_bit}"
     )
 
@@ -160,14 +160,13 @@ def load_data_for_symbol(
     """
     Lädt Daten für ein bestimmtes Symbol.
 
-    J1 Slice 1–3: Dummy; J1 Slice 4: optional Kraken über ``load_ohlcv_with_meta`` (gleicher Vertrag).
-    J1 CSV: ``ohlcv_source=csv`` + ``ohlcv_csv_path``.
+    J1 Slice 1–3: Dummy. J1 CSV: ``ohlcv_source=csv`` + ``ohlcv_csv_path``.
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")
         n_bars: Anzahl Bars
-        ohlcv_source: ``dummy`` | ``kraken`` | ``csv`` (CLI: ``--ohlcv-source``).
-        timeframe: Kraken-Timeframe; Dummy bleibt 1h-synthetisch (siehe Loader).
+        ohlcv_source: ``dummy`` | ``csv`` (CLI: ``--ohlcv-source``).
+        timeframe: OHLCV-Timeframe; Dummy bleibt 1h-synthetisch (siehe Loader).
         ohlcv_csv_path: Pfad zur CSV bei ``csv``.
 
     Returns:

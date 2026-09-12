@@ -152,7 +152,7 @@ class MetricsCollector:
         Record an exchange reconnection.
 
         Args:
-            labels: Optional labels (e.g., {"exchange": "kraken"})
+            labels: Optional labels (e.g., {"exchange": "example"})
         """
         self.metrics["reconnects_total"].add_value(1.0, labels)
 

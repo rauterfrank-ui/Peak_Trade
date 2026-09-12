@@ -38,7 +38,7 @@ Usage:
     ...     session_id="session_20251208_001",
     ...     run_type="live_session_shadow",
     ...     mode="shadow",
-    ...     env_name="kraken_futures_testnet",
+    ...     env_name="shadow_local",
     ...     symbol="BTC/USDT",
     ...     status="completed",
     ...     started_at=datetime.utcnow(),
@@ -102,7 +102,7 @@ class LiveSessionRecord:
         run_id: Optional: Experiment/Run-ID, falls im Experiment-Kontext
         run_type: z.B. "live_session_shadow", "live_session_testnet"
         mode: Generischer Mode ("shadow", "testnet", "live", "paper")
-        env_name: Environment-Name (z.B. "kraken_futures_testnet")
+        env_name: Environment-Name (z.B. "shadow_local")
         symbol: Trading-Symbol (z.B. "BTC/USDT")
         status: "started" | "completed" | "failed" | "aborted"
         started_at: Session-Startzeit
@@ -119,7 +119,7 @@ class LiveSessionRecord:
         ...     session_id="session_20251208_001",
         ...     run_type="live_session_shadow",
         ...     mode="shadow",
-        ...     env_name="kraken_futures_testnet",
+        ...     env_name="shadow_local",
         ...     symbol="BTC/USDT",
         ...     status="completed",
         ...     started_at=datetime.utcnow(),
@@ -250,7 +250,7 @@ def register_live_session_run(
         ...     session_id="session_001",
         ...     run_type="live_session_shadow",
         ...     mode="shadow",
-        ...     env_name="kraken_testnet",
+        ...     env_name="shadow_local",
         ...     symbol="BTC/USDT",
         ...     status="completed",
         ...     started_at=datetime.utcnow(),
