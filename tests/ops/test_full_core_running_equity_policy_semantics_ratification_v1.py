@@ -75,6 +75,7 @@ SPEC_PATH = (
 )
 S_HEADING = "11.2.1.S FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION"
 T_HEADING = "11.2.1.T FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION"
+U_HEADING = "11.2.1.U FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION"
 _FORBIDDEN_EQUITY_FIELDS = (
     "details.availEq",
     "availEq",
@@ -107,7 +108,7 @@ _CANDIDATE_IDS = (
 def _t_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     t_start = runbook.index(T_HEADING)
-    return runbook[t_start : runbook.index("## 11.3 Autonomy state model", t_start)]
+    return runbook[t_start : runbook.index(U_HEADING, t_start)]
 
 
 def test_all_ten_policies_decided() -> None:
