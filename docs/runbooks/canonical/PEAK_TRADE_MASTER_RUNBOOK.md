@@ -1970,6 +1970,89 @@ anti-churn admission only. PDF Step 5 remains unresolved. Rotation
 remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
 authority remains false.
 
+### 4.5.13 Cap 2.2 append-only 15m PIT persistence and collection contracts (docs, typed contract, and archive seams; AUTHORITY_EFFECT=OFFLINE_APPEND_ONLY_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_ONLY)
+
+Owner-GO
+`PEAK_TRADE_CAP22_WP1_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1`
+implements only the contracts and append-only PIT persistence seams
+required before later prospective Cap-2.2 15-minute collection. This
+subsection does **not** replace §4.5–§4.5.12, does **not** start
+collection, does **not** enable a scheduler, does **not** authorize
+venue or network reads, does **not** run historical backfill, does
+**not** compute forward labels, does **not** run walk-forward, does
+**not** ratify a policy winner, does **not** activate ranking, does
+**not** close PDF Step 5, does **not** authorize `apply_rotation`, does
+**not** allow PDF Step 7, does **not** grant runtime, and does **not**
+join a host.
+
+Subordinate spec:
+`docs&#47;ops&#47;specs&#47;CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md`.
+
+Typed contract and seam:
+`src&#47;ops&#47;cap22_append_only_15m_pit_persistence_v1&#47;`.
+
+``` text
+CONTRACT_ID=CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1
+DECISION_ID=CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1
+AUTHORITY_EFFECT=OFFLINE_APPEND_ONLY_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_ONLY
+AUTHORITY_SCOPE=OFFLINE_APPEND_ONLY_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_ONLY
+COLLECTION_CADENCE_ID=PT1M_15_MINUTE_ANCHORS_V1
+COLLECTION_NETWORK_AUTHORIZED=false
+COLLECTION_SCHEDULER_ENABLED=false
+PROSPECTIVE_COLLECTION_STARTED=false
+CAP22_PROSPECTIVE_COLLECTION_CONTRACTS_IMPLEMENTED=true
+CAP22_PROSPECTIVE_COLLECTION_STARTED=false
+CAP22_90D_EVIDENCE_CLOCK_STARTED=false
+CAP21_EXISTING_PRODUCER_AUTHORITY_PRESERVED=true
+CAP21_APPEND_ONLY_AT_T_PERSISTENCE_IMPLEMENTED=true
+CAP21_NEW_MEMBERSHIP_OWNER_CREATED=false
+CAP22_MEMBERSHIP_AUTHORITY_ADDED=false
+ECONOMIC_MD_EXISTING_PRODUCER_AUTHORITY_PRESERVED=true
+ECONOMIC_MD_APPEND_ONLY_AT_T_PERSISTENCE_IMPLEMENTED=true
+EXACT_T_BINDING_REQUIRED=true
+NO_TODAY_UNIVERSE_MEMBERSHIP_RETROACTIVE=true
+APPEND_ONLY=true
+IDENTICAL_DUPLICATE_IDEMPOTENT=true
+CONFLICTING_OVERWRITE_FORBIDDEN=true
+HISTORICAL_EVIDENCE_GENERATED=false
+FORWARD_LABEL_EXECUTION_IMPLEMENTED=false
+WALK_FORWARD_EXECUTION_IMPLEMENTED=false
+POLICY_RATIFICATION_JUSTIFIED=false
+ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+ECONOMIC_RANK_ACTIVATED=false
+PDF_STEP_5_STATUS=UNRESOLVED
+ROTATION_POLICY_STATUS=FAIL_CLOSED_UNTIL_PDF_STEP_5
+PDF_STEP_7_STATUS=FORBIDDEN
+RUNTIME_AUTHORITY_GRANTED=false
+PRODUCTIVE_MF_HOST_JOIN=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+NEXT_CANONICAL_DECISION=PDF_STEP_5_ANTI_CHURN_OWNER_RATIFICATION
+NEXT_CAP22_DEPENDENCY=SEPARATE_OWNER_GO_REQUIRED_FOR_PROSPECTIVE_15M_CAP21_AND_ECONOMIC_MD_COLLECTION
+THIS_PERSIST_DOES_NOT_START_COLLECTION=true
+THIS_PERSIST_DOES_NOT_START_90D_CLOCK=true
+THIS_PERSIST_DOES_NOT_WIRE_PRODUCTIVE_ECONOMIC_RANKING=true
+```
+
+Cap 2.1 remains the sole structural/safety eligibility owner. Cap 2.2
+does not gain membership or selection authority. The Economic-MD
+producer remains an observation producer and does not rank. Latest-state
+Cap-2.1 persistence is unchanged. Append-only archive keys are the
+ratified UTC 15-minute anchors. Economic-MD at T binds to the exact
+Cap-2.1 snapshot at the same T. Identical digest replay is idempotent;
+conflicting content at the same T is fail-closed.
+
+The later collection flow remains declarative only:
+
+Cap2.1 snapshot(T) → Economic-MD observation(T) bound to that exact
+Cap-2.1 snapshot → append-only persistence → manifest verification.
+
+This persist does **not** move productive selection ownership away from
+Cap 2.3. Downstream execution must not re-rank. Policy A remains
+anti-churn admission only. PDF Step 5 remains unresolved. Rotation
+remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
+authority remains false.
+
 ## 4.6 Volatility authority
 
 Typed volatility presence may participate in already-ratified Alpha
