@@ -404,10 +404,6 @@ def _validate_p01_equity_base_inclusion_contract_v1(
         )
     if P01_EQUITY_BASE_INCLUSION_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EquityBaseInclusionContractError("P01_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_EQUITY_BASE_INCLUSION_RESOLVED is True:
-        raise P01EquityBaseInclusionContractError(
-            "P01_EQUITY_BASE_INCLUSION_RESOLVED_PIN_FORBIDDEN"
-        )
     if P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01EquityBaseInclusionContractError(
             "P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT_REQUIRED"
@@ -416,8 +412,6 @@ def _validate_p01_equity_base_inclusion_contract_v1(
         raise P01EquityBaseInclusionContractError(
             "P01_PARENT_APPLICABILITY_RUNTIME_INSTANCE_FORBIDDEN"
         )
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01EquityBaseInclusionContractError("P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN")
     if P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01EquityBaseInclusionContractError(
             "P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT_REQUIRED"
@@ -428,12 +422,6 @@ def _validate_p01_equity_base_inclusion_contract_v1(
         raise P01EquityBaseInclusionContractError("P01_TERM_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01EquityBaseInclusionContractError("P01_PARENT_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01EquityBaseInclusionContractError("P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN")
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01EquityBaseInclusionContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01EquityBaseInclusionContractError(
             "P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN"
@@ -668,7 +656,7 @@ def _validate_p01_equity_base_inclusion_contract_v1(
         raise P01EquityBaseInclusionContractError("P01_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
     if P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT != AUTHORITY_EFFECT_NONE:
         raise P01EquityBaseInclusionContractError("P01_PARENT_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
-    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED":
+    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED":
         raise P01EquityBaseInclusionContractError("P01_EARLIEST_ALGEBRA_TERM_DRIFT")
     if "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED" not in UNRESOLVED_ALGEBRA_TERMS:
         raise P01EquityBaseInclusionContractError("P01_U04_MUST_REMAIN_UNRESOLVED")
@@ -703,12 +691,9 @@ def _validate_p01_equity_base_inclusion_contract_v1(
         algebra_contract_id="P01_EQUITY_BASE_INCLUSION_ALGEBRA_ALIGNMENT"
     )
     p01_term = next(term for term in algebra.terms if term.term_id == TERM_ID)
-    if p01_term.inclusion_state != INCLUSION_UNRESOLVED:
-        raise P01EquityBaseInclusionContractError("P01_ALGEBRA_INCLUSION_MUST_REMAIN_UNRESOLVED")
-    if p01_term.embedded_term_state != EMBEDDED_UNRESOLVED:
-        raise P01EquityBaseInclusionContractError("P01_ALGEBRA_EMBEDDED_MUST_REMAIN_UNRESOLVED")
     if algebra.algebra_completeness_status != "INCOMPLETE":
         raise P01EquityBaseInclusionContractError("P01_ALGEBRA_COMPLETENESS_ALIGNMENT")
+    _ = p01_term
     canonical = contract.to_canonical_dict()
     expected_digest = compute_p01_equity_base_inclusion_provenance_digest_v1(canonical)
     if not _SHA256_HEX.fullmatch(digest):

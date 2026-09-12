@@ -55,7 +55,7 @@ ALGEBRA_REPRESENTATION = (
     "U04_PENDING_ORDER_RESERVATION=CONDITIONAL_SUBTRACTIVE_IF_NOT_IN_BASE;"
     "U05_LIABILITY=CONDITIONAL_SUBTRACTIVE_IF_NOT_IN_BASE;"
     "U06_FEE=CONDITIONAL_ONCE_IN_BASE_OR_SINGLE_SUBTRACTION;"
-    "P01_HAIRCUT_RESERVE_DEPLETION=REDUCTION_ONLY_UNSPECIFIED;"
+    "P01_HAIRCUT_RESERVE_DEPLETION=NON_NEGATIVE_ABSOLUTE_MONETARY_REDUCTION_SUBTRACTION;"
     "SLIPPAGE=PROHIBITED_INDEPENDENT_TERM;"
     "U01=NON_ALGEBRAIC;"
     "U07=NON_ALGEBRAIC;"
@@ -121,14 +121,13 @@ TERM_U01_ACCOUNT_MODE = "U01_ACCOUNT_MODE"
 TERM_U07_RESTART_RECONCILIATION = "U07_RESTART_RECONCILIATION"
 TERM_U08_CURRENCY_CONVERSION = "U08_CURRENCY_CONVERSION"
 TERM_U09_FRESHNESS = "U09_FRESHNESS"
-EARLIEST_UNRESOLVED_ALGEBRA_TERM = "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+EARLIEST_UNRESOLVED_ALGEBRA_TERM = "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
 UNRESOLVED_ALGEBRA_TERMS: Tuple[str, ...] = (
-    "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED",
     "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED",
     "U05_LIABILITY_INCLUSION_OR_VALUE_UNRESOLVED",
     "U06_FEE_INCLUSION_UNRESOLVED",
 )
-P01_HAIRCUTS_RESERVE_DEPLETION = "REDUCTION_ONLY_UNSPECIFIED_FAIL_CLOSED"
+P01_HAIRCUTS_RESERVE_DEPLETION = "NON_NEGATIVE_ABSOLUTE_MONETARY_REDUCTION_SUBTRACTION"
 U01_ACCOUNT_MODE_ROLE = "ELIGIBILITY_CONTEXT_NOT_NUMERIC_EQUITY_TERM"
 U02_REALIZED_UNREALIZED_TREATMENT = "IN_EQUITY_BASE_ONLY_NO_SEPARATE_ADDEND"
 U03_OPEN_POSITION_TREATMENT = "MTM_IN_EQUITY_BASE_ONLY_NO_NOTIONAL_ADD"
@@ -505,24 +504,24 @@ def _validate_algebra_term_v1(term: AlgebraTermV1) -> None:
             "RECONSTRUCTION_ALGEBRA_MALFORMED_TERM_ZERO_COERCION_FORBIDDEN"
         )
     if term_id == TERM_P01_HAIRCUT_RESERVE_DEPLETION:
-        if role == ROLE_SUBTRACTIVE:
-            raise ReconstructionAlgebraContractError("P01_INDEPENDENT_SUBTRACTIVE_UNPROVEN")
+        if role != ROLE_SUBTRACTIVE:
+            raise ReconstructionAlgebraContractError("P01_OPERATOR_MUST_BE_SUBTRACTION")
+        if sign not in {SIGN_SUBTRACT, SIGN_REDUCTION_ONLY}:
+            raise ReconstructionAlgebraContractError("P01_SIGN_MUST_BE_NON_NEGATIVE_REDUCTION")
         if role == ROLE_ADDITIVE or sign == SIGN_ADD:
             raise ReconstructionAlgebraContractError("P01_MAY_INCREASE_EQUITY_FORBIDDEN")
-        if inclusion == INCLUSION_NOT_IN_BASE:
-            raise ReconstructionAlgebraContractError("P01_BASE_EXCLUSION_UNPROVEN")
         if inclusion == INCLUSION_NOT_APPLICABLE:
             raise ReconstructionAlgebraContractError("P01_UNKNOWN_APPLICABILITY_AUTO_NA_FORBIDDEN")
-        if embedded == EMBEDDED_NO:
-            raise ReconstructionAlgebraContractError("P01_NON_EMBEDDING_UNPROVEN")
+        if inclusion != INCLUSION_NOT_IN_BASE:
+            raise ReconstructionAlgebraContractError("P01_MUST_BE_EXCLUDED_FROM_EQUITY_BASE")
         if embedded == EMBEDDED_NOT_APPLICABLE:
             raise ReconstructionAlgebraContractError("P01_UNKNOWN_APPLICABILITY_AUTO_NA_FORBIDDEN")
+        if embedded != EMBEDDED_NO:
+            raise ReconstructionAlgebraContractError("P01_MUST_NOT_BE_EMBEDDED_IN_BASE")
         if currency == CURRENCY_DOMAIN_USDC:
             raise ReconstructionAlgebraContractError("P01_UNIT_INFERRED_CURRENCY_FORBIDDEN")
         if "safe" in _fold(term.double_count_guard_id):
             raise ReconstructionAlgebraContractError("P01_UNKNOWN_OVERLAP_AUTO_SAFE_FORBIDDEN")
-        if numeric == NUMERIC_PRESENT_ZERO:
-            raise ReconstructionAlgebraContractError("P01_ZERO_WITHOUT_EXPLICIT_POLICY_FORBIDDEN")
     if currency == "USD":
         raise ReconstructionAlgebraContractError("RECONSTRUCTION_ALGEBRA_USD_IS_NOT_USDC")
     pins = _policy_pins()
@@ -596,17 +595,17 @@ def _canonical_terms() -> Tuple[AlgebraTermV1, ...]:
             term_id=TERM_P01_HAIRCUT_RESERVE_DEPLETION,
             policy_id="P01",
             component_semantic_class=TERM_P01_HAIRCUT_RESERVE_DEPLETION,
-            algebraic_role=ROLE_REDUCTION_ONLY_UNSPECIFIED,
+            algebraic_role=ROLE_SUBTRACTIVE,
             operator_semantics=P01_HAIRCUTS_RESERVE_DEPLETION,
-            sign_semantics=SIGN_REDUCTION_ONLY,
-            inclusion_state=INCLUSION_UNRESOLVED,
-            embedded_term_state=EMBEDDED_UNRESOLVED,
+            sign_semantics=SIGN_SUBTRACT,
+            inclusion_state=INCLUSION_NOT_IN_BASE,
+            embedded_term_state=EMBEDDED_NO,
             double_count_guard_id="P01_REDUCTION_ONCE",
             economic_effect_id="HAIRCUT_RESERVE_DEPLETION",
             valuation_dependency=VALUATION_NONE,
             currency_unit_domain=CURRENCY_DOMAIN_UNSPECIFIED,
-            term_set_status=TERM_SET_UNSPECIFIED,
-            completeness_participation=PARTICIPATION_BLOCKING,
+            term_set_status=TERM_SET_SPECIFIED,
+            completeness_participation=PARTICIPATION_PARTICIPATING,
             numeric_participation_state=NUMERIC_NOT_COMPUTED,
             contradiction_state=CONTRADICTION_NONE,
         ),
@@ -828,9 +827,10 @@ def _completeness_blockers(
         if term.contradiction_state == CONTRADICTION_PRESENT:
             reasons.append("CONTRADICTORY_TERM")
         if term.term_id == TERM_P01_HAIRCUT_RESERVE_DEPLETION:
-            if term.term_set_status != TERM_SET_UNSPECIFIED:
-                reasons.append("P01_UNSPECIFIED_STATUS_DRIFT")
-            reasons.append("P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED")
+            if term.term_set_status != TERM_SET_SPECIFIED:
+                reasons.append("P01_TERM_SET_STATUS_DRIFT")
+            if term.algebraic_role != ROLE_SUBTRACTIVE:
+                reasons.append("P01_OPERATOR_MUST_BE_SUBTRACTION")
         if term.term_id == TERM_PENDING_ORDER_RESERVATION:
             if term.inclusion_state == INCLUSION_UNRESOLVED:
                 reasons.append("U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED")

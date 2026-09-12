@@ -464,28 +464,6 @@ def _validate_p01_member_freshness_inheritance_contract_v1(
         raise P01MemberFreshnessInheritanceContractError(
             "P01_PARENT_TERM_RUNTIME_INSTANCE_FORBIDDEN"
         )
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError("P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN")
-    if P01_EQUITY_BASE_INCLUSION_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError(
-            "P01_EQUITY_BASE_INCLUSION_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_EMBEDDED_STATE_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError(
-            "P01_EMBEDDED_STATE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_U04_OVERLAP_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError("P01_U04_OVERLAP_RESOLVED_PIN_FORBIDDEN")
-    if P01_U05_OVERLAP_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError("P01_U05_OVERLAP_RESOLVED_PIN_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01MemberFreshnessInheritanceContractError(
-            "P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01MemberFreshnessInheritanceContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01MemberFreshnessInheritanceContractError(
             "P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN"

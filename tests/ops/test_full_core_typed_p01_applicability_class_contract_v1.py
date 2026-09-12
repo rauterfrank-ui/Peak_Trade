@@ -140,8 +140,8 @@ def test_p01_applicability_class_contract_constructs() -> None:
     assert P01_APPLICABILITY_CLASS == "GOVERNED_CONDITIONAL"
     assert P01_APPLICABILITY_STATE_MODEL == "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED"
     assert P01_APPLICABILITY_CLASS_SELECTED_OPTION == "P01_OP_APPLICABILITY_GOVERNED_CONDITIONAL_V1"
-    assert P01_APPLICATION_PREDICATE_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE == "UNSPECIFIED_FAIL_CLOSED"
+    assert P01_APPLICATION_PREDICATE_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE == "GOVERNED_P01_REDUCTION_DIRECTIVE_PREDICATE_V1"
     assert P01_EXACT_MEMBER_COUNT == 1
     assert P01_EXACT_MEMBER_IDENTITY_SET == MEMBER_ID
     assert P01_APPLICABILITY_CLASS_CONTRACT_SCHEMA_PRESENT is True
@@ -171,18 +171,18 @@ def test_class_does_not_ratify_predicate_formula_operator_or_sign() -> None:
     assert contract.class_does_not_ratify_source_mapping == "true"
     assert contract.class_does_not_close_p01_term_semantics == "true"
     assert contract.class_does_not_close_haircut_reserve_depletion_unspecified == "true"
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
-    assert P01_APPLICABILITY_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE_RESOLVED is False
-    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is False
-    assert P01_ZERO_ABSENCE_NA_RESOLVED is False
-    assert P01_REQUIREDNESS_RESOLVED is False
-    assert P01_OPTIONALITY_RESOLVED is False
-    assert P01_ZERO_SEMANTICS_RESOLVED is False
-    assert P01_ABSENCE_SEMANTICS_RESOLVED is False
-    assert P01_COMBINATION_PRECEDENCE_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE_RESOLVED is True
+    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True
+    assert P01_ZERO_ABSENCE_NA_RESOLVED is True
+    assert P01_REQUIREDNESS_RESOLVED is True
+    assert P01_OPTIONALITY_RESOLVED is True
+    assert P01_ZERO_SEMANTICS_RESOLVED is True
+    assert P01_ABSENCE_SEMANTICS_RESOLVED is True
+    assert P01_COMBINATION_PRECEDENCE_RESOLVED is True
     assert "P01_APPLICATION_PREDICATE_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert contract.remaining_unresolved_semantics == REMAINING_UNRESOLVED_SEMANTICS
     with pytest.raises(P01ApplicabilityClassContractError) as formula:
@@ -230,8 +230,8 @@ def test_applicability_is_distinct_from_value_zero_and_absence() -> None:
     assert P01_APPLICABILITY_IS_DISTINCT_FROM_ZERO is True
     assert P01_APPLICABILITY_IS_DISTINCT_FROM_ABSENCE is True
     assert P01_APPLICABILITY_IS_DISTINCT_FROM_NOT_APPLICABLE_VALUE_ENCODING is True
-    assert P01_INPUT_PRECONDITIONS_RESOLVED is False
-    assert P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED is False
+    assert P01_INPUT_PRECONDITIONS_RESOLVED is True
+    assert P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED is True
 
 
 def test_forbidden_surfaces_are_not_applicability_authority() -> None:
@@ -283,22 +283,22 @@ def test_missing_and_malformed_inputs_fail_closed() -> None:
 
 def test_gap_dag_and_live_pins_remain_fail_closed() -> None:
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS"] == "ABSOLUTE_MONETARY_REDUCTION_AMOUNT"
     assert dag["P01_APPLICABILITY_CLASS_RESOLVED"] is True
     assert dag["P01_APPLICABILITY_CLASS"] == "GOVERNED_CONDITIONAL"
     assert dag["P01_APPLICABILITY_STATE_MODEL"] == "APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED"
-    assert dag["P01_APPLICATION_PREDICATE_RESOLVED"] is False
-    assert dag["P01_APPLICATION_PREDICATE"] == "UNSPECIFIED_FAIL_CLOSED"
+    assert dag["P01_APPLICATION_PREDICATE_RESOLVED"] is True
+    assert dag["P01_APPLICATION_PREDICATE"] == "GOVERNED_P01_REDUCTION_DIRECTIVE_PREDICATE_V1"
     assert dag["P01_EXACT_MEMBER_COUNT"] == 1
     assert dag["P01_EXACT_MEMBER_IDENTITY_SET"] == MEMBER_ID
     assert dag["P01_APPLICABILITY_CLASS_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_APPLICABILITY_CLASS_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
-    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is False
+    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is True
     assert dag["P01_RUNTIME_INSTANCE_PRESENT"] is False
-    assert dag["P01_APPLICABILITY_RESOLVED"] is False
+    assert dag["P01_APPLICABILITY_RESOLVED"] is True
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False

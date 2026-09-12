@@ -321,8 +321,6 @@ def _validate_p01_applicability_contract_v1(contract: P01ApplicabilityContractV1
         raise P01ApplicabilityContractError("P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01ApplicabilityContractError("P01_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01ApplicabilityContractError("P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN")
     if P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT is not True:
         raise P01ApplicabilityContractError(
             "P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_SCHEMA_PRESENT_REQUIRED"
@@ -333,12 +331,6 @@ def _validate_p01_applicability_contract_v1(contract: P01ApplicabilityContractV1
         raise P01ApplicabilityContractError("P01_TERM_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01ApplicabilityContractError("P01_PARENT_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01ApplicabilityContractError("P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN")
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01ApplicabilityContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01ApplicabilityContractError("P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN")
     if SOURCE_SELECTED is True or SOURCE_OBJECT_PRESENT is True:
@@ -502,7 +494,7 @@ def _validate_p01_applicability_contract_v1(contract: P01ApplicabilityContractV1
         raise P01ApplicabilityContractError("P01_UNSPECIFIED_CLOSED_STATUS_MISMATCH")
     if effect != P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT or effect != AUTHORITY_EFFECT_NONE:
         raise P01ApplicabilityContractError("P01_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
-    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED":
+    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED":
         raise P01ApplicabilityContractError("P01_EARLIEST_ALGEBRA_TERM_DRIFT")
     if "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED" not in UNRESOLVED_ALGEBRA_TERMS:
         raise P01ApplicabilityContractError("P01_U04_MUST_REMAIN_UNRESOLVED")

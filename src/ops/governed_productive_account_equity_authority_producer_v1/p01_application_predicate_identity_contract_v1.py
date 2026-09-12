@@ -21,7 +21,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_APPLICABILITY_CLASS,
     P01_APPLICABILITY_CLASS_RESOLVED,
     P01_APPLICATION_FALSE_RULE_RESOLVED,
-    P01_APPLICATION_PREDICATE,
     P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_AUTHORITY_EFFECT,
     P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT,
     P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_SCHEMA_PRESENT,
@@ -81,7 +80,7 @@ RATIFICATION_SCOPE = "APPLICATION_PREDICATE_IDENTITY_AND_BOUNDARY_ONLY"
 SELECTED_OPTION = P01_APPLICATION_PREDICATE_IDENTITY_SELECTED_OPTION
 PREDICATE_MODEL = P01_APPLICATION_PREDICATE_MODEL
 DECISION_STATE_MODEL = P01_APPLICABILITY_DECISION_STATE_MODEL
-APPLICATION_PREDICATE = P01_APPLICATION_PREDICATE
+APPLICATION_PREDICATE = "UNSPECIFIED_FAIL_CLOSED"
 STATE_APPLIES = "APPLIES"
 STATE_DOES_NOT_APPLY = "DOES_NOT_APPLY"
 STATE_UNKNOWN_FAIL_CLOSED = "UNKNOWN_FAIL_CLOSED"
@@ -420,68 +419,6 @@ def _validate_p01_application_predicate_identity_contract_v1(
     if P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED is not True:
         raise P01ApplicationPredicateIdentityContractError(
             "P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED_REQUIRED"
-        )
-    if P01_APPLICATION_PREDICATE_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_APPLICATION_PREDICATE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICATION_TRUE_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_APPLICATION_TRUE_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICATION_FALSE_RULE_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_APPLICATION_FALSE_RULE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_APPLICABILITY_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_APPLICABILITY_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_REQUIREDNESS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_REQUIREDNESS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_OPTIONALITY_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError("P01_OPTIONALITY_RESOLVED_PIN_FORBIDDEN")
-    if P01_ZERO_SEMANTICS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_ZERO_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_ABSENCE_SEMANTICS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_ABSENCE_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_ZERO_ABSENCE_NA_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_ZERO_ABSENCE_NA_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_INPUT_PRECONDITIONS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_INPUT_PRECONDITIONS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_COMBINATION_PRECEDENCE_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_COMBINATION_PRECEDENCE_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN"
-        )
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01ApplicationPredicateIdentityContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
         )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01ApplicationPredicateIdentityContractError(

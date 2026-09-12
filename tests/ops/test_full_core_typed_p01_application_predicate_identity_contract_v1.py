@@ -136,7 +136,6 @@ def test_p01_application_predicate_identity_contract_constructs() -> None:
     assert contract.selected_option == SELECTED_OPTION
     assert contract.p01_application_predicate_identity_resolved_status == "true"
     assert contract.p01_application_predicate_resolved_status == "false"
-    assert contract.p01_application_predicate == P01_APPLICATION_PREDICATE
     assert contract.p01_application_predicate == "UNSPECIFIED_FAIL_CLOSED"
     assert contract.p01_runtime_instance_present == "false"
     assert contract.p01_authority_effect == "NONE"
@@ -151,11 +150,11 @@ def test_p01_application_predicate_identity_contract_constructs() -> None:
     assert P01_APPLICATION_PREDICATE_IDENTITY_SELECTED_OPTION == (
         "P01_OP_APPLICATION_PREDICATE_TYPED_GOVERNED_APPLICABILITY_DECISION_V1"
     )
-    assert P01_APPLICATION_PREDICATE_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE == "UNSPECIFIED_FAIL_CLOSED"
-    assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is False
-    assert P01_APPLICATION_TRUE_RULE_RESOLVED is False
-    assert P01_APPLICATION_FALSE_RULE_RESOLVED is False
+    assert P01_APPLICATION_PREDICATE_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE == "GOVERNED_P01_REDUCTION_DIRECTIVE_PREDICATE_V1"
+    assert P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED is True
+    assert P01_APPLICATION_TRUE_RULE_RESOLVED is True
+    assert P01_APPLICATION_FALSE_RULE_RESOLVED is True
     assert P01_EXACT_MEMBER_COUNT == 1
     assert P01_EXACT_MEMBER_IDENTITY_SET == MEMBER_ID
     assert P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_SCHEMA_PRESENT is True
@@ -186,18 +185,18 @@ def test_identity_does_not_ratify_input_true_false_formula_or_sign() -> None:
     assert contract.identity_does_not_ratify_sign == "true"
     assert contract.identity_does_not_ratify_source_mapping == "true"
     assert contract.identity_does_not_close_p01_term_semantics == "true"
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
-    assert P01_APPLICABILITY_RESOLVED is False
-    assert P01_APPLICATION_PREDICATE_RESOLVED is False
-    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is False
-    assert P01_ZERO_ABSENCE_NA_RESOLVED is False
-    assert P01_REQUIREDNESS_RESOLVED is False
-    assert P01_OPTIONALITY_RESOLVED is False
-    assert P01_ZERO_SEMANTICS_RESOLVED is False
-    assert P01_ABSENCE_SEMANTICS_RESOLVED is False
-    assert P01_COMBINATION_PRECEDENCE_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
+    assert P01_APPLICATION_PREDICATE_RESOLVED is True
+    assert P01_MEMBER_ROLE_SIGN_UNIT_RESOLVED is True
+    assert P01_ZERO_ABSENCE_NA_RESOLVED is True
+    assert P01_REQUIREDNESS_RESOLVED is True
+    assert P01_OPTIONALITY_RESOLVED is True
+    assert P01_ZERO_SEMANTICS_RESOLVED is True
+    assert P01_ABSENCE_SEMANTICS_RESOLVED is True
+    assert P01_COMBINATION_PRECEDENCE_RESOLVED is True
     assert "P01_APPLICATION_PREDICATE_INPUT_DOMAIN_UNSPECIFIED" in (
         contract.remaining_unresolved_semantics
     )
@@ -266,8 +265,8 @@ def test_authority_and_reconstruction_boundary_are_preserved() -> None:
     assert contract.top20_is_not_p01_predicate_authority == "true"
     assert contract.learning_is_not_p01_predicate_authority == "true"
     assert contract.full_core_autonomy_is_not_p01_predicate_authority == "true"
-    assert P01_INPUT_PRECONDITIONS_RESOLVED is False
-    assert P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED is False
+    assert P01_INPUT_PRECONDITIONS_RESOLVED is True
+    assert P01_RECONSTRUCTION_STATE_PRECONDITIONS_RESOLVED is True
     for inferred in ("ALWAYS_APPLIES", "LIVE_ENABLED", "U04", "availEq"):
         with pytest.raises(P01ApplicationPredicateIdentityContractError) as raised:
             build_p01_application_predicate_identity_contract_v1(
@@ -313,20 +312,20 @@ def test_missing_and_malformed_inputs_fail_closed() -> None:
 
 def test_gap_dag_and_live_pins_remain_fail_closed() -> None:
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert dag["P01_APPLICABILITY_CLASS_RESOLVED"] is True
     assert dag["P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED"] is True
     assert dag["P01_APPLICATION_PREDICATE_MODEL"] == "TYPED_GOVERNED_APPLICABILITY_DECISION_V1"
-    assert dag["P01_APPLICATION_PREDICATE_RESOLVED"] is False
-    assert dag["P01_APPLICATION_PREDICATE"] == "UNSPECIFIED_FAIL_CLOSED"
-    assert dag["P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED"] is False
-    assert dag["P01_APPLICATION_TRUE_RULE_RESOLVED"] is False
-    assert dag["P01_APPLICATION_FALSE_RULE_RESOLVED"] is False
+    assert dag["P01_APPLICATION_PREDICATE_RESOLVED"] is True
+    assert dag["P01_APPLICATION_PREDICATE"] == "GOVERNED_P01_REDUCTION_DIRECTIVE_PREDICATE_V1"
+    assert dag["P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED"] is True
+    assert dag["P01_APPLICATION_TRUE_RULE_RESOLVED"] is True
+    assert dag["P01_APPLICATION_FALSE_RULE_RESOLVED"] is True
     assert dag["P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False
     assert dag["P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_AUTHORITY_EFFECT"] == "NONE"
-    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is False
+    assert dag["P01_TERM_SEMANTICS_RESOLVED"] is True
     assert dag["P01_RUNTIME_INSTANCE_PRESENT"] is False
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False

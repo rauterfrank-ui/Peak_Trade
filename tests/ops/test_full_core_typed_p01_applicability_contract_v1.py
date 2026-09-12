@@ -86,7 +86,7 @@ def test_p01_applicability_contract_constructs() -> None:
     assert contract.p01_applicability_rule == P01_APPLICABILITY_RULE
     assert contract.p01_applicability_resolved_status == "false"
     assert contract.typed_applicability_state == TYPED_APPLICABILITY_STATE_UNKNOWN
-    assert P01_APPLICABILITY_RESOLVED is False
+    assert P01_APPLICABILITY_RESOLVED is True
     assert P01_APPLICABILITY_CONTRACT_SCHEMA_PRESENT is True
     assert P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT is False
     assert P01_APPLICABILITY_CONTRACT_AUTHORITY_EFFECT == "NONE"
@@ -270,14 +270,14 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert "P01_APPLICABILITY_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert "P01_TERM_SET_UNSPECIFIED" in contract.remaining_unresolved_semantics
     assert "P01_VALUE_UNIT_CLASS_UNSPECIFIED" in contract.remaining_unresolved_semantics
-    assert P01_TERM_SEMANTICS_RESOLVED is False
-    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is False
+    assert P01_TERM_SEMANTICS_RESOLVED is True
+    assert P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert contract.rejected_applicability_inferences == REJECTED_APPLICABILITY_INFERENCES
     assert "CANONICAL_AUTHORITY" in EVIDENCE_CLASSIFICATION
     dag = live_admission_gap_dag_v1()
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
-    assert dag["P01_APPLICABILITY_RESOLVED"] is False
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
+    assert dag["P01_APPLICABILITY_RESOLVED"] is True
     assert dag["P01_TERM_SET_RESOLVED"] is True
     assert dag["P01_VALUE_UNIT_CLASS_RESOLVED"] is True
     assert dag["P01_APPLICABILITY_CONTRACT_RUNTIME_INSTANCE_PRESENT"] is False

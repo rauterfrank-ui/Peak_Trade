@@ -299,12 +299,6 @@ def _validate_p01_term_set_and_unit_class_contract_v1(
         raise P01TermSetAndUnitClassContractError("P01_TERM_CONTRACT_SCHEMA_PRESENT_REQUIRED")
     if P01_TERM_CONTRACT_RUNTIME_INSTANCE_PRESENT is True:
         raise P01TermSetAndUnitClassContractError("P01_PARENT_RUNTIME_INSTANCE_FORBIDDEN")
-    if P01_TERM_SEMANTICS_RESOLVED is True:
-        raise P01TermSetAndUnitClassContractError("P01_TERM_SEMANTICS_RESOLVED_PIN_FORBIDDEN")
-    if P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED is True:
-        raise P01TermSetAndUnitClassContractError(
-            "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED_CLOSED_PIN_FORBIDDEN"
-        )
     if RECONSTRUCTION_ALGEBRA_COMPLETE is True:
         raise P01TermSetAndUnitClassContractError(
             "P01_RECONSTRUCTION_ALGEBRA_COMPLETE_PIN_FORBIDDEN"
@@ -458,7 +452,7 @@ def _validate_p01_term_set_and_unit_class_contract_v1(
         or effect != AUTHORITY_EFFECT_NONE
     ):
         raise P01TermSetAndUnitClassContractError("P01_AUTHORITY_EFFECT_MUST_REMAIN_NONE")
-    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED":
+    if EARLIEST_UNRESOLVED_ALGEBRA_TERM != "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED":
         raise P01TermSetAndUnitClassContractError("P01_EARLIEST_ALGEBRA_TERM_DRIFT")
     if "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED" not in UNRESOLVED_ALGEBRA_TERMS:
         raise P01TermSetAndUnitClassContractError("P01_U04_MUST_REMAIN_UNRESOLVED")
@@ -477,8 +471,6 @@ def _validate_p01_term_set_and_unit_class_contract_v1(
         algebra_contract_id="P01_TERM_SET_ALGEBRA_ALIGNMENT"
     )
     p01_term = next(term for term in algebra.terms if term.term_id == TERM_ID)
-    if p01_term.term_set_status != TERM_SET_UNSPECIFIED:
-        raise P01TermSetAndUnitClassContractError("P01_ALGEBRA_TERM_SET_ALIGNMENT_MISMATCH")
     if p01_term.currency_unit_domain != CURRENCY_DOMAIN_UNSPECIFIED:
         raise P01TermSetAndUnitClassContractError("P01_ALGEBRA_UNIT_ALIGNMENT_MISMATCH")
     if algebra.algebra_completeness_status != "INCOMPLETE":

@@ -72,7 +72,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.reconstruc
     ROLE_ADDITIVE,
     ROLE_EMBEDDED_NOT_SEPARATE,
     ROLE_PROHIBITED,
-    ROLE_REDUCTION_ONLY_UNSPECIFIED,
+    ROLE_SUBTRACTIVE,
     ROLE_VALUATION_INPUT_ONLY,
     SCHEMA_CLASS,
     SIGN_ADD,
@@ -182,13 +182,11 @@ def test_term_identity_and_additive_subtractive_distinction() -> None:
     by_id = {term.term_id: term for term in contract.terms}
     assert by_id[TERM_EQUITY_BASE].algebraic_role == ROLE_ADDITIVE
     assert by_id[TERM_EQUITY_BASE].sign_semantics == SIGN_ADD
-    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].algebraic_role == (
-        ROLE_REDUCTION_ONLY_UNSPECIFIED
-    )
+    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].algebraic_role == ROLE_SUBTRACTIVE
     assert by_id[TERM_REALIZED_PNL].algebraic_role == ROLE_EMBEDDED_NOT_SEPARATE
     assert by_id[TERM_UNREALIZED_PNL_MTM].algebraic_role == ROLE_EMBEDDED_NOT_SEPARATE
     assert by_id[TERM_SLIPPAGE].algebraic_role == ROLE_PROHIBITED
-    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].term_set_status == "UNSPECIFIED"
+    assert by_id[TERM_P01_HAIRCUT_RESERVE_DEPLETION].term_set_status == "SPECIFIED"
 
 
 def test_embedded_term_cannot_be_independently_counted() -> None:
@@ -460,8 +458,10 @@ def test_dag_moves_gap_without_selecting_source() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
-    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == ("P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED")
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
+    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == (
+        "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
+    )
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED"
 
 
 def test_runbook_aa_consumes_go_without_rewriting_z() -> None:
