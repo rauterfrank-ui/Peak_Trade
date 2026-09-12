@@ -140,6 +140,7 @@ def test_slot_contains_no_producer_implementation() -> None:
         "constants_v1.py",
         "internal_reconstruction_contract_v1.py",
         "normalization_inclusion_adjudication_v1.py",
+        "reconstruction_algebra_contract_v1.py",
         "sample_schema_v1.py",
         "venue_witness_observation_v1.py",
     ]
@@ -152,6 +153,7 @@ def test_slot_contains_no_producer_implementation() -> None:
             "venue_witness_observation_v1.py",
             "normalization_inclusion_adjudication_v1.py",
             "internal_reconstruction_contract_v1.py",
+            "reconstruction_algebra_contract_v1.py",
         }
     )
     for forbidden in (
@@ -186,6 +188,11 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in reconstruction
     assert "def reconstruct" not in reconstruction
     assert "def bind_account_equity" not in reconstruction
+    algebra = (SLOT_DIR / "reconstruction_algebra_contract_v1.py").read_text(encoding="utf-8")
+    assert "def mint" not in algebra
+    assert "def produce" not in algebra
+    assert "def reconstruct" not in algebra
+    assert "def bind_account_equity" not in algebra
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:

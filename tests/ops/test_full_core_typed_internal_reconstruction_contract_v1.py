@@ -128,6 +128,7 @@ SCHEMA_PATH = (
 )
 Y_HEADING = "11.2.1.Y FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTRACT"
 Z_HEADING = "11.2.1.Z FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT"
+AA_HEADING = "11.2.1.AA FULL_CORE_TYPED_RECONSTRUCTION_ALGEBRA_CONTRACT"
 
 
 def _component(
@@ -247,7 +248,7 @@ def _synthetic_fields(**overrides: object) -> dict[str, object]:
 def _z_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     z_start = runbook.index(Z_HEADING)
-    return runbook[z_start : runbook.index("## 11.3 Autonomy state model", z_start)]
+    return runbook[z_start : runbook.index(AA_HEADING, z_start)]
 
 
 def test_valid_synthetic_contract_can_be_constructed() -> None:
@@ -550,8 +551,8 @@ def test_schema_creation_does_not_select_source_or_mapping_or_producer() -> None
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
-    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == "RECONSTRUCTION_ALGEBRA_INCOMPLETE"
-    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "RECONSTRUCTION_ALGEBRA_INCOMPLETE"
+    assert dag["EARLIEST_DECOMPOSED_CONTRACT_GAP"] == ("P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED")
+    assert EARLIEST_DECOMPOSED_CONTRACT_GAP == "P01_HAIRCUT_RESERVE_DEPLETION_UNSPECIFIED"
 
 
 def test_step_29p_remains_inadmissible_and_live_gates_remain_false() -> None:

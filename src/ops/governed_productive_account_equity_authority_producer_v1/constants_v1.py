@@ -2,7 +2,8 @@
 
 Owner assignment plus typed sample schema, typed venue-witness
 observation contract, typed normalization/inclusion adjudication schema,
-and typed internal reconstruction contract schema. No producer
+and typed internal reconstruction contract schema, plus typed
+reconstruction algebra contract schema. No producer
 implementation. No runtime source object. No mapping. No value
 binding. No Live-account-bound join. No wire.
 """
@@ -49,6 +50,7 @@ INTERNAL_RECONSTRUCTION_PROVEN = False
 INTERNAL_RECONSTRUCTION_AUTHORITY_EFFECT = "NONE"
 RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT = True
 RECONSTRUCTION_ALGEBRA_COMPLETE = False
+RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT = "NONE"
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
 DIVERGENCE_POLICY_CREATED = False
@@ -190,5 +192,22 @@ RECONSTRUCTION_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
     "reconstruction_proven_status",
     "observation_vs_authority_class",
     "internal_reconstruction_authority_effect",
+    "provenance_digest",
+)
+ALGEBRA_PROVENANCE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "algebra_contract_id",
+    "algebra_contract_version",
+    "reconstruction_contract_schema_class",
+    "target_semantic_dimension_id",
+    "algebra_representation",
+    "algebra_completeness_status",
+    "canonical_formula_status",
+    "canonical_formula_representation",
+    "unresolved_required_terms",
+    "contradiction_status",
+    "currency_unit_compatibility_status",
+    "valuation_dependency_status",
+    "reconstruction_algebra_authority_effect",
+    "term_vector",
     "provenance_digest",
 )

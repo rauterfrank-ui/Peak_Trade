@@ -32,6 +32,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     PRODUCER_IMPLEMENTATION_PRESENT,
     RAW_TO_WITNESS_PROVEN,
     RECONCILIATION_CONTRACT_CREATED,
+    RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT,
     RECONSTRUCTION_ALGEBRA_COMPLETE,
     RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT,
     SAMPLE_PRESENT,
@@ -53,6 +54,13 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.internal_r
     ReconstructionComponentV1,
     attach_internal_reconstruction_provenance_digest_v1,
     build_internal_reconstruction_contract_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.reconstruction_algebra_contract_v1 import (
+    AlgebraTermV1,
+    ReconstructionAlgebraContractError,
+    ReconstructionAlgebraContractV1,
+    attach_reconstruction_algebra_provenance_digest_v1,
+    build_reconstruction_algebra_contract_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.normalization_inclusion_adjudication_v1 import (
     NormalizationInclusionAdjudicationContractError,
@@ -108,8 +116,12 @@ __all__ = [
     "PRODUCER_IMPLEMENTATION_PRESENT",
     "RAW_TO_WITNESS_PROVEN",
     "RECONCILIATION_CONTRACT_CREATED",
+    "RECONSTRUCTION_ALGEBRA_AUTHORITY_EFFECT",
     "RECONSTRUCTION_ALGEBRA_COMPLETE",
     "RECONSTRUCTION_ALGEBRA_SCHEMA_PRESENT",
+    "AlgebraTermV1",
+    "ReconstructionAlgebraContractError",
+    "ReconstructionAlgebraContractV1",
     "ReconstructionComponentV1",
     "SAMPLE_PRESENT",
     "SEMANTIC_MAPPING_PROVEN",
@@ -127,9 +139,11 @@ __all__ = [
     "WITNESS_CONTRACT_MISSING_CLOSED",
     "attach_internal_reconstruction_provenance_digest_v1",
     "attach_normalization_inclusion_provenance_digest_v1",
+    "attach_reconstruction_algebra_provenance_digest_v1",
     "attach_venue_witness_provenance_digest_v1",
     "build_governed_running_account_equity_sample_v1",
     "build_internal_reconstruction_contract_v1",
     "build_normalization_inclusion_adjudication_v1",
+    "build_reconstruction_algebra_contract_v1",
     "build_trading_account_venue_witness_observation_v1",
 ]
