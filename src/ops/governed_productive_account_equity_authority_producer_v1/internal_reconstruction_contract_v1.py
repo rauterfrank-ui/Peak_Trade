@@ -36,6 +36,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     SOURCE_OBJECT_PRESENT,
     SOURCE_SELECTED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.reconstruction_algebra_contract_v1 import (
+    ALGEBRA_REPRESENTATION as ALGEBRA_REPRESENTATION,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.venue_witness_observation_v1 import (
     PRESENCE_EMPTY,
     PRESENCE_MALFORMED,
@@ -59,14 +62,6 @@ RECONSTRUCTED_VALUE_STATE_NOT_COMPUTED = "NOT_COMPUTED"
 RECONSTRUCTED_VALUE_STATE_COMPUTED = "COMPUTED"
 ALGEBRA_STATUS_INCOMPLETE = "INCOMPLETE"
 ALGEBRA_STATUS_COMPLETE = "COMPLETE"
-ALGEBRA_REPRESENTATION = (
-    "U02_U03_IN_EQUITY_BASE_ONLY_NO_SEPARATE_ADDEND;"
-    "P01_REDUCTION_ONLY;"
-    "U04_HOLD_ONCE;"
-    "U05_LIABILITY_ONCE;"
-    "U06_FEE_ONCE;"
-    "ALGEBRA_COMPLETE=false"
-)
 COMPONENT_COMPLETENESS_INCOMPLETE = "INCOMPLETE"
 COMPONENT_COMPLETENESS_UNPROVEN = "UNPROVEN"
 COMPONENT_COMPLETENESS_COMPLETE = "COMPLETE"
