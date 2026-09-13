@@ -28,11 +28,34 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     OBSERVATION_EXECUTION_AUTHORIZED,
     OBSERVATION_NETWORK_GET_AUTHORIZED,
     OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT,
+    D4_D5_GENESIS_RUNTIME_STORE_RELPATH,
 )
 
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
 S0_BLOCKED = "OBSERVATION_S0_BLOCKED_MISSING_D4_OR_D5_RUNTIME_PAYLOAD"
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def resolve_canonical_d4_d5_genesis_runtime_store_root_v1(
+    *,
+    repo_root: Path | str | None = None,
+) -> Path | None:
+    root = Path(repo_root) if repo_root is not None else _REPO_ROOT
+    base = root / D4_D5_GENESIS_RUNTIME_STORE_RELPATH
+    if not base.exists():
+        return None
+    if (base / "d4_bound_account_identity_runtime_instance_v1.json").is_file() and (
+        base / "d5_checkpoint_observation_window_binding_v1.json"
+    ).is_file():
+        return base
+    candidates = sorted(path for path in base.iterdir() if path.is_dir())
+    for candidate in reversed(candidates):
+        if (candidate / "d4_bound_account_identity_runtime_instance_v1.json").is_file() and (
+            candidate / "d5_checkpoint_observation_window_binding_v1.json"
+        ).is_file():
+            return candidate
+    return None
 
 
 class Package1ObservationS0RuntimeBindingGateError(ValueError):
@@ -69,7 +92,14 @@ def inspect_package_1_observation_s0_runtime_binding_gate_v1(
         )
     if EXECUTION_READY is not False:
         raise Package1ObservationS0RuntimeBindingGateError("EXECUTION_READY_MUST_REMAIN_FALSE")
-    if OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT is not False:
+    if OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT is True:
+        if store_root is None:
+            store_root = resolve_canonical_d4_d5_genesis_runtime_store_root_v1()
+            if store_root is None:
+                raise Package1ObservationS0RuntimeBindingGateError(
+                    "OBSERVATION_S0_RUNTIME_PAYLOADS_CLAIMED_BUT_ARTIFACT_ABSENT"
+                )
+    elif OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT is not False:
         raise Package1ObservationS0RuntimeBindingGateError(
             "OBSERVATION_S0_RUNTIME_PAYLOADS_MUST_REMAIN_ABSENT_WITHOUT_ARTIFACT"
         )

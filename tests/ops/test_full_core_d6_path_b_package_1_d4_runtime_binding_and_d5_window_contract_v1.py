@@ -89,6 +89,7 @@ SPEC_PATH = (
 )
 AZ_HEADING = "11.2.1.AZ FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES"
 BA_HEADING = "11.2.1.BA FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT"
+BB_HEADING = "11.2.1.BB FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE"
 _ISO = "2026-09-13T08:26:00Z"
 _ISO_START = "2026-09-13T08:00:00Z"
 _ISO_END = "2026-09-13T09:00:00Z"
@@ -166,7 +167,7 @@ def _d5_pair():
 def _ba_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ba_start = runbook.index(BA_HEADING)
-    return runbook[ba_start : runbook.index("## 11.3 Autonomy state model", ba_start)]
+    return runbook[ba_start : runbook.index(BB_HEADING, ba_start)]
 
 
 def test_valid_d4_explicit_typed_binding_is_digest_stable(tmp_path: Path) -> None:

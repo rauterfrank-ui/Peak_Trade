@@ -21,18 +21,18 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bound_acco
     BoundAccountIdentityContractV1,
     FORBIDDEN_PROVENANCE_CLASSES,
     PROVENANCE_EXPLICIT_TYPED_BINDING,
+    PROVENANCE_GENESIS_FRESH_TYPED_BINDING,
     RATIFIED_IDENTITY_MEMBERS,
+    RATIFIED_PROVENANCE_CLASSES,
     build_bound_account_identity_contract_v1,
     compute_bound_account_identity_digest_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
-    BOUND_ACCOUNT_CONCRETE_UID_OBSERVED,
     BOUND_ACCOUNT_IDENTITY_FROM_CREDENTIAL_FORBIDDEN,
     BOUND_ACCOUNT_IDENTITY_FROM_ENV_FORBIDDEN,
     BOUND_ACCOUNT_IDENTITY_IMPLICIT_DEFAULT_FORBIDDEN,
     BOUND_ACCOUNT_IDENTITY_RUNTIME_INSTANCE_PRESENT,
-    D4_CONCRETE_UID_CORROBORATED,
     D4_RUNTIME_BINDING_CONTRACT_PRESENT,
 )
 
@@ -150,14 +150,6 @@ def _assert_runtime_pins() -> None:
         raise BoundAccountIdentityRuntimeBindingError(
             "BOUND_ACCOUNT_IDENTITY_IMPLICIT_DEFAULT_NOT_FORBIDDEN"
         )
-    if D4_CONCRETE_UID_CORROBORATED is not False:
-        raise BoundAccountIdentityRuntimeBindingError(
-            "D4_CONCRETE_UID_CORROBORATED_MUST_REMAIN_FALSE"
-        )
-    if BOUND_ACCOUNT_CONCRETE_UID_OBSERVED is not False:
-        raise BoundAccountIdentityRuntimeBindingError(
-            "BOUND_ACCOUNT_CONCRETE_UID_OBSERVED_MUST_REMAIN_FALSE"
-        )
     if ACCOUNT_EQUITY_AUTHORITY_OWNER != (
         "ops.governed_productive_account_equity_authority_producer_v1"
     ):
@@ -166,7 +158,23 @@ def _assert_runtime_pins() -> None:
 
 def _binding_from_identity(
     identity: BoundAccountIdentityContractV1,
+    *,
+    concrete_uid_corroborated: str,
 ) -> BoundAccountIdentityRuntimeBindingV1:
+    if identity.identity_provenance_class == PROVENANCE_EXPLICIT_TYPED_BINDING:
+        if concrete_uid_corroborated != CONCRETE_UID_CORROBORATED_TOKEN:
+            raise BoundAccountIdentityRuntimeBindingError(
+                "D4_RUNTIME_CANNOT_SET_CONCRETE_UID_CORROBORATED"
+            )
+    elif identity.identity_provenance_class == PROVENANCE_GENESIS_FRESH_TYPED_BINDING:
+        if concrete_uid_corroborated not in {TRUE_TOKEN, CONCRETE_UID_CORROBORATED_TOKEN}:
+            raise BoundAccountIdentityRuntimeBindingError(
+                "D4_RUNTIME_GENESIS_UID_CORROBORATED_TOKEN_INVALID"
+            )
+    else:
+        raise BoundAccountIdentityRuntimeBindingError(
+            f"D4_RUNTIME_PROVENANCE_NOT_RATIFIED:{identity.identity_provenance_class}"
+        )
     payload = {
         "identity_id": identity.identity_id,
         "identity_kind": identity.identity_kind,
@@ -179,7 +187,7 @@ def _binding_from_identity(
         "identity_digest": identity.identity_digest,
         "contract_status": CONTRACT_STATUS_PROVEN,
         "runtime_instance_present": RUNTIME_INSTANCE_PRESENT_TOKEN,
-        "concrete_uid_corroborated": CONCRETE_UID_CORROBORATED_TOKEN,
+        "concrete_uid_corroborated": concrete_uid_corroborated,
         "observation_vs_authority_class": identity.observation_vs_authority_class,
         "authority_effect": AUTHORITY_EFFECT,
     }
@@ -200,16 +208,20 @@ def build_bound_account_identity_runtime_binding_v1(
     bound_td_mode: str,
     settlement_currency: str,
     identity_provenance_class: str = PROVENANCE_EXPLICIT_TYPED_BINDING,
+    concrete_uid_corroborated: str = CONCRETE_UID_CORROBORATED_TOKEN,
 ) -> BoundAccountIdentityRuntimeBindingV1:
     _assert_runtime_pins()
     provenance = _require_non_empty_str(
         field="identity_provenance_class", raw=identity_provenance_class
     )
     _reject_mint_source(field="identity_provenance_class", raw=provenance)
-    if provenance != PROVENANCE_EXPLICIT_TYPED_BINDING:
+    if provenance not in RATIFIED_PROVENANCE_CLASSES:
         raise BoundAccountIdentityRuntimeBindingError(
-            f"D4_RUNTIME_PROVENANCE_NOT_EXPLICIT_TYPED_BINDING:{provenance}"
+            f"D4_RUNTIME_PROVENANCE_NOT_RATIFIED:{provenance}"
         )
+    corroborated = _require_non_empty_str(
+        field="concrete_uid_corroborated", raw=concrete_uid_corroborated
+    )
     try:
         identity = build_bound_account_identity_contract_v1(
             identity_id=identity_id,
@@ -221,11 +233,12 @@ def build_bound_account_identity_runtime_binding_v1(
         )
     except BoundAccountIdentityContractError as exc:
         raise BoundAccountIdentityRuntimeBindingError(str(exc)) from exc
-    binding = _binding_from_identity(identity)
-    if binding.concrete_uid_corroborated != CONCRETE_UID_CORROBORATED_TOKEN:
-        raise BoundAccountIdentityRuntimeBindingError(
-            "D4_RUNTIME_CANNOT_SET_CONCRETE_UID_CORROBORATED"
-        )
+    binding = _binding_from_identity(identity, concrete_uid_corroborated=corroborated)
+    if provenance == PROVENANCE_EXPLICIT_TYPED_BINDING:
+        if binding.concrete_uid_corroborated != CONCRETE_UID_CORROBORATED_TOKEN:
+            raise BoundAccountIdentityRuntimeBindingError(
+                "D4_RUNTIME_CANNOT_SET_CONCRETE_UID_CORROBORATED"
+            )
     if binding.contract_status != CONTRACT_STATUS_PROVEN:
         raise BoundAccountIdentityRuntimeBindingError("D4_RUNTIME_CONTRACT_STATUS_NOT_PROVEN")
     return binding
@@ -240,6 +253,7 @@ def persist_bound_account_identity_runtime_binding_v1(
     bound_td_mode: str,
     settlement_currency: str,
     identity_provenance_class: str = PROVENANCE_EXPLICIT_TYPED_BINDING,
+    concrete_uid_corroborated: str = CONCRETE_UID_CORROBORATED_TOKEN,
 ) -> BoundAccountIdentityRuntimeBindingV1:
     binding = build_bound_account_identity_runtime_binding_v1(
         identity_id=identity_id,
@@ -248,6 +262,7 @@ def persist_bound_account_identity_runtime_binding_v1(
         bound_td_mode=bound_td_mode,
         settlement_currency=settlement_currency,
         identity_provenance_class=identity_provenance_class,
+        concrete_uid_corroborated=concrete_uid_corroborated,
     )
     path = d4_runtime_instance_path_v1(store_root=store_root)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -263,7 +278,7 @@ def persist_bound_account_identity_runtime_binding_v1(
         "identity_digest": binding.identity_digest,
         "contract_status": binding.contract_status,
         "runtime_instance_present": binding.runtime_instance_present,
-        "concrete_uid_corroborated": CONCRETE_UID_CORROBORATED_TOKEN,
+        "concrete_uid_corroborated": binding.concrete_uid_corroborated,
         "observation_vs_authority_class": binding.observation_vs_authority_class,
         "authority_effect": binding.authority_effect,
         "instance_digest": binding.instance_digest,
@@ -310,15 +325,23 @@ def load_bound_account_identity_runtime_binding_v1(
             "provenance_digest",
         )
     }
-    if payload["identity_provenance_class"] != PROVENANCE_EXPLICIT_TYPED_BINDING:
+    if payload["identity_provenance_class"] not in RATIFIED_PROVENANCE_CLASSES:
         raise BoundAccountIdentityRuntimeBindingError(
-            "D4_RUNTIME_PROVENANCE_NOT_EXPLICIT_TYPED_BINDING:"
-            f"{payload['identity_provenance_class']}"
+            f"D4_RUNTIME_PROVENANCE_NOT_RATIFIED:{payload['identity_provenance_class']}"
         )
-    if payload["concrete_uid_corroborated"] != CONCRETE_UID_CORROBORATED_TOKEN:
-        raise BoundAccountIdentityRuntimeBindingError(
-            "D4_RUNTIME_CANNOT_SET_CONCRETE_UID_CORROBORATED"
-        )
+    if payload["identity_provenance_class"] == PROVENANCE_EXPLICIT_TYPED_BINDING:
+        if payload["concrete_uid_corroborated"] != CONCRETE_UID_CORROBORATED_TOKEN:
+            raise BoundAccountIdentityRuntimeBindingError(
+                "D4_RUNTIME_CANNOT_SET_CONCRETE_UID_CORROBORATED"
+            )
+    elif payload["identity_provenance_class"] == PROVENANCE_GENESIS_FRESH_TYPED_BINDING:
+        if payload["concrete_uid_corroborated"] not in {
+            TRUE_TOKEN,
+            CONCRETE_UID_CORROBORATED_TOKEN,
+        }:
+            raise BoundAccountIdentityRuntimeBindingError(
+                "D4_RUNTIME_GENESIS_UID_CORROBORATED_TOKEN_INVALID"
+            )
     if payload["runtime_instance_present"] != RUNTIME_INSTANCE_PRESENT_TOKEN:
         raise BoundAccountIdentityRuntimeBindingError("D4_RUNTIME_INSTANCE_PRESENT_TOKEN_INVALID")
     if payload["contract_status"] != CONTRACT_STATUS_PROVEN:
@@ -378,7 +401,7 @@ def inspect_bound_account_identity_runtime_binding_status_v1(
     return BoundAccountIdentityRuntimeBindingStatusV1(
         contract_status=loaded.contract_status,
         runtime_instance_present=loaded.runtime_instance_present,
-        concrete_uid_corroborated=CONCRETE_UID_CORROBORATED_TOKEN,
+        concrete_uid_corroborated=loaded.concrete_uid_corroborated,
         canonical_runtime_instance_present=canonical_present,
         artifact_present=TRUE_TOKEN,
     )
