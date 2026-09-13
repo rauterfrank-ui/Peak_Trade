@@ -82,6 +82,7 @@ SPEC_PATH = (
 )
 AT_HEADING = "11.2.1.AT FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION"
 AU_HEADING = "11.2.1.AU FULL_CORE_D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
+AV_HEADING = "11.2.1.AV FULL_CORE_D6_CLASSIFIED_KIND_SET_AND_EVENT_SOURCE_SEAM"
 _DIGEST = "a" * 64
 _DIGEST_B = "b" * 64
 _ISO = "2026-09-13T08:48:00Z"
@@ -160,7 +161,7 @@ def _binding(identity: BoundAccountIdentityContractV1):
 def _au_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     au_start = runbook.index(AU_HEADING)
-    return runbook[au_start : runbook.index("## 11.3 Autonomy state model", au_start)]
+    return runbook[au_start : runbook.index(AV_HEADING, au_start)]
 
 
 def test_d4_and_d5_prerequisites_and_exact_account_binding() -> None:
