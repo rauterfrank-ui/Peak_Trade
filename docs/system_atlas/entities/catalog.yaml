@@ -5771,6 +5771,7 @@ entities:
     # 11.2.1.AN P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT persist; P01_APPLICATION_PREDICATE_IDENTITY_RESOLVED=true; P01_APPLICATION_PREDICATE_MODEL=TYPED_GOVERNED_APPLICABILITY_DECISION_V1; P01_APPLICABILITY_DECISION_STATE_MODEL=APPLIES_DOES_NOT_APPLY_UNKNOWN_FAIL_CLOSED; P01_APPLICATION_PREDICATE_RESOLVED=false.
     # 11.2.1.AO P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT persist; P01_PREDICATE_INPUT_DOMAIN_IDENTITY_RESOLVED=true; P01_PREDICATE_INPUT_DOMAIN_CLASS=TYPED_GOVERNED_P01_RECONSTRUCTION_CONTEXT_V1; P01_APPLICATION_PREDICATE_INPUT_DOMAIN_RESOLVED=false.
     # 11.2.1.AQ EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS persist; C17_CREATED=false; MAPPING_BOUNDARY_CURRENTLY_OPEN=false; C01_C16_REJECTION_STILL_BINDING=true.
+    # 11.2.1.AR OPTION_D SSOT + checkpoint/event-taxonomy/eq-target contracts; RAW_EQ_SOURCE_AUTHORITY=false; C17_CREATED=false; EVENT_ACQUISITION_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5830,6 +5831,10 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/source_promotion_state_machine_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/mapping_boundary_reopen_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/source_candidate_census_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/option_d_ssot_architecture_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/equity_stock_checkpoint_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/equity_affecting_event_taxonomy_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/fresh_eq_reconciliation_target_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5882,6 +5887,8 @@ entities:
       - tests/ops/test_full_core_typed_p01_application_predicate_identity_contract_v1.py
       - tests/ops/test_full_core_typed_p01_application_predicate_input_domain_identity_contract_v1.py
       - tests/ops/test_full_core_typed_p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py
+      - tests/ops/test_full_core_equity_recovery_pr1_governance_reopen_and_candidate_census_v1.py
+      - tests/ops/test_full_core_option_d_ssot_checkpoint_event_taxonomy_and_eq_reconciliation_target_contracts_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5917,6 +5924,7 @@ entities:
       - docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_V1.md
       - docs/ops/specs/FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS_V1.md
+      - docs/ops/specs/FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_AND_EQ_RECONCILIATION_TARGET_CONTRACTS_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6325,6 +6333,16 @@ entities:
       MAPPING_BOUNDARY_CURRENTLY_OPEN=false; C17_CREATED=false;
       GENUINELY_NEW_CANDIDATE_COUNT=0; SOURCE_SELECTED=false;
       MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AR persist: OPTION_D SSOT plus typed checkpoint,
+      event-taxonomy, and fresh-eq reconciliation-target contracts;
+      OPTION_D_SSOT_PERSISTED=true; RAW_EQ_SOURCE_AUTHORITY=false;
+      EQ_RECONCILIATION_TARGET_ONLY=true; CHECKPOINT_CAN_MINT_EQUITY=false;
+      UNCLASSIFIED_EVENT_FAIL_CLOSED=true; C17_CREATED=false;
+      EVENT_ACQUISITION_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false;
+      RESTART_PROVEN=false; BOUND_ACCOUNT_IDENTITY_PROVEN=false;
+      EARLIEST_OPTION_D_DEPENDENCY=D4_BOUND_ACCOUNT_IDENTITY;
       EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
       NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
