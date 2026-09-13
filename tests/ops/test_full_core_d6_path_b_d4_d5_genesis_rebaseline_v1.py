@@ -38,11 +38,13 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     TD_MODE_RESOLUTION_OWNER_GO,
+    UID_RECAPTURE_OWNER_GO,
     build_d4_d5_genesis_rebaseline_contract_v1,
     persist_d4_d5_genesis_rebaseline_contract_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_runtime_orchestrator_v1 import (
     D4D5GenesisRuntimeOrchestratorError,
+    continue_d4_d5_genesis_with_fresh_account_config_uid_v1,
     continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1,
     execute_d4_d5_genesis_runtime_orchestrator_v1,
 )
@@ -51,6 +53,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis
     resolve_fresh_position_mgn_mode_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis_fresh_account_config_bootstrap_v1 import (
+    FRESH_ACCOUNT_CONFIG_UID_ABSENT,
     D4GenesisFreshAccountConfigBootstrapError,
     extract_observed_account_config_identity_facts_v1,
     resolve_genesis_d4_members_v1,
@@ -73,6 +76,11 @@ _SUCCESS_BODY = (
     b'{"code":"0","msg":"","data":[{"uid":"900199001990019900","acctLv":"2",'
     b'"posMode":"net_mode","tdMode":"cross"}]}'
 )
+_UID_ONLY_BODY = (
+    b'{"code":"0","msg":"","data":[{"uid":"900199001990019900","acctLv":"2",'
+    b'"posMode":"net_mode","mainUid":"900199001990019901"}]}'
+)
+_NO_UID_BODY = b'{"code":"0","msg":"","data":[{"acctLv":"2","posMode":"net_mode","mainUid":"1"}]}'
 _NO_TD_BODY = (
     b'{"code":"0","msg":"","data":[{"uid":"900199001990019900","acctLv":"2","posMode":"net_mode"}]}'
 )
@@ -217,12 +225,16 @@ def test_runbook_bb_persists_genesis_without_historical_continuity() -> None:
     assert "NETWORK_POST_PERFORMED=false" in bb_section
     assert "BOUND_TD_MODE_RESOLVED=true" in bb_section
     assert "FRESH_MGN_MODE_OBSERVED=cross" in bb_section
+    assert "FRESH_UID_PRESENT=true" in bb_section
+    assert "D4_BOUND_ACCOUNT_IDENTITY_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG_UID" in bb_section
+    assert "BOUND_ACCOUNT_IDENTITY_RESOLVED=true" in bb_section
+    assert "D4_RUNTIME_INSTANCE_PRESENT=true" in bb_section
+    assert "D5_RUNTIME_INSTANCE_PRESENT=true" in bb_section
+    assert "OBSERVATION_S0_PREREQUISITES_SATISFIED=true" in bb_section
     assert (
-        "D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK"
+        "UID_RECAPTURE_OWNER_GO=OWNER_GO_D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1"
         in bb_section
     )
-    assert "D4_RUNTIME_INSTANCE_PRESENT=false" in bb_section
-    assert "D5_RUNTIME_INSTANCE_PRESENT=false" in bb_section
     assert "KIND_SET_RESOLVED=false" in bb_section
     assert "MS2_AUTHORIZED=false" in bb_section
     assert "D7_AUTHORIZED=false" in bb_section
@@ -243,6 +255,40 @@ def _persist_bound_genesis_contract(tmp_path: Path) -> None:
         continue_owner_go=CONTINUE_OWNER_GO,
     )
     persist_d4_d5_genesis_rebaseline_contract_v1(store_root=tmp_path, contract=contract)
+
+
+def _persist_bound_genesis_pack_with_td_mode(tmp_path: Path) -> None:
+    _persist_bound_genesis_contract(tmp_path)
+    (tmp_path / "d4_genesis_position_mgn_mode_observed_facts_v1.json").write_text(
+        (
+            '{"bound_td_mode":"cross","bound_td_mode_derivation":'
+            '"OKX_FUTURES_SWAP_MGN_MODE_TO_TD_MODE_IDENTITY_MAPPING",'
+            '"bound_td_mode_source":"FRESH_AUTHENTICATED_POSITION_MGN_MODE",'
+            '"fresh_mgn_mode_observed":"cross","http_status":"200",'
+            '"network_get_count":"1","network_post_count":"0","observed_uid":""}\n'
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "claims.json").write_text(
+        (
+            '{"ACCOUNT_CONFIG_GET_PERFORMED":"true","ADDITIONAL_READ_ONLY_GETS":"1",'
+            '"BOUND_TD_MODE_RESOLVED":"true","D4_BOUND_TD_MODE_SOURCE":'
+            '"FRESH_AUTHENTICATED_POSITION_MGN_MODE",'
+            '"D4_GENESIS_FIELD_FAIL_CLOSED":'
+            '"bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK",'
+            '"D4_RUNTIME_INSTANCE_PRESENT":"false","D5_RUNTIME_INSTANCE_PRESENT":"false",'
+            '"FRESH_MGN_MODE_OBSERVED":"cross","GENESIS_AS_OF":'
+            f'"{EXPECTED_GENESIS_AS_OF}","GENESIS_ID":"{EXPECTED_GENESIS_ID}",'
+            '"HISTORICAL_COMPLETENESS_CLAIMED":"false",'
+            '"HISTORICAL_CONTINUITY_CLAIMED":"false",'
+            '"LEGACY_D4_D5_RUNTIME_CHAIN":"NOT_RECONSTRUCTED",'
+            '"NETWORK_POST_PERFORMED":"false",'
+            '"OBSERVATION_S0_PREREQUISITES_SATISFIED":"false",'
+            '"POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS":"true",'
+            '"POSITIONS_GET_PERFORMED":"true","PRE_GENESIS_DATA_IMPORTED":"false"}\n'
+        ),
+        encoding="utf-8",
+    )
 
 
 def test_fresh_position_mgn_mode_cross_maps_to_td_mode() -> None:
@@ -340,4 +386,72 @@ def test_continue_genesis_missing_uid_fail_closes_after_mgn_mode(tmp_path: Path)
     )
     assert '"fresh_mgn_mode_observed":"cross"' in facts
     assert not (tmp_path / "d4_bound_account_identity_runtime_instance_v1.json").exists()
+    assert not any(call.method == "POST" for call in transport.calls)
+
+
+def test_uid_recapture_persists_d4_d5_from_fresh_account_config_uid(tmp_path: Path) -> None:
+    _persist_bound_genesis_pack_with_td_mode(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_UID_ONLY_BODY)
+    result = continue_d4_d5_genesis_with_fresh_account_config_uid_v1(
+        store_root=tmp_path,
+        owner_go=UID_RECAPTURE_OWNER_GO,
+        transport=transport,
+    )
+    assert result.genesis_id == EXPECTED_GENESIS_ID
+    assert result.genesis_as_of == EXPECTED_GENESIS_AS_OF
+    assert result.account_config_get_performed == "true"
+    assert result.network_post_performed == "false"
+    assert result.d4_bound_account_identity == _SYNTHETIC_UID
+    assert result.d4_bound_venue_identity == "OKX"
+    assert result.d4_bound_td_mode == "cross"
+    assert result.d4_settlement_currency == "USDC"
+    assert result.d4_runtime_instance_persisted == "true"
+    assert result.d5_runtime_instance_persisted == "true"
+    assert result.d5_window_start == EXPECTED_GENESIS_AS_OF
+    assert result.d5_window_end == EXPECTED_GENESIS_AS_OF
+    assert result.observation_s0_prerequisites_satisfied == "true"
+    facts = (tmp_path / "d4_genesis_account_config_observed_facts_v1.json").read_text(
+        encoding="utf-8"
+    )
+    assert '"observed_uid":"900199001990019900"' in facts
+    assert '"observed_main_uid":"900199001990019901"' in facts
+    claims = (tmp_path / "claims.json").read_text(encoding="utf-8")
+    assert '"BOUND_ACCOUNT_IDENTITY_RESOLVED":"true"' in claims
+    assert '"D4_BOUND_ACCOUNT_IDENTITY_SOURCE":"FRESH_AUTHENTICATED_ACCOUNT_CONFIG_UID"' in claims
+    assert_package_1_observation_s0_runtime_payloads_present_v1(store_root=tmp_path)
+    assert [call.method for call in transport.calls] == ["GET"]
+    assert all("/account/config" in call.endpoint for call in transport.calls)
+    assert not any("/account/positions" in call.endpoint for call in transport.calls)
+    assert not any(call.method == "POST" for call in transport.calls)
+
+
+def test_uid_recapture_ignores_account_config_td_mode(tmp_path: Path) -> None:
+    _persist_bound_genesis_pack_with_td_mode(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_SUCCESS_BODY)
+    result = continue_d4_d5_genesis_with_fresh_account_config_uid_v1(
+        store_root=tmp_path,
+        owner_go=UID_RECAPTURE_OWNER_GO,
+        transport=transport,
+    )
+    assert result.d4_bound_td_mode == "cross"
+    facts = (tmp_path / "d4_genesis_account_config_observed_facts_v1.json").read_text(
+        encoding="utf-8"
+    )
+    assert '"bound_td_mode_source":"FRESH_AUTHENTICATED_POSITION_MGN_MODE"' in facts
+
+
+def test_uid_recapture_absent_uid_fail_closes(tmp_path: Path) -> None:
+    _persist_bound_genesis_pack_with_td_mode(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_NO_UID_BODY)
+    with pytest.raises(D4D5GenesisRuntimeOrchestratorError) as err:
+        continue_d4_d5_genesis_with_fresh_account_config_uid_v1(
+            store_root=tmp_path,
+            owner_go=UID_RECAPTURE_OWNER_GO,
+            transport=transport,
+        )
+    assert FRESH_ACCOUNT_CONFIG_UID_ABSENT in str(err.value)
+    assert not (tmp_path / "d4_bound_account_identity_runtime_instance_v1.json").exists()
+    assert not (tmp_path / "d5_checkpoint_observation_window_binding_v1.json").exists()
+    claims = (tmp_path / "claims.json").read_text(encoding="utf-8")
+    assert f'"D4_GENESIS_FIELD_FAIL_CLOSED":"{FRESH_ACCOUNT_CONFIG_UID_ABSENT}"' in claims
     assert not any(call.method == "POST" for call in transport.calls)

@@ -43,14 +43,18 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     TD_MODE_RESOLUTION_OWNER_GO,
+    UID_RECAPTURE_OWNER_GO,
     D4D5GenesisRebaselineContractV1,
     build_d4_d5_genesis_rebaseline_contract_v1,
     load_d4_d5_genesis_rebaseline_contract_v1,
     persist_d4_d5_genesis_rebaseline_contract_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis_fresh_account_config_bootstrap_v1 import (
+    ACCOUNT_IDENTITY_SOURCE,
+    FRESH_ACCOUNT_CONFIG_UID_ABSENT,
     D4GenesisFreshAccountConfigBootstrapError,
     execute_genesis_account_config_get_v1,
+    execute_genesis_account_config_uid_recapture_get_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis_fresh_position_mgn_mode_bootstrap_v1 import (
     D4GenesisFreshPositionMgnModeBootstrapError,
@@ -535,6 +539,302 @@ def continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1(
             "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS": "true",
             "POSITIONS_GET_PERFORMED": "true",
             "PRE_GENESIS_DATA_IMPORTED": "false",
+        },
+    )
+    persist_manifest_sha256_v1(store_root=store_root)
+    assert_package_1_observation_s0_runtime_payloads_present_v1(store_root=store_root)
+    return D4D5GenesisRuntimeOrchestrationResultV1(
+        genesis_id=gid,
+        genesis_as_of=as_of,
+        account_config_get_performed="true",
+        additional_read_only_gets="1",
+        network_post_performed="false",
+        d4_bound_account_identity=d4.bound_account_identity,
+        d4_bound_venue_identity=d4.bound_venue_identity,
+        d4_bound_td_mode=d4.bound_td_mode,
+        d4_settlement_currency=d4.settlement_currency,
+        d4_runtime_instance_persisted="true",
+        d4_uid_corroborated=d4.concrete_uid_corroborated,
+        d5_checkpoint_reference=window.checkpoint_id,
+        d5_observation_reference=window.checkpoint_observation_ref,
+        d5_window_start=window.checkpoint_window_start,
+        d5_window_end=window.checkpoint_window_end,
+        d5_runtime_instance_persisted="true",
+        historical_continuity_claimed="false",
+        historical_completeness_claimed="false",
+        pre_genesis_data_imported="false",
+        observation_s0_prerequisites_satisfied="true",
+        store_root=str(Path(store_root)),
+        genesis_contract=contract,
+        d4_binding=d4,
+        d5_window=window,
+        acquisition=acquisition,
+    )
+
+
+def _load_existing_bound_td_mode_from_genesis_pack_v1(*, store_root: Path) -> str:
+    claims_path = Path(store_root) / CLAIMS_FILENAME
+    facts_path = Path(store_root) / SANITIZED_POSITION_FACTS_FILENAME
+    if not claims_path.is_file() or not facts_path.is_file():
+        raise D4D5GenesisRuntimeOrchestratorError("D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode")
+    try:
+        claims = json.loads(claims_path.read_text(encoding="utf-8"))
+        facts = json.loads(facts_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise D4D5GenesisRuntimeOrchestratorError(
+            "D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode"
+        ) from exc
+    if not isinstance(claims, dict) or not isinstance(facts, dict):
+        raise D4D5GenesisRuntimeOrchestratorError("D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode")
+    if str(claims.get("BOUND_TD_MODE_RESOLVED") or "") != "true":
+        raise D4D5GenesisRuntimeOrchestratorError("D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode")
+    mode = str(facts.get("bound_td_mode") or "").strip()
+    source = str(facts.get("bound_td_mode_source") or "").strip()
+    if mode != "cross":
+        raise D4D5GenesisRuntimeOrchestratorError("D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode")
+    if source != "FRESH_AUTHENTICATED_POSITION_MGN_MODE":
+        raise D4D5GenesisRuntimeOrchestratorError("D4_GENESIS_FIELD_FAIL_CLOSED:bound_td_mode")
+    return mode
+
+
+def _persist_genesis_d4_d5_runtime_instances_v1(
+    *,
+    store_root: Path | str,
+    contract: D4D5GenesisRebaselineContractV1,
+    bound_account_identity: str,
+    bound_venue_identity: str,
+    bound_td_mode: str,
+    settlement_currency: str,
+) -> tuple[
+    BoundAccountIdentityRuntimeBindingV1,
+    CheckpointObservationWindowBindingV1,
+    CheckpointObservationAcquisitionResultV1,
+]:
+    gid = contract.genesis_id
+    as_of = contract.genesis_as_of
+    d4 = persist_bound_account_identity_runtime_binding_v1(
+        store_root=store_root,
+        identity_id=bound_account_identity,
+        bound_account_identity=bound_account_identity,
+        bound_venue_identity=bound_venue_identity,
+        bound_td_mode=bound_td_mode,
+        settlement_currency=settlement_currency,
+        identity_provenance_class=PROVENANCE_GENESIS_FRESH_TYPED_BINDING,
+        concrete_uid_corroborated="true",
+    )
+    schema_digest = contract.provenance_digest
+    input_set_digest = _sha256_hex(f"{d4.identity_digest}|{as_of}|{gid}")
+    checkpoint = build_equity_stock_checkpoint_contract_v1(
+        checkpoint_id=f"CKPT{gid}",
+        schema_digest=schema_digest,
+        input_set_digest=input_set_digest,
+        checkpoint_version="v1",
+        bound_account_identity_ref=d4.identity_id,
+        bound_account_identity_digest=d4.identity_digest,
+    )
+    acquisition = acquire_checkpoint_observation_v1(
+        observation_id=f"OBS{gid}",
+        source_observation_id=f"SRC{gid}",
+        expected_bound_account_identity_ref=d4.identity_id,
+        expected_bound_account_identity_digest=d4.identity_digest,
+        bound_account_identity_ref=d4.identity_id,
+        bound_account_identity_digest=d4.identity_digest,
+        observed_at_as_of=as_of,
+        acquired_at=as_of,
+        component_completeness="COMPLETE",
+        freshness_policy_status=FRESHNESS_EVIDENCE_STATUS,
+    )
+    checkpoint_binding = bind_checkpoint_observation_to_checkpoint_v1(
+        binding_id=f"BIND{gid}",
+        checkpoint=checkpoint,
+        acquisition=acquisition,
+    )
+    window = bind_checkpoint_observation_window_v1(
+        binding_id=f"WIN{gid}",
+        checkpoint_id=checkpoint.checkpoint_id,
+        acquisition=acquisition,
+        checkpoint_binding=checkpoint_binding,
+        checkpoint_window_start=as_of,
+        checkpoint_window_end=as_of,
+        binding_class=BINDING_CLASS_GENESIS_EPOCH,
+        window_derivation_class=WINDOW_DERIVATION_GENESIS_EPOCH,
+        observed_at_as_of_relation_class=AS_OF_RELATION_GENESIS_EPOCH,
+        event_completeness_from_window="false",
+    )
+    persist_checkpoint_observation_window_binding_v1(store_root=store_root, binding=window)
+    return d4, window, acquisition
+
+
+def continue_d4_d5_genesis_with_fresh_account_config_uid_v1(
+    *,
+    store_root: Path | str,
+    owner_go: str = UID_RECAPTURE_OWNER_GO,
+    vault_file: Path | str | None = None,
+    transport: LiveCanaryTransportV1 | None = None,
+) -> D4D5GenesisRuntimeOrchestrationResultV1:
+    if owner_go != UID_RECAPTURE_OWNER_GO:
+        raise D4D5GenesisRuntimeOrchestratorError("UID_RECAPTURE_OWNER_GO_MISMATCH")
+    try:
+        contract = load_d4_d5_genesis_rebaseline_contract_v1(store_root=store_root)
+    except Exception as exc:
+        raise D4D5GenesisRuntimeOrchestratorError(str(exc)) from exc
+    if contract.genesis_id != EXPECTED_GENESIS_ID:
+        raise D4D5GenesisRuntimeOrchestratorError("GENESIS_ID_MUST_REMAIN_BOUND")
+    if contract.genesis_as_of != EXPECTED_GENESIS_AS_OF:
+        raise D4D5GenesisRuntimeOrchestratorError("GENESIS_AS_OF_MUST_REMAIN_BOUND")
+    gid = contract.genesis_id
+    as_of = contract.genesis_as_of
+    bound_td_mode = _load_existing_bound_td_mode_from_genesis_pack_v1(store_root=Path(store_root))
+    missing_members: list[str] = []
+    if REUSED_BINDING_VENUE != "OKX":
+        missing_members.append("bound_venue_identity")
+    if REQUIRED_SETTLEMENT_CURRENCY != "USDC":
+        missing_members.append("settlement_currency")
+    try:
+        recapture = execute_genesis_account_config_uid_recapture_get_v1(
+            owner_go=owner_go,
+            vault_file=vault_file,
+            transport=transport,
+        )
+    except D4GenesisFreshAccountConfigBootstrapError as exc:
+        fail_code = str(exc)
+        _persist_json(
+            path=Path(store_root) / CLAIMS_FILENAME,
+            payload={
+                "ACCOUNT_CONFIG_GET_PERFORMED": "false",
+                "ADDITIONAL_READ_ONLY_GETS": "1",
+                "BOUND_TD_MODE_RESOLVED": "true",
+                "D4_BOUND_ACCOUNT_IDENTITY_SOURCE": ACCOUNT_IDENTITY_SOURCE,
+                "D4_BOUND_TD_MODE_SOURCE": "FRESH_AUTHENTICATED_POSITION_MGN_MODE",
+                "D4_GENESIS_FIELD_FAIL_CLOSED": fail_code,
+                "D4_RUNTIME_INSTANCE_PRESENT": "false",
+                "D5_RUNTIME_INSTANCE_PRESENT": "false",
+                "FRESH_MGN_MODE_OBSERVED": "cross",
+                "GENESIS_AS_OF": as_of,
+                "GENESIS_ID": gid,
+                "HISTORICAL_COMPLETENESS_CLAIMED": "false",
+                "HISTORICAL_CONTINUITY_CLAIMED": "false",
+                "LEGACY_D4_D5_RUNTIME_CHAIN": "NOT_RECONSTRUCTED",
+                "NETWORK_POST_PERFORMED": "false",
+                "OBSERVATION_S0_PREREQUISITES_SATISFIED": "false",
+                "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS": "true",
+                "POSITIONS_GET_PERFORMED": "true",
+                "PRE_GENESIS_DATA_IMPORTED": "false",
+            },
+        )
+        persist_manifest_sha256_v1(store_root=store_root)
+        raise D4D5GenesisRuntimeOrchestratorError(fail_code) from exc
+    observed = recapture["observed"]
+    _persist_json(
+        path=Path(store_root) / SANITIZED_GET_FACTS_FILENAME,
+        payload={
+            "http_status": str(recapture["http_status"]),
+            "network_get_count": "1",
+            "network_post_count": "0",
+            "observed_uid": observed.observed_uid,
+            "observed_main_uid": observed.observed_main_uid,
+            "observed_td_mode": observed.observed_td_mode,
+            "observed_settle_ccy": observed.observed_settle_ccy,
+            "observed_field_names": ",".join(observed.observed_field_names),
+            "d4_genesis_bootstrap_source": "FRESH_AUTHENTICATED_ACCOUNT_CONFIG",
+            "bound_account_identity_source": ACCOUNT_IDENTITY_SOURCE,
+            "bound_td_mode_source": "FRESH_AUTHENTICATED_POSITION_MGN_MODE",
+            "bound_venue_identity_source": "CANONICAL_REUSED_GET_PATH_VENUE_IDENTITY",
+            "settlement_currency_source": "OWNER_PACKAGE_REQUIRED_SETTLEMENT_CURRENCY",
+        },
+    )
+    if observed.observed_uid == "":
+        _persist_json(
+            path=Path(store_root) / CLAIMS_FILENAME,
+            payload={
+                "ACCOUNT_CONFIG_GET_PERFORMED": "true",
+                "ADDITIONAL_READ_ONLY_GETS": "1",
+                "BOUND_TD_MODE_RESOLVED": "true",
+                "D4_BOUND_ACCOUNT_IDENTITY_SOURCE": ACCOUNT_IDENTITY_SOURCE,
+                "D4_BOUND_TD_MODE_SOURCE": "FRESH_AUTHENTICATED_POSITION_MGN_MODE",
+                "D4_GENESIS_FIELD_FAIL_CLOSED": FRESH_ACCOUNT_CONFIG_UID_ABSENT,
+                "D4_RUNTIME_INSTANCE_PRESENT": "false",
+                "D5_RUNTIME_INSTANCE_PRESENT": "false",
+                "FRESH_MGN_MODE_OBSERVED": "cross",
+                "FRESH_UID_PRESENT": "false",
+                "GENESIS_AS_OF": as_of,
+                "GENESIS_ID": gid,
+                "HISTORICAL_COMPLETENESS_CLAIMED": "false",
+                "HISTORICAL_CONTINUITY_CLAIMED": "false",
+                "LEGACY_D4_D5_RUNTIME_CHAIN": "NOT_RECONSTRUCTED",
+                "NETWORK_POST_PERFORMED": "false",
+                "OBSERVATION_S0_PREREQUISITES_SATISFIED": "false",
+                "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS": "true",
+                "POSITIONS_GET_PERFORMED": "true",
+                "PRE_GENESIS_DATA_IMPORTED": "false",
+            },
+        )
+        persist_manifest_sha256_v1(store_root=store_root)
+        raise D4D5GenesisRuntimeOrchestratorError(FRESH_ACCOUNT_CONFIG_UID_ABSENT)
+    if missing_members:
+        _persist_json(
+            path=Path(store_root) / CLAIMS_FILENAME,
+            payload={
+                "ACCOUNT_CONFIG_GET_PERFORMED": "true",
+                "ADDITIONAL_READ_ONLY_GETS": "1",
+                "BOUND_ACCOUNT_IDENTITY_RESOLVED": "true",
+                "BOUND_TD_MODE_RESOLVED": "true",
+                "D4_BOUND_ACCOUNT_IDENTITY_SOURCE": ACCOUNT_IDENTITY_SOURCE,
+                "D4_BOUND_TD_MODE_SOURCE": "FRESH_AUTHENTICATED_POSITION_MGN_MODE",
+                "D4_GENESIS_FIELD_FAIL_CLOSED": ",".join(missing_members),
+                "D4_RUNTIME_INSTANCE_PRESENT": "false",
+                "D5_RUNTIME_INSTANCE_PRESENT": "false",
+                "FRESH_MGN_MODE_OBSERVED": "cross",
+                "FRESH_UID_PRESENT": "true",
+                "GENESIS_AS_OF": as_of,
+                "GENESIS_ID": gid,
+                "HISTORICAL_COMPLETENESS_CLAIMED": "false",
+                "HISTORICAL_CONTINUITY_CLAIMED": "false",
+                "LEGACY_D4_D5_RUNTIME_CHAIN": "NOT_RECONSTRUCTED",
+                "NETWORK_POST_PERFORMED": "false",
+                "OBSERVATION_S0_PREREQUISITES_SATISFIED": "false",
+                "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS": "true",
+                "POSITIONS_GET_PERFORMED": "true",
+                "PRE_GENESIS_DATA_IMPORTED": "false",
+            },
+        )
+        persist_manifest_sha256_v1(store_root=store_root)
+        raise D4D5GenesisRuntimeOrchestratorError(
+            "D4_GENESIS_FIELD_FAIL_CLOSED:" + ",".join(missing_members)
+        )
+    d4, window, acquisition = _persist_genesis_d4_d5_runtime_instances_v1(
+        store_root=store_root,
+        contract=contract,
+        bound_account_identity=observed.observed_uid,
+        bound_venue_identity=REUSED_BINDING_VENUE,
+        bound_td_mode=bound_td_mode,
+        settlement_currency=REQUIRED_SETTLEMENT_CURRENCY,
+    )
+    _persist_json(
+        path=Path(store_root) / CLAIMS_FILENAME,
+        payload={
+            "ACCOUNT_CONFIG_GET_PERFORMED": "true",
+            "ADDITIONAL_READ_ONLY_GETS": "1",
+            "BOUND_ACCOUNT_IDENTITY_RESOLVED": "true",
+            "BOUND_TD_MODE_RESOLVED": "true",
+            "BOUND_VENUE_IDENTITY_RESOLVED": "true",
+            "D4_BOUND_ACCOUNT_IDENTITY_SOURCE": ACCOUNT_IDENTITY_SOURCE,
+            "D4_BOUND_TD_MODE_SOURCE": "FRESH_AUTHENTICATED_POSITION_MGN_MODE",
+            "D4_RUNTIME_INSTANCE_PRESENT": "true",
+            "D5_RUNTIME_INSTANCE_PRESENT": "true",
+            "FRESH_MGN_MODE_OBSERVED": "cross",
+            "FRESH_UID_PRESENT": "true",
+            "GENESIS_AS_OF": as_of,
+            "GENESIS_ID": gid,
+            "HISTORICAL_COMPLETENESS_CLAIMED": "false",
+            "HISTORICAL_CONTINUITY_CLAIMED": "false",
+            "LEGACY_D4_D5_RUNTIME_CHAIN": "NOT_RECONSTRUCTED",
+            "NETWORK_POST_PERFORMED": "false",
+            "OBSERVATION_S0_PREREQUISITES_SATISFIED": "true",
+            "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS": "true",
+            "POSITIONS_GET_PERFORMED": "true",
+            "PRE_GENESIS_DATA_IMPORTED": "false",
+            "SETTLEMENT_CURRENCY_RESOLVED": "true",
         },
     )
     persist_manifest_sha256_v1(store_root=store_root)

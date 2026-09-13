@@ -18972,10 +18972,15 @@ BOUND_TD_MODE_RESOLVED=true
 BOUND_TD_MODE=cross
 D4_BOUND_TD_MODE_SOURCE=FRESH_AUTHENTICATED_POSITION_MGN_MODE
 D4_BOUND_TD_MODE_DERIVATION=OKX_FUTURES_SWAP_MGN_MODE_TO_TD_MODE_IDENTITY_MAPPING
-D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK
-D4_RUNTIME_INSTANCE_PRESENT=false
-D5_RUNTIME_INSTANCE_PRESENT=false
-OBSERVATION_S0_PREREQUISITES_SATISFIED=false
+FRESH_UID_PRESENT=true
+D4_BOUND_ACCOUNT_IDENTITY_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG_UID
+BOUND_ACCOUNT_IDENTITY_RESOLVED=true
+BOUND_VENUE_IDENTITY_RESOLVED=true
+SETTLEMENT_CURRENCY_RESOLVED=true
+D4_RUNTIME_INSTANCE_PRESENT=true
+D5_RUNTIME_INSTANCE_PRESENT=true
+OBSERVATION_S0_PREREQUISITES_SATISFIED=true
+UID_RECAPTURE_OWNER_GO=OWNER_GO_D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1
 TD_MODE_RESOLUTION_OWNER_GO=OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1
 D4_D5_GENESIS_RUNTIME_STORE=evidence/ops/full_core_d6_path_b_d4_d5_genesis_rebaseline_v1/2026-09-13T170318Z
 ```
@@ -18984,16 +18989,19 @@ A. Legacy D4/D5 runtime instances are not reconstructed. New evidence
 is valid only from `GENESIS_AS_OF`. Pre-genesis periods are
 `OUT_OF_SCOPE_FOR_NEW_RUNTIME_CHAIN`.
 
-B. Account-config GET remains the D4 identity bootstrap source. It does
-not supply a global `tdMode`. Owner-GO
+B. Account-config GET remains the D4 identity bootstrap source. Owner-GO
 `OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1`
 authorized one additional `GET &#47;api&#47;v5&#47;account&#47;positions`
 scoped to the current canonical single-selected future
 `SUI-USD_UM_XPERP-310404`. Fresh unique `mgnMode=cross` maps to
-`bound_td_mode=cross`. D4/D5 runtime instances remain unpersisted
-because the previously observed account UID is absent from the genesis
-evidence pack and was not present on the positions row. Defaults, env,
-credential contents, and history remain forbidden mint sources.
+`bound_td_mode=cross`. Owner-GO
+`OWNER_GO_D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1`
+authorized one fresh `GET &#47;api&#47;v5&#47;account&#47;config` and bound
+`bound_account_identity` from the current `uid` field. `mainUid` is
+persisted only as observed venue evidence and is not an identity
+authority. D4 and D5 runtime instances are persisted for this genesis
+epoch. Defaults, env, credential contents, and history remain forbidden
+mint sources.
 
 C. The D5 genesis window is a point window at `GENESIS_AS_OF`. This
 does **not** assert zero prior events and does **not** prove event

@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_rebaseline_contract_v1 import (
     CONTINUE_OWNER_GO,
+    UID_RECAPTURE_OWNER_GO,
     D4D5GenesisRebaselineContractError,
     build_d4_d5_genesis_rebaseline_contract_v1,
 )
@@ -66,6 +67,8 @@ VENUE_IDENTITY_SOURCE = "CANONICAL_REUSED_GET_PATH_VENUE_IDENTITY"
 SETTLEMENT_SOURCE_OBSERVED = "FRESH_ACCOUNT_CONFIG_SETTLE_CCY"
 SETTLEMENT_SOURCE_OWNER_PIN = "OWNER_PACKAGE_REQUIRED_SETTLEMENT_CURRENCY"
 TD_MODE_SOURCE_OBSERVED = "FRESH_ACCOUNT_CONFIG_TD_MODE"
+ACCOUNT_IDENTITY_SOURCE = "FRESH_AUTHENTICATED_ACCOUNT_CONFIG_UID"
+FRESH_ACCOUNT_CONFIG_UID_ABSENT = "FRESH_ACCOUNT_CONFIG_UID_ABSENT"
 
 
 class D4GenesisFreshAccountConfigBootstrapError(ValueError):
@@ -94,9 +97,21 @@ class GenesisD4MemberResolutionV1:
     uid_freshly_observed: str
 
 
-def extract_observed_account_config_identity_facts_v1(
+def _optional_account_config_field(row: Mapping[str, Any], field: str) -> str:
+    raw = row.get(field)
+    if raw is None:
+        return ""
+    if isinstance(raw, bool) or not isinstance(raw, (str, int)):
+        raise D4GenesisFreshAccountConfigBootstrapError(f"D4_GENESIS_FIELD_NOT_STRING:{field}")
+    text = str(raw).strip()
+    if text == "":
+        return ""
+    return text
+
+
+def _extract_account_config_row_v1(
     payload: Mapping[str, Any],
-) -> ObservedAccountConfigIdentityFactsV1:
+) -> tuple[Mapping[str, Any], tuple[str, ...]]:
     if not isinstance(payload, Mapping):
         raise D4GenesisFreshAccountConfigBootstrapError("ACCOUNT_CONFIG_PAYLOAD_NOT_OBJECT")
     code = str(payload.get("code") or "").strip()
@@ -111,26 +126,34 @@ def extract_observed_account_config_identity_facts_v1(
         raise D4GenesisFreshAccountConfigBootstrapError("ACCOUNT_CONFIG_DATA_NOT_SINGLE_OBJECT")
     row = data[0]
     names = tuple(sorted(str(key) for key in row.keys()))
+    return row, names
 
-    def _optional(field: str) -> str:
-        raw = row.get(field)
-        if raw is None:
-            return ""
-        if isinstance(raw, bool) or not isinstance(raw, (str, int)):
-            raise D4GenesisFreshAccountConfigBootstrapError(f"D4_GENESIS_FIELD_NOT_STRING:{field}")
-        text = str(raw).strip()
-        if text == "":
-            return ""
-        return text
 
-    uid = _optional("uid")
+def extract_observed_account_config_identity_facts_v1(
+    payload: Mapping[str, Any],
+) -> ObservedAccountConfigIdentityFactsV1:
+    row, names = _extract_account_config_row_v1(payload)
+    uid = _optional_account_config_field(row, "uid")
     if uid == "":
         raise D4GenesisFreshAccountConfigBootstrapError("D4_GENESIS_FIELD_FAIL_CLOSED:uid")
     return ObservedAccountConfigIdentityFactsV1(
         observed_uid=uid,
-        observed_main_uid=_optional("mainUid"),
-        observed_td_mode=_optional("tdMode"),
-        observed_settle_ccy=_optional("settleCcy"),
+        observed_main_uid=_optional_account_config_field(row, "mainUid"),
+        observed_td_mode=_optional_account_config_field(row, "tdMode"),
+        observed_settle_ccy=_optional_account_config_field(row, "settleCcy"),
+        observed_field_names=names,
+    )
+
+
+def extract_account_config_uid_recapture_facts_v1(
+    payload: Mapping[str, Any],
+) -> ObservedAccountConfigIdentityFactsV1:
+    row, names = _extract_account_config_row_v1(payload)
+    return ObservedAccountConfigIdentityFactsV1(
+        observed_uid=_optional_account_config_field(row, "uid"),
+        observed_main_uid=_optional_account_config_field(row, "mainUid"),
+        observed_td_mode=_optional_account_config_field(row, "tdMode"),
+        observed_settle_ccy=_optional_account_config_field(row, "settleCcy"),
         observed_field_names=names,
     )
 
@@ -192,25 +215,11 @@ def _assert_one_get_zero_writes(client: LiveCanaryHttpClientV1) -> dict[str, Any
     return counters
 
 
-def execute_genesis_account_config_get_v1(
+def _execute_account_config_http_get_v1(
     *,
-    owner_go: str,
-    origin_main_sha: str,
-    genesis_id: str,
-    genesis_as_of: str,
     vault_file: Path | str | None = None,
     transport: LiveCanaryTransportV1 | None = None,
-) -> dict[str, Any]:
-    try:
-        build_d4_d5_genesis_rebaseline_contract_v1(
-            genesis_id=genesis_id,
-            genesis_as_of=genesis_as_of,
-            owner_go=owner_go,
-            bound_origin_main_sha=origin_main_sha,
-            continue_owner_go=CONTINUE_OWNER_GO,
-        )
-    except D4D5GenesisRebaselineContractError as exc:
-        raise D4GenesisFreshAccountConfigBootstrapError(str(exc)) from exc
+) -> tuple[int, dict[str, Any], bytes]:
     if REUSED_BINDING_REST_HOST != AUTHORIZED_HOST:
         raise D4GenesisFreshAccountConfigBootstrapError("HOST_MISMATCH")
     if ENDPOINT in FORBIDDEN_ENDPOINTS:
@@ -236,7 +245,6 @@ def execute_genesis_account_config_get_v1(
     handle = None
     http_status: int | None = None
     body_bytes = b""
-    get_error: str | None = None
     try:
         url = f"{REUSED_REST_BASE}{ENDPOINT}"
         parsed = urlparse(url)
@@ -263,22 +271,76 @@ def execute_genesis_account_config_get_v1(
         if bool(response.redirect_followed):
             raise D4GenesisFreshAccountConfigBootstrapError("REDIRECT_FOLLOWED")
     except LiveCanaryHttpError as exc:
-        get_error = str(exc)
         raise D4GenesisFreshAccountConfigBootstrapError(f"GENESIS_GET_FAILED:{exc}") from exc
     finally:
         auth_headers.clear()
         if handle is not None:
             release_live_canary_ephemeral_material_v1(handle)
     counters = _assert_one_get_zero_writes(client)
+    if http_status is None:
+        raise D4GenesisFreshAccountConfigBootstrapError("GENESIS_GET_FAILED:HTTP_STATUS_ABSENT")
+    return http_status, counters, body_bytes
+
+
+def execute_genesis_account_config_get_v1(
+    *,
+    owner_go: str,
+    origin_main_sha: str,
+    genesis_id: str,
+    genesis_as_of: str,
+    vault_file: Path | str | None = None,
+    transport: LiveCanaryTransportV1 | None = None,
+) -> dict[str, Any]:
+    try:
+        build_d4_d5_genesis_rebaseline_contract_v1(
+            genesis_id=genesis_id,
+            genesis_as_of=genesis_as_of,
+            owner_go=owner_go,
+            bound_origin_main_sha=origin_main_sha,
+            continue_owner_go=CONTINUE_OWNER_GO,
+        )
+    except D4D5GenesisRebaselineContractError as exc:
+        raise D4GenesisFreshAccountConfigBootstrapError(str(exc)) from exc
+    http_status, counters, body_bytes = _execute_account_config_http_get_v1(
+        vault_file=vault_file,
+        transport=transport,
+    )
     payload = parse_json_object_v1(body_bytes)
     observed = extract_observed_account_config_identity_facts_v1(payload)
     members = resolve_genesis_d4_members_v1(observed=observed)
     return {
         "http_status": http_status,
-        "get_error": get_error,
+        "get_error": None,
         "counters": counters,
         "observed": observed,
         "members": members,
+        "network_get_count": 1,
+        "network_post_count": 0,
+        "d4_genesis_bootstrap_source": "FRESH_AUTHENTICATED_ACCOUNT_CONFIG",
+    }
+
+
+def execute_genesis_account_config_uid_recapture_get_v1(
+    *,
+    owner_go: str,
+    vault_file: Path | str | None = None,
+    transport: LiveCanaryTransportV1 | None = None,
+) -> dict[str, Any]:
+    if owner_go != UID_RECAPTURE_OWNER_GO:
+        raise D4GenesisFreshAccountConfigBootstrapError("UID_RECAPTURE_OWNER_GO_MISMATCH")
+    http_status, counters, body_bytes = _execute_account_config_http_get_v1(
+        vault_file=vault_file,
+        transport=transport,
+    )
+    payload = parse_json_object_v1(body_bytes)
+    observed = extract_account_config_uid_recapture_facts_v1(payload)
+    return {
+        "http_status": http_status,
+        "get_error": None,
+        "counters": counters,
+        "observed": observed,
+        "bound_account_identity": observed.observed_uid,
+        "bound_account_identity_source": ACCOUNT_IDENTITY_SOURCE,
         "network_get_count": 1,
         "network_post_count": 0,
         "d4_genesis_bootstrap_source": "FRESH_AUTHENTICATED_ACCOUNT_CONFIG",
