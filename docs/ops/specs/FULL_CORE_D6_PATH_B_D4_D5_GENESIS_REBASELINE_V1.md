@@ -12,9 +12,9 @@ last_updated: 2026-09-13
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.BB.
 
 ```text
-OWNER_GO=OWNER_GO_D6_PATH_B_D4_D5_GENESIS_REBASELINE_CONTINUE_V1
+OWNER_GO=OWNER_GO_D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1
 OWNER_GO_STATUS=CONSUMED
-WORKPACKAGE=D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1
+WORKPACKAGE=D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1
 GENESIS_REBASELINE_SELECTED_BY_OWNER=true
 LEGACY_D4_D5_RUNTIME_CHAIN=NOT_RECONSTRUCTED
 HISTORICAL_CONTINUITY_CLAIMED=false
@@ -52,10 +52,14 @@ FRESH_MGN_MODE_OBSERVED=cross
 BOUND_TD_MODE_RESOLVED=true
 BOUND_TD_MODE=cross
 D4_BOUND_TD_MODE_SOURCE=FRESH_AUTHENTICATED_POSITION_MGN_MODE
-D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK
-D4_RUNTIME_INSTANCE_PRESENT=false
-D5_RUNTIME_INSTANCE_PRESENT=false
-OBSERVATION_S0_PREREQUISITES_SATISFIED=false
+FRESH_UID_PRESENT=true
+D4_BOUND_ACCOUNT_IDENTITY_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG_UID
+BOUND_ACCOUNT_IDENTITY_RESOLVED=true
+BOUND_VENUE_IDENTITY_RESOLVED=true
+SETTLEMENT_CURRENCY_RESOLVED=true
+D4_RUNTIME_INSTANCE_PRESENT=true
+D5_RUNTIME_INSTANCE_PRESENT=true
+OBSERVATION_S0_PREREQUISITES_SATISFIED=true
 ```
 
 This persist starts a new canonical D4/D5 runtime chain. It does not
@@ -66,7 +70,10 @@ periods are out of scope for the new chain.
 The one authorized identity bootstrap GET is `GET &#47;api&#47;v5&#47;account&#47;config`.
 Owner-GO `OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1`
 authorized one additional `GET &#47;api&#47;v5&#47;account&#47;positions`
-for `bound_td_mode` via unique fresh `mgnMode`. Env, credential
+for `bound_td_mode` via unique fresh `mgnMode`. Owner-GO
+`OWNER_GO_D6_PATH_B_BOUND_ACCOUNT_IDENTITY_FRESH_CONFIG_UID_RECAPTURE_V1`
+authorized one fresh `GET &#47;api&#47;v5&#47;account&#47;config` to bind
+`bound_account_identity` from the current `uid` field. Env, credential
 contents, defaults, fixtures, and historical evidence remain forbidden
 mint sources. Missing members fail closed on that field.
 

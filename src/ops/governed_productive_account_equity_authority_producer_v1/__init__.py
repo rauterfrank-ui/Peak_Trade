@@ -481,6 +481,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
     CONTINUE_OWNER_GO,
     D4D5GenesisRebaselineContractError,
     D4D5GenesisRebaselineContractV1,
+    UID_RECAPTURE_OWNER_GO,
     build_d4_d5_genesis_rebaseline_contract_v1,
     persist_d4_d5_genesis_rebaseline_contract_v1,
 )
@@ -488,6 +489,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis
     D4GenesisFreshAccountConfigBootstrapError,
     ObservedAccountConfigIdentityFactsV1,
     execute_genesis_account_config_get_v1,
+    execute_genesis_account_config_uid_recapture_get_v1,
     extract_observed_account_config_identity_facts_v1,
     resolve_genesis_d4_members_v1,
 )
@@ -495,6 +497,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
     D4D5GenesisRuntimeOrchestrationResultV1,
     D4D5GenesisRuntimeOrchestratorError,
     capture_genesis_as_of_v1,
+    continue_d4_d5_genesis_with_fresh_account_config_uid_v1,
     execute_d4_d5_genesis_runtime_orchestrator_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_observation_s0_runtime_binding_gate_v1 import (
@@ -1036,10 +1039,13 @@ __all__ = [
     "persist_bound_account_identity_runtime_binding_v1",
     "build_d4_d5_genesis_rebaseline_contract_v1",
     "persist_d4_d5_genesis_rebaseline_contract_v1",
+    "UID_RECAPTURE_OWNER_GO",
     "execute_genesis_account_config_get_v1",
+    "execute_genesis_account_config_uid_recapture_get_v1",
     "extract_observed_account_config_identity_facts_v1",
     "resolve_genesis_d4_members_v1",
     "capture_genesis_as_of_v1",
+    "continue_d4_d5_genesis_with_fresh_account_config_uid_v1",
     "execute_d4_d5_genesis_runtime_orchestrator_v1",
     "acquire_checkpoint_observation_v1",
     "bind_checkpoint_observation_to_checkpoint_v1",
