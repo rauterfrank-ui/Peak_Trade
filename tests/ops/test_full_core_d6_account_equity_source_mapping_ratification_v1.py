@@ -59,7 +59,12 @@ _AS_OF = "2026-09-13T19:20:00Z"
 def _be_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BE_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BF FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION",
+            start,
+        )
+    ]
 
 
 def test_sealed_input_manifests_verify() -> None:

@@ -19398,6 +19398,137 @@ CURRENT_CANONICAL_SECTION=11.2.1.BE.FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_R
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.BF FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION (BOUND; SEALED S1–S6 PLUS #6452 MAPPING INPUT ONLY; NO RATIFIED EQUITY-STOCK SOURCE KIND; RANKED REMAINING D6 BLOCKER; NO GET; NO POST; NO MS2; NO D7; NO WIRE)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–BE standing forbidden surfaces. Does **not** re-run S1–S5.
+Does **not** re-run S6 classification. Does **not** rewrite the #6452
+source-role table. Does **not** mint D4 identity. Does **not**
+rehabilitate C01. Does **not** treat `details.eq` as source authority.
+Does **not** invent classified EQUITY_STOCK source kinds. Does **not**
+INCLUDE or EXCLUDE U05, U06, or residual from UNKNOWN embedding facts.
+Does **not** treat empty, blank, or zero forensic tokens as kind
+absence. Does **not** treat live `fee=0` or archive nonzero `fee` as
+F16/F17/F18. Does **not** prove retention or ordering completeness. Does
+**not** select a productive event-source seam. Does **not** authorize
+Mini-Slice 2, D6 closeout, or D7. Does **not** GET. Does **not** POST.
+Does **not** construct `LiveExecutionPort`. Protected surfaces remain
+unchanged.
+
+Owner-GO
+`OWNER_GO_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_V1`
+authorizes one bounded re-evaluation of already-sealed PACKAGE_1
+Observation, S6 classification, and the #6452 source-role mapping, plus
+persist of a ranked remaining D6 blocker. It does **not** authorize new
+venue GET/POST, Mini-Slice 2, D7, or Live.
+
+``` text
+OWNER_GO=OWNER_GO_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_SSOT_PERSIST
+THIS_SLICE=11.2.1.BF.FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+CURRENT_PHASE=11.2.1.BF.FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+SEALED_INPUT_ONLY=true
+MANIFESTS_VERIFY=true
+NEW_NETWORK_GET_COUNT=0
+NETWORK_POST_PERFORMED=false
+EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED=false
+MAPPING_PERSISTED=true
+RATIFIED_SOURCE_KINDS=NONE
+KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+U05_KIND_DECISION=REMAIN_UNKNOWN
+U06_KIND_DECISION=REMAIN_UNKNOWN
+RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN
+F12_STATUS=UNKNOWN
+F13_STATUS=UNKNOWN
+F16_STATUS=UNKNOWN
+F17_STATUS=UNKNOWN
+F18_STATUS=UNKNOWN
+KIND_SET_INCLUDE_EXCLUDE_BLOCKED_BY=F12_F13_F16_F17_F18_UNKNOWN
+EARLIEST_REMAINING_D6_BLOCKER=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET
+RETENTION_COVERAGE_STATUS=FAIL_CLOSED_NOT_PROVEN
+ORDERING_COMPLETENESS_STATUS=FAIL_CLOSED_NOT_PROVEN
+AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM=false
+COMPLETE_CLASSIFIED_EVENT_STREAM_PROVEN=false
+COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION_STATUS=FAIL_CLOSED_KIND_SET_AND_RETENTION_ORDERING_SEAM_UNPROVEN
+MS2_AUTHORIZED=false
+MS2_EXECUTED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C01_REHABILITATION_FORBIDDEN=true
+ATLAS_AUTHORITY=NONE
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+SINGLE_SELECTED_FUTURE_UNCHANGED=true
+MAX_POSITIONS=1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+ACQUISITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/account_equity_source_mapping_and_complete_event_stream_acquisition_v1.py
+PARENT_CONTRACT=FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET
+EARLIEST_D6_COMPLETENESS_DEPENDENCY=RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Sealed S1–S5, sealed S6, and the sealed #6452 source-role mapping are
+the only input. All three MANIFESTs must verify. No new venue GET is
+performed. Forensic raw tokens from balance `liab`/`crossLiab`/`isoLiab`/
+`borrowFroz` and bills/archive `fee`/`type`/`subType` are recorded as
+`FORENSIC_RAW_EVIDENCE`. Empty, blank, and zero tokens do **not** prove
+kind absence. Live `fee=0` and archive nonzero `fee` do **not** decide
+F16/F17/F18. Venue type tokens remain unratified kinds.
+
+B. Unique ranking persist. Relative to §11.2.1.BE the remaining D6
+blocker is ranked, not a flat bag. Rank 1, and the earliest remaining D6
+blocker, is `NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET`,
+uniquely blocked by `F12_F13_F16_F17_F18_UNKNOWN` because include/exclude
+from UNKNOWN remains forbidden. `NO_RATIFIED_EQUITY_STOCK_SOURCE_KIND`
+is a consequence of that kind-set. The productive event-source seam remains
+absent and downstream of the kind-set, Mini-Slice 2 unauthorized, and
+`GET &#47;api&#47;v5&#47;account&#47;bills` remaining CURRENT_NONCANONICAL.
+Retention and ordering remain independently `FAIL_CLOSED_NOT_PROVEN` from
+partial bills/archive overlap and are **not** the earliest source-kind
+blocker. `EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY` remains
+`NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING` because no
+EQUITY_STOCK source kind is ratified. Mini-Slice 2, D6 closeout, and D7
+remain unauthorized.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.BF.FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

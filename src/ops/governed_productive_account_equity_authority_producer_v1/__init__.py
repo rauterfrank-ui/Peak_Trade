@@ -526,6 +526,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.account_eq
     execute_account_equity_source_mapping_ratification_v1,
     reject_unratified_equity_stock_source_kind_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.account_equity_source_mapping_and_complete_event_stream_acquisition_v1 import (
+    AccountEquitySourceMappingAndCompleteEventStreamAcquisitionError,
+    AccountEquitySourceMappingAndCompleteEventStreamAcquisitionResultV1,
+    execute_account_equity_source_mapping_and_complete_event_stream_acquisition_v1,
+    reject_observed_value_as_kind_absence_or_embedding_decision_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1089,6 +1095,10 @@ __all__ = [
     "assert_eq_is_not_source_authority_v1",
     "execute_account_equity_source_mapping_ratification_v1",
     "reject_unratified_equity_stock_source_kind_v1",
+    "AccountEquitySourceMappingAndCompleteEventStreamAcquisitionError",
+    "AccountEquitySourceMappingAndCompleteEventStreamAcquisitionResultV1",
+    "execute_account_equity_source_mapping_and_complete_event_stream_acquisition_v1",
+    "reject_observed_value_as_kind_absence_or_embedding_decision_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
