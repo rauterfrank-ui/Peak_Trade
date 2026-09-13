@@ -18870,6 +18870,144 @@ CURRENT_CANONICAL_SECTION=11.2.1.BA.FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BIN
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.BB FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE (BOUND; NEW CANONICAL D4/D5 RUNTIME EPOCH; LEGACY CHAIN NOT RECONSTRUCTED; ONE ACCOUNT-CONFIG GET; POINT WINDOW; NO COMPLETENESS; OBSERVATION NOT EXECUTED; NO MAPPING; NO MS2; NO D7; NO POST; NO WIRE)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–BA standing forbidden surfaces. Does **not** reconstruct the
+legacy D4/D5 runtime chain. Does **not** claim historical continuity or
+historical completeness. Does **not** import pre-genesis data. Does
+**not** mint identity from env, credential, default, fixture, or
+history. Does **not** execute observation S1–S5. Does **not** authorize
+balance, subtypes, bills, bills-archive, or POST. Does **not**
+implement a reconstruction engine. Does **not** mint C17. Does **not**
+prove a mapping. Does **not** bind STEP-29P. Does **not** construct
+`LiveExecutionPort`. Protected surfaces remain unchanged.
+
+Owner-GO
+`OWNER_GO_D6_PATH_B_D4_D5_GENESIS_REBASELINE_CONTINUE_V1`
+resumes the Owner-selected genesis/rebaseline cut. It authorizes one
+`GET &#47;api&#47;v5&#47;account&#47;config` as the D4 genesis bootstrap source and
+persist of a new D5 point-window epoch at `GENESIS_AS_OF`. It does
+**not** authorize observation execution, Mini-Slice 2, D7, or Live.
+
+``` text
+OWNER_GO=OWNER_GO_D6_PATH_B_D4_D5_GENESIS_REBASELINE_CONTINUE_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_ONE_ACCOUNT_CONFIG_GET
+RISK_CLASS=R2_ONE_READ_ONLY_ACCOUNT_CONFIG_GET_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_SSOT_PERSIST
+THIS_SLICE=11.2.1.BB.FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE
+CURRENT_PHASE=11.2.1.BB.FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_REBASELINE_SELECTED_BY_OWNER=true
+LEGACY_D4_D5_RUNTIME_CHAIN=NOT_RECONSTRUCTED
+HISTORICAL_CONTINUITY_CLAIMED=false
+HISTORICAL_COMPLETENESS_CLAIMED=false
+PRE_GENESIS_DATA_IMPORTED=false
+PRE_GENESIS_PERIOD=OUT_OF_SCOPE_FOR_NEW_RUNTIME_CHAIN
+D4_GENESIS_BOOTSTRAP_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG
+D4_GENESIS_ACCOUNT_CONFIG_GET_AUTHORIZED=true
+D4_POST_GENESIS_OBSERVATION_MUST_NOT_MINT_IDENTITY=true
+POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS=true
+NEW_CANONICAL_RUNTIME_CHAIN_STARTS_AT_GENESIS_AS_OF=true
+IDENTITY_PROVENANCE_CLASS=GENESIS_FRESH_TYPED_BINDING
+WINDOW_BINDING_CLASS=GENESIS_EPOCH_POINT_WINDOW_BINDING
+OBSERVED_AT_AS_OF_RELATION_CLASS=GENESIS_EPOCH_COINCIDENT_NOT_COMPLETENESS
+EVENT_COMPLETENESS_FROM_WINDOW=false
+D5_WINDOW_END_EQUALS_OBSERVED_AT_AS_OF_RELATION_AUTHORITY_PRESENT=false
+OBSERVATION_S0_STRUCTURAL_BLOCKERS_CLEARED=true
+OBSERVATION_EXECUTED=false
+OBSERVATION_EXECUTION_AUTHORIZED=false
+OBSERVATION_NETWORK_GET_AUTHORIZED=false
+KIND_SET_RESOLVED=false
+MS2_AUTHORIZED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C01_REHABILITATION_FORBIDDEN=true
+ATLAS_AUTHORITY=NONE
+NETWORK_POST_PERFORMED=false
+PACKAGE_1_PERSISTED=true
+PATH_B_PREAUTHORIZATION_READY=true
+EXECUTION_READY=false
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+SINGLE_SELECTED_FUTURE_UNCHANGED=true
+MAX_POSITIONS=1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+GENESIS_CONTRACT_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_rebaseline_contract_v1.py
+D4_GENESIS_BOOTSTRAP_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_account_config_bootstrap_v1.py
+D4_GENESIS_POSITION_MGN_MODE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_position_mgn_mode_bootstrap_v1.py
+GENESIS_ORCHESTRATOR_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_runtime_orchestrator_v1.py
+PARENT_CONTRACT=FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+NEXT_STEP_REQUIRES_OWNER_GO=true
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+ACCOUNT_CONFIG_GET_PERFORMED=true
+ADDITIONAL_READ_ONLY_GETS=1
+POSITIONS_GET_PERFORMED=true
+POSITIONS_QUERY_INSTRUMENT=SUI-USD_UM_XPERP-310404
+POSITION_MATCH_COUNT=1
+FRESH_MGN_MODE_OBSERVED=cross
+BOUND_TD_MODE_RESOLVED=true
+BOUND_TD_MODE=cross
+D4_BOUND_TD_MODE_SOURCE=FRESH_AUTHENTICATED_POSITION_MGN_MODE
+D4_BOUND_TD_MODE_DERIVATION=OKX_FUTURES_SWAP_MGN_MODE_TO_TD_MODE_IDENTITY_MAPPING
+D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK
+D4_RUNTIME_INSTANCE_PRESENT=false
+D5_RUNTIME_INSTANCE_PRESENT=false
+OBSERVATION_S0_PREREQUISITES_SATISFIED=false
+TD_MODE_RESOLUTION_OWNER_GO=OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1
+D4_D5_GENESIS_RUNTIME_STORE=evidence/ops/full_core_d6_path_b_d4_d5_genesis_rebaseline_v1/2026-09-13T170318Z
+```
+
+A. Legacy D4/D5 runtime instances are not reconstructed. New evidence
+is valid only from `GENESIS_AS_OF`. Pre-genesis periods are
+`OUT_OF_SCOPE_FOR_NEW_RUNTIME_CHAIN`.
+
+B. Account-config GET remains the D4 identity bootstrap source. It does
+not supply a global `tdMode`. Owner-GO
+`OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1`
+authorized one additional `GET &#47;api&#47;v5&#47;account&#47;positions`
+scoped to the current canonical single-selected future
+`SUI-USD_UM_XPERP-310404`. Fresh unique `mgnMode=cross` maps to
+`bound_td_mode=cross`. D4/D5 runtime instances remain unpersisted
+because the previously observed account UID is absent from the genesis
+evidence pack and was not present on the positions row. Defaults, env,
+credential contents, and history remain forbidden mint sources.
+
+C. The D5 genesis window is a point window at `GENESIS_AS_OF`. This
+does **not** assert zero prior events and does **not** prove event
+completeness. Observation execution remains unauthorized even if S0
+runtime payloads are present.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.BB.FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

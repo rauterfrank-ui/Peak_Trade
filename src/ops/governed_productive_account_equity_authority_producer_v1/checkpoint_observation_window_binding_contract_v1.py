@@ -42,7 +42,10 @@ SCHEMA_CLASS = "CHECKPOINT_OBSERVATION_WINDOW_BINDING_CONTRACT_V1"
 CONTRACT_VERSION = "v1"
 AUTHORITY_EFFECT = "NONE"
 BINDING_CLASS_EXPLICIT = "EXPLICIT_TYPED_WINDOW_BINDING"
+BINDING_CLASS_GENESIS_EPOCH = "GENESIS_EPOCH_POINT_WINDOW_BINDING"
 AS_OF_RELATION_UNPROVEN = "UNPROVEN_NO_IMPLIED_EQUALITY"
+AS_OF_RELATION_GENESIS_EPOCH = "GENESIS_EPOCH_COINCIDENT_NOT_COMPLETENESS"
+WINDOW_DERIVATION_GENESIS_EPOCH = "GENESIS_EPOCH_POINT"
 WINDOW_RUNTIME_INSTANCE_FILENAME = "d5_checkpoint_observation_window_binding_v1.json"
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
@@ -210,25 +213,39 @@ def bind_checkpoint_observation_window_v1(
     start = _require_iso_z(field="checkpoint_window_start", raw=checkpoint_window_start)
     end = _require_iso_z(field="checkpoint_window_end", raw=checkpoint_window_end)
     observed_at = _require_iso_z(field="observed_at_as_of", raw=acquisition.observed_at_as_of)
-    if cls != BINDING_CLASS_EXPLICIT:
-        raise CheckpointObservationWindowBindingContractError(
-            f"D5_WINDOW_BINDING_CLASS_NOT_EXPLICIT:{cls}"
-        )
     if derivation in FORBIDDEN_WINDOW_DERIVATION_CLASSES:
         raise CheckpointObservationWindowBindingContractError(
             f"D5_WINDOW_IMPLICIT_NOW_OR_LOOKBACK_FORBIDDEN:{derivation}"
-        )
-    if derivation != BINDING_CLASS_EXPLICIT:
-        raise CheckpointObservationWindowBindingContractError(
-            f"D5_WINDOW_DERIVATION_NOT_EXPLICIT:{derivation}"
         )
     if relation in FORBIDDEN_AS_OF_RELATION_CLAIMS:
         raise CheckpointObservationWindowBindingContractError(
             f"D5_WINDOW_AS_OF_RELATION_AUTHORITY_ABSENT:{relation}"
         )
-    if relation != AS_OF_RELATION_UNPROVEN:
+    if cls == BINDING_CLASS_GENESIS_EPOCH:
+        if derivation != WINDOW_DERIVATION_GENESIS_EPOCH:
+            raise CheckpointObservationWindowBindingContractError(
+                f"D5_WINDOW_GENESIS_DERIVATION_REQUIRED:{derivation}"
+            )
+        if relation != AS_OF_RELATION_GENESIS_EPOCH:
+            raise CheckpointObservationWindowBindingContractError(
+                f"D5_WINDOW_GENESIS_RELATION_REQUIRED:{relation}"
+            )
+        if start != end or start != observed_at:
+            raise CheckpointObservationWindowBindingContractError(
+                "D5_WINDOW_GENESIS_START_END_AS_OF_MUST_COINCIDE"
+            )
+    elif cls == BINDING_CLASS_EXPLICIT:
+        if derivation != BINDING_CLASS_EXPLICIT:
+            raise CheckpointObservationWindowBindingContractError(
+                f"D5_WINDOW_DERIVATION_NOT_EXPLICIT:{derivation}"
+            )
+        if relation != AS_OF_RELATION_UNPROVEN:
+            raise CheckpointObservationWindowBindingContractError(
+                f"D5_WINDOW_AS_OF_RELATION_NOT_EXPLICITLY_UNPROVEN:{relation}"
+            )
+    else:
         raise CheckpointObservationWindowBindingContractError(
-            f"D5_WINDOW_AS_OF_RELATION_NOT_EXPLICITLY_UNPROVEN:{relation}"
+            f"D5_WINDOW_BINDING_CLASS_NOT_EXPLICIT:{cls}"
         )
     if completeness != FALSE_TOKEN:
         raise CheckpointObservationWindowBindingContractError(
@@ -411,10 +428,20 @@ def load_checkpoint_observation_window_binding_v1(
         raise CheckpointObservationWindowBindingContractError(
             "D5_WINDOW_CANNOT_PROVE_EVENT_COMPLETENESS"
         )
-    if payload["observed_at_as_of_relation_class"] != AS_OF_RELATION_UNPROVEN:
+    if payload["observed_at_as_of_relation_class"] not in {
+        AS_OF_RELATION_UNPROVEN,
+        AS_OF_RELATION_GENESIS_EPOCH,
+    }:
         raise CheckpointObservationWindowBindingContractError(
             "D5_WINDOW_AS_OF_RELATION_AUTHORITY_ABSENT:"
             f"{payload['observed_at_as_of_relation_class']}"
+        )
+    if (
+        payload["observed_at_as_of_relation_class"] == AS_OF_RELATION_GENESIS_EPOCH
+        and payload["binding_class"] != BINDING_CLASS_GENESIS_EPOCH
+    ):
+        raise CheckpointObservationWindowBindingContractError(
+            "D5_WINDOW_GENESIS_RELATION_REQUIRES_GENESIS_BINDING_CLASS"
         )
     if payload["window_derivation_class"] in FORBIDDEN_WINDOW_DERIVATION_CLASSES:
         raise CheckpointObservationWindowBindingContractError(

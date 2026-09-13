@@ -5780,6 +5780,7 @@ entities:
     # 11.2.1.AX D6 named remaining-unknown kind-set evidence persist; KIND_SET_EVIDENCE_PERSIST_CREATED=true; U05_KIND_DECISION=REMAIN_UNKNOWN; U06_KIND_DECISION=REMAIN_UNKNOWN; RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN; KIND_SET_RESOLVED=false; MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false; UNKNOWN_NECESSARY_CLASS_REMAINS=true; AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false; SOURCE_SELECTED=false; RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false; C17_CREATED=false.
     # 11.2.1.AZ D6 PATH_B CLASS_C PACKAGE_1 trading-account observation rules; PACKAGE_1_PERSISTED=true; PATH_B_PREAUTHORIZATION_READY=true; EXECUTION_READY=false; OBSERVATION_EXECUTED=false; D4_RULE_PERSISTED=true; BALANCE_RULE_PERSISTED=true; EMPTY_COVERAGE_RULE_PERSISTED=true; EMBEDDING_RULE_PERSISTED=true; KIND_SET_RESOLVED=false; MS2_AUTHORIZED=false; D6_FULLY_CLOSED=false; D7_AUTHORIZED=false; C01_REHABILITATION_FORBIDDEN=true; ATLAS_AUTHORITY=NONE; C17_CREATED=false.
     # 11.2.1.BA D6 PATH_B PACKAGE_1 D4 runtime binding and D5 window contract; D4_RUNTIME_BINDING_CREATED=true; D4_CONCRETE_UID_CORROBORATED=false; BOUND_ACCOUNT_IDENTITY_RUNTIME_INSTANCE_PRESENT=false; D5_WINDOW_BINDING_CREATED=true; CHECKPOINT_OBSERVATION_WINDOW_RUNTIME_INSTANCE_PRESENT=false; D5_WINDOW_END_EQUALS_OBSERVED_AT_AS_OF_RELATION_AUTHORITY_PRESENT=false; OBSERVATION_S0_STRUCTURAL_BLOCKERS_CLEARED=true; OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT=false; OBSERVATION_EXECUTED=false; EXECUTION_READY=false; C17_CREATED=false; ATLAS_AUTHORITY=NONE.
+    # 11.2.1.BB D6 PATH_B D4/D5 genesis rebaseline; GENESIS_REBASELINE_SELECTED_BY_OWNER=true; LEGACY_D4_D5_RUNTIME_CHAIN=NOT_RECONSTRUCTED; HISTORICAL_CONTINUITY_CLAIMED=false; HISTORICAL_COMPLETENESS_CLAIMED=false; D4_GENESIS_BOOTSTRAP_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG; OBSERVATION_EXECUTED=false; EXECUTION_READY=false; C17_CREATED=false; ATLAS_AUTHORITY=NONE.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5854,6 +5855,10 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/bound_account_identity_runtime_binding_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/checkpoint_observation_window_binding_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/package_1_observation_s0_runtime_binding_gate_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_rebaseline_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_account_config_bootstrap_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_position_mgn_mode_bootstrap_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_runtime_orchestrator_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5917,6 +5922,7 @@ entities:
       - tests/ops/test_full_core_d6_scoped_read_only_observation_boundary_v1.py
       - tests/ops/test_full_core_d6_path_b_class_c_package_1_trading_account_observation_rules_v1.py
       - tests/ops/test_full_core_d6_path_b_package_1_d4_runtime_binding_and_d5_window_contract_v1.py
+      - tests/ops/test_full_core_d6_path_b_d4_d5_genesis_rebaseline_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5962,6 +5968,7 @@ entities:
       - docs/ops/specs/FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY_V1.md
       - docs/ops/specs/FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES_V1.md
       - docs/ops/specs/FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT_V1.md
+      - docs/ops/specs/FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6545,6 +6552,27 @@ entities:
       OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT=false;
       OBSERVATION_EXECUTED=false; EXECUTION_READY=false;
       NETWORK_GET_PERFORMED=false; C17_CREATED=false;
+      RECONSTRUCTION_ENGINE_CREATED=false;
+      EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION;
+      EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET;
+      EARLIEST_D6_COMPLETENESS_DEPENDENCY=RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.BB persist: PATH_B D4/D5 genesis rebaseline; new
+      canonical runtime epoch; LEGACY_D4_D5_RUNTIME_CHAIN=NOT_RECONSTRUCTED;
+      HISTORICAL_CONTINUITY_CLAIMED=false;
+      HISTORICAL_COMPLETENESS_CLAIMED=false;
+      D4_GENESIS_BOOTSTRAP_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG;
+      ACCOUNT_CONFIG_GET_PERFORMED=true;
+      POSITIONS_GET_PERFORMED=true;
+      FRESH_MGN_MODE_OBSERVED=cross;
+      BOUND_TD_MODE_RESOLVED=true;
+      D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK;
+      D4_RUNTIME_INSTANCE_PRESENT=false;
+      D5_RUNTIME_INSTANCE_PRESENT=false;
+      POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS=true;
+      OBSERVATION_EXECUTED=false; EXECUTION_READY=false;
+      NETWORK_POST_PERFORMED=false; C17_CREATED=false;
       RECONSTRUCTION_ENGINE_CREATED=false;
       EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION;
       EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET;
