@@ -71,7 +71,12 @@ _AS_OF = "2026-09-13T22:15:00Z"
 def _bh_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BH_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BI FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION",
+            start,
+        )
+    ]
 
 
 def _copy_genesis(tmp_path: Path) -> Path:
