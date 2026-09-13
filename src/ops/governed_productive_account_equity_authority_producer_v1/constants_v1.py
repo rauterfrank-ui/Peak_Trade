@@ -23,7 +23,8 @@ checkpoint, event-taxonomy, fresh-eq reconciliation-target
 contracts, bound account-identity contract, and typed
 checkpoint-observation acquisition, plus typed D6 scoped
 read-only observation-boundary contract, plus PATH_B CLASS_C
-PACKAGE_1 trading-account observation rules.
+PACKAGE_1 trading-account observation rules, plus D4 durable runtime
+binding and D5 checkpoint-window binding contracts.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire. Event acquisition remains typed and
@@ -31,7 +32,9 @@ completeness-unproven. Classified kind-set and event-source seam
 census remain fail-closed. Observation remains defined-not-executed.
 PACKAGE_1 persists selected observation surfaces and semantic laws
 only. PATH_B_PREAUTHORIZATION_READY is not execution.
-No reconstruction engine.
+D4/D5 runtime binding contracts do not mint concrete UID values or
+window timestamps. Observation S0 remains blocked without persisted
+runtime payloads. No reconstruction engine.
 """
 
 from __future__ import annotations
@@ -404,11 +407,20 @@ BOUND_ACCOUNT_IDENTITY_FROM_ENV_FORBIDDEN = True
 BOUND_ACCOUNT_IDENTITY_FROM_CREDENTIAL_FORBIDDEN = True
 BOUND_ACCOUNT_IDENTITY_IMPLICIT_DEFAULT_FORBIDDEN = True
 BOUND_ACCOUNT_CONCRETE_UID_OBSERVED = False
+D4_RUNTIME_BINDING_CONTRACT_PRESENT = True
+D4_RUNTIME_BINDING_CREATED = True
+D4_CONCRETE_UID_CORROBORATED = False
 CHECKPOINT_OBSERVATION_ACQUISITION_SCHEMA_PRESENT = True
 CHECKPOINT_OBSERVATION_ACQUISITION_CREATED = True
 CHECKPOINT_OBSERVATION_PROVEN = True
 CHECKPOINT_OBSERVATION_RUNTIME_INSTANCE_PRESENT = False
 CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED = False
+D5_WINDOW_BINDING_CONTRACT_PRESENT = True
+D5_WINDOW_BINDING_CREATED = True
+CHECKPOINT_OBSERVATION_WINDOW_RUNTIME_INSTANCE_PRESENT = False
+D5_WINDOW_END_EQUALS_OBSERVED_AT_AS_OF_RELATION_AUTHORITY_PRESENT = False
+OBSERVATION_S0_STRUCTURAL_BLOCKERS_CLEARED = True
+OBSERVATION_S0_RUNTIME_PAYLOADS_PRESENT = False
 EARLIEST_OPTION_D_DEPENDENCY = "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
 C17_CREATION_FROZEN_UNTIL_D1_D9_PROVEN = True
 LIVE_RESTART_RECONSTRUCTED = False
