@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1
 status: active
-scope: Full-Core D5 typed checkpoint-observation acquisition for one BoundAccountIdentity; explicit reference/digest checkpoint binding; no venue GET; no event-stream acquisition; no reconstruction engine; no C17; no mapping; no producer; no runtime binding; no POST; no wire; no LiveExecutionPort construction
+scope: Full-Core D5 typed checkpoint-observation acquisition for one BoundAccountIdentity; explicit reference/digest checkpoint binding; explicit window-binding contract present; no productive window runtime instance; no venue GET; no event-stream acquisition; no reconstruction engine; no C17; no mapping; no producer; no POST; no wire; no LiveExecutionPort construction
 capability: FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-13

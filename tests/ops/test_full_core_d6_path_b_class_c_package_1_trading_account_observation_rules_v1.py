@@ -97,6 +97,7 @@ SPEC_PATH = (
 )
 AY_HEADING = "11.2.1.AY FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY"
 AZ_HEADING = "11.2.1.AZ FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES"
+BA_HEADING = "11.2.1.BA FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT"
 _NEW_CONTRACT_FILE = (
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "path_b_class_c_package_1_trading_account_observation_rules_contract_v1.py"
@@ -128,7 +129,7 @@ def _ay_section() -> str:
 def _az_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     az_start = runbook.index(AZ_HEADING)
-    return runbook[az_start : runbook.index("## 11.3 Autonomy state model", az_start)]
+    return runbook[az_start : runbook.index(BA_HEADING, az_start)]
 
 
 def test_package_1_persists_selected_surfaces_and_semantic_laws() -> None:
@@ -322,6 +323,7 @@ def test_runbook_az_consumes_owner_selection_without_rewriting_ay_or_executing()
         "THIS_SLICE=11.2.1.AZ.FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES"
         in (az_section)
     )
+    assert "THIS_SLICE=11.2.1.BA" not in az_section
     assert "PACKAGE_1_PERSISTED=true" in az_section
     assert "PATH_B_PREAUTHORIZATION_READY=true" in az_section
     assert "EXECUTION_READY=false" in az_section

@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT_V1
 status: active
-scope: Full-Core D4 bound account-identity contract; reference-only binding of checkpoint, event-taxonomy, and fresh-eq targets; no venue GET; no concrete UID observation; no event acquisition; no reconstruction engine; no C17; no mapping; no producer; no runtime binding; no POST; no wire; no LiveExecutionPort construction
+scope: Full-Core D4 bound account-identity contract; reference-only binding of checkpoint, event-taxonomy, and fresh-eq targets; durable runtime-binding contract present; no productive runtime instance; no venue GET; no concrete UID observation; no event acquisition; no reconstruction engine; no C17; no mapping; no producer; no POST; no wire; no LiveExecutionPort construction
 capability: FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-13
