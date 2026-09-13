@@ -19952,6 +19952,165 @@ CURRENT_CANONICAL_SECTION=11.2.1.BI.FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILI
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.BJ FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE (BOUND; DURABLE REMAINING-UNKNOWN PIN AFTER BH+BI; CURRENTLY DECISION-CAPABLE EVIDENCE CLASSES NONE; GATE_A AND GATE_B NAMED NOT EXECUTED; NO GET; NO POST; NO MS2; NO D7; NO WIRE)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–BI standing forbidden surfaces. Does **not** rewrite the #6452
+source-role table. Does **not** restore legacy equity structure, universes,
+or Authority topology. Does **not** treat historical semantics as current
+authority. Does **not** infer an `eq` identity from `cashBal`, `upl`, or
+`liab`. Does **not** INCLUDE or EXCLUDE U05, U06, or residual from UNKNOWN.
+Does **not** ratify EQUITY_STOCK source kinds. Does **not** uniquely
+decide F16–F18. Does **not** prove retention or ordering completeness.
+Does **not** select a productive event-source seam. Does **not**
+authorize Mini-Slice 2, D6 closeout, or D7. Does **not** GET. Does
+**not** POST. Does **not** execute GATE_A or GATE_B. Does **not** search
+vendor, web, repo, or archive for eq-composition authority. Does **not**
+construct `LiveExecutionPort`. Protected surfaces remain unchanged.
+
+Owner-GO
+`OWNER_GO_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_V1`
+authorizes sealed-input persist of the durable remaining-unknown pin after
+BH+BI, the currently-decision-capable-class verdict `NONE`, exhausted
+or forbidden classes, and named reopen gates GATE_A and GATE_B. It does
+**not** authorize venue GET/POST, GATE_A execution, GATE_B binding,
+vendor/web/repo/archive search, Mini-Slice 2, D7, Live, C01–C16 revival,
+PATH_C unknown closeout, or legacy-structure restore.
+
+``` text
+OWNER_GO=OWNER_GO_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_SSOT_PERSIST
+THIS_SLICE=11.2.1.BJ.FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE
+CURRENT_PHASE=11.2.1.BJ.FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+SEALED_INPUT_ONLY=true
+MANIFESTS_VERIFY=true
+VENUE_GET_COUNT=0
+POST_COUNT=0
+NEW_NETWORK_GET_COUNT=0
+NETWORK_POST_PERFORMED=false
+GATE_A_PERSISTED=true
+GATE_A_EXECUTED=false
+GATE_B_PERSISTED=true
+GATE_B_EXECUTED=false
+CURRENTLY_DECISION_CAPABLE_EVIDENCE_CLASSES_FOR_F12_F13=NONE
+UNKNOWN_IS_DURABLE_BUT_NOT_D6_CLOSEOUT=true
+INCLUDE_FROM_UNKNOWN_FORBIDDEN=true
+EXCLUDE_FROM_UNKNOWN_FORBIDDEN=true
+FURTHER_READ_ONLY_SLICES_ON_EXHAUSTED_CLASSES_FORBIDDEN=true
+RATIFIED_EQ_IDENTITY=NONE
+F12_DECISION=REMAIN_UNKNOWN
+F13_DECISION=REMAIN_UNKNOWN
+U05_KIND_DECISION=REMAIN_UNKNOWN
+F16_DECISION=REMAIN_UNKNOWN
+F17_DECISION=REMAIN_UNKNOWN
+F18_DECISION=REMAIN_UNKNOWN
+F12_STATUS=UNKNOWN
+F13_STATUS=UNKNOWN
+U05_STATUS=UNKNOWN
+F16_STATUS=UNKNOWN
+F17_STATUS=UNKNOWN
+F18_STATUS=UNKNOWN
+KIND_SET_INCLUDE_EXCLUDE_BLOCKED_BY=NO_CURRENTLY_DECISION_CAPABLE_EVIDENCE_CLASS_FOR_F12_F13
+EARLIEST_REMAINING_D6_BLOCKER=F12_F13_REMAIN_UNKNOWN_NO_CURRENTLY_DECISION_CAPABLE_EVIDENCE_CLASS_AFTER_BH_AND_BI
+NARROWER_THAN_BI=true
+REPEAT_GET_HOPING_FOR_NONZERO_FORBIDDEN=true
+RATIFIED_SOURCE_KINDS=NONE
+KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+U06_KIND_DECISION=REMAIN_UNKNOWN
+RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN
+RETENTION_COVERAGE_STATUS=FAIL_CLOSED_NOT_PROVEN
+ORDERING_COMPLETENESS_STATUS=FAIL_CLOSED_NOT_PROVEN
+AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM=false
+COMPLETE_CLASSIFIED_EVENT_STREAM_PROVEN=false
+MS2_AUTHORIZED=false
+MS2_EXECUTED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C01_REHABILITATION_FORBIDDEN=true
+C01_C16_REVIVED=false
+LEGACY_STRUCTURE_RESTORED=false
+SEMANTIC_SALVAGE_RULE_APPLIED=true
+PATH_A=REJECT
+PATH_C=REJECT
+ATLAS_AUTHORITY=NONE
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+STEP_29P_UNCHANGED=true
+SINGLE_SELECTED_FUTURE_UNCHANGED=true
+MAX_POSITIONS=1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+PIN_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1.py
+PARENT_CONTRACT=FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET
+EARLIEST_D6_COMPLETENESS_DEPENDENCY=RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Sealed BH and BI packs are re-read only. No new forensic raw is
+collected. After BH empty/zero/absent liability-stock tokens and BI
+`RATIFIED_EQ_IDENTITY=NONE`, no currently decision-capable evidence class
+can INCLUDE or EXCLUDE F12 or F13. F12, F13, and U05 remain
+`REMAIN_UNKNOWN`. F16–F18 remain independently `REMAIN_UNKNOWN`. Empty
+KIND_SET is not resolved. UNKNOWN is durable and is **not** D6 closeout.
+PATH_C remains REJECT. Further read-only slices on exhausted classes are
+forbidden. `RAW_EQ_SOURCE_AUTHORITY` remains false.
+
+B. Unique ranking persist. Relative to §11.2.1.BI the remaining D6
+blocker is ranked tighter because currently decision-capable evidence
+classes for F12/F13 are `NONE`. Rank 1, and the earliest remaining D6
+blocker, is
+`F12_F13_REMAIN_UNKNOWN_NO_CURRENTLY_DECISION_CAPABLE_EVIDENCE_CLASS_AFTER_BH_AND_BI`.
+GATE_A is named only: independently attested genuine productive nonzero
+liability-stock on the bound D4 account; a later separate Owner-GO may
+authorize exactly one GET of already selected
+`GET &#47;api&#47;v5&#47;account&#47;balance`; hope-GET, POST, borrow, and
+account mutation remain forbidden; that GET alone cannot INCLUDE or
+EXCLUDE. GATE_B is named only: a newly bound unique external eq-composition
+authority not already exhausted by BI; no uniqueness remains
+`REMAIN_UNKNOWN`; this persist performs no vendor, web, repo, or archive
+search. Rank 2 remains F16–F18. Legacy equity structure is not restored.
+`EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY` remains
+`NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING`. Mini-Slice 2, D6
+closeout, and D7 remain unauthorized.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.BJ.FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

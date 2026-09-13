@@ -73,7 +73,12 @@ _AS_OF = "2026-09-13T23:00:00Z"
 def _bi_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BI_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BJ FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE",
+            start,
+        )
+    ]
 
 
 def _run(tmp_path: Path):

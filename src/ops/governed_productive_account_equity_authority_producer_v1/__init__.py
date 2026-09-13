@@ -551,6 +551,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.eq_identit
     execute_eq_identity_and_f12_f13_liability_stock_kind_ratification_v1,
     reject_claimed_eq_identity_or_kind_proof_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1 import (
+    F12F13KindSetRemainingUnknownPinAndReopenGateError,
+    F12F13KindSetRemainingUnknownPinAndReopenGateResultV1,
+    execute_f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1,
+    reject_claimed_f12_f13_kind_set_close_or_gate_execution_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1131,6 +1137,10 @@ __all__ = [
     "EqIdentityAndF12F13LiabilityStockKindRatificationResultV1",
     "execute_eq_identity_and_f12_f13_liability_stock_kind_ratification_v1",
     "reject_claimed_eq_identity_or_kind_proof_v1",
+    "F12F13KindSetRemainingUnknownPinAndReopenGateError",
+    "F12F13KindSetRemainingUnknownPinAndReopenGateResultV1",
+    "execute_f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1",
+    "reject_claimed_f12_f13_kind_set_close_or_gate_execution_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
