@@ -19125,6 +19125,147 @@ CURRENT_CANONICAL_SECTION=11.2.1.BC.FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_OBSERV
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.BD FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION (BOUND; SEALED S1–S5 INPUT ONLY; FAIL-CLOSED UNCLASSIFIED; NO KIND RESOLUTION; NO MAPPING PROOF; NO GET; NO POST; NO MS2; NO D7; NO WIRE)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–BC standing forbidden surfaces. Does **not** re-run S1–S5.
+Does **not** mint D4 identity. Does **not** rehabilitate C01. Does **not**
+ratify observed venue `type` or `subType` tokens as EQUITY_STOCK kinds.
+Does **not** resolve the kind-set. Does **not** prove a source-semantic
+mapping. Does **not** prove retention or ordering completeness from
+partial overlap. Does **not** authorize Mini-Slice 2, D6 closeout, or
+D7. Does **not** GET. Does **not** POST. Does **not** construct
+`LiveExecutionPort`. Protected surfaces remain unchanged.
+
+Owner-GO
+`OWNER_GO_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION_V1`
+authorizes S6 mapping/classification of the sealed PACKAGE_1
+Observation pack
+`evidence/ops/full_core_d6_path_b_package_1_observation_execution_v1/2026-09-13T182521Z`
+against already-defined D6/Class-C contracts. It does **not** authorize
+the desired completeness outcome. Fail-closed unclassified coverage is
+the proven persist.
+
+``` text
+OWNER_GO=OWNER_GO_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.BD.FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION
+CURRENT_PHASE=11.2.1.BD.FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+SEALED_INPUT_ONLY=true
+MANIFEST_VERIFY_RC=0
+S6_EXECUTED=true
+OBSERVED_KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+MAPPING_PERSISTED=false
+MAPPING_COVERAGE_STATUS=FAIL_CLOSED_NO_RATIFIED_KIND
+CLASSIFICATION_RECORDS_PERSISTED=true
+CLASSIFIED_BILL_ROW_COUNT=58
+RETENTION_COVERAGE_STATUS=FAIL_CLOSED_NOT_PROVEN
+ORDERING_COMPLETENESS_STATUS=FAIL_CLOSED_NOT_PROVEN
+D4_CORROBORATION_RESULT=D4_RUNTIME_EVIDENCE_CORROBORATED_IDENTITY_NOT_MINTED
+D4_IDENTITY_MINTED=false
+D4_POST_GENESIS_OBSERVATION_MUST_NOT_MINT_IDENTITY=true
+RAW_EQ_SOURCE_AUTHORITY=false
+NEW_NETWORK_GET_COUNT=0
+NETWORK_POST_PERFORMED=false
+F12_STATUS=UNKNOWN
+F13_STATUS=UNKNOWN
+F16_STATUS=UNKNOWN
+F17_STATUS=UNKNOWN
+F18_STATUS=UNKNOWN
+U05_KIND_DECISION=REMAIN_UNKNOWN
+U06_KIND_DECISION=REMAIN_UNKNOWN
+RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN
+MS2_AUTHORIZED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C01_REHABILITATION_FORBIDDEN=true
+FIELD_SEMANTIC_TRACE_PERSISTED=true
+ATLAS_AUTHORITY=NONE
+PACKAGE_1_PERSISTED=true
+PATH_B_PREAUTHORIZATION_READY=true
+EXECUTION_READY=false
+OBSERVATION_EXECUTED=false
+OBSERVATION_EXECUTION_AUTHORIZED=false
+OBSERVATION_NETWORK_GET_AUTHORIZED=false
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+SINGLE_SELECTED_FUTURE_UNCHANGED=true
+MAX_POSITIONS=1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+S6_MAPPING_CLASSIFICATION_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/package_1_s6_mapping_classification_v1.py
+PARENT_CONTRACT=FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Sealed S1–S5 evidence is the only input. MANIFEST verification must
+PASS before classification. No new venue GET is performed. Observed
+`uid` remains corroboration-only and is not minted as D4 identity.
+
+B. Every observed bills and bills-archive row is mapped through the
+existing equity-affecting event taxonomy. Because
+`RATIFIED_CLASSIFIED_KIND_SET` is empty, rows remain `UNCLASSIFIED`
+and `mapped_numeric_effect=NOT_MAPPED_FAIL_CLOSED`. Observed venue
+`type`/`subType` tokens are forensic facts, not ratified kinds. They
+do not ratify U05, U06, FILL, or any residual class.
+
+C. The subtypes catalog remains a query result, not kind completeness.
+Balance `eq` remains reconciliation or embedding evidence only.
+F12/F13/F16/F17/F18 remain UNKNOWN. Retention and ordering remain
+fail-closed; partial bill-id overlap is not completeness. The
+kind-set stays unresolved. Mapping is not proven.
+
+D. Every observed relevant venue field from the sealed S1–S5 pack is
+classified with provenance
+`RAW_VENUE_FIELD → OBSERVED_VALUE/TYPE → SOURCE_ENDPOINT →
+EXISTING_CANONICAL_SEMANTIC/CONTRACT → PEAK_TRADE_TARGET_KIND →
+CLASSIFICATION_STATUS → RATIFICATION_STATUS`. Statuses are
+`MAPPED_RATIFIED`, `OBSERVED_UNRATIFIED`, `AMBIGUOUS`, or
+`NOT_APPLICABLE`. Observation of a field name or value does not ratify
+economic semantics. `details.eq` maps to the existing fresh-eq
+reconciliation-target contract and is not source authority.
+`availEq`/`totalEq`/`adjEq` remain C01/C02 rejected as equity source.
+`imr`/`mmr`/`mgnRatio` remain unbound against
+`MARGIN_REQUIREMENTS`. Liability, fee, interest, and `upl` fields
+remain ambiguous against U05/U06/U03 and F12–F18. Observed-but-unratified
+and ambiguous fields are persisted as ratification candidates. The
+kind-set remains unresolved. Mini-Slice 2, D6 closeout, and D7 remain
+unauthorized.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.BD.FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
