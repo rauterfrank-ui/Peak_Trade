@@ -21,7 +21,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bound_acco
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     DIMENSION_EQUITY_STOCK,
-    EVENT_ACQUISITION_CREATED,
     UNCLASSIFIED_EVENT_FAIL_CLOSED,
 )
 
@@ -129,8 +128,8 @@ def evaluate_event_reconstruction_eligibility_v1(
     classification_status: str,
     event_semantic_class: str,
 ) -> str:
-    if EVENT_ACQUISITION_CREATED is not False or EVENT_ACQUISITION_PRESENT is not False:
-        raise EquityAffectingEventTaxonomyContractError("EVENT_ACQUISITION_CREATED_NOT_FALSE")
+    if EVENT_ACQUISITION_PRESENT is not False:
+        raise EquityAffectingEventTaxonomyContractError("EVENT_TAXONOMY_IS_NOT_ACQUISITION")
     if classification_status not in CLASSIFICATION_STATUSES:
         raise EquityAffectingEventTaxonomyContractError(
             f"EVENT_CLASSIFICATION_STATUS_UNKNOWN_TOKEN:{classification_status}"

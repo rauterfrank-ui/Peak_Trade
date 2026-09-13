@@ -338,7 +338,7 @@ def test_c01_c16_remain_fenced_and_no_source_or_engine() -> None:
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False
-    assert EVENT_ACQUISITION_CREATED is False
+    assert EVENT_ACQUISITION_CREATED is True
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert RESTART_PROVEN is False
     assert LIVE_ENABLED is False

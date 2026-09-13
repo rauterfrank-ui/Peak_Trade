@@ -27,7 +27,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CHECKPOINT_OBSERVATION_ACQUISITION_CREATED,
     CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED,
     C17_CREATED,
-    EVENT_ACQUISITION_CREATED,
     RAW_EQ_SOURCE_AUTHORITY,
     RECONSTRUCTION_ENGINE_CREATED,
     SOURCE_SELECTED,
@@ -243,8 +242,6 @@ def acquire_checkpoint_observation_v1(
         raise CheckpointObservationAcquisitionContractError(
             "CHECKPOINT_OBSERVATION_NETWORK_GET_NOT_UNAUTHORIZED"
         )
-    if EVENT_ACQUISITION_CREATED is not False:
-        raise CheckpointObservationAcquisitionContractError("EVENT_ACQUISITION_CREATED_NOT_FALSE")
     if RECONSTRUCTION_ENGINE_CREATED is not False:
         raise CheckpointObservationAcquisitionContractError(
             "RECONSTRUCTION_ENGINE_CREATED_NOT_FALSE"
