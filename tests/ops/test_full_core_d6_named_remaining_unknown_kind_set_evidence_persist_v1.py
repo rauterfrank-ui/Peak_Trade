@@ -71,6 +71,7 @@ SPEC_PATH = (
 )
 AW_HEADING = "11.2.1.AW FULL_CORE_D6_EQUITY_STOCK_NECESSARY_KIND_SET_CLOSEOUT"
 AX_HEADING = "11.2.1.AX FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST"
+AY_HEADING = "11.2.1.AY FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY"
 _NEW_CONTRACT_FILE = (
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "named_remaining_unknown_kind_set_evidence_persist_contract_v1.py"
@@ -93,7 +94,7 @@ def _aw_section() -> str:
 def _ax_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ax_start = runbook.index(AX_HEADING)
-    return runbook[ax_start : runbook.index("## 11.3 Autonomy state model", ax_start)]
+    return runbook[ax_start : runbook.index(AY_HEADING, ax_start)]
 
 
 def test_three_candidates_remain_unknown_and_kind_set_stays_empty() -> None:

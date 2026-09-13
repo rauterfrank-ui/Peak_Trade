@@ -5847,6 +5847,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/classified_event_kind_set_and_source_seam_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/equity_stock_necessary_kind_set_closeout_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/named_remaining_unknown_kind_set_evidence_persist_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/scoped_read_only_observation_boundary_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5907,6 +5908,7 @@ entities:
       - tests/ops/test_full_core_d6_classified_kind_set_and_event_source_seam_v1.py
       - tests/ops/test_full_core_d6_equity_stock_necessary_kind_set_closeout_v1.py
       - tests/ops/test_full_core_d6_named_remaining_unknown_kind_set_evidence_persist_v1.py
+      - tests/ops/test_full_core_d6_scoped_read_only_observation_boundary_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5949,6 +5951,7 @@ entities:
       - docs/ops/specs/FULL_CORE_D6_CLASSIFIED_KIND_SET_AND_EVENT_SOURCE_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_D6_EQUITY_STOCK_NECESSARY_KIND_SET_CLOSEOUT_V1.md
       - docs/ops/specs/FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST_V1.md
+      - docs/ops/specs/FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6473,6 +6476,33 @@ entities:
       COMPLETE_EVENT_STREAM_PROVEN=false;
       EVENT_KIND_SOURCE_SEAM_SELECTED=false; SOURCE_SELECTED=false;
       RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false;
+      C17_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false;
+      EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION;
+      EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET;
+      EARLIEST_D6_COMPLETENESS_DEPENDENCY=RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AY persist: scoped read-only observation-boundary contract;
+      OBSERVATION_BOUNDARY_CONTRACT_CREATED=true;
+      OBSERVATION_BOUNDARY_CONTRACT_STATUS=DEFINED_NOT_EXECUTED_GET_UNAUTHORIZED;
+      OBSERVATION_EXECUTED=false; OBSERVATION_EXECUTION_AUTHORIZED=false;
+      OBSERVATION_NETWORK_GET_AUTHORIZED=false;
+      ACCOUNT_COMPOSITION_OBSERVATION_DEFINED=true;
+      LIABILITY_OBSERVATION_DEFINED=true;
+      FEE_EMBEDDING_OBSERVATION_DEFINED=true;
+      EXOGENOUS_EVENT_COVERAGE_OBSERVATION_DEFINED=true;
+      U05_KIND_DECISION=REMAIN_UNKNOWN;
+      U06_KIND_DECISION=REMAIN_UNKNOWN;
+      RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN;
+      KIND_SET_RESOLVED=false;
+      RATIFIED_CLASSIFIED_EVENT_KIND_SET=EMPTY_FAIL_CLOSED;
+      MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false;
+      D6_FULLY_CLOSED=false; D7_AUTHORIZED=false;
+      PATH_A=REJECT;
+      PATH_B=SELECTED_BUT_BLOCKED_ON_NEW_AUTHORIZATION;
+      PATH_C=REJECT;
+      CANDIDATE_SURFACE_SELECTION=NONE_SELECTED;
+      ACCOUNT_BILLS remains CURRENT_NONCANONICAL;
       C17_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false;
       EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION;
       EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET;
