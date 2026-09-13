@@ -66,7 +66,12 @@ _AS_OF = "2026-09-13T20:00:00Z"
 def _bg_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BG_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BH FULL_CORE_D6_F12_F13_PRIMARY_LIABILITY_STOCK_OBSERVATION",
+            start,
+        )
+    ]
 
 
 def test_sealed_input_manifests_verify() -> None:

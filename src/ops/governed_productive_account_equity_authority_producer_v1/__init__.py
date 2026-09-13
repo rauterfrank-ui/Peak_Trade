@@ -538,6 +538,13 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.f12_f13_f1
     execute_f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1,
     reject_claimed_f12_f13_f16_f17_f18_proof_without_primary_evidence_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.f12_f13_primary_liability_stock_observation_v1 import (
+    F12F13PrimaryLiabilityStockObservationError,
+    F12F13PrimaryLiabilityStockObservationResultV1,
+    assert_f12_f13_balance_surface_already_selected_v1,
+    execute_f12_f13_primary_liability_stock_observation_v1,
+    reject_claimed_f12_f13_proof_from_token_shape_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1109,6 +1116,11 @@ __all__ = [
     "F12F13F16F17F18NecessaryEquityStockKindResolutionResultV1",
     "execute_f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1",
     "reject_claimed_f12_f13_f16_f17_f18_proof_without_primary_evidence_v1",
+    "F12F13PrimaryLiabilityStockObservationError",
+    "F12F13PrimaryLiabilityStockObservationResultV1",
+    "assert_f12_f13_balance_surface_already_selected_v1",
+    "execute_f12_f13_primary_liability_stock_observation_v1",
+    "reject_claimed_f12_f13_proof_from_token_shape_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
