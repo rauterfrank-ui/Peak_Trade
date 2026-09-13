@@ -75,6 +75,7 @@ AR_HEADING = (
     "AND_EQ_RECONCILIATION_TARGET_CONTRACTS"
 )
 AS_HEADING = "11.2.1.AS FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT"
+AT_HEADING = "11.2.1.AT FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION"
 _DIGEST = "a" * 64
 _DIGEST_B = "b" * 64
 _NEW_CONTRACT_FILES = (
@@ -116,7 +117,7 @@ def _identity_kwargs(identity: BoundAccountIdentityContractV1) -> dict[str, str]
 def _as_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     as_start = runbook.index(AS_HEADING)
-    return runbook[as_start : runbook.index("## 11.3 Autonomy state model", as_start)]
+    return runbook[as_start : runbook.index(AT_HEADING, as_start)]
 
 
 def test_d4_members_are_explicit_and_digest_is_deterministic() -> None:
@@ -345,8 +346,10 @@ def test_c01_c16_remain_fenced_and_no_source_or_engine() -> None:
     assert WIRE_SEND_PERMITTED is False
     assert dag["BOUND_ACCOUNT_IDENTITY_PROVEN"] is True
     assert dag["BOUND_ACCOUNT_CONCRETE_UID_OBSERVED"] is False
-    assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
-    assert EARLIEST_OPTION_D_DEPENDENCY == "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
+    assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == (
+        "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
+    )
+    assert EARLIEST_OPTION_D_DEPENDENCY == "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )

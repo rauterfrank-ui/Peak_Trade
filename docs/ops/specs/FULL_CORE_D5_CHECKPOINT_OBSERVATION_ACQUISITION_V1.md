@@ -1,0 +1,63 @@
+---
+docs_token: DOCS_TOKEN_FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1
+status: active
+scope: Full-Core D5 typed checkpoint-observation acquisition for one BoundAccountIdentity; explicit reference/digest checkpoint binding; no venue GET; no event-stream acquisition; no reconstruction engine; no C17; no mapping; no producer; no runtime binding; no POST; no wire; no LiveExecutionPort construction
+capability: FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-13
+---
+
+# Full Core D5 Checkpoint Observation Acquisition V1
+
+Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.AT.
+
+```text
+OWNER_GO=OWNER_GO_OPTION_D_D5_CHECKPOINT_OBSERVATION_ACQUISITION_WORKPACKAGE_V1
+SELECTED_OPTION=OPTION_D
+OPTION_D_SSOT_PERSISTED=true
+BOUND_ACCOUNT_IDENTITY_PROVEN=true
+CHECKPOINT_OBSERVATION_ACQUISITION_SCHEMA_PRESENT=true
+CHECKPOINT_OBSERVATION_ACQUISITION_CREATED=true
+CHECKPOINT_OBSERVATION_PROVEN=true
+CHECKPOINT_OBSERVATION_RUNTIME_INSTANCE_PRESENT=false
+CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED=false
+NETWORK_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+NEW_TRANSPORT_CREATED=false
+CHECKPOINT_BINDS_OBSERVATION_BY_REFERENCE_ONLY=true
+UNKNOWN_MISSING_STALE_PARTIAL_IDENTITY_MISMATCH_FAIL_CLOSED=true
+CROSS_ACCOUNT_MIXING_FAIL_CLOSED=true
+CHECKPOINT_CAN_MINT_EQUITY=false
+RECONSTRUCTED_EQUITY_CREATED=false
+EVENT_STREAM_ACQUISITION_CREATED=false
+EQ_RECONCILIATION_EXECUTED=false
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+C01_C16_REJECTION_STILL_BINDING=true
+C17_CREATED=false
+C17_CREATION_FROZEN_UNTIL_D1_D9_PROVEN=true
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+GOVERNED_PRODUCER_CREATED=false
+EVENT_ACQUISITION_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+RESTART_PROVEN=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+D5_CHECKPOINT_OBSERVATION_ACQUISITION=TYPED_ACQUISITION_CONTRACT_PRESENT_AND_CHECKPOINT_BOUND
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+AUTHORITY_EFFECT=NONE
+```
+
+This persist ratifies typed checkpoint-observation acquisition for exactly
+one BoundAccountIdentity and binds a valid acquisition result to the
+existing governed checkpoint contract by reference and digest. It does
+not GET venue state, does not acquire classified events, does not
+reconstruct or mint equity, does not execute fresh-`eq` reconciliation,
+does not mint C17, and does not authorize a producer, runtime binding, or
+Live.
