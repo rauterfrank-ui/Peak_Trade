@@ -507,6 +507,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
     inspect_package_1_observation_s0_runtime_binding_gate_v1,
     reject_package_1_observation_execution_without_runtime_payloads_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_observation_execution_v1 import (
+    Package1ObservationExecutionError,
+    Package1ObservationExecutionResultV1,
+    execute_package_1_observation_s1_s5_v1,
+    preflight_package_1_observation_s0_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1057,6 +1063,10 @@ __all__ = [
     "assert_package_1_observation_s0_runtime_payloads_present_v1",
     "inspect_package_1_observation_s0_runtime_binding_gate_v1",
     "reject_package_1_observation_execution_without_runtime_payloads_v1",
+    "Package1ObservationExecutionError",
+    "Package1ObservationExecutionResultV1",
+    "execute_package_1_observation_s1_s5_v1",
+    "preflight_package_1_observation_s0_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",

@@ -18,6 +18,7 @@ from typing import Any, Mapping, Tuple
 from src.ops.governed_productive_account_equity_authority_producer_v1.bound_account_identity_contract_v1 import (
     FORBIDDEN_PROVENANCE_CLASSES,
     PROVENANCE_EXPLICIT_TYPED_BINDING,
+    PROVENANCE_GENESIS_FRESH_TYPED_BINDING,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     ACCOUNT_BILLS_ATLAS_AUTHORITY,
@@ -471,7 +472,10 @@ def corroborate_d4_identity_from_account_config_observation_v1(
         raise PathBClassCPackage1TradingAccountObservationRulesContractError(
             f"D4_OBSERVATION_PROVENANCE_FORBIDDEN:{provenance}"
         )
-    if provenance != PROVENANCE_EXPLICIT_TYPED_BINDING:
+    if provenance not in {
+        PROVENANCE_EXPLICIT_TYPED_BINDING,
+        PROVENANCE_GENESIS_FRESH_TYPED_BINDING,
+    }:
         raise PathBClassCPackage1TradingAccountObservationRulesContractError(
             f"D4_OBSERVATION_MUST_NOT_MINT_IDENTITY:{provenance}"
         )

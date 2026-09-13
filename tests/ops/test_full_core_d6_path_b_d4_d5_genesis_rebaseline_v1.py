@@ -70,6 +70,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1.md"
 BB_HEADING = "11.2.1.BB FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE"
+BC_HEADING = "11.2.1.BC FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_OBSERVATION_EXECUTION"
 _GENESIS_AS_OF = "2026-09-13T16:50:00Z"
 _SYNTHETIC_UID = "900199001990019900"
 _SUCCESS_BODY = (
@@ -99,7 +100,7 @@ _POSITION_NO_UID_BODY = (
 def _bb_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BB_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[start : runbook.index(BC_HEADING, start)]
 
 
 def test_genesis_contract_marks_legacy_chain_not_reconstructed() -> None:
