@@ -519,6 +519,13 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
     execute_package_1_s6_mapping_classification_v1,
     verify_manifest_sha256_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.account_equity_source_mapping_ratification_v1 import (
+    AccountEquitySourceMappingRatificationError,
+    AccountEquitySourceMappingRatificationResultV1,
+    assert_eq_is_not_source_authority_v1,
+    execute_account_equity_source_mapping_ratification_v1,
+    reject_unratified_equity_stock_source_kind_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1077,6 +1084,11 @@ __all__ = [
     "Package1S6MappingClassificationResultV1",
     "execute_package_1_s6_mapping_classification_v1",
     "verify_manifest_sha256_v1",
+    "AccountEquitySourceMappingRatificationError",
+    "AccountEquitySourceMappingRatificationResultV1",
+    "assert_eq_is_not_source_authority_v1",
+    "execute_account_equity_source_mapping_ratification_v1",
+    "reject_unratified_equity_stock_source_kind_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",

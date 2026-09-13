@@ -59,7 +59,11 @@ _S6_AS_OF = "2026-09-13T18:40:00Z"
 def _bd_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BD_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BE FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION", start
+        )
+    ]
 
 
 def test_sealed_observation_manifest_verifies() -> None:
