@@ -20,7 +20,8 @@ application-predicate input-domain identity and boundary ratification,
 plus typed C17+ source-candidate/acceptance/promotion/reopen contracts
 and a read-only candidate census, plus OPTION_D SSOT architecture,
 checkpoint, event-taxonomy, fresh-eq reconciliation-target
-contracts, and bound account-identity contract.
+contracts, bound account-identity contract, and typed
+checkpoint-observation acquisition.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire. No event acquisition. No
@@ -278,7 +279,12 @@ BOUND_ACCOUNT_IDENTITY_FROM_ENV_FORBIDDEN = True
 BOUND_ACCOUNT_IDENTITY_FROM_CREDENTIAL_FORBIDDEN = True
 BOUND_ACCOUNT_IDENTITY_IMPLICIT_DEFAULT_FORBIDDEN = True
 BOUND_ACCOUNT_CONCRETE_UID_OBSERVED = False
-EARLIEST_OPTION_D_DEPENDENCY = "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
+CHECKPOINT_OBSERVATION_ACQUISITION_SCHEMA_PRESENT = True
+CHECKPOINT_OBSERVATION_ACQUISITION_CREATED = True
+CHECKPOINT_OBSERVATION_PROVEN = True
+CHECKPOINT_OBSERVATION_RUNTIME_INSTANCE_PRESENT = False
+CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED = False
+EARLIEST_OPTION_D_DEPENDENCY = "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
 C17_CREATION_FROZEN_UNTIL_D1_D9_PROVEN = True
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False

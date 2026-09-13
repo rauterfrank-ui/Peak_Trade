@@ -138,6 +138,7 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert py_files == [
         "__init__.py",
         "bound_account_identity_contract_v1.py",
+        "checkpoint_observation_acquisition_contract_v1.py",
         "constants_v1.py",
         "equity_affecting_event_taxonomy_contract_v1.py",
         "equity_stock_checkpoint_contract_v1.py",
@@ -186,6 +187,7 @@ def test_slot_contains_no_producer_implementation() -> None:
             "fresh_eq_reconciliation_target_contract_v1.py",
             "option_d_ssot_architecture_contract_v1.py",
             "bound_account_identity_contract_v1.py",
+            "checkpoint_observation_acquisition_contract_v1.py",
         }
     )
     for forbidden in (
@@ -230,6 +232,13 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in identity
     assert "def reconstruct" not in identity
     assert "def bind_account_equity" not in identity
+    observation = (SLOT_DIR / "checkpoint_observation_acquisition_contract_v1.py").read_text(
+        encoding="utf-8"
+    )
+    assert "def mint" not in observation
+    assert "def produce" not in observation
+    assert "def reconstruct" not in observation
+    assert "def bind_account_equity" not in observation
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:

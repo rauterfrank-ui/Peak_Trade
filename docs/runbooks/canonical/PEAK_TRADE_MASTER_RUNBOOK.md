@@ -17323,6 +17323,153 @@ CURRENT_CANONICAL_SECTION=11.2.1.AS.FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.AT FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION (BOUND; TYPED CHECKPOINT OBSERVATION ACQUISITION FOR ONE BOUND ACCOUNT IDENTITY; NO EVENT STREAM; NO RECONSTRUCTION ENGINE; NO C17; NO MAPPING; NO GET; NO WIRE; NO POST)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–AS standing forbidden surfaces. Does **not** GET venue
+state. Does **not** observe a productive account UID. Does **not**
+acquire classified event streams. Does **not** implement a
+reconstruction engine. Does **not** mint Running Equity from a
+checkpoint. Does **not** reconstruct equity. Does **not** execute
+fresh-`eq` reconciliation. Does **not** mint C17. Does **not** prove a
+mapping. Does **not** implement a producer. Does **not** bind STEP-29P.
+Does **not** POST. Does **not** construct `LiveExecutionPort`. Does **not**
+set `LIVE_ENABLED=true`. Does **not** set `LIVE_ARMED=true`. Does **not**
+set `WIRE_SEND_PERMITTED=true`. Observation/evidence is **not**
+reconstructed equity and is **not** source authority. A checkpoint
+remains an observation anchor. Census did **not** prove an authorized
+productive read-only GET seam for this slice; D5 therefore persists
+typed offline acquisition of explicit governed observation members.
+
+Owner-GO `OWNER_GO_OPTION_D_D5_CHECKPOINT_OBSERVATION_ACQUISITION_WORKPACKAGE_V1`
+authorizes persist of the typed checkpoint-observation acquisition and
+result contract, exact BoundAccountIdentity validation before
+acquisition and result binding, and explicit reference/digest binding
+of a valid acquisition result to the existing governed checkpoint
+contract.
+
+``` text
+OWNER_GO=OWNER_GO_OPTION_D_D5_CHECKPOINT_OBSERVATION_ACQUISITION_WORKPACKAGE_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_SSOT_PERSIST
+THIS_SLICE=11.2.1.AT.FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION
+CURRENT_PHASE=11.2.1.AT.FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+OPTION_D_SSOT_PERSISTED=true
+BOUND_ACCOUNT_IDENTITY_PROVEN=true
+BOUND_ACCOUNT_IDENTITY_CONTRACT_SCHEMA_PRESENT=true
+BOUND_ACCOUNT_IDENTITY_RUNTIME_INSTANCE_PRESENT=false
+BOUND_ACCOUNT_CONCRETE_UID_OBSERVED=false
+CHECKPOINT_OBSERVATION_ACQUISITION_SCHEMA_PRESENT=true
+CHECKPOINT_OBSERVATION_ACQUISITION_CREATED=true
+CHECKPOINT_OBSERVATION_PROVEN=true
+CHECKPOINT_OBSERVATION_RUNTIME_INSTANCE_PRESENT=false
+CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED=false
+NETWORK_GET_PERFORMED=false
+NETWORK_POST_PERFORMED=false
+NEW_TRANSPORT_CREATED=false
+REUSED_EXISTING_READ_SEAM=TYPED_IDENTITY_CHECKPOINT_WITNESS_PROVENANCE_CONTRACTS
+CHECKPOINT_BINDS_OBSERVATION_BY_REFERENCE_ONLY=true
+UNKNOWN_MISSING_STALE_PARTIAL_IDENTITY_MISMATCH_FAIL_CLOSED=true
+CROSS_ACCOUNT_MIXING_FAIL_CLOSED=true
+CHECKPOINT_CAN_MINT_EQUITY=false
+RECONSTRUCTED_EQUITY_CREATED=false
+EVENT_STREAM_ACQUISITION_CREATED=false
+EQ_RECONCILIATION_EXECUTED=false
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+C01_C16_REJECTION_STILL_BINDING=true
+C17_CREATED=false
+C17_CREATION_FROZEN_UNTIL_D1_D9_PROVEN=true
+SOURCE_SELECTED=false
+MAPPING_PROVEN=false
+GOVERNED_PRODUCER_CREATED=false
+EVENT_ACQUISITION_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+RESTART_PROVEN=false
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+OBSERVATION_ACQUISITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/checkpoint_observation_acquisition_contract_v1.py
+PARENT_CONTRACT=FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+D1_SSOT_OPTION_D_AND_DIMENSION_SPLIT=PERSISTED
+D2_CHECKPOINT_CONTRACT_NO_EQUITY_MINT=SCHEMA_PRESENT
+D3_EVENT_TAXONOMY_UNKNOWN_FAIL_CLOSED=SCHEMA_PRESENT
+D4_BOUND_ACCOUNT_IDENTITY=CONTRACT_PRESENT_AND_REFERENCE_BOUND
+D5_CHECKPOINT_OBSERVATION_ACQUISITION=TYPED_ACQUISITION_CONTRACT_PRESENT_AND_CHECKPOINT_BOUND
+D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION=NOT_BUILT
+D7_DETERMINISTIC_STOCK_RECONSTRUCTION=NOT_BUILT
+D8_FRESH_EQ_RECONCILE_FAIL_CLOSED=CONTRACT_PRESENT_NOT_PROVEN
+D9_RESTART_FROM_CHECKPOINT_PLUS_EVENTS_PLUS_TARGET=NOT_PROVEN
+D10_C17_CANDIDATE_IF_AND_ONLY_IF_D1_D9_PROVEN=FROZEN
+D11_OWNER_RATIFY_AND_MAPPING=NOT_PROVEN
+D12_AVAILABLE_FOR_SIZING_U04_LAYER=NOT_BUILT
+D13_P01_AFTER_EQUITY=NOT_BOUND
+D14_STEP29P_AND_ADMISSION_CLOSEOUT=NOT_BUILT
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+EARLIEST_DECOMPOSED_CONTRACT_GAP=U04_PENDING_ORDER_RESERVATION_INCLUSION_UNRESOLVED
+MAX_SAFE_REPO_INTERNAL_NEXT_SLICE=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION_REQUIRES_OWNER_GO
+FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE=false
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Forensic census (existing seams; no invented members). The owner
+package already has a typed checkpoint contract, D4 identity
+reference binding, venue-witness observation provenance/freshness
+timestamps, and sample completeness/freshness fields. C01–C16 remain
+rejected, including C01 GET account-balance. The existing
+Fresh-Pretrade GET seam is typed admission evidence only and is **not**
+a D5 EQUITY_STOCK checkpoint observation source. No authorized
+productive read-only GET seam for checkpoint observations exists.
+Concrete UID remains unobserved. Source mapping remains unproven.
+Therefore D5 does **not** GET.
+
+B. Adjudicated observation members and fail-closed semantics:
+
+``` text
+RATIFIED_D5_OBSERVATION_MEMBERS=observation_id,source_observation_id,bound_account_identity_ref,bound_account_identity_digest,observed_at_as_of,acquired_at,component_completeness,freshness_policy_status,observation_vs_authority_class,network_method,claimed_equity_stock_value,provenance_digest
+IDENTITY_MUST_MATCH_D4_BEFORE_ACQUISITION_AND_BINDING=true
+COMPLETENESS_SUCCESS_TOKEN=COMPLETE
+FRESHNESS_SUCCESS_TOKEN=EXPLICIT_TIMESTAMPS_NOT_WITNESS_TTL_POLICY
+TTL_POLICY_UNBOUND=true
+UNKNOWN_MISSING_STALE_PARTIAL_IDENTITY_MISMATCH_FAIL_CLOSED=true
+NETWORK_METHOD_SUCCESS_TOKEN=NONE
+CLAIMED_EQUITY_MUST_REMAIN_ABSENT=true
+```
+
+C. Checkpoint reference binding. A valid acquisition result is bound to
+the existing checkpoint by `checkpoint_observation_ref` plus
+`checkpoint_observation_digest`. The checkpoint remains a
+non-authoritative reconstruction anchor. Binding cannot mint equity,
+cannot reconstruct equity, cannot acquire events, and cannot execute
+fresh-`eq` reconciliation.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.AT.FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
