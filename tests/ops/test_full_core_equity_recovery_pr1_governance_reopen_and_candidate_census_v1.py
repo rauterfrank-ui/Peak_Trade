@@ -77,6 +77,10 @@ SPEC_PATH = (
 )
 AP_HEADING = "11.2.1.AP FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT"
 AQ_HEADING = "11.2.1.AQ FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS"
+AR_HEADING = (
+    "11.2.1.AR FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_"
+    "AND_EQ_RECONCILIATION_TARGET_CONTRACTS"
+)
 _DIGEST = hashlib.sha256(b"equity-recovery-pr1-synthetic").hexdigest()
 _COMPLETE_CHECKS = {
     "provenance_complete": "true",
@@ -94,7 +98,7 @@ _COMPLETE_CHECKS = {
 def _aq_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     aq_start = runbook.index(AQ_HEADING)
-    return runbook[aq_start : runbook.index("## 11.3 Autonomy state model", aq_start)]
+    return runbook[aq_start : runbook.index(AR_HEADING, aq_start)]
 
 
 def _synthetic_candidate_kwargs() -> dict[str, str]:
