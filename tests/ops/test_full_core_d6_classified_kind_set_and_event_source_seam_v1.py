@@ -82,6 +82,7 @@ SPEC_PATH = (
 )
 AU_HEADING = "11.2.1.AU FULL_CORE_D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
 AV_HEADING = "11.2.1.AV FULL_CORE_D6_CLASSIFIED_KIND_SET_AND_EVENT_SOURCE_SEAM"
+AW_HEADING = "11.2.1.AW FULL_CORE_D6_EQUITY_STOCK_NECESSARY_KIND_SET_CLOSEOUT"
 _DIGEST = "a" * 64
 _DIGEST_B = "b" * 64
 _NEW_CONTRACT_FILES = (
@@ -128,7 +129,7 @@ def _identity_kwargs(identity: BoundAccountIdentityContractV1) -> dict[str, str]
 def _av_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     av_start = runbook.index(AV_HEADING)
-    return runbook[av_start : runbook.index("## 11.3 Autonomy state model", av_start)]
+    return runbook[av_start : runbook.index(AW_HEADING, av_start)]
 
 
 def test_exact_kind_membership_and_inclusion_exclusion_boundaries() -> None:
