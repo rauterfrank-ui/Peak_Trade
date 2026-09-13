@@ -5871,6 +5871,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/account_equity_source_mapping_ratification_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/account_equity_source_mapping_and_complete_event_stream_acquisition_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/f12_f13_primary_liability_stock_observation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5939,6 +5940,7 @@ entities:
       - tests/ops/test_full_core_d6_path_b_package_1_s6_mapping_classification_v1.py
       - tests/ops/test_full_core_d6_account_equity_source_mapping_ratification_v1.py
       - tests/ops/test_full_core_d6_source_mapping_and_complete_event_stream_acquisition_v1.py
+      - tests/ops/test_full_core_d6_f12_f13_primary_liability_stock_observation_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
