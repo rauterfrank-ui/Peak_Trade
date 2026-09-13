@@ -22,12 +22,15 @@ and a read-only candidate census, plus OPTION_D SSOT architecture,
 checkpoint, event-taxonomy, fresh-eq reconciliation-target
 contracts, bound account-identity contract, and typed
 checkpoint-observation acquisition, plus typed D6 scoped
-read-only observation-boundary contract.
+read-only observation-boundary contract, plus PATH_B CLASS_C
+PACKAGE_1 trading-account observation rules.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire. Event acquisition remains typed and
 completeness-unproven. Classified kind-set and event-source seam
 census remain fail-closed. Observation remains defined-not-executed.
+PACKAGE_1 persists selected observation surfaces and semantic laws
+only. PATH_B_PREAUTHORIZATION_READY is not execution.
 No reconstruction engine.
 """
 
@@ -307,6 +310,53 @@ CANDIDATE_SURFACE_SELECTION = "NONE_SELECTED"
 PATH_A_ARCHIVE_OR_REPO_SEARCH = "REJECT"
 PATH_B_SCOPED_READ_ONLY_OBSERVATION = "SELECTED_BUT_BLOCKED_ON_NEW_AUTHORIZATION"
 PATH_C_ARCHITECTURAL_UNKNOWN_CLOSEOUT = "REJECT"
+PATH_B_CLASS_C_PACKAGE_1_SELECTED = True
+PACKAGE_1_PERSISTED = True
+PATH_B_PREAUTHORIZATION_READY = True
+EXECUTION_READY = False
+PACKAGE_1_AUTHORITY_EFFECT = "NONE"
+SELECTED_OBSERVATION_SURFACES: tuple[str, ...] = (
+    "GET_/api/v5/account/config",
+    "GET_/api/v5/account/balance",
+    "GET_/api/v5/account/bills",
+    "GET_/api/v5/account/bills-archive",
+    "GET_/api/v5/account/subtypes",
+)
+D4_RULE_PERSISTED = True
+D4_OBSERVED_FIELDS_ARE_RUNTIME_EVIDENCE_ONLY = True
+D4_OBSERVATION_MUST_NOT_MINT_IDENTITY = True
+BALANCE_RULE_PERSISTED = True
+BALANCE_OBSERVATION_DOES_NOT_REHABILITATE_C01 = True
+EQ_ROLE = "RECONCILIATION_OR_EMBEDDING_TARGET_ONLY"
+OBSERVED_COMPONENT_FIELDS_HAVE_AUTHORITY_EFFECT = "NONE"
+BALANCE_OBSERVATION_ALLOWED_FIELDS: tuple[str, ...] = (
+    "eq",
+    "cashBal",
+    "liab",
+    "crossLiab",
+    "isoLiab",
+    "interest",
+    "upl",
+    "uplLiab",
+    "uTime",
+)
+EMPTY_COVERAGE_RULE_PERSISTED = True
+EMPTY_ROWS_MEAN_ONLY_NO_ROWS_OBSERVED_WITHIN_EXECUTED_QUERY = True
+EMPTY_ROWS_PROVE_ZERO_EVENTS = False
+EMPTY_ROWS_PROVE_KIND_ABSENCE = False
+PAGINATION_EXHAUSTION_PROVES_QUERY_TRAVERSAL_COMPLETED = True
+PAGINATION_EXHAUSTION_PROVES_COMPLETENESS = False
+RETENTION_GAP_FAIL_CLOSED = True
+ORDERING_OR_TIE_AMBIGUITY_FAIL_CLOSED = True
+EMBEDDING_RULE_PERSISTED = True
+EMBEDDING_OPTION = "E_OPTION_A_FAIL_CLOSED_UNKNOWN_ALLOWED"
+UNKNOWN_EMBEDDING_FACTS: tuple[str, ...] = (
+    "F12_LIABILITY_AFFECTS_EQUITY_STOCK",
+    "F13_LIABILITY_ALREADY_EMBEDDED_IN_EQ",
+    "F16_FEE_ALREADY_EMBEDDED_IN_EQ",
+    "F17_FEE_SEPARATE_ACCOUNT_DELTA",
+    "F18_FEE_RECONCILIATION_ONLY",
+)
 U05_KIND_DECISION = "REMAIN_UNKNOWN"
 U06_KIND_DECISION = "REMAIN_UNKNOWN"
 RESIDUAL_KIND_DECISION = "REMAIN_UNKNOWN"

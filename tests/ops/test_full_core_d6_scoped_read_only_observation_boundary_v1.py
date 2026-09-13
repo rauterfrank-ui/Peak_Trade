@@ -92,6 +92,7 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY_V1.md"
 AX_HEADING = "11.2.1.AX FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST"
 AY_HEADING = "11.2.1.AY FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY"
+AZ_HEADING = "11.2.1.AZ FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES"
 _NEW_CONTRACT_FILE = (
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "scoped_read_only_observation_boundary_contract_v1.py"
@@ -132,7 +133,7 @@ def _ax_section() -> str:
 def _ay_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ay_start = runbook.index(AY_HEADING)
-    return runbook[ay_start : runbook.index("## 11.3 Autonomy state model", ay_start)]
+    return runbook[ay_start : runbook.index(AZ_HEADING, ay_start)]
 
 
 def test_four_observation_domains_are_defined_and_kinds_remain_unknown() -> None:
@@ -264,6 +265,7 @@ def test_runbook_ay_consumes_owner_go_without_rewriting_ax_or_executing_observat
     ay_section = _ay_section()
     assert "THIS_SLICE=11.2.1.AX" in ax_section
     assert "THIS_SLICE=11.2.1.AY" not in ax_section
+    assert "THIS_SLICE=11.2.1.AZ" not in ay_section
     assert "OWNER_GO=OWNER_GO_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY_CONTRACT_V1" in ay_section
     assert "OWNER_GO_STATUS=CONSUMED" in ay_section
     assert "THIS_SLICE=11.2.1.AY.FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY" in ay_section
