@@ -21,6 +21,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bound_acco
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     DIMENSION_EQUITY_STOCK,
+    KIND_SET_RESOLVED,
     UNCLASSIFIED_EVENT_FAIL_CLOSED,
 )
 
@@ -40,7 +41,7 @@ RECONSTRUCTION_INVALID_STATUSES: Tuple[str, ...] = (
     CLASSIFICATION_STATUS_UNCLASSIFIED,
 )
 RATIFIED_CLASSIFIED_KIND_SET: Tuple[str, ...] = ()
-RATIFIED_CLASSIFIED_KIND_SET_RESOLVED = False
+RATIFIED_CLASSIFIED_KIND_SET_RESOLVED = KIND_SET_RESOLVED
 EVENT_ACQUISITION_PRESENT = False
 REQUIRED_FIELDS: Tuple[str, ...] = (
     "event_record_id",

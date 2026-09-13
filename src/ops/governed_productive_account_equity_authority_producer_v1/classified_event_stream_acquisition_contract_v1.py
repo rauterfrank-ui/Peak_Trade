@@ -29,9 +29,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.checkpoint
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
+    AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT,
     C17_CREATED,
     CHECKPOINT_OBSERVATION_PROVEN,
     COMPLETE_EVENT_STREAM_PROVEN,
+    D6_COMPLETENESS_PRECONDITIONS_PROVEN,
     EVENT_ACQUISITION_CREATED,
     EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED,
     RAW_EQ_SOURCE_AUTHORITY,
@@ -248,6 +250,14 @@ def _assert_shared_pins() -> None:
         raise ClassifiedEventStreamAcquisitionContractError("RAW_EQ_SOURCE_AUTHORITY_NOT_FALSE")
     if SOURCE_SELECTED is not False:
         raise ClassifiedEventStreamAcquisitionContractError("SOURCE_SELECTED_NOT_FALSE")
+    if AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT is not False:
+        raise ClassifiedEventStreamAcquisitionContractError(
+            "AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_NOT_ABSENT"
+        )
+    if D6_COMPLETENESS_PRECONDITIONS_PROVEN is not False:
+        raise ClassifiedEventStreamAcquisitionContractError(
+            "D6_COMPLETENESS_PRECONDITIONS_PROVEN_NOT_FALSE"
+        )
     if C17_CREATED is not False:
         raise ClassifiedEventStreamAcquisitionContractError("C17_CREATED_NOT_FALSE")
     if ACCOUNT_EQUITY_AUTHORITY_OWNER != (

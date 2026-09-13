@@ -24,8 +24,9 @@ contracts, bound account-identity contract, and typed
 checkpoint-observation acquisition.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
-Live-account-bound join. No wire. No event acquisition. No
-reconstruction engine.
+Live-account-bound join. No wire. Event acquisition remains typed and
+completeness-unproven. Classified kind-set and event-source seam
+census remain fail-closed. No reconstruction engine.
 """
 
 from __future__ import annotations
@@ -274,6 +275,22 @@ EVENT_ACQUISITION_SCHEMA_PRESENT = True
 EVENT_ACQUISITION_RUNTIME_INSTANCE_PRESENT = False
 EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED = False
 COMPLETE_EVENT_STREAM_PROVEN = False
+KIND_SET_CENSUS_CREATED = True
+KIND_SET_RESOLVED = False
+RATIFIED_CLASSIFIED_EVENT_KIND_SET_TOKEN = "EMPTY_FAIL_CLOSED"
+AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT = False
+SOURCE_COVERAGE_COMPLETE = False
+ORDERING_PROVEN = False
+GAP_DETECTION_FAIL_CLOSED = True
+IDEMPOTENCY_REPLAY_IDENTITY_PROVEN = False
+D6_COMPLETENESS_PRECONDITIONS_PROVEN = False
+EVENT_KIND_SOURCE_SEAM_SELECTED = False
+EVENT_KIND_SOURCE_BINDING_IS_NOT_EQUITY_SOURCE_AUTHORITY = True
+EVENT_KIND_SOURCE_BINDING_IS_NOT_RAW_EQ_SOURCE_AUTHORITY = True
+EVENT_KIND_SOURCE_BINDING_IS_NOT_MAPPING_PROVEN = True
+EARLIEST_D6_COMPLETENESS_DEPENDENCY = (
+    "RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM"
+)
 RECONSTRUCTION_ENGINE_CREATED = False
 RESTART_PROVEN = False
 BOUND_ACCOUNT_IDENTITY_PROVEN = True
