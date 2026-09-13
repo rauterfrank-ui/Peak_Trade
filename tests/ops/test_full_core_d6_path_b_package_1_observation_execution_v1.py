@@ -110,7 +110,11 @@ def _transport_for(genesis: Path) -> RecordingFakeCanaryTransportV1:
 def _bc_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BC_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BD FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION", start
+        )
+    ]
 
 
 def test_canary_private_allowlist_includes_package_1_surfaces() -> None:
