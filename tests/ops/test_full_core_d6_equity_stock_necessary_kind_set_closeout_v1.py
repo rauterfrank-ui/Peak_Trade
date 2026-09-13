@@ -80,7 +80,11 @@ _FORBIDDEN_ENGINE_MARKERS = (
 def _aw_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     aw_start = runbook.index(AW_HEADING)
-    return runbook[aw_start : runbook.index("## 11.3 Autonomy state model", aw_start)]
+    return runbook[
+        aw_start : runbook.index(
+            "11.2.1.AX FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST", aw_start
+        )
+    ]
 
 
 def _av_section() -> str:

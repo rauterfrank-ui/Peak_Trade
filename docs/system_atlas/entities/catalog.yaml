@@ -5777,6 +5777,7 @@ entities:
     # 11.2.1.AU D6 classified event-stream acquisition; EVENT_ACQUISITION_CREATED=true; COMPLETE_EVENT_STREAM_PROVEN=false; EVENT_ACQUISITION_RUNTIME_INSTANCE_PRESENT=false; EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED=false; C17_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false.
     # 11.2.1.AV D6 classified kind-set and event-source seam census; KIND_SET_RESOLVED=false; AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false; D6_COMPLETENESS_PRECONDITIONS_PROVEN=false; COMPLETE_EVENT_STREAM_PROVEN=false; EVENT_KIND_SOURCE_SEAM_SELECTED=false; SOURCE_SELECTED=false; RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false; C17_CREATED=false.
     # 11.2.1.AW D6 equity-stock necessary kind-set closeout; KIND_SET_CLOSEOUT_CREATED=true; KIND_SET_RESOLVED=false; MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false; UNKNOWN_NECESSARY_CLASS_REMAINS=true; KIND_SET_CLOSEOUT_STATUS=FAIL_CLOSED_NAMED_REMAINING_UNKNOWN; AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false; SOURCE_SELECTED=false; RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false; C17_CREATED=false.
+    # 11.2.1.AX D6 named remaining-unknown kind-set evidence persist; KIND_SET_EVIDENCE_PERSIST_CREATED=true; U05_KIND_DECISION=REMAIN_UNKNOWN; U06_KIND_DECISION=REMAIN_UNKNOWN; RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN; KIND_SET_RESOLVED=false; MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false; UNKNOWN_NECESSARY_CLASS_REMAINS=true; AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false; SOURCE_SELECTED=false; RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false; C17_CREATED=false.
     kind: RUNTIME_COMPONENT
     name: Offline Core-to-Live composition root v1
     epistemic_class: FORENSIC_RAW
@@ -5845,6 +5846,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/classified_event_stream_acquisition_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/classified_event_kind_set_and_source_seam_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/equity_stock_necessary_kind_set_closeout_contract_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/named_remaining_unknown_kind_set_evidence_persist_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5904,6 +5906,7 @@ entities:
       - tests/ops/test_full_core_d6_classified_event_stream_acquisition_v1.py
       - tests/ops/test_full_core_d6_classified_kind_set_and_event_source_seam_v1.py
       - tests/ops/test_full_core_d6_equity_stock_necessary_kind_set_closeout_v1.py
+      - tests/ops/test_full_core_d6_named_remaining_unknown_kind_set_evidence_persist_v1.py
       - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
       - docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md
       - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
@@ -5945,6 +5948,7 @@ entities:
       - docs/ops/specs/FULL_CORE_D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION_V1.md
       - docs/ops/specs/FULL_CORE_D6_CLASSIFIED_KIND_SET_AND_EVENT_SOURCE_SEAM_V1.md
       - docs/ops/specs/FULL_CORE_D6_EQUITY_STOCK_NECESSARY_KIND_SET_CLOSEOUT_V1.md
+      - docs/ops/specs/FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
       Navigation inventory of the offline Core-to-Live composition root.
@@ -6435,6 +6439,32 @@ entities:
       NAMED_REMAINING_UNKNOWN_NECESSARY_CLASSES=U05_LIABILITY_AS_CLASSIFIED_EQUITY_STOCK_KIND,U06_FEE_AS_CLASSIFIED_EQUITY_STOCK_KIND,RESIDUAL_UNNAMED_NECESSARY_EQUITY_STOCK_EVENT_CLASS;
       MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false;
       KIND_SET_CLOSEOUT_STATUS=FAIL_CLOSED_NAMED_REMAINING_UNKNOWN;
+      AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false;
+      SOURCE_COVERAGE_COMPLETE=false; ORDERING_PROVEN=false;
+      GAP_DETECTION_FAIL_CLOSED=true;
+      IDEMPOTENCY_REPLAY_IDENTITY_PROVEN=false;
+      D6_COMPLETENESS_PRECONDITIONS_PROVEN=false;
+      COMPLETE_EVENT_STREAM_PROVEN=false;
+      EVENT_KIND_SOURCE_SEAM_SELECTED=false; SOURCE_SELECTED=false;
+      RAW_EQ_SOURCE_AUTHORITY=false; MAPPING_PROVEN=false;
+      C17_CREATED=false; RECONSTRUCTION_ENGINE_CREATED=false;
+      EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION;
+      EARLIEST_D6_KIND_SET_DEPENDENCY=NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET;
+      EARLIEST_D6_COMPLETENESS_DEPENDENCY=RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM;
+      EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
+      NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING.
+      11.2.1.AX persist: named remaining-unknown EQUITY_STOCK kind-set
+      evidence persist; KIND_SET_EVIDENCE_PERSIST_CREATED=true;
+      KIND_SET_EVIDENCE_PERSIST_STATUS=FAIL_CLOSED_THREE_CANDIDATES_REMAIN_UNKNOWN;
+      U05_KIND_DECISION=REMAIN_UNKNOWN;
+      U06_KIND_DECISION=REMAIN_UNKNOWN;
+      RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN;
+      KIND_SET_RESOLVED=false;
+      RATIFIED_CLASSIFIED_EVENT_KIND_SET=EMPTY_FAIL_CLOSED;
+      UNKNOWN_NECESSARY_CLASS_REMAINS=true;
+      MS1_KIND_SET_FULLY_CLOSED=false; MS2_AUTHORIZED=false;
+      RESIDUAL_COMPLETENESS_PROVEN=false;
+      RESIDUAL_NO_REMAINDER_NORMALIZED=false;
       AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT=false;
       SOURCE_COVERAGE_COMPLETE=false; ORDERING_PROVEN=false;
       GAP_DETECTION_FAIL_CLOSED=true;
