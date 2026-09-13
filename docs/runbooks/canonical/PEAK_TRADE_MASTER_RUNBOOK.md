@@ -19266,6 +19266,138 @@ CURRENT_CANONICAL_SECTION=11.2.1.BD.FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLA
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.BE FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION (BOUND; SEALED S1–S6 INPUT ONLY; PARTIAL SOURCE-MAPPING PERSIST; NO RATIFIED EQUITY-STOCK SOURCE KIND; NO KIND-SET CLOSEOUT; NO GET; NO POST; NO MS2; NO D7; NO WIRE)
+
+Additive persist. Does **not** rewrite §11.2.1.S C01–C16 rejection or
+§11.2.1.T–BD standing forbidden surfaces. Does **not** re-run S1–S5.
+Does **not** re-run S6 classification. Does **not** mint D4 identity.
+Does **not** rehabilitate C01. Does **not** treat `details.eq` as source
+authority. Does **not** invent classified EQUITY_STOCK source kinds.
+Does **not** include or exclude U05, U06, or residual from UNKNOWN
+embedding facts. Does **not** prove retention or ordering completeness.
+Does **not** authorize Mini-Slice 2, D6 closeout, or D7. Does **not**
+GET. Does **not** POST. Does **not** construct `LiveExecutionPort`.
+Protected surfaces remain unchanged.
+
+Owner-GO
+`OWNER_GO_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION_WORKPACKAGE_V1`
+authorizes ratification of already-observed S1–S5 fields against
+existing D6/Class-C/algebra/census authority, persist of uniquely
+supported source-role mappings, and fail-closed guards against
+unratified kinds. It does **not** authorize a complete kind-set, Mini-Slice
+2, D7, venue GET/POST, or Live.
+
+``` text
+OWNER_GO=OWNER_GO_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION_WORKPACKAGE_V1
+OWNER_GO_STATUS=CONSUMED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+RISK_CLASS=R1_NO_CREDENTIAL_NO_VENUE_NO_ECONOMIC_MUTATION
+PERSIST_CLASS=FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.BE.FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION
+CURRENT_PHASE=11.2.1.BE.FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+SEALED_INPUT_ONLY=true
+MANIFESTS_VERIFY=true
+S6_EXECUTED=true
+FIELD_SEMANTIC_TRACE_PERSISTED=true
+OBSERVED_RELEVANT_FIELD_COUNT=169
+RATIFICATION_CANDIDATE_COUNT=136
+RATIFIED_SOURCE_KINDS=NONE
+KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+SOURCE_MAPPING=PARTIAL_FAIL_CLOSED_NO_RATIFIED_SOURCE_KIND
+MAPPING_PERSISTED=true
+MAPPING_COVERAGE_STATUS=PARTIAL_FAIL_CLOSED_NO_RATIFIED_SOURCE_KIND
+CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false
+RAW_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+U05_KIND_DECISION=REMAIN_UNKNOWN
+U06_KIND_DECISION=REMAIN_UNKNOWN
+RESIDUAL_KIND_DECISION=REMAIN_UNKNOWN
+F12_STATUS=UNKNOWN
+F13_STATUS=UNKNOWN
+F16_STATUS=UNKNOWN
+F17_STATUS=UNKNOWN
+F18_STATUS=UNKNOWN
+RETENTION_COVERAGE_STATUS=FAIL_CLOSED_NOT_PROVEN
+ORDERING_COMPLETENESS_STATUS=FAIL_CLOSED_NOT_PROVEN
+COMPLETE_CLASSIFIED_EVENT_STREAM_PROVEN=false
+NEW_NETWORK_GET_COUNT=0
+NETWORK_POST_PERFORMED=false
+MS2_AUTHORIZED=false
+MS2_EXECUTED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C01_REHABILITATION_FORBIDDEN=true
+ATLAS_AUTHORITY=NONE
+PACKAGE_1_PERSISTED=true
+PATH_B_PREAUTHORIZATION_READY=true
+EXECUTION_READY=false
+C17_CREATED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+SINGLE_SELECTED_FUTURE_UNCHANGED=true
+MAX_POSITIONS=1
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+SOURCE_MAPPING_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/account_equity_source_mapping_ratification_v1.py
+PARENT_CONTRACT=FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+EARLIEST_OPTION_D_DEPENDENCY=D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. Sealed S6 field-semantic traces plus sealed S1–S5 observation are the
+only input. Both MANIFESTs must verify before ratification. No new
+venue GET is performed. Observed `uid` remains corroboration-only.
+
+B. Unique non-source persist. `details.eq` remains the fresh-eq
+reconciliation target and is **not** source authority. C01/C02
+forbidden equity-source fields, notional addends, D4 identity/settlement
+members, U01 account-mode, currency-domain observation, forensic bill
+identity/timestamps, U02 realized-PnL algebra (not an event kind), U03
+unrealized MTM (not an event kind), and unbound `imr`/`mmr`/`mgnRatio`
+margin-dimension observations are persisted as `RATIFIED_NON_SOURCE`.
+They cannot become classified EQUITY_STOCK source kinds.
+
+C. Unique other-domain persist. `ordFroz`/`ordFrozen` remain U04
+`AVAILABLE_FOR_SIZING_OR_RISK_SIZING` observations, not EQUITY_STOCK
+kinds. Inclusion of U04 in the reconstruction algebra remains unresolved.
+
+D. Remaining unknowns stay fail-closed. U05 liability fields remain
+`UNRESOLVED_AMBIGUOUS` because F12/F13 are UNKNOWN. Bills `fee` remains
+`UNRESOLVED_AMBIGUOUS` because F16/F17/F18 are UNKNOWN. Interest remains
+hypothesis-only. Venue `type`/`subType` tokens are not ratified kinds.
+The classified kind-set stays empty. Retention and ordering remain
+`FAIL_CLOSED_NOT_PROVEN`. Mini-Slice 2, D6 closeout, and D7 remain
+unauthorized.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION_WORKPACKAGE_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.BE.FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
