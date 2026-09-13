@@ -68,6 +68,7 @@ RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1.md"
 AS_HEADING = "11.2.1.AS FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT"
 AT_HEADING = "11.2.1.AT FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION"
+AU_HEADING = "11.2.1.AU FULL_CORE_D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
 _DIGEST = "a" * 64
 _DIGEST_B = "b" * 64
 _ISO = "2026-09-13T08:26:00Z"
@@ -135,7 +136,7 @@ def _acquire(identity: BoundAccountIdentityContractV1, **overrides: str):
 def _at_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     at_start = runbook.index(AT_HEADING)
-    return runbook[at_start : runbook.index("## 11.3 Autonomy state model", at_start)]
+    return runbook[at_start : runbook.index(AU_HEADING, at_start)]
 
 
 def test_d4_prerequisite_and_exact_identity_match() -> None:
@@ -309,7 +310,7 @@ def test_existing_owner_pins_and_non_regression() -> None:
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False
-    assert EVENT_ACQUISITION_CREATED is False
+    assert EVENT_ACQUISITION_CREATED is True
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert RESTART_PROVEN is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
@@ -319,7 +320,7 @@ def test_existing_owner_pins_and_non_regression() -> None:
     assert dag["CHECKPOINT_OBSERVATION_ACQUISITION_CREATED"] is True
     assert dag["CHECKPOINT_OBSERVATION_PROVEN"] is True
     assert dag["CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED"] is False
-    assert dag["EVENT_ACQUISITION_CREATED"] is False
+    assert dag["EVENT_ACQUISITION_CREATED"] is True
     assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == (
         "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
     )

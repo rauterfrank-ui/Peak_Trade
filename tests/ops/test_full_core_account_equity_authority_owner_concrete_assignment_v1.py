@@ -139,6 +139,7 @@ def test_slot_contains_no_producer_implementation() -> None:
         "__init__.py",
         "bound_account_identity_contract_v1.py",
         "checkpoint_observation_acquisition_contract_v1.py",
+        "classified_event_stream_acquisition_contract_v1.py",
         "constants_v1.py",
         "equity_affecting_event_taxonomy_contract_v1.py",
         "equity_stock_checkpoint_contract_v1.py",
@@ -188,6 +189,7 @@ def test_slot_contains_no_producer_implementation() -> None:
             "option_d_ssot_architecture_contract_v1.py",
             "bound_account_identity_contract_v1.py",
             "checkpoint_observation_acquisition_contract_v1.py",
+            "classified_event_stream_acquisition_contract_v1.py",
         }
     )
     for forbidden in (
@@ -239,6 +241,13 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in observation
     assert "def reconstruct" not in observation
     assert "def bind_account_equity" not in observation
+    event_stream = (SLOT_DIR / "classified_event_stream_acquisition_contract_v1.py").read_text(
+        encoding="utf-8"
+    )
+    assert "def mint" not in event_stream
+    assert "def produce" not in event_stream
+    assert "def reconstruct" not in event_stream
+    assert "def bind_account_equity" not in event_stream
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:

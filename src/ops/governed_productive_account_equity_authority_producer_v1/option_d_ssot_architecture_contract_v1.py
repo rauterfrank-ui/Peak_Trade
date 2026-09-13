@@ -1,8 +1,9 @@
 """OPTION_D SSOT architecture and dimension-split contract.
 
-Schema/contract only. Does not acquire events. Does not reconstruct
-equity. Does not mint C17. Does not map venue `eq` to source
-authority. Does not bind STEP-29P. AUTHORITY_EFFECT=NONE.
+Schema/contract only. Event acquisition is recorded as a typed D6
+surface pin. Does not reconstruct equity. Does not mint C17. Does
+not map venue `eq` to source authority. Does not bind STEP-29P.
+AUTHORITY_EFFECT=NONE.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -214,8 +215,8 @@ def build_option_d_ssot_architecture_contract_v1(
         raise OptionDSSOTArchitectureContractError("SOURCE_SELECTED_NOT_FALSE")
     if GOVERNED_PRODUCER_CREATED is not False:
         raise OptionDSSOTArchitectureContractError("GOVERNED_PRODUCER_CREATED_NOT_FALSE")
-    if EVENT_ACQUISITION_CREATED is not False:
-        raise OptionDSSOTArchitectureContractError("EVENT_ACQUISITION_CREATED_NOT_FALSE")
+    if EVENT_ACQUISITION_CREATED is not True:
+        raise OptionDSSOTArchitectureContractError("EVENT_ACQUISITION_CREATED_NOT_TRUE")
     if RECONSTRUCTION_ENGINE_CREATED is not False:
         raise OptionDSSOTArchitectureContractError("RECONSTRUCTION_ENGINE_CREATED_NOT_FALSE")
     if RESTART_PROVEN is not False:
@@ -243,7 +244,7 @@ def build_option_d_ssot_architecture_contract_v1(
         "eq_reconciliation_target_only": _TRUE,
         "c17_created": _FALSE,
         "mapping_proven": _FALSE,
-        "event_acquisition_created": _FALSE,
+        "event_acquisition_created": _TRUE,
         "reconstruction_engine_created": _FALSE,
         "restart_proven": _FALSE,
         "earliest_option_d_dependency": EARLIEST_OPTION_D_DEPENDENCY,
@@ -273,7 +274,7 @@ def build_option_d_ssot_architecture_contract_v1(
         eq_reconciliation_target_only=_TRUE,
         c17_created=_FALSE,
         mapping_proven=_FALSE,
-        event_acquisition_created=_FALSE,
+        event_acquisition_created=_TRUE,
         reconstruction_engine_created=_FALSE,
         restart_proven=_FALSE,
         earliest_option_d_dependency=EARLIEST_OPTION_D_DEPENDENCY,

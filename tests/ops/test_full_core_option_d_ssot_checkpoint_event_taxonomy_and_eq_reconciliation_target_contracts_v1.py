@@ -382,7 +382,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
 
 def test_no_event_acquisition_reconstruction_engine_restart_or_live() -> None:
     dag = live_admission_gap_dag_v1()
-    assert EVENT_ACQUISITION_CREATED is False
+    assert EVENT_ACQUISITION_CREATED is True
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert RESTART_PROVEN is False
     assert BOUND_ACCOUNT_IDENTITY_PROVEN is True
@@ -393,7 +393,7 @@ def test_no_event_acquisition_reconstruction_engine_restart_or_live() -> None:
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
-    assert dag["EVENT_ACQUISITION_CREATED"] is False
+    assert dag["EVENT_ACQUISITION_CREATED"] is True
     assert dag["RECONSTRUCTION_ENGINE_CREATED"] is False
     assert dag["RESTART_PROVEN"] is False
     assert dag["RAW_EQ_SOURCE_AUTHORITY"] is False
