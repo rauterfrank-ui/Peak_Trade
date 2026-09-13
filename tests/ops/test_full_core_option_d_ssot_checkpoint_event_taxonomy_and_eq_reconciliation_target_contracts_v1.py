@@ -45,6 +45,10 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
     EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY,
     live_admission_gap_dag_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.bound_account_identity_contract_v1 import (
+    BoundAccountIdentityContractV1,
+    build_bound_account_identity_contract_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     BOUND_ACCOUNT_IDENTITY_PROVEN,
     C01_C16_NOT_ELEVATED,
@@ -99,6 +103,7 @@ AR_HEADING = (
     "11.2.1.AR FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_"
     "AND_EQ_RECONCILIATION_TARGET_CONTRACTS"
 )
+AS_HEADING = "11.2.1.AS FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT"
 _DIGEST = hashlib.sha256(b"option-d-ssot-synthetic").hexdigest()
 _DIGEST_B = hashlib.sha256(b"option-d-ssot-synthetic-b").hexdigest()
 _NEW_CONTRACT_FILES = (
@@ -110,6 +115,8 @@ _NEW_CONTRACT_FILES = (
     "equity_affecting_event_taxonomy_contract_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "fresh_eq_reconciliation_target_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/"
+    "bound_account_identity_contract_v1.py",
 )
 _FORBIDDEN_ENGINE_MARKERS = (
     "reconstruct_equity_stock_from_events",
@@ -120,10 +127,28 @@ _FORBIDDEN_ENGINE_MARKERS = (
 )
 
 
+def _synthetic_identity() -> BoundAccountIdentityContractV1:
+    return build_bound_account_identity_contract_v1(
+        identity_id="SYNTHETIC_ACCOUNT_A",
+        bound_account_identity="SYNTHETIC_ACCOUNT_A",
+        bound_venue_identity="SYNTHETIC_VENUE_OKX",
+        bound_td_mode="cross",
+        settlement_currency="USDC",
+    )
+
+
+def _identity_kwargs() -> dict[str, str]:
+    identity = _synthetic_identity()
+    return {
+        "bound_account_identity_ref": identity.identity_id,
+        "bound_account_identity_digest": identity.identity_digest,
+    }
+
+
 def _ar_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     ar_start = runbook.index(AR_HEADING)
-    return runbook[ar_start : runbook.index("## 11.3 Autonomy state model", ar_start)]
+    return runbook[ar_start : runbook.index(AS_HEADING, ar_start)]
 
 
 def test_option_d_and_dimension_split_pins() -> None:
@@ -189,6 +214,7 @@ def test_checkpoint_cannot_mint_equity() -> None:
         schema_digest=_DIGEST,
         input_set_digest=_DIGEST_B,
         checkpoint_version="v1",
+        **_identity_kwargs(),
     )
     assert checkpoint.equity_mint_status == "NOT_MINTED"
     assert checkpoint.running_equity_value_state == "ABSENT"
@@ -201,6 +227,7 @@ def test_checkpoint_cannot_mint_equity() -> None:
             input_set_digest=_DIGEST_B,
             checkpoint_version="v1",
             claimed_equity_stock_value="100.00",
+            **_identity_kwargs(),
         )
     assert "CHECKPOINT_CANNOT_MINT_EQUITY" in str(err.value)
     with pytest.raises(EquityStockCheckpointContractError):
@@ -209,6 +236,7 @@ def test_checkpoint_cannot_mint_equity() -> None:
             schema_digest="not-a-digest",
             input_set_digest=_DIGEST_B,
             checkpoint_version="v1",
+            **_identity_kwargs(),
         )
 
 
@@ -223,6 +251,7 @@ def test_unclassified_and_unknown_events_fail_closed() -> None:
         ordering_key="1",
         event_digest=_DIGEST,
         mapped_numeric_effect="FORBIDDEN_NOT_ZERO",
+        **_identity_kwargs(),
     )
     assert unknown.reconstruction_eligibility == "INVALID_FAIL_CLOSED"
     assert unknown.execution_eligibility == "INVALID_FAIL_CLOSED"
@@ -233,6 +262,7 @@ def test_unclassified_and_unknown_events_fail_closed() -> None:
         ordering_key="2",
         event_digest=_DIGEST_B,
         mapped_numeric_effect="FORBIDDEN_NOT_ZERO",
+        **_identity_kwargs(),
     )
     assert unclassified.reconstruction_eligibility == "INVALID_FAIL_CLOSED"
     with pytest.raises(EquityAffectingEventTaxonomyContractError) as zero_err:
@@ -243,6 +273,7 @@ def test_unclassified_and_unknown_events_fail_closed() -> None:
             ordering_key="3",
             event_digest=_DIGEST,
             mapped_numeric_effect="0",
+            **_identity_kwargs(),
         )
     assert "UNCLASSIFIED_EVENT_CANNOT_MAP_TO_ZERO_OR_NOOP" in str(zero_err.value)
     with pytest.raises(EquityAffectingEventTaxonomyContractError) as ignore_err:
@@ -253,6 +284,7 @@ def test_unclassified_and_unknown_events_fail_closed() -> None:
             ordering_key="4",
             event_digest=_DIGEST,
             mapped_numeric_effect="ignore",
+            **_identity_kwargs(),
         )
     assert "UNCLASSIFIED_EVENT_CANNOT_MAP_TO_ZERO_OR_NOOP" in str(ignore_err.value)
     with pytest.raises(EquityAffectingEventTaxonomyContractError) as classified_err:
@@ -263,6 +295,7 @@ def test_unclassified_and_unknown_events_fail_closed() -> None:
             ordering_key="5",
             event_digest=_DIGEST,
             mapped_numeric_effect="FORBIDDEN_NOT_ZERO",
+            **_identity_kwargs(),
         )
     assert "CLASSIFIED_KIND_NOT_RATIFIED" in str(classified_err.value)
 
@@ -280,6 +313,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
         venue_eq_provenance_digest=_DIGEST_B,
         venue_eq_value_state="PRESENT",
         venue_eq_value="12.50",
+        **_identity_kwargs(),
     )
     assert match.reconciliation_status == "MATCH"
     assert match.governed_sample_valid == "false"
@@ -297,6 +331,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
         venue_eq_provenance_digest=_DIGEST_B,
         venue_eq_value_state="PRESENT",
         venue_eq_value="9.00",
+        **_identity_kwargs(),
     )
     assert mismatch.reconciliation_status == STATUS_MISMATCH
     assert mismatch.governed_sample_valid == "false"
@@ -312,6 +347,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
         venue_eq_provenance_digest=_DIGEST_B,
         venue_eq_value_state="PRESENT",
         venue_eq_value="12.50",
+        **_identity_kwargs(),
     )
     assert unknown.reconciliation_status == STATUS_UNKNOWN
     assert unknown.governed_sample_valid == "false"
@@ -327,6 +363,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
             venue_eq_value_state="PRESENT",
             venue_eq_value="12.50",
             tolerance_policy=TOLERANCE_POLICY_UNSPECIFIED,
+            **_identity_kwargs(),
         )
     with pytest.raises(FreshEqReconciliationTargetContractError):
         build_fresh_eq_reconciliation_target_contract_v1(
@@ -339,6 +376,7 @@ def test_fresh_eq_is_target_only_and_mismatch_cannot_mint_sample() -> None:
             venue_eq_provenance_digest=_DIGEST_B,
             venue_eq_value_state="PRESENT",
             venue_eq_value="12.50",
+            **_identity_kwargs(),
         )
 
 
@@ -347,7 +385,7 @@ def test_no_event_acquisition_reconstruction_engine_restart_or_live() -> None:
     assert EVENT_ACQUISITION_CREATED is False
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert RESTART_PROVEN is False
-    assert BOUND_ACCOUNT_IDENTITY_PROVEN is False
+    assert BOUND_ACCOUNT_IDENTITY_PROVEN is True
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False
@@ -361,8 +399,9 @@ def test_no_event_acquisition_reconstruction_engine_restart_or_live() -> None:
     assert dag["RAW_EQ_SOURCE_AUTHORITY"] is False
     assert dag["EQ_RECONCILIATION_TARGET_ONLY"] is True
     assert dag["C17_CREATED"] is False
-    assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == "D4_BOUND_ACCOUNT_IDENTITY"
-    assert EARLIEST_OPTION_D_DEPENDENCY == "D4_BOUND_ACCOUNT_IDENTITY"
+    assert dag["BOUND_ACCOUNT_IDENTITY_PROVEN"] is True
+    assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
+    assert EARLIEST_OPTION_D_DEPENDENCY == "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )

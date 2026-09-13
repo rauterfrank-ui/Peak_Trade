@@ -17,6 +17,9 @@ from dataclasses import dataclass
 from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping, Tuple
 
+from src.ops.governed_productive_account_equity_authority_producer_v1.bound_account_identity_contract_v1 import (
+    require_bound_account_identity_ref_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     DIMENSION_EQUITY_STOCK,
     EQ_RECONCILIATION_TARGET_ONLY,
@@ -52,6 +55,8 @@ REQUIRED_FIELDS: Tuple[str, ...] = (
     "governed_sample_valid",
     "raw_eq_source_authority",
     "eq_reconciliation_target_only",
+    "bound_account_identity_ref",
+    "bound_account_identity_digest",
 )
 _SHA256_HEX = re.compile(r"^[0-9a-f]{64}$")
 _SCIENTIFIC_NOTATION = re.compile(r"^[+-]?(?:\d+\.?\d*|\.\d+)[eE][+-]?\d+$")
@@ -85,6 +90,8 @@ class FreshEqReconciliationTargetContractV1:
     reconstructed_stock_overwritten: str
     raw_eq_source_authority: str
     eq_reconciliation_target_only: str
+    bound_account_identity_ref: str
+    bound_account_identity_digest: str
     authority_effect: str
     provenance_digest: str
 
@@ -160,8 +167,14 @@ def build_fresh_eq_reconciliation_target_contract_v1(
     venue_eq_provenance_digest: str,
     venue_eq_value_state: str,
     venue_eq_value: str,
+    bound_account_identity_ref: str,
+    bound_account_identity_digest: str,
     tolerance_policy: str = TOLERANCE_POLICY_EXACT,
 ) -> FreshEqReconciliationTargetContractV1:
+    identity_ref, identity_digest = require_bound_account_identity_ref_v1(
+        bound_account_identity_ref=bound_account_identity_ref,
+        bound_account_identity_digest=bound_account_identity_digest,
+    )
     payload = {
         "reconciliation_record_id": _require_non_empty_str(
             field="reconciliation_record_id", raw=reconciliation_record_id
@@ -222,6 +235,8 @@ def build_fresh_eq_reconciliation_target_contract_v1(
     payload["reconstructed_stock_overwritten"] = _FALSE
     payload["raw_eq_source_authority"] = _FALSE
     payload["eq_reconciliation_target_only"] = _TRUE
+    payload["bound_account_identity_ref"] = identity_ref
+    payload["bound_account_identity_digest"] = identity_digest
     payload["reconstructed_fact_class"] = RECONSTRUCTED_FACT_CLASS
     payload["venue_eq_fact_class"] = VENUE_EQ_FACT_CLASS
     payload["observation_semantic_class"] = OBSERVATION_SEMANTIC_CLASS
@@ -248,6 +263,8 @@ def build_fresh_eq_reconciliation_target_contract_v1(
         reconstructed_stock_overwritten=_FALSE,
         raw_eq_source_authority=_FALSE,
         eq_reconciliation_target_only=_TRUE,
+        bound_account_identity_ref=identity_ref,
+        bound_account_identity_digest=identity_digest,
         authority_effect=AUTHORITY_EFFECT,
         provenance_digest=digest,
     )

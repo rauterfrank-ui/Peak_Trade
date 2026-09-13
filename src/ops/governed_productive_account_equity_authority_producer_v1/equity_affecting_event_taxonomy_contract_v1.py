@@ -16,6 +16,9 @@ import re
 from dataclasses import dataclass
 from typing import Any, Mapping, Tuple
 
+from src.ops.governed_productive_account_equity_authority_producer_v1.bound_account_identity_contract_v1 import (
+    require_bound_account_identity_ref_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     DIMENSION_EQUITY_STOCK,
     EVENT_ACQUISITION_CREATED,
@@ -48,6 +51,8 @@ REQUIRED_FIELDS: Tuple[str, ...] = (
     "ordering_key",
     "event_digest",
     "mapped_numeric_effect",
+    "bound_account_identity_ref",
+    "bound_account_identity_digest",
     "reconstruction_eligibility",
     "execution_eligibility",
 )
@@ -76,6 +81,8 @@ class EquityAffectingEventTaxonomyRecordV1:
     ordering_key: str
     event_digest: str
     mapped_numeric_effect: str
+    bound_account_identity_ref: str
+    bound_account_identity_digest: str
     reconstruction_eligibility: str
     execution_eligibility: str
     authority_effect: str
@@ -144,7 +151,13 @@ def build_equity_affecting_event_taxonomy_record_v1(
     ordering_key: str,
     event_digest: str,
     mapped_numeric_effect: str,
+    bound_account_identity_ref: str,
+    bound_account_identity_digest: str,
 ) -> EquityAffectingEventTaxonomyRecordV1:
+    identity_ref, identity_digest = require_bound_account_identity_ref_v1(
+        bound_account_identity_ref=bound_account_identity_ref,
+        bound_account_identity_digest=bound_account_identity_digest,
+    )
     payload = {
         "event_record_id": _require_non_empty_str(field="event_record_id", raw=event_record_id),
         "classification_status": _require_non_empty_str(
@@ -159,6 +172,8 @@ def build_equity_affecting_event_taxonomy_record_v1(
         "mapped_numeric_effect": _require_non_empty_str(
             field="mapped_numeric_effect", raw=mapped_numeric_effect
         ),
+        "bound_account_identity_ref": identity_ref,
+        "bound_account_identity_digest": identity_digest,
     }
     if payload["classification_status"] not in CLASSIFICATION_STATUSES:
         raise EquityAffectingEventTaxonomyContractError(
