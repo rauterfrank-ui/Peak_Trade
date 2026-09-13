@@ -37,7 +37,10 @@ CONTRACT_VERSION = "v1"
 AUTHORITY_EFFECT = "NONE"
 OWNER_GO = "OWNER_GO_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1"
 CONTINUE_OWNER_GO = "OWNER_GO_D6_PATH_B_D4_D5_GENESIS_REBASELINE_CONTINUE_V1"
+TD_MODE_RESOLUTION_OWNER_GO = "OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1"
 EXPECTED_ORIGIN_MAIN_SHA = "cf3aede3c115fc0b77253482af861f73614db877"
+EXPECTED_GENESIS_ID = "D4D5GENESIS8d3f573ffc0c59b4"
+EXPECTED_GENESIS_AS_OF = "2026-09-13T17:03:18Z"
 GENESIS_EPOCH_SEMANTIC_CLASS = "NEW_CANONICAL_RECONSTRUCTION_EPOCH_STARTS_HERE"
 PRIOR_PERIODS_SCOPE = "OUT_OF_SCOPE_FOR_NEW_CHAIN"
 PRE_GENESIS_PERIOD = "OUT_OF_SCOPE_FOR_NEW_RUNTIME_CHAIN"
@@ -177,6 +180,36 @@ def build_d4_d5_genesis_rebaseline_contract_v1(
 
 def genesis_contract_path_v1(*, store_root: Path | str) -> Path:
     return Path(store_root) / GENESIS_CONTRACT_FILENAME
+
+
+def load_d4_d5_genesis_rebaseline_contract_v1(
+    *,
+    store_root: Path | str,
+) -> D4D5GenesisRebaselineContractV1:
+    path = genesis_contract_path_v1(store_root=store_root)
+    if not path.is_file():
+        raise D4D5GenesisRebaselineContractError("GENESIS_CONTRACT_ARTIFACT_ABSENT")
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise D4D5GenesisRebaselineContractError("GENESIS_CONTRACT_NOT_JSON") from exc
+    if not isinstance(payload, dict):
+        raise D4D5GenesisRebaselineContractError("GENESIS_CONTRACT_NOT_OBJECT")
+    contract = build_d4_d5_genesis_rebaseline_contract_v1(
+        genesis_id=str(payload.get("genesis_id") or ""),
+        genesis_as_of=str(payload.get("genesis_as_of") or ""),
+        owner_go=str(payload.get("owner_go") or ""),
+        bound_origin_main_sha=str(payload.get("bound_origin_main_sha") or ""),
+        continue_owner_go=str(payload.get("continue_owner_go") or ""),
+    )
+    persisted_digest = str(payload.get("provenance_digest") or "").strip()
+    if persisted_digest != contract.provenance_digest:
+        raise D4D5GenesisRebaselineContractError("GENESIS_CONTRACT_DIGEST_MISMATCH")
+    if contract.genesis_id != EXPECTED_GENESIS_ID:
+        raise D4D5GenesisRebaselineContractError("GENESIS_ID_MUST_REMAIN_BOUND")
+    if contract.genesis_as_of != EXPECTED_GENESIS_AS_OF:
+        raise D4D5GenesisRebaselineContractError("GENESIS_AS_OF_MUST_REMAIN_BOUND")
+    return contract
 
 
 def persist_d4_d5_genesis_rebaseline_contract_v1(

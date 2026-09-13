@@ -44,8 +44,15 @@ AUTHORITY_EFFECT=NONE
 GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
 GENESIS_AS_OF=2026-09-13T17:03:18Z
 ACCOUNT_CONFIG_GET_PERFORMED=true
-ADDITIONAL_READ_ONLY_GETS=0
-D4_GENESIS_FIELD_FAIL_CLOSED=bound_td_mode
+ADDITIONAL_READ_ONLY_GETS=1
+POSITIONS_GET_PERFORMED=true
+POSITIONS_QUERY_INSTRUMENT=SUI-USD_UM_XPERP-310404
+POSITION_MATCH_COUNT=1
+FRESH_MGN_MODE_OBSERVED=cross
+BOUND_TD_MODE_RESOLVED=true
+BOUND_TD_MODE=cross
+D4_BOUND_TD_MODE_SOURCE=FRESH_AUTHENTICATED_POSITION_MGN_MODE
+D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK
 D4_RUNTIME_INSTANCE_PRESENT=false
 D5_RUNTIME_INSTANCE_PRESENT=false
 OBSERVATION_S0_PREREQUISITES_SATISFIED=false
@@ -56,11 +63,12 @@ reconstruct missing historical D4/D5 runtime instances. Evidence
 created by this persist is valid only from `GENESIS_AS_OF`. Earlier
 periods are out of scope for the new chain.
 
-The one authorized network action is `GET &#47;api&#47;v5&#47;account&#47;config`.
-That fresh authenticated response may bootstrap observable account
-identity facts for the genesis boundary. Env, credential contents,
-defaults, fixtures, and historical evidence remain forbidden mint
-sources. Missing members fail closed on that field.
+The one authorized identity bootstrap GET is `GET &#47;api&#47;v5&#47;account&#47;config`.
+Owner-GO `OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1`
+authorized one additional `GET &#47;api&#47;v5&#47;account&#47;positions`
+for `bound_td_mode` via unique fresh `mgnMode`. Env, credential
+contents, defaults, fixtures, and historical evidence remain forbidden
+mint sources. Missing members fail closed on that field.
 
 The D5 genesis window is a point window
 `start = end = observed_at_as_of = GENESIS_AS_OF`. That does not

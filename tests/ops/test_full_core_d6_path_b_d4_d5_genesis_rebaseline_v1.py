@@ -33,13 +33,22 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.checkpoint
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_rebaseline_contract_v1 import (
     CONTINUE_OWNER_GO,
+    EXPECTED_GENESIS_AS_OF,
+    EXPECTED_GENESIS_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
+    TD_MODE_RESOLUTION_OWNER_GO,
     build_d4_d5_genesis_rebaseline_contract_v1,
+    persist_d4_d5_genesis_rebaseline_contract_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_runtime_orchestrator_v1 import (
     D4D5GenesisRuntimeOrchestratorError,
+    continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1,
     execute_d4_d5_genesis_runtime_orchestrator_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis_fresh_position_mgn_mode_bootstrap_v1 import (
+    D4GenesisFreshPositionMgnModeBootstrapError,
+    resolve_fresh_position_mgn_mode_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_genesis_fresh_account_config_bootstrap_v1 import (
     D4GenesisFreshAccountConfigBootstrapError,
@@ -66,6 +75,16 @@ _SUCCESS_BODY = (
 )
 _NO_TD_BODY = (
     b'{"code":"0","msg":"","data":[{"uid":"900199001990019900","acctLv":"2","posMode":"net_mode"}]}'
+)
+_BOUND_INST = "SUI-USD_UM_XPERP-310404"
+_POSITION_CROSS_BODY = (
+    b'{"code":"0","msg":"","data":[{"instId":"SUI-USD_UM_XPERP-310404","instType":"FUTURES",'
+    b'"mgnMode":"cross","pos":"1","uid":"900199001990019900"}]}'
+)
+_POSITION_EMPTY_BODY = b'{"code":"0","msg":"","data":[]}'
+_POSITION_NO_UID_BODY = (
+    b'{"code":"0","msg":"","data":[{"instId":"SUI-USD_UM_XPERP-310404","instType":"FUTURES",'
+    b'"mgnMode":"cross","pos":"1"}]}'
 )
 
 
@@ -196,7 +215,12 @@ def test_runbook_bb_persists_genesis_without_historical_continuity() -> None:
     assert "D4_GENESIS_BOOTSTRAP_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG" in bb_section
     assert "POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS=true" in bb_section
     assert "NETWORK_POST_PERFORMED=false" in bb_section
-    assert "D4_GENESIS_FIELD_FAIL_CLOSED=bound_td_mode" in bb_section
+    assert "BOUND_TD_MODE_RESOLVED=true" in bb_section
+    assert "FRESH_MGN_MODE_OBSERVED=cross" in bb_section
+    assert (
+        "D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK"
+        in bb_section
+    )
     assert "D4_RUNTIME_INSTANCE_PRESENT=false" in bb_section
     assert "D5_RUNTIME_INSTANCE_PRESENT=false" in bb_section
     assert "KIND_SET_RESOLVED=false" in bb_section
@@ -208,3 +232,112 @@ def test_runbook_bb_persists_genesis_without_historical_continuity() -> None:
     mot = (REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md").read_text(encoding="utf-8")
     assert "FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1.md" in mot
     assert "§11.2.1.BB FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE" in mot
+
+
+def _persist_bound_genesis_contract(tmp_path: Path) -> None:
+    contract = build_d4_d5_genesis_rebaseline_contract_v1(
+        genesis_id=EXPECTED_GENESIS_ID,
+        genesis_as_of=EXPECTED_GENESIS_AS_OF,
+        owner_go=OWNER_GO,
+        bound_origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        continue_owner_go=CONTINUE_OWNER_GO,
+    )
+    persist_d4_d5_genesis_rebaseline_contract_v1(store_root=tmp_path, contract=contract)
+
+
+def test_fresh_position_mgn_mode_cross_maps_to_td_mode() -> None:
+    mode, count, _names, uid = resolve_fresh_position_mgn_mode_v1(
+        payload={
+            "code": "0",
+            "data": [
+                {
+                    "instId": _BOUND_INST,
+                    "mgnMode": "cross",
+                    "pos": "1",
+                    "uid": _SYNTHETIC_UID,
+                }
+            ],
+        },
+        bound_instrument_id=_BOUND_INST,
+    )
+    assert mode == "cross"
+    assert count == 1
+    assert uid == _SYNTHETIC_UID
+
+
+def test_fresh_position_empty_or_conflict_fail_closes() -> None:
+    with pytest.raises(D4GenesisFreshPositionMgnModeBootstrapError) as empty_err:
+        resolve_fresh_position_mgn_mode_v1(
+            payload={"code": "0", "data": []}, bound_instrument_id=_BOUND_INST
+        )
+    assert "POSITIONS_EMPTY" in str(empty_err.value)
+    with pytest.raises(D4GenesisFreshPositionMgnModeBootstrapError) as conflict_err:
+        resolve_fresh_position_mgn_mode_v1(
+            payload={
+                "code": "0",
+                "data": [
+                    {"instId": _BOUND_INST, "mgnMode": "cross"},
+                    {"instId": _BOUND_INST, "mgnMode": "isolated"},
+                ],
+            },
+            bound_instrument_id=_BOUND_INST,
+        )
+    assert "CONFLICTING_MGN_MODE" in str(conflict_err.value)
+
+
+def test_continue_genesis_persists_d4_d5_from_fresh_mgn_mode(tmp_path: Path) -> None:
+    _persist_bound_genesis_contract(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_POSITION_CROSS_BODY)
+    result = continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1(
+        store_root=tmp_path,
+        owner_go=TD_MODE_RESOLUTION_OWNER_GO,
+        transport=transport,
+    )
+    assert result.genesis_id == EXPECTED_GENESIS_ID
+    assert result.genesis_as_of == EXPECTED_GENESIS_AS_OF
+    assert result.additional_read_only_gets == "1"
+    assert result.network_post_performed == "false"
+    assert result.d4_bound_td_mode == "cross"
+    assert result.d4_bound_account_identity == _SYNTHETIC_UID
+    assert result.d4_runtime_instance_persisted == "true"
+    assert result.d5_runtime_instance_persisted == "true"
+    assert result.d5_window_start == EXPECTED_GENESIS_AS_OF
+    assert result.d5_window_end == EXPECTED_GENESIS_AS_OF
+    assert result.d4_binding.identity_provenance_class == PROVENANCE_GENESIS_FRESH_TYPED_BINDING
+    assert_package_1_observation_s0_runtime_payloads_present_v1(store_root=tmp_path)
+    assert [call.method for call in transport.calls] == ["GET"]
+    assert all("/account/positions" in call.endpoint for call in transport.calls)
+    assert not any(call.method == "POST" for call in transport.calls)
+
+
+def test_continue_genesis_empty_positions_fail_closes(tmp_path: Path) -> None:
+    _persist_bound_genesis_contract(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_POSITION_EMPTY_BODY)
+    with pytest.raises(D4D5GenesisRuntimeOrchestratorError) as err:
+        continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1(
+            store_root=tmp_path,
+            owner_go=TD_MODE_RESOLUTION_OWNER_GO,
+            transport=transport,
+        )
+    assert "POSITIONS_EMPTY" in str(err.value)
+    assert not (tmp_path / "d4_bound_account_identity_runtime_instance_v1.json").exists()
+    assert not (tmp_path / "d5_checkpoint_observation_window_binding_v1.json").exists()
+    assert not any(call.method == "POST" for call in transport.calls)
+
+
+def test_continue_genesis_missing_uid_fail_closes_after_mgn_mode(tmp_path: Path) -> None:
+    _persist_bound_genesis_contract(tmp_path)
+    transport = RecordingFakeCanaryTransportV1(body=_POSITION_NO_UID_BODY)
+    with pytest.raises(D4D5GenesisRuntimeOrchestratorError) as err:
+        continue_d4_d5_genesis_with_fresh_position_mgn_mode_v1(
+            store_root=tmp_path,
+            owner_go=TD_MODE_RESOLUTION_OWNER_GO,
+            transport=transport,
+        )
+    assert "D4_BOUND_ACCOUNT_IDENTITY_ABSENT_FROM_GENESIS_EVIDENCE_PACK" in str(err.value)
+    facts = (tmp_path / "d4_genesis_position_mgn_mode_observed_facts_v1.json").read_text(
+        encoding="utf-8"
+    )
+    assert '"fresh_mgn_mode_observed":"cross"' in facts
+    assert not (tmp_path / "d4_bound_account_identity_runtime_instance_v1.json").exists()
+    assert not any(call.method == "POST" for call in transport.calls)

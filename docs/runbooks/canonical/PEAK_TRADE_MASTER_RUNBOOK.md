@@ -18954,6 +18954,7 @@ CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
 PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
 GENESIS_CONTRACT_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_rebaseline_contract_v1.py
 D4_GENESIS_BOOTSTRAP_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_account_config_bootstrap_v1.py
+D4_GENESIS_POSITION_MGN_MODE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_position_mgn_mode_bootstrap_v1.py
 GENESIS_ORCHESTRATOR_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_runtime_orchestrator_v1.py
 PARENT_CONTRACT=FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT
 EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
@@ -18962,11 +18963,20 @@ NEXT_STEP_REQUIRES_OWNER_GO=true
 GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
 GENESIS_AS_OF=2026-09-13T17:03:18Z
 ACCOUNT_CONFIG_GET_PERFORMED=true
-ADDITIONAL_READ_ONLY_GETS=0
-D4_GENESIS_FIELD_FAIL_CLOSED=bound_td_mode
+ADDITIONAL_READ_ONLY_GETS=1
+POSITIONS_GET_PERFORMED=true
+POSITIONS_QUERY_INSTRUMENT=SUI-USD_UM_XPERP-310404
+POSITION_MATCH_COUNT=1
+FRESH_MGN_MODE_OBSERVED=cross
+BOUND_TD_MODE_RESOLVED=true
+BOUND_TD_MODE=cross
+D4_BOUND_TD_MODE_SOURCE=FRESH_AUTHENTICATED_POSITION_MGN_MODE
+D4_BOUND_TD_MODE_DERIVATION=OKX_FUTURES_SWAP_MGN_MODE_TO_TD_MODE_IDENTITY_MAPPING
+D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK
 D4_RUNTIME_INSTANCE_PRESENT=false
 D5_RUNTIME_INSTANCE_PRESENT=false
 OBSERVATION_S0_PREREQUISITES_SATISFIED=false
+TD_MODE_RESOLUTION_OWNER_GO=OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1
 D4_D5_GENESIS_RUNTIME_STORE=evidence/ops/full_core_d6_path_b_d4_d5_genesis_rebaseline_v1/2026-09-13T170318Z
 ```
 
@@ -18974,12 +18984,16 @@ A. Legacy D4/D5 runtime instances are not reconstructed. New evidence
 is valid only from `GENESIS_AS_OF`. Pre-genesis periods are
 `OUT_OF_SCOPE_FOR_NEW_RUNTIME_CHAIN`.
 
-B. The one authorized GET is `GET &#47;api&#47;v5&#47;account&#47;config`. Observed UID
-and `tdMode` may bind D4 members. `bound_venue_identity` reuses the
-current canonical GET-path venue identity `OKX`. Missing `settleCcy`
-may use the current unique owner-package settlement pin `USDC`.
-Missing `tdMode` fail-closes on that field. Defaults, env, credential
-contents, and history remain forbidden mint sources.
+B. Account-config GET remains the D4 identity bootstrap source. It does
+not supply a global `tdMode`. Owner-GO
+`OWNER_GO_PR_6448_BOUND_TD_MODE_FRESH_POSITION_RESOLUTION_V1`
+authorized one additional `GET &#47;api&#47;v5&#47;account&#47;positions`
+scoped to the current canonical single-selected future
+`SUI-USD_UM_XPERP-310404`. Fresh unique `mgnMode=cross` maps to
+`bound_td_mode=cross`. D4/D5 runtime instances remain unpersisted
+because the previously observed account UID is absent from the genesis
+evidence pack and was not present on the positions row. Defaults, env,
+credential contents, and history remain forbidden mint sources.
 
 C. The D5 genesis window is a point window at `GENESIS_AS_OF`. This
 does **not** assert zero prior events and does **not** prove event

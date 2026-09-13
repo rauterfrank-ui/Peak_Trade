@@ -5857,6 +5857,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/package_1_observation_s0_runtime_binding_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_rebaseline_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_account_config_bootstrap_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/d4_genesis_fresh_position_mgn_mode_bootstrap_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/d4_d5_genesis_runtime_orchestrator_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -6563,7 +6564,10 @@ entities:
       HISTORICAL_COMPLETENESS_CLAIMED=false;
       D4_GENESIS_BOOTSTRAP_SOURCE=FRESH_AUTHENTICATED_ACCOUNT_CONFIG;
       ACCOUNT_CONFIG_GET_PERFORMED=true;
-      D4_GENESIS_FIELD_FAIL_CLOSED=bound_td_mode;
+      POSITIONS_GET_PERFORMED=true;
+      FRESH_MGN_MODE_OBSERVED=cross;
+      BOUND_TD_MODE_RESOLVED=true;
+      D4_GENESIS_FIELD_FAIL_CLOSED=bound_account_identity:ABSENT_FROM_GENESIS_EVIDENCE_PACK;
       D4_RUNTIME_INSTANCE_PRESENT=false;
       D5_RUNTIME_INSTANCE_PRESENT=false;
       POINT_WINDOW_DOES_NOT_ASSERT_ZERO_PRIOR_EVENTS=true;
