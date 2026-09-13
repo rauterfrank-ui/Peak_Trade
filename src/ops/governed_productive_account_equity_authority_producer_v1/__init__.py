@@ -532,6 +532,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.account_eq
     execute_account_equity_source_mapping_and_complete_event_stream_acquisition_v1,
     reject_observed_value_as_kind_absence_or_embedding_decision_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1 import (
+    F12F13F16F17F18NecessaryEquityStockKindResolutionError,
+    F12F13F16F17F18NecessaryEquityStockKindResolutionResultV1,
+    execute_f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1,
+    reject_claimed_f12_f13_f16_f17_f18_proof_without_primary_evidence_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1099,6 +1105,10 @@ __all__ = [
     "AccountEquitySourceMappingAndCompleteEventStreamAcquisitionResultV1",
     "execute_account_equity_source_mapping_and_complete_event_stream_acquisition_v1",
     "reject_observed_value_as_kind_absence_or_embedding_decision_v1",
+    "F12F13F16F17F18NecessaryEquityStockKindResolutionError",
+    "F12F13F16F17F18NecessaryEquityStockKindResolutionResultV1",
+    "execute_f12_f13_f16_f17_f18_necessary_equity_stock_kind_resolution_v1",
+    "reject_claimed_f12_f13_f16_f17_f18_proof_without_primary_evidence_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
