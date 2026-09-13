@@ -15,6 +15,9 @@ import re
 from dataclasses import dataclass
 from typing import Any, Mapping, Tuple
 
+from src.ops.governed_productive_account_equity_authority_producer_v1.bound_account_identity_contract_v1 import (
+    require_bound_account_identity_ref_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
     CHECKPOINT_CAN_MINT_EQUITY,
@@ -29,6 +32,7 @@ OBSERVATION_VS_AUTHORITY_CLASS = "NON_AUTHORITATIVE_ANCHOR"
 EQUITY_MINT_STATUS_NOT_MINTED = "NOT_MINTED"
 RUNNING_EQUITY_VALUE_STATE_ABSENT = "ABSENT"
 BOUND_ACCOUNT_IDENTITY_STATUS_UNPROVEN = "UNPROVEN_FAIL_CLOSED"
+BOUND_ACCOUNT_IDENTITY_STATUS_BOUND_BY_REFERENCE = "BOUND_BY_REFERENCE"
 ORDERING_BOUNDARY_CLASS = "CHECKPOINT_PRECEDES_SUBSEQUENT_CLASSIFIED_EVENTS"
 REQUIRED_FIELDS: Tuple[str, ...] = (
     "checkpoint_id",
@@ -39,6 +43,8 @@ REQUIRED_FIELDS: Tuple[str, ...] = (
     "observation_vs_authority_class",
     "equity_mint_status",
     "running_equity_value_state",
+    "bound_account_identity_ref",
+    "bound_account_identity_digest",
     "bound_account_identity_status",
     "ordering_boundary_class",
     "schema_digest",
@@ -68,6 +74,8 @@ class EquityStockCheckpointContractV1:
     observation_vs_authority_class: str
     equity_mint_status: str
     running_equity_value_state: str
+    bound_account_identity_ref: str
+    bound_account_identity_digest: str
     bound_account_identity_status: str
     ordering_boundary_class: str
     schema_digest: str
@@ -125,8 +133,14 @@ def build_equity_stock_checkpoint_contract_v1(
     schema_digest: str,
     input_set_digest: str,
     checkpoint_version: str,
+    bound_account_identity_ref: str,
+    bound_account_identity_digest: str,
     claimed_equity_stock_value: str = "ABSENT",
 ) -> EquityStockCheckpointContractV1:
+    identity_ref, identity_digest = require_bound_account_identity_ref_v1(
+        bound_account_identity_ref=bound_account_identity_ref,
+        bound_account_identity_digest=bound_account_identity_digest,
+    )
     payload = {
         "checkpoint_id": _require_non_empty_str(field="checkpoint_id", raw=checkpoint_id),
         "checkpoint_schema_version": CONTRACT_VERSION,
@@ -136,7 +150,9 @@ def build_equity_stock_checkpoint_contract_v1(
         "observation_vs_authority_class": OBSERVATION_VS_AUTHORITY_CLASS,
         "equity_mint_status": EQUITY_MINT_STATUS_NOT_MINTED,
         "running_equity_value_state": RUNNING_EQUITY_VALUE_STATE_ABSENT,
-        "bound_account_identity_status": BOUND_ACCOUNT_IDENTITY_STATUS_UNPROVEN,
+        "bound_account_identity_ref": identity_ref,
+        "bound_account_identity_digest": identity_digest,
+        "bound_account_identity_status": BOUND_ACCOUNT_IDENTITY_STATUS_BOUND_BY_REFERENCE,
         "ordering_boundary_class": ORDERING_BOUNDARY_CLASS,
         "schema_digest": _require_non_empty_str(field="schema_digest", raw=schema_digest),
         "input_set_digest": _require_non_empty_str(field="input_set_digest", raw=input_set_digest),

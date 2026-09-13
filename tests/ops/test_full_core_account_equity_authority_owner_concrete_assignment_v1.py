@@ -137,6 +137,7 @@ def test_slot_contains_no_producer_implementation() -> None:
     py_files = sorted(path.name for path in SLOT_DIR.glob("*.py"))
     assert py_files == [
         "__init__.py",
+        "bound_account_identity_contract_v1.py",
         "constants_v1.py",
         "equity_affecting_event_taxonomy_contract_v1.py",
         "equity_stock_checkpoint_contract_v1.py",
@@ -184,6 +185,7 @@ def test_slot_contains_no_producer_implementation() -> None:
             "equity_affecting_event_taxonomy_contract_v1.py",
             "fresh_eq_reconciliation_target_contract_v1.py",
             "option_d_ssot_architecture_contract_v1.py",
+            "bound_account_identity_contract_v1.py",
         }
     )
     for forbidden in (
@@ -223,6 +225,11 @@ def test_slot_contains_no_producer_implementation() -> None:
     assert "def produce" not in algebra
     assert "def reconstruct" not in algebra
     assert "def bind_account_equity" not in algebra
+    identity = (SLOT_DIR / "bound_account_identity_contract_v1.py").read_text(encoding="utf-8")
+    assert "def mint" not in identity
+    assert "def produce" not in identity
+    assert "def reconstruct" not in identity
+    assert "def bind_account_equity" not in identity
 
 
 def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:

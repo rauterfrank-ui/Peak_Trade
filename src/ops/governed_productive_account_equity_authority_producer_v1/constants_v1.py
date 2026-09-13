@@ -19,8 +19,8 @@ predicate identity and boundary ratification, plus typed P01
 application-predicate input-domain identity and boundary ratification,
 plus typed C17+ source-candidate/acceptance/promotion/reopen contracts
 and a read-only candidate census, plus OPTION_D SSOT architecture,
-checkpoint, event-taxonomy, and fresh-eq reconciliation-target
-contracts.
+checkpoint, event-taxonomy, fresh-eq reconciliation-target
+contracts, and bound account-identity contract.
 No producer implementation. No
 runtime source object. No mapping. No value binding. No
 Live-account-bound join. No wire. No event acquisition. No
@@ -271,8 +271,14 @@ EQ_RECONCILIATION_TARGET_RUNTIME_INSTANCE_PRESENT = False
 EVENT_ACQUISITION_CREATED = False
 RECONSTRUCTION_ENGINE_CREATED = False
 RESTART_PROVEN = False
-BOUND_ACCOUNT_IDENTITY_PROVEN = False
-EARLIEST_OPTION_D_DEPENDENCY = "D4_BOUND_ACCOUNT_IDENTITY"
+BOUND_ACCOUNT_IDENTITY_PROVEN = True
+BOUND_ACCOUNT_IDENTITY_CONTRACT_SCHEMA_PRESENT = True
+BOUND_ACCOUNT_IDENTITY_RUNTIME_INSTANCE_PRESENT = False
+BOUND_ACCOUNT_IDENTITY_FROM_ENV_FORBIDDEN = True
+BOUND_ACCOUNT_IDENTITY_FROM_CREDENTIAL_FORBIDDEN = True
+BOUND_ACCOUNT_IDENTITY_IMPLICIT_DEFAULT_FORBIDDEN = True
+BOUND_ACCOUNT_CONCRETE_UID_OBSERVED = False
+EARLIEST_OPTION_D_DEPENDENCY = "D5_CHECKPOINT_OBSERVATION_ACQUISITION"
 C17_CREATION_FROZEN_UNTIL_D1_D9_PROVEN = True
 LIVE_RESTART_RECONSTRUCTED = False
 RECONCILIATION_CONTRACT_CREATED = False
