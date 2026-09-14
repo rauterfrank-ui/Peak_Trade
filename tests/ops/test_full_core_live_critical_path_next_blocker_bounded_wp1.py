@@ -77,7 +77,11 @@ _AS_OF = "2026-09-14T09:00:00Z"
 def _bm_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BM_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BN FULL_CORE_LIVE_EQUITY_STOCK_KIND_SET_NEW_CANONICAL_DEFINITION", start
+        )
+    ]
 
 
 def _run(tmp_path: Path):

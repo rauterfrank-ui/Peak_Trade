@@ -589,6 +589,17 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.live_criti
     join_live_critical_path_to_d6_diagnostics_v1,
     reject_claimed_live_critical_path_authority_mutation_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.live_equity_stock_kind_set_new_canonical_definition_v1 import (
+    LiveEquityStockKindCandidateV1,
+    LiveEquityStockKindSetDefinitionError,
+    LiveEquityStockKindSetDefinitionResultV1,
+    LiveEquityStockKindSetDefinitionV1,
+    LiveEquityStockMembershipRecordV1,
+    build_live_equity_stock_kind_set_definition_v1,
+    evaluate_live_equity_stock_kind_membership_v1,
+    execute_live_equity_stock_kind_set_new_canonical_definition_v1,
+    reject_claimed_live_kind_set_authority_mutation_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1199,6 +1210,15 @@ __all__ = [
     "execute_live_critical_path_next_blocker_bounded_wp1",
     "join_live_critical_path_to_d6_diagnostics_v1",
     "reject_claimed_live_critical_path_authority_mutation_v1",
+    "LiveEquityStockKindCandidateV1",
+    "LiveEquityStockKindSetDefinitionError",
+    "LiveEquityStockKindSetDefinitionResultV1",
+    "LiveEquityStockKindSetDefinitionV1",
+    "LiveEquityStockMembershipRecordV1",
+    "build_live_equity_stock_kind_set_definition_v1",
+    "evaluate_live_equity_stock_kind_membership_v1",
+    "execute_live_equity_stock_kind_set_new_canonical_definition_v1",
+    "reject_claimed_live_kind_set_authority_mutation_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
