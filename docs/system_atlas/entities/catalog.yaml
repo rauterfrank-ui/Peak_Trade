@@ -5903,6 +5903,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_today_initial_stock_ratification_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_today_initial_stock_anchor_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_today_initial_stock_kind_set_membership_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/gate_a_independently_attested_productive_nonzero_liability_stock_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5972,6 +5973,7 @@ entities:
       - tests/ops/test_full_core_d6_account_equity_source_mapping_ratification_v1.py
       - tests/ops/test_full_core_d6_source_mapping_and_complete_event_stream_acquisition_v1.py
       - tests/ops/test_full_core_d6_f12_f13_primary_liability_stock_observation_v1.py
+      - tests/ops/test_full_core_option_d_gate_a_independently_attested_productive_nonzero_liability_stock_v1.py
       - tests/ops/test_full_core_d6_eq_identity_and_f12_f13_liability_stock_kind_ratification_v1.py
       - tests/ops/test_full_core_d6_f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1.py
       - tests/ops/test_full_core_d6_bj_semantics_bounded_implementation_wp1.py
@@ -6028,6 +6030,7 @@ entities:
       - docs/ops/specs/FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_V1.md
       - docs/ops/specs/FULL_CORE_D6_F12_F13_F16_F17_F18_NECESSARY_EQUITY_STOCK_KIND_RESOLUTION_V1.md
       - docs/ops/specs/FULL_CORE_D6_F12_F13_PRIMARY_LIABILITY_STOCK_OBSERVATION_V1.md
+      - docs/ops/specs/FULL_CORE_OPTION_D_GATE_A_INDEPENDENTLY_ATTESTED_PRODUCTIVE_NONZERO_LIABILITY_STOCK_V1.md
       - docs/ops/specs/FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1.md
       - docs/ops/specs/FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_V1.md
       - docs/ops/specs/FULL_CORE_D6_BJ_SEMANTICS_BOUNDED_IMPLEMENTATION_WP1.md
