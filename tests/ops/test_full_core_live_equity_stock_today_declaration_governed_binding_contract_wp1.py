@@ -72,6 +72,7 @@ MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
 BS_HEADING = "11.2.1.BS FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_SOURCE_KIND"
 BT_HEADING = "11.2.1.BT FULL_CORE_LIVE_EQUITY_STOCK_TODAY_DECLARATION_GOVERNED_BINDING_CONTRACT"
+BU_HEADING = "11.2.1.BU FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_RATIFICATION"
 SEALED_BS = REPO_ROOT / CANONICAL_BS_PACK_RELPATH
 D4_UID = "856964404452495999"
 D4_CCY = "USDC"
@@ -170,7 +171,7 @@ def _run(tmp_path: Path, *, config: dict | None = None, balance: dict | None = N
 def _bt_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BT_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[start : runbook.index(BU_HEADING, start)]
 
 
 def test_owner_go_and_sha_mismatch_fail_closed(tmp_path: Path) -> None:
