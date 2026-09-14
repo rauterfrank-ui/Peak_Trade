@@ -22835,6 +22835,203 @@ CURRENT_CANONICAL_SECTION=11.2.1.CB.FULL_CORE_BORROW_OR_ACCOUNT_LIABILITY_STATE_
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.CC FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION (BOUND; EXACTLY ONE PREVIOUSLY UNADJUDICATED EVENT SURFACE QUALIFIED; GET &#47;api&#47;v5&#47;account&#47;interest-accrued PRE-ACQUISITION CONTRACT BOUND; NO GET; NO POST; EMBEDDING WITNESS UNBOUND; U05/U06/RESIDUAL REMAIN_UNKNOWN; NO GATE_A RETRY; NO GATE_B; VENUE EQ NON-SOURCE; BILLS NONCANONICAL; NO MS2; NO D7; NO WIRE)
+
+Additive persist. Does **not** rewrite sealed §11.2.1.CB, §11.2.1.CA,
+§11.2.1.BZ, §11.2.1.BY, or earlier OPTION_D packs. Does **not** GET.
+Does **not** POST. Does **not** retry GATE_A. Does **not** execute
+GATE_B. Does **not** INCLUDE or EXCLUDE U05, U06, or residual from
+UNKNOWN. Does **not** relabel bills or fills. Does **not** treat
+`liab`/`totalLiab` as embedding or P01-overlap proof. Does **not** use
+`acctLv=2` as a standalone disqualifier. Venue `eq` remains a
+reconciliation target only. D6 classified-event KIND_SET remains
+`EMPTY_FAIL_CLOSED`. Protected surfaces remain unchanged.
+
+Owner-GO
+`QUALIFY_AND_BIND_EXACTLY_ONE_NEW_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_NON_ALGEBRAIC_EMBEDDING_WITNESS_NOT_IN_PRIOR_FOUR_CANDIDATES_TO_ACQUISITION_BOUNDARY_V1`
+authorizes qualifying and binding at most one previously unadjudicated
+independent liability-event surface or non-algebraic embedding witness,
+not among the four already adjudicated GET candidates, to the
+pre-acquisition boundary. It fulfills the §11.2.1.CB next-GO to supply
+or authorize that surface or witness. It does **not** authorize
+Hope-GET, GATE_A/GATE_B re-execution, bills as source authority, venue
+`eq` as source authority, kind invention, Mini-Slice 2, D7,
+reconstruction, DAG-pin release, U06 acquisition, residual
+exhaustiveness, or productive acquisition.
+
+A bounded census of previously unadjudicated official EEA GET surfaces
+inspected five candidates and selected exactly one EVENT_SURFACE:
+`GET &#47;api&#47;v5&#47;account&#47;interest-accrued`. Official EEA V5
+documentation at `https:&#47;&#47;my.okx.com&#47;docs-v5&#47;en&#47;` with
+REST `https:&#47;&#47;eea.okx.com` documents that surface as read-only GET
+interest-accrued data for the past year, with fields `ccy`, `instId`,
+`mgnMode`, `interest`, `interestRate`, `liab` (Liability), `totalLiab`,
+`interestFreeLiab`, and `ts` (timestamp for interest accrued). The same
+regional specification documents MARGIN borrowing under Futures mode,
+so `acctLv=2` is not a standalone disqualifier. The bound account class
+is an EEA Futures-mode trading account. Current MARGIN-loan presence on
+the bound account remains UNKNOWN and is not proven by this slice. The
+surface was not previously adjudicated or excluded in canonical repo
+evidence. It is not an embedding witness. The existing typed producer
+is reused without authority redesign. Authorized GET count remains `0`.
+Actual GET count is `0`. POST count is `0`. Future max GET count, if
+separately authorized, is `1`. Retry remains forbidden.
+
+``` text
+OWNER_GO=QUALIFY_AND_BIND_EXACTLY_ONE_NEW_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_NON_ALGEBRAIC_EMBEDDING_WITNESS_NOT_IN_PRIOR_FOUR_CANDIDATES_TO_ACQUISITION_BOUNDARY_V1
+OWNER_GO_STATUS=CONSUMED
+PARENT_CB_NEXT_OWNER_GO=OWNER_GO_REQUIRED_TO_SUPPLY_OR_AUTHORIZE_AN_INDEPENDENT_LIABILITY_EVENT_SURFACE_AND_NON_ALGEBRAIC_EMBEDDING_WITNESS_NOT_IN_THE_FOUR_ADJUDICATED_GET_CANDIDATES_V1
+AUTHORITY_CLASS=R0_PRE_ACQUISITION_EVENT_SURFACE_BINDING_NO_VENUE_GET
+RISK_CLASS=R0_NO_SECRETREF_NO_ACCOUNT_MUTATION
+PERSIST_CLASS=FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION_SSOT_PERSIST
+THIS_SLICE=11.2.1.CC.FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION
+CURRENT_PHASE=11.2.1.CC.FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION
+CURRENT_CANONICAL_SECTION=11.2.1.CC.FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION
+ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+EXISTING_AUTHORITY_OWNER_UNCHANGED=true
+NEW_AUTHORITY_OWNER_ALLOWED=false
+SELECTED_OPTION=OPTION_D
+GENESIS_ID=D4D5GENESIS8d3f573ffc0c59b4
+GENESIS_AS_OF=2026-09-13T17:03:18Z
+U05_EVIDENCE_CLASS=U05_INDEPENDENT_LIABILITY_EVENT_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_PRIMARY_PROOF_V1
+AUTHORIZED_ACQUISITION_SURFACE=FORENSIC_INDEPENDENT_EQUITY_STOCK_AFFECTING_EVENT_RECORD_NOT_BALANCE_SNAPSHOT_NOT_SOURCE_AUTHORITY
+EXPECTED_PRIMARY_PROOF_OBJECT=INDEPENDENT_LIABILITY_EVENT_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_V1
+CANDIDATE_CENSUS_COUNT=5
+SELECTED_SINGLE_CANDIDATE_ID=GET_&#47;api&#47;v5&#47;account&#47;interest-accrued
+SELECTED_CANDIDATE_KIND=EVENT_SURFACE
+WHY_THIS_SINGLE_CANDIDATE_SELECTED=STRONGEST_PREVIOUSLY_UNADJUDICATED_EEA_GET_WITH_EXPLICIT_LIAB_INTEREST_TS_AND_NOT_SPOT_MODE_RESTRICTED
+PRIOR_FOUR_CANDIDATES_EXCLUDED=true
+EXACT_SURFACE_OR_WITNESS=GET_&#47;api&#47;v5&#47;account&#47;interest-accrued
+HTTP_METHOD=GET
+BOUND_ENDPOINT=&#47;api&#47;v5&#47;account&#47;interest-accrued
+VENUE_AUTHORITY_SOURCE=https:&#47;&#47;my.okx.com&#47;docs-v5&#47;en&#47;
+VENUE_CAPABILITY_PROVEN=true
+READ_ONLY_PROVEN=true
+LIABILITY_IDENTITY_CAPABILITY=true
+ACCOUNT_SCOPE_CAPABILITY=true
+TIME_EVENT_IDENTITY_CAPABILITY=true
+CURRENCY_SCOPE_CAPABILITY=true
+EQUITY_STOCK_EFFECT_CAPABILITY=false
+INDEPENDENCE_FROM_RECONSTRUCTION_ALGEBRA=true
+NON_ALGEBRAIC_EMBEDDING_CAPABILITY=false
+ONCE_ONLY_EFFECT_CAPABILITY=false
+DOUBLE_COUNTING_SAFETY_CAPABILITY=true
+ACCTLV2_ALONE_USED_AS_DISQUALIFIER=false
+SURFACE_OR_WITNESS_BINDABLE=true
+SURFACE_BINDING_STATUS=PRE_ACQUISITION_CONTRACT_BOUND
+PRIMARY_PROOF_ROLE_BOUND=INDEPENDENT_LIABILITY_EVENT_SURFACE_NOT_EMBEDDING_WITNESS
+SOURCE_PROVENANCE_STATUS=PRE_ACQUISITION_CONTRACT_BOUND_RAW_NOT_ACQUIRED
+MAX_GET_COUNT=1
+FUTURE_MAX_GET_COUNT_IF_SEPARATELY_AUTHORIZED=1
+RETRY_ALLOWED=false
+HOPE_GET_FORBIDDEN=true
+ACQUISITION_AUTHORITY_AFTER_BINDING=NOT_AUTHORIZED_SEPARATE_OWNER_GO_REQUIRED
+PRODUCTIVE_ACQUISITION_AUTHORIZED=false
+AUTHORIZED_GET_COUNT=0
+ACTUAL_GET_COUNT=0
+POST_COUNT=0
+ACCOUNT_MUTATION_PERFORMED=false
+PRODUCTIVE_ACQUISITION_EXECUTED=false
+BORROW_OR_ACCOUNT_LIABILITY_STATE_PRODUCER_STATUS=IMPLEMENTED_TYPED_FAIL_CLOSED_OVER_SEALED_RAW
+PRODUCER_ID=BORROW_OR_ACCOUNT_LIABILITY_STATE_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_PRODUCER_V1
+INDEPENDENT_LIABILITY_EVENT_PROVEN=false
+EQUITY_STOCK_EFFECT_PROVEN=false
+EVENT_AFTER_PRIOR_PROVEN=false
+D4_D5_SCOPE_IDENTITY_PROVEN=false
+NON_ALGEBRAIC_EMBEDDING_IDENTITY=UNKNOWN
+P01_U05_OVERLAP_DISPROVEN=false
+ONCE_ONLY_EQUITY_STOCK_EFFECT_PROVEN=false
+DOUBLE_COUNTING_GUARD_PROVEN=true
+U05_PRIMARY_PROOF_STATUS=NOT_ACQUIRED_EVENT_SURFACE_PRE_ACQUISITION_BOUND_EMBEDDING_WITNESS_UNBOUND
+U05_DECISION_BEFORE=REMAIN_UNKNOWN
+U05_DECISION_AFTER=REMAIN_UNKNOWN
+U05_DECISION_BASIS=EVENT_SURFACE_PRE_ACQUISITION_BOUND_NO_GET_EXECUTED_EMBEDDING_WITNESS_UNBOUND
+U06_DECISION_UNCHANGED=REMAIN_UNKNOWN
+RESIDUAL_DECISION_UNCHANGED=REMAIN_UNKNOWN
+BLOCKER_ID=INDEPENDENT_LIABILITY_EVENT_NOT_ACQUIRED_AND_NON_ALGEBRAIC_EMBEDDING_WITNESS_STILL_UNBOUND_AFTER_INTEREST_ACCRUED_PRE_ACQUISITION_BINDING
+ARCHITECTURE_BLOCKER=U05_STILL_REQUIRES_SEPARATELY_AUTHORIZED_ACQUISITION_AND_INDEPENDENT_NON_ALGEBRAIC_EMBEDDING_WITNESS
+GATE_A_REOPENED=false
+GATE_B_REEXECUTED=false
+GET_ALONE_MAY_INCLUDE=false
+GET_ALONE_MAY_EXCLUDE=false
+RATIFIED_CLASSIFIED_EVENT_KIND_SET_AFTER=EMPTY_FAIL_CLOSED
+KIND_SET=EMPTY_FAIL_CLOSED
+KIND_SET_RESOLVED=false
+CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false
+RAW_EQ_SOURCE_AUTHORITY=false
+VENUE_EQ_SOURCE_AUTHORITY=false
+EQ_RECONCILIATION_TARGET_ONLY=true
+ACCOUNT_BILLS_CANONICALIZED=false
+ACCOUNT_BILLS_CURRENT_NONCANONICAL=true
+MS2_AUTHORIZED=false
+MS2_EXECUTED=false
+D6_FULLY_CLOSED=false
+D7_AUTHORIZED=false
+C17_CREATED=false
+RECONSTRUCTION_IMPLEMENTED=false
+RECONSTRUCTION_ENGINE_CREATED=false
+ATLAS_AUTHORITY=NONE
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+CORE_LOGIC_CHANGE=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+MASTER_V2_UNCHANGED=true
+DOUBLE_PLAY_UNCHANGED=true
+BULL_BEAR_STATE_SWITCH_UNCHANGED=true
+TOP20_RANKING_UNIVERSE_UNCHANGED=true
+TOP20_SELECTION_BINDINGS_UNCHANGED=true
+SELF_LEARNING_UNCHANGED=true
+FULL_CORE_AUTONOMY_UNCHANGED=true
+STEP_29P_UNCHANGED=true
+CONSTRUCT_LIVE_EXECUTION_PORT_V1=FORBIDDEN_IN_CAP_11_1
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/u05_independent_liability_event_surface_or_embedding_witness_qualification_v1.py
+PARENT_CONTRACT=FULL_CORE_BORROW_OR_ACCOUNT_LIABILITY_STATE_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_PRODUCER_FAIL_CLOSED
+EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_TO_EXECUTE_EXACTLY_ONE_BOUND_U05_PRIMARY_PROOF_GET_OR_WITNESS_ACQUISITION_V1
+NEXT_ACTION=STOP_AWAIT_OWNER_MERGE_GO
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+A. The four previously adjudicated GET candidates remain excluded and
+are not repackaged. Official EEA documentation, independently retrieved,
+does not previously appear in canonical repo evidence for
+`GET &#47;api&#47;v5&#47;account&#47;interest-accrued`. That surface is
+the strongest remaining event-producing read-only candidate because it
+exposes documented liability and interest-accrued fields with temporal
+and currency identity and is not restricted to Spot mode.
+
+B. Official EEA documentation documents MARGIN loans under Futures mode
+in max-loan and set-leverage text. `acctLv=2` therefore cannot by itself
+disqualify the selected surface. Current presence of MARGIN market-loan
+rows on the bound account remains UNKNOWN and requires a separately
+authorized GET. `enableSpotBorrow=false` is documented as a Spot-mode
+borrow switch and does not adjudicate Futures-mode MARGIN.
+
+C. The selected surface is bound only as
+`INDEPENDENT_LIABILITY_EVENT_SURFACE_NOT_EMBEDDING_WITNESS`. It cannot
+prove non-algebraic embedding, once-only equity-stock effect, or P01/U05
+non-overlap. Numerical `liab`/`totalLiab` coincidence is forbidden as
+embedding evidence. Independent liability events remain unproven because
+no GET was executed.
+
+D. Ambiguity that remains impossible without new external evidence: a
+separately authorized raw acquisition of the bound surface, and an
+independent non-algebraic embedding witness that is not venue `eq`
+source authority. Productive GET remains unauthorized until a separate
+current Owner-GO permits the exact bound acquisition.
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.CC.FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
@@ -87222,7 +87419,7 @@ gates. Does **not** set `LIVE_ENABLED=true` or `LIVE_ARMED=true`. Does
 `EXACT_OKX_FEE_FORMULA` to proven. Does **not** mark §11.14 complete.
 
 This GO consumed a bounded `OWNER_GET_ONLY_GO` to refresh stale pretrade
-predicates against current `origin/main` `8605bf596ef773419e99157b143befbcb69fa6a7`
+predicates against current `origin&#47;main` `8605bf596ef773419e99157b143befbcb69fa6a7`
 and to observe `GET &#47;api&#47;v5&#47;account&#47;trade-fee` for
 `instType=FUTURES&instFamily=SUI-USD_UM_XPERP`. Technical readiness true
 is not an execution grant.
@@ -87419,7 +87616,7 @@ promote `EXACT_OKX_FEE_FORMULA` to proven. Does **not** mark §11.14
 complete.
 
 This GO consumed a bounded `OWNER_EXECUTION_GO` bound to
-`origin/main` `705a063d0fddb60bc6d94693e029bb57669108dc` and
+`origin&#47;main` `705a063d0fddb60bc6d94693e029bb57669108dc` and
 `PRE_EXISTING_POSITION_STATE=pos=1`. Fresh GET-only pretrade observed
 `pos=1` on `SUI-USD_UM_XPERP-310404`. The productive canary ENTRY path
 is a LIMIT BUY qty=1. That action would increase the existing position.
