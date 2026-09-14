@@ -77,7 +77,12 @@ _AS_OF = "2026-09-13T23:59:00Z"
 def _bj_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BJ_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BK FULL_CORE_D6_BJ_SEMANTICS_BOUNDED_IMPLEMENTATION",
+            start,
+        )
+    ]
 
 
 def _run(tmp_path: Path):
