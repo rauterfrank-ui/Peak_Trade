@@ -87,7 +87,12 @@ _AS_OF = "2026-09-14T06:15:00Z"
 def _bk_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BK_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.BL FULL_CORE_D6_BK_BOUNDED_IMPLEMENTATION",
+            start,
+        )
+    ]
 
 
 def _record(fact_id: str, **fields: str) -> dict[str, str]:
