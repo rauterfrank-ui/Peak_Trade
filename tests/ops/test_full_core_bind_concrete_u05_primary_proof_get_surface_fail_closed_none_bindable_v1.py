@@ -89,7 +89,12 @@ CA_HEADING = (
 def _ca_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(CA_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[
+        start : runbook.index(
+            "11.2.1.CB FULL_CORE_BORROW_OR_ACCOUNT_LIABILITY_STATE_AND_NON_ALGEBRAIC_",
+            start,
+        )
+    ]
 
 
 def _copy_genesis(tmp_path: Path) -> Path:
