@@ -105,7 +105,11 @@ SOURCE_PATH = (
 def _cc_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(CC_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    cd = "11.2.1.CD FULL_CORE_U05_PRIMARY_PROOF_BOUND_INTEREST_ACCRUED_GET_ACQUISITION"
+    end = runbook.find(cd, start)
+    if end < 0:
+        end = runbook.index("## 11.3 Autonomy state model", start)
+    return runbook[start:end]
 
 
 def _copy_genesis(tmp_path: Path) -> Path:
