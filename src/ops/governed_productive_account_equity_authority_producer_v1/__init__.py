@@ -557,6 +557,17 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.f12_f13_ki
     execute_f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1,
     reject_claimed_f12_f13_kind_set_close_or_gate_execution_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.bj_remaining_unknown_kind_semantics_v1 import (
+    BjFactSemanticsRecordV1,
+    BjRemainingUnknownKindSemanticsError,
+    BjRemainingUnknownKindSemanticsResultV1,
+    attach_bj_semantics_to_d6_diagnostics_v1,
+    evaluate_bj_remaining_unknown_kind_semantics_v1,
+    execute_bj_remaining_unknown_kind_semantics_v1,
+    reject_claimed_bj_semantics_authority_mutation_v1,
+    select_precedent_reason_code_v1,
+    select_precedent_status_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1141,6 +1152,15 @@ __all__ = [
     "F12F13KindSetRemainingUnknownPinAndReopenGateResultV1",
     "execute_f12_f13_kind_set_remaining_unknown_pin_and_reopen_gate_v1",
     "reject_claimed_f12_f13_kind_set_close_or_gate_execution_v1",
+    "BjFactSemanticsRecordV1",
+    "BjRemainingUnknownKindSemanticsError",
+    "BjRemainingUnknownKindSemanticsResultV1",
+    "attach_bj_semantics_to_d6_diagnostics_v1",
+    "evaluate_bj_remaining_unknown_kind_semantics_v1",
+    "execute_bj_remaining_unknown_kind_semantics_v1",
+    "reject_claimed_bj_semantics_authority_mutation_v1",
+    "select_precedent_reason_code_v1",
+    "select_precedent_status_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
