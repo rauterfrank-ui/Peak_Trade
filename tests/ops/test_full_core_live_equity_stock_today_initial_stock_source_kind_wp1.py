@@ -58,6 +58,7 @@ MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
 BR_HEADING = "11.2.1.BR FULL_CORE_LIVE_EQUITY_STOCK_OWNER_SUPPLIED_BOOTSTRAP_ARTIFACT"
 BS_HEADING = "11.2.1.BS FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_SOURCE_KIND"
+BT_HEADING = "11.2.1.BT FULL_CORE_LIVE_EQUITY_STOCK_TODAY_DECLARATION_GOVERNED_BINDING_CONTRACT"
 SEALED_BR = REPO_ROOT / CANONICAL_BR_PACK_RELPATH
 CANONICAL_PACK = REPO_ROOT / CANONICAL_PACK_RELPATH
 _AS_OF = "2026-09-14T18:40:00Z"
@@ -66,7 +67,7 @@ _AS_OF = "2026-09-14T18:40:00Z"
 def _bs_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BS_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    return runbook[start : runbook.index(BT_HEADING, start)]
 
 
 def _write_declaration(root: Path, payload: dict) -> Path:
