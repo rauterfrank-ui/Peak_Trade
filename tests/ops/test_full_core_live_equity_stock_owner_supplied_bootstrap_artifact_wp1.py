@@ -107,7 +107,8 @@ _AS_OF = "2026-09-14T17:00:00Z"
 def _br_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BR_HEADING)
-    return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    successor = "11.2.1.BS FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_SOURCE_KIND"
+    return runbook[start : runbook.index(successor, start)]
 
 
 def _write_artifact(root: Path, payload: dict | bytes) -> Path:

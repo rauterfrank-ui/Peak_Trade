@@ -10,6 +10,8 @@ last_updated: 2026-09-14
 # Full Core Live Equity Stock Owner-Supplied Bootstrap Artifact WP1
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.BR.
+Historical sealed persist only. `PRODUCTIVE_CRITICAL_PATH_STATUS=RETIRED_FROM_PRODUCTIVE_CRITICAL_PATH`.
+Productive successor is Master Runbook §11.2.1.BS.
 
 ```text
 OWNER_GO=OWNER_GO_FULL_CORE_LIVE_EQUITY_STOCK_OWNER_SUPPLIED_BOOTSTRAP_ARTIFACT_V1
