@@ -578,6 +578,17 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bk_bj_sema
     records_from_bj_semantics_claims_v1,
     reject_claimed_bk_authority_mutation_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.live_critical_path_next_blocker_bounded_wp1 import (
+    LiveCriticalKindSetBoundaryV1,
+    LiveCriticalPathItemAdjudicationV1,
+    LiveCriticalPathNextBlockerError,
+    LiveCriticalPathNextBlockerResultV1,
+    build_live_critical_kind_set_boundary_v1,
+    build_live_critical_path_item_adjudications_v1,
+    execute_live_critical_path_next_blocker_bounded_wp1,
+    join_live_critical_path_to_d6_diagnostics_v1,
+    reject_claimed_live_critical_path_authority_mutation_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1179,6 +1190,15 @@ __all__ = [
     "join_bk_consumption_to_d6_diagnostics_v1",
     "records_from_bj_semantics_claims_v1",
     "reject_claimed_bk_authority_mutation_v1",
+    "LiveCriticalKindSetBoundaryV1",
+    "LiveCriticalPathItemAdjudicationV1",
+    "LiveCriticalPathNextBlockerError",
+    "LiveCriticalPathNextBlockerResultV1",
+    "build_live_critical_kind_set_boundary_v1",
+    "build_live_critical_path_item_adjudications_v1",
+    "execute_live_critical_path_next_blocker_bounded_wp1",
+    "join_live_critical_path_to_d6_diagnostics_v1",
+    "reject_claimed_live_critical_path_authority_mutation_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
