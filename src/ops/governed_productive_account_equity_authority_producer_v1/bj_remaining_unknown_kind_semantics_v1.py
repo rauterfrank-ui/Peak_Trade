@@ -19,6 +19,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.account_eq
     RATIFIED_SOURCE_KIND_SET,
     reject_unratified_equity_stock_source_kind_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.bj_future_admissible_evidence_and_include_exclude_qualification_law_v1 import (
+    NEW_FUTURE_ADMISSIBLE_EVIDENCE_CLASS_IDS,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     D6_FULLY_CLOSED,
     D7_AUTHORIZED,
@@ -162,7 +165,9 @@ STATUS_PRECEDENCE: tuple[str, ...] = (
 )
 _STATUS_RANK = {code: index for index, code in enumerate(STATUS_PRECEDENCE)}
 
-FUTURE_ADMISSIBLE_EVIDENCE_CLASSES: frozenset[str] = frozenset({GATE_A_ID, GATE_B_ID})
+FUTURE_ADMISSIBLE_EVIDENCE_CLASSES: frozenset[str] = (
+    frozenset({GATE_A_ID, GATE_B_ID}) | NEW_FUTURE_ADMISSIBLE_EVIDENCE_CLASS_IDS
+)
 RATIFIED_NON_SOURCE_OR_OTHER_DOMAIN_IDS: frozenset[str] = frozenset({"eq"})
 STANDING_D6_DIAGNOSTIC_KEYS: tuple[str, ...] = (
     "KIND_SET_RESOLVED",
