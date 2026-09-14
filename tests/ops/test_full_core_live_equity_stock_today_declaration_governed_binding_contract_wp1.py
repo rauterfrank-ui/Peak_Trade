@@ -503,6 +503,7 @@ def test_runbook_bt_and_navigation_persist() -> None:
     assert "FULL_CORE_LIVE_EQUITY_STOCK_TODAY_DECLARATION_GOVERNED_BINDING_CONTRACT_WP1.md" in mot
     assert BT_HEADING in mot
     assert "11.2.1.BT" in atlas
+    assert "live_equity_stock_today_declaration_governed_binding_contract_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is False
     assert LIVE_ARMED is False

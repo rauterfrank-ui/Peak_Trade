@@ -5895,6 +5895,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_bootstrap_stock_acquisition_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_owner_supplied_bootstrap_artifact_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_today_initial_stock_source_kind_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/live_equity_stock_today_declaration_governed_binding_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
