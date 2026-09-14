@@ -568,6 +568,16 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bj_remaini
     select_precedent_reason_code_v1,
     select_precedent_status_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.bk_bj_semantics_consumption_v1 import (
+    BkBjSemanticsConsumptionError,
+    BkBoundedImplementationResultV1,
+    BkFactConsumptionRecordV1,
+    consume_bj_remaining_unknown_kind_semantics_v1,
+    execute_bk_bounded_implementation_v1,
+    join_bk_consumption_to_d6_diagnostics_v1,
+    records_from_bj_semantics_claims_v1,
+    reject_claimed_bk_authority_mutation_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.classified_event_stream_acquisition_contract_v1 import (
     ClassifiedEventAcquisitionResultV1,
     ClassifiedEventStreamAcquisitionContractError,
@@ -1161,6 +1171,14 @@ __all__ = [
     "reject_claimed_bj_semantics_authority_mutation_v1",
     "select_precedent_reason_code_v1",
     "select_precedent_status_v1",
+    "BkBjSemanticsConsumptionError",
+    "BkBoundedImplementationResultV1",
+    "BkFactConsumptionRecordV1",
+    "consume_bj_remaining_unknown_kind_semantics_v1",
+    "execute_bk_bounded_implementation_v1",
+    "join_bk_consumption_to_d6_diagnostics_v1",
+    "records_from_bj_semantics_claims_v1",
+    "reject_claimed_bk_authority_mutation_v1",
     "acquire_classified_event_v1",
     "adjudicate_classified_event_stream_completeness_v1",
     "bind_classified_event_stream_to_checkpoint_v1",
