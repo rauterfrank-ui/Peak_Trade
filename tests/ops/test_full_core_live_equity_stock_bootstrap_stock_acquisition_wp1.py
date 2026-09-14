@@ -104,6 +104,9 @@ _AS_OF = "2026-09-14T16:00:00Z"
 def _bq_section() -> str:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     start = runbook.index(BQ_HEADING)
+    br = "11.2.1.BR FULL_CORE_LIVE_EQUITY_STOCK_OWNER_SUPPLIED_BOOTSTRAP_ARTIFACT"
+    if br in runbook[start:]:
+        return runbook[start : runbook.index(br, start)]
     return runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
 
 
