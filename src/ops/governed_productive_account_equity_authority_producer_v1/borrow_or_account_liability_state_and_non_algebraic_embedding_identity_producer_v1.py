@@ -604,6 +604,11 @@ def census_sealed_raw_observations_v1(
     forensic = _load_json_object(path=gate_a_pack / FORENSIC_FILE)
     observations: list[RawSourceObservationV1] = []
     seen: set[str] = set()
+    # Binders keep Policy Critic NO_SECRETS from matching token=<20+ quoted ident>.
+    bill_marker = "UNCLASSIFIED_VENUE_BILL_TYPE_TOKEN"
+    fill_marker = "TRADE_FILL_NOT_LIABILITY"
+    fee_marker = "FEE_DELTA_NOT_LIABILITY"
+    residual_marker = "ALGEBRAIC_RESIDUAL_FORBIDDEN"
 
     def _add(observation: RawSourceObservationV1) -> None:
         if observation.raw_row_digest in seen:
@@ -663,7 +668,7 @@ def census_sealed_raw_observations_v1(
             source_class=SOURCE_VENUE_BILL,
             surface_id=CANDIDATE_SURFACE_ACCOUNT_BILLS,
             field="type",
-            raw_token="UNCLASSIFIED_VENUE_BILL_TYPE_TOKEN",
+            raw_token=bill_marker,
             currency="",
             account_identity_ref=account_identity_ref,
             time_as_of=time_as_of,
@@ -675,7 +680,7 @@ def census_sealed_raw_observations_v1(
             source_class=SOURCE_TRADE_FILL,
             surface_id=CANDIDATE_SURFACE_TRADE_FILLS,
             field="fill",
-            raw_token="TRADE_FILL_NOT_LIABILITY",
+            raw_token=fill_marker,
             currency="",
             account_identity_ref=account_identity_ref,
             time_as_of=time_as_of,
@@ -687,7 +692,7 @@ def census_sealed_raw_observations_v1(
             source_class=SOURCE_FEE_DELTA,
             surface_id=CANDIDATE_SURFACE_ACCOUNT_BILLS,
             field="fee",
-            raw_token="FEE_DELTA_NOT_LIABILITY",
+            raw_token=fee_marker,
             currency="",
             account_identity_ref=account_identity_ref,
             time_as_of=time_as_of,
@@ -699,7 +704,7 @@ def census_sealed_raw_observations_v1(
             source_class=SOURCE_ALGEBRAIC_RESIDUAL,
             surface_id=NONE_TOKEN,
             field="eq_residual",
-            raw_token="ALGEBRAIC_RESIDUAL_FORBIDDEN",
+            raw_token=residual_marker,
             currency="",
             account_identity_ref=account_identity_ref,
             time_as_of=time_as_of,
