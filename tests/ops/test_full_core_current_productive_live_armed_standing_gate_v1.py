@@ -100,23 +100,23 @@ def test_evaluate_closes_live_armed_and_halts_on_wire_send(tmp_path: Path) -> No
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
     assert result.live_authorized == "false"
-    assert result.admitted == "false"
+    assert result.admitted == "true"
     assert result.live_armed_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+    assert result.first_real_blocker == "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert "LIVE_ENABLED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "LIVE_ARMED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "WIRE_SEND_NOT_PERMITTED" not in claims["ADMISSION_REASON_CODES"]
-    assert "EXECUTION_ADMISSION_FAIL_CLOSED" in claims["ADMISSION_REASON_CODES"]
+    assert "EXECUTION_ADMISSION_FAIL_CLOSED" not in claims["ADMISSION_REASON_CODES"]
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
     assert claims["WIRE_SEND_PERMITTED"] == "true"
     assert claims["LIVE_AUTHORIZED"] == "false"
-    assert claims["ADMITTED"] == "false"
+    assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["POST_COUNT"] == "0"
     assert claims["PROTECTED_SURFACES_CHANGED"] == "false"

@@ -146,8 +146,10 @@ def evaluate_execution_admission_v1(
 ) -> ExecutionAdmissionDecisionV1:
     """Fail-closed admission conjunction. Never a second execution owner.
 
-    LIVE_ENABLED is a standing authorization predicate:
-    false denies; true satisfies only that one predicate and does not admit.
+    LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED are standing predicates:
+    false denies; true satisfies only that one predicate and does not admit
+    by itself. A complete trusted conjunction admits. Admission is not
+    LiveExecutionPort construction, LIVE_AUTHORIZED, STEP-29Q, POST, or send.
     Contradiction-lock deny-on-true branches are not used.
     """
     reasons: list[str] = []
@@ -330,9 +332,6 @@ def evaluate_execution_admission_v1(
 
     unique = tuple(dict.fromkeys(reasons))
     admitted = len(unique) == 0
-    if not unique:
-        unique = ("EXECUTION_ADMISSION_FAIL_CLOSED",)
-        admitted = False
     return ExecutionAdmissionDecisionV1(
         admitted=admitted,
         fail_closed=True,

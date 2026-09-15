@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
@@ -238,20 +239,31 @@ def execute_current_productive_live_enabled_standing_gate_v1(
         raise CurrentProductiveLiveEnabledStandingGateError("STANDING_FIELD_WIRE_TRUE")
 
     decision = evaluate_execution_admission_v1(_admission_inputs_v1())
-    if decision.admitted is True:
-        raise CurrentProductiveLiveEnabledStandingGateError("ADMISSION_MUST_REMAIN_FALSE")
     deny_hit = _LIVE_ENABLED_DENY_REASONS.intersection(decision.reason_codes)
     if deny_hit:
         raise CurrentProductiveLiveEnabledStandingGateError(
             f"LIVE_ENABLED_DENY_PRESENT:{sorted(deny_hit)}"
         )
-    if WIRE_SEND_PERMITTED is True:
+    remainder_closed = EXECUTION_ADMISSION_REMAINDER_CLOSED is True
+    if remainder_closed:
+        if decision.admitted is not True:
+            raise CurrentProductiveLiveEnabledStandingGateError("ADMISSION_REMAINDER_NOT_CLOSED")
+        if "EXECUTION_ADMISSION_FAIL_CLOSED" in decision.reason_codes:
+            raise CurrentProductiveLiveEnabledStandingGateError(
+                "ADMISSION_FAIL_CLOSED_STILL_PRESENT"
+            )
         if "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes:
             raise CurrentProductiveLiveEnabledStandingGateError("WIRE_SEND_DENY_PRESENT")
-        if "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes:
-            raise CurrentProductiveLiveEnabledStandingGateError("ADMISSION_FAIL_CLOSED_MISSING")
-    elif "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
-        raise CurrentProductiveLiveEnabledStandingGateError("WIRE_SEND_DENY_MISSING")
+    else:
+        if decision.admitted is True:
+            raise CurrentProductiveLiveEnabledStandingGateError("ADMISSION_MUST_REMAIN_FALSE")
+        if WIRE_SEND_PERMITTED is True:
+            if "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes:
+                raise CurrentProductiveLiveEnabledStandingGateError("WIRE_SEND_DENY_PRESENT")
+            if "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes:
+                raise CurrentProductiveLiveEnabledStandingGateError("ADMISSION_FAIL_CLOSED_MISSING")
+        elif "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
+            raise CurrentProductiveLiveEnabledStandingGateError("WIRE_SEND_DENY_MISSING")
 
     construction = evaluate_live_execution_port_construction_admission_v1(
         admission=decision,
@@ -264,7 +276,9 @@ def execute_current_productive_live_enabled_standing_gate_v1(
     if construction.constructible is True or construction.constructed is True:
         raise CurrentProductiveLiveEnabledStandingGateError("PORT_MUST_REMAIN_FORBIDDEN")
 
-    if WIRE_SEND_PERMITTED is True:
+    if remainder_closed:
+        first_blocker = "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+    elif WIRE_SEND_PERMITTED is True:
         first_blocker = "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
     elif LIVE_ARMED is True:
         first_blocker = "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"

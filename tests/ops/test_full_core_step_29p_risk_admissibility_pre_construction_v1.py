@@ -317,8 +317,9 @@ def test_gate_independence_when_risk_admissible() -> None:
     decision = evaluate_execution_admission_v1(
         _all_modelable_live_gates_true(step_29p_risk_admissible=True)
     )
-    assert decision.admitted is False
+    assert decision.admitted is True
     assert "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P" not in decision.reason_codes
+    assert "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
@@ -332,6 +333,7 @@ def test_gate_independence_when_risk_admissible() -> None:
     )
     assert construction.constructible is False
     assert construction.constructed is False
+    assert "EXECUTION_ADMISSION_NOT_ADMITTED" not in construction.reason_codes
     proof = prove_live_execution_port_not_constructible_v1()
     assert proof["constructed"] is False
 
@@ -421,7 +423,8 @@ def test_zero_submit_wire_port_on_full_core_path(
     assert result.wire_send_occurred is False
     assert result.boundary.live_execution_port_constructed is False
     assert result.boundary.admission is not None
-    assert result.boundary.admission.admitted is False
+    assert result.boundary.admission.admitted is True
+    assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" in result.reason_codes
 
 
 def test_requirement_matrix_covers_required_gets_and_unresolved_equity() -> None:

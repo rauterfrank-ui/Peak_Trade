@@ -44,6 +44,7 @@ from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
+    EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_ENABLED,
     NUMERIC_EQUITY_TTL_SECONDS,
@@ -874,7 +875,11 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         blocker_class = "C"
         next_go = "OWNER_GO_REQUIRED_FOR_PRODUCTIVE_READ_ONLY_GET_FOR_29P_V1"
     elif current_productive_29p is True:
-        if WIRE_SEND_PERMITTED is True:
+        if EXECUTION_ADMISSION_REMAINDER_CLOSED is True:
+            first_blocker = "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+            blocker_class = "E"
+            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_EXECUTION_PORT_NOT_AUTHORIZED_BY_THIS_SLICE"
+        elif WIRE_SEND_PERMITTED is True:
             first_blocker = "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
             blocker_class = "E"
             next_go = "OWNER_GO_REQUIRED_FOR_ADMISSION_REMAINDER_NOT_AUTHORIZED_BY_THIS_SLICE"
