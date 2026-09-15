@@ -1,8 +1,9 @@
 """Constants for the offline Core→Live composition root.
 
-LIVE_ENABLED may be true as a standing admission predicate. LIVE_ARMED and
-WIRE_SEND_PERMITTED remain false. This package never arms wire send and does
-not treat LIVE_ENABLED as admission, authorization, or port construction.
+LIVE_ENABLED and LIVE_ARMED may be true as standing admission predicates.
+WIRE_SEND_PERMITTED remains false. This package never permits wire send and
+does not treat LIVE_ENABLED or LIVE_ARMED as admission, authorization, or
+port construction.
 """
 
 from __future__ import annotations
@@ -288,13 +289,15 @@ LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_ARMED = True
 LIVE_ENABLED_DOES_NOT_IMPLY_WIRE_SEND = True
 LIVE_ENABLED_DOES_NOT_IMPLY_PORT_CONSTRUCTION = True
 LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_AUTHORIZED = True
-LIVE_ARMED = False
+LIVE_ARMED = True
 LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED = True
+LIVE_ARMED_STANDING_GATE_CLOSED = True
 LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION = True
 LIVE_ARMED_FALSE_REMAINS_FAIL_CLOSED = True
 LIVE_ARMED_DOES_NOT_IMPLY_RISK_ADMISSIBLE = True
 LIVE_ARMED_DOES_NOT_IMPLY_WIRE_SEND = True
 LIVE_ARMED_DOES_NOT_IMPLY_PORT_CONSTRUCTION = True
+LIVE_ARMED_DOES_NOT_IMPLY_LIVE_AUTHORIZED = True
 SUBMIT_UNLOCKED = False
 WIRE_SEND_PERMITTED = False
 WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED = True
@@ -483,7 +486,7 @@ CANARY_DEFAULT_SIDE = "BUY"
 
 
 def standing_live_gate_fields_v1() -> dict[str, bool]:
-    """Standing Full-Core live gates. LIVE_ENABLED is a predicate, not admission."""
+    """Standing Full-Core live gates. LIVE_ENABLED and LIVE_ARMED are predicates, not admission."""
     return {
         "live_enabled": LIVE_ENABLED is True,
         "live_armed": LIVE_ARMED is True,

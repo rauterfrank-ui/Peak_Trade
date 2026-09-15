@@ -66,7 +66,7 @@ def test_standing_flags_close_live_enabled_without_activation() -> None:
     assert LIVE_ENABLED_DOES_NOT_IMPLY_WIRE_SEND is True
     assert LIVE_ENABLED_DOES_NOT_IMPLY_PORT_CONSTRUCTION is True
     assert LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_AUTHORIZED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_AUTHORIZED is False
     assert CANARY_LIVE_ENABLED is False
@@ -99,22 +99,22 @@ def test_evaluate_closes_live_enabled_and_halts_on_live_armed(tmp_path: Path) ->
     )
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert result.live_enabled == "true"
-    assert result.live_armed == "false"
+    assert result.live_armed == "true"
     assert result.wire_send_permitted == "false"
     assert result.live_authorized == "false"
     assert result.admitted == "false"
     assert result.live_enabled_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "LIVE_ARMED_STANDING_GATE_REMAINS_FALSE"
+    assert result.first_real_blocker == "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert "LIVE_ENABLED_FALSE" not in claims["ADMISSION_REASON_CODES"]
-    assert "LIVE_ARMED_FALSE" in claims["ADMISSION_REASON_CODES"]
+    assert "LIVE_ARMED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "WIRE_SEND_NOT_PERMITTED" in claims["ADMISSION_REASON_CODES"]
     assert claims["LIVE_ENABLED"] == "true"
-    assert claims["LIVE_ARMED"] == "false"
+    assert claims["LIVE_ARMED"] == "true"
     assert claims["WIRE_SEND_PERMITTED"] == "false"
     assert claims["LIVE_AUTHORIZED"] == "false"
     assert claims["ADMITTED"] == "false"
@@ -146,22 +146,13 @@ def test_ssot_docs_once_present() -> None:
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert DA_HEADING in runbook
     assert THIS_SLICE in runbook
-    assert (
-        "LIVE_ENABLED=true"
-        in runbook[
-            runbook.index(
-                "11.2.1.DA FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE"
-            ) : runbook.index("## 11.3 Autonomy state model")
-        ]
-    )
-    assert (
-        "LIVE_ARMED=false"
-        in runbook[
-            runbook.index(
-                "11.2.1.DA FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE"
-            ) : runbook.index("## 11.3 Autonomy state model")
-        ]
-    )
+    da_section = runbook[
+        runbook.index(
+            "11.2.1.DA FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE"
+        ) : runbook.index("11.2.1.DB FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE")
+    ]
+    assert "LIVE_ENABLED=true" in da_section
+    assert "LIVE_ARMED=false" in da_section
     assert SPEC_PATH.name in mot
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1" in spec
     assert "11.2.1.DA" in atlas

@@ -72,7 +72,7 @@ _ENABLED_DENY = frozenset(
 
 def test_standing_defaults_and_pre_wire_flags() -> None:
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True
     assert LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION is True
@@ -90,7 +90,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
     assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is True
     armed = gap_node_v1("LIVE_ARMED")
-    assert armed.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
+    assert armed.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION"
     assert armed.wiring_authorized is True
     assert armed.standing_live_gates_would_change is False
     send = gap_node_v1("WIRE_SEND_PERMITTED")
@@ -105,7 +105,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
         "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
     )
     dag = live_admission_gap_dag_v1()
-    assert dag["LIVE_ARMED"] is False
+    assert dag["LIVE_ARMED"] is True
     assert dag["LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
     assert dag["PRODUCTIVE_WIRE_SEND_REACHABLE"] is False
 
@@ -202,7 +202,7 @@ def test_host_composition_uses_admission_authority_and_does_not_construct(monkey
     )
     assert result.intent is not None
     assert result.intent.live_enabled is True
-    assert result.intent.live_armed is False
+    assert result.intent.live_armed is True
     assert result.intent.wire_send_permitted is False
     assert result.intent.execution_eligible is False
     assert result.intent.submission_authorized is False
@@ -221,7 +221,7 @@ def test_host_composition_uses_admission_authority_and_does_not_construct(monkey
 def test_canary_cannot_bypass_full_core_armed_seam() -> None:
     decision = evaluate_execution_admission_v1(_live_inputs(live_armed=True, live_enabled=True))
     assert decision.admitted is False
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert LIVE_CANARY_MINIMUM_EXPOSURE_AUTHORIZED_DEFAULT is False
     canary = refuse_canary_plan_as_full_core_e2e_v1(
         {"instrument_id": DEFAULT_INSTRUMENT_ID, "side": DEFAULT_SIDE}

@@ -166,7 +166,7 @@ def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 def test_flags_and_standing_gates_remain_false() -> None:
     assert LIVE_ACCOUNT_BOUND_IMPLEMENTED is True
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
@@ -289,7 +289,7 @@ def test_join_complete_bound_still_cannot_admit(
     assert inputs.live_enabled is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
-    assert "LIVE_ARMED_FALSE" in decision.reason_codes
+    assert "LIVE_ARMED_FALSE" not in decision.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in decision.reason_codes
 
@@ -386,7 +386,7 @@ def test_offline_injected_full_core_path_halts_before_wire_and_does_not_post(
     assert result.boundary.canary_http_invoked is False
     assert result.boundary.live_execution_port_constructed is False
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
-    assert "LIVE_ARMED_FALSE" in result.reason_codes
+    assert "LIVE_ARMED_FALSE" not in result.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
     admission = result.boundary.admission
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in admission.reason_codes

@@ -198,7 +198,7 @@ def test_step_29p_risk_admissible_and_live_gates_remain_false() -> None:
     u_section = _u_section()
     assert "STEP_29P_RISK_ADMISSIBLE=false" in u_section
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
 
 

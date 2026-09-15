@@ -152,7 +152,7 @@ def test_ms1_does_not_release_ms2_or_equity_authority() -> None:
     assert C17_CREATED is False
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert closeout.authorized_productive_event_source_seam_present == "false"
     assert closeout.event_kind_source_seam_selected == "false"

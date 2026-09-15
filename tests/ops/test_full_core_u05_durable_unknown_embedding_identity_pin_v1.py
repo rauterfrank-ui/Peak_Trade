@@ -52,7 +52,7 @@ EXPECTED_SHA = "d3dbac35af5c9cfc3bc1a4087aeecc66950c58c6"
 
 def test_standing_pins_remain_fail_closed() -> None:
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (

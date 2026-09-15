@@ -93,7 +93,7 @@ def _all_modelable_live_gates_true(**overrides):
 
 def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True
     assert LIVE_ENABLED_TRUE_IS_NOT_AUTOMATIC_ADMISSION is True
@@ -192,7 +192,8 @@ def test_case6_offline_composition_still_halts_without_port_or_wire(monkeypatch)
     assert result.boundary.admission is not None
     assert result.boundary.admission.admitted is False
     assert "LIVE_ENABLED_FALSE" not in result.boundary.admission.reason_codes
-    assert "LIVE_ARMED_FALSE" in result.boundary.admission.reason_codes
+    assert "LIVE_ARMED_FALSE" not in result.boundary.admission.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" in result.boundary.admission.reason_codes
     assert result.boundary.live_execution_port_constructed is False
     assert result.wire_send_occurred is False
     assert result.boundary.canary_http_invoked is False

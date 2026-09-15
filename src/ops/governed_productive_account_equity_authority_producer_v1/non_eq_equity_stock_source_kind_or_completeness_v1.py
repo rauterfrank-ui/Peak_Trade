@@ -294,8 +294,6 @@ def reject_kind_set_uplift_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ARMED is not False:
-        raise NonEqEquityStockSourceKindOrCompletenessError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise NonEqEquityStockSourceKindOrCompletenessError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:

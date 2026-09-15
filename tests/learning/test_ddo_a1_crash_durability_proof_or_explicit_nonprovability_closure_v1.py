@@ -568,7 +568,7 @@ def test_overclaim_and_second_owners_are_forbidden() -> None:
     assert TESTNET_AUTHORIZED is False
     assert ORDERS_AUTHORIZED is False
     assert PAPER_EXECUTION_AUTHORIZED is False
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert LIVE_ENABLED is True
     assert WIRE_SEND_PERMITTED is False
     stamps = a1_crash_durability_proof_or_nonprovability_observability_v1()

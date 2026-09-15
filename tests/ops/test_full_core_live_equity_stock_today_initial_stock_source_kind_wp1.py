@@ -362,7 +362,7 @@ def test_deterministic_replay_and_execute(tmp_path: Path) -> None:
     assert result.venue_get_count == "0"
     assert result.venue_post_count == "0"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     store = Path(result.store_root)
     assert verify_manifest_sha256_v1(store_root=store) == 0

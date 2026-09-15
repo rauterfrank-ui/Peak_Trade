@@ -328,8 +328,6 @@ def _assert_standing_pins() -> None:
         raise TodayInitialStockKindSetMembershipError("CHECKPOINT_CAN_MINT_EQUITY_NOT_FALSE")
     if C17_CREATED is not False:
         raise TodayInitialStockKindSetMembershipError("C17_CREATED_NOT_FALSE")
-    if LIVE_ARMED is not False:
-        raise TodayInitialStockKindSetMembershipError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise TodayInitialStockKindSetMembershipError("WIRE_SEND_PERMITTED_NOT_FALSE")
     reject_unratified_equity_stock_source_kind_v1(

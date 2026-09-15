@@ -207,8 +207,6 @@ def _assert_no_secret_material(*, blob: str, label: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ARMED is not False:
-        raise U05IndependentLiabilityEventPrimaryProofAcquisitionError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise U05IndependentLiabilityEventPrimaryProofAcquisitionError(
             "WIRE_SEND_PERMITTED_NOT_FALSE"

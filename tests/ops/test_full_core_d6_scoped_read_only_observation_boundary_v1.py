@@ -234,7 +234,7 @@ def test_observation_boundary_does_not_select_surfaces_or_authorize_get() -> Non
     assert C17_CREATED is False
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert EARLIEST_D6_KIND_SET_DEPENDENCY == (
         "NAMED_REMAINING_UNKNOWN_NECESSARY_EQUITY_STOCK_KIND_SET"

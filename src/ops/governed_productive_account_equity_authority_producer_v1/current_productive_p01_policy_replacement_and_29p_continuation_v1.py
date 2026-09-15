@@ -335,7 +335,7 @@ def execute_current_productive_p01_policy_replacement_and_29p_continuation_v1(
         raise CurrentProductiveP01PolicyContinuationError("ORIGIN_MAIN_SHA_MISMATCH")
     if execute_get is not True:
         raise CurrentProductiveP01PolicyContinuationError("EXECUTE_GET_FLAG_REQUIRED")
-    if LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
+    if WIRE_SEND_PERMITTED is not False:
         raise CurrentProductiveP01PolicyContinuationError("STANDING_LIVE_GATES_MUST_REMAIN_FALSE")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
         raise CurrentProductiveP01PolicyContinuationError("SEALED_LEGACY_CENSUS_MUST_REMAIN_CLOSED")

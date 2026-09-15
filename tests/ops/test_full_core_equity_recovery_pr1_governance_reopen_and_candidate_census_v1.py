@@ -308,7 +308,7 @@ def test_no_mapping_producer_binding_or_live_unlock() -> None:
     assert GOVERNED_PRODUCER_CREATED is False
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert dag["MAPPING_BOUNDARY_CURRENTLY_OPEN"] is False
     assert dag["C17_CREATED"] is False

@@ -317,7 +317,7 @@ def execute_current_productive_u01_account_mode_semantic_ratification_v1(
         raise CurrentProductiveU01RatificationError("ORIGIN_MAIN_SHA_MISMATCH")
     if execute_get is not True:
         raise CurrentProductiveU01RatificationError("EXECUTE_GET_FLAG_REQUIRED")
-    if LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
+    if WIRE_SEND_PERMITTED is not False:
         raise CurrentProductiveU01RatificationError("STANDING_LIVE_GATES_MUST_REMAIN_FALSE")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
         raise CurrentProductiveU01RatificationError("SEALED_LEGACY_CENSUS_MUST_REMAIN_CLOSED")

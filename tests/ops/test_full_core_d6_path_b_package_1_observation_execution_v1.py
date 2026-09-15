@@ -230,7 +230,7 @@ def test_s1_s5_persists_raw_pack_without_mapping_or_post(tmp_path: Path) -> None
     assert MS2_AUTHORIZED is False
     assert EXECUTION_READY is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
 
 

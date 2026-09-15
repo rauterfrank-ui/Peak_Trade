@@ -488,7 +488,7 @@ def test_runtime_trading_live_authority_unchanged() -> None:
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False
     assert LIVE_EFFECT == "NONE"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_AUTHORIZED is False
     assert TESTNET_AUTHORIZED is False

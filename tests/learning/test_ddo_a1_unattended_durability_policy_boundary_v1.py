@@ -358,7 +358,7 @@ def test_trading_decision_and_productive_return_unchanged(tmp_path: Path, monkey
 def test_live_enabled_armed_and_wire_send_unchanged(tmp_path: Path) -> None:
     _state, _ = _run_bound_host(tmp_path)
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_AUTHORIZED is False
     assert TESTNET_AUTHORIZED is False

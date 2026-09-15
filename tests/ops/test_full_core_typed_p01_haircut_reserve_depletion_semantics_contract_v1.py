@@ -272,7 +272,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()

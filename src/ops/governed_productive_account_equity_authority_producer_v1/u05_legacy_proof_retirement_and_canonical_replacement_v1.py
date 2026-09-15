@@ -243,8 +243,6 @@ def reject_synthetic_witness_as_productive_proof_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ARMED is not False:
-        raise U05LegacyProofRetirementAndCanonicalReplacementError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise U05LegacyProofRetirementAndCanonicalReplacementError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
