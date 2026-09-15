@@ -27270,6 +27270,123 @@ LIVE_TRANSPORT_ATTEMPTED=false
 LIVE_VENUE_MUTATION_PERFORMED=false
 ```
 
+### 11.2.1.DL FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1`
+(and its resume token
+`OWNER_RESUME_GO_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1`).
+This persist does not rewrite §11.2.1.DA–§11.2.1.DK standing persist
+fields. It establishes present-day disposition management Authority for
+exactly one currently open occupancy after fresh authenticated READ-ONLY
+GET revalidation. It does not establish historical Peak_Trade ownership.
+`HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN` remains binding.
+Canary, §11.13.5, and §11.14 remain isolated and are not imported as
+ownership or flatten Authority.
+
+Authority is valid only while fresh evidence matches the granted object
+`SUI-USD_UM_XPERP-310404` / `FUTURES` / `posId=3891385768441942017` /
+`pos=1` / `posSide=net` / `mgnMode=cross`. Material mismatch, multiple
+open positions, unexpected pending orders, incompatible account mode,
+identity ambiguity, or already-flat state fail closed with `POST_COUNT=0`.
+Already-flat is disposition-complete by external state and does not POST.
+
+This slice constructs a CURRENT reduce-only CLOSE/FLATTEN venue plan and
+exact final envelope from fresh abs(position), fresh price-band and
+ticker constraints, and canonical Full-Core envelope/one-shot seams.
+Quantity never exceeds fresh abs(position). No increase, reversal, flip,
+or entry Authority is granted. `MAX_POST_COUNT=1`. Automatic retry,
+second submit, and follow-on submit remain false. Standing
+`EXTERNAL_EFFECT_AUTHORIZED=false`. This Owner-GO does **not** create or
+consume a live permit and does **not** POST. The later actual-POST
+Owner-GO for this exact flatten envelope remains separate.
+
+``` text
+THIS_SLICE=11.2.1.DL.FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DL.FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY
+CURRENT_CANONICAL_SECTION=11.2.1.DL.FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=7360cb0c6fc229de2835aa68399cc8271ad5c8d0
+HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN
+CURRENT_DISPOSITION_MANAGEMENT_AUTHORITY=OWNER_GRANTED_EXACT_OBJECT_ONLY
+FLATTEN_PREPARATION_AUTHORIZED=true
+FLATTEN_POST_AUTHORIZED=false
+ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT=true
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN=true
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+SUBMIT_UNLOCKED=false
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+PERMIT_CONSUMED_DURABLY=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_EXACT_OBJECT_FLATTEN_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
+NEXT_STEP_REQUIRES_OWNER_GO=true
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py
+PLAN_OWNER=src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1/20260915T212400Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DL
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Live exact-object revalidation matched the granted occupancy. Fresh
+reduce-only flatten plan and exact envelope were constructed. No live
+permit was created or consumed. No Venue POST occurred.
+
+``` text
+LIVE_AUTHORIZED_OBJECT_MATCH=true
+LIVE_FLATTEN_PLAN_CREATED=true
+LIVE_FLATTEN_SIDE=sell
+LIVE_FLATTEN_QUANTITY=1
+LIVE_REDUCE_ONLY=true
+LIVE_ORDER_TYPE=limit
+LIVE_LIMIT_PRICE=0.6819
+LIVE_FINAL_ENVELOPE_ID=env-3fab4e99a26792599cee5a2db22b20ad
+LIVE_FINAL_ENVELOPE_DIGEST=3fab4e99a26792599cee5a2db22b20adf56355830245d61ebae4c8feded085e1
+LIVE_EXACT_ENVELOPE_BOUND_PERMIT_READINESS=true
+LIVE_PERMIT_CREATED=false
+LIVE_PERMIT_CONSUMED_DURABLY=false
+LIVE_POST_COUNT=0
+LIVE_TRANSPORT_ATTEMPTED=false
+LIVE_VENUE_MUTATION_PERFORMED=false
+LIVE_FIRST_REAL_BLOCKER=OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_EXACT_OBJECT_FLATTEN_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
+LIVE_HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN
+LIVE_CURRENT_DISPOSITION_MANAGEMENT_AUTHORITY=OWNER_GRANTED_EXACT_OBJECT_ONLY
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
