@@ -5961,6 +5961,12 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py
+      - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
+      - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
+      - src/ops/current_productive_eea_universe_inventory_acquisition_v1/constants_v1.py
+      - src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -5984,6 +5990,7 @@ entities:
       - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
       - tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py
       - tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py
+      - tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
