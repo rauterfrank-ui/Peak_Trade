@@ -37,6 +37,11 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 
 PERMIT_SCHEMA_VERSION = "full_core_external_effect_permit.v1"
 MAX_POST_COUNT = 1
+ONE_SHOT_REAL_POST_AUTHORITY_REFS: frozenset[str] = frozenset(
+    {
+        "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+    }
+)
 _SECRET_TOKENS = ("secret", "passphrase", "api_key", "apikey", "private_key")
 _UNKNOWN_KS = frozenset(
     {
@@ -193,6 +198,21 @@ def issue_external_effect_permit_v1(
     if _permit_id_from_payload_v1(permit.to_canonical_payload_v1()) != permit.permit_id:
         raise FullCoreExternalEffectPermitError("PERMIT_ID_DRIFT")
     return permit
+
+
+def permit_authorizes_one_shot_real_post_v1(permit: ExternalEffectPermitV1) -> bool:
+    """True only for a later actual-POST Owner-GO. This readiness GO is excluded."""
+    if permit is None or not isinstance(permit, ExternalEffectPermitV1):
+        return False
+    if permit.single_use is not True:
+        return False
+    if int(permit.max_post_count) != MAX_POST_COUNT:
+        return False
+    if permit.retry_allowed is True or permit.second_submit_allowed is True:
+        return False
+    if permit.standing_external_effect_authorized is True:
+        return False
+    return str(permit.authority_ref or "") in ONE_SHOT_REAL_POST_AUTHORITY_REFS
 
 
 def assert_permit_matches_envelope_v1(

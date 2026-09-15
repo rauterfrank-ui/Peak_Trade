@@ -4,7 +4,10 @@ Consume the permit on durable storage before invoking the injected transport.
 Standing EXTERNAL_EFFECT_AUTHORIZED remains false. Host/autonomy loops are not
 joined. Direct STEP-29Q submission remains forbidden.
 
-This slice never opens a venue socket. Tests inject a non-networking transport.
+This slice never opens a venue socket unless an exact envelope-bound
+single-use permit authorizes a later actual-POST Owner-GO. Standing
+REAL_VENUE_POST_ALLOWED remains false. Tests inject a non-networking
+transport. The readiness Owner-GO is not send permission.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -38,6 +41,7 @@ from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 i
     ExternalEffectPermitV1,
     FullCoreExternalEffectPermitError,
     assert_permit_matches_envelope_v1,
+    permit_authorizes_one_shot_real_post_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
@@ -147,12 +151,16 @@ def attempt_envelope_bound_external_effect_send_v1(
     except FullCoreExternalEffectDurableConsumeError as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
     payload = _payload_from_envelope_v1(envelope)
+    one_shot = permit_authorizes_one_shot_real_post_v1(permit)
+    if REAL_VENUE_POST_ALLOWED is True:
+        raise FullCoreEnvelopeBoundSendSeamError("STANDING_REAL_VENUE_POST_FORBIDDEN")
     try:
         result = transport.post_trade_order(
             payload=payload,
             permit_id=permit.permit_id,
             envelope_id=envelope.envelope_id,
             envelope_digest=envelope.envelope_digest,
+            one_shot_real_post=one_shot,
         )
     except FullCoreProductiveHttpPostError as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
@@ -160,24 +168,29 @@ def attempt_envelope_bound_external_effect_send_v1(
         raise FullCoreEnvelopeBoundSendSeamError("UNKNOWN_OUTCOME") from exc
     if not isinstance(result, FullCoreTradeOrderPostResultV1):
         raise FullCoreEnvelopeBoundSendSeamError("UNKNOWN_OUTCOME")
-    if result.venue_live_contact is True or REAL_VENUE_POST_ALLOWED is True:
+    if REAL_VENUE_POST_ALLOWED is True:
+        raise FullCoreEnvelopeBoundSendSeamError("STANDING_REAL_VENUE_POST_FORBIDDEN")
+    if result.venue_live_contact is True and one_shot is not True:
         raise FullCoreEnvelopeBoundSendSeamError("REAL_VENUE_POST_FORBIDDEN_IN_THIS_SLICE")
     if str(result.endpoint) != TRADE_ORDER_PATH:
         raise FullCoreEnvelopeBoundSendSeamError("TRADE_ORDER_PATH_DRIFT")
-    mocked = 1 if result.post_attempted is True else 0
+    mocked = 1 if result.post_attempted is True and result.venue_live_contact is not True else 0
+    real = 1 if result.venue_live_contact is True and one_shot is True else 0
     follow_on = load_external_effect_durable_consume_v1(store_root=store_root)
     isolated = (
         follow_on.get("durable_consumed") is True and follow_on.get("resubmit_allowed") is not True
     )
     return EnvelopeBoundSendSeamResultV1(
         mocked_post_count=mocked,
-        real_post_count=0,
-        venue_live_contact=False,
+        real_post_count=real,
+        venue_live_contact=bool(result.venue_live_contact),
         unknown_outcome=bool(result.unknown_outcome),
         follow_on_submit_isolated=isolated is True,
         durable_consumed=True,
         transport_class=str(result.transport_class),
-        outcome="MOCKED_POST_RECORDED_NO_VENUE_CONTACT",
+        outcome=(
+            "ONE_SHOT_REAL_POST_RECORDED" if real == 1 else "MOCKED_POST_RECORDED_NO_VENUE_CONTACT"
+        ),
     )
 
 
