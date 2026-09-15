@@ -26218,6 +26218,90 @@ CURRENT_CANONICAL_SECTION=11.2.1.CX
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.CY FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P
+
+Consumes Owner-GO
+`CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_TO_FIRST_REAL_BLOCKER_V1`.
+This is a CURRENT_PRODUCTIVE_FIRST persist. It does not reconstruct
+historical account identity or historical Cap-2.3 selection as the
+current productive instrument. It does not import canary
+`DEFAULT_INSTRUMENT_ID` as Full-Core instrument authority. It does not
+re-select.
+
+STEP-29P consumes an explicit Cap-2.4 `BoundInstrumentV1` as the sole
+instrument-scope authority (exactly one selected future,
+`MAX_POSITIONS=1`). `LIVE_ACCOUNT_BOUND` is evaluated through the existing
+typed seam over Fresh Pretrade GET identity extracts. String passthrough
+of `LIVE_ACCOUNT_BOUND` is not authority. Missing, stale, mismatch, or
+multiple identities fail closed.
+
+P01 remains explicit `DOES_NOT_APPLY` by architectural redundancy.
+Missing, empty, stale, or invalid P01 directives remain
+`UNKNOWN_FAIL_CLOSED`. Standing reconstruction pin
+`P01_RUNTIME_INSTANCE_PRESENT=false` is unchanged.
+
+Same-epoch READ-ONLY `/api/v5/account/config` (U01) and
+`/api/v5/account/balance` (`details[ccy=USDC].availEq`) are authorized.
+U04 is not subtracted again. CU mint proceeds when observation, explicit
+P01 DNA fact, and U01 eligibility are bound. STEP-29P is reevaluated
+on the same decision epoch. Injected doubles may close adapter wiring;
+they are not CURRENT_PRODUCTIVE 29P. The first real blocker is the
+missing current Cap-2.4 BoundInstrument instance. Supplying that
+instance without canary import or reselection requires a new Owner-GO.
+No POST. No Live enable/arm. No wire-send.
+
+``` text
+THIS_SLICE=11.2.1.CY.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P
+CONTRACT_VERSION=v1
+CHECKPOINT_MINTS_EQUITY=false
+OWNER_GO=CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_TO_FIRST_REAL_BLOCKER_V1
+OWNER_GO_STATUS=CONSUMED
+PIN_OWNER_GO=OWNER_GO_REQUIRED_TO_BIND_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1
+PIN_OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.CY.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P
+CURRENT_CANONICAL_SECTION=11.2.1.CY.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P
+AUTHORITY_CLASS=R1_PLUS_TWO_AUTHORIZED_READ_ONLY_GETS
+EXPECTED_ORIGIN_MAIN=4f38931f050df06471c9b71fa0174eca13a2bb48
+P01_LEGACY_RECONSTRUCTION_PERFORMED=false
+P01_POLICY_DECISION=DOES_NOT_APPLY
+P01_DECISION_BASIS=ARCHITECTURAL_REDUNDANCY_NOT_HISTORICAL_ABSENCE
+P01_INDEPENDENT_SAFETY_FUNCTION=false
+P01_FORMULA=P01_CONTRIBUTION=0_BY_EXPLICIT_DOES_NOT_APPLY
+P01_AUTHORIZED_INPUTS=NONE_STANDING_POLICY_NOT_VENUE_DERIVED
+P01_DIRECTIVE_STATUS=RATIFIED_CURRENT_PRODUCTIVE_DOES_NOT_APPLY
+P01_RUNTIME_INSTANCE_PRESENT=false
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+GET_ENDPOINT_U01=/api/v5/account/config
+GET_ENDPOINT_BALANCE=/api/v5/account/balance
+AUTHORIZED_GET_COUNT=2
+POST_COUNT=0
+U04_SUBTRACTED=false
+MAX_POSITIONS_EFFECTIVE=1
+SEALED_LEGACY_CENSUS_REOPENED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+ATLAS_AUTHORITY=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_live_account_bound_and_instrument_scope_for_29p_v1/20260915T143000Z
+FIRST_DEFINITIVE_BLOCK=CURRENT_PRODUCTIVE_CAP24_BOUND_INSTRUMENT_INSTANCE_MISSING
+BLOCKER_CLASS=B
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_TO_SUPPLY_CURRENT_CAP24_BOUND_INSTRUMENT_INSTANCE_FOR_29P_WITHOUT_CANARY_IMPORT_OR_RESELECTION_V1
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.CY
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
