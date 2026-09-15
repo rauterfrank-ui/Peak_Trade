@@ -27,7 +27,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     REQUIRED_ACCOUNT_MODE,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u01_account_mode_adapter_v1 import (
-    CANONICAL_SEMANTIC_TOKEN,
     REQUIRED_RAW_TOKEN,
     adapt_current_productive_u01_account_mode_v1,
     build_current_productive_u01_eligibility_fact_v1,
@@ -108,7 +107,7 @@ def test_raw_2_maps_to_futures_mode_and_mints_eligibility() -> None:
     adaptation = adapt_current_productive_u01_account_mode_v1("2")
     assert adaptation.status == "ELIGIBLE"
     assert adaptation.raw_token == "2"
-    assert adaptation.semantic_token == CANONICAL_SEMANTIC_TOKEN
+    assert adaptation.semantic_token == "FUTURES_MODE"
     assert adaptation.eligible == "true"
     assert adaptation.raw_rewritten == "false"
     fact = build_current_productive_u01_eligibility_fact_v1(
