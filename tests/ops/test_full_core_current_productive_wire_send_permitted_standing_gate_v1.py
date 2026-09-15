@@ -113,23 +113,23 @@ def test_evaluate_closes_wire_send_and_halts_on_admission(tmp_path: Path) -> Non
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
     assert result.live_authorized == "false"
-    assert result.admitted == "false"
+    assert result.admitted == "true"
     assert result.wire_send_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+    assert result.first_real_blocker == "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert "LIVE_ENABLED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "LIVE_ARMED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "WIRE_SEND_NOT_PERMITTED" not in claims["ADMISSION_REASON_CODES"]
-    assert "EXECUTION_ADMISSION_FAIL_CLOSED" in claims["ADMISSION_REASON_CODES"]
+    assert "EXECUTION_ADMISSION_FAIL_CLOSED" not in claims["ADMISSION_REASON_CODES"]
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
     assert claims["WIRE_SEND_PERMITTED"] == "true"
     assert claims["LIVE_AUTHORIZED"] == "false"
-    assert claims["ADMITTED"] == "false"
+    assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["POST_COUNT"] == "0"
     assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
@@ -162,7 +162,7 @@ def test_ssot_docs_once_present() -> None:
     dc_section = runbook[
         runbook.index(
             "11.2.1.DC FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE"
-        ) : runbook.index("## 11.3 Autonomy state model")
+        ) : runbook.index("11.2.1.DD FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER")
     ]
     assert "WIRE_SEND_PERMITTED=true" in dc_section
     assert "LIVE_ENABLED=true" in dc_section

@@ -390,8 +390,8 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         producer="evaluate_execution_admission_v1",
         contract="ExecutionAdmissionDecisionV1",
         consumer="halt_at_live_execution_boundary_v1",
-        implementation_status="IMPLEMENTED_FAIL_CLOSED",
-        test_status="PROVEN_NOT_ADMITTED",
+        implementation_status="CONJUNCTION_ADMITTED_NOT_PORT_CONSTRUCTION",
+        test_status="PROVEN_ADMITTED_HALTS_BEFORE_WIRE",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
@@ -758,6 +758,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE",
             "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION",
             "STANDING_TRUE_NOT_AUTOMATIC_SEND",
+            "CONJUNCTION_ADMITTED_NOT_PORT_CONSTRUCTION",
         }
     )
     return {

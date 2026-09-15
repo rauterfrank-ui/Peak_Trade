@@ -17,10 +17,14 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
     ADMISSION_CONTEXT_OFFLINE_FULL_CORE_PROOF,
+    CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    CapitalAdmissionStatusV1,
     DurableKillSwitchEvidenceStatusV1,
     ExecutionAdmissionInputsV1,
+    FreshPretradeGetStatusV1,
+    LiveAccountBoundStatusV1,
     OwnerOneShotPermitStatusV1,
     PRETRADE_SOURCE_FRESH_GET,
     PRETRADE_SOURCE_FROZEN_OFFLINE,
@@ -225,3 +229,30 @@ def test_construct_live_execution_port_remains_forbidden_on_halt(
     assert result.boundary is not None
     assert result.boundary.live_execution_port_constructed is False
     assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" in result.reason_codes
+
+
+def test_complete_trusted_live_conjunction_admits_without_port_or_send() -> None:
+    decision = evaluate_execution_admission_v1(
+        _live_inputs(
+            live_enabled=True,
+            live_armed=True,
+            wire_send_permitted=True,
+            pretrade_source_kind=PRETRADE_SOURCE_FRESH_GET,
+            pretrade_freshness_status=PretradeFreshnessStatusV1.LIVE_FRESH.value,
+            capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+            durable_kill_switch_evidence_status=(
+                DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+            ),
+            durable_kill_switch_blocked=False,
+            fresh_pretrade_get_status=FreshPretradeGetStatusV1.TRUSTED_PRESENT.value,
+            live_account_bound_status=LiveAccountBoundStatusV1.TRUSTED_PRESENT.value,
+            capital_admission_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
+            capital_authority_class=CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
+            step_29p_risk_admissible=True,
+        )
+    )
+    assert decision.admitted is True
+    assert decision.fail_closed is True
+    assert decision.reason_codes == ()
+    assert "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes
+    assert decision.runtime_authority_effect == "NONE"

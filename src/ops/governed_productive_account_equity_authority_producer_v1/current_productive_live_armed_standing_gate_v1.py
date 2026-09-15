@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_ARMED_DOES_NOT_IMPLY_LIVE_AUTHORIZED,
     LIVE_ARMED_DOES_NOT_IMPLY_PORT_CONSTRUCTION,
@@ -244,8 +245,6 @@ def execute_current_productive_live_armed_standing_gate_v1(
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_FIELD_WIRE_TRUE")
 
     decision = evaluate_execution_admission_v1(_admission_inputs_v1())
-    if decision.admitted is True:
-        raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_MUST_REMAIN_FALSE")
     deny_hit = _LIVE_ARMED_DENY_REASONS.intersection(decision.reason_codes)
     if deny_hit:
         raise CurrentProductiveLiveArmedStandingGateError(
@@ -253,13 +252,24 @@ def execute_current_productive_live_armed_standing_gate_v1(
         )
     if "LIVE_ENABLED_FALSE" in decision.reason_codes:
         raise CurrentProductiveLiveArmedStandingGateError("LIVE_ENABLED_DENY_PRESENT")
-    if WIRE_SEND_PERMITTED is True:
+    remainder_closed = EXECUTION_ADMISSION_REMAINDER_CLOSED is True
+    if remainder_closed:
+        if decision.admitted is not True:
+            raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_REMAINDER_NOT_CLOSED")
+        if "EXECUTION_ADMISSION_FAIL_CLOSED" in decision.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_FAIL_CLOSED_STILL_PRESENT")
         if "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes:
             raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_PRESENT")
-        if "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes:
-            raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_FAIL_CLOSED_MISSING")
-    elif "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
-        raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_MISSING")
+    else:
+        if decision.admitted is True:
+            raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_MUST_REMAIN_FALSE")
+        if WIRE_SEND_PERMITTED is True:
+            if "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes:
+                raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_PRESENT")
+            if "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes:
+                raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_FAIL_CLOSED_MISSING")
+        elif "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_MISSING")
 
     construction = evaluate_live_execution_port_construction_admission_v1(
         admission=decision,
@@ -271,7 +281,16 @@ def execute_current_productive_live_armed_standing_gate_v1(
     )
     if construction.constructible is True or construction.constructed is True:
         raise CurrentProductiveLiveArmedStandingGateError("PORT_MUST_REMAIN_FORBIDDEN")
-    if WIRE_SEND_PERMITTED is True:
+    if remainder_closed:
+        if "WIRE_SEND_NOT_PERMITTED" in construction.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_PRESENT")
+        if "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" not in (
+            construction.reason_codes
+        ):
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_CAP_11_1_MISSING")
+        if "EXECUTION_ADMISSION_NOT_ADMITTED" in construction.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_ADMISSION_DENY_PRESENT")
+    elif WIRE_SEND_PERMITTED is True:
         if "WIRE_SEND_NOT_PERMITTED" in construction.reason_codes:
             raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_PRESENT")
         if "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" not in (
@@ -284,9 +303,13 @@ def execute_current_productive_live_armed_standing_gate_v1(
         raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_MISSING")
 
     first_blocker = (
-        "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
-        if WIRE_SEND_PERMITTED is True
-        else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+        "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+        if remainder_closed
+        else (
+            "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+            if WIRE_SEND_PERMITTED is True
+            else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+        )
     )
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH

@@ -150,7 +150,6 @@ def halt_at_live_execution_boundary_v1(
         and construction.constructed is False
         and construction.constructible is False
         and wire_send_occurred is False
-        and admission.admitted is False
     )
     status = CompositionStatusV1.HALT if halt else CompositionStatusV1.DENY
     return ExecutionBoundaryResultV1(
