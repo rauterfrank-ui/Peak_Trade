@@ -27080,6 +27080,90 @@ CURRENT_CANONICAL_SECTION=11.2.1.DI
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.DJ FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS
+
+Consumes Owner-GO
+`OWNER_GO_FRESH_CAP23_CAP24_CURRENT_PRODUCTIVE_DECISION_AND_ONE_SHOT_REAL_POST_READINESS_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DI standing persist
+fields. It establishes a fresh CURRENT_PRODUCTIVE Cap-23 selection and
+Cap-24 binding through the current Cap-2.1–2.4 producers after a fresh
+EEA public universe acquisition. It does not reuse stale Cap-23
+identities, historical DH/CZ instrument bindings, fixtures, or
+screenshots as current authority.
+
+Master-V2 remains the sole decision authority. Missing current runtime
+cycle is recorded as `CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT`. This
+slice does not fabricate ENTER, size, or venue plan.
+`STEP_29Q_STATUS=PLAN_ONLY`.
+
+The Full-Core urllib POST transport may open a host-bound
+`eea.okx.com` `/api/v5/trade/order` socket only when an exact
+envelope-bound single-use permit carries a later actual-POST Owner-GO.
+This readiness Owner-GO is not that permit. Standing
+`EXTERNAL_EFFECT_AUTHORIZED=false`. Consume-before-transport, durable
+`SENT_INITIATED`, max POST count=1, no retry, no second/follow-on
+submit, and UNKNOWN_OUTCOME fail-closed remain in force. This slice
+does **not** POST, does **not** consume a live permit, does **not**
+load credential material onto a POST path, and does **not** start a
+mutative network session. Canary, Funding, flatten, and §11.14 remain
+isolated.
+
+``` text
+THIS_SLICE=11.2.1.DJ.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_FRESH_CAP23_CAP24_CURRENT_PRODUCTIVE_DECISION_AND_ONE_SHOT_REAL_POST_READINESS_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DJ.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS
+CURRENT_CANONICAL_SECTION=11.2.1.DJ.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=114a68670bdd552fc1fcc90352a01b4dd7dc4dc5
+RESELECTION_AUTHORIZED_BY_THIS_GO=true
+ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT=true
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN=true
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+SUBMIT_UNLOCKED=false
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CONSUMED_DURABLY=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+NEXT_STEP_REQUIRES_OWNER_GO=true
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1/20260915T201500Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DJ
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

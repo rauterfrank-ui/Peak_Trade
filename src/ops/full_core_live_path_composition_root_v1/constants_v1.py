@@ -4,8 +4,9 @@ LIVE_ENABLED, LIVE_ARMED, WIRE_SEND_PERMITTED, SUBMISSION_AUTHORIZED, and
 LIVE_AUTHORIZED may be true as standing predicates. A Cap-11.1 send-capable
 LiveExecutionPort may be constructed and joined. PRODUCTIVE_WIRE_SEND_REACHABLE
 may be true only as send-seam reachability. Standing EXTERNAL_EFFECT_AUTHORIZED
-remains false. Envelope-bound single-use permits may authorize a mocked send
-seam. This package never opens a venue socket in the current slice.
+and REAL_VENUE_POST_ALLOWED remain false. An envelope-bound single-use permit
+whose authority_ref is a later actual-POST Owner-GO may open one host-bound
+socket. This readiness slice never passes that flag and never POSTs.
 """
 
 from __future__ import annotations
@@ -376,6 +377,9 @@ REPLAY_PROTECTION_PRESENT = True
 REPLAY_PROTECTION_DURABLE = True
 FOLLOW_ON_SUBMIT_ISOLATED = True
 FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED = True
+ONE_SHOT_REAL_POST_TRANSPORT_IMPLEMENTED = True
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT = True
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN = True
 REAL_EXTERNAL_EFFECT_AUTHORIZED = False
 REAL_VENUE_POST_ALLOWED = False
 POST_ALLOWED = False
