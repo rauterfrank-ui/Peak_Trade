@@ -40,6 +40,7 @@ JOIN_SEAM_ID = "FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1"
 FRESH_PRETRADE_GET_AUTHORITY = "VENUE_PRETRADE_GATES"
 FRESHNESS_POLICY = "FRESH_GET_PER_PRETRADE_DECISION"
 TRANSPORT_CLASS_INJECTED_TEST_DOUBLE = "INJECTED_TEST_DOUBLE"
+TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET = "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1"
 TRANSPORT_CLASS_MISSING = "TRANSPORT_MISSING"
 METHOD_GET = "GET"
 
@@ -268,13 +269,20 @@ def _item_status_and_reasons(
     transport_class = str(result.transport_class or "")
     if transport_class == TRANSPORT_CLASS_MISSING or result.get_performed is not True:
         return FreshPretradeGetStatusV1.MISSING.value, (f"{prefix}_GET_NOT_PERFORMED",)
-    if transport_class != TRANSPORT_CLASS_INJECTED_TEST_DOUBLE:
+    if transport_class == TRANSPORT_CLASS_INJECTED_TEST_DOUBLE:
+        if result.venue_live_contact is True:
+            return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
+                f"{prefix}_INJECTED_DOUBLE_CANNOT_CLAIM_VENUE_CONTACT",
+                "FRESH_PRETRADE_GET_INJECTED_DOUBLE_CANNOT_CLAIM_VENUE_CONTACT",
+            )
+    elif transport_class == TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET:
+        if result.venue_live_contact is not True:
+            return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
+                f"{prefix}_PRODUCTIVE_GET_MUST_HAVE_VENUE_CONTACT",
+            )
+    else:
         return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
             f"{prefix}_TRANSPORT_CLASS_NOT_BOUND",
-        )
-    if result.venue_live_contact is True:
-        return FreshPretradeGetStatusV1.CONTRADICTORY.value, (
-            f"{prefix}_INJECTED_DOUBLE_CANNOT_CLAIM_VENUE_CONTACT",
         )
     path = _endpoint_path_only(result.endpoint or requested_endpoint)
     if path != spec.endpoint_path:
@@ -317,7 +325,14 @@ def _item_status_and_reasons(
     if code != "0":
         return FreshPretradeGetStatusV1.MALFORMED.value, (f"{prefix}_VENUE_CODE_NOT_EXACT_ZERO",)
     data = payload.get("data")
-    if not isinstance(data, list) or not data:
+    if not isinstance(data, list):
+        return FreshPretradeGetStatusV1.MALFORMED.value, (f"{prefix}_DATA_EMPTY_OR_NOT_LIST",)
+    if not data:
+        if spec.item_id == "MARGIN_MODE" and path == ENDPOINT_ACCOUNT_POSITIONS:
+            return FreshPretradeGetStatusV1.TRUSTED_PRESENT.value, (
+                f"{prefix}_TRUSTED_PRESENT",
+                "MARGIN_MODE_EMPTY_POSITIONS_NO_OPEN_POSITION",
+            )
         return FreshPretradeGetStatusV1.MALFORMED.value, (f"{prefix}_DATA_EMPTY_OR_NOT_LIST",)
     return FreshPretradeGetStatusV1.TRUSTED_PRESENT.value, (f"{prefix}_TRUSTED_PRESENT",)
 

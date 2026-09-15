@@ -26302,6 +26302,91 @@ CURRENT_CANONICAL_SECTION=11.2.1.CY
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.CZ FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P
+
+Consumes Owner-GO
+`CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_TO_FIRST_REAL_BLOCKER_V1`.
+This persist does not rewrite §11.2.1.CY standing fields. It supplies the
+missing CURRENT Cap-2.4 BoundInstrument by executing the existing Cap-2.3
+policy on a fresh CURRENT Cap-2.2 ranking of a fresh CURRENT Cap-2.1
+universe. Cap-2.1 remains a no-network producer. Universe membership,
+ranking algorithm, selection algorithm, and Full-Core safety admission
+are unchanged.
+
+A separate CURRENT_PRODUCTIVE READ-ONLY acquisition layer GETs
+`eea.okx.com` `&#47;api&#47;v5&#47;public&#47;instruments` and
+`&#47;api&#47;v5&#47;public&#47;mark-price` for FUTURES and SWAP without instId and without
+credentials. The provenance-bound payload is injected into the existing
+Cap-2.1 producer. `www.okx.com` is forbidden. Canary
+`DEFAULT_INSTRUMENT_ID` is not instrument authority. This Owner-GO
+authorizes reselection. Manual instrument selection remains forbidden.
+
+After CURRENT BoundInstrument mint, the existing LAB seam, required Fresh
+Pretrade GET set, U01, standing P01 `DOES_NOT_APPLY`,
+`details[ccy=USDC].availEq`, CU, instrument scope, and STEP-29P are
+reevaluated on the same decision epoch. Productive READ-ONLY GETs may
+make `STEP_29P_RISK_ADMISSIBLE=true`. That does not admit Live. Injected
+doubles may close wiring; they are not CURRENT_PRODUCTIVE 29P. No POST.
+No Live enable/arm. No wire-send.
+
+``` text
+THIS_SLICE=11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P
+CONTRACT_VERSION=v1
+CHECKPOINT_MINTS_EQUITY=false
+OWNER_GO=CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_TO_FIRST_REAL_BLOCKER_V1
+OWNER_GO_STATUS=CONSUMED
+PIN_OWNER_GO=OWNER_GO_REQUIRED_TO_SUPPLY_CURRENT_CAP24_BOUND_INSTRUMENT_INSTANCE_FOR_29P_WITHOUT_CANARY_IMPORT_OR_RESELECTION_V1
+PIN_OWNER_GO_STATUS=CONSUMED_AND_SUPERSEDED_FOR_RESELECTION_BY_THIS_GO
+CURRENT_PHASE=11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P
+CURRENT_CANONICAL_SECTION=11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P
+AUTHORITY_CLASS=R1_PLUS_EEA_PUBLIC_UNIVERSE_GETS_PLUS_AUTHORIZED_READ_ONLY_GETS
+EXPECTED_ORIGIN_MAIN=ee3850128e01378f4b480f4ab1b5e57dd8ee24a3
+EEA_UNIVERSE_HOST=eea.okx.com
+EEA_PUBLIC_ENDPOINTS=/api/v5/public/instruments;/api/v5/public/mark-price
+NETWORK_METHODS=GET
+POST_COUNT=0
+CAP21_NETWORK_OWNER_CHANGED=false
+TRANSPORT_REUSED=false
+TRANSPORT_AUTHORITY_PROMOTED=false
+CAP21_UNIVERSE_SIZE=462
+CAP23_SELECTED_INSTRUMENT_ID=0G-USDT-SWAP
+SINGLE_SELECTED_FUTURE_PROVEN=true
+ECONOMIC_RANK_ACTIVATED=false
+RANKING_ALGORITHM_CHANGED=false
+RESELECTION_AUTHORIZED_BY_THIS_GO=true
+MANUAL_INSTRUMENT_SELECTION_PERFORMED=false
+SELECTION_ALGORITHM_CHANGED=false
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+P01_POLICY_DECISION=DOES_NOT_APPLY
+P01_RUNTIME_INSTANCE_PRESENT=false
+MAX_POSITIONS_EFFECTIVE=1
+SEALED_LEGACY_CENSUS_REOPENED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+ATLAS_AUTHORITY=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py
+ACQUISITION_OWNER=src/ops/current_productive_eea_universe_inventory_acquisition_v1/
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1/20260915T140000Z
+FIRST_DEFINITIVE_BLOCK=LIVE_ENABLED_STANDING_GATE_REMAINS_FALSE
+BLOCKER_CLASS=E
+STEP_29P_RISK_ADMISSIBLE=true
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_FOR_LIVE_ENABLED_NOT_AUTHORIZED_BY_THIS_SLICE
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.CZ
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
