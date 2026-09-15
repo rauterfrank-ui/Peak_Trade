@@ -5929,6 +5929,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/residual_positive_necessary_kind_exhaustiveness_primary_proof_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/residual_positive_necessary_kind_exhaustiveness_durable_unknown_pin_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/kind_set_and_account_equity_source_mapping_architecture_ratification_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/remaining_necessary_kind_evidence_classification_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
