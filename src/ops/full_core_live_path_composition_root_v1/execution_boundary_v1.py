@@ -52,6 +52,9 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     PretradeConjunctionResultV1,
     VenuePlanCandidateV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+    evaluate_submission_authorized_v1,
+)
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_v1 import (
     HostActivationBindingV1,
 )
@@ -85,6 +88,7 @@ def halt_at_live_execution_boundary_v1(
     ]
     live_port_constructed = False
     host_joined = False
+    submission_authorized = False
     if LIVE_ENABLED is not True:
         reasons.append("EXECUTION_DISABLED")
     if LIVE_ARMED is not True:
@@ -162,6 +166,22 @@ def halt_at_live_execution_boundary_v1(
                 reasons.append("HOST_JOIN_SUBMISSION_AUTHORIZED_UNEXPECTED")
             if join.wire_send_occurred is True:
                 reasons.append("HOST_JOIN_WIRE_SIDE_EFFECT")
+            submission = evaluate_submission_authorized_v1(
+                host_joined=join.host_joined is True,
+                live_port=port,
+                admitted=admission.admitted is True,
+                live_enabled=resolved_inputs.live_enabled,
+                live_armed=resolved_inputs.live_armed,
+                wire_send_permitted=resolved_inputs.wire_send_permitted,
+                durable_kill_switch_blocked=resolved_inputs.durable_kill_switch_blocked,
+                durable_kill_switch_evidence_status=(
+                    resolved_inputs.durable_kill_switch_evidence_status
+                ),
+                attempt_wire_send=attempt_wire_send is True,
+                attempt_submit=False,
+            )
+            reasons.extend(submission.reason_codes)
+            submission_authorized = submission.submission_authorized is True
     if attempt_wire_send:
         try:
             refuse_wire_send_v1()
@@ -180,4 +200,5 @@ def halt_at_live_execution_boundary_v1(
         halt_before_wire=halt,
         admission=admission,
         host_joined=host_joined,
+        submission_authorized=submission_authorized,
     )

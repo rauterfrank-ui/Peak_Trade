@@ -46,6 +46,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
+    current_productive_first_real_blocker_v1,
     standing_live_gate_fields_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
@@ -437,7 +438,7 @@ def execute_current_productive_cap72_host_join_to_live_execution_port_v1(
     if getattr(port, "SUBMISSION_AUTHORIZED", True) is not False:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("PORT_SUBMISSION_AUTHORIZED")
 
-    first_blocker = "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+    first_blocker = current_productive_first_real_blocker_v1()
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)

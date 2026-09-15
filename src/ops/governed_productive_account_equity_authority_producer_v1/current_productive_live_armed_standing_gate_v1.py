@@ -35,6 +35,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
+    current_productive_first_real_blocker_v1,
     standing_live_gate_fields_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
@@ -320,23 +321,7 @@ def execute_current_productive_live_armed_standing_gate_v1(
     elif "WIRE_SEND_NOT_PERMITTED" not in construction.reason_codes:
         raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_MISSING")
 
-    first_blocker = (
-        "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
-        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
-        else (
-            "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-            if construction_closed
-            else (
-                "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
-                if remainder_closed
-                else (
-                    "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
-                    if WIRE_SEND_PERMITTED is True
-                    else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
-                )
-            )
-        )
-    )
+    first_blocker = current_productive_first_real_blocker_v1()
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)

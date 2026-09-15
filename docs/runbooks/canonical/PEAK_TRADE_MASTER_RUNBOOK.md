@@ -26815,6 +26815,86 @@ CURRENT_CANONICAL_SECTION=11.2.1.DF
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+The remaining SUBMISSION_AUTHORIZED remainder after Cap-7.2 host-join is
+superseded by §11.2.1.DG. Standing Live flags in §11.2.1.DA, §11.2.1.DB,
+§11.2.1.DC, §11.2.1.DD, §11.2.1.DE, and §11.2.1.DF remain unchanged.
+
+### 11.2.1.DG FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1`.
+This persist does not rewrite §11.2.1.DA, §11.2.1.DB, §11.2.1.DC,
+§11.2.1.DD, §11.2.1.DE, or §11.2.1.DF standing fields. It closes
+`SUBMISSION_AUTHORIZED` as a fail-closed submission-capability admission
+remainder after the productive Cap-7.2 host already owns the constructed
+fail-closed LiveExecutionPort handle. Default, missing, malformed, and
+unknown predicates deny. Host-join, the LiveExecutionPort handle, and
+`WIRE_SEND_PERMITTED` remain independently insufficient. Kill-switch and
+FILEGATE remain fail-closed through Execution Admission. Independent
+gates remain independently required.
+
+This persist does **not** set `LIVE_AUTHORIZED=true`. It does **not**
+change STEP-29Q from PLAN_ONLY. It does **not** POST. It does **not**
+activate productive transport. It does **not** set
+`PRODUCTIVE_WIRE_SEND_REACHABLE=true`. It does **not** use Canary,
+Funding, or §11.14. `SUBMISSION_AUTHORIZED=true` is not automatic send,
+submit execution, STEP-29Q eligibility, or `LIVE_AUTHORIZED`.
+Canary and §11.14 keep their own isolated send/arm constants.
+
+``` text
+THIS_SLICE=11.2.1.DG.FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DG.FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED
+CURRENT_CANONICAL_SECTION=11.2.1.DG.FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+EXPECTED_ORIGIN_MAIN=7fa87e76c7755467528848a3ff52ac4d98f48bb6
+SUBMISSION_AUTHORIZED=true
+SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+SUBMISSION_AUTHORIZED_STANDING_GATE_CLOSED=true
+SUBMISSION_AUTHORIZED_TRUE_IS_NOT_AUTOMATIC_SEND=true
+SUBMISSION_AUTHORIZED_TRUE_IS_NOT_AUTOMATIC_WIRE=true
+SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_WIRE_SEND=true
+SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_LIVE_AUTHORIZED=true
+SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_STEP_29Q=true
+SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_POST=true
+SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_PRODUCTIVE_WIRE_SEND_REACHABLE=true
+CAP_7_2_HOST_JOINED_IS_NOT_SUBMISSION_AUTHORIZED=true
+CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=true
+HOST_JOINED=true
+LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true
+LIVE_ENABLED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+ADMITTED=true
+LIVE_AUTHORIZED=false
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29Q_STATUS=PLAN_ONLY
+PRODUCTIVE_WIRE_SEND_REACHABLE=false
+POST_COUNT=0
+STEP_29P_RISK_ADMISSIBLE=true
+FIRST_DEFINITIVE_BLOCK=PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE
+BLOCKER_CLASS=E
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_FOR_PRODUCTIVE_WIRE_SEND_NOT_AUTHORIZED_BY_THIS_SLICE
+NEXT_STEP_REQUIRES_OWNER_GO=true
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_submission_authorized_v1/20260915T195700Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DG
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
