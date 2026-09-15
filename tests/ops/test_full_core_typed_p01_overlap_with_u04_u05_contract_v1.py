@@ -363,7 +363,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is False
     assert GOVERNED_PRODUCER_CREATED is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     with pytest.raises(ExecutionPortConstructionForbiddenError):

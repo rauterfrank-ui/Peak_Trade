@@ -165,7 +165,7 @@ def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
 
 def test_flags_and_standing_gates_remain_false() -> None:
     assert LIVE_ACCOUNT_BOUND_IMPLEMENTED is True
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
@@ -180,9 +180,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     live_enabled = gap_node_v1("LIVE_ENABLED")
-    assert live_enabled.implementation_status == (
-        "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
-    )
+    assert live_enabled.implementation_status == ("STANDING_TRUE_NOT_AUTOMATIC_ADMISSION")
     assert live_enabled.standing_live_gates_would_change is False
 
 
@@ -191,7 +189,7 @@ def test_complete_binding_evidence_component_pass() -> None:
     assert evidence.evidence_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
     assert evidence.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
     assert evidence.observed_account_identity == _TEST_UID
-    assert evidence.live_enabled is False
+    assert evidence.live_enabled is True
     assert evidence.wire_send_permitted is False
     assert "LIVE_ACCOUNT_BOUND_TRUSTED_PRESENT" in evidence.reason_codes
 
@@ -288,10 +286,9 @@ def test_join_complete_bound_still_cannot_admit(
     assert inputs.live_account_bound_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
     assert inputs.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
     assert inputs.fresh_pretrade_get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
-    assert inputs.live_enabled is False
+    assert inputs.live_enabled is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
-    assert "LIVE_ENABLED_FALSE" in decision.reason_codes
     assert "LIVE_ARMED_FALSE" in decision.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in decision.reason_codes
@@ -389,7 +386,7 @@ def test_offline_injected_full_core_path_halts_before_wire_and_does_not_post(
     assert result.boundary.canary_http_invoked is False
     assert result.boundary.live_execution_port_constructed is False
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
-    assert "LIVE_ENABLED_FALSE" in result.reason_codes
+    assert "LIVE_ARMED_FALSE" in result.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
     admission = result.boundary.admission
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in admission.reason_codes

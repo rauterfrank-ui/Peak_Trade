@@ -71,7 +71,7 @@ _ENABLED_DENY = frozenset(
 
 
 def test_standing_defaults_and_pre_wire_flags() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True
@@ -201,7 +201,7 @@ def test_host_composition_uses_admission_authority_and_does_not_construct(monkey
         attempt_wire_send=True,
     )
     assert result.intent is not None
-    assert result.intent.live_enabled is False
+    assert result.intent.live_enabled is True
     assert result.intent.live_armed is False
     assert result.intent.wire_send_permitted is False
     assert result.intent.execution_eligible is False

@@ -809,8 +809,6 @@ def bind_step_29p_typed_equity_from_risk_capital_v1(
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ENABLED is not False:
-        raise CurrentProductive29PRiskCapitalModelError("LIVE_ENABLED_NOT_FALSE")
     if LIVE_ARMED is not False:
         raise CurrentProductive29PRiskCapitalModelError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:

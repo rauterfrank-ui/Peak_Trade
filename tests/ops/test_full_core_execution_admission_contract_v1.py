@@ -64,7 +64,7 @@ def _live_inputs(**overrides) -> ExecutionAdmissionInputsV1:
 
 
 def test_standing_live_flags_remain_false() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert MODE_TEST == "TEST"

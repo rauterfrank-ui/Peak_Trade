@@ -197,7 +197,7 @@ def test_c01_c16_remain_rejected_and_forbidden_fields_deny() -> None:
 def test_step_29p_risk_admissible_and_live_gates_remain_false() -> None:
     u_section = _u_section()
     assert "STEP_29P_RISK_ADMISSIBLE=false" in u_section
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
 

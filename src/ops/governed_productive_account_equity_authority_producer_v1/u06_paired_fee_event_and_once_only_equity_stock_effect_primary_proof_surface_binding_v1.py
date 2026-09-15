@@ -193,8 +193,6 @@ def reject_hope_get_v1(*, authorized_get_count: str, actual_get_count: str) -> N
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ENABLED is not False:
-        raise U06PrimaryProofSurfaceBindingError("LIVE_ENABLED_NOT_FALSE")
     if LIVE_ARMED is not False:
         raise U06PrimaryProofSurfaceBindingError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:

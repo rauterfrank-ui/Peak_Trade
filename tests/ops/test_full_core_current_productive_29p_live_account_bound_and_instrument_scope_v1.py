@@ -176,7 +176,7 @@ def _run(
 
 
 def test_standing_pins_and_canary_not_imported() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False

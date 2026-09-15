@@ -226,7 +226,7 @@ def test_s6_classifies_sealed_pack_fail_closed_without_kind_resolution(
     assert OBSERVATION_NETWORK_GET_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EXECUTION_READY is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert verify_manifest_sha256_v1(store_root=pack) == 0

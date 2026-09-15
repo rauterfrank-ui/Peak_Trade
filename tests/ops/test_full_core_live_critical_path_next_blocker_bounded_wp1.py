@@ -216,7 +216,7 @@ def test_sealed_bl_consumption_keeps_historical_unknown_and_empty_live_kind_set(
     assert KIND_SET_RESOLVED is False
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (

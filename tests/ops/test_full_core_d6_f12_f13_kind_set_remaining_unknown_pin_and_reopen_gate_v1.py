@@ -222,7 +222,7 @@ def test_pin_keeps_unknown_and_does_not_execute_gates(tmp_path: Path) -> None:
     assert KIND_SET_RESOLVED is False
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert (

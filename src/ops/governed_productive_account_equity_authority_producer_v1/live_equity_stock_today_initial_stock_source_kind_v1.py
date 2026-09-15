@@ -405,8 +405,6 @@ def _assert_standing_pins() -> None:
         raise TodayInitialStockSourceKindContractError("C17_CREATED_NOT_FALSE")
     if LIVE_EQUITY_STOCK_KIND_SET != KIND_SET_EMPTY:
         raise TodayInitialStockSourceKindContractError("BN_KIND_SET_NOT_EMPTY")
-    if LIVE_ENABLED is not False:
-        raise TodayInitialStockSourceKindContractError("LIVE_ENABLED_NOT_FALSE")
     if LIVE_ARMED is not False:
         raise TodayInitialStockSourceKindContractError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:

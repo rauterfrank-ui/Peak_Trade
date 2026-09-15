@@ -159,7 +159,7 @@ def _u04() -> CurrentProductiveU04ReservationFactV1:
 
 
 def test_standing_pins_and_option_b() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert GOVERNED_PRODUCER_CREATED is False

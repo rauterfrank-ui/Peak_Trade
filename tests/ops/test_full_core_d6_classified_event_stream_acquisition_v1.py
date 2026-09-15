@@ -464,7 +464,7 @@ def test_existing_owner_pins_and_non_regression() -> None:
     assert RESTART_PROVEN is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert CHECKPOINT_CAN_MINT_EQUITY is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert dag["EVENT_ACQUISITION_CREATED"] is True

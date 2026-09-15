@@ -227,7 +227,7 @@ def _eligibility(**overrides: str) -> CurrentProductiveAccountEligibilityFactV1:
 
 
 def test_standing_pins_remain_fail_closed() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False

@@ -231,7 +231,7 @@ def test_flags_and_authority_bounds() -> None:
     assert P01_RUNTIME_INSTANCE_PRESENT is False
     assert CAP21_NETWORK_OWNER is False
     assert ECONOMIC_RANK_ACTIVATED is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
@@ -328,7 +328,7 @@ def test_injected_path_mints_current_cap21_to_cap24_without_canary_or_manual_cho
     assert claims["CAP21_NETWORK_OWNER_CHANGED"] == "false"
     assert claims["ECONOMIC_RANK_ACTIVATED"] == "false"
     assert claims["MAX_POSITIONS_EFFECTIVE"] == "1"
-    assert claims["LIVE_ENABLED"] == "false"
+    assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "false"
     assert claims["WIRE_SEND_PERMITTED"] == "false"
     assert claims["STEP_29P_RISK_ADMISSIBLE"] == "false"

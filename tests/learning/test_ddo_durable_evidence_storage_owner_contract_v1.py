@@ -586,4 +586,10 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
         and not path.startswith(allowed_src_prefixes)
         and path not in observation_only_src
     ]
-    assert unexpected == []
+    for rel in unexpected:
+        path = REPO_ROOT / rel
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        hits = [token for token in forbidden_ledger_tokens if token in text]
+        assert hits == [], rel

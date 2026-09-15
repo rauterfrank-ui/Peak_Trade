@@ -341,7 +341,7 @@ def test_c01_c16_remain_fenced_and_no_source_or_engine() -> None:
     assert EVENT_ACQUISITION_CREATED is True
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert RESTART_PROVEN is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert dag["BOUND_ACCOUNT_IDENTITY_PROVEN"] is True

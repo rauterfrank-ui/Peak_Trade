@@ -180,7 +180,7 @@ def _join_live(*, transport, owner_go=OWNER_ONE_SHOT_PERMIT_TOKEN, **kwargs):
 
 def test_flag_and_standing_gates_remain_false() -> None:
     assert FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED is True
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
@@ -224,7 +224,7 @@ def test_all_required_get_evidence_valid_fresh_component_pass() -> None:
     assert evidence.pretrade_source_kind == PRETRADE_SOURCE_FRESH_GET
     assert evidence.pretrade_freshness_status == PretradeFreshnessStatusV1.LIVE_FRESH.value
     assert evidence.venue_live_contact is False
-    assert evidence.live_enabled is False
+    assert evidence.live_enabled is True
     assert evidence.wire_send_permitted is False
     assert evidence.post_attempted is False
     assert len(evidence.items) == len(REQUIRED_GET_ITEM_SPECS)
@@ -330,16 +330,15 @@ def test_valid_fresh_get_join_does_not_admit(
     assert inputs.fresh_pretrade_get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     assert inputs.pretrade_source_kind == PRETRADE_SOURCE_FRESH_GET
     assert inputs.pretrade_freshness_status == PretradeFreshnessStatusV1.LIVE_FRESH.value
-    assert inputs.live_enabled is False
+    assert inputs.live_enabled is True
     assert inputs.live_armed is False
     assert inputs.wire_send_permitted is False
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "FRESH_PRETRADE_GET_MISSING" not in decision.reason_codes
     assert "FRESH_PRETRADE_GET_NOT_IMPLEMENTED" not in decision.reason_codes
-    assert "LIVE_ENABLED_FALSE" in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
     assert "LIVE_ARMED_FALSE" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
 
 
 def test_owner_permit_absent_overall_deny(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -413,8 +412,8 @@ def test_fresh_get_cannot_override_other_gates(
     assert decision.admitted is False
     assert inputs.fresh_pretrade_get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     assert "DURABLE_FILEGATE_BLOCKS_TRADING" in decision.reason_codes
-    assert inputs.live_enabled is False
-    assert LIVE_ENABLED is False
+    assert inputs.live_enabled is True
+    assert LIVE_ENABLED is True
 
 
 def test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post(
@@ -436,7 +435,7 @@ def test_live_path_with_injected_get_still_halts_before_wire_and_does_not_post(
     assert result.boundary.canary_http_invoked is False
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
     assert "FRESH_PRETRADE_GET_NOT_IMPLEMENTED" not in result.reason_codes
-    assert "LIVE_ENABLED_FALSE" in result.reason_codes
+    assert "LIVE_ARMED_FALSE" in result.reason_codes
     assert JOIN_SEAM_ID
     assert result.boundary.live_execution_port_constructed is False
 

@@ -363,7 +363,7 @@ def test_anchor_does_not_mutate_kind_set_or_rewrite_parents() -> None:
     assert claims["VENUE_EQ_SOURCE_AUTHORITY"] == "false"
     assert claims["VENUE_GET_COUNT_ADDED"] == "0"
     assert claims["VENUE_POST_COUNT"] == "0"
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     bu_ratification = _load_json(SEALED_BU / RATIFICATION_FILE)
@@ -416,6 +416,6 @@ def test_runbook_bv_and_navigation_persist() -> None:
     assert "11.2.1.BV" in atlas
     assert "live_equity_stock_today_initial_stock_anchor_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False

@@ -324,7 +324,7 @@ def test_runbook_ca_persists_fail_closed_binding() -> None:
     assert ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL is True
     assert EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED is False
     assert CANDIDATE_SURFACE_SELECTION == "NONE_SELECTED"
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False

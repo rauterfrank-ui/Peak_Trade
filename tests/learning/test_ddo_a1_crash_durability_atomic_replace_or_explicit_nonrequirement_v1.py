@@ -319,7 +319,7 @@ def test_no_authority_or_live_drift() -> None:
     assert SECOND_TRADING_AUTHORITY_CREATED is False
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False
     assert LIVE_EFFECT == "NONE"
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_AUTHORIZED is False
