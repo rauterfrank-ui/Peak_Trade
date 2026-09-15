@@ -157,6 +157,7 @@ class ExecutionBoundaryResultV1:
     canary_http_invoked: bool
     halt_before_wire: bool
     admission: Optional[ExecutionAdmissionDecisionV1] = None
+    host_joined: bool = False
 
 
 @dataclass(frozen=True)

@@ -193,7 +193,7 @@ def test_risk_admissible_does_not_construct_or_arm() -> None:
     assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" in str(raised.value)
     port = bind_simulated_execution_port_v1()
     assert isinstance(port, SimulatedExecutionPortV1)
-    assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is False
+    assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True

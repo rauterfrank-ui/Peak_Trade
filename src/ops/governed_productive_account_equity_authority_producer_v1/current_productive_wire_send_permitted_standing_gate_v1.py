@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
@@ -332,12 +333,16 @@ def execute_current_productive_wire_send_permitted_standing_gate_v1(
         raise CurrentProductiveWireSendPermittedStandingGateError("CONSTRUCTION_WIRE_DENY_PRESENT")
 
     first_blocker = (
-        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-        if construction_closed
+        "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
         else (
-            "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
-            if remainder_closed
-            else "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+            "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+            if construction_closed
+            else (
+                "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+                if remainder_closed
+                else "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+            )
         )
     )
     blocker_class = "E"

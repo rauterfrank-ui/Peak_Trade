@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     EXECUTION_ADMISSION_DOES_NOT_IMPLY_LIVE_AUTHORIZED,
     EXECUTION_ADMISSION_DOES_NOT_IMPLY_PORT_CONSTRUCTION,
     EXECUTION_ADMISSION_DOES_NOT_IMPLY_POST,
@@ -306,9 +307,13 @@ def execute_current_productive_execution_admission_remainder_v1(
         raise CurrentProductiveExecutionAdmissionRemainderError("CONSTRUCTION_WIRE_DENY_PRESENT")
 
     first_blocker = (
-        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-        if construction_closed
-        else "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+        "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
+        else (
+            "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+            if construction_closed
+            else "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+        )
     )
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH

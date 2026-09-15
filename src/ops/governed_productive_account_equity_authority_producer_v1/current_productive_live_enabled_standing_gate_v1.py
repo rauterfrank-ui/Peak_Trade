@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
@@ -289,7 +290,9 @@ def execute_current_productive_live_enabled_standing_gate_v1(
     elif construction.constructible is True or construction.constructed is True:
         raise CurrentProductiveLiveEnabledStandingGateError("PORT_MUST_REMAIN_FORBIDDEN")
 
-    if construction_closed:
+    if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True:
+        first_blocker = "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+    elif construction_closed:
         first_blocker = "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
     elif remainder_closed:
         first_blocker = "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"

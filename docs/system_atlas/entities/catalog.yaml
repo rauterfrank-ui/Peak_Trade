@@ -5753,6 +5753,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # 11.2.1.DF current-productive Cap-7.2 host-join to LiveExecutionPort V1: CONTRACT_VERSION=v1; CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=true; HOST_JOINED=true; ADMITTED=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=SUBMISSION_AUTHORIZED_REMAINS_FALSE; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py.
     # 11.2.1.DE current-productive LiveExecutionPort construction V1: CONTRACT_VERSION=v1; LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED=true; LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true; ADMITTED=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py.
     # 11.2.1.DD current-productive Execution Admission remainder V1: CONTRACT_VERSION=v1; EXECUTION_ADMISSION_REMAINDER_CLOSED=true; ADMITTED=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py.
     # 11.2.1.DC current-productive WIRE_SEND_PERMITTED standing-gate V1: CONTRACT_VERSION=v1; WIRE_SEND_PERMITTED=true; WIRE_SEND_PERMITTED_TRUE_IS_NOT_AUTOMATIC_SEND=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py.
@@ -5846,6 +5847,7 @@ entities:
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
@@ -5971,6 +5973,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
@@ -5987,6 +5990,7 @@ entities:
       - bound_path_identity_v1
       - live_admission_gap_dag_v1
       - evaluate_live_execution_port_construction_admission_v1
+      - join_cap72_host_to_live_execution_port_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -5994,6 +5998,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
@@ -6005,6 +6010,7 @@ entities:
       - tests/ops/test_full_core_current_productive_live_armed_standing_gate_v1.py
       - tests/ops/test_full_core_current_productive_wire_send_permitted_standing_gate_v1.py
       - tests/ops/test_full_core_current_productive_live_execution_port_construction_v1.py
+      - tests/ops/test_full_core_current_productive_cap72_host_join_to_live_execution_port_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
@@ -7133,15 +7139,18 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
     source_symbols:
       - halt_at_live_execution_boundary_v1
       - refuse_wire_send_v1
       - evaluate_execution_admission_v1
       - evaluate_live_execution_port_construction_admission_v1
+      - join_cap72_host_to_live_execution_port_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/execution_ports_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
@@ -7150,8 +7159,10 @@ entities:
       ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
       11.2.1.Q STEP-29P risk-admissibility does not construct LiveExecutionPort.
       Evaluates LiveExecutionPort construction admission as an explicit
-      conjunction. Does not construct Cap 11.1 LiveExecutionPort. Does not
-      invoke canary HTTP. Does not read durable FILEGATE StatePersistence.
+      conjunction. Host-join may attach that fail-closed handle to the
+      Cap-7.2 host. Host-join is not submission, LIVE_AUTHORIZED, STEP-29Q,
+      POST, or wire send. Does not invoke canary HTTP. Does not read durable
+      FILEGATE StatePersistence.
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED
       remain false. LIVE_ARMED=true is not automatic admission and does
       not construct LiveExecutionPort. Atlas is not canonical authority.
