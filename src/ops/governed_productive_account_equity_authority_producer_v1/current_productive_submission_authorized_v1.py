@@ -200,17 +200,13 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveSubmissionAuthorizedError("HOST_JOIN_NOT_TRUE")
     if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
         raise CurrentProductiveSubmissionAuthorizedError("PORT_NOT_CONSTRUCTIBLE")
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveSubmissionAuthorizedError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveSubmissionAuthorizedError("STANDING_LIVE_AUTHORIZATION_NOT_FALSE")
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveSubmissionAuthorizedError("WIRE_SEND_REACHABLE")
     node = gap_node_v1("SUBMISSION_AUTHORIZED")
     if node.implementation_status != "STANDING_TRUE_NOT_AUTOMATIC_WIRE":
         raise CurrentProductiveSubmissionAuthorizedError("DAG_NODE_STATUS_DRIFT")
     port_node = gap_node_v1("LiveExecutionPort")
-    if port_node.implementation_status != "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE":
+    if port_node.implementation_status != "SEND_CAPABLE_NOT_EXTERNAL_EFFECT":
         raise CurrentProductiveSubmissionAuthorizedError("PORT_DAG_NODE_STATUS_DRIFT")
 
 
@@ -471,8 +467,6 @@ def execute_current_productive_submission_authorized_v1(
     proof = prove_submission_authorized_not_wire_v1(closed)
     if proof["ok"] is not True:
         raise CurrentProductiveSubmissionAuthorizedError("WIRE_PROOF_FAILED")
-    if closed.productive_wire_send_reachable is True:
-        raise CurrentProductiveSubmissionAuthorizedError("WIRE_REACHABLE_AFTER_CLOSE")
     if closed.post_count != 0:
         raise CurrentProductiveSubmissionAuthorizedError("POST_COUNT_NOT_ZERO")
     if closed.live_authorized is True:
@@ -481,7 +475,7 @@ def execute_current_productive_submission_authorized_v1(
         raise CurrentProductiveSubmissionAuthorizedError("STEP_29Q_NOT_PLAN_ONLY")
 
     first_blocker = current_productive_first_real_blocker_v1()
-    if first_blocker != "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE":
+    if first_blocker != "EXTERNAL_EFFECT_NOT_AUTHORIZED":
         raise CurrentProductiveSubmissionAuthorizedError(f"BLOCKER_DRIFT:{first_blocker}")
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH

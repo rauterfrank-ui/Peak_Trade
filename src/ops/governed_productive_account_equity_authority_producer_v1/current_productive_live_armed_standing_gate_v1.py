@@ -162,12 +162,8 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveLiveArmedStandingGateError("MUST_NOT_IMPLY_AUTHORIZED")
     if LIVE_ARMED_DOES_NOT_IMPLY_RISK_ADMISSIBLE is not True:
         raise CurrentProductiveLiveArmedStandingGateError("MUST_NOT_IMPLY_RISK")
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveLiveArmedStandingGateError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_LIVE_AUTHORIZATION_NOT_FALSE")
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_REACHABLE")
     if LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True:
         if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
             raise CurrentProductiveLiveArmedStandingGateError("PORT_NOT_CONSTRUCTIBLE")

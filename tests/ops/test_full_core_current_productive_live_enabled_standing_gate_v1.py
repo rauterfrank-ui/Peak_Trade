@@ -68,7 +68,7 @@ def test_standing_flags_close_live_enabled_without_activation() -> None:
     assert LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_AUTHORIZED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
-    assert LIVE_AUTHORIZED is False
+    assert LIVE_AUTHORIZED is True
     assert CANARY_LIVE_ENABLED is False
     assert SECTION_11_14_LIVE_ENABLED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "b34db27f354a399c4d66263f3e48300b6857d363"
@@ -101,12 +101,12 @@ def test_evaluate_closes_live_enabled_and_halts_on_live_armed(tmp_path: Path) ->
     assert result.live_enabled == "true"
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
-    assert result.live_authorized == "false"
+    assert result.live_authorized == "true"
     assert result.admitted == "true"
     assert result.live_enabled_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
+    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
@@ -117,7 +117,7 @@ def test_evaluate_closes_live_enabled_and_halts_on_live_armed(tmp_path: Path) ->
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
     assert claims["WIRE_SEND_PERMITTED"] == "true"
-    assert claims["LIVE_AUTHORIZED"] == "false"
+    assert claims["LIVE_AUTHORIZED"] == "true"
     assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["POST_COUNT"] == "0"

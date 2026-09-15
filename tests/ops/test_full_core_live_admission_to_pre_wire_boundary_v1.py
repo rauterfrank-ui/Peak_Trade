@@ -86,7 +86,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
     assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTIBLE is True
-    assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
+    assert PRODUCTIVE_WIRE_SEND_REACHABLE is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is False
     armed = gap_node_v1("LIVE_ARMED")
     assert armed.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION"
@@ -101,12 +101,12 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
         "NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING"
     )
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
-        "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_SUBMISSION_AUTHORIZED_NOT_WIRE"
+        "SEND_CAPABLE_LIVE_AUTHORIZED_NOT_EXTERNAL_EFFECT"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["LIVE_ARMED"] is True
     assert dag["LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
-    assert dag["PRODUCTIVE_WIRE_SEND_REACHABLE"] is False
+    assert dag["PRODUCTIVE_WIRE_SEND_REACHABLE"] is True
 
 
 def test_enabled_armed_matrix_false_false() -> None:
@@ -161,7 +161,7 @@ def test_armed_true_does_not_imply_risk_port_or_wire() -> None:
     assert construction.constructible is False
     assert construction.constructed is False
     assert "EXECUTION_ADMISSION_NOT_ADMITTED" in construction.reason_codes
-    assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
+    assert PRODUCTIVE_WIRE_SEND_REACHABLE is True
 
 
 def test_full_conjunction_still_halts_at_external_boundary() -> None:

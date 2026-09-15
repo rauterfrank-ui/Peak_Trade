@@ -27,7 +27,6 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CAP_7_2_HOST_JOINED_IS_NOT_WIRE_SEND,
     CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
     LIVE_EXECUTION_PORT_ROLE,
-    PRODUCTIVE_WIRE_SEND_REACHABLE,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
     LiveExecutionPortConstructionAdmissionV1,
@@ -58,14 +57,12 @@ class Cap72HostLiveExecutionPortJoinV1:
     host_join_standing: bool
 
 
-def _port_side_effect_free(port: LiveExecutionPortV1) -> bool:
+def _port_no_external_effect(port: LiveExecutionPortV1) -> bool:
     return (
-        getattr(port, "REACHABLE", True) is False
-        and getattr(port, "EXCHANGE_ORDER_SUBMIT_REACHABLE", True) is False
-        and getattr(port, "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE", True) is False
-        and getattr(port, "SUBMISSION_AUTHORIZED", True) is False
-        and getattr(port, "WIRE_SEND_OCCURRED", True) is False
+        getattr(port, "WIRE_SEND_OCCURRED", True) is False
         and int(getattr(port, "POST_COUNT", 1)) == 0
+        and getattr(port, "MATERIAL_LOADED", False) is False
+        and getattr(port, "EXTERNAL_EFFECT_AUTHORIZED", True) is False
     )
 
 
@@ -139,29 +136,12 @@ def join_cap72_host_to_live_execution_port_v1(
                 port_role=LIVE_EXECUTION_PORT_ROLE,
                 host_join_standing=standing,
             )
-    if not isinstance(port, LiveExecutionPortV1) or _port_side_effect_free(port) is not True:
+    if not isinstance(port, LiveExecutionPortV1) or _port_no_external_effect(port) is not True:
         host.live_execution_port = None
         return Cap72HostLiveExecutionPortJoinV1(
             host_joined=False,
             fail_closed=True,
-            reason_codes=("LIVE_EXECUTION_PORT_NOT_SIDE_EFFECT_FREE",),
-            live_execution_port=None,
-            simulated_port_retained=True,
-            simulated_port_sole_reachable=True,
-            submission_authorized=False,
-            execution_eligible=False,
-            wire_send_occurred=False,
-            post_count=0,
-            side_effect_free=True,
-            port_role=LIVE_EXECUTION_PORT_ROLE,
-            host_join_standing=standing,
-        )
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is True:
-        host.live_execution_port = None
-        return Cap72HostLiveExecutionPortJoinV1(
-            host_joined=False,
-            fail_closed=True,
-            reason_codes=("PRODUCTIVE_WIRE_SEND_REACHABLE",),
+            reason_codes=("LIVE_EXECUTION_PORT_EXTERNAL_EFFECT_PRESENT",),
             live_execution_port=None,
             simulated_port_retained=True,
             simulated_port_sole_reachable=True,

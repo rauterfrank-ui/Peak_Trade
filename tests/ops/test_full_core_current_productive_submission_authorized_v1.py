@@ -99,20 +99,18 @@ def test_standing_flags_close_without_wire() -> None:
     assert SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_POST is True
     assert SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_PRODUCTIVE_WIRE_SEND_REACHABLE is True
     assert CAP_7_2_HOST_JOINED_IS_NOT_SUBMISSION_AUTHORIZED is True
-    assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
-    assert LIVE_AUTHORIZED is False
+    assert PRODUCTIVE_WIRE_SEND_REACHABLE is True
+    assert LIVE_AUTHORIZED is True
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "7fa87e76c7755467528848a3ff52ac4d98f48bb6"
-    assert current_productive_first_real_blocker_v1() == (
-        "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
-    )
+    assert current_productive_first_real_blocker_v1() == ("EXTERNAL_EFFECT_NOT_AUTHORIZED")
     assert gap_node_v1("SUBMISSION_AUTHORIZED").implementation_status == (
         "STANDING_TRUE_NOT_AUTOMATIC_WIRE"
     )
     assert gap_node_v1("LiveExecutionPort").implementation_status == (
-        "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
+        "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     )
 
 
@@ -158,7 +156,7 @@ def test_host_join_port_handle_and_wire_permit_alone_do_not_submit() -> None:
         construct_live_execution_port_v1()
     wire_only = evaluate_submission_authorized_v1(wire_send_permitted=True)
     assert wire_only.submission_authorized is False
-    assert LIVE_AUTHORIZED is False
+    assert LIVE_AUTHORIZED is True
 
 
 def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
@@ -189,7 +187,7 @@ def test_evaluate_closes_submission_without_wire(tmp_path: Path) -> None:
     assert result.live_enabled == "true"
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
-    assert result.live_authorized == "false"
+    assert result.live_authorized == "true"
     assert result.admitted == "true"
     assert result.host_joined == "true"
     assert result.port_constructed == "true"
@@ -197,14 +195,14 @@ def test_evaluate_closes_submission_without_wire(tmp_path: Path) -> None:
     assert result.submission_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
+    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert claims["SUBMISSION_AUTHORIZED"] == "true"
-    assert claims["LIVE_AUTHORIZED"] == "false"
+    assert claims["LIVE_AUTHORIZED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
-    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
+    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "true"
     assert claims["POST_COUNT"] == "0"
     assert claims["HOST_JOINED"] == "true"
     assert claims["CAP_7_2_HOST_JOINED_IS_NOT_SUBMISSION_AUTHORIZED"] == "true"

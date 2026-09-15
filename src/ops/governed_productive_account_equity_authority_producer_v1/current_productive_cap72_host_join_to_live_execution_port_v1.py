@@ -207,14 +207,10 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError(
             "JOIN_MUST_NOT_EXECUTION_ELIGIBLE"
         )
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError(
             "STANDING_LIVE_AUTHORIZATION_NOT_FALSE"
         )
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("WIRE_SEND_REACHABLE")
     if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is not True:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("HOST_JOIN_NOT_TRUE")
     if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
@@ -222,7 +218,7 @@ def _assert_standing_pins() -> None:
     if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not False:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("PORT_STILL_FORBIDDEN")
     node = gap_node_v1("LiveExecutionPort")
-    if node.implementation_status != "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE":
+    if node.implementation_status != "SEND_CAPABLE_NOT_EXTERNAL_EFFECT":
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DAG_NODE_STATUS_DRIFT")
 
 

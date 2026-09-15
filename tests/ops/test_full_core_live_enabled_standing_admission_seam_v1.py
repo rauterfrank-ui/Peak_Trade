@@ -111,7 +111,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is False
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
-        "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_SUBMISSION_AUTHORIZED_NOT_WIRE"
+        "SEND_CAPABLE_LIVE_AUTHORIZED_NOT_EXTERNAL_EFFECT"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["LIVE_ENABLED"] is True

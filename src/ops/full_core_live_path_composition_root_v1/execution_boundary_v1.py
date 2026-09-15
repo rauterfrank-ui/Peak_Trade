@@ -18,11 +18,13 @@ from src.ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1.e
     construct_live_execution_port_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED,
+    EXTERNAL_EFFECT_AUTHORIZED,
     LIVE_ARMED,
+    LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_ROLE,
     MODE_LIVE,
-    PRODUCTIVE_WIRE_SEND_REACHABLE,
     WIRE_SEND_PERMITTED,
 )
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
@@ -52,6 +54,18 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     PretradeConjunctionResultV1,
     VenuePlanCandidateV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
+    FullCoreExternalEffectNotAuthorizedError,
+    evaluate_external_effect_v1,
+    refuse_external_effect_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
+    FullCoreGatedProductiveWireTransportV1,
+    FullCoreSendCredentialHandleV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.live_authorized_v1 import (
+    evaluate_live_authorized_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     evaluate_submission_authorized_v1,
 )
@@ -61,7 +75,7 @@ from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_
 
 
 def refuse_wire_send_v1() -> None:
-    raise RuntimeError("WIRE_SEND_FORBIDDEN_IN_OFFLINE_FULL_CORE_PATH")
+    refuse_external_effect_v1(reason="WIRE_SEND_FORBIDDEN_IN_OFFLINE_FULL_CORE_PATH")
 
 
 def halt_at_live_execution_boundary_v1(
@@ -141,20 +155,26 @@ def halt_at_live_execution_boundary_v1(
         wire_send_permitted=resolved_inputs.wire_send_permitted,
         attempt_with_credentials=False,
         attempt_network_session=False,
+        send_capable=LIVE_AUTHORIZED is True and CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED is True,
     )
     reasons.extend(construction.reason_codes)
     should_construct = construction.constructible is True or attempt_construct_live_port is True
     if should_construct:
         try:
-            port = construct_live_execution_port_v1(construction_admission=construction)
+            port = construct_live_execution_port_v1(
+                construction_admission=construction,
+                send_capable=construction.send_capable is True,
+                credential_handle_bound=True,
+                transport_bound=True,
+            )
         except ExecutionPortConstructionForbiddenError:
             reasons.append("LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN")
         else:
             live_port_constructed = True
-            if getattr(port, "EXCHANGE_ORDER_SUBMIT_REACHABLE", True) is not False:
-                reasons.append("LIVE_EXECUTION_PORT_SUBMIT_REACHABLE_UNEXPECTED")
             if getattr(port, "WIRE_SEND_OCCURRED", True) is not False:
                 reasons.append("LIVE_EXECUTION_PORT_WIRE_SIDE_EFFECT")
+            if getattr(port, "EXTERNAL_EFFECT_AUTHORIZED", False) is True:
+                reasons.append("LIVE_EXECUTION_PORT_EXTERNAL_EFFECT_UNEXPECTED")
             join = join_cap72_host_to_live_execution_port_v1(
                 host=HostActivationBindingV1(),
                 construction_admission=construction,
@@ -182,6 +202,26 @@ def halt_at_live_execution_boundary_v1(
             )
             reasons.extend(submission.reason_codes)
             submission_authorized = submission.submission_authorized is True
+            live_auth = evaluate_live_authorized_v1(
+                live_enabled=resolved_inputs.live_enabled,
+                live_armed=resolved_inputs.live_armed,
+                wire_send_permitted=resolved_inputs.wire_send_permitted,
+                submission_authorized=submission_authorized,
+                attempt_external_effect=attempt_wire_send is True,
+            )
+            reasons.extend(live_auth.reason_codes)
+            effect = evaluate_external_effect_v1(attempt_external_effect=attempt_wire_send is True)
+            reasons.extend(effect.reason_codes)
+            if attempt_wire_send is True:
+                try:
+                    handle = FullCoreSendCredentialHandleV1(
+                        handle_id="full-core-gated-handle",
+                        bound=True,
+                    )
+                    transport = FullCoreGatedProductiveWireTransportV1(handle=handle)
+                    transport.attempt_trade_order_post(payload=None)
+                except FullCoreExternalEffectNotAuthorizedError as exc:
+                    reasons.append(str(exc))
     if attempt_wire_send:
         try:
             refuse_wire_send_v1()
@@ -189,7 +229,7 @@ def halt_at_live_execution_boundary_v1(
             reasons.append(str(exc))
     _ = plan
     wire_send_occurred = False
-    halt = wire_send_occurred is False and PRODUCTIVE_WIRE_SEND_REACHABLE is False
+    halt = wire_send_occurred is False and EXTERNAL_EFFECT_AUTHORIZED is False
     status = CompositionStatusV1.HALT if halt else CompositionStatusV1.DENY
     return ExecutionBoundaryResultV1(
         status=status,
