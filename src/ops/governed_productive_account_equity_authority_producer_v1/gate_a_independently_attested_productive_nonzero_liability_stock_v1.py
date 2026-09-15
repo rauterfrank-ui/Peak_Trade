@@ -236,10 +236,6 @@ def _assert_no_secret_material(*, blob: bytes, label: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise GateAIndependentlyAttestedProductiveNonzeroLiabilityStockError(
-            "WIRE_SEND_PERMITTED_NOT_FALSE"
-        )
     if RAW_EQ_SOURCE_AUTHORITY is not False:
         raise GateAIndependentlyAttestedProductiveNonzeroLiabilityStockError(
             "RAW_EQ_SOURCE_AUTHORITY_NOT_FALSE"

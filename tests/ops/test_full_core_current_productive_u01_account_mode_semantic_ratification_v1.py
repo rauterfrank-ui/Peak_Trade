@@ -89,7 +89,7 @@ def _run(tmp_path: Path, *, body: bytes) -> object:
 def test_standing_pins() -> None:
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert P01_RUNTIME_INSTANCE_PRESENT is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False
     assert REQUIRED_ACCOUNT_MODE == "FUTURES_MODE"

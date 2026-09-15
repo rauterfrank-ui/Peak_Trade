@@ -98,7 +98,7 @@ def test_capital_admission_authority_reused_not_replaced() -> None:
     assert CAPITAL_AUTHORITY_RISK_ADMISSIBLE == "RISK_ADMISSIBLE"
     assert FULL_CORE_LIVE_ENABLED is True
     assert FULL_CORE_LIVE_ARMED is True
-    assert FULL_CORE_WIRE_SEND is False
+    assert FULL_CORE_WIRE_SEND is True
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert CAPITAL_RISK_MODE_OFFLINE_ALGEBRA == "OFFLINE_ALGEBRA"

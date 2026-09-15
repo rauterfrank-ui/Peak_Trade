@@ -343,7 +343,7 @@ def test_c01_c16_remain_fenced_and_no_source_or_engine() -> None:
     assert RESTART_PROVEN is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert dag["BOUND_ACCOUNT_IDENTITY_PROVEN"] is True
     assert dag["BOUND_ACCOUNT_CONCRETE_UID_OBSERVED"] is False
     assert dag["EARLIEST_OPTION_D_DEPENDENCY"] == (

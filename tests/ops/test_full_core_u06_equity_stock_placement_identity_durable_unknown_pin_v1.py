@@ -84,7 +84,7 @@ FORBIDDEN_SOURCE_TOKENS = (
 def test_standing_pins_remain_fail_closed() -> None:
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert U06_KIND_DECISION == DECISION_REMAIN_UNKNOWN

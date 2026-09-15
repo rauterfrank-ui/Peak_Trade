@@ -365,7 +365,7 @@ def test_anchor_does_not_mutate_kind_set_or_rewrite_parents() -> None:
     assert claims["VENUE_POST_COUNT"] == "0"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     bu_ratification = _load_json(SEALED_BU / RATIFICATION_FILE)
     assert bu_ratification["initial_stock_anchor_status"] == "ABSENT"
     assert bu_ratification["ratification_digest"] == AUTHORIZED_RATIFICATION_DIGEST
@@ -418,4 +418,4 @@ def test_runbook_bv_and_navigation_persist() -> None:
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True

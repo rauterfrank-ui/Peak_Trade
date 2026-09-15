@@ -434,7 +434,7 @@ def test_no_network_side_effect_and_package_1_authority_non_regression() -> None
     assert C01_REHABILITATION_FORBIDDEN is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert OWNER == "ops.governed_productive_account_equity_authority_producer_v1"
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()

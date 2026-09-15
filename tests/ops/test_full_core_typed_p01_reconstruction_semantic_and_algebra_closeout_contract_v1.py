@@ -410,7 +410,7 @@ def test_protected_surfaces_and_live_pins_remain_fail_closed() -> None:
     assert GOVERNED_PRODUCER_CREATED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()
 

@@ -95,7 +95,7 @@ def test_mapping_unproven_and_value_binding_not_implemented() -> None:
     assert RISK_SIZING_OWNER == "STEP_29P"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ENABLED is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND is True
@@ -129,7 +129,7 @@ def test_forbidden_raw_venue_fields_remain_hard_deny() -> None:
         assert result.equity_dimension_bound is False
         assert result.live_enabled is True
         assert result.live_armed is True
-        assert result.wire_send_permitted is False
+        assert result.wire_send_permitted is True
 
 
 def test_injected_and_offline_equity_are_not_live_capital_authority() -> None:
@@ -140,13 +140,13 @@ def test_injected_and_offline_equity_are_not_live_capital_authority() -> None:
     assert injected.risk_admissible is True
     assert injected.live_enabled is True
     assert injected.live_armed is True
-    assert injected.wire_send_permitted is False
+    assert injected.wire_send_permitted is True
     assert injected.port_constructed is False
     assert MAPPING_PROVEN is False
     assert IMPLEMENTATION_OF_VALUE_BINDING is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     adapter = (
         REPO_ROOT / "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py"
     ).read_text(encoding="utf-8")
@@ -196,7 +196,7 @@ def test_risk_admissible_does_not_construct_or_arm() -> None:
     assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_runbook_r_consumes_go_without_rewriting_q() -> None:

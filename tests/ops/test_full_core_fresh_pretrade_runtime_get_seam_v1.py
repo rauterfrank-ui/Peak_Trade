@@ -182,7 +182,7 @@ def test_flag_and_standing_gates_remain_false() -> None:
     assert FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
@@ -225,7 +225,7 @@ def test_all_required_get_evidence_valid_fresh_component_pass() -> None:
     assert evidence.pretrade_freshness_status == PretradeFreshnessStatusV1.LIVE_FRESH.value
     assert evidence.venue_live_contact is False
     assert evidence.live_enabled is True
-    assert evidence.wire_send_permitted is False
+    assert evidence.wire_send_permitted is True
     assert evidence.post_attempted is False
     assert len(evidence.items) == len(REQUIRED_GET_ITEM_SPECS)
     assert all(
@@ -332,13 +332,13 @@ def test_valid_fresh_get_join_does_not_admit(
     assert inputs.pretrade_freshness_status == PretradeFreshnessStatusV1.LIVE_FRESH.value
     assert inputs.live_enabled is True
     assert inputs.live_armed is True
-    assert inputs.wire_send_permitted is False
+    assert inputs.wire_send_permitted is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "FRESH_PRETRADE_GET_MISSING" not in decision.reason_codes
     assert "FRESH_PRETRADE_GET_NOT_IMPLEMENTED" not in decision.reason_codes
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
 
 
 def test_owner_permit_absent_overall_deny(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

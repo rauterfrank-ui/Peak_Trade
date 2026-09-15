@@ -178,7 +178,7 @@ def test_resolution_keeps_kind_set_fail_closed_and_ranks_missing_evidence(
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_canonical_resolution_pack_matches_executor() -> None:

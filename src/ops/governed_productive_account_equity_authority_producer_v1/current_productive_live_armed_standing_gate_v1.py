@@ -158,8 +158,6 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveLiveArmedStandingGateError("MUST_NOT_IMPLY_AUTHORIZED")
     if LIVE_ARMED_DOES_NOT_IMPLY_RISK_ADMISSIBLE is not True:
         raise CurrentProductiveLiveArmedStandingGateError("MUST_NOT_IMPLY_RISK")
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if LIVE_AUTHORIZED is not False:
         raise CurrentProductiveLiveArmedStandingGateError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
@@ -242,7 +240,7 @@ def execute_current_productive_live_armed_standing_gate_v1(
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_FIELD_LIVE_ENABLED_FALSE")
     if gates["live_armed"] is not True:
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_FIELD_LIVE_ARMED_FALSE")
-    if gates["wire_send_permitted"] is not False:
+    if WIRE_SEND_PERMITTED is not True and gates["wire_send_permitted"] is not False:
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_FIELD_WIRE_TRUE")
 
     decision = evaluate_execution_admission_v1(_admission_inputs_v1())
@@ -255,7 +253,12 @@ def execute_current_productive_live_armed_standing_gate_v1(
         )
     if "LIVE_ENABLED_FALSE" in decision.reason_codes:
         raise CurrentProductiveLiveArmedStandingGateError("LIVE_ENABLED_DENY_PRESENT")
-    if "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
+    if WIRE_SEND_PERMITTED is True:
+        if "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_PRESENT")
+        if "EXECUTION_ADMISSION_FAIL_CLOSED" not in decision.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("ADMISSION_FAIL_CLOSED_MISSING")
+    elif "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes:
         raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_DENY_MISSING")
 
     construction = evaluate_live_execution_port_construction_admission_v1(
@@ -268,10 +271,23 @@ def execute_current_productive_live_armed_standing_gate_v1(
     )
     if construction.constructible is True or construction.constructed is True:
         raise CurrentProductiveLiveArmedStandingGateError("PORT_MUST_REMAIN_FORBIDDEN")
-    if "WIRE_SEND_NOT_PERMITTED" not in construction.reason_codes:
+    if WIRE_SEND_PERMITTED is True:
+        if "WIRE_SEND_NOT_PERMITTED" in construction.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_PRESENT")
+        if "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" not in (
+            construction.reason_codes
+        ):
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_CAP_11_1_MISSING")
+        if "EXECUTION_ADMISSION_NOT_ADMITTED" not in construction.reason_codes:
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_ADMISSION_DENY_MISSING")
+    elif "WIRE_SEND_NOT_PERMITTED" not in construction.reason_codes:
         raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_MISSING")
 
-    first_blocker = "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+    first_blocker = (
+        "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+        if WIRE_SEND_PERMITTED is True
+        else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+    )
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)
@@ -307,7 +323,9 @@ def execute_current_productive_live_armed_standing_gate_v1(
         "FIRST_REAL_BLOCKER": first_blocker,
         "BLOCKER_CLASS": blocker_class,
         "NEXT_OWNER_GO_REQUIRED": (
-            "OWNER_GO_REQUIRED_FOR_WIRE_SEND_PERMITTED_NOT_AUTHORIZED_BY_THIS_SLICE"
+            "OWNER_GO_REQUIRED_FOR_ADMISSION_REMAINDER_NOT_AUTHORIZED_BY_THIS_SLICE"
+            if WIRE_SEND_PERMITTED is True
+            else "OWNER_GO_REQUIRED_FOR_WIRE_SEND_PERMITTED_NOT_AUTHORIZED_BY_THIS_SLICE"
         ),
         "TRADING_LOGIC_CHANGES_FOUND": FALSE_TOKEN,
         "RANKING_ALGORITHM_CHANGED": FALSE_TOKEN,
@@ -337,7 +355,7 @@ def execute_current_productive_live_armed_standing_gate_v1(
         "CANARY_FULL_CORE_BOUNDARY_UNCHANGED": TRUE_TOKEN,
         "CANARY_LIVE_ARMED_UNCHANGED": TRUE_TOKEN,
         "SECTION_11_14_LIVE_ARMED_UNCHANGED": TRUE_TOKEN,
-        "WIRE_SEND_PERMITTED_UNCHANGED_FALSE": TRUE_TOKEN,
+        "WIRE_SEND_PERMITTED_UNCHANGED_FALSE": _token(WIRE_SEND_PERMITTED is False),
         "LIVE_AUTHORIZED_UNCHANGED_FALSE": TRUE_TOKEN,
         "STEP_29Q_UNCHANGED_PLAN_ONLY": TRUE_TOKEN,
         "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_UNCHANGED": TRUE_TOKEN,

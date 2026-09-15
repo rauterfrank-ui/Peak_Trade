@@ -326,7 +326,7 @@ def test_runbook_ca_persists_fail_closed_binding() -> None:
     assert CANDIDATE_SURFACE_SELECTION == "NONE_SELECTED"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert MS2_AUTHORIZED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"

@@ -356,7 +356,7 @@ def test_standing_pins_and_live_path_dag_unchanged() -> None:
     assert OBSERVATION_NETWORK_GET_AUTHORIZED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
         == "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"

@@ -65,7 +65,7 @@ def test_standing_flags_close_live_armed_without_activation() -> None:
     assert LIVE_ARMED_DOES_NOT_IMPLY_PORT_CONSTRUCTION is True
     assert LIVE_ARMED_DOES_NOT_IMPLY_LIVE_AUTHORIZED is True
     assert LIVE_ARMED_DOES_NOT_IMPLY_RISK_ADMISSIBLE is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert LIVE_AUTHORIZED is False
     assert CANARY_LIVE_ARMED is False
     assert SECTION_11_14_LIVE_ARMED is False
@@ -98,22 +98,23 @@ def test_evaluate_closes_live_armed_and_halts_on_wire_send(tmp_path: Path) -> No
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert result.live_enabled == "true"
     assert result.live_armed == "true"
-    assert result.wire_send_permitted == "false"
+    assert result.wire_send_permitted == "true"
     assert result.live_authorized == "false"
     assert result.admitted == "false"
     assert result.live_armed_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+    assert result.first_real_blocker == "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert "LIVE_ENABLED_FALSE" not in claims["ADMISSION_REASON_CODES"]
     assert "LIVE_ARMED_FALSE" not in claims["ADMISSION_REASON_CODES"]
-    assert "WIRE_SEND_NOT_PERMITTED" in claims["ADMISSION_REASON_CODES"]
+    assert "WIRE_SEND_NOT_PERMITTED" not in claims["ADMISSION_REASON_CODES"]
+    assert "EXECUTION_ADMISSION_FAIL_CLOSED" in claims["ADMISSION_REASON_CODES"]
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
-    assert claims["WIRE_SEND_PERMITTED"] == "false"
+    assert claims["WIRE_SEND_PERMITTED"] == "true"
     assert claims["LIVE_AUTHORIZED"] == "false"
     assert claims["ADMITTED"] == "false"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
@@ -147,7 +148,9 @@ def test_ssot_docs_once_present() -> None:
     db_section = runbook[
         runbook.index(
             "11.2.1.DB FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE"
-        ) : runbook.index("## 11.3 Autonomy state model")
+        ) : runbook.index(
+            "11.2.1.DC FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE"
+        )
     ]
     assert "LIVE_ARMED=true" in db_section
     assert "WIRE_SEND_PERMITTED=false" in db_section

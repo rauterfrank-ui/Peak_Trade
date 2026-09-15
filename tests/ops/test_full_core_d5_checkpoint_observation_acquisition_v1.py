@@ -316,7 +316,7 @@ def test_existing_owner_pins_and_non_regression() -> None:
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert dag["CHECKPOINT_OBSERVATION_ACQUISITION_CREATED"] is True
     assert dag["CHECKPOINT_OBSERVATION_PROVEN"] is True
     assert dag["CHECKPOINT_OBSERVATION_NETWORK_GET_AUTHORIZED"] is False

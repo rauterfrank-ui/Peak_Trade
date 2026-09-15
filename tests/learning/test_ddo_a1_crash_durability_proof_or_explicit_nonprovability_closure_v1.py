@@ -570,7 +570,7 @@ def test_overclaim_and_second_owners_are_forbidden() -> None:
     assert PAPER_EXECUTION_AUTHORIZED is False
     assert LIVE_ARMED is True
     assert LIVE_ENABLED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     stamps = a1_crash_durability_proof_or_nonprovability_observability_v1()
     assert stamps["a1_crash_proof_host_crash_durability"] == "UNPROVEN"
     assert stamps["a1_crash_proof_durability_closure"] == DURABILITY_CLOSURE

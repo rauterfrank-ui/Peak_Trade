@@ -109,14 +109,13 @@ def test_offline_full_chain_from_core_not_injected_intent(monkeypatch: pytest.Mo
     assert result.pretrade.instrument_binding_valid is True
     assert result.pretrade.pretrade_valid is True
     assert result.pretrade.live_enabled is True
-    assert result.pretrade.wire_send_permitted is False
+    assert result.pretrade.wire_send_permitted is True
     assert result.boundary is not None
     assert result.boundary.halt_before_wire is True
     assert result.wire_send_occurred is False
     assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
     assert result.full_core_system_e2e_proven is False
     assert result.current_live_core_path_proven is False
     assert result.full_core_restart_test_authorized is False

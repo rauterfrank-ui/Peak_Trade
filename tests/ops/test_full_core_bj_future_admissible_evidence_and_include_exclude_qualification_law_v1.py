@@ -328,5 +328,5 @@ def test_runbook_by_persists_qualification_law() -> None:
     assert D6_FULLY_CLOSED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert MS2_AUTHORIZED is False

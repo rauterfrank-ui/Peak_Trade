@@ -282,7 +282,7 @@ def test_step_29p_risk_admissible_and_live_gates_remain_false() -> None:
     assert "STEP_29P_RISK_ADMISSIBLE=false" in v_section
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_cap11_1_and_cap72_unchanged() -> None:

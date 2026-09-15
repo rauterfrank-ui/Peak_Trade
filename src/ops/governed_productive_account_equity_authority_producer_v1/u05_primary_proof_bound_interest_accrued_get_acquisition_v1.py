@@ -279,10 +279,6 @@ def _load_json_object(*, path: Path) -> dict[str, Any]:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise U05PrimaryProofBoundInterestAccruedGetAcquisitionError(
-            "WIRE_SEND_PERMITTED_NOT_FALSE"
-        )
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise U05PrimaryProofBoundInterestAccruedGetAcquisitionError(
             "U05_KIND_DECISION_NOT_REMAIN_UNKNOWN"

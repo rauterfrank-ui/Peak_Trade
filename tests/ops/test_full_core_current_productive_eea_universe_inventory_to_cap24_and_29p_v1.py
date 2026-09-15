@@ -233,7 +233,7 @@ def test_flags_and_authority_bounds() -> None:
     assert ECONOMIC_RANK_ACTIVATED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert DEFAULT_INSTRUMENT_ID == CANARY_DEFAULT_INSTRUMENT_ID
     assert OWNER_GO in ALLOWED_OWNER_GOS
@@ -330,7 +330,7 @@ def test_injected_path_mints_current_cap21_to_cap24_without_canary_or_manual_cho
     assert claims["MAX_POSITIONS_EFFECTIVE"] == "1"
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
-    assert claims["WIRE_SEND_PERMITTED"] == "false"
+    assert claims["WIRE_SEND_PERMITTED"] == "true"
     assert claims["STEP_29P_RISK_ADMISSIBLE"] == "false"
     assert result.first_real_blocker == (
         "CURRENT_PRODUCTIVE_29P_REQUIRES_PRODUCTIVE_TRUSTED_GET_AND_CAP24_BOUND_INSTRUMENT"

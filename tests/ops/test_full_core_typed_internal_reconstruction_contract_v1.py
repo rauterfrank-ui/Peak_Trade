@@ -566,7 +566,7 @@ def test_step_29p_remains_inadmissible_and_live_gates_remain_false() -> None:
     assert result.risk_admissible is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert EQUITY_DIMENSION_BOUND is False
     assert FIELD_TO_DIMENSION_MAPPING_PRESENT is False
     with pytest.raises(ExecutionPortConstructionForbiddenError) as raised:

@@ -395,8 +395,6 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
         raise CurrentProductive29PFreshGetError("ORIGIN_MAIN_SHA_MISMATCH")
     if execute_get is not True:
         raise CurrentProductive29PFreshGetError("EXECUTE_GET_FLAG_REQUIRED")
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductive29PFreshGetError("STANDING_LIVE_GATES_MUST_REMAIN_FALSE")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
         raise CurrentProductive29PFreshGetError("SEALED_LEGACY_CENSUS_MUST_REMAIN_CLOSED")
     if CURRENT_PRODUCTIVE_29P_FRESH_GET_POST_COUNT != 0:

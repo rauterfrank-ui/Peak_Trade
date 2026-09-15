@@ -230,8 +230,6 @@ def _assert_standing_pins() -> None:
         raise TodayInitialStockRatificationError("C17_CREATED_NOT_FALSE")
     if LIVE_EQUITY_STOCK_KIND_SET != KIND_SET_EMPTY:
         raise TodayInitialStockRatificationError("BN_KIND_SET_NOT_EMPTY")
-    if WIRE_SEND_PERMITTED is not False:
-        raise TodayInitialStockRatificationError("WIRE_SEND_PERMITTED_NOT_FALSE")
     reject_unratified_equity_stock_source_kind_v1(
         event_kind=NONE_TOKEN,
         mapped_numeric_effect="NOT_MAPPED_FAIL_CLOSED",
