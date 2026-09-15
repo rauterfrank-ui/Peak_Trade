@@ -234,6 +234,7 @@ def test_ssot_docs_once_present() -> None:
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1" in spec
     assert "11.2.1.CX" in atlas
     assert "current_productive_p01_policy_v1.py" in atlas
+    assert "current_productive_p01_policy_replacement_and_29p_continuation_v1.py" in atlas
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["P01_POLICY_DECISION"] == "DOES_NOT_APPLY"
