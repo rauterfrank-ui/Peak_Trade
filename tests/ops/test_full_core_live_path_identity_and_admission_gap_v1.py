@@ -207,7 +207,9 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     live_auth = gap_node_v1("LIVE_AUTHORIZED")
     assert live_auth.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_SEND"
     effect = gap_node_v1("EXTERNAL_EFFECT")
-    assert effect.implementation_status == "IMPLEMENTED_FAIL_CLOSED"
+    assert effect.implementation_status == (
+        "ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE"
+    )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
 
 

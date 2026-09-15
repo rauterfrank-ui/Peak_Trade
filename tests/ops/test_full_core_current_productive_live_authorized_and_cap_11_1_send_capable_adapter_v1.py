@@ -108,14 +108,18 @@ def test_standing_flags_close_without_external_effect() -> None:
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "d3e0e6b35b1893d005fa015fb4c7f50de5a877ec"
-    assert current_productive_first_real_blocker_v1() == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
+    assert current_productive_first_real_blocker_v1() == (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    )
     assert gap_node_v1("LIVE_AUTHORIZED").implementation_status == (
         "STANDING_TRUE_NOT_AUTOMATIC_SEND"
     )
     assert gap_node_v1("LiveExecutionPort").implementation_status == (
         "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     )
-    assert gap_node_v1("EXTERNAL_EFFECT").implementation_status == "IMPLEMENTED_FAIL_CLOSED"
+    assert gap_node_v1("EXTERNAL_EFFECT").implementation_status == (
+        "ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE"
+    )
 
 
 def test_default_and_missing_predicates_deny() -> None:
@@ -198,7 +202,9 @@ def test_evaluate_closes_live_authorized_without_external_effect(tmp_path: Path)
     assert result.step_29q_status == "PLAN_ONLY"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
+    assert result.first_real_blocker == (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    )
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
@@ -241,7 +247,9 @@ def test_ssot_docs_once_present() -> None:
     dh_section = runbook[
         runbook.index(
             "11.2.1.DH FULL_CORE_CURRENT_PRODUCTIVE_LIVE_AUTHORIZED_AND_CAP_11_1_SEND_CAPABLE_ADAPTER"
-        ) : runbook.index("## 11.3 Autonomy state model")
+        ) : runbook.index(
+            "11.2.1.DI FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM"
+        )
     ]
     assert "LIVE_AUTHORIZED=true" in dh_section
     assert "CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED=true" in dh_section

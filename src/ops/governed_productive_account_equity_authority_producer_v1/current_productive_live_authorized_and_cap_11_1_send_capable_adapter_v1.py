@@ -231,7 +231,9 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveLiveAuthorizedSendCapableError("DAG_LIVE_AUTHORIZED_STATUS_DRIFT")
     if gap_node_v1("LiveExecutionPort").implementation_status != "SEND_CAPABLE_NOT_EXTERNAL_EFFECT":
         raise CurrentProductiveLiveAuthorizedSendCapableError("PORT_DAG_NODE_STATUS_DRIFT")
-    if gap_node_v1("EXTERNAL_EFFECT").implementation_status != "IMPLEMENTED_FAIL_CLOSED":
+    if gap_node_v1("EXTERNAL_EFFECT").implementation_status != (
+        "ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE"
+    ):
         raise CurrentProductiveLiveAuthorizedSendCapableError("EXTERNAL_EFFECT_DAG_STATUS_DRIFT")
 
 
@@ -459,7 +461,9 @@ def execute_current_productive_live_authorized_and_cap_11_1_send_capable_adapter
         raise CurrentProductiveLiveAuthorizedSendCapableError("MISSING_HANDLE_MUST_FAIL")
 
     first_blocker = current_productive_first_real_blocker_v1()
-    if first_blocker != "EXTERNAL_EFFECT_NOT_AUTHORIZED":
+    if first_blocker != (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    ):
         raise CurrentProductiveLiveAuthorizedSendCapableError(f"BLOCKER_DRIFT:{first_blocker}")
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH

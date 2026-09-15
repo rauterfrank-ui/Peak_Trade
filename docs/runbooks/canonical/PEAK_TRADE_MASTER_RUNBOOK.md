@@ -26985,6 +26985,101 @@ CURRENT_CANONICAL_SECTION=11.2.1.DH
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+The remaining envelope-bound single-use External-Effect send-seam remainder
+after LIVE_AUTHORIZED / Cap-11.1 send-capable is superseded by §11.2.1.DI.
+Standing persist fields in §11.2.1.DH remain unchanged as a historical record.
+
+### 11.2.1.DI FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1`.
+This persist does not rewrite §11.2.1.DA, §11.2.1.DB, §11.2.1.DC,
+§11.2.1.DD, §11.2.1.DE, §11.2.1.DF, §11.2.1.DG, or §11.2.1.DH standing
+persist fields. It ratifies an envelope-bound single-use Full-Core
+External-Effect send seam:
+
+`FINAL_ORDER_ENVELOPE` binds submit-relevant parameters and a
+deterministic digest. `ExternalEffectPermitV1` issues only when standing
+CURRENT_PRODUCTIVE predicates, kill-switch, and FILEGATE admit, and only
+for that exact envelope. Durable consume records `SENT_INITIATED` before
+the injected transport. Replay, retry, second submit, and follow-on
+submit remain fail-closed. The Full-Core urllib POST seam exists and is
+host-bound to `eea.okx.com` `/api/v5/trade/order`. This slice keeps
+`REAL_VENUE_POST_ALLOWED=false`, so the socket is never opened. Tests
+inject a non-networking transport. Credential material is never loaded.
+
+This persist does **not** set standing `EXTERNAL_EFFECT_AUTHORIZED=true`.
+It does **not** change STEP-29Q from PLAN_ONLY. Direct 29Q submission
+remains forbidden. It does **not** POST against the venue. It does
+**not** load credential material. It does **not** start a mutative
+network session. It does **not** use Canary, Funding, or §11.14.
+`SUBMIT_UNLOCKED` remains false and alone is not permission to send.
+Cap-7.2 host / autonomy loops are not joined to this seam.
+
+``` text
+THIS_SLICE=11.2.1.DI.FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DI.FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM
+CURRENT_CANONICAL_SECTION=11.2.1.DI.FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+EXPECTED_ORIGIN_MAIN=836a89b4d4ff1eace55ad320a2d7c24b5227d155
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_PRESENT=true
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+SUBMIT_UNLOCKED=false
+SUBMIT_UNLOCKED_ALONE_IS_NOT_SEND_PERMISSION=true
+LIVE_AUTHORIZED=true
+LIVE_AUTHORIZED_TRUE_IS_NOT_AUTOMATIC_SEND=true
+CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED=true
+SEND_SEAM_PRESENT=true
+HOST_JOINED=true
+LIVE_ENABLED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+ADMITTED=true
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29Q_STATUS=PLAN_ONLY
+STEP_29Q_BLOCKS_POST=false
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+MOCKED_POST_COUNT=1
+POST_COUNT=0
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+AUTONOMOUS_FOLLOW_ON_EXECUTION_ALLOWED=false
+STEP_29P_RISK_ADMISSIBLE=true
+FIRST_DEFINITIVE_BLOCK=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+BLOCKER_CLASS=E
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+NEXT_STEP_REQUIRES_OWNER_GO=true
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1/20260915T212000Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DI
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

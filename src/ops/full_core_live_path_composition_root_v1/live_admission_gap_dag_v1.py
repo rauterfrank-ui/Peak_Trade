@@ -781,11 +781,11 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     _node(
         component_id="EXTERNAL_EFFECT",
         authority="LIVE_EXECUTION_BOUNDARY external-effect gate",
-        producer="evaluate_external_effect_v1",
-        contract="EXTERNAL_EFFECT_AUTHORIZED",
+        producer="attempt_envelope_bound_external_effect_send_v1",
+        contract="ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM",
         consumer="halt_at_live_execution_boundary_v1",
-        implementation_status="IMPLEMENTED_FAIL_CLOSED",
-        test_status="EXTERNAL_EFFECT_FAIL_CLOSED_PROVEN",
+        implementation_status="ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE",
+        test_status="ENVELOPE_BOUND_SINGLE_USE_SEAM_PROVEN_NOT_REAL_POST",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
@@ -821,6 +821,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE",
             "STANDING_TRUE_NOT_AUTOMATIC_WIRE",
             "SEND_CAPABLE_NOT_EXTERNAL_EFFECT",
+            "ENVELOPE_BOUND_SINGLE_USE_SEAM_IMPLEMENTED_STANDING_FALSE",
         }
     )
     return {

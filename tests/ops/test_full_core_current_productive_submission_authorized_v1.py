@@ -105,7 +105,9 @@ def test_standing_flags_close_without_wire() -> None:
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "7fa87e76c7755467528848a3ff52ac4d98f48bb6"
-    assert current_productive_first_real_blocker_v1() == ("EXTERNAL_EFFECT_NOT_AUTHORIZED")
+    assert current_productive_first_real_blocker_v1() == (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    )
     assert gap_node_v1("SUBMISSION_AUTHORIZED").implementation_status == (
         "STANDING_TRUE_NOT_AUTOMATIC_WIRE"
     )
@@ -195,7 +197,9 @@ def test_evaluate_closes_submission_without_wire(tmp_path: Path) -> None:
     assert result.submission_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
+    assert result.first_real_blocker == (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    )
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
