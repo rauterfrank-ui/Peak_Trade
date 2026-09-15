@@ -5995,6 +5995,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py
@@ -6057,6 +6058,7 @@ entities:
       - tests/ops/test_full_core_current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py
       - tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py
       - tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py
+      - tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
