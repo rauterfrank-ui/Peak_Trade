@@ -215,7 +215,7 @@ def _p01(**overrides: str) -> CurrentProductiveP01ReductionFactV1:
 def _eligibility(**overrides: str) -> CurrentProductiveAccountEligibilityFactV1:
     payload = {
         "fact_id": "CURRENT_PRODUCTIVE_U01_ACCOUNT_ELIGIBILITY",
-        "account_mode": "OPEN",
+        "account_mode": "FUTURES_MODE",
         "bound_account_identity": "acct-1",
         "bound_venue_identity": "okx",
         "bound_td_mode": "cross",
@@ -360,6 +360,14 @@ def test_missing_stale_forbidden_and_double_count_fail_closed() -> None:
     )
     assert unknown_p01.produced == "false"
     assert "P01_APPLICABILITY_UNKNOWN_FAIL_CLOSED" in unknown_p01.reason_codes
+    retired_open = produce_current_productive_available_for_sizing_v1(
+        base=_base(),
+        u04=_u04(),
+        p01=_p01(),
+        eligibility=_eligibility(account_mode="OPEN"),
+    )
+    assert retired_open.produced == "false"
+    assert "ACCOUNT_MODE_INELIGIBLE" in retired_open.reason_codes
     contracts = produce_current_productive_available_for_sizing_v1(
         base=_base(settlement_currency="USD"),
         u04=_u04(),
