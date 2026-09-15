@@ -5951,6 +5951,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
