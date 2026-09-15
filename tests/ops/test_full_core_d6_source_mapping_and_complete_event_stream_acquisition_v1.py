@@ -167,7 +167,7 @@ def test_acquisition_ranks_remaining_blocker_without_source_kinds(
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
 
 

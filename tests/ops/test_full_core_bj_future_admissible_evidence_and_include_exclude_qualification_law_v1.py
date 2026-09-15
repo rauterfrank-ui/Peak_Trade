@@ -327,6 +327,6 @@ def test_runbook_by_persists_qualification_law() -> None:
     assert ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL is True
     assert D6_FULLY_CLOSED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False

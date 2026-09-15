@@ -274,10 +274,6 @@ def reject_durable_unknown_as_kind_include_or_exclude_v1(*, claimed: str) -> Non
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ARMED is not False:
-        raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
-            "LIVE_ARMED_NOT_FALSE"
-        )
     if WIRE_SEND_PERMITTED is not False:
         raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
             "WIRE_SEND_PERMITTED_NOT_FALSE"

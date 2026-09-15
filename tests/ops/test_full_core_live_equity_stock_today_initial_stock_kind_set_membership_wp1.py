@@ -434,7 +434,7 @@ def test_membership_does_not_rewrite_parents() -> None:
     assert claims["VENUE_GET_COUNT_ADDED"] == "0"
     assert claims["VENUE_POST_COUNT"] == "0"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     bv_anchor = _load_json(SEALED_BV / ANCHOR_FILE)
     assert bv_anchor["kind_set_members"] == "NONE"
@@ -494,5 +494,5 @@ def test_runbook_bw_and_navigation_persist() -> None:
     assert "live_equity_stock_today_initial_stock_kind_set_membership_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False

@@ -205,7 +205,7 @@ def test_ratification_is_none_and_facts_remain_unknown(tmp_path: Path) -> None:
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY

@@ -192,8 +192,6 @@ def reject_durable_unknown_as_include_or_exclude_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ARMED is not False:
-        raise U06EquityStockPlacementIdentityDurableUnknownPinError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise U06EquityStockPlacementIdentityDurableUnknownPinError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:

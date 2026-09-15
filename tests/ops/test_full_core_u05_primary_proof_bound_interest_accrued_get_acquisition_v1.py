@@ -169,7 +169,7 @@ def test_identity_row_does_not_prove_embedding_or_include(tmp_path: Path) -> Non
     assert producer["producer_qualifying_liability_event_count"] == "0"
     assert claims["INDEPENDENT_LIABILITY_EVENT_PROVEN"] == "false"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (

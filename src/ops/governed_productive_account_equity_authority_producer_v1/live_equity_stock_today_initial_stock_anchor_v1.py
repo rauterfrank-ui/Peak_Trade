@@ -303,8 +303,6 @@ def _assert_standing_pins() -> None:
         raise TodayInitialStockAnchorError("C17_CREATED_NOT_FALSE")
     if LIVE_EQUITY_STOCK_KIND_SET != KIND_SET_EMPTY:
         raise TodayInitialStockAnchorError("BN_KIND_SET_NOT_EMPTY")
-    if LIVE_ARMED is not False:
-        raise TodayInitialStockAnchorError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:
         raise TodayInitialStockAnchorError("WIRE_SEND_PERMITTED_NOT_FALSE")
     reject_unratified_equity_stock_source_kind_v1(

@@ -63,9 +63,9 @@ def _live_inputs(**overrides) -> ExecutionAdmissionInputsV1:
     return ExecutionAdmissionInputsV1(**payload)
 
 
-def test_standing_live_flags_remain_false() -> None:
+def test_standing_live_enabled_and_armed_are_predicates_not_admission() -> None:
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MODE_TEST == "TEST"
 

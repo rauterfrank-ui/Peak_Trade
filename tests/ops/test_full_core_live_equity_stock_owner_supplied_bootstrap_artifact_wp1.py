@@ -351,7 +351,7 @@ def test_protected_surfaces_structurally_unchanged() -> None:
     assert DIMENSION_EQUITY_STOCK != DIMENSION_AVAILABLE_FOR_SIZING
     assert DIMENSION_P01_RISK_CAPITAL_REDUCTION != DIMENSION_EQUITY_STOCK
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert KIND_SET_RESOLVED is False
     assert MS2_AUTHORIZED is False
@@ -431,7 +431,7 @@ def test_execute_persists_contract_and_protected_surfaces(tmp_path: Path) -> Non
     assert result.gate_a_executed == "false"
     assert result.gate_b_executed == "false"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"

@@ -376,7 +376,7 @@ def test_runbook_cc_persists_pre_acquisition_binding() -> None:
     assert ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL is True
     assert EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (

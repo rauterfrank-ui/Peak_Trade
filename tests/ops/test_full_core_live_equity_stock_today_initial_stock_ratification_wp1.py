@@ -268,7 +268,7 @@ def test_ratification_does_not_create_anchor_or_mutate_kind_set() -> None:
     assert claims["VENUE_GET_COUNT_ADDED"] == "0"
     assert claims["VENUE_POST_COUNT"] == "0"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
 
 
@@ -318,5 +318,5 @@ def test_runbook_bu_and_navigation_persist() -> None:
     assert "live_equity_stock_today_initial_stock_ratification_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False

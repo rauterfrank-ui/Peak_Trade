@@ -155,7 +155,7 @@ def test_evidence_persist_does_not_release_ms2_or_equity_authority() -> None:
     assert C17_CREATED is False
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert P01_U05_OVERLAP_ADJUDICATION == "UNKNOWN_RELATIONSHIP_FAIL_CLOSED"
     assert HYPOTHESIS_ONLY_EQUITY_STOCK_EVENT_CLASSES == (

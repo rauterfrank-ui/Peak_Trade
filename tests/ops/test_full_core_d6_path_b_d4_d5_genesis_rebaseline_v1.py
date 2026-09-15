@@ -208,7 +208,7 @@ def test_protected_surfaces_and_observation_execution_remain_closed() -> None:
     assert OBSERVATION_NETWORK_GET_AUTHORIZED is False
     assert EXECUTION_READY is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
 
 

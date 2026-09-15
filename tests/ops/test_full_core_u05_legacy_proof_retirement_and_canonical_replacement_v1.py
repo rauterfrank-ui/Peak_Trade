@@ -106,7 +106,7 @@ def _execute(tmp_path: Path) -> object:
 
 def test_standing_pins_remain_fail_closed() -> None:
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False

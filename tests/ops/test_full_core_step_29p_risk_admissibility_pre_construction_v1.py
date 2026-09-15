@@ -143,7 +143,7 @@ def _complete_claim(**overrides) -> Step29PCapitalRiskAdmissibilityClaimV1:
 def test_flags_and_dag_next_pointer() -> None:
     assert STEP_29P_CAPITAL_RISK_ADMISSIBILITY_IMPLEMENTED is True
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ENABLED is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_LIVE_ARMED is True
@@ -212,7 +212,7 @@ def test_incomplete_conjunction_false_complete_conjunction_true() -> None:
     )
     assert complete.risk_admissible is True
     assert complete.live_enabled is True
-    assert complete.live_armed is False
+    assert complete.live_armed is True
     assert complete.wire_send_permitted is False
     assert complete.standing_gates_satisfied is False
     assert complete.port_constructed is False
@@ -320,7 +320,7 @@ def test_gate_independence_when_risk_admissible() -> None:
     assert decision.admitted is False
     assert "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P" not in decision.reason_codes
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     construction = evaluate_live_execution_port_construction_admission_v1(
         admission=decision,

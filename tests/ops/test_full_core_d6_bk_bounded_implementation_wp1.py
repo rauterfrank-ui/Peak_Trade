@@ -409,7 +409,7 @@ def test_sealed_bj_consumption_keeps_unknown_and_empty_kind_set(tmp_path: Path) 
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     store = Path(result.store_root)
     assert verify_manifest_sha256_v1(store_root=store) == 0

@@ -352,7 +352,7 @@ def test_candidate_is_not_ratification_or_anchor(tmp_path: Path) -> None:
     assert result.venue_get_count == "2"
     assert result.venue_post_count == "0"
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert claims["CANDIDATE_STATUS"] != claims["RATIFICATION_STATUS"]
@@ -507,5 +507,5 @@ def test_runbook_bt_and_navigation_persist() -> None:
     assert "live_equity_stock_today_declaration_governed_binding_contract_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
-    assert LIVE_ARMED is False
+    assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is False
