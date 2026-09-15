@@ -456,7 +456,49 @@ def test_live_path_without_transport_denies_missing_get(
     assert result.wire_send_occurred is False
 
 
-def test_runbook_and_spec_bind_fresh_get_without_live_arming() -> None:
+def test_productive_read_only_class_requires_venue_contact() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+        TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+    )
+
+    denied = _collect(
+        transport=InjectedFreshGetTransportV1(
+            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            venue_live_contact=False,
+        )
+    )
+    assert denied.evidence_status == FreshPretradeGetStatusV1.CONTRADICTORY.value
+    trusted = _collect(
+        transport=InjectedFreshGetTransportV1(
+            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            venue_live_contact=True,
+        )
+    )
+    assert trusted.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+
+
+def test_injected_double_still_cannot_claim_venue_contact() -> None:
+    denied = _collect(transport=InjectedFreshGetTransportV1(venue_live_contact=True))
+    assert denied.evidence_status == FreshPretradeGetStatusV1.CONTRADICTORY.value
+    assert "FRESH_PRETRADE_GET_INJECTED_DOUBLE_CANNOT_CLAIM_VENUE_CONTACT" in denied.reason_codes
+
+
+def test_empty_margin_mode_positions_are_trusted_flat_account() -> None:
+    evidence = _collect(
+        transport=InjectedFreshGetTransportV1(
+            payloads={
+                ENDPOINT_PUBLIC_INSTRUMENTS: _OK_PAYLOAD,
+                ENDPOINT_PUBLIC_PRICE_LIMIT: _OK_PAYLOAD,
+                ENDPOINT_ACCOUNT_MAX_SIZE: _OK_PAYLOAD,
+                ENDPOINT_ACCOUNT_LEVERAGE_INFO: _OK_PAYLOAD,
+                ENDPOINT_ACCOUNT_CONFIG: _OK_PAYLOAD,
+                ENDPOINT_ACCOUNT_POSITIONS: {"code": "0", "data": []},
+                ENDPOINT_ACCOUNT_BALANCE: _OK_PAYLOAD,
+            }
+        )
+    )
+    assert evidence.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+    assert "MARGIN_MODE_EMPTY_POSITIONS_NO_OPEN_POSITION" in evidence.reason_codes
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     start = runbook.index("11.2.1.L FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM")
