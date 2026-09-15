@@ -27624,6 +27624,94 @@ Occupancy, pending, Cap-23/24 identities, Master-V2 decision IDs, and
 the first real blocker are evidence-bound in the canonical pack. This
 slice does not POST and does not mint a permit.
 
+### 11.2.1.DO FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION
+
+Consumes Owner-GO
+`OWNER_GO_FRESH_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DN standing persist
+fields. After the DN observe/HOLD stop it re-proves current occupancy,
+pending orders, and account config through READ-ONLY GETs. It does not
+reuse DN Cap-21/22/23/24 identities, Master-V2 decision IDs, market
+facts, fixtures, or screenshots as current authority.
+
+If occupancy is absent and pending is empty, Cap-2.1–2.4 run through
+the current producers after a fresh EEA public universe acquisition and
+one current Master-V2 cycle runs through
+`run_current_productive_master_v2_runtime_cycle_v1` from observed
+READ-ONLY GET evidence. Selection and instrument may differ from DN.
+Master-V2, Double Play, Bull/Bear State Switch, Top-20 selection, and
+learning bindings are consumed unchanged. This slice does not fabricate
+ENTER, size, or venue plan. HOLD / NO_ACTION / DENY /
+NO_EXECUTABLE_DECISION is a valid truthful stop. Envelope bind proceeds
+only when the current productive decision is executable.
+`STEP_29Q_STATUS=PLAN_ONLY`. This Owner-GO does not create or consume a
+live permit and does not POST. Historical ownership remains
+`UNKNOWN_NOT_PROVEN`. Canary, §11.13.5, and §11.14 remain isolated.
+
+``` text
+THIS_SLICE=11.2.1.DO.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_FRESH_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DO.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION
+CURRENT_CANONICAL_SECTION=11.2.1.DO.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=aadd3c9acb8e34fab98bfda245525ef3926d7412
+HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN
+RESELECTION_AUTHORIZED_BY_THIS_GO=true
+ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT=true
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN=true
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+PERMIT_CONSUMED_DURABLY=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+SECTION_11_14_REWRITTEN=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+STANDING_SEAM_REMAINDER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+CANONICAL_PHASE_BEFORE=11.2.1.DN.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_FLATTEN_OCCUPANCY_ABSENT
+CANONICAL_PHASE_AFTER=11.2.1.DO.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1/20260916T010000Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DO
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Occupancy, pending, Cap-23/24 identities, Master-V2 decision IDs, and
+the first real blocker are evidence-bound in the canonical pack. This
+slice does not POST and does not mint a permit.
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
