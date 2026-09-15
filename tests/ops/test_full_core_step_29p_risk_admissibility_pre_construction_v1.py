@@ -161,7 +161,7 @@ def test_flags_and_dag_next_pointer() -> None:
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     port = gap_node_v1("LiveExecutionPort")
-    assert port.implementation_status == "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE"
+    assert port.implementation_status == "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
     assert "STEP_29P_CAPITAL_RISK_ADMISSIBILITY" in port.dependencies
 
 

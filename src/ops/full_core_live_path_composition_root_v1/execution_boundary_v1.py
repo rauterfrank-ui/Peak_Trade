@@ -7,7 +7,8 @@ Joins Fresh Pretrade Runtime GET evidence via fresh_pretrade_runtime_get_v1.
 Joins LIVE_ACCOUNT_BOUND evidence via live_account_bound_v1.
 Joins Capital Admission evidence via capital_admission_v1.
 May construct a fail-closed LiveExecutionPort when construction admission
-is met. Does not invoke canary HTTP. Does not arm Live. Does not send wire.
+is met and join that handle onto the Cap-7.2 host. Does not invoke canary
+HTTP. Does not arm Live. Does not send wire. Host-join is not submission.
 """
 
 from __future__ import annotations
@@ -39,6 +40,9 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     ExecutionAdmissionInputsV1,
     evaluate_execution_admission_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.cap72_host_join_to_live_execution_port_v1 import (
+    join_cap72_host_to_live_execution_port_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
     evaluate_live_execution_port_construction_admission_v1,
 )
@@ -47,6 +51,9 @@ from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     ExecutionBoundaryResultV1,
     PretradeConjunctionResultV1,
     VenuePlanCandidateV1,
+)
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_v1 import (
+    HostActivationBindingV1,
 )
 
 
@@ -77,6 +84,7 @@ def halt_at_live_execution_boundary_v1(
         f"LIVE_EXECUTION_PORT_ROLE={LIVE_EXECUTION_PORT_ROLE}",
     ]
     live_port_constructed = False
+    host_joined = False
     if LIVE_ENABLED is not True:
         reasons.append("EXECUTION_DISABLED")
     if LIVE_ARMED is not True:
@@ -143,6 +151,17 @@ def halt_at_live_execution_boundary_v1(
                 reasons.append("LIVE_EXECUTION_PORT_SUBMIT_REACHABLE_UNEXPECTED")
             if getattr(port, "WIRE_SEND_OCCURRED", True) is not False:
                 reasons.append("LIVE_EXECUTION_PORT_WIRE_SIDE_EFFECT")
+            join = join_cap72_host_to_live_execution_port_v1(
+                host=HostActivationBindingV1(),
+                construction_admission=construction,
+                live_port=port,
+            )
+            host_joined = join.host_joined is True
+            reasons.extend(join.reason_codes)
+            if join.submission_authorized is True:
+                reasons.append("HOST_JOIN_SUBMISSION_AUTHORIZED_UNEXPECTED")
+            if join.wire_send_occurred is True:
+                reasons.append("HOST_JOIN_WIRE_SIDE_EFFECT")
     if attempt_wire_send:
         try:
             refuse_wire_send_v1()
@@ -160,4 +179,5 @@ def halt_at_live_execution_boundary_v1(
         canary_http_invoked=False,
         halt_before_wire=halt,
         admission=admission,
+        host_joined=host_joined,
     )

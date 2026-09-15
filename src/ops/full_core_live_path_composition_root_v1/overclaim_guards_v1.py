@@ -33,9 +33,10 @@ def prove_package_does_not_import_wire_surfaces_v1() -> dict[str, Any]:
         for token in FORBIDDEN_IMPORT_TOKENS:
             if token in text:
                 hits.append(f"{path.name}:{token}")
-                if token == "construct_live_execution_port_v1" and path.name == (
-                    "execution_boundary_v1.py"
-                ):
+                if token == "construct_live_execution_port_v1" and path.name in {
+                    "execution_boundary_v1.py",
+                    "cap72_host_join_to_live_execution_port_v1.py",
+                }:
                     continue
                 unexpected.append(f"{path.name}:{token}")
     return {

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from src.ops.single_future_stateful_no_order_runtime_activation_v1.activation_gate_v1 import (
     ActivationGateResultV1,
@@ -28,6 +28,11 @@ from src.ops.single_future_stateful_no_order_runtime_activation_v1.simulated_exe
     SimulatedExecutionPortV1,
     construct_simulated_execution_port_v1,
 )
+
+if TYPE_CHECKING:
+    from src.ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1.execution_ports_v1 import (
+        LiveExecutionPortV1,
+    )
 
 
 @dataclass
@@ -55,6 +60,7 @@ class HostActivationBindingV1:
     runtime_mode: str = RUNTIME_MODE
     last_gate: dict[str, Any] = field(default_factory=dict)
     execution_port: Optional[SimulatedExecutionPortV1] = None
+    live_execution_port: Optional["LiveExecutionPortV1"] = None
 
     def to_canonical_state(self) -> CanonicalActivationStateV1 | None:
         loaded = None

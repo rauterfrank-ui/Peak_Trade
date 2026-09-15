@@ -198,14 +198,18 @@ def _assert_standing_pins() -> None:
         )
     if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
         raise CurrentProductiveLiveExecutionPortConstructionError("WIRE_SEND_REACHABLE")
-    if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is not False:
-        raise CurrentProductiveLiveExecutionPortConstructionError("HOST_JOIN_NOT_FALSE")
+    if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True:
+        expected_status = "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
+    else:
+        expected_status = "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE"
+        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is not False:
+            raise CurrentProductiveLiveExecutionPortConstructionError("HOST_JOIN_NOT_FALSE")
     if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
         raise CurrentProductiveLiveExecutionPortConstructionError("PORT_NOT_CONSTRUCTIBLE")
     if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not False:
         raise CurrentProductiveLiveExecutionPortConstructionError("PORT_STILL_FORBIDDEN")
     node = gap_node_v1("LiveExecutionPort")
-    if node.implementation_status != "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE":
+    if node.implementation_status != expected_status:
         raise CurrentProductiveLiveExecutionPortConstructionError("DAG_NODE_STATUS_DRIFT")
 
 
@@ -379,7 +383,11 @@ def execute_current_productive_live_execution_port_construction_v1(
         and getattr(port, "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE", True) is False
     )
 
-    first_blocker = "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+    first_blocker = (
+        "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
+        else "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+    )
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)
@@ -422,7 +430,9 @@ def execute_current_productive_live_execution_port_construction_v1(
         "FIRST_REAL_BLOCKER": first_blocker,
         "BLOCKER_CLASS": blocker_class,
         "NEXT_OWNER_GO_REQUIRED": (
-            "OWNER_GO_REQUIRED_FOR_CAP_7_2_HOST_JOIN_NOT_AUTHORIZED_BY_THIS_SLICE"
+            "OWNER_GO_REQUIRED_FOR_SUBMISSION_AUTHORIZED_NOT_AUTHORIZED_BY_THIS_SLICE"
+            if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
+            else "OWNER_GO_REQUIRED_FOR_CAP_7_2_HOST_JOIN_NOT_AUTHORIZED_BY_THIS_SLICE"
         ),
         "TRADING_LOGIC_CHANGES_FOUND": FALSE_TOKEN,
         "RANKING_ALGORITHM_CHANGED": FALSE_TOKEN,
@@ -453,7 +463,9 @@ def execute_current_productive_live_execution_port_construction_v1(
         "PRODUCTIVE_WIRE_SEND_REACHABLE_UNCHANGED_FALSE": TRUE_TOKEN,
         "LIVE_AUTHORIZED_UNCHANGED_FALSE": TRUE_TOKEN,
         "STEP_29Q_UNCHANGED_PLAN_ONLY": TRUE_TOKEN,
-        "CAP_7_2_HOST_JOIN_UNCHANGED_FALSE": TRUE_TOKEN,
+        "CAP_7_2_HOST_JOIN_UNCHANGED_FALSE": _token(
+            CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is False
+        ),
         "LIVE_ENABLED_UNCHANGED_TRUE": TRUE_TOKEN,
         "LIVE_ARMED_UNCHANGED_TRUE": TRUE_TOKEN,
         "WIRE_SEND_PERMITTED_UNCHANGED_TRUE": TRUE_TOKEN,

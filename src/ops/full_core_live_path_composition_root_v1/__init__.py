@@ -100,6 +100,9 @@ from src.ops.full_core_live_path_composition_root_v1.live_execution_port_constru
     prove_live_execution_port_constructible_when_admitted_v1,
     prove_live_execution_port_not_constructible_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.cap72_host_join_to_live_execution_port_v1 import (
+    join_cap72_host_to_live_execution_port_v1,
+)
 
 __all__ = [
     "CAPABILITY_ID",
@@ -154,6 +157,7 @@ __all__ = [
     "evaluate_step_29p_capital_risk_admissibility_v1",
     "collect_fresh_pretrade_runtime_get_v1",
     "evaluate_live_execution_port_construction_admission_v1",
+    "join_cap72_host_to_live_execution_port_v1",
     "prove_live_execution_port_constructible_when_admitted_v1",
     "prove_live_execution_port_not_constructible_v1",
     "prove_treasury_interference_absent_v1",

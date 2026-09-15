@@ -1,4 +1,4 @@
-"""CURRENT_PRODUCTIVE LiveExecutionPort construction tests. Offline. No wire. No POST."""
+"""CURRENT_PRODUCTIVE Cap-7.2 host-join tests. Offline. No wire. No POST."""
 
 from __future__ import annotations
 
@@ -11,16 +11,21 @@ from src.ops.capability_11_1_execution_domain_and_order_lifecycle_contracts_v1.e
     ExecutionPortConstructionForbiddenError,
     construct_live_execution_port_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.cap72_host_join_to_live_execution_port_v1 import (
+    join_cap72_host_to_live_execution_port_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
+    CAP_7_2_HOST_JOINED_IS_NOT_EXECUTION_ELIGIBLE,
+    CAP_7_2_HOST_JOINED_IS_NOT_LIVE_AUTHORIZED,
+    CAP_7_2_HOST_JOINED_IS_NOT_POST,
+    CAP_7_2_HOST_JOINED_IS_NOT_STEP_29Q,
+    CAP_7_2_HOST_JOINED_IS_NOT_SUBMISSION_AUTHORIZED,
+    CAP_7_2_HOST_JOINED_IS_NOT_WIRE_SEND,
     CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT,
+    CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_IMPLEMENTED,
     LIVE_ARMED,
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
-    LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_LIVE_AUTHORIZED,
-    LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_POST,
-    LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_STEP_29Q,
-    LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_SUBMISSION_AUTHORIZED,
-    LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_WIRE_SEND,
     LIVE_EXECUTION_PORT_CONSTRUCTIBLE,
     LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
@@ -30,19 +35,19 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
     LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN,
     gap_node_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
-    CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_ADAPTER_CREATED,
-)
 from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
     evaluate_live_execution_port_construction_admission_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_live_execution_port_construction_v1 import (
+from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_CAP72_HOST_JOIN_TO_LIVE_EXECUTION_PORT_ADAPTER_CREATED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap72_host_join_to_live_execution_port_v1 import (
     CANONICAL_PACK_RELPATH,
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     THIS_SLICE,
-    CurrentProductiveLiveExecutionPortConstructionError,
-    execute_current_productive_live_execution_port_construction_v1,
+    CurrentProductiveCap72HostJoinToLiveExecutionPortError,
+    execute_current_productive_cap72_host_join_to_live_execution_port_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
@@ -54,15 +59,22 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_v1 import (
     LIVE_ARMED as SECTION_11_14_LIVE_ARMED,
 )
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.host_binding_v1 import (
+    HostActivationBindingV1,
+)
+from src.ops.single_future_stateful_no_order_runtime_activation_v1.simulated_execution_port_v1 import (
+    SimulatedExecutionPortV1,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = (
-    REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md"
+    REPO_ROOT
+    / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP72_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1.md"
 )
 ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
-DE_HEADING = "### 11.2.1.DE FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION"
+DF_HEADING = "### 11.2.1.DF FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
@@ -72,66 +84,77 @@ PROTECTED_ALGORITHM_FILES = (
 )
 
 
-def test_standing_flags_construct_without_activation() -> None:
-    assert CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_ADAPTER_CREATED is True
+def test_standing_flags_join_without_activation() -> None:
+    assert CURRENT_PRODUCTIVE_CAP72_HOST_JOIN_TO_LIVE_EXECUTION_PORT_ADAPTER_CREATED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTIBLE is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is False
-    assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_SUBMISSION_AUTHORIZED is True
-    assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_WIRE_SEND is True
-    assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_LIVE_AUTHORIZED is True
-    assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_STEP_29Q is True
-    assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_POST is True
     assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
+    assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_IMPLEMENTED is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_SUBMISSION_AUTHORIZED is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_WIRE_SEND is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_LIVE_AUTHORIZED is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_STEP_29Q is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_POST is True
+    assert CAP_7_2_HOST_JOINED_IS_NOT_EXECUTION_ELIGIBLE is True
     assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
     assert LIVE_AUTHORIZED is False
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
-    assert EXPECTED_ORIGIN_MAIN_SHA == "fec53461fe1a6c8b3000b57d8f0ce842a5bdc7ea"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "f573538d0ff561c752f3e123b9f66b8a3938b064"
     assert gap_node_v1("LiveExecutionPort").implementation_status == (
         "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
     )
 
 
-def test_construction_fail_closed_without_prerequisites() -> None:
+def test_host_join_fail_closed_without_prerequisites() -> None:
     denied = evaluate_live_execution_port_construction_admission_v1()
-    assert denied.constructible is False
-    assert denied.constructed is False
-    assert "EXECUTION_ADMISSION_NOT_ADMITTED" in denied.reason_codes
+    host = HostActivationBindingV1()
+    result = join_cap72_host_to_live_execution_port_v1(
+        host=host,
+        construction_admission=denied,
+    )
+    assert result.host_joined is False
+    assert result.fail_closed is True
+    assert "CONSTRUCTION_ADMISSION_NOT_CONSTRUCTIBLE" in result.reason_codes
+    assert isinstance(host.execution_port, SimulatedExecutionPortV1)
+    assert host.live_execution_port is None
+    missing = join_cap72_host_to_live_execution_port_v1(host=HostActivationBindingV1())
+    assert missing.host_joined is False
+    assert "CONSTRUCTION_ADMISSION_NOT_CONSTRUCTIBLE" in missing.reason_codes
     with pytest.raises(
         ExecutionPortConstructionForbiddenError,
         match="LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1",
     ):
-        construct_live_execution_port_v1(construction_admission=denied)
-    with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()
 
 
 def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
     with pytest.raises(
-        CurrentProductiveLiveExecutionPortConstructionError, match="OWNER_GO_MISMATCH"
+        CurrentProductiveCap72HostJoinToLiveExecutionPortError, match="OWNER_GO_MISMATCH"
     ):
-        execute_current_productive_live_execution_port_construction_v1(
+        execute_current_productive_cap72_host_join_to_live_execution_port_v1(
             owner_go="WRONG",
             origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "a",
         )
     with pytest.raises(
-        CurrentProductiveLiveExecutionPortConstructionError, match="ORIGIN_MAIN_SHA_MISMATCH"
+        CurrentProductiveCap72HostJoinToLiveExecutionPortError,
+        match="ORIGIN_MAIN_SHA_MISMATCH",
     ):
-        execute_current_productive_live_execution_port_construction_v1(
+        execute_current_productive_cap72_host_join_to_live_execution_port_v1(
             owner_go=OWNER_GO,
             origin_main_sha="0" * 40,
             evidence_root=tmp_path / "b",
         )
 
 
-def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> None:
-    result = execute_current_productive_live_execution_port_construction_v1(
+def test_evaluate_joins_fail_closed_port_without_wire(tmp_path: Path) -> None:
+    result = execute_current_productive_cap72_host_join_to_live_execution_port_v1(
         owner_go=OWNER_GO,
         origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
@@ -146,6 +169,8 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert result.port_constructible == "true"
     assert result.port_constructed == "true"
     assert result.port_construction_side_effect_free == "true"
+    assert result.host_joined == "true"
+    assert result.host_join_side_effect_free == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
     assert result.first_real_blocker == "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
@@ -154,6 +179,7 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert result.manifest_verify_rc == 0
     assert claims["ADMISSION_REASON_CODES"] == []
     assert claims["CONSTRUCTION_REASON_CODES"] == []
+    assert claims["HOST_JOIN_REASON_CODES"] == []
     assert claims["LIVE_AUTHORIZED"] == "false"
     assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
@@ -162,8 +188,10 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTIBLE"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTED"] == "true"
-    assert claims["PORT_CONSTRUCTION_SIDE_EFFECT_FREE"] == "true"
+    assert claims["HOST_JOINED"] == "true"
+    assert claims["HOST_JOIN_SIDE_EFFECT_FREE"] == "true"
     assert claims["CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"] == "true"
+    assert claims["SIMULATED_EXECUTION_PORT_RETAINED"] == "true"
     assert claims["PROTECTED_SURFACES_CHANGED"] == "false"
     assert claims["SAFETY_AUTHORITY_WEAKENED"] == "false"
     assert claims["CANARY_FULL_CORE_BOUNDARY_CHANGED"] == "false"
@@ -190,8 +218,25 @@ def test_ssot_docs_once_present() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DE_HEADING in runbook
+    assert DF_HEADING in runbook
     assert THIS_SLICE in runbook
+    df_section = runbook[
+        runbook.index(
+            "11.2.1.DF FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"
+        ) : runbook.index("## 11.3 Autonomy state model")
+    ]
+    assert "WIRE_SEND_PERMITTED=true" in df_section
+    assert "LIVE_ENABLED=true" in df_section
+    assert "LIVE_ARMED=true" in df_section
+    assert "LIVE_AUTHORIZED=false" in df_section
+    assert "STEP_29Q_STATUS=PLAN_ONLY" in df_section
+    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=false" in df_section
+    assert "ADMITTED=true" in df_section
+    assert "LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true" in df_section
+    assert "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=true" in df_section
+    assert "HOST_JOINED=true" in df_section
+    assert "SUBMISSION_AUTHORIZED=false" in df_section
+    assert "FIRST_DEFINITIVE_BLOCK=SUBMISSION_AUTHORIZED_REMAINS_FALSE" in df_section
     de_section = runbook[
         runbook.index(
             "11.2.1.DE FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION"
@@ -199,19 +244,13 @@ def test_ssot_docs_once_present() -> None:
             "11.2.1.DF FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"
         )
     ]
-    assert "WIRE_SEND_PERMITTED=true" in de_section
-    assert "LIVE_ENABLED=true" in de_section
-    assert "LIVE_ARMED=true" in de_section
-    assert "LIVE_AUTHORIZED=false" in de_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in de_section
-    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=false" in de_section
-    assert "ADMITTED=true" in de_section
-    assert "LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true" in de_section
     assert "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false" in de_section
     assert SPEC_PATH.name in mot
-    assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1" in spec
-    assert "11.2.1.DE" in atlas
-    assert "current_productive_live_execution_port_construction_v1.py" in atlas
+    assert (
+        "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_CAP72_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1" in spec
+    )
+    assert "11.2.1.DF" in atlas
+    assert "current_productive_cap72_host_join_to_live_execution_port_v1.py" in atlas
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["LIVE_ENABLED"] == "true"
@@ -220,10 +259,11 @@ def test_ssot_docs_once_present() -> None:
     assert claims["LIVE_AUTHORIZED"] == "false"
     assert claims["ADMITTED"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTED"] == "true"
-    assert claims["FIRST_REAL_BLOCKER"] == (
-        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-    )
+    assert claims["HOST_JOINED"] == "true"
+    assert claims["CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"] == "true"
+    assert claims["FIRST_REAL_BLOCKER"] == "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
     assert claims["POST_COUNT"] == "0"
     assert claims["STEP_29P_RISK_ADMISSIBLE"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
+    assert claims["SUBMISSION_AUTHORIZED"] == "false"
     assert verify_manifest_sha256_v1(store_root=pack) == 0
