@@ -26136,6 +26136,88 @@ CURRENT_CANONICAL_SECTION=11.2.1.CW
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.CX FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT
+
+Consumes Owner-GO
+`CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_AND_29P_CONTINUATION_V1`.
+This is a CURRENT_PRODUCTIVE_FIRST / LEGACY_NON_BLOCKING persist. It does
+not reconstruct historical P01. P01 is a Peak_Trade-governed risk/sizing
+term, not a venue fact. Fresh venue GETs may supply current
+account/capital evidence and must not decide P01 `APPLIES` or
+`DOES_NOT_APPLY` from themselves.
+
+The current productive capital/risk algebra is Option B:
+`details[ccy=USDC].availEq` minus conditional P01. Venue free margin is
+already net of in-use, including open-order reservation (U04). STEP-29P
+already owns capital/order/risk/exposure/venue caps and `max_positions`.
+Generic safety buffer, canary envelope, `adjEq`, and future-fee reserves
+are not P01 members in the current productive model. No independent
+monetary haircut remains at the capital-input layer. Therefore the new
+CURRENT_PRODUCTIVE P01 policy is explicit `DOES_NOT_APPLY`. Basis =
+architectural redundancy, not historical absence.
+
+Missing, empty, stale, or invalid directives remain
+`UNKNOWN_FAIL_CLOSED`. Empty evaluator output is not `DOES_NOT_APPLY`.
+Standing reconstruction pin `P01_RUNTIME_INSTANCE_PRESENT=false` is
+unchanged. Sealed CW/CV missing-directive semantics remain sealed.
+
+Same-epoch READ-ONLY `/api/v5/account/config` (U01) and
+`/api/v5/account/balance` (`details[ccy=USDC].availEq`) are authorized.
+U04 is not subtracted again. CU mint proceeds when observation, explicit
+P01 DNA fact, and U01 eligibility are bound. STEP-29P is reevaluated.
+Live Account Bound and instrument-bearing identity cannot be forged from
+string passthrough or `DEFAULT_INSTRUMENT_ID`. Those remain the first
+real blocker. No POST. No Live enable/arm. No wire-send.
+
+``` text
+THIS_SLICE=11.2.1.CX.FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_AND_29P_CONTINUATION
+CONTRACT_VERSION=v1
+CHECKPOINT_MINTS_EQUITY=false
+OWNER_GO=CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_AND_29P_CONTINUATION_V1
+OWNER_GO_STATUS=CONSUMED
+PIN_OWNER_GO=OWNER_GO_REQUIRED_TO_RATIFY_P01_APPLIES_WITH_AMOUNT_OR_DOES_NOT_APPLY_FOR_CURRENT_PRODUCTIVE_SIZING_V1
+PIN_OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.CX.FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_AND_29P_CONTINUATION
+CURRENT_CANONICAL_SECTION=11.2.1.CX.FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_AND_29P_CONTINUATION
+AUTHORITY_CLASS=R1_PLUS_TWO_AUTHORIZED_READ_ONLY_GETS
+EXPECTED_ORIGIN_MAIN=3568168b7b68c6619906be6533209c0cca32501c
+P01_LEGACY_RECONSTRUCTION_PERFORMED=false
+P01_POLICY_DECISION=DOES_NOT_APPLY
+P01_DECISION_BASIS=ARCHITECTURAL_REDUNDANCY_NOT_HISTORICAL_ABSENCE
+P01_INDEPENDENT_SAFETY_FUNCTION=false
+P01_FORMULA=P01_CONTRIBUTION=0_BY_EXPLICIT_DOES_NOT_APPLY
+P01_AUTHORIZED_INPUTS=NONE_STANDING_POLICY_NOT_VENUE_DERIVED
+P01_DIRECTIVE_STATUS=RATIFIED_CURRENT_PRODUCTIVE_DOES_NOT_APPLY
+P01_RUNTIME_INSTANCE_PRESENT=false
+GET_ENDPOINT_U01=/api/v5/account/config
+GET_ENDPOINT_BALANCE=/api/v5/account/balance
+AUTHORIZED_GET_COUNT=2
+POST_COUNT=0
+U04_SUBTRACTED=false
+SEALED_LEGACY_CENSUS_REOPENED=false
+LIVE_ENABLED=false
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+ATLAS_AUTHORITY=NONE
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_p01_policy_replacement_and_29p_continuation_v1/20260915T120000Z
+FIRST_DEFINITIVE_BLOCK=LIVE_ACCOUNT_BOUND_NOT_TRUSTED_AND_STEP_29P_INSTRUMENT_SCOPE_MISSING
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_TO_BIND_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1
+NEXT_STEP_REQUIRES_OWNER_GO=true
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.CX
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
