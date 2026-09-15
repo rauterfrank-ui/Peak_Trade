@@ -40,7 +40,6 @@ from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 i
     live_admission_gap_dag_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
-    CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON,
     evaluate_live_execution_port_construction_admission_v1,
     prove_live_execution_port_not_constructible_v1,
 )
@@ -86,9 +85,9 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
     assert FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED is True
     assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is False
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED is True
-    assert LIVE_EXECUTION_PORT_CONSTRUCTIBLE is False
+    assert LIVE_EXECUTION_PORT_CONSTRUCTIBLE is True
     assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
-    assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is True
+    assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is False
     armed = gap_node_v1("LIVE_ARMED")
     assert armed.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION"
     assert armed.wiring_authorized is True
@@ -102,7 +101,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
         "NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING"
     )
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
-        "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
+        "CONSTRUCTION_CLOSED_CAP72_HOST_REMAINS_SIMULATED"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["LIVE_ARMED"] is True
@@ -161,7 +160,7 @@ def test_armed_true_does_not_imply_risk_port_or_wire() -> None:
     )
     assert construction.constructible is False
     assert construction.constructed is False
-    assert CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON in construction.reason_codes
+    assert "EXECUTION_ADMISSION_NOT_ADMITTED" in construction.reason_codes
     assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
 
 
@@ -190,7 +189,7 @@ def test_construction_admission_never_constructs_with_productive_resources() -> 
     assert denied.constructed is False
     assert denied.productive_resources_requested is True
     assert "PRODUCTIVE_CONSTRUCTION_RESOURCES_FORBIDDEN" in denied.reason_codes
-    assert CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON in denied.reason_codes
+    assert denied.constructible is False
 
 
 def test_host_composition_uses_admission_authority_and_does_not_construct(monkeypatch) -> None:
@@ -214,7 +213,7 @@ def test_host_composition_uses_admission_authority_and_does_not_construct(monkey
     assert result.boundary.canary_http_invoked is False
     assert result.boundary.halt_before_wire is True
     assert "STANDING_LIVE_GATE_TRUE" not in result.reason_codes
-    assert CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON in result.reason_codes
+    assert "EXECUTION_ADMISSION_NOT_ADMITTED" in result.reason_codes
     assert OWNER_ONE_SHOT_PERMIT_TOKEN == "OWNER_GO_FULL_CORE_LIVE_PATH_OFFLINE_V1"
 
 

@@ -5753,6 +5753,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # 11.2.1.DE current-productive LiveExecutionPort construction V1: CONTRACT_VERSION=v1; LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED=true; LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true; ADMITTED=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py.
     # 11.2.1.DD current-productive Execution Admission remainder V1: CONTRACT_VERSION=v1; EXECUTION_ADMISSION_REMAINDER_CLOSED=true; ADMITTED=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py.
     # 11.2.1.DC current-productive WIRE_SEND_PERMITTED standing-gate V1: CONTRACT_VERSION=v1; WIRE_SEND_PERMITTED=true; WIRE_SEND_PERMITTED_TRUE_IS_NOT_AUTOMATIC_SEND=true; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py.
     # 11.2.1.DB current-productive LIVE_ARMED standing-gate V1: CONTRACT_VERSION=v1; LIVE_ARMED=true; LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true; WIRE_SEND_PERMITTED=false; LIVE_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; STEP_29P_RISK_ADMISSIBLE=true; FIRST_DEFINITIVE_BLOCK=WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py.
@@ -5969,6 +5970,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
@@ -6002,6 +6004,7 @@ entities:
       - tests/ops/test_full_core_current_productive_live_enabled_standing_gate_v1.py
       - tests/ops/test_full_core_current_productive_live_armed_standing_gate_v1.py
       - tests/ops/test_full_core_current_productive_wire_send_permitted_standing_gate_v1.py
+      - tests/ops/test_full_core_current_productive_live_execution_port_construction_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py

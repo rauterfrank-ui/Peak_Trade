@@ -30,6 +30,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_CONSTRUCTIBLE,
+    LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
@@ -165,10 +166,16 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveLiveArmedStandingGateError("STANDING_LIVE_AUTHORIZATION_NOT_FALSE")
     if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
         raise CurrentProductiveLiveArmedStandingGateError("WIRE_SEND_REACHABLE")
-    if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not False:
-        raise CurrentProductiveLiveArmedStandingGateError("PORT_CONSTRUCTIBLE")
-    if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not True:
-        raise CurrentProductiveLiveArmedStandingGateError("PORT_NOT_FORBIDDEN")
+    if LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True:
+        if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
+            raise CurrentProductiveLiveArmedStandingGateError("PORT_NOT_CONSTRUCTIBLE")
+        if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not False:
+            raise CurrentProductiveLiveArmedStandingGateError("PORT_STILL_FORBIDDEN")
+    else:
+        if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not False:
+            raise CurrentProductiveLiveArmedStandingGateError("PORT_CONSTRUCTIBLE")
+        if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not True:
+            raise CurrentProductiveLiveArmedStandingGateError("PORT_NOT_FORBIDDEN")
     node = gap_node_v1("LIVE_ARMED")
     if node.implementation_status != "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION":
         raise CurrentProductiveLiveArmedStandingGateError("DAG_NODE_STATUS_DRIFT")
@@ -279,9 +286,19 @@ def execute_current_productive_live_armed_standing_gate_v1(
         attempt_with_credentials=False,
         attempt_network_session=False,
     )
-    if construction.constructible is True or construction.constructed is True:
+    construction_closed = LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True
+    if construction_closed:
+        if construction.constructible is not True:
+            raise CurrentProductiveLiveArmedStandingGateError("PORT_NOT_CONSTRUCTIBLE")
+        if construction.constructed is True:
+            raise CurrentProductiveLiveArmedStandingGateError("EVALUATE_MUST_NOT_CONSTRUCT")
+        if "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" in (
+            construction.reason_codes
+        ):
+            raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_CAP_11_1_STILL_PRESENT")
+    elif construction.constructible is True or construction.constructed is True:
         raise CurrentProductiveLiveArmedStandingGateError("PORT_MUST_REMAIN_FORBIDDEN")
-    if remainder_closed:
+    elif remainder_closed:
         if "WIRE_SEND_NOT_PERMITTED" in construction.reason_codes:
             raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_PRESENT")
         if "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1" not in (
@@ -303,12 +320,16 @@ def execute_current_productive_live_armed_standing_gate_v1(
         raise CurrentProductiveLiveArmedStandingGateError("CONSTRUCTION_WIRE_DENY_MISSING")
 
     first_blocker = (
-        "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
-        if remainder_closed
+        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+        if construction_closed
         else (
-            "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
-            if WIRE_SEND_PERMITTED is True
-            else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+            "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+            if remainder_closed
+            else (
+                "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+                if WIRE_SEND_PERMITTED is True
+                else "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
+            )
         )
     )
     blocker_class = "E"
