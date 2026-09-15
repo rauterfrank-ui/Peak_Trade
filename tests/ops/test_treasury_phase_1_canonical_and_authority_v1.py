@@ -83,7 +83,11 @@ def test_package_has_no_network_or_canary_imports() -> None:
         assert token not in joined
     assert "urllib.request" not in joined
     assert "http.client" not in joined
-    full_core = "\n".join(path.read_text(encoding="utf-8") for path in FULL_CORE_DIR.glob("*.py"))
+    full_core = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in FULL_CORE_DIR.glob("*.py")
+        if path.name != "treasury_interference_proof_v1.py"
+    )
     assert "treasury_phase_1_offline_contracts_v1" not in full_core
     assert "treasury_separation_gate" not in full_core
 
@@ -92,7 +96,7 @@ def test_capital_admission_authority_reused_not_replaced() -> None:
     assert CAPITAL_ADMISSION_IMPLEMENTED is True
     assert CAPITAL_ADMISSION_AUTHORITY == "capital_admission_contract_v1"
     assert CAPITAL_AUTHORITY_RISK_ADMISSIBLE == "RISK_ADMISSIBLE"
-    assert FULL_CORE_LIVE_ENABLED is False
+    assert FULL_CORE_LIVE_ENABLED is True
     assert FULL_CORE_LIVE_ARMED is False
     assert FULL_CORE_WIRE_SEND is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True

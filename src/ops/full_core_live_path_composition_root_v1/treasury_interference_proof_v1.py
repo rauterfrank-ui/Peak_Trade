@@ -43,8 +43,16 @@ def prove_treasury_interference_absent_v1() -> dict[str, Any]:
             continue
         text = path.read_text(encoding="utf-8")
         for marker in needles:
-            if marker in text:
-                hits.append(f"{path.name}:{marker}")
+            if marker not in text:
+                continue
+            if path.name == "productive_read_only_get_transport_v1.py" and marker in {
+                "/asset/withdrawal",
+                "/asset/transfer",
+            }:
+                # GET-only FORBIDDEN_ENDPOINTS denylist is a safety pin, not
+                # Treasury call-graph reachability.
+                continue
+            hits.append(f"{path.name}:{marker}")
     dag_ids = tuple(node.component_id for node in LIVE_ADMISSION_GAP_NODES)
     treasury_in_dag = any("TREASURY" in component_id for component_id in dag_ids)
     ok = not hits and treasury_in_dag is False

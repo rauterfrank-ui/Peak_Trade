@@ -336,8 +336,10 @@ def _mark_price_by_native_id_v1(payload: Mapping[str, Any]) -> dict[str, str]:
 
 
 def _assert_protected_surfaces_v1() -> None:
-    if LIVE_ENABLED is not False or LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductiveEeaUniverseTo29PError("STANDING_LIVE_GATES_MUST_REMAIN_FALSE")
+    if LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
+        raise CurrentProductiveEeaUniverseTo29PError(
+            "STANDING_LIVE_ACTIVATION_GATES_MUST_REMAIN_FALSE"
+        )
     if CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED is not False:
         raise CurrentProductiveEeaUniverseTo29PError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
@@ -876,9 +878,14 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         blocker_class = "C"
         next_go = "OWNER_GO_REQUIRED_FOR_PRODUCTIVE_READ_ONLY_GET_FOR_29P_V1"
     elif current_productive_29p is True:
-        first_blocker = "LIVE_ENABLED_STANDING_GATE_REMAINS_FALSE"
-        blocker_class = "E"
-        next_go = "OWNER_GO_REQUIRED_FOR_LIVE_ENABLED_NOT_AUTHORIZED_BY_THIS_SLICE"
+        if LIVE_ENABLED is True:
+            first_blocker = "LIVE_ARMED_STANDING_GATE_REMAINS_FALSE"
+            blocker_class = "E"
+            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_ARMED_NOT_AUTHORIZED_BY_THIS_SLICE"
+        else:
+            first_blocker = "LIVE_ENABLED_STANDING_GATE_REMAINS_FALSE"
+            blocker_class = "E"
+            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_ENABLED_NOT_AUTHORIZED_BY_THIS_SLICE"
     else:
         first_blocker = "STEP_29P_RISK_ADMISSIBLE_FALSE"
         blocker_class = "C"
@@ -946,9 +953,9 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         "SAFETY_AUTHORITY_CHANGED": FALSE_TOKEN,
         "CANARY_FULL_CORE_BOUNDARY_CHANGED": FALSE_TOKEN,
         "PROTECTED_SURFACES_CHANGED": FALSE_TOKEN,
-        "LIVE_ENABLED": FALSE_TOKEN,
-        "LIVE_ARMED": FALSE_TOKEN,
-        "WIRE_SEND_PERMITTED": FALSE_TOKEN,
+        "LIVE_ENABLED": TRUE_TOKEN if LIVE_ENABLED is True else FALSE_TOKEN,
+        "LIVE_ARMED": TRUE_TOKEN if LIVE_ARMED is True else FALSE_TOKEN,
+        "WIRE_SEND_PERMITTED": TRUE_TOKEN if WIRE_SEND_PERMITTED is True else FALSE_TOKEN,
         "SECRET_MATERIAL_PERSISTED": False,
         "ALGEBRA": CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ALGEBRA,
         "U04_SUBTRACTED": FALSE_TOKEN,
@@ -1087,9 +1094,9 @@ def _persist_terminal_v1(
         "P01_STATUS": p01_status,
         "STEP_29P_RISK_ADMISSIBLE": FALSE_TOKEN,
         "CANARY_INSTRUMENT_AUTHORITY_IMPORTED": FALSE_TOKEN,
-        "LIVE_ENABLED": FALSE_TOKEN,
-        "LIVE_ARMED": FALSE_TOKEN,
-        "WIRE_SEND_PERMITTED": FALSE_TOKEN,
+        "LIVE_ENABLED": TRUE_TOKEN if LIVE_ENABLED is True else FALSE_TOKEN,
+        "LIVE_ARMED": TRUE_TOKEN if LIVE_ARMED is True else FALSE_TOKEN,
+        "WIRE_SEND_PERMITTED": TRUE_TOKEN if WIRE_SEND_PERMITTED is True else FALSE_TOKEN,
         "SECRET_MATERIAL_PERSISTED": False,
         "EXTRA": extra or {},
     }

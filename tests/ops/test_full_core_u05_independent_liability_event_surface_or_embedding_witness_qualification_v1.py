@@ -375,7 +375,7 @@ def test_runbook_cc_persists_pre_acquisition_binding() -> None:
     assert RESIDUAL_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL is True
     assert EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False

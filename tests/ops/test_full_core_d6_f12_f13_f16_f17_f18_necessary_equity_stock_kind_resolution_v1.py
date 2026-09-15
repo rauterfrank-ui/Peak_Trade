@@ -176,7 +176,7 @@ def test_resolution_keeps_kind_set_fail_closed_and_ranks_missing_evidence(
     assert KIND_SET_RESOLVED is False
     assert MS2_AUTHORIZED is False
     assert RAW_EQ_SOURCE_AUTHORITY is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
 

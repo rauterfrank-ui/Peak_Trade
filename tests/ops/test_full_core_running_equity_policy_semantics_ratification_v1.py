@@ -190,7 +190,7 @@ def test_mapping_owner_source_and_live_gates_unchanged() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     dag = live_admission_gap_dag_v1()
@@ -223,7 +223,7 @@ def test_c01_c16_remain_rejected_in_s_and_forbidden_fields_deny() -> None:
 def test_step_29p_risk_admissible_and_live_gates_remain_false() -> None:
     t_section = _t_section()
     assert "STEP_29P_RISK_ADMISSIBLE=false" in t_section
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
 

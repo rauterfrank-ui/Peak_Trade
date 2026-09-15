@@ -356,14 +356,14 @@ def test_runbook_bx_persists_gate_a_execution() -> None:
     assert "11.2.1.BX" in atlas
     assert "gate_a_independently_attested_productive_nonzero_liability_stock_v1.py" in atlas
     assert "ATLAS_AUTHORITY=NONE" in atlas
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False
 
 
 def test_standing_pins_unchanged() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert MS2_AUTHORIZED is False

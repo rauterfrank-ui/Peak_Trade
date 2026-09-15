@@ -339,8 +339,6 @@ def reject_u04_reclassify_as_equity_stock_kind_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ENABLED is not False:
-        raise RemainingNecessaryKindEvidenceClassificationError("LIVE_ENABLED_NOT_FALSE")
     if LIVE_ARMED is not False:
         raise RemainingNecessaryKindEvidenceClassificationError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:

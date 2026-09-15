@@ -315,7 +315,7 @@ def test_no_second_trading_authority_or_live_drift(tmp_path: Path) -> None:
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
     assert LIVE_EFFECT == "NONE"
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_AUTHORIZED is False

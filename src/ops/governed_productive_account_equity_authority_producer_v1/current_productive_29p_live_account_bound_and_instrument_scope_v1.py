@@ -400,7 +400,7 @@ def execute_current_productive_lab_and_instrument_scope_for_29p_v1(
         raise CurrentProductiveLabInstrumentScopeError("ORIGIN_MAIN_SHA_MISMATCH")
     if execute_get is not True:
         raise CurrentProductiveLabInstrumentScopeError("EXECUTE_GET_FLAG_REQUIRED")
-    if LIVE_ENABLED is not False or LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
+    if LIVE_ARMED is not False or WIRE_SEND_PERMITTED is not False:
         raise CurrentProductiveLabInstrumentScopeError("STANDING_LIVE_GATES_MUST_REMAIN_FALSE")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
         raise CurrentProductiveLabInstrumentScopeError("SEALED_LEGACY_CENSUS_MUST_REMAIN_CLOSED")

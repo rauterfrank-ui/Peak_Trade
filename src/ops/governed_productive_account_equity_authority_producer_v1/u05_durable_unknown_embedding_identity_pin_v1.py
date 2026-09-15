@@ -157,8 +157,6 @@ def _require_token(*, field: str, payload: Mapping[str, Any], expected: str) -> 
 
 
 def _assert_standing_pins() -> None:
-    if LIVE_ENABLED is not False:
-        raise U05DurableUnknownEmbeddingIdentityPinError("LIVE_ENABLED_NOT_FALSE")
     if LIVE_ARMED is not False:
         raise U05DurableUnknownEmbeddingIdentityPinError("LIVE_ARMED_NOT_FALSE")
     if WIRE_SEND_PERMITTED is not False:

@@ -143,7 +143,7 @@ def _path_from_replay(replay, **kwargs):
 
 
 def test_standing_gates_remain_false() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert CURRENT_LIVE_CORE_PATH_PROVEN is False
@@ -425,11 +425,11 @@ def test_venue_translation_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_execution_disabled_and_unarmed_on_halt(monkeypatch: pytest.MonkeyPatch) -> None:
     result, _ = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
     assert result.boundary is not None
-    assert "EXECUTION_DISABLED" in result.reason_codes
+    assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" in result.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
     assert result.wire_send_occurred is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
 
 
@@ -460,7 +460,7 @@ def test_attempted_wire_send_still_false(monkeypatch: pytest.MonkeyPatch) -> Non
     assert result.boundary.canary_http_invoked is False
     assert "WIRE_SEND_FORBIDDEN_IN_OFFLINE_FULL_CORE_PATH" in result.reason_codes
     assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" in result.reason_codes
-    assert "EXECUTION_DISABLED" in result.reason_codes
+    assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" in result.reason_codes
 
 

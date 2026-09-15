@@ -132,7 +132,7 @@ def _join(*, transport=_DEFAULT_TRANSPORT, claim=_DEFAULT_TRANSPORT, **kwargs):
 
 def test_flags_and_standing_gates_remain_false() -> None:
     assert CAPITAL_ADMISSION_IMPLEMENTED is True
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
@@ -152,7 +152,7 @@ def test_valid_typed_capital_evidence_component_may_pass() -> None:
     assert evidence.evidence_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
     assert evidence.capital_authority_class == CAPITAL_AUTHORITY_OBSERVED_NOT_RISK_ADMISSIBLE
     assert evidence.risk_admissible is False
-    assert evidence.live_enabled is False
+    assert evidence.live_enabled is True
     assert evidence.wire_send_permitted is False
     assert live_venue_capital_may_bind_step_29p_v1(evidence) is False
     assert "CAPITAL_ADMISSION_TRUSTED_PRESENT" in evidence.reason_codes
@@ -273,10 +273,9 @@ def test_capital_valid_live_enabled_false_overall_deny(
     StatePersistence(str(path)).save(KillSwitchState.ACTIVE)
     inputs = _join(state_path=str(path))
     assert inputs.capital_admission_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
-    assert inputs.live_enabled is False
+    assert inputs.live_enabled is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
-    assert "LIVE_ENABLED_FALSE" in decision.reason_codes
     assert "LIVE_ARMED_FALSE" in decision.reason_codes
     assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
 
@@ -332,7 +331,7 @@ def test_capital_admission_cannot_override_other_gates(
     assert decision.admitted is False
     assert inputs.capital_admission_status == CapitalAdmissionStatusV1.TRUSTED_PRESENT.value
     assert "DURABLE_FILEGATE_BLOCKS_TRADING" in decision.reason_codes
-    assert "LIVE_ENABLED_FALSE" in decision.reason_codes
+    assert "LIVE_ARMED_FALSE" in decision.reason_codes
 
 
 def test_offline_injected_path_still_halts_before_wire(

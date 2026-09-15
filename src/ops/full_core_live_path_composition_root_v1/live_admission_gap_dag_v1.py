@@ -688,8 +688,8 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         producer="src.ops.full_core_live_path_composition_root_v1.constants_v1",
         contract="LIVE_ENABLED",
         consumer="evaluate_execution_admission_v1",
-        implementation_status="STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE",
-        test_status="STANDING_ADMISSION_SEAM_PROVEN",
+        implementation_status="STANDING_TRUE_NOT_AUTOMATIC_ADMISSION",
+        test_status="STANDING_TRUE_PROVEN_NOT_ADMISSION",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
@@ -756,6 +756,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "JOINED_TYPED_EVIDENCE_FAIL_CLOSED",
             "PRIVATE_GET_AUTH_REQUIRED_FAIL_CLOSED",
             "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE",
+            "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION",
         }
     )
     return {

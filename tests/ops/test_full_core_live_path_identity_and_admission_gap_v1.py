@@ -89,7 +89,7 @@ def test_standing_identity_and_gates_remain_fail_closed() -> None:
     assert identity["FULL_CORE_SYSTEM_E2E_PROVEN"] is False
     assert identity["CURRENT_LIVE_CORE_PATH_PROVEN"] is False
     assert identity["STANDING_LIVE_AUTHORIZATION"] is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert STANDING_LIVE_AUTHORIZATION is False
@@ -190,9 +190,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     live_enabled = gap_node_v1("LIVE_ENABLED")
     assert live_enabled.standing_live_gates_would_change is False
     assert live_enabled.repo_internal_solvable is True
-    assert live_enabled.implementation_status == (
-        "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
-    )
+    assert live_enabled.implementation_status == ("STANDING_TRUE_NOT_AUTOMATIC_ADMISSION")
     assert live_enabled.wiring_authorized is True
     port = gap_node_v1("LiveExecutionPort")
     assert port.implementation_status == "CONSTRUCTION_FORBIDDEN"

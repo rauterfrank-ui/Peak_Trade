@@ -26387,6 +26387,74 @@ CURRENT_CANONICAL_SECTION=11.2.1.CZ
 HARD_STOP_AFTER_THIS_TASK=true
 ```
 
+### 11.2.1.DA FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_EVALUATION_V1`.
+This persist does not rewrite §11.2.1.CZ standing fields. It ratifies the
+existing §11.2.1.O LIVE_ENABLED standing admission seam against the current
+Cap-2.4 BoundInstrument and `STEP_29P_RISK_ADMISSIBLE=true` epoch. The
+contradiction lock that denied both `LIVE_ENABLED=false` and
+`LIVE_ENABLED=true` remains removed. `LIVE_ENABLED=true` satisfies only
+that one deny predicate. Independent gates remain independently required.
+
+This persist does **not** set `LIVE_AUTHORIZED=true`. It does **not** set
+`LIVE_ARMED=true`. It does **not** set `WIRE_SEND_PERMITTED=true`. It does
+**not** change STEP-29Q from PLAN_ONLY. It does **not** construct
+`LiveExecutionPort`. It does **not** POST. It does **not** activate
+productive transport. It does **not** use Canary, Funding, or §11.14. It
+does **not** derive admission, arming, or wire permission from
+`LIVE_ENABLED=true`. Canary and §11.14 keep their own `LIVE_ENABLED=false`
+constants.
+
+``` text
+THIS_SLICE=11.2.1.DA.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_EVALUATION_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DA.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE
+CURRENT_CANONICAL_SECTION=11.2.1.DA.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+EXPECTED_ORIGIN_MAIN=b34db27f354a399c4d66263f3e48300b6857d363
+LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true
+LIVE_ENABLED_STANDING_GATE_CLOSED=true
+LIVE_ENABLED_TRUE_IS_NOT_AUTOMATIC_ADMISSION=true
+LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_ARMED=true
+LIVE_ENABLED_DOES_NOT_IMPLY_WIRE_SEND=true
+LIVE_ENABLED_DOES_NOT_IMPLY_PORT_CONSTRUCTION=true
+LIVE_ENABLED_DOES_NOT_IMPLY_LIVE_AUTHORIZED=true
+CONTRADICTION_LOCK_REMOVED=true
+LIVE_ENABLED=true
+LIVE_ARMED=false
+WIRE_SEND_PERMITTED=false
+LIVE_AUTHORIZED=false
+STANDING_LIVE_AUTHORIZATION=false
+STEP_29Q_STATUS=PLAN_ONLY
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=false
+POST_COUNT=0
+STEP_29P_RISK_ADMISSIBLE=true
+FIRST_DEFINITIVE_BLOCK=LIVE_ARMED_STANDING_GATE_REMAINS_FALSE
+BLOCKER_CLASS=E
+NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_FOR_LIVE_ARMED_NOT_AUTHORIZED_BY_THIS_SLICE
+NEXT_STEP_REQUIRES_OWNER_GO=true
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_live_enabled_standing_gate_v1/20260915T163400Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DA
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

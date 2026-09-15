@@ -92,7 +92,7 @@ def _all_modelable_live_gates_true(**overrides):
 
 
 def test_standing_live_enabled_default_and_seam_flags() -> None:
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True
@@ -102,7 +102,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert LIVE_ENABLED_DOES_NOT_IMPLY_WIRE_SEND is True
     assert LIVE_ENABLED_DOES_NOT_IMPLY_PORT_CONSTRUCTION is True
     node = gap_node_v1("LIVE_ENABLED")
-    assert node.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
+    assert node.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_ADMISSION"
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
@@ -114,7 +114,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
         "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
     )
     dag = live_admission_gap_dag_v1()
-    assert dag["LIVE_ENABLED"] is False
+    assert dag["LIVE_ENABLED"] is True
     assert dag["LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED"] is True
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
@@ -172,7 +172,7 @@ def test_case4_offline_context_with_all_booleans_true_still_not_admitted() -> No
 def test_case5_canary_surface_unchanged_by_full_core_live_enabled_true() -> None:
     decision = evaluate_execution_admission_v1(_live_inputs(live_enabled=True))
     assert decision.admitted is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_CANARY_MINIMUM_EXPOSURE_AUTHORIZED_DEFAULT is False
     canary = refuse_canary_plan_as_full_core_e2e_v1(
         {"instrument_id": DEFAULT_INSTRUMENT_ID, "side": DEFAULT_SIDE}
@@ -191,7 +191,8 @@ def test_case6_offline_composition_still_halts_without_port_or_wire(monkeypatch)
     assert result.boundary is not None
     assert result.boundary.admission is not None
     assert result.boundary.admission.admitted is False
-    assert "LIVE_ENABLED_FALSE" in result.boundary.admission.reason_codes
+    assert "LIVE_ENABLED_FALSE" not in result.boundary.admission.reason_codes
+    assert "LIVE_ARMED_FALSE" in result.boundary.admission.reason_codes
     assert result.boundary.live_execution_port_constructed is False
     assert result.wire_send_occurred is False
     assert result.boundary.canary_http_invoked is False

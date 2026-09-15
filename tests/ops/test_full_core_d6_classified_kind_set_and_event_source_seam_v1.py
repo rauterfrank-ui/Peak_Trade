@@ -311,7 +311,7 @@ def test_d4_d5_d6_prerequisites_and_existing_owner_unchanged() -> None:
     assert GOVERNED_PRODUCER_CREATED is False
     assert CHECKPOINT_CAN_MINT_EQUITY is False
     assert EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED is False
-    assert LIVE_ENABLED is False
+    assert LIVE_ENABLED is True
     assert LIVE_ARMED is False
     assert WIRE_SEND_PERMITTED is False
     assert adjudication.event_kind_source_seam_selected == "false"
