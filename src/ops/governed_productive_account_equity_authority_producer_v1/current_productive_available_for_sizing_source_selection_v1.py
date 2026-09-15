@@ -560,10 +560,6 @@ def classify_source_selection_verdict_v1() -> dict[str, str]:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductiveAvailableForSizingSourceSelectionError(
-            "WIRE_SEND_PERMITTED_NOT_FALSE"
-        )
     if CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED is not True:
         raise CurrentProductiveAvailableForSizingSourceSelectionError(
             "CURRENT_PRODUCTIVE_ARCHITECTURE_NOT_RATIFIED"

@@ -206,7 +206,7 @@ def test_ratification_is_none_and_facts_remain_unknown(tmp_path: Path) -> None:
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
         == "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"

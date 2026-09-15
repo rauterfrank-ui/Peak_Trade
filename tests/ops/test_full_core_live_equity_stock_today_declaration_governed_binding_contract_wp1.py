@@ -353,7 +353,7 @@ def test_candidate_is_not_ratification_or_anchor(tmp_path: Path) -> None:
     assert result.venue_post_count == "0"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert claims["CANDIDATE_STATUS"] != claims["RATIFICATION_STATUS"]
     assert claims["INITIAL_STOCK_ANCHOR_STATUS"] == "ABSENT"
@@ -508,4 +508,4 @@ def test_runbook_bt_and_navigation_persist() -> None:
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True

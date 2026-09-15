@@ -134,7 +134,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert CAPITAL_ADMISSION_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
@@ -153,7 +153,7 @@ def test_valid_typed_capital_evidence_component_may_pass() -> None:
     assert evidence.capital_authority_class == CAPITAL_AUTHORITY_OBSERVED_NOT_RISK_ADMISSIBLE
     assert evidence.risk_admissible is False
     assert evidence.live_enabled is True
-    assert evidence.wire_send_permitted is False
+    assert evidence.wire_send_permitted is True
     assert live_venue_capital_may_bind_step_29p_v1(evidence) is False
     assert "CAPITAL_ADMISSION_TRUSTED_PRESENT" in evidence.reason_codes
     assert "OBSERVED_CAPITAL_NOT_RISK_ADMISSIBLE" in evidence.reason_codes
@@ -277,7 +277,7 @@ def test_capital_valid_live_enabled_false_overall_deny(
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
 
 
 def test_forged_risk_admissible_cannot_override_gates() -> None:

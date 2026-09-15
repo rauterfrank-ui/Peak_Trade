@@ -220,7 +220,7 @@ def test_package_1_forbidden_authority_effects_remain_false() -> None:
     assert RECONSTRUCTION_ENGINE_CREATED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert persist.kind_set_resolved == "false"
     assert persist.ms2_authorized == "false"
     assert persist.d6_fully_closed == "false"

@@ -386,8 +386,6 @@ def reject_existing_surface_as_bindable_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise NonEqEquityStockSourceKindPrimaryProofSurfaceError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise NonEqEquityStockSourceKindPrimaryProofSurfaceError("U05_UNKNOWN_PRESERVED")
     if PRODUCTIVE_U05_EQUITY_STOCK_KIND_MEMBERSHIP != PRODUCTIVE_MEMBERSHIP:

@@ -73,7 +73,7 @@ _ENABLED_DENY = frozenset(
 def test_standing_defaults_and_pre_wire_flags() -> None:
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True
     assert LIVE_ARMED_TRUE_IS_NOT_AUTOMATIC_ADMISSION is True
     assert LIVE_ARMED_FALSE_REMAINS_FAIL_CLOSED is True
@@ -94,7 +94,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
     assert armed.wiring_authorized is True
     assert armed.standing_live_gates_would_change is False
     send = gap_node_v1("WIRE_SEND_PERMITTED")
-    assert send.implementation_status == "STANDING_ADMISSION_SEAM_IMPLEMENTED_DEFAULT_FALSE"
+    assert send.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_SEND"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
@@ -203,7 +203,7 @@ def test_host_composition_uses_admission_authority_and_does_not_construct(monkey
     assert result.intent is not None
     assert result.intent.live_enabled is True
     assert result.intent.live_armed is True
-    assert result.intent.wire_send_permitted is False
+    assert result.intent.wire_send_permitted is True
     assert result.intent.execution_eligible is False
     assert result.intent.submission_authorized is False
     assert result.boundary is not None

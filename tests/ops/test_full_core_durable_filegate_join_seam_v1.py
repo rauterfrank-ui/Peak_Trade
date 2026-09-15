@@ -75,7 +75,7 @@ def test_join_flag_and_standing_gates_remain_false() -> None:
     assert DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
@@ -102,12 +102,12 @@ def test_valid_active_filegate_is_trusted_but_does_not_admit(
     assert inputs.durable_kill_switch_blocked is False
     assert inputs.live_enabled is True
     assert inputs.live_armed is True
-    assert inputs.wire_send_permitted is False
+    assert inputs.wire_send_permitted is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "DURABLE_FILEGATE_EVIDENCE_MISSING" not in decision.reason_codes
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
 
 
 def test_valid_killed_filegate_is_trusted_and_blocks(
@@ -227,7 +227,7 @@ def test_full_core_path_join_trusted_active_still_halts_before_wire(
     assert result.wire_send_occurred is False
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
     assert "LIVE_ARMED_FALSE" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
     assert "DURABLE_FILEGATE_EVIDENCE_MISSING" not in result.reason_codes
     assert JOIN_SEAM_ID
     assert result.boundary.live_execution_port_constructed is False

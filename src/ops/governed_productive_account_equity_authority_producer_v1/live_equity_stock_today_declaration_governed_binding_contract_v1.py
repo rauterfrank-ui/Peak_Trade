@@ -448,8 +448,6 @@ def _assert_standing_pins() -> None:
         raise TodayDeclarationGovernedBindingContractError("C17_CREATED_NOT_FALSE")
     if LIVE_EQUITY_STOCK_KIND_SET != KIND_SET_EMPTY:
         raise TodayDeclarationGovernedBindingContractError("BN_KIND_SET_NOT_EMPTY")
-    if WIRE_SEND_PERMITTED is not False:
-        raise TodayDeclarationGovernedBindingContractError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if EQUITY_UNIT != "SETTLEMENT_CURRENCY_UNITS":
         raise TodayDeclarationGovernedBindingContractError("EQUITY_UNIT_DRIFT")
     reject_unratified_equity_stock_source_kind_v1(

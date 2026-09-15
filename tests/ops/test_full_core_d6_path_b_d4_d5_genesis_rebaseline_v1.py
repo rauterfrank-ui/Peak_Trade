@@ -209,7 +209,7 @@ def test_protected_surfaces_and_observation_execution_remain_closed() -> None:
     assert EXECUTION_READY is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_runbook_bb_persists_genesis_without_historical_continuity() -> None:

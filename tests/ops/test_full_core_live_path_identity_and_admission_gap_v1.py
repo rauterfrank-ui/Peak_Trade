@@ -91,7 +91,7 @@ def test_standing_identity_and_gates_remain_fail_closed() -> None:
     assert identity["STANDING_LIVE_AUTHORIZATION"] is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert STANDING_LIVE_AUTHORIZATION is False
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert CURRENT_LIVE_CORE_PATH_PROVEN is False

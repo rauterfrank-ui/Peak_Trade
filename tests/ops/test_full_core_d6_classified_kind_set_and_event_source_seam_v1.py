@@ -313,7 +313,7 @@ def test_d4_d5_d6_prerequisites_and_existing_owner_unchanged() -> None:
     assert EVENT_ACQUISITION_NETWORK_GET_AUTHORIZED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert adjudication.event_kind_source_seam_selected == "false"
     assert adjudication.source_selected == "false"
     assert adjudication.raw_eq_source_authority == "false"

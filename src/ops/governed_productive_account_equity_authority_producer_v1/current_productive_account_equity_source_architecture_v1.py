@@ -351,8 +351,6 @@ def classify_reconciliation_and_restart_v1() -> dict[str, Any]:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductiveAccountEquitySourceArchitectureError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED is not True:
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "CURRENT_PRODUCTIVE_ARCHITECTURE_NOT_RATIFIED"

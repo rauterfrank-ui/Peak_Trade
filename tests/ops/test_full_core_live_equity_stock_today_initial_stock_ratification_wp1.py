@@ -269,7 +269,7 @@ def test_ratification_does_not_create_anchor_or_mutate_kind_set() -> None:
     assert claims["VENUE_POST_COUNT"] == "0"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_canonical_pack_and_bt_candidate_unrewritten() -> None:
@@ -319,4 +319,4 @@ def test_runbook_bu_and_navigation_persist() -> None:
     assert "ATLAS_AUTHORITY=NONE" in atlas
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True

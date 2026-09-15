@@ -145,7 +145,7 @@ def _path_from_replay(replay, **kwargs):
 def test_standing_gates_remain_false() -> None:
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert CURRENT_LIVE_CORE_PATH_PROVEN is False
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert FULL_CORE_RESTART_TEST_AUTHORIZED is False
@@ -427,8 +427,7 @@ def test_execution_disabled_and_unarmed_on_halt(monkeypatch: pytest.MonkeyPatch)
     assert result.boundary is not None
     assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
     assert result.wire_send_occurred is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
@@ -463,7 +462,7 @@ def test_attempted_wire_send_still_false(monkeypatch: pytest.MonkeyPatch) -> Non
     assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" in result.reason_codes
     assert "EXECUTION_DISABLED" not in result.reason_codes
     assert "EXECUTION_UNARMED" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
 
 
 def test_spec_and_runbook_isolation_language() -> None:

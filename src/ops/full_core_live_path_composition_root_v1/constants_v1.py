@@ -1,9 +1,10 @@
 """Constants for the offline Core→Live composition root.
 
-LIVE_ENABLED and LIVE_ARMED may be true as standing admission predicates.
-WIRE_SEND_PERMITTED remains false. This package never permits wire send and
-does not treat LIVE_ENABLED or LIVE_ARMED as admission, authorization, or
-port construction.
+LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED may be true as standing
+admission predicates. PRODUCTIVE_WIRE_SEND_REACHABLE remains false. This
+package never sends venue bytes and does not treat those standing
+predicates as admission, LIVE_AUTHORIZED, STEP-29Q, POST, or
+LiveExecutionPort construction.
 """
 
 from __future__ import annotations
@@ -299,10 +300,17 @@ LIVE_ARMED_DOES_NOT_IMPLY_WIRE_SEND = True
 LIVE_ARMED_DOES_NOT_IMPLY_PORT_CONSTRUCTION = True
 LIVE_ARMED_DOES_NOT_IMPLY_LIVE_AUTHORIZED = True
 SUBMIT_UNLOCKED = False
-WIRE_SEND_PERMITTED = False
+WIRE_SEND_PERMITTED = True
 WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED = True
+WIRE_SEND_PERMITTED_STANDING_GATE_CLOSED = True
 WIRE_SEND_PERMITTED_TRUE_IS_NOT_AUTOMATIC_SEND = True
+WIRE_SEND_PERMITTED_TRUE_IS_NOT_AUTOMATIC_ADMISSION = True
 WIRE_SEND_PERMITTED_FALSE_REMAINS_FAIL_CLOSED = True
+WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_ADMISSION = True
+WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_PORT_CONSTRUCTION = True
+WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_LIVE_AUTHORIZED = True
+WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_STEP_29Q = True
+WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_POST = True
 FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED = True
 CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT = False
 LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED = True
@@ -486,7 +494,7 @@ CANARY_DEFAULT_SIDE = "BUY"
 
 
 def standing_live_gate_fields_v1() -> dict[str, bool]:
-    """Standing Full-Core live gates. LIVE_ENABLED and LIVE_ARMED are predicates, not admission."""
+    """Standing Full-Core live gates. True predicates are not admission or send."""
     return {
         "live_enabled": LIVE_ENABLED is True,
         "live_armed": LIVE_ARMED is True,

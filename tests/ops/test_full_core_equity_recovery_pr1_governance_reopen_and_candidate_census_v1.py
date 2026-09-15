@@ -309,7 +309,7 @@ def test_no_mapping_producer_binding_or_live_unlock() -> None:
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert dag["MAPPING_BOUNDARY_CURRENTLY_OPEN"] is False
     assert dag["C17_CREATED"] is False
     assert dag["EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY"] == (

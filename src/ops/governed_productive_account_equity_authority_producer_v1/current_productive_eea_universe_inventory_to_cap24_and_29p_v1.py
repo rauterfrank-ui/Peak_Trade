@@ -336,8 +336,6 @@ def _mark_price_by_native_id_v1(payload: Mapping[str, Any]) -> dict[str, str]:
 
 
 def _assert_protected_surfaces_v1() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductiveEeaUniverseTo29PError("STANDING_WIRE_SEND_GATE_MUST_REMAIN_FALSE")
     if CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED is not False:
         raise CurrentProductiveEeaUniverseTo29PError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
     if SEALED_LEGACY_CENSUS_REOPENED is not False:
@@ -876,7 +874,11 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         blocker_class = "C"
         next_go = "OWNER_GO_REQUIRED_FOR_PRODUCTIVE_READ_ONLY_GET_FOR_29P_V1"
     elif current_productive_29p is True:
-        if LIVE_ARMED is True:
+        if WIRE_SEND_PERMITTED is True:
+            first_blocker = "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
+            blocker_class = "E"
+            next_go = "OWNER_GO_REQUIRED_FOR_ADMISSION_REMAINDER_NOT_AUTHORIZED_BY_THIS_SLICE"
+        elif LIVE_ARMED is True:
             first_blocker = "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
             blocker_class = "E"
             next_go = "OWNER_GO_REQUIRED_FOR_WIRE_SEND_PERMITTED_NOT_AUTHORIZED_BY_THIS_SLICE"

@@ -339,8 +339,6 @@ def reject_u04_reclassify_as_equity_stock_kind_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise RemainingNecessaryKindEvidenceClassificationError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise RemainingNecessaryKindEvidenceClassificationError("U05_UNKNOWN_PRESERVED")
     if U06_KIND_DECISION != DECISION_REMAIN_UNKNOWN:

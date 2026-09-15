@@ -392,7 +392,7 @@ def test_no_event_acquisition_reconstruction_engine_restart_or_live() -> None:
     assert MAPPING_BOUNDARY_CURRENTLY_OPEN is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert dag["EVENT_ACQUISITION_CREATED"] is True
     assert dag["RECONSTRUCTION_ENGINE_CREATED"] is False
     assert dag["RESTART_PROVEN"] is False

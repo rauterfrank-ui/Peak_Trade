@@ -231,7 +231,7 @@ def test_s1_s5_persists_raw_pack_without_mapping_or_post(tmp_path: Path) -> None
     assert EXECUTION_READY is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_canonical_productive_pack_sealed_without_s6() -> None:

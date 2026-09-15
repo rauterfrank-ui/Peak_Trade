@@ -133,7 +133,7 @@ def _execute(tmp_path: Path) -> object:
 def test_standing_pins_remain_fail_closed() -> None:
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EQ_RECONCILIATION_TARGET_ONLY is True
     assert EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is False

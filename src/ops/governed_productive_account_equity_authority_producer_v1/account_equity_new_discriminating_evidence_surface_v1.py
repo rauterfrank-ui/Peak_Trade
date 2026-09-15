@@ -278,8 +278,6 @@ def reject_kind_set_resolved_while_remaining_unknown_v1(*, claimed: str) -> None
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise AccountEquityNewDiscriminatingEvidenceSurfaceError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise AccountEquityNewDiscriminatingEvidenceSurfaceError("U05_UNKNOWN_PRESERVED")
     if U06_KIND_DECISION != DECISION_REMAIN_UNKNOWN:

@@ -354,7 +354,7 @@ def test_p01_global_semantics_and_algebra_remain_unresolved() -> None:
     assert GOVERNED_PRODUCER_CREATED is False
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()
 

@@ -242,10 +242,6 @@ def reject_none_bindable_get_count_zero_as_absent_v1(*, claimed: str) -> None:
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise ResidualPositiveNecessaryKindExhaustivenessDurableUnknownPinError(
-            "WIRE_SEND_PERMITTED_NOT_FALSE"
-        )
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise ResidualPositiveNecessaryKindExhaustivenessDurableUnknownPinError(
             "U05_UNKNOWN_PRESERVED"

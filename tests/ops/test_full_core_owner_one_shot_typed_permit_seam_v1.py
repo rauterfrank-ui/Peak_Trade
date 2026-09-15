@@ -76,7 +76,7 @@ def test_permit_flag_and_standing_gates_remain_false() -> None:
     assert OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
         "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
     )
@@ -98,19 +98,19 @@ def test_valid_owner_one_shot_emits_typed_permit_and_does_not_admit() -> None:
     assert evidence.consumed is False
     assert evidence.live_enabled is True
     assert evidence.live_armed is True
-    assert evidence.wire_send_permitted is False
+    assert evidence.wire_send_permitted is True
     inputs = _join_inputs(owner_go=OWNER_ONE_SHOT_PERMIT_TOKEN)
     assert inputs.owner_one_shot_permit_status == (OwnerOneShotPermitStatusV1.TRUSTED_PRESENT.value)
     assert inputs.owner_authorization_present is True
     assert inputs.live_enabled is True
     assert inputs.live_armed is True
-    assert inputs.wire_send_permitted is False
+    assert inputs.wire_send_permitted is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "MISSING_OWNER_AUTHORIZATION" not in decision.reason_codes
     assert "OWNER_ONE_SHOT_PERMIT_MISSING" not in decision.reason_codes
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
 
 
 def test_missing_permit_fail_closed() -> None:
@@ -123,7 +123,7 @@ def test_missing_permit_fail_closed() -> None:
         assert "OWNER_ONE_SHOT_PERMIT_MISSING" in decision.reason_codes
         assert "MISSING_OWNER_AUTHORIZATION" in decision.reason_codes
         assert inputs.live_enabled is True
-        assert inputs.wire_send_permitted is False
+        assert inputs.wire_send_permitted is True
 
 
 def test_malformed_permit_fail_closed() -> None:
@@ -217,10 +217,10 @@ def test_trusted_filegate_plus_valid_permit_still_cannot_wire_send(
     assert inputs.owner_authorization_present is True
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert inputs.wire_send_permitted is False
-    assert WIRE_SEND_PERMITTED is False
+    assert inputs.wire_send_permitted is True
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_full_core_path_valid_permit_still_halts_before_wire(

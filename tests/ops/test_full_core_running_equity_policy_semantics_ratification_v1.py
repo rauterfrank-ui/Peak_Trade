@@ -192,7 +192,7 @@ def test_mapping_owner_source_and_live_gates_unchanged() -> None:
     )
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     dag = live_admission_gap_dag_v1()
     assert dag["MAPPING_PROVEN"] is False
     assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ACCOUNT_EQUITY_AUTHORITY_OWNER
@@ -225,7 +225,7 @@ def test_step_29p_risk_admissible_and_live_gates_remain_false() -> None:
     assert "STEP_29P_RISK_ADMISSIBLE=false" in t_section
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
 
 
 def test_cap11_1_and_cap72_unchanged() -> None:

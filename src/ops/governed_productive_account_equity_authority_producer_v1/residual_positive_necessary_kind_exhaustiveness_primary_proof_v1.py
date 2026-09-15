@@ -293,10 +293,6 @@ def reject_acquisition_without_bound_contract_v1(
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise ResidualPositiveNecessaryKindExhaustivenessPrimaryProofError(
-            "WIRE_SEND_PERMITTED_NOT_FALSE"
-        )
     if U05_KIND_DECISION != DECISION_REMAIN_UNKNOWN:
         raise ResidualPositiveNecessaryKindExhaustivenessPrimaryProofError("U05_UNKNOWN_PRESERVED")
     if U06_KIND_DECISION != DECISION_REMAIN_UNKNOWN:

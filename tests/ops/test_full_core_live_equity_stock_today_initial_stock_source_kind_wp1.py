@@ -363,7 +363,7 @@ def test_deterministic_replay_and_execute(tmp_path: Path) -> None:
     assert result.venue_post_count == "0"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     store = Path(result.store_root)
     assert verify_manifest_sha256_v1(store_root=store) == 0
     claims = json.loads((store / "claims.json").read_text(encoding="utf-8"))

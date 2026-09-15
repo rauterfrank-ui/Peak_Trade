@@ -167,7 +167,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert LIVE_ACCOUNT_BOUND_IMPLEMENTED is True
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
-    assert WIRE_SEND_PERMITTED is False
+    assert WIRE_SEND_PERMITTED is True
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS == "INJECTED_NON_PRODUCTIVE"
@@ -190,7 +190,7 @@ def test_complete_binding_evidence_component_pass() -> None:
     assert evidence.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
     assert evidence.observed_account_identity == _TEST_UID
     assert evidence.live_enabled is True
-    assert evidence.wire_send_permitted is False
+    assert evidence.wire_send_permitted is True
     assert "LIVE_ACCOUNT_BOUND_TRUSTED_PRESENT" in evidence.reason_codes
 
 
@@ -290,7 +290,7 @@ def test_join_complete_bound_still_cannot_admit(
     decision = evaluate_execution_admission_v1(inputs)
     assert decision.admitted is False
     assert "LIVE_ARMED_FALSE" not in decision.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in decision.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in decision.reason_codes
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in decision.reason_codes
 
 
@@ -387,7 +387,7 @@ def test_offline_injected_full_core_path_halts_before_wire_and_does_not_post(
     assert result.boundary.live_execution_port_constructed is False
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
     assert "LIVE_ARMED_FALSE" not in result.reason_codes
-    assert "WIRE_SEND_NOT_PERMITTED" in result.reason_codes
+    assert "WIRE_SEND_NOT_PERMITTED" not in result.reason_codes
     admission = result.boundary.admission
     assert "LIVE_ACCOUNT_BOUND_MISSING" not in admission.reason_codes
     assert JOIN_SEAM_ID

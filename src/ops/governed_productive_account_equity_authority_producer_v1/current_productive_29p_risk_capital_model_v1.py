@@ -809,8 +809,6 @@ def bind_step_29p_typed_equity_from_risk_capital_v1(
 
 
 def _assert_standing_pins() -> None:
-    if WIRE_SEND_PERMITTED is not False:
-        raise CurrentProductive29PRiskCapitalModelError("WIRE_SEND_PERMITTED_NOT_FALSE")
     if CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED is not True:
         raise CurrentProductive29PRiskCapitalModelError("ARCHITECTURE_NOT_RATIFIED")
     if CURRENT_PRODUCTIVE_ARCHITECTURE_IS_NOT_HISTORICAL_RECONSTRUCTION is not True:
