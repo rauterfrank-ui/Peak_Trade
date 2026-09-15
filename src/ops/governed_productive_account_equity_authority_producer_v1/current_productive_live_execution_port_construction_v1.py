@@ -191,16 +191,12 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveLiveExecutionPortConstructionError("MUST_NOT_STEP_29Q")
     if LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_POST is not True:
         raise CurrentProductiveLiveExecutionPortConstructionError("MUST_NOT_POST")
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveLiveExecutionPortConstructionError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveLiveExecutionPortConstructionError(
             "STANDING_LIVE_AUTHORIZATION_NOT_FALSE"
         )
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveLiveExecutionPortConstructionError("WIRE_SEND_REACHABLE")
     if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True:
-        expected_status = "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
+        expected_status = "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     else:
         expected_status = "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE"
         if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is not False:

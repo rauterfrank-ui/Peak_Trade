@@ -174,14 +174,10 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveWireSendPermittedStandingGateError("MUST_NOT_IMPLY_STEP_29Q")
     if WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_POST is not True:
         raise CurrentProductiveWireSendPermittedStandingGateError("MUST_NOT_IMPLY_POST")
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveWireSendPermittedStandingGateError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveWireSendPermittedStandingGateError(
             "STANDING_LIVE_AUTHORIZATION_NOT_FALSE"
         )
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveWireSendPermittedStandingGateError("WIRE_SEND_REACHABLE")
     if LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True:
         if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
             raise CurrentProductiveWireSendPermittedStandingGateError("PORT_NOT_CONSTRUCTIBLE")

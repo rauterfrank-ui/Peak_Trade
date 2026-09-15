@@ -41,6 +41,7 @@ class LiveExecutionPortConstructionAdmissionV1:
     execution_admitted: bool
     cap_11_1_construction_forbidden: bool
     productive_resources_requested: bool
+    send_capable: bool
     contract_implemented: bool
     port_role: str
 
@@ -53,6 +54,7 @@ def evaluate_live_execution_port_construction_admission_v1(
     wire_send_permitted: Optional[bool] = None,
     attempt_with_credentials: bool = False,
     attempt_network_session: bool = False,
+    send_capable: bool = False,
 ) -> LiveExecutionPortConstructionAdmissionV1:
     enabled = LIVE_ENABLED is True if live_enabled is None else live_enabled is True
     armed = LIVE_ARMED is True if live_armed is None else live_armed is True
@@ -85,6 +87,7 @@ def evaluate_live_execution_port_construction_admission_v1(
         execution_admitted=admitted,
         cap_11_1_construction_forbidden=False,
         productive_resources_requested=productive_requested,
+        send_capable=send_capable is True and constructible,
         contract_implemented=LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED,
         port_role=LIVE_EXECUTION_PORT_ROLE,
     )

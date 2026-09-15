@@ -86,14 +86,14 @@ def test_standing_flags_construct_without_activation() -> None:
     assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_STEP_29Q is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_POST is True
     assert CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
-    assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
-    assert LIVE_AUTHORIZED is False
+    assert PRODUCTIVE_WIRE_SEND_REACHABLE is True
+    assert LIVE_AUTHORIZED is True
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "fec53461fe1a6c8b3000b57d8f0ce842a5bdc7ea"
     assert gap_node_v1("LiveExecutionPort").implementation_status == (
-        "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
+        "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     )
 
 
@@ -140,7 +140,7 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert result.live_enabled == "true"
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
-    assert result.live_authorized == "false"
+    assert result.live_authorized == "true"
     assert result.admitted == "true"
     assert result.admission_deny_absent == "true"
     assert result.port_constructible == "true"
@@ -148,18 +148,18 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert result.port_construction_side_effect_free == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
+    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
     assert claims["ADMISSION_REASON_CODES"] == []
     assert claims["CONSTRUCTION_REASON_CODES"] == []
-    assert claims["LIVE_AUTHORIZED"] == "false"
+    assert claims["LIVE_AUTHORIZED"] == "true"
     assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["SUBMISSION_AUTHORIZED"] == "false"
     assert claims["POST_COUNT"] == "0"
-    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
+    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTIBLE"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTED"] == "true"
     assert claims["PORT_CONSTRUCTION_SIDE_EFFECT_FREE"] == "true"

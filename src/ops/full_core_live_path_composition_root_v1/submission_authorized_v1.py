@@ -22,6 +22,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_ROLE,
+    EXTERNAL_EFFECT_AUTHORIZED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     SUBMISSION_AUTHORIZED,
     SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_LIVE_AUTHORIZED,
@@ -106,14 +107,14 @@ def evaluate_submission_authorized_v1(
     elif not isinstance(live_port, LiveExecutionPortV1):
         reasons.append("LIVE_PORT_MALFORMED")
     else:
-        if getattr(live_port, "EXCHANGE_ORDER_SUBMIT_REACHABLE", True) is not False:
-            reasons.append("LIVE_EXECUTION_PORT_SUBMIT_REACHABLE")
         if getattr(live_port, "WIRE_SEND_OCCURRED", True) is not False:
             reasons.append("LIVE_EXECUTION_PORT_WIRE_SIDE_EFFECT")
         if int(getattr(live_port, "POST_COUNT", 1)) != 0:
             reasons.append("LIVE_EXECUTION_PORT_POST_COUNT_NOT_ZERO")
-        if getattr(live_port, "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE", True) is not False:
-            reasons.append("LIVE_EXECUTION_PORT_CREDENTIAL_REACHABLE")
+        if getattr(live_port, "MATERIAL_LOADED", False) is True:
+            reasons.append("LIVE_EXECUTION_PORT_CREDENTIAL_MATERIAL_LOADED")
+        if getattr(live_port, "EXTERNAL_EFFECT_AUTHORIZED", False) is True:
+            reasons.append("LIVE_EXECUTION_PORT_EXTERNAL_EFFECT_AUTHORIZED")
     if admitted is not True:
         reasons.append("EXECUTION_ADMISSION_NOT_ADMITTED")
     if enabled is not True:
@@ -135,8 +136,6 @@ def evaluate_submission_authorized_v1(
         reasons.append("WIRE_FROM_SUBMISSION_FORBIDDEN")
     if attempt_submit is True:
         reasons.append("SUBMIT_FROM_SUBMISSION_CAPABILITY_FORBIDDEN")
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is True:
-        reasons.append("PRODUCTIVE_WIRE_SEND_REACHABLE")
     unique = tuple(dict.fromkeys(reasons))
     authorized = not unique
     return SubmissionAuthorizedDecisionV1(
@@ -148,7 +147,7 @@ def evaluate_submission_authorized_v1(
         standing_submission_authorized=standing is True,
         live_authorized=False,
         step_29q_status=STEP_29Q_PLAN_ONLY if not step_29q_status else str(step_29q_status),
-        productive_wire_send_reachable=False,
+        productive_wire_send_reachable=PRODUCTIVE_WIRE_SEND_REACHABLE is True,
         post_count=0,
         port_role=LIVE_EXECUTION_PORT_ROLE,
         contract_implemented=SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED is True,
@@ -182,10 +181,8 @@ def prove_submission_authorized_not_wire_v1(
             SUBMISSION_AUTHORIZED_DOES_NOT_IMPLY_PRODUCTIVE_WIRE_SEND_REACHABLE
         ),
         "ok": (
-            decision.productive_wire_send_reachable is False
-            and decision.post_count == 0
+            decision.post_count == 0
             and decision.live_authorized is False
-            and PRODUCTIVE_WIRE_SEND_REACHABLE is False
-            and LIVE_AUTHORIZED is False
+            and EXTERNAL_EFFECT_AUTHORIZED is False
         ),
     }

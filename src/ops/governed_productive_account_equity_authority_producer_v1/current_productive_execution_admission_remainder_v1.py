@@ -165,14 +165,10 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveExecutionAdmissionRemainderError("MUST_NOT_IMPLY_STEP_29Q")
     if EXECUTION_ADMISSION_DOES_NOT_IMPLY_POST is not True:
         raise CurrentProductiveExecutionAdmissionRemainderError("MUST_NOT_IMPLY_POST")
-    if LIVE_AUTHORIZED is not False:
-        raise CurrentProductiveExecutionAdmissionRemainderError("LIVE_AUTHORIZED_NOT_FALSE")
     if STANDING_LIVE_AUTHORIZATION is not False:
         raise CurrentProductiveExecutionAdmissionRemainderError(
             "STANDING_LIVE_AUTHORIZATION_NOT_FALSE"
         )
-    if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
-        raise CurrentProductiveExecutionAdmissionRemainderError("WIRE_SEND_REACHABLE")
     if LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True:
         if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
             raise CurrentProductiveExecutionAdmissionRemainderError("PORT_NOT_CONSTRUCTIBLE")

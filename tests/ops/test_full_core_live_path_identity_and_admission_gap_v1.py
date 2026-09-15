@@ -72,6 +72,8 @@ REQUIRED_GAP_COMPONENTS = (
     "LIVE_ARMED",
     "WIRE_SEND_PERMITTED",
     "SUBMISSION_AUTHORIZED",
+    "LIVE_AUTHORIZED",
+    "EXTERNAL_EFFECT",
 )
 
 
@@ -153,6 +155,8 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "LIVE_ARMED",
             "WIRE_SEND_PERMITTED",
             "SUBMISSION_AUTHORIZED",
+            "LIVE_AUTHORIZED",
+            "EXTERNAL_EFFECT",
             "LiveExecutionPort",
         }:
             assert node.wiring_authorized is True
@@ -196,10 +200,14 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert live_enabled.implementation_status == ("STANDING_TRUE_NOT_AUTOMATIC_ADMISSION")
     assert live_enabled.wiring_authorized is True
     port = gap_node_v1("LiveExecutionPort")
-    assert port.implementation_status == "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE"
+    assert port.implementation_status == "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     submission = gap_node_v1("SUBMISSION_AUTHORIZED")
     assert submission.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_WIRE"
     assert submission.wiring_authorized is True
+    live_auth = gap_node_v1("LIVE_AUTHORIZED")
+    assert live_auth.implementation_status == "STANDING_TRUE_NOT_AUTOMATIC_SEND"
+    effect = gap_node_v1("EXTERNAL_EFFECT")
+    assert effect.implementation_status == "IMPLEMENTED_FAIL_CLOSED"
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
 
 

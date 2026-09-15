@@ -124,7 +124,7 @@ class LiveExecutionPortContractDeclarationV1:
 
 @dataclass(frozen=True)
 class LiveExecutionPortV1:
-    """Fail-closed LiveExecutionPort. Constructed != reachable != submit != wire."""
+    """Fail-closed or send-capable LiveExecutionPort. Constructed != send != POST."""
 
     PORT_KIND: str = "LIVE_EXECUTION_PORT_V1"
     EXECUTION_MODE: str = "LIVE"
@@ -144,6 +144,12 @@ class LiveExecutionPortV1:
     SUBMISSION_AUTHORIZED: bool = False
     WIRE_SEND_OCCURRED: bool = False
     POST_COUNT: int = 0
+    SEND_SEAM_PRESENT: bool = False
+    SEND_CAPABLE: bool = False
+    EXTERNAL_EFFECT_AUTHORIZED: bool = False
+    CREDENTIAL_HANDLE_BOUND: bool = False
+    TRANSPORT_BOUND: bool = False
+    MATERIAL_LOADED: bool = False
     CONTRACT_VERSION: str = EXECUTION_PORT_CONTRACT_VERSION
 
 
@@ -163,12 +169,32 @@ def construct_testnet_execution_port_v1(*_args: Any, **_kwargs: Any) -> None:
 
 def construct_live_execution_port_v1(*_args: Any, **kwargs: Any) -> LiveExecutionPortV1:
     admission = kwargs.get("construction_admission")
+    send_capable = kwargs.get("send_capable") is True or (
+        admission is not None and getattr(admission, "send_capable", False) is True
+    )
+    credential_handle_bound = kwargs.get("credential_handle_bound") is True
+    transport_bound = kwargs.get("transport_bound") is True
     if (
         admission is not None
         and getattr(admission, "constructible", False) is True
         and getattr(admission, "constructed", False) is False
         and getattr(admission, "productive_resources_requested", False) is not True
     ):
+        if send_capable is True:
+            return LiveExecutionPortV1(
+                PORT_KIND="SEND_CAPABLE_LIVE_EXECUTION_PORT_V1",
+                REACHABLE=True,
+                EXCHANGE_ORDER_SUBMIT_REACHABLE=True,
+                EXCHANGE_CREDENTIAL_ACCESS_REACHABLE=credential_handle_bound is True,
+                SEND_SEAM_PRESENT=True,
+                SEND_CAPABLE=True,
+                CREDENTIAL_HANDLE_BOUND=credential_handle_bound is True,
+                TRANSPORT_BOUND=transport_bound is True,
+                MATERIAL_LOADED=False,
+                EXTERNAL_EFFECT_AUTHORIZED=False,
+                WIRE_SEND_OCCURRED=False,
+                POST_COUNT=0,
+            )
         return LiveExecutionPortV1()
     raise ExecutionPortConstructionForbiddenError(
         "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1"

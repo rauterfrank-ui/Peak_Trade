@@ -75,8 +75,8 @@ def test_standing_flags_close_wire_send_without_activation() -> None:
     assert WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_LIVE_AUTHORIZED is True
     assert WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_STEP_29Q is True
     assert WIRE_SEND_PERMITTED_DOES_NOT_IMPLY_POST is True
-    assert PRODUCTIVE_WIRE_SEND_REACHABLE is False
-    assert LIVE_AUTHORIZED is False
+    assert PRODUCTIVE_WIRE_SEND_REACHABLE is True
+    assert LIVE_AUTHORIZED is True
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
@@ -112,12 +112,12 @@ def test_evaluate_closes_wire_send_and_halts_on_admission(tmp_path: Path) -> Non
     assert result.live_enabled == "true"
     assert result.live_armed == "true"
     assert result.wire_send_permitted == "true"
-    assert result.live_authorized == "false"
+    assert result.live_authorized == "true"
     assert result.admitted == "true"
     assert result.wire_send_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
+    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
@@ -128,11 +128,11 @@ def test_evaluate_closes_wire_send_and_halts_on_admission(tmp_path: Path) -> Non
     assert claims["LIVE_ENABLED"] == "true"
     assert claims["LIVE_ARMED"] == "true"
     assert claims["WIRE_SEND_PERMITTED"] == "true"
-    assert claims["LIVE_AUTHORIZED"] == "false"
+    assert claims["LIVE_AUTHORIZED"] == "true"
     assert claims["ADMITTED"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["POST_COUNT"] == "0"
-    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
+    assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "true"
     assert claims["PROTECTED_SURFACES_CHANGED"] == "false"
     assert claims["SAFETY_AUTHORITY_WEAKENED"] == "false"
     assert claims["CANARY_FULL_CORE_BOUNDARY_CHANGED"] == "false"

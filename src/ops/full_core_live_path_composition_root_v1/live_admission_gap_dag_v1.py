@@ -318,11 +318,16 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     RUNNING_EQUITY_SOURCE_SEMANTICS,
     LIVE_ARMED,
     LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
+    LIVE_AUTHORIZED,
+    LIVE_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     LIVE_ENABLED,
     LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED,
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
+    EXTERNAL_EFFECT_AUTHORIZED,
+    EXTERNAL_EFFECT_GATE_IMPLEMENTED,
+    CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED,
     STANDING_LIVE_AUTHORIZATION,
     SUBMISSION_AUTHORIZED,
     SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
@@ -341,7 +346,7 @@ NEXT_STEP_REQUIRES_OWNER_GO = True
 HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG = True
 LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = False
 CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT = (
-    "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_SUBMISSION_AUTHORIZED_NOT_WIRE"
+    "SEND_CAPABLE_LIVE_AUTHORIZED_NOT_EXTERNAL_EFFECT"
 )
 
 
@@ -664,8 +669,8 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         producer="join_cap72_host_to_live_execution_port_v1",
         contract="LIVE_EXECUTION_PORT_ROLE",
         consumer="HostActivationBindingV1",
-        implementation_status="HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE",
-        test_status="HOST_JOIN_AND_CONSTRUCTION_SEAM_PROVEN",
+        implementation_status="SEND_CAPABLE_NOT_EXTERNAL_EFFECT",
+        test_status="SEND_CAPABLE_SEAM_PROVEN_NOT_POST",
         repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
@@ -756,6 +761,40 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         layer=5,
         dependencies=("LiveExecutionPort", "WIRE_SEND_PERMITTED"),
     ),
+    _node(
+        component_id="LIVE_AUTHORIZED",
+        authority="CURRENT_PRODUCTIVE live-execution authority predicate",
+        producer="evaluate_live_authorized_v1",
+        contract="LIVE_AUTHORIZED",
+        consumer="halt_at_live_execution_boundary_v1",
+        implementation_status="STANDING_TRUE_NOT_AUTOMATIC_SEND",
+        test_status="STANDING_TRUE_PROVEN_NOT_EXTERNAL_EFFECT",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
+        productive_account_access_required=False,
+        standing_live_gates_would_change=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
+        layer=5,
+        dependencies=("SUBMISSION_AUTHORIZED", "LIVE_ARMED"),
+    ),
+    _node(
+        component_id="EXTERNAL_EFFECT",
+        authority="LIVE_EXECUTION_BOUNDARY external-effect gate",
+        producer="evaluate_external_effect_v1",
+        contract="EXTERNAL_EFFECT_AUTHORIZED",
+        consumer="halt_at_live_execution_boundary_v1",
+        implementation_status="IMPLEMENTED_FAIL_CLOSED",
+        test_status="EXTERNAL_EFFECT_FAIL_CLOSED_PROVEN",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
+        productive_account_access_required=False,
+        standing_live_gates_would_change=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
+        layer=6,
+        dependencies=("LIVE_AUTHORIZED", "LiveExecutionPort"),
+    ),
 )
 
 
@@ -781,6 +820,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE",
             "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE",
             "STANDING_TRUE_NOT_AUTOMATIC_WIRE",
+            "SEND_CAPABLE_NOT_EXTERNAL_EFFECT",
         }
     )
     return {
@@ -808,6 +848,13 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
             SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED
         ),
+        "LIVE_AUTHORIZED": LIVE_AUTHORIZED,
+        "LIVE_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
+            LIVE_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED
+        ),
+        "CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED": CAP_11_1_SEND_CAPABLE_ADAPTER_CONSTRUCTED,
+        "EXTERNAL_EFFECT_AUTHORIZED": EXTERNAL_EFFECT_AUTHORIZED,
+        "EXTERNAL_EFFECT_GATE_IMPLEMENTED": EXTERNAL_EFFECT_GATE_IMPLEMENTED,
         "FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED": (
             FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED
         ),
