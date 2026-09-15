@@ -158,6 +158,7 @@ class ExecutionBoundaryResultV1:
     halt_before_wire: bool
     admission: Optional[ExecutionAdmissionDecisionV1] = None
     host_joined: bool = False
+    submission_authorized: bool = False
 
 
 @dataclass(frozen=True)

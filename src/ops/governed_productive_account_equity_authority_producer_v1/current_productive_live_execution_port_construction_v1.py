@@ -43,6 +43,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
+    current_productive_first_real_blocker_v1,
     standing_live_gate_fields_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
@@ -383,11 +384,7 @@ def execute_current_productive_live_execution_port_construction_v1(
         and getattr(port, "EXCHANGE_CREDENTIAL_ACCESS_REACHABLE", True) is False
     )
 
-    first_blocker = (
-        "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
-        if CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
-        else "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-    )
+    first_blocker = current_productive_first_real_blocker_v1()
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)

@@ -117,7 +117,7 @@ def test_evaluate_closes_wire_send_and_halts_on_admission(tmp_path: Path) -> Non
     assert result.wire_send_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0

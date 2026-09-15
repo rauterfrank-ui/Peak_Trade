@@ -148,7 +148,7 @@ def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> No
     assert result.port_construction_side_effect_free == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "SUBMISSION_AUTHORIZED_REMAINS_FALSE"
+    assert result.first_real_blocker == "PRODUCTIVE_WIRE_SEND_REACHABLE_REMAINS_FALSE"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0

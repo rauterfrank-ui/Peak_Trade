@@ -324,6 +324,8 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     OWNER_ONE_SHOT_TYPED_LIVE_EXECUTION_PERMIT_IMPLEMENTED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
+    SUBMISSION_AUTHORIZED,
+    SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
     WIRE_SEND_PERMITTED,
     WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED,
 )
@@ -339,7 +341,7 @@ NEXT_STEP_REQUIRES_OWNER_GO = True
 HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG = True
 LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = False
 CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT = (
-    "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_NOT_WIRE"
+    "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_SUBMISSION_AUTHORIZED_NOT_WIRE"
 )
 
 
@@ -737,6 +739,23 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
         layer=4,
         dependencies=("LIVE_ARMED",),
     ),
+    _node(
+        component_id="SUBMISSION_AUTHORIZED",
+        authority="CURRENT_PRODUCTIVE submission-capability admission",
+        producer="evaluate_submission_authorized_v1",
+        contract="SUBMISSION_AUTHORIZED",
+        consumer="halt_at_live_execution_boundary_v1",
+        implementation_status="STANDING_TRUE_NOT_AUTOMATIC_WIRE",
+        test_status="STANDING_TRUE_PROVEN_NOT_WIRE",
+        repo_internal_solvable=True,
+        fresh_external_evidence_required=False,
+        productive_account_access_required=False,
+        standing_live_gates_would_change=False,
+        reusable_mechanism_only=False,
+        wiring_authorized=True,
+        layer=5,
+        dependencies=("LiveExecutionPort", "WIRE_SEND_PERMITTED"),
+    ),
 )
 
 
@@ -761,6 +780,7 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
             "CONJUNCTION_ADMITTED_NOT_PORT_CONSTRUCTION",
             "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE",
             "HOST_JOINED_NOT_SUBMISSION_AUTHORIZED_NOT_WIRE",
+            "STANDING_TRUE_NOT_AUTOMATIC_WIRE",
         }
     )
     return {
@@ -783,6 +803,10 @@ def live_admission_gap_dag_v1() -> dict[str, Any]:
         "WIRE_SEND_PERMITTED": WIRE_SEND_PERMITTED,
         "WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
             WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED
+        ),
+        "SUBMISSION_AUTHORIZED": SUBMISSION_AUTHORIZED,
+        "SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED": (
+            SUBMISSION_AUTHORIZED_STANDING_ADMISSION_SEAM_IMPLEMENTED
         ),
         "FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED": (
             FULL_CORE_HOST_STANDING_PREDICATE_JOIN_IMPLEMENTED

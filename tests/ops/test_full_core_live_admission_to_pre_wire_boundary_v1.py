@@ -101,7 +101,7 @@ def test_standing_defaults_and_pre_wire_flags() -> None:
         "NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING"
     )
     assert CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT == (
-        "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_NOT_WIRE"
+        "CONSTRUCTION_CLOSED_CAP72_HOST_JOINED_SUBMISSION_AUTHORIZED_NOT_WIRE"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["LIVE_ARMED"] is True
