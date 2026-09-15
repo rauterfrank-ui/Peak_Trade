@@ -5855,7 +5855,9 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/live_authorized_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
       - src/ops/full_core_live_path_composition_root_v1/models_v1.py
       - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
@@ -5977,11 +5979,13 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/constants_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -5995,6 +5999,8 @@ entities:
       - evaluate_live_execution_port_construction_admission_v1
       - join_cap72_host_to_live_execution_port_v1
       - evaluate_submission_authorized_v1
+      - evaluate_live_authorized_v1
+      - invoke_external_effect_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -6017,6 +6023,7 @@ entities:
       - tests/ops/test_full_core_current_productive_live_execution_port_construction_v1.py
       - tests/ops/test_full_core_current_productive_cap72_host_join_to_live_execution_port_v1.py
       - tests/ops/test_full_core_current_productive_submission_authorized_v1.py
+      - tests/ops/test_full_core_current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
