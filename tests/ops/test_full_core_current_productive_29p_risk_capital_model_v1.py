@@ -131,7 +131,7 @@ def _p01(**overrides: str) -> CurrentProductiveP01ReductionFactV1:
 def _eligibility() -> CurrentProductiveAccountEligibilityFactV1:
     return CurrentProductiveAccountEligibilityFactV1(
         fact_id="CURRENT_PRODUCTIVE_U01_ACCOUNT_ELIGIBILITY",
-        account_mode="OPEN",
+        account_mode="FUTURES_MODE",
         bound_account_identity="acct-1",
         bound_venue_identity="okx",
         bound_td_mode="cross",
