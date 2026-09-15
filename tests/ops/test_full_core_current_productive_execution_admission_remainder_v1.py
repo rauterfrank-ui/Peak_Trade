@@ -114,7 +114,7 @@ def test_evaluate_closes_admission_and_halts_on_port_construction(tmp_path: Path
     assert result.admission_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+    assert result.first_real_blocker == "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
@@ -131,7 +131,7 @@ def test_evaluate_closes_admission_and_halts_on_port_construction(tmp_path: Path
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
     assert claims["POST_COUNT"] == "0"
     assert claims["PRODUCTIVE_WIRE_SEND_REACHABLE"] == "false"
-    assert claims["LIVE_EXECUTION_PORT_CONSTRUCTIBLE"] == "false"
+    assert claims["LIVE_EXECUTION_PORT_CONSTRUCTIBLE"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTED"] == "false"
     assert claims["PROTECTED_SURFACES_CHANGED"] == "false"
     assert claims["SAFETY_AUTHORITY_WEAKENED"] == "false"

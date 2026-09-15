@@ -1,4 +1,4 @@
-"""Offline Core→Live composition root. No wire send. No LiveExecutionPort construction."""
+"""Offline Core→Live composition root. No wire send. Construction is fail-closed."""
 
 from __future__ import annotations
 
@@ -97,6 +97,7 @@ from src.ops.full_core_live_path_composition_root_v1.path_v1 import (
 )
 from src.ops.full_core_live_path_composition_root_v1.live_execution_port_construction_admission_v1 import (
     evaluate_live_execution_port_construction_admission_v1,
+    prove_live_execution_port_constructible_when_admitted_v1,
     prove_live_execution_port_not_constructible_v1,
 )
 
@@ -153,6 +154,7 @@ __all__ = [
     "evaluate_step_29p_capital_risk_admissibility_v1",
     "collect_fresh_pretrade_runtime_get_v1",
     "evaluate_live_execution_port_construction_admission_v1",
+    "prove_live_execution_port_constructible_when_admitted_v1",
     "prove_live_execution_port_not_constructible_v1",
     "prove_treasury_interference_absent_v1",
     "join_durable_filegate_into_admission_inputs_v1",

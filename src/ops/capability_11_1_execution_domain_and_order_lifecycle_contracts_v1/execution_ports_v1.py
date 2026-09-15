@@ -102,7 +102,7 @@ class TestnetExecutionPortContractDeclarationV1:
 
 @dataclass(frozen=True)
 class LiveExecutionPortContractDeclarationV1:
-    """Declaration-only Live port. Construction permanently forbidden in 11.1."""
+    """Declaration-only Live port. Bare construction remains fail-closed."""
 
     PORT_KIND: str = "LIVE_EXECUTION_PORT_V1_DECLARATION_ONLY"
     EXECUTION_MODE: str = "LIVE"
@@ -122,6 +122,31 @@ class LiveExecutionPortContractDeclarationV1:
     CONTRACT_VERSION: str = EXECUTION_PORT_CONTRACT_VERSION
 
 
+@dataclass(frozen=True)
+class LiveExecutionPortV1:
+    """Fail-closed LiveExecutionPort. Constructed != reachable != submit != wire."""
+
+    PORT_KIND: str = "LIVE_EXECUTION_PORT_V1"
+    EXECUTION_MODE: str = "LIVE"
+    CONSTRUCTIBLE: bool = True
+    REACHABLE: bool = False
+    REAL_EXECUTION_ADAPTER_CONSTRUCTED: bool = False
+    EXCHANGE_ORDER_SUBMIT_REACHABLE: bool = False
+    EXCHANGE_CREDENTIAL_ACCESS_REACHABLE: bool = False
+    ADAPTER_DECISION_AUTHORITY: bool = False
+    ADAPTER_ALPHA_AUTHORITY: bool = False
+    ADAPTER_RISK_AUTHORITY: bool = False
+    ADAPTER_SAFETY_AUTHORITY: bool = False
+    ADAPTER_ACCOUNTING_AUTHORITY: bool = False
+    ADAPTER_PORTFOLIO_AUTHORITY: bool = False
+    ADAPTER_RECONCILIATION_AUTHORITY: bool = False
+    ADAPTER_AUTHORIZATION_AUTHORITY: bool = False
+    SUBMISSION_AUTHORIZED: bool = False
+    WIRE_SEND_OCCURRED: bool = False
+    POST_COUNT: int = 0
+    CONTRACT_VERSION: str = EXECUTION_PORT_CONTRACT_VERSION
+
+
 def declare_testnet_execution_port_v1() -> TestnetExecutionPortContractDeclarationV1:
     return TestnetExecutionPortContractDeclarationV1()
 
@@ -136,7 +161,15 @@ def construct_testnet_execution_port_v1(*_args: Any, **_kwargs: Any) -> None:
     )
 
 
-def construct_live_execution_port_v1(*_args: Any, **_kwargs: Any) -> None:
+def construct_live_execution_port_v1(*_args: Any, **kwargs: Any) -> LiveExecutionPortV1:
+    admission = kwargs.get("construction_admission")
+    if (
+        admission is not None
+        and getattr(admission, "constructible", False) is True
+        and getattr(admission, "constructed", False) is False
+        and getattr(admission, "productive_resources_requested", False) is not True
+    ):
+        return LiveExecutionPortV1()
     raise ExecutionPortConstructionForbiddenError(
         "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN_IN_CAPABILITY_11_1"
     )

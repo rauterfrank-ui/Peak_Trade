@@ -337,9 +337,9 @@ MAX_SAFE_REPO_INTERNAL_NEXT_SLICE = (
 FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE = False
 NEXT_STEP_REQUIRES_OWNER_GO = True
 HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG = True
-LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = True
+LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN = False
 CANONICAL_ORDER_HOST_JOIN_VS_LIVE_ARMED_VS_LIVE_EXECUTION_PORT = (
-    "STANDING_GATES_BEFORE_CONSTRUCTION_CAP72_HOST_REMAINS_SIMULATED"
+    "CONSTRUCTION_CLOSED_CAP72_HOST_REMAINS_SIMULATED"
 )
 
 
@@ -658,18 +658,18 @@ LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     ),
     _node(
         component_id="LiveExecutionPort",
-        authority="Cap 11.1 LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN",
-        producer="FORBIDDEN_IN_CAP_11_1",
+        authority="CURRENT_PRODUCTIVE construction admission conjunction",
+        producer="evaluate_live_execution_port_construction_admission_v1",
         contract="LIVE_EXECUTION_PORT_ROLE",
-        consumer="later Full-Core transport boundary",
-        implementation_status="CONSTRUCTION_FORBIDDEN",
-        test_status="CONSTRUCTION_ADMISSION_CONTRACT_PROVEN_STILL_FORBIDDEN",
-        repo_internal_solvable=False,
+        consumer="halt_at_live_execution_boundary_v1",
+        implementation_status="CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE",
+        test_status="CONSTRUCTION_ADMISSION_AND_SEAM_PROVEN",
+        repo_internal_solvable=True,
         fresh_external_evidence_required=False,
         productive_account_access_required=False,
         standing_live_gates_would_change=False,
         reusable_mechanism_only=False,
-        wiring_authorized=False,
+        wiring_authorized=True,
         layer=5,
         dependencies=(
             "DURABLE_FILEGATE_RUNTIME_JOIN",

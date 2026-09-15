@@ -161,7 +161,7 @@ def test_flags_and_dag_next_pointer() -> None:
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     port = gap_node_v1("LiveExecutionPort")
-    assert port.implementation_status == "CONSTRUCTION_FORBIDDEN"
+    assert port.implementation_status == "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE"
     assert "STEP_29P_CAPITAL_RISK_ADMISSIBILITY" in port.dependencies
 
 
@@ -331,11 +331,13 @@ def test_gate_independence_when_risk_admissible() -> None:
         attempt_with_credentials=False,
         attempt_network_session=False,
     )
-    assert construction.constructible is False
+    assert construction.constructible is True
     assert construction.constructed is False
     assert "EXECUTION_ADMISSION_NOT_ADMITTED" not in construction.reason_codes
+    assert construction.cap_11_1_construction_forbidden is False
     proof = prove_live_execution_port_not_constructible_v1()
     assert proof["constructed"] is False
+    assert proof["constructible"] is False
 
 
 def test_forged_risk_admissible_without_29p_contract_denied() -> None:
@@ -421,10 +423,11 @@ def test_zero_submit_wire_port_on_full_core_path(
     assert result.boundary is not None
     assert result.boundary.halt_before_wire is True
     assert result.wire_send_occurred is False
-    assert result.boundary.live_execution_port_constructed is False
+    assert result.boundary.live_execution_port_constructed is True
     assert result.boundary.admission is not None
     assert result.boundary.admission.admitted is True
-    assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" in result.reason_codes
+    assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
+    assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" not in result.reason_codes
 
 
 def test_requirement_matrix_covers_required_gets_and_unresolved_equity() -> None:

@@ -151,6 +151,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
             "LIVE_ENABLED",
             "LIVE_ARMED",
             "WIRE_SEND_PERMITTED",
+            "LiveExecutionPort",
         }:
             assert node.wiring_authorized is True
         else:
@@ -193,7 +194,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
     assert live_enabled.implementation_status == ("STANDING_TRUE_NOT_AUTOMATIC_ADMISSION")
     assert live_enabled.wiring_authorized is True
     port = gap_node_v1("LiveExecutionPort")
-    assert port.implementation_status == "CONSTRUCTION_FORBIDDEN"
+    assert port.implementation_status == "CONSTRUCTIBLE_NOT_HOST_JOINED_NOT_WIRE"
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
 
 

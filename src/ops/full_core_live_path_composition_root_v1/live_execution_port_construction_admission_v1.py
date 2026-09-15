@@ -1,8 +1,8 @@
 """LiveExecutionPort construction-admission contract. Offline. No credentials.
 
-Evaluates whether construction would be admissible as an explicit conjunction.
-Cap 11.1 still forbids construction. This module never constructs a port, never
-opens a session, never looks up secrets, and never sends wire.
+Evaluates whether construction is admissible as an explicit conjunction.
+Construction is not LIVE_AUTHORIZED, STEP-29Q, POST, or wire send.
+This module never opens a session, never looks up secrets, and never sends wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -72,18 +72,18 @@ def evaluate_live_execution_port_construction_admission_v1(
         reasons.append("WIRE_SEND_NOT_PERMITTED")
     if admitted is not True:
         reasons.append("EXECUTION_ADMISSION_NOT_ADMITTED")
-    reasons.append(CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON)
     unique = tuple(dict.fromkeys(reasons))
+    constructible = not unique
     return LiveExecutionPortConstructionAdmissionV1(
-        constructible=False,
+        constructible=constructible,
         constructed=False,
-        fail_closed=True,
+        fail_closed=not constructible,
         reason_codes=unique,
         standing_live_enabled=enabled,
         standing_live_armed=armed,
         standing_wire_send_permitted=send,
         execution_admitted=admitted,
-        cap_11_1_construction_forbidden=True,
+        cap_11_1_construction_forbidden=False,
         productive_resources_requested=productive_requested,
         contract_implemented=LIVE_EXECUTION_PORT_CONSTRUCTION_ADMISSION_CONTRACT_IMPLEMENTED,
         port_role=LIVE_EXECUTION_PORT_ROLE,
@@ -100,7 +100,34 @@ def prove_live_execution_port_not_constructible_v1() -> dict[str, bool]:
         "ok": (
             decision.constructible is False
             and decision.constructed is False
-            and LIVE_EXECUTION_PORT_CONSTRUCTIBLE is False
-            and CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON in decision.reason_codes
+            and "EXECUTION_ADMISSION_NOT_ADMITTED" in decision.reason_codes
+        ),
+    }
+
+
+def prove_live_execution_port_constructible_when_admitted_v1(
+    *,
+    admission: ExecutionAdmissionDecisionV1,
+) -> dict[str, bool]:
+    decision = evaluate_live_execution_port_construction_admission_v1(
+        admission=admission,
+        live_enabled=True,
+        live_armed=True,
+        wire_send_permitted=True,
+        attempt_with_credentials=False,
+        attempt_network_session=False,
+    )
+    return {
+        "constructible": decision.constructible,
+        "constructed": decision.constructed,
+        "LIVE_EXECUTION_PORT_CONSTRUCTIBLE": LIVE_EXECUTION_PORT_CONSTRUCTIBLE,
+        "cap_11_1_construction_forbidden": decision.cap_11_1_construction_forbidden,
+        "ok": (
+            admission.admitted is True
+            and decision.constructible is True
+            and decision.constructed is False
+            and decision.cap_11_1_construction_forbidden is False
+            and not decision.reason_codes
+            and LIVE_EXECUTION_PORT_CONSTRUCTIBLE is True
         ),
     }

@@ -6,8 +6,8 @@ Joins OWNER_ONE_SHOT permit evidence via owner_one_shot_permit_v1.
 Joins Fresh Pretrade Runtime GET evidence via fresh_pretrade_runtime_get_v1.
 Joins LIVE_ACCOUNT_BOUND evidence via live_account_bound_v1.
 Joins Capital Admission evidence via capital_admission_v1.
-Does not construct Cap 11.1 LiveExecutionPort. Does not invoke canary HTTP.
-Does not arm Live. Does not send wire.
+May construct a fail-closed LiveExecutionPort when construction admission
+is met. Does not invoke canary HTTP. Does not arm Live. Does not send wire.
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_ROLE,
     MODE_LIVE,
+    PRODUCTIVE_WIRE_SEND_REACHABLE,
     WIRE_SEND_PERMITTED,
 )
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
@@ -76,19 +77,6 @@ def halt_at_live_execution_boundary_v1(
         f"LIVE_EXECUTION_PORT_ROLE={LIVE_EXECUTION_PORT_ROLE}",
     ]
     live_port_constructed = False
-    if attempt_construct_live_port:
-        try:
-            construct_live_execution_port_v1()
-        except ExecutionPortConstructionForbiddenError:
-            reasons.append("LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN")
-        else:
-            live_port_constructed = True
-            reasons.append("LIVE_EXECUTION_PORT_CONSTRUCTED_UNEXPECTED")
-    if attempt_wire_send:
-        try:
-            refuse_wire_send_v1()
-        except RuntimeError as exc:
-            reasons.append(str(exc))
     if LIVE_ENABLED is not True:
         reasons.append("EXECUTION_DISABLED")
     if LIVE_ARMED is not True:
@@ -143,14 +131,26 @@ def halt_at_live_execution_boundary_v1(
         attempt_network_session=False,
     )
     reasons.extend(construction.reason_codes)
+    should_construct = construction.constructible is True or attempt_construct_live_port is True
+    if should_construct:
+        try:
+            port = construct_live_execution_port_v1(construction_admission=construction)
+        except ExecutionPortConstructionForbiddenError:
+            reasons.append("LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN")
+        else:
+            live_port_constructed = True
+            if getattr(port, "EXCHANGE_ORDER_SUBMIT_REACHABLE", True) is not False:
+                reasons.append("LIVE_EXECUTION_PORT_SUBMIT_REACHABLE_UNEXPECTED")
+            if getattr(port, "WIRE_SEND_OCCURRED", True) is not False:
+                reasons.append("LIVE_EXECUTION_PORT_WIRE_SIDE_EFFECT")
+    if attempt_wire_send:
+        try:
+            refuse_wire_send_v1()
+        except RuntimeError as exc:
+            reasons.append(str(exc))
     _ = plan
     wire_send_occurred = False
-    halt = (
-        live_port_constructed is False
-        and construction.constructed is False
-        and construction.constructible is False
-        and wire_send_occurred is False
-    )
+    halt = wire_send_occurred is False and PRODUCTIVE_WIRE_SEND_REACHABLE is False
     status = CompositionStatusV1.HALT if halt else CompositionStatusV1.DENY
     return ExecutionBoundaryResultV1(
         status=status,

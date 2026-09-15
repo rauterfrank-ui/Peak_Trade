@@ -29,6 +29,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     LIVE_AUTHORIZED,
     LIVE_ENABLED,
     LIVE_EXECUTION_PORT_CONSTRUCTIBLE,
+    LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
@@ -170,10 +171,16 @@ def _assert_standing_pins() -> None:
         )
     if PRODUCTIVE_WIRE_SEND_REACHABLE is not False:
         raise CurrentProductiveExecutionAdmissionRemainderError("WIRE_SEND_REACHABLE")
-    if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not False:
-        raise CurrentProductiveExecutionAdmissionRemainderError("PORT_CONSTRUCTIBLE")
-    if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not True:
-        raise CurrentProductiveExecutionAdmissionRemainderError("PORT_NOT_FORBIDDEN")
+    if LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True:
+        if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not True:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_NOT_CONSTRUCTIBLE")
+        if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not False:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_STILL_FORBIDDEN")
+    else:
+        if LIVE_EXECUTION_PORT_CONSTRUCTIBLE is not False:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_CONSTRUCTIBLE")
+        if LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is not True:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_NOT_FORBIDDEN")
     node = gap_node_v1("ExecutionAdmissionDecisionV1")
     if node.implementation_status != "CONJUNCTION_ADMITTED_NOT_PORT_CONSTRUCTION":
         raise CurrentProductiveExecutionAdmissionRemainderError("DAG_NODE_STATUS_DRIFT")
@@ -276,10 +283,21 @@ def execute_current_productive_execution_admission_remainder_v1(
         attempt_with_credentials=False,
         attempt_network_session=False,
     )
-    if construction.constructible is True or construction.constructed is True:
-        raise CurrentProductiveExecutionAdmissionRemainderError("PORT_MUST_REMAIN_FORBIDDEN")
-    if CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON not in construction.reason_codes:
-        raise CurrentProductiveExecutionAdmissionRemainderError("CONSTRUCTION_CAP_11_1_MISSING")
+    construction_closed = LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED is True
+    if construction_closed:
+        if construction.constructible is not True:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_NOT_CONSTRUCTIBLE")
+        if construction.constructed is True:
+            raise CurrentProductiveExecutionAdmissionRemainderError("EVALUATE_MUST_NOT_CONSTRUCT")
+        if CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON in construction.reason_codes:
+            raise CurrentProductiveExecutionAdmissionRemainderError(
+                "CONSTRUCTION_CAP_11_1_STILL_PRESENT"
+            )
+    else:
+        if construction.constructible is True or construction.constructed is True:
+            raise CurrentProductiveExecutionAdmissionRemainderError("PORT_MUST_REMAIN_FORBIDDEN")
+        if CAP_11_1_CONSTRUCTION_FORBIDDEN_REASON not in construction.reason_codes:
+            raise CurrentProductiveExecutionAdmissionRemainderError("CONSTRUCTION_CAP_11_1_MISSING")
     if "EXECUTION_ADMISSION_NOT_ADMITTED" in construction.reason_codes:
         raise CurrentProductiveExecutionAdmissionRemainderError(
             "CONSTRUCTION_ADMISSION_DENY_PRESENT"
@@ -287,7 +305,11 @@ def execute_current_productive_execution_admission_remainder_v1(
     if "WIRE_SEND_NOT_PERMITTED" in construction.reason_codes:
         raise CurrentProductiveExecutionAdmissionRemainderError("CONSTRUCTION_WIRE_DENY_PRESENT")
 
-    first_blocker = "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+    first_blocker = (
+        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
+        if construction_closed
+        else "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+    )
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH
     store.mkdir(parents=True, exist_ok=True)
