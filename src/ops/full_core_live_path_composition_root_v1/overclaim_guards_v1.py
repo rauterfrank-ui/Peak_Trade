@@ -30,15 +30,15 @@ def prove_package_does_not_import_wire_surfaces_v1() -> dict[str, Any]:
         if path.name in {"constants_v1.py", "overclaim_guards_v1.py"}:
             continue
         text = path.read_text(encoding="utf-8")
-        for token in FORBIDDEN_IMPORT_TOKENS:
-            if token in text:
-                hits.append(f"{path.name}:{token}")
-                if token == "construct_live_execution_port_v1" and path.name in {
+        for forbidden_import in FORBIDDEN_IMPORT_TOKENS:
+            if forbidden_import in text:
+                hits.append(f"{path.name}:{forbidden_import}")
+                if forbidden_import == "construct_live_execution_port_v1" and path.name in {
                     "execution_boundary_v1.py",
                     "cap72_host_join_to_live_execution_port_v1.py",
                 }:
                     continue
-                unexpected.append(f"{path.name}:{token}")
+                unexpected.append(f"{path.name}:{forbidden_import}")
     return {
         "ok": not unexpected,
         "hits": hits,

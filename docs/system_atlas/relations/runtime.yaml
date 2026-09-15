@@ -1028,10 +1028,12 @@ relations:
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
     notes: >-
       Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1
       is consumed at this same join point. Construction admission remains
-      non-constructible under Cap 11.1. Not a second execution boundary.
+      required. Host-join attaches the fail-closed LiveExecutionPort handle
+      and is not submission. Not a second execution boundary.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_restart_gate

@@ -5847,6 +5847,7 @@ entities:
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
       - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
@@ -5997,6 +5998,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
@@ -7137,15 +7139,18 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
     source_symbols:
       - halt_at_live_execution_boundary_v1
       - refuse_wire_send_v1
       - evaluate_execution_admission_v1
       - evaluate_live_execution_port_construction_admission_v1
+      - join_cap72_host_to_live_execution_port_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
       - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/capability_11_1_execution_domain_and_order_lifecycle_contracts_v1/execution_ports_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
       - tests/ops/test_full_core_live_admission_to_pre_wire_boundary_v1.py
@@ -7154,8 +7159,10 @@ entities:
       ExecutionAdmissionDecisionV1 at this sole Full-Core join point.
       11.2.1.Q STEP-29P risk-admissibility does not construct LiveExecutionPort.
       Evaluates LiveExecutionPort construction admission as an explicit
-      conjunction. Does not construct Cap 11.1 LiveExecutionPort. Does not
-      invoke canary HTTP. Does not read durable FILEGATE StatePersistence.
+      conjunction. Host-join may attach that fail-closed handle to the
+      Cap-7.2 host. Host-join is not submission, LIVE_AUTHORIZED, STEP-29Q,
+      POST, or wire send. Does not invoke canary HTTP. Does not read durable
+      FILEGATE StatePersistence.
       Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED
       remain false. LIVE_ARMED=true is not automatic admission and does
       not construct LiveExecutionPort. Atlas is not canonical authority.
