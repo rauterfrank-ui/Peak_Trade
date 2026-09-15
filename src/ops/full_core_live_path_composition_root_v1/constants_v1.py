@@ -3,9 +3,9 @@
 LIVE_ENABLED, LIVE_ARMED, WIRE_SEND_PERMITTED, SUBMISSION_AUTHORIZED, and
 LIVE_AUTHORIZED may be true as standing predicates. A Cap-11.1 send-capable
 LiveExecutionPort may be constructed and joined. PRODUCTIVE_WIRE_SEND_REACHABLE
-may be true only as send-seam reachability. EXTERNAL_EFFECT_AUTHORIZED remains
-false. This package never sends venue bytes and does not treat reachability,
-LIVE_AUTHORIZED, or submission as an actual POST.
+may be true only as send-seam reachability. Standing EXTERNAL_EFFECT_AUTHORIZED
+remains false. Envelope-bound single-use permits may authorize a mocked send
+seam. This package never opens a venue socket in the current slice.
 """
 
 from __future__ import annotations
@@ -368,6 +368,18 @@ PRODUCTIVE_WIRE_SEND_REACHABLE_DOES_NOT_IMPLY_STEP_29Q = True
 EXTERNAL_EFFECT_AUTHORIZED = False
 EXTERNAL_EFFECT_GATE_IMPLEMENTED = True
 EXTERNAL_EFFECT_FALSE_REMAINS_FAIL_CLOSED = True
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM = True
+EXACT_ENVELOPE_REQUIRED = True
+SINGLE_USE_EXTERNAL_EFFECT_PERMIT = True
+MAX_EXTERNAL_EFFECT_POST_COUNT = 1
+REPLAY_PROTECTION_PRESENT = True
+REPLAY_PROTECTION_DURABLE = True
+FOLLOW_ON_SUBMIT_ISOLATED = True
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED = True
+REAL_EXTERNAL_EFFECT_AUTHORIZED = False
+REAL_VENUE_POST_ALLOWED = False
+POST_ALLOWED = False
+SUBMIT_UNLOCKED_ALONE_IS_NOT_SEND_PERMISSION = True
 ORDERS_AUTHORIZED = False
 TESTNET_AUTHORIZED = False
 FULL_CORE_RESTART_TEST_AUTHORIZED = False
@@ -558,6 +570,8 @@ def standing_live_gate_fields_v1() -> dict[str, bool]:
 
 def current_productive_first_real_blocker_v1() -> str:
     """Earliest remaining CURRENT_PRODUCTIVE remainder after standing gates."""
+    if ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM is True:
+        return "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
     if PRODUCTIVE_WIRE_SEND_REACHABLE is True:
         return "EXTERNAL_EFFECT_NOT_AUTHORIZED"
     if SUBMISSION_AUTHORIZED is True:

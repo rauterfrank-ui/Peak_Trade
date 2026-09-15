@@ -475,7 +475,9 @@ def execute_current_productive_submission_authorized_v1(
         raise CurrentProductiveSubmissionAuthorizedError("STEP_29Q_NOT_PLAN_ONLY")
 
     first_blocker = current_productive_first_real_blocker_v1()
-    if first_blocker != "EXTERNAL_EFFECT_NOT_AUTHORIZED":
+    if first_blocker != (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    ):
         raise CurrentProductiveSubmissionAuthorizedError(f"BLOCKER_DRIFT:{first_blocker}")
     blocker_class = "E"
     store = Path(evidence_root) if evidence_root is not None else root / CANONICAL_PACK_RELPATH

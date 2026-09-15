@@ -114,7 +114,9 @@ def test_evaluate_closes_admission_and_halts_on_port_construction(tmp_path: Path
     assert result.admission_deny_absent == "true"
     assert result.step_29p_risk_admissible == "true"
     assert result.cap24_bound_instrument_id
-    assert result.first_real_blocker == "EXTERNAL_EFFECT_NOT_AUTHORIZED"
+    assert result.first_real_blocker == (
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+    )
     assert result.blocker_class == "E"
     assert result.post_count == "0"
     assert result.manifest_verify_rc == 0
