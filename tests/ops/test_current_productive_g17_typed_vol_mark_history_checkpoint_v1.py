@@ -77,13 +77,17 @@ def _mark_row(index: int, *, confirm: str = "1", px: str | None = None) -> list[
     return [ts, price, price, price, price, confirm]
 
 
-def _sixty_one_samples() -> tuple[FullCoreG17Pt1mMarkIngestFieldsV1, ...]:
+def _sixty_one_samples(
+    *,
+    canonical_instrument_id: str = CANON,
+    venue_instrument_id: str = NATIVE,
+) -> tuple[FullCoreG17Pt1mMarkIngestFieldsV1, ...]:
     rows = list(reversed([_mark_row(i) for i in range(61)]))
     extracted = extract_full_core_g17_pt1m_mark_ingest_fields_v1(
         {"code": "0", "msg": "", "data": rows},
         venue=VENUE,
-        canonical_instrument_id=CANON,
-        venue_instrument_id=NATIVE,
+        canonical_instrument_id=canonical_instrument_id,
+        venue_instrument_id=venue_instrument_id,
         receive_or_capture_timestamp=CAPTURE_TS,
         source_endpoint=ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
     )

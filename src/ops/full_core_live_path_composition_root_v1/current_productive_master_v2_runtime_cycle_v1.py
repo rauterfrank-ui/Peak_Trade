@@ -4,6 +4,9 @@ Reuses the canonical decision owner
 ``run_integrated_offline_trading_logic_replay_v1``. Does not fabricate
 ENTER, direction, quantity, or CMC fields. Missing observed inputs deny.
 Does not POST. Does not consume a permit. Does not apply simulated fills.
+Requires the existing productive typed-volatility presence gate on the
+already-bound G17/CMC value. Does not own HardeningSession, rewrite JOIN-1
+or JOIN-2, or mutate bind-module owner locks.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -626,6 +629,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         confirmation_progress_session_id=cap61_binding.confirmation_session_id,
         confirmation_progress_venue=cap61_binding.venue,
         confirmation_progress_instrument=cap61_binding.instrument_key(),
+        require_productive_typed_volatility_presence_gate=True,
         explicit_runtime_scope_reset=False,
     )
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)

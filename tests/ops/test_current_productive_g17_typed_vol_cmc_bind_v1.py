@@ -40,6 +40,9 @@ from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 i
     TypedRuntimeProducerOutcomeV1,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
+from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
+    TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
+)
 from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
     _apply,
     _sixty_one_samples,
@@ -263,11 +266,12 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
     )
     assert cycle.input_blocker == ""
     assert cycle.replay is not None
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
     assert len(calls) == 1
     assert calls[0] is created.producer.output_port_v1().estimate
 
 
-def test_master_v2_cycle_absent_estimate_does_not_require_typed_carrier(
+def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -329,6 +333,68 @@ def test_master_v2_cycle_absent_estimate_does_not_require_typed_carrier(
     assert calls == []
 
 
+def _allowed_bound() -> BoundInstrumentV1:
+    return BoundInstrumentV1(
+        instrument_id="inst-eth-usdt-perp",
+        venue_native_id="inst-eth-usdt-perp",
+        ranking_snapshot_id="rank-g17-bind",
+        ranking_integrity_digest="rank-g17-bind-digest",
+        universe_snapshot_id="uni-g17-bind",
+        selection_id="sel-g17-bind",
+        selection_integrity_digest="sel-g17-bind-digest",
+        selection_state="SELECTED",
+    )
+
+
+def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
+    closes = _closes()
+    last = float(closes[-1])
+    return {
+        "bound_instrument": _allowed_bound(),
+        "cycle_id": cycle_id,
+        "observed_unix": 1_700_000_100.0,
+        "mark_px": last,
+        "index_px": last,
+        "bid_px": last - 0.5,
+        "ask_px": last + 0.5,
+        "volume": 12_345.0,
+        "open_interest": 1_000.0,
+        "funding_rate": 0.0001,
+        "finalized_closes": closes,
+        "last_finalized_event_ts_unix": 1_700_000_000.0,
+        "venue_flat": True,
+        "existing_position_side": ExistingPositionSide.NONE,
+        "g17_typed_vol_producer": producer,
+    }
+
+
+def test_master_v2_cycle_none_producer_fail_closes_typed_presence() -> None:
+    cycle = run_current_productive_master_v2_runtime_cycle_v1(**_cycle_kwargs("g17-presence-none"))
+    assert cycle.input_blocker == ""
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons
+    assert cycle.decision_outcome not in {"enter_long", "enter_short"}
+
+
+def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
+    tmp_path: Path,
+) -> None:
+    created = _apply(
+        tmp_path,
+        samples=_sixty_one_samples(
+            canonical_instrument_id="inst-eth-usdt-perp",
+            venue_instrument_id="inst-eth-usdt-perp",
+        ),
+        canonical_instrument_id="inst-eth-usdt-perp",
+        venue_instrument_id="inst-eth-usdt-perp",
+    )
+    assert created.producer is not None
+    cycle = run_current_productive_master_v2_runtime_cycle_v1(
+        **_cycle_kwargs("g17-presence-produced", producer=created.producer)
+    )
+    assert cycle.input_blocker == ""
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
+
+
 def test_source_freeze_no_second_owner_ingest_or_presence_gate() -> None:
     bind_src = BIND_SRC.read_text(encoding="utf-8")
     master_src = MASTER_V2_SRC.read_text(encoding="utf-8")
@@ -345,7 +411,7 @@ def test_source_freeze_no_second_owner_ingest_or_presence_gate() -> None:
     assert "bind_typed_canonical_volatility_estimate_into_market_context_v1" in bind_src
     assert "apply_current_productive_g17_typed_vol_cmc_bind_v1" in master_src
     assert "ingest_finalized_pt1m_mark_sample_v1" not in master_src
-    assert "require_productive_typed_volatility_presence_gate=True" not in master_src
+    assert "require_productive_typed_volatility_presence_gate=True" in master_src
     assert "HardenedBridgeSessionStateV2" not in master_src
     assert "g17_typed_vol_producer=g17_checkpoint.producer" in v5
     assert "bind_typed_canonical_volatility_estimate" not in v5

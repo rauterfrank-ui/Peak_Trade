@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -37,8 +38,16 @@ from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundIns
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
+from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+    CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
+    TypedRuntimeProducerOutcomeV1,
+)
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from trading.master_v2.double_play_state import SideState
+from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
+    _apply,
+    _sixty_one_samples,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -53,6 +62,7 @@ DR_HEADING = (
 )
 THIS_SLICE = "11.2.1.DR.FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_AND_CONFIRMATION_CURSOR_JOIN"
 _INSTRUMENT = "inst-eth-usdt-perp"
+_PRODUCED_G17_CACHE: dict[str, CanonicalVolatilityTypedRuntimeProducerScaffoldV1] = {}
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
@@ -83,6 +93,31 @@ def _strong_uptrend_closes(count: int = 64) -> tuple[float, ...]:
     return tuple(1000.0 + float(index) * 10.0 for index in range(count))
 
 
+_AUTO_G17 = object()
+
+
+def _produced_g17_producer(
+    *, instrument_id: str
+) -> CanonicalVolatilityTypedRuntimeProducerScaffoldV1:
+    cached = _PRODUCED_G17_CACHE.get(instrument_id)
+    if cached is not None:
+        return cached
+    store_root = Path(tempfile.mkdtemp(prefix="g17-presence-gate-"))
+    created = _apply(
+        store_root,
+        samples=_sixty_one_samples(
+            canonical_instrument_id=instrument_id,
+            venue_instrument_id=instrument_id,
+        ),
+        canonical_instrument_id=instrument_id,
+        venue_instrument_id=instrument_id,
+    )
+    assert created.producer is not None
+    assert created.last_outcome == TypedRuntimeProducerOutcomeV1.PRODUCED.value
+    _PRODUCED_G17_CACHE[instrument_id] = created.producer
+    return created.producer
+
+
 def _cycle(
     *,
     cycle_id: str,
@@ -91,9 +126,15 @@ def _cycle(
     closes: tuple[float, ...] | None = None,
     mark_px: float | None = None,
     event_ts_unix: float = 1_700_000_000.0,
+    g17_typed_vol_producer: object = _AUTO_G17,
 ) -> object:
     path = closes if closes is not None else _strong_uptrend_closes()
     last = float(path[-1] if mark_px is None else mark_px)
+    producer = (
+        _produced_g17_producer(instrument_id=instrument_id)
+        if g17_typed_vol_producer is _AUTO_G17
+        else g17_typed_vol_producer
+    )
     return run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=_bound(instrument_id=instrument_id),
         cycle_id=cycle_id,
@@ -110,6 +151,7 @@ def _cycle(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         incoming_cursor=incoming_cursor,
+        g17_typed_vol_producer=producer,
     )
 
 
@@ -263,6 +305,13 @@ def test_missing_cursor_does_not_invent_enter() -> None:
     assert cycle_a.cursor_restore_status == "missing"
     assert cycle_a.decision_outcome != "enter_long"
     assert cycle_a.decision_outcome != "enter_short"
+
+
+def test_missing_typed_producer_does_not_invent_enter() -> None:
+    cycle_a = _cycle(cycle_id="missing-typed-producer", g17_typed_vol_producer=None)
+    assert cycle_a.decision_outcome != "enter_long"
+    assert cycle_a.decision_outcome != "enter_short"
+    assert "TYPED_VOLATILITY_ESTIMATE_MISSING" in cycle_a.fail_reasons
 
 
 @pytest.mark.parametrize(
