@@ -111,6 +111,7 @@ entities:
 
   - id: NAVIGATION_INDEX:map_of_truth
     # Cap 6.3 §9.2.8 pre-metadata cross-instrument validation persist; ATLAS_AUTHORITY=NONE; MOT not SSOT
+    # Cap 6.3 §9.2.9 metadata-owner contract persist; ATLAS_AUTHORITY=NONE; MOT not SSOT
     # 11.2.1.EE Full-Core G17 typed-vol CMC bind MOT navigation-only pointer: CONTRACT_VERSION=v1; MERGED_PR=6542; CMC_BINDING_PERFORMED=true; CMC_BINDING_SCOPE=THIS_MS2_FULL_CORE_JOIN_ONLY; ED_CMC_BINDING_PERFORMED=false; ED_CMC_BINDING_PERFORMED_FIELD_UNCHANGED=true; ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED; INGEST_SAMPLE=false; PRESENCE_GATE_MUTATED=false; JOIN_1_REWRITTEN=false; JOIN_2_REWRITTEN=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_VENUE_POST_ALLOWED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; MOT not SSOT
     kind: NAVIGATION_INDEX
     name: Map of Truth
@@ -140,6 +141,8 @@ entities:
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1.md
       - tests/ops/test_cap63_dynamic_derivation_cross_instrument_validation_v1.py
       - evidence/ops/cap63_dynamic_derivation_cross_instrument_validation_v1/
+      - docs/ops/specs/CAP63_TICK_LOT_CTVAL_PRICE_SCALE_METADATA_AUTHORITY_V1.md
+      - tests/ops/test_cap63_tick_lot_ctval_price_scale_metadata_authority_v1.py
       - src/ops/derive_scope_event_distances_v1/__init__.py
       - src/ops/derive_scope_event_distances_v1/constants_v1.py
       - src/ops/derive_scope_event_distances_v1/derive_v1.py
@@ -196,6 +199,11 @@ entities:
       navigation pointer only: pre-metadata validation performed; Cap 2.3/2.2
       universe consumed; formula golden bands are formula samples not an
       instrument universe; metadata gate unconsumed; CURRENT MODEL_B frozen
+      200/80/120 unchanged; MODEL_C unbound.
+      Cap 6.3 tick/lot/ctVal/price-scale metadata authority owner contract
+      (§9.2.9) is a navigation pointer only: reuse owner model persisted;
+      consumer owner uninvented; later-bind field subset OPEN; price-scale
+      identity OPEN; implementation unauthorized; CURRENT MODEL_B frozen
       200/80/120 unchanged; MODEL_C unbound.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
