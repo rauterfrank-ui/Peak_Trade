@@ -5792,6 +5792,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # 11.2.1.DZ Full-Core concrete macOS Keychain item identity V1: CONTRACT_VERSION=v1; KEYCHAIN_SERVICE_ID=peak-trade.full-core.venue-credentials; KEYCHAIN_ACCOUNT_ID=okx-eea.productive; PROVIDER_REF_IDENTIFIER=okx-eea-productive; SOURCE_REF_KIND=provider-ref; CONCRETE_BACKEND_ITEM_IDENTITY_BOUND=true; REAL_KEYCHAIN_ACCESSED=false; PRODUCTIVE_PROVIDER_ACTIVE=false; V5_JOINED=false; AUTHORITY_NON_INTERFERENCE_PROVEN=true; CREDENTIAL_POSSESSION_ALONE_GRANTS_NO_POST_AUTHORITY=true; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_concrete_backend_item_identity_v1.py.
     # 11.2.1.DY Full-Core checkout-independent credential source-backend-kind V1: CONTRACT_VERSION=v1; SOURCE_BACKEND_CLASS=OS_NATIVE_SECRET_STORE; PRODUCTIVE_TARGET_BACKEND=MACOS_KEYCHAIN; SOURCE_REF_KIND=provider-ref; SOURCE_LOCATION_BOUND=true; EPHEMERAL_LIFETIME_CONTRACT_DEFINED=true; ZERO_RETENTION_SEMANTICS_DEFINED=true; REAL_KEYCHAIN_ACCESSED=false; PRODUCTIVE_PROVIDER_ACTIVE=false; V5_JOINED=false; CREDENTIAL_POSSESSION_ALONE_GRANTS_NO_POST_AUTHORITY=true; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py.
     # 11.2.1.DX Full-Core checkout-independent credential capability offline contract V1: CONTRACT_VERSION=v1; OFFLINE_CONTRACT_DEFINED=true; NOT_PRODUCTIVELY_JOINED=true; NOT_RUNTIME_ACTIVE=true; NO_CREDENTIAL_MATERIAL=true; PRODUCTIVE_BACKEND_JOINED=false; V5_JOINED=false; CREDENTIAL_POSSESSION_ALONE_GRANTS_NO_POST_AUTHORITY=true; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_capability_v1.py.
     # 11.2.1.DV current-productive one runtime-cycle after C1 boundary 1789527780 V5: CONTRACT_VERSION=v5; OWNER_GO_STATUS=DEFINED_NOT_CONSUMED; V5_PROVENANCE_INVARIANT=EXPLICIT_DECLARED_AUTHORIZED_CHECKOUT_SHA_EQ_ACTUAL_GIT_HEAD; FROZEN_EXPECTED_ORIGIN_MAIN_SHA_EQ_HEAD_REQUIRED=false; CLI_HEAD_SELF_CONFIRMATION_ALLOWED=false; PREVIOUS_C1_VENUE_EVENT_TIME=1789527780.0; RUNTIME_CYCLE_EXECUTED=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py.
@@ -5910,6 +5911,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_capability_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_concrete_backend_item_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
@@ -6106,6 +6108,7 @@ entities:
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_capability_offline_contract_v1.py
+      - tests/ops/test_full_core_checkout_independent_credential_concrete_backend_item_identity_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_source_backend_kind_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
