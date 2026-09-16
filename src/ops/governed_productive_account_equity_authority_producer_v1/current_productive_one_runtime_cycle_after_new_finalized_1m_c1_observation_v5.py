@@ -38,6 +38,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m
     extract_full_core_g17_pt1m_mark_ingest_fields_v1,
     mark_history_get_query_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
+    CHECKPOINT_PER_RUN_DIRNAME,
+    apply_current_productive_g17_typed_vol_mark_history_checkpoint_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_TICKER,
@@ -195,6 +199,9 @@ C1_GATE_NATIVE_ID = "0G-USDT-SWAP"
 C1_GATE_BAR = "1m"
 CURRENT_CURSOR_STORE_RELPATH = (
     "evidence/ops/full_core_current_productive_sidestate_confirmation_cursor_current_v1"
+)
+CURRENT_G17_CHECKPOINT_STORE_RELPATH = (
+    "evidence/ops/full_core_current_productive_g17_typed_vol_mark_history_checkpoint_current_v1"
 )
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
@@ -907,6 +914,13 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
         cursor_store_root = (
             root / CURRENT_CURSOR_STORE_RELPATH if execute_network is True else store / "cursor"
         )
+    g17_per_run_root = store / CHECKPOINT_PER_RUN_DIRNAME
+    g17_checkpoint_store_root = (
+        root / CURRENT_G17_CHECKPOINT_STORE_RELPATH if execute_network is True else g17_per_run_root
+    )
+    g17_extra_persist_roots: tuple[Path, ...] = (
+        () if g17_checkpoint_store_root == g17_per_run_root else (g17_per_run_root,)
+    )
 
     gate_payload: Any = c1_gate_payload
     gate_http = 0
@@ -1324,6 +1338,18 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
                 "g17_pt1m_mark_failure_codes": ",".join(g17_mark_extraction.failure_codes),
                 "g17_pt1m_mark_source_endpoint": g17_mark_extraction.source_endpoint,
             }
+            g17_checkpoint = apply_current_productive_g17_typed_vol_mark_history_checkpoint_v1(
+                store_root=g17_checkpoint_store_root,
+                extra_persist_roots=g17_extra_persist_roots,
+                venue=DEFAULT_VENUE,
+                canonical_instrument_id=str(bound.instrument_id),
+                venue_instrument_id=str(native_id),
+                samples=g17_mark_extraction.samples,
+            )
+            market_payloads["g17_checkpoint_disposition"] = g17_checkpoint.disposition
+            market_payloads["g17_checkpoint_reason"] = g17_checkpoint.reason_code
+            market_payloads["g17_checkpoint_history_digest"] = g17_checkpoint.history_digest
+            market_payloads["g17_checkpoint_fail_closed"] = _token(g17_checkpoint.fail_closed)
             mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
                 acquisition_result.mark_price_payload, native_id=native_id
             )

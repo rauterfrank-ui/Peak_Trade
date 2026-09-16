@@ -30055,6 +30055,109 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.ED FULL_CORE_CURRENT_PRODUCTIVE_G17_TYPED_VOL_MARK_HISTORY_CHECKPOINT
+
+Consumes Owner-GO `OWNER_GO_S2_JOIN_2`. This persist does not rewrite
+§11.2.1.DA–§11.2.1.EC standing persist fields and does not rewrite the
+JOIN-1 mark-sample adapter. CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+
+This slice joins existing G17 mark-history persistence into the
+CURRENT_PRODUCTIVE Full-Core cycle as a sibling checkpoint to the
+SideState/confirmation cursor. Authority is G17 mark-history persistence
+only. The checkpoint module owns filename, create-versus-restore,
+identity check, and ingest orchestration. V5 owns the sibling store-root
+and makes one thin call after JOIN-1 extraction and before the Master-V2
+cycle.
+
+Missing file creates an empty
+`CanonicalVolatilityTypedRuntimeProducerScaffoldV1` with
+`persistence_path` set, then ingests JOIN-1 extracted samples. Present
+file restores through `restore_from_persistence_v1`. Restored
+venue / canonical instrument / venue-instrument must match the current
+bound identity. Corrupt or incompatible payloads fail closed through
+existing G17 errors. This slice never empty-creates over a corrupt file,
+never rewrites a corrupt file, and never invents recovery.
+
+Persist happens only through the existing G17 DISTINCT path. Restore
+returns history, acceptance state, and history digest. The volatility
+estimate is not restored and is not rematerialized. A later valid new
+finalized DISTINCT sample is required for `PRODUCED`. Duplicates remain
+canonical no-ops under `accept_distinct_market_sample_v1`. No second
+incremental filter is introduced.
+
+This persist does **not** consume
+`OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1`.
+That GO remains `DEFINED_NOT_CONSUMED`. No CMC bind. No presence-gate
+mutation. No HardeningSession owner. No SideState cursor schema change.
+No economic_md producer schedule. No Master-V2 / Double Play semantic
+change. No volatility-formula change. No Live / Testnet / POST
+authorization.
+
+``` text
+THIS_SLICE=11.2.1.ED.FULL_CORE_CURRENT_PRODUCTIVE_G17_TYPED_VOL_MARK_HISTORY_CHECKPOINT
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_S2_JOIN_2
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+J2_CLASSIFICATION=B
+ARTIFACT_ID=CURRENT_PRODUCTIVE_G17_TYPED_VOL_MARK_HISTORY_CHECKPOINT_V1
+CHECKPOINT_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_mark_history_checkpoint_v1
+AUTHORITY=G17_MARK_HISTORY_PERSISTENCE_ONLY
+VENUE=OKX
+STATE_SCHEMA=CanonicalVolatilityRuntimeMarkHistoryHostV1.to_persistence_dict_v1
+PERSIST_ENGINE=existing_G17_persistence_API
+TYPED_VOL_HOST_PERSISTENCE_PERFORMED=true
+CMC_BINDING_PERFORMED=false
+PRESENCE_GATE_MUTATED=false
+JOIN_1_REWRITTEN=false
+INGEST_INLINE_IN_V5=false
+G17_MARKET_MISSING_GATE=false
+ESTIMATE_REMATERIALIZED_ON_RESTORE=false
+HARDENING_SESSION_OWNER=false
+SIDESTATE_CURSOR_OWNER=false
+ECONOMIC_MD_OWNER=false
+GLOBAL_SINGLETON=false
+IMPLICIT_RECOVERY=false
+MASTER_V2_DOUBLE_PLAY_SEMANTIC_CHANGE=false
+VOLATILITY_FORMULA_CHANGE=false
+MODEL_B_UNCHANGED=true
+MODEL_C_UNBOUND=true
+LIVE_ENABLED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+PERMIT_CREATED=false
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+PREVIOUS_V5_RUNTIME_GO=OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1
+PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED
+GO_CONSUMPTION_OPEN=true
+RUNTIME_CYCLE_EXECUTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
+PDF_CHANGED=false
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
