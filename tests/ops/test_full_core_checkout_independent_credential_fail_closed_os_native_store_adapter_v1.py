@@ -83,6 +83,11 @@ DZ_MODULE_PATH = (
     / "src/ops/full_core_live_path_composition_root_v1"
     / "checkout_independent_credential_concrete_backend_item_identity_v1.py"
 )
+EB_MODULE_PATH = (
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py"
+)
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 OWNER_URI = "fullcore-cred://provider-ref/okx-eea-productive"
 UNKNOWN_URI = "fullcore-cred://provider-ref/unknown-identifier"
@@ -256,6 +261,10 @@ def test_v5_does_not_import_or_join_adapter() -> None:
     assert "checkout_independent_credential_capability_v1" not in source
     assert "checkout_independent_credential_concrete_backend_item_identity_v1" not in source
     assert "checkout_independent_credential_source_backend_kind_v1" not in source
+    assert (
+        "checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1"
+        not in source
+    )
     assert V5_JOINED is False
     assert V5_USES_NEW_PROVIDER is False
     path = default_vault_path_v1(repo_root=REPO_ROOT)
@@ -263,7 +272,14 @@ def test_v5_does_not_import_or_join_adapter() -> None:
 
 
 def test_no_network_or_venue_imports() -> None:
-    for path in (MODULE_PATH, RESOLVE_MODULE_PATH, DX_MODULE_PATH, DY_MODULE_PATH, DZ_MODULE_PATH):
+    for path in (
+        MODULE_PATH,
+        RESOLVE_MODULE_PATH,
+        DX_MODULE_PATH,
+        DY_MODULE_PATH,
+        DZ_MODULE_PATH,
+        EB_MODULE_PATH,
+    ):
         source = path.read_text(encoding="utf-8")
         for forbidden in _FORBIDDEN_IMPORTS:
             assert forbidden not in source
@@ -307,7 +323,7 @@ def test_dx_dy_dz_semantics_remain() -> None:
     assert "provider.resolve_capability_v1" in dx_source or "resolve_fn(" in dx_source
     assert "PRODUCTIVE_BACKEND_ABSENT" in dx_source
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    ea = runbook.split("### 11.2.1.EA ", 1)[1].split("## 11.3 ", 1)[0]
+    ea = runbook.split("### 11.2.1.EA ", 1)[1].split("### 11.2.1.EB ", 1)[0]
     assert (
         "11.2.1.EA.FULL_CORE_CHECKOUT_INDEPENDENT_FAIL_CLOSED_MACOS_KEYCHAIN_PROVIDER_ADAPTER" in ea
     )

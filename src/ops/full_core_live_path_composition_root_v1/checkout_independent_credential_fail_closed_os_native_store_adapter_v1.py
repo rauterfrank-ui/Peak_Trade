@@ -1,8 +1,8 @@
 """Fail-closed offline OS-native-store provider adapter V1.
 
 Binds MACOS_KEYCHAIN behind FullCoreCheckoutIndependentCredentialProviderPortV1.
-Consumes the canonical DZ identifier-only mapping. Does not access Keychain,
-load material, join V5, GET, sign, or POST.
+Consumes the canonical DZ identifier-only mapping and EB item-class/encoding
+metadata. Does not access Keychain, load material, join V5, GET, sign, or POST.
 
 OWNER_GO=OWNER_GO_FULL_CORE_CHECKOUT_INDEPENDENT_FAIL_CLOSED_MACOS_KEYCHAIN_PROVIDER_ADAPTER_OFFLINE_CONTRACT_V1
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -29,6 +29,12 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     prove_authority_non_interference_v1,
     prove_concrete_keychain_item_identity_bound_v1,
     resolve_bound_keychain_item_identity_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1 import (
+    KEYCHAIN_ITEM_CLASS,
+    KEYCHAIN_VALUE_ENCODING,
+    prove_item_class_and_value_encoding_bound_v1,
+    resolve_bound_keychain_item_class_and_value_encoding_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_source_backend_kind_v1 import (
     PRODUCTIVE_TARGET_BACKEND,
@@ -106,6 +112,13 @@ class FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1:
             _error("PROVIDER_REF_IDENTIFIER_MUST_REMAIN_OWNER_EXACT")
         if identity.source_ref_uri != SOURCE_REF_URI:
             _error("SOURCE_REF_URI_MUST_REMAIN_OWNER_COMPOSED")
+        encoding = resolve_bound_keychain_item_class_and_value_encoding_v1(uri)
+        if encoding.keychain_item_class != KEYCHAIN_ITEM_CLASS:
+            _error("KEYCHAIN_ITEM_CLASS_DRIFT")
+        if encoding.keychain_value_encoding != KEYCHAIN_VALUE_ENCODING:
+            _error("KEYCHAIN_VALUE_ENCODING_DRIFT")
+        if encoding.payload_schema_bound != FALSE_TOKEN:
+            _error("PAYLOAD_SCHEMA_MUST_REMAIN_UNBOUND")
         if SOURCE_BACKEND_CLASS != "OS_NATIVE_SECRET_STORE":
             _error("SOURCE_BACKEND_CLASS_DRIFT")
         if PRODUCTIVE_TARGET_BACKEND != "MACOS_KEYCHAIN":
@@ -146,6 +159,7 @@ def bind_fail_closed_os_native_store_adapter_v1() -> (
 
 def prove_fail_closed_adapter_bound_v1() -> dict[str, str]:
     prove_concrete_keychain_item_identity_bound_v1()
+    prove_item_class_and_value_encoding_bound_v1()
     if SOURCE_BACKEND_CLASS != "OS_NATIVE_SECRET_STORE":
         _error("SOURCE_BACKEND_CLASS_DRIFT")
     if PRODUCTIVE_TARGET_BACKEND != "MACOS_KEYCHAIN":
@@ -171,6 +185,9 @@ def prove_fail_closed_adapter_bound_v1() -> dict[str, str]:
         "OFFLINE_ADAPTER_IMPLEMENTED": TRUE_TOKEN,
         "PROVIDER_PORT_IMPLEMENTED_BY_ADAPTER": TRUE_TOKEN,
         "CANONICAL_DZ_IDENTITY_CONSUMED": TRUE_TOKEN,
+        "CANONICAL_EB_ITEM_CLASS_CONSUMED": TRUE_TOKEN,
+        "KEYCHAIN_ITEM_CLASS": KEYCHAIN_ITEM_CLASS,
+        "KEYCHAIN_VALUE_ENCODING": KEYCHAIN_VALUE_ENCODING,
         "RESOLVE_DISPATCH_TO_ADAPTER_IMPLEMENTED": TRUE_TOKEN,
         "SOURCE_BACKEND_CLASS": SOURCE_BACKEND_CLASS,
         "PRODUCTIVE_TARGET_BACKEND": PRODUCTIVE_TARGET_BACKEND,
