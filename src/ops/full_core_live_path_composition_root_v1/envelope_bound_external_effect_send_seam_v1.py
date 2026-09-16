@@ -48,6 +48,10 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FullCoreFinalOrderEnvelopeError,
     assert_envelope_unmodified_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_ack_mapper_v1 import (
+    FullCorePostSubmitJoinResultV1,
+    join_full_core_post_result_to_lifecycle_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
     FullCoreProductiveHttpPostError,
     FullCoreProductiveTradeOrderPostTransportV1,
@@ -72,6 +76,7 @@ class EnvelopeBoundSendSeamResultV1:
     durable_consumed: bool
     transport_class: str
     outcome: str
+    post_submit_join: FullCorePostSubmitJoinResultV1 | None = None
 
 
 def _payload_from_envelope_v1(envelope: FinalOrderEnvelopeV1) -> dict[str, Any]:
@@ -180,6 +185,11 @@ def attempt_envelope_bound_external_effect_send_v1(
     isolated = (
         follow_on.get("durable_consumed") is True and follow_on.get("resubmit_allowed") is not True
     )
+    post_submit_join = join_full_core_post_result_to_lifecycle_v1(
+        result=result,
+        sent_clordid=str(envelope.client_order_id),
+        submit_count=1,
+    )
     return EnvelopeBoundSendSeamResultV1(
         mocked_post_count=mocked,
         real_post_count=real,
@@ -191,6 +201,7 @@ def attempt_envelope_bound_external_effect_send_v1(
         outcome=(
             "ONE_SHOT_REAL_POST_RECORDED" if real == 1 else "MOCKED_POST_RECORDED_NO_VENUE_CONTACT"
         ),
+        post_submit_join=post_submit_join,
     )
 
 
