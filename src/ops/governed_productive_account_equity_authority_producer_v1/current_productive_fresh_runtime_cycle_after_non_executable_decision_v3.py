@@ -41,6 +41,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     extract_ticker_fields_v1,
     run_current_productive_master_v2_runtime_cycle_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CurrentProductiveCursorError,
+    load_current_productive_sidestate_confirmation_cursor_v1,
+    persist_current_productive_sidestate_confirmation_cursor_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
     try_bind_current_productive_venue_plan_v1,
@@ -386,6 +391,8 @@ def execute_current_productive_fresh_runtime_cycle_after_non_executable_decision
     execute_network: bool = False,
     repository_sha: str | None = None,
     producer_observed_at_unix: float | None = None,
+    incoming_cursor: object | None = None,
+    cursor_store_root: Path | None = None,
 ) -> CurrentProductiveFreshRuntimeCycleAfterNonExecutableResultV3:
     if owner_go != OWNER_GO:
         raise CurrentProductiveFreshRuntimeCycleAfterNonExecutableV3Error("OWNER_GO_MISMATCH")
@@ -677,30 +684,49 @@ def execute_current_productive_fresh_runtime_cycle_after_non_executable_decision
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
             elif not market_blocker:
-                try:
-                    cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
-                        bound_instrument=bound,
-                        cycle_id=f"dq-{native_id}-{package_started}",
-                        observed_unix=observed_unix,
-                        mark_px=float(mark_px),
-                        index_px=float(index_px),
-                        bid_px=float(bid),
-                        ask_px=float(ask),
-                        volume=float(volume),
-                        open_interest=float(oi),
-                        funding_rate=float(funding),
-                        finalized_closes=closes,
-                        last_finalized_event_ts_unix=float(last_ts),
-                        venue_flat=venue_flat,
-                        existing_position_side=existing_side,
-                    )
-                except (TypeError, RuntimeError, ValueError) as exc:
-                    market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
-                else:
-                    if cycle_result.input_blocker:
-                        market_blocker = cycle_result.input_blocker
-                    market_payloads["finalized_close_count"] = str(len(closes))
-                    market_payloads["mark_px_observed"] = str(mark_px)
+                loaded_cursor = incoming_cursor
+                if loaded_cursor is None and cursor_store_root is not None:
+                    try:
+                        loaded_cursor = load_current_productive_sidestate_confirmation_cursor_v1(
+                            Path(cursor_store_root)
+                        )
+                    except CurrentProductiveCursorError as exc:
+                        market_blocker = f"CURSOR_RESTORE_FAIL_CLOSED:{exc.reason_code}"
+                        loaded_cursor = None
+                if not market_blocker:
+                    try:
+                        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+                            bound_instrument=bound,
+                            cycle_id=f"dq-{native_id}-{package_started}",
+                            observed_unix=observed_unix,
+                            mark_px=float(mark_px),
+                            index_px=float(index_px),
+                            bid_px=float(bid),
+                            ask_px=float(ask),
+                            volume=float(volume),
+                            open_interest=float(oi),
+                            funding_rate=float(funding),
+                            finalized_closes=closes,
+                            last_finalized_event_ts_unix=float(last_ts),
+                            venue_flat=venue_flat,
+                            existing_position_side=existing_side,
+                            incoming_cursor=loaded_cursor,
+                        )
+                    except (TypeError, RuntimeError, ValueError) as exc:
+                        market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
+                    else:
+                        if cycle_result.input_blocker:
+                            market_blocker = cycle_result.input_blocker
+                        market_payloads["finalized_close_count"] = str(len(closes))
+                        market_payloads["mark_px_observed"] = str(mark_px)
+                        if (
+                            cursor_store_root is not None
+                            and cycle_result.outgoing_cursor is not None
+                        ):
+                            persist_current_productive_sidestate_confirmation_cursor_v1(
+                                cycle_result.outgoing_cursor,
+                                store_root=Path(cursor_store_root),
+                            )
     if handle is not None:
         release_live_canary_ephemeral_material_v1(handle)
 
