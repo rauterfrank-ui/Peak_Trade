@@ -443,12 +443,12 @@ Stop immediately if this file is treated as:
 
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
-  freeze-exception preconditions are persisted in Master Runbook §9.2.4.
-  The freeze-exception itself remains later and unauthorized.
+  freeze-exception authority is persisted in Master Runbook §9.2.5.
+  Pure derivation function plus golden vectors remain later and unauthorized.
   Cross-instrument derived-distance validation and tick/lot/ctVal
   price-scale metadata remain separate later gates before runtime bind.
   No derivation function, no seam, no atomic retire+bind.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1
 HARD_STOP_AFTER_THIS_PERSIST=true
 NEXT_OWNER_GO_STATUS=CONSUMED_BY_9.2.4
 NEXT_OWNER_GO_CONSUMED=true

@@ -88,3 +88,9 @@ record freeze-exception **preconditions** (docs-only). A later freeze-exception
 would have to name this Cap 6.2 generator-alias freeze explicitly. That
 persist does **not** grant the exception, bind MODEL_C, or change productive
 distances.
+
+Master Runbook §9.2.5 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md`
+record freeze-exception **authority** for this Cap 6.2 generator-alias freeze
+(docs-only). That persist does **not** mutate productive `200.0` / `80.0` /
+`120.0`, bind MODEL_C, or retire generator inputs.

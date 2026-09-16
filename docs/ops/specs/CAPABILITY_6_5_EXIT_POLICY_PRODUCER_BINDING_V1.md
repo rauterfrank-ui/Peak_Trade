@@ -111,3 +111,10 @@ would have to name this Cap 6.5 adverse consumer-alias freeze explicitly
 (retarget, not a new frozen `80.0` owner). Profit-protection freeze is **not**
 inside that later exception. That persist does **not** grant the exception,
 bind MODEL_C, or change productive distances.
+
+Master Runbook §9.2.5 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md`
+record freeze-exception **authority** for this Cap 6.5 adverse consumer-alias
+freeze (docs-only; retarget later, not a new frozen `80.0` owner).
+Profit-protection freeze is **not** excepted. That persist does **not** mutate
+productive distances, bind MODEL_C, or retire generator inputs.
