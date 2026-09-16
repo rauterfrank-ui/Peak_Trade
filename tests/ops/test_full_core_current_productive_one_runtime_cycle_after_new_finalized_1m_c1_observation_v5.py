@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import inspect
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -31,15 +33,24 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     PREVIOUS_C1_VENUE_EVENT_TIME as V4_PREVIOUS_C1_VENUE_EVENT_TIME,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+    CLI_HEAD_SELF_CONFIRMATION_ALLOWED,
     CLI_ORIGIN_MAIN_SHA_DEFAULT,
     CONSUMED_V4_OWNER_GO,
     CURRENT_CURSOR_STORE_RELPATH,
     EXPECTED_ORIGIN_MAIN_SHA,
+    FROZEN_EXPECTED_ORIGIN_MAIN_SHA_EQ_HEAD_REQUIRED,
     OWNER_GO,
     PREVIOUS_C1_VENUE_EVENT_TIME,
     STANDING_SEAM_REMAINDER,
+    V5_PROVENANCE_INVARIANT,
     CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
     execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
+    main,
+    require_current_productive_v5_checkout_provenance_v1,
+)
+from src.ops.preregistration_probe_fixture_repository_sha_binding_v1.repository_sha_source_v1 import (
+    RepositoryShaResolutionErrorV1,
+    resolve_repository_sha_from_git_head_v1,
 )
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     MULTI_FUTURE_RUNTIME_AUTHORIZED,
@@ -66,9 +77,19 @@ V4_HOST = (
     / "src/ops/governed_productive_account_equity_authority_producer_v1"
     / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v4.py"
 )
+V5_HOST = (
+    REPO_ROOT
+    / "src/ops/governed_productive_account_equity_authority_producer_v1"
+    / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
+)
 SATISFIED_TS_MS = 1_789_527_840_000
 FLOOR_TS_MS = 1_789_527_780_000
 V4_SATISFIED_TS_MS = 1_789_527_600_000
+OTHER_VALID_SHA = "a" * 40
+
+
+def _declared_checkout_sha() -> str:
+    return resolve_repository_sha_from_git_head_v1(repo_root=REPO_ROOT)
 
 
 def _candles(*, last_ts_ms: int, confirm: str = "1", count: int = 8) -> dict[str, object]:
@@ -84,7 +105,8 @@ def _candles(*, last_ts_ms: int, confirm: str = "1", count: int = 8) -> dict[str
 
 
 def _execute(**kwargs):
-    kwargs.setdefault("actual_checkout_sha", EXPECTED_ORIGIN_MAIN_SHA)
+    if "origin_main_sha" not in kwargs:
+        kwargs["origin_main_sha"] = _declared_checkout_sha()
     return execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
         **kwargs
     )
@@ -100,6 +122,9 @@ def test_created_flag_standing_pins_and_c1_floor() -> None:
     assert REAL_VENUE_POST_ALLOWED is False
     assert EXTERNAL_EFFECT_AUTHORIZED is False
     assert EXPECTED_ORIGIN_MAIN_SHA == "cd96b853dc8905757caaa6881cdc5145a430087a"
+    assert FROZEN_EXPECTED_ORIGIN_MAIN_SHA_EQ_HEAD_REQUIRED is False
+    assert CLI_HEAD_SELF_CONFIRMATION_ALLOWED is False
+    assert V5_PROVENANCE_INVARIANT == "EXPLICIT_DECLARED_AUTHORIZED_CHECKOUT_SHA_EQ_ACTUAL_GIT_HEAD"
     assert PREVIOUS_C1_VENUE_EVENT_TIME == 1789527780.0
     assert PREVIOUS_C1_VENUE_EVENT_TIME != 1789526340.0
     assert current_productive_first_real_blocker_v1() == STANDING_SEAM_REMAINDER
@@ -131,7 +156,6 @@ def test_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:
     ):
         _execute(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "store",
             c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
         )
@@ -144,55 +168,78 @@ def test_consumed_v4_owner_go_fail_closed(tmp_path: Path) -> None:
     ):
         _execute(
             owner_go=CONSUMED_V4_OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "store",
             c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
         )
 
 
-def test_origin_main_sha_mismatch_fail_closed(tmp_path: Path) -> None:
-    with pytest.raises(
-        CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
-        match="ORIGIN_MAIN_SHA_MISMATCH",
-    ):
-        _execute(
-            owner_go=OWNER_GO,
-            origin_main_sha="0" * 40,
-            evidence_root=tmp_path / "store",
-            c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
+def test_explicit_declared_equals_actual_head_pass() -> None:
+    head = _declared_checkout_sha()
+    assert (
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha=head,
+            actual_checkout_sha=None,
+            repo_root=REPO_ROOT,
         )
+        == head
+    )
 
 
-def test_checkout_head_mismatch_fail_closed(tmp_path: Path) -> None:
+def test_declared_not_equal_actual_head_fail_closed() -> None:
+    head = _declared_checkout_sha()
     with pytest.raises(
         CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
         match="CHECKOUT_HEAD_MISMATCH",
     ):
-        _execute(
-            owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-            actual_checkout_sha="0" * 40,
-            evidence_root=tmp_path / "store",
-            c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha=head,
+            actual_checkout_sha=OTHER_VALID_SHA,
+            repo_root=REPO_ROOT,
         )
 
 
-def test_default_argument_cannot_self_confirm_wrong_head(monkeypatch, tmp_path: Path) -> None:
+def test_malformed_declaration_fail_closed() -> None:
+    with pytest.raises(
+        CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
+        match="ORIGIN_MAIN_SHA_MALFORMED",
+    ):
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha="not-a-sha",
+            actual_checkout_sha=OTHER_VALID_SHA,
+            repo_root=REPO_ROOT,
+        )
+
+
+def test_unresolvable_git_head_fail_closed(monkeypatch) -> None:
+    def _boom(repo_root):
+        raise RepositoryShaResolutionErrorV1("GIT_DIR_ABSENT_FAIL_CLOSED")
+
     monkeypatch.setattr(
         "src.ops.governed_productive_account_equity_authority_producer_v1."
         "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5."
         "resolve_repository_sha_from_git_head_v1",
-        lambda repo_root: "0" * 40,
+        _boom,
     )
     with pytest.raises(
         CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
-        match="CHECKOUT_HEAD_MISMATCH",
+        match="CHECKOUT_HEAD_UNRESOLVABLE",
     ):
-        execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-            owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-            evidence_root=tmp_path / "store",
-            c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha=_declared_checkout_sha(),
+            actual_checkout_sha=None,
+            repo_root=REPO_ROOT,
+        )
+
+
+def test_missing_injected_checkout_head_fail_closed() -> None:
+    with pytest.raises(
+        CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
+        match="CHECKOUT_HEAD_MISSING",
+    ):
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha=_declared_checkout_sha(),
+            actual_checkout_sha="",
+            repo_root=REPO_ROOT,
         )
 
 
@@ -209,10 +256,39 @@ def test_empty_origin_main_sha_argument_fail_closed(tmp_path: Path) -> None:
         )
 
 
+def test_cli_omitted_origin_main_sha_does_not_fill_from_head(monkeypatch) -> None:
+    monkeypatch.setattr(sys, "argv", ["v5-host"])
+    with pytest.raises(
+        CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError,
+        match="ORIGIN_MAIN_SHA_ARGUMENT_MISSING",
+    ):
+        main()
+    source = inspect.getsource(main)
+    assert "declared_sha = resolve_repository_sha_from_git_head_v1" not in source
+
+
+def test_frozen_expected_is_not_runtime_head_equality_target() -> None:
+    assert OTHER_VALID_SHA != EXPECTED_ORIGIN_MAIN_SHA
+    assert (
+        require_current_productive_v5_checkout_provenance_v1(
+            origin_main_sha=OTHER_VALID_SHA,
+            actual_checkout_sha=OTHER_VALID_SHA,
+        )
+        == OTHER_VALID_SHA
+    )
+    source = inspect.getsource(require_current_productive_v5_checkout_provenance_v1)
+    assert "actual != EXPECTED_ORIGIN_MAIN_SHA" not in source
+    assert "declared != EXPECTED_ORIGIN_MAIN_SHA" not in source
+    assert "actual == EXPECTED_ORIGIN_MAIN_SHA" not in source
+    assert "declared == EXPECTED_ORIGIN_MAIN_SHA" not in source
+    host = V5_HOST.read_text(encoding="utf-8")
+    assert "if actual != EXPECTED_ORIGIN_MAIN_SHA" not in host
+    assert "if declared != EXPECTED_ORIGIN_MAIN_SHA" not in host
+
+
 def test_gate_equal_to_floor_does_not_run_cycle(tmp_path: Path) -> None:
     result = _execute(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
         c1_gate_payload=_candles(last_ts_ms=FLOOR_TS_MS),
     )
@@ -227,7 +303,6 @@ def test_gate_equal_to_floor_does_not_run_cycle(tmp_path: Path) -> None:
 def test_v4_satisfied_timestamp_does_not_satisfy_v5_floor(tmp_path: Path) -> None:
     result = _execute(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
         c1_gate_payload=_candles(last_ts_ms=V4_SATISFIED_TS_MS),
     )
@@ -242,7 +317,6 @@ def test_gate_override_previous_must_be_v5_floor(tmp_path: Path) -> None:
     ):
         _execute(
             owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "store",
             c1_gate_override={
                 "CONDITION_GATE": "NOT_YET_SATISFIED",
@@ -256,7 +330,6 @@ def test_gate_override_previous_must_be_v5_floor(tmp_path: Path) -> None:
 def test_gate_override_not_satisfied_does_not_run_cycle(tmp_path: Path) -> None:
     result = _execute(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
         c1_gate_override={
             "CONDITION_GATE": "NOT_YET_SATISFIED",
@@ -287,7 +360,6 @@ def test_cursor_instrument_mismatch_fail_closed(tmp_path: Path) -> None:
     incoming = json.loads(TRACKED_CURSOR.read_text(encoding="utf-8"))
     result = _execute(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
         acquisition_transport=_eligible_transport(),
         fresh_get_transport=_fresh_get_transport(),
@@ -308,7 +380,6 @@ def test_cursor_instrument_mismatch_fail_closed(tmp_path: Path) -> None:
 def test_satisfied_gate_hold_deny_without_post(tmp_path: Path) -> None:
     result = _execute(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
         acquisition_transport=_eligible_transport(),
         fresh_get_transport=_fresh_get_transport(),
