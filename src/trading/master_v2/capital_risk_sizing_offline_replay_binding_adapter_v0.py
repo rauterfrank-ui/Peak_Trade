@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, replace
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import TYPE_CHECKING, Optional, Tuple
 
 if TYPE_CHECKING:
@@ -53,6 +53,7 @@ DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST = _OFFLINE_BINDING_CONFIG_DIGEST
 
 _DEFAULT_REFERENCE_PRICE = Decimal("3500")
 _DEFAULT_PROTECTIVE_STOP = Decimal("3400")
+_UNSET_PROTECTIVE_STOP = object()
 _DEFAULT_ACCOUNT_EQUITY = Decimal("10000")
 _DEFAULT_SCOPE_CAPITAL = Decimal("500")
 _DEFAULT_PER_TRADE_RISK = Decimal("25")
@@ -77,19 +78,59 @@ def default_offline_replay_instrument_v0(
     )
 
 
+def derive_protective_stop_price_from_adverse_exit_v0(
+    *,
+    selected_side: str,
+    reference_price: Decimal,
+    adverse_exit_distance: Decimal | float | str,
+) -> Decimal | None:
+    """Bind 29P stop to the CURRENT adverse-exit distance at the 29P reference.
+
+    Reuses the LONG/SHORT branch of ``compute_evaluated_thresholds`` with
+    ``trailing_anchor = reference_price``. Does not invent a new stop policy,
+    does not use the offline fixture ``3400``, and fail-closes to ``None``
+    when side/distance/reference cannot form a strictly positive finite stop.
+    """
+    side = str(selected_side or "").strip().upper()
+    try:
+        reference = Decimal(str(reference_price))
+        distance = Decimal(str(adverse_exit_distance))
+    except (InvalidOperation, ValueError):
+        return None
+    if not reference.is_finite() or reference <= 0:
+        return None
+    if not distance.is_finite() or distance <= 0:
+        return None
+    if side == "LONG":
+        stop = reference - distance
+    elif side == "SHORT":
+        stop = reference + distance
+    else:
+        return None
+    if not stop.is_finite() or stop <= 0:
+        return None
+    return stop
+
+
 def default_offline_replay_capital_context_v0(
     *,
     instrument_id: str,
     reference_price: Decimal | None = None,
+    protective_stop_price: Decimal | None | object = _UNSET_PROTECTIVE_STOP,
 ) -> "CanonicalCoreRuntimeCapitalContextV0":
     from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
         CanonicalCoreRuntimeCapitalContextV0,
     )
 
     price = reference_price if reference_price is not None else _DEFAULT_REFERENCE_PRICE
+    stop = (
+        _DEFAULT_PROTECTIVE_STOP
+        if protective_stop_price is _UNSET_PROTECTIVE_STOP
+        else protective_stop_price
+    )
     return CanonicalCoreRuntimeCapitalContextV0(
         reference_price=price,
-        protective_stop_price=_DEFAULT_PROTECTIVE_STOP,
+        protective_stop_price=stop,
         account_equity=_DEFAULT_ACCOUNT_EQUITY,
         scope_capital_limit=_DEFAULT_SCOPE_CAPITAL,
         per_trade_risk_limit=_DEFAULT_PER_TRADE_RISK,

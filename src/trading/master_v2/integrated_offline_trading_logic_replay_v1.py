@@ -1830,9 +1830,16 @@ def run_integrated_offline_trading_logic_replay_v1(
     _crs_binding = importlib.import_module(
         "trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0"
     )
+    reference_price = Decimal(str(bound_context.mark_price))
+    protective_stop_price = _crs_binding.derive_protective_stop_price_from_adverse_exit_v0(
+        selected_side=str(evidence.selected_side),
+        reference_price=reference_price,
+        adverse_exit_distance=inp.adverse_exit_distance,
+    )
     capital_context = _crs_binding.default_offline_replay_capital_context_v0(
         instrument_id=inp.instrument_id,
-        reference_price=Decimal(str(bound_context.mark_price)),
+        reference_price=reference_price,
+        protective_stop_price=protective_stop_price,
     )
     sizing_binding = _crs_binding.bind_capital_risk_sizing_offline_replay_evidence_v0(
         evidence,
