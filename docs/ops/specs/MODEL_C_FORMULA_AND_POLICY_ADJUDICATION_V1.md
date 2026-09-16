@@ -385,12 +385,17 @@ productive baseline.
 2. Owner Formula and Policy adjudication — **this file**
 3. Dual-use split implementation (switch-event vs profit-protection
    identity; numeric remains `200.0`) — **implemented**
-4. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **not authorized** (`NEXT_STOP`)
-5. Pure derivation function + golden vectors vs MODEL_B — **not authorized**
-6. Runtime bind at the Integrated Replay seam — **not authorized**
+4. Formula-owner / derived-producer identity contract —
+   [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md)
+   — **persisted** (docs-only; producer unimplemented; seam unbound)
+5. Cap-6.2 digest residual + Cap-6.5 adverse residual owner contract —
+   **not authorized**
+6. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **not authorized**
+7. Pure derivation function + golden vectors vs MODEL_B — **not authorized**
+8. Runtime bind at the Integrated Replay seam — **not authorized**
 
-Steps 3 and 4 must not be skipped. Formula adjudication does not skip
-them.
+Steps 3 through 6 must not be skipped. Formula adjudication does not skip
+them. Formula-owner contract persist is **not** a freeze-exception GO.
 
 ## 9. Relation to existing authorities
 
@@ -400,7 +405,8 @@ them.
 | [CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md](CANONICAL_DYNAMIC_SCOPE_TRAILING_STATE_CONTINUITY_CONTRACT_V1.md) | Trailing SSOT consumed; not replaced |
 | [FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md](FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md) | `hysteresis_multiplier` remains unbound docs vocabulary |
 | [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use identity split implemented separately; profit-protection remains 200.0 under Cap 6.5 own owner |
-| Canonical Master Runbook | Unchanged; this file does not rewrite SSOT path labels |
+| [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md) | Formula/producer identity contract persist; not a runtime bind |
+| Canonical Master Runbook §9.2.2 | SSOT for this formula-owner contract persist; this file does not rewrite SSOT path labels |
 
 Master Runbook §1 path labels and Map of Truth `TRADING_DECISION_CORE`
 remain navigation / path labels, not this formula.
@@ -430,7 +436,8 @@ MARKER: MODEL_B_REMAINS_PRODUCTIVE_BASELINE
 MARKER: SWITCH_OWNER_REMAINS_TRANSITION_STATE
 MARKER: DERIVATION_SEAM_UNBOUND
 MARKER: LIVE_AUTHORIZED=false
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
+MARKER: FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT
 ```
 
 ## 11. STOP conditions
@@ -452,8 +459,11 @@ Stop immediately if text or a later change:
 ## 12. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
-EARLIEST_UNRESOLVED_MODEL_C_DEPENDENCY=MODEL_C_FREEZE_EXCEPTION
-LATER_REQUIRED_GO=PURE_DERIVATION_FUNCTION_AND_GOLDEN_VECTORS
-LATER_REQUIRED_GO_AFTER_THAT=MODEL_C_RUNTIME_BIND
+NEXT_STOP=AWAIT_OWNER_GO_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT
+EARLIEST_UNRESOLVED_MODEL_C_DEPENDENCY=CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER
+LATER_REQUIRED_GO=MODEL_C_FREEZE_EXCEPTION
+LATER_REQUIRED_GO_AFTER_THAT=PURE_DERIVATION_FUNCTION_AND_GOLDEN_VECTORS
+LATER_REQUIRED_GO_AFTER_THAT_BIND=MODEL_C_RUNTIME_BIND
+FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+ADJUDICATED_TARGET_POLICY_NOT_RUNTIME_BOUND=true
 ```

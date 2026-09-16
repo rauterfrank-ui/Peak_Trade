@@ -97,11 +97,22 @@ PERMIT_ENVELOPE_AUTHORIZED=false
 
 ## Next authority boundary
 
+Formula-owner / derived-producer identity is now persisted docs-only in
+[`CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md`](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md)
+(Master Runbook §9.2.2). That persist does **not** authorize runtime, a
+freeze-exception, or numeric mutation.
+
 ```text
+FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+DERIVED_DISTANCE_FORMULA_AUTHORIZED=false
+DERIVED_DISTANCE_PRODUCER_AUTHORIZED=false
+DERIVATION_RUNTIME_BIND_AUTHORIZED=false
 NEXT_BOUNDED_WORKPACKAGE=
-  separate Owner-GO for freeze-exception preconditions and/or
-  Cap-23 cross-instrument validation of derived-distance semantics
-  after formula owner is separately authorized
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1
+  separate Owner-GO for Cap-6.2 digest residual owner and Cap-6.5
+  adverse-exit owner after generator-input retirement; still no
+  freeze-exception and no runtime bind.
+  Cross-instrument derived-distance validation remains a later
+  separate GO after formula-owner and before runtime bind.
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1
 HARD_STOP_AFTER_THIS_PERSIST=true
 ```
