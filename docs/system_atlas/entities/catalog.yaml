@@ -5832,6 +5832,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # S2-BIND MS2 Full-Core G17 typed-vol CMC bind V1: CONTRACT_VERSION=v1; ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED; INGEST_SAMPLE=false; PRESENCE_GATE_IN_THIS_WP=false; CMC_BINDING_PERFORMED=true; PRESENCE_GATE_MUTATED=false; JOIN_1_REWRITTEN=false; JOIN_2_REWRITTEN=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py; cycle=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py; seam=src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py.
     # 11.2.1.ED Full-Core G17 typed-vol mark-history checkpoint V1: CONTRACT_VERSION=v1; ARTIFACT_ID=CURRENT_PRODUCTIVE_G17_TYPED_VOL_MARK_HISTORY_CHECKPOINT_V1; J2_CLASSIFICATION=B; TYPED_VOL_HOST_PERSISTENCE_PERFORMED=true; CMC_BINDING_PERFORMED=false; PRESENCE_GATE_MUTATED=false; JOIN_1_REWRITTEN=false; ESTIMATE_REMATERIALIZED=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py; cycle=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py.
     # 11.2.1.EC Full-Core G17 PT1M mark-sample adapter V1: CONTRACT_VERSION=v1; SAMPLE_IDENTITY=FINALIZED_OKX_HISTORY_MARK_PRICE_CANDLES_PT1M_CONFIRM_1; ECONOMIC_MD_PRODUCER_SCHEDULED=false; CMC_BINDING_PERFORMED=false; TYPED_VOL_HOST_PERSISTENCE_PERFORMED=false; PRESENCE_GATE_MUTATED=false; JOIN_2=false; INGEST_PERFORMED=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py; cycle=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py.
     # 11.2.1.EB Full-Core macOS Keychain item-class and value-encoding V1: CONTRACT_VERSION=v1; KEYCHAIN_ITEM_CLASS=generic-password; KEYCHAIN_VALUE_ENCODING=utf-8; KEYCHAIN_VALUE_DATA_REPRESENTATION=BYTES; PAYLOAD_SCHEMA_BOUND=false; REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false; REAL_KEYCHAIN_ACCESS_AUTHORIZED=false; PRODUCTIVE_PROVIDER_ACTIVE=false; V5_USES_NEW_PROVIDER=false; AUTHORITY_NON_INTERFERENCE_PROVEN=true; CREDENTIAL_POSSESSION_ALONE_GRANTS_NO_POST_AUTHORITY=true; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py.
@@ -6108,6 +6109,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
@@ -6191,6 +6193,7 @@ entities:
       - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py
       - tests/ops/test_current_productive_g17_pt1m_mark_sample_adapter_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
+      - tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
