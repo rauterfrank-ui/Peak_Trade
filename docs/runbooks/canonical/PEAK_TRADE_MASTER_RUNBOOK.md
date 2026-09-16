@@ -28001,6 +28001,88 @@ This slice does not POST and does not mint a permit. Offline Cycle A/B
 proof lives in
 `tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py`.
 
+### 11.2.1.DS FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DR standing persist
+fields. It repairs the CURRENT_PRODUCTIVE host-ENTER STEP-29P request
+binding after §11.2.1.DR.
+
+Root cause: `run_integrated_offline_trading_logic_replay_v1` overrode
+29P `reference_price` to the observed mark while leaving
+`protective_stop_price` at the offline fixture `3400`. Host ENTER mark
+`1630` is LONG-invalid against that fixture (`INVALID_STOP_PRICE`).
+The separate ARMED replay kept mark `3500`, so the same fixture stayed
+LONG-valid. The stop was neither missing nor a 29P-policy defect; it was
+a fixture absolute price bound to a different reference. Venue capital
+is not causal. Legacy equity/U04/U05/U06 reconstruction is not required.
+
+Repair: bind `protective_stop_price` from the already-current
+`adverse_exit_distance` producer at the same 29P reference mark and the
+ENTER `selected_side`, using the existing LONG/SHORT orientation
+(`reference ± adverse_exit_distance`). Host uses
+`CANONICAL_ADVERSE_EXIT_DISTANCE`. 29P policy, Master-V2, Double Play,
+confirmation thresholds, and `MAX_POSITIONS=1` are unchanged. Offline
+ENTER is not Live proof. This slice does not POST and does not mint a
+permit. `STEP_29Q_STATUS=PLAN_ONLY`.
+
+``` text
+THIS_SLICE=11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+CURRENT_CANONICAL_SECTION=11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_NO_NETWORK
+EXPECTED_ORIGIN_MAIN=a977a41589968c8a10b3b920ba390c05190fe6cb
+FAULT_LOCATION=29P_REQUEST_BINDING
+INVALID_STOP_PRICE_PREDICATE=LONG_STOP_GTE_REFERENCE_OR_MISSING_OR_NON_FINITE
+STOP_PRICE_AUTHORITY_SOURCE=inp.adverse_exit_distance+selected_side+mark_reference
+VENUE_CAPITAL_CAUSAL=false
+LEGACY_DEPENDENCY_DISCOVERED=false
+REPAIR_CLASS=CURRENT_PRODUCER_TO_29P_CONSUMER_BINDING
+29P_POLICY_CHANGED=false
+TRADING_LOGIC_AUTHORITY_CHANGED=false
+CONFIRMATION_SEMANTICS_CHANGED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+PERMIT_CONSUMED_DURABLY=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+SECTION_11_14_REWRITTEN=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+OFFLINE_ENTER_IS_NOT_LIVE_PROOF=true
+STANDING_SEAM_REMAINDER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+CANONICAL_PHASE_BEFORE=11.2.1.DR.FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_AND_CONFIRMATION_CURSOR_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+PACKAGE_PATH=src/trading/master_v2/
+DEFINITION_SCHEMA_PATH=src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DS
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+This slice does not POST and does not mint a permit. Offline host-ENTER
+proof lives in
+`tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py`.
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

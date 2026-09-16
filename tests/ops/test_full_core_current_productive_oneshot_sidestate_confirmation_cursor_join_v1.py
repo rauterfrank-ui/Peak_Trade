@@ -197,6 +197,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
     sizing = cycle_b.replay.intermediate.capital_risk_sizing_decision
     assert sizing is not None
     assert str(cycle_b.replay.intermediate.capital_risk_mode) == "OFFLINE_ALGEBRA"
+    assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
     status, reasons, plan = try_bind_current_productive_venue_plan_v1(
         replay=cycle_b.replay,
         bound_instrument=_bound(),
@@ -204,9 +205,18 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
         run_id="cursor-join-run",
         composed_epoch="2026-09-16T00:00:00Z",
     )
-    assert status is CompositionStatusV1.DENY
-    assert "29P_DENY" in reasons
-    assert plan is None
+    assert status is CompositionStatusV1.PASS, reasons
+    assert plan is not None
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref="DR_CURSOR_JOIN_HOST_ENTER_OFFLINE",
+        provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
+        creation_epoch="2026-09-16T00:00:00Z",
+    )
+    assert envelope.envelope_id
+    assert envelope.envelope_digest
+    assert cycle_b.replay.intermediate.canonical_order_intent is not None
+    assert cycle_b.replay.intermediate.canonical_order_intent.execution_eligible is False
     assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
 
 
