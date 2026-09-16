@@ -5915,6 +5915,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_capability_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_concrete_backend_item_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_fail_closed_os_native_store_adapter_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
@@ -6113,6 +6114,7 @@ entities:
       - tests/ops/test_full_core_checkout_independent_credential_capability_offline_contract_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_concrete_backend_item_identity_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_fail_closed_os_native_store_adapter_v1.py
+      - tests/ops/test_full_core_checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_source_backend_kind_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
