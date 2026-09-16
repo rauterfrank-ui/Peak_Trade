@@ -89,7 +89,13 @@ would have to name this Cap 6.3 generator-input freeze explicitly. That
 persist does **not** grant the exception, bind MODEL_C, or change effective
 numeric values.
 
+Master Runbook §9.2.5 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md`
+record freeze-exception **authority** for this Cap 6.3 generator-input freeze
+(docs-only). That persist does **not** grant mutation or runtime-bind
+authority, bind MODEL_C, or change effective numeric values.
+
 This capability document does **not** change effective numeric values
 `200.0` / `80.0` / `120.0`. MODEL_B remains CURRENT. MODEL_C remains
-unbound. Freeze-exception is not authorized. `min_scope_band` is not a
-Cap 6.3 key.
+unbound. Freeze-exception authority is persisted in §9.2.5; it is not a
+numeric cutover. `min_scope_band` is not a Cap 6.3 key.

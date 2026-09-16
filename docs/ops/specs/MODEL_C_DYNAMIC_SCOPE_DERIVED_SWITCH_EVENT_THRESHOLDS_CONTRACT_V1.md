@@ -44,7 +44,7 @@ MODEL_C_ARCHITECTURE_TARGET=AUTHORIZED
 MODEL_C_RUNTIME_IMPLEMENTATION_AUTHORIZED=false
 MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
 MODEL_C_FORMULA_AUTHORIZED=false
-MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
+MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
 HYSTERESIS_MULTIPLIER_RUNTIME_BINDING_AUTHORIZED=false
 LIVE_AUTHORIZED=false
 ORDERS_AUTHORIZED=false
@@ -218,22 +218,27 @@ These must survive any future MODEL_C bind. This contract does not authorize cha
 
 `hysteresis_multiplier` remains docs vocabulary in the Manifest / DSE contract. It is **not** a RuntimeScopeState field and **must not** be introduced as one without a separate GO.
 
-## 10. Freeze and config gates (still in force)
+## 10. Freeze and config gates (still in force for CURRENT numbers)
 
-Until a **separate** freeze-exception GO:
+Freeze-exception **authority** is persisted in Master Runbook §9.2.5 /
+[CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md).
+That grant is **not** mutation and **not** runtime bind.
 
 ```text
-MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
+MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
+EXCEPTION_AUTHORITY_IMPLIES_MUTATION_AUTHORITY=false
+EXCEPTION_AUTHORITY_IMPLIES_RUNTIME_BIND_AUTHORITY=false
 EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
 ```
 
-Still binding:
+CURRENT numeric freeze remains binding until later atomic retire+bind:
 
 - Cap 6.2: no change to productive `up_distance=200.0` / `adverse_exit_distance=80.0` / `reversal_distance=120.0` while persisting scope
 - Cap 6.3: [`docs/ops/CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md`](../CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md) — one config owner; effective values unchanged
 - Tests and parity modules that assert `CANONICAL_UP_DISTANCE == 200.0`
 
-This contract **does not** grant an exception. Formula GO alone is also insufficient without an explicit freeze-exception GO.
+This contract **does not** mutate those numbers. Formula GO alone remains
+insufficient for cutover.
 
 ## 11. Parallel producers (not retired here)
 
@@ -273,6 +278,7 @@ Owner:
 | [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md) | Formula/producer identity contract persist; not a runtime bind |
 | [CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md](CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md) | Cap 6.2 digest + Cap 6.5 adverse residual owner persist; not a runtime bind |
 | [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md) | Freeze-exception preconditions persist; freeze-exception itself unauthorized |
+| [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md) | Freeze-exception authority persist; not mutation; not runtime bind |
 | [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use split implemented: Cap 6.5 own `200.0` profit-protection owner |
 | Canonical Master Runbook | Unchanged by this file; this contract does not rewrite SSOT path labels |
 
@@ -302,7 +308,9 @@ MODEL_C docs and any later implementation **must not** land on `feat&#47;full-co
    (docs-only; no freeze-exception; no runtime bind)
 6. Freeze-exception **preconditions** — **persisted** in
    [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md)
-   (docs-only). Freeze-exception Cap 6.2 / 6.3 / 6.5 itself — **not authorized**
+   (docs-only). Freeze-exception **authority** — **persisted** in
+   [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md)
+   (docs-only; not mutation; not runtime bind; CURRENT numbers unchanged)
 7. Pure derivation function + golden vectors vs MODEL_B — separate GO
 8. Runtime bind at the Integrated Replay seam — separate GO
 
@@ -316,7 +324,10 @@ MARKER: MODEL_C_ARCHITECTURE_TARGET=AUTHORIZED
 MARKER: MODEL_C_RUNTIME_IMPLEMENTATION_AUTHORIZED=false
 MARKER: MODEL_C_FORMULA_AUTHORIZED=false
 MARKER: MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
-MARKER: MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
+MARKER: MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
+MARKER: FREEZE_EXCEPTION_ACTUALLY_PERSISTED=true
+MARKER: EXCEPTION_AUTHORITY_NOT_MUTATION=true
+MARKER: EXCEPTION_AUTHORITY_NOT_RUNTIME_BIND=true
 MARKER: HYSTERESIS_MULTIPLIER_RUNTIME_BINDING_AUTHORIZED=false
 MARKER: MODEL_A_REJECTED_AS_DIRECT_IMPLEMENTATION_PATH
 MARKER: MODEL_B_REMAINS_PRODUCTIVE_BASELINE
@@ -333,7 +344,7 @@ MARKER: CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 MARKER: CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
 MARKER: FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
 MARKER: FREEZE_EXCEPTION_PRECONDITIONS_MET=true
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS
 ```
 
 ## 17. STOP conditions
@@ -344,7 +355,7 @@ Stop immediately (no runtime, no second formula) if:
 2. `hysteresis_multiplier` is described as runtime-bound
 3. `transition_state` is described as consuming `current_*_boundary` as switch threshold
 4. Profit-protection is allowed to follow derived switch `up_distance` without a split
-5. Cap 6.2 / 6.3 freeze is treated as already excepted
+5. Cap 6.2 / 6.3 freeze-exception is treated as mutation, runtime bind, or numeric cutover
 6. PR `#6270` is modified
 7. Live / orders / credentials / execution are implied
 8. Scenario-adapter fallback is cited as the MODEL_C formula
@@ -353,19 +364,20 @@ Stop immediately (no runtime, no second formula) if:
 ## 18. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION
+NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS
 FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
 CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
 FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
 FREEZE_EXCEPTION_PRECONDITIONS_MET=true
-MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
+MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
+FREEZE_EXCEPTION_ACTUALLY_PERSISTED=true
 ```
 
 Dual-use identity split is implemented (both values remain `200.0`).
 Formula/producer identity is persisted docs-only. Cap-6.2 digest and
 Cap-6.5 adverse residual owners are persisted docs-only. Freeze-exception
-preconditions are persisted docs-only. Freeze-exception remains
-unauthorized. Cross-instrument validation remains
-`NOT_RATIFIED_PENDING_SEPARATE_VALIDATION` before runtime bind. It is not
-a freeze-exception precondition.
+preconditions and freeze-exception **authority** are persisted docs-only.
+The exception is not mutation and not runtime bind. Cross-instrument
+validation remains `NOT_RATIFIED_PENDING_SEPARATE_VALIDATION` before
+runtime bind. It is not a freeze-exception precondition.
