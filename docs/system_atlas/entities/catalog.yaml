@@ -135,6 +135,7 @@ entities:
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md
+      - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_PROTOCOL_V1.md
       - src/ops/derive_scope_event_distances_v1/__init__.py
       - src/ops/derive_scope_event_distances_v1/constants_v1.py
       - src/ops/derive_scope_event_distances_v1/derive_v1.py
@@ -181,6 +182,12 @@ entities:
       is a navigation pointer only: derive_scope_event_distances_v1 implemented
       unbound; FAIL_CLOSED_RESULT data contract only; not producer; not runtime
       bind; CURRENT MODEL_B frozen 200/80/120 unchanged; MODEL_C unbound.
+      Cap 6.3 dynamic derivation cross-instrument validation protocol (§9.2.7)
+      is a navigation pointer only: protocol owner persisted; Cap 2.3
+      remains sole selection owner; no instrument list; band provenance is
+      RuntimeScopeState.current_hysteresis_band; validation not executed;
+      tick/lot/ctVal metadata gate unconsumed; CURRENT MODEL_B frozen
+      200/80/120 unchanged; MODEL_C unbound.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
       unresolved; freeze exception unauthorized; last_active_side unauthorized;
