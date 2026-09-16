@@ -227,14 +227,15 @@ CROSS_INSTRUMENT_VALIDATION_STATUS=NOT_RATIFIED_PENDING_SEPARATE_VALIDATION
 CROSS_INSTRUMENT_VALIDATION_PERFORMED=false
 CROSS_INSTRUMENT_VALIDATION_PROTOCOL_OWNER=AUTHORITY_MISSING
 TICK_LOT_CTVAL_PRICE_SCALE_METADATA_AUTHORITY=AUTHORITY_MISSING
-DERIVE_SCOPE_EVENT_DISTANCES_V1_STATUS=UNIMPLEMENTED
+DERIVE_SCOPE_EVENT_DISTANCES_V1_STATUS=IMPLEMENTED_UNBOUND
 DERIVATION_SEAM_STATUS=UNBOUND
 ATOMIC_RETIRE_BIND_AUTHORIZED=false
 ```
 
-Canonical next after this persist is layer C (pure derivation function +
-golden vectors vs MODEL_B). Cross-instrument / price-scale remain layer D,
-required **before runtime bind** (layer E), not pulled into C.
+Canonical next after this persist was layer C (pure derivation function +
+golden vectors vs MODEL_B). That persist is Master Runbook §9.2.6.
+Cross-instrument / price-scale remain layer D, required **before runtime bind**
+(layer E).
 
 ## 9. Machine markers
 
@@ -286,12 +287,13 @@ Stop immediately if this file is treated as:
 
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
-  pure derivation function plus golden vectors vs MODEL_B remain later
-  and unauthorized. Cross-instrument derived-distance validation and
-  tick/lot/ctVal price-scale metadata remain separate later gates before
-  runtime bind. No seam, no atomic retire+bind, no CURRENT numeric mutation.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1
-LATER_REQUIRED_GO_ALIAS=PURE_DERIVATION_FUNCTION_AND_GOLDEN_VECTORS
+  Pure derivation function plus golden vectors are persisted in
+  Master Runbook §9.2.6 (implemented unbound; not producer; not runtime bind).
+  Cross-instrument derived-distance validation remains the earliest named OPEN
+  gate before runtime bind. Tick/lot/ctVal price-scale metadata remains a
+  separate later gate. No seam, no atomic retire+bind, no CURRENT numeric mutation.
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1
+LATER_REQUIRED_GO_ALIAS=CROSS_INSTRUMENT_VALIDATION
 HARD_STOP_AFTER_THIS_PERSIST=true
 NEXT_OWNER_GO_CONSUMED=false
 ```

@@ -131,6 +131,7 @@ entities:
       - docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md
+      - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
       - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
@@ -168,6 +169,10 @@ entities:
       Cap 6.2 FROZEN_* alias/digest coupling, and Cap 6.5 adverse consumer alias;
       not mutation; not runtime bind; CURRENT MODEL_B frozen 200/80/120 unchanged;
       profit-protection 200.0 stays frozen; MODEL_C unbound.
+      Cap 6.3 dynamic derivation pure function and golden vectors (§9.2.6)
+      is a navigation pointer only: derive_scope_event_distances_v1 implemented
+      unbound; FAIL_CLOSED_RESULT data contract only; not producer; not runtime
+      bind; CURRENT MODEL_B frozen 200/80/120 unchanged; MODEL_C unbound.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
       unresolved; freeze exception unauthorized; last_active_side unauthorized;

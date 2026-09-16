@@ -392,12 +392,13 @@ Stop immediately if this file is treated as:
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
   Freeze-exception authority is persisted in Master Runbook §9.2.5.
-  Pure derivation function plus golden vectors remain later and unauthorized.
-  Cross-instrument derived-distance validation and tick/lot/ctVal
-  price-scale metadata remain separate later gates before runtime bind.
-  No derivation function, no seam, no atomic retire+bind.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1
-LATER_REQUIRED_GO_ALIAS=PURE_DERIVATION_FUNCTION_AND_GOLDEN_VECTORS
+  Pure derivation function plus golden vectors are persisted in
+  Master Runbook §9.2.6 (implemented unbound; not producer; not runtime bind).
+  Cross-instrument derived-distance validation remains the earliest named OPEN
+  gate before runtime bind. Tick/lot/ctVal price-scale metadata remains a
+  separate later gate. No seam, no atomic retire+bind.
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1
+LATER_REQUIRED_GO_ALIAS=CROSS_INSTRUMENT_VALIDATION
 HARD_STOP_AFTER_THIS_PERSIST=true
 NEXT_OWNER_GO_STATUS=CONSUMED_BY_9.2.5
 NEXT_OWNER_GO_CONSUMED=true

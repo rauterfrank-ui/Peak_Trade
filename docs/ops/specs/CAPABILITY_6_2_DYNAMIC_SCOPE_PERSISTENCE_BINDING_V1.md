@@ -94,3 +94,9 @@ Master Runbook §9.2.5 and
 record freeze-exception **authority** for this Cap 6.2 generator-alias freeze
 (docs-only). That persist does **not** mutate productive `200.0` / `80.0` /
 `120.0`, bind MODEL_C, or retire generator inputs.
+
+Master Runbook §9.2.6 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md`
+record the unbound pure function `derive_scope_event_distances_v1`. That
+persist does **not** bind this Cap 6.2 package to the function, mutate
+productive distances, or retire generator inputs.

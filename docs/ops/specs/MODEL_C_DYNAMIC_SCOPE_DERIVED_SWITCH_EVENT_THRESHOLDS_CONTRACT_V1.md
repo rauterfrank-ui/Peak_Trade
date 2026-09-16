@@ -311,8 +311,12 @@ MODEL_C docs and any later implementation **must not** land on `feat&#47;full-co
    (docs-only). Freeze-exception **authority** — **persisted** in
    [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md)
    (docs-only; not mutation; not runtime bind; CURRENT numbers unchanged)
-7. Pure derivation function + golden vectors vs MODEL_B — separate GO
-8. Runtime bind at the Integrated Replay seam — separate GO
+7. Pure derivation function + golden vectors — **implemented unbound** in
+   [CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md](CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md)
+   (not a productive producer; seam unbound; CURRENT numbers unchanged)
+8. Cross-instrument derived-distance validation — separate later GO before
+   runtime bind. Tick/lot/ctVal/price-scale remains a separate AUTHORITY_MISSING
+   gate. Runtime bind at the Integrated Replay seam remains a later GO.
 
 ## 16. Machine markers
 
@@ -344,7 +348,7 @@ MARKER: CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 MARKER: CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
 MARKER: FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
 MARKER: FREEZE_EXCEPTION_PRECONDITIONS_MET=true
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION
 ```
 
 ## 17. STOP conditions
@@ -364,7 +368,7 @@ Stop immediately (no runtime, no second formula) if:
 ## 18. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS
+NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION
 FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
 CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
@@ -372,12 +376,14 @@ FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
 FREEZE_EXCEPTION_PRECONDITIONS_MET=true
 MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
 FREEZE_EXCEPTION_ACTUALLY_PERSISTED=true
+PURE_FUNCTION_IMPLEMENTED_UNBOUND=true
 ```
 
 Dual-use identity split is implemented (both values remain `200.0`).
 Formula/producer identity is persisted docs-only. Cap-6.2 digest and
 Cap-6.5 adverse residual owners are persisted docs-only. Freeze-exception
 preconditions and freeze-exception **authority** are persisted docs-only.
-The exception is not mutation and not runtime bind. Cross-instrument
+The unbound pure function plus golden vectors are implemented; they are not
+a productive producer and not a runtime bind. Cross-instrument
 validation remains `NOT_RATIFIED_PENDING_SEPARATE_VALIDATION` before
-runtime bind. It is not a freeze-exception precondition.
+runtime bind. Tick/lot/ctVal/price-scale remains `AUTHORITY_MISSING`.
