@@ -197,24 +197,27 @@ Not authorized as seams (already forbidden by the parent MODEL_C contract):
 - silent mutation of Cap 6.3 TOML values
 - scenario `_distance_triplet_from_scope_v0`
 
-## 6. Residuals that remain OPEN / AUTHORITY_MISSING
+## 6. Residuals that remain OPEN
 
 Class: `OPEN`. This persist does **not** close them and does **not** invent
 owners, protocols, or values.
 
 ```text
-CAP62_DIGEST_STATUS=AUTHORITY_MISSING
-CAP62_DIGEST_RESIDUAL=
-  dynamic_scope_config_digest_v1 currently materializes Cap 6.3
-  up/adverse/reversal into the Cap 6.2 persistence digest.
-  Governed digest retarget after generator retirement is not owned here.
-
-CAP65_ADVERSE_STATUS=AUTHORITY_MISSING
-CAP65_ADVERSE_POST_RETIREMENT_RESIDUAL=
-  Cap 6.5 FROZEN_ADVERSE_EXIT_DISTANCE aliases Cap 6.3
-  CANONICAL_ADVERSE_EXIT_DISTANCE. The dual-use split covered only
-  switch-event up_distance vs profit-protection. Exit-adverse owner
-  after generator-input retirement is not decided here.
+CAP62_DIGEST_STATUS=OWNED
+CAP65_ADVERSE_STATUS=OWNED
+CAP62_CAP65_RESIDUAL_OWNER_CONTRACT=
+  docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md
+  Master Runbook §9.2.3
+CAP62_DIGEST_POST_RETIREMENT_SEMANTICS=
+  Cap 6.2 digest surface remains Cap 6.2; material retargets to
+  derive_scope_event_distances_v1 plus OQ-C2 policy identity;
+  not retired Cap 6.3 generator numerics; not cycle-varying floats.
+CAP65_ADVERSE_POST_RETIREMENT_SEMANTICS=
+  Cap 6.5 remains consumer of derived OQ-C2 adverse; must not become
+  an own frozen 80.0 owner; alias of Cap 6.3 retires in atomic cutover.
+EXIT_POLICY_CONFIG_DIGEST_POST_RETIREMENT_SEMANTICS=
+  adverse plus embedded Cap 6.3 digest retarget; profit-protection and
+  time-hold remain Cap 6.5 own material.
 
 CROSS_INSTRUMENT_VALIDATION_STATUS=NOT_RATIFIED_PENDING_SEPARATE_VALIDATION
 CROSS_INSTRUMENT_VALIDATION_PERFORMED=false
@@ -222,11 +225,15 @@ CROSS_INSTRUMENT_VALIDATION_PROTOCOL_OWNER=AUTHORITY_MISSING
 TICK_LOT_CTVAL_PRICE_SCALE_METADATA_AUTHORITY=AUTHORITY_MISSING
 ```
 
+Cap-6.2 digest and Cap-6.5 adverse residuals are owned in
+[`CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md`](CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md).
+That persist does **not** authorize freeze-exception or runtime bind.
+
 Cross-instrument validation of derived-distance semantics is a **separate**
-later Owner-GO **after** this formula-owner contract and **before** runtime
-bind. It is **not** a Cap-23 / Cap-24 selection rewire. Cap 23 remains sole
-productive selection owner. This persist does not ratify an instrument set,
-price-scale table, tick/lot/ctVal schema, or derived output ranges.
+later Owner-GO **before** runtime bind. It is **not** a Cap-23 / Cap-24
+selection rewire. Cap 23 remains sole productive selection owner. This persist
+does not ratify an instrument set, price-scale table, tick/lot/ctVal schema,
+or derived output ranges.
 
 ## 7. Later migration boundary (not authorized now)
 
@@ -310,8 +317,8 @@ MARKER: MODEL_B_REMAINS_PRODUCTIVE_BASELINE
 MARKER: EFFECTIVE_NUMERIC_VALUES_UNCHANGED=true
 MARKER: FREEZE_EXCEPTION_AUTHORIZED=false
 MARKER: MODEL_C_BOUND=false
-MARKER: CAP62_DIGEST_STATUS=AUTHORITY_MISSING
-MARKER: CAP65_ADVERSE_STATUS=AUTHORITY_MISSING
+MARKER: CAP62_DIGEST_STATUS=OWNED
+MARKER: CAP65_ADVERSE_STATUS=OWNED
 MARKER: CROSS_INSTRUMENT_VALIDATION_STATUS=NOT_RATIFIED_PENDING_SEPARATE_VALIDATION
 MARKER: ATOMIC_RETIRE_AND_BIND_REQUIRED=true
 MARKER: LIVE_AUTHORIZED=false
@@ -330,18 +337,19 @@ Stop immediately if this file is treated as:
 6. Cap-23 / Cap-24 selection rewire
 7. research BPS rewrite or Cap 6.5 profit-protection rewrite
 8. a second productive distance owner
-9. closure of Cap-6.2 digest, Cap-6.5 adverse, or cross-instrument validation
+9. closure of cross-instrument validation (Cap-6.2 digest and Cap-6.5 adverse
+   residual owners are persisted separately in §9.2.3; this file must not
+   be treated as that persist)
 10. Live / Testnet / orders / credentials / venue POST
 
 ## 11. Next authority boundary
 
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
-  separate Owner-GO for Cap-6.2 digest residual owner and Cap-6.5
-  adverse-exit owner after generator-input retirement; still no
-  freeze-exception and no runtime bind.
-  Cross-instrument derived-distance validation remains a later
-  separate GO after this formula-owner contract and before runtime bind.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1
+  Cap-6.2 digest and Cap-6.5 adverse residual owners are persisted in
+  Master Runbook §9.2.3. Freeze-exception remains later and unauthorized.
+  Cross-instrument derived-distance validation remains a later separate
+  GO before runtime bind.
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1
 HARD_STOP_AFTER_THIS_PERSIST=true
 ```

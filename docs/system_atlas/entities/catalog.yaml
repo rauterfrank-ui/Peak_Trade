@@ -128,6 +128,7 @@ entities:
       - docs/ops/specs/MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md
       - docs/ops/specs/CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md
       - docs/ops/specs/CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md
+      - docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
       - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
@@ -146,8 +147,14 @@ entities:
       Cap 6.3 derived-distance formula owner authority-ready contract (§9.2.2)
       is a navigation pointer only: target producer derive_scope_event_distances_v1
       unimplemented; seam unbound; CURRENT MODEL_B frozen 200/80/120 unchanged;
-      MODEL_C unbound; freeze-exception unauthorized; Cap-6.2 digest and Cap-6.5
-      adverse residuals remain AUTHORITY_MISSING.
+      MODEL_C unbound; freeze-exception unauthorized.
+      Cap 6.2 digest and Cap 6.5 adverse residual owner contract (§9.2.3)
+      is a navigation pointer only: Cap 6.2 digest retargets to derived-producer
+      policy identity; Cap 6.5 adverse remains consumer of derived OQ-C2
+      adverse; exit_policy_config_digest_v1 retargets with it; CURRENT MODEL_B
+      frozen 200/80/120 unchanged; profit-protection remains Cap 6.5 200.0;
+      MODEL_C unbound; freeze-exception unauthorized; cross-instrument validation
+      remains AUTHORITY_MISSING.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
       unresolved; freeze exception unauthorized; last_active_side unauthorized;
