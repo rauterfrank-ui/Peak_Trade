@@ -30158,6 +30158,112 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EE FULL_CORE_CURRENT_PRODUCTIVE_G17_TYPED_VOL_CMC_BIND
+
+Consumes Owner-GO `OWNER_GO_MS3_1_RUNBOOK_PERSIST_11_2_1_EE`. This
+persist does not rewrite §11.2.1.DA–§11.2.1.ED standing persist fields
+and does not rewrite JOIN-1, JOIN-2, or the already-merged bind code.
+CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+Owner-named MS3 is the bounded closeout context for this persist only;
+this heading does not backfill a historical S2-BIND or MS3 runbook
+token and does not backfill missing §11.2.1.EC.
+
+This persist records the already-merged Full-Core G17 producer→CMC
+join from PR #6542
+(`420d83ee341b2cd715b4e64a484e52f09c54897f`). V5 hands the exact JOIN-2
+producer into the Master-V2 runtime cycle. The cycle calls
+`apply_current_productive_g17_typed_vol_cmc_bind_v1`, which reuses
+`bind_typed_canonical_volatility_estimate_into_market_context_v1`
+only when this-cycle producer outcome is `PRODUCED` with a present
+estimate and `ready_for_binding_handoff=true`. Absent estimate leaves
+the pre-existing feature `volatility_estimate` unchanged. No sample
+ingest, no second producer, no create/restore of a second persistence
+owner, and no HardeningSession owner.
+
+§11.2.1.ED `CMC_BINDING_PERFORMED=false` remains the JOIN-2
+checkpoint-slice record and is not rewritten, superseded, or
+normalized here. This slice records `CMC_BINDING_PERFORMED=true` for
+the later Full-Core CMC bind join only.
+
+Owner locks recorded by the merged bind module (prospective for that
+join, not a historical rewrite of ED):
+`ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED`
+`INGEST_SAMPLE=false`
+`PRESENCE_GATE_IN_THIS_WP=false`
+
+This persist does **not** consume
+`OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1`.
+That GO remains `DEFINED_NOT_CONSUMED`. No presence-gate mutation. No
+JOIN-1/JOIN-2 rewrite. No MOT or Atlas mutation. No later S3. No
+Master-V2 / Double Play semantic change. No volatility-formula change.
+No Live / Testnet / POST authorization.
+
+``` text
+THIS_SLICE=11.2.1.EE.FULL_CORE_CURRENT_PRODUCTIVE_G17_TYPED_VOL_CMC_BIND
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_MS3_1_RUNBOOK_PERSIST_11_2_1_EE
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+MERGED_PR=6542
+MERGED_ORIGIN_MAIN_SHA=420d83ee341b2cd715b4e64a484e52f09c54897f
+PACKAGE_MARKER=FULL_CORE_G17_TYPED_VOL_CMC_BIND_V1=true
+BIND_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1
+ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED
+INGEST_SAMPLE=false
+PRESENCE_GATE_IN_THIS_WP=false
+CMC_BINDING_PERFORMED=true
+CMC_BINDING_SCOPE=THIS_MS2_FULL_CORE_JOIN_ONLY
+ED_CMC_BINDING_PERFORMED=false
+ED_CMC_BINDING_PERFORMED_FIELD_UNCHANGED=true
+PRESENCE_GATE_MUTATED=false
+JOIN_1_REWRITTEN=false
+JOIN_2_REWRITTEN=false
+MOT_MUTATED=false
+ATLAS_MUTATED=false
+HARDENING_SESSION_OWNER=false
+SIDESTATE_CURSOR_OWNER=false
+ECONOMIC_MD_OWNER=false
+GLOBAL_SINGLETON=false
+MASTER_V2_DOUBLE_PLAY_SEMANTIC_CHANGE=false
+VOLATILITY_FORMULA_CHANGE=false
+MODEL_B_UNCHANGED=true
+MODEL_C_UNBOUND=true
+LIVE_ENABLED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+PERMIT_CREATED=false
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+PREVIOUS_V5_RUNTIME_GO=OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1
+PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED
+GO_CONSUMPTION_OPEN=true
+RUNTIME_CYCLE_EXECUTED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py
+PDF_CHANGED=false
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
