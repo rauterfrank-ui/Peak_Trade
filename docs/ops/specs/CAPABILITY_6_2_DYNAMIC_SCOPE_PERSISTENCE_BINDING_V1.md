@@ -69,3 +69,15 @@ path except for classified resets:
 RUNTIME_ACTIVATED=false
 LIVE_TESTNET_ORDERS=false
 ```
+
+## Target residual owner (docs-only; not a runtime bind)
+
+Master Runbook §9.2.3 and
+`docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md`
+record the TARGET Cap 6.2 `dynamic_scope_config_digest_v1` identity after
+later Cap-6.3 generator-input retirement: digest surface remains Cap 6.2;
+material retargets to `derive_scope_event_distances_v1` plus OQ-C2 policy
+identity; not retired Cap 6.3 generator numerics; not cycle-varying floats.
+
+That persist does **not** change productive `200.0` / `80.0` / `120.0`,
+bind MODEL_C, or authorize a freeze-exception.

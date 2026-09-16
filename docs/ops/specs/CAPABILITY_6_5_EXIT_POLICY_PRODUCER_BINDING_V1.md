@@ -89,3 +89,17 @@ false until Capability 7.1).
 RUNTIME_ACTIVATED=false
 LIVE_TESTNET_ORDERS=false
 ```
+
+## Target residual owner (docs-only; not a runtime bind)
+
+Master Runbook §9.2.3 and
+`docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md`
+record the TARGET Cap 6.5 `FROZEN_ADVERSE_EXIT_DISTANCE` identity after later
+Cap-6.3 generator-input retirement: Cap 6.5 remains a **consumer** of
+`derive_scope_event_distances_v1` OQ-C2 adverse (not a new frozen `80.0`
+owner). `exit_policy_config_digest_v1` retargets with that consumer identity
+(`adverse` plus embedded Cap 6.3 digest). Profit-protection remains Cap 6.5
+own `200.0`.
+
+That persist does **not** change productive distances, bind MODEL_C, or
+authorize a freeze-exception.

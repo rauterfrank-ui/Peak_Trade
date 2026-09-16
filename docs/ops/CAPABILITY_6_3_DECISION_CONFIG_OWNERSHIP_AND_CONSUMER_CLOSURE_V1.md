@@ -74,6 +74,14 @@ authority-ready contract only (`derive_scope_event_distances_v1`
 unimplemented; seam unbound). That persist does **not** change effective
 numeric values, bind MODEL_C, or authorize a freeze-exception.
 
+Master Runbook §9.2.3 and
+`docs/ops/specs/CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md`
+record Cap 6.2 digest retarget and Cap 6.5 adverse consumer identity after
+later generator-input retirement (docs-only). Cap 6.5 remains a consumer of
+derived OQ-C2 adverse; profit-protection remains Cap 6.5 own `200.0`. That
+persist does **not** change effective numeric values, bind MODEL_C, or
+authorize a freeze-exception.
+
 This capability document does **not** change effective numeric values
 `200.0` / `80.0` / `120.0`. MODEL_B remains CURRENT. MODEL_C remains
 unbound. Freeze-exception is not authorized. `min_scope_band` is not a
