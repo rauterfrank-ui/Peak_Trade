@@ -132,6 +132,11 @@ entities:
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md
+      - src/ops/derive_scope_event_distances_v1/__init__.py
+      - src/ops/derive_scope_event_distances_v1/constants_v1.py
+      - src/ops/derive_scope_event_distances_v1/derive_v1.py
+      - src/ops/derive_scope_event_distances_v1/golden_vectors_v1.py
+      - src/ops/derive_scope_event_distances_v1/result_v1.py
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
       - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
