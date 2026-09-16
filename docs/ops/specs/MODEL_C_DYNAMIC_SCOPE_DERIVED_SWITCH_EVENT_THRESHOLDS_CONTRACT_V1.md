@@ -272,6 +272,7 @@ Owner:
 | [`docs/ops/CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md`](../CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md) | Productive distance config owner |
 | [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md) | Formula/producer identity contract persist; not a runtime bind |
 | [CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md](CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md) | Cap 6.2 digest + Cap 6.5 adverse residual owner persist; not a runtime bind |
+| [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md) | Freeze-exception preconditions persist; freeze-exception itself unauthorized |
 | [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use split implemented: Cap 6.5 own `200.0` profit-protection owner |
 | Canonical Master Runbook | Unchanged by this file; this contract does not rewrite SSOT path labels |
 
@@ -299,7 +300,9 @@ MODEL_C docs and any later implementation **must not** land on `feat&#47;full-co
    **persisted** in
    [CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md](CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT_V1.md)
    (docs-only; no freeze-exception; no runtime bind)
-6. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **not authorized**
+6. Freeze-exception **preconditions** — **persisted** in
+   [CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md](CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md)
+   (docs-only). Freeze-exception Cap 6.2 / 6.3 / 6.5 itself — **not authorized**
 7. Pure derivation function + golden vectors vs MODEL_B — separate GO
 8. Runtime bind at the Integrated Replay seam — separate GO
 
@@ -328,7 +331,9 @@ MARKER: LIVE_AUTHORIZED=false
 MARKER: FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
 MARKER: CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 MARKER: CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS
+MARKER: FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
+MARKER: FREEZE_EXCEPTION_PRECONDITIONS_MET=true
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION
 ```
 
 ## 17. STOP conditions
@@ -348,15 +353,19 @@ Stop immediately (no runtime, no second formula) if:
 ## 18. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS
+NEXT_STOP=AWAIT_OWNER_GO_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION
 FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
 CAP62_DIGEST_OWNER_CONTRACT_PERSISTED=true
 CAP65_ADVERSE_OWNER_CONTRACT_PERSISTED=true
+FREEZE_EXCEPTION_PRECONDITIONS_CONTRACT_PERSISTED=true
+FREEZE_EXCEPTION_PRECONDITIONS_MET=true
 MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 ```
 
 Dual-use identity split is implemented (both values remain `200.0`).
 Formula/producer identity is persisted docs-only. Cap-6.2 digest and
 Cap-6.5 adverse residual owners are persisted docs-only. Freeze-exception
-remains unauthorized. Cross-instrument validation remains
-`NOT_RATIFIED_PENDING_SEPARATE_VALIDATION` before any freeze-exception GO.
+preconditions are persisted docs-only. Freeze-exception remains
+unauthorized. Cross-instrument validation remains
+`NOT_RATIFIED_PENDING_SEPARATE_VALIDATION` before runtime bind. It is not
+a freeze-exception precondition.

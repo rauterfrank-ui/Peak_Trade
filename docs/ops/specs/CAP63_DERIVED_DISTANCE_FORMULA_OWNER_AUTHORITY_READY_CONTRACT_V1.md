@@ -346,10 +346,10 @@ Stop immediately if this file is treated as:
 
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
-  Cap-6.2 digest and Cap-6.5 adverse residual owners are persisted in
-  Master Runbook §9.2.3. Freeze-exception remains later and unauthorized.
+  Freeze-exception preconditions are persisted in Master Runbook §9.2.4.
+  Freeze-exception remains later and unauthorized.
   Cross-instrument derived-distance validation remains a later separate
   GO before runtime bind.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1
 HARD_STOP_AFTER_THIS_PERSIST=true
 ```

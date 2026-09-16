@@ -82,6 +82,13 @@ derived OQ-C2 adverse; profit-protection remains Cap 6.5 own `200.0`. That
 persist does **not** change effective numeric values, bind MODEL_C, or
 authorize a freeze-exception.
 
+Master Runbook §9.2.4 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md`
+record freeze-exception **preconditions** (docs-only). A later freeze-exception
+would have to name this Cap 6.3 generator-input freeze explicitly. That
+persist does **not** grant the exception, bind MODEL_C, or change effective
+numeric values.
+
 This capability document does **not** change effective numeric values
 `200.0` / `80.0` / `120.0`. MODEL_B remains CURRENT. MODEL_C remains
 unbound. Freeze-exception is not authorized. `min_scope_band` is not a

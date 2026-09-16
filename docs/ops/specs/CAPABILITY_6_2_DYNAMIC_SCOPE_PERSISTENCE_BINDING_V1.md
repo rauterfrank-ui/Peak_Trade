@@ -81,3 +81,10 @@ identity; not retired Cap 6.3 generator numerics; not cycle-varying floats.
 
 That persist does **not** change productive `200.0` / `80.0` / `120.0`,
 bind MODEL_C, or authorize a freeze-exception.
+
+Master Runbook §9.2.4 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md`
+record freeze-exception **preconditions** (docs-only). A later freeze-exception
+would have to name this Cap 6.2 generator-alias freeze explicitly. That
+persist does **not** grant the exception, bind MODEL_C, or change productive
+distances.
