@@ -61,6 +61,12 @@ Safety posture unchanged:
 - Evidence does not authorize runtime
 - Dashboard does not authorize trades or side switches
 
+Owner persist
+[`CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md`](CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md)
+records **future** distance intent `DYNAMICALLY_DERIVED`. That persist does
+**not** bind this MODEL_C contract, does not authorize a freeze-exception,
+and does not change CURRENT MODEL_B numeric inputs.
+
 ## 3. Owner decisions frozen by this contract
 
 | Model | Status |
