@@ -249,7 +249,7 @@ def test_module_has_no_keychain_or_network_imports() -> None:
     assert "CONCRETE_KEYCHAIN_SERVICE_BOUND = False" in dy_source
     assert "CONCRETE_KEYCHAIN_ACCOUNT_BOUND = False" in dy_source
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    dz = runbook.split("### 11.2.1.DZ ", 1)[1].split("## 11.3 ", 1)[0]
+    dz = runbook.split("### 11.2.1.DZ ", 1)[1].split("### 11.2.1.EA ", 1)[0]
     assert "11.2.1.DZ.FULL_CORE_CONCRETE_MACOS_KEYCHAIN_ITEM_IDENTITY" in dz
     assert "KEYCHAIN_SERVICE_ID=peak-trade.full-core.venue-credentials" in dz
     assert "KEYCHAIN_ACCOUNT_ID=okx-eea.productive" in dz
