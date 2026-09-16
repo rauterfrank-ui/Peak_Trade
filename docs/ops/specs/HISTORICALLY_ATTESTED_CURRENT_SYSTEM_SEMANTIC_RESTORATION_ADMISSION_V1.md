@@ -1,7 +1,7 @@
 # Historically Attested Current-System Semantic Restoration Admission v1
 
 status: ACTIVE
-last_updated: 2026-08-29
+last_updated: 2026-09-16
 owner: Peak_Trade
 purpose: Governance admission class for restoration to proven Master V2 / Double Play semantics. Not a slice grant. Not live authority.
 docs_token: DOCS_TOKEN_HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1
@@ -126,16 +126,17 @@ Committed authorization state (single active grant; no multi-grant model):
 
 ```text
 grant_active=true
-slice_grant_id=INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1
+slice_grant_id=DOUBLE_PLAY_ASYMMETRIC_DYNAMIC_SCOPE_RECOVERY_BOUNDED_SLICE_V1
 RESTORATION_TARGET_CONFORMANCE=true
 restoration_target_id=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
 binds_to_current_a06_code=false
 allowed_paths=
   src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
-  tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py
+  tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py
 ```
 
-The prior `SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1` and
+The prior `INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1`,
+`SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1` and
 `CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1` exact-file grants are
 historical record only. They are not accumulated. A06 protected paths are not
 widened into a directory permission.
