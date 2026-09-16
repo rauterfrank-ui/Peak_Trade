@@ -926,29 +926,54 @@ def _resolve_runtime_scope_state_for_cycle_v1(
     return prior_state, False
 
 
+def _runtime_envelope_for_snapshot_v1(
+    snapshot: CanonicalScopeSnapshotV1,
+) -> RuntimeEnvelope:
+    """Static envelope contains the snapshot window. Invents no new ceiling."""
+    return RuntimeEnvelope(
+        static=StaticHardLimits(
+            min_band_width=float(snapshot.min_scope_band),
+            max_band_width=float(snapshot.max_scope_band),
+            max_notional=_DEFAULT_STATIC_LIMITS.max_notional,
+            max_leverage=_DEFAULT_STATIC_LIMITS.max_leverage,
+            max_switches_per_window=_DEFAULT_STATIC_LIMITS.max_switches_per_window,
+        ),
+        live_authorization=_DEFAULT_RUNTIME_ENVELOPE.live_authorization,
+    )
+
+
 def _rules_for_cycle_v1(
     *,
     provided: Optional[DynamicScopeRules],
     snapshot: CanonicalScopeSnapshotV1,
+    market_context: Optional[CanonicalMarketContextV1] = None,
 ) -> DynamicScopeRules:
     if provided is not None:
         if provided.volatility_estimate is None:
             raise ValueError("dynamic_scope_rules_volatility_estimate_missing")
         return provided
-    # floor_policy=NONE: admit positive snapshot vol unchanged; never max(..., 1e-9).
-    admitted = admit_positive_volatility_without_strategy_floor_v1(
-        value=float(snapshot.volatility_estimate),
-        source_file_or_component=(
-            "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:"
-            "_rules_for_cycle_v1"
-        ),
-    )
-    volatility_estimate = require_admitted_legacy_volatility_float_v1(admitted)
+    typed = None if market_context is None else market_context.canonical_volatility_estimate
+    if typed is not None:
+        from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
+            adapt_canonical_volatility_estimate_to_legacy_float_v1,
+        )
+
+        volatility_estimate = float(adapt_canonical_volatility_estimate_to_legacy_float_v1(typed))
+    else:
+        # floor_policy=NONE: admit positive snapshot vol unchanged; never max(..., 1e-9).
+        admitted = admit_positive_volatility_without_strategy_floor_v1(
+            value=float(snapshot.volatility_estimate),
+            source_file_or_component=(
+                "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py:"
+                "_rules_for_cycle_v1"
+            ),
+        )
+        volatility_estimate = require_admitted_legacy_volatility_float_v1(admitted)
     return DynamicScopeRules(
         downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
         upscope_band_multiplier=_DEFAULT_SCOPE_RULES.upscope_band_multiplier,
-        min_band_width=max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width),
-        max_band_width=min(float(snapshot.max_scope_band), _DEFAULT_SCOPE_RULES.max_band_width),
+        min_band_width=float(snapshot.min_scope_band),
+        max_band_width=float(snapshot.max_scope_band),
         min_switch_cooldown_ticks=_DEFAULT_SCOPE_RULES.min_switch_cooldown_ticks,
         volatility_estimate=volatility_estimate,
         max_switches_per_window=_DEFAULT_SCOPE_RULES.max_switches_per_window,
@@ -1502,7 +1527,9 @@ def run_integrated_offline_trading_logic_replay_v1(
     rules = _rules_for_cycle_v1(
         provided=inp.dynamic_scope_rules,
         snapshot=current_scope,
+        market_context=bound_context,
     )
+    runtime_envelope = _runtime_envelope_for_snapshot_v1(current_scope)
     runtime_scope_before, runtime_scope_reinitialized = _resolve_runtime_scope_state_for_cycle_v1(
         instrument_id=inp.instrument_id,
         current_scope=current_scope,
@@ -1517,7 +1544,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         side=active_for_trail,
         st=runtime_scope_before,
         rules=rules,
-        env=_DEFAULT_RUNTIME_ENVELOPE,
+        env=runtime_envelope,
     )
     trailing_anchor_used = (
         float(runtime_scope_pre.anchor_price)
@@ -1653,7 +1680,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         event=mapped_event,
         scope_state=runtime_scope_pre,
         rules=rules,
-        envelope=_DEFAULT_RUNTIME_ENVELOPE,
+        envelope=runtime_envelope,
         now_tick=inp.now_tick,
     )
     # EVIDENCE_ONLY capture immediately after transition_state (non-restart).
@@ -1681,7 +1708,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         side=derive_active_side(next_side_state),
         st=runtime_scope_after_switch,
         rules=rules,
-        env=_DEFAULT_RUNTIME_ENVELOPE,
+        env=runtime_envelope,
     )
     state_switch_id = _derive_state_switch_id(
         inp.instrument_id, inp.trading_epoch, scope_event.scope_event_id
