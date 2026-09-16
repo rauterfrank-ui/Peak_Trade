@@ -26,6 +26,9 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     HostExitPolicyBindingV1,
     evaluate_host_exit_policy_producers_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
+    apply_current_productive_g17_typed_vol_cmc_bind_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
     CurrentProductiveCursorError,
@@ -74,6 +77,9 @@ from trading.master_v2.canonical_market_context_v1 import (
     FEATURE_CONTRACT_VERSION,
     WarmupStatus,
     with_computed_input_digest,
+)
+from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+    CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     ScopeInitializationPrerequisitesV1,
@@ -389,6 +395,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     incoming_cursor: object | None = None,
+    g17_typed_vol_producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None = None,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -484,6 +491,11 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             input_digest="",
         )
     )
+    g17_cmc_bind = apply_current_productive_g17_typed_vol_cmc_bind_v1(
+        market_context,
+        producer=g17_typed_vol_producer,
+    )
+    market_context = g17_cmc_bind.context
     side_state = SideState.NEUTRAL_OBSERVE
     direction_state = EntryExitDirectionState.NEUTRAL
     position_mgmt = PositionManagementContext.FLAT

@@ -1413,6 +1413,7 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
                             venue_flat=venue_flat,
                             existing_position_side=existing_side,
                             incoming_cursor=loaded_cursor,
+                            g17_typed_vol_producer=g17_checkpoint.producer,
                         )
                     except (TypeError, RuntimeError, ValueError) as exc:
                         market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
