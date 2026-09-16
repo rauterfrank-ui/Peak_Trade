@@ -233,7 +233,7 @@ def test_module_has_no_keychain_or_network_imports() -> None:
     assert "11.2.1.DY.FULL_CORE_CHECKOUT_INDEPENDENT_CREDENTIAL_SOURCE_BACKEND_KIND" in (runbook)
     assert "PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED" in runbook
     assert "GO_CONSUMPTION_OPEN=true" in runbook
-    dy = runbook.split("### 11.2.1.DY ", 1)[1].split("## 11.3 ", 1)[0]
+    dy = runbook.split("### 11.2.1.DY ", 1)[1].split("### 11.2.1.DZ ", 1)[0]
     assert "GO_CONSUMPTION_OPEN=true" in dy
     assert "DEFINED_NOT_CONSUMED" in dy
     assert "REAL_KEYCHAIN_ACCESSED=false" in dy
