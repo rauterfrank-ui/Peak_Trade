@@ -6004,6 +6004,8 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
@@ -6071,6 +6073,7 @@ entities:
       - tests/ops/test_full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py
       - tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py
       - tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py
+      - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
