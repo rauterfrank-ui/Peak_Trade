@@ -33,6 +33,11 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
     EeaPublicUniverseGetPortV1,
     EeaUniverseAcquisitionError,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+    extract_full_core_g17_pt1m_mark_ingest_fields_v1,
+    mark_history_get_query_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_TICKER,
@@ -84,6 +89,9 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     current_productive_first_real_blocker_v1,
+)
+from src.ops.stateful_confirmation_and_c1_productive_binding_v1.constants_v1 import (
+    DEFAULT_VENUE,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V3_CREATED,
@@ -1246,7 +1254,8 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
             if pos_status == "FOREIGN_OPEN_POSITION_MAX_POSITIONS_1":
                 market_blocker = pos_status
             ticker_payload = candles_payload = oi_payload = funding_payload = None
-            ticker_err = candles_err = oi_err = funding_err = ""
+            mark_history_payload = None
+            ticker_err = candles_err = oi_err = funding_err = mark_history_err = ""
             if not market_blocker:
                 try:
                     ticker_payload, ticker_err = _transport_payload(
@@ -1277,6 +1286,13 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
                         auth_required=False,
                         native_id=native_id,
                     )
+                    mark_history_payload, mark_history_err = _transport_payload(
+                        fresh_get_transport,
+                        path=ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+                        query=mark_history_get_query_v1(venue_native_id=native_id),
+                        auth_required=False,
+                        native_id=native_id,
+                    )
                 except (
                     TypeError,
                     RuntimeError,
@@ -1287,12 +1303,26 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
                         market_blocker or f"MARKET_GET_FAIL_CLOSED:{type(exc).__name__}"
                     )
                     ticker_payload = candles_payload = oi_payload = funding_payload = None
+                    mark_history_payload = None
                     ticker_err = candles_err = oi_err = funding_err = type(exc).__name__
+                    mark_history_err = type(exc).__name__
+            g17_mark_extraction = extract_full_core_g17_pt1m_mark_ingest_fields_v1(
+                mark_history_payload if isinstance(mark_history_payload, Mapping) else None,
+                venue=DEFAULT_VENUE,
+                canonical_instrument_id=str(bound.instrument_id),
+                venue_instrument_id=str(native_id),
+                receive_or_capture_timestamp=str(int(observed_unix * 1000)),
+                source_endpoint=ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+            )
             market_payloads = {
                 "ticker_error": ticker_err,
                 "candles_error": candles_err,
                 "oi_error": oi_err,
                 "funding_error": funding_err,
+                "g17_pt1m_mark_history_error": mark_history_err,
+                "g17_pt1m_mark_sample_count": str(len(g17_mark_extraction.samples)),
+                "g17_pt1m_mark_failure_codes": ",".join(g17_mark_extraction.failure_codes),
+                "g17_pt1m_mark_source_endpoint": g17_mark_extraction.source_endpoint,
             }
             mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
                 acquisition_result.mark_price_payload, native_id=native_id
