@@ -136,6 +136,9 @@ entities:
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md
       - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_PROTOCOL_V1.md
+      - docs/ops/specs/CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1.md
+      - tests/ops/test_cap63_dynamic_derivation_cross_instrument_validation_v1.py
+      - evidence/ops/cap63_dynamic_derivation_cross_instrument_validation_v1/
       - src/ops/derive_scope_event_distances_v1/__init__.py
       - src/ops/derive_scope_event_distances_v1/constants_v1.py
       - src/ops/derive_scope_event_distances_v1/derive_v1.py
@@ -185,8 +188,13 @@ entities:
       Cap 6.3 dynamic derivation cross-instrument validation protocol (§9.2.7)
       is a navigation pointer only: protocol owner persisted; Cap 2.3
       remains sole selection owner; no instrument list; band provenance is
-      RuntimeScopeState.current_hysteresis_band; validation not executed;
-      tick/lot/ctVal metadata gate unconsumed; CURRENT MODEL_B frozen
+      RuntimeScopeState.current_hysteresis_band; validation not executed by
+      that protocol persist; tick/lot/ctVal metadata gate unconsumed;
+      CURRENT MODEL_B frozen 200/80/120 unchanged; MODEL_C unbound.
+      Cap 6.3 dynamic derivation cross-instrument validation (§9.2.8) is a
+      navigation pointer only: pre-metadata validation performed; Cap 2.3/2.2
+      universe consumed; formula golden bands are formula samples not an
+      instrument universe; metadata gate unconsumed; CURRENT MODEL_B frozen
       200/80/120 unchanged; MODEL_C unbound.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
