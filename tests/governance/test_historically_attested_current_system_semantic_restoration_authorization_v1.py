@@ -45,10 +45,10 @@ AUTH_PATH = (
     / "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
 )
 
-COMMITTED_SLICE_GRANT_ID = "INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1"
+COMMITTED_SLICE_GRANT_ID = "DOUBLE_PLAY_ASYMMETRIC_DYNAMIC_SCOPE_RECOVERY_BOUNDED_SLICE_V1"
 COMMITTED_SLICE_GRANT_PATHS = [
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "tests/trading/master_v2/test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1.py",
+    "tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py",
 ]
 HISTORICAL_A06_ADAPTER_PATH = "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py"
 HISTORICAL_SIBLING_ADAPTER_PATH = (
@@ -204,6 +204,7 @@ class TestRestorationAdmissionNegativeV1:
         report = build_boundary_report(
             [UNGRANTED_PROTECTED_PATH],
             repo_root=REPO_ROOT,
+            skip_technical_wiring_authorization=True,
         )
         assert report.admissible is False
         assert report.fail_closed is True

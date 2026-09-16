@@ -21,6 +21,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -4540,7 +4541,9 @@ entities:
       ddo_replay_capture_disabled_isolation_reason_v0 is a replay
       precondition only; it does not change global capture defaults.
       WP-FS-B1 attached proven host decorators for all
-      IMPLEMENTED_CAPTURE_SEAMS_V0. Capture remains observation-only.
+      IMPLEMENTED_CAPTURE_SEAMS_V0.       Capture remains observation-only.
+      Dynamic-Scope 50/500 non-collapse restore in Integrated Replay does
+      not change DDO capture authority.
       Double-Play seam core.double_play_entry_exit now persists a sibling
       typed observation projection v1 of EntryExitPolicyDecisionV0
       and a sibling producer-input evidence record v1 of
@@ -5301,6 +5304,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
