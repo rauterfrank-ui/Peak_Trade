@@ -5753,6 +5753,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # 11.2.1.DW Full-Core POST-result to Cap-11.1 post-submit lifecycle join V1: CONTRACT_VERSION=v1; FULL_CORE_POST_RESPONSE_TO_ACK_MAPPER=true; ACK_IS_NOT_FILL=true; HTTP_SUCCESS_IS_NOT_ACK=true; UNKNOWN_SUBMIT_RESULT_NEVER_BLINDLY_RETRIED=true; SECTION_11_14_PROMOTED=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py.
     # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V4: CONTRACT_VERSION=v4; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; CYCLE_C1_VENUE_EVENT_TIME=1789527780.0; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v4.py.
     # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V3: CONTRACT_VERSION=v3; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; CYCLE_C1_VENUE_EVENT_TIME=1789526340.0; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3.py.
     # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V2: CONTRACT_VERSION=v2; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; CYCLE_C1_VENUE_EVENT_TIME=1789525080.0; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v2.py.
@@ -6021,6 +6022,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py
       - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
@@ -6043,6 +6045,8 @@ entities:
       - evaluate_live_authorized_v1
       - invoke_external_effect_v1
       - attempt_envelope_bound_external_effect_send_v1
+      - classify_full_core_post_result_v1
+      - join_full_core_post_result_to_lifecycle_v1
       - issue_external_effect_permit_v1
       - try_bind_current_productive_venue_plan_v1
     evidence_sources:
@@ -6055,6 +6059,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/submission_authorized_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
+      - tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
       - tests/ops/test_full_core_durable_filegate_join_seam_v1.py

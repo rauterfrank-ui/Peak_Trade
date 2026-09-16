@@ -28644,6 +28644,93 @@ finding. CURRENT cursor matches the pack cursor on instrument
 `CURRENT_PRODUCTIVE_MASTER_V2_RUNTIME_CYCLE_LINEAGE_V1`, epoch `6`, and
 `venue_event_time=1789527780.0`.
 
+### 11.2.1.DW FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+
+Consumes Owner-GO
+`BOUNDED_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DV standing persist
+fields. It activates the missing Full-Core-owned downstream join from the
+existing CURRENT POST result
+`FullCoreTradeOrderPostResultV1` onto the already ratified Cap 11.1
+lifecycle and Full-Core recon classes.
+
+The join is one-way and downstream of POST:
+
+POST_ATTEMPTED
+→ ACKNOWLEDGED | REJECTED | UNKNOWN
+→ POST_SUBMIT_RECON | UNKNOWN_OUTCOME_RECON
+→ Cap 11.1 restart gate.
+
+CURRENT authority used, not redesigned: §11.4 lifecycle states;
+Cap 11.1 transition matrix and UNKNOWN-submit semantics; §11.2.1.DM
+HTTP 200 / venue `code=0` / `sCode=0` is submit ACK, not fill.
+HTTP success is not ACK. Ambiguous, malformed, and timeout outcomes
+remain UNKNOWN. UNKNOWN never blindly resubmits. Fill is never inferred
+from a submit ACK. §11.14 remains historical navigation/implementation
+evidence and is not promoted. This persist does **not** POST. Standing
+`EXTERNAL_EFFECT_AUTHORIZED=false`. Standing
+`REAL_VENUE_POST_ALLOWED=false`. STEP-29Q remains `PLAN_ONLY`.
+
+``` text
+THIS_SLICE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CONTRACT_VERSION=v1
+OWNER_GO=BOUNDED_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+EXPECTED_ORIGIN_MAIN=74f7b366c8c16d8991fb4d3ca990ec06043b8bf6
+FULL_CORE_POST_RESPONSE_TO_ACK_MAPPER=true
+FULL_CORE_POST_SUBMIT_LIFECYCLE_JOIN_ACTIVATED=true
+CANONICAL_POST_SUBMIT_AUTHORITY=SECTION_11_4_PLUS_CAP_11_1_PLUS_SECTION_11_2_1_DM
+ACK_IS_NOT_FILL=true
+HTTP_SUCCESS_IS_NOT_ACK=true
+UNKNOWN_SUBMIT_RESULT_NEVER_BLINDLY_RETRIED=true
+EXCHANGE_QUERY_BEFORE_RETRY=true
+SECTION_11_14_PROMOTED=false
+SECTION_11_14_REWRITTEN=false
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+MAX_POSITIONS_EFFECTIVE=1
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+The mapper is Full-Core-owned venue-event normalization onto Cap 11.1.
+It does not construct `LiveExecutionPort`. It does not issue or consume a
+permit. Offline fixtures prove accepted ACK without fill, explicit
+rejection, malformed/timeout UNKNOWN, unresolved UNKNOWN restart
+blocking, and no second submit.
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
