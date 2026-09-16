@@ -2053,6 +2053,94 @@ anti-churn admission only. PDF Step 5 remains unresolved. Rotation
 remains fail-closed. PDF Step 7 remains forbidden. Multi-future runtime
 authority remains false.
 
+### 4.5.14 Ranking-universe to Full-Core SSF handoff contract (CURRENT; assertion/validation only; AUTHORITY_EFFECT=NONE)
+
+Owner-GO
+`OWNER_GO_RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1`
+persists the already-adjudicated CURRENT object and authority chain from
+the last ranking-universe selection object into Full-Core ingest. This
+subsection does **not** replace §4.5–§4.5.13, does **not** rewrite Cap
+2.1–2.4 producer semantics, does **not** join MF, does **not** join
+`C1_GATE_NATIVE_ID`, does **not** activate Caps 2.1–2.4, does **not**
+change selection policy, hysteresis, or `dv4` previous-selection
+behavior, and does **not** create a second ranking, selection, binding,
+trading, or execution authority.
+
+This persist is **CURRENT**. Earlier composition-root wording such as
+`B_INSTRUMENT_OWNER=Cap_2_4` remains a standing Full-Core instrument
+owner label and is **not** rewritten here as if it had already named
+this handoff contract. Cap 2.4 remains **not** a Full-Core package
+member.
+
+Subordinate spec:
+`docs&#47;ops&#47;specs&#47;RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md`.
+
+Typed assertion/validator (not a producer; not an owner):
+`src&#47;ops&#47;ranking_universe_to_full_core_ssf_handoff_contract_v1.py`.
+
+``` text
+CONTRACT_ID=RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1
+DOCUMENT_CLASS=CANONICAL_CURRENT_HANDOFF_CONTRACT
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+VALIDATOR_AUTHORITY_EFFECT=NONE
+SECOND_AUTHORITY_CREATED=false
+NEW_RUNTIME_JOIN_CREATED=false
+PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED=false
+LAST_RANKING_UNIVERSE_AUTHORITY=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+HANDOFF_INPUT_OBJECT=SingleSelectedFutureSelectionV1
+FIRST_EXTERNAL_RUNTIME_CONSUMER=run_single_selected_future_runtime_binding_gate_v1
+CAP24_ARCHITECTURAL_CLASSIFICATION=SHARED_BOUNDARY_SEAM
+CAP24_IS_FULL_CORE_PACKAGE_MEMBER=false
+BOUNDARY_TRANSFORM=validate_selection_freshness_integrity+validate_ranking_universe_references+validate_native_identity+bind_existing_selected_identity+NO_rerank+NO_reselect
+FULL_CORE_INGEST_OBJECT=BoundInstrumentV1
+FIRST_TRADING_DECISION_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
+REPLAY_CONSUMER=run_integrated_offline_trading_logic_replay_v1
+MF_EGRESS_NOT_THIS_HANDOFF=true
+C1_GATE_NATIVE_ID_JOINED=false
+CAP22_ROLE=RANKING_CONTEXT_ONLY
+CAP22_SELECTION_AUTHORITY=false
+CAP22_TRADING_AUTHORITY=false
+CAP22_WIRE_AUTHORITY=false
+CAP23_ROLE=SOLE_PRODUCTIVE_SELECTION_AUTHORITY
+CAP24_ROLE=VALIDATE_AND_BIND_EXISTING_SELECTED_IDENTITY
+CAP24_MAY_RERANK=false
+CAP24_MAY_RESELECT=false
+CAP24_MAY_REPLACE_SELECTED_INSTRUMENT_IDENTITY=false
+MASTER_V2_ROLE=TRADING_DECISION_AUTHORITY_ON_BOUND_INSTRUMENT
+MASTER_V2_MAY_RESELECT_INSTRUMENT=false
+```
+
+CURRENT object chain (not a new join):
+
+``` text
+ProductiveFuturesRankingSnapshotV1
+→ Cap 2.3 SingleSelectedFutureSelectionV1
+  [LAST_RANKING_UNIVERSE_AUTHORITY]
+→ run_single_selected_future_runtime_binding_gate_v1
+  [Cap 2.4; SHARED_BOUNDARY_SEAM; FIRST_EXTERNAL_RUNTIME_CONSUMER]
+→ BoundInstrumentV1
+  [FULL_CORE_INGEST_OBJECT]
+→ run_current_productive_master_v2_runtime_cycle_v1
+  [FIRST_TRADING_DECISION_CONSUMER]
+→ run_integrated_offline_trading_logic_replay_v1
+```
+
+Field lineage (no silent canonical/native-ID normalization):
+
+``` text
+instrument_id=preserved_and_validated
+venue_native_id=preserved_and_validated
+selection_id=derived_in_cap_2_3+preserved_through_cap_2_4+dropped_before_replay
+ranking_snapshot_id=preserved_through_cap_2_4+dropped_before_replay
+universe_snapshot_id=absent_or_dropped_on_ssf_dto+re_derived_or_validated_by_cap_2_4_from_matched_ranking_and_universe+dropped_before_replay
+```
+
+Mismatch or missing required provenance is fail-closed. Cap 2.4 may
+bind only the already-selected identity. Master V2 consumes that bound
+identity and must not determine a new instrument. Isolated MF egress is
+**not** this handoff (`MF_EGRESS_NOT_THIS_HANDOFF=true`).
+
 ## 4.6 Volatility authority
 
 Typed volatility presence may participate in already-ratified Alpha
