@@ -154,6 +154,10 @@ Until a later runtime-bind GO: the seam **must not exist** in runtime code. Prod
 MODEL_C_FORMULA=ADJUDICATED_DOCS_ONLY_NOT_RUNTIME_BOUND
 MODEL_C_FORMULA_AUTHORIZED=false
 FORMULA_OWNER=docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md
+FORMULA_OWNER_AUTHORITY_READY_CONTRACT=docs/ops/specs/CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md
+FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+DERIVED_DISTANCE_PRODUCER_STATUS=UNIMPLEMENTED
+DERIVATION_SEAM_STATUS=UNBOUND
 ```
 
 Recorded mapping (docs-only; not runtime-bound) lives in the sibling
@@ -266,6 +270,7 @@ Owner:
 | [MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md](MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md) | Target vocabulary (trailing, confirmation, no naive static thresholds); not a formula bind |
 | [CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md](CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md) | Persistence + distance freeze |
 | [`docs/ops/CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md`](../CAPABILITY_6_3_DECISION_CONFIG_OWNERSHIP_AND_CONSUMER_CLOSURE_V1.md) | Productive distance config owner |
+| [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md) | Formula/producer identity contract persist; not a runtime bind |
 | [CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md](CAPABILITY_6_5_EXIT_POLICY_PRODUCER_BINDING_V1.md) | Dual-use split implemented: Cap 6.5 own `200.0` profit-protection owner |
 | Canonical Master Runbook | Unchanged by this file; this contract does not rewrite SSOT path labels |
 
@@ -286,9 +291,14 @@ MODEL_C docs and any later implementation **must not** land on `feat&#47;full-co
 1. **This docs contract** (WP1) — closed on `e9bd94965` (PR `#6271`)
 2. **Owner Formula and Policy adjudication** — recorded in [MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md](MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md)
 3. Dual-use split (switch-event vs profit-protection) — **implemented** (identity split; numeric remains `200.0`)
-4. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **`NEXT_STOP`**
-5. Pure derivation function + golden vectors vs MODEL_B — separate GO
-6. Runtime bind at the Integrated Replay seam — separate GO
+4. Formula-owner / derived-producer identity contract — **persisted** in
+   [CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md](CAP63_DERIVED_DISTANCE_FORMULA_OWNER_AUTHORITY_READY_CONTRACT_V1.md)
+   (docs-only; producer unimplemented; seam unbound)
+5. Cap-6.2 digest residual + Cap-6.5 adverse residual owner contract —
+   **not authorized**
+6. Freeze-exception Cap 6.2 / 6.3 / 6.5 — **not authorized**
+7. Pure derivation function + golden vectors vs MODEL_B — separate GO
+8. Runtime bind at the Integrated Replay seam — separate GO
 
 ## 16. Machine markers
 
@@ -312,7 +322,8 @@ MARKER: DUAL_USE_SPLIT_IMPLEMENTED=true
 MARKER: CONFIRMATION_EPOCHS_NOT_DERIVED_FROM_BAND
 MARKER: FOUR_STEP_PIPELINE_PRESERVED
 MARKER: LIVE_AUTHORIZED=false
-MARKER: NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
+MARKER: FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+MARKER: NEXT_STOP=AWAIT_OWNER_GO_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT
 ```
 
 ## 17. STOP conditions
@@ -332,7 +343,12 @@ Stop immediately (no runtime, no second formula) if:
 ## 18. Next stop
 
 ```text
-NEXT_STOP=AWAIT_OWNER_GO_MODEL_C_FREEZE_EXCEPTION
+NEXT_STOP=AWAIT_OWNER_GO_CAP63_CAP62_DIGEST_AND_CAP65_ADVERSE_RESIDUAL_OWNER_CONTRACT
+FORMULA_OWNER_AUTHORITY_READY_CONTRACT_PERSISTED=true
+MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=false
 ```
 
-Dual-use identity split is implemented (both values remain `200.0`). Freeze-exception remains required before any MODEL_C runtime bind.
+Dual-use identity split is implemented (both values remain `200.0`).
+Formula/producer identity is persisted docs-only. Freeze-exception remains
+unauthorized. Cap-6.2 digest and Cap-6.5 adverse residuals remain
+`AUTHORITY_MISSING` before any freeze-exception GO.
