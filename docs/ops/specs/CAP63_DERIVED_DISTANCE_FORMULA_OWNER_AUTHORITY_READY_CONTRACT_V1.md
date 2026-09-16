@@ -347,9 +347,10 @@ Stop immediately if this file is treated as:
 ```text
 NEXT_BOUNDED_WORKPACKAGE=
   Freeze-exception authority is persisted in Master Runbook §9.2.5.
-  Pure derivation function plus golden vectors remain later and unauthorized.
+  Pure derivation function plus golden vectors are persisted in
+  Master Runbook §9.2.6 (implemented unbound; not producer; not runtime bind).
   Cross-instrument derived-distance validation remains a later separate
   GO before runtime bind.
-EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1
+EXACT_NEXT_OWNER_GO_TOKEN=OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1
 HARD_STOP_AFTER_THIS_PERSIST=true
 ```

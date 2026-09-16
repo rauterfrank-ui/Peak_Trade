@@ -118,3 +118,9 @@ record freeze-exception **authority** for this Cap 6.5 adverse consumer-alias
 freeze (docs-only; retarget later, not a new frozen `80.0` owner).
 Profit-protection freeze is **not** excepted. That persist does **not** mutate
 productive distances, bind MODEL_C, or retire generator inputs.
+
+Master Runbook §9.2.6 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md`
+record the unbound pure function `derive_scope_event_distances_v1`. That
+persist does **not** bind this Cap 6.5 package to the function, rewrite
+profit-protection, or retire generator inputs.

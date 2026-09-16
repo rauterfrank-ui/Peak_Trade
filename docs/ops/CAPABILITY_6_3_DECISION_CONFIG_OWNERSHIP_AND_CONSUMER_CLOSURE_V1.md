@@ -95,7 +95,16 @@ record freeze-exception **authority** for this Cap 6.3 generator-input freeze
 (docs-only). That persist does **not** grant mutation or runtime-bind
 authority, bind MODEL_C, or change effective numeric values.
 
+Master Runbook §9.2.6 and
+`docs/ops/specs/CAP63_DYNAMIC_DERIVATION_PURE_FUNCTION_AND_GOLDEN_VECTORS_V1.md`
+record the unbound pure function `derive_scope_event_distances_v1` plus
+golden vectors. That persist does **not** authorize a productive producer,
+runtime bind, or generator-input retirement, and does **not** change
+effective numeric values.
+
 This capability document does **not** change effective numeric values
 `200.0` / `80.0` / `120.0`. MODEL_B remains CURRENT. MODEL_C remains
 unbound. Freeze-exception authority is persisted in §9.2.5; it is not a
-numeric cutover. `min_scope_band` is not a Cap 6.3 key.
+numeric cutover. The §9.2.6 pure function is implemented and unbound; it is
+not the productive generator-distance owner. `min_scope_band` is not a
+Cap 6.3 key.
