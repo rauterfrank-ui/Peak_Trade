@@ -311,6 +311,33 @@ relations:
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority.
 
+  - id: REL:s_map_navigates_ranking_universe_to_full_core_ssf_handoff
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
+    source: CAPABILITY:cap_2_4_runtime_binding
+    type: GOVERNED_BY
+    target: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+    notes: >
+      The handoff contract classifies Cap 2.4 as SHARED_BOUNDARY_SEAM
+      validate-and-bind of the already-selected identity. No rerank, no
+      reselect, no second selection authority. Not a runtime CONSUMES
+      edge. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_mf_authoritative_next_active_set
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

@@ -101,8 +101,11 @@ entities:
       onto AUTHORITATIVE_NEXT_ACTIVE_SET as a new scope bind without
       transferring Active-Set ownership, without closing PDF Step 5,
       and without
-      runtime, Live, or Cap-2.3 rewire. Atlas is not canonical
-      authority.
+      runtime, Live, or Cap-2.3 rewire. Section 4.5.14 persists CURRENT
+      RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 as
+      assertion/validation only; Cap 2.4 remains SHARED_BOUNDARY_SEAM;
+      BoundInstrumentV1 is the Full-Core ingest object. Atlas is not
+      canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
     kind: NAVIGATION_INDEX
@@ -124,6 +127,7 @@ entities:
       - docs/ops/specs/MODEL_C_FORMULA_AND_POLICY_ADJUDICATION_V1.md
       - docs/ops/specs/MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
+      - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
     notes: >-
       WP-04 mechanical navigation inventory only. Decision Map is listed as a
@@ -150,6 +154,9 @@ entities:
       contract is a navigation pointer only; no productive host ledger_path.
       T016 learning/blueprint family absorption index is a navigation
       pointer only; AUTHORITY=NONE; not Master Runbook; not SSOT.
+      RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 is a
+      navigation pointer only; AUTHORITY_EFFECT=NONE; not selection
+      authority; not a second SSOT.
       Notion is not a Peak_Trade component; NOTION_PEAK_TRADE_COMPONENT=false;
       NOTION_REPOSITORY_MIRROR_CURRENT=false; CURRENT truth is Runtime Truth Map.
       Atlas is not trading authority.
@@ -469,6 +476,32 @@ entities:
       ATLAS_AUTHORITY=NONE.
       No Atlas edge to Cap 2.3 or Cap 2.4.
 
+  - id: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    kind: CONTRACT
+    name: Ranking-universe to Full-Core SSF handoff
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
+    source_paths:
+      - src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
+      - src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+      - tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+    notes: >-
+      CURRENT assertion/validation contract for the productive ranking-universe
+      to Full-Core Single-Selected-Future ingest boundary. LAST_RANKING_UNIVERSE_AUTHORITY
+      remains Cap 2.3. Cap 2.4 is SHARED_BOUNDARY_SEAM and is not a Full-Core
+      package member. FULL_CORE_INGEST_OBJECT=BoundInstrumentV1. Validator
+      AUTHORITY_EFFECT=NONE. No second ranking, selection, binding, trading, or
+      execution authority. No new runtime join. MF egress is not this handoff.
+      C1_GATE_NATIVE_ID remains NOT_JOINED. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
@@ -749,6 +782,12 @@ entities:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+    notes: >-
+      Standing producer-spec role remains RUNTIME_BINDING_CONSUMER.
+      CURRENT architectural classification SHARED_BOUNDARY_SEAM is
+      persisted by CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1.
+      Cap 2.4 is not a Full-Core package member. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_1_1_reconciliation
     kind: CAPABILITY
