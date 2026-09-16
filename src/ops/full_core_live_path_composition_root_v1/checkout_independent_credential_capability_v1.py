@@ -38,6 +38,8 @@ PRODUCTIVE_BACKEND_JOINED = False
 V5_JOINED = False
 CHECKOUT_INDEPENDENT_PRODUCTIVE_PROVIDER_ACTIVE = False
 AUTONOMOUS_EXECUTOR_ACTIVATED = False
+REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE = "REAL_BACKEND_ACCESS_NOT_IMPLEMENTED_AND_NOT_AUTHORIZED"
+HISTORICAL_PHASE_A_PRODUCTIVE_BACKEND_ABSENT_CODE = "PRODUCTIVE_BACKEND_ABSENT"
 
 CREDENTIAL_CAPABILITY_IS_TECHNICAL_CAPABILITY_NOT_TRADING_AUTHORITY = True
 CREDENTIAL_POSSESSION_GRANTS_NO_TRADING_AUTHORITY = True
@@ -244,7 +246,7 @@ class FullCoreCheckoutIndependentCredentialCapabilityV1:
 
 
 class FullCoreCheckoutIndependentCredentialProviderPortV1(Protocol):
-    """Phase-B port. Phase A has no productive implementation."""
+    """Fail-closed provider port. Real Keychain acquisition is not implemented."""
 
     def resolve_capability_v1(
         self,
@@ -338,19 +340,30 @@ def resolve_checkout_independent_credential_capability_v1(
     repo_root: str | None = None,
     checkout_identity: str | None = None,
 ) -> FullCoreCheckoutIndependentCredentialCapabilityV1:
-    """Phase A productive resolve: always fail-closed. No backend is joined."""
+    """Dispatch to an explicit provider, then remain fail-closed before acquisition."""
 
     if repo_root or checkout_identity:
         raise FullCoreCheckoutIndependentCredentialCapabilityError(
             "CHECKOUT_IDENTITY_MUST_NOT_BE_CREDENTIAL_AUTHORITY"
         )
     parsed = assert_checkout_independent_source_ref_v1(source_ref)
-    _assert_environment_v1(environment)
-    _assert_credential_class_v1(credential_class)
-    del parsed
+    env = _assert_environment_v1(environment)
+    klass = _assert_credential_class_v1(credential_class)
     if provider is None:
         raise FullCoreCheckoutIndependentCredentialCapabilityError("PROVIDER_UNAVAILABLE")
-    raise FullCoreCheckoutIndependentCredentialCapabilityError("PRODUCTIVE_BACKEND_ABSENT")
+    resolve_fn = getattr(provider, "resolve_capability_v1", None)
+    if not callable(resolve_fn):
+        raise FullCoreCheckoutIndependentCredentialCapabilityError("PROVIDER_UNAVAILABLE")
+    returned = resolve_fn(
+        source_ref=parsed,
+        credential_class=klass,
+        environment=env,
+    )
+    if getattr(returned, "material_loaded", False) is True:
+        raise FullCoreCheckoutIndependentCredentialCapabilityError(
+            "CREDENTIAL_MATERIAL_LOADED_FORBIDDEN"
+        )
+    raise FullCoreCheckoutIndependentCredentialCapabilityError(REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE)
 
 
 def release_checkout_independent_credential_capability_v1(

@@ -18,6 +18,7 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     EXECUTION_AUTONOMY_TRADING_DECISION_AUTHORITY,
     GET_AUTH_CAPABILITY_IMPLIES_POST_AUTHORITY,
     PRODUCTIVE_BACKEND_JOINED,
+    REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE,
     REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_ENVIRONMENT,
     SIGNING_CAPABILITY_IMPLIES_SEND_AUTHORITY,
@@ -266,21 +267,26 @@ def test_no_network_and_no_secret_files_required() -> None:
     assert CHECKOUT_INDEPENDENT_PRODUCTIVE_PROVIDER_ACTIVE is False
 
 
-def test_productive_resolve_fail_closed_even_with_injected_object() -> None:
-    class _ForbiddenBackend:
+def test_productive_resolve_dispatches_then_remains_fail_closed() -> None:
+    calls: list[object] = []
+
+    class _RecordingBackend:
         def resolve_capability_v1(self, **kwargs: object) -> object:
-            raise AssertionError("PHASE_A_MUST_NOT_CALL_BACKEND")
+            calls.append(kwargs)
+            return bind_offline_contract_capability_v1(source_ref=VALID_REF)
 
         def release_capability_v1(self, capability: object) -> None:
             del capability
 
     with pytest.raises(
-        FullCoreCheckoutIndependentCredentialCapabilityError, match="PRODUCTIVE_BACKEND_ABSENT"
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match=REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE,
     ):
         resolve_checkout_independent_credential_capability_v1(
             source_ref=VALID_REF,
-            provider=_ForbiddenBackend(),  # type: ignore[arg-type]
+            provider=_RecordingBackend(),  # type: ignore[arg-type]
         )
+    assert len(calls) == 1
 
 
 def test_release_lifecycle_and_reuse_fail_closed() -> None:
