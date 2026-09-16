@@ -28083,6 +28083,327 @@ This slice does not POST and does not mint a permit. Offline host-ENTER
 proof lives in
 `tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py`.
 
+### 11.2.1.DT FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DS standing persist
+fields. After the DS 29P-binding repair it re-proves current occupancy,
+pending orders, and account config through READ-ONLY GETs. It does not
+reuse DQ Cap-21/22/23/24 identities, Master-V2 decision IDs, market
+facts, fixtures, or screenshots as current authority. A sealed historical
+pack is not the current cursor.
+
+If occupancy is absent and pending is empty, Cap-2.1–2.4 run through
+the current producers after a fresh EEA public universe acquisition and
+one current Master-V2 cycle runs through
+`run_current_productive_master_v2_runtime_cycle_v1` from observed
+READ-ONLY GET evidence. The DR cursor join restores SideState and
+confirmation progress only on exact schema/version + instrument +
+venue-native-id + `CURRENT_PRODUCTIVE_MASTER_V2_RUNTIME_CYCLE_LINEAGE_V1`.
+Missing, invalid, stale, or mismatched cursors remain the Cap-6.2
+NEUTRAL default and never invent ARMED or ENTER. The outgoing cursor is
+persisted for the next CURRENT cycle. Master-V2, Double Play, Bull/Bear
+State Switch, Top-20 selection, confirmation thresholds, 29P policy,
+learning bindings, and `MAX_POSITIONS=1` are consumed unchanged. This
+slice does not fabricate ENTER, size, or venue plan. HOLD / NO_ACTION /
+DENY / NO_EXECUTABLE_DECISION is a valid truthful stop. Envelope bind
+proceeds only when the current productive decision is executable.
+`STEP_29Q_STATUS=PLAN_ONLY`. This Owner-GO does not create or consume a
+live permit and does not POST. Historical ownership remains
+`UNKNOWN_NOT_PROVEN`. Canary, §11.13.5, and §11.14 remain isolated.
+
+``` text
+THIS_SLICE=11.2.1.DT.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DT.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CURRENT_CANONICAL_SECTION=11.2.1.DT.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=a3fa2cb1fd6e9922f94b9dd8f4693e7fbef95796
+HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN
+RESELECTION_AUTHORIZED_BY_THIS_GO=true
+ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT=true
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN=true
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+PERMIT_CONSUMED_DURABLY=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+SECTION_11_14_REWRITTEN=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+STANDING_SEAM_REMAINDER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+CANONICAL_PHASE_BEFORE=11.2.1.DS.FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_ROOT_CAUSE_AND_REPAIR
+CANONICAL_PHASE_AFTER=11.2.1.DT.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1/20260916T011000Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DT
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Occupancy, pending, Cap-23/24 identities, cursor restore/persist,
+Master-V2 decision IDs, and the first real blocker are evidence-bound in
+the canonical pack. This slice does not POST and does not mint a permit.
+
+Cycle-bound pack `20260916T011000Z` records
+`MASTER_V2_RUNTIME_CYCLE_ID=dt-0G-USDT-SWAP-2026-09-16T01:18:21Z`,
+`MASTER_V2_DECISION=observe`, `DOUBLE_PLAY_DECISION=none`,
+`DECISION_EXECUTION_ELIGIBLE=false`, `CURSOR_RESTORE_STATUS=missing`,
+`CURSOR_PERSISTED=true`, `HOLD_CLASS=B_CONFIRMATION_STATE_ADVANCED_AND_PERSISTED`,
+`POST_COUNT=0`, and `VENUE_MUTATION_PERFORMED=false`. Incoming CURRENT
+cursor was missing. Restore used the Cap-6.2 NEUTRAL default and did not
+invent ARMED or ENTER. The outgoing cursor is the current persist for the
+next same-instrument cycle: `venue_event_time=1789521420.0`,
+`market_observation_epoch=1`, bull confirmation candidate 1/2, bear
+observe 0/2, SideState `neutral_observe`. `SIZING_RESULT=MISSING_29P`
+remains the HOLD-path sizing absence token and is not a 29P or equity
+finding. These values are cycle-bound evidence, not standing GET-count
+or 29P authority.
+
+### 11.2.1.DU FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DT standing persist
+fields. After the DT cycle it re-proves current occupancy, pending
+orders, and account config through READ-ONLY GETs. It does not reuse
+DQ/DR/DS/DT Cap-21/22/23/24 identities, Master-V2 decision IDs, market
+facts, fixtures, or screenshots as current authority. A sealed historical
+pack is not the current cursor. Cap-23/24 run unchanged and do not force
+the previous instrument.
+
+If occupancy is absent and pending is empty, Cap-2.1–2.4 run through
+the current producers after a fresh EEA public universe acquisition and
+one current Master-V2 cycle runs through
+`run_current_productive_master_v2_runtime_cycle_v1` from observed
+READ-ONLY GET evidence. The DR cursor join restores SideState and
+confirmation progress only on exact schema/version + instrument +
+venue-native-id + `CURRENT_PRODUCTIVE_MASTER_V2_RUNTIME_CYCLE_LINEAGE_V1`.
+A selected-instrument mismatch does not restore or transfer confirmation.
+Missing, invalid, stale, or mismatched cursors remain the Cap-6.2
+NEUTRAL default and never invent ARMED or ENTER. The outgoing cursor is
+persisted for the next CURRENT cycle. Master-V2, Double Play, Bull/Bear
+State Switch, Top-20 selection, confirmation thresholds, 29P policy,
+learning bindings, and `MAX_POSITIONS=1` are consumed unchanged. This
+slice does not fabricate ENTER, size, or venue plan. HOLD / NO_ACTION /
+DENY / NO_EXECUTABLE_DECISION is a valid truthful stop. Envelope bind
+proceeds only when the current productive decision is executable.
+`STEP_29Q_STATUS=PLAN_ONLY`. This Owner-GO does not create or consume a
+live permit and does not POST. Historical ownership remains
+`UNKNOWN_NOT_PROVEN`. Canary, §11.13.5, and §11.14 remain isolated.
+
+``` text
+THIS_SLICE=11.2.1.DU.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DU.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CURRENT_CANONICAL_SECTION=11.2.1.DU.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=a3fa2cb1fd6e9922f94b9dd8f4693e7fbef95796
+HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN
+RESELECTION_AUTHORIZED_BY_THIS_GO=true
+ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true
+ONE_SHOT_REAL_POST_REQUIRES_EXACT_ENVELOPE_BOUND_PERMIT=true
+ONE_SHOT_REAL_POST_STANDING_EXTERNAL_EFFECT_FORBIDDEN=true
+ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM=true
+EXACT_ENVELOPE_REQUIRED=true
+SINGLE_USE=true
+MAX_POST_COUNT=1
+REPLAY_PROTECTION_DURABLE=true
+FOLLOW_ON_SUBMIT_ISOLATED=true
+FULL_CORE_ACTUAL_HTTP_POST_SEAM_IMPLEMENTED=true
+LIVE_AUTHORIZED=true
+LIVE_ARMED=true
+WIRE_SEND_PERMITTED=true
+SUBMISSION_AUTHORIZED=true
+PRODUCTIVE_WIRE_SEND_REACHABLE=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+ACTUAL_ORDER_SUBMIT_PERFORMED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+PERMIT_CONSUMED_DURABLY=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+EXTERNAL_EFFECT_APPLICABILITY=false
+MAX_POSITIONS_EFFECTIVE=1
+CANARY_INSTRUMENT_AUTHORITY_IMPORTED=false
+SECTION_11_14_REWRITTEN=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+STANDING_SEAM_REMAINDER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT
+CANONICAL_PHASE_BEFORE=11.2.1.DT.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CANONICAL_PHASE_AFTER=11.2.1.DU.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1/20260916T012200Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DU
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Occupancy, pending, Cap-23/24 identities, cursor restore/persist,
+Master-V2 decision IDs, and the first real blocker are evidence-bound in
+the canonical pack. This slice does not POST and does not mint a permit.
+
+Cycle-bound pack `20260916T012200Z` records
+`MASTER_V2_RUNTIME_CYCLE_ID=du-0G-USDT-SWAP-2026-09-16T01:30:45Z`,
+`MASTER_V2_DECISION=observe`, `DOUBLE_PLAY_DECISION=none`,
+`DECISION_EXECUTION_ELIGIBLE=false`, `CURSOR_RESTORE_STATUS=restored`,
+`INSTRUMENT_BINDING_MATCH=true`, `CURSOR_PERSISTED=true`,
+`CONFIRMATION_PROGRESS_CLASS=B_CONFIRMATION_RESET_OR_INVALIDATED`,
+`POST_COUNT=0`, and `VENUE_MUTATION_PERFORMED=false`. Incoming CURRENT
+cursor matched Cap-23 `0G-USDT-SWAP` and was restored. Current trading
+evidence reset bull confirmation from candidate 1/2 to observe 0/2.
+Adjudicated C2 class for that reset is `ACCEPTED_DISTINCT_RESET` after
+DISTINCT C1 `venue_event_time=1789522140.0` /
+`market_observation_epoch` 1→2. Pack field
+`CONFIRMATION_PROGRESS_CLASS=B_CONFIRMATION_RESET_OR_INVALIDATED` is
+preserved and is not rewritten. No envelope was bound.
+`SIZING_RESULT=MISSING_29P` remains the HOLD-path sizing absence token
+and is not a 29P or equity finding. These values are cycle-bound
+evidence, not standing GET-count or 29P authority.
+
+### 11.2.1.DV FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.DU standing persist
+fields. Phase 1 is one READ-ONLY public candles GET for `0G-USDT-SWAP`
+`bar=1m`. A cycle runs only when a `confirm=1` candle has
+`venue_event_time > 1789522140.0`. Cap-23 is not forced. Cursor restore
+remains exact schema/native/instrument/lineage +
+`CURRENT_PRODUCTIVE_MASTER_V2_RUNTIME_CYCLE_LINEAGE_V1`. DT/DU packs are
+not current market authority. This slice does not POST and does not mint
+a permit. `STEP_29Q_STATUS=PLAN_ONLY`.
+
+``` text
+THIS_SLICE=11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+CURRENT_CANONICAL_SECTION=11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS_PLUS_BOUNDED_READ_ONLY_GET
+EXPECTED_ORIGIN_MAIN=a3fa2cb1fd6e9922f94b9dd8f4693e7fbef95796
+CONDITION_GATE=SATISFIED
+PREVIOUS_C1_VENUE_EVENT_TIME=1789522140.0
+NEWEST_FINALIZED_1M_VENUE_EVENT_TIME=1789523160.0
+RUNTIME_CYCLE_COUNT_THIS_GO=1
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+STEP_29Q_STATUS=PLAN_ONLY
+POST_COUNT=0
+TRANSPORT_ATTEMPTED=false
+VENUE_MUTATION_PERFORMED=false
+PERMIT_CREATED=false
+EXTERNAL_EFFECT_PERMIT_CREATED=false
+EXTERNAL_EFFECT_APPLICABILITY=false
+MAX_POSITIONS_EFFECTIVE=1
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DU.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY
+CANONICAL_PHASE_AFTER=11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION
+PACKAGE_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/
+DEFINITION_SCHEMA_PATH=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1/20260916T014000Z
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/governed_productive_account_equity_authority_producer_v1/
+SPEC_OWNER=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V1.md
+CURRENT_CANONICAL_SECTION=11.2.1.DV
+HARD_STOP_AFTER_THIS_TASK=true
+```
+
+Cycle-bound pack `20260916T014000Z` records
+`MASTER_V2_RUNTIME_CYCLE_ID=dv-0G-USDT-SWAP-2026-09-16T01:47:03Z`,
+`CONDITION_GATE=SATISFIED`, `C1_CLASSIFICATION=DISTINCT`,
+`MARKET_OBSERVATION_EPOCH` 2→3, Bull/Bear signal class `observe`,
+confirmation `OBSERVE_TO_OBSERVE`, SideState `neutral_observe`,
+`MASTER_V2_DECISION=observe`, `DOUBLE_PLAY_DECISION=none`,
+`POST_COUNT=0`. No envelope was bound. `SIZING_RESULT=MISSING_29P`
+remains the HOLD-path sizing absence token and is not a 29P or equity
+finding.
+
+Owner-GO
+`OWNER_GO_CANONICALIZE_CURRENT_PRODUCTIVE_DT_DU_DV_RUNTIME_EVIDENCE_V1`
+does not start a runtime cycle. It canonicalizes the closed DT→DU→DV
+evidence sequence against `origin/main`
+`a3fa2cb1fd6e9922f94b9dd8f4693e7fbef95796` without rewriting the
+§11.2.1.DT–§11.2.1.DV standing persist fields above. Event-time sequence
+from pack cursors/gate, with no reconstructed intermediate candles:
+
+``` text
+DT_CYCLE_ID=dt-0G-USDT-SWAP-2026-09-16T01:18:21Z
+DT_C1_VENUE_EVENT_TIME=1789521420.0
+DT_CURSOR_RESTORE_STATUS=missing
+DT_BULL_CONFIRMATION=candidate_1_of_2
+DU_CYCLE_ID=du-0G-USDT-SWAP-2026-09-16T01:30:45Z
+DU_C1_VENUE_EVENT_TIME=1789522140.0
+DU_CURSOR_RESTORE_STATUS=restored
+DU_C2_CLASS=ACCEPTED_DISTINCT_RESET
+DU_BULL_CONFIRMATION=observe_0_of_2
+DV_CYCLE_ID=dv-0G-USDT-SWAP-2026-09-16T01:47:03Z
+DV_C1_VENUE_EVENT_TIME=1789523160.0
+DV_CURSOR_RESTORE_STATUS=restored
+DV_C1_CLASSIFICATION=DISTINCT
+DV_MARKET_OBSERVATION_EPOCH=2_TO_3
+DV_CONFIRMATION_TRANSITION_CLASS=OBSERVE_TO_OBSERVE
+DV_BULL_CONFIRMATION=observe_0_of_2
+INSTRUMENT=0G-USDT-SWAP
+POST_COUNT=0
+PERMIT_CREATED=false
+VENUE_MUTATION_PERFORMED=false
+NEXT_RUNTIME_C1_BOUNDARY=venue_event_time_gt_1789523160.0
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
