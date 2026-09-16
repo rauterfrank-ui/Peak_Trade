@@ -6022,6 +6022,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py
       - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
@@ -6044,6 +6045,8 @@ entities:
       - evaluate_live_authorized_v1
       - invoke_external_effect_v1
       - attempt_envelope_bound_external_effect_send_v1
+      - classify_full_core_post_result_v1
+      - join_full_core_post_result_to_lifecycle_v1
       - issue_external_effect_permit_v1
       - try_bind_current_productive_venue_plan_v1
     evidence_sources:
@@ -6056,6 +6059,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/submission_authorized_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
+      - tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py
       - tests/ops/test_full_core_live_path_offline_full_chain_v1.py
       - tests/ops/test_full_core_live_path_identity_and_admission_gap_v1.py
       - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
