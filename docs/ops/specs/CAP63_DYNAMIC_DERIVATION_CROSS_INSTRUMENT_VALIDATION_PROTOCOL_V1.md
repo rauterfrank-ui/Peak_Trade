@@ -192,9 +192,9 @@ Allowed when
 `OWNER_GO_BOUNDED_CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1`
 is later consumed:
 
-- `tests&#47;ops&#47;test_cap63_dynamic_derivation_cross_instrument_validation_v1.py`
-- `evidence&#47;ops&#47;cap63_dynamic_derivation_cross_instrument_validation_v1&#47;**`
-- `docs&#47;ops&#47;specs&#47;CAP63_DYNAMIC_DERIVATION_CROSS_INSTRUMENT_VALIDATION_V1.md`
+- later validation test owner named in §3.4 <!-- pt:ref-target-ignore -->
+- later validation evidence path named in §3.4 <!-- pt:ref-target-ignore -->
+- later validation contract record named in §3.4 <!-- pt:ref-target-ignore -->
 - Master Runbook persist for that validation closeout
 - Map of Truth and Atlas navigation pointers (`AUTHORITY=NONE`)
 
@@ -210,9 +210,9 @@ Forbidden to that later GO (and to this persist):
 - Cap 6.5 profit-protection `200.0` mutation
 - tick / lot / ctVal / price-scale metadata authority
 
-`src&#47;ops&#47;derive_scope_event_distances_v1` may be **imported** by later
-tests. It must not be mutated by the later validation GO unless a separate
-Owner-GO explicitly names that mutation.
+[`src/ops/derive_scope_event_distances_v1/derive_v1.py`](../../../src/ops/derive_scope_event_distances_v1/derive_v1.py)
+may be **imported** by later tests. It must not be mutated by the later
+validation GO unless a separate Owner-GO explicitly names that mutation.
 
 ## 4. CURRENT productive baseline (unchanged)
 
