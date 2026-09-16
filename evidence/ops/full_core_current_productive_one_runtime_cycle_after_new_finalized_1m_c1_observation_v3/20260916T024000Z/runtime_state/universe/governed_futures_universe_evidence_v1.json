@@ -1,0 +1,92 @@
+{
+  "alpha_allowed": false,
+  "authority_verification": {
+    "ALPHA_ALLOWED": false,
+    "ALPHA_AUTHORITY_ADDED": false,
+    "AUTHORITY_OWNER": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+    "DASHBOARD_AUTHORITY": false,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "OWNER": "ops.governed_futures_universe_producer_v1",
+    "PRODUCER_VERSION": "governed_futures_universe_producer.v1",
+    "RANKING_AUTHORITY_ADDED": false,
+    "SCHEMA_VERSION": "governed_futures_universe_snapshot.v1",
+    "SELECTION_AUTHORITY_ADDED": false,
+    "UNIVERSE_AUTHORITY_OWNER_SINGLE": true,
+    "VENUE": "okx_eea"
+  },
+  "call_graph": [
+    "productive_universe_entry_point",
+    "okx_eea_instrument_discovery",
+    "raw_metadata_validation",
+    "futures_only_filter",
+    "btc_exclusion",
+    "canonical_instrument_normalization",
+    "eligibility_data_quality_classification",
+    "deterministic_universe_snapshot",
+    "atomic_persistence",
+    "snapshot_verification",
+    "evidence"
+  ],
+  "capability_id": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+  "config_digest": "1128b092dfa029cf13d7289a3d83d0e313294c66307da1194dd4915897962e4e",
+  "dashboard_independence": true,
+  "deterministic_replay_verification": {
+    "ok": true,
+    "recomputed_payload_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+    "snapshot_payload_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5"
+  },
+  "eligible_instrument_count": 461,
+  "evidence_digest": "9f99b83a9d6dd6d529b24f28b38efcae0f94c8d3b3daccb484e9d94130f41b73",
+  "excluded_instrument_count": 227,
+  "exclusion_counts_by_reason": {
+    "BTC_INSTRUMENT": 13,
+    "MISSING_QUOTE_CURRENCY": 197,
+    "UNSUPPORTED_CONTRACT_TYPE": 27,
+    "UNSUPPORTED_INSTRUMENT_TYPE": 2
+  },
+  "failure_codes": [],
+  "no_alpha_proof": true,
+  "no_execution_proof": true,
+  "no_ranking_proof": true,
+  "no_selection_proof": true,
+  "persistence_path": "/Users/frnkhrz/Peak_Trade/evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T024000Z/runtime_state/universe/governed_futures_universe_snapshot_v1.json",
+  "persistence_verification": {
+    "ok": true,
+    "payload_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+    "persistence_path": "/Users/frnkhrz/Peak_Trade/evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T024000Z/runtime_state/universe/governed_futures_universe_snapshot_v1.json",
+    "reloaded_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+    "snapshot_id": "gfu_4bcb145e1f2b3378",
+    "verification": {
+      "manifest_path": "/Users/frnkhrz/Peak_Trade/evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3/20260916T024000Z/runtime_state/universe/MANIFEST.sha256",
+      "ok": true
+    }
+  },
+  "producer_version": "governed_futures_universe_producer.v1",
+  "raw_instrument_count": 688,
+  "repository_sha": "1d076b415d1da33e08d7bf2821d14ea25bdf0317",
+  "restart_verification": {
+    "alpha_allowed_after_restart": false,
+    "expected_payload_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+    "failure_codes": [],
+    "identical_canonical_truth": true,
+    "loaded_payload_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+    "loaded_snapshot_id": "gfu_4bcb145e1f2b3378",
+    "ok": true
+  },
+  "schema_version": "governed_futures_universe_snapshot.v1",
+  "snapshot_digest": "9fdf5e2e64ebfd54f68141a24b749c85fc212111472afc6d884926aec26535c5",
+  "snapshot_id": "gfu_4bcb145e1f2b3378",
+  "source_digest": "c5a775723d27a4a46d42a4ea8d3a225ad65199d9a9074164f812f9a04195facc",
+  "universe_status": "ELIGIBLE_UNIVERSE_READY",
+  "verifier_result": {
+    "ALPHA_AUTHORITY_ADDED": false,
+    "DASHBOARD_AUTHORITY": false,
+    "EXECUTION_AUTHORITY_ADDED": false,
+    "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
+    "RANKING_AUTHORITY_ADDED": false,
+    "SELECTION_AUTHORITY_ADDED": false,
+    "UNIVERSE_AUTHORITY_OWNER_SINGLE": true,
+    "ok": true
+  }
+}

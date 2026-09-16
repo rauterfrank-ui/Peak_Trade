@@ -5753,6 +5753,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V3: CONTRACT_VERSION=v3; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; CYCLE_C1_VENUE_EVENT_TIME=1789526340.0; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3.py.
     # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V2: CONTRACT_VERSION=v2; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; CYCLE_C1_VENUE_EVENT_TIME=1789525080.0; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v2.py.
     # 11.2.1.DV current-productive one runtime-cycle after new finalized 1m C1 observation V1: CONTRACT_VERSION=v1; CONDITION_GATE=SATISFIED; RUNTIME_CYCLE_COUNT_THIS_GO=1; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py.
     # 11.2.1.DU current-productive persisted-cursor runtime-cycle to pre-external-effect applicability V1: CONTRACT_VERSION=v1; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_EXTERNAL_EFFECT_AUTHORIZED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; PERMIT_CREATED=false; EXTERNAL_EFFECT_PERMIT_CREATED=false; TRANSPORT_ATTEMPTED=false; VENUE_MUTATION_PERFORMED=false; PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED=true; HISTORICAL_POSITION_OWNERSHIP=UNKNOWN_NOT_PROVEN; ATLAS_AUTHORITY=NONE; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py.
@@ -6008,6 +6009,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v2.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
@@ -6077,6 +6079,7 @@ entities:
       - tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py
       - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py
       - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v2.py
+      - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v3.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
       - tests/ops/test_full_core_live_enabled_standing_admission_seam_v1.py
