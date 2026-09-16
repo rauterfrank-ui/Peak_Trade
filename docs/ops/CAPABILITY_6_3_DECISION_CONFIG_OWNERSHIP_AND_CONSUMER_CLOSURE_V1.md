@@ -52,3 +52,22 @@ CORE_LOGIC_CHANGE=false
 Generator:
 
 `scripts/ops/generate_capability_6_3_evidence_v1.py`
+
+## Owner decision persist (docs-only, not numeric)
+
+Master Runbook §9.2.1 and
+`docs/ops/specs/CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md`
+record Owner target authority for **future** Cap 6.3 distance semantics:
+
+```text
+CAP63_UNIT_CLASS=DYNAMICALLY_DERIVED
+CAP63_VALUE_SCOPE=DYNAMICALLY_DERIVED
+CAP63_CROSS_INSTRUMENT_VALIDITY=NOT_RATIFIED_PENDING_SEPARATE_VALIDATION
+CAP63_NORMALIZATION_JOIN_REQUIRED=REPLACED_BY_DYNAMIC_DERIVATION
+MIN_SCOPE_BAND_IN_SCOPE=NO_KEEP_SEPARATE_OWNER
+```
+
+This capability document does **not** change effective numeric values
+`200.0` / `80.0` / `120.0`. MODEL_B remains CURRENT. MODEL_C remains
+unbound. Freeze-exception is not authorized. `min_scope_band` is not a
+Cap 6.3 key.
