@@ -9,8 +9,9 @@ forced. Cursor restore remains exact schema/native/instrument/lineage. Does
 not POST. Does not mint an external-effect permit. Does not poll. Does not
 rewrite the consumed V1/V2/V3/V4 DV or DW standing persist.
 
-Checkout provenance is resolved from git rev-parse HEAD via the existing
-ops helper. CLI default cannot self-confirm EXPECTED_ORIGIN_MAIN_SHA.
+Checkout provenance: explicit --origin-main-sha must equal actual git HEAD.
+CLI omission must not fill declared from HEAD. Frozen EXPECTED_ORIGIN_MAIN_SHA
+is an implementation-time origin/main snapshot, not a runtime HEAD target.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -98,6 +99,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.preregistration_probe_fixture_repository_sha_binding_v1.repository_sha_source_v1 import (
     RepositoryShaResolutionErrorV1,
+    assert_valid_repository_sha_v1,
     resolve_repository_sha_from_git_head_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
@@ -147,6 +149,9 @@ CONSUMED_V4_OWNER_GO = (
 )
 THIS_SLICE = "11.2.1.DV.FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5"
 EXPECTED_ORIGIN_MAIN_SHA = "cd96b853dc8905757caaa6881cdc5145a430087a"
+V5_PROVENANCE_INVARIANT = "EXPLICIT_DECLARED_AUTHORIZED_CHECKOUT_SHA_EQ_ACTUAL_GIT_HEAD"
+FROZEN_EXPECTED_ORIGIN_MAIN_SHA_EQ_HEAD_REQUIRED = False
+CLI_HEAD_SELF_CONFIRMATION_ALLOWED = False
 CLI_ORIGIN_MAIN_SHA_DEFAULT = ""
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_one_runtime_cycle_after_new_"
@@ -317,24 +322,23 @@ def require_current_productive_v5_checkout_provenance_v1(
     actual_checkout_sha: str | None = None,
     repo_root: Path | None = None,
 ) -> str:
-    """Fail-closed V5 guard: argument and actual git HEAD must both equal expected.
+    """Fail-closed V5 guard: explicit declared checkout SHA == actual git HEAD.
 
-    Reuses resolve_repository_sha_from_git_head_v1. Does not treat a missing
-    or default CLI argument as EXPECTED_ORIGIN_MAIN_SHA.
+    `--origin-main-sha` remains the explicit declaration argument. Missing or
+    default-empty declaration is fail-closed. Frozen EXPECTED_ORIGIN_MAIN_SHA
+    is not compared to HEAD.
     """
-    declared = str(origin_main_sha or "").strip()
-    if declared == "":
+    declared_raw = str(origin_main_sha or "").strip()
+    if declared_raw == "" or declared_raw == CLI_ORIGIN_MAIN_SHA_DEFAULT:
         raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
             "ORIGIN_MAIN_SHA_ARGUMENT_MISSING"
         )
-    if declared == CLI_ORIGIN_MAIN_SHA_DEFAULT:
+    try:
+        declared = assert_valid_repository_sha_v1(declared_raw, field="origin_main_sha")
+    except RepositoryShaResolutionErrorV1 as exc:
         raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
-            "ORIGIN_MAIN_SHA_ARGUMENT_MISSING"
-        )
-    if declared != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
-            "ORIGIN_MAIN_SHA_MISMATCH"
-        )
+            "ORIGIN_MAIN_SHA_MALFORMED"
+        ) from exc
     if actual_checkout_sha is None:
         try:
             actual = resolve_repository_sha_from_git_head_v1(
@@ -345,12 +349,18 @@ def require_current_productive_v5_checkout_provenance_v1(
                 f"CHECKOUT_HEAD_UNRESOLVABLE:{exc}"
             ) from exc
     else:
-        actual = str(actual_checkout_sha).strip().lower()
-        if actual == "":
+        actual_raw = str(actual_checkout_sha).strip().lower()
+        if actual_raw == "":
             raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
                 "CHECKOUT_HEAD_MISSING"
             )
-    if actual != EXPECTED_ORIGIN_MAIN_SHA:
+        try:
+            actual = assert_valid_repository_sha_v1(actual_raw, field="checkout_sha")
+        except RepositoryShaResolutionErrorV1 as exc:
+            raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
+                f"CHECKOUT_HEAD_UNRESOLVABLE:{exc}"
+            ) from exc
+    if declared != actual:
         raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
             "CHECKOUT_HEAD_MISMATCH"
         )
@@ -1933,12 +1943,9 @@ def main() -> int:
         override = json.loads(Path(args.c1_gate_json).read_text(encoding="utf-8"))
     declared_sha = str(args.origin_main_sha).strip()
     if declared_sha == CLI_ORIGIN_MAIN_SHA_DEFAULT:
-        try:
-            declared_sha = resolve_repository_sha_from_git_head_v1(repo_root=_REPO_ROOT)
-        except RepositoryShaResolutionErrorV1 as exc:
-            raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
-                f"CHECKOUT_HEAD_UNRESOLVABLE:{exc}"
-            ) from exc
+        raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
+            "ORIGIN_MAIN_SHA_ARGUMENT_MISSING"
+        )
     result = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
         owner_go=str(args.owner_go),
         origin_main_sha=declared_sha,
