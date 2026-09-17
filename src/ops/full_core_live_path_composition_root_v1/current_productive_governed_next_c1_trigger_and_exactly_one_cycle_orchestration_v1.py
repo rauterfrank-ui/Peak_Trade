@@ -40,6 +40,7 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
     UrllibEeaPublicUniverseGetTransportV1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+    OCCUPANCY_NEXT_OWNER_GO,
     OWNER_GO as V5_OWNER_GO,
     execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
 )
@@ -55,6 +56,31 @@ RUNTIME_TRIGGER_OWNER_GO_SCOPE = "EXACTLY_ONE_EG_DISPATCH_ONLY"
 RUNTIME_TRIGGER_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
 PRODUCTIVE_ACQUISITION_PRODUCER = "acquire_eea_universe_inventory_v1"
 PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS = "UrllibEeaPublicUniverseGetTransportV1"
+S4B_OWNER_GO = (
+    "OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1"
+)
+S4B_OWNER_GO_SCOPE = "OCCUPANCY_GATE_INPUT_BIND_OFFLINE_ONLY"
+S4B_OWNER_GO_STATUS = "CONSUMED"
+S4B_THIS_SLICE = "11.2.1.EH.S4B_V5_OCCUPANCY_GATE_INPUT_BIND"
+OCCUPANCY_OWNER_GO = OCCUPANCY_NEXT_OWNER_GO
+OCCUPANCY_OWNER_GO_SCOPE = "OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF_ONLY"
+OCCUPANCY_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
+OCCUPANCY_FRESH_GET_TRANSPORT_PARAM = "fresh_get_transport"
+OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL = "FullCoreFreshPretradeGetTransportV1"
+S4B_V5_EXECUTE_NETWORK = False
+S4B_TRANSPORT_CONSTRUCTED = False
+S4B_GET_COUNT = 0
+S4B_EG_DISPATCH_COUNT = 0
+S4B_V5_INVOKE_COUNT = 0
+S4B_RUNTIME_CYCLE_COUNT = 0
+VENUE_OCCUPANCY_KNOWLEDGE = "UNKNOWN"
+S4B_CANONICAL_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "20260917T151200Z"
+)
+S4A_FRESH_C1_GET_OWNER_GO = "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1"
+S4A_OWNER_GO = "OWNER_GO_S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_V1"
+EH_SEAM_OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
 THIS_SLICE = (
     "11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_"
     "EXACTLY_ONE_CYCLE_ORCHESTRATION"
@@ -91,6 +117,13 @@ REASON_CYCLE_EXCEPTION = "CYCLE_EXCEPTION"
 REASON_OWNER_GO_MISMATCH = "OWNER_GO_MISMATCH"
 REASON_PERSIST_GO_NOT_TRIGGER_LICENSE = "PERSIST_GO_NOT_TRIGGER_LICENSE"
 REASON_DISPATCHED = "DISPATCHED"
+REASON_OCCUPANCY_GO_STATUS_DRIFT = "OCCUPANCY_GO_STATUS_DRIFT"
+REASON_RUNTIME_GO_SEPARATION_DRIFT = "RUNTIME_GO_SEPARATION_DRIFT"
+REASON_NETWORK_PIN_DRIFT = "NETWORK_PIN_DRIFT"
+REASON_INVOKE_COUNT_DRIFT = "INVOKE_COUNT_DRIFT"
+REASON_TRANSPORT_CONSTRUCTED_DRIFT = "TRANSPORT_CONSTRUCTED_DRIFT"
+DISPOSITION_PRESENT = "PRESENT"
+DISPOSITION_FAIL_CLOSED = "FAIL_CLOSED"
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
 
@@ -224,9 +257,17 @@ def _inject_productive_acquisition_join(kwargs: dict[str, Any]) -> dict[str, Any
     return kwargs
 
 
+def _inject_occupancy_gate_input_join(kwargs: dict[str, Any]) -> dict[str, Any]:
+    kwargs["execute_network"] = False
+    if OCCUPANCY_FRESH_GET_TRANSPORT_PARAM not in kwargs:
+        kwargs[OCCUPANCY_FRESH_GET_TRANSPORT_PARAM] = None
+    return kwargs
+
+
 def _default_v5_dispatch(**kwargs: Any) -> Any:
     kwargs.setdefault("owner_go", V5_OWNER_GO)
     kwargs = _inject_productive_acquisition_join(kwargs)
+    kwargs = _inject_occupancy_gate_input_join(kwargs)
     return execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
         **kwargs
     )
@@ -347,6 +388,7 @@ def trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
         if v5_kwargs:
             kwargs.update(dict(v5_kwargs))
         kwargs = _inject_productive_acquisition_join(kwargs)
+        kwargs = _inject_occupancy_gate_input_join(kwargs)
         cycle_result = dispatch(**kwargs)
         transitions.append(STATE_CYCLE_COMPLETED)
         transitions.append(STATE_IDLE)
@@ -431,3 +473,110 @@ def trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
             transitions=tuple(transitions + [STATE_FAILED_STOP]),
             cycle_result=None,
         )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4BOccupancyGateInputBindV1:
+    disposition: str
+    occupancy_owner_go: str
+    occupancy_owner_go_scope: str
+    occupancy_owner_go_status: str
+    occupancy_fresh_get_transport_param: str
+    occupancy_fresh_get_transport_protocol: str
+    occupancy_transport_injected: bool
+    occupancy_transport_invoked: bool
+    occupancy_transport_constructed: bool
+    acquisition_transport_class: str
+    acquisition_transport_semantically_separate: bool
+    v5_execute_network: bool
+    venue_occupancy: str
+    occupancy_status_fabricated: bool
+    persist_go_is_runtime_license: bool
+    occupancy_owner_go_consumed: bool
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    reason_code: str
+
+
+def bind_s4b_occupancy_gate_input_v1(
+    *,
+    owner_go: str,
+    occupancy_transport: object | None = None,
+) -> CurrentProductiveS4BOccupancyGateInputBindV1:
+    def _fail(reason_code: str) -> CurrentProductiveS4BOccupancyGateInputBindV1:
+        return CurrentProductiveS4BOccupancyGateInputBindV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            occupancy_owner_go="",
+            occupancy_owner_go_scope="",
+            occupancy_owner_go_status="",
+            occupancy_fresh_get_transport_param="",
+            occupancy_fresh_get_transport_protocol="",
+            occupancy_transport_injected=False,
+            occupancy_transport_invoked=False,
+            occupancy_transport_constructed=False,
+            acquisition_transport_class="",
+            acquisition_transport_semantically_separate=False,
+            v5_execute_network=False,
+            venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+            occupancy_status_fabricated=False,
+            persist_go_is_runtime_license=False,
+            occupancy_owner_go_consumed=False,
+            get_count=0,
+            eg_dispatch_count=0,
+            v5_invoke_count=0,
+            runtime_cycle_count=0,
+            reason_code=reason_code,
+        )
+
+    if owner_go != S4B_OWNER_GO:
+        return _fail(REASON_OWNER_GO_MISMATCH)
+    tokens = (
+        S4B_OWNER_GO,
+        OCCUPANCY_OWNER_GO,
+        S4A_FRESH_C1_GET_OWNER_GO,
+        RUNTIME_TRIGGER_OWNER_GO,
+        V5_OWNER_GO,
+        OWNER_GO,
+        S4A_OWNER_GO,
+        EH_SEAM_OWNER_GO,
+    )
+    if len(set(tokens)) != 8:
+        return _fail(REASON_RUNTIME_GO_SEPARATION_DRIFT)
+    if OCCUPANCY_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED":
+        return _fail(REASON_OCCUPANCY_GO_STATUS_DRIFT)
+    if S4B_V5_EXECUTE_NETWORK is True:
+        return _fail(REASON_NETWORK_PIN_DRIFT)
+    if (
+        S4B_GET_COUNT != 0
+        or S4B_EG_DISPATCH_COUNT != 0
+        or S4B_V5_INVOKE_COUNT != 0
+        or S4B_RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _fail(REASON_INVOKE_COUNT_DRIFT)
+    if S4B_TRANSPORT_CONSTRUCTED is True:
+        return _fail(REASON_TRANSPORT_CONSTRUCTED_DRIFT)
+    return CurrentProductiveS4BOccupancyGateInputBindV1(
+        disposition=DISPOSITION_PRESENT,
+        occupancy_owner_go=OCCUPANCY_OWNER_GO,
+        occupancy_owner_go_scope=OCCUPANCY_OWNER_GO_SCOPE,
+        occupancy_owner_go_status=OCCUPANCY_OWNER_GO_STATUS,
+        occupancy_fresh_get_transport_param=OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+        occupancy_fresh_get_transport_protocol=OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+        occupancy_transport_injected=occupancy_transport is not None,
+        occupancy_transport_invoked=False,
+        occupancy_transport_constructed=False,
+        acquisition_transport_class=PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
+        acquisition_transport_semantically_separate=True,
+        v5_execute_network=False,
+        venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+        occupancy_status_fabricated=False,
+        persist_go_is_runtime_license=False,
+        occupancy_owner_go_consumed=False,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        reason_code="",
+    )

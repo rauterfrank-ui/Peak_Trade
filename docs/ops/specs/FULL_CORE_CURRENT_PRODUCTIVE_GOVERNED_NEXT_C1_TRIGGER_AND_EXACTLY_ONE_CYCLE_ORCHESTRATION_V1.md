@@ -19,7 +19,13 @@ not a runtime trigger license. S4A defines
 `OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1` as the exactly-one
 runtime trigger GO (`DEFINED_NOT_CONSUMED`). Default V5 dispatch injects
 the existing `UrllibEeaPublicUniverseGetTransportV1` acquisition
-transport and keeps V5 `execute_network` false. It may accept one injected
+transport and keeps V5 `execute_network` false. Occupancy
+`fresh_get_transport` is a separate pass-through seam and is not
+constructed by default. S4B binds that occupancy input under
+`OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1`
+without GET, EG dispatch, or V5 invoke. Occupancy Owner-GO
+`SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF`
+remains `DEFINED_NOT_CONSUMED`. It may accept one injected
 finalized 1m C1, deduplicate it against the persisted cursor last-accepted
 `venue_event_time`, take a fail-closed single-cycle exclusion lock, and
 dispatch the existing V5 N=1 host exactly once. It does not poll, sleep-loop,
@@ -34,6 +40,13 @@ RUNTIME_TRIGGER_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
 PERSIST_GO_IS_TRIGGER_LICENSE=false
 PRODUCTIVE_ACQUISITION_PRODUCER=acquire_eea_universe_inventory_v1
 PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS=UrllibEeaPublicUniverseGetTransportV1
+S4B_OWNER_GO=OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1
+OCCUPANCY_OWNER_GO=SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF
+OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+OCCUPANCY_FRESH_GET_TRANSPORT_PARAM=fresh_get_transport
+OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL=FullCoreFreshPretradeGetTransportV1
+S4B_V5_EXECUTE_NETWORK=false
+VENUE_OCCUPANCY=UNKNOWN
 JOIN_SEAM_ID=CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1
 FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY=NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY
 EXISTING_V5_REUSE=true

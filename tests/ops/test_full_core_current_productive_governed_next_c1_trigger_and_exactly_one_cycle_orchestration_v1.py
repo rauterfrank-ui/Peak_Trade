@@ -22,10 +22,17 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     CYCLE_EXCLUSION_LOCK_NAME,
     DISPOSITION_DISPATCHED,
     DISPOSITION_FAILED_STOP,
+    DISPOSITION_FAIL_CLOSED,
     DISPOSITION_NO_DISPATCH,
+    DISPOSITION_PRESENT,
     FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY,
     JOIN_SEAM_ID,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+    OCCUPANCY_OWNER_GO,
+    OCCUPANCY_OWNER_GO_STATUS,
     OWNER_GO,
+    PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
     REASON_CONCURRENT_CYCLE,
     REASON_CURSOR_MISSING,
     REASON_CYCLE_EXCEPTION,
@@ -37,14 +44,20 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REASON_STALE_C1,
     REASON_UNFINALIZED_C1,
     RUNTIME_TRIGGER_OWNER_GO,
+    S4A_FRESH_C1_GET_OWNER_GO,
+    S4B_OWNER_GO,
+    S4B_V5_EXECUTE_NETWORK,
     STATE_CYCLE_COMPLETED,
     STATE_CYCLE_IN_PROGRESS,
     STATE_FAILED_STOP,
     STATE_IDLE,
     STATE_NEW_C1_ACCEPTED,
     THIS_SLICE,
+    VENUE_OCCUPANCY_KNOWLEDGE,
     CurrentProductiveC1ObservationV1,
     CurrentProductiveGovernedNextC1OrchestrationError,
+    _inject_occupancy_gate_input_join,
+    bind_s4b_occupancy_gate_input_v1,
     trigger_current_productive_next_c1_and_exactly_one_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
@@ -61,6 +74,12 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5_CREATED,
+    CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+    OCCUPANCY_NEXT_OWNER_GO,
+    OWNER_GO as V5_OWNER_GO,
+    execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
 )
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     WRITER_LOCK_FILENAME as CAP23_WRITER_LOCK_FILENAME,
@@ -261,6 +280,7 @@ def test_new_c1_single_dispatch(tmp_path: Path) -> None:
         assert transport is not None
         assert type(transport).__name__ == "UrllibEeaPublicUniverseGetTransportV1"
         assert getattr(transport, "request_count", 0) == 0
+        assert kwargs.get("fresh_get_transport") is None
         return _stub_result()
 
     result = _trigger(tmp_path, _observation(), cycle_dispatch=_dispatch)
@@ -581,3 +601,97 @@ def test_authority_guard_cannot_mint_permit_or_post() -> None:
     assert AUTONOMY_CAN_MINT_PERMIT is False
     assert AUTONOMY_CAN_POST is False
     _assert_post_guard()
+
+
+class _SpyOccupancyTransportV1:
+    def __init__(self) -> None:
+        self.get_calls = 0
+
+    def get(self, **kwargs: object) -> object:
+        self.get_calls += 1
+        raise AssertionError("occupancy GET invoked during S4B offline bind")
+
+
+def test_s4b_occupancy_input_seam_injects_without_get_or_v5_invoke(tmp_path: Path) -> None:
+    spy = _SpyOccupancyTransportV1()
+    injected = _inject_occupancy_gate_input_join(
+        {"execute_network": True, "fresh_get_transport": spy}
+    )
+    absent = _inject_occupancy_gate_input_join({"execute_network": True})
+    assert injected["execute_network"] is False
+    assert injected["fresh_get_transport"] is spy
+    assert absent["execute_network"] is False
+    assert absent["fresh_get_transport"] is None
+    assert spy.get_calls == 0
+    calls: list[object] = []
+
+    def _dispatch(**kwargs):
+        calls.append(kwargs)
+        assert kwargs["execute_network"] is False
+        assert kwargs["fresh_get_transport"] is spy
+        assert kwargs["fresh_get_transport"].get_calls == 0
+        return _stub_result()
+
+    result = _trigger(
+        tmp_path,
+        _observation(),
+        cycle_dispatch=_dispatch,
+        v5_kwargs={"fresh_get_transport": spy},
+    )
+    assert result.disposition == DISPOSITION_DISPATCHED
+    assert result.dispatch_count == 1
+    assert len(calls) == 1
+    assert spy.get_calls == 0
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "execute_network = True" not in source
+    assert OCCUPANCY_FRESH_GET_TRANSPORT_PARAM in source
+    assert OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL in source
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in spec
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED is True
+    bound = bind_s4b_occupancy_gate_input_v1(owner_go=S4B_OWNER_GO)
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.v5_execute_network is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != V5_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert bound.acquisition_transport_class == PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+    assert bound.acquisition_transport_semantically_separate is True
+    assert bind_s4b_occupancy_gate_input_v1(owner_go=OWNER_GO).disposition == (
+        DISPOSITION_FAIL_CLOSED
+    )
+
+
+def test_s4b_missing_occupancy_transport_remains_fail_closed(tmp_path: Path) -> None:
+    v5_host = (
+        REPO_ROOT
+        / "src/ops/governed_productive_account_equity_authority_producer_v1"
+        / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
+    )
+    source = v5_host.read_text(encoding="utf-8")
+    assert 'occupancy_blocker = "FRESH_GET_TRANSPORT_MISSING"' in source
+    result = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
+        owner_go=V5_OWNER_GO,
+        origin_main_sha=_declared_checkout_sha(),
+        evidence_root=tmp_path / "s4b-missing-occupancy",
+        execute_network=False,
+        acquisition_transport=_eligible_transport(),
+        c1_gate_payload=_candles(last_ts_ms=int(NEW_C1 * 1000)),
+        producer_observed_at_unix=1_700_000_100.0,
+    )
+    assert result.condition_gate == "SATISFIED"
+    assert result.occupancy_status == "FRESH_GET_TRANSPORT_MISSING"
+    assert result.first_real_blocker == "FRESH_GET_TRANSPORT_MISSING"
+    assert result.post_count == "0"
+    assert result.permit_created == "false"
+    claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
+    assert claims["OCCUPANCY_STATUS"] == "FRESH_GET_TRANSPORT_MISSING"
+    assert claims["NEXT_OWNER_GO_REQUIRED"] == OCCUPANCY_NEXT_OWNER_GO
+    assert claims["NEXT_OWNER_GO_REQUIRED"] == OCCUPANCY_OWNER_GO
+    assert claims["VENUE_MUTATION_PERFORMED"] == "false"

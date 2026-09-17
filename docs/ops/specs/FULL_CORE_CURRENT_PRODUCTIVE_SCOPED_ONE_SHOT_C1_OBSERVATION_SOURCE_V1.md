@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, S2+S3 canonical single runtime-path offline bind, and S4A runtime-enablement offline bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; Fresh-C1 GET runtime GO and EG runtime trigger GO are DEFINED_NOT_CONSUMED and not consumed; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, S2+S3 canonical single runtime-path offline bind, S4A runtime-enablement offline bind, and S4B occupancy-gate input bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; Occupancy Owner-GO remains DEFINED_NOT_CONSUMED; Fresh-C1 GET runtime GO and EG runtime trigger GO are DEFINED_NOT_CONSUMED and not consumed; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -11,7 +11,7 @@ last_updated: 2026-09-17
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH,
 §11.2.1.EH MS04A, §11.2.1.EH MS04D, §11.2.1.EH S1,
-§11.2.1.EH S2+S3, and §11.2.1.EH S4A. Atlas remains
+§11.2.1.EH S2+S3, §11.2.1.EH S4A, and §11.2.1.EH S4B. Atlas remains
 `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
 MS01 consumed
@@ -47,6 +47,14 @@ false, and bind lock_root/evidence_root under the existing EH evidence
 family. Persist GOs are not runtime licenses. T2 remains
 `DEFINED_NOT_CONSUMED` and is not consumed. Direct V5 remains forbidden.
 V5 remains the N=1 cycle host and is not the EH lifecycle owner.
+S4B consumes
+`OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1`
+to bind occupancy `fresh_get_transport` as a pass-through EG→V5 input
+seam while `S4A_V5_EXECUTE_NETWORK=false`. Occupancy Owner-GO
+`SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF`
+remains `DEFINED_NOT_CONSUMED` and is not GET_GO, EG_GO, or T2_GO.
+This bind does not construct occupancy transport, GET, classify venue
+occupancy, or consume Occupancy Owner-GO. `VENUE_OCCUPANCY=UNKNOWN`.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
@@ -91,6 +99,12 @@ S4A_EG_RUNTIME_TRIGGER_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
 S4A_PRODUCTIVE_ACQUISITION_PRODUCER=acquire_eea_universe_inventory_v1
 S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS=UrllibEeaPublicUniverseGetTransportV1
 S4A_V5_EXECUTE_NETWORK=false
+S4B_OWNER_GO=OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1
+S4B_OCCUPANCY_INPUT_BOUND=true
+OCCUPANCY_OWNER_GO=SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF
+OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+CANONICAL_OCCUPANCY_INPUT_SEAM=fresh_get_transport
+VENUE_OCCUPANCY=UNKNOWN
 S4A_LOCK_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
 S4A_EVIDENCE_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
 EG_TRIGGER_EXECUTED=false
