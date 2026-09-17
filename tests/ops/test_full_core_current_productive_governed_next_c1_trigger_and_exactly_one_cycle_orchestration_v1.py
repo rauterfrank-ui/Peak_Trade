@@ -33,8 +33,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REASON_DUPLICATE_C1,
     REASON_LINEAGE_MISMATCH,
     REASON_OWNER_GO_MISMATCH,
+    REASON_PERSIST_GO_NOT_TRIGGER_LICENSE,
     REASON_STALE_C1,
     REASON_UNFINALIZED_C1,
+    RUNTIME_TRIGGER_OWNER_GO,
     STATE_CYCLE_COMPLETED,
     STATE_CYCLE_IN_PROGRESS,
     STATE_FAILED_STOP,
@@ -170,7 +172,7 @@ def _trigger(tmp_path: Path, observation, **kwargs):
     if cursor_store is None:
         cursor_store = _seed_cursor(tmp_path)
     return trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=kwargs.pop("owner_go", OWNER_GO),
+        owner_go=kwargs.pop("owner_go", RUNTIME_TRIGGER_OWNER_GO),
         origin_main_sha=kwargs.pop("origin_main_sha", _declared_checkout_sha()),
         observation=observation,
         cursor_store_root=cursor_store,
@@ -211,6 +213,7 @@ def test_created_flag_pins_and_docs() -> None:
     assert AUTONOMY_CAN_POST is False
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
+    assert RUNTIME_TRIGGER_OWNER_GO != OWNER_GO
     assert JOIN_SEAM_ID == (
         "CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1"
     )
@@ -231,6 +234,14 @@ def test_created_flag_pins_and_docs() -> None:
         assert (REPO_ROOT / path).is_file()
 
 
+def test_persist_go_is_not_runtime_trigger_license(tmp_path: Path) -> None:
+    with pytest.raises(
+        CurrentProductiveGovernedNextC1OrchestrationError,
+        match=REASON_PERSIST_GO_NOT_TRIGGER_LICENSE,
+    ):
+        _trigger(tmp_path, _observation(), owner_go=OWNER_GO)
+
+
 def test_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:
     with pytest.raises(
         CurrentProductiveGovernedNextC1OrchestrationError,
@@ -246,6 +257,10 @@ def test_new_c1_single_dispatch(tmp_path: Path) -> None:
         calls.append(kwargs)
         assert kwargs["execute_network"] is False
         assert kwargs["incoming_cursor"] is not None
+        transport = kwargs.get("acquisition_transport")
+        assert transport is not None
+        assert type(transport).__name__ == "UrllibEeaPublicUniverseGetTransportV1"
+        assert getattr(transport, "request_count", 0) == 0
         return _stub_result()
 
     result = _trigger(tmp_path, _observation(), cycle_dispatch=_dispatch)
@@ -334,7 +349,7 @@ def test_concurrent_trigger_exactly_one_accepted(tmp_path: Path) -> None:
 
     def _run_first() -> None:
         first["result"] = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-            owner_go=OWNER_GO,
+            owner_go=RUNTIME_TRIGGER_OWNER_GO,
             origin_main_sha=_declared_checkout_sha(),
             observation=_observation(),
             cursor_store_root=cursor_store,
@@ -347,7 +362,7 @@ def test_concurrent_trigger_exactly_one_accepted(tmp_path: Path) -> None:
     worker.start()
     assert started.wait(timeout=2.0) is True
     second["result"] = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
         cursor_store_root=cursor_store,
@@ -376,7 +391,7 @@ def test_cycle_exception_no_retry_cursor_not_advanced(tmp_path: Path) -> None:
         raise RuntimeError("injected-cycle-failure")
 
     failed = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
         cursor_store_root=cursor_store,
@@ -398,7 +413,7 @@ def test_cycle_exception_no_retry_cursor_not_advanced(tmp_path: Path) -> None:
         return _stub_result()
 
     blocked = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(venue_event_time=NEW_C1 + 60.0),
         cursor_store_root=cursor_store,
@@ -464,7 +479,7 @@ def _v5_join_kwargs(tmp_path: Path, **extra: object) -> dict[str, object]:
 def test_hold_cycle_skips_29p_reaches_pre_external_effect(tmp_path: Path) -> None:
     cursor_store = _seed_cursor(tmp_path)
     result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
         cursor_store_root=cursor_store,
@@ -501,7 +516,7 @@ def test_enter_live_29p_guard_and_fail_closes_envelope(
     )
     missing_cursor = _seed_cursor(tmp_path / "missing-cursor-root")
     missing = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
         cursor_store_root=missing_cursor,
@@ -524,7 +539,7 @@ def test_enter_live_29p_guard_and_fail_closes_envelope(
 
     passed_cursor = _seed_cursor(tmp_path / "pass-cursor-root")
     passed = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=OWNER_GO,
+        owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
         cursor_store_root=passed_cursor,

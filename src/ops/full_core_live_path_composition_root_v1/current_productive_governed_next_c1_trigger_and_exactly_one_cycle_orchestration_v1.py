@@ -36,6 +36,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
+    UrllibEeaPublicUniverseGetTransportV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
     OWNER_GO as V5_OWNER_GO,
     execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
@@ -47,6 +50,11 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 OWNER_GO = (
     "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1"
 )
+RUNTIME_TRIGGER_OWNER_GO = "OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1"
+RUNTIME_TRIGGER_OWNER_GO_SCOPE = "EXACTLY_ONE_EG_DISPATCH_ONLY"
+RUNTIME_TRIGGER_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
+PRODUCTIVE_ACQUISITION_PRODUCER = "acquire_eea_universe_inventory_v1"
+PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS = "UrllibEeaPublicUniverseGetTransportV1"
 THIS_SLICE = (
     "11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_"
     "EXACTLY_ONE_CYCLE_ORCHESTRATION"
@@ -81,6 +89,7 @@ REASON_CURSOR_INVALID = "CURSOR_INVALID"
 REASON_LINEAGE_MISMATCH = "LINEAGE_MISMATCH"
 REASON_CYCLE_EXCEPTION = "CYCLE_EXCEPTION"
 REASON_OWNER_GO_MISMATCH = "OWNER_GO_MISMATCH"
+REASON_PERSIST_GO_NOT_TRIGGER_LICENSE = "PERSIST_GO_NOT_TRIGGER_LICENSE"
 REASON_DISPATCHED = "DISPATCHED"
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
@@ -208,9 +217,16 @@ def _c1_reject_reason(
     return REASON_UNFINALIZED_C1
 
 
+def _inject_productive_acquisition_join(kwargs: dict[str, Any]) -> dict[str, Any]:
+    kwargs["execute_network"] = False
+    if kwargs.get("acquisition_transport") is None and kwargs.get("acquisition_result") is None:
+        kwargs["acquisition_transport"] = UrllibEeaPublicUniverseGetTransportV1()
+    return kwargs
+
+
 def _default_v5_dispatch(**kwargs: Any) -> Any:
     kwargs.setdefault("owner_go", V5_OWNER_GO)
-    kwargs["execute_network"] = False
+    kwargs = _inject_productive_acquisition_join(kwargs)
     return execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
         **kwargs
     )
@@ -263,7 +279,11 @@ def trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
         raise CurrentProductiveGovernedNextC1OrchestrationError("SEND_AUTHORITY_DRIFT")
     if AUTONOMY_CAN_MINT_PERMIT is True or AUTONOMY_CAN_POST is True:
         raise CurrentProductiveGovernedNextC1OrchestrationError("AUTONOMY_SEND_DRIFT")
-    if owner_go != OWNER_GO:
+    if owner_go == OWNER_GO:
+        raise CurrentProductiveGovernedNextC1OrchestrationError(
+            REASON_PERSIST_GO_NOT_TRIGGER_LICENSE
+        )
+    if owner_go != RUNTIME_TRIGGER_OWNER_GO:
         raise CurrentProductiveGovernedNextC1OrchestrationError(REASON_OWNER_GO_MISMATCH)
 
     lock = AuthorizationLifecycleLockV1(
@@ -326,7 +346,7 @@ def trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
             kwargs["evidence_root"] = Path(evidence_root) / "cycle"
         if v5_kwargs:
             kwargs.update(dict(v5_kwargs))
-        kwargs["execute_network"] = False
+        kwargs = _inject_productive_acquisition_join(kwargs)
         cycle_result = dispatch(**kwargs)
         transitions.append(STATE_CYCLE_COMPLETED)
         transitions.append(STATE_IDLE)
