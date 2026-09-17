@@ -298,7 +298,7 @@ def test_s10_t04_current_behavior_vs_owner_norm_partial_deviates() -> None:
 
 
 def test_s10_t05_open_cells_remain_open_and_s11_absent() -> None:
-    """S10-T05: listed OPEN cells stay open; S11 not started; no execution/KS surface."""
+    """S10-T05: listed OPEN cells stay open; S11 successor file exists; no execution/KS surface."""
     replay_tree = ast.parse(_REPLAY_SOURCE.read_text(encoding="utf-8"))
     mapper_fn = _function_def(replay_tree, "_canonical_scope_event_to_scope_event")
     mapper_src = ast.get_source_segment(_REPLAY_SOURCE.read_text(encoding="utf-8"), mapper_fn)
@@ -311,7 +311,12 @@ def test_s10_t05_open_cells_remain_open_and_s11_absent() -> None:
     assert "killswitch_blocked taxonomy" in this_src
     assert "composition-before-transition semantics" in this_src
     assert "Manifest-vs-Owner envelope" in this_src
-    assert list(_REPO_ROOT.glob("tests/trading/test_s11_*.py")) == []
+    s11_path = (
+        _REPO_ROOT
+        / "tests/trading/test_s11_ks_mode_label_ne_action_post_29q_guard_conformance_v1.py"
+    )
+    assert s11_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s11_*.py")) == [s11_path]
     this_tree = ast.parse(this_src)
     imported = _imported_names(this_tree)
     assert all("src.execution" not in name for name in imported)
