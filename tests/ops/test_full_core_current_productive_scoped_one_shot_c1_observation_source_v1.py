@@ -1,4 +1,4 @@
-"""MS01 authority persist and owner pins for scoped one-shot C1 observation source."""
+"""MS01 authority persist plus MS02 payload-to-observation mapping."""
 
 from __future__ import annotations
 
@@ -12,6 +12,8 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY as EG_AUTHORITY_BOUNDARY,
     JOIN_SEAM_ID as EG_JOIN_SEAM_ID,
+    REQUIRED_BAR,
+    CurrentProductiveC1ObservationV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
     AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
@@ -20,8 +22,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     AUTONOMY_CAN_RESELECT_DOWNSTREAM,
     BOUNDED_POLL_AUTHORIZED,
     CADENCE_OWNER_AUTHORIZED,
+    CONFIRM_FINALIZED,
     CONTINUOUS_RUNTIME_AUTHORIZED,
     DAEMON_AUTHORIZED,
+    DISPOSITION_EMITTED,
+    DISPOSITION_FAIL_CLOSED,
     EG_AUTHORITY_BOUNDARY_UNCHANGED,
     JOIN_SEAM_ID,
     LIVE_GET_EXECUTED,
@@ -34,8 +39,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     OWNER_GO_SCOPE,
     PERFORM_GET_DEFAULT,
     PRODUCER_AUTHORITY,
+    REASON_OWNER_GO_MISMATCH,
+    REASON_UNFINALIZED_OR_ABSENT,
     RUNTIME_CYCLE_AUTHORIZED,
     THIS_SLICE,
+    map_injected_candles_payload_to_current_productive_c1_observation_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
@@ -74,11 +82,14 @@ PROTECTED_ALGORITHM_FILES = (
     "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
 )
 EH_HEADING = "### 11.2.1.EH FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE"
+NATIVE_ID = "0G-USDT-SWAP"
+OLDER_FINALIZED_TS_S = 1_789_527_720.0
+NEWEST_FINALIZED_TS_S = 1_789_527_840.0
 FORBIDDEN_SOURCE_SNIPPETS = (
     "while True",
     "time.sleep",
-    "extract_finalized_candle_closes_v1",
     "_evaluate_c1_gate_v1",
+    "1789527780",
     "trigger_current_productive_next_c1_and_exactly_one_cycle_v1",
     "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1",
     "FullCoreProductiveReadOnlyGetTransportV1",
@@ -87,6 +98,15 @@ FORBIDDEN_SOURCE_SNIPPETS = (
     "scheduler",
     "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT",
 )
+
+
+def _candle_row(*, ts_s: float, confirm: str, close: str = "0.1880") -> list[str]:
+    ts_ms = str(int(ts_s * 1000))
+    return [ts_ms, close, close, close, close, "10", "100", "USDT", confirm]
+
+
+def _candles_payload(*rows: list[str]) -> dict[str, object]:
+    return {"code": "0", "msg": "", "data": list(rows)}
 
 
 def test_ms01_created_flag_pins_and_docs() -> None:
@@ -149,7 +169,8 @@ def test_ms01_source_guards_forbid_successor_and_runtime_surfaces() -> None:
     source = OWNER_MODULE.read_text(encoding="utf-8")
     for snippet in FORBIDDEN_SOURCE_SNIPPETS:
         assert snippet not in source
-    assert "MS01 AUTHORITY/CONTRACT SCAFFOLD ONLY" in source
+    assert "MS02 PAYLOAD-TO-OBSERVATION MAPPING ONLY" in source
+    assert "extract_finalized_candle_closes_v1" in source
     assert "def acquire_" not in source
     assert "urllib" not in source
     assert "http.client" not in source
@@ -158,3 +179,111 @@ def test_ms01_source_guards_forbid_successor_and_runtime_surfaces() -> None:
     assert "time.sleep" not in eg_source
     assert 'execute_network": True' not in eg_source
     assert "execute_network = True" not in eg_source
+
+
+def test_ms02_newest_finalized_confirm_1_maps_exactly_once() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S + 60.0, confirm="0"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_EMITTED
+    assert result.get_count == 0
+    assert result.reason_code == ""
+    observation = result.observation
+    assert observation is not None
+    assert isinstance(observation, CurrentProductiveC1ObservationV1)
+    assert observation.venue_event_time == NEWEST_FINALIZED_TS_S
+    assert observation.confirm == CONFIRM_FINALIZED
+    assert observation.confirm == "1"
+    assert observation.native_id == NATIVE_ID
+    assert observation.bar == REQUIRED_BAR
+    assert observation.bar == "1m"
+    assert observation.payload is payload
+
+
+def test_ms02_multiple_finalized_bars_emit_only_newest() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="1"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S - 60.0, confirm="1"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_EMITTED
+    assert result.get_count == 0
+    observation = result.observation
+    assert observation is not None
+    assert observation.venue_event_time == NEWEST_FINALIZED_TS_S
+    assert observation.confirm == "1"
+    assert observation.payload is payload
+
+
+def test_ms02_raw_payload_preserved_for_eg_c1_gate_payload() -> None:
+    payload = _candles_payload(_candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"))
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    observation = result.observation
+    assert observation is not None
+    assert observation.payload is payload
+    assert observation.payload == payload
+    bound = dict(observation.payload)
+    assert bound["code"] == "0"
+    assert bound["data"] is payload["data"]
+    assert result.get_count == 0
+
+
+def test_ms02_unfinalized_or_absent_fail_closed_does_not_synthesize() -> None:
+    payload = _candles_payload(
+        _candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="0"),
+        _candle_row(ts_s=OLDER_FINALIZED_TS_S, confirm="0"),
+    )
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go=OWNER_GO,
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.observation is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_UNFINALIZED_OR_ABSENT
+
+
+def test_ms02_owner_go_mismatch_fail_closed() -> None:
+    payload = _candles_payload(_candle_row(ts_s=NEWEST_FINALIZED_TS_S, confirm="1"))
+    result = map_injected_candles_payload_to_current_productive_c1_observation_v1(
+        owner_go="OWNER_GO_WRONG",
+        candles_payload=payload,
+        native_id=NATIVE_ID,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.observation is None
+    assert result.get_count == 0
+    assert result.reason_code == REASON_OWNER_GO_MISMATCH
+
+
+def test_ms02_does_not_start_ms03_cursor_or_ms04_get_or_ms05_trigger() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "cursor_last_accepted_c1_venue_event_time_v1" not in source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1" not in source
+    assert "NO_NEW_C1" not in source
+    assert "STALE_OBSERVED" not in source
+    assert "perform_get" not in source
+    assert "injected_get_transport" not in source
+    assert "FullCoreFreshPretradeGetTransportV1" not in source
+    assert "ENDPOINT_MARKET_CANDLES" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert "_evaluate_c1_gate_v1" not in source
+    assert "1789527780" not in source
+    assert "execute_network" not in source
