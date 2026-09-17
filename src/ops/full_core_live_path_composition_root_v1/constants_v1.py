@@ -503,7 +503,8 @@ FULL_CORE_OFFLINE_E2E_EVIDENCE_CLASS = "INJECTED_NON_PRODUCTIVE"
 
 PATH_KIND = "FULL_CORE_LIVE_PATH"
 FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH = "FULL_CORE_LIVE_PATH"
-PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY = "SECTION_11_2_1"
+# Semantic CURRENT Full-Core live-path authority (not development chronology).
+PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY = "full_core_live_path_authority_v1"
 CANARY_VENUE_PROOF_PATH_KIND = "CANARY_VENUE_PROOF_ONLY"
 CANARY_VENUE_PROOF_PATH_ROLE = "HISTORICAL_AND_SCOPED_VENUE_PROOF"
 CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E = False
@@ -522,12 +523,16 @@ DECISION_OWNER = (
     "trading.master_v2.integrated_offline_trading_logic_replay_v1."
     "run_integrated_offline_trading_logic_replay_v1"
 )
-RISK_SIZING_OWNER = "STEP_29P"
+# Semantic CURRENT owners (decoupled from STEP_/CAP_ development chronology).
+# Persisted claim keys / runtime plan tokens retain historical tokens unchanged.
+RISK_SIZING_OWNER = "capital_risk_admissibility_owner_v1"
 SAFETY_OWNER = (
     "trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0."
     "evaluate_offline_safety_kernel_boundary_v0"
 )
-ORDER_INTENT_OWNER = "STEP_29Q"
+ORDER_INTENT_OWNER = "canonical_order_intent_owner_v1"
+HOST_JOIN_OWNER = "stateful_no_order_host_join_v1"
+SEND_CAPABLE_ADAPTER_OWNER = "send_capable_adapter_v1"
 VENUE_TRANSLATION_OWNER = "TRANSLATOR_ONLY"
 PRETRADE_OWNER = "VENUE_PRETRADE_GATES"
 WIRE_SEND_OWNER = "LIVE_EXECUTION_BOUNDARY"

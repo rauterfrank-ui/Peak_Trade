@@ -376,7 +376,7 @@ def _node(**kwargs: Any) -> LiveAdmissionGapNodeV1:
 LIVE_ADMISSION_GAP_NODES: Tuple[LiveAdmissionGapNodeV1, ...] = (
     _node(
         component_id="PATH_IDENTITY",
-        authority="SECTION_11_2_1",
+        authority="full_core_live_path_authority_v1",
         producer="src.ops.full_core_live_path_composition_root_v1.path_identity_v1",
         contract="FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH",
         consumer="productive_live_next_pointer_authority_v1",
