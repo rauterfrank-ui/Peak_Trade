@@ -16,6 +16,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     G12_IS_NOT_FULL_CORE_E2E,
+    HOST_JOIN_OWNER,
     LIVE_ARMED,
     LIVE_ENABLED,
     PATH_KIND,
@@ -24,6 +25,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E,
     SECTION_11_14_NEXT_POINTER_DOMAIN,
     SECTION_11_14_POST_IS_NOT_STEP_29Q,
+    SEND_CAPABLE_ADAPTER_OWNER,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
 )
@@ -92,6 +94,10 @@ def test_standing_identity_and_gates_remain_fail_closed() -> None:
     assert identity["FULL_CORE_SYSTEM_E2E_PROVEN"] is False
     assert identity["CURRENT_LIVE_CORE_PATH_PROVEN"] is False
     assert identity["STANDING_LIVE_AUTHORIZATION"] is False
+    assert identity["HOST_JOIN_OWNER"] == "stateful_no_order_host_join_v1"
+    assert identity["SEND_CAPABLE_ADAPTER_OWNER"] == "send_capable_adapter_v1"
+    assert HOST_JOIN_OWNER == "stateful_no_order_host_join_v1"
+    assert SEND_CAPABLE_ADAPTER_OWNER == "send_capable_adapter_v1"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
@@ -104,11 +110,14 @@ def test_canary_and_section_11_14_are_not_productive_live_next_pointers() -> Non
     canary = refuse_competing_productive_live_next_pointer_v1("SECTION_11_13_5")
     ladder = refuse_competing_productive_live_next_pointer_v1("SECTION_11_14")
     full_core = refuse_competing_productive_live_next_pointer_v1("SECTION_11_2_1")
+    semantic = refuse_competing_productive_live_next_pointer_v1("full_core_live_path_authority_v1")
     assert canary["refused_as_productive_live_next_pointer"] is True
     assert ladder["refused_as_productive_live_next_pointer"] is True
     assert full_core["claimed_is_productive_live_authority"] is True
     assert full_core["refused_as_productive_live_next_pointer"] is False
-    assert PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY == "SECTION_11_2_1"
+    assert semantic["claimed_is_productive_live_authority"] is True
+    assert semantic["refused_as_productive_live_next_pointer"] is False
+    assert PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY == "full_core_live_path_authority_v1"
     assert SECTION_11_13_5_NEXT_POINTER_DOMAIN == "SCOPED_CANARY_VENUE_PROOF_EVIDENCE_ONLY"
     assert SECTION_11_14_NEXT_POINTER_DOMAIN == (
         "HISTORICAL_CANARY_LIFECYCLE_EVIDENCE_LADDER_NOT_FULL_CORE_E2E"

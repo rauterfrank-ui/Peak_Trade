@@ -92,7 +92,7 @@ def test_mapping_unproven_and_value_binding_not_implemented() -> None:
     assert MAPPING_PROVEN is False
     assert IMPLEMENTATION_OF_VALUE_BINDING is False
     assert LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE is False
-    assert RISK_SIZING_OWNER == "STEP_29P"
+    assert RISK_SIZING_OWNER == "capital_risk_admissibility_owner_v1"
     assert LIVE_ENABLED is True
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
@@ -177,7 +177,7 @@ def test_live_account_bound_join_not_executed_and_does_not_mint_equity() -> None
 
 def test_authority_firewall_learning_ranking_and_cap23() -> None:
     assert SELECTION_OWNER == "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
-    assert RISK_SIZING_OWNER == "STEP_29P"
+    assert RISK_SIZING_OWNER == "capital_risk_admissibility_owner_v1"
     leaks: list[str] = []
     for path in sorted(PACKAGE_DIR.glob("*.py")):
         text = path.read_text(encoding="utf-8")

@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     FULL_CORE_SYSTEM_E2E_PROVEN,
     FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH,
     G12_IS_NOT_FULL_CORE_E2E,
+    HOST_JOIN_OWNER,
     LIVE_ARMED,
     LIVE_ENABLED,
     PATH_KIND,
@@ -29,11 +30,20 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E,
     SECTION_11_14_NEXT_POINTER_DOMAIN,
     SECTION_11_14_POST_IS_NOT_STEP_29Q,
+    SEND_CAPABLE_ADAPTER_OWNER,
     STANDING_LIVE_AUTHORIZATION,
     WIRE_SEND_PERMITTED,
 )
 
-PRODUCTIVE_LIVE_AUTHORITY_SECTIONS = frozenset({"SECTION_11_2_1", "11.2.1"})
+# Semantic primary plus proven historical accepted-path compatibility tokens.
+PRODUCTIVE_LIVE_AUTHORITY_SECTIONS = frozenset(
+    {
+        "full_core_live_path_authority_v1",
+        # HISTORICAL_COMPATIBILITY_ONLY — accepted path identity for safety consumers.
+        "SECTION_11_2_1",
+        "11.2.1",
+    }
+)
 EVIDENCE_ONLY_LIVE_POINTER_SECTIONS = frozenset(
     {
         "SECTION_11_13_5",
@@ -56,7 +66,10 @@ def section_is_productive_live_authority_v1(section: str | None) -> bool:
     token = str(section or "").strip()
     if token in PRODUCTIVE_LIVE_AUTHORITY_SECTIONS:
         return True
+    # HISTORICAL_COMPATIBILITY_ONLY — prefix acceptance for prior Full-Core path IDs.
     if token.startswith("11.2.1") or token.startswith("SECTION_11_2_1"):
+        return True
+    if token.startswith("full_core_live_path_authority_v1"):
         return True
     return False
 
@@ -100,6 +113,8 @@ def bound_path_identity_v1() -> dict[str, Any]:
         "CURRENT_LIVE_CORE_PATH_PROVEN": CURRENT_LIVE_CORE_PATH_PROVEN,
         "STANDING_LIVE_AUTHORIZATION": STANDING_LIVE_AUTHORIZATION,
         "PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY": PRODUCTIVE_LIVE_NEXT_POINTER_AUTHORITY,
+        "HOST_JOIN_OWNER": HOST_JOIN_OWNER,
+        "SEND_CAPABLE_ADAPTER_OWNER": SEND_CAPABLE_ADAPTER_OWNER,
         "SECTION_11_13_5_NEXT_POINTER_DOMAIN": SECTION_11_13_5_NEXT_POINTER_DOMAIN,
         "SECTION_11_14_NEXT_POINTER_DOMAIN": SECTION_11_14_NEXT_POINTER_DOMAIN,
         "SECTION_11_14_POST_IS_NOT_STEP_29Q": SECTION_11_14_POST_IS_NOT_STEP_29Q,
