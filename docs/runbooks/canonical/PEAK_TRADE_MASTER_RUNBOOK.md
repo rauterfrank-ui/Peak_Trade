@@ -30615,6 +30615,85 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EG FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.EF standing persist
+fields. CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+
+This persist closes the Current-Productive autonomy gap
+`PRODUCTIVE_CONTINUOUS_CYCLE_AND_NEXT_C1_TRIGGER_OWNER_ABSENT` as
+orchestration authority only. A new finalized 1m C1 may be accepted,
+deduplicated against the persisted cursor last-accepted
+`venue_event_time`, and used to dispatch the existing V5 N=1 host
+exactly once under a fail-closed O_CREAT|O_EXCL cycle-exclusion lock.
+Duplicate, stale, and unfinalized C1 observations do not dispatch.
+Concurrent invocation fail-closed. Cycle exception records
+`FAILED_STOP` without automatic retry and without force-unlock.
+Cap-2.3 universe lock is not cycle exclusion. This persist does not
+poll, daemonize, mint a permit, POST, or change Master-V2,
+Double-Play, sealed-core, Cap-2.3, Cap-2.4, 29P, 29Q, or admission
+semantics. HOLD still skips Live-29P. ENTER still requires the
+existing Live-29P join before venue-plan. STEP-29Q remains
+`PLAN_ONLY`. PRE_EXTERNAL_EFFECT remains the terminal autonomy
+boundary.
+
+``` text
+THIS_SLICE=11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+JOIN_SEAM_ID=CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1
+FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY=NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY
+EXISTING_V5_REUSE=true
+CYCLE_HOST=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py
+DEDUP_BOUNDARY=PERSISTED_CURSOR_LAST_ACCEPTED_VENUE_EVENT_TIME
+SINGLE_CYCLE_EXCLUSION_MECHANISM=AuthorizationLifecycleLockV1_O_CREAT_O_EXCL
+CAP23_UNIVERSE_LOCK_IS_NOT_CYCLE_EXCLUSION=true
+AUTONOMY_CAN_CHANGE_TRADING_LOGIC=false
+AUTONOMY_CAN_RESELECT_DOWNSTREAM=false
+AUTONOMY_CAN_MINT_PERMIT=false
+AUTONOMY_CAN_POST=false
+NEW_TRADING_AUTHORITY_CREATED=false
+HOLD_SKIPS_PRIVATE_GET=true
+ENTER_REQUIRES_FRESH_LIVE_29P=true
+STEP_29Q_STATUS=PLAN_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+PERMIT_CREATED=false
+POST_COUNT=0
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+CAP23_SELECTOR_UNCHANGED=true
+CAP24_BINDER_UNCHANGED=true
+MASTER_V2_MUTATED=false
+DOUBLE_PLAY_MUTATED=false
+SEALED_CORE_MUTATED=false
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
