@@ -165,6 +165,20 @@ def _load_cursor_or_reason(cursor_store_root: Path) -> tuple[Mapping[str, Any] |
     return loaded, ""
 
 
+def load_current_productive_c1_cursor_or_reason_v1(
+    cursor_store_root: Path,
+) -> tuple[Mapping[str, Any] | None, str]:
+    return _load_cursor_or_reason(cursor_store_root)
+
+
+def evaluate_current_productive_c1_reject_reason_v1(
+    *,
+    observation: CurrentProductiveC1ObservationV1,
+    cursor: Mapping[str, Any],
+) -> str:
+    return _c1_reject_reason(observation=observation, cursor=cursor)
+
+
 def _c1_reject_reason(
     *,
     observation: CurrentProductiveC1ObservationV1,
