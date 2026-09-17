@@ -392,7 +392,12 @@ def test_satisfied_gate_hold_deny_without_post(tmp_path: Path) -> None:
     assert result.permit_created == "false"
     assert result.master_v2_runtime_cycle_id
     assert result.venue_plan_status == "DENY"
-    assert "HOLD" in result.decision_provenance or result.first_real_blocker == "HOLD"
+    assert result.final_envelope_id == ""
+    claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
+    assert claims["STEP_29P_GET_COUNT"] == "0"
+    assert claims["STEP_29P_JOIN_STATUS"] == "NOT_CALLED_HOLD"
+    assert claims["LIVE_29P_GET_CONSUMED"] == "false"
+    assert claims["MASTER_V2_DECISION"] not in {"enter_long", "enter_short"}
     transport = FullCoreProductiveHttpTradeOrderTransportV1(handle=_handle())
     with pytest.raises(FullCoreProductiveHttpPostError, match="REAL_VENUE_POST_FORBIDDEN"):
         transport.post_trade_order(
