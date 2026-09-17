@@ -438,9 +438,12 @@ def test_s06_t06_selected_side_is_not_sidestate_and_not_transition_arg() -> None
 
     this_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
     assert all(_call_name(call) != "transition_state" for call in _ordered_calls(this_tree))
-    assert not (
-        _REPO_ROOT / "tests/trading/test_s07_sidestate_transition_boundary_conformance_v1.py"
-    ).exists()
+    s07_path = _REPO_ROOT / "tests/trading/test_s07_sidestate_transition_boundary_conformance_v1.py"
+    assert s07_path.is_file()
+    assert all(
+        "test_s07_sidestate_transition_boundary_conformance_v1" not in name
+        for name in _imported_names(this_tree)
+    )
 
 
 def test_s06_t07_legacy_compose_and_scenario_composition_not_c4_owner() -> None:
