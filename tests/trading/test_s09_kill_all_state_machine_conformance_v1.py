@@ -353,8 +353,12 @@ def test_s09_t07_invalid_envelope_or_rules_block_kill_all_required() -> None:
 
 
 def test_s09_t08_s10_absent_and_open_items_unchanged() -> None:
-    """S09-T08: S10 not started; S08 open items remain; no execution/KS surface."""
-    assert list(_REPO_ROOT.glob("tests/trading/test_s10_*.py")) == []
+    """S09-T08: S10 successor file exists; S08 open items remain; no execution/KS surface."""
+    s10_path = (
+        _REPO_ROOT / "tests/trading/test_s10_kill_all_fanout_partial_same_tick_conformance_v1.py"
+    )
+    assert s10_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s10_*.py")) == [s10_path]
     s08_path = _REPO_ROOT / "tests/trading/test_s08_entry_exit_conformance_v1.py"
     assert s08_path.is_file()
     this_src = Path(__file__).read_text(encoding="utf-8")
