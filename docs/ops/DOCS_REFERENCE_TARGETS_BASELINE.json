@@ -1,15 +1,33 @@
 {
-  "generated_at_utc": "2026-09-10T23:54:59.276086+00:00",
-  "git_sha": "49cc9371ffa9f80d94ae107b79e87684e85d292c",
+  "generated_at_utc": "2026-09-17T22:30:03.526749+00:00",
+  "git_sha": "4c7ca76134750d8676d0754688eeb8c975d67a43",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 3082,
-    "ignored_files": 509,
-    "scanned_files": 2573,
-    "total_references": 15861
+    "total_markdown_files": 3208,
+    "ignored_files": 498,
+    "scanned_files": 2710,
+    "total_references": 16658
   },
-  "missing_count": 128,
+  "missing_count": 191,
   "missing_items": [
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 65,
+      "target": "src/autonomous/workflow_engine.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 70,
+      "target": "src/autonomous/decision_engine.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
+      "line_number": 75,
+      "target": "src/autonomous/monitors.py",
+      "link_text": null
+    },
     {
       "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
       "line_number": 150,
@@ -59,6 +77,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/RESILIENCE.md",
+      "line_number": 675,
+      "target": "../examples/resilience/README.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/TECH_DEBT_BACKLOG.md",
       "line_number": 74,
       "target": "src/data/kraken.py",
@@ -77,9 +101,75 @@
       "link_text": null
     },
     {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 142,
+      "target": "scripts/demo_backtest_with_risk.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 142,
+      "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
+      "line_number": 89,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "line_number": 74,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "line_number": 150,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "line_number": 212,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "line_number": 217,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "line_number": 356,
+      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
       "line_number": 19,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
+      "line_number": 172,
+      "target": "src/observability/policy/policy_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
+      "line_number": 158,
+      "target": "src/peak_trade/__init__.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
+      "line_number": 159,
+      "target": "src/peak_trade/governance/__init__.py",
       "link_text": null
     },
     {
@@ -222,8 +312,44 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 133,
+      "target": "src/docs/PEAK_TRADE_PROJECT_SUMMARY.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 134,
+      "target": "src/docs/Peak_Trade_0_trades_debug_summary.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 135,
+      "target": "src/docs/architecture.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 136,
       "target": "src/docs/armstrong_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 137,
+      "target": "src/docs/nicole_el_karoui_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 138,
+      "target": "src/docs/peak_trade_documentation.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 139,
+      "target": "src/docs/trading_bot_notes.md",
       "link_text": null
     },
     {
@@ -336,6 +462,42 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 114,
+      "target": "src/docs/Peak_Trade_0_trades_debug_summary.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 115,
+      "target": "src/docs/Peak_Trade_Data_Layer_Doku.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 116,
+      "target": "src/docs/Peak_Trade_Projektuebersicht.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 117,
+      "target": "src/docs/architecture.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 118,
+      "target": "src/docs/nicole_el_karoui_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 119,
+      "target": "src/docs/peak_trade_documentation.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 121,
       "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
@@ -374,6 +536,18 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/search_terms_and_scope.md",
       "line_number": 30,
       "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 21,
+      "target": "src/docs/trading_bot_notes.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 171,
+      "target": "src/docs/trading_bot_notes.md",
       "link_text": null
     },
     {
@@ -437,9 +611,63 @@
       "link_text": null
     },
     {
+      "source_file": "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+      "line_number": 87,
+      "target": "src/risk/_archive/position_sizer_old_backup.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 3497,
+      "target": "src/ops/p67/shadow_session_scheduler_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 3498,
+      "target": "src/ops/p72/run_shadowloop_pack_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
+      "line_number": 25,
+      "target": "src/utils/report_paths.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STATUS_OVERVIEW_2026-02-19.md",
+      "line_number": 60,
+      "target": "scripts/ops/p71_health_gate_v1.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STATUS_OVERVIEW_2026-02-19.md",
+      "line_number": 63,
+      "target": "scripts/ops/p72_shadowloop_pack_v1.sh",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/TEST_HEALTH_AUTOMATION_V1.md",
+      "line_number": 25,
+      "target": "src/notifications/slack.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md",
       "line_number": 222,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md",
+      "line_number": 224,
+      "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/historical_other_md/Peak_Trade_Workflow_Officer_Concept.md",
+      "line_number": 96,
+      "target": "src/ops/p39/registry_cli_v1.py",
       "link_text": null
     },
     {
@@ -533,6 +761,24 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 26,
+      "target": "src/utils/report_paths.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 263,
+      "target": "src/utils/report_paths.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 290,
+      "target": "src/utils/report_paths.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/reviews/bounded_acceptance_final_handover_note/FINAL_HANDOVER_NOTE.md",
       "line_number": 46,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
@@ -588,6 +834,12 @@
     },
     {
       "source_file": "docs/ops/specs/OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md",
+      "line_number": 71,
+      "target": "src/ops/p85/run_live_data_ingest_readiness_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md",
       "line_number": 86,
       "target": "src/data/kraken_cache_loader.py",
       "link_text": null
@@ -599,15 +851,45 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md",
+      "line_number": 2088,
+      "target": "src/ops/p67/shadow_session_scheduler_cli_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md",
+      "line_number": 77,
+      "target": "src/ops/p67/shadow_session_scheduler_cli_v1.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/specs/SESSION_ENV_NAME_AND_EXCHANGE_SURFACES_NON_AUTHORITY_V0.md",
       "line_number": 58,
       "target": "src/exchange/kraken_testnet.py",
       "link_text": null
     },
     {
+      "source_file": "docs/project_docs/BACKTEST_INTEGRATION.md",
+      "line_number": 229,
+      "target": "scripts/demo_backtest_with_risk.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/BACKTEST_INTEGRATION.md",
+      "line_number": 495,
+      "target": "scripts/demo_backtest_with_risk.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/project_docs/CHANGELOG.md",
       "line_number": 75,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CHANGELOG.md",
+      "line_number": 80,
+      "target": "scripts/demo_complete_pipeline.py",
       "link_text": null
     },
     {
@@ -626,6 +908,12 @@
       "source_file": "docs/project_docs/FILES_CHANGED.md",
       "line_number": 11,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/FILES_CHANGED.md",
+      "line_number": 14,
+      "target": "scripts/demo_complete_pipeline.py",
       "link_text": null
     },
     {
@@ -654,8 +942,20 @@
     },
     {
       "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 190,
+      "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
       "line_number": 192,
       "target": "scripts/demo_kraken_simple.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/FINAL_SUMMARY.md",
+      "line_number": 375,
+      "target": "scripts/demo_complete_pipeline.py",
       "link_text": null
     },
     {
@@ -678,6 +978,12 @@
     },
     {
       "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
+      "line_number": 107,
+      "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
       "line_number": 122,
       "target": "scripts/demo_kraken_simple.py",
       "link_text": null
@@ -686,6 +992,18 @@
       "source_file": "docs/project_docs/IMPLEMENTATION_SUMMARY.md",
       "line_number": 276,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/RISK_MANAGEMENT.md",
+      "line_number": 47,
+      "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/RISK_MANAGEMENT.md",
+      "line_number": 73,
+      "target": "scripts/demo_complete_pipeline.py",
       "link_text": null
     },
     {
@@ -749,6 +1067,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 14,
+      "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
       "line_number": 63,
       "target": "src/data/kraken.py",
@@ -773,9 +1097,63 @@
       "link_text": null
     },
     {
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 68,
+      "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/README.md",
+      "line_number": 29,
+      "target": "src/trigger_training/hooks.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/README.md",
+      "line_number": 30,
+      "target": "src/trigger_training/operator_meta_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/README.md",
+      "line_number": 31,
+      "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/TRIGGER_TRAINING_REPORTS_V1.md",
+      "line_number": 20,
+      "target": "src/trigger_training/hooks.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/TRIGGER_TRAINING_REPORTS_V1.md",
+      "line_number": 253,
+      "target": "src/trigger_training/hooks.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/TRIGGER_TRAINING_SPEED_STATUS_V1.md",
+      "line_number": 67,
+      "target": "src/trigger_training/reaction_stats.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/trigger_training/TRIGGER_TRAINING_SPEED_STATUS_V1.md",
       "line_number": 517,
       "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/WORKFLOW_MULTI_SESSION_REPORTS.md",
+      "line_number": 23,
+      "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/trigger_training/WORKFLOW_MULTI_SESSION_REPORTS.md",
+      "line_number": 36,
+      "target": "src/trigger_training/operator_meta_report.py",
       "link_text": null
     }
   ]

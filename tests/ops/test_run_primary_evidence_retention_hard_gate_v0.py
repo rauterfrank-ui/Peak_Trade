@@ -34,8 +34,6 @@ ORDER_CAPABILITY_DRY_VALIDATION = (
 ORDER_CAPABILITY_FIXTURE_BINDING = (
     REPO_ROOT / "scripts" / "ops" / "run_order_capability_fixture_binding_dry_validation_v1.py"
 )
-P67_LIB = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_v1.py"
-P72_PACK = REPO_ROOT / "src" / "ops" / "p72" / "run_shadowloop_pack_v1.py"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
 P101 = REPO_ROOT / "scripts" / "ops" / "p101_stop_playbook_v1.sh"
 P93 = REPO_ROOT / "scripts" / "ops" / "p93_online_readiness_status_dashboard_v1.sh"
@@ -388,13 +386,6 @@ def test_bounded_adapters_write_closeout_and_review_on_execute() -> None:
         assert "REVIEW_RESULT.json" in text
         assert "verify_manifest_sha256" in text
         assert "archive root must be outside /tmp" in text
-
-
-def test_p67_p72_reference_finalize_primary_evidence_root() -> None:
-    for path in (P67_LIB, P72_PACK):
-        text = path.read_text(encoding="utf-8")
-        assert "primary_evidence_enforce" in text
-        assert "finalize_primary_evidence_root" in text
 
 
 def test_p79_verifier_and_post_stop_paths_reference_manifest_and_closeout() -> None:

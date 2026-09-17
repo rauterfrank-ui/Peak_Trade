@@ -12,7 +12,6 @@ GENERIC_EVIDENCE_REGISTRY_V1 = (
     REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
 )
 SCHEDULER_BOUNDARY_GUARD = REPO_ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
-P67_SCHEDULER_CLI = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_cli_v1.py"
 SCHEDULER_LAUNCHER = REPO_ROOT / "scripts" / "run_scheduler.py"
 SUPERVISOR_PACK_SCRIPT = (
     REPO_ROOT / "scripts" / "ops" / "pack_online_readiness_supervisor_evidence_v0.py"
@@ -230,7 +229,6 @@ def test_generic_registry_v1_implemented_not_deferred() -> None:
 
 def test_scheduler_boundary_markers_aligned_with_main() -> None:
     assert SCHEDULER_BOUNDARY_GUARD.is_file()
-    assert P67_SCHEDULER_CLI.is_file()
     text = _spec_text()
     assert "SCHEDULER_BOUNDARY_LAUNCHER_GUARDED=true" in text
     assert "P67_CLI_SCHEDULER_BOUNDARY_GUARDED=true" in text

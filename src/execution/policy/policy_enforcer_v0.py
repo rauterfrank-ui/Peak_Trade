@@ -24,7 +24,7 @@ class PolicyEnforceResult:
 
 class PolicyEnforcerV0:
     """
-    Enforce policy decisions produced by src.observability.policy.policy_v0.decide_policy_v0.
+    Enforce policy decisions produced by src.observability.policy.policy_v1.decide_policy_v1.
 
     Default stance:
     - If policy is missing -> allow (non-breaking)
