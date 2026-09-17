@@ -27,6 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     AUTONOMY_CAN_RESELECT_DOWNSTREAM,
     BOUNDED_POLL_AUTHORIZED,
     CADENCE_OWNER_AUTHORIZED,
+    CANONICAL_HISTORICAL_EVIDENCE_PACK,
     CONFIRM_FINALIZED,
     CONTINUOUS_RUNTIME_AUTHORIZED,
     DAEMON_AUTHORIZED,
@@ -34,6 +35,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     DISPOSITION_FAIL_CLOSED,
     DISPOSITION_PRESENT,
     EG_AUTHORITY_BOUNDARY_UNCHANGED,
+    EG_DISPATCH_COUNT,
+    EG_TRIGGER_EXECUTED,
+    GET_COUNT_THIS_SLICE,
+    HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT,
+    HISTORICAL_PACK_CLASS,
     JOIN_SEAM_ID,
     LIVE_GET_EXECUTED,
     MS01_IMPLEMENTATION_STATUS,
@@ -45,6 +51,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     MS04A_SLICE,
     MS04_AUTHORIZED,
     MS05_AUTHORIZED,
+    MS05_STARTED,
     OWNER_GO,
     OWNER_GO_SCOPE,
     PERFORM_GET_DEFAULT,
@@ -56,6 +63,18 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     REASON_OWNER_GO_MISMATCH,
     REASON_UNFINALIZED_OR_ABSENT,
     RUNTIME_CYCLE_AUTHORIZED,
+    RUNTIME_CYCLE_COUNT,
+    RUNTIME_CYCLE_EXECUTED,
+    S1_OWNER_GO,
+    S1_OWNER_GO_SCOPE,
+    S1_OWNER_GO_STATUS,
+    S1_THIS_SLICE,
+    T1_CONSUMED,
+    T1_OWNER_GO_STATUS,
+    T1_TRANSITION,
+    T2_CONSUMED,
+    T2_OWNER_GO,
+    T2_OWNER_GO_STATUS,
     THIS_SLICE,
     bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1,
     evaluate_current_productive_c1_observation_against_cursor_floor_v1,
@@ -91,6 +110,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+    OWNER_GO as V5_OWNER_GO,
 )
 from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
     TRACKED_CURSOR,
@@ -128,6 +150,12 @@ EH_MS04A_HEADING = (
 EH_MS04D_HEADING = (
     "### 11.2.1.EH MS04D FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_MS04B_HISTORICAL_EVIDENCE"
 )
+EH_S1_HEADING = "### 11.2.1.EH S1 POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
+S1_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T134900Z"
+)
 MS04B_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
@@ -142,7 +170,6 @@ FORBIDDEN_SOURCE_SNIPPETS = (
     "while True",
     "time.sleep",
     "_evaluate_c1_gate_v1",
-    "1789527780",
     "trigger_current_productive_next_c1_and_exactly_one_cycle_v1",
     "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1",
     "FullCoreProductiveReadOnlyGetTransportV1(",
@@ -192,6 +219,26 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert MS04A_SLICE == "MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1"
     assert MS04_AUTHORIZED is False
     assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    assert T1_TRANSITION == "PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG"
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T2_OWNER_GO == V5_OWNER_GO
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert T1_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED"
+    assert T1_OWNER_GO_STATUS != T2_OWNER_GO_STATUS
+    assert HISTORICAL_PACK_CLASS == "HISTORICAL_EVIDENCE_ONLY"
+    assert HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT is True
+    assert GET_COUNT_THIS_SLICE == 0
+    assert EG_DISPATCH_COUNT == 0
+    assert RUNTIME_CYCLE_COUNT == 0
+    assert EG_TRIGGER_EXECUTED is False
+    assert RUNTIME_CYCLE_EXECUTED is False
+    assert S1_OWNER_GO == "OWNER_GO_POST_MS04D_T1_T2_AUTHORITY_SEPARATION_PERSIST_V1"
+    assert S1_OWNER_GO_SCOPE == "T1_T2_AUTHORITY_SEPARATION_PERSIST_ONLY"
+    assert S1_OWNER_GO_STATUS == "CONSUMED"
+    assert S1_THIS_SLICE == "11.2.1.EH.S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
     assert AUTONOMY_CAN_CHANGE_TRADING_LOGIC is False
     assert AUTONOMY_CAN_RESELECT_DOWNSTREAM is False
     assert AUTONOMY_CAN_MINT_PERMIT is False
@@ -209,9 +256,14 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert EH_HEADING in runbook
     assert EH_MS04A_HEADING in runbook
     assert EH_MS04D_HEADING in runbook
+    assert EH_S1_HEADING in runbook
     assert THIS_SLICE in runbook
     assert MS04A_SLICE in runbook
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in runbook
+    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in runbook
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in runbook
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in runbook
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in runbook
     assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in runbook
     assert "RAW_HTTP_BYTES_PERSISTED=false" in runbook
     assert TRANSPORT_RAW_BODY_SHA256 in runbook
@@ -220,6 +272,9 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in mot
     assert "MS04A_EH_LIVE_GET_CONTRACT" in mot
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in mot
+    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in mot
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in mot
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in mot
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -230,6 +285,10 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert "MS04A_EH_LIVE_GET_CONTRACT" in atlas
     assert "MS04A_CONTRACT_BOUND=true" in atlas
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in atlas
+    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in atlas
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in atlas
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in atlas
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in atlas
     assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in atlas
     for path in PROTECTED_ALGORITHM_FILES:
         assert (REPO_ROOT / path).is_file()
@@ -239,6 +298,10 @@ def test_ms01_source_guards_forbid_successor_and_runtime_surfaces() -> None:
     source = OWNER_MODULE.read_text(encoding="utf-8")
     for snippet in FORBIDDEN_SOURCE_SNIPPETS:
         assert snippet not in source
+    remainder = source.replace(T2_OWNER_GO, "")
+    assert "1789527780" not in remainder
+    assert T2_OWNER_GO in source
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
     assert "MS02 PAYLOAD-TO-OBSERVATION MAPPING" in source
     assert "MS03 CURSOR-FLOOR AND ABSENCE FAIL-CLOSED" in source
     assert "MS04A LIVE GET CONTRACT BINDING" in source
@@ -559,8 +622,9 @@ def test_ms03_does_not_start_ms04_get_or_ms05_trigger() -> None:
     assert "FullCoreFreshPretradeGetTransportV1" not in source
     assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
     assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    remainder = source.replace(T2_OWNER_GO, "")
+    assert "1789527780" not in remainder
     assert "_evaluate_c1_gate_v1" not in source
-    assert "1789527780" not in source
     assert "execute_network" not in source
     assert "def acquire_" not in source
     assert MS03_AUTHORIZED is False
@@ -693,7 +757,7 @@ def test_ms04d_historical_evidence_pack_is_not_standing_enablement() -> None:
     assert not (MS04B_EVIDENCE_PACK / "raw_http.bin").exists()
     source = OWNER_MODULE.read_text(encoding="utf-8")
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    ms04d = runbook.split(EH_MS04D_HEADING, 1)[1].split("\n## ", 1)[0]
+    ms04d = runbook.split(EH_MS04D_HEADING, 1)[1].split(EH_S1_HEADING, 1)[0]
     assert LIVE_GET_EXECUTED is False
     assert PERFORM_GET_DEFAULT is False
     assert MS04_AUTHORIZED is False
@@ -707,3 +771,82 @@ def test_ms04d_historical_evidence_pack_is_not_standing_enablement() -> None:
     assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in ms04d
     assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
     assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+
+
+def test_s1_post_ms04d_t1_t2_authority_separation_is_not_runtime_enablement() -> None:
+    assert T1_TRANSITION == "PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG"
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T1_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED"
+    assert T2_OWNER_GO == V5_OWNER_GO
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert HISTORICAL_PACK_CLASS == "HISTORICAL_EVIDENCE_ONLY"
+    assert HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT is True
+    assert CANONICAL_HISTORICAL_EVIDENCE_PACK.endswith("20260917T130821Z")
+    assert GET_COUNT_THIS_SLICE == 0
+    assert EG_DISPATCH_COUNT == 0
+    assert RUNTIME_CYCLE_COUNT == 0
+    assert EG_TRIGGER_EXECUTED is False
+    assert RUNTIME_CYCLE_AUTHORIZED is False
+    assert RUNTIME_CYCLE_EXECUTED is False
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
+    assert "execute_network=True" not in source
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s1 = runbook.split(EH_S1_HEADING, 1)[1].split("\n## ", 1)[0]
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s1
+    assert "T1_CONSUMED=false" in s1
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s1
+    assert "T2_CONSUMED=false" in s1
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in s1
+    assert "CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT=true" in s1
+    assert "LIVE_GET_EXECUTED=false" in s1
+    assert "GET_COUNT_THIS_SLICE=0" in s1
+    assert "EG_DISPATCH_COUNT=0" in s1
+    assert "RUNTIME_CYCLE_COUNT=0" in s1
+    assert "MS05_STARTED=false" in s1
+    assert "S2_STARTED=false" in s1
+    assert "not create, define, or consume a T1 Owner-GO" in s1
+    assert "T2 remains" in s1 or "DEFINED_NOT_CONSUMED" in s1
+    historical = json.loads((MS04B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert historical["LIVE_GET_EXECUTED"] is True
+    assert historical["LIVE_GET_EXECUTED_STANDING_PIN"] is False
+    assert LIVE_GET_EXECUTED is not historical["LIVE_GET_EXECUTED"]
+    assert S1_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S1_EVIDENCE_PACK) == 0
+    claims = json.loads((S1_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["T1_OWNER_GO_STATUS"] == "OWNER_GO_ABSENT"
+    assert claims["T1_CONSUMED"] is False
+    assert claims["T2_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["T2_CONSUMED"] is False
+    assert claims["HISTORICAL_PACK_CLASS"] == "HISTORICAL_EVIDENCE_ONLY"
+    assert claims["HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT"] is True
+    assert claims["CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT"] is True
+    assert claims["LIVE_GET_EXECUTED"] is False
+    assert claims["PERFORM_GET_DEFAULT"] is False
+    assert claims["MS04_AUTHORIZED"] is False
+    assert claims["MS05_AUTHORIZED"] is False
+    assert claims["MS05_STARTED"] is False
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["EG_TRIGGER_EXECUTED"] is False
+    assert claims["RUNTIME_CYCLE_AUTHORIZED"] is False
+    assert claims["RUNTIME_CYCLE_EXECUTED"] is False
+    assert claims["T1_OWNER_GO_DEFINED"] is False
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in spec
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "consume a T1 Owner-GO" in spec
+    assert "does not consume T2" in spec

@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding and MS04B historical GET evidence; standing live GET remains unauthorized; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, and post-MS04D T1/T2 authority-separation persist; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -10,8 +10,8 @@ last_updated: 2026-09-17
 # Full Core Current Productive Scoped One Shot C1 Observation Source V1
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH,
-§11.2.1.EH MS04A, and §11.2.1.EH MS04D. Atlas remains `NAVIGATION_ONLY` /
-`AUTHORITY=NONE`.
+§11.2.1.EH MS04A, §11.2.1.EH MS04D, and §11.2.1.EH S1. Atlas remains
+`NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
 MS01 consumed
 `OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`
@@ -19,12 +19,18 @@ for authority persist and owner pins only. MS04A consumes
 `OWNER_GO_MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1` for request
 contract binding only. MS04D consumes
 `OWNER_GO_MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE_V1` to persist the
-already-validated MS04B forensic pack as historical evidence only. The
-EH seam Owner-GO is unchanged. Standing pins remain
-`LIVE_GET_EXECUTED=false`, `PERFORM_GET_DEFAULT=false`, and
-`MS04_AUTHORIZED=false`. This spec does not authorize a live GET, poll,
-permit, POST, EG trigger, or runtime cycle. V5 remains the N=1 cycle
-host and is not the EH lifecycle owner.
+already-validated MS04B forensic pack as historical evidence only. S1
+consumes `OWNER_GO_POST_MS04D_T1_T2_AUTHORITY_SEPARATION_PERSIST_V1` to
+persist that T1=`PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG` has
+`OWNER_GO_ABSENT` and is not consumed, while T2 remains
+`DEFINED_NOT_CONSUMED` and not consumed. S1 does not create, define, or
+consume a T1 Owner-GO and does not consume T2. The EH seam Owner-GO is
+unchanged. Standing pins remain `LIVE_GET_EXECUTED=false`,
+`PERFORM_GET_DEFAULT=false`, `MS04_AUTHORIZED=false`, and
+`MS05_AUTHORIZED=false`. The MS04B pack remains
+`HISTORICAL_EVIDENCE_ONLY`. This spec does not authorize a live GET,
+poll, permit, POST, EG trigger, V5 invoke, MS05, or runtime cycle. V5
+remains the N=1 cycle host and is not the EH lifecycle owner.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
@@ -37,7 +43,20 @@ MS01_IMPLEMENTATION_STATUS=AUTHORITY_SCAFFOLD_ONLY
 MS04A_SLICE=MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1
 MS04A_CONTRACT_BOUND=true
 CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/20260917T130821Z
+HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY
 HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true
+T1_TRANSITION=PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG
+T1_OWNER_GO_STATUS=OWNER_GO_ABSENT
+T1_CONSUMED=false
+T2_OWNER_GO=OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1
+T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+T2_CONSUMED=false
+GET_COUNT_THIS_SLICE=0
+EG_DISPATCH_COUNT=0
+RUNTIME_CYCLE_COUNT=0
+EG_TRIGGER_EXECUTED=false
+RUNTIME_CYCLE_EXECUTED=false
+MS05_STARTED=false
 RAW_HTTP_BYTES_PERSISTED=false
 GET_TRANSPORT_CAPABILITY=FullCoreProductiveReadOnlyGetTransportV1
 GET_HOST=eea.okx.com
