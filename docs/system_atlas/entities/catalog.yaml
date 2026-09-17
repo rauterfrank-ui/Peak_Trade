@@ -5671,6 +5671,57 @@ entities:
       absence, not restored, and are not productive CURRENT surfaces.
       Atlas navigation/metadata only. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:owner_disposition_removed_p53_p72_surfaces
+    kind: RUNTIME_COMPONENT
+    name: Owner-disposition-removed leftover p53-p72 and no-value surfaces
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: REMOVED
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/p53/__init__.py
+      - src/ops/p53/switch_layer_evidence_v1.py
+      - src/ops/p57/__init__.py
+      - src/ops/p57/switch_layer_paper_shadow_v1.py
+      - src/ops/p58/__init__.py
+      - src/ops/p58/switch_layer_online_readiness_v1.py
+      - src/ops/p61/__init__.py
+      - src/ops/p61/online_readiness_contract_v1.py
+      - src/ops/p61/run_online_readiness_v1.py
+      - src/ops/p62/__init__.py
+      - src/ops/p62/run_online_readiness_shadow_session_v1.py
+      - src/ops/p63/__init__.py
+      - src/ops/p63/run_online_readiness_shadow_runner_v1.py
+      - src/ops/p64/__init__.py
+      - src/ops/p64/run_online_readiness_runner_v1.py
+      - src/ops/p65/__init__.py
+      - src/ops/p65/run_online_readiness_loop_runner_v1.py
+      - src/ops/p66/__init__.py
+      - src/ops/p66/run_online_readiness_operator_entrypoint_v1.py
+      - src/ops/p67/__init__.py
+      - src/ops/p67/recorded_price_series_v0.py
+      - src/ops/p67/shadow_session_scheduler_cli_v1.py
+      - src/ops/p67/shadow_session_scheduler_v1.py
+      - src/ops/p71/__init__.py
+      - src/ops/p71/online_readiness_health_gate_v1.py
+      - src/ops/p72/__init__.py
+      - src/ops/p72/run_shadowloop_pack_v1.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/__init__.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/constants_v1.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_claims_v1.py
+      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_v1.py
+      - src/risk/_archive/position_sizer_old_backup.py
+    evidence_sources:
+      - docs/ops/PEAK_TRADE_REUSE_CANDIDATES.md
+    notes: >-
+      Owner disposition WP removed these leftover p53-p72, z2dh src, and
+      no-value archive surfaces from the current tree. Listed source_paths
+      are historical absence, not restored, and are not productive CURRENT
+      surfaces. Z2DH capability remains evidence-bound on
+      RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1.
+      Atlas navigation/metadata only. ATLAS_AUTHORITY=NONE.
+
   - id: GUARD:economic_diagnostic_optimization_boundary
     # inventory: fifth mapping-bind grant closed; sixth generator-fallback slice grant closed; seventh ARMED identity-split slice grant closed; grant_active=false; class remains
     kind: GUARD
@@ -7852,6 +7903,7 @@ entities:
     source_paths:
       - src/ops/gates/risk_gate.py
       - src/execution/pipeline.py
+      - src/execution/policy/policy_enforcer_v0.py
     source_symbols:
       - kill_switch_should_block_trading
       - resolve_kill_switch_limit_from_state_file
@@ -7878,6 +7930,8 @@ entities:
       External trigger library was removed (KS_THIN_01); not re-wired. Does
       not split killswitch_blocked.
       Does not authorize Live flatten. Does not set LIVE_RESTART_RECONSTRUCTED.
+      Pipeline observability cost/edge gating binds policy_v1 only; policy_v0
+      is removed. FILEGATE semantics and execution authority are unchanged.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1

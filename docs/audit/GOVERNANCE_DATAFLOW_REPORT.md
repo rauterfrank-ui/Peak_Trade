@@ -169,7 +169,7 @@
 
 | Ort | Datei | Befund |
 |-----|-------|--------|
-| **Policy v0/v1** | `src&#47;observability&#47;policy&#47;policy_v0.py`, `policy_v1.py` | Default `NO_TRADE` bei fehlenden Inputs |
+| **Policy v1** | `src&#47;observability&#47;policy&#47;policy_v1.py` | Default `NO_TRADE` bei fehlenden Inputs |
 | **Pipeline** | `src&#47;execution&#47;pipeline.py` | „Phase Policy v0: safety-first NO_TRADE default“ |
 | **Incident/Pilot Snapshots** | `scripts&#47;ops&#47;build_incident_snapshot.sh`, `build_pilot_ready_snapshot.sh` | `"policy_note": "NO_TRADE default preserved"` |
 | **deny-by-default** | `src&#47;ai_orchestration&#47;switch_layer_routing_v1.py` | `reason: str = "deny_by_default"` |
