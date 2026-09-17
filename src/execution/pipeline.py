@@ -39,7 +39,6 @@ from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, TYPE_
 from src.ops.recon.context import normalize_pipeline_context_for_recon
 from src.observability.nowcast.decision_context_v1 import build_decision_context_v1
 from src.observability.policy.policy_v1 import decide_policy_v1  # v1 cost/edge gate
-from src.observability.policy.policy_v0 import decide_policy_v0  # legacy reference
 from src.execution.policy import PolicyEnforcerV0
 from src.core.performance import performance_monitor
 

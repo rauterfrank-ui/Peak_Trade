@@ -20,8 +20,6 @@ sys.path.insert(0, str(project_root))
 TARGET_SCRIPTS: dict[str, Path] = {
     "run_simple_backtest": project_root / "scripts/run_simple_backtest.py",
     "demo_portfolio_backtest": project_root / "scripts/demo_portfolio_backtest.py",
-    "demo_backtest_with_risk": project_root / "scripts/demo_backtest_with_risk.py",
-    "demo_complete_pipeline": project_root / "scripts/demo_complete_pipeline.py",
     "run_momentum_realistic": project_root / "scripts/run_momentum_realistic.py",
 }
 
@@ -31,7 +29,6 @@ DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
 FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
     {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data", "create_test_data"}
 )
-DEMO_BACKTEST_WITH_RISK_N_BARS = 200
 RUN_SIMPLE_BACKTEST_N_BARS = 200
 RUN_SIMPLE_BACKTEST_RISK_SEMANTICS_MARKERS = (
     "BacktestEngine",
@@ -46,24 +43,6 @@ RUN_SIMPLE_BACKTEST_RISK_SEMANTICS_MARKERS = (
     "daily_loss_limit_pct=cfg",
     "get_strategy_config",
 )
-RISK_SEMANTICS_MARKERS = (
-    "BacktestEngine",
-    "RiskLimits",
-    "RiskLimitsConfig",
-    "PositionSizer",
-    "PositionSizerConfig",
-    "run_realistic",
-    '"stop_pct": 0.02',
-    "max_drawdown_pct=10.0",
-    "max_position_pct=5.0",
-    "daily_loss_limit_pct=2.0",
-    'method="fixed_fractional"',
-    "risk_pct=2.0",
-    "max_position_pct=50.0",
-    "max_drawdown_pct=30.0",
-    "daily_loss_limit_pct=10.0",
-)
-
 FORBIDDEN_DIRECT_IMPORTS = (
     "from src.strategies.ma_crossover import generate_signals",
     "from src.strategies.momentum import generate_signals",
@@ -95,154 +74,6 @@ def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
 def _local_function_defs(name: str) -> set[str]:
     tree = ast.parse(_read_source(name))
     return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
-
-
-def test_demo_complete_pipeline_source_has_no_local_loader_definitions() -> None:
-    local_defs = _local_function_defs("demo_complete_pipeline")
-    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
-
-
-def test_demo_complete_pipeline_source_imports_canonical_data_loader() -> None:
-    source = _read_source("demo_complete_pipeline")
-    assert "load_ohlcv_data" in source
-    assert "scripts.run_backtest" in source
-
-
-def test_demo_complete_pipeline_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
-    """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; verify via source + owner."""
-    import scripts.run_backtest as run_backtest_script
-
-    source = _read_source("demo_complete_pipeline")
-    assert "from scripts.run_backtest import load_ohlcv_data" in source
-    assert "load_ohlcv_data" not in _local_function_defs("demo_complete_pipeline")
-    assert run_backtest_script.load_ohlcv_data.__module__ == "scripts.run_backtest"
-
-
-def test_demo_4_local_ohlcv_pipeline_fallback_wires_canonical_loader() -> None:
-    """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; mock risk before import."""
-    import types
-
-    captured: dict[str, object] = {}
-    sample_df = _sample_ohlcv()
-
-    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
-        captured.update(
-            {
-                "data_file": data_file,
-                "start_date": start_date,
-                "end_date": end_date,
-                "n_bars": n_bars,
-                "verbose": verbose,
-            }
-        )
-        return sample_df
-
-    risk_mock = types.ModuleType("src.risk")
-    for name in (
-        "PositionSizer",
-        "PositionSizerConfig",
-        "RiskLimitChecker",
-        "RiskLimits",
-        "RiskLimitsConfig",
-        "PositionRequest",
-        "PortfolioState",
-        "calc_position_size",
-    ):
-        setattr(risk_mock, name, MagicMock())
-
-    sys.modules.pop("scripts.demo_complete_pipeline", None)
-    with patch.dict(sys.modules, {"src.risk": risk_mock}):
-        import scripts.demo_complete_pipeline as demo_script
-
-    with patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader):
-        result = demo_script.demo_4_local_ohlcv_pipeline()
-
-    assert result is sample_df
-    assert captured == {
-        "data_file": None,
-        "start_date": None,
-        "end_date": None,
-        "n_bars": 200,
-        "verbose": False,
-    }
-
-
-def test_demo_backtest_with_risk_source_has_no_local_loader_definitions() -> None:
-    local_defs = _local_function_defs("demo_backtest_with_risk")
-    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
-
-
-def test_demo_backtest_with_risk_source_imports_canonical_data_loader() -> None:
-    source = _read_source("demo_backtest_with_risk")
-    assert "load_ohlcv_data" in source
-    assert "scripts.run_backtest" in source
-
-
-def test_demo_backtest_with_risk_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
-    import scripts.demo_backtest_with_risk as demo_script
-    import scripts.run_backtest as run_backtest_script
-
-    source = _read_source("demo_backtest_with_risk")
-    assert "from scripts.run_backtest import load_ohlcv_data" in source
-    assert "load_ohlcv_data" not in _local_function_defs("demo_backtest_with_risk")
-    assert demo_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
-
-
-def test_demo_default_risk_wires_canonical_loader_with_n_bars_200() -> None:
-    import scripts.demo_backtest_with_risk as demo_script
-
-    captured: dict[str, object] = {}
-    sample_df = _sample_ohlcv(DEMO_BACKTEST_WITH_RISK_N_BARS)
-    mock_engine = MagicMock()
-    mock_result = MagicMock()
-    mock_result.stats = {
-        "total_return": 0.01,
-        "max_drawdown": -0.02,
-        "sharpe": 1.0,
-        "total_trades": 1,
-        "win_rate": 1.0,
-        "profit_factor": 2.0,
-    }
-    mock_result.blocked_trades = 0
-    mock_engine.run_realistic.return_value = mock_result
-    mock_engine.risk_limits.config.max_drawdown_pct = 20.0
-    mock_engine.risk_limits.config.max_position_pct = 10.0
-    mock_engine.risk_limits.config.daily_loss_limit_pct = 5.0
-
-    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
-        captured.update(
-            {
-                "data_file": data_file,
-                "start_date": start_date,
-                "end_date": end_date,
-                "n_bars": n_bars,
-                "verbose": verbose,
-            }
-        )
-        return sample_df
-
-    with (
-        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
-        patch.object(demo_script, "BacktestEngine", return_value=mock_engine),
-        patch.object(demo_script, "load_strategy", return_value=MagicMock()),
-    ):
-        demo_script.demo_default_risk()
-
-    assert captured == {
-        "data_file": None,
-        "start_date": None,
-        "end_date": None,
-        "n_bars": DEMO_BACKTEST_WITH_RISK_N_BARS,
-        "verbose": False,
-    }
-    mock_engine.run_realistic.assert_called_once()
-
-
-def test_demo_backtest_with_risk_risk_semantics_preserved_in_source() -> None:
-    source = _read_source("demo_backtest_with_risk")
-    for marker in RISK_SEMANTICS_MARKERS:
-        assert marker in source, f"missing risk semantics marker: {marker}"
-    assert "create_test_data" not in source
 
 
 def test_run_simple_backtest_source_has_no_local_loader_definitions() -> None:
@@ -343,20 +174,13 @@ def test_run_simple_backtest_risk_semantics_preserved_in_source() -> None:
 
 @pytest.mark.parametrize(
     "name",
-    [n for n in TARGET_SCRIPTS if n != "demo_complete_pipeline"],
+    list(TARGET_SCRIPTS),
 )
 def test_module_imports_without_main_side_effects(name: str) -> None:
     module = importlib.import_module(f"scripts.{name}")
     with patch.object(module, "main") as main_mock:
         importlib.reload(module)
     main_mock.assert_not_called()
-
-
-def test_demo_complete_pipeline_source_imports_load_strategy_without_running_main() -> None:
-    """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; source-only check."""
-    source = _read_source("demo_complete_pipeline")
-    assert "load_strategy" in source
-    assert "from src.strategies.ma_crossover import generate_signals" not in source
 
 
 @pytest.mark.parametrize("name", TARGET_SCRIPTS)
@@ -393,8 +217,6 @@ def test_ma_crossover_scripts_use_canonical_registry_key() -> None:
     ma_scripts = (
         "run_simple_backtest",
         "demo_portfolio_backtest",
-        "demo_backtest_with_risk",
-        "demo_complete_pipeline",
     )
     for name in ma_scripts:
         assert MA_CROSSOVER_KEY in _read_source(name)

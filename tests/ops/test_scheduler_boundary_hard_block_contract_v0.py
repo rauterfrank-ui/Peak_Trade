@@ -15,7 +15,6 @@ RUN_SCHEDULER = REPO_ROOT / "scripts/run_scheduler.py"
 HARDENING_TESTS = REPO_ROOT / "tests/ops/test_scheduler_dry_run_hardening_source_contract_v0.py"
 HARDENING_MARKER = "SCHEDULER_DRY_RUN_HARDENING_SOURCE_CONTRACT_V0=true"
 SHARED_GUARD = REPO_ROOT / "scripts/ops/scheduler_start_boundary_guard_v0.py"
-P67_CLI = REPO_ROOT / "src/ops/p67/shadow_session_scheduler_cli_v1.py"
 
 REQUIRED_MARKERS = (
     "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0=true",
@@ -37,15 +36,6 @@ def _load_run_scheduler():
     assert spec is not None and spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     sys.modules["run_scheduler"] = mod
-    spec.loader.exec_module(mod)
-    return mod
-
-
-def _load_p67_cli():
-    spec = importlib.util.spec_from_file_location("p67_shadow_session_scheduler_cli_v1", P67_CLI)
-    assert spec is not None and spec.loader is not None
-    mod = importlib.util.module_from_spec(spec)
-    sys.modules["p67_shadow_session_scheduler_cli_v1"] = mod
     spec.loader.exec_module(mod)
     return mod
 
@@ -205,13 +195,6 @@ def test_guard_allows_test_preflight_override_env(monkeypatch) -> None:
     mod.assert_scheduler_start_authorized()
 
 
-def test_p67_cli_guarded_in_spec() -> None:
-    text = SPEC.read_text(encoding="utf-8")
-    assert "shadow_session_scheduler_cli_v1.py" in text
-    assert "scheduler_start_boundary_guard_v0.py" in text
-    assert P67_CLI.is_file()
-
-
 def test_shared_guard_module_exists() -> None:
     assert SHARED_GUARD.is_file()
     text = SHARED_GUARD.read_text(encoding="utf-8")
@@ -233,79 +216,6 @@ def test_boundary_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v
     assert HARDENING_MARKER in text
     lines = {line.strip() for line in text.splitlines()}
     assert "SCHEDULER_EXECUTION_AUTHORIZED=true" not in lines
-
-
-def test_p67_cli_calls_guard_before_run() -> None:
-    source = P67_CLI.read_text(encoding="utf-8")
-    guard_idx = source.index("_assert_scheduler_start_authorized")
-    run_idx = source.index("run_shadow_session_scheduler_v1(ctx)")
-    assert guard_idx < run_idx
-    assert "scheduler_start_boundary_guard_v0" in source
-    assert "build_paper_shadow_247_preflight_status" not in source
-
-
-def test_p67_cli_main_blocks_before_scheduler(monkeypatch) -> None:
-    p67 = _load_p67_cli()
-    scheduler_calls: list[object] = []
-
-    monkeypatch.setattr(sys, "argv", ["shadow_session_scheduler_cli_v1"])
-    monkeypatch.setattr(
-        p67,
-        "_assert_scheduler_start_authorized",
-        lambda: (_ for _ in ()).throw(SystemExit(2)),
-    )
-    monkeypatch.setattr(
-        p67,
-        "run_shadow_session_scheduler_v1",
-        lambda ctx: scheduler_calls.append(ctx) or {},
-    )
-
-    with pytest.raises(SystemExit) as exc:
-        p67.main()
-    assert exc.value.code == 2
-    assert scheduler_calls == []
-
-
-def test_p67_cli_main_blocks_with_machine_tokens(monkeypatch, capsys) -> None:
-    p67 = _load_p67_cli()
-
-    def _guard():
-        print("SCHEDULER_START_BLOCKED_BY_PREFLIGHT=true")
-        print("SCHEDULER_EXECUTION_AUTHORIZED=false")
-        print("HOLD_NO_PAPER_RUN_ACTIVE=true")
-        print("SCHEDULER_START_BLOCK_REASON=hold_context_v0.current_state=HOLD_NO_PAPER_RUN")
-        raise SystemExit(2)
-
-    monkeypatch.setattr(sys, "argv", ["shadow_session_scheduler_cli_v1"])
-    monkeypatch.setattr(p67, "_assert_scheduler_start_authorized", _guard)
-    monkeypatch.setattr(
-        p67, "run_shadow_session_scheduler_v1", lambda ctx: {"meta": {}, "events": []}
-    )
-
-    with pytest.raises(SystemExit) as exc:
-        p67.main()
-    assert exc.value.code == 2
-    out = capsys.readouterr().out
-    assert "SCHEDULER_START_BLOCKED_BY_PREFLIGHT=true" in out
-    assert "SCHEDULER_EXECUTION_AUTHORIZED=false" in out
-    assert "HOLD_NO_PAPER_RUN_ACTIVE=true" in out
-
-
-def test_p67_cli_main_reaches_scheduler_when_guard_passes(monkeypatch) -> None:
-    p67 = _load_p67_cli()
-    scheduler_calls: list[object] = []
-
-    monkeypatch.setattr(sys, "argv", ["shadow_session_scheduler_cli_v1"])
-    monkeypatch.setattr(p67, "_assert_scheduler_start_authorized", lambda: None)
-    monkeypatch.setattr(
-        p67,
-        "run_shadow_session_scheduler_v1",
-        lambda ctx: scheduler_calls.append(ctx) or {"meta": {"mode": ctx.mode}, "events": []},
-    )
-
-    rc = p67.main()
-    assert rc == 0
-    assert len(scheduler_calls) == 1
 
 
 def test_boundary_owner_crosslinks_gap7_and_scheduler_dry_run_hardening_v0() -> None:

@@ -5618,7 +5618,6 @@ entities:
       - src/ops/order_capability_private_endpoint_boundary_contract_v1.py
       - src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py
       - src/ops/order_capability_side_price_qty_rules_contract_v1.py
-      - src/ops/p67/recorded_price_series_v0.py
       - src/ops/p85/run_live_data_ingest_readiness_v1.py
       - src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/constants_v1.py
       - src/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/constants_v1.py
@@ -5845,15 +5844,9 @@ entities:
     current_status: CURRENT_NONCANONICAL
     modified_by: PENDING_CHANGE
     source_paths:
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/__init__.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/constants_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_claims_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_v1.py
+      - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/SUMMARY.json
+      - evidence/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/20260902T143840Z/claims.json
     evidence_sources:
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
-      - tests/ops/test_section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1.py
-      - tests/ops/test_section_11_13_5_z2dh_persist_v1.py
       - tests/ops/test_section_11_13_5_z2di_persist_v1.py
       - tests/ops/test_section_11_13_5_z2dj_persist_v1.py
       - tests/ops/test_section_11_13_5_z2dk_persist_v1.py

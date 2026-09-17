@@ -21,13 +21,8 @@ from __future__ import annotations
 
 import importlib
 import importlib.util
-import json
-import socket
-import sys
 from pathlib import Path
 from typing import Any
-
-import pytest
 
 try:
     import tomllib
@@ -39,8 +34,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 # Must stay aligned with `shadow_247_futures_start_wrapper_skeleton_v0` and wrapper contract tests.
 RECORDED_PUBLIC_REST_REPLAY_KIND = "bounded_shadow_dry_run_recorded_public_rest_replay_heartbeat"
 
-_RECORDED_ADAPTER = REPO_ROOT / "src/ops/p67/recorded_price_series_v0.py"
-_P67_SCHEDULER = REPO_ROOT / "src/ops/p67/shadow_session_scheduler_v1.py"
 _WRAPPER = REPO_ROOT / "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
 _BRIDGE = REPO_ROOT / "scripts/ops/build_public_rest_to_supervised_observer_bridge_v0.py"
 _STATIC_PKG = REPO_ROOT / "scripts/ops/build_static_market_capture_package_v0.py"
@@ -81,26 +74,6 @@ def _load_scripts_ops_module(fake_name: str, path: Path) -> Any:
 def test_public_capture_and_recorded_adapter_surfaces_exist() -> None:
     matches = list(REPO_ROOT.glob("scripts/ops/capture_public_rest_*_v0.py"))
     assert matches == []
-    assert _RECORDED_ADAPTER.is_file()
-
-
-def test_recorded_price_adapter_documents_midpoint_and_returns_contract() -> None:
-    text = _RECORDED_ADAPTER.read_text(encoding="utf-8")
-    assert "load_simple_returns_from_recorded_price_source" in text
-    assert "bidPrice" in text and "askPrice" in text
-    assert "midpoint" in text.lower()
-
-
-def test_p67_scheduler_exposes_recorded_price_meta_keys() -> None:
-    body = _P67_SCHEDULER.read_text(encoding="utf-8")
-    for key in (
-        "recorded_price_source_used",
-        "recorded_price_source_path",
-        "recorded_price_series_count",
-        "validate_recorded_price_source_path",
-        "load_simple_returns_from_recorded_price_source",
-    ):
-        assert key in body, f"missing stable crosslink field/reference: {key!r}"
 
 
 def test_bounded_wrapper_wires_recorded_public_rest_inventory_and_replay_kind() -> None:
@@ -174,12 +147,10 @@ def test_preflight_contract_doc_states_blocked_non_authorizing() -> None:
 
 
 def test_supervised_observer_is_optional_test_surface_not_p67_gate() -> None:
-    """Traceability crosslink reused gate artefacts; P67 Pfad referenziert kein supervised bundle."""
+    """Traceability crosslink reused gate artefacts; no p67 scheduler remains."""
     assert _SUPERVISED_OBSERVER_TEST.is_file()
     assert _OBS_SUPERVISED_TIMED_SCRIPT.is_file()
     assert _OBS_FILE_SNAPSHOT_SCRIPT.is_file()
-    p67_txt = _P67_SCHEDULER.read_text(encoding="utf-8").lower()
-    assert "supervised" not in p67_txt
 
 
 def test_offline_crosslink_shadow247_governance_charter_path_anchor_v0() -> None:
@@ -225,44 +196,3 @@ def test_offline_crosslink_stop_snapshot_contract_ids_v0() -> None:
     assert "PT_STOP_KEYS" in body
     low = body.lower()
     assert "does not authorize live trading" in low
-
-
-def test_p67_recorded_source_meta_matches_offline_crosslink_semantics(
-    tmp_path: Path,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    def _deny_socket(*_a: object, **_kw: object) -> object:
-        raise AssertionError("socket creation blocked for offline crosslink contract")
-
-    monkeypatch.setattr(socket, "socket", _deny_socket)
-    sys.modules.pop("src.ops.p67.shadow_session_scheduler_v1", None)
-
-    gate = tmp_path / "recorded_gate"
-    rows = []
-    for i in range(61):
-        rows.append(
-            {
-                "bidPrice": f"{100 + i}.00",
-                "askPrice": f"{100 + i}.50",
-                "symbol": "BTCUSDT",
-            },
-        )
-    gate.mkdir(parents=True)
-    (gate / "mids.json").write_text(json.dumps(rows) + "\n", encoding="utf-8")
-
-    from src.ops.p67.shadow_session_scheduler_v1 import (
-        P67RunContextV1,
-        run_shadow_session_scheduler_v1,
-    )
-
-    out = run_shadow_session_scheduler_v1(
-        P67RunContextV1(
-            mode="shadow",
-            iterations=1,
-            interval_seconds=0.0,
-            recorded_price_source=gate,
-        ),
-    )
-    assert out["meta"]["recorded_price_source_used"] is True
-    assert out["meta"]["recorded_price_series_count"] == 60
-    assert out["meta"]["recorded_price_source_path"] == str(gate.resolve())
