@@ -192,10 +192,11 @@ def test_created_flag_pins_and_docs() -> None:
     assert (
         "FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT" in mot
     )
+    assert "docs_token:" in spec
     assert (
-        "docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1"
-        in spec
-    )
+        "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_"
+        "BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1"
+    ) in spec
     assert "CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1" in atlas
     for path in (*PROTECTED_ALGORITHM_FILES, *SEALED_CORE_MEMBERS):
         assert (REPO_ROOT / path).is_file()
