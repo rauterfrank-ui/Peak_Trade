@@ -86,6 +86,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
     CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
+    verify_manifest_sha256_v1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -122,6 +125,15 @@ EH_HEADING = "### 11.2.1.EH FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSE
 EH_MS04A_HEADING = (
     "### 11.2.1.EH MS04A FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_LIVE_GET_CONTRACT"
 )
+EH_MS04D_HEADING = (
+    "### 11.2.1.EH MS04D FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_MS04B_HISTORICAL_EVIDENCE"
+)
+MS04B_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T130821Z"
+)
+TRANSPORT_RAW_BODY_SHA256 = "d6e8cc85ea1fc9f6d3461cca09294d5791ad6133cafff8fe39ba4dd163704997"
 NATIVE_ID = "0G-USDT-SWAP"
 OLDER_FINALIZED_TS_S = 1_789_527_720.0
 NEWEST_FINALIZED_TS_S = 1_789_527_840.0
@@ -196,12 +208,18 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert EH_HEADING in runbook
     assert EH_MS04A_HEADING in runbook
+    assert EH_MS04D_HEADING in runbook
     assert THIS_SLICE in runbook
     assert MS04A_SLICE in runbook
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in runbook
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in runbook
+    assert "RAW_HTTP_BYTES_PERSISTED=false" in runbook
+    assert TRANSPORT_RAW_BODY_SHA256 in runbook
     assert "CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN" in runbook
     assert "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT" not in runbook
     assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in mot
     assert "MS04A_EH_LIVE_GET_CONTRACT" in mot
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in mot
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -211,6 +229,8 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert "MS03_CURSOR_FLOOR_AND_ABSENCE_FAIL_CLOSED" in atlas
     assert "MS04A_EH_LIVE_GET_CONTRACT" in atlas
     assert "MS04A_CONTRACT_BOUND=true" in atlas
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in atlas
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in atlas
     for path in PROTECTED_ALGORITHM_FILES:
         assert (REPO_ROOT / path).is_file()
 
@@ -639,3 +659,51 @@ def test_ms04a_does_not_execute_get_or_eg_or_v5() -> None:
     assert PERFORM_GET_DEFAULT is False
     assert LIVE_GET_EXECUTED is False
     assert MS05_AUTHORIZED is False
+
+
+def test_ms04d_historical_evidence_pack_is_not_standing_enablement() -> None:
+    assert MS04B_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=MS04B_EVIDENCE_PACK) == 0
+    claims = json.loads((MS04B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    metadata = json.loads(
+        (MS04B_EVIDENCE_PACK / "request_metadata.json").read_text(encoding="utf-8")
+    )
+    mapped = json.loads((MS04B_EVIDENCE_PACK / "ms02_mapping.json").read_text(encoding="utf-8"))
+    floor = json.loads(
+        (MS04B_EVIDENCE_PACK / "ms03_floor_evaluation.json").read_text(encoding="utf-8")
+    )
+    assert claims["GET_COUNT"] == 1
+    assert claims["HTTP_STATUS"] == 200
+    assert claims["OBSERVATION_NATIVE_ID"] == NATIVE_ID
+    assert claims["OBSERVATION_BAR"] == "1m"
+    assert claims["OBSERVATION_FINALIZED"] == "1"
+    assert claims["OBSERVATION_VENUE_EVENT_TIME"] == 1_789_650_660.0
+    assert claims["CURSOR_FLOOR_VENUE_EVENT_TIME"] == 1_789_527_780.0
+    assert claims["MS02_MAPPING_RESULT"] == "EMITTED"
+    assert mapped["disposition"] == "EMITTED"
+    assert claims["MS03_FLOOR_COMPARISON"] == "NEWER_THAN_FLOOR"
+    assert floor["disposition"] == "EMITTED"
+    assert metadata["body_sha256"] == TRANSPORT_RAW_BODY_SHA256
+    assert claims["BODY_SHA256"] == TRANSPORT_RAW_BODY_SHA256
+    assert claims["LIVE_GET_EXECUTED"] is True
+    assert claims["LIVE_GET_EXECUTED_STANDING_PIN"] is False
+    assert claims["MS04_AUTHORIZED_STANDING"] is False
+    assert claims["PERFORM_GET_DEFAULT"] is False
+    assert not (MS04B_EVIDENCE_PACK / "raw_body.bin").exists()
+    assert not (MS04B_EVIDENCE_PACK / "raw_http.bin").exists()
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    ms04d = runbook.split(EH_MS04D_HEADING, 1)[1].split("\n## ", 1)[0]
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert "LIVE_GET_EXECUTED = False" in source
+    assert "PERFORM_GET_DEFAULT = False" in source
+    assert "MS04_AUTHORIZED = False" in source
+    assert "THIS_SLICE_FRESH_GET_EXECUTED" not in ms04d
+    assert "THIS_SLICE_LIVE_GET_EXECUTED" not in ms04d
+    assert "CANONICAL_EVIDENCE_PACK=" in ms04d
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in ms04d
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source

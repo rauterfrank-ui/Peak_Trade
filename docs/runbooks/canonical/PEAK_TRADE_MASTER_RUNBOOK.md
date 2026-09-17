@@ -30871,6 +30871,90 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EH MS04D FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_MS04B_HISTORICAL_EVIDENCE
+
+Consumes Owner-GO
+`OWNER_GO_MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE_V1`
+for canonical persistence of the already-validated MS04B forensic pack
+as historical evidence only. This persist does not rewrite
+§11.2.1.DA–§11.2.1.EH standing persist fields, including the MS04A
+standing pins. CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+The EH seam Owner-GO remains
+`OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`.
+
+Exactly one bounded Owner-GO public read-only candles GET occurred under
+`OWNER_GO_SCOPE=MS04B_EXACTLY_ONE_BOUND_EH_LIVE_GET_ONLY`. That event is
+recorded by the canonical evidence pack below. The pack is historical
+evidence, not standing enablement, not GET authority, and not EG/V5
+runtime authority. Standing pins remain
+`LIVE_GET_EXECUTED=false`, `PERFORM_GET_DEFAULT=false`, and
+`MS04_AUTHORIZED=false`. `LIVE_GET_EXECUTED` is not reinterpreted as
+historical-event state. The completion record is the canonical evidence
+pack itself. No `THIS_SLICE_*` enablement field is added.
+
+Epistemic distinction for the persisted body: the transport observed and
+hash-recorded the raw HTTP body as
+`d6e8cc85ea1fc9f6d3461cca09294d5791ad6133cafff8fe39ba4dd163704997`.
+The persisted pack contains a pretty-printed JSON representation of the
+parsed payload. The raw HTTP byte artifact is absent and is not
+reconstructed. This persist does not GET, retry, dispatch the EG
+trigger, mutate the cursor, invoke V5, execute a runtime cycle, or
+start MS05.
+
+``` text
+THIS_SLICE=11.2.1.EH.MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE_V1
+OWNER_GO_SCOPE=MS04B_HISTORICAL_EVIDENCE_PERSIST_ONLY
+OWNER_GO_STATUS=CONSUMED
+SEAM_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+JOIN_SEAM_ID=CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_SEAM_V1
+MS04A_CONTRACT_BOUND=true
+CANONICAL_EVIDENCE_PACK=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/20260917T130821Z
+HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true
+RAW_HTTP_BYTES_PERSISTED=false
+PERSISTED_REPRESENTATION=PRETTY_PRINTED_JSON
+TRANSPORT_RAW_BODY_SHA256=d6e8cc85ea1fc9f6d3461cca09294d5791ad6133cafff8fe39ba4dd163704997
+BOUND_ORIGIN_MAIN_SHA=c5b89ee7871b0026bff31fbf74be5134261d0fce
+EG_TRIGGER_EXECUTED=false
+RUNTIME_CYCLE_AUTHORIZED=false
+PERFORM_GET_DEFAULT=false
+LIVE_GET_EXECUTED=false
+MS04_AUTHORIZED=false
+MS05_AUTHORIZED=false
+AUTONOMY_CAN_MINT_PERMIT=false
+AUTONOMY_CAN_POST=false
+NEW_TRADING_AUTHORITY_CREATED=false
+STEP_29Q_STATUS=PLAN_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+PERMIT_CREATED=false
+POST_COUNT=0
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
