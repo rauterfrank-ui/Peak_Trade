@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, and post-MS04D T1/T2 authority-separation persist; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, and S2+S3 canonical single runtime-path offline bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -10,7 +10,8 @@ last_updated: 2026-09-17
 # Full Core Current Productive Scoped One Shot C1 Observation Source V1
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH,
-§11.2.1.EH MS04A, §11.2.1.EH MS04D, and §11.2.1.EH S1. Atlas remains
+§11.2.1.EH MS04A, §11.2.1.EH MS04D, §11.2.1.EH S1, and
+§11.2.1.EH S2+S3. Atlas remains
 `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
 MS01 consumed
@@ -24,13 +25,20 @@ consumes `OWNER_GO_POST_MS04D_T1_T2_AUTHORITY_SEPARATION_PERSIST_V1` to
 persist that T1=`PRESENT_HISTORICAL_MS04B_EMITTED_OBSERVATION_TO_EG` has
 `OWNER_GO_ABSENT` and is not consumed, while T2 remains
 `DEFINED_NOT_CONSUMED` and not consumed. S1 does not create, define, or
-consume a T1 Owner-GO and does not consume T2. The EH seam Owner-GO is
-unchanged. Standing pins remain `LIVE_GET_EXECUTED=false`,
+consume a T1 Owner-GO and does not consume T2. S2+S3 consumes
+`OWNER_GO_POST_MS04D_S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND_V1`
+to persist the already-carried path
+`EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST` and bind its
+offline call-contract. Census A/B/C are not equal architecture offers.
+Direct V5 as CURRENT_PRODUCTIVE entrypoint is forbidden. Historical
+MS04B as EG input is forbidden. The EH seam Owner-GO is unchanged.
+Standing pins remain `LIVE_GET_EXECUTED=false`,
 `PERFORM_GET_DEFAULT=false`, `MS04_AUTHORIZED=false`, and
 `MS05_AUTHORIZED=false`. The MS04B pack remains
-`HISTORICAL_EVIDENCE_ONLY`. This spec does not authorize a live GET,
-poll, permit, POST, EG trigger, V5 invoke, MS05, or runtime cycle. V5
-remains the N=1 cycle host and is not the EH lifecycle owner.
+`HISTORICAL_EVIDENCE_ONLY`. T1 remains `OWNER_GO_ABSENT`. T2 remains
+`DEFINED_NOT_CONSUMED`. This spec does not authorize a live GET,
+poll, permit, POST, EG trigger, V5 invoke, MS05, S4, or runtime cycle.
+V5 remains the N=1 cycle host and is not the EH lifecycle owner.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
@@ -51,9 +59,21 @@ T1_CONSUMED=false
 T2_OWNER_GO=OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1
 T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
 T2_CONSUMED=false
+S2_S3_OWNER_GO=OWNER_GO_POST_MS04D_S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND_V1
+S2_S3_OWNER_GO_SCOPE=OFFLINE_PATH_SELECTION_AND_CALL_CONTRACT_BIND_ONLY
+S2_S3_CALL_CONTRACT_BOUND=true
+SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST
+PATH_CARDINALITY=1
+DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN
+HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN
+T1_ONLY_WITHOUT_T2=FORBIDDEN
+FRESH_GET_AUTHORIZED=false
+NETWORK_EXECUTION_AUTHORIZED=false
 GET_COUNT_THIS_SLICE=0
 EG_DISPATCH_COUNT=0
+V5_INVOKE_COUNT=0
 RUNTIME_CYCLE_COUNT=0
+S4_STARTED=false
 EG_TRIGGER_EXECUTED=false
 RUNTIME_CYCLE_EXECUTED=false
 MS05_STARTED=false

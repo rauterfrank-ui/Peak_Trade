@@ -13,6 +13,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY as EG_AUTHORITY_BOUNDARY,
     JOIN_SEAM_ID as EG_JOIN_SEAM_ID,
+    OWNER_GO as EG_OWNER_GO,
     REASON_DUPLICATE_C1,
     REASON_LINEAGE_MISMATCH,
     REASON_STALE_C1,
@@ -28,17 +29,27 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     BOUNDED_POLL_AUTHORIZED,
     CADENCE_OWNER_AUTHORIZED,
     CANONICAL_HISTORICAL_EVIDENCE_PACK,
+    CENSUS_A_REJECT_BOTH,
+    CENSUS_B_HISTORICAL_OBSERVATION_TO_EG,
+    CENSUS_C_ARCHITECTURE,
     CONFIRM_FINALIZED,
     CONTINUOUS_RUNTIME_AUTHORIZED,
+    CYCLE_HOST,
     DAEMON_AUTHORIZED,
+    DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
     DISPOSITION_EMITTED,
     DISPOSITION_FAIL_CLOSED,
     DISPOSITION_PRESENT,
     EG_AUTHORITY_BOUNDARY_UNCHANGED,
+    EG_CALL_TOKEN,
+    EG_CALL_TOKEN_CLASS,
     EG_DISPATCH_COUNT,
     EG_TRIGGER_EXECUTED,
+    FRESH_C1_REQUIREMENT,
+    FRESH_GET_AUTHORIZED,
     GET_COUNT_THIS_SLICE,
     HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT,
+    HISTORICAL_MS04B_AS_EG_INPUT,
     HISTORICAL_PACK_CLASS,
     JOIN_SEAM_ID,
     LIVE_GET_EXECUTED,
@@ -52,8 +63,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     MS04_AUTHORIZED,
     MS05_AUTHORIZED,
     MS05_STARTED,
+    NETWORK_EXECUTION_AUTHORIZED,
+    OBSERVATION_SOURCE,
+    ORCHESTRATOR,
     OWNER_GO,
     OWNER_GO_SCOPE,
+    PATH_CARDINALITY,
     PERFORM_GET_DEFAULT,
     PRESENCE_ABSENT,
     PRESENCE_PRESENT,
@@ -69,13 +84,25 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     S1_OWNER_GO_SCOPE,
     S1_OWNER_GO_STATUS,
     S1_THIS_SLICE,
+    S2_S3_CALL_CONTRACT_BOUND,
+    S2_S3_OWNER_GO,
+    S2_S3_OWNER_GO_SCOPE,
+    S2_S3_OWNER_GO_STATUS,
+    S2_S3_THIS_SLICE,
+    S4_STARTED,
+    SELECTED_RUNTIME_PATH,
+    T1_CLASS,
     T1_CONSUMED,
+    T1_ONLY_WITHOUT_T2,
     T1_OWNER_GO_STATUS,
     T1_TRANSITION,
+    T2_CLASS,
     T2_CONSUMED,
     T2_OWNER_GO,
     T2_OWNER_GO_STATUS,
     THIS_SLICE,
+    V5_INVOKE_COUNT,
+    bind_current_productive_canonical_single_runtime_path_call_contract_v1,
     bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1,
     evaluate_current_productive_c1_observation_against_cursor_floor_v1,
     map_injected_candles_payload_to_current_productive_c1_observation_v1,
@@ -151,10 +178,16 @@ EH_MS04D_HEADING = (
     "### 11.2.1.EH MS04D FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_MS04B_HISTORICAL_EVIDENCE"
 )
 EH_S1_HEADING = "### 11.2.1.EH S1 POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
+EH_S2_S3_HEADING = "### 11.2.1.EH S2+S3 CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
 S1_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
     / "20260917T134900Z"
+)
+S2_S3_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T140800Z"
 )
 MS04B_EVIDENCE_PACK = (
     REPO_ROOT
@@ -232,6 +265,7 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT is True
     assert GET_COUNT_THIS_SLICE == 0
     assert EG_DISPATCH_COUNT == 0
+    assert V5_INVOKE_COUNT == 0
     assert RUNTIME_CYCLE_COUNT == 0
     assert EG_TRIGGER_EXECUTED is False
     assert RUNTIME_CYCLE_EXECUTED is False
@@ -239,6 +273,21 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert S1_OWNER_GO_SCOPE == "T1_T2_AUTHORITY_SEPARATION_PERSIST_ONLY"
     assert S1_OWNER_GO_STATUS == "CONSUMED"
     assert S1_THIS_SLICE == "11.2.1.EH.S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
+    assert S2_S3_OWNER_GO == (
+        "OWNER_GO_POST_MS04D_S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND_V1"
+    )
+    assert S2_S3_OWNER_GO_SCOPE == "OFFLINE_PATH_SELECTION_AND_CALL_CONTRACT_BIND_ONLY"
+    assert S2_S3_OWNER_GO_STATUS == "CONSUMED"
+    assert S2_S3_THIS_SLICE == "11.2.1.EH.S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
+    assert S2_S3_CALL_CONTRACT_BOUND is True
+    assert SELECTED_RUNTIME_PATH == ("EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST")
+    assert PATH_CARDINALITY == 1
+    assert DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT == "FORBIDDEN"
+    assert HISTORICAL_MS04B_AS_EG_INPUT == "FORBIDDEN"
+    assert T1_ONLY_WITHOUT_T2 == "FORBIDDEN"
+    assert FRESH_GET_AUTHORIZED is False
+    assert NETWORK_EXECUTION_AUTHORIZED is False
+    assert S4_STARTED is False
     assert AUTONOMY_CAN_CHANGE_TRADING_LOGIC is False
     assert AUTONOMY_CAN_RESELECT_DOWNSTREAM is False
     assert AUTONOMY_CAN_MINT_PERMIT is False
@@ -257,10 +306,12 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert EH_MS04A_HEADING in runbook
     assert EH_MS04D_HEADING in runbook
     assert EH_S1_HEADING in runbook
+    assert EH_S2_S3_HEADING in runbook
     assert THIS_SLICE in runbook
     assert MS04A_SLICE in runbook
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in runbook
     assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in runbook
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in runbook
     assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in runbook
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in runbook
     assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in runbook
@@ -273,6 +324,7 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert "MS04A_EH_LIVE_GET_CONTRACT" in mot
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in mot
     assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in mot
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in mot
     assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in mot
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in mot
     assert "docs_token:" in spec
@@ -286,6 +338,8 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert "MS04A_CONTRACT_BOUND=true" in atlas
     assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in atlas
     assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in atlas
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in atlas
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in atlas
     assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in atlas
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in atlas
     assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in atlas
@@ -804,7 +858,7 @@ def test_s1_post_ms04d_t1_t2_authority_separation_is_not_runtime_enablement() ->
     assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
     assert "execute_network=True" not in source
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s1 = runbook.split(EH_S1_HEADING, 1)[1].split("\n## ", 1)[0]
+    s1 = runbook.split(EH_S1_HEADING, 1)[1].split(EH_S2_S3_HEADING, 1)[0]
     assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s1
     assert "T1_CONSUMED=false" in s1
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s1
@@ -850,3 +904,117 @@ def test_s1_post_ms04d_t1_t2_authority_separation_is_not_runtime_enablement() ->
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
     assert "consume a T1 Owner-GO" in spec
     assert "does not consume T2" in spec
+
+
+def test_s2_s3_canonical_single_runtime_path_offline_bind_is_not_runtime_enablement() -> None:
+    result = bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+        owner_go=S2_S3_OWNER_GO,
+    )
+    assert result.disposition == DISPOSITION_PRESENT
+    assert result.selected_runtime_path == SELECTED_RUNTIME_PATH
+    assert result.path_cardinality == 1
+    assert result.observation_source == OBSERVATION_SOURCE
+    assert result.orchestrator == ORCHESTRATOR
+    assert result.cycle_host == CYCLE_HOST
+    assert result.eg_call_token == EG_CALL_TOKEN
+    assert result.eg_call_token == EG_OWNER_GO
+    assert result.eg_call_token_class == EG_CALL_TOKEN_CLASS
+    assert result.t2_owner_go == T2_OWNER_GO
+    assert result.t2_owner_go == V5_OWNER_GO
+    assert result.t2_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert result.t1_owner_go_status == "OWNER_GO_ABSENT"
+    assert result.direct_v5_as_current_productive_entrypoint == "FORBIDDEN"
+    assert result.historical_ms04b_as_eg_input == "FORBIDDEN"
+    assert result.t1_only_without_t2 == "FORBIDDEN"
+    assert result.network_execution_authorized is False
+    assert result.fresh_get_authorized is False
+    assert result.get_count == 0
+    assert result.eg_dispatch_count == 0
+    assert result.v5_invoke_count == 0
+    assert result.runtime_cycle_count == 0
+    assert result.reason_code == ""
+    assert CENSUS_A_REJECT_BOTH == "UNSELECTED_NOT_A_RUNTIME_PATH"
+    assert CENSUS_B_HISTORICAL_OBSERVATION_TO_EG == "FORBIDDEN"
+    assert CENSUS_C_ARCHITECTURE == "CARRIED_AS_EH_TO_EG_TO_V5_HOST_OFFLINE_BIND_ONLY"
+    assert T1_CLASS == "OWNER_GO_ABSENT_NOT_CALL_AUTHORITY"
+    assert T2_CLASS == "DEFINED_NOT_CONSUMED_RUNTIME_AUTHORITY_NOT_CONSUMED"
+    assert FRESH_C1_REQUIREMENT == (
+        "REQUIRED_FOR_EVENTUAL_RUNTIME_INPUT_THIS_SLICE_GET_UNAUTHORIZED"
+    )
+    assert T1_OWNER_GO_STATUS == "OWNER_GO_ABSENT"
+    assert T1_CONSUMED is False
+    assert T2_OWNER_GO_STATUS == "DEFINED_NOT_CONSUMED"
+    assert T2_CONSUMED is False
+    assert LIVE_GET_EXECUTED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+    assert MS05_STARTED is False
+    assert S4_STARTED is False
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "bind_current_productive_canonical_single_runtime_path_call_contract_v1" in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "execute_network" not in source
+    assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
+    mismatched = bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+        owner_go=OWNER_GO,
+    )
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.selected_runtime_path == ""
+    assert mismatched.path_cardinality == 0
+    assert mismatched.get_count == 0
+    assert mismatched.eg_dispatch_count == 0
+    assert mismatched.v5_invoke_count == 0
+    assert mismatched.runtime_cycle_count == 0
+    assert mismatched.reason_code == REASON_OWNER_GO_MISMATCH
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s2s3 = runbook.split(EH_S2_S3_HEADING, 1)[1].split("\n## ", 1)[0]
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in s2s3
+    assert "PATH_CARDINALITY=1" in s2s3
+    assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in s2s3
+    assert "HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN" in s2s3
+    assert "T1_ONLY_WITHOUT_T2=FORBIDDEN" in s2s3
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s2s3
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s2s3
+    assert "T2_CONSUMED=false" in s2s3
+    assert "T1_CONSUMED=false" in s2s3
+    assert "execute_network=false" in s2s3
+    assert "GET_COUNT_THIS_SLICE=0" in s2s3
+    assert "EG_DISPATCH_COUNT=0" in s2s3
+    assert "V5_INVOKE_COUNT=0" in s2s3
+    assert "RUNTIME_CYCLE_COUNT=0" in s2s3
+    assert "S4_STARTED=false" in s2s3
+    assert "does not GET, dispatch EG, invoke V5" in s2s3
+    assert S2_S3_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S2_S3_EVIDENCE_PACK) == 0
+    claims = json.loads((S2_S3_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["SELECTED_RUNTIME_PATH"] == SELECTED_RUNTIME_PATH
+    assert claims["PATH_CARDINALITY"] == 1
+    assert claims["DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT"] == "FORBIDDEN"
+    assert claims["HISTORICAL_MS04B_AS_EG_INPUT"] == "FORBIDDEN"
+    assert claims["T1_OWNER_GO_STATUS"] == "OWNER_GO_ABSENT"
+    assert claims["T1_CONSUMED"] is False
+    assert claims["T2_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["T2_CONSUMED"] is False
+    assert claims["NETWORK_EXECUTION_AUTHORIZED"] is False
+    assert claims["FRESH_GET_AUTHORIZED"] is False
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["LIVE_GET_EXECUTED"] is False
+    assert claims["S4_STARTED"] is False
+    assert claims["BOUND_ORIGIN_MAIN_SHA"] == "18750d36bcb8cee4de934d73d2ed4626d81a2d97"
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in spec
+    assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in spec
+    assert "HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN" in spec
+    assert "does not consume T2" in spec
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    assert "20260917T140800Z" in mot
+    origin = (S2_S3_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "18750d36bcb8cee4de934d73d2ed4626d81a2d97"

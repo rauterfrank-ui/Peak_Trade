@@ -23,6 +23,15 @@ as DEFINED_NOT_CONSUMED and not consumed. Does not create, define, or
 consume a T1 Owner-GO. Does not consume T2. Historical MS04B pack remains
 HISTORICAL_EVIDENCE_ONLY and is not standing enablement.
 
+S2+S3 COLLAPSE CANONICAL SINGLE RUNTIME PATH OFFLINE BIND.
+Pins the already-carried CURRENT_PRODUCTIVE next-cycle call chain
+EH scoped one-shot C1 -> EG exactly-one orchestration -> V5 N=1 host.
+Census A/B/C are not equal architecture offers. Historical MS04B as EG
+input remains forbidden. Direct V5 as CURRENT_PRODUCTIVE entrypoint
+remains forbidden. T1 remains OWNER_GO_ABSENT. T2 remains
+DEFINED_NOT_CONSUMED. This bind does not GET, dispatch EG, invoke V5,
+or start a runtime cycle.
+
 EG remains owner of dedup, cursor accept/reject, trigger, and exactly-one
 cycle dispatch. V5 remains the N=1 cycle host. This module does not call
 the EG trigger or V5 host.
@@ -40,6 +49,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REQUIRED_BAR,
     CurrentProductiveC1ObservationV1,
     CurrentProductiveGovernedNextC1OrchestrationError,
+    OWNER_GO as EG_OWNER_GO,
     REASON_CURSOR_INVALID as EG_REASON_CURSOR_INVALID,
     REASON_CURSOR_MISSING as EG_REASON_CURSOR_MISSING,
     cursor_last_accepted_c1_venue_event_time_v1,
@@ -107,7 +117,32 @@ EG_TRIGGER_EXECUTED = False
 RUNTIME_CYCLE_EXECUTED = False
 GET_COUNT_THIS_SLICE = 0
 EG_DISPATCH_COUNT = 0
+V5_INVOKE_COUNT = 0
 RUNTIME_CYCLE_COUNT = 0
+S2_S3_THIS_SLICE = "11.2.1.EH.S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
+S2_S3_OWNER_GO = "OWNER_GO_POST_MS04D_S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND_V1"
+S2_S3_OWNER_GO_SCOPE = "OFFLINE_PATH_SELECTION_AND_CALL_CONTRACT_BIND_ONLY"
+S2_S3_OWNER_GO_STATUS = "CONSUMED"
+S2_S3_CALL_CONTRACT_BOUND = True
+SELECTED_RUNTIME_PATH = "EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST"
+PATH_CARDINALITY = 1
+OBSERVATION_SOURCE = "EH_SCOPED_ONE_SHOT_C1"
+ORCHESTRATOR = "EG_NEXT_C1_TRIGGER_AND_EXACTLY_ONE"
+CYCLE_HOST = "V5_N1"
+EG_CALL_TOKEN = EG_OWNER_GO
+EG_CALL_TOKEN_CLASS = "PERSIST_CONSUMED_NOT_TRIGGER_LICENSE"
+T2_CLASS = "DEFINED_NOT_CONSUMED_RUNTIME_AUTHORITY_NOT_CONSUMED"
+T1_CLASS = "OWNER_GO_ABSENT_NOT_CALL_AUTHORITY"
+DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT = "FORBIDDEN"
+HISTORICAL_MS04B_AS_EG_INPUT = "FORBIDDEN"
+T1_ONLY_WITHOUT_T2 = "FORBIDDEN"
+CENSUS_A_REJECT_BOTH = "UNSELECTED_NOT_A_RUNTIME_PATH"
+CENSUS_B_HISTORICAL_OBSERVATION_TO_EG = "FORBIDDEN"
+CENSUS_C_ARCHITECTURE = "CARRIED_AS_EH_TO_EG_TO_V5_HOST_OFFLINE_BIND_ONLY"
+FRESH_C1_REQUIREMENT = "REQUIRED_FOR_EVENTUAL_RUNTIME_INPUT_THIS_SLICE_GET_UNAUTHORIZED"
+FRESH_GET_AUTHORIZED = False
+NETWORK_EXECUTION_AUTHORIZED = False
+S4_STARTED = False
 GET_TRANSPORT_CAPABILITY = "FullCoreProductiveReadOnlyGetTransportV1"
 GET_TRANSPORT_CLASS = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
 GET_HOST = AUTHORIZED_HOST
@@ -358,5 +393,104 @@ def bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contra
         inst_id_binding_source=INST_ID_BINDING_SOURCE,
         limit_binding_source=LIMIT_BINDING_SOURCE,
         get_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveCanonicalSingleRuntimePathCallContractV1:
+    disposition: str
+    selected_runtime_path: str
+    path_cardinality: int
+    observation_source: str
+    orchestrator: str
+    cycle_host: str
+    eg_call_token: str
+    eg_call_token_class: str
+    t2_owner_go: str
+    t2_owner_go_status: str
+    t1_owner_go_status: str
+    direct_v5_as_current_productive_entrypoint: str
+    historical_ms04b_as_eg_input: str
+    t1_only_without_t2: str
+    network_execution_authorized: bool
+    fresh_get_authorized: bool
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    reason_code: str
+
+
+def _path_fail(
+    reason_code: str,
+) -> CurrentProductiveCanonicalSingleRuntimePathCallContractV1:
+    return CurrentProductiveCanonicalSingleRuntimePathCallContractV1(
+        disposition=DISPOSITION_FAIL_CLOSED,
+        selected_runtime_path="",
+        path_cardinality=0,
+        observation_source="",
+        orchestrator="",
+        cycle_host="",
+        eg_call_token="",
+        eg_call_token_class="",
+        t2_owner_go="",
+        t2_owner_go_status="",
+        t1_owner_go_status="",
+        direct_v5_as_current_productive_entrypoint=DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+        historical_ms04b_as_eg_input=HISTORICAL_MS04B_AS_EG_INPUT,
+        t1_only_without_t2=T1_ONLY_WITHOUT_T2,
+        network_execution_authorized=False,
+        fresh_get_authorized=False,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        reason_code=reason_code,
+    )
+
+
+def bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+    *,
+    owner_go: str,
+) -> CurrentProductiveCanonicalSingleRuntimePathCallContractV1:
+    if owner_go != S2_S3_OWNER_GO:
+        return _path_fail(REASON_OWNER_GO_MISMATCH)
+    if PATH_CARDINALITY != 1:
+        return _path_fail("PATH_CARDINALITY_DRIFT")
+    if T1_OWNER_GO_STATUS != "OWNER_GO_ABSENT" or T1_CONSUMED is True:
+        return _path_fail("T1_STATUS_DRIFT")
+    if T2_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED" or T2_CONSUMED is True:
+        return _path_fail("T2_STATUS_DRIFT")
+    if FRESH_GET_AUTHORIZED is True or NETWORK_EXECUTION_AUTHORIZED is True:
+        return _path_fail("NETWORK_PIN_DRIFT")
+    if (
+        GET_COUNT_THIS_SLICE != 0
+        or EG_DISPATCH_COUNT != 0
+        or V5_INVOKE_COUNT != 0
+        or RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _path_fail("INVOKE_COUNT_DRIFT")
+    return CurrentProductiveCanonicalSingleRuntimePathCallContractV1(
+        disposition=DISPOSITION_PRESENT,
+        selected_runtime_path=SELECTED_RUNTIME_PATH,
+        path_cardinality=PATH_CARDINALITY,
+        observation_source=OBSERVATION_SOURCE,
+        orchestrator=ORCHESTRATOR,
+        cycle_host=CYCLE_HOST,
+        eg_call_token=EG_CALL_TOKEN,
+        eg_call_token_class=EG_CALL_TOKEN_CLASS,
+        t2_owner_go=T2_OWNER_GO,
+        t2_owner_go_status=T2_OWNER_GO_STATUS,
+        t1_owner_go_status=T1_OWNER_GO_STATUS,
+        direct_v5_as_current_productive_entrypoint=DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+        historical_ms04b_as_eg_input=HISTORICAL_MS04B_AS_EG_INPUT,
+        t1_only_without_t2=T1_ONLY_WITHOUT_T2,
+        network_execution_authorized=NETWORK_EXECUTION_AUTHORIZED,
+        fresh_get_authorized=FRESH_GET_AUTHORIZED,
+        get_count=GET_COUNT_THIS_SLICE,
+        eg_dispatch_count=EG_DISPATCH_COUNT,
+        v5_invoke_count=V5_INVOKE_COUNT,
+        runtime_cycle_count=RUNTIME_CYCLE_COUNT,
         reason_code="",
     )
