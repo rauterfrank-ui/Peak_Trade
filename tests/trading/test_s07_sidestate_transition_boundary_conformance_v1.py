@@ -376,3 +376,6 @@ def test_s07_t08_candidate_ack_is_not_active_or_pending_transition() -> None:
     assert all("src.execution" not in name for name in imported)
     assert all(not name.startswith("src.live") for name in imported)
     assert all("kill_switch_should_block_trading" not in name for name in imported)
+    s08_path = _REPO_ROOT / "tests/trading/test_s08_entry_exit_conformance_v1.py"
+    assert s08_path.is_file()
+    assert all("test_s08_entry_exit_conformance_v1" not in name for name in imported)
