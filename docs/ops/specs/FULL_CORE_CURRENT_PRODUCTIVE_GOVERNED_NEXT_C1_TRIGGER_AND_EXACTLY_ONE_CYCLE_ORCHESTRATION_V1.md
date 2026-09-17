@@ -25,7 +25,13 @@ constructed by default. S4B binds that occupancy input under
 `OWNER_GO_S4B_V5_OCCUPANCY_GATE_INPUT_BIND_UNDER_S4A_EXECUTE_NETWORK_FALSE_OFFLINE_ONLY_V1`
 without GET, EG dispatch, or V5 invoke. Occupancy Owner-GO
 `SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF`
-remains `DEFINED_NOT_CONSUMED`. It may accept one injected
+remains `DEFINED_NOT_CONSUMED`. S4D persists the already-validated S4C
+occupancy reproof pack as historical decision-scoped evidence only under
+`OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1`. Pack
+claim `OCCUPANCY_ABSENT` is not standing venue occupancy. Pack claim
+`CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY` is not standing GO
+consumption forever. A later pretrade decision requires a new fresh
+occupancy reproof. It may accept one injected
 finalized 1m C1, deduplicate it against the persisted cursor last-accepted
 `venue_event_time`, take a fail-closed single-cycle exclusion lock, and
 dispatch the existing V5 N=1 host exactly once. It does not poll, sleep-loop,
@@ -47,6 +53,18 @@ OCCUPANCY_FRESH_GET_TRANSPORT_PARAM=fresh_get_transport
 OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL=FullCoreFreshPretradeGetTransportV1
 S4B_V5_EXECUTE_NETWORK=false
 VENUE_OCCUPANCY=UNKNOWN
+S4D_OWNER_GO=OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1
+S4C_EVIDENCE_PACK=evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1/20260917T154542Z
+S4C_MANIFEST_SHA256=8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25
+S4C_PRETRADE_DECISION_ID=dv-occupancy-reproof-after-c1-gate-v5
+S4C_PACK_CLASSIFIER=_classify_occupancy_v1
+S4C_PACK_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+S4C_PACK_OCCUPANCY_DISPOSITION=OCCUPANCY_ABSENT
+S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER=CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY
+S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY=true
+FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true
+OCCUPANCY_OWNER_GO_CONSUMED=false
+S4D_V5_EXECUTE_NETWORK=false
 JOIN_SEAM_ID=CURRENT_PRODUCTIVE_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_SEAM_V1
 FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY=NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY
 EXISTING_V5_REUSE=true

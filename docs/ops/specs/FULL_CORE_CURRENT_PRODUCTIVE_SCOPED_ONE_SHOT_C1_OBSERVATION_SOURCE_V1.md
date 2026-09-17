@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, S2+S3 canonical single runtime-path offline bind, S4A runtime-enablement offline bind, and S4B occupancy-gate input bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; Occupancy Owner-GO remains DEFINED_NOT_CONSUMED; Fresh-C1 GET runtime GO and EG runtime trigger GO are DEFINED_NOT_CONSUMED and not consumed; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, S2+S3 canonical single runtime-path offline bind, S4A runtime-enablement offline bind, S4B occupancy-gate input bind, and S4D S4C disposition/GO-consumption standing persist; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; Occupancy Owner-GO remains DEFINED_NOT_CONSUMED; standing VENUE_OCCUPANCY remains UNKNOWN; Fresh-C1 GET runtime GO and EG runtime trigger GO are DEFINED_NOT_CONSUMED and not consumed; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -11,7 +11,7 @@ last_updated: 2026-09-17
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH,
 §11.2.1.EH MS04A, §11.2.1.EH MS04D, §11.2.1.EH S1,
-§11.2.1.EH S2+S3, §11.2.1.EH S4A, and §11.2.1.EH S4B. Atlas remains
+§11.2.1.EH S2+S3, §11.2.1.EH S4A, §11.2.1.EH S4B, and §11.2.1.EH S4D. Atlas remains
 `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
 MS01 consumed
@@ -55,6 +55,19 @@ seam while `S4A_V5_EXECUTE_NETWORK=false`. Occupancy Owner-GO
 remains `DEFINED_NOT_CONSUMED` and is not GET_GO, EG_GO, or T2_GO.
 This bind does not construct occupancy transport, GET, classify venue
 occupancy, or consume Occupancy Owner-GO. `VENUE_OCCUPANCY=UNKNOWN`.
+S4D consumes
+`OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1`
+to persist the already-validated S4C occupancy reproof pack as
+historical decision-scoped evidence only. Pack claim
+`OCCUPANCY_DISPOSITION=OCCUPANCY_ABSENT` is a
+`FRESH_GET_PER_PRETRADE_DECISION` fact for
+`pretrade_decision_id=dv-occupancy-reproof-after-c1-gate-v5` and is not
+standing venue occupancy. Pack claim
+`OCCUPANCY_OWNER_GO_STATUS_AFTER=CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY`
+is a historical invocation fact. Standing Occupancy Owner-GO remains
+`DEFINED_NOT_CONSUMED`. A later pretrade decision requires a new fresh
+occupancy reproof. This persist does not GET, dispatch EG, invoke V5,
+consume T2, or start MS05.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
@@ -105,6 +118,19 @@ OCCUPANCY_OWNER_GO=SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRE
 OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
 CANONICAL_OCCUPANCY_INPUT_SEAM=fresh_get_transport
 VENUE_OCCUPANCY=UNKNOWN
+S4D_OWNER_GO=OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1
+S4D_S4C_EVIDENCE_BOUND=true
+S4C_EVIDENCE_PACK=evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1/20260917T154542Z
+S4C_MANIFEST_SHA256=8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25
+S4C_PRETRADE_DECISION_ID=dv-occupancy-reproof-after-c1-gate-v5
+S4C_PACK_CLASSIFIER=_classify_occupancy_v1
+S4C_PACK_FRESHNESS_POLICY=FRESH_GET_PER_PRETRADE_DECISION
+S4C_PACK_OCCUPANCY_DISPOSITION=OCCUPANCY_ABSENT
+S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER=CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY
+S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY=true
+FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true
+OCCUPANCY_OWNER_GO_CONSUMED=false
+S4D_V5_EXECUTE_NETWORK=false
 S4A_LOCK_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
 S4A_EVIDENCE_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
 EG_TRIGGER_EXECUTED=false

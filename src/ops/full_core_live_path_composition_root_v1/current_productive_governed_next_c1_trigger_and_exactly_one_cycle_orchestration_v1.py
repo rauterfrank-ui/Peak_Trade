@@ -78,6 +78,32 @@ S4B_CANONICAL_EVIDENCE_PACK = (
     "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
     "20260917T151200Z"
 )
+S4D_OWNER_GO = "OWNER_GO_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_V1"
+S4D_OWNER_GO_SCOPE = "S4C_HISTORICAL_DECISION_SCOPED_EVIDENCE_PERSIST_ONLY"
+S4D_OWNER_GO_STATUS = "CONSUMED"
+S4D_THIS_SLICE = "11.2.1.EH.S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST"
+S4C_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1/"
+    "20260917T154542Z"
+)
+S4C_PRETRADE_DECISION_ID = "dv-occupancy-reproof-after-c1-gate-v5"
+S4C_PACK_OCCUPANCY_DISPOSITION = "OCCUPANCY_ABSENT"
+S4C_PACK_CLASSIFIER = "_classify_occupancy_v1"
+S4C_PACK_FRESHNESS_POLICY = "FRESH_GET_PER_PRETRADE_DECISION"
+S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER = "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+S4C_MANIFEST_SHA256 = "8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25"
+S4C_EXPECTED_REQUEST_CARDINALITY = 3
+S4D_CANONICAL_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "20260917T154800Z"
+)
+S4D_V5_EXECUTE_NETWORK = False
+S4D_GET_COUNT = 0
+S4D_EG_DISPATCH_COUNT = 0
+S4D_V5_INVOKE_COUNT = 0
+S4D_RUNTIME_CYCLE_COUNT = 0
+FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION = True
+S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY = True
 S4A_FRESH_C1_GET_OWNER_GO = "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1"
 S4A_OWNER_GO = "OWNER_GO_S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_V1"
 EH_SEAM_OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -122,6 +148,7 @@ REASON_RUNTIME_GO_SEPARATION_DRIFT = "RUNTIME_GO_SEPARATION_DRIFT"
 REASON_NETWORK_PIN_DRIFT = "NETWORK_PIN_DRIFT"
 REASON_INVOKE_COUNT_DRIFT = "INVOKE_COUNT_DRIFT"
 REASON_TRANSPORT_CONSTRUCTED_DRIFT = "TRANSPORT_CONSTRUCTED_DRIFT"
+REASON_STANDING_VENUE_OCCUPANCY_DRIFT = "STANDING_VENUE_OCCUPANCY_DRIFT"
 DISPOSITION_PRESENT = "PRESENT"
 DISPOSITION_FAIL_CLOSED = "FAIL_CLOSED"
 FALSE_TOKEN = "false"
@@ -534,6 +561,7 @@ def bind_s4b_occupancy_gate_input_v1(
         return _fail(REASON_OWNER_GO_MISMATCH)
     tokens = (
         S4B_OWNER_GO,
+        S4D_OWNER_GO,
         OCCUPANCY_OWNER_GO,
         S4A_FRESH_C1_GET_OWNER_GO,
         RUNTIME_TRIGGER_OWNER_GO,
@@ -542,7 +570,7 @@ def bind_s4b_occupancy_gate_input_v1(
         S4A_OWNER_GO,
         EH_SEAM_OWNER_GO,
     )
-    if len(set(tokens)) != 8:
+    if len(set(tokens)) != 9:
         return _fail(REASON_RUNTIME_GO_SEPARATION_DRIFT)
     if OCCUPANCY_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED":
         return _fail(REASON_OCCUPANCY_GO_STATUS_DRIFT)
@@ -580,3 +608,128 @@ def bind_s4b_occupancy_gate_input_v1(
         runtime_cycle_count=0,
         reason_code="",
     )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+    disposition: str
+    occupancy_owner_go: str
+    occupancy_owner_go_scope: str
+    occupancy_owner_go_status: str
+    occupancy_owner_go_consumed: bool
+    s4c_pack_occupancy_disposition: str
+    s4c_pack_occupancy_owner_go_status_after: str
+    s4c_pretrade_decision_id: str
+    s4c_freshness_policy: str
+    s4c_classifier: str
+    s4c_evidence_pack: str
+    s4c_manifest_sha256: str
+    historical_evidence_is_not_standing_enablement: bool
+    venue_occupancy: str
+    s4c_pack_claim_is_not_standing_venue_occupancy: bool
+    fresh_reproof_required_for_later_pretrade_decision: bool
+    v5_execute_network: bool
+    persist_go_is_runtime_license: bool
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    reason_code: str
+
+
+def bind_s4d_s4c_disposition_go_consumption_persist_v1(
+    *,
+    owner_go: str,
+) -> CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+    def _fail(reason_code: str) -> CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1:
+        return CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            occupancy_owner_go="",
+            occupancy_owner_go_scope="",
+            occupancy_owner_go_status="",
+            occupancy_owner_go_consumed=False,
+            s4c_pack_occupancy_disposition="",
+            s4c_pack_occupancy_owner_go_status_after="",
+            s4c_pretrade_decision_id="",
+            s4c_freshness_policy="",
+            s4c_classifier="",
+            s4c_evidence_pack="",
+            s4c_manifest_sha256="",
+            historical_evidence_is_not_standing_enablement=True,
+            venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+            s4c_pack_claim_is_not_standing_venue_occupancy=True,
+            fresh_reproof_required_for_later_pretrade_decision=True,
+            v5_execute_network=False,
+            persist_go_is_runtime_license=False,
+            get_count=0,
+            eg_dispatch_count=0,
+            v5_invoke_count=0,
+            runtime_cycle_count=0,
+            reason_code=reason_code,
+        )
+
+    if owner_go != S4D_OWNER_GO:
+        return _fail(REASON_OWNER_GO_MISMATCH)
+    tokens = (
+        S4D_OWNER_GO,
+        S4B_OWNER_GO,
+        OCCUPANCY_OWNER_GO,
+        S4A_FRESH_C1_GET_OWNER_GO,
+        RUNTIME_TRIGGER_OWNER_GO,
+        V5_OWNER_GO,
+        OWNER_GO,
+        S4A_OWNER_GO,
+        EH_SEAM_OWNER_GO,
+    )
+    if len(set(tokens)) != 9:
+        return _fail(REASON_RUNTIME_GO_SEPARATION_DRIFT)
+    if OCCUPANCY_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED":
+        return _fail(REASON_OCCUPANCY_GO_STATUS_DRIFT)
+    if VENUE_OCCUPANCY_KNOWLEDGE != "UNKNOWN":
+        return _fail(REASON_STANDING_VENUE_OCCUPANCY_DRIFT)
+    if S4D_V5_EXECUTE_NETWORK is True or S4B_V5_EXECUTE_NETWORK is True:
+        return _fail(REASON_NETWORK_PIN_DRIFT)
+    if (
+        S4D_GET_COUNT != 0
+        or S4D_EG_DISPATCH_COUNT != 0
+        or S4D_V5_INVOKE_COUNT != 0
+        or S4D_RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _fail(REASON_INVOKE_COUNT_DRIFT)
+    return CurrentProductiveS4DS4CDispositionGoConsumptionPersistV1(
+        disposition=DISPOSITION_PRESENT,
+        occupancy_owner_go=OCCUPANCY_OWNER_GO,
+        occupancy_owner_go_scope=OCCUPANCY_OWNER_GO_SCOPE,
+        occupancy_owner_go_status=OCCUPANCY_OWNER_GO_STATUS,
+        occupancy_owner_go_consumed=False,
+        s4c_pack_occupancy_disposition=S4C_PACK_OCCUPANCY_DISPOSITION,
+        s4c_pack_occupancy_owner_go_status_after=S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER,
+        s4c_pretrade_decision_id=S4C_PRETRADE_DECISION_ID,
+        s4c_freshness_policy=S4C_PACK_FRESHNESS_POLICY,
+        s4c_classifier=S4C_PACK_CLASSIFIER,
+        s4c_evidence_pack=S4C_EVIDENCE_PACK,
+        s4c_manifest_sha256=S4C_MANIFEST_SHA256,
+        historical_evidence_is_not_standing_enablement=True,
+        venue_occupancy=VENUE_OCCUPANCY_KNOWLEDGE,
+        s4c_pack_claim_is_not_standing_venue_occupancy=S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY,
+        fresh_reproof_required_for_later_pretrade_decision=(
+            FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION
+        ),
+        v5_execute_network=False,
+        persist_go_is_runtime_license=False,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        reason_code="",
+    )
+
+
+def s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+    *,
+    pretrade_decision_id: str,
+) -> bool:
+    """Persisted S4C pack is historical evidence, not a later-decision fresh GET."""
+    if pretrade_decision_id != S4C_PRETRADE_DECISION_ID:
+        return False
+    return FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION is False

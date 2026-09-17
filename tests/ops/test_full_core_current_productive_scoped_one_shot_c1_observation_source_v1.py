@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 from pathlib import Path
 
@@ -27,6 +28,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REQUIRED_BAR,
     CurrentProductiveC1ObservationV1,
     bind_s4b_occupancy_gate_input_v1,
+    bind_s4d_s4c_disposition_go_consumption_persist_v1,
+    s4c_historical_pack_may_be_consumed_as_fresh_get_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
     AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
@@ -119,6 +122,20 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     S4B_OWNER_GO,
     S4B_THIS_SLICE,
     S4B_V5_EXECUTE_NETWORK,
+    S4C_EVIDENCE_PACK,
+    S4C_MANIFEST_SHA256,
+    S4C_PACK_CLASSIFIER,
+    S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY,
+    S4C_PACK_FRESHNESS_POLICY,
+    S4C_PACK_OCCUPANCY_DISPOSITION,
+    S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER,
+    S4C_PRETRADE_DECISION_ID,
+    FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION,
+    S4D_CANONICAL_EVIDENCE_PACK,
+    S4D_OWNER_GO,
+    S4D_S4C_EVIDENCE_BOUND,
+    S4D_THIS_SLICE,
+    S4D_V5_EXECUTE_NETWORK,
     SELECTED_RUNTIME_PATH,
     T1_CLASS,
     T1_CONSUMED,
@@ -166,6 +183,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
     CURRENT_PRODUCTIVE_S4A_RUNTIME_ENABLEMENT_CREATED,
     CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
+    CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED,
     CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_CREATED,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
@@ -217,6 +235,7 @@ EH_S1_HEADING = "### 11.2.1.EH S1 POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
 EH_S2_S3_HEADING = "### 11.2.1.EH S2+S3 CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
 EH_S4A_HEADING = "### 11.2.1.EH S4A RUNTIME_ENABLEMENT_OFFLINE_BIND"
 EH_S4B_HEADING = "### 11.2.1.EH S4B V5_OCCUPANCY_GATE_INPUT_BIND"
+EH_S4D_HEADING = "### 11.2.1.EH S4D S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST"
 S1_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
@@ -236,6 +255,16 @@ S4B_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
     / "20260917T151200Z"
+)
+S4C_EVIDENCE_PACK_PATH = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_s4c_exactly_one_current_occupancy_reproof_v1"
+    / "20260917T154542Z"
+)
+S4D_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T154800Z"
 )
 MS04B_EVIDENCE_PACK = (
     REPO_ROOT
@@ -1302,7 +1331,7 @@ def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
         assert snippet not in source
     assert S4B_OCCUPANCY_INPUT_BOUND is True
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s4b = runbook.split(EH_S4B_HEADING, 1)[1].split("\n## ", 1)[0]
+    s4b = runbook.split(EH_S4B_HEADING, 1)[1].split(EH_S4D_HEADING, 1)[0]
     assert S4B_THIS_SLICE in s4b
     assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in s4b
     assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4b
@@ -1339,5 +1368,189 @@ def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
     assert S4B_CANONICAL_EVIDENCE_PACK.endswith("20260917T151200Z")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert S4B_THIS_SLICE in atlas or "S4B_V5_OCCUPANCY_GATE_INPUT_BIND" in atlas
+    for path in PROTECTED_ALGORITHM_FILES:
+        assert (REPO_ROOT / path).is_file()
+
+
+FORBIDDEN_SECRET_SNIPPETS = (
+    "OK-ACCESS-KEY",
+    "OK-ACCESS-SIGN",
+    "OK-ACCESS-PASSPHRASE",
+    "OK-ACCESS-TIMESTAMP",
+    "BEGIN PRIVATE",
+    "api_secret",
+    "API_SECRET",
+)
+
+
+def test_s4d_s4c_disposition_go_consumption_standing_persist_offline() -> None:
+    bound = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4D_OWNER_GO)
+    assert CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED is True
+    assert S4D_S4C_EVIDENCE_BOUND is True
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.get_count == 0
+    assert bound.eg_dispatch_count == 0
+    assert bound.v5_invoke_count == 0
+    assert bound.runtime_cycle_count == 0
+    assert bound.v5_execute_network is False
+    assert S4D_V5_EXECUTE_NETWORK is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert S4A_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == "UNKNOWN"
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.venue_occupancy != bound.s4c_pack_occupancy_disposition
+    assert bound.s4c_pack_occupancy_disposition == "OCCUPANCY_ABSENT"
+    assert bound.s4c_pack_occupancy_disposition == S4C_PACK_OCCUPANCY_DISPOSITION
+    assert bound.s4c_pack_claim_is_not_standing_venue_occupancy is True
+    assert S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY is True
+    assert bound.occupancy_owner_go == OCCUPANCY_OWNER_GO
+    assert bound.occupancy_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert bound.occupancy_owner_go_consumed is False
+    assert bound.s4c_pack_occupancy_owner_go_status_after == (
+        "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+    )
+    assert bound.s4c_pack_occupancy_owner_go_status_after == (
+        S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER
+    )
+    assert bound.s4c_pretrade_decision_id == "dv-occupancy-reproof-after-c1-gate-v5"
+    assert bound.s4c_pretrade_decision_id == S4C_PRETRADE_DECISION_ID
+    assert bound.s4c_freshness_policy == "FRESH_GET_PER_PRETRADE_DECISION"
+    assert bound.s4c_freshness_policy == S4C_PACK_FRESHNESS_POLICY
+    assert bound.s4c_classifier == "_classify_occupancy_v1"
+    assert bound.s4c_classifier == S4C_PACK_CLASSIFIER
+    assert bound.s4c_evidence_pack == S4C_EVIDENCE_PACK
+    assert bound.s4c_manifest_sha256 == S4C_MANIFEST_SHA256
+    assert bound.s4c_manifest_sha256 == (
+        "8783db12b2f2f659439d9d32a891e3d4afbd802f811bddada6d9a60d26d7de25"
+    )
+    assert bound.historical_evidence_is_not_standing_enablement is True
+    assert bound.fresh_reproof_required_for_later_pretrade_decision is True
+    assert FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION is True
+    assert bound.persist_go_is_runtime_license is False
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != T2_OWNER_GO
+    assert bound.occupancy_owner_go != S4B_OWNER_GO
+    assert bound.occupancy_owner_go != S4D_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go != EG_OWNER_GO
+    assert S4D_OWNER_GO != S4A_FRESH_C1_GET_OWNER_GO
+    assert S4D_OWNER_GO != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert S4D_OWNER_GO != T2_OWNER_GO
+    assert S4D_OWNER_GO != OCCUPANCY_OWNER_GO
+    mismatched = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4A_OWNER_GO)
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.get_count == 0
+    occupancy_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=OCCUPANCY_OWNER_GO
+    )
+    assert occupancy_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert occupancy_as_persist.occupancy_owner_go_consumed is False
+    get_go_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=S4A_FRESH_C1_GET_OWNER_GO
+    )
+    assert get_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    eg_go_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(
+        owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    )
+    assert eg_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    t2_as_persist = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=T2_OWNER_GO)
+    assert t2_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id="dv-later-unrelated-pretrade-decision"
+        )
+        is False
+    )
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id=S4C_PRETRADE_DECISION_ID
+        )
+        is False
+    )
+    occupancy = json.loads(
+        (S4C_EVIDENCE_PACK_PATH / "occupancy_v1.json").read_text(encoding="utf-8")
+    )
+    s4c_claims = json.loads((S4C_EVIDENCE_PACK_PATH / "claims.json").read_text(encoding="utf-8"))
+    assert occupancy["CLASSIFIER"] == "_classify_occupancy_v1"
+    assert occupancy["OCCUPANCY_STATUS"] == "OCCUPANCY_ABSENT"
+    assert occupancy["CLASSIFIER_INPUTS"]["POSITION_ROW_COUNT"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["PENDING_ROW_COUNT"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["POSITIONS_CODE"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["PENDING_CODE"] == "0"
+    assert occupancy["CLASSIFIER_INPUTS"]["CONFIG_CODE"] == "0"
+    assert s4c_claims["OCCUPANCY_DISPOSITION"] == occupancy["OCCUPANCY_STATUS"]
+    assert s4c_claims["CLASSIFIER"] == occupancy["CLASSIFIER"]
+    assert s4c_claims["OCCUPANCY_DISPOSITION"] != "UNKNOWN"
+    manifest_bytes = (S4C_EVIDENCE_PACK_PATH / "MANIFEST.sha256").read_bytes()
+    assert hashlib.sha256(manifest_bytes).hexdigest() == S4C_MANIFEST_SHA256
+    assert verify_manifest_sha256_v1(store_root=S4C_EVIDENCE_PACK_PATH) == 0
+    for path in S4C_EVIDENCE_PACK_PATH.iterdir():
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for snippet in FORBIDDEN_SECRET_SNIPPETS:
+            assert snippet not in text
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SOURCE_SNIPPETS:
+        assert snippet not in source
+    eg_source = EG_MODULE.read_text(encoding="utf-8")
+    assert (
+        "urlopen"
+        not in eg_source.split("def bind_s4d_s4c_disposition_go_consumption_persist_v1")[1].split(
+            "def s4c_historical_pack_may_be_consumed_as_fresh_get_v1"
+        )[0]
+    )
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s4d = runbook.split(EH_S4D_HEADING, 1)[1].split("\n## ", 1)[0]
+    assert S4D_THIS_SLICE in s4d
+    assert "VENUE_OCCUPANCY=UNKNOWN" in s4d
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4d
+    assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4d
+    assert "S4C_PACK_OCCUPANCY_DISPOSITION=OCCUPANCY_ABSENT" in s4d
+    assert "S4C_PACK_CLAIM_IS_NOT_STANDING_VENUE_OCCUPANCY=true" in s4d
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in s4d
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s4d
+    assert "GET_COUNT_THIS_SLICE=0" in s4d
+    assert "EG_DISPATCH_COUNT=0" in s4d
+    assert "V5_INVOKE_COUNT=0" in s4d
+    assert "RUNTIME_CYCLE_COUNT=0" in s4d
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4D_OWNER_GO in spec
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    assert "20260917T154542Z" in mot
+    assert "20260917T154800Z" in mot
+    assert S4D_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S4D_EVIDENCE_PACK) == 0
+    claims = json.loads((S4D_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["THIS_SLICE"] == S4D_THIS_SLICE
+    assert claims["S4C_EVIDENCE_PACK"] == S4C_EVIDENCE_PACK
+    assert claims["S4C_MANIFEST_SHA256"] == S4C_MANIFEST_SHA256
+    assert claims["S4C_PACK_CLASSIFIER"] == "_classify_occupancy_v1"
+    assert claims["S4C_PACK_OCCUPANCY_DISPOSITION"] == "OCCUPANCY_ABSENT"
+    assert claims["VENUE_OCCUPANCY"] == "UNKNOWN"
+    assert claims["VENUE_OCCUPANCY"] != claims["S4C_PACK_OCCUPANCY_DISPOSITION"]
+    assert claims["OCCUPANCY_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["OCCUPANCY_OWNER_GO_CONSUMED"] is False
+    assert claims["S4C_PACK_OCCUPANCY_OWNER_GO_STATUS_AFTER"] == (
+        "CONSUMED_THIS_OCCUPANCY_DISPOSITION_ONLY"
+    )
+    assert claims["FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION"] is True
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["S4A_V5_EXECUTE_NETWORK"] is False
+    assert claims["S4D_V5_EXECUTE_NETWORK"] is False
+    s4d_text = (S4D_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SECRET_SNIPPETS:
+        assert snippet not in s4d_text
+    origin = (S4D_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "e6831784cac84d2287a5e6aedb274fb933a377dc"
+    assert S4D_CANONICAL_EVIDENCE_PACK.endswith("20260917T154800Z")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    assert S4D_THIS_SLICE in atlas or "S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST" in atlas
     for path in PROTECTED_ALGORITHM_FILES:
         assert (REPO_ROOT / path).is_file()
