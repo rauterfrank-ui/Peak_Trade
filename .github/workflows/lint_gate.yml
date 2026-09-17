@@ -222,6 +222,13 @@ jobs:
 
           echo "✅ Code formatting check passed"
 
+      - name: Clean Core Seal v1
+        if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
+        run: |
+          set -euo pipefail
+          echo "🛡️  Checking CLEAN_CORE_SEAL_V1..."
+          python scripts/ops/check_clean_core_seal_v1.py
+
       - name: Economic diagnostic optimization boundary guard v0
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' }}
         run: |

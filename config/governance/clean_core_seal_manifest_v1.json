@@ -1,0 +1,342 @@
+{
+  "schema_version": "clean_core_seal_manifest_v1",
+  "state": "SEALED",
+  "document_class": "SUBORDINATE_ALLOWLIST_NOT_SECOND_SSOT",
+  "canonical_authority": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+  "census_bound_origin_main_sha": "44946b4b85076f8c7ed17cbcb4ba4cda5f8695c5",
+  "seal_core_count": 20,
+  "whole_file_count": 7,
+  "mixed_file_count": 13,
+  "unseal_implemented": false,
+  "runtime_performance_overhead": "ZERO",
+  "runtime_import": false,
+  "hash_strategy": {
+    "whole_file": "sha256_of_exact_repository_file_bytes",
+    "mixed_file": "sha256_of_canonical_ast_dump_include_attributes_false_decorators_stripped_on_functions",
+    "replay_join": "ordered_sealed_callee_name_projection_of_run_integrated_offline_trading_logic_replay_v1"
+  },
+  "members": [
+    {
+      "id": "SEAL_CORE_01",
+      "path": "src/trading/master_v2/double_play_state.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "04e9b557599ed433ae1d0546f6f3e81c400ef6529c2149237216ae583de6dd6a"
+    },
+    {
+      "id": "SEAL_CORE_02",
+      "path": "src/trading/master_v2/chop_scope_event_policy_binding_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "apply_chop_scope_event_policy_v1",
+        "chop_scope_policy_blocks_side_transition_v1"
+      ],
+      "assignments": [],
+      "ast_sha256": "91aa1f85ff2d651746456749dbe5253c4859f829579f35c62c1eba79ab5f3db0"
+    },
+    {
+      "id": "SEAL_CORE_03",
+      "path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "EntryExitDirectionState",
+        "PositionState",
+        "ReconciliationState",
+        "TradingGate",
+        "SafetyMode",
+        "ExistingPositionSide",
+        "ExitClass",
+        "DecisionOutcome",
+        "EntryEligibility",
+        "PositionManagementAction",
+        "ReversalState",
+        "PolicyBlockedReason",
+        "DecisionPrecedenceStage",
+        "PolicySignalV0",
+        "DoublePlayEntryExitPolicyV0",
+        "DoublePlayEntryExitPolicyInputV0",
+        "EntryExitPolicyDecisionV0",
+        "evaluate_double_play_entry_exit_policy_v0"
+      ],
+      "assignments": [],
+      "ast_sha256": "61e59b77510d5ae89f46014b3831da76cbe8e7bae9fc318080852dc31d5a8668"
+    },
+    {
+      "id": "SEAL_CORE_04",
+      "path": "src/trading/master_v2/double_play_composition_matrix_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "CompositionDirectionState",
+        "PositionManagementContext",
+        "CompositionStatus",
+        "CompositionSelectedSide",
+        "CompositionConflictStatus",
+        "CompositionChopGuardStatus",
+        "CompositionBlockedReason",
+        "BothCandidateOutcome",
+        "BothInvalidOutcome",
+        "SuitabilityResultRefV1",
+        "DoublePlayCompositionPolicyV1",
+        "DoublePlayCompositionInputV1",
+        "DoublePlayCompositionResultV1",
+        "evaluate_double_play_composition_matrix_v1"
+      ],
+      "assignments": [],
+      "ast_sha256": "93cd937d43418ca7882bddac11ba5505ca172d6c386b3595c35d3c93a4020478"
+    },
+    {
+      "id": "SEAL_CORE_05",
+      "path": "src/trading/master_v2/survival_assessment_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "57cc9a4847c48cf9aa79256d30bc6d75542ca15b3592d742aba911af1016a73a"
+    },
+    {
+      "id": "SEAL_CORE_06",
+      "path": "src/trading/master_v2/suitability_binding_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "c9794ed99dfca19651a2f50d38a8128e39ba921136116a0203a85edf1838c7d9"
+    },
+    {
+      "id": "SEAL_CORE_07",
+      "path": "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "assert_post_c3_downstream_confirmation_non_authority_v1",
+        "assert_c4_c3_assessment_identity_binding_v1"
+      ],
+      "assignments": [
+        "COMPOSITION_REMAINS_SOLE_CONFIRMED_ADMISSIBILITY_GATE",
+        "SURVIVAL_CONFIRMED_EARLY_GATE",
+        "SUITABILITY_CONFIRMED_EARLY_GATE"
+      ],
+      "ast_sha256": "037e469c76de5d8894fc3a1da6b38f650ee0f7fa7ac4447c4adc36c95839bbeb"
+    },
+    {
+      "id": "SEAL_CORE_08",
+      "path": "src/trading/master_v2/directional_assessment_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "DirectionalAssessmentSide",
+        "DirectionalAssessmentStatus",
+        "DirectionalAssessmentHardBlockReason",
+        "ScopeEventRefV1",
+        "DirectionalConfirmationStateV1",
+        "DirectionalAssessmentPolicyV1",
+        "DirectionalAssessmentInputV1",
+        "DirectionalAssessmentV1",
+        "validate_directional_assessment_policy",
+        "compute_signal_strength",
+        "compute_directional_confidence",
+        "_collect_input_gate_blocks",
+        "_finalize_assessment"
+      ],
+      "assignments": [],
+      "ast_sha256": "f847972193941480157c5fd21fb43da4ce47f850f87f0fd02f39d6cd2e14a38c"
+    },
+    {
+      "id": "SEAL_CORE_09",
+      "path": "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "aefe4a2eb77fe5e122ab347bac09dcaf1748001fb7128b73f57b17f8564eef89"
+    },
+    {
+      "id": "SEAL_CORE_10",
+      "path": "src/trading/master_v2/canonical_market_context_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "12385f61184ed6997e99c713bfcc5b3c4f4fa2a0fbaa936b1a9252f487f4b347"
+    },
+    {
+      "id": "SEAL_CORE_11",
+      "path": "src/trading/master_v2/canonical_scope_initialization_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "c1e2fb95bd2a6c47498bf2f7a4375413c02f3965774607f355b1b2f248c6e21e"
+    },
+    {
+      "id": "SEAL_CORE_12",
+      "path": "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "ScopeDirectionState",
+        "ScopeCandidateKind",
+        "CanonicalScopeEventType",
+        "ScopeEventBlockReason",
+        "ScopeEventGeneratorPolicyV1",
+        "ScopeCooldownStateV1",
+        "ScopeConfirmationStateV1",
+        "ScopeEventGeneratorInputV1",
+        "EvaluatedThresholdsV1",
+        "ScopeEventSemanticBindingV1",
+        "ScopeEventEvidenceV1",
+        "generate_deterministic_scope_event"
+      ],
+      "assignments": [],
+      "ast_sha256": "3fb9a79a0d07ef7a15031ed4540c58ead8788785c86e13fd74bf7f2069925673"
+    },
+    {
+      "id": "SEAL_CORE_13",
+      "path": "src/trading/market_state/distinct_market_observation_acceptor_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "ObservationClassification",
+        "ObservationReasonCode",
+        "ObservationTransportMetadataV1",
+        "ObservationCandidateV1",
+        "ObservationAcceptanceStateV1",
+        "ObservationAcceptanceResultV1",
+        "evaluate_distinct_market_observation_v1",
+        "commit_observation_acceptance_v1",
+        "DistinctMarketObservationAcceptorV1"
+      ],
+      "assignments": [],
+      "ast_sha256": "17ee02728cb0ac564d2c544f2d3443f5818998cddf7755fe2b2b6614107b4df9"
+    },
+    {
+      "id": "SEAL_CORE_14",
+      "path": "src/trading/market_state/directional_confirmation_progress_v1.py",
+      "mode": "WHOLE_FILE",
+      "content_sha256": "75373f6eeb36ef7c1ff3c9ad746850a969c8fcdfe2a5d37f6ba26676c81023f5"
+    },
+    {
+      "id": "SEAL_CORE_15",
+      "path": "src/trading/market_state/observation_identity_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "MarketObservationEpoch",
+        "InstrumentObservationKeyV1",
+        "ObservationIdentityV1"
+      ],
+      "assignments": [
+        "DISTINCTNESS_IDENTITY_FIELDS"
+      ],
+      "ast_sha256": "c03693a6eeb30af6362ec52884f6ff529e0796d10f7195f8eccb364cbce6cd95"
+    },
+    {
+      "id": "SEAL_CORE_16",
+      "path": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "_canonical_scope_event_to_scope_event",
+        "_side_state_to_entry_exit_direction",
+        "_rules_for_cycle_v1",
+        "_resolve_c3_confirmation_binding_v1",
+        "_survival_input_for_assessment",
+        "_suitability_input_for_assessment",
+        "resolve_integrated_scope_adverse_exit_signal_v0",
+        "resolve_integrated_reversal_preparation_entry_exit_binding_v0"
+      ],
+      "assignments": [
+        "_FORBIDDEN_INSTRUMENT_SUBSTRINGS",
+        "_DEFAULT_STATIC_LIMITS",
+        "_DEFAULT_RUNTIME_ENVELOPE",
+        "_DEFAULT_SCOPE_RULES"
+      ],
+      "join_projection": {
+        "function": "run_integrated_offline_trading_logic_replay_v1",
+        "callee_names": [
+          "bind_canonical_market_context_event",
+          "with_computed_input_digest",
+          "initialize_canonical_scope",
+          "_rules_for_cycle_v1",
+          "derive_active_side",
+          "update_dynamic_boundaries",
+          "generate_deterministic_scope_event",
+          "with_computed_scope_event_digest",
+          "_canonical_scope_event_to_scope_event",
+          "_resolve_c3_confirmation_binding_v1",
+          "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1",
+          "assert_post_c3_downstream_confirmation_non_authority_v1",
+          "_survival_input_for_assessment",
+          "evaluate_survival_assessment_v1",
+          "_suitability_input_for_assessment",
+          "evaluate_suitability_binding_v1",
+          "assert_c4_c3_assessment_identity_binding_v1",
+          "compute_composition_input_digest",
+          "evaluate_double_play_composition_matrix_v1",
+          "transition_state",
+          "resolve_integrated_scope_adverse_exit_signal_v0",
+          "resolve_integrated_reversal_preparation_entry_exit_binding_v0",
+          "_side_state_to_entry_exit_direction",
+          "compute_entry_exit_policy_input_digest",
+          "evaluate_double_play_entry_exit_policy_v0"
+        ]
+      },
+      "join_projection_sequence": [
+        "with_computed_input_digest",
+        "bind_canonical_market_context_event",
+        "initialize_canonical_scope",
+        "_rules_for_cycle_v1",
+        "derive_active_side",
+        "update_dynamic_boundaries",
+        "with_computed_scope_event_digest",
+        "generate_deterministic_scope_event",
+        "_canonical_scope_event_to_scope_event",
+        "_resolve_c3_confirmation_binding_v1",
+        "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1",
+        "assert_post_c3_downstream_confirmation_non_authority_v1",
+        "evaluate_survival_assessment_v1",
+        "_survival_input_for_assessment",
+        "evaluate_survival_assessment_v1",
+        "_survival_input_for_assessment",
+        "evaluate_suitability_binding_v1",
+        "_suitability_input_for_assessment",
+        "evaluate_suitability_binding_v1",
+        "_suitability_input_for_assessment",
+        "assert_c4_c3_assessment_identity_binding_v1",
+        "compute_composition_input_digest",
+        "evaluate_double_play_composition_matrix_v1",
+        "transition_state",
+        "update_dynamic_boundaries",
+        "derive_active_side",
+        "resolve_integrated_scope_adverse_exit_signal_v0",
+        "resolve_integrated_reversal_preparation_entry_exit_binding_v0",
+        "_side_state_to_entry_exit_direction",
+        "compute_entry_exit_policy_input_digest",
+        "evaluate_double_play_entry_exit_policy_v0"
+      ],
+      "ast_sha256": "cd87ec4291711c3db8eef130966e693451d28bffd8213b8f6956cc1bda588c4b"
+    },
+    {
+      "id": "SEAL_CORE_17",
+      "path": "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "is_reversal_preparation_composition_v0",
+        "derive_reversal_preparation_position_context_v0",
+        "project_composition_for_reversal_preparation_entry_exit_v0"
+      ],
+      "assignments": [],
+      "ast_sha256": "c1ae73833edb4fc5a8d27b4796d54f37d70305c37170c7e6ac739630de78a32d"
+    },
+    {
+      "id": "SEAL_CORE_18",
+      "path": "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "derive_scope_adverse_exit_signal_v0"
+      ],
+      "assignments": [],
+      "ast_sha256": "6c9597b55bc7ed41d489469ec897cd1feede74ca007b26cdddce312889ab4d70"
+    },
+    {
+      "id": "SEAL_CORE_19",
+      "path": "src/trading/master_v2/canonical_volatility_binding_and_provenance_transport_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "resolve_legacy_volatility_float_for_consumer_v1"
+      ],
+      "assignments": [],
+      "ast_sha256": "5f147e5556b4285bbe1d30f9e0ebb8bde12eaa6c23e3b24288242e0ffc5f0221"
+    },
+    {
+      "id": "SEAL_CORE_20",
+      "path": "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
+      "mode": "MIXED_FILE",
+      "definitions": [
+        "admit_positive_volatility_without_strategy_floor_v1",
+        "require_admitted_legacy_volatility_float_v1",
+        "quarantine_explicit_replay_default_volatility_v1"
+      ],
+      "assignments": [],
+      "ast_sha256": "1799c4b90a81a5dbe96df037edead33535f0c5d59652e03035e58a4571f8c22f"
+    }
+  ]
+}
