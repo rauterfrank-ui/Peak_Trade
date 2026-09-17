@@ -6144,6 +6144,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py
       - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py
@@ -6178,6 +6179,7 @@ entities:
       - issue_external_effect_permit_v1
       - try_bind_current_productive_venue_plan_v1
       - join_current_productive_enter_live_29p_before_venue_plan_v1
+      - trigger_current_productive_next_c1_and_exactly_one_cycle_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -6224,6 +6226,7 @@ entities:
       - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v4.py
       - tests/ops/test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
+      - tests/ops/test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - tests/ops/test_current_productive_g17_pt1m_mark_sample_adapter_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py
