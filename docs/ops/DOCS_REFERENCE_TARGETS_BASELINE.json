@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-17T22:28:46.782114+00:00",
-  "git_sha": "972140fd9f593a86cee79d58e26c07cca2c1c754",
+  "generated_at_utc": "2026-09-17T22:30:03.526749+00:00",
+  "git_sha": "4c7ca76134750d8676d0754688eeb8c975d67a43",
   "tool_version": "1.0.0",
   "scan_stats": {
     "total_markdown_files": 3208,
     "ignored_files": 498,
     "scanned_files": 2710,
-    "total_references": 16654
+    "total_references": 16658
   },
-  "missing_count": 188,
+  "missing_count": 191,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -101,6 +101,18 @@
       "link_text": null
     },
     {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 142,
+      "target": "scripts/demo_backtest_with_risk.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 142,
+      "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
       "line_number": 89,
       "target": "src/market_sentinel/v0_daily_outlook.py",
@@ -140,6 +152,12 @@
       "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
       "line_number": 19,
       "target": "src/data/kraken_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
+      "line_number": 172,
+      "target": "src/observability/policy/policy_v0.py",
       "link_text": null
     },
     {
