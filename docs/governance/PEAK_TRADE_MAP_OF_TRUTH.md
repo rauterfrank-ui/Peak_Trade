@@ -99,7 +99,7 @@ in the Master Runbook and the named packages.
 | Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
 | Canonical Python launcher | `scripts/pt` |
-| Canonical interpreter | `.venv/bin/python` |
+| Canonical interpreter | `.venv&#47;bin&#47;python` |
 
 ------------------------------------------------------------------------
 
