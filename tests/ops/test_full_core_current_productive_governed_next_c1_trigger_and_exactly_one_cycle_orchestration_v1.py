@@ -47,6 +47,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     S4A_FRESH_C1_GET_OWNER_GO,
     S4B_OWNER_GO,
     S4B_V5_EXECUTE_NETWORK,
+    S4C_MANIFEST_SHA256,
+    S4C_PACK_OCCUPANCY_DISPOSITION,
+    S4C_PRETRADE_DECISION_ID,
+    S4D_OWNER_GO,
+    S4D_V5_EXECUTE_NETWORK,
     STATE_CYCLE_COMPLETED,
     STATE_CYCLE_IN_PROGRESS,
     STATE_FAILED_STOP,
@@ -58,6 +63,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     CurrentProductiveGovernedNextC1OrchestrationError,
     _inject_occupancy_gate_input_join,
     bind_s4b_occupancy_gate_input_v1,
+    bind_s4d_s4c_disposition_go_consumption_persist_v1,
+    s4c_historical_pack_may_be_consumed_as_fresh_get_v1,
     trigger_current_productive_next_c1_and_exactly_one_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
@@ -75,6 +82,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5_CREATED,
     CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
+    CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
     OCCUPANCY_NEXT_OWNER_GO,
@@ -666,6 +674,41 @@ def test_s4b_occupancy_input_seam_injects_without_get_or_v5_invoke(tmp_path: Pat
     assert bind_s4b_occupancy_gate_input_v1(owner_go=OWNER_GO).disposition == (
         DISPOSITION_FAIL_CLOSED
     )
+    assert CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED is True
+    persisted = bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=S4D_OWNER_GO)
+    assert persisted.disposition == DISPOSITION_PRESENT
+    assert persisted.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert persisted.venue_occupancy == "UNKNOWN"
+    assert persisted.s4c_pack_occupancy_disposition == S4C_PACK_OCCUPANCY_DISPOSITION
+    assert persisted.s4c_pack_occupancy_disposition != persisted.venue_occupancy
+    assert persisted.occupancy_owner_go_consumed is False
+    assert persisted.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert persisted.v5_execute_network is False
+    assert S4D_V5_EXECUTE_NETWORK is False
+    assert persisted.s4c_pretrade_decision_id == S4C_PRETRADE_DECISION_ID
+    assert persisted.s4c_manifest_sha256 == S4C_MANIFEST_SHA256
+    assert persisted.fresh_reproof_required_for_later_pretrade_decision is True
+    assert persisted.persist_go_is_runtime_license is False
+    assert persisted.get_count == 0
+    assert persisted.eg_dispatch_count == 0
+    assert persisted.v5_invoke_count == 0
+    assert persisted.runtime_cycle_count == 0
+    assert persisted.occupancy_owner_go != S4D_OWNER_GO
+    assert persisted.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert persisted.occupancy_owner_go != RUNTIME_TRIGGER_OWNER_GO
+    assert (
+        s4c_historical_pack_may_be_consumed_as_fresh_get_v1(
+            pretrade_decision_id="dv-unrelated-later-decision"
+        )
+        is False
+    )
+    assert bind_s4d_s4c_disposition_go_consumption_persist_v1(owner_go=OWNER_GO).disposition == (
+        DISPOSITION_FAIL_CLOSED
+    )
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "S4D_OWNER_GO=" + S4D_OWNER_GO in spec
+    assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
 
 
 def test_s4b_missing_occupancy_transport_remains_fail_closed(tmp_path: Path) -> None:
