@@ -316,6 +316,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
       - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
@@ -342,6 +343,9 @@ entities:
       CONTRACT:cap22_historical_evidence_time_semantics_v1.
       Append-only 15m PIT persistence and collection contracts are persisted by
       CONTRACT:cap22_append_only_15m_pit_persistence_v1.
+      KEEP29 external separation removed the
+      src/ops/cap22_append_only_15m_pit_persistence_v1 package from the
+      current tree; Cap 2.2 ranking authority is unchanged. Spec remains.
       No offline policy class has productive authority.
       CAP22_BECOMES_NETWORK_OWNER=false.
       CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false.
@@ -525,6 +529,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
@@ -543,8 +548,10 @@ entities:
       PT1M_15_MINUTE_ANCHORS_V1. Cap-2.1 and Economic-MD at-T seams. Exact T
       binding. No scheduler. Collection not started. 90d clock not started.
       No historical evidence generated. No productive ranking activation.
-      PDF Step 5 remains UNRESOLVED. Atlas is not runtime authority.
-      ATLAS_AUTHORITY=NONE.
+      PDF Step 5 remains UNRESOLVED. KEEP29 external separation removed the
+      listed source_paths from the current tree; the spec remains. Paths are
+      retained as historical absence, not restored. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
       No Atlas edge to Cap 2.3 or Cap 2.4.
 
   - id: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
@@ -5620,7 +5627,50 @@ entities:
       - src/ops/section_11_13_4_live_dry_run_order_plan_v1/constants_v1.py
     evidence_sources:
       - src/ops/bounded_futures_private_readonly_contract_v0.py
-    notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. No new live, testnet, or canary capability. Atlas is not trading authority.
+    notes: Fail-closed / decommission token cleanup on existing contracts, including current-system Kraken remnant removal. KEEP29 removed src/ops/p85 from the current tree; remaining listed surfaces are unchanged. No new live, testnet, or canary capability. Atlas is not trading authority.
+
+  - id: RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces
+    kind: RUNTIME_COMPONENT
+    name: KEEP29-removed non-current ops CLI surfaces
+    epistemic_class: HISTORICAL
+    current_canonical: false
+    current_status: REMOVED
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/p39/__init__.py
+      - src/ops/p39/registry_cli_v1.py
+      - src/ops/p40/__init__.py
+      - src/ops/p40/backtest_runner_cli_v1.py
+      - src/ops/p41/.gitkeep
+      - src/ops/p42/.gitkeep
+      - src/ops/p50/__init__.py
+      - src/ops/p50/ai_model_policy_cli_v1.py
+      - src/ops/p51/__init__.py
+      - src/ops/p51/ai_model_cards_validate_v1.py
+      - src/ops/p55/__init__.py
+      - src/ops/p55/switch_layer_e2e_runner_v1.py
+      - src/ops/p77/__init__.py
+      - src/ops/p77/online_readiness_daemon_core_v1.py
+      - src/ops/p78/__init__.py
+      - src/ops/p78/online_readiness_supervisor_plan_v1.py
+      - src/ops/p79/__init__.py
+      - src/ops/p79/supervisor_health_plan_v1.py
+      - src/ops/p85/__init__.py
+      - src/ops/p86/__init__.py
+      - src/ops/p86/run_online_readiness_plus_ingest_gate_v1.py
+      - src/ops/p91/__init__.py
+      - src/ops/p91/shadow_soak_audit_v1.py
+      - src/ops/p98/__init__.py
+      - src/ops/p98/ops_loop_orchestrator_v1.py
+      - src/ops/p99/__init__.py
+      - src/ops/p99/ops_loop_cli_v1.py
+    evidence_sources:
+      - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
+    notes: >-
+      KEEP29 external separation removed these non-current ops CLI/package
+      paths from the current tree. Listed source_paths are historical
+      absence, not restored, and are not productive CURRENT surfaces.
+      Atlas navigation/metadata only. ATLAS_AUTHORITY=NONE.
 
   - id: GUARD:economic_diagnostic_optimization_boundary
     # inventory: fifth mapping-bind grant closed; sixth generator-fallback slice grant closed; seventh ARMED identity-split slice grant closed; grant_active=false; class remains

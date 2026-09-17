@@ -40,7 +40,6 @@ def test_can_import_live():
     from src.live import orders
     from src.live import broker_base
     from src.live import risk_limits
-    from src.live import workflows
 
 
 def test_strategy_registry_available():

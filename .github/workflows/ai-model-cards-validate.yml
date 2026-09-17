@@ -20,4 +20,8 @@ jobs:
           python -m pip install pyyaml
       - name: Validate AI model cards
         run: |
+          if [ ! -f src/ops/p51/ai_model_cards_validate_v1.py ]; then
+            echo "p51 validator absent after KEEP29 external separation; no-op."
+            exit 0
+          fi
           python -m src.ops.p51.ai_model_cards_validate_v1 --paths docs/ai/model_cards
