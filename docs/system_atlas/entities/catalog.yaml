@@ -112,6 +112,7 @@ entities:
   - id: NAVIGATION_INDEX:map_of_truth
     # Cap 6.3 §9.2.8 pre-metadata cross-instrument validation persist; ATLAS_AUTHORITY=NONE; MOT not SSOT
     # Cap 6.3 §9.2.9 metadata-owner contract persist; ATLAS_AUTHORITY=NONE; MOT not SSOT
+    # Scope-Init §9.2.10 min/max_scope_band PRICE_DISTANCE_BOUNDS persist; ATLAS_AUTHORITY=NONE; MOT not SSOT
     # 11.2.1.EE Full-Core G17 typed-vol CMC bind MOT navigation-only pointer: CONTRACT_VERSION=v1; MERGED_PR=6542; CMC_BINDING_PERFORMED=true; CMC_BINDING_SCOPE=THIS_MS2_FULL_CORE_JOIN_ONLY; ED_CMC_BINDING_PERFORMED=false; ED_CMC_BINDING_PERFORMED_FIELD_UNCHANGED=true; ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED; INGEST_SAMPLE=false; PRESENCE_GATE_MUTATED=false; JOIN_1_REWRITTEN=false; JOIN_2_REWRITTEN=false; EXTERNAL_EFFECT_AUTHORIZED=false; REAL_VENUE_POST_ALLOWED=false; STEP_29Q_STATUS=PLAN_ONLY; POST_COUNT=0; VENUE_MUTATION_PERFORMED=false; ATLAS_AUTHORITY=NONE; MOT not SSOT
     kind: NAVIGATION_INDEX
     name: Map of Truth
@@ -143,6 +144,8 @@ entities:
       - evidence/ops/cap63_dynamic_derivation_cross_instrument_validation_v1/
       - docs/ops/specs/CAP63_TICK_LOT_CTVAL_PRICE_SCALE_METADATA_AUTHORITY_V1.md
       - tests/ops/test_cap63_tick_lot_ctval_price_scale_metadata_authority_v1.py
+      - docs/ops/specs/SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_OWNER_DECISION_V1.md
+      - tests/ops/test_scope_init_min_max_semantic_class_owner_decision_v1.py
       - src/ops/derive_scope_event_distances_v1/__init__.py
       - src/ops/derive_scope_event_distances_v1/constants_v1.py
       - src/ops/derive_scope_event_distances_v1/derive_v1.py
@@ -205,6 +208,11 @@ entities:
       consumer owner uninvented; later-bind field subset OPEN; price-scale
       identity OPEN; implementation unauthorized; CURRENT MODEL_B frozen
       200/80/120 unchanged; MODEL_C unbound.
+      Scope-Init min/max_scope_band semantic class Owner decision (§9.2.10)
+      is a navigation pointer only: PRICE_DISTANCE_BOUNDS dimensional identity;
+      Owner remains CanonicalScopeInitializationPolicyV1 via _default_policies;
+      NOT_CAP63; literals 50.0/500.0 unchanged; numeric calibration
+      unadjudicated; Cap 6.3/6.5 authority unchanged; MODEL_C unbound.
       Directional mapping contract repair is runtime-bound for SHORT reversal
       polarity and PENDING departing-side generator orientation (ARMED residual
       unresolved; freeze exception unauthorized; last_active_side unauthorized;
