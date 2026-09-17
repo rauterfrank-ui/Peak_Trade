@@ -522,8 +522,10 @@ def test_s08_t07_ownership_consumption_does_not_collapse_sidestate_or_scope() ->
 
 
 def test_s08_t08_s09_absent_and_non_execution_surface() -> None:
-    """S08-T08: S09 not started; this slice does not import execution/Live/KS."""
-    assert list(_REPO_ROOT.glob("tests/trading/test_s09_*.py")) == []
+    """S08-T08: S09 successor file exists; this slice does not import execution/Live/KS."""
+    s09_path = _REPO_ROOT / "tests/trading/test_s09_kill_all_state_machine_conformance_v1.py"
+    assert s09_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s09_*.py")) == [s09_path]
     this_tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
     imported = _imported_names(this_tree)
     assert all(_COMPOSE_ORACLE not in name for name in imported)
