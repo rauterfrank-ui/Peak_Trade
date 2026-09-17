@@ -60,17 +60,26 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     load_current_productive_sidestate_confirmation_cursor_v1,
     persist_current_productive_sidestate_confirmation_cursor_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    CurrentProductiveEnterLive29PInjectedGetV1,
+    DECISION_ENTER,
+    STATUS_PASS,
+    current_productive_decision_class_v1,
+    join_current_productive_enter_live_29p_before_venue_plan_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
     try_bind_current_productive_venue_plan_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     FreshPretradeGetStatusV1,
+    LiveAccountBoundStatusV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     bind_final_order_envelope_from_venue_plan_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     FullCoreFreshPretradeGetTransportV1,
@@ -106,6 +115,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V2_CREATED,
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V3_CREATED,
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V4_CREATED,
+    CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_CREATED,
     CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5_CREATED,
     CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_CREATED,
 )
@@ -328,6 +338,10 @@ def _assert_dv_pins() -> None:
     ):
         raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
             "DV_V5_ADAPTER_NOT_CREATED"
+        )
+    if CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_CREATED is not True:
+        raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
+            "ENTER_LIVE_29P_JOIN_NOT_CREATED"
         )
 
 
@@ -877,6 +891,7 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
     c1_gate_payload: Mapping[str, Any] | None = None,
     c1_gate_override: Mapping[str, Any] | None = None,
     actual_checkout_sha: str | None = None,
+    enter_live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
 ) -> CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationResultV1:
     if owner_go == CONSUMED_V4_OWNER_GO:
         raise CurrentProductiveOneRuntimeCycleAfterNewFinalized1mC1ObservationError(
@@ -1530,11 +1545,61 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
     plan = None
     sizing_result = "NOT_REACHED"
     risk_admission_result = "NOT_REACHED"
+    live_29p_injected = enter_live_29p_injected
+    if (
+        live_29p_injected is None
+        and execute_network is True
+        and fresh_get_transport is not None
+        and not occupancy_blocker
+        and not market_blocker
+        and cycle_replay is not None
+        and current_productive_decision_class_v1(cycle_replay) == DECISION_ENTER
+    ):
+        balance_payload, balance_err = _transport_payload(
+            fresh_get_transport,
+            path=ENDPOINT_ACCOUNT_BALANCE,
+            query={},
+            auth_required=True,
+            native_id=str(identities.get("cap23_selected_instrument_id") or "dv5-enter-29p"),
+        )
+        live_29p_injected = CurrentProductiveEnterLive29PInjectedGetV1(
+            payload=balance_payload if isinstance(balance_payload, Mapping) else None,
+            get_performed=balance_payload is not None and not balance_err,
+            http_status=200 if balance_payload is not None and not balance_err else 0,
+            error_class=balance_err,
+            body_sha256="",
+            observed_at=package_started,
+            age_seconds="1",
+            live_account_bound_status=LiveAccountBoundStatusV1.MISSING.value,
+            raw_acct_lv=str(occupancy_facts.get("CONFIG_ACCTLV") or ""),
+            fresh_pretrade_get_status=(
+                FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+                if balance_payload is not None and not balance_err
+                else FreshPretradeGetStatusV1.MISSING.value
+            ),
+        )
+    live_29p_join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        replay=cycle_replay,
+        bound_instrument=bound,
+        injected=live_29p_injected,
+        decision_epoch=package_started,
+    )
+    if live_29p_join.decision_class == DECISION_ENTER:
+        cycle_replay = live_29p_join.replay
     if occupancy_blocker or market_blocker:
         venue_plan_status = "DENY"
         risk_admission_result = "DENY"
         decision_provenance = occupancy_blocker or market_blocker
-    if bound is not None and not occupancy_blocker and not market_blocker:
+    elif live_29p_join.decision_class == DECISION_ENTER and live_29p_join.status != STATUS_PASS:
+        venue_plan_status = "DENY"
+        risk_admission_result = "DENY"
+        decision_provenance = live_29p_join.first_blocker or live_29p_join.status
+    if (
+        bound is not None
+        and not occupancy_blocker
+        and not market_blocker
+        and live_29p_join.venue_plan_authorized is True
+    ):
         status, reasons, plan = try_bind_current_productive_venue_plan_v1(
             replay=cycle_replay,
             bound_instrument=bound,
@@ -1565,6 +1630,15 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
         step_29p_status = "NOT_REACHED_HOLD_PATH_MISSING_29P_IS_NOT_A_29P_FINDING"
     else:
         step_29p_status = sizing_result
+    if live_29p_join.decision_class == DECISION_ENTER:
+        if live_29p_join.status == STATUS_PASS:
+            step_29p_status = live_29p_join.sizing_outcome or STATUS_PASS
+        else:
+            step_29p_status = live_29p_join.status
+        if live_29p_join.status != STATUS_PASS:
+            plan = None
+            envelope_readiness = FALSE_TOKEN
+            decision_result = "NO_EXECUTABLE_DECISION"
     selected_native = identities.get("cap23_selected_instrument_id", "")
     if previous_cursor_instrument and selected_native:
         instrument_binding_match = _token(previous_cursor_instrument == selected_native)
@@ -1639,7 +1713,14 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
     envelope_id = ""
     envelope_digest = ""
     envelope_fields: dict[str, str] = {}
-    if plan is not None and envelope_readiness == TRUE_TOKEN:
+    if (
+        plan is not None
+        and envelope_readiness == TRUE_TOKEN
+        and not (
+            live_29p_join.decision_class == DECISION_ENTER and live_29p_join.status != STATUS_PASS
+        )
+        and live_29p_join.used_offline_default_equity != TRUE_TOKEN
+    ):
         envelope = bind_final_order_envelope_from_venue_plan_v1(
             plan,
             admission_ref="DV_FRESH_CAP24_AND_CURRENT_PRODUCTIVE_MASTER_V2",
@@ -1759,6 +1840,12 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
         "CROSS_INSTRUMENT_CONFIRMATION_CARRY": cross_instrument_confirmation_carry,
         "CURSOR_PERSISTED": cursor_persisted,
         "STEP_29P_STATUS": step_29p_status,
+        "STEP_29P_GET_COUNT": str(live_29p_join.get_count),
+        "STEP_29P_JOIN_STATUS": live_29p_join.status,
+        "LIVE_29P_GET_CONSUMED": _token(live_29p_join.called and live_29p_join.get_count == 1),
+        "EVALUATE_STEP_29P_JOINED_THIS_WP": TRUE_TOKEN,
+        "USED_OFFLINE_DEFAULT_EQUITY": live_29p_join.used_offline_default_equity,
+        "LIVE_29P_PRODUCER_OUTPUT_VALUE": live_29p_join.producer_output_value,
         "SIZING_RESULT": sizing_result,
         "RISK_ADMISSION_RESULT": risk_admission_result,
         "CURRENT_PRODUCTIVE_VENUE_PLAN_STATUS": venue_plan_status,
@@ -1891,6 +1978,10 @@ def execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_obser
         "SIDESTATE_BEFORE": sidestate_before,
         "SIDESTATE_AFTER": sidestate_after,
         "STEP_29P_STATUS": step_29p_status,
+        "STEP_29P_JOIN_STATUS": live_29p_join.status,
+        "STEP_29P_GET_COUNT": str(live_29p_join.get_count),
+        "LIVE_29P_GET_CONSUMED": _token(live_29p_join.called and live_29p_join.get_count == 1),
+        "USED_OFFLINE_DEFAULT_EQUITY": live_29p_join.used_offline_default_equity,
         "ORDER_INTENT_CREATED": replay_facts["ORDER_INTENT_CREATED"],
         "ENVELOPE_READINESS": envelope_readiness,
         "ENVELOPE_STATUS": envelope_status,

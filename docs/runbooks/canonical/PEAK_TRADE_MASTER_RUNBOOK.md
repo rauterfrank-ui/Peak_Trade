@@ -30535,6 +30535,86 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EF FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT
+
+Consumes Owner-GO
+`OWNER_GO_CURRENT_PRODUCTIVE_LIVE_29P_CAPITAL_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1`.
+This persist does not rewrite §11.2.1.DA–§11.2.1.EE standing persist
+fields. CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+
+This persist closes the adjudicated Current-Productive safety gap
+`LIVE_29P_GET_NOT_CONSUMED_IN_CURRENT_PRODUCTIVE_CYCLE_HOST`. An
+execution-eligible ENTER must consume the existing governed Live-29P
+GET producer and canonical 29P evaluator before 29Q / venue-plan /
+envelope readiness. HOLD/observe continues to stop before 29P and does
+not perform a private GET. PASS rebinds canonical producer equity into
+the existing capital-risk-sizing adapter. FAIL, UNKNOWN, STALE, or
+MISSING fail-closed. Offline-default equity cannot feed a Real-POST-
+capable Current-Productive ENTER. 29P evidence is not authority. Raw
+venue fields are not promoted to sizing authority. No new equity or
+sizing owner is created. Master-V2, Double-Play, sealed-core,
+Cap-2.3/2.4, permit, and POST authority are unchanged.
+
+This persist does **not** consume
+`OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1`.
+That GO remains `DEFINED_NOT_CONSUMED` for a later runtime cycle. No
+permit. No POST. No next V5 market cycle.
+
+``` text
+THIS_SLICE=11.2.1.EF.FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_LIVE_29P_CAPITAL_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1
+OWNER_GO_STATUS=CONSUMED
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+JOIN_SEAM_ID=CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1
+EXACT_JOIN_SEAM=V5_HOST_AFTER_MASTER_V2_REPLAY_BEFORE_TRY_BIND_VENUE_PLAN
+EXISTING_29P_PRODUCER=produce_current_productive_29p_risk_capital_v1
+EXISTING_29P_EVALUATOR=evaluate_step_29p_capital_risk_admissibility_v1
+AUTHORITY_REUSED=true
+NEW_AUTHORITY_CREATED=false
+EVALUATE_STEP_29P_JOINED_THIS_WP=true
+HOLD_SKIPS_PRIVATE_GET=true
+ENTER_REQUIRES_FRESH_LIVE_29P=true
+OFFLINE_DEFAULT_EQUITY_CANNOT_FEED_ENTER_ENVELOPE=true
+STEP_29Q_STATUS=PLAN_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+PERMIT_CREATED=false
+POST_COUNT=0
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+CAP23_SELECTOR_UNCHANGED=true
+CAP24_BINDER_UNCHANGED=true
+MASTER_V2_MUTATED=false
+DOUBLE_PLAY_MUTATED=false
+SEALED_CORE_MUTATED=false
+FILEGATE_JOINED_THIS_WP=false
+PREVIOUS_V5_RUNTIME_GO=OWNER_GO_CONDITION_GATED_CURRENT_PRODUCTIVE_RUNTIME_CYCLE_AFTER_C1_BOUNDARY_1789527780_V1
+PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+CYCLE_HOST=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
