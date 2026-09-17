@@ -1,0 +1,42 @@
+"""CURRENT_PRODUCTIVE scoped one-shot C1 observation source.
+
+MS01 AUTHORITY/CONTRACT SCAFFOLD ONLY.
+Observation-acquisition owner pins. Does not map payloads, compare cursor
+floors, GET, poll, daemonize, sleep-loop, dispatch EG, or execute a
+runtime cycle.
+
+EG remains owner of dedup, cursor accept/reject, trigger, and exactly-one
+cycle dispatch. V5 remains the N=1 cycle host. This module does not import
+or call those surfaces.
+
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+"""
+
+from __future__ import annotations
+
+OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
+OWNER_GO_SCOPE = "MS01_AUTHORITY_PERSIST_AND_OWNER_PINS_ONLY"
+THIS_SLICE = "11.2.1.EH.FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE"
+JOIN_SEAM_ID = "CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_SEAM_V1"
+OWNER = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_scoped_one_shot_c1_observation_source_v1"
+)
+PRODUCER_AUTHORITY = "ONE_SHOT_PUBLIC_1M_C1_OBSERVATION_ACQUISITION_ONLY"
+EG_AUTHORITY_BOUNDARY_UNCHANGED = "NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY"
+MS01_IMPLEMENTATION_STATUS = "AUTHORITY_SCAFFOLD_ONLY"
+BOUNDED_POLL_AUTHORIZED = False
+DAEMON_AUTHORIZED = False
+CADENCE_OWNER_AUTHORIZED = False
+CONTINUOUS_RUNTIME_AUTHORIZED = False
+RUNTIME_CYCLE_AUTHORIZED = False
+PERFORM_GET_DEFAULT = False
+LIVE_GET_EXECUTED = False
+MS02_AUTHORIZED = False
+MS03_AUTHORIZED = False
+MS04_AUTHORIZED = False
+MS05_AUTHORIZED = False
+AUTONOMY_CAN_CHANGE_TRADING_LOGIC = False
+AUTONOMY_CAN_RESELECT_DOWNSTREAM = False
+AUTONOMY_CAN_MINT_PERMIT = False
+AUTONOMY_CAN_POST = False
