@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01 authority persist; no GET; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding; no live GET; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -9,18 +9,18 @@ last_updated: 2026-09-17
 
 # Full Core Current Productive Scoped One Shot C1 Observation Source V1
 
-Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH.
-Consumes Owner-GO
-`OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`
-for MS01 authority persist and owner pins only. Atlas remains
-`NAVIGATION_ONLY` / `AUTHORITY=NONE`.
+Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH
+and §11.2.1.EH MS04A. Atlas remains `NAVIGATION_ONLY` /
+`AUTHORITY=NONE`.
 
-This persist adds observation-acquisition owner pins only. It does not map
-a candles payload to `CurrentProductiveC1ObservationV1`, does not compare
-an EG cursor floor, does not GET, poll, sleep-loop, daemonize, mint a
-permit, POST, dispatch the EG trigger, or execute a runtime cycle. EG
-remains owner of dedup, trigger, and exactly-one cycle. V5 remains the
-N=1 cycle host.
+MS01 consumed
+`OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`
+for authority persist and owner pins only. MS04A consumes
+`OWNER_GO_MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1` for request
+contract binding only. The EH seam Owner-GO is unchanged. This spec
+does not authorize a live GET, poll, permit, POST, EG trigger, or
+runtime cycle. V5 remains the N=1 cycle host and is not the EH
+lifecycle owner.
 
 ```text
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
@@ -30,6 +30,18 @@ JOIN_SEAM_ID=CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_SEAM_V1
 PRODUCER_AUTHORITY=ONE_SHOT_PUBLIC_1M_C1_OBSERVATION_ACQUISITION_ONLY
 EG_AUTHORITY_BOUNDARY_UNCHANGED=NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY
 MS01_IMPLEMENTATION_STATUS=AUTHORITY_SCAFFOLD_ONLY
+MS04A_SLICE=MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1
+MS04A_CONTRACT_BOUND=true
+GET_TRANSPORT_CAPABILITY=FullCoreProductiveReadOnlyGetTransportV1
+GET_HOST=eea.okx.com
+GET_METHOD=GET
+GET_PATH=/api/v5/market/candles
+INST_ID_BINDING_SOURCE=CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID
+GET_BAR=1m
+GET_LIMIT=100
+LIMIT_BINDING_SOURCE=EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY
+GET_AUTH_REQUIRED=false
+GET_MAX_REQUEST_COUNT=1
 BOUNDED_POLL_AUTHORIZED=false
 DAEMON_AUTHORIZED=false
 CADENCE_OWNER_AUTHORIZED=false

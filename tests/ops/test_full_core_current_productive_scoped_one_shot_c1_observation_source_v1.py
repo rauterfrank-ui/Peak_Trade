@@ -38,7 +38,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     LIVE_GET_EXECUTED,
     MS01_IMPLEMENTATION_STATUS,
     MS02_AUTHORIZED,
+    MS02_HANDOFF,
     MS03_AUTHORIZED,
+    MS03_HANDOFF,
+    MS04A_CONTRACT_BOUND,
+    MS04A_SLICE,
     MS04_AUTHORIZED,
     MS05_AUTHORIZED,
     OWNER_GO,
@@ -53,9 +57,23 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     REASON_UNFINALIZED_OR_ABSENT,
     RUNTIME_CYCLE_AUTHORIZED,
     THIS_SLICE,
+    bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1,
     evaluate_current_productive_c1_observation_against_cursor_floor_v1,
     map_injected_candles_payload_to_current_productive_c1_observation_v1,
     resolve_current_productive_c1_cursor_floor_v1,
+    GET_AUTH_REQUIRED,
+    GET_BAR,
+    GET_CONNECT_TIMEOUT_SECONDS,
+    GET_HOST,
+    GET_LIMIT,
+    GET_MAX_REQUEST_COUNT,
+    GET_METHOD,
+    GET_PATH,
+    GET_TIMEOUT_SECONDS,
+    GET_TRANSPORT_CAPABILITY,
+    GET_TRANSPORT_CLASS,
+    INST_ID_BINDING_SOURCE,
+    LIMIT_BINDING_SOURCE,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
@@ -101,6 +119,9 @@ PROTECTED_ALGORITHM_FILES = (
     "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
 )
 EH_HEADING = "### 11.2.1.EH FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE"
+EH_MS04A_HEADING = (
+    "### 11.2.1.EH MS04A FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_LIVE_GET_CONTRACT"
+)
 NATIVE_ID = "0G-USDT-SWAP"
 OLDER_FINALIZED_TS_S = 1_789_527_720.0
 NEWEST_FINALIZED_TS_S = 1_789_527_840.0
@@ -112,7 +133,7 @@ FORBIDDEN_SOURCE_SNIPPETS = (
     "1789527780",
     "trigger_current_productive_next_c1_and_exactly_one_cycle_v1",
     "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1",
-    "FullCoreProductiveReadOnlyGetTransportV1",
+    "FullCoreProductiveReadOnlyGetTransportV1(",
     "execute_network=True",
     'execute_network": True',
     "scheduler",
@@ -155,6 +176,8 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert LIVE_GET_EXECUTED is False
     assert MS02_AUTHORIZED is False
     assert MS03_AUTHORIZED is False
+    assert MS04A_CONTRACT_BOUND is True
+    assert MS04A_SLICE == "MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1"
     assert MS04_AUTHORIZED is False
     assert MS05_AUTHORIZED is False
     assert AUTONOMY_CAN_CHANGE_TRADING_LOGIC is False
@@ -172,10 +195,13 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert EH_HEADING in runbook
+    assert EH_MS04A_HEADING in runbook
     assert THIS_SLICE in runbook
+    assert MS04A_SLICE in runbook
     assert "CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN" in runbook
     assert "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT" not in runbook
     assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in mot
+    assert "MS04A_EH_LIVE_GET_CONTRACT" in mot
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -183,6 +209,8 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     assert JOIN_SEAM_ID in atlas
     assert "MS03_CURSOR_FLOOR=true" in atlas
     assert "MS03_CURSOR_FLOOR_AND_ABSENCE_FAIL_CLOSED" in atlas
+    assert "MS04A_EH_LIVE_GET_CONTRACT" in atlas
+    assert "MS04A_CONTRACT_BOUND=true" in atlas
     for path in PROTECTED_ALGORITHM_FILES:
         assert (REPO_ROOT / path).is_file()
 
@@ -193,10 +221,15 @@ def test_ms01_source_guards_forbid_successor_and_runtime_surfaces() -> None:
         assert snippet not in source
     assert "MS02 PAYLOAD-TO-OBSERVATION MAPPING" in source
     assert "MS03 CURSOR-FLOOR AND ABSENCE FAIL-CLOSED" in source
+    assert "MS04A LIVE GET CONTRACT BINDING" in source
     assert "extract_finalized_candle_closes_v1" in source
     assert "def acquire_" not in source
     assert "urllib" not in source
     assert "http.client" not in source
+    assert "opener.open" not in source
+    assert "Request(" not in source
+    assert "transport.get" not in source
+    assert "build_opener" not in source
     eg_source = EG_MODULE.read_text(encoding="utf-8")
     assert "while True" not in eg_source
     assert "time.sleep" not in eg_source
@@ -504,12 +537,105 @@ def test_ms03_does_not_start_ms04_get_or_ms05_trigger() -> None:
     assert "perform_get" not in source
     assert "injected_get_transport" not in source
     assert "FullCoreFreshPretradeGetTransportV1" not in source
-    assert "ENDPOINT_MARKET_CANDLES" not in source
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
     assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
     assert "_evaluate_c1_gate_v1" not in source
     assert "1789527780" not in source
     assert "execute_network" not in source
     assert "def acquire_" not in source
     assert MS03_AUTHORIZED is False
+    assert MS04A_CONTRACT_BOUND is True
     assert MS04_AUTHORIZED is False
+    assert MS05_AUTHORIZED is False
+
+
+def test_ms04a_binds_existing_public_candles_request_without_get(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_PRESENT
+    assert result.host == GET_HOST
+    assert result.host == "eea.okx.com"
+    assert result.method == GET_METHOD
+    assert result.method == "GET"
+    assert result.path == GET_PATH
+    assert result.path == "/api/v5/market/candles"
+    assert result.inst_id == NATIVE_ID
+    assert result.inst_id_binding_source == INST_ID_BINDING_SOURCE
+    assert result.inst_id_binding_source == "CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID"
+    assert result.bar == GET_BAR
+    assert result.bar == REQUIRED_BAR
+    assert result.bar == "1m"
+    assert result.limit == GET_LIMIT
+    assert result.limit == "100"
+    assert result.limit_binding_source == LIMIT_BINDING_SOURCE
+    assert result.limit_binding_source == "EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY"
+    assert result.auth_required is GET_AUTH_REQUIRED
+    assert result.auth_required is False
+    assert result.max_request_count == GET_MAX_REQUEST_COUNT
+    assert result.max_request_count == 1
+    assert result.timeout_seconds == GET_TIMEOUT_SECONDS
+    assert result.timeout_seconds == 20.0
+    assert result.connect_timeout_seconds == GET_CONNECT_TIMEOUT_SECONDS
+    assert result.connect_timeout_seconds == 10.0
+    assert result.endpoint == (f"{GET_PATH}?instId={NATIVE_ID}&bar={GET_BAR}&limit={GET_LIMIT}")
+    assert result.transport_capability == GET_TRANSPORT_CAPABILITY
+    assert result.transport_capability == "FullCoreProductiveReadOnlyGetTransportV1"
+    assert result.transport_class == GET_TRANSPORT_CLASS
+    assert result.get_count == 0
+    assert result.reason_code == ""
+    assert MS02_HANDOFF == ("map_injected_candles_payload_to_current_productive_c1_observation_v1")
+    assert MS03_HANDOFF == ("evaluate_current_productive_c1_observation_against_cursor_floor_v1")
+    assert MS04_AUTHORIZED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert LIVE_GET_EXECUTED is False
+
+
+def test_ms04a_missing_cursor_fail_closed_does_not_get(tmp_path: Path) -> None:
+    empty = tmp_path / "empty-cursor"
+    empty.mkdir()
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=empty,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.inst_id == ""
+    assert result.endpoint == ""
+    assert result.get_count == 0
+    assert result.reason_code == REASON_CURSOR_MISSING
+
+
+def test_ms04a_owner_go_mismatch_fail_closed_does_not_get(tmp_path: Path) -> None:
+    store = _seed_cursor(tmp_path)
+    result = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go="OWNER_GO_WRONG",
+        cursor_store_root=store,
+    )
+    assert result.disposition == DISPOSITION_FAIL_CLOSED
+    assert result.get_count == 0
+    assert result.reason_code == REASON_OWNER_GO_MISMATCH
+
+
+def test_ms04a_does_not_execute_get_or_eg_or_v5() -> None:
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert GET_TRANSPORT_CAPABILITY in source
+    assert "ENDPOINT_MARKET_CANDLES" in source
+    assert "bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1" in (
+        source
+    )
+    assert "FullCoreProductiveReadOnlyGetTransportV1(" not in source
+    assert "opener.open" not in source
+    assert "execute_network" not in source
+    assert "trigger_current_productive_next_c1_and_exactly_one_cycle_v1" not in source
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in (source)
+    )
+    assert "_evaluate_c1_gate_v1" not in source
+    assert "C1_GATE_NATIVE_ID" not in source
+    assert MS04_AUTHORIZED is False
+    assert PERFORM_GET_DEFAULT is False
+    assert LIVE_GET_EXECUTED is False
     assert MS05_AUTHORIZED is False

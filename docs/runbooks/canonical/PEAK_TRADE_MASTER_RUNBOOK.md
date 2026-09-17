@@ -30771,6 +30771,106 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EH MS04A FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_LIVE_GET_CONTRACT
+
+Consumes Owner-GO
+`OWNER_GO_MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1`
+for EH live-GET request-contract binding only. This persist does not
+rewrite §11.2.1.DA–§11.2.1.EH standing persist fields. CURRENT_PHASE
+remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+The EH seam Owner-GO remains
+`OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`.
+
+This persist binds the existing CURRENT_PRODUCTIVE read-only public
+candles transport capability onto the EH one-shot observation seam. It
+does not construct the transport, GET, poll, daemonize, sleep-loop,
+retry, mint a permit, POST, dispatch the EG trigger, or execute a
+runtime cycle. V5 remains the N=1 cycle host and is not the EH
+lifecycle owner. MS04 live GET remains unauthorized.
+
+Transport capability reused:
+`FullCoreProductiveReadOnlyGetTransportV1`
+(`TRANSPORT_CLASS=FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1`).
+Host, method, timeouts, and GET-only fail-closed classes are that
+transport's existing constants. Path is the existing
+`ENDPOINT_MARKET_CANDLES`. `bar` is EG `REQUIRED_BAR=1m`. `instId`
+binds from the EG-owned current-productive cursor `venue_native_id`
+already used by MS03. `limit=100` is the unique existing
+CURRENT_PRODUCTIVE public 1m candles GET query value. `auth_required`
+is false because producer authority is
+`ONE_SHOT_PUBLIC_1M_C1_OBSERVATION_ACQUISITION_ONLY`. Cardinality is 1
+because producer authority is one-shot. Future payload handoff remains
+merged MS02. Future floor comparison remains merged MS03. Empty,
+malformed, and unfinalized payloads remain MS02
+`UNFINALIZED_OR_ABSENT`. Cursor absence/invalid remain MS03 reasons.
+
+``` text
+THIS_SLICE=11.2.1.EH.MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING
+CONTRACT_VERSION=v1
+OWNER_GO=OWNER_GO_MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1
+OWNER_GO_SCOPE=MS04A_EH_LIVE_GET_CONTRACT_BINDING_ONLY
+OWNER_GO_STATUS=CONSUMED
+SEAM_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+JOIN_SEAM_ID=CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_SEAM_V1
+MS04A_SLICE=MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1
+MS04A_CONTRACT_BOUND=true
+GET_TRANSPORT_CAPABILITY=FullCoreProductiveReadOnlyGetTransportV1
+GET_TRANSPORT_CLASS=FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1
+GET_HOST=eea.okx.com
+GET_METHOD=GET
+GET_PATH=/api/v5/market/candles
+INST_ID_BINDING_SOURCE=CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID
+GET_BAR=1m
+GET_LIMIT=100
+LIMIT_BINDING_SOURCE=EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY
+GET_AUTH_REQUIRED=false
+GET_MAX_REQUEST_COUNT=1
+GET_TIMEOUT_SECONDS=20.0
+GET_CONNECT_TIMEOUT_SECONDS=10.0
+MS02_HANDOFF=map_injected_candles_payload_to_current_productive_c1_observation_v1
+MS03_HANDOFF=evaluate_current_productive_c1_observation_against_cursor_floor_v1
+V5_ROLE=N1_CYCLE_HOST_NOT_EH_LIFECYCLE_OWNER
+EG_TRIGGER_EXECUTED=false
+BOUNDED_POLL_AUTHORIZED=false
+DAEMON_AUTHORIZED=false
+RUNTIME_CYCLE_AUTHORIZED=false
+PERFORM_GET_DEFAULT=false
+LIVE_GET_EXECUTED=false
+MS04_AUTHORIZED=false
+MS05_AUTHORIZED=false
+AUTONOMY_CAN_MINT_PERMIT=false
+AUTONOMY_CAN_POST=false
+NEW_TRADING_AUTHORITY_CREATED=false
+STEP_29Q_STATUS=PLAN_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+PERMIT_CREATED=false
+POST_COUNT=0
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:

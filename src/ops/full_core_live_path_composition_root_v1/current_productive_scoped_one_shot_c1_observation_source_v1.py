@@ -10,6 +10,12 @@ evaluates a mapped observation against that floor. Reuses EG load and
 compare helpers. Does not synthesize a floor, GET, poll, daemonize,
 sleep-loop, dispatch EG, or execute a runtime cycle.
 
+MS04A LIVE GET CONTRACT BINDING.
+Binds the existing FullCoreProductiveReadOnlyGetTransportV1 capability
+identity and the existing CURRENT_PRODUCTIVE public 1m candles GET query
+shape onto this EH seam. Does not construct the transport, call get,
+poll, dispatch EG, or execute a runtime cycle.
+
 EG remains owner of dedup, cursor accept/reject, trigger, and exactly-one
 cycle dispatch. V5 remains the N=1 cycle host. This module does not call
 the EG trigger or V5 host.
@@ -34,7 +40,17 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     load_current_productive_c1_cursor_or_reason_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_CANDLES,
     extract_finalized_candle_closes_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    METHOD_GET,
+    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+)
+from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    AUTHORIZED_HOST,
+    CONNECT_TIMEOUT_SECONDS,
+    DEFAULT_TIMEOUT_SECONDS,
 )
 
 OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -58,7 +74,24 @@ LIVE_GET_EXECUTED = False
 MS02_AUTHORIZED = False
 MS03_AUTHORIZED = False
 MS04_AUTHORIZED = False
+MS04A_CONTRACT_BOUND = True
+MS04A_SLICE = "MS04A_EH_LIVE_GET_CONTRACT_AND_OWNER_BINDING_V1"
 MS05_AUTHORIZED = False
+GET_TRANSPORT_CAPABILITY = "FullCoreProductiveReadOnlyGetTransportV1"
+GET_TRANSPORT_CLASS = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+GET_HOST = AUTHORIZED_HOST
+GET_METHOD = METHOD_GET
+GET_PATH = ENDPOINT_MARKET_CANDLES
+GET_BAR = REQUIRED_BAR
+GET_LIMIT = "100"
+GET_AUTH_REQUIRED = False
+GET_MAX_REQUEST_COUNT = 1
+GET_TIMEOUT_SECONDS = DEFAULT_TIMEOUT_SECONDS
+GET_CONNECT_TIMEOUT_SECONDS = CONNECT_TIMEOUT_SECONDS
+INST_ID_BINDING_SOURCE = "CURRENT_PRODUCTIVE_CURSOR_VENUE_NATIVE_ID"
+LIMIT_BINDING_SOURCE = "EXISTING_CURRENT_PRODUCTIVE_PUBLIC_1M_CANDLES_GET_QUERY"
+MS02_HANDOFF = "map_injected_candles_payload_to_current_productive_c1_observation_v1"
+MS03_HANDOFF = "evaluate_current_productive_c1_observation_against_cursor_floor_v1"
 AUTONOMY_CAN_CHANGE_TRADING_LOGIC = False
 AUTONOMY_CAN_RESELECT_DOWNSTREAM = False
 AUTONOMY_CAN_MINT_PERMIT = False
@@ -209,6 +242,90 @@ def evaluate_current_productive_c1_observation_against_cursor_floor_v1(
         disposition=DISPOSITION_EMITTED,
         presence=PRESENCE_PRESENT,
         floor_venue_event_time=floor_result.floor_venue_event_time,
+        get_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveScopedOneShotC1GetRequestContractV1:
+    disposition: str
+    host: str
+    method: str
+    path: str
+    inst_id: str
+    bar: str
+    limit: str
+    auth_required: bool
+    max_request_count: int
+    timeout_seconds: float
+    connect_timeout_seconds: float
+    endpoint: str
+    transport_capability: str
+    transport_class: str
+    inst_id_binding_source: str
+    limit_binding_source: str
+    get_count: int
+    reason_code: str
+
+
+def _request_fail(
+    reason_code: str,
+) -> CurrentProductiveScopedOneShotC1GetRequestContractV1:
+    return CurrentProductiveScopedOneShotC1GetRequestContractV1(
+        disposition=DISPOSITION_FAIL_CLOSED,
+        host="",
+        method="",
+        path="",
+        inst_id="",
+        bar="",
+        limit="",
+        auth_required=GET_AUTH_REQUIRED,
+        max_request_count=GET_MAX_REQUEST_COUNT,
+        timeout_seconds=GET_TIMEOUT_SECONDS,
+        connect_timeout_seconds=GET_CONNECT_TIMEOUT_SECONDS,
+        endpoint="",
+        transport_capability=GET_TRANSPORT_CAPABILITY,
+        transport_class=GET_TRANSPORT_CLASS,
+        inst_id_binding_source=INST_ID_BINDING_SOURCE,
+        limit_binding_source=LIMIT_BINDING_SOURCE,
+        get_count=0,
+        reason_code=reason_code,
+    )
+
+
+def bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+    *,
+    owner_go: str,
+    cursor_store_root: Path,
+) -> CurrentProductiveScopedOneShotC1GetRequestContractV1:
+    floor_result, cursor = _resolve_cursor_floor_with_payload(
+        owner_go=owner_go,
+        cursor_store_root=cursor_store_root,
+    )
+    if floor_result.disposition != DISPOSITION_PRESENT or cursor is None:
+        return _request_fail(floor_result.reason_code)
+    inst_id = str(cursor.get("venue_native_id") or "").strip()
+    if not inst_id:
+        return _request_fail(REASON_CURSOR_INVALID)
+    endpoint = f"{GET_PATH}?instId={inst_id}&bar={GET_BAR}&limit={GET_LIMIT}"
+    return CurrentProductiveScopedOneShotC1GetRequestContractV1(
+        disposition=DISPOSITION_PRESENT,
+        host=GET_HOST,
+        method=GET_METHOD,
+        path=GET_PATH,
+        inst_id=inst_id,
+        bar=GET_BAR,
+        limit=GET_LIMIT,
+        auth_required=GET_AUTH_REQUIRED,
+        max_request_count=GET_MAX_REQUEST_COUNT,
+        timeout_seconds=GET_TIMEOUT_SECONDS,
+        connect_timeout_seconds=GET_CONNECT_TIMEOUT_SECONDS,
+        endpoint=endpoint,
+        transport_capability=GET_TRANSPORT_CAPABILITY,
+        transport_class=GET_TRANSPORT_CLASS,
+        inst_id_binding_source=INST_ID_BINDING_SOURCE,
+        limit_binding_source=LIMIT_BINDING_SOURCE,
         get_count=0,
         reason_code="",
     )
