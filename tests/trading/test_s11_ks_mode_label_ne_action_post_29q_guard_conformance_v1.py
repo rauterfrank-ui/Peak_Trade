@@ -292,8 +292,8 @@ def test_s11_t03_post_29q_guard_holds_without_rewriting_outcome() -> None:
     assert ks_calls[0].lineno < typed_calls[0].lineno
 
 
-def test_s11_t04_s10_open_remainder_and_s12_absent() -> None:
-    """S11-T04: S10 remainder stays open; S12 not started; no FILEGATE/execution surface."""
+def test_s11_t04_s10_open_remainder_and_s12_successor_present() -> None:
+    """S11-T04: S10 remainder stays open; S12 successor file exists; no FILEGATE/execution surface."""
     s10_path = (
         _REPO_ROOT / "tests/trading/test_s10_kill_all_fanout_partial_same_tick_conformance_v1.py"
     )
@@ -305,7 +305,11 @@ def test_s11_t04_s10_open_remainder_and_s12_absent() -> None:
     assert "composition-before-transition semantics" in s10_src
     assert "Manifest-vs-Owner envelope" in s10_src
     assert "KILL_ALL_REQUIRED" in s10_src
-    assert list(_REPO_ROOT.glob("tests/trading/test_s12_*.py")) == []
+    s12_path = (
+        _REPO_ROOT / "tests/trading/test_s12_29p_pre_29q_safety_29q_plan_only_conformance_v1.py"
+    )
+    assert s12_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s12_*.py")) == [s12_path]
     this_src = Path(__file__).read_text(encoding="utf-8")
     assert "PENDING_ENTRY_ELIGIBILITY_CANONICALLY_DEFINED remains false" in this_src
     assert "quantity_status remains NOT_BOUND" in this_src
