@@ -16,6 +16,10 @@ Epistemic:
 - ALREADY_ADJUDICATED: S01 vector set; no Future-Reselection
 - Not claimed: equality between replay input_digest and CMC input_digest as a
   productive identity gate (no such check exists on origin/main)
+
+Path is tests/trading/ not tests/trading/master_v2/: the Economic Guard treats
+tests/trading/master_v2/test_* as forbidden MASTER_V2 mutation surface.
+Replay harness reuse stays via import of the existing owner test helpers.
 """
 
 from __future__ import annotations
@@ -45,7 +49,7 @@ from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 imp
     _replay_input,
 )
 
-_REPO_ROOT = Path(__file__).resolve().parents[3]
+_REPO_ROOT = Path(__file__).resolve().parents[2]
 _CMC_SOURCE = _REPO_ROOT / "src/trading/master_v2/canonical_market_context_v1.py"
 _REPLAY_SOURCE = _REPO_ROOT / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
 _MAPPER_MODULE = "intended_action_mapper_v1"
