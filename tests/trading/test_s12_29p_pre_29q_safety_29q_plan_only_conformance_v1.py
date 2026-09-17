@@ -250,8 +250,8 @@ def test_s12_t04_exit_is_not_blanket_killed_by_pre_29q_safety(
         }
 
 
-def test_s12_t05_open_remainder_and_s13_absent() -> None:
-    """S12-T05: S10/S11 remainder stays open; S13 not started; no FILEGATE/execution."""
+def test_s12_t05_open_remainder_and_s13_successor_present() -> None:
+    """S12-T05: S10/S11 remainder stays open; S13 successor file exists; no FILEGATE/execution."""
     s11_path = (
         _REPO_ROOT
         / "tests/trading/test_s11_ks_mode_label_ne_action_post_29q_guard_conformance_v1.py"
@@ -271,7 +271,11 @@ def test_s12_t05_open_remainder_and_s13_absent() -> None:
     this_src = Path(__file__).read_text(encoding="utf-8")
     assert "PENDING_ENTRY_ELIGIBILITY_CANONICALLY_DEFINED remains false" in this_src
     assert "Safety-kernel/Kill-Switch blocked-flag unification" in this_src
-    assert list(_REPO_ROOT.glob("tests/trading/test_s13_*.py")) == []
+    s13_path = (
+        _REPO_ROOT / "tests/trading/test_s13_recon_negative_suite_invariants_conformance_v1.py"
+    )
+    assert s13_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s13_*.py")) == [s13_path]
     this_tree = ast.parse(this_src)
     imported = _imported_names(this_tree)
     assert all("src.execution" not in name for name in imported)
