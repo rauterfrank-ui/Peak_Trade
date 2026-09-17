@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, and S2+S3 canonical single runtime-path offline bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
+scope: Full-Core CURRENT_PRODUCTIVE scoped one-shot C1 observation-source MS01/MS02/MS03 persist plus MS04A GET-contract binding, MS04B historical GET evidence, post-MS04D T1/T2 authority-separation persist, S2+S3 canonical single runtime-path offline bind, and S4A runtime-enablement offline bind; standing live GET remains unauthorized; T1 Owner-GO remains absent; T2 remains DEFINED_NOT_CONSUMED; Fresh-C1 GET runtime GO and EG runtime trigger GO are DEFINED_NOT_CONSUMED and not consumed; no poll; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-17
@@ -10,8 +10,8 @@ last_updated: 2026-09-17
 # Full Core Current Productive Scoped One Shot C1 Observation Source V1
 
 Derived spec. Non-SSOT. Canonical persist is Master Runbook §11.2.1.EH,
-§11.2.1.EH MS04A, §11.2.1.EH MS04D, §11.2.1.EH S1, and
-§11.2.1.EH S2+S3. Atlas remains
+§11.2.1.EH MS04A, §11.2.1.EH MS04D, §11.2.1.EH S1,
+§11.2.1.EH S2+S3, and §11.2.1.EH S4A. Atlas remains
 `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
 MS01 consumed
@@ -38,6 +38,14 @@ Standing pins remain `LIVE_GET_EXECUTED=false`,
 `HISTORICAL_EVIDENCE_ONLY`. T1 remains `OWNER_GO_ABSENT`. T2 remains
 `DEFINED_NOT_CONSUMED`. This spec does not authorize a live GET,
 poll, permit, POST, EG trigger, V5 invoke, MS05, S4, or runtime cycle.
+S4A consumes `OWNER_GO_S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_V1` to define
+`OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1` and
+`OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1` as
+`DEFINED_NOT_CONSUMED` runtime GOs, bind productive universe
+acquisition injection behind EG→V5 with V5 network execution remaining
+false, and bind lock_root/evidence_root under the existing EH evidence
+family. Persist GOs are not runtime licenses. T2 remains
+`DEFINED_NOT_CONSUMED` and is not consumed. Direct V5 remains forbidden.
 V5 remains the N=1 cycle host and is not the EH lifecycle owner.
 
 ```text
@@ -74,6 +82,17 @@ EG_DISPATCH_COUNT=0
 V5_INVOKE_COUNT=0
 RUNTIME_CYCLE_COUNT=0
 S4_STARTED=false
+S4A_ENABLEMENT_BOUND=true
+S4A_RUNTIME_CONSUMED=false
+S4A_FRESH_C1_GET_OWNER_GO=OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1
+S4A_FRESH_C1_GET_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+S4A_EG_RUNTIME_TRIGGER_OWNER_GO=OWNER_GO_S4A_EG_EXACTLY_ONE_RUNTIME_TRIGGER_V1
+S4A_EG_RUNTIME_TRIGGER_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+S4A_PRODUCTIVE_ACQUISITION_PRODUCER=acquire_eea_universe_inventory_v1
+S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS=UrllibEeaPublicUniverseGetTransportV1
+S4A_V5_EXECUTE_NETWORK=false
+S4A_LOCK_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
+S4A_EVIDENCE_ROOT_RELPATH=evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/s4_runtime_v1
 EG_TRIGGER_EXECUTED=false
 RUNTIME_CYCLE_EXECUTED=false
 MS05_STARTED=false

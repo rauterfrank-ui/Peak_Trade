@@ -32,6 +32,13 @@ remains forbidden. T1 remains OWNER_GO_ABSENT. T2 remains
 DEFINED_NOT_CONSUMED. This bind does not GET, dispatch EG, invoke V5,
 or start a runtime cycle.
 
+S4A RUNTIME ENABLEMENT OFFLINE BIND.
+Defines the one-shot Fresh-C1 GET runtime GO and the EG exactly-one
+runtime trigger GO as DEFINED_NOT_CONSUMED. Binds productive universe
+acquisition injection behind EG->V5 while keeping V5 network execution
+false. Binds lock_root and evidence_root under the existing EH evidence
+family. Does not GET, dispatch EG, invoke V5, consume T2, or start S4.
+
 EG remains owner of dedup, cursor accept/reject, trigger, and exactly-one
 cycle dispatch. V5 remains the N=1 cycle host. This module does not call
 the EG trigger or V5 host.
@@ -50,8 +57,14 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     CurrentProductiveC1ObservationV1,
     CurrentProductiveGovernedNextC1OrchestrationError,
     OWNER_GO as EG_OWNER_GO,
+    PRODUCTIVE_ACQUISITION_PRODUCER as EG_PRODUCTIVE_ACQUISITION_PRODUCER,
+    PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS as EG_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
     REASON_CURSOR_INVALID as EG_REASON_CURSOR_INVALID,
     REASON_CURSOR_MISSING as EG_REASON_CURSOR_MISSING,
+    REASON_PERSIST_GO_NOT_TRIGGER_LICENSE as EG_REASON_PERSIST_GO_NOT_TRIGGER_LICENSE,
+    RUNTIME_TRIGGER_OWNER_GO as EG_RUNTIME_TRIGGER_OWNER_GO,
+    RUNTIME_TRIGGER_OWNER_GO_SCOPE as EG_RUNTIME_TRIGGER_OWNER_GO_SCOPE,
+    RUNTIME_TRIGGER_OWNER_GO_STATUS as EG_RUNTIME_TRIGGER_OWNER_GO_STATUS,
     cursor_last_accepted_c1_venue_event_time_v1,
     evaluate_current_productive_c1_reject_reason_v1,
     load_current_productive_c1_cursor_or_reason_v1,
@@ -143,6 +156,31 @@ FRESH_C1_REQUIREMENT = "REQUIRED_FOR_EVENTUAL_RUNTIME_INPUT_THIS_SLICE_GET_UNAUT
 FRESH_GET_AUTHORIZED = False
 NETWORK_EXECUTION_AUTHORIZED = False
 S4_STARTED = False
+S4A_THIS_SLICE = "11.2.1.EH.S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND"
+S4A_OWNER_GO = "OWNER_GO_S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_V1"
+S4A_OWNER_GO_SCOPE = "S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND_ONLY"
+S4A_OWNER_GO_STATUS = "CONSUMED"
+S4A_FRESH_C1_GET_OWNER_GO = "OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1"
+S4A_FRESH_C1_GET_OWNER_GO_SCOPE = "EXACTLY_ONE_PUBLIC_READONLY_1M_CANDLES_GET_ONLY"
+S4A_FRESH_C1_GET_OWNER_GO_STATUS = "DEFINED_NOT_CONSUMED"
+S4A_EG_RUNTIME_TRIGGER_OWNER_GO = EG_RUNTIME_TRIGGER_OWNER_GO
+S4A_EG_RUNTIME_TRIGGER_OWNER_GO_SCOPE = EG_RUNTIME_TRIGGER_OWNER_GO_SCOPE
+S4A_EG_RUNTIME_TRIGGER_OWNER_GO_STATUS = EG_RUNTIME_TRIGGER_OWNER_GO_STATUS
+S4A_PRODUCTIVE_ACQUISITION_PRODUCER = EG_PRODUCTIVE_ACQUISITION_PRODUCER
+S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS = EG_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+S4A_V5_EXECUTE_NETWORK = False
+S4A_LOCK_ROOT_RELPATH = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "s4_runtime_v1"
+)
+S4A_EVIDENCE_ROOT_RELPATH = S4A_LOCK_ROOT_RELPATH
+S4A_ENABLEMENT_BOUND = True
+S4A_RUNTIME_CONSUMED = False
+S4A_CANONICAL_EVIDENCE_PACK = (
+    "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
+    "20260917T143500Z"
+)
+REASON_PERSIST_GO_NOT_RUNTIME_LICENSE = EG_REASON_PERSIST_GO_NOT_TRIGGER_LICENSE
 GET_TRANSPORT_CAPABILITY = "FullCoreProductiveReadOnlyGetTransportV1"
 GET_TRANSPORT_CLASS = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
 GET_HOST = AUTHORIZED_HOST
@@ -492,5 +530,351 @@ def bind_current_productive_canonical_single_runtime_path_call_contract_v1(
         eg_dispatch_count=EG_DISPATCH_COUNT,
         v5_invoke_count=V5_INVOKE_COUNT,
         runtime_cycle_count=RUNTIME_CYCLE_COUNT,
+        reason_code="",
+    )
+
+
+_S4A_FORBIDDEN_GET_TOKENS = frozenset(
+    {
+        OWNER_GO,
+        S1_OWNER_GO,
+        S2_S3_OWNER_GO,
+        S4A_OWNER_GO,
+        EG_OWNER_GO,
+        EG_RUNTIME_TRIGGER_OWNER_GO,
+        T2_OWNER_GO,
+    }
+)
+_S4A_FORBIDDEN_TRIGGER_TOKENS = frozenset(
+    {
+        OWNER_GO,
+        S1_OWNER_GO,
+        S2_S3_OWNER_GO,
+        S4A_OWNER_GO,
+        EG_OWNER_GO,
+        S4A_FRESH_C1_GET_OWNER_GO,
+        T2_OWNER_GO,
+    }
+)
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4AFreshC1GetAuthorityV1:
+    disposition: str
+    owner_go: str
+    owner_go_scope: str
+    owner_go_status: str
+    host: str
+    method: str
+    path: str
+    bar: str
+    limit: str
+    auth_required: bool
+    max_request_count: int
+    transport_capability: str
+    standing_fresh_get_authorized: bool
+    get_count: int
+    reason_code: str
+
+
+def bind_s4a_fresh_c1_get_runtime_authority_v1(
+    *,
+    owner_go: str,
+    cursor_store_root: Path,
+) -> CurrentProductiveS4AFreshC1GetAuthorityV1:
+    if owner_go in _S4A_FORBIDDEN_GET_TOKENS:
+        return CurrentProductiveS4AFreshC1GetAuthorityV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            owner_go="",
+            owner_go_scope="",
+            owner_go_status="",
+            host="",
+            method="",
+            path="",
+            bar="",
+            limit="",
+            auth_required=GET_AUTH_REQUIRED,
+            max_request_count=GET_MAX_REQUEST_COUNT,
+            transport_capability=GET_TRANSPORT_CAPABILITY,
+            standing_fresh_get_authorized=False,
+            get_count=0,
+            reason_code=REASON_PERSIST_GO_NOT_RUNTIME_LICENSE
+            if owner_go in {OWNER_GO, S1_OWNER_GO, S2_S3_OWNER_GO, S4A_OWNER_GO, EG_OWNER_GO}
+            else REASON_OWNER_GO_MISMATCH,
+        )
+    if owner_go != S4A_FRESH_C1_GET_OWNER_GO:
+        return CurrentProductiveS4AFreshC1GetAuthorityV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            owner_go="",
+            owner_go_scope="",
+            owner_go_status="",
+            host="",
+            method="",
+            path="",
+            bar="",
+            limit="",
+            auth_required=GET_AUTH_REQUIRED,
+            max_request_count=GET_MAX_REQUEST_COUNT,
+            transport_capability=GET_TRANSPORT_CAPABILITY,
+            standing_fresh_get_authorized=False,
+            get_count=0,
+            reason_code=REASON_OWNER_GO_MISMATCH,
+        )
+    contract = bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1(
+        owner_go=OWNER_GO,
+        cursor_store_root=cursor_store_root,
+    )
+    if contract.disposition != DISPOSITION_PRESENT:
+        return CurrentProductiveS4AFreshC1GetAuthorityV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            owner_go=S4A_FRESH_C1_GET_OWNER_GO,
+            owner_go_scope=S4A_FRESH_C1_GET_OWNER_GO_SCOPE,
+            owner_go_status=S4A_FRESH_C1_GET_OWNER_GO_STATUS,
+            host="",
+            method="",
+            path="",
+            bar="",
+            limit="",
+            auth_required=GET_AUTH_REQUIRED,
+            max_request_count=GET_MAX_REQUEST_COUNT,
+            transport_capability=GET_TRANSPORT_CAPABILITY,
+            standing_fresh_get_authorized=False,
+            get_count=0,
+            reason_code=contract.reason_code,
+        )
+    return CurrentProductiveS4AFreshC1GetAuthorityV1(
+        disposition=DISPOSITION_PRESENT,
+        owner_go=S4A_FRESH_C1_GET_OWNER_GO,
+        owner_go_scope=S4A_FRESH_C1_GET_OWNER_GO_SCOPE,
+        owner_go_status=S4A_FRESH_C1_GET_OWNER_GO_STATUS,
+        host=contract.host,
+        method=contract.method,
+        path=contract.path,
+        bar=contract.bar,
+        limit=contract.limit,
+        auth_required=contract.auth_required,
+        max_request_count=contract.max_request_count,
+        transport_capability=contract.transport_capability,
+        standing_fresh_get_authorized=FRESH_GET_AUTHORIZED,
+        get_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4AEgTriggerAuthorityV1:
+    disposition: str
+    owner_go: str
+    owner_go_scope: str
+    owner_go_status: str
+    persist_go: str
+    persist_go_is_trigger_license: bool
+    dispatch_count: int
+    reason_code: str
+
+
+def bind_s4a_eg_runtime_trigger_authority_v1(
+    *,
+    owner_go: str,
+) -> CurrentProductiveS4AEgTriggerAuthorityV1:
+    if owner_go in _S4A_FORBIDDEN_TRIGGER_TOKENS:
+        return CurrentProductiveS4AEgTriggerAuthorityV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            owner_go="",
+            owner_go_scope="",
+            owner_go_status="",
+            persist_go=EG_OWNER_GO,
+            persist_go_is_trigger_license=False,
+            dispatch_count=0,
+            reason_code=REASON_PERSIST_GO_NOT_RUNTIME_LICENSE
+            if owner_go == EG_OWNER_GO
+            else REASON_OWNER_GO_MISMATCH,
+        )
+    if owner_go != S4A_EG_RUNTIME_TRIGGER_OWNER_GO:
+        return CurrentProductiveS4AEgTriggerAuthorityV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            owner_go="",
+            owner_go_scope="",
+            owner_go_status="",
+            persist_go=EG_OWNER_GO,
+            persist_go_is_trigger_license=False,
+            dispatch_count=0,
+            reason_code=REASON_OWNER_GO_MISMATCH,
+        )
+    return CurrentProductiveS4AEgTriggerAuthorityV1(
+        disposition=DISPOSITION_PRESENT,
+        owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+        owner_go_scope=S4A_EG_RUNTIME_TRIGGER_OWNER_GO_SCOPE,
+        owner_go_status=S4A_EG_RUNTIME_TRIGGER_OWNER_GO_STATUS,
+        persist_go=EG_OWNER_GO,
+        persist_go_is_trigger_license=False,
+        dispatch_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4AProductiveAcquisitionJoinV1:
+    disposition: str
+    producer: str
+    transport_class: str
+    v5_network_execution: bool
+    transport_constructed: bool
+    get_count: int
+    reason_code: str
+
+
+def bind_s4a_productive_acquisition_join_v1(
+    *,
+    owner_go: str,
+) -> CurrentProductiveS4AProductiveAcquisitionJoinV1:
+    if owner_go != S4A_OWNER_GO:
+        return CurrentProductiveS4AProductiveAcquisitionJoinV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            producer="",
+            transport_class="",
+            v5_network_execution=False,
+            transport_constructed=False,
+            get_count=0,
+            reason_code=REASON_OWNER_GO_MISMATCH,
+        )
+    if S4A_V5_EXECUTE_NETWORK is True:
+        return CurrentProductiveS4AProductiveAcquisitionJoinV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            producer="",
+            transport_class="",
+            v5_network_execution=False,
+            transport_constructed=False,
+            get_count=0,
+            reason_code="NETWORK_PIN_DRIFT",
+        )
+    return CurrentProductiveS4AProductiveAcquisitionJoinV1(
+        disposition=DISPOSITION_PRESENT,
+        producer=S4A_PRODUCTIVE_ACQUISITION_PRODUCER,
+        transport_class=S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
+        v5_network_execution=False,
+        transport_constructed=False,
+        get_count=0,
+        reason_code="",
+    )
+
+
+@dataclass(frozen=True)
+class CurrentProductiveS4ARuntimeEnablementEnvelopeV1:
+    disposition: str
+    selected_runtime_path: str
+    fresh_c1_get_owner_go: str
+    eg_runtime_trigger_owner_go: str
+    t2_owner_go: str
+    t2_owner_go_status: str
+    persist_gos_are_runtime_licenses: bool
+    productive_acquisition_producer: str
+    productive_acquisition_transport_class: str
+    v5_network_execution: bool
+    direct_v5_as_current_productive_entrypoint: str
+    lock_root_relpath: str
+    evidence_root_relpath: str
+    get_count: int
+    eg_dispatch_count: int
+    v5_invoke_count: int
+    runtime_cycle_count: int
+    s4_started: bool
+    ms05_started: bool
+    reason_code: str
+
+
+def bind_s4a_runtime_enablement_envelope_v1(
+    *,
+    owner_go: str,
+    cursor_store_root: Path,
+) -> CurrentProductiveS4ARuntimeEnablementEnvelopeV1:
+    def _fail(reason_code: str) -> CurrentProductiveS4ARuntimeEnablementEnvelopeV1:
+        return CurrentProductiveS4ARuntimeEnablementEnvelopeV1(
+            disposition=DISPOSITION_FAIL_CLOSED,
+            selected_runtime_path="",
+            fresh_c1_get_owner_go="",
+            eg_runtime_trigger_owner_go="",
+            t2_owner_go="",
+            t2_owner_go_status="",
+            persist_gos_are_runtime_licenses=False,
+            productive_acquisition_producer="",
+            productive_acquisition_transport_class="",
+            v5_network_execution=False,
+            direct_v5_as_current_productive_entrypoint=DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+            lock_root_relpath="",
+            evidence_root_relpath="",
+            get_count=0,
+            eg_dispatch_count=0,
+            v5_invoke_count=0,
+            runtime_cycle_count=0,
+            s4_started=False,
+            ms05_started=False,
+            reason_code=reason_code,
+        )
+
+    if owner_go != S4A_OWNER_GO:
+        return _fail(REASON_OWNER_GO_MISMATCH)
+    tokens = (
+        S4A_FRESH_C1_GET_OWNER_GO,
+        S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+        T2_OWNER_GO,
+        OWNER_GO,
+        EG_OWNER_GO,
+        S4A_OWNER_GO,
+    )
+    if len(set(tokens)) != 6:
+        return _fail("RUNTIME_GO_SEPARATION_DRIFT")
+    if T2_OWNER_GO_STATUS != "DEFINED_NOT_CONSUMED" or T2_CONSUMED is True:
+        return _fail("T2_STATUS_DRIFT")
+    if S4_STARTED is True or MS05_STARTED is True or S4A_RUNTIME_CONSUMED is True:
+        return _fail("S4_OR_MS05_STARTED_DRIFT")
+    if FRESH_GET_AUTHORIZED is True or NETWORK_EXECUTION_AUTHORIZED is True:
+        return _fail("NETWORK_PIN_DRIFT")
+    if (
+        GET_COUNT_THIS_SLICE != 0
+        or EG_DISPATCH_COUNT != 0
+        or V5_INVOKE_COUNT != 0
+        or RUNTIME_CYCLE_COUNT != 0
+    ):
+        return _fail("INVOKE_COUNT_DRIFT")
+    get_auth = bind_s4a_fresh_c1_get_runtime_authority_v1(
+        owner_go=S4A_FRESH_C1_GET_OWNER_GO,
+        cursor_store_root=cursor_store_root,
+    )
+    if get_auth.disposition != DISPOSITION_PRESENT:
+        return _fail(get_auth.reason_code)
+    trigger_auth = bind_s4a_eg_runtime_trigger_authority_v1(
+        owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+    )
+    if trigger_auth.disposition != DISPOSITION_PRESENT:
+        return _fail(trigger_auth.reason_code)
+    join = bind_s4a_productive_acquisition_join_v1(owner_go=S4A_OWNER_GO)
+    if join.disposition != DISPOSITION_PRESENT:
+        return _fail(join.reason_code)
+    path = bind_current_productive_canonical_single_runtime_path_call_contract_v1(
+        owner_go=S2_S3_OWNER_GO,
+    )
+    if path.disposition != DISPOSITION_PRESENT:
+        return _fail(path.reason_code)
+    return CurrentProductiveS4ARuntimeEnablementEnvelopeV1(
+        disposition=DISPOSITION_PRESENT,
+        selected_runtime_path=SELECTED_RUNTIME_PATH,
+        fresh_c1_get_owner_go=S4A_FRESH_C1_GET_OWNER_GO,
+        eg_runtime_trigger_owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO,
+        t2_owner_go=T2_OWNER_GO,
+        t2_owner_go_status=T2_OWNER_GO_STATUS,
+        persist_gos_are_runtime_licenses=False,
+        productive_acquisition_producer=join.producer,
+        productive_acquisition_transport_class=join.transport_class,
+        v5_network_execution=False,
+        direct_v5_as_current_productive_entrypoint=DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+        lock_root_relpath=S4A_LOCK_ROOT_RELPATH,
+        evidence_root_relpath=S4A_EVIDENCE_ROOT_RELPATH,
+        get_count=0,
+        eg_dispatch_count=0,
+        v5_invoke_count=0,
+        runtime_cycle_count=0,
+        s4_started=S4_STARTED,
+        ms05_started=MS05_STARTED,
         reason_code="",
     )
