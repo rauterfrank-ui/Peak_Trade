@@ -39,6 +39,13 @@ acquisition injection behind EG->V5 while keeping V5 network execution
 false. Binds lock_root and evidence_root under the existing EH evidence
 family. Does not GET, dispatch EG, invoke V5, consume T2, or start S4.
 
+S4B V5 OCCUPANCY GATE INPUT BIND.
+Re-exports the EG occupancy-gate input seam under the standing S4A
+network pin remaining false. Occupancy Owner-GO remains
+DEFINED_NOT_CONSUMED and is not GET_GO, EG_GO, or T2_GO. Binding does
+not construct occupancy transport, GET, classify venue occupancy, or
+consume Occupancy Owner-GO. Venue occupancy remains UNKNOWN.
+
 EG remains owner of dedup, cursor accept/reject, trigger, and exactly-one
 cycle dispatch. V5 remains the N=1 cycle host. This module does not call
 the EG trigger or V5 host.
@@ -56,6 +63,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REQUIRED_BAR,
     CurrentProductiveC1ObservationV1,
     CurrentProductiveGovernedNextC1OrchestrationError,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PARAM as EG_OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL as EG_OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+    OCCUPANCY_OWNER_GO as EG_OCCUPANCY_OWNER_GO,
+    OCCUPANCY_OWNER_GO_SCOPE as EG_OCCUPANCY_OWNER_GO_SCOPE,
+    OCCUPANCY_OWNER_GO_STATUS as EG_OCCUPANCY_OWNER_GO_STATUS,
     OWNER_GO as EG_OWNER_GO,
     PRODUCTIVE_ACQUISITION_PRODUCER as EG_PRODUCTIVE_ACQUISITION_PRODUCER,
     PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS as EG_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS,
@@ -65,6 +77,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     RUNTIME_TRIGGER_OWNER_GO as EG_RUNTIME_TRIGGER_OWNER_GO,
     RUNTIME_TRIGGER_OWNER_GO_SCOPE as EG_RUNTIME_TRIGGER_OWNER_GO_SCOPE,
     RUNTIME_TRIGGER_OWNER_GO_STATUS as EG_RUNTIME_TRIGGER_OWNER_GO_STATUS,
+    S4B_CANONICAL_EVIDENCE_PACK as EG_S4B_CANONICAL_EVIDENCE_PACK,
+    S4B_OWNER_GO as EG_S4B_OWNER_GO,
+    S4B_OWNER_GO_SCOPE as EG_S4B_OWNER_GO_SCOPE,
+    S4B_OWNER_GO_STATUS as EG_S4B_OWNER_GO_STATUS,
+    S4B_THIS_SLICE as EG_S4B_THIS_SLICE,
+    S4B_V5_EXECUTE_NETWORK as EG_S4B_V5_EXECUTE_NETWORK,
+    VENUE_OCCUPANCY_KNOWLEDGE as EG_VENUE_OCCUPANCY_KNOWLEDGE,
     cursor_last_accepted_c1_venue_event_time_v1,
     evaluate_current_productive_c1_reject_reason_v1,
     load_current_productive_c1_cursor_or_reason_v1,
@@ -180,6 +199,20 @@ S4A_CANONICAL_EVIDENCE_PACK = (
     "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1/"
     "20260917T143500Z"
 )
+S4B_THIS_SLICE = EG_S4B_THIS_SLICE
+S4B_OWNER_GO = EG_S4B_OWNER_GO
+S4B_OWNER_GO_SCOPE = EG_S4B_OWNER_GO_SCOPE
+S4B_OWNER_GO_STATUS = EG_S4B_OWNER_GO_STATUS
+OCCUPANCY_OWNER_GO = EG_OCCUPANCY_OWNER_GO
+OCCUPANCY_OWNER_GO_SCOPE = EG_OCCUPANCY_OWNER_GO_SCOPE
+OCCUPANCY_OWNER_GO_STATUS = EG_OCCUPANCY_OWNER_GO_STATUS
+OCCUPANCY_FRESH_GET_TRANSPORT_PARAM = EG_OCCUPANCY_FRESH_GET_TRANSPORT_PARAM
+OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL = EG_OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL
+S4B_V5_EXECUTE_NETWORK = EG_S4B_V5_EXECUTE_NETWORK
+VENUE_OCCUPANCY_KNOWLEDGE = EG_VENUE_OCCUPANCY_KNOWLEDGE
+S4B_CANONICAL_EVIDENCE_PACK = EG_S4B_CANONICAL_EVIDENCE_PACK
+S4B_OCCUPANCY_INPUT_BOUND = True
+S4B_OCCUPANCY_OWNER_GO_CONSUMED = False
 REASON_PERSIST_GO_NOT_RUNTIME_LICENSE = EG_REASON_PERSIST_GO_NOT_TRIGGER_LICENSE
 GET_TRANSPORT_CAPABILITY = "FullCoreProductiveReadOnlyGetTransportV1"
 GET_TRANSPORT_CLASS = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET

@@ -26,6 +26,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     REASON_UNFINALIZED_C1,
     REQUIRED_BAR,
     CurrentProductiveC1ObservationV1,
+    bind_s4b_occupancy_gate_input_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
     AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
@@ -71,6 +72,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     MS05_STARTED,
     NETWORK_EXECUTION_AUTHORIZED,
     OBSERVATION_SOURCE,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PARAM,
+    OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL,
+    OCCUPANCY_OWNER_GO,
+    OCCUPANCY_OWNER_GO_STATUS,
     ORCHESTRATOR,
     OWNER_GO,
     OWNER_GO_SCOPE,
@@ -108,6 +113,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     S4A_RUNTIME_CONSUMED,
     S4A_THIS_SLICE,
     S4A_V5_EXECUTE_NETWORK,
+    S4B_CANONICAL_EVIDENCE_PACK,
+    S4B_OCCUPANCY_INPUT_BOUND,
+    S4B_OCCUPANCY_OWNER_GO_CONSUMED,
+    S4B_OWNER_GO,
+    S4B_THIS_SLICE,
+    S4B_V5_EXECUTE_NETWORK,
     SELECTED_RUNTIME_PATH,
     T1_CLASS,
     T1_CONSUMED,
@@ -120,6 +131,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     T2_OWNER_GO_STATUS,
     THIS_SLICE,
     V5_INVOKE_COUNT,
+    VENUE_OCCUPANCY_KNOWLEDGE,
     bind_current_productive_canonical_single_runtime_path_call_contract_v1,
     bind_current_productive_scoped_one_shot_c1_public_candles_get_request_contract_v1,
     bind_s4a_eg_runtime_trigger_authority_v1,
@@ -153,6 +165,7 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
     CURRENT_PRODUCTIVE_S4A_RUNTIME_ENABLEMENT_CREATED,
+    CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
     CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_CREATED,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
@@ -203,6 +216,7 @@ EH_MS04D_HEADING = (
 EH_S1_HEADING = "### 11.2.1.EH S1 POST_MS04D_T1_T2_AUTHORITY_SEPARATION"
 EH_S2_S3_HEADING = "### 11.2.1.EH S2+S3 CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND"
 EH_S4A_HEADING = "### 11.2.1.EH S4A RUNTIME_ENABLEMENT_OFFLINE_BIND"
+EH_S4B_HEADING = "### 11.2.1.EH S4B V5_OCCUPANCY_GATE_INPUT_BIND"
 S1_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
@@ -217,6 +231,11 @@ S4A_EVIDENCE_PACK = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
     / "20260917T143500Z"
+)
+S4B_EVIDENCE_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_current_productive_scoped_one_shot_c1_observation_source_v1"
+    / "20260917T151200Z"
 )
 MS04B_EVIDENCE_PACK = (
     REPO_ROOT
@@ -1159,7 +1178,7 @@ def test_s4a_runtime_enablement_offline_bind_is_not_runtime_consume() -> None:
         not in source
     )
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s4a = runbook.split(EH_S4A_HEADING, 1)[1].split("\n## ", 1)[0]
+    s4a = runbook.split(EH_S4A_HEADING, 1)[1].split(EH_S4B_HEADING, 1)[0]
     assert S4A_THIS_SLICE in s4a
     assert "S4A_FRESH_C1_GET_OWNER_GO=" + S4A_FRESH_C1_GET_OWNER_GO in s4a
     assert "S4A_EG_RUNTIME_TRIGGER_OWNER_GO=" + S4A_EG_RUNTIME_TRIGGER_OWNER_GO in s4a
@@ -1204,3 +1223,121 @@ def test_s4a_runtime_enablement_offline_bind_is_not_runtime_consume() -> None:
     assert S4A_CANONICAL_EVIDENCE_PACK.endswith("20260917T143500Z")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     assert S4A_THIS_SLICE in atlas or "S4A_RUNTIME_ENABLEMENT_OFFLINE_BIND" in atlas
+
+
+class _SpyOccupancyTransportV1:
+    def __init__(self) -> None:
+        self.get_calls = 0
+
+    def get(self, **kwargs: object) -> object:
+        self.get_calls += 1
+        raise AssertionError("occupancy GET invoked during S4B offline bind")
+
+
+def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
+    spy = _SpyOccupancyTransportV1()
+    bound = bind_s4b_occupancy_gate_input_v1(owner_go=S4B_OWNER_GO)
+    injected = bind_s4b_occupancy_gate_input_v1(
+        owner_go=S4B_OWNER_GO,
+        occupancy_transport=spy,
+    )
+    assert CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED is True
+    assert bound.disposition == DISPOSITION_PRESENT
+    assert bound.get_count == 0
+    assert bound.eg_dispatch_count == 0
+    assert bound.v5_invoke_count == 0
+    assert bound.runtime_cycle_count == 0
+    assert bound.occupancy_transport_constructed is False
+    assert bound.occupancy_transport_invoked is False
+    assert bound.occupancy_transport_injected is False
+    assert bound.v5_execute_network is False
+    assert S4B_V5_EXECUTE_NETWORK is False
+    assert S4A_V5_EXECUTE_NETWORK is False
+    assert bound.venue_occupancy == "UNKNOWN"
+    assert bound.venue_occupancy == VENUE_OCCUPANCY_KNOWLEDGE
+    assert bound.occupancy_status_fabricated is False
+    assert bound.occupancy_owner_go == OCCUPANCY_OWNER_GO
+    assert bound.occupancy_owner_go == (
+        "SEPARATE_OWNER_GO_FOR_CURRENT_OCCUPANCY_DISPOSITION_AFTER_FRESH_REPROOF"
+    )
+    assert bound.occupancy_owner_go_status == "DEFINED_NOT_CONSUMED"
+    assert bound.occupancy_owner_go_status == OCCUPANCY_OWNER_GO_STATUS
+    assert bound.occupancy_owner_go_consumed is False
+    assert S4B_OCCUPANCY_OWNER_GO_CONSUMED is False
+    assert bound.persist_go_is_runtime_license is False
+    assert bound.occupancy_fresh_get_transport_param == OCCUPANCY_FRESH_GET_TRANSPORT_PARAM
+    assert bound.occupancy_fresh_get_transport_param == "fresh_get_transport"
+    assert bound.occupancy_fresh_get_transport_protocol == OCCUPANCY_FRESH_GET_TRANSPORT_PROTOCOL
+    assert bound.occupancy_fresh_get_transport_protocol == "FullCoreFreshPretradeGetTransportV1"
+    assert bound.acquisition_transport_class == S4A_PRODUCTIVE_ACQUISITION_TRANSPORT_CLASS
+    assert bound.acquisition_transport_semantically_separate is True
+    assert bound.occupancy_owner_go != S4A_FRESH_C1_GET_OWNER_GO
+    assert bound.occupancy_owner_go != S4A_EG_RUNTIME_TRIGGER_OWNER_GO
+    assert bound.occupancy_owner_go != T2_OWNER_GO
+    assert bound.occupancy_owner_go != S4B_OWNER_GO
+    assert bound.occupancy_owner_go != OWNER_GO
+    assert bound.occupancy_owner_go != EG_OWNER_GO
+    assert bound.occupancy_fresh_get_transport_param != "acquisition_transport"
+    assert bound.occupancy_fresh_get_transport_protocol != bound.acquisition_transport_class
+    assert injected.disposition == DISPOSITION_PRESENT
+    assert injected.occupancy_transport_injected is True
+    assert injected.occupancy_transport_invoked is False
+    assert injected.venue_occupancy == "UNKNOWN"
+    assert injected.occupancy_status_fabricated is False
+    assert spy.get_calls == 0
+    mismatched = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_OWNER_GO)
+    assert mismatched.disposition == DISPOSITION_FAIL_CLOSED
+    assert mismatched.get_count == 0
+    occupancy_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=OCCUPANCY_OWNER_GO)
+    assert occupancy_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    assert occupancy_as_persist.occupancy_owner_go_consumed is False
+    get_go_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_FRESH_C1_GET_OWNER_GO)
+    assert get_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    eg_go_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=S4A_EG_RUNTIME_TRIGGER_OWNER_GO)
+    assert eg_go_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    t2_as_persist = bind_s4b_occupancy_gate_input_v1(owner_go=T2_OWNER_GO)
+    assert t2_as_persist.disposition == DISPOSITION_FAIL_CLOSED
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    for snippet in FORBIDDEN_SOURCE_SNIPPETS:
+        assert snippet not in source
+    assert S4B_OCCUPANCY_INPUT_BOUND is True
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    s4b = runbook.split(EH_S4B_HEADING, 1)[1].split("\n## ", 1)[0]
+    assert S4B_THIS_SLICE in s4b
+    assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in s4b
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4b
+    assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4b
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s4b
+    assert "VENUE_OCCUPANCY=UNKNOWN" in s4b
+    assert "GET_COUNT_THIS_SLICE=0" in s4b
+    assert "EG_DISPATCH_COUNT=0" in s4b
+    assert "V5_INVOKE_COUNT=0" in s4b
+    assert "RUNTIME_CYCLE_COUNT=0" in s4b
+    assert "does not GET, dispatch EG, invoke V5" in s4b
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert OCCUPANCY_OWNER_GO in spec
+    assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "VENUE_OCCUPANCY=UNKNOWN" in spec
+    mot = MOT_PATH.read_text(encoding="utf-8")
+    assert "20260917T151200Z" in mot
+    assert S4B_EVIDENCE_PACK.is_dir()
+    assert verify_manifest_sha256_v1(store_root=S4B_EVIDENCE_PACK) == 0
+    claims = json.loads((S4B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert claims["THIS_SLICE"] == S4B_THIS_SLICE
+    assert claims["OCCUPANCY_OWNER_GO"] == OCCUPANCY_OWNER_GO
+    assert claims["OCCUPANCY_OWNER_GO_STATUS"] == "DEFINED_NOT_CONSUMED"
+    assert claims["OCCUPANCY_OWNER_GO_CONSUMED"] is False
+    assert claims["VENUE_OCCUPANCY"] == "UNKNOWN"
+    assert claims["GET_COUNT_THIS_SLICE"] == 0
+    assert claims["EG_DISPATCH_COUNT"] == 0
+    assert claims["V5_INVOKE_COUNT"] == 0
+    assert claims["RUNTIME_CYCLE_COUNT"] == 0
+    assert claims["S4A_V5_EXECUTE_NETWORK"] is False
+    assert claims["OCCUPANCY_STATUS_FABRICATED"] is False
+    origin = (S4B_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
+    assert origin == "43d0dd45f36aee085ae98cf550d61302e1b17c83"
+    assert S4B_CANONICAL_EVIDENCE_PACK.endswith("20260917T151200Z")
+    atlas = ATLAS_PATH.read_text(encoding="utf-8")
+    assert S4B_THIS_SLICE in atlas or "S4B_V5_OCCUPANCY_GATE_INPUT_BIND" in atlas
+    for path in PROTECTED_ALGORITHM_FILES:
+        assert (REPO_ROOT / path).is_file()
