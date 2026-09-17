@@ -195,11 +195,13 @@ relations:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
     evidence_sources:
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/contract_v1.py
+      - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
     notes: >
       Append-only 15m PIT persistence and collection contracts govern later
-      Cap 2.2 prospective collection. No productive authority. Not a
-      runtime CONSUMES edge. ATLAS_AUTHORITY=NONE.
+      Cap 2.2 prospective collection. KEEP29 removed the former
+      src/ops/cap22_append_only_15m_pit_persistence_v1 implementation
+      package; this relation remains spec-governed only. No productive
+      authority. Not a runtime CONSUMES edge. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_map_navigates_cap22_offline_policy_candidates_and_evidence
     source: NAVIGATION_INDEX:map_of_truth

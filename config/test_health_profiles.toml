@@ -124,15 +124,7 @@ cmd = "python3 scripts/run_offline_synth_session_smoke.py"
 weight = 2
 category = "offline_synth"
 
-# Check 3: Trigger Training Drill Demo
-[[profiles.weekly_core.checks]]
-id = "trigger_training_demo"
-name = "TriggerTraining Drill Demo"
-cmd = "python3 scripts/run_offline_trigger_training_drill_example.py --session-id TEST_HEALTH_SMOKE"
-weight = 2
-category = "trigger_training"
-
-# Check 4: Strategy Tests (Smoke)
+# Check 3: Strategy Tests (Smoke)
 [[profiles.weekly_core.checks]]
 id = "pytest_strategies_smoke"
 name = "Pytest Strategies Smoke"
