@@ -31701,6 +31701,137 @@ HARD_STOP_AFTER_THIS_TASK=true
 RUNTIME_CYCLE_AUTHORIZED=false
 ```
 
+### 11.2.1.EH S6 GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND
+
+Offline bind of the CURRENT governed continuous-cycle sequencer
+(`PRIMARY_SEMANTIC_IDENTITY=governed_continuous_cycle_orchestrator_v1`).
+`EH.S6` / `S6` are historical compatibility / navigation labels only and
+are not a new CURRENT architectural identity.
+
+Consumes persist Owner-GO
+`OWNER_GO_EH_S6_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND_V1`
+for offline bind of a bounded CURRENT_PRODUCTIVE continuous-cycle
+sequencer over the existing S5 exactly-one governed cycle. This persist
+does not rewrite §11.2.1.DA–§11.2.1.EH S5 standing persist fields.
+CURRENT_PHASE remains
+`11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN`.
+The EH seam Owner-GO remains
+`OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1`.
+S5 remains the per-cycle execution primitive and is reused unchanged.
+
+Purpose: repeatedly instantiate existing S5 five-token cycle
+authorizations under one bounded continuous Owner-GO, using injected /
+fresh finalized 1m C1 inputs, while preserving exactly-one-cycle
+semantics inside each S5 invocation.
+
+Inputs: continuous-run authorization distinct from S5/POST/permit GOs;
+injected observation source (offline); cursor floor; hard iteration and
+duration bounds.
+
+Outputs: continuous-run disposition / ledger; per-accepted-C1 S5 cycle
+records; cursor floor advance only after accepted progression; zero
+POST / permit / external effect.
+
+Cycle progression: accept next fresh finalized C1 → mint a fresh S5
+consume-instance authorization → invoke unchanged S5 once → on HOLD,
+wait for a later fresh C1 within bounds; on PRE_EXTERNAL_EFFECT, occupancy
+other than ABSENT, stale/equal C1, authorization mismatch, partial failure,
+bound hit, or cancel → terminate fail-closed.
+
+Authorization boundary: runtime GO
+`OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1`
+(`DEFINED_NOT_CONSUMED`) authorizes only bounded repeated instantiation of
+existing S5 five-token cycle authorizations. Persist Owner-GO is not a
+runtime license. Continuous GO ≠ S5 cycle GO ≠ GET/EG/occupancy/T2/POST.
+`CONTINUOUS_RUN_AUTHORIZED=false`. No productive continuous-run consume in
+this slice.
+
+Fail-closed / non-authorities: no trading-logic mutation; no FORCE_ENTER;
+no instrument reselect; no Cap23/24 ownership change; no Master-V2 /
+Double-Play / SideState / confirmation / entry-exit / risk / 29Q mutation;
+no permit mint; no POST composition; no network GET; Direct V5 forbidden;
+validation-only hard caps (`MAX_CYCLES_PER_RUN` default 2 / hard cap 4;
+`MAX_RUN_DURATION_SECONDS` default 90 / hard cap 180).
+
+``` text
+THIS_SLICE=11.2.1.EH.S6_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND
+CONTRACT_VERSION=v1
+PRIMARY_SEMANTIC_IDENTITY=governed_continuous_cycle_orchestrator_v1
+HISTORICAL_COMPATIBILITY_LABEL=EH.S6
+OWNER_GO=OWNER_GO_EH_S6_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND_V1
+OWNER_GO_SCOPE=S6_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND_ONLY
+OWNER_GO_STATUS=CONSUMED
+RUNTIME_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1
+RUNTIME_OWNER_GO_SCOPE=BOUNDED_REPEATED_INSTANTIATION_OF_EXISTING_S5_FIVE_TOKEN_CYCLE_AUTHORIZATION_ONLY
+RUNTIME_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED
+PERSIST_GO_IS_RUNTIME_LICENSE=false
+S5_RUNTIME_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1
+S5_REUSED_UNCHANGED=true
+POST_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
+POST_COMPOSED_INTO_CONTINUOUS_GO=false
+GO_SEPARATION=CONTINUOUS_GO_NE_S5_CYCLE_GO_NE_GET_GO_NE_EG_GO_NE_OCCUPANCY_GO_NE_T2_GO_NE_POST_GO
+SEAM_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+JOIN_SEAM_ID=CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_SEAM_V1
+FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY=BOUNDED_CONTINUOUS_SEQUENCING_TO_PRE_EXTERNAL_EFFECT_ONLY
+S5_V5_EXECUTE_NETWORK=false
+S6_V5_EXECUTE_NETWORK=false
+DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN
+AUTONOMY_CAN_FORCE_ENTER=false
+AUTONOMY_CAN_CHANGE_TRADING_LOGIC=false
+AUTONOMY_CAN_MINT_PERMIT=false
+AUTONOMY_CAN_POST=false
+MAX_CYCLES_PER_RUN_DEFAULT=2
+MAX_CYCLES_PER_RUN_HARD_CAP=4
+MAX_RUN_DURATION_SECONDS_DEFAULT=90
+MAX_RUN_DURATION_SECONDS_HARD_CAP=180
+WAIT_INTERVAL_SECONDS_DEFAULT=1
+STALL_SECONDS_DEFAULT=30
+MAX_WAIT_FOR_NEXT_C1_SECONDS_DEFAULT=30
+BOUNDS_CLASS=VALIDATION_DEFAULTS_NOT_PRODUCTIVE_POLICY
+CONTINUOUS_RUN_AUTHORIZED=false
+CONTINUOUS_RUN_EXECUTED=false
+GET_COUNT_THIS_SLICE=0
+EG_DISPATCH_COUNT=0
+V5_INVOKE_COUNT=0
+RUNTIME_CYCLE_COUNT=0
+S5_INVOKE_COUNT_THIS_SLICE=0
+PERFORM_GET_DEFAULT=false
+LIVE_GET_EXECUTED=false
+MS04_AUTHORIZED=false
+MS05_AUTHORIZED=false
+MS05_STARTED=false
+S4_STARTED=false
+STEP_29Q_STATUS=PLAN_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+PERMIT_CREATED=false
+POST_COUNT=0
+EXTERNAL_EFFECT_COUNT=0
+VENUE_MUTATION_PERFORMED=false
+MAX_POSITIONS_EFFECTIVE=1
+PROTECTED_SURFACES_UNCHANGED=true
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+CANONICAL_PHASE_BEFORE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CANONICAL_PHASE_AFTER=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+PACKAGE_PATH=src/ops/full_core_live_path_composition_root_v1/
+DEFINITION_SCHEMA_PATH=src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py
+```
+
+``` text
+CODE_OWNER=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+HARD_STOP_AFTER_THIS_TASK=true
+RUNTIME_CYCLE_AUTHORIZED=false
+CONTINUOUS_RUN_AUTHORIZED=false
+```
+
 ## 11.3 Autonomy state model
 
 The autonomous runtime must maintain durable state for at least:
