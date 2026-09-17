@@ -241,8 +241,8 @@ def test_s13_t04_v_neg_02_mapper_is_not_decision_owner() -> None:
         assert all(not name.startswith("src.live") for name in imported)
 
 
-def test_s13_t05_v_neg_03_filegate_absent_and_s14_not_started() -> None:
-    """S13-T05 / V-NEG-03: FILEGATE/execution absent; S12 remainder open; S14 absent."""
+def test_s13_t05_v_neg_03_filegate_absent_and_s14_successor_present() -> None:
+    """S13-T05 / V-NEG-03: FILEGATE/execution absent; S12 remainder open; S14 successor file exists."""
     s12_path = (
         _REPO_ROOT / "tests/trading/test_s12_29p_pre_29q_safety_29q_plan_only_conformance_v1.py"
     )
@@ -258,7 +258,9 @@ def test_s13_t05_v_neg_03_filegate_absent_and_s14_not_started() -> None:
     this_src = Path(__file__).read_text(encoding="utf-8")
     assert "Safety-kernel/Kill-Switch blocked-flag unification" in this_src
     assert "PENDING_ENTRY_ELIGIBILITY_CANONICALLY_DEFINED remains false" in this_src
-    assert list(_REPO_ROOT.glob("tests/trading/test_s14_*.py")) == []
+    s14_path = _REPO_ROOT / "tests/trading/test_s14_joined_happy_path_conformance_v1.py"
+    assert s14_path.is_file()
+    assert list(_REPO_ROOT.glob("tests/trading/test_s14_*.py")) == [s14_path]
     this_tree = ast.parse(this_src)
     imported = _imported_names(this_tree)
     assert all("src.execution" not in name for name in imported)
