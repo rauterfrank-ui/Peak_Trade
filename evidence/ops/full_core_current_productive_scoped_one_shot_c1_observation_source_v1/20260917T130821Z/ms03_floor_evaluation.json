@@ -1,0 +1,9 @@
+{
+  "comparison": "NEWER_THAN_FLOOR",
+  "disposition": "EMITTED",
+  "floor_venue_event_time": 1789527780.0,
+  "get_count": 0,
+  "observation_venue_event_time": 1789650660.0,
+  "presence": "PRESENT",
+  "reason_code": ""
+}
