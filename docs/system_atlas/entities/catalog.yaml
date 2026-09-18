@@ -5946,6 +5946,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1: CONTRACT_VERSION=v1; BINDER_AUTHORITY=ops.full_core_live_path_composition_root_v1; BINDING_BOUNDARY=FreshPretradeGetTransportResultV1 IMMEDIATELY_AFTER_TRANSPORT_GET_BEFORE_A1_A2_A3; USAGE=DataUsageContextKind.LIVE_TRADE; SOURCE_KIND=S1_stamp_exact_REAL_only; FAIL_CLOSED_UNBOUND=true; FOREIGN_VOCAB_EQUIVALENCE=false; DATASAFETYGATE_JOIN=false; S2C_UNAUTHORIZED=true; AUTHORITY_EFFECT=RATIFIED_CONTEXT_BINDER_IMPLEMENTATION_ONLY; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: CONTRACT_VERSION=v1; DATA_SAFETY_SOURCE_KIND_FIELD=FreshPretradeGetTransportResultV1.data_safety_source_kind; REAL_PRODUCER=FullCoreProductiveReadOnlyGetTransportV1.get; REAL_ONLY_WITH_DIRECT_VENUE_ACQUISITION_EVIDENCE=true; INJECTED_FAILED_UNBOUND=true; VENUE_NATIVE_REMAP=false; DATASAFETYGATE_JOIN=false; USAGE_CONTEXT_UNCHANGED=true; V5_C1_TRANSPORT=false; AUTHORITY_EFFECT=NONE; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py|fresh_pretrade_runtime_get_v1.py.
     # FULL_CORE_CURRENT_SEMANTIC_IDENTITY_DECOUPLING_V1: CONTRACT_VERSION=v1; SEMANTIC_PRIMARY_OWNERS=capital_risk_admissibility_owner_v1|canonical_order_intent_owner_v1|stateful_no_order_host_join_v1|send_capable_adapter_v1|full_core_live_path_authority_v1; PERSISTED_CLAIM_KEYS_UNCHANGED=true; RUNTIME_PLAN_TOKENS_UNCHANGED=true; HISTORICAL_PATH_COMPAT=SECTION_11_2_1|11.2.1; AUTHORITY_EFFECT=NONE; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/constants_v1.py|path_identity_v1.py|live_admission_gap_dag_v1.py.
     # governed_continuous_cycle_orchestrator_v1 offline bind (historical label EH.S6): CONTRACT_VERSION=v1; PRIMARY_SEMANTIC_IDENTITY=governed_continuous_cycle_orchestrator_v1; HISTORICAL_COMPATIBILITY_LABEL=EH.S6; THIS_SLICE=11.2.1.EH.S6_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_OFFLINE_BIND; JOIN_SEAM_ID=CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_SEAM_V1; RUNTIME_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1; RUNTIME_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED; PERSIST_GO_IS_RUNTIME_LICENSE=false; S5_REUSED_UNCHANGED=true; POST_COMPOSED_INTO_CONTINUOUS_GO=false; CONTINUOUS_RUN_AUTHORIZED=false; CONTINUOUS_RUN_EXECUTED=false; DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN; S6_V5_EXECUTE_NETWORK=false; GET_COUNT_THIS_SLICE=0; EG_DISPATCH_COUNT=0; V5_INVOKE_COUNT=0; RUNTIME_CYCLE_COUNT=0; POST_COUNT=0; EXTERNAL_EFFECT_COUNT=0; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py.
@@ -6264,6 +6265,7 @@ entities:
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/gated_productive_wire_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
@@ -6285,6 +6287,7 @@ entities:
       - try_bind_current_productive_venue_plan_v1
       - join_current_productive_enter_live_29p_before_venue_plan_v1
       - trigger_current_productive_next_c1_and_exactly_one_cycle_v1
+      - bind_full_core_datasafety_context_from_fresh_pretrade_get_transport_result_v1
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
@@ -6294,6 +6297,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/submission_authorized_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py
       - tests/ops/test_full_core_live_path_composition_root_v1.py
       - tests/ops/test_full_core_post_response_to_ack_mapper_and_lifecycle_join_v1.py
       - tests/ops/test_full_core_checkout_independent_credential_capability_offline_contract_v1.py
@@ -6306,6 +6310,8 @@ entities:
       - tests/ops/test_full_core_durable_filegate_join_seam_v1.py
       - tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py
       - tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py
+      - tests/ops/full_core_live_path_composition_root_v1/test_s2b_runtime_usage_binding_at_transport_result_v1.py
+      - tests/ops/full_core_live_path_composition_root_v1/test_s2b_usage_context_live_trade_binding_gap_pin_v1.py
       - tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py
       - tests/ops/test_full_core_current_productive_live_enabled_standing_gate_v1.py
       - tests/ops/test_full_core_current_productive_live_armed_standing_gate_v1.py
@@ -7658,6 +7664,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_fresh_pretrade_runtime_get_v1
+    # S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1: coupling-review only; Fresh GET seam type is the bind boundary; binder owner remains composition root; DATASAFETYGATE_JOIN=false; AUTHORITY_EFFECT=RATIFIED_CONTEXT_BINDER_IMPLEMENTATION_ONLY; ATLAS_AUTHORITY=NONE.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: CONTRACT_VERSION=v1; data_safety_source_kind optional on FreshPretradeGetTransportResultV1; REAL only from FullCoreProductiveReadOnlyGetTransportV1.get with direct venue evidence; injected/failed unbound; no DataSafetyGate join; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     kind: GATE
     name: Full-core fresh pretrade runtime GET seam v1
@@ -7694,6 +7701,10 @@ entities:
       only by FullCoreProductiveReadOnlyGetTransportV1.get under direct
       eea.okx.com acquisition evidence. No VENUE_NATIVE remap. No
       DataSafetyGate/usage_context join in S1.
+      S2B: ratified Full-Core composition-root binder may compose
+      DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp at this
+      result type before A1/A2/A3 unwrap. Fail-closed unbound when stamp
+      is None. No DataSafetyGate join. No admission/activation/POST.
       11.2.1.Q productive GETs live in a sibling package, not this seam.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 

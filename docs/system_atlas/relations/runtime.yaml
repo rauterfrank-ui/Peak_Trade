@@ -1140,6 +1140,8 @@ relations:
       Halt joins typed Fresh Pretrade GET evidence. Does not admit
       Live. Does not POST. Does not override FILEGATE or permit.
       S1 data_safety_source_kind stamp does not change this CALLS edge.
+      S2B LIVE_TRADE DataSafetyContext bind is composition-root owned and
+      does not change this CALLS edge.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_live_account_bound

@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
-ATLAS_CHANGED_RELATION_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,17 +41,14 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `GATE:full_core_live_account_bound_v1` |
-| `GATE:full_core_owner_one_shot_permit_v1` |
+| `REL:r_full_core_path_calls_live_account_bound` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_fresh_pretrade_get_composes_permit` |
-| `REL:r_full_core_live_account_bound_composes_fresh_get` |
-| `REL:r_full_core_path_calls_fresh_pretrade_runtime_get` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -81,7 +78,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
+| _(none)_ |
 
 ## AFFECTED_SCHEMAS
 
@@ -97,7 +94,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- S1 DataSafety source_kind stamp at productive venue GET (PR 6584). FreshPretradeGetTransportResultV1.data_safety_source_kind default None. REAL only from FullCoreProductiveReadOnlyGetTransportV1.get with direct eea.okx.com acquisition evidence. Injected/failed remain unbound. No DataSafetyGate join, no usage_context, no V5/C1 carrier, no activation. Atlas is not canonical authority.
+- S2B runtime usage binding at FreshPretradeGetTransportResultV1 (WP S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1). Binder ops.full_core_live_path_composition_root_v1 composes DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp only before A1/A2/A3 unwrap. Fail-closed unbound when stamp is None. No DataSafetyGate join, no foreign live-vocab inference, no S2C, no admission/activation/POST/wire. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
