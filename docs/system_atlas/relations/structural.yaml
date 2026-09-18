@@ -544,10 +544,11 @@ relations:
     evidence_sources:
       - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      S1 addressing census consumes the already-composed #6602 pair map.
-      It must not reinvoke compose or Cap23/Cap24. Atlas is not runtime
-      authority. ATLAS_AUTHORITY=NONE.
+      S2 resolver consumes the already-composed #6602 pair map. It must not
+      reinvoke compose or Cap23/Cap24. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
     source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
@@ -557,8 +558,9 @@ relations:
     evidence_sources:
       - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      Intended per-lane store_root remains existing IsolatedLaneSlotV1.lane_state_root
+      S2 resolves occupied-lane store_root to existing IsolatedLaneSlotV1.lane_state_root
       via lane_state_root_for. No second lane identity. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 

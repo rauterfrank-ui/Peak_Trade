@@ -1,7 +1,7 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S1 binds contract and census only. The S2 store-root resolver is named, not
-implemented. Does not persist, restore, bind Cap61, or invoke the consumer.
+S2 implements occupied-lane store-root resolution only. Does not persist,
+restore, bind Cap61, invoke the consumer, or prove S3 isolation.
 """
 
 from __future__ import annotations
@@ -60,10 +60,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S1_CONTRACT_BIND"
+SLICE_ID = "S2_RESOLVER_ONLY"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S1_CONTRACT_BIND"
+    "_S2_RESOLVER"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -103,8 +103,13 @@ CURSOR_SCHEMA_CHANGED = False
 NEW_CURSOR_LANE_ID_FIELD = False
 FIRST_TRADING_DECISION_CONSUMER = HANDOFF_FIRST_TRADING_DECISION_CONSUMER
 S2_JOIN_SYMBOL = "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1"
-S2_IMPLEMENTED = False
+S2_IMPLEMENTED = True
 S2_INTENDED_EGRESS = "dict[lane_id, str]"
+S3_IMPLEMENTED = False
+RESOLUTION_RULE = "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
+OCCUPIED_LANES_ONLY = True
+UNIQUE_MUTABLE_ROOTS_ENFORCED = True
+GLOBAL_N1_CURSOR_REJECTED = True
 
 CURSOR_BUNDLE_CYCLE_CROSSING_SURFACES = (
     "SideState",
@@ -220,7 +225,12 @@ assert JOIN_RUNTIME_ACTIVATION_AUTHORITY is False
 assert JOIN_RANKING_AUTHORITY is False
 assert JOIN_PERSISTENCE_AUTHORITY is False
 assert JOIN_FULL_AUTONOMY_HOST_AUTHORITY is False
-assert S2_IMPLEMENTED is False
+assert S2_IMPLEMENTED is True
+assert S3_IMPLEMENTED is False
+assert OCCUPIED_LANES_ONLY is True
+assert UNIQUE_MUTABLE_ROOTS_ENFORCED is True
+assert GLOBAL_N1_CURSOR_REJECTED is True
+assert RESOLUTION_RULE == "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
 assert NEW_COLLECTION_DTO_CREATED is False
 assert NEW_TOP5_HANDOFF_DTO_CREATED is False
 assert NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED is False
@@ -251,6 +261,20 @@ DOUBLE_PLAY_CHANGE_REQUIRED = False
 FULL_AUTONOMY_HOST_CHANGE_REQUIRED = False
 CURSOR_OWNER_CHANGE_REQUIRED = False
 
+FAILURE_AUTHORITY = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_AUTHORITY_CLAIM_FORBIDDEN"
+FAILURE_UNKNOWN_LANE_ID = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_UNKNOWN_LANE_ID"
+FAILURE_PAIR_TYPE = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_PAIR_TYPE_MISMATCH"
+FAILURE_SLOT_TYPE = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SLOT_TYPE_MISMATCH"
+FAILURE_BOUND_TYPE = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_BOUND_TYPE_MISMATCH"
+FAILURE_OCCUPANCY = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_OCCUPANCY_MISMATCH"
+FAILURE_IDENTITY_MISMATCH = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_IDENTITY_MISMATCH"
+FAILURE_MISSING_STORE_ROOT = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_MISSING_STORE_ROOT"
+FAILURE_INVALID_STORE_ROOT = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_INVALID_STORE_ROOT"
+FAILURE_SHARED_STORE_ROOT = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SHARED_STORE_ROOT"
+FAILURE_N1_GLOBAL_CURSOR_STORE = (
+    "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_N1_GLOBAL_CURSOR_STORE_FORBIDDEN"
+)
+
 FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
     {
         "produce_occupied_lane_cap23_n1_selections_v1",
@@ -263,7 +287,6 @@ FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
         "ensure_single_selected_future_runtime_binding_v1",
         "persist_binding_evidence_atomic_v1",
         "compose_occupied_lane_mv2_dp_handoff_v1",
-        "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
         "run_current_productive_master_v2_runtime_cycle_v1",
         "run_integrated_offline_trading_logic_replay_v1",
         "ensure_host_confirmation_binding_v1",
