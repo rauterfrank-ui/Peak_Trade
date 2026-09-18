@@ -908,7 +908,7 @@ entities:
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
     kind: CONTRACT
-    name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S4
+    name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S5
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
@@ -926,21 +926,20 @@ entities:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
       - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py
     notes: >-
-      S4 bounded test-harness lane-isolated invoke of
-      run_current_productive_master_v2_runtime_cycle_v1 from the S3 seam.
-      CONSUMER_INVOKED=true means harness invocation only, not productive MF
-      authorization or host join. Cycle signature has no store_root; each
-      occupied lane supplies its BoundInstrumentV1 and incoming_cursor=None.
-      Store_root remains IsolatedLaneSlotV1.lane_state_root and is not a
-      persist/restore target. N=1 global cursor path is rejected. Cap61 remains
-      state_root=None and persist=False inside the existing cycle. Same N=1
-      MV2+DP configuration across lanes; shared mutable state remains false.
-      No persist, restore, Cap61 live bind, new state owner, cursor schema
-      change, host join, or S5. Not ranking, selection, trading-authority,
-      runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE
-      remains 1. PREPARED_BOUND_CARDINALITY remains 0..5.
-      PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. CROSS_UNIVERSE_*
-      remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+      S5 in-memory carry of each occupied lane's existing outgoing cursor
+      into the next cycle incoming_cursor of that same lane only. Holder is
+      OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor.
+      No new state owner. lane_state_root remains EXTERNAL_ADDRESSING_ONLY
+      and is not injected into the cycle. S4 still invokes the first cycle
+      with incoming_cursor=None. N=1 global cursor path is rejected. Cap61
+      remains state_root=None and persist=False inside the existing cycle.
+      No disk persist, no disk restore, no Cap61 live bind, no cursor schema
+      change, no host join, and no S6. Not ranking, selection,
+      trading-authority, runtime-activation, or execution authority.
+      MAX_POSITIONS_EFFECTIVE remains 1. PREPARED_BOUND_CARDINALITY remains
+      0..5. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED.
+      CROSS_UNIVERSE_* remain false. Shared mutable state remains false.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT

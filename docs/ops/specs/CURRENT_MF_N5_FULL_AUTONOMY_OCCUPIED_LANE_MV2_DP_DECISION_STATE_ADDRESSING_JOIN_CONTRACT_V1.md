@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
 status: active
-scope: S4 bounded lane-isolated invoke of the existing N=1 MV2+DP cycle from the S3 seam; no persist; no restore; no Cap61 live bind; no host; no productive MF join; no S5
+scope: S5 in-memory cycle-crossing cursor carry per occupied lane; no disk persist; no disk restore; no Cap61 live bind; no host; no productive MF join; no S6
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,13 +19,14 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S4_CONSUMER_INVOKE
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S5_CYCLE_CROSSING_IN_MEMORY_STATE
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
-SLICE_ID=S4_LANE_ADDRESSED_CONSUMER_INVOKE
+SLICE_ID=S5_CYCLE_CROSSING_IN_MEMORY_STATE
 S2_IMPLEMENTED=true
 S3_IMPLEMENTED=true
 S4_IMPLEMENTED=true
-S5_IMPLEMENTED=false
+S5_IMPLEMENTED=true
+S6_IMPLEMENTED=false
 RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 OCCUPIED_LANES_ONLY=true
 UNIQUE_MUTABLE_ROOTS_ENFORCED=true
@@ -75,7 +76,13 @@ S3_INTENDED_EGRESS=dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)
 S4_JOIN_SYMBOL=invoke_occupied_lane_mv2_dp_decision_state_consumer_v1
 S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
 S4_IMPLEMENTED=true
-S5_IMPLEMENTED=false
+S5_JOIN_SYMBOL=carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
+S5_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S5_IMPLEMENTED=true
+S6_IMPLEMENTED=false
+IN_MEMORY_CURSOR_HOLDER=OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor
+IN_MEMORY_CURSOR_HOLDER_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
+LANE_STATE_ROOT_ROLE=EXTERNAL_ADDRESSING_ONLY
 NEW_COLLECTION_DTO_CREATED=false
 NEW_TOP5_HANDOFF_DTO_CREATED=false
 NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED=false
@@ -138,22 +145,23 @@ only through the S4 bounded harness:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
 This slice implements
-`invoke_occupied_lane_mv2_dp_decision_state_consumer_v1` from the closed
-S3 seam. It does **not** persist or load the cursor, does **not** restore
-the cursor from disk or from `incoming_cursor`, does **not** set Cap61
-`state_root`, does **not** persist Cap61/Cap62/G17/Exit, does **not**
-reinvoke Cap 2.3 or Cap 2.4, does **not** join the Full-Autonomy host,
-does **not** change Master V2 or Double Play trading semantics, does
-**not** change cursor schema or add `lane_id`, does **not** create a
-second state owner, does **not** start S5, does **not** create a
-productive MF join, and does **not** create five isolated executing
-lanes. `CONSUMER_INVOKED=true` means bounded/test-harness lane-isolated
-invocation only.
+`carry_occupied_lane_mv2_dp_decision_state_in_memory_v1`. It reuses the
+existing cursor object already carried on
+`OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor`.
+It does **not** create a second state owner. It does **not** persist or
+load the cursor, does **not** read or write `lane_state_root`, does
+**not** set Cap61 `state_root`, does **not** persist Cap61/Cap62/G17/Exit,
+does **not** reinvoke Cap 2.3 or Cap 2.4, does **not** join the
+Full-Autonomy host, does **not** change Master V2 or Double Play trading
+semantics, does **not** change cursor schema or add `lane_id`, does
+**not** start S6, does **not** create a productive MF join, and does
+**not** create five isolated executing lanes.
 
 ## 1. Purpose
 
-Invoke the existing N=1 MV2+DP cycle lane-isolated from the closed S3
-seam. Forensic consumer facts remain:
+Carry each occupied lane's last outgoing cursor, already held in memory on
+the S4 invocation record, into the next cycle's `incoming_cursor` for that
+same lane only. Forensic consumer facts remain:
 
 ```text
 CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
@@ -164,10 +172,11 @@ CAP61_CYCLE_PERSIST=false
 DISK_STORE_ROOT_USED_ONLY_BY_PERSIST_LOAD_WRAPPERS=true
 ```
 
-The cycle does not take `store_root`. Lane addressing is the S3 seam
-(`IsolatedLaneSlotV1.lane_state_root` plus shared cursor filename). S4
-calls the cycle with that lane's `BoundInstrumentV1` and
-`incoming_cursor=None`. Persist and restore remain out of scope.
+The cycle does not take `store_root`. `lane_state_root` stays
+`EXTERNAL_ADDRESSING_ONLY` and is not injected into the cycle. S4 still
+calls the first cycle with `incoming_cursor=None`. S5 passes the prior
+outgoing cursor object of the same lane as the next `incoming_cursor`.
+No disk persist and no disk restore.
 
 ```text
 compose_occupied_lane_mv2_dp_handoff_v1
@@ -191,10 +200,16 @@ S4 BOUNDED HARNESS INVOKE — occupied lanes only
   incoming_cursor=None
   persist not called
   Cap61 state_root remains None
-  CONSUMER_INVOKED=true means BOUNDED_TEST_HARNESS_LANE_ISOLATED
         │
         ▼
-STOP — no persist; no restore; no Cap61 live bind; no host; no S5
+S5 IN-MEMORY CARRY — occupied lanes only
+  holder = prior invocation outgoing_cursor for lane X
+  next incoming_cursor(lane X) is that same object
+  never shared with lane Y
+  lane_state_root not consumed
+        │
+        ▼
+STOP — no disk persist; no disk restore; no Cap61 live bind; no host; no S6
 ```
 
 `#6602` already closed PAIR_MAP_STOP. `#6605` already closed S3.
@@ -262,9 +277,10 @@ HostExitPolicyBindingV1 is ephemeral this-cycle. Optional G17 producer is
 in-memory when passed. ScopeCooldown and composition-direction are reset
 each cycle on this consumer and are not cursor-carried.
 
-**interpretation:** S4 invokes the named consumer from the S3 seam in a
-bounded test harness only. It does not persist, restore, live-bind Cap61,
-join the host, authorize productive MF, or start S5.
+**interpretation:** S5 reuses the cursor object on the existing per-lane
+invocation record as the in-memory cycle-crossing holder. It does not
+persist, load from disk, live-bind Cap61, join the host, authorize
+productive MF, or start S6. `lane_state_root` remains external addressing.
 
 ## 3. Slot context
 
@@ -276,10 +292,10 @@ Slot state root remains
 `IsolatedLaneSlotV1.lane_state_root`.
 
 This contract does not invent a second lane identity, a new cursor
-schema, or a new state store. S4 reuses the existing field as the
-store_root string at the pre-cycle seam and records it on the invocation
-result. The cycle does not take `store_root`; disk addressing remains
-`{store_root}&#47;{CURSOR_FILENAME}` and is not performed here.
+schema, or a new state store. The in-memory holder is the existing
+outgoing cursor on the invocation record, owned by the existing cursor
+module. `lane_state_root` is not injected into the cycle and is not
+reinterpreted as a consumed state root.
 
 ## 4. S1 versus S2 versus S3 versus S4 versus S5
 
@@ -293,7 +309,10 @@ S3_INTENDED_EGRESS=dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)
 S4_JOIN_SYMBOL=invoke_occupied_lane_mv2_dp_decision_state_consumer_v1
 S4_IMPLEMENTED=true
 S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
-S5_IMPLEMENTED=false
+S5_JOIN_SYMBOL=carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
+S5_IMPLEMENTED=true
+S5_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S6_IMPLEMENTED=false
 FIRST_DECISION_STATE_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
 CONSUMPTION_SEAM=pre_invoke_run_current_productive_master_v2_runtime_cycle_v1
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
@@ -302,13 +321,15 @@ RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 ```
 
 S4 invokes the named consumer from the S3 seam in a bounded test harness.
-It does not authorize persist, restore, Cap61 live bind, host, Master V2
-or Double Play mutation, productive MF join, or S5.
+S5 reuses that invocation's outgoing cursor as the next in-memory incoming
+cursor of the same lane. It does not authorize disk persist, disk restore,
+Cap61 live bind, host, Master V2 or Double Play mutation, productive MF
+join, or S6.
 
 ## 5. Non-goals
 
 ```text
-NO_S5
+NO_S6
 NO_CURSOR_PERSIST
 NO_CURSOR_LOAD_OR_RESTORE_FROM_DISK
 NO_CAP61_STATE_ROOT_BIND
