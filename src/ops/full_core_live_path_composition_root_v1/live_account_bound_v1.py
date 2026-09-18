@@ -503,5 +503,6 @@ def join_live_account_bound_into_admission_inputs_v1(
         admission_context=inputs.admission_context,
         fresh_pretrade_get_status=inputs.fresh_pretrade_get_status,
         live_account_bound_status=bound.evidence_status,
+        data_safety_admission_status=inputs.data_safety_admission_status,
         provenance_refs=inputs.provenance_refs,
     )

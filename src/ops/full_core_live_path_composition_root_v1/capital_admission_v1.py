@@ -666,6 +666,7 @@ def join_capital_admission_into_admission_inputs_v1(
         capital_admission_status=evidence.evidence_status,
         capital_authority_class=evidence.capital_authority_class,
         step_29p_risk_admissible=admissibility.risk_admissible is True,
+        data_safety_admission_status=inputs.data_safety_admission_status,
         provenance_refs=inputs.provenance_refs
         + (
             OFFLINE_BOUNDARY_ROLE,

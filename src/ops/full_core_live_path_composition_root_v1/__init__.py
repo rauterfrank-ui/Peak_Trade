@@ -52,7 +52,12 @@ from src.ops.full_core_live_path_composition_root_v1.durable_filegate_join_v1 im
     join_durable_filegate_into_admission_inputs_v1,
     read_durable_filegate_join_evidence_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.datasafety_gate_join_into_execution_admission_v1 import (
+    aggregate_datasafety_admission_status_v1,
+    evaluate_datasafety_admission_for_transport_result_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+    DataSafetyAdmissionStatusV1,
     ExecutionAdmissionDecisionV1,
     evaluate_execution_admission_v1,
 )
@@ -109,6 +114,7 @@ __all__ = [
     "CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY",
     "CANARY_VENUE_PROOF_PATH_ROLE",
     "CURRENT_LIVE_CORE_PATH_PROVEN",
+    "DataSafetyAdmissionStatusV1",
     "DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED",
     "FRESH_PRETRADE_RUNTIME_GET_IMPLEMENTED",
     "FULL_CORE_OFFLINE_E2E_PROVEN",
@@ -150,6 +156,8 @@ __all__ = [
     "WIRE_SEND_PERMITTED",
     "bound_path_identity_v1",
     "compose_core_live_execution_intent_v1",
+    "evaluate_datasafety_admission_for_transport_result_v1",
+    "aggregate_datasafety_admission_status_v1",
     "evaluate_execution_admission_v1",
     "evaluate_owner_one_shot_permit_v1",
     "evaluate_live_account_bound_v1",

@@ -24,8 +24,13 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     OFFLINE_BOUNDARY_ROLE,
     WIRE_SEND_PERMITTED,
 )
+from src.ops.full_core_live_path_composition_root_v1.datasafety_gate_join_into_execution_admission_v1 import (
+    aggregate_datasafety_admission_status_v1,
+    evaluate_datasafety_admission_for_transport_result_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
+    DataSafetyAdmissionStatusV1,
     ExecutionAdmissionInputsV1,
     FreshPretradeGetStatusV1,
     PRETRADE_SOURCE_FRESH_GET,
@@ -159,6 +164,7 @@ class FreshPretradeRuntimeGetEvidenceV1:
     live_armed: bool
     wire_send_permitted: bool
     post_attempted: bool
+    data_safety_admission_status: str = DataSafetyAdmissionStatusV1.MISSING.value
     join_seam_id: str = JOIN_SEAM_ID
     authority: str = FRESH_PRETRADE_GET_AUTHORITY
     freshness_policy: str = FRESHNESS_POLICY
@@ -417,6 +423,7 @@ def collect_fresh_pretrade_runtime_get_v1(
         )
 
     group_results: dict[str, FreshPretradeGetTransportResultV1 | None] = {}
+    group_datasafety_status: dict[str, str] = {}
     post_attempted = False
     for spec in REQUIRED_GET_ITEM_SPECS:
         if spec.fetch_group in group_results:
@@ -429,7 +436,7 @@ def collect_fresh_pretrade_runtime_get_v1(
             inst_type=inst_type,
         )
         if transport is None:
-            group_results[spec.fetch_group] = FreshPretradeGetTransportResultV1(
+            result = FreshPretradeGetTransportResultV1(
                 get_performed=False,
                 method=METHOD_GET,
                 endpoint=requested,
@@ -441,11 +448,20 @@ def collect_fresh_pretrade_runtime_get_v1(
                 historical_reuse=False,
                 error_class="TRANSPORT_MISSING",
             )
+            # S2C: bind+check on the typed result before A1 unwrap.
+            group_datasafety_status[spec.fetch_group] = (
+                evaluate_datasafety_admission_for_transport_result_v1(result)
+            )
+            group_results[spec.fetch_group] = result
             continue
         result = transport.get(
             endpoint=requested,
             auth_required=spec.auth_required,
             pretrade_decision_id=decision,
+        )
+        # S2C: immediately after transport.get, before A1 ItemEvidence unwrap.
+        group_datasafety_status[spec.fetch_group] = (
+            evaluate_datasafety_admission_for_transport_result_v1(result)
         )
         if str(getattr(result, "method", METHOD_GET) or "") != METHOD_GET:
             post_attempted = True
@@ -532,6 +548,9 @@ def collect_fresh_pretrade_runtime_get_v1(
         else:
             freshness = PretradeFreshnessStatusV1.UNKNOWN.value
     any_performed = any(item.get_performed for item in items)
+    data_safety_admission_status = aggregate_datasafety_admission_status_v1(
+        tuple(group_datasafety_status.values())
+    )
     return FreshPretradeRuntimeGetEvidenceV1(
         evidence_status=aggregate,
         pretrade_source_kind=source,
@@ -545,6 +564,7 @@ def collect_fresh_pretrade_runtime_get_v1(
         live_armed=LIVE_ARMED is True,
         wire_send_permitted=WIRE_SEND_PERMITTED is True,
         post_attempted=post_attempted,
+        data_safety_admission_status=data_safety_admission_status,
     )
 
 
@@ -628,5 +648,6 @@ def join_fresh_pretrade_runtime_get_into_admission_inputs_v1(
         admission_context=inputs.admission_context,
         fresh_pretrade_get_status=get_status,
         live_account_bound_status=inputs.live_account_bound_status,
+        data_safety_admission_status=evidence.data_safety_admission_status,
         provenance_refs=inputs.provenance_refs,
     )

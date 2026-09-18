@@ -1142,6 +1142,9 @@ relations:
       S1 data_safety_source_kind stamp does not change this CALLS edge.
       S2B LIVE_TRADE DataSafetyContext bind is composition-root owned and
       does not change this CALLS edge.
+      S2C DataSafetyGate.check conjunct does not change this CALLS edge.
+      DataSafetyGate=CONJUNCT_NOT_OWNER.
+      evaluate_execution_admission_v1 remains the sole admission owner.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_live_account_bound

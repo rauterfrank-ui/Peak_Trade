@@ -56,6 +56,10 @@ AUTHORIZED_RUNTIME_BIND_RELPATH = (
     "src/ops/full_core_live_path_composition_root_v1/"
     "datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py"
 )
+AUTHORIZED_DATASAFETY_GATE_JOIN_RELPATH = (
+    "src/ops/full_core_live_path_composition_root_v1/"
+    "datasafety_gate_join_into_execution_admission_v1.py"
+)
 
 
 def _field_names(cls: type) -> set[str]:
@@ -180,10 +184,13 @@ def test_unbound_usage_fail_closed_no_silent_live_trade_fallback() -> None:
     # Contract: source_kind=None remains UNBOUND and must not synthesize REAL usage pairing.
     assert unbound.data_safety_source_kind is not DataSourceKind.REAL.value
     assert unbound.data_safety_source_kind is not DataSourceKind.REAL
-    # Outside the authorized binder seam, no LIVE_TRADE assignment may appear.
-    authorized = (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve()
+    # Outside the authorized binder/join seams, no LIVE_TRADE assignment may appear.
+    authorized = {
+        (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve(),
+        (REPO_ROOT / AUTHORIZED_DATASAFETY_GATE_JOIN_RELPATH).resolve(),
+    }
     for path in _composition_root_py_files():
-        if path.resolve() == authorized:
+        if path.resolve() in authorized:
             continue
         text = path.read_text(encoding="utf-8")
         assert "DataUsageContextKind.LIVE_TRADE" not in text
@@ -216,20 +223,24 @@ def test_s1_real_none_provenance_unchanged() -> None:
 
 
 def test_no_full_core_datasafetygate_join_and_usage_confined_to_authorized_seam() -> None:
-    authorized = (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve()
-    assert authorized.is_file()
+    authorized_bind = (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve()
+    authorized_join = (REPO_ROOT / AUTHORIZED_DATASAFETY_GATE_JOIN_RELPATH).resolve()
+    assert authorized_bind.is_file()
+    assert authorized_join.is_file()
     hits: list[str] = []
     gate_hits: list[str] = []
+    ensure_hits: list[str] = []
     for path in _composition_root_py_files():
         rel = str(path.relative_to(REPO_ROOT))
         text = path.read_text(encoding="utf-8")
         tree = ast.parse(text)
         for node in ast.walk(tree):
             if isinstance(node, ast.Name) and node.id == "DataSafetyGate":
-                gate_hits.append(rel)
+                if path.resolve() != authorized_join:
+                    gate_hits.append(rel)
             if isinstance(node, ast.Attribute) and node.attr == "ensure_allowed":
-                gate_hits.append(rel)
-        if path.resolve() == authorized:
+                ensure_hits.append(rel)
+        if path.resolve() in {authorized_bind, authorized_join}:
             continue
         if (
             "DataUsageContextKind" in text
@@ -239,15 +250,16 @@ def test_no_full_core_datasafetygate_join_and_usage_confined_to_authorized_seam(
             hits.append(rel)
     transport_src = _SRC_TRANSPORT.read_text(encoding="utf-8")
     tree = ast.parse(transport_src)
-    imported: set[str] = set()
+    imported_set: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.ImportFrom) and (node.module or "").startswith("src.data.safety"):
             for alias in node.names:
-                imported.add(alias.name)
-    assert imported == {"DataSourceKind"}
+                imported_set.add(alias.name)
+    assert imported_set == {"DataSourceKind"}
     assert "DataUsageContextKind" not in transport_src
     assert not hits, f"usage/context wiring outside authorized seam: {hits}"
-    assert not gate_hits, f"DataSafetyGate join present in composition root: {gate_hits}"
+    assert not gate_hits, f"DataSafetyGate outside authorized join seam: {gate_hits}"
+    assert not ensure_hits, f"ensure_allowed present in composition root: {ensure_hits}"
 
 
 def test_pin_itself_does_not_wire_gate_join() -> None:
@@ -256,6 +268,7 @@ def test_pin_itself_does_not_wire_gate_join() -> None:
     assert "OWNER_RATIFIED_USAGE_BINDER" in pin_src
     assert "NO_DATASAFETYCONTEXT_FABRICATION_NO_LIVE_TRADE_FALLBACK" in pin_src
     assert "AUTHORIZED_RUNTIME_BIND_RELPATH" in pin_src
+    assert "AUTHORIZED_DATASAFETY_GATE_JOIN_RELPATH" in pin_src
     tree = ast.parse(pin_src)
     for node in ast.walk(tree):
         if isinstance(node, ast.Attribute) and node.attr == "ensure_allowed":
