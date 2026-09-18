@@ -1,7 +1,4 @@
-"""CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join.
-
-S1 exports contract constants only. The S2 compose function is not implemented.
-"""
+"""CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join."""
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.constants_v1 import (
     ADMITTED_MAP_PRODUCER_OWNER,
@@ -32,6 +29,10 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.co
     SLOT_STATE_ROOT_RESOLVER,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
 )
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.handoff_join_v1 import (
+    FullAutonomyOccupiedLaneMv2DpHandoffJoinError,
+    compose_occupied_lane_mv2_dp_handoff_v1,
+)
 
 __all__ = [
     "ADMITTED_MAP_PRODUCER_OWNER",
@@ -61,4 +62,6 @@ __all__ = [
     "SLOT_IDENTITY",
     "SLOT_STATE_ROOT_RESOLVER",
     "THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER",
+    "FullAutonomyOccupiedLaneMv2DpHandoffJoinError",
+    "compose_occupied_lane_mv2_dp_handoff_v1",
 ]
