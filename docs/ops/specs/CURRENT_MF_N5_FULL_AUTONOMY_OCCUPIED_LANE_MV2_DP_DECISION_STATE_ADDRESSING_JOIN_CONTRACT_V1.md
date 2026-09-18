@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
 status: active
-scope: S6 durable per-lane cursor persist and restore under lane_state_root; harness durability only; no Cap61 live bind; no host; no productive MF join; no S7
+scope: S7 durable per-lane load-cycle-persist compose under lane_state_root; harness durability only; S6 restore unchanged; no Cap61 live bind; no host; no productive MF join; no S8
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,14 +19,15 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S6_DURABLE_CURSOR_PERSIST_RESTORE
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S7_DURABLE_LOAD_CYCLE_PERSIST_COMPOSE
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
-SLICE_ID=S6_DURABLE_PER_LANE_CURSOR_PERSIST_RESTORE
+SLICE_ID=S7_DURABLE_PER_LANE_LOAD_CYCLE_PERSIST_COMPOSE
 S2_IMPLEMENTED=true
 S3_IMPLEMENTED=true
 S4_IMPLEMENTED=true
 S5_IMPLEMENTED=true
 S6_IMPLEMENTED=true
+S7_IMPLEMENTED=true
 RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 OCCUPIED_LANES_ONLY=true
 UNIQUE_MUTABLE_ROOTS_ENFORCED=true
@@ -83,6 +84,9 @@ S6_PERSIST_SYMBOL=persist_occupied_lane_mv2_dp_decision_state_cursor_v1
 S6_RESTORE_SYMBOL=restore_occupied_lane_mv2_dp_decision_state_cursor_v1
 S6_JOIN_SYMBOL=restore_occupied_lane_mv2_dp_decision_state_cursor_v1
 S6_IMPLEMENTED=true
+S7_JOIN_SYMBOL=compose_occupied_lane_mv2_dp_durable_cycle_v1
+S7_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S7_IMPLEMENTED=true
 PERSIST_SURFACE_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
 DISK_PATH_RULE={store_root}/current_productive_sidestate_confirmation_cursor_v1.json
 ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
@@ -152,15 +156,18 @@ only through the S4 bounded harness:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
 This slice implements
-`persist_occupied_lane_mv2_dp_decision_state_cursor_v1` and
-`restore_occupied_lane_mv2_dp_decision_state_cursor_v1`. It reuses the
-existing cursor persist and load functions. It does **not** create a
-second state owner or a new cursor schema. `lane_state_root` remains
-`EXTERNAL_ADDRESSING_ONLY` and is passed only as `store_root` to those
-existing functions, never into the cycle. Cap61 `state_root` stays unset.
-`PERSIST_ENABLED=true` is bounded harness durability only and is not Cap61
-persist, not a productive host join, and not multi-future authorization.
-It does **not** start S7.
+`compose_occupied_lane_mv2_dp_durable_cycle_v1`. It reuses S6
+`restore_occupied_lane_mv2_dp_decision_state_cursor_v1` (load + cycle) and
+S6 `persist_occupied_lane_mv2_dp_decision_state_cursor_v1` (post-cycle
+outgoing writeback). It does **not** create a second state owner or a new
+cursor schema. `lane_state_root` remains `EXTERNAL_ADDRESSING_ONLY` and is
+passed only as `store_root` to those existing functions, never into the
+cycle. Cap61 `state_root` stays unset. S7 invocation records set
+`persist_enabled=true`. S6 restore remains load+cycle without writeback
+and `persist_enabled=false`. `PERSIST_ENABLED=true` is bounded harness
+durability only and is not Cap61 persist, not a productive host join, and
+not multi-future authorization. Atomicity stays
+`NON_ATOMIC_DIRECT_WRITE_TEXT`. It does **not** start S8.
 
 ## 1. Purpose
 
@@ -181,7 +188,8 @@ The cycle does not take `store_root`. `lane_state_root` stays
 `EXTERNAL_ADDRESSING_ONLY` and is not injected into the cycle. S4 still
 calls the first cycle with `incoming_cursor=None`. S5 passes the prior
 outgoing cursor object of the same lane as the next `incoming_cursor`.
-No disk persist and no disk restore.
+S6 persist writes a prior outgoing cursor; S6 restore loads and invokes
+without writeback. S7 composes load → cycle → persist of the new outgoing.
 
 ```text
 compose_occupied_lane_mv2_dp_handoff_v1
@@ -217,10 +225,20 @@ S6 DURABLE HARNESS — occupied lanes only
   restart simulation drops the in-memory object
   load the same file; restored payload is next incoming_cursor(X)
   missing file remains the existing load None / cycle missing
+  restore does not persist the new outgoing
+  restore persist_enabled=false
   cross-lane instrument mismatch fail-closed before the cycle
         │
         ▼
-STOP — no Cap61 live bind; no host; no S7
+S7 DURABLE COMPOSE — occupied lanes only
+  reuse S6 restore (load + cycle)
+  persist the NEW outgoing_cursor under the same lane_state_root
+  S7 invocation persist_enabled=true
+  cap61_state_root_bound=false
+  cycle still does not take store_root
+        │
+        ▼
+STOP — no Cap61 live bind; no host; no S8
 ```
 
 `#6602` already closed PAIR_MAP_STOP. `#6605` already closed S3.
@@ -290,10 +308,10 @@ HostExitPolicyBindingV1 is ephemeral this-cycle. Optional G17 producer is
 in-memory when passed. ScopeCooldown and composition-direction are reset
 each cycle on this consumer and are not cursor-carried.
 
-**interpretation:** S5 reuses the cursor object on the existing per-lane
-invocation record as the in-memory cycle-crossing holder. It does not
-persist, load from disk, live-bind Cap61, join the host, authorize
-productive MF, or start S6. `lane_state_root` remains external addressing.
+**interpretation:** S7 reuses S6 restore and S6 persist to close the
+durable harness loop. It does not live-bind Cap61, join the host,
+authorize productive MF, mutate the cursor owner, or start S8.
+`lane_state_root` remains external addressing.
 
 ## 3. Slot context
 
@@ -310,7 +328,7 @@ outgoing cursor on the invocation record, owned by the existing cursor
 module. `lane_state_root` is not injected into the cycle and is not
 reinterpreted as a consumed state root.
 
-## 4. S1 versus S2 versus S3 versus S4 versus S5
+## 4. S1 versus S2 versus S3 versus S4 versus S5 versus S6 versus S7
 
 ```text
 S1_CONTRACT_BIND=closed
@@ -325,7 +343,11 @@ S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocatio
 S5_JOIN_SYMBOL=carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
 S5_IMPLEMENTED=true
 S5_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S6_PERSIST_SYMBOL=persist_occupied_lane_mv2_dp_decision_state_cursor_v1
+S6_RESTORE_SYMBOL=restore_occupied_lane_mv2_dp_decision_state_cursor_v1
 S6_IMPLEMENTED=true
+S7_JOIN_SYMBOL=compose_occupied_lane_mv2_dp_durable_cycle_v1
+S7_IMPLEMENTED=true
 FIRST_DECISION_STATE_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
 CONSUMPTION_SEAM=pre_invoke_run_current_productive_master_v2_runtime_cycle_v1
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
@@ -335,16 +357,16 @@ RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 
 S4 invokes the named consumer from the S3 seam in a bounded test harness.
 S5 reuses that invocation's outgoing cursor as the next in-memory incoming
-cursor of the same lane. It does not authorize disk persist, disk restore,
+cursor of the same lane. S6 persist and restore remain separate primitives.
+S6 restore does not persist the new outgoing. S7 composes S6 restore then
+S6 persist so the post-cycle outgoing is durable. It does not authorize
 Cap61 live bind, host, Master V2 or Double Play mutation, productive MF
-join, or S6.
+join, cursor-owner mutation, or S8.
 
 ## 5. Non-goals
 
 ```text
-NO_S6
-NO_CURSOR_PERSIST
-NO_CURSOR_LOAD_OR_RESTORE_FROM_DISK
+NO_S8
 NO_CAP61_STATE_ROOT_BIND
 NO_CAP61_PERSIST
 NO_CAP62_PERSIST
@@ -353,6 +375,9 @@ NO_EXIT_POLICY_PERSIST
 NO_CURSOR_SCHEMA_CHANGE
 NO_CURSOR_LANE_ID_FIELD
 NO_NEW_STATE_OWNER
+NO_CURSOR_OWNER_CHANGE
+NO_ATOMICITY_CHANGE
+NO_S6_RESTORE_WRITEBACK
 NO_PRODUCTIVE_MF_HOST_JOIN
 NO_FIVE_LANE_CONTINUOUS_RUNTIME
 NO_FIVE_LANE_RUNTIME_CREATED
