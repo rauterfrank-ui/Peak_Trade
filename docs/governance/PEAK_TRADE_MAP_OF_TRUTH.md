@@ -90,6 +90,8 @@ in the Master Runbook and the named packages.
 | `capital_risk_admissibility_owner_v1` | `src/ops/full_core_live_path_composition_root_v1/` (risk admissibility modules) |
 | `canonical_order_intent_owner_v1` | `src/ops/full_core_live_path_composition_root_v1/` |
 | `stateful_no_order_host_join_v1` | `src/ops/full_core_live_path_composition_root_v1/` |
+| Cap 7.2 host activation binding implementation | `src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py` |
+| Occupied-lane N=5 Full-Autonomy runtime completion | `src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/` |
 | `send_capable_adapter_v1` | `src/ops/governed_productive_account_equity_authority_producer_v1/` and Full-Core composition root |
 | Exactly-one governed cycle | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
 | `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |

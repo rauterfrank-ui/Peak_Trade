@@ -1017,6 +1017,39 @@ entities:
       FIRST_TRUE_OWNER_BOUNDARY is the actual host-join invoke or flag
       flip. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_full_autonomy_runtime_n5_completion_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Full-Autonomy runtime completion
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py
+      - tests/ops/test_current_mf_n5_full_autonomy_runtime_n5_completion_v1.py
+    notes: >-
+      RUNTIME_N5_HOST_JOIN_AND_CARDINALITY_COMPLETION consumes N1 host-join
+      readiness and invokes ensure_host_activation_binding_v1 per occupied
+      lane under lane-local Cap 7.2 activation roots. Productive cardinality
+      rolls 1_JOINED through 5_JOINED as five isolated N=1 lanes.
+      HOST_JOIN=true. MF_PRODUCTIVE_JOIN=true.
+      PRODUCTIVE_RUNTIME_CARDINALITY=5_JOINED.
+      MAX_POSITIONS_EFFECTIVE remains 1 (Cap23/Cap24 per-lane N=1).
+      MULTI_FUTURE_RUNTIME_AUTHORIZED=false (Cap 7.2 negative precondition).
+      EXECUTION_CONCURRENCY_AUTHORIZED=false. Sequential LANE_ID order.
+      EXTERNAL_EFFECT_AUTHORIZED=false. No POST, permit, live-port join,
+      productive host entry, Cap23/Cap24 reinvoke, or trading-decision
+      authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
