@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
 status: active
-scope: S1 contract/census bind for per-lane MV2/DP decision-state addressing after PAIR_MAP_STOP; no S2 resolver; no persist; no restore; no host; no trading; no five-lane runtime
+scope: S2 occupied-lane MV2/DP decision-state store-root resolver after S1 census; no persist; no restore; no Cap61 live bind; no consumer invoke; no host; no trading; no five-lane runtime
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,10 +19,15 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S1_CONTRACT_BIND
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S2_RESOLVER
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
-SLICE_ID=S1_CONTRACT_BIND
-S2_IMPLEMENTED=false
+SLICE_ID=S2_RESOLVER_ONLY
+S2_IMPLEMENTED=true
+S3_IMPLEMENTED=false
+RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
+OCCUPIED_LANES_ONLY=true
+UNIQUE_MUTABLE_ROOTS_ENFORCED=true
+GLOBAL_N1_CURSOR_REJECTED=true
 AUTHORITY_EFFECT=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 JOIN_RANKING_AUTHORITY=false
@@ -98,7 +103,10 @@ INSTRUMENT_ID_ALONE_SUFFICIENT=false
 ATLAS_AUTHORITY=NONE
 ```
 
-S1 typed constants:
+S2 typed resolver:
+`src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1&#47;addressing_join_v1.py`.
+
+S2 typed constants:
 `src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1&#47;constants_v1.py`.
 
 Closed pair-map producer remains:
@@ -113,18 +121,20 @@ Existing cursor bundle owner remains:
 Existing trading-decision consumer remains named, not invoked:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
-This slice does **not** implement
-`resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1`, does **not**
-persist or load the cursor, does **not** restore the cursor from disk, does
-**not** set Cap61 `state_root`, does **not** persist Cap61/Cap62/G17/Exit,
-does **not** reinvoke Cap 2.3 or Cap 2.4, does **not** join the
-Full-Autonomy host, does **not** invoke Master V2 or Double Play, does
-**not** change cursor schema or add `lane_id`, does **not** create a second
-state owner, and does **not** create five isolated executing lanes.
+This slice implements
+`resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1` only. It does
+**not** persist or load the cursor, does **not** restore the cursor from
+disk, does **not** set Cap61 `state_root`, does **not** persist
+Cap61/Cap62/G17/Exit, does **not** reinvoke Cap 2.3 or Cap 2.4, does
+**not** join the Full-Autonomy host, does **not** invoke Master V2 or
+Double Play, does **not** change cursor schema or add `lane_id`, does
+**not** create a second state owner, does **not** prove S3 isolation, and
+does **not** create five isolated executing lanes.
 
 ## 1. Purpose
 
-Bind the non-authorizing addressing census after the closed pair map:
+Resolve occupied-lane MV2/DP decision-state store roots after the closed
+pair map and S1 census:
 
 ```text
 compose_occupied_lane_mv2_dp_handoff_v1
@@ -133,14 +143,18 @@ compose_occupied_lane_mv2_dp_handoff_v1
 dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)]
         │
         ▼
-S1 CONTRACT BIND — per-lane MV2/DP decision-state addressing
-  intended store_root = IsolatedLaneSlotV1.lane_state_root
-  N=1 global cursor path is NOT lane-safe
+S1 CONTRACT BIND — census closed
+        │
+        ▼
+S2 RESOLVER — occupied lanes only
+  store_root = IsolatedLaneSlotV1.lane_state_root
+  unique mutable roots enforced
+  N=1 global cursor path rejected as shared N=5 root
   same N=1 MV2+DP configuration/semantics on every slot
   shared mutable state across lanes = false
         │
         ▼
-STOP — S2 store-root resolver not implemented
+STOP — no persist; no restore; no Cap61 live bind; no consumer invoke; no S3
 ```
 
 `#6602` already closed PAIR_MAP_STOP. This slice does not reopen that
@@ -203,8 +217,8 @@ HostExitPolicyBindingV1 is ephemeral this-cycle. Optional G17 producer is
 in-memory when passed. ScopeCooldown and composition-direction are reset
 each cycle on this consumer and are not cursor-carried.
 
-**interpretation:** S1 names addressing only. It does not persist,
-restore, live-bind Cap61, or invoke.
+**interpretation:** S2 resolves addressing only. It does not persist,
+restore, live-bind Cap61, invoke, or prove S3 isolation.
 
 ## 3. Slot context
 
@@ -216,26 +230,28 @@ Slot state root remains
 `IsolatedLaneSlotV1.lane_state_root`.
 
 This contract does not invent a second lane identity, a new cursor
-schema, or a new state store. Later S2 must reuse that existing field as
-the intended store_root string.
+schema, or a new state store. S2 reuses that existing field as the
+store_root string.
 
-## 4. S1 versus S2
+## 4. S1 versus S2 versus S3
 
 ```text
-S1_CONTRACT_BIND=this slice
+S1_CONTRACT_BIND=closed
 S2_JOIN_SYMBOL=resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1
-S2_IMPLEMENTED=false
+S2_IMPLEMENTED=true
 S2_INTENDED_EGRESS=dict[lane_id, str]
+S3_IMPLEMENTED=false
+RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 ```
 
-S2 remains a later Owner-GO. Naming the symbol here does not implement
-it and does not authorize persist, restore, Cap61 live bind, host,
-Master V2, Double Play, or consumer invoke.
+S2 implements the named resolver only. It does not authorize persist,
+restore, Cap61 live bind, host, Master V2, Double Play, consumer invoke,
+or S3 isolation proof.
 
 ## 5. Non-goals
 
 ```text
-NO_S2_STORE_ROOT_RESOLVER
+NO_S3_ISOLATION_PROOF
 NO_CURSOR_PERSIST
 NO_CURSOR_LOAD_OR_RESTORE_FROM_DISK
 NO_CAP61_STATE_ROOT_BIND

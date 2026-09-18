@@ -1,14 +1,19 @@
 """CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing join.
 
-S1 exports contract/census constants only. The S2 store-root resolver is
-not implemented.
+S2 exports occupied-lane store-root resolution only. Persist, restore,
+Cap61 live bind, consumer invoke, and S3 isolation remain out of scope.
 """
 
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
+    FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
+    resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
+)
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
     CONTRACT_ID,
     CURSOR_BUNDLE_TYPE,
     FIRST_TRADING_DECISION_CONSUMER,
+    GLOBAL_N1_CURSOR_REJECTED,
     HOST_JOIN,
     INTENDED_PER_LANE_STORE_ROOT,
     JOIN_PERSISTENCE_AUTHORITY,
@@ -21,17 +26,21 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK,
     MAY_PERSIST_CURSOR,
     N1_GLOBAL_CURSOR_LANE_SAFE,
+    OCCUPIED_LANES_ONLY,
     OWNER,
     PAIR_MAP_OBJECT,
     PAIR_MAP_PRODUCER,
     PREPARED_BOUND_CARDINALITY,
     PRODUCTIVE_RUNTIME_CARDINALITY,
+    RESOLUTION_RULE,
     S2_IMPLEMENTED,
     S2_JOIN_SYMBOL,
+    S3_IMPLEMENTED,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
+    UNIQUE_MUTABLE_ROOTS_ENFORCED,
 )
 
 __all__ = [
@@ -39,6 +48,7 @@ __all__ = [
     "CONTRACT_ID",
     "CURSOR_BUNDLE_TYPE",
     "FIRST_TRADING_DECISION_CONSUMER",
+    "GLOBAL_N1_CURSOR_REJECTED",
     "HOST_JOIN",
     "INTENDED_PER_LANE_STORE_ROOT",
     "JOIN_PERSISTENCE_AUTHORITY",
@@ -51,15 +61,21 @@ __all__ = [
     "MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK",
     "MAY_PERSIST_CURSOR",
     "N1_GLOBAL_CURSOR_LANE_SAFE",
+    "OCCUPIED_LANES_ONLY",
     "OWNER",
     "PAIR_MAP_OBJECT",
     "PAIR_MAP_PRODUCER",
     "PREPARED_BOUND_CARDINALITY",
     "PRODUCTIVE_RUNTIME_CARDINALITY",
+    "RESOLUTION_RULE",
     "S2_IMPLEMENTED",
     "S2_JOIN_SYMBOL",
+    "S3_IMPLEMENTED",
     "SAME_TRADING_CONFIGURATION_ACROSS_LANES",
     "SHARED_MUTABLE_STATE_ACROSS_LANES",
     "SLICE_ID",
     "THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER",
+    "UNIQUE_MUTABLE_ROOTS_ENFORCED",
+    "FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError",
+    "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
 ]

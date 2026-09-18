@@ -1,4 +1,4 @@
-"""S1 contract/census bind tests for occupied-lane MV2/DP decision-state addressing."""
+"""S2 occupied-lane MV2/DP decision-state store-root resolver tests."""
 
 from __future__ import annotations
 
@@ -7,12 +7,18 @@ import inspect
 from dataclasses import fields
 from pathlib import Path
 
+import pytest
+
 from src.ops.current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1.constants_v1 import (
     PREPARED_BOUND_CARDINALITY as BOUNDARY_PREPARED_BOUND_CARDINALITY,
     PRODUCTIVE_RUNTIME_CARDINALITY as BOUNDARY_PRODUCTIVE_RUNTIME_CARDINALITY,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1 import (
     constants_v1 as addressing_constants,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
+    FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
+    resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
@@ -33,12 +39,23 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     DOUBLE_PLAY_CHANGE_REQUIRED,
     DURABLE_SIBLING_NOT_REQUIRED_CYCLE_CROSSING_STORE,
     EXECUTION_CONCURRENCY_AUTHORIZED,
+    FAILURE_BOUND_TYPE,
+    FAILURE_IDENTITY_MISMATCH,
+    FAILURE_INVALID_STORE_ROOT,
+    FAILURE_MISSING_STORE_ROOT,
+    FAILURE_N1_GLOBAL_CURSOR_STORE,
+    FAILURE_OCCUPANCY,
+    FAILURE_PAIR_TYPE,
+    FAILURE_SHARED_STORE_ROOT,
+    FAILURE_SLOT_TYPE,
+    FAILURE_UNKNOWN_LANE_ID,
     FIRST_TRADING_DECISION_CONSUMER,
     FIVE_LANE_CONTINUOUS_HOST_JOIN,
     FIVE_LANE_RUNTIME_CREATED,
     FORBIDDEN_CALL_GRAPH_TARGETS,
     FULL_AUTONOMY_HOST_CHANGE_REQUIRED,
     FULL_AUTONOMY_HOST_OWNER,
+    GLOBAL_N1_CURSOR_REJECTED,
     HOST_JOIN,
     INTENDED_PER_LANE_STORE_ROOT,
     INTENDED_PER_LANE_STORE_ROOT_FIELD,
@@ -72,6 +89,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     NEW_MV2_DP_INGRESS_DTO_CREATED,
     NEW_STATE_OWNER_CREATED,
     NEW_TOP5_HANDOFF_DTO_CREATED,
+    OCCUPIED_LANES_ONLY,
     OWNER,
     OWNER_GO_THIS_SLICE,
     PAIR_MAP_OBJECT,
@@ -81,10 +99,12 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     PARALLEL_AUTHORITY_CREATED,
     PREPARED_BOUND_CARDINALITY,
     PRODUCTIVE_RUNTIME_CARDINALITY,
+    RESOLUTION_RULE,
     RUNTIME_AUTHORIZATION_EFFECT,
     S2_IMPLEMENTED,
     S2_INTENDED_EGRESS,
     S2_JOIN_SYMBOL,
+    S3_IMPLEMENTED,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -95,6 +115,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
     THIS_SLICE_MAY_RESTORE_CURSOR,
+    UNIQUE_MUTABLE_ROOTS_ENFORCED,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.constants_v1 import (
     HANDOFF_EGRESS_OBJECT,
@@ -102,9 +123,20 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.co
     S2_IMPLEMENTED as HANDOFF_S2_IMPLEMENTED,
     S2_JOIN_SYMBOL as HANDOFF_S2_JOIN_SYMBOL,
 )
-from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import LANE_IDS
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.handoff_join_v1 import (
+    compose_occupied_lane_mv2_dp_handoff_v1,
+)
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1 import (
+    constants_v1 as topology_constants,
+)
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
+    LANE_IDS,
+    OCCUPANCY_EMPTY,
+    OCCUPANCY_OCCUPIED,
+)
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
     IsolatedLaneSlotV1,
+    IsolatedLaneTopologyV1,
     lane_state_root_for,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
@@ -118,15 +150,18 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE as CAP23_MAX_POSITIONS,
     OWNER as CAP23_OWNER,
 )
+from src.ops.single_selected_future_policy_v1.governed_pin_v1 import lane_state_root_key
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE as CAP24_MAX_POSITIONS,
     OWNER as CAP24_OWNER,
 )
+from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
 PACKAGE_DIR = Path(addressing_constants.__file__).resolve().parent
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INIT_SOURCE = (PACKAGE_DIR / "__init__.py").read_text(encoding="utf-8")
 CONSTANTS_SOURCE = (PACKAGE_DIR / "constants_v1.py").read_text(encoding="utf-8")
+JOIN_SOURCE = (PACKAGE_DIR / "addressing_join_v1.py").read_text(encoding="utf-8")
 CYCLE_SOURCE = (
     REPO_ROOT
     / "src/ops/full_core_live_path_composition_root_v1"
@@ -142,6 +177,19 @@ CURSOR_SOURCE = (
     / "src/ops/full_core_live_path_composition_root_v1"
     / "current_productive_sidestate_confirmation_cursor_v1.py"
 ).read_text(encoding="utf-8")
+UNIVERSE_SNAPSHOT = "uni-shared"
+RANKING_SNAPSHOT = "rank-shared"
+RANKING_DIGEST = "rank-digest-shared"
+SUBSTRING_FORBIDDEN_INIT = frozenset(
+    name
+    for name in FORBIDDEN_CALL_GRAPH_TARGETS
+    if name
+    not in {
+        "master_v2",
+        "double_play",
+        "execution",
+    }
+)
 
 
 def _import_names(source: str) -> set[str]:
@@ -156,8 +204,120 @@ def _import_names(source: str) -> set[str]:
     return names
 
 
-def test_s1_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S1_CONTRACT_BIND"
+def _called_names(source: str) -> set[str]:
+    called: set[str] = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Name):
+                called.add(node.func.id)
+            elif isinstance(node.func, ast.Attribute):
+                called.add(node.func.attr)
+    return called
+
+
+def _bound(*, lane_id: str, instrument_id: str | None = None) -> BoundInstrumentV1:
+    return BoundInstrumentV1(
+        instrument_id=instrument_id or f"INST-{lane_id}",
+        venue_native_id=f"VENUE-{lane_id[-1]}",
+        ranking_snapshot_id=RANKING_SNAPSHOT,
+        ranking_integrity_digest=RANKING_DIGEST,
+        universe_snapshot_id=UNIVERSE_SNAPSHOT,
+        selection_id=f"sel-{lane_id}",
+        selection_integrity_digest=f"sel-digest-{lane_id}",
+        selection_state="SELECTED",
+    )
+
+
+def _slot(
+    *,
+    lane_id: str,
+    topology_state_root_base: Path,
+    bound: BoundInstrumentV1 | None = None,
+    occupancy: str | None = None,
+    lane_state_root: str | None = None,
+) -> IsolatedLaneSlotV1:
+    occupied = bound is not None
+    return IsolatedLaneSlotV1(
+        lane_id=lane_id,
+        occupancy=occupancy or (OCCUPANCY_OCCUPIED if occupied else OCCUPANCY_EMPTY),
+        canonical_instrument_id=None if bound is None else bound.instrument_id,
+        lane_state_root=lane_state_root
+        or lane_state_root_for(topology_state_root_base=topology_state_root_base, lane_id=lane_id),
+        universe_snapshot_id=None if bound is None else bound.universe_snapshot_id,
+        ranking_snapshot_id=None if bound is None else bound.ranking_snapshot_id,
+        ranking_integrity_digest=None if bound is None else bound.ranking_integrity_digest,
+    )
+
+
+def _pair(
+    tmp_path: Path,
+    lane_id: str,
+    *,
+    bound: BoundInstrumentV1 | None = None,
+    occupancy: str | None = None,
+    lane_state_root: str | None = None,
+) -> tuple[IsolatedLaneSlotV1, BoundInstrumentV1]:
+    instrument = bound or _bound(lane_id=lane_id)
+    return (
+        _slot(
+            lane_id=lane_id,
+            topology_state_root_base=tmp_path,
+            bound=instrument,
+            occupancy=occupancy,
+            lane_state_root=lane_state_root,
+        ),
+        instrument,
+    )
+
+
+def _topology(
+    tmp_path: Path,
+    occupied: dict[str, BoundInstrumentV1] | None = None,
+) -> IsolatedLaneTopologyV1:
+    occupied = occupied or {}
+    topology_state_root_base = str(Path(tmp_path).expanduser().resolve())
+    slots = [
+        _slot(
+            lane_id=lane_id,
+            topology_state_root_base=topology_state_root_base,
+            bound=occupied.get(lane_id),
+        )
+        for lane_id in LANE_IDS
+    ]
+    occupied_ids = tuple(
+        str(slot.canonical_instrument_id) for slot in slots if slot.occupancy == OCCUPANCY_OCCUPIED
+    )
+    return IsolatedLaneTopologyV1(
+        schema_version=topology_constants.SCHEMA_VERSION,
+        owner=topology_constants.OWNER,
+        contract_id=topology_constants.CONTRACT_ID,
+        topology_state_root_base=topology_state_root_base,
+        membership_instance_id="membership-s2",
+        universe_snapshot_id=UNIVERSE_SNAPSHOT,
+        ranking_snapshot_id=RANKING_SNAPSHOT,
+        ranking_integrity_digest=RANKING_DIGEST,
+        slots=tuple(slots),
+        occupied_count=len(occupied_ids),
+        occupied_instrument_ids=occupied_ids,
+        lane_identity_encodes_rank=False,
+        no_padding=True,
+        one_instrument_per_lane=True,
+        one_lane_per_instrument=True,
+        pure_rank_reorder_causes_lane_move=False,
+        mf_productive_join=False,
+        five_lane_runtime_created=False,
+        max_positions_effective=1,
+        initial_assignment_policy=topology_constants.INITIAL_ASSIGNMENT_POLICY,
+        retained_member_policy=topology_constants.RETAINED_MEMBER_POLICY,
+        exit_policy=topology_constants.EXIT_POLICY,
+        entry_policy=topology_constants.ENTRY_POLICY,
+        free_lane_assignment_policy=topology_constants.FREE_LANE_ASSIGNMENT_POLICY,
+        restart_reconstruction_policy=topology_constants.RESTART_RECONSTRUCTION_POLICY,
+    )
+
+
+def test_s2_authority_flags_and_addressing_census_bind() -> None:
+    assert SLICE_ID == "S2_RESOLVER_ONLY"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -166,7 +326,7 @@ def test_s1_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S1_CONTRACT_BIND"
+        "_S2_RESOLVER"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -183,6 +343,10 @@ def test_s1_authority_flags_and_addressing_census_bind() -> None:
     assert SLOT_STATE_ROOT_RESOLVER == lane_state_root_for.__name__
     assert INTENDED_PER_LANE_STORE_ROOT == "IsolatedLaneSlotV1.lane_state_root"
     assert INTENDED_PER_LANE_STORE_ROOT_FIELD == "lane_state_root"
+    assert RESOLUTION_RULE == "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
+    assert OCCUPIED_LANES_ONLY is True
+    assert UNIQUE_MUTABLE_ROOTS_ENFORCED is True
+    assert GLOBAL_N1_CURSOR_REJECTED is True
     assert N1_GLOBAL_CURSOR_LANE_SAFE is False
     assert CURSOR_BUNDLE_TYPE == CurrentProductiveSideStateConfirmationCursorV1.__name__
     assert CURSOR_HAS_LANE_ID_FIELD is False
@@ -240,6 +404,7 @@ def test_s1_authority_flags_and_addressing_census_bind() -> None:
     assert PREPARED_BOUND_CARDINALITY == BOUNDARY_PREPARED_BOUND_CARDINALITY == "0..5"
     assert PRODUCTIVE_RUNTIME_CARDINALITY == BOUNDARY_PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
     assert PREPARED_BOUND_CARDINALITY != "5_PRODUCTIVE_LANES"
+    assert S3_IMPLEMENTED is False
 
 
 def test_s1_reuses_existing_lane_ids_and_lane_state_root_field(tmp_path: Path) -> None:
@@ -252,12 +417,13 @@ def test_s1_reuses_existing_lane_ids_and_lane_state_root_field(tmp_path: Path) -
             topology_state_root_base=tmp_path,
             lane_id=lane_id,
         )
-        assert resolved == str(tmp_path / lane_id)
+        assert resolved == str(Path(tmp_path).expanduser().resolve() / lane_id)
         assert resolved != N1_GLOBAL_CURSOR_STORE_RELPATH
 
 
 def test_s1_n1_global_cursor_path_is_not_lane_safe() -> None:
     assert N1_GLOBAL_CURSOR_LANE_SAFE is False
+    assert GLOBAL_N1_CURSOR_REJECTED is True
     assert N1_GLOBAL_CURSOR_STORE_RELPATH == (
         "evidence/ops/full_core_current_productive_sidestate_confirmation_cursor_current_v1"
     )
@@ -325,29 +491,246 @@ def test_s1_same_trading_configuration_is_not_shared_mutable_state() -> None:
     assert MAX_POSITIONS_EFFECTIVE == 1
 
 
-def test_s2_resolver_is_named_but_not_implemented() -> None:
+def test_s2_join_is_implemented() -> None:
     assert S2_JOIN_SYMBOL == "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1"
-    assert S2_IMPLEMENTED is False
+    assert S2_IMPLEMENTED is True
     assert S2_INTENDED_EGRESS == "dict[lane_id, str]"
-    assert not (PACKAGE_DIR / "addressing_join_v1.py").exists()
-    assert not (PACKAGE_DIR / "store_root_join_v1.py").exists()
-    assert not (PACKAGE_DIR / "handoff_join_v1.py").exists()
-    assert not hasattr(addressing_constants, S2_JOIN_SYMBOL)
+    assert S3_IMPLEMENTED is False
+    assert (PACKAGE_DIR / "addressing_join_v1.py").is_file()
     addressing_pkg = __import__(
         "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
         fromlist=["*"],
     )
-    assert not hasattr(addressing_pkg, S2_JOIN_SYMBOL)
-    assert not callable(getattr(addressing_pkg, S2_JOIN_SYMBOL, None))
+    assert (
+        getattr(addressing_pkg, S2_JOIN_SYMBOL)
+        is resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1
+    )
+    assert callable(resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1)
+    assert resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1.__name__ == S2_JOIN_SYMBOL
     assert f"def {S2_JOIN_SYMBOL}" not in CONSTANTS_SOURCE
-    assert f"def {S2_JOIN_SYMBOL}" not in INIT_SOURCE
-    assert inspect.getmodule(addressing_constants) is not None
+    assert f"def {S2_JOIN_SYMBOL}" in JOIN_SOURCE
 
 
-def test_s1_forbidden_graph_and_protected_imports() -> None:
-    for forbidden in FORBIDDEN_CALL_GRAPH_TARGETS:
+def test_t_empty_returns_empty_dict() -> None:
+    resolved = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1({})
+    assert resolved == {}
+    assert list(resolved) == []
+
+
+def test_t_n1_single_occupied_lane_maps_to_existing_lane_state_root(tmp_path: Path) -> None:
+    pair = _pair(tmp_path, "LANE_3")
+    resolved = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1({"LANE_3": pair})
+    expected = lane_state_root_for(topology_state_root_base=tmp_path, lane_id="LANE_3")
+    assert list(resolved) == ["LANE_3"]
+    assert resolved["LANE_3"] == expected
+    assert resolved["LANE_3"] == pair[0].lane_state_root
+    assert resolved["LANE_3"] != N1_GLOBAL_CURSOR_STORE_RELPATH
+
+
+def test_t_occupied_lanes_only_omits_absent_lanes(tmp_path: Path) -> None:
+    pairs = {
+        "LANE_1": _pair(tmp_path, "LANE_1"),
+        "LANE_4": _pair(tmp_path, "LANE_4"),
+    }
+    resolved = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(pairs)
+    assert list(resolved) == ["LANE_1", "LANE_4"]
+    assert "LANE_2" not in resolved
+    assert "LANE_3" not in resolved
+    assert "LANE_5" not in resolved
+
+
+def test_t_multi_occupied_is_deterministic_and_unique(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in LANE_IDS}
+    shuffled = {
+        "LANE_5": pairs["LANE_5"],
+        "LANE_1": pairs["LANE_1"],
+        "LANE_4": pairs["LANE_4"],
+        "LANE_2": pairs["LANE_2"],
+        "LANE_3": pairs["LANE_3"],
+    }
+    resolved = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(shuffled)
+    assert list(resolved) == list(LANE_IDS)
+    roots = list(resolved.values())
+    assert len(roots) == len(set(roots))
+    for lane_id in LANE_IDS:
+        expected = lane_state_root_for(topology_state_root_base=tmp_path, lane_id=lane_id)
+        assert resolved[lane_id] == expected
+        assert resolved[lane_id] == pairs[lane_id][0].lane_state_root
+        for other_id in LANE_IDS:
+            if other_id == lane_id:
+                continue
+            assert resolved[lane_id] != resolved[other_id]
+
+
+def test_t_compose_pair_map_is_accepted_without_recompose(tmp_path: Path) -> None:
+    originals = {
+        "LANE_2": _bound(lane_id="LANE_2"),
+        "LANE_5": _bound(lane_id="LANE_5"),
+    }
+    topology = _topology(tmp_path, originals)
+    composed = compose_occupied_lane_mv2_dp_handoff_v1(originals, topology)
+    resolved = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(composed)
+    assert list(resolved) == ["LANE_2", "LANE_5"]
+    for lane_id in ("LANE_2", "LANE_5"):
+        assert resolved[lane_id] == composed[lane_id][0].lane_state_root
+        assert resolved[lane_id] == lane_state_root_for(
+            topology_state_root_base=tmp_path, lane_id=lane_id
+        )
+
+
+def test_t_unknown_lane_fails_closed(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": _pair(tmp_path, "LANE_1"), "LANE_X": _pair(tmp_path, "LANE_1")}
+        )
+    assert exc.value.failure_code == FAILURE_UNKNOWN_LANE_ID
+    assert "LANE_X" in exc.value.detail
+
+
+def test_t_empty_occupancy_fails_closed(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_5": _pair(tmp_path, "LANE_5", occupancy=OCCUPANCY_EMPTY)}
+        )
+    assert exc.value.failure_code == FAILURE_OCCUPANCY
+    assert exc.value.detail == "LANE_5"
+
+
+def test_t_identity_mismatch_fails_closed(tmp_path: Path) -> None:
+    slot, _bound_slot = _pair(tmp_path, "LANE_2")
+    other = _bound(lane_id="LANE_2", instrument_id="INST-OTHER")
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1({"LANE_2": (slot, other)})
+    assert exc.value.failure_code == FAILURE_IDENTITY_MISMATCH
+    assert exc.value.detail == "LANE_2"
+
+
+def test_t_missing_root_fails_closed(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": _pair(tmp_path, "LANE_1", lane_state_root="   ")}
+        )
+    assert exc.value.failure_code == FAILURE_MISSING_STORE_ROOT
+    assert exc.value.detail == "LANE_1"
+
+
+def test_t_invalid_root_fails_closed(tmp_path: Path) -> None:
+    wrong_root = lane_state_root_for(topology_state_root_base=tmp_path, lane_id="LANE_2")
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": _pair(tmp_path, "LANE_1", lane_state_root=wrong_root)}
+        )
+    assert exc.value.failure_code == FAILURE_INVALID_STORE_ROOT
+    assert exc.value.detail == "LANE_1"
+
+
+def test_t_shared_symlink_root_fails_closed(tmp_path: Path) -> None:
+    lane1 = tmp_path / "LANE_1"
+    lane1.mkdir()
+    (tmp_path / "LANE_2").symlink_to(lane1)
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {
+                "LANE_1": _pair(tmp_path, "LANE_1"),
+                "LANE_2": _pair(tmp_path, "LANE_2"),
+            }
+        )
+    assert exc.value.failure_code == FAILURE_SHARED_STORE_ROOT
+    assert "LANE_1" in exc.value.detail
+    assert "LANE_2" in exc.value.detail
+
+
+def test_t_n1_global_cursor_path_rejected_as_store_root(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {
+                "LANE_1": _pair(
+                    tmp_path,
+                    "LANE_1",
+                    lane_state_root=N1_GLOBAL_CURSOR_STORE_RELPATH,
+                )
+            }
+        )
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    assert exc.value.detail == "LANE_1"
+
+
+def test_t_n1_global_cursor_path_rejected_as_shared_n5_base(tmp_path: Path) -> None:
+    n1_base = tmp_path / N1_GLOBAL_CURSOR_STORE_RELPATH
+    n1_base.mkdir(parents=True)
+    n1_lane_root = lane_state_root_for(topology_state_root_base=n1_base, lane_id="LANE_4")
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_4": _pair(tmp_path, "LANE_4", lane_state_root=n1_lane_root)}
+        )
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    assert exc.value.detail == "LANE_4"
+
+
+def test_t_pair_and_slot_type_mismatch_fail_closed(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": object()}  # type: ignore[dict-item]
+        )
+    assert exc.value.failure_code == FAILURE_PAIR_TYPE
+    slot, bound = _pair(tmp_path, "LANE_1")
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": (object(), bound)}  # type: ignore[dict-item]
+        )
+    assert exc.value.failure_code == FAILURE_SLOT_TYPE
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
+            {"LANE_1": (slot, object())}  # type: ignore[dict-item]
+        )
+    assert exc.value.failure_code == FAILURE_BOUND_TYPE
+
+
+def test_t_no_cursor_io_consumer_cap61_or_runtime_side_effects() -> None:
+    for source in (JOIN_SOURCE, INIT_SOURCE):
+        assert "open(" not in source
+        assert "write_text" not in source
+        assert "read_text" not in source
+        assert "Path.write" not in source
+        assert "json.dump" not in source
+        assert "json.load" not in source
+        assert "run_current_productive_master_v2_runtime_cycle_v1" not in source
+        assert "ensure_host_confirmation_binding_v1" not in source
+        assert "CurrentProductiveSideStateConfirmationCursorV1" not in source
+        assert "state_root=" not in source
+        assert "persist=" not in source
+    assert "compose_occupied_lane_mv2_dp_handoff_v1" not in JOIN_SOURCE
+    imported = (
+        _import_names(JOIN_SOURCE) | _import_names(INIT_SOURCE) | _import_names(CONSTANTS_SOURCE)
+    )
+    assert (
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.handoff_join_v1"
+        not in imported
+    )
+    assert (
+        "src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1"
+        not in imported
+    )
+    assert (
+        "src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1"
+        not in imported
+    )
+    assert "src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1" not in (
+        imported
+    )
+    assert "src.ops.stateful_no_order_host_join_v1" not in imported
+    assert "trading.master_v2.integrated_offline_trading_logic_replay_v1" not in imported
+    called = _called_names(JOIN_SOURCE)
+    assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
+    assert inspect.getsource(resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1)
+
+
+def test_s2_forbidden_graph_and_protected_imports() -> None:
+    for forbidden in SUBSTRING_FORBIDDEN_INIT:
         assert forbidden not in INIT_SOURCE
-    imported = _import_names(CONSTANTS_SOURCE) | _import_names(INIT_SOURCE)
+    imported = (
+        _import_names(CONSTANTS_SOURCE) | _import_names(INIT_SOURCE) | _import_names(JOIN_SOURCE)
+    )
     assert (
         "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.handoff_join_v1"
         not in imported
@@ -389,8 +772,9 @@ def test_s1_forbidden_graph_and_protected_imports() -> None:
     )
     assert "src.ops.exit_policy_producer_binding_v1.host_binding_v1" not in imported
     assert f"def {S2_JOIN_SYMBOL}" not in CONSTANTS_SOURCE
-    assert f"def {S2_JOIN_SYMBOL}" not in INIT_SOURCE
     assert FIRST_TRADING_DECISION_CONSUMER in CONSTANTS_SOURCE
     assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
     assert MAY_PERSIST_CURSOR is False
     assert MAY_BIND_CAP61_STATE_ROOT is False
+    assert lane_state_root_key
+    assert S3_IMPLEMENTED is False
