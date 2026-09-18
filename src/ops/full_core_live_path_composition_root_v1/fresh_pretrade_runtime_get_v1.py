@@ -106,6 +106,10 @@ class FreshPretradeGetTransportResultV1:
     historical_reuse: bool
     error_class: str
     body_sha256: str = ""
+    # Explicit DataSafety provenance carrier (S1). Default None = UNBOUND.
+    # Only FullCoreProductiveReadOnlyGetTransportV1.get may set REAL from
+    # direct venue-acquisition evidence. Foreign vocabularies are not mapped.
+    data_safety_source_kind: str | None = None
 
 
 class FullCoreFreshPretradeGetTransportV1(Protocol):
