@@ -145,6 +145,7 @@ def _report(
         skip_decommission_authorization=skip_decommission,
         skip_restoration_authorization=skip_restoration,
         skip_owner_adjudication_authorization=skip_owner,
+        skip_od1_single_lane_confirmation_authorization=True,
         file_diffs=diffs,
         diff_base_sha=diff_base_sha,
     )

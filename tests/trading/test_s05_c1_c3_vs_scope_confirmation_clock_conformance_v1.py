@@ -5,7 +5,7 @@ MASTER_V2_DOUBLE_PLAY_BOUNDED_BEHAVIORAL_CONFORMANCE_VECTOR_SET_FROM_PROVEN_CELL
 SLICE=S05_C1_C3_VS_SCOPE_CONFIRMATION_CLOCK
 C1_OWNER=DistinctMarketObservationAcceptorV1
 C2_OWNER=evaluate_confirmation_progress_v1
-C3_OWNER=evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1
+C3_OWNER=evaluate_directional_assessment_with_confirmation_progress_v1
 SCOPE_CLOCK_OWNER=generate_deterministic_scope_event
 REPLAY_CONSUMER=run_integrated_offline_trading_logic_replay_v1
 
@@ -189,20 +189,40 @@ def _replay_instrument_key():
     return _key(venue="offline_replay", canonical=_INSTRUMENT, venue_inst=_INSTRUMENT)
 
 
-def _injected_c1(*, duplicate: bool = False):
+def _injected_c1(
+    *, duplicate: bool = False, previous_mark: float | None = None, mark: float = 3500.0
+):
     key = _replay_instrument_key()
     state = DistinctMarketObservationAcceptorV1.initial_state(bound_instrument_key=key)
-    candidate = _candidate(
+    if previous_mark is None:
+        candidate = _candidate(
+            venue=key.venue,
+            canonical=key.canonical_instrument_id,
+            venue_inst=key.venue_instrument_id,
+            mark=mark,
+        )
+        first = DistinctMarketObservationAcceptorV1.evaluate(state, candidate)
+        if not duplicate:
+            return first
+        committed = DistinctMarketObservationAcceptorV1.commit(current_state=state, result=first)
+        return DistinctMarketObservationAcceptorV1.evaluate(committed, candidate)
+    first_candidate = _candidate(
         venue=key.venue,
         canonical=key.canonical_instrument_id,
         venue_inst=key.venue_instrument_id,
-        mark=3500.0,
+        mark=previous_mark,
+        event_time=1_700_000_000.0,
     )
-    first = DistinctMarketObservationAcceptorV1.evaluate(state, candidate)
-    if not duplicate:
-        return first
+    first = DistinctMarketObservationAcceptorV1.evaluate(state, first_candidate)
     committed = DistinctMarketObservationAcceptorV1.commit(current_state=state, result=first)
-    return DistinctMarketObservationAcceptorV1.evaluate(committed, candidate)
+    second_candidate = _candidate(
+        venue=key.venue,
+        canonical=key.canonical_instrument_id,
+        venue_inst=key.venue_instrument_id,
+        mark=mark,
+        event_time=1_700_000_001.0,
+    )
+    return DistinctMarketObservationAcceptorV1.evaluate(committed, second_candidate)
 
 
 def test_s05_t01_c1_distinct_may_advance_c2_c3_without_scope_candidate() -> None:
@@ -224,13 +244,13 @@ def test_s05_t01_c1_distinct_may_advance_c2_c3_without_scope_candidate() -> None
 
     injected = run_integrated_offline_trading_logic_replay_v1(
         _replay_input(
-            observation_acceptance_result=_injected_c1(),
+            observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
             scope_confirmation_state=_empty_scope_confirmation(),
         )
     )
     assert injected.intermediate is not None
     cursor = _replay_c2_cursor(injected)
-    assert cursor[0] == 1 or cursor[2] == 1
+    assert cursor[1] == 1 or cursor[3] == 1
     assert injected.intermediate.scope_event.next_confirmation_state.candidate_count == 0
     assert injected.intermediate.scope_event.event_type not in _SCOPE_CONFIRMED
 
@@ -278,14 +298,11 @@ def test_s05_t03_replay_binds_distinct_confirmation_epoch_fields() -> None:
     assert "int(inp.confirmation_epochs)" in scope_kw
     c3_threshold = _constructor_kw(c3_tree, "ConfirmationProgressInputV1", "confirmation_threshold")
     assert "int(policy.confirmation_epochs)" in c3_threshold
-    c3_policy = [
-        _attr_path(kw.value)
-        for call in _ordered_calls(replay_tree)
-        if _call_name(call)
-        == "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1"
-        for kw in call.keywords
-        if kw.arg == "policy"
-    ]
+    c3_policy = _constructor_kw(
+        replay_tree,
+        "DirectionalAssessmentConfirmationIntegrationInputV1",
+        "policy",
+    )
     assert "inp.policies.directional" in c3_policy
 
     fixture = _replay_input()
@@ -295,7 +312,7 @@ def test_s05_t03_replay_binds_distinct_confirmation_epoch_fields() -> None:
     directional_once = replace(fixture.policies.directional, confirmation_epochs=1)
     split = run_integrated_offline_trading_logic_replay_v1(
         _replay_input(
-            observation_acceptance_result=_injected_c1(),
+            observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
             scope_confirmation_state=_empty_scope_confirmation(),
             confirmation_epochs=5,
             policies=replace(fixture.policies, directional=directional_once),
@@ -332,7 +349,8 @@ def test_s05_t04_c1_duplicate_does_not_compensate_on_scope_cursor() -> None:
         )
     )
     assert result.intermediate is not None
-    assert _replay_c2_cursor(result) == (0, 0, 0, 0)
+    cursor = _replay_c2_cursor(result)
+    assert cursor[1] == 0 and cursor[3] == 0
     assert result.intermediate.scope_event.next_confirmation_state.candidate_count == 0
     assert result.intermediate.scope_event.event_type not in _SCOPE_CONFIRMED
 
@@ -358,14 +376,14 @@ def test_s05_t05_duplicate_scope_trading_epoch_preserves_scope_state() -> None:
     )
     result = run_integrated_offline_trading_logic_replay_v1(
         _replay_input(
-            observation_acceptance_result=_injected_c1(),
+            observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
             scope_confirmation_state=frozen,
         )
     )
     assert result.intermediate is not None
     assert result.intermediate.scope_event.next_confirmation_state == frozen
     cursor = _replay_c2_cursor(result)
-    assert cursor[0] == 1 or cursor[2] == 1
+    assert cursor[1] == 1 or cursor[3] == 1
     assert result.intermediate.bull_assessment.status is not None
     assert result.intermediate.scope_event.next_confirmation_state.candidate_count == 1
 
@@ -380,7 +398,7 @@ def test_s05_t06_legacy_da_is_not_productive_c1_c3_or_scope_clock() -> None:
     replay_tree = ast.parse(replay_src)
     assert f"{_LEGACY_DA}(" not in replay_src
     assert all(_call_name(call) != _LEGACY_DA for call in _ordered_calls(replay_tree))
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in {
+    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in {
         _call_name(call) for call in _ordered_calls(replay_tree)
     }
     assert "LEGACY_NON_AUTHORITY" in replay_src
@@ -408,7 +426,7 @@ def test_s05_t07_c3_confirmed_alone_does_not_emit_scope_confirmed() -> None:
     )
     result = run_integrated_offline_trading_logic_replay_v1(
         _replay_input(
-            observation_acceptance_result=_injected_c1(),
+            observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
             scope_confirmation_state=_empty_scope_confirmation(),
             policies=policies,
         )

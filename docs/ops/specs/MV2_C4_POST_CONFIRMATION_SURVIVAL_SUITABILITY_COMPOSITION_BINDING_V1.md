@@ -4,7 +4,7 @@ status: active
 scope: additive pure domain C4; post-C3 binding + research C1 DISTINCT parity; non-authorizing; no runtime activation
 capability: POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_V1
 architecture_spec: MASTER_V2_DOUBLE_PLAY_ARCHITECTURE_DESIGN
-last_updated: 2026-07-31
+last_updated: 2026-09-18
 ---
 
 # Master V2 Double Play C4 — Post-Confirmation Survival / Suitability / Composition Binding V1
@@ -46,14 +46,21 @@ PROMOTION_AUTHORITY=false
 ## 3. Productive Call Graph
 
 ```
-bull_c3.assessment → bull Survival → bull Suitability ─┐
-                                                       ├→ Composition → State → Entry/Exit
-bear_c3.assessment → bear Survival → bear Suitability ─┘
+ElementaryDirectionV1
+  → selected lane presence/lifecycle
+    → C3 evaluate_directional_assessment_with_confirmation_progress_v1
+      → selected-lane Survival → selected-lane Suitability
+        → C4 single-candidate | NO_DIRECTION composition
+          → State → Entry/Exit
 ```
 
-Identity binding: Survival / Suitability / Composition reference the exact C3
-assessment id + semantic digest; side and trading epoch stay unchanged; no
-cross-side projection; no confirmation recompute.
+Inactive opposite lane produces no DA / Survival / Suitability artifacts.
+`evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1`
+remains a non-productive dual-lane helper.
+
+Identity binding: Survival / Suitability / Composition reference the exact
+selected-lane C3 assessment id + semantic digest, or genuine absence for
+`NO_DIRECTION`. Composition remains the sole `selected_side` owner.
 
 ## 4. Research C1 DISTINCT Wiring
 
@@ -62,8 +69,8 @@ productive C1 evaluator/commit path. Each orderly research bar yields one
 DISTINCT acceptance; identical bar repetition yields DUPLICATE / non-advance;
 session/venue/instrument mismatches and event-time regression fail closed.
 
-Bull and Bear consume the same accepted observation but advance confirmation
-states separately via the C3 carrier.
+Bull and Bear no longer both advance on the productive replay path. Elementary
+direction selects one lane; only that lane is confirmed, filtered, and admitted.
 
 ## 5. Legacy Quarantine
 
@@ -72,13 +79,27 @@ states separately via the C3 carrier.
 - `project_directional_confirmation_state_from_assessments_v1` — fail-closed
 - scenario modules (`double_play_survival` / `suitability` / `composition`,
   `survival_suitability_scenario_binding_adapter_v0`) — not in productive C4 graph
+- `evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1` —
+  non-productive dual-lane helper; not the productive replay join
 
-## 6. Conscious Non-Goals
+## 6. Bounded composition geometry lift
+
+`COMPOSITION_SEMANTICS_CHANGE` remains false. The freeze is lifted only for:
+
+`single-candidate | NO_DIRECTION`
+
+via `DoublePlaySingleLaneCompositionInputV1`. Dual-candidate construction is
+fail-closed. `both_sides_confirmed` is unreachable on this productive typed path.
+Scope-CHOP remains a consumer projection. Entry/Exit policy is unchanged.
+
+## 7. Conscious Non-Goals
 
 C4 does **not**:
 
 - activate runtime / orders / testnet / live
 - mutate parameters or volatility
-- redefine Survival / Suitability / Composition semantics
+- redefine Survival / Suitability / Composition semantics beyond the bounded
+  single-candidate | NO_DIRECTION geometry
 - introduce a second confirmation authority
 - start C5+
+- modify EntryExitPolicy, SideState ARMED, or Switch authority

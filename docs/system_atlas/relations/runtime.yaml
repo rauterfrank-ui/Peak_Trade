@@ -295,7 +295,8 @@ relations:
     notes: >-
       Host decorator observe_after_producer_v0 seam core.master_v2_evidence.
       No-op unless an enabled capture session is bound. Not a second total
-      decision owner.
+      decision owner. OD1 single-lane replay join does not change this
+      observation-only relation. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_ddo_capture_observes_entry_exit
     source: RUNTIME_COMPONENT:ddo_capture_v0

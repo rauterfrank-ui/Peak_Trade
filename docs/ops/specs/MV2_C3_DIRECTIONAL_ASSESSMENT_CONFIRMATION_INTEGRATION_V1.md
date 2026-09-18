@@ -4,7 +4,7 @@ status: active
 scope: additive pure domain C3; confirmation integration; non-authorizing; no runtime activation
 capability: DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1
 architecture_spec: MASTER_V2_DOUBLE_PLAY_ARCHITECTURE_DESIGN
-last_updated: 2026-07-31
+last_updated: 2026-09-18
 ---
 
 # Master V2 Double Play C3 — Directional Assessment Confirmation Integration V1
@@ -125,15 +125,19 @@ status is introduced.
 
 ## 8. Productive Wiring
 
-`run_integrated_offline_trading_logic_replay_v1` evaluates Bull and Bear exclusively
-via:
+`run_integrated_offline_trading_logic_replay_v1` selects exactly one confirmation
+lane from `ElementaryDirectionV1` and evaluates that lane exclusively via:
 
-`evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1`
+`evaluate_directional_assessment_with_confirmation_progress_v1`
+
+`evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1` remains a
+non-productive dual-lane helper and is not called on the productive replay path.
 
 When C3 carrier / C1 result are omitted, offline replay resolves:
 
-- initial empty OBSERVE carrier
+- typed Inactive presence (no fabricated opposite-lane DA)
 - explicit NON_DISTINCT acceptor placeholder
+- C4 `NO_DIRECTION` when elementary identity selects no lane
 
 It never invents DISTINCT and never consults
 `DirectionalConfirmationStateV1` for status.
@@ -156,7 +160,8 @@ unchanged.
 Evidence that no parallel confirmation authority remains:
 
 1. Productive replay AST must not call `evaluate_directional_assessment_v1`
-2. Productive replay must call the C3 bull/bear integrator
+2. Productive replay must call selected-lane
+   `evaluate_directional_assessment_with_confirmation_progress_v1` only
 3. `project_directional_confirmation_state_from_assessments_v1` raises
    `LEGACY_LOSSY_CROSS_SIDE_PROJECTOR_AUTHORITY_FORBIDDEN`
 4. Bar-sequence projection reads `directional_confirmation_progress_after` only
@@ -178,6 +183,7 @@ C3 does **not**:
 Canonical tests:
 
 - `tests&#47;trading&#47;master_v2&#47;test_directional_assessment_confirmation_integration_v1.py`
+- `tests&#47;trading&#47;master_v2&#47;test_single_lane_confirmation_activation_v1.py`
 
 Plus C1/C2/DA/replay/double-play regressions.
 

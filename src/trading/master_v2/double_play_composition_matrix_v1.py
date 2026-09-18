@@ -14,7 +14,7 @@ import json
 import re
 from dataclasses import dataclass, replace
 from enum import Enum
-from typing import Mapping, Optional, Tuple
+from typing import Mapping, Optional, Tuple, Union
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     observe_after_producer_v0,
@@ -132,6 +132,16 @@ class BothInvalidOutcome(str, Enum):
     NO_ACTION = "no_action"
 
 
+class DualCandidateConstructionErrorV1(ValueError):
+    """Raised when LONG and SHORT artifacts are supplied on the single-lane path."""
+
+
+class SingleLaneCandidateKindV1(str, Enum):
+    NO_DIRECTION = "no_direction"
+    LONG_CANDIDATE = "long_candidate"
+    SHORT_CANDIDATE = "short_candidate"
+
+
 @dataclass(frozen=True)
 class SuitabilityResultRefV1:
     suitability_id: str
@@ -178,17 +188,118 @@ class DoublePlayCompositionInputV1:
 
 
 @dataclass(frozen=True)
+class SingleLaneNoDirectionV1:
+    """Genuine absence: no DA, Survival, or Suitability artifacts."""
+
+    kind: SingleLaneCandidateKindV1 = SingleLaneCandidateKindV1.NO_DIRECTION
+
+    def __post_init__(self) -> None:
+        if self.kind is not SingleLaneCandidateKindV1.NO_DIRECTION:
+            raise ValueError("NO_DIRECTION_KIND_DRIFT")
+
+
+@dataclass(frozen=True)
+class SingleLaneLongCandidateV1:
+    kind: SingleLaneCandidateKindV1
+    directional_assessment: DirectionalAssessmentV1
+    survival_result: SurvivalResultV1
+    suitability_result: SuitabilityResultV1
+
+    def __post_init__(self) -> None:
+        if self.kind is not SingleLaneCandidateKindV1.LONG_CANDIDATE:
+            raise ValueError("LONG_CANDIDATE_KIND_DRIFT")
+        if self.directional_assessment.side is not DirectionalAssessmentSide.LONG:
+            raise DualCandidateConstructionErrorV1("BULL_CANNOT_ADMIT_SHORT")
+
+
+@dataclass(frozen=True)
+class SingleLaneShortCandidateV1:
+    kind: SingleLaneCandidateKindV1
+    directional_assessment: DirectionalAssessmentV1
+    survival_result: SurvivalResultV1
+    suitability_result: SuitabilityResultV1
+
+    def __post_init__(self) -> None:
+        if self.kind is not SingleLaneCandidateKindV1.SHORT_CANDIDATE:
+            raise ValueError("SHORT_CANDIDATE_KIND_DRIFT")
+        if self.directional_assessment.side is not DirectionalAssessmentSide.SHORT:
+            raise DualCandidateConstructionErrorV1("BEAR_CANNOT_ADMIT_LONG")
+
+
+SingleLaneCompositionCandidateV1 = Union[
+    SingleLaneNoDirectionV1,
+    SingleLaneLongCandidateV1,
+    SingleLaneShortCandidateV1,
+]
+
+
+def build_single_lane_composition_candidate_v1(
+    *,
+    long_assessment: Optional[DirectionalAssessmentV1] = None,
+    long_survival: Optional[SurvivalResultV1] = None,
+    long_suitability: Optional[SuitabilityResultV1] = None,
+    short_assessment: Optional[DirectionalAssessmentV1] = None,
+    short_survival: Optional[SurvivalResultV1] = None,
+    short_suitability: Optional[SuitabilityResultV1] = None,
+) -> SingleLaneCompositionCandidateV1:
+    """XOR constructor. Dual artifacts are type/contract-illegal."""
+    long_parts = (long_assessment, long_survival, long_suitability)
+    short_parts = (short_assessment, short_survival, short_suitability)
+    long_any = any(part is not None for part in long_parts)
+    short_any = any(part is not None for part in short_parts)
+    if long_any and short_any:
+        raise DualCandidateConstructionErrorV1("DUAL_CANDIDATE_CONSTRUCTION_FORBIDDEN")
+    if not long_any and not short_any:
+        return SingleLaneNoDirectionV1()
+    if long_any:
+        if any(part is None for part in long_parts):
+            raise ValueError("LONG_CANDIDATE_ARTIFACTS_INCOMPLETE")
+        return SingleLaneLongCandidateV1(
+            kind=SingleLaneCandidateKindV1.LONG_CANDIDATE,
+            directional_assessment=long_assessment,
+            survival_result=long_survival,
+            suitability_result=long_suitability,
+        )
+    if any(part is None for part in short_parts):
+        raise ValueError("SHORT_CANDIDATE_ARTIFACTS_INCOMPLETE")
+    return SingleLaneShortCandidateV1(
+        kind=SingleLaneCandidateKindV1.SHORT_CANDIDATE,
+        directional_assessment=short_assessment,
+        survival_result=short_survival,
+        suitability_result=short_suitability,
+    )
+
+
+@dataclass(frozen=True)
+class DoublePlaySingleLaneCompositionInputV1:
+    """Productive C4 input: exactly one tagged alternative."""
+
+    instrument_id: str
+    trading_epoch: int
+    context_reference: str
+    candidate: SingleLaneCompositionCandidateV1
+    previous_direction_state: CompositionDirectionState
+    position_management_context: PositionManagementContext
+    last_evaluated_trading_epoch: int
+    input_complete: bool
+    input_digest: str
+    explicit_blocked_reasons: Tuple[CompositionBlockedReason, ...] = ()
+    scope_chop_policy_active: bool = False
+    policy_version: str = DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION
+
+
+@dataclass(frozen=True)
 class DoublePlayCompositionResultV1:
     composition_id: str
     instrument_id: str
     trading_epoch: int
     context_reference: str
-    bull_assessment_ref: DirectionalAssessmentRefV1
-    bear_assessment_ref: DirectionalAssessmentRefV1
-    bull_survival_ref: SurvivalResultRefV1
-    bear_survival_ref: SurvivalResultRefV1
-    bull_suitability_ref: SuitabilityResultRefV1
-    bear_suitability_ref: SuitabilityResultRefV1
+    bull_assessment_ref: Optional[DirectionalAssessmentRefV1]
+    bear_assessment_ref: Optional[DirectionalAssessmentRefV1]
+    bull_survival_ref: Optional[SurvivalResultRefV1]
+    bear_survival_ref: Optional[SurvivalResultRefV1]
+    bull_suitability_ref: Optional[SuitabilityResultRefV1]
+    bear_suitability_ref: Optional[SuitabilityResultRefV1]
     previous_direction_state: CompositionDirectionState
     position_management_context: PositionManagementContext
     composition_status: CompositionStatus
@@ -300,8 +411,53 @@ def _serialize_suitability_canonical(result: SuitabilityResultV1) -> dict[str, o
     }
 
 
-def compute_composition_input_digest(inp: DoublePlayCompositionInputV1) -> str:
-    canonical = serialize_composition_input_canonical(inp)
+def serialize_single_lane_composition_input_canonical(
+    inp: DoublePlaySingleLaneCompositionInputV1,
+) -> str:
+    candidate = inp.candidate
+    if isinstance(candidate, SingleLaneLongCandidateV1):
+        candidate_payload: dict[str, object] = {
+            "kind": candidate.kind.value,
+            "directional_assessment": json.loads(
+                serialize_directional_assessment_canonical(candidate.directional_assessment)
+            ),
+            "survival_result": _serialize_survival_canonical(candidate.survival_result),
+            "suitability_result": _serialize_suitability_canonical(candidate.suitability_result),
+        }
+    elif isinstance(candidate, SingleLaneShortCandidateV1):
+        candidate_payload = {
+            "kind": candidate.kind.value,
+            "directional_assessment": json.loads(
+                serialize_directional_assessment_canonical(candidate.directional_assessment)
+            ),
+            "survival_result": _serialize_survival_canonical(candidate.survival_result),
+            "suitability_result": _serialize_suitability_canonical(candidate.suitability_result),
+        }
+    else:
+        candidate_payload = {"kind": SingleLaneCandidateKindV1.NO_DIRECTION.value}
+    payload: dict[str, object] = {
+        "instrument_id": inp.instrument_id,
+        "trading_epoch": inp.trading_epoch,
+        "context_reference": inp.context_reference,
+        "candidate": candidate_payload,
+        "previous_direction_state": inp.previous_direction_state.value,
+        "position_management_context": inp.position_management_context.value,
+        "last_evaluated_trading_epoch": inp.last_evaluated_trading_epoch,
+        "input_complete": inp.input_complete,
+        "explicit_blocked_reasons": sorted(r.value for r in inp.explicit_blocked_reasons),
+        "scope_chop_policy_active": inp.scope_chop_policy_active,
+        "policy_version": inp.policy_version,
+    }
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def compute_composition_input_digest(
+    inp: Union[DoublePlayCompositionInputV1, DoublePlaySingleLaneCompositionInputV1],
+) -> str:
+    if isinstance(inp, DoublePlaySingleLaneCompositionInputV1):
+        canonical = serialize_single_lane_composition_input_canonical(inp)
+    else:
+        canonical = serialize_composition_input_canonical(inp)
     return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
@@ -311,12 +467,12 @@ def serialize_composition_result_canonical(result: DoublePlayCompositionResultV1
         "instrument_id": result.instrument_id,
         "trading_epoch": result.trading_epoch,
         "context_reference": result.context_reference,
-        "bull_assessment_ref": _serialize_directional_ref(result.bull_assessment_ref),
-        "bear_assessment_ref": _serialize_directional_ref(result.bear_assessment_ref),
-        "bull_survival_ref": _serialize_survival_ref(result.bull_survival_ref),
-        "bear_survival_ref": _serialize_survival_ref(result.bear_survival_ref),
-        "bull_suitability_ref": _serialize_suitability_ref(result.bull_suitability_ref),
-        "bear_suitability_ref": _serialize_suitability_ref(result.bear_suitability_ref),
+        "bull_assessment_ref": _serialize_optional_directional_ref(result.bull_assessment_ref),
+        "bear_assessment_ref": _serialize_optional_directional_ref(result.bear_assessment_ref),
+        "bull_survival_ref": _serialize_optional_survival_ref(result.bull_survival_ref),
+        "bear_survival_ref": _serialize_optional_survival_ref(result.bear_survival_ref),
+        "bull_suitability_ref": _serialize_optional_suitability_ref(result.bull_suitability_ref),
+        "bear_suitability_ref": _serialize_optional_suitability_ref(result.bear_suitability_ref),
         "previous_direction_state": result.previous_direction_state.value,
         "position_management_context": result.position_management_context.value,
         "composition_status": result.composition_status.value,
@@ -343,6 +499,24 @@ def _serialize_directional_ref(ref: DirectionalAssessmentRefV1) -> dict[str, obj
         "side": ref.side.value,
         "status": ref.status,
     }
+
+
+def _serialize_optional_directional_ref(
+    ref: Optional[DirectionalAssessmentRefV1],
+) -> Optional[dict[str, object]]:
+    return None if ref is None else _serialize_directional_ref(ref)
+
+
+def _serialize_optional_survival_ref(
+    ref: Optional[SurvivalResultRefV1],
+) -> Optional[dict[str, object]]:
+    return None if ref is None else _serialize_survival_ref(ref)
+
+
+def _serialize_optional_suitability_ref(
+    ref: Optional[SuitabilityResultRefV1],
+) -> Optional[dict[str, object]]:
+    return None if ref is None else _serialize_suitability_ref(ref)
 
 
 def _serialize_survival_ref(ref: SurvivalResultRefV1) -> dict[str, object]:
@@ -541,8 +715,348 @@ def _finalize_result(
     return with_computed_composition_result_digest(result)
 
 
+def _finalize_single_lane_result(
+    inp: DoublePlaySingleLaneCompositionInputV1,
+    policy: DoublePlayCompositionPolicyV1,
+    *,
+    composition_status: CompositionStatus,
+    selected_side: CompositionSelectedSide,
+    conflict_status: CompositionConflictStatus,
+    chop_guard_status: CompositionChopGuardStatus,
+    reason_codes: Tuple[str, ...],
+    computed_input_digest: str,
+) -> DoublePlayCompositionResultV1:
+    candidate = inp.candidate
+    bull_assessment_ref = None
+    bear_assessment_ref = None
+    bull_survival_ref = None
+    bear_survival_ref = None
+    bull_suitability_ref = None
+    bear_suitability_ref = None
+    if isinstance(candidate, SingleLaneLongCandidateV1):
+        bull_assessment_ref = directional_assessment_ref_from_assessment_v1(
+            candidate.directional_assessment
+        )
+        bull_survival_ref = survival_result_ref_from_result(candidate.survival_result)
+        bull_suitability_ref = suitability_result_ref_from_result(candidate.suitability_result)
+    elif isinstance(candidate, SingleLaneShortCandidateV1):
+        bear_assessment_ref = directional_assessment_ref_from_assessment_v1(
+            candidate.directional_assessment
+        )
+        bear_survival_ref = survival_result_ref_from_result(candidate.survival_result)
+        bear_suitability_ref = suitability_result_ref_from_result(candidate.suitability_result)
+    result = DoublePlayCompositionResultV1(
+        composition_id=_derive_composition_id(
+            inp.instrument_id, inp.trading_epoch, composition_status
+        ),
+        instrument_id=inp.instrument_id,
+        trading_epoch=inp.trading_epoch,
+        context_reference=inp.context_reference,
+        bull_assessment_ref=bull_assessment_ref,
+        bear_assessment_ref=bear_assessment_ref,
+        bull_survival_ref=bull_survival_ref,
+        bear_survival_ref=bear_survival_ref,
+        bull_suitability_ref=bull_suitability_ref,
+        bear_suitability_ref=bear_suitability_ref,
+        previous_direction_state=inp.previous_direction_state,
+        position_management_context=inp.position_management_context,
+        composition_status=composition_status,
+        selected_side=selected_side,
+        conflict_status=conflict_status,
+        chop_guard_status=chop_guard_status,
+        reason_codes=reason_codes,
+        policy_version=policy.policy_version,
+        input_digest=computed_input_digest,
+        semantic_digest="",
+    )
+    return with_computed_composition_result_digest(result)
+
+
+def _collect_single_lane_reference_blocks(
+    inp: DoublePlaySingleLaneCompositionInputV1,
+) -> Tuple[CompositionBlockedReason, ...]:
+    candidate = inp.candidate
+    if isinstance(candidate, SingleLaneNoDirectionV1):
+        return ()
+    if isinstance(candidate, SingleLaneLongCandidateV1):
+        assessment = candidate.directional_assessment
+        survival = candidate.survival_result
+        suitability = candidate.suitability_result
+        side_reason = CompositionBlockedReason.BULL_ASSESSMENT_REF_MISMATCH
+        survival_reason = CompositionBlockedReason.BULL_SURVIVAL_REF_MISMATCH
+        suitability_reason = CompositionBlockedReason.BULL_SUITABILITY_REF_MISMATCH
+        expected_side = DirectionalAssessmentSide.LONG
+        side_mismatch = CompositionBlockedReason.BULL_SIDE_MISMATCH
+    else:
+        assessment = candidate.directional_assessment
+        survival = candidate.survival_result
+        suitability = candidate.suitability_result
+        side_reason = CompositionBlockedReason.BEAR_ASSESSMENT_REF_MISMATCH
+        survival_reason = CompositionBlockedReason.BEAR_SURVIVAL_REF_MISMATCH
+        suitability_reason = CompositionBlockedReason.BEAR_SUITABILITY_REF_MISMATCH
+        expected_side = DirectionalAssessmentSide.SHORT
+        side_mismatch = CompositionBlockedReason.BEAR_SIDE_MISMATCH
+    blocks: list[CompositionBlockedReason] = []
+    if assessment.instrument_id != inp.instrument_id:
+        blocks.append(side_reason)
+    if survival.instrument_id != inp.instrument_id:
+        blocks.append(survival_reason)
+    if suitability.instrument_id != inp.instrument_id:
+        blocks.append(suitability_reason)
+    if assessment.trading_epoch != inp.trading_epoch:
+        blocks.append(side_reason)
+    if survival.trading_epoch != inp.trading_epoch:
+        blocks.append(survival_reason)
+    if suitability.trading_epoch != inp.trading_epoch:
+        blocks.append(suitability_reason)
+    surv_dref = survival.directional_assessment_ref
+    if (
+        surv_dref.assessment_id != assessment.assessment_id
+        or surv_dref.semantic_digest != assessment.semantic_digest
+    ):
+        blocks.append(survival_reason)
+    if assessment.side is not expected_side:
+        blocks.append(side_mismatch)
+    return tuple(dict.fromkeys(blocks))
+
+
+def _evaluate_single_lane_composition_matrix_v1(
+    inp: DoublePlaySingleLaneCompositionInputV1,
+    policy: DoublePlayCompositionPolicyV1,
+) -> DoublePlayCompositionResultV1:
+    computed_digest = compute_composition_input_digest(inp)
+
+    def blocked(
+        reason: CompositionBlockedReason,
+        *,
+        reason_code: str,
+        extra: Tuple[str, ...] = (),
+    ) -> DoublePlayCompositionResultV1:
+        codes = (reason_code, reason.value) + extra
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.BLOCKED,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.INPUT_CONFLICT,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=codes,
+            computed_input_digest=computed_digest,
+        )
+
+    policy_blocks = validate_double_play_composition_policy(
+        policy, policy_version=inp.policy_version
+    )
+    if policy_blocks:
+        return blocked(
+            CompositionBlockedReason.POLICY_VERSION_INVALID,
+            reason_code="policy_validation_failed",
+        )
+    if not _instrument_id_allowed(inp.instrument_id):
+        return blocked(
+            CompositionBlockedReason.INSTRUMENT_KIND_FORBIDDEN,
+            reason_code="instrument_gate_failed",
+        )
+    if not inp.input_complete:
+        return blocked(
+            CompositionBlockedReason.INPUT_INCOMPLETE,
+            reason_code="input_gate_failed",
+        )
+    if inp.explicit_blocked_reasons:
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.BLOCKED,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.INPUT_CONFLICT,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("explicit_blocked",)
+            + tuple(sorted(r.value for r in inp.explicit_blocked_reasons)),
+            computed_input_digest=computed_digest,
+        )
+    if inp.input_digest and inp.input_digest != computed_digest:
+        return blocked(
+            CompositionBlockedReason.INPUT_DIGEST_MISMATCH,
+            reason_code="input_digest_mismatch",
+        )
+    ref_blocks = _collect_single_lane_reference_blocks(inp)
+    if ref_blocks:
+        return blocked(ref_blocks[0], reason_code="reference_consistency_failed")
+
+    candidate = inp.candidate
+    if isinstance(candidate, SingleLaneNoDirectionV1):
+        if inp.scope_chop_policy_active:
+            return _finalize_single_lane_result(
+                inp,
+                policy,
+                composition_status=CompositionStatus.CHOP_GUARD_BLOCK,
+                selected_side=CompositionSelectedSide.NONE,
+                conflict_status=CompositionConflictStatus.NONE,
+                chop_guard_status=CompositionChopGuardStatus.CHOP_GUARD_BLOCK,
+                reason_codes=(
+                    "no_directional_candidate",
+                    "scope_chop_policy_projection",
+                    "no_new_entry",
+                    "entry_blocked",
+                ),
+                computed_input_digest=computed_digest,
+            )
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.NO_ACTION,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("no_directional_candidate", "no_action"),
+            computed_input_digest=computed_digest,
+        )
+
+    epoch_mode, epoch_block = _resolve_epoch_semantics(
+        trading_epoch=inp.trading_epoch,
+        last_evaluated_trading_epoch=inp.last_evaluated_trading_epoch,
+        bull_epoch=candidate.directional_assessment.trading_epoch,
+        bear_epoch=candidate.directional_assessment.trading_epoch,
+    )
+    if epoch_block is not None:
+        return blocked(epoch_block, reason_code=f"epoch_semantics_failed:{epoch_mode}")
+
+    if inp.scope_chop_policy_active:
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.CHOP_GUARD_BLOCK,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.CHOP_GUARD_BLOCK,
+            reason_codes=(
+                "scope_chop_policy_projection",
+                "no_new_entry",
+                "entry_blocked",
+            ),
+            computed_input_digest=computed_digest,
+        )
+
+    assessment = candidate.directional_assessment
+    survival = candidate.survival_result
+    suitability = candidate.suitability_result
+    admissible = _side_fully_admissible(assessment, survival, suitability)
+    is_long = isinstance(candidate, SingleLaneLongCandidateV1)
+
+    if (
+        inp.position_management_context is PositionManagementContext.LONG_POSITION
+        and admissible
+        and not is_long
+    ):
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.REVERSAL_PREPARATION,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("existing_long_position", "bear_confirmed", "reversal_preparation"),
+            computed_input_digest=computed_digest,
+        )
+    if (
+        inp.position_management_context is PositionManagementContext.SHORT_POSITION
+        and admissible
+        and is_long
+    ):
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.REVERSAL_PREPARATION,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("existing_short_position", "bull_confirmed", "reversal_preparation"),
+            computed_input_digest=computed_digest,
+        )
+
+    if admissible:
+        if is_long:
+            return _finalize_single_lane_result(
+                inp,
+                policy,
+                composition_status=CompositionStatus.LONG_SELECTED,
+                selected_side=CompositionSelectedSide.LONG,
+                conflict_status=CompositionConflictStatus.NONE,
+                chop_guard_status=CompositionChopGuardStatus.NONE,
+                reason_codes=("long_only_admissible",),
+                computed_input_digest=computed_digest,
+            )
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.SHORT_SELECTED,
+            selected_side=CompositionSelectedSide.SHORT,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("short_only_admissible",),
+            computed_input_digest=computed_digest,
+        )
+
+    if assessment.status is DirectionalAssessmentStatus.CONFIRMED:
+        side_label = "bull" if is_long else "bear"
+        if survival.status is not SurvivalAssessmentStatus.PASS:
+            return blocked(
+                CompositionBlockedReason.SURVIVAL_NOT_PASS,
+                reason_code=f"{side_label}_confirmed_survival_not_pass",
+            )
+        if suitability.status is not SuitabilityBindingStatus.PASS:
+            return blocked(
+                CompositionBlockedReason.SUITABILITY_NOT_PASS,
+                reason_code=f"{side_label}_confirmed_suitability_not_pass",
+            )
+
+    if assessment.status in {
+        DirectionalAssessmentStatus.CANDIDATE,
+        DirectionalAssessmentStatus.OBSERVE,
+    }:
+        return _finalize_single_lane_result(
+            inp,
+            policy,
+            composition_status=CompositionStatus.OBSERVE,
+            selected_side=CompositionSelectedSide.NONE,
+            conflict_status=CompositionConflictStatus.NONE,
+            chop_guard_status=CompositionChopGuardStatus.NONE,
+            reason_codes=("observe_or_candidate_only", "no_entry"),
+            computed_input_digest=computed_digest,
+        )
+    if assessment.status is DirectionalAssessmentStatus.INVALID:
+        return blocked(
+            CompositionBlockedReason.AMBIGUOUS_COMPOSITION,
+            reason_code="one_side_invalid",
+        )
+    if assessment.status is DirectionalAssessmentStatus.BLOCKED:
+        return blocked(
+            CompositionBlockedReason.AMBIGUOUS_COMPOSITION,
+            reason_code="selected_lane_blocked",
+        )
+    return blocked(
+        CompositionBlockedReason.AMBIGUOUS_COMPOSITION,
+        reason_code="composition_unresolved",
+    )
+
+
 @observe_after_producer_v0(seam_id="core.survival_suitability_composition")
 def evaluate_double_play_composition_matrix_v1(
+    inp: Union[DoublePlayCompositionInputV1, DoublePlaySingleLaneCompositionInputV1],
+    policy: DoublePlayCompositionPolicyV1,
+) -> DoublePlayCompositionResultV1:
+    """
+    Deterministic Double Play composition matrix evaluator.
+
+    Productive path uses the single-lane tagged candidate. Dual-lane input remains
+    for legacy/non-productive surfaces only.
+    """
+    if isinstance(inp, DoublePlaySingleLaneCompositionInputV1):
+        return _evaluate_single_lane_composition_matrix_v1(inp, policy)
+    return _evaluate_dual_lane_composition_matrix_v1(inp, policy)
+
+
+def _evaluate_dual_lane_composition_matrix_v1(
     inp: DoublePlayCompositionInputV1,
     policy: DoublePlayCompositionPolicyV1,
 ) -> DoublePlayCompositionResultV1:
@@ -860,13 +1374,22 @@ __all__ = [
     "DoublePlayCompositionInputV1",
     "DoublePlayCompositionPolicyV1",
     "DoublePlayCompositionResultV1",
+    "DoublePlaySingleLaneCompositionInputV1",
+    "DualCandidateConstructionErrorV1",
     "PositionManagementContext",
+    "SingleLaneCandidateKindV1",
+    "SingleLaneCompositionCandidateV1",
+    "SingleLaneLongCandidateV1",
+    "SingleLaneNoDirectionV1",
+    "SingleLaneShortCandidateV1",
     "SuitabilityResultRefV1",
+    "build_single_lane_composition_candidate_v1",
     "compute_composition_input_digest",
     "compute_composition_result_semantic_digest",
     "evaluate_double_play_composition_matrix_v1",
     "serialize_composition_input_canonical",
     "serialize_composition_result_canonical",
+    "serialize_single_lane_composition_input_canonical",
     "suitability_result_ref_from_result",
     "validate_double_play_composition_policy",
     "with_computed_composition_result_digest",

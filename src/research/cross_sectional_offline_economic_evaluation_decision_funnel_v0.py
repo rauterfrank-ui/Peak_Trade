@@ -82,22 +82,29 @@ class DecisionFunnelAccumulatorV0:
             DirectionalAssessmentStatus.CANDIDATE,
             DirectionalAssessmentStatus.CONFIRMED,
         }
-        if bull.status in candidate_statuses or bear.status in candidate_statuses:
+        if (bull is not None and bull.status in candidate_statuses) or (
+            bear is not None and bear.status in candidate_statuses
+        ):
             self.directional_candidate_count += 1
-        if (
-            bull.status is DirectionalAssessmentStatus.CONFIRMED
-            or bear.status is DirectionalAssessmentStatus.CONFIRMED
+        if (bull is not None and bull.status is DirectionalAssessmentStatus.CONFIRMED) or (
+            bear is not None and bear.status is DirectionalAssessmentStatus.CONFIRMED
         ):
             self.directional_confirmed_count += 1
 
         if (
-            intermediate.bull_survival.status is SurvivalAssessmentStatus.PASS
-            or intermediate.bear_survival.status is SurvivalAssessmentStatus.PASS
+            intermediate.bull_survival is not None
+            and intermediate.bull_survival.status is SurvivalAssessmentStatus.PASS
+        ) or (
+            intermediate.bear_survival is not None
+            and intermediate.bear_survival.status is SurvivalAssessmentStatus.PASS
         ):
             self.survival_pass_count += 1
         if (
-            intermediate.bull_suitability.status is SuitabilityBindingStatus.PASS
-            or intermediate.bear_suitability.status is SuitabilityBindingStatus.PASS
+            intermediate.bull_suitability is not None
+            and intermediate.bull_suitability.status is SuitabilityBindingStatus.PASS
+        ) or (
+            intermediate.bear_suitability is not None
+            and intermediate.bear_suitability.status is SuitabilityBindingStatus.PASS
         ):
             self.suitability_pass_count += 1
         if (

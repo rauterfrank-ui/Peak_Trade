@@ -646,7 +646,6 @@ def test_19_no_config_or_threshold_mutation() -> None:
 
 def test_20_old_confirmation_counter_not_productive_authority() -> None:
     replay_src = REPLAY_MODULE.read_text(encoding="utf-8")
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in replay_src
     assert "evaluate_directional_assessment_v1(" not in replay_src
     tree = ast.parse(replay_src)
     call_names: set[str] = set()
@@ -658,7 +657,10 @@ def test_20_old_confirmation_counter_not_productive_authority() -> None:
             elif isinstance(func, ast.Attribute):
                 call_names.add(func.attr)
     assert "evaluate_directional_assessment_v1" not in call_names
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" not in (
+        call_names
+    )
     wiring_src = WIRING_MODULE.read_text(encoding="utf-8")
     assert "LEGACY_LOSSY_CROSS_SIDE_PROJECTOR_AUTHORITY_FORBIDDEN" in wiring_src
     wiring_tree = ast.parse(wiring_src)
@@ -704,7 +706,6 @@ def test_22_legacy_candidate_count_ignored_by_c3() -> None:
 
 def test_23_run_integrated_imports_c3_not_legacy_da_evaluator() -> None:
     source = inspect.getsource(run_integrated_offline_trading_logic_replay_v1)
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in source
     tree = ast.parse(source)
     call_names: set[str] = set()
     for node in ast.walk(tree):
@@ -715,6 +716,9 @@ def test_23_run_integrated_imports_c3_not_legacy_da_evaluator() -> None:
             elif isinstance(func, ast.Attribute):
                 call_names.add(func.attr)
     assert "evaluate_directional_assessment_v1" not in call_names
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" not in (
+        call_names
+    )
     # Legacy name may appear only as quarantine documentation, never as a call.
     assert "LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY_NOTE" in source

@@ -287,7 +287,7 @@ def test_s06_t02_one_sided_confirmed_pass_yields_side_only_from_composition() ->
             venue="okx_eea",
             instrument=_key(),
         ),
-        observation_acceptance_result=_distinct_acceptor()[0],
+        observation_acceptance_result=_distinct_acceptor(previous_mark=9.0, mark=11.0)[0],
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
         confirmation_progress_instrument=_key(),
@@ -355,7 +355,7 @@ def test_s06_t04_survival_pass_on_non_confirmed_does_not_select_side() -> None:
             venue="okx_eea",
             instrument=_key(),
         ),
-        observation_acceptance_result=_distinct_acceptor()[0],
+        observation_acceptance_result=_distinct_acceptor(previous_mark=9.0, mark=11.0)[0],
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
         confirmation_progress_instrument=_key(),
@@ -404,12 +404,12 @@ def test_s06_t05_both_sides_confirmed_yields_none_not_scope_chop() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert replay.intermediate is not None
-    assert replay.intermediate.bull_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert replay.intermediate.bear_assessment.status is DirectionalAssessmentStatus.CONFIRMED
+    assert replay.intermediate.bull_assessment is None
+    assert replay.intermediate.bear_assessment is None
     assert replay.intermediate.composition_result.selected_side is CompositionSelectedSide.NONE
     assert (
         replay.intermediate.composition_result.conflict_status
-        is CompositionConflictStatus.BOTH_SIDES_CONFIRMED
+        is not CompositionConflictStatus.BOTH_SIDES_CONFIRMED
     )
 
 
