@@ -1,7 +1,7 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S3 binds resolver output to the pre-cycle consumption seam and proves
-per-lane isolation. Does not persist, restore, bind Cap61, or invoke.
+S4 invokes the existing N=1 MV2+DP cycle lane-isolated from the S3 seam
+in a bounded test harness. Does not persist, restore, or bind Cap61.
 """
 
 from __future__ import annotations
@@ -60,10 +60,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S3_ISOLATION_PROOF"
+SLICE_ID = "S4_LANE_ADDRESSED_CONSUMER_INVOKE"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S3_ISOLATION_PROOF"
+    "_S4_CONSUMER_INVOKE"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -108,7 +108,12 @@ S2_INTENDED_EGRESS = "dict[lane_id, str]"
 S3_JOIN_SYMBOL = "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1"
 S3_IMPLEMENTED = True
 S3_INTENDED_EGRESS = "dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]"
-S4_IMPLEMENTED = False
+S4_JOIN_SYMBOL = "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
+S4_IMPLEMENTED = True
+S4_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
+S5_IMPLEMENTED = False
+INVOCATION_CONTEXT = "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
+CONSUMER_INVOKED = True
 RESOLUTION_RULE = "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
 OCCUPIED_LANES_ONLY = True
 UNIQUE_MUTABLE_ROOTS_ENFORCED = True
@@ -165,7 +170,7 @@ JOIN_MAPPING_AUTHORITY = False
 JOIN_PERSISTENCE_AUTHORITY = False
 JOIN_FULL_AUTONOMY_HOST_AUTHORITY = False
 PARALLEL_AUTHORITY_CREATED = False
-THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER = False
+THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER = True
 THIS_SLICE_MAY_REINVOKE_CAP23 = False
 THIS_SLICE_MAY_REINVOKE_CAP24 = False
 MAY_PERSIST_CURSOR = False
@@ -239,7 +244,11 @@ assert JOIN_PERSISTENCE_AUTHORITY is False
 assert JOIN_FULL_AUTONOMY_HOST_AUTHORITY is False
 assert S2_IMPLEMENTED is True
 assert S3_IMPLEMENTED is True
-assert S4_IMPLEMENTED is False
+assert S4_IMPLEMENTED is True
+assert S5_IMPLEMENTED is False
+assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
+assert INVOCATION_CONTEXT == "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
+assert CONSUMER_INVOKED is True
 assert OCCUPIED_LANES_ONLY is True
 assert UNIQUE_MUTABLE_ROOTS_ENFORCED is True
 assert GLOBAL_N1_CURSOR_REJECTED is True
@@ -253,7 +262,7 @@ assert NEW_COLLECTION_DTO_CREATED is False
 assert NEW_TOP5_HANDOFF_DTO_CREATED is False
 assert NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED is False
 assert NEW_MV2_DP_INGRESS_DTO_CREATED is False
-assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
+assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
 assert MAY_PERSIST_CURSOR is False
 assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
 assert MAY_BIND_CAP61_STATE_ROOT is False
@@ -271,6 +280,10 @@ assert PAIR_MAP_PRODUCER_OWNER == (
 )
 assert ADDRESSING_CONSUMER_OWNER == OWNER
 assert S2_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+assert S3_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+assert S4_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+assert S4_JOIN_SYMBOL != S2_JOIN_SYMBOL
+assert S4_JOIN_SYMBOL != S3_JOIN_SYMBOL
 
 CAP23_CHANGE_REQUIRED = False
 CAP24_CHANGE_REQUIRED = False
@@ -296,6 +309,9 @@ FAILURE_CURSOR_ADDRESS_ALIAS = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_C
 FAILURE_SEAM_STORE_ROOT_MISMATCH = (
     "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SEAM_STORE_ROOT_MISMATCH"
 )
+FAILURE_INCOMING_CURSOR_FORBIDDEN = (
+    "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_INCOMING_CURSOR_FORBIDDEN"
+)
 
 FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
     {
@@ -309,7 +325,6 @@ FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
         "ensure_single_selected_future_runtime_binding_v1",
         "persist_binding_evidence_atomic_v1",
         "compose_occupied_lane_mv2_dp_handoff_v1",
-        "run_current_productive_master_v2_runtime_cycle_v1",
         "run_integrated_offline_trading_logic_replay_v1",
         "ensure_host_confirmation_binding_v1",
         "commit_host_confirmation_after_replay_v1",

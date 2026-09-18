@@ -546,8 +546,8 @@ relations:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      S3 seam bind consumes the already-composed #6602 pair map via the S2
-      resolver. It must not reinvoke compose or Cap23/Cap24. Atlas is not
+      S4 harness invoke consumes the already-composed #6602 pair map via the
+      S3 seam. It must not reinvoke compose or Cap23/Cap24. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
@@ -560,8 +560,8 @@ relations:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      S3 binds occupied-lane store_root to existing IsolatedLaneSlotV1.lane_state_root
-      at the pre-cycle seam via lane_state_root_for. No second lane identity.
+      S4 invokes the existing cycle per occupied lane. store_root remains
+      IsolatedLaneSlotV1.lane_state_root and is not passed into the cycle.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff

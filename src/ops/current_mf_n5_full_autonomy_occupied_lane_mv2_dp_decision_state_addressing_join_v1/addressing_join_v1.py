@@ -1,14 +1,16 @@
-"""Occupied-lane MV2/DP decision-state addressing: store-root resolve and seam bind.
+"""Occupied-lane MV2/DP decision-state addressing: resolve, seam bind, bounded invoke.
 
 Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
-bound to the pre-cycle consumption seam. Does not persist, restore, bind
-Cap61, invoke the consumer, or join a host.
+bound to the pre-cycle consumption seam, then lane-isolated invocation of
+the existing N=1 MV2+DP cycle. Does not persist, restore, bind Cap61, or
+join a host.
 """
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Mapping, NoReturn
+from typing import Mapping, NoReturn, Sequence
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     CAP23_CHANGE_REQUIRED,
@@ -26,6 +28,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FAILURE_BOUND_TYPE,
     FAILURE_CURSOR_ADDRESS_ALIAS,
     FAILURE_IDENTITY_MISMATCH,
+    FAILURE_INCOMING_CURSOR_FORBIDDEN,
     FAILURE_INVALID_STORE_ROOT,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
@@ -66,6 +69,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S2_IMPLEMENTED,
     S3_IMPLEMENTED,
     S4_IMPLEMENTED,
+    S5_IMPLEMENTED,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
@@ -81,6 +85,11 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
     IsolatedLaneSlotV1,
     lane_state_root_for,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    CurrentProductiveMasterV2CycleResultV1,
+    ExistingPositionSide,
+    run_current_productive_master_v2_runtime_cycle_v1,
+)
 from src.ops.single_selected_future_policy_v1.governed_pin_v1 import lane_state_root_key
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
@@ -92,6 +101,18 @@ class FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError(ValueError):
         self.detail = detail
 
 
+@dataclass(frozen=True)
+class OccupiedLaneMv2DpDecisionStateConsumerInvocationV1:
+    lane_id: str
+    bound_instrument: BoundInstrumentV1
+    store_root: str
+    cursor_address: str
+    incoming_cursor: None
+    persist_enabled: bool
+    cap61_state_root_bound: bool
+    cycle_result: CurrentProductiveMasterV2CycleResultV1
+
+
 def _fail(code: str, detail: str = "") -> NoReturn:
     raise FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError(code, detail)
 
@@ -100,7 +121,8 @@ def _assert_non_authority() -> None:
     if (
         not S2_IMPLEMENTED
         or not S3_IMPLEMENTED
-        or S4_IMPLEMENTED
+        or not S4_IMPLEMENTED
+        or S5_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -127,7 +149,6 @@ def _assert_non_authority() -> None:
         or FIVE_LANE_CONTINUOUS_HOST_JOIN
         or MULTI_FUTURE_RUNTIME_AUTHORIZED
         or PARALLEL_AUTHORITY_CREATED
-        or THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER
         or THIS_SLICE_MAY_REINVOKE_CAP23
         or THIS_SLICE_MAY_REINVOKE_CAP24
         or MAY_PERSIST_CURSOR
@@ -267,3 +288,72 @@ def bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(
     if unresolved or extra:
         _fail(FAILURE_SEAM_STORE_ROOT_MISMATCH, ",".join(unresolved + extra))
     return bound_seam
+
+
+def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    *,
+    cycle_id_prefix: str,
+    observed_unix: float,
+    mark_px: float,
+    index_px: float,
+    bid_px: float,
+    ask_px: float,
+    volume: float,
+    open_interest: float,
+    funding_rate: float,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+    venue_flat: bool,
+    existing_position_side: ExistingPositionSide,
+    incoming_cursor: object | None = None,
+) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
+    """Lane-isolated bounded harness invoke of the existing N=1 MV2+DP cycle.
+
+    Addressing is the S3 seam (`IsolatedLaneSlotV1.lane_state_root`). The cycle
+    does not take `store_root`. Incoming cursor must be absent. Persist is not
+    performed. This is not a productive MF or host join.
+    """
+    _assert_non_authority()
+    if not THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER:
+        _fail(FAILURE_AUTHORITY, OWNER)
+    if incoming_cursor is not None:
+        _fail(FAILURE_INCOMING_CURSOR_FORBIDDEN, OWNER)
+    prefix = str(cycle_id_prefix or "").strip()
+    if not prefix:
+        _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    invoked: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        bound, store_root, cursor_address = item
+        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+            bound_instrument=bound,
+            cycle_id=f"{prefix}:{lane_id}",
+            observed_unix=observed_unix,
+            mark_px=mark_px,
+            index_px=index_px,
+            bid_px=bid_px,
+            ask_px=ask_px,
+            volume=volume,
+            open_interest=open_interest,
+            funding_rate=funding_rate,
+            finalized_closes=finalized_closes,
+            last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+            venue_flat=venue_flat,
+            existing_position_side=existing_position_side,
+            incoming_cursor=None,
+        )
+        invoked[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
+            lane_id=lane_id,
+            bound_instrument=bound,
+            store_root=store_root,
+            cursor_address=cursor_address,
+            incoming_cursor=None,
+            persist_enabled=False,
+            cap61_state_root_bound=False,
+            cycle_result=cycle_result,
+        )
+    return invoked

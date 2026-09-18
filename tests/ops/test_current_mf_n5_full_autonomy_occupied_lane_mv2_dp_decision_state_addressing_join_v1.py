@@ -18,7 +18,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
+    OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
+    invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
@@ -28,6 +30,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     CONSUMPTION_SEAM,
     CONSUMER_CYCLE_INPUTS,
     CONSUMER_CYCLE_TAKES_STORE_ROOT,
+    CONSUMER_INVOKED,
     CAP23_CHANGE_REQUIRED,
     CAP23_SELECTION_OWNER,
     CAP24_BINDING_OWNER,
@@ -48,6 +51,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FAILURE_BOUND_TYPE,
     FAILURE_CURSOR_ADDRESS_ALIAS,
     FAILURE_IDENTITY_MISMATCH,
+    FAILURE_INCOMING_CURSOR_FORBIDDEN,
     FAILURE_INVALID_STORE_ROOT,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
@@ -67,6 +71,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     HOST_JOIN,
     INTENDED_PER_LANE_STORE_ROOT,
     INTENDED_PER_LANE_STORE_ROOT_FIELD,
+    INVOCATION_CONTEXT,
     JOIN_CAP23_SELECTION_AUTHORITY,
     JOIN_CAP24_BINDING_AUTHORITY,
     JOIN_EXECUTION_AUTHORITY,
@@ -116,6 +121,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S3_INTENDED_EGRESS,
     S3_JOIN_SYMBOL,
     S4_IMPLEMENTED,
+    S4_INTENDED_EGRESS,
+    S4_JOIN_SYMBOL,
+    S5_IMPLEMENTED,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -149,6 +157,14 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
     IsolatedLaneSlotV1,
     IsolatedLaneTopologyV1,
     lane_state_root_for,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ExistingPositionSide,
+    run_current_productive_master_v2_runtime_cycle_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ExistingPositionSide,
+    run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME as EXISTING_CURSOR_FILENAME,
@@ -328,7 +344,7 @@ def _topology(
 
 
 def test_s2_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S3_ISOLATION_PROOF"
+    assert SLICE_ID == "S4_LANE_ADDRESSED_CONSUMER_INVOKE"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -337,7 +353,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S3_ISOLATION_PROOF"
+        "_S4_CONSUMER_INVOKE"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -371,7 +387,9 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert CAP24_BINDING_OWNER == CAP24_OWNER
     assert FIRST_TRADING_DECISION_CONSUMER == HANDOFF_FIRST_TRADING_DECISION_CONSUMER
     assert FIRST_TRADING_DECISION_CONSUMER == ("run_current_productive_master_v2_runtime_cycle_v1")
-    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
+    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
+    assert INVOCATION_CONTEXT == "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
+    assert CONSUMER_INVOKED is True
     assert THIS_SLICE_MAY_REINVOKE_CAP23 is False
     assert THIS_SLICE_MAY_REINVOKE_CAP24 is False
     assert MAY_PERSIST_CURSOR is False
@@ -416,7 +434,9 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert PRODUCTIVE_RUNTIME_CARDINALITY == BOUNDARY_PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
     assert PREPARED_BOUND_CARDINALITY != "5_PRODUCTIVE_LANES"
     assert S3_IMPLEMENTED is True
-    assert S4_IMPLEMENTED is False
+    assert S4_IMPLEMENTED is True
+    assert S5_IMPLEMENTED is False
+    assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
     assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
@@ -514,7 +534,8 @@ def test_s2_join_is_implemented() -> None:
     assert S2_IMPLEMENTED is True
     assert S2_INTENDED_EGRESS == "dict[lane_id, str]"
     assert S3_IMPLEMENTED is True
-    assert S4_IMPLEMENTED is False
+    assert S4_IMPLEMENTED is True
+    assert S5_IMPLEMENTED is False
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
     assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
@@ -540,7 +561,8 @@ def test_s3_join_is_implemented() -> None:
     assert S3_JOIN_SYMBOL == "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1"
     assert S3_IMPLEMENTED is True
     assert S3_INTENDED_EGRESS == ("dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]")
-    assert S4_IMPLEMENTED is False
+    assert S4_IMPLEMENTED is True
+    assert S5_IMPLEMENTED is False
     addressing_pkg = __import__(
         "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
         fromlist=["*"],
@@ -740,32 +762,35 @@ def test_t_no_cursor_io_consumer_cap61_or_runtime_side_effects() -> None:
         assert "Path.write" not in source
         assert "json.dump" not in source
         assert "json.load" not in source
-        assert "run_current_productive_master_v2_runtime_cycle_v1" not in source
         assert "ensure_host_confirmation_binding_v1" not in source
         assert "CurrentProductiveSideStateConfirmationCursorV1" not in source
         assert "state_root=" not in source
         assert "persist=" not in source
+        assert "persist_current_productive_sidestate_confirmation_cursor_v1" not in source
+        assert "load_current_productive_sidestate_confirmation_cursor_v1" not in source
+        assert "restore_current_productive_sidestate_confirmation_cursor_v1" not in source
+    assert "run_current_productive_master_v2_runtime_cycle_v1" not in INIT_SOURCE
     assert "compose_occupied_lane_mv2_dp_handoff_v1" not in JOIN_SOURCE
-    imported = (
-        _import_names(JOIN_SOURCE) | _import_names(INIT_SOURCE) | _import_names(CONSTANTS_SOURCE)
-    )
+    imported_init_constants = _import_names(INIT_SOURCE) | _import_names(CONSTANTS_SOURCE)
     assert (
         "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.handoff_join_v1"
-        not in imported
+        not in imported_init_constants
     )
     assert (
         "src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1"
-        not in imported
+        not in imported_init_constants
     )
     assert (
         "src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1"
-        not in imported
+        not in imported_init_constants
     )
     assert "src.ops.stateful_confirmation_and_c1_productive_binding_v1.host_binding_v1" not in (
-        imported
+        imported_init_constants
     )
-    assert "src.ops.stateful_no_order_host_join_v1" not in imported
-    assert "trading.master_v2.integrated_offline_trading_logic_replay_v1" not in imported
+    assert "src.ops.stateful_no_order_host_join_v1" not in imported_init_constants
+    assert "trading.master_v2.integrated_offline_trading_logic_replay_v1" not in (
+        imported_init_constants | _import_names(JOIN_SOURCE)
+    )
     called = _called_names(JOIN_SOURCE)
     assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
     assert inspect.getsource(resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1)
@@ -793,7 +818,7 @@ def test_s2_forbidden_graph_and_protected_imports() -> None:
     assert "src.ops.single_selected_future_policy_v1.producer_v1" not in imported
     assert (
         "src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1"
-        not in imported
+        not in (_import_names(CONSTANTS_SOURCE) | _import_names(INIT_SOURCE))
     )
     assert (
         "src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1"
@@ -819,12 +844,13 @@ def test_s2_forbidden_graph_and_protected_imports() -> None:
     assert "src.ops.exit_policy_producer_binding_v1.host_binding_v1" not in imported
     assert f"def {S2_JOIN_SYMBOL}" not in CONSTANTS_SOURCE
     assert FIRST_TRADING_DECISION_CONSUMER in CONSTANTS_SOURCE
-    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
+    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
     assert MAY_PERSIST_CURSOR is False
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert lane_state_root_key
     assert S3_IMPLEMENTED is True
-    assert S4_IMPLEMENTED is False
+    assert S4_IMPLEMENTED is True
+    assert S5_IMPLEMENTED is False
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
     assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
@@ -941,7 +967,8 @@ def test_s3_missing_and_mismatch_fail_closed(tmp_path: Path) -> None:
 
 
 def test_s3_no_consumer_cursor_cap61_or_runtime_side_effects() -> None:
-    assert "run_current_productive_master_v2_runtime_cycle_v1(" not in JOIN_SOURCE
+    bind_source = inspect.getsource(bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1)
+    assert "run_current_productive_master_v2_runtime_cycle_v1(" not in bind_source
     assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
     assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
     assert "restore_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
@@ -949,8 +976,132 @@ def test_s3_no_consumer_cursor_cap61_or_runtime_side_effects() -> None:
     called = _called_names(JOIN_SOURCE)
     assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
     assert "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1" in JOIN_SOURCE
-    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
+    assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
     assert MAY_PERSIST_CURSOR is False
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert inspect.getsource(bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1)
+
+
+def _invoke_kwargs() -> dict[str, object]:
+    return {
+        "cycle_id_prefix": "s4-harness",
+        "observed_unix": 1_700_000_000.0,
+        "mark_px": 100.0,
+        "index_px": 100.0,
+        "bid_px": 99.5,
+        "ask_px": 100.5,
+        "volume": 10.0,
+        "open_interest": 20.0,
+        "funding_rate": 0.0001,
+        "finalized_closes": (98.0, 99.0, 100.0),
+        "last_finalized_event_ts_unix": 1_699_999_940.0,
+        "venue_flat": True,
+        "existing_position_side": ExistingPositionSide.NONE,
+    }
+
+
+def test_s4_n1_parity_matches_direct_cycle(tmp_path: Path) -> None:
+    pair = _pair(tmp_path, "LANE_3")
+    kwargs = _invoke_kwargs()
+    invoked = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_3": pair},
+        **kwargs,  # type: ignore[arg-type]
+    )
+    direct = run_current_productive_master_v2_runtime_cycle_v1(
+        bound_instrument=pair[1],
+        cycle_id="s4-harness:LANE_3",
+        observed_unix=kwargs["observed_unix"],  # type: ignore[arg-type]
+        mark_px=kwargs["mark_px"],  # type: ignore[arg-type]
+        index_px=kwargs["index_px"],  # type: ignore[arg-type]
+        bid_px=kwargs["bid_px"],  # type: ignore[arg-type]
+        ask_px=kwargs["ask_px"],  # type: ignore[arg-type]
+        volume=kwargs["volume"],  # type: ignore[arg-type]
+        open_interest=kwargs["open_interest"],  # type: ignore[arg-type]
+        funding_rate=kwargs["funding_rate"],  # type: ignore[arg-type]
+        finalized_closes=kwargs["finalized_closes"],  # type: ignore[arg-type]
+        last_finalized_event_ts_unix=kwargs["last_finalized_event_ts_unix"],  # type: ignore[arg-type]
+        venue_flat=kwargs["venue_flat"],  # type: ignore[arg-type]
+        existing_position_side=kwargs["existing_position_side"],  # type: ignore[arg-type]
+        incoming_cursor=None,
+    )
+    assert list(invoked) == ["LANE_3"]
+    record = invoked["LANE_3"]
+    assert isinstance(record, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1)
+    assert record.bound_instrument is pair[1]
+    assert record.store_root == pair[0].lane_state_root
+    assert record.incoming_cursor is None
+    assert record.persist_enabled is False
+    assert record.cap61_state_root_bound is False
+    assert record.cycle_result.cycle_id == "s4-harness:LANE_3"
+    assert record.cycle_result.decision_outcome == direct.decision_outcome
+    assert record.cycle_result.fail_reasons == direct.fail_reasons
+    assert record.cycle_result.cursor_restore_status == direct.cursor_restore_status
+    assert INVOCATION_CONTEXT == "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
+    assert not (Path(record.store_root) / CURSOR_FILENAME).exists()
+
+
+def test_s4_n_gt_1_distinct_invocations_and_no_root_alias(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in ("LANE_1", "LANE_4", "LANE_5")}
+    shuffled = {"LANE_5": pairs["LANE_5"], "LANE_1": pairs["LANE_1"], "LANE_4": pairs["LANE_4"]}
+    invoked = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        shuffled,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    assert list(invoked) == ["LANE_1", "LANE_4", "LANE_5"]
+    roots = [item.store_root for item in invoked.values()]
+    cursors = [item.cursor_address for item in invoked.values()]
+    results = [item.cycle_result for item in invoked.values()]
+    assert len(set(roots)) == 3
+    assert len(set(cursors)) == 3
+    assert len({id(item) for item in results}) == 3
+    for lane_id, record in invoked.items():
+        assert record.lane_id == lane_id
+        assert record.bound_instrument is pairs[lane_id][1]
+        assert record.bound_instrument.instrument_id == f"INST-{lane_id}"
+        assert record.store_root == pairs[lane_id][0].lane_state_root
+        assert record.cycle_result.cycle_id == f"s4-harness:{lane_id}"
+        assert record.persist_enabled is False
+        assert record.cap61_state_root_bound is False
+        assert record.incoming_cursor is None
+        assert record.store_root != N1_GLOBAL_CURSOR_STORE_RELPATH
+        assert not (Path(record.store_root) / CURSOR_FILENAME).exists()
+
+
+def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+            {"LANE_1": _pair(tmp_path, "LANE_1")},
+            incoming_cursor=object(),
+            **_invoke_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_INCOMING_CURSOR_FORBIDDEN
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+            {
+                "LANE_2": _pair(
+                    tmp_path,
+                    "LANE_2",
+                    lane_state_root=N1_GLOBAL_CURSOR_STORE_RELPATH,
+                )
+            },
+            **_invoke_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    invoke_source = inspect.getsource(invoke_occupied_lane_mv2_dp_decision_state_consumer_v1)
+    assert "incoming_cursor=None" in invoke_source
+    assert (
+        "store_root="
+        not in invoke_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
+            1
+        ].split(")", 1)[0]
+    )
+    assert "persist=" not in invoke_source
+    assert MAY_PERSIST_CURSOR is False
+    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+    assert MAY_BIND_CAP61_STATE_ROOT is False
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+    assert EXECUTION_CONCURRENCY_AUTHORIZED is False
+    assert MAX_POSITIONS_EFFECTIVE == 1
