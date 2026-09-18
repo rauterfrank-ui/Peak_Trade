@@ -1,8 +1,9 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S7 composes per-lane load → existing MV2/DP cycle → persist of the new
-outgoing cursor under the same lane_state_root. Reuses S6 restore and persist.
-Harness durability only. Does not bind Cap61, join a host, or authorize
+S8 binds occupied lane_state_root onto governed-cycle path params
+(cursor_store_root, lock_root, evidence_root) without invoking the
+governed cycle. S7 compose remains load → cycle → persist. Harness
+addressing only. Does not bind Cap61, join a host, or authorize
 multi-future runtime.
 """
 
@@ -62,10 +63,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S7_DURABLE_PER_LANE_LOAD_CYCLE_PERSIST_COMPOSE"
+SLICE_ID = "S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S7_DURABLE_LOAD_CYCLE_PERSIST_COMPOSE"
+    "_S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -125,6 +126,13 @@ S6_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvoca
 S7_JOIN_SYMBOL = "compose_occupied_lane_mv2_dp_durable_cycle_v1"
 S7_IMPLEMENTED = True
 S7_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
+S8_JOIN_SYMBOL = "bind_occupied_lane_governed_cycle_store_roots_v1"
+S8_IMPLEMENTED = True
+S8_INTENDED_EGRESS = "dict[lane_id, (cursor_store_root, lock_root, evidence_root)]"
+S8_CONSUMPTION_SEAM = "pre_invoke_governed_cycle_path_params"
+GOVERNED_CYCLE_LOCK_ROOT_DIRNAME = "governed_cycle_lock"
+GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME = "governed_cycle_evidence"
+MAY_INVOKE_GOVERNED_CYCLE = False
 PERSIST_SURFACE = (
     "ops.full_core_live_path_composition_root_v1."
     "current_productive_sidestate_confirmation_cursor_v1."
@@ -278,16 +286,20 @@ assert S4_IMPLEMENTED is True
 assert S5_IMPLEMENTED is True
 assert S6_IMPLEMENTED is True
 assert S7_IMPLEMENTED is True
+assert S8_IMPLEMENTED is True
 assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
 assert S5_JOIN_SYMBOL == "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
 assert S6_PERSIST_SYMBOL == "persist_occupied_lane_mv2_dp_decision_state_cursor_v1"
 assert S6_RESTORE_SYMBOL == "restore_occupied_lane_mv2_dp_decision_state_cursor_v1"
 assert S6_JOIN_SYMBOL == S6_RESTORE_SYMBOL
 assert S7_JOIN_SYMBOL == "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+assert S8_JOIN_SYMBOL == "bind_occupied_lane_governed_cycle_store_roots_v1"
 assert S5_JOIN_SYMBOL != S4_JOIN_SYMBOL
 assert S6_PERSIST_SYMBOL != S6_RESTORE_SYMBOL
 assert S7_JOIN_SYMBOL != S6_RESTORE_SYMBOL
 assert S7_JOIN_SYMBOL != S6_PERSIST_SYMBOL
+assert S8_JOIN_SYMBOL != S7_JOIN_SYMBOL
+assert MAY_INVOKE_GOVERNED_CYCLE is False
 assert IN_MEMORY_CURSOR_HOLDER == (
     "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
 )
@@ -348,6 +360,19 @@ assert S7_JOIN_SYMBOL != S2_JOIN_SYMBOL
 assert S7_JOIN_SYMBOL != S3_JOIN_SYMBOL
 assert S7_JOIN_SYMBOL != S4_JOIN_SYMBOL
 assert S7_JOIN_SYMBOL != S5_JOIN_SYMBOL
+assert S8_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+assert S8_JOIN_SYMBOL != S2_JOIN_SYMBOL
+assert S8_JOIN_SYMBOL != S3_JOIN_SYMBOL
+assert S8_JOIN_SYMBOL != S4_JOIN_SYMBOL
+assert S8_JOIN_SYMBOL != S5_JOIN_SYMBOL
+assert S8_JOIN_SYMBOL != S6_PERSIST_SYMBOL
+assert S8_JOIN_SYMBOL != S6_RESTORE_SYMBOL
+assert S8_CONSUMPTION_SEAM == "pre_invoke_governed_cycle_path_params"
+assert GOVERNED_CYCLE_LOCK_ROOT_DIRNAME == "governed_cycle_lock"
+assert GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME == "governed_cycle_evidence"
+assert GOVERNED_CYCLE_LOCK_ROOT_DIRNAME != GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME
+assert GOVERNED_CYCLE_LOCK_ROOT_DIRNAME != CURSOR_FILENAME
+assert GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME != CURSOR_FILENAME
 
 CAP23_CHANGE_REQUIRED = False
 CAP24_CHANGE_REQUIRED = False
@@ -398,6 +423,8 @@ FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
         "ensure_single_selected_future_runtime_binding_v1",
         "persist_binding_evidence_atomic_v1",
         "compose_occupied_lane_mv2_dp_handoff_v1",
+        "run_current_productive_governed_cycle_v1",
+        "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation",
         "run_integrated_offline_trading_logic_replay_v1",
         "ensure_host_confirmation_binding_v1",
         "commit_host_confirmation_after_replay_v1",

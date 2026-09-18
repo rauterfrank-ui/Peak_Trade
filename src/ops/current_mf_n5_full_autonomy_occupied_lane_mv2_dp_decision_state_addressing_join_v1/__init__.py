@@ -1,14 +1,15 @@
 """CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing join.
 
-S7 composes per-lane load → existing MV2/DP cycle → persist of the new
-outgoing cursor under the same lane_state_root. S6 restore remains
-load+cycle without writeback. Cap61 live bind, host join, and productive
-MF join remain out of scope.
+S8 binds occupied lane_state_root onto governed-cycle path params without
+invoking the governed cycle. S7 compose remains per-lane load → existing
+MV2/DP cycle → persist. S6 restore remains load+cycle without writeback.
+Cap61 live bind, host join, and productive MF join remain out of scope.
 """
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
+    bind_occupied_lane_governed_cycle_store_roots_v1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
@@ -60,6 +61,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S6_RESTORE_SYMBOL,
     S7_IMPLEMENTED,
     S7_JOIN_SYMBOL,
+    S8_IMPLEMENTED,
+    S8_JOIN_SYMBOL,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -110,6 +113,8 @@ __all__ = [
     "S6_RESTORE_SYMBOL",
     "S7_IMPLEMENTED",
     "S7_JOIN_SYMBOL",
+    "S8_IMPLEMENTED",
+    "S8_JOIN_SYMBOL",
     "SAME_TRADING_CONFIGURATION_ACROSS_LANES",
     "SHARED_MUTABLE_STATE_ACROSS_LANES",
     "SLICE_ID",
@@ -117,6 +122,7 @@ __all__ = [
     "UNIQUE_MUTABLE_ROOTS_ENFORCED",
     "FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError",
     "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1",
+    "bind_occupied_lane_governed_cycle_store_roots_v1",
     "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1",
     "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1",
     "compose_occupied_lane_mv2_dp_durable_cycle_v1",

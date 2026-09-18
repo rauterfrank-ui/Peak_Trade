@@ -908,7 +908,7 @@ entities:
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
     kind: CONTRACT
-    name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S7
+    name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S8
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
@@ -926,19 +926,15 @@ entities:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
       - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py
     notes: >-
-      S7_DURABLE_PER_LANE_LOAD_CYCLE_PERSIST_COMPOSE harness-only compose:
-      Load via existing S6 restore, then the existing MV2/DP cycle, then
-      persist of the new outgoing_cursor through the existing cursor owner
-      under that lane's lane_state_root. S6 restore semantics remain unchanged.
-      Path rule is store_root plus the shared cursor filename. Write is the
-      existing non-atomic write_text, not a new owner. Restored payload is the
-      next incoming_cursor of the same lane only. Missing file stays the
-      existing load None. PERSIST_ENABLED is harness durability only, not
-      Cap61 persist. lane_state_root remains EXTERNAL_ADDRESSING_ONLY and is
-      not injected into the cycle. N=1 global cursor path is rejected. Cap61
-      remains state_root=None and persist=False inside the existing cycle.
+      S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE
+      harness-only path bind: reuse S3 lane_state_root as cursor_store_root
+      and address distinct lock_root plus evidence_root under that same
+      root. Does not invoke the governed cycle, write disk, or mutate S7
+      compose. N=1 global cursor path is rejected. Cap61 remains
+      state_root=None and persist=False inside the existing cycle.
       NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false.
       HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false.
+      MAY_INVOKE_GOVERNED_CYCLE=false.
       RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change.
       Not ranking, selection, trading-authority, runtime-activation, or
       execution authority. MAX_POSITIONS_EFFECTIVE remains 1.

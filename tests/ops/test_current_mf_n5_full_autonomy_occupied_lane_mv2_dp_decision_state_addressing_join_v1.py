@@ -21,6 +21,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
+    bind_occupied_lane_governed_cycle_store_roots_v1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
@@ -80,6 +81,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FULL_AUTONOMY_HOST_CHANGE_REQUIRED,
     FULL_AUTONOMY_HOST_OWNER,
     GLOBAL_N1_CURSOR_REJECTED,
+    GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
+    GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
     HOST_JOIN,
     INTENDED_PER_LANE_STORE_ROOT,
     INTENDED_PER_LANE_STORE_ROOT_FIELD,
@@ -100,6 +103,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     MAY_CAP62_PERSIST,
     MAY_EXIT_POLICY_PERSIST,
     MAY_G17_CHECKPOINT,
+    MAY_INVOKE_GOVERNED_CYCLE,
     MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK,
     MAY_PERSIST_CURSOR,
     MF_PRODUCTIVE_JOIN,
@@ -146,6 +150,10 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S6_RESTORE_SYMBOL,
     S7_IMPLEMENTED,
     S7_JOIN_SYMBOL,
+    S8_CONSUMPTION_SEAM,
+    S8_IMPLEMENTED,
+    S8_INTENDED_EGRESS,
+    S8_JOIN_SYMBOL,
     IN_MEMORY_CURSOR_HOLDER,
     LANE_STATE_ROOT_ROLE,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
@@ -383,7 +391,7 @@ def _topology(
 
 
 def test_s2_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S7_DURABLE_PER_LANE_LOAD_CYCLE_PERSIST_COMPOSE"
+    assert SLICE_ID == "S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -392,7 +400,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S7_DURABLE_LOAD_CYCLE_PERSIST_COMPOSE"
+        "_S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -441,6 +449,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert MAY_CAP62_PERSIST is False
     assert MAY_G17_CHECKPOINT is False
     assert MAY_EXIT_POLICY_PERSIST is False
+    assert MAY_INVOKE_GOVERNED_CYCLE is False
     assert THIS_SLICE_MAY_BIND_CAP61_STATE_ROOT is False
     assert THIS_SLICE_MAY_RESTORE_CURSOR is True
     assert JOIN_RANKING_AUTHORITY is False
@@ -480,6 +489,8 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert S5_IMPLEMENTED is True
     assert S6_IMPLEMENTED is True
     assert S7_IMPLEMENTED is True
+    assert S8_IMPLEMENTED is True
+    assert S8_JOIN_SYMBOL == "bind_occupied_lane_governed_cycle_store_roots_v1"
     assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
@@ -1874,3 +1885,165 @@ def test_s7_corrupt_schema_and_n1_global_follow_existing_contract(tmp_path: Path
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert EXECUTION_CONCURRENCY_AUTHORIZED is False
     assert MAX_POSITIONS_EFFECTIVE == 1
+
+
+def _existing_paths(root: Path) -> set[str]:
+    if not root.exists():
+        return set()
+    return {str(path) for path in root.rglob("*")} | {str(root)}
+
+
+def test_s8_join_is_implemented_without_governed_cycle_invoke() -> None:
+    assert S8_IMPLEMENTED is True
+    assert S8_JOIN_SYMBOL == "bind_occupied_lane_governed_cycle_store_roots_v1"
+    assert S8_INTENDED_EGRESS == "dict[lane_id, (cursor_store_root, lock_root, evidence_root)]"
+    assert S8_CONSUMPTION_SEAM == "pre_invoke_governed_cycle_path_params"
+    assert MAY_INVOKE_GOVERNED_CYCLE is False
+    assert CAP61_CYCLE_STATE_ROOT_BOUND is False
+    assert MAY_BIND_CAP61_STATE_ROOT is False
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
+    assert MAX_POSITIONS_EFFECTIVE == 1
+    addressing_pkg = __import__(
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
+        fromlist=["*"],
+    )
+    assert (
+        getattr(addressing_pkg, S8_JOIN_SYMBOL) is bind_occupied_lane_governed_cycle_store_roots_v1
+    )
+    assert callable(bind_occupied_lane_governed_cycle_store_roots_v1)
+    assert bind_occupied_lane_governed_cycle_store_roots_v1.__name__ == S8_JOIN_SYMBOL
+    assert f"def {S8_JOIN_SYMBOL}" not in CONSTANTS_SOURCE
+    assert f"def {S8_JOIN_SYMBOL}" in JOIN_SOURCE
+    bind_source = inspect.getsource(bind_occupied_lane_governed_cycle_store_roots_v1)
+    assert "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(" in bind_source
+    assert "run_current_productive_governed_cycle_v1" not in JOIN_SOURCE
+    assert "run_current_productive_governed_cycle_v1(" not in bind_source
+    assert "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation" not in (
+        JOIN_SOURCE
+    )
+    assert "stateful_no_order_host_join_v1" not in JOIN_SOURCE
+    assert "compose_occupied_lane_mv2_dp_handoff_v1" not in JOIN_SOURCE
+    assert "produce_occupied_lane_cap23_n1_selections_v1" not in JOIN_SOURCE
+    assert "run_single_selected_future_policy_v1" not in JOIN_SOURCE
+    assert "run_single_selected_future_runtime_binding_gate_v1" not in JOIN_SOURCE
+    assert "mkdir" not in bind_source
+    assert "write_text" not in bind_source
+    assert "open(" not in bind_source
+    called = _called_names(JOIN_SOURCE)
+    assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
+    compose_source = inspect.getsource(compose_occupied_lane_mv2_dp_durable_cycle_v1)
+    restore_source = inspect.getsource(restore_occupied_lane_mv2_dp_decision_state_cursor_v1)
+    restore_idx = compose_source.find("restore_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    assert 0 <= restore_idx < persist_idx
+    assert "bind_occupied_lane_governed_cycle_store_roots_v1(" not in compose_source
+    assert "persist_enabled=False" in restore_source
+    assert "persist_occupied_lane_mv2_dp_decision_state_cursor_v1(" not in restore_source
+
+
+def test_s8_n1_binds_three_lane_local_roots_without_disk_write(tmp_path: Path) -> None:
+    pairs = {"LANE_3": _pair(tmp_path, "LANE_3")}
+    before = _existing_paths(tmp_path)
+    addressed = bind_occupied_lane_governed_cycle_store_roots_v1(pairs)
+    after = _existing_paths(tmp_path)
+    assert after == before
+    assert list(addressed) == ["LANE_3"]
+    cursor_store_root, lock_root, evidence_root = addressed["LANE_3"]
+    expected_store = lane_state_root_for(topology_state_root_base=tmp_path, lane_id="LANE_3")
+    assert cursor_store_root == expected_store
+    assert cursor_store_root == pairs["LANE_3"][0].lane_state_root
+    assert lock_root == lane_state_root_key(Path(expected_store) / GOVERNED_CYCLE_LOCK_ROOT_DIRNAME)
+    assert evidence_root == lane_state_root_key(
+        Path(expected_store) / GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME
+    )
+    assert cursor_store_root != lock_root != evidence_root
+    assert cursor_store_root != evidence_root
+    assert lock_root.startswith(cursor_store_root)
+    assert evidence_root.startswith(cursor_store_root)
+    assert cursor_store_root != N1_GLOBAL_CURSOR_STORE_RELPATH
+    assert lock_root != N1_GLOBAL_CURSOR_STORE_RELPATH
+    assert evidence_root != N1_GLOBAL_CURSOR_STORE_RELPATH
+    assert N1_GLOBAL_CURSOR_STORE_RELPATH not in cursor_store_root
+    assert HOST_JOIN is False
+    assert CAP61_CYCLE_STATE_ROOT_BOUND is False
+    assert PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
+
+
+def test_s8_n_gt_1_lane_1_and_5_root_sets_are_disjoint(tmp_path: Path) -> None:
+    pairs = {
+        "LANE_1": _pair(tmp_path, "LANE_1"),
+        "LANE_5": _pair(tmp_path, "LANE_5"),
+    }
+    addressed = bind_occupied_lane_governed_cycle_store_roots_v1(pairs)
+    assert list(addressed) == ["LANE_1", "LANE_5"]
+    left = set(addressed["LANE_1"])
+    right = set(addressed["LANE_5"])
+    assert len(left) == 3
+    assert len(right) == 3
+    assert left.isdisjoint(right)
+    for lane_id, (cursor_store_root, lock_root, evidence_root) in addressed.items():
+        expected = pairs[lane_id][0].lane_state_root
+        assert cursor_store_root == expected
+        assert lock_root == lane_state_root_key(Path(expected) / GOVERNED_CYCLE_LOCK_ROOT_DIRNAME)
+        assert evidence_root == lane_state_root_key(
+            Path(expected) / GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME
+        )
+
+
+def test_s8_cross_lane_lock_alias_fails_closed(tmp_path: Path) -> None:
+    pairs = {
+        "LANE_1": _pair(tmp_path, "LANE_1"),
+        "LANE_2": _pair(tmp_path, "LANE_2"),
+    }
+    left_lock = Path(pairs["LANE_1"][0].lane_state_root) / GOVERNED_CYCLE_LOCK_ROOT_DIRNAME
+    right_lock = Path(pairs["LANE_2"][0].lane_state_root) / GOVERNED_CYCLE_LOCK_ROOT_DIRNAME
+    left_lock.mkdir(parents=True)
+    Path(pairs["LANE_2"][0].lane_state_root).mkdir(parents=True)
+    right_lock.symlink_to(left_lock)
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        bind_occupied_lane_governed_cycle_store_roots_v1(pairs)
+    assert exc.value.failure_code == FAILURE_SHARED_STORE_ROOT
+    assert "LANE_1" in exc.value.detail
+    assert "LANE_2" in exc.value.detail
+
+
+def test_s8_n1_global_cursor_relpath_rejected(tmp_path: Path) -> None:
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        bind_occupied_lane_governed_cycle_store_roots_v1(
+            {
+                "LANE_1": _pair(
+                    tmp_path,
+                    "LANE_1",
+                    lane_state_root=N1_GLOBAL_CURSOR_STORE_RELPATH,
+                )
+            }
+        )
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+
+
+def test_s8_empty_unoccupied_skipped_and_occupancy_mismatch_fail_closed(tmp_path: Path) -> None:
+    assert bind_occupied_lane_governed_cycle_store_roots_v1({}) == {}
+    occupied = {
+        "LANE_1": _pair(tmp_path, "LANE_1"),
+        "LANE_4": _pair(tmp_path, "LANE_4"),
+    }
+    addressed = bind_occupied_lane_governed_cycle_store_roots_v1(occupied)
+    assert list(addressed) == ["LANE_1", "LANE_4"]
+    assert "LANE_2" not in addressed
+    assert "LANE_3" not in addressed
+    assert "LANE_5" not in addressed
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        bind_occupied_lane_governed_cycle_store_roots_v1(
+            {"LANE_5": _pair(tmp_path, "LANE_5", occupancy=OCCUPANCY_EMPTY)}
+        )
+    assert exc.value.failure_code == FAILURE_OCCUPANCY
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+    assert EXECUTION_CONCURRENCY_AUTHORIZED is False
+    assert MAX_POSITIONS_EFFECTIVE == 1
+    assert PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
+    assert CAP61_CYCLE_STATE_ROOT_BOUND is False
+    assert MAY_INVOKE_GOVERNED_CYCLE is False

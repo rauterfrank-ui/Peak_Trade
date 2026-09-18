@@ -2,10 +2,10 @@
 
 Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
 bound to the pre-cycle consumption seam, then lane-isolated invocation of
-the existing N=1 MV2+DP cycle. S7 composes S6 restore (load + cycle) with
-S6 persist of the new outgoing cursor under the same lane_state_root.
-The cycle still does not take store_root. Cap61 stays unbound. This is
-harness durability, not a host or productive MF join.
+the existing N=1 MV2+DP cycle. S8 binds that same lane_state_root onto
+governed-cycle path params without invoking the governed cycle. S7 compose
+remains load + cycle + persist. Cap61 stays unbound. This is harness
+addressing, not a host or productive MF join.
 """
 
 from __future__ import annotations
@@ -49,6 +49,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FIVE_LANE_CONTINUOUS_HOST_JOIN,
     FIVE_LANE_RUNTIME_CREATED,
     FULL_AUTONOMY_HOST_CHANGE_REQUIRED,
+    GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
+    GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
     GLOBAL_N1_CURSOR_REJECTED,
     HOST_JOIN,
     INSTRUMENT_ID_ALONE_SUFFICIENT,
@@ -65,6 +67,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     JOIN_TRADING_AUTHORITY,
     MASTER_V2_CHANGE_REQUIRED,
     MAY_BIND_CAP61_STATE_ROOT,
+    MAY_INVOKE_GOVERNED_CYCLE,
     MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK,
     MAY_PERSIST_CURSOR,
     MF_PRODUCTIVE_JOIN,
@@ -80,6 +83,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S5_IMPLEMENTED,
     S6_IMPLEMENTED,
     S7_IMPLEMENTED,
+    S8_IMPLEMENTED,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
@@ -139,6 +143,7 @@ def _assert_non_authority() -> None:
         or not S5_IMPLEMENTED
         or not S6_IMPLEMENTED
         or not S7_IMPLEMENTED
+        or not S8_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -170,6 +175,7 @@ def _assert_non_authority() -> None:
         or not MAY_PERSIST_CURSOR
         or not MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK
         or MAY_BIND_CAP61_STATE_ROOT
+        or MAY_INVOKE_GOVERNED_CYCLE
         or not THIS_SLICE_MAY_RESTORE_CURSOR
         or not UNIVERSE_ISOLATION_ENFORCED
     ):
@@ -737,3 +743,39 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
             cap61_state_root_bound=False,
         )
     return composed
+
+
+def bind_occupied_lane_governed_cycle_store_roots_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+) -> dict[str, tuple[str, str, str]]:
+    """Map occupied S3 store_root onto governed-cycle path params. Does not invoke."""
+    _assert_non_authority()
+    if MAY_INVOKE_GOVERNED_CYCLE:
+        _fail(FAILURE_AUTHORITY, OWNER)
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    addressed: dict[str, tuple[str, str, str]] = {}
+    seen_roots: dict[str, str] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        _bound, store_root, _cursor_address = item
+        cursor_store_root = store_root
+        lock_root = lane_state_root_key(Path(store_root) / GOVERNED_CYCLE_LOCK_ROOT_DIRNAME)
+        evidence_root = lane_state_root_key(Path(store_root) / GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME)
+        role_roots = (
+            ("cursor", cursor_store_root),
+            ("lock", lock_root),
+            ("evidence", evidence_root),
+        )
+        if len({root for _role, root in role_roots}) != 3:
+            _fail(FAILURE_CURSOR_ADDRESS_ALIAS, lane_id)
+        for role, root in role_roots:
+            if _n1_global_cursor_store_forbidden(root):
+                _fail(FAILURE_N1_GLOBAL_CURSOR_STORE, lane_id)
+            prior = seen_roots.get(root)
+            if prior is not None:
+                _fail(FAILURE_SHARED_STORE_ROOT, f"{prior},{lane_id}:{role}")
+            seen_roots[root] = f"{lane_id}:{role}"
+        addressed[lane_id] = (cursor_store_root, lock_root, evidence_root)
+    return addressed
