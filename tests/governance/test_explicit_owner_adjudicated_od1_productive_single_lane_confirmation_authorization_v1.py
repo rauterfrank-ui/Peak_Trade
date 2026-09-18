@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import copy
 import json
-import subprocess
 from pathlib import Path
 
 from src.governance.economic_diagnostic_optimization_boundary_v0 import (
@@ -61,8 +60,10 @@ COMMITTED_REQUIRED_RUNTIME_PATHS = [
     "src/trading/master_v2/double_play_composition_matrix_v1.py",
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
 ]
-COMMITTED_DIFF_BASE_SHA = "255450145660c68a98b1dbfd29952308d12932e2"
-COMMITTED_EVIDENCE_DIGEST = "f7da8710edd4de1dfceabd9ef3c54fb49b731aa747fed20abcab3ffa104714e6"
+HISTORICAL_BOUND_DIFF_BASE_SHA = "255450145660c68a98b1dbfd29952308d12932e2"
+HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST = (
+    "f7da8710edd4de1dfceabd9ef3c54fb49b731aa747fed20abcab3ffa104714e6"
+)
 COMMITTED_SLICE_GRANT_ID = "OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_BOUNDED_SLICE_V1"
 FOREIGN_MASTER_V2_PATH = "src/trading/master_v2/survival_assessment_v1.py"
 FOREIGN_MASTER_V2_TEST_PATH = "tests/trading/master_v2/test_survival_assessment_v1.py"
@@ -82,6 +83,18 @@ def _load_auth() -> dict:
     payload = json.loads(AUTH_PATH.read_text(encoding="utf-8"))
     assert isinstance(payload, dict)
     return payload
+
+
+def _inactive_grant() -> dict:
+    auth = copy.deepcopy(_load_auth())
+    auth["grant_active"] = False
+    auth["allowed_paths"] = []
+    auth["required_runtime_paths"] = []
+    auth["allowed_surface_classes"] = []
+    auth["authorized_evidence_digest"] = ""
+    auth["bound_diff_base_sha"] = ""
+    auth["slice_grant_id"] = ""
+    return auth
 
 
 def _unified_diff(path: str, removed: list[str], added: list[str]) -> str:
@@ -161,22 +174,8 @@ def _report(
     )
 
 
-def _committed_file_diffs() -> dict[str, str]:
-    diffs: dict[str, str] = {}
-    for path in COMMITTED_ALLOWED_PATHS:
-        result = subprocess.run(
-            ["git", "diff", "-U20", "origin/main...HEAD", "--", path],
-            cwd=REPO_ROOT,
-            check=False,
-            capture_output=True,
-            text=True,
-        )
-        diffs[path] = result.stdout if result.returncode == 0 else ""
-    return diffs
-
-
-class TestOd1SingleLaneConfirmationCommittedActiveGrantV1:
-    def test_committed_artifact_is_valid_active_exact_file_grant(self) -> None:
+class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
+    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
         auth = load_od1_single_lane_confirmation_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_od1_single_lane_confirmation_authorization(
@@ -188,13 +187,13 @@ class TestOd1SingleLaneConfirmationCommittedActiveGrantV1:
         assert auth["authorized_scope_class"] == OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS
         assert auth["authorization_token"] == OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == OD1_SINGLE_LANE_CONFIRMATION_MUTATION_PURPOSE
-        assert auth["grant_active"] is True
-        assert auth["allowed_paths"] == COMMITTED_ALLOWED_PATHS
-        assert auth["required_runtime_paths"] == COMMITTED_REQUIRED_RUNTIME_PATHS
-        assert auth["allowed_surface_classes"] == [OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS]
-        assert auth["slice_grant_id"] == COMMITTED_SLICE_GRANT_ID
-        assert auth["authorized_evidence_digest"] == COMMITTED_EVIDENCE_DIGEST
-        assert auth["bound_diff_base_sha"] == COMMITTED_DIFF_BASE_SHA
+        assert auth["grant_active"] is False
+        assert auth["allowed_paths"] == []
+        assert auth["required_runtime_paths"] == []
+        assert auth["allowed_surface_classes"] == []
+        assert auth["slice_grant_id"] == ""
+        assert auth["authorized_evidence_digest"] == ""
+        assert auth["bound_diff_base_sha"] == ""
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
@@ -234,6 +233,28 @@ class TestOd1SingleLaneConfirmationCommittedActiveGrantV1:
         assert claims["SCOPE_EVENT_SWITCH_UNCHANGED"] is True
         assert claims["EXECUTION_RISK_INTENT_UNCHANGED"] is True
         assert claims["NO_PARALLEL_PRODUCTIVE_DIRECTION_AUTHORITY"] is True
+        notes = " ".join(str(item) for item in auth["notes"])
+        assert COMMITTED_SLICE_GRANT_ID in notes
+        assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
+        assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert COMMITTED_ALLOWED_PATHS == [
+            "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
+            "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+            "src/trading/master_v2/double_play_composition_matrix_v1.py",
+            "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+            "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py",
+            "tests/trading/master_v2/test_single_lane_composition_matrix_v1.py",
+            "tests/trading/master_v2/test_od1_single_lane_confirmation_regression_v1.py",
+            "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py",
+            "tests/trading/master_v2/test_post_confirmation_survival_suitability_composition_binding_v1.py",
+            "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py",
+        ]
+        assert COMMITTED_REQUIRED_RUNTIME_PATHS == [
+            "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
+            "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+            "src/trading/master_v2/double_play_composition_matrix_v1.py",
+            "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+        ]
         mapping = load_mapping_bind_authorization(REPO_ROOT)
         assert mapping is not None
         assert mapping["grant_active"] is False
@@ -249,45 +270,20 @@ class TestOd1SingleLaneConfirmationCommittedActiveGrantV1:
             is False
         )
 
-    def test_committed_digest_matches_locked_ten_file_diffs(self) -> None:
-        diffs = _committed_file_diffs()
-        actual = compute_od1_single_lane_confirmation_evidence_digest(
-            file_diffs=diffs,
-            diff_base_sha=COMMITTED_DIFF_BASE_SHA,
-            paths=COMMITTED_ALLOWED_PATHS,
-        )
-        assert actual == COMMITTED_EVIDENCE_DIGEST
 
-    def test_committed_ten_file_forbidden_surface_is_admissible(self) -> None:
-        diffs = _committed_file_diffs()
-        report = build_boundary_report(
-            COMMITTED_ALLOWED_PATHS + [FORBIDDEN_RESEARCH_PATH],
-            repo_root=REPO_ROOT,
-            file_diffs=diffs,
-            diff_base_sha=COMMITTED_DIFF_BASE_SHA,
-            skip_technical_wiring_authorization=True,
-            skip_decommission_authorization=True,
-            skip_restoration_authorization=True,
-            skip_owner_adjudication_authorization=True,
-            skip_mapping_bind_authorization=True,
-            skip_generator_fallback_authorization=True,
-            skip_armed_identity_split_authorization=True,
-        )
+class TestOd1SingleLaneConfirmationAdmissionPositiveV1:
+    def test_exact_authorized_fixture_and_digest_pass(self) -> None:
+        changed = list(COMMITTED_REQUIRED_RUNTIME_PATHS)
+        diffs = {path: _od1_diff(path) for path in changed}
+        auth = _active_grant(changed, diffs, required_runtime_paths=changed)
+        report = _report(changed, auth=auth, diffs=diffs)
         assert report.admissible is True
         assert report.fail_closed is False
         assert report.od1_single_lane_confirmation_authorization_applied is True
         assert REASON_OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZED in report.reason_codes
-        assert report.unclassified_touch_count == 0
-        assert report.impact_unknown is False
-        assert FORBIDDEN_RESEARCH_PATH not in {
-            match.matched_path for match in report.forbidden_surface_matches
-        }
-        unique_forbidden = {match.matched_path for match in report.forbidden_surface_matches}
-        assert unique_forbidden == set(COMMITTED_ALLOWED_PATHS)
-        assert (
-            "OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_WITHOUT_TRADING_SEMANTIC_EFFECT"
-            in report.allowed_surface_classification
-        )
+        assert report.productive_mapping_contract_runtime_bind_authorization_applied is False
+        assert report.scope_direction_generator_fallback_authorization_applied is False
+        assert report.sidestate_armed_identity_split_authorization_applied is False
         assert load_contract(REPO_ROOT)["immutable_flags"]["MASTER_V2_MUTATION_ALLOWED"] is False
 
 
@@ -295,15 +291,7 @@ class TestOd1SingleLaneConfirmationAdmissionNegativeV1:
     def test_without_class_master_v2_diff_blocks(self) -> None:
         changed = list(COMMITTED_REQUIRED_RUNTIME_PATHS)
         diffs = {path: _od1_diff(path) for path in changed}
-        auth = _active_grant(changed, diffs, required_runtime_paths=changed)
-        auth["grant_active"] = False
-        auth["allowed_paths"] = []
-        auth["required_runtime_paths"] = []
-        auth["allowed_surface_classes"] = []
-        auth["authorized_evidence_digest"] = ""
-        auth["bound_diff_base_sha"] = ""
-        auth["slice_grant_id"] = ""
-        report = _report(changed, auth=auth, diffs=diffs)
+        report = _report(changed, auth=_inactive_grant(), diffs=diffs)
         assert report.admissible is False
         assert report.od1_single_lane_confirmation_authorization_applied is False
         assert REASON_OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZED not in report.reason_codes

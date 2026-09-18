@@ -1,31 +1,18 @@
 {
   "OWNER_APPROVED_ALONE_IS_INSUFFICIENT": true,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
-  "allowed_paths": [
-    "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
-    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
-    "src/trading/master_v2/double_play_composition_matrix_v1.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py",
-    "tests/trading/master_v2/test_single_lane_composition_matrix_v1.py",
-    "tests/trading/master_v2/test_od1_single_lane_confirmation_regression_v1.py",
-    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py",
-    "tests/trading/master_v2/test_post_confirmation_survival_suitability_composition_binding_v1.py",
-    "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py"
-  ],
-  "allowed_surface_classes": [
-    "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_V1"
-  ],
+  "allowed_paths": [],
+  "allowed_surface_classes": [],
   "authority_effect": "NONE",
   "authorization_token": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "f7da8710edd4de1dfceabd9ef3c54fb49b731aa747fed20abcab3ffa104714e6",
+  "authorized_evidence_digest": "",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_V1",
   "blanket_allowlist": false,
   "bound_authority_spec": "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md",
   "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
   "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
-  "bound_diff_base_sha": "255450145660c68a98b1dbfd29952308d12932e2",
+  "bound_diff_base_sha": "",
   "branch_protection_bypass": false,
   "branch_specific_exception": false,
   "broad_master_v2_grant": false,
@@ -95,7 +82,7 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": true,
+  "grant_active": false,
   "human_adjudicated_slice_claims": {
     "C4_CANDIDATE_CARDINALITY_LE_1": true,
     "C4_SOLE_SELECTED_SIDE_PRODUCER": true,
@@ -115,7 +102,7 @@
   },
   "mutation_purpose_class": "OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION",
   "notes": [
-    "Active exact-file grant bound to the canonical SHA-256 evidence digest of the attested unified diffs and the diff base SHA. A later unrelated diff on the same paths does not reuse the grant.",
+    "Slice grant closed after merge. Class remains; grant is inactive. Historical slice_grant_id=OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_BOUNDED_SLICE_V1. Historical bound_diff_base_sha=255450145660c68a98b1dbfd29952308d12932e2. Historical authorized_evidence_digest=f7da8710edd4de1dfceabd9ef3c54fb49b731aa747fed20abcab3ffa104714e6.",
     "Owner adjudication is necessary and not sufficient. Unknown JSON fields fail closed.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false or CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false.",
     "Does not authorize live, testnet, canary, orders, or execution. Not wiring, restoration, decommission, nonproductive contract change, the fifth mapping-bind class, the sixth generator-fallback class, or the seventh SideState ARMED identity-split class.",
@@ -133,12 +120,7 @@
     "TESTNET_CAPABILITY_INCREASED": false
   },
   "required_check_waiver": false,
-  "required_runtime_paths": [
-    "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
-    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
-    "src/trading/master_v2/double_play_composition_matrix_v1.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
-  ],
+  "required_runtime_paths": [],
   "required_semantic_invariants": {
     "ACTIVE_SIDE_TO_SCOPE_DIRECTION_CHANGED": false,
     "ARMED_LAST_ACTIVE_SIDE_CHANGED": false,
@@ -174,5 +156,5 @@
   "runtime_activation": false,
   "runtime_effect": "NONE",
   "scope_id": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1",
-  "slice_grant_id": "OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_BOUNDED_SLICE_V1"
+  "slice_grant_id": ""
 }
