@@ -1,7 +1,8 @@
-"""Resolve occupied-lane MV2/DP decision-state store roots from the pair map.
+"""Occupied-lane MV2/DP decision-state addressing: store-root resolve and seam bind.
 
-Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping.
-Does not persist, restore, bind Cap61, invoke the consumer, or join a host.
+Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
+bound to the pre-cycle consumption seam. Does not persist, restore, bind
+Cap61, invoke the consumer, or join a host.
 """
 
 from __future__ import annotations
@@ -18,16 +19,19 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     CROSS_UNIVERSE_REPLACEMENT,
     CROSS_UNIVERSE_RERANKING,
     CROSS_UNIVERSE_SELECTION,
+    CURSOR_FILENAME,
     CURSOR_OWNER_CHANGE_REQUIRED,
     DOUBLE_PLAY_CHANGE_REQUIRED,
     FAILURE_AUTHORITY,
     FAILURE_BOUND_TYPE,
+    FAILURE_CURSOR_ADDRESS_ALIAS,
     FAILURE_IDENTITY_MISMATCH,
     FAILURE_INVALID_STORE_ROOT,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
     FAILURE_OCCUPANCY,
     FAILURE_PAIR_TYPE,
+    FAILURE_SEAM_STORE_ROOT_MISMATCH,
     FAILURE_SHARED_STORE_ROOT,
     FAILURE_SLOT_TYPE,
     FAILURE_UNKNOWN_LANE_ID,
@@ -61,6 +65,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     PARALLEL_AUTHORITY_CREATED,
     S2_IMPLEMENTED,
     S3_IMPLEMENTED,
+    S4_IMPLEMENTED,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
@@ -94,7 +99,8 @@ def _fail(code: str, detail: str = "") -> NoReturn:
 def _assert_non_authority() -> None:
     if (
         not S2_IMPLEMENTED
-        or S3_IMPLEMENTED
+        or not S3_IMPLEMENTED
+        or S4_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -226,3 +232,38 @@ def resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(
         seen_roots[actual_root] = lane_id
         resolved[lane_id] = actual_root
     return resolved
+
+
+def bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+) -> dict[str, tuple[BoundInstrumentV1, str, str]]:
+    """Bind resolver output to the pre-cycle seam. Does not invoke the consumer."""
+    _assert_non_authority()
+    resolved_roots = resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1(composed_pairs)
+    bound_seam: dict[str, tuple[BoundInstrumentV1, str, str]] = {}
+    seen_cursor_addresses: dict[str, str] = {}
+    for lane_id in LANE_IDS:
+        pair = composed_pairs.get(lane_id)
+        if pair is None:
+            continue
+        slot, bound = _unpack_pair(lane_id, pair)
+        store_root = resolved_roots.get(lane_id)
+        if store_root is None:
+            _fail(FAILURE_MISSING_STORE_ROOT, lane_id)
+        if store_root != lane_state_root_key(slot.lane_state_root):
+            _fail(FAILURE_SEAM_STORE_ROOT_MISMATCH, lane_id)
+        if _n1_global_cursor_store_forbidden(store_root):
+            _fail(FAILURE_N1_GLOBAL_CURSOR_STORE, lane_id)
+        cursor_address = lane_state_root_key(Path(store_root) / CURSOR_FILENAME)
+        if _is_n1_global_cursor_path(cursor_address):
+            _fail(FAILURE_N1_GLOBAL_CURSOR_STORE, lane_id)
+        prior_lane = seen_cursor_addresses.get(cursor_address)
+        if prior_lane is not None:
+            _fail(FAILURE_CURSOR_ADDRESS_ALIAS, f"{prior_lane},{lane_id}")
+        seen_cursor_addresses[cursor_address] = lane_id
+        bound_seam[lane_id] = (bound, store_root, cursor_address)
+    unresolved = sorted(set(resolved_roots) - set(bound_seam))
+    extra = sorted(set(bound_seam) - set(resolved_roots))
+    if unresolved or extra:
+        _fail(FAILURE_SEAM_STORE_ROOT_MISMATCH, ",".join(unresolved + extra))
+    return bound_seam
