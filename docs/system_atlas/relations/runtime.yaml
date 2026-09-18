@@ -79,6 +79,32 @@ relations:
       occupancy. Rank order is not lane identity. Not membership authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_durable_lane_assignment_persistence_persists_n5_lane_topology
+    source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+    type: PERSISTS
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >-
+      Records exact prior governed topology. Does not call
+      apply_isolated_lane_topology_v1. Not PRODUCES/SELECTS/BINDS.
+      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_durable_lane_assignment_persistence_loads_n5_lane_topology
+    source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+    type: LOADS
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >-
+      Recovers exact IsolatedLaneTopologyV1 as explicit prior topology.
+      Recovery stops there. Missing/corrupt restart state must not bootstrap.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_cap24_binds
     source: BINDER:bound_instrument_v1
     type: BINDS

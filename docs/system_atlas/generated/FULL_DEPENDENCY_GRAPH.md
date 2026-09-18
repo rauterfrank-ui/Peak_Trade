@@ -90,6 +90,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
 - transitive_downstream: `(none)`
 
+### CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+
+- direct_upstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
+- transitive_upstream: `CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1, CONTRACT:mf_selection_and_anti_churn_semantics_v1`
+- direct_downstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
+- transitive_downstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
+
 ### CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
 
 - direct_upstream: `CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CONTRACT:mf_selection_and_anti_churn_semantics_v1`
