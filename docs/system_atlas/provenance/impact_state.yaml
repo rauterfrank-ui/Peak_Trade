@@ -8,18 +8,11 @@ introduced_by: PENDING_CHANGE
 modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
-note: Offline Core-to-Live composition root inventory plus Full-Core productive
-  Live-path identity and live-admission gap DAG. 11.2.1.Z persist adds typed
-  INTERNAL_RECONSTRUCTION_CONTRACT_V1 reconstruction contract;
-  INTERNAL_RECONSTRUCTION_SCHEMA_PRESENT=true;
-  INTERNAL_RECONSTRUCTION_RUNTIME_INSTANCE_PRESENT=false;
-  INTERNAL_RECONSTRUCTION_PROVEN=false; RECONSTRUCTION_ALGEBRA_COMPLETE=false;
-  SOURCE_OBJECT_PRESENT=false; SOURCE_SELECTED=false;
-  MAPPING_PROVEN=false; GOVERNED_PRODUCER_CREATED=false;
-  EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY remains
-  NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING;
-  no equity value binding. Canary / §11.14 remain
-  evidence-domain only. No Live GET/POST. Atlas is not canonical authority.
+note: >-
+  CURRENT-only Master Runbook operational SSOT rewrite and Map of Truth
+  navigation sync (PR 6583). Atlas entity catalog reviewed for runbook/map
+  path coupling. Clean Trading Core CLOSED; remaining core gap NONE.
+  No Live GET/POST authorized by docs. Atlas is not canonical authority.
 changed_entities:
 - ACRONYM:C1
 - ACRONYM:C2
