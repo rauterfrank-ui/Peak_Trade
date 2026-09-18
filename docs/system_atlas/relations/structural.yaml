@@ -429,6 +429,32 @@ relations:
       owner remains ops.current_mf_n5_isolated_lane_instance_topology_v1.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_occupied_lane_pin_consumer
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+    notes: >
+      Produce join sequences consume_occupied_lane_pins_v1. It is not a
+      second pin-consumer owner. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_cap23
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+    notes: >
+      Produce join invokes existing Cap23 N=1 produce/persist per occupied
+      lane. Cap23 remains sole selection writer. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
