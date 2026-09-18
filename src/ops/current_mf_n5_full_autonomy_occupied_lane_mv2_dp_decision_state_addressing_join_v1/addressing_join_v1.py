@@ -1,11 +1,11 @@
-"""Occupied-lane MV2/DP decision-state addressing: resolve, seam bind, invoke, in-memory carry.
+"""Occupied-lane MV2/DP decision-state addressing: resolve, seam, invoke, carry, persist.
 
 Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
 bound to the pre-cycle consumption seam, then lane-isolated invocation of
-the existing N=1 MV2+DP cycle. S5 keeps each lane's outgoing cursor in the
-existing invocation record and passes that same object as the next cycle's
-incoming cursor. Does not persist, load, restore from disk, bind Cap61, or
-join a host.
+the existing N=1 MV2+DP cycle. S6 writes and reloads each lane's existing
+outgoing cursor through the existing cursor persist/load owner under that
+lane's lane_state_root. The cycle still does not take store_root. Cap61
+stays unbound. This is harness durability, not a host or productive MF join.
 """
 
 from __future__ import annotations
@@ -78,6 +78,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S3_IMPLEMENTED,
     S4_IMPLEMENTED,
     S5_IMPLEMENTED,
+    S6_IMPLEMENTED,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
@@ -92,6 +93,10 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
     IsolatedLaneSlotV1,
     lane_state_root_for,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    load_current_productive_sidestate_confirmation_cursor_v1,
+    persist_current_productive_sidestate_confirmation_cursor_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CurrentProductiveMasterV2CycleResultV1,
@@ -131,6 +136,7 @@ def _assert_non_authority() -> None:
         or not S3_IMPLEMENTED
         or not S4_IMPLEMENTED
         or not S5_IMPLEMENTED
+        or not S6_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -159,10 +165,10 @@ def _assert_non_authority() -> None:
         or PARALLEL_AUTHORITY_CREATED
         or THIS_SLICE_MAY_REINVOKE_CAP23
         or THIS_SLICE_MAY_REINVOKE_CAP24
-        or MAY_PERSIST_CURSOR
-        or MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK
+        or not MAY_PERSIST_CURSOR
+        or not MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK
         or MAY_BIND_CAP61_STATE_ROOT
-        or THIS_SLICE_MAY_RESTORE_CURSOR
+        or not THIS_SLICE_MAY_RESTORE_CURSOR
         or not UNIVERSE_ISOLATION_ENFORCED
     ):
         _fail(FAILURE_AUTHORITY, OWNER)
@@ -529,3 +535,148 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             cycle_result=cycle_result,
         )
     return carried
+
+
+def _require_prior_lane_set(
+    bound_seam: Mapping[str, tuple[BoundInstrumentV1, str, str]],
+    prior_invocations: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+) -> None:
+    unknown_prior = sorted(set(prior_invocations) - set(LANE_IDS))
+    if unknown_prior:
+        _fail(FAILURE_UNKNOWN_LANE_ID, ",".join(unknown_prior))
+    if set(prior_invocations) != set(bound_seam):
+        missing = sorted(set(bound_seam) - set(prior_invocations))
+        extra = sorted(set(prior_invocations) - set(bound_seam))
+        if missing:
+            _fail(FAILURE_MISSING_LANE_STATE, ",".join(missing))
+        _fail(FAILURE_MISMATCHED_LANE_STATE, ",".join(extra))
+
+
+def _incoming_from_loaded_cursor(
+    *,
+    lane_id: str,
+    bound: BoundInstrumentV1,
+    payload: object,
+) -> object | None:
+    if payload is None:
+        return None
+    if not isinstance(payload, Mapping):
+        _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+    instrument_id = str(payload.get("instrument_id") or "").strip()
+    venue_native_id = str(payload.get("venue_native_id") or "").strip()
+    if instrument_id != bound.instrument_id or venue_native_id != bound.venue_native_id:
+        _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+    return payload
+
+
+def persist_occupied_lane_mv2_dp_decision_state_cursor_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    prior_invocations: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+) -> dict[str, str]:
+    """Write each lane's outgoing cursor under that lane's existing store_root.
+
+    Uses the existing cursor owner. Does not pass lane_state_root into the cycle
+    and does not bind Cap61.
+    """
+    _assert_non_authority()
+    if not MAY_PERSIST_CURSOR:
+        _fail(FAILURE_AUTHORITY, OWNER)
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    _require_prior_lane_set(bound_seam, prior_invocations)
+    written: dict[str, str] = {}
+    seen_cursor_ids: dict[int, str] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        bound, store_root, cursor_address = item
+        cursor = _cursor_from_prior_invocation(
+            lane_id=lane_id,
+            bound=bound,
+            store_root=store_root,
+            prior=prior_invocations[lane_id],
+        )
+        prior_lane = seen_cursor_ids.get(id(cursor))
+        if prior_lane is not None:
+            _fail(FAILURE_ALIASED_LANE_STATE, f"{prior_lane},{lane_id}")
+        seen_cursor_ids[id(cursor)] = lane_id
+        path = persist_current_productive_sidestate_confirmation_cursor_v1(
+            cursor,
+            store_root=Path(store_root),
+        )
+        actual = lane_state_root_key(path)
+        if actual != cursor_address:
+            _fail(FAILURE_SEAM_STORE_ROOT_MISMATCH, lane_id)
+        written[lane_id] = actual
+    return written
+
+
+def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    *,
+    cycle_id_prefix: str,
+    observed_unix: float,
+    mark_px: float,
+    index_px: float,
+    bid_px: float,
+    ask_px: float,
+    volume: float,
+    open_interest: float,
+    funding_rate: float,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+    venue_flat: bool,
+    existing_position_side: ExistingPositionSide,
+    g17_typed_vol_producers: Mapping[str, object] | None = None,
+) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
+    """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
+
+    Missing files follow the existing load contract and become incoming_cursor=None.
+    A file whose instrument or venue does not match the lane is rejected before
+    the cycle. Schema handling stays inside the existing cycle restore.
+    """
+    _assert_non_authority()
+    if not MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK:
+        _fail(FAILURE_AUTHORITY, OWNER)
+    prefix = str(cycle_id_prefix or "").strip()
+    if not prefix:
+        _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    producers = _resolve_lane_g17_producers(tuple(bound_seam), g17_typed_vol_producers)
+    restored: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        bound, store_root, cursor_address = item
+        payload = load_current_productive_sidestate_confirmation_cursor_v1(Path(store_root))
+        incoming = _incoming_from_loaded_cursor(lane_id=lane_id, bound=bound, payload=payload)
+        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+            bound_instrument=bound,
+            cycle_id=f"{prefix}:{lane_id}",
+            observed_unix=observed_unix,
+            mark_px=mark_px,
+            index_px=index_px,
+            bid_px=bid_px,
+            ask_px=ask_px,
+            volume=volume,
+            open_interest=open_interest,
+            funding_rate=funding_rate,
+            finalized_closes=finalized_closes,
+            last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+            venue_flat=venue_flat,
+            existing_position_side=existing_position_side,
+            incoming_cursor=incoming,
+            g17_typed_vol_producer=producers[lane_id],
+        )
+        restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
+            lane_id=lane_id,
+            bound_instrument=bound,
+            store_root=store_root,
+            cursor_address=cursor_address,
+            incoming_cursor=incoming,
+            persist_enabled=False,
+            cap61_state_root_bound=False,
+            cycle_result=cycle_result,
+        )
+    return restored

@@ -546,10 +546,10 @@ relations:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      S5 in-memory carry still consumes the already-composed #6602 pair map
-      via the S3 seam and must not reinvoke compose or Cap23/Cap24. The
-      cursor object stays owned by the existing cursor module. Atlas is not
-      runtime authority. ATLAS_AUTHORITY=NONE.
+      S6 persist and restore still consume the already-composed #6602 pair map
+      via the S3 seam and must not reinvoke compose or Cap23/Cap24. The cursor
+      file stays owned by the existing cursor module. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
     source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
@@ -561,8 +561,8 @@ relations:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
     notes: >
-      S5 carries the cursor in memory per occupied lane. lane_state_root
-      remains IsolatedLaneSlotV1.lane_state_root, external addressing only,
+      S6 writes and reloads the existing cursor file under
+      IsolatedLaneSlotV1.lane_state_root. That root stays external addressing
       and is not passed into the cycle. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 

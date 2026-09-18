@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
 status: active
-scope: S5 in-memory cycle-crossing cursor carry per occupied lane; no disk persist; no disk restore; no Cap61 live bind; no host; no productive MF join; no S6
+scope: S6 durable per-lane cursor persist and restore under lane_state_root; harness durability only; no Cap61 live bind; no host; no productive MF join; no S7
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,14 +19,14 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S5_CYCLE_CROSSING_IN_MEMORY_STATE
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S6_DURABLE_CURSOR_PERSIST_RESTORE
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
-SLICE_ID=S5_CYCLE_CROSSING_IN_MEMORY_STATE
+SLICE_ID=S6_DURABLE_PER_LANE_CURSOR_PERSIST_RESTORE
 S2_IMPLEMENTED=true
 S3_IMPLEMENTED=true
 S4_IMPLEMENTED=true
 S5_IMPLEMENTED=true
-S6_IMPLEMENTED=false
+S6_IMPLEMENTED=true
 RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 OCCUPIED_LANES_ONLY=true
 UNIQUE_MUTABLE_ROOTS_ENFORCED=true
@@ -79,7 +79,14 @@ S4_IMPLEMENTED=true
 S5_JOIN_SYMBOL=carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
 S5_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
 S5_IMPLEMENTED=true
-S6_IMPLEMENTED=false
+S6_PERSIST_SYMBOL=persist_occupied_lane_mv2_dp_decision_state_cursor_v1
+S6_RESTORE_SYMBOL=restore_occupied_lane_mv2_dp_decision_state_cursor_v1
+S6_JOIN_SYMBOL=restore_occupied_lane_mv2_dp_decision_state_cursor_v1
+S6_IMPLEMENTED=true
+PERSIST_SURFACE_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
+DISK_PATH_RULE={store_root}/current_productive_sidestate_confirmation_cursor_v1.json
+ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
+PERSIST_ENABLED=true
 IN_MEMORY_CURSOR_HOLDER=OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor
 IN_MEMORY_CURSOR_HOLDER_OWNER=ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1
 LANE_STATE_ROOT_ROLE=EXTERNAL_ADDRESSING_ONLY
@@ -106,8 +113,8 @@ DOUBLE_PLAY_CHANGE_REQUIRED=false
 FULL_AUTONOMY_HOST_CHANGE_REQUIRED=false
 CURSOR_OWNER_CHANGE_REQUIRED=false
 THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=true
-MAY_PERSIST_CURSOR=false
-MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=false
+MAY_PERSIST_CURSOR=true
+MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=true
 MAY_BIND_CAP61_STATE_ROOT=false
 MAY_CAP61_PERSIST=false
 MAY_CAP62_PERSIST=false
@@ -145,17 +152,15 @@ only through the S4 bounded harness:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
 This slice implements
-`carry_occupied_lane_mv2_dp_decision_state_in_memory_v1`. It reuses the
-existing cursor object already carried on
-`OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor`.
-It does **not** create a second state owner. It does **not** persist or
-load the cursor, does **not** read or write `lane_state_root`, does
-**not** set Cap61 `state_root`, does **not** persist Cap61/Cap62/G17/Exit,
-does **not** reinvoke Cap 2.3 or Cap 2.4, does **not** join the
-Full-Autonomy host, does **not** change Master V2 or Double Play trading
-semantics, does **not** change cursor schema or add `lane_id`, does
-**not** start S6, does **not** create a productive MF join, and does
-**not** create five isolated executing lanes.
+`persist_occupied_lane_mv2_dp_decision_state_cursor_v1` and
+`restore_occupied_lane_mv2_dp_decision_state_cursor_v1`. It reuses the
+existing cursor persist and load functions. It does **not** create a
+second state owner or a new cursor schema. `lane_state_root` remains
+`EXTERNAL_ADDRESSING_ONLY` and is passed only as `store_root` to those
+existing functions, never into the cycle. Cap61 `state_root` stays unset.
+`PERSIST_ENABLED=true` is bounded harness durability only and is not Cap61
+persist, not a productive host join, and not multi-future authorization.
+It does **not** start S7.
 
 ## 1. Purpose
 
@@ -205,11 +210,17 @@ S4 BOUNDED HARNESS INVOKE — occupied lanes only
 S5 IN-MEMORY CARRY — occupied lanes only
   holder = prior invocation outgoing_cursor for lane X
   next incoming_cursor(lane X) is that same object
-  never shared with lane Y
-  lane_state_root not consumed
         │
         ▼
-STOP — no disk persist; no disk restore; no Cap61 live bind; no host; no S6
+S6 DURABLE HARNESS — occupied lanes only
+  persist outgoing_cursor(X) via existing owner under lane_state_root(X)
+  restart simulation drops the in-memory object
+  load the same file; restored payload is next incoming_cursor(X)
+  missing file remains the existing load None / cycle missing
+  cross-lane instrument mismatch fail-closed before the cycle
+        │
+        ▼
+STOP — no Cap61 live bind; no host; no S7
 ```
 
 `#6602` already closed PAIR_MAP_STOP. `#6605` already closed S3.
@@ -232,11 +243,13 @@ FIRST_TRADING_DECISION_CONSUMER remains run_current_productive_master_v2_runtime
 THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=true
 CONSUMER_INVOKED=true
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
-MAY_PERSIST_CURSOR=false
-MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=false
+MAY_PERSIST_CURSOR=true
+MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=true
 MAY_BIND_CAP61_STATE_ROOT=false
 HOST_JOIN=false
 MF_PRODUCTIVE_JOIN=false
+PERSIST_ENABLED=true
+ATOMICITY_SEMANTICS=NON_ATOMIC_DIRECT_WRITE_TEXT
 ```
 
 ## 2. State-surface census
@@ -312,7 +325,7 @@ S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocatio
 S5_JOIN_SYMBOL=carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
 S5_IMPLEMENTED=true
 S5_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
-S6_IMPLEMENTED=false
+S6_IMPLEMENTED=true
 FIRST_DECISION_STATE_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
 CONSUMPTION_SEAM=pre_invoke_run_current_productive_master_v2_runtime_cycle_v1
 INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED

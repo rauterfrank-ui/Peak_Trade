@@ -1,8 +1,8 @@
 """CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing join.
 
-S5 carries each occupied lane's outgoing cursor in memory into the next
-cycle incoming cursor. Disk persist, disk restore, Cap61 live bind, and
-host join remain out of scope.
+S6 persists and restores each occupied lane's existing cursor through the
+cursor owner under that lane's lane_state_root. Cap61 live bind, host join,
+and productive MF join remain out of scope.
 """
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
@@ -11,7 +11,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
+    restore_occupied_lane_mv2_dp_decision_state_cursor_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
@@ -50,6 +52,10 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S4_JOIN_SYMBOL,
     S5_IMPLEMENTED,
     S5_JOIN_SYMBOL,
+    S6_IMPLEMENTED,
+    S6_JOIN_SYMBOL,
+    S6_PERSIST_SYMBOL,
+    S6_RESTORE_SYMBOL,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -94,6 +100,10 @@ __all__ = [
     "S4_JOIN_SYMBOL",
     "S5_IMPLEMENTED",
     "S5_JOIN_SYMBOL",
+    "S6_IMPLEMENTED",
+    "S6_JOIN_SYMBOL",
+    "S6_PERSIST_SYMBOL",
+    "S6_RESTORE_SYMBOL",
     "SAME_TRADING_CONFIGURATION_ACROSS_LANES",
     "SHARED_MUTABLE_STATE_ACROSS_LANES",
     "SLICE_ID",
@@ -104,5 +114,7 @@ __all__ = [
     "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1",
     "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1",
     "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1",
+    "persist_occupied_lane_mv2_dp_decision_state_cursor_v1",
     "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
+    "restore_occupied_lane_mv2_dp_decision_state_cursor_v1",
 ]

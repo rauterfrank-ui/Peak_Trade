@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import inspect
+import json
 import math
 from dataclasses import fields, replace
 from pathlib import Path
@@ -23,7 +24,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
+    restore_occupied_lane_mv2_dp_decision_state_cursor_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
@@ -131,8 +134,15 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S4_IMPLEMENTED,
     S4_INTENDED_EGRESS,
     S4_JOIN_SYMBOL,
+    ATOMICITY_SEMANTICS,
+    PERSIST_ENABLED,
+    PERSIST_SURFACE_OWNER,
     S5_IMPLEMENTED,
     S5_JOIN_SYMBOL,
+    S6_IMPLEMENTED,
+    S6_JOIN_SYMBOL,
+    S6_PERSIST_SYMBOL,
+    S6_RESTORE_SYMBOL,
     IN_MEMORY_CURSOR_HOLDER,
     LANE_STATE_ROOT_ROLE,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
@@ -168,6 +178,10 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
     IsolatedLaneSlotV1,
     IsolatedLaneTopologyV1,
     lane_state_root_for,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CurrentProductiveCursorError,
+    persist_current_productive_sidestate_confirmation_cursor_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ExistingPositionSide,
@@ -365,7 +379,7 @@ def _topology(
 
 
 def test_s2_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S5_CYCLE_CROSSING_IN_MEMORY_STATE"
+    assert SLICE_ID == "S6_DURABLE_PER_LANE_CURSOR_PERSIST_RESTORE"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -374,7 +388,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S5_CYCLE_CROSSING_IN_MEMORY_STATE"
+        "_S6_DURABLE_CURSOR_PERSIST_RESTORE"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -413,15 +427,18 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert CONSUMER_INVOKED is True
     assert THIS_SLICE_MAY_REINVOKE_CAP23 is False
     assert THIS_SLICE_MAY_REINVOKE_CAP24 is False
-    assert MAY_PERSIST_CURSOR is False
-    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+    assert MAY_PERSIST_CURSOR is True
+    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
+    assert PERSIST_ENABLED is True
+    assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
+    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert MAY_CAP61_PERSIST is False
     assert MAY_CAP62_PERSIST is False
     assert MAY_G17_CHECKPOINT is False
     assert MAY_EXIT_POLICY_PERSIST is False
     assert THIS_SLICE_MAY_BIND_CAP61_STATE_ROOT is False
-    assert THIS_SLICE_MAY_RESTORE_CURSOR is False
+    assert THIS_SLICE_MAY_RESTORE_CURSOR is True
     assert JOIN_RANKING_AUTHORITY is False
     assert JOIN_SELECTION_AUTHORITY is False
     assert JOIN_CAP23_SELECTION_AUTHORITY is False
@@ -787,8 +804,8 @@ def test_t_no_cursor_io_consumer_cap61_or_runtime_side_effects() -> None:
         assert "CurrentProductiveSideStateConfirmationCursorV1" not in source
         assert "state_root=" not in source
         assert "persist=" not in source
-        assert "persist_current_productive_sidestate_confirmation_cursor_v1" not in source
-        assert "load_current_productive_sidestate_confirmation_cursor_v1" not in source
+        assert "persist_current_productive_sidestate_confirmation_cursor_v1" not in INIT_SOURCE
+        assert "load_current_productive_sidestate_confirmation_cursor_v1" not in INIT_SOURCE
         assert "restore_current_productive_sidestate_confirmation_cursor_v1" not in source
     assert "run_current_productive_master_v2_runtime_cycle_v1" not in INIT_SOURCE
     assert "compose_occupied_lane_mv2_dp_handoff_v1" not in JOIN_SOURCE
@@ -843,7 +860,11 @@ def test_s2_forbidden_graph_and_protected_imports() -> None:
     )
     assert (
         "src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1"
-        not in imported
+        not in (_import_names(CONSTANTS_SOURCE) | _import_names(INIT_SOURCE))
+    )
+    assert (
+        "src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1"
+        in _import_names(JOIN_SOURCE)
     )
     assert "trading.master_v2.integrated_offline_trading_logic_replay_v1" not in imported
     assert not any(
@@ -866,7 +887,7 @@ def test_s2_forbidden_graph_and_protected_imports() -> None:
     assert f"def {S2_JOIN_SYMBOL}" not in CONSTANTS_SOURCE
     assert FIRST_TRADING_DECISION_CONSUMER in CONSTANTS_SOURCE
     assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
-    assert MAY_PERSIST_CURSOR is False
+    assert MAY_PERSIST_CURSOR is True
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert lane_state_root_key
     assert S3_IMPLEMENTED is True
@@ -990,16 +1011,19 @@ def test_s3_missing_and_mismatch_fail_closed(tmp_path: Path) -> None:
 def test_s3_no_consumer_cursor_cap61_or_runtime_side_effects() -> None:
     bind_source = inspect.getsource(bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1)
     assert "run_current_productive_master_v2_runtime_cycle_v1(" not in bind_source
-    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
-    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
+    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in bind_source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in bind_source
     assert "restore_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
     assert "ensure_host_confirmation_binding_v1(" not in JOIN_SOURCE
     called = _called_names(JOIN_SOURCE)
     assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
     assert "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1" in JOIN_SOURCE
     assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
-    assert MAY_PERSIST_CURSOR is False
-    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+    assert MAY_PERSIST_CURSOR is True
+    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
+    assert PERSIST_ENABLED is True
+    assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
+    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert inspect.getsource(bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1)
 
@@ -1118,8 +1142,11 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
         ].split(")", 1)[0]
     )
     assert "persist=" not in invoke_source
-    assert MAY_PERSIST_CURSOR is False
-    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+    assert MAY_PERSIST_CURSOR is True
+    assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
+    assert PERSIST_ENABLED is True
+    assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
+    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert HOST_JOIN is False
     assert MF_PRODUCTIVE_JOIN is False
@@ -1194,8 +1221,8 @@ def test_s5_reuses_existing_invocation_cursor_without_new_owner() -> None:
     assert "store_root=" not in cycle_call
     assert "persist=" not in carry_source
     assert "state_root=" not in carry_source
-    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
-    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
+    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in carry_source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in carry_source
     assert "restore_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
     assert "open(" not in JOIN_SOURCE
     assert "write_text" not in JOIN_SOURCE
@@ -1421,7 +1448,244 @@ def test_s5_missing_mismatched_and_aliased_lane_state_fail_closed(tmp_path: Path
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert EXECUTION_CONCURRENCY_AUTHORIZED is False
     assert MAX_POSITIONS_EFFECTIVE == 1
-    assert MAY_PERSIST_CURSOR is False
+    assert MAY_PERSIST_CURSOR is True
     assert MAY_BIND_CAP61_STATE_ROOT is False
     assert "state_root=None" in CYCLE_SOURCE
     assert "persist=False" in CYCLE_SOURCE
+
+
+def _direct_next_cycle(bound, incoming, producer, cycle_id: str):
+    raw = _invoke_kwargs()
+    raw.pop("cycle_id_prefix")
+    return run_current_productive_master_v2_runtime_cycle_v1(
+        bound_instrument=bound,
+        cycle_id=cycle_id,
+        incoming_cursor=incoming,
+        g17_typed_vol_producer=producer,
+        **raw,  # type: ignore[arg-type]
+    )
+
+
+def _seed_outgoing(tmp_path: Path, lane_ids: tuple[str, ...]):
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in lane_ids}
+    producers = _lane_g17_producers(pairs)
+    first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        pairs,
+        g17_typed_vol_producers=producers,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    written = persist_occupied_lane_mv2_dp_decision_state_cursor_v1(pairs, first)
+    return pairs, first, written
+
+
+def test_s6_reuses_existing_cursor_owner_without_new_schema() -> None:
+    assert S6_IMPLEMENTED is True
+    assert S6_JOIN_SYMBOL == "restore_occupied_lane_mv2_dp_decision_state_cursor_v1"
+    assert S6_PERSIST_SYMBOL == "persist_occupied_lane_mv2_dp_decision_state_cursor_v1"
+    assert PERSIST_ENABLED is True
+    assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
+    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert NEW_STATE_OWNER_CREATED is False
+    assert CURSOR_SCHEMA_CHANGED is False
+    assert JOIN_PERSISTENCE_AUTHORITY is False
+    assert MAY_CAP61_PERSIST is False
+    persist_source = inspect.getsource(persist_occupied_lane_mv2_dp_decision_state_cursor_v1)
+    restore_source = inspect.getsource(restore_occupied_lane_mv2_dp_decision_state_cursor_v1)
+    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" in persist_source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1(" in restore_source
+    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in restore_source
+    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in persist_source
+    owner_persist = inspect.getsource(persist_current_productive_sidestate_confirmation_cursor_v1)
+    assert "path.write_text" in owner_persist
+    assert "os.replace" not in owner_persist
+    assert "NamedTemporaryFile" not in owner_persist
+    restore_cycle = restore_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
+        1
+    ].split(")", 1)[0]
+    assert "incoming_cursor=incoming" in restore_cycle
+    assert "store_root=" not in restore_cycle
+    assert "state_root=" not in restore_source
+    assert "CurrentProductiveSideStateConfirmationCursorV1" not in JOIN_SOURCE
+
+
+def test_s6_n1_persist_restart_restore_parity(tmp_path: Path) -> None:
+    pairs, first, written = _seed_outgoing(tmp_path, ("LANE_3",))
+    outgoing = first["LANE_3"].cycle_result.outgoing_cursor
+    assert outgoing is not None
+    assert written["LANE_3"] == lane_state_root_key(
+        Path(pairs["LANE_3"][0].lane_state_root) / CURSOR_FILENAME
+    )
+    del first
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s6-restart"),  # type: ignore[arg-type]
+    )
+    loaded = restored["LANE_3"].incoming_cursor
+    assert loaded == outgoing.to_dict()
+    direct = _direct_next_cycle(
+        pairs["LANE_3"][1],
+        outgoing,
+        _memory_g17_producer(
+            instrument_id=pairs["LANE_3"][1].instrument_id,
+            venue_native_id=pairs["LANE_3"][1].venue_native_id,
+        ),
+        "s6-memory:LANE_3",
+    )
+    disk = _direct_next_cycle(
+        pairs["LANE_3"][1],
+        loaded,
+        _memory_g17_producer(
+            instrument_id=pairs["LANE_3"][1].instrument_id,
+            venue_native_id=pairs["LANE_3"][1].venue_native_id,
+        ),
+        "s6-disk:LANE_3",
+    )
+    assert disk.decision_outcome == direct.decision_outcome
+    assert disk.cursor_restore_status == direct.cursor_restore_status == "restored"
+    assert restored["LANE_3"].persist_enabled is False
+    assert restored["LANE_3"].cap61_state_root_bound is False
+
+
+def test_s6_n_gt_1_distinct_roots_survive_restart(tmp_path: Path) -> None:
+    pairs, first, written = _seed_outgoing(tmp_path, ("LANE_1", "LANE_5"))
+    assert written["LANE_1"] != written["LANE_5"]
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s6-n5"),  # type: ignore[arg-type]
+    )
+    for lane_id in ("LANE_1", "LANE_5"):
+        outgoing = first[lane_id].cycle_result.outgoing_cursor
+        assert outgoing is not None
+        assert restored[lane_id].incoming_cursor == outgoing.to_dict()
+        assert restored[lane_id].store_root == pairs[lane_id][0].lane_state_root
+    assert restored["LANE_1"].incoming_cursor != restored["LANE_5"].incoming_cursor
+
+
+def test_s6_cross_lane_file_rejected_and_interleaved_isolated(tmp_path: Path) -> None:
+    left = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    right = {"LANE_5": _pair(tmp_path / "other", "LANE_5")}
+    left_first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        left,
+        g17_typed_vol_producers=_lane_g17_producers(left),
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    right_first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        right,
+        g17_typed_vol_producers=_lane_g17_producers(right),
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1(left, left_first)
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1(right, right_first)
+    left_only = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        left,
+        g17_typed_vol_producers=_lane_g17_producers(left),
+        **_carry_kwargs(cycle_id_prefix="s6-left"),  # type: ignore[arg-type]
+    )
+    right_only = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        right,
+        g17_typed_vol_producers=_lane_g17_producers(right),
+        **_carry_kwargs(cycle_id_prefix="s6-right"),  # type: ignore[arg-type]
+    )
+    assert left_only["LANE_1"].incoming_cursor == (
+        left_first["LANE_1"].cycle_result.outgoing_cursor.to_dict()
+    )
+    assert right_only["LANE_5"].incoming_cursor == (
+        right_first["LANE_5"].cycle_result.outgoing_cursor.to_dict()
+    )
+    foreign = Path(right["LANE_5"][0].lane_state_root) / CURSOR_FILENAME
+    foreign.write_text(
+        (Path(left["LANE_1"][0].lane_state_root) / CURSOR_FILENAME).read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+            right,
+            g17_typed_vol_producers=_lane_g17_producers(right),
+            **_carry_kwargs(cycle_id_prefix="s6-foreign"),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISMATCHED_LANE_STATE
+    assert exc.value.detail == "LANE_5"
+
+
+def test_s6_missing_file_follows_existing_load_none(tmp_path: Path) -> None:
+    pairs = {"LANE_2": _pair(tmp_path, "LANE_2")}
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        **_carry_kwargs(cycle_id_prefix="s6-missing"),  # type: ignore[arg-type]
+    )
+    assert restored["LANE_2"].incoming_cursor is None
+    assert restored["LANE_2"].cycle_result.cursor_restore_status == "missing"
+
+
+def test_s6_corrupt_and_schema_follow_existing_contract(tmp_path: Path) -> None:
+    pairs, _first, _written = _seed_outgoing(tmp_path, ("LANE_4",))
+    path = Path(pairs["LANE_4"][0].lane_state_root) / CURSOR_FILENAME
+    original = path.read_text(encoding="utf-8")
+    payload = json.loads(original)
+    payload["schema_name"] = "not-the-canonical-schema"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s6-schema"),  # type: ignore[arg-type]
+    )
+    direct = _direct_next_cycle(
+        pairs["LANE_4"][1],
+        payload,
+        _memory_g17_producer(
+            instrument_id=pairs["LANE_4"][1].instrument_id,
+            venue_native_id=pairs["LANE_4"][1].venue_native_id,
+        ),
+        "s6-schema-direct",
+    )
+    assert restored["LANE_4"].cycle_result.cursor_restore_status == direct.cursor_restore_status
+    assert direct.cursor_restore_status == "refused_mismatch"
+    payload["schema_name"] = json.loads(original)["schema_name"]
+    payload["side_state"] = "NOT_A_SIDESTATE"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    invalid = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s6-invalid"),  # type: ignore[arg-type]
+    )
+    direct_invalid = _direct_next_cycle(
+        pairs["LANE_4"][1],
+        payload,
+        _memory_g17_producer(
+            instrument_id=pairs["LANE_4"][1].instrument_id,
+            venue_native_id=pairs["LANE_4"][1].venue_native_id,
+        ),
+        "s6-invalid-direct",
+    )
+    assert invalid["LANE_4"].cycle_result.cursor_restore_status == (
+        direct_invalid.cursor_restore_status
+    )
+    assert direct_invalid.cursor_restore_status == "fail_closed_invalid_sidestate"
+    path.write_text("{", encoding="utf-8")
+    with pytest.raises(CurrentProductiveCursorError) as exc:
+        restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+            pairs,
+            **_carry_kwargs(cycle_id_prefix="s6-corrupt"),  # type: ignore[arg-type]
+        )
+    assert exc.value.reason_code == "CURSOR_FILE_CORRUPT"
+
+
+def test_s6_n1_global_root_still_rejected(tmp_path: Path) -> None:
+    pairs, first, _written = _seed_outgoing(tmp_path, ("LANE_1",))
+    blocked = {"LANE_1": _pair(tmp_path, "LANE_1", lane_state_root=N1_GLOBAL_CURSOR_STORE_RELPATH)}
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        persist_occupied_lane_mv2_dp_decision_state_cursor_v1(blocked, first)
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+            blocked,
+            **_carry_kwargs(cycle_id_prefix="s6-n1"),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+    assert EXECUTION_CONCURRENCY_AUTHORIZED is False
+    assert MAX_POSITIONS_EFFECTIVE == 1

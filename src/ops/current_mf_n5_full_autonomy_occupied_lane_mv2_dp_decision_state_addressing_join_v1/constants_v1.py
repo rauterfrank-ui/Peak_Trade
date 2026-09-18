@@ -1,7 +1,8 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S5 carries each occupied lane's existing outgoing cursor in memory into the
-next cycle's incoming cursor. Does not persist, restore from disk, or bind Cap61.
+S6 persists and restores each occupied lane's existing outgoing cursor through
+the existing cursor owner under that lane's lane_state_root. Harness durability
+only. Does not bind Cap61, join a host, or authorize multi-future runtime.
 """
 
 from __future__ import annotations
@@ -60,10 +61,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S5_CYCLE_CROSSING_IN_MEMORY_STATE"
+SLICE_ID = "S6_DURABLE_PER_LANE_CURSOR_PERSIST_RESTORE"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S5_CYCLE_CROSSING_IN_MEMORY_STATE"
+    "_S6_DURABLE_CURSOR_PERSIST_RESTORE"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -115,6 +116,24 @@ S4_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvoca
 S5_JOIN_SYMBOL = "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
 S5_IMPLEMENTED = True
 S5_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
+S6_PERSIST_SYMBOL = "persist_occupied_lane_mv2_dp_decision_state_cursor_v1"
+S6_RESTORE_SYMBOL = "restore_occupied_lane_mv2_dp_decision_state_cursor_v1"
+S6_JOIN_SYMBOL = S6_RESTORE_SYMBOL
+S6_IMPLEMENTED = True
+S6_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
+PERSIST_SURFACE = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_sidestate_confirmation_cursor_v1."
+    "persist_current_productive_sidestate_confirmation_cursor_v1"
+)
+LOAD_SURFACE = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_sidestate_confirmation_cursor_v1."
+    "load_current_productive_sidestate_confirmation_cursor_v1"
+)
+PERSIST_SURFACE_OWNER = CURSOR_OWNER
+ATOMICITY_SEMANTICS = "NON_ATOMIC_DIRECT_WRITE_TEXT"
+PERSIST_ENABLED = True
 IN_MEMORY_CURSOR_HOLDER = (
     "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
 )
@@ -180,8 +199,8 @@ PARALLEL_AUTHORITY_CREATED = False
 THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER = True
 THIS_SLICE_MAY_REINVOKE_CAP23 = False
 THIS_SLICE_MAY_REINVOKE_CAP24 = False
-MAY_PERSIST_CURSOR = False
-MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK = False
+MAY_PERSIST_CURSOR = True
+MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK = True
 MAY_BIND_CAP61_STATE_ROOT = False
 MAY_CAP61_PERSIST = False
 MAY_CAP62_PERSIST = False
@@ -253,9 +272,14 @@ assert S2_IMPLEMENTED is True
 assert S3_IMPLEMENTED is True
 assert S4_IMPLEMENTED is True
 assert S5_IMPLEMENTED is True
+assert S6_IMPLEMENTED is True
 assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
 assert S5_JOIN_SYMBOL == "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
+assert S6_PERSIST_SYMBOL == "persist_occupied_lane_mv2_dp_decision_state_cursor_v1"
+assert S6_RESTORE_SYMBOL == "restore_occupied_lane_mv2_dp_decision_state_cursor_v1"
+assert S6_JOIN_SYMBOL == S6_RESTORE_SYMBOL
 assert S5_JOIN_SYMBOL != S4_JOIN_SYMBOL
+assert S6_PERSIST_SYMBOL != S6_RESTORE_SYMBOL
 assert IN_MEMORY_CURSOR_HOLDER == (
     "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
 )
@@ -278,8 +302,12 @@ assert NEW_TOP5_HANDOFF_DTO_CREATED is False
 assert NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED is False
 assert NEW_MV2_DP_INGRESS_DTO_CREATED is False
 assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is True
-assert MAY_PERSIST_CURSOR is False
-assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+assert MAY_PERSIST_CURSOR is True
+assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
+assert PERSIST_ENABLED is True
+assert PERSIST_SURFACE_OWNER == CURSOR_OWNER
+assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+assert JOIN_PERSISTENCE_AUTHORITY is False
 assert MAY_BIND_CAP61_STATE_ROOT is False
 assert MAY_CAP61_PERSIST is False
 assert MAY_CAP62_PERSIST is False
@@ -303,6 +331,10 @@ assert S5_JOIN_SYMBOL != S2_JOIN_SYMBOL
 assert S5_JOIN_SYMBOL != S3_JOIN_SYMBOL
 assert S5_JOIN_SYMBOL != S4_JOIN_SYMBOL
 assert S5_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+assert S6_PERSIST_SYMBOL != PAIR_MAP_PRODUCER
+assert S6_RESTORE_SYMBOL != PAIR_MAP_PRODUCER
+assert S6_PERSIST_SYMBOL != S4_JOIN_SYMBOL
+assert S6_RESTORE_SYMBOL != S5_JOIN_SYMBOL
 
 CAP23_CHANGE_REQUIRED = False
 CAP24_CHANGE_REQUIRED = False
@@ -356,8 +388,6 @@ FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
         "run_integrated_offline_trading_logic_replay_v1",
         "ensure_host_confirmation_binding_v1",
         "commit_host_confirmation_after_replay_v1",
-        "persist_current_productive_sidestate_confirmation_cursor_v1",
-        "load_current_productive_sidestate_confirmation_cursor_v1",
         "restore_current_productive_sidestate_confirmation_cursor_v1",
         "persist_dynamic_scope_state_atomic_v1",
         "load_dynamic_scope_state_v1",
