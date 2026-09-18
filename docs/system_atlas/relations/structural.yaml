@@ -595,6 +595,21 @@ relations:
       ensure_host_activation_binding_v1 or flipping HOST_JOIN.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_runtime_n5_completion_depends_on_n1_host_join_readiness
+    source: CONTRACT:current_mf_n5_full_autonomy_runtime_n5_completion_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py
+    notes: >
+      This completion adapter consumes compose_occupied_lane_n1_host_join_readiness_v1
+      and invokes ensure_host_activation_binding_v1 without joining the
+      Cap 7.2 live execution port or minting permits.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
