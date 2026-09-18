@@ -1,7 +1,4 @@
-"""CURRENT MF N=5 Full-Autonomy occupied-lane bound ingest join.
-
-S1 exports contract constants only. The S2 ingest function is not implemented.
-"""
+"""CURRENT MF N=5 Full-Autonomy occupied-lane bound ingest join."""
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1.constants_v1 import (
     BOUNDARY_BIND_JOIN_OWNER,
@@ -28,6 +25,10 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1.cons
     SLOT_IDENTITY,
     SLOT_STATE_ROOT_RESOLVER,
 )
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1.ingest_join_v1 import (
+    FullAutonomyOccupiedLaneBoundIngestJoinError,
+    admit_occupied_lane_bound_instruments_v1,
+)
 
 __all__ = [
     "BOUNDARY_BIND_JOIN_OWNER",
@@ -53,4 +54,6 @@ __all__ = [
     "SLICE_ID",
     "SLOT_IDENTITY",
     "SLOT_STATE_ROOT_RESOLVER",
+    "FullAutonomyOccupiedLaneBoundIngestJoinError",
+    "admit_occupied_lane_bound_instruments_v1",
 ]
