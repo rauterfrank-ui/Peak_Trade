@@ -83,6 +83,20 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
+- transitive_downstream: `(none)`
+
+### CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+
+- direct_upstream: `CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CONTRACT:mf_selection_and_anti_churn_semantics_v1`
+- transitive_upstream: `CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CONTRACT:mf_selection_and_anti_churn_semantics_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### FORENSIC_REFERENCE:information_corpus_persistence_base
 
 - direct_upstream: `(none)`

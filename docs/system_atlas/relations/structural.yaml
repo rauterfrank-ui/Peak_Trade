@@ -337,6 +337,33 @@ relations:
       Not an MF productive join. CROSS_UNIVERSE_* remain false.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_current_mf_n5_lane_topology_optionally_uses_pinned_cap23_adapter
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: OPTIONALLY_USES
+    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >
+      Occupied lanes may consume the existing same-universe pin factory.
+      Topology is not selection authority and does not write Cap23.
+      CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_current_mf_n5_lane_topology_depends_on_mf_membership_semantics
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: DEPENDS_ON
+    target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >
+      Consumes governed membership identity only. Does not own POLICY_A
+      admission, removal, or challenger eligibility. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
