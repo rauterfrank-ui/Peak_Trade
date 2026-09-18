@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
 status: active
-scope: S3 occupied-lane MV2/DP decision-state isolation proof and pre-cycle consumption-seam bind; no persist; no restore; no Cap61 live bind; no consumer invoke; no host; no trading; no five-lane runtime
+scope: S4 bounded lane-isolated invoke of the existing N=1 MV2+DP cycle from the S3 seam; no persist; no restore; no Cap61 live bind; no host; no productive MF join; no S5
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,12 +19,13 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S3_ISOLATION_PROOF
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1_S4_CONSUMER_INVOKE
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1
-SLICE_ID=S3_ISOLATION_PROOF
+SLICE_ID=S4_LANE_ADDRESSED_CONSUMER_INVOKE
 S2_IMPLEMENTED=true
 S3_IMPLEMENTED=true
-S4_IMPLEMENTED=false
+S4_IMPLEMENTED=true
+S5_IMPLEMENTED=false
 RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 OCCUPIED_LANES_ONLY=true
 UNIQUE_MUTABLE_ROOTS_ENFORCED=true
@@ -34,6 +35,8 @@ CONSUMPTION_SEAM=pre_invoke_run_current_productive_master_v2_runtime_cycle_v1
 CONSUMER_CYCLE_TAKES_STORE_ROOT=false
 CURSOR_FILENAME_SHARED_ACROSS_LANES=true
 CAP61_CYCLE_STATE_ROOT_BOUND=false
+INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
+CONSUMER_INVOKED=true
 AUTHORITY_EFFECT=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 JOIN_RANKING_AUTHORITY=false
@@ -69,6 +72,10 @@ S2_JOIN_SYMBOL=resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1
 S2_INTENDED_EGRESS=dict[lane_id, str]
 S3_JOIN_SYMBOL=bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1
 S3_INTENDED_EGRESS=dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]
+S4_JOIN_SYMBOL=invoke_occupied_lane_mv2_dp_decision_state_consumer_v1
+S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S4_IMPLEMENTED=true
+S5_IMPLEMENTED=false
 NEW_COLLECTION_DTO_CREATED=false
 NEW_TOP5_HANDOFF_DTO_CREATED=false
 NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED=false
@@ -91,7 +98,7 @@ MASTER_V2_CHANGE_REQUIRED=false
 DOUBLE_PLAY_CHANGE_REQUIRED=false
 FULL_AUTONOMY_HOST_CHANGE_REQUIRED=false
 CURSOR_OWNER_CHANGE_REQUIRED=false
-THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=false
+THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=true
 MAY_PERSIST_CURSOR=false
 MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=false
 MAY_BIND_CAP61_STATE_ROOT=false
@@ -126,23 +133,41 @@ Lane topology and slot types remain:
 Existing cursor bundle owner remains:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_sidestate_confirmation_cursor_v1.py`.
 
-Existing trading-decision consumer remains named, not invoked:
+Existing trading-decision consumer remains the named N=1 cycle, invoked
+only through the S4 bounded harness:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
 This slice implements
-`bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1` only. It does
-**not** persist or load the cursor, does **not** restore the cursor from
-disk, does **not** set Cap61 `state_root`, does **not** persist
-Cap61/Cap62/G17/Exit, does **not** reinvoke Cap 2.3 or Cap 2.4, does
-**not** join the Full-Autonomy host, does **not** invoke Master V2 or
-Double Play, does **not** change cursor schema or add `lane_id`, does
-**not** create a second state owner, does **not** start S4, and
-does **not** create five isolated executing lanes.
+`invoke_occupied_lane_mv2_dp_decision_state_consumer_v1` from the closed
+S3 seam. It does **not** persist or load the cursor, does **not** restore
+the cursor from disk or from `incoming_cursor`, does **not** set Cap61
+`state_root`, does **not** persist Cap61/Cap62/G17/Exit, does **not**
+reinvoke Cap 2.3 or Cap 2.4, does **not** join the Full-Autonomy host,
+does **not** change Master V2 or Double Play trading semantics, does
+**not** change cursor schema or add `lane_id`, does **not** create a
+second state owner, does **not** start S5, does **not** create a
+productive MF join, and does **not** create five isolated executing
+lanes. `CONSUMER_INVOKED=true` means bounded/test-harness lane-isolated
+invocation only.
 
 ## 1. Purpose
 
-Bind S2 resolver output to the pre-cycle consumption seam and prove
-per-lane isolation after the closed pair map:
+Invoke the existing N=1 MV2+DP cycle lane-isolated from the closed S3
+seam. Forensic consumer facts remain:
+
+```text
+CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
+CONSUMER_CYCLE_TAKES_STORE_ROOT=false
+CONSUMER_CYCLE_CURSOR_PARAM=incoming_cursor
+CAP61_CYCLE_STATE_ROOT=None
+CAP61_CYCLE_PERSIST=false
+DISK_STORE_ROOT_USED_ONLY_BY_PERSIST_LOAD_WRAPPERS=true
+```
+
+The cycle does not take `store_root`. Lane addressing is the S3 seam
+(`IsolatedLaneSlotV1.lane_state_root` plus shared cursor filename). S4
+calls the cycle with that lane's `BoundInstrumentV1` and
+`incoming_cursor=None`. Persist and restore remain out of scope.
 
 ```text
 compose_occupied_lane_mv2_dp_handoff_v1
@@ -158,18 +183,23 @@ S2 RESOLVER — occupied lanes only
 S3 CONSUMPTION SEAM BIND — immediately before
   run_current_productive_master_v2_runtime_cycle_v1
   bound_instrument + store_root + cursor_address
-  cursor filename shared; isolation = distinct store roots
-  unique mutable roots / no filename aliasing
-  N=1 global cursor path rejected
-  same N=1 MV2+DP configuration; shared mutable state = false
-  consumer NOT invoked
         │
         ▼
-STOP — no persist; no restore; no Cap61 live bind; no consumer invoke; no S4
+S4 BOUNDED HARNESS INVOKE — occupied lanes only
+  same N=1 MV2+DP market/trading configuration
+  per-lane BoundInstrumentV1
+  incoming_cursor=None
+  persist not called
+  Cap61 state_root remains None
+  CONSUMER_INVOKED=true means BOUNDED_TEST_HARNESS_LANE_ISOLATED
+        │
+        ▼
+STOP — no persist; no restore; no Cap61 live bind; no host; no S5
 ```
 
-`#6602` already closed PAIR_MAP_STOP. This slice does not reopen that
-owner. Ranking authority already ended at `#6597`.
+`#6602` already closed PAIR_MAP_STOP. `#6605` already closed S3.
+This slice does not reopen those owners. Ranking authority already ended
+at `#6597`.
 
 All occupied slots, at most five, must use the same canonical Master V2 +
 Double Play configuration and semantics as the existing N=1 slot.
@@ -184,10 +214,14 @@ N=1 global cursor path != per-lane store_root
 0..5 prepared bounds != Five-Lane runtime authorized
 0..5 prepared bounds != MAX_POSITIONS_EFFECTIVE raise
 FIRST_TRADING_DECISION_CONSUMER remains run_current_productive_master_v2_runtime_cycle_v1
-THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=false
+THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=true
+CONSUMER_INVOKED=true
+INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
 MAY_PERSIST_CURSOR=false
 MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK=false
 MAY_BIND_CAP61_STATE_ROOT=false
+HOST_JOIN=false
+MF_PRODUCTIVE_JOIN=false
 ```
 
 ## 2. State-surface census
@@ -228,8 +262,9 @@ HostExitPolicyBindingV1 is ephemeral this-cycle. Optional G17 producer is
 in-memory when passed. ScopeCooldown and composition-direction are reset
 each cycle on this consumer and are not cursor-carried.
 
-**interpretation:** S3 binds addressing to the named pre-cycle seam only.
-It does not persist, restore, live-bind Cap61, invoke, or start S4.
+**interpretation:** S4 invokes the named consumer from the S3 seam in a
+bounded test harness only. It does not persist, restore, live-bind Cap61,
+join the host, authorize productive MF, or start S5.
 
 ## 3. Slot context
 
@@ -241,12 +276,12 @@ Slot state root remains
 `IsolatedLaneSlotV1.lane_state_root`.
 
 This contract does not invent a second lane identity, a new cursor
-schema, or a new state store. S3 reuses the existing field as the
-store_root string at the pre-cycle seam. The cycle does not take
-`store_root`; disk addressing remains `{store_root}&#47;{CURSOR_FILENAME}`
-and is not performed here.
+schema, or a new state store. S4 reuses the existing field as the
+store_root string at the pre-cycle seam and records it on the invocation
+result. The cycle does not take `store_root`; disk addressing remains
+`{store_root}&#47;{CURSOR_FILENAME}` and is not performed here.
 
-## 4. S1 versus S2 versus S3 versus S4
+## 4. S1 versus S2 versus S3 versus S4 versus S5
 
 ```text
 S1_CONTRACT_BIND=closed
@@ -255,21 +290,25 @@ S2_IMPLEMENTED=true
 S3_JOIN_SYMBOL=bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1
 S3_IMPLEMENTED=true
 S3_INTENDED_EGRESS=dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]
-S4_IMPLEMENTED=false
+S4_JOIN_SYMBOL=invoke_occupied_lane_mv2_dp_decision_state_consumer_v1
+S4_IMPLEMENTED=true
+S4_INTENDED_EGRESS=dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]
+S5_IMPLEMENTED=false
 FIRST_DECISION_STATE_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
 CONSUMPTION_SEAM=pre_invoke_run_current_productive_master_v2_runtime_cycle_v1
+INVOCATION_CONTEXT=BOUNDED_TEST_HARNESS_LANE_ISOLATED
+CONSUMER_INVOKED=true
 RESOLUTION_RULE=occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root
 ```
 
-S3 binds the named resolver output to the pre-cycle seam and proves
-filename-coexistence isolation via distinct store roots. It does not
-authorize persist, restore, Cap61 live bind, host, Master V2, Double Play,
-consumer invoke, or S4.
+S4 invokes the named consumer from the S3 seam in a bounded test harness.
+It does not authorize persist, restore, Cap61 live bind, host, Master V2
+or Double Play mutation, productive MF join, or S5.
 
 ## 5. Non-goals
 
 ```text
-NO_S4
+NO_S5
 NO_CURSOR_PERSIST
 NO_CURSOR_LOAD_OR_RESTORE_FROM_DISK
 NO_CAP61_STATE_ROOT_BIND
@@ -292,8 +331,8 @@ NO_CAP23_SEMANTIC_CHANGE
 NO_CAP24_REINVOKE
 NO_CAP24_SEMANTIC_CHANGE
 NO_WALLCLOCK_SESSION_BIND_THROUGH
-NO_MASTER_V2
-NO_DOUBLE_PLAY
+NO_MASTER_V2_SEMANTIC_CHANGE
+NO_DOUBLE_PLAY_SEMANTIC_CHANGE
 NO_C1_CYCLE
 NO_STEP_29P
 NO_STEP_29Q
@@ -302,5 +341,6 @@ NO_NEW_TOP5_HANDOFF_DTO
 NO_MULTI_BOUND_AUTHORITY_DTO
 NO_NEW_MV2_DP_INGRESS_DTO
 NO_MF_SINGLE_EGRESS_REWIRE
-NO_FIRST_TRADING_DECISION_CONSUMER_INVOKE
+NO_PRODUCTIVE_MF_CONSUMER_JOIN
+NO_HOST_JOIN
 ```

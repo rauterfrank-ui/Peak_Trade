@@ -1,16 +1,19 @@
 """CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing join.
 
-S3 exports pre-cycle consumption-seam bind. Persist, restore, Cap61 live
-bind, consumer invoke, and S4 remain out of scope.
+S4 exports bounded lane-isolated consumer invoke from the S3 seam.
+Persist, restore, Cap61 live bind, host join, and S5 remain out of scope.
 """
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
+    OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
+    invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
+    CONSUMER_INVOKED,
     CONSUMPTION_SEAM,
     CONTRACT_ID,
     CURSOR_BUNDLE_TYPE,
@@ -19,6 +22,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     GLOBAL_N1_CURSOR_REJECTED,
     HOST_JOIN,
     INTENDED_PER_LANE_STORE_ROOT,
+    INVOCATION_CONTEXT,
     JOIN_PERSISTENCE_AUTHORITY,
     JOIN_RANKING_AUTHORITY,
     JOIN_RUNTIME_ACTIVATION_AUTHORITY,
@@ -41,6 +45,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S3_IMPLEMENTED,
     S3_JOIN_SYMBOL,
     S4_IMPLEMENTED,
+    S4_JOIN_SYMBOL,
+    S5_IMPLEMENTED,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -50,6 +56,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
 
 __all__ = [
     "ADDRESSING_CONSUMER_OWNER",
+    "CONSUMER_INVOKED",
     "CONSUMPTION_SEAM",
     "CONTRACT_ID",
     "CURSOR_BUNDLE_TYPE",
@@ -58,6 +65,7 @@ __all__ = [
     "GLOBAL_N1_CURSOR_REJECTED",
     "HOST_JOIN",
     "INTENDED_PER_LANE_STORE_ROOT",
+    "INVOCATION_CONTEXT",
     "JOIN_PERSISTENCE_AUTHORITY",
     "JOIN_RANKING_AUTHORITY",
     "JOIN_RUNTIME_ACTIVATION_AUTHORITY",
@@ -80,12 +88,16 @@ __all__ = [
     "S3_IMPLEMENTED",
     "S3_JOIN_SYMBOL",
     "S4_IMPLEMENTED",
+    "S4_JOIN_SYMBOL",
+    "S5_IMPLEMENTED",
     "SAME_TRADING_CONFIGURATION_ACROSS_LANES",
     "SHARED_MUTABLE_STATE_ACROSS_LANES",
     "SLICE_ID",
     "THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER",
     "UNIQUE_MUTABLE_ROOTS_ENFORCED",
     "FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError",
+    "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1",
     "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1",
+    "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1",
     "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
 ]
