@@ -9,20 +9,23 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  S2C DataSafetyGate productive admission join
-  (WP S2C_DATASAFETYGATE_PRODUCTIVE_ADMISSION_JOIN_V1).
-  DataSafetyGate.check is a fail-closed conjunct of
-  evaluate_execution_admission_v1. DataSafetyGate=CONJUNCT_NOT_OWNER.
-  ALLOW is not admission. Prior S2C unauthorized / join=false notes
-  are superseded for this implemented coupling. No activation/POST/wire.
-  Atlas is not canonical authority.
+  Passive elementary C1 mark-to-mark direction identity
+  (WP ELEMENTARY_DIRECTION_PRIMITIVE_V1). Cycle evidence only.
+  Not Replay / Double Play / ScopeEvent / Entry consumption.
+  AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 changed_entities:
-- GATE:full_core_fresh_pretrade_runtime_get_v1
-- GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
-- REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+- CONTRACT:elementary_direction_primitive_v1
+- NAVIGATION_INDEX:map_of_truth
+- REL:r_full_core_cycle_observes_elementary_direction
+- REL:s_elementary_direction_implements_primitive_contract
+- REL:s_map_navigates_elementary_direction_primitive
+- RUNTIME_COMPONENT:elementary_direction_v1
 - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []
-new_relations: []
+new_relations:
+- REL:r_full_core_cycle_observes_elementary_direction
+- REL:s_elementary_direction_implements_primitive_contract
+- REL:s_map_navigates_elementary_direction_primitive
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
@@ -30,7 +33,10 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-- id: GATE:full_core_fresh_pretrade_runtime_get_v1
-- id: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
-- id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+- id: CONTRACT:elementary_direction_primitive_v1
+- id: NAVIGATION_INDEX:map_of_truth
+- id: REL:r_full_core_cycle_observes_elementary_direction
+- id: REL:s_elementary_direction_implements_primitive_contract
+- id: REL:s_map_navigates_elementary_direction_primitive
+- id: RUNTIME_COMPONENT:elementary_direction_v1
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1

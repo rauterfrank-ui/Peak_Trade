@@ -1082,3 +1082,28 @@ relations:
       Navigation only. Map of Truth defines no semantics. The T016
       provenance index is AUTHORITY=NONE and not SSOT. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_elementary_direction_primitive
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:elementary_direction_primitive_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. The elementary
+      direction primitive is AUTHORITY_EFFECT=NONE and not a trading-decision
+      owner. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_elementary_direction_implements_primitive_contract
+    source: RUNTIME_COMPONENT:elementary_direction_v1
+    type: IMPLEMENTS
+    target: CONTRACT:elementary_direction_primitive_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/market_state/elementary_direction_v1.py
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+    notes: >
+      Topology only. Implementation is not activation and is not Double Play
+      consumption. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
