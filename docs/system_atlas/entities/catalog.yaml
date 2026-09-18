@@ -655,6 +655,37 @@ entities:
       Learning/DDO remains observation-only and is not a candidate-selection
       bridge. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 isolated lane-instance topology
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/__init__.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/constants_v1.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/__init__.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/constants_v1.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+      - tests/ops/test_current_mf_n5_isolated_lane_instance_topology_v1.py
+    notes: >-
+      Non-authoritative mapping from governed same-universe MF POLICY_A
+      membership identity onto opaque LANE_1..LANE_5 instance identities.
+      Rank order is not lane identity. Not ranking, membership, Cap23
+      selection, Cap24 binding, trading, or execution authority. Occupied
+      lanes may consume the existing same-universe Cap23 pin factory.
+      No productive MF join, no five-lane runtime, no execution concurrency,
+      MAX_POSITIONS_EFFECTIVE remains 1. Durable topology persistence is
+      not invented. CROSS_UNIVERSE_* remain false. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary

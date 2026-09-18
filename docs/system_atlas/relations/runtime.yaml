@@ -54,6 +54,31 @@ relations:
       CROSS_UNIVERSE_* remain false. No MF domain edge.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_current_mf_n5_lane_topology_calls_pinned_cap23_adapter
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: CALLS
+    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+    notes: >-
+      Pin factory reuse only. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer.
+      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_current_mf_n5_lane_topology_consumes_mf_membership_semantics
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: CONSUMES
+    target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+      - src/ops/mf_membership_context_artifact_contract_v1.py
+    notes: >-
+      Consumes governed membership identity and derived enter/retain/exit
+      occupancy. Rank order is not lane identity. Not membership authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_cap24_binds
     source: BINDER:bound_instrument_v1
     type: BINDS
