@@ -16,6 +16,8 @@ Membership, hierarchy, supersession. Inverse edges are not inferred.
 | id | source | type | target | epistemic | evidence |
 | --- | --- | --- | --- | --- | --- |
 | REL:s_binder_uses_schema | BINDER:bound_instrument_v1 | USES_SCHEMA | SCHEMA:runtime_binding_v1 | STATUS=FORENSIC_RAW | src/ops/single_selected_future_runtime_binding_v1/constants_v1.py |
+| REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap23_produce_join | CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 | DEPENDS_ON | CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1 | STATUS=ADJUDICATED | docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md,src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py |
+| REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap24 | CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED | docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md,src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py |
 | REL:s_cap21_governed_by_btc | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY | src/ops/governed_futures_universe_producer_v1/constants_v1.py |
 | REL:s_cap21_governed_by_never_default | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | INVARIANT:missing_metadata_never_defaulted | STATUS=CANONICAL_AUTHORITY | docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md |
 | REL:s_cap21_tested_by | CAPABILITY:cap_2_1_gfu | TESTED_BY | TEST:gfu_producer | STATUS=FORENSIC_RAW | docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md |

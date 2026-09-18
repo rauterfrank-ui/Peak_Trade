@@ -455,6 +455,31 @@ relations:
       lane. Cap23 remains sole selection writer. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap23_produce_join
+    source: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+    notes: >
+      Bind join consumes the already-produced #6597 SSF map. It must not
+      reinvoke Cap23. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap24
+    source: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+    notes: >
+      Bind join invokes existing Cap24 N=1 gate per occupied lane. Cap24
+      remains VALIDATE_AND_BIND_EXISTING_SELECTED_IDENTITY. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
