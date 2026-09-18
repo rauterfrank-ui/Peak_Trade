@@ -35,6 +35,24 @@ relations:
     epistemic_status: ADJUDICATED
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/producer_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+    notes: >-
+      Optional pin still selects from the same full Cap 2.2 snapshot.
+      No second ranking, no cross-universe candidate pool.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_current_mf_member_pinned_cap23_n1_adapter_validates_same_universe_pin
+    source: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    type: VALIDATES
+    target: SELECTOR:single_selected_future_policy
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+    notes: >-
+      Same-universe pin constraint only. Not PRODUCES/SELECTS/BINDS.
+      CROSS_UNIVERSE_* remain false. No MF domain edge.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_cap24_binds
     source: BINDER:bound_instrument_v1
@@ -205,6 +223,7 @@ relations:
     notes: >-
       Host decorator observe_after_producer_v0 seam selection.single_future.
       No-op unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
+      Cap23 governed pin does not confer DDO selection or routing authority.
 
   - id: REL:r_ddo_capture_observes_binding
     source: RUNTIME_COMPONENT:ddo_capture_v0

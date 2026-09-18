@@ -270,6 +270,7 @@ terms:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     definition: >-
       Observation-only DDO capture adapters and productive host hooks that persist
       existing authoritative producer outputs into the append-only DDO ledger.
@@ -288,6 +289,7 @@ terms:
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Capture is observation-only. Listed src/ops paths
       are fail-open host hooks, not new trading or execution semantics.
+      Cap23 governed pin does not make DDO a selection or routing bridge.
       Double-Play typed observation projection v1 stores exact producer tokens
       without copying them into DECISION_TYPE_V0 / DECISION_RESULT_V0.
 

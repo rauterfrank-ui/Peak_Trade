@@ -25,12 +25,16 @@ closures:
       - SELECTOR:single_selected_future_policy
       - OWNER_DECISION:cap23_exclusive_selection
       - SCHEMA:single_selected_future_selection_v1
+      - CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
     upstream:
       - CAPABILITY:cap_2_2_ranking
       - SELECTOR:productive_futures_ranking
     downstream:
       - CAPABILITY:cap_2_4_runtime_binding
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    notes: >-
+      Optional same-universe Cap23 pin is inspect-only in this closure.
+      No cross-universe ranking merge. ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding
     title: NATIVE_INSTRUMENT_BINDING
@@ -44,6 +48,10 @@ closures:
     downstream:
       - HOST:cap72_stateful_host
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    notes: >-
+      Cap23 governed pin does not mutate Cap 2.4. Binding still consumes the
+      Cap 2.3 selection DTO. Same-universe pin is not a Cap24 rewrite.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:canary
     title: CANARY

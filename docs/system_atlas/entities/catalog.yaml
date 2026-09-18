@@ -616,6 +616,45 @@ entities:
       C1_GATE_NATIVE_ID remains NOT_JOINED. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    kind: CONTRACT
+    name: CURRENT MF-member to pinned Cap23 N=1 adapter
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_MEMBER_TO_PINNED_CAP23_N1_ADAPTER_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/__init__.py
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_MEMBER_TO_PINNED_CAP23_N1_ADAPTER_CONTRACT_V1.md
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/__init__.py
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+      - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
+      - src/ops/single_selected_future_policy_v1/__init__.py
+      - tests/ops/test_current_mf_member_to_pinned_cap23_n1_adapter_v1.py
+    notes: >-
+      Optional same-universe Cap23 N=1 pin factory. Not selection authority.
+      Cap 2.3 remains the sole writer of the selection DTO. Pin is valid only
+      inside the same productive Cap 2.2 ranking/universe identity from which
+      the member was derived (universe_snapshot_id, ranking_snapshot_id,
+      integrity_digest, unique eligible instrument row, lane_state_root).
+      Instrument identity alone is not sufficient. CROSS_UNIVERSE_SELECTION,
+      CROSS_UNIVERSE_PIN, CROSS_UNIVERSE_REPLACEMENT, CROSS_UNIVERSE_FALLBACK,
+      CROSS_UNIVERSE_CANDIDATE_BORROWING, CROSS_UNIVERSE_RERANKING, and
+      MULTI_UNIVERSE_MERGE remain false. No MF productive join, no
+      MF_SINGLE_EGRESS rewire, no five-lane runtime, no Cap24/Master-V2/Double
+      Play mutation. Historical MF artifacts are not CURRENT universe identity.
+      Learning/DDO remains observation-only and is not a candidate-selection
+      bridge. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
@@ -881,10 +920,20 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/producer_v1.py
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+      - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
+      - src/ops/single_selected_future_policy_v1/__init__.py
+    notes: >-
+      Optional same-universe governed pin constrains candidate proposal only.
+      Unpinned Cap 2.3 remains the global first-eligible path. Pin does not
+      merge, borrow, or fall back across ranking universes. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_2_4_runtime_binding
     kind: CAPABILITY
@@ -985,8 +1034,13 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+    notes: >-
+      Cap23 governed pin consumes one full Cap 2.2 snapshot identity.
+      No cross-universe ranking merge, normalization, or candidate borrowing.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: SELECTOR:single_selected_future_policy
     kind: SELECTOR
@@ -994,8 +1048,24 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+      - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
+      - src/ops/single_selected_future_policy_v1/__init__.py
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/producer_v1.py
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+      - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
+      - src/ops/single_selected_future_policy_v1/__init__.py
+    notes: >-
+      Optional same-universe pin replaces only _pick_top_eligible proposal.
+      Existing hysteresis, min-holding, REPLACEMENT_PENDING, EXIT_ONLY, and
+      open-position policy remain. CROSS_UNIVERSE_* remain false.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: BINDER:bound_instrument_v1
     kind: BINDER
@@ -4611,6 +4681,9 @@ entities:
       - src/governance/capital_risk_sizing_v1.py
       - src/trading/master_v2/double_play_composition_matrix_v1.py
     notes: >-
+      Cap23 governed-pin WP does not confer DDO ranking, selection, trading,
+      binding, or execution authority. Capture remains observation-only and
+      is not a candidate-selection bridge.
       Offline observation adapter. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
       SECOND_RISK_AUTHORITY=false. SECOND_SAFETY_AUTHORITY=false.

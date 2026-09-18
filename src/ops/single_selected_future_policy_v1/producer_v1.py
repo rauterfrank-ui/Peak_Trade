@@ -23,6 +23,9 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (
     SELECTION_POLICY_VERSION,
     STATE_NO_SELECTION,
 )
+from src.ops.single_selected_future_policy_v1.governed_pin_v1 import (
+    GovernedCap23InstrumentPinV1,
+)
 from src.ops.single_selected_future_policy_v1.models_v1 import (
     SelectionProduceResultV1,
     SingleSelectedFutureSelectionV1,
@@ -57,6 +60,8 @@ def produce_from_ranking_state_root_v1(
     hysteresis_rank_improvement: int = DEFAULT_HYSTERESIS_RANK_IMPROVEMENT,
     min_history_samples: int = DEFAULT_MIN_HISTORY_SAMPLES,
     min_data_quality_status: str = DEFAULT_MIN_DATA_QUALITY_STATUS,
+    governed_pin: GovernedCap23InstrumentPinV1 | None = None,
+    lane_state_root: Path | str | None = None,
 ) -> SelectionProduceResultV1:
     loaded = load_and_validate_ranking_snapshot_v1(Path(ranking_state_root))
     if not loaded.ok or loaded.snapshot is None:
@@ -73,6 +78,8 @@ def produce_from_ranking_state_root_v1(
             hysteresis_rank_improvement=hysteresis_rank_improvement,
             min_history_samples=min_history_samples,
             min_data_quality_status=min_data_quality_status,
+            governed_pin=governed_pin,
+            lane_state_root=lane_state_root,
         )
     return produce_single_selected_future_v1(
         ranking_snapshot=loaded.snapshot.to_dict(),
@@ -87,6 +94,8 @@ def produce_from_ranking_state_root_v1(
         hysteresis_rank_improvement=hysteresis_rank_improvement,
         min_history_samples=min_history_samples,
         min_data_quality_status=min_data_quality_status,
+        governed_pin=governed_pin,
+        lane_state_root=lane_state_root,
     )
 
 
@@ -116,6 +125,7 @@ def run_single_selected_future_policy_v1(
     allowlist_payload: Mapping[str, Any] | None = None,
     legacy_selection_payload: Mapping[str, Any] | None = None,
     manual_override_payload: Mapping[str, Any] | None = None,
+    governed_pin: GovernedCap23InstrumentPinV1 | None = None,
 ) -> dict[str, Any]:
     """Full productive call graph: select → persist → verify (no runtime activation)."""
     writer = SingleSelectedFutureSingleWriterV1(state_root=Path(state_root), session_id=session_id)
@@ -165,6 +175,8 @@ def run_single_selected_future_policy_v1(
                 hysteresis_rank_improvement=hysteresis_rank_improvement,
                 min_history_samples=min_history_samples,
                 min_data_quality_status=min_data_quality_status,
+                governed_pin=governed_pin,
+                lane_state_root=state_root,
             )
         else:
             produced = produce_single_selected_future_v1(
@@ -184,6 +196,8 @@ def run_single_selected_future_policy_v1(
                 allowlist_payload=allowlist_payload,
                 legacy_selection_payload=legacy_selection_payload,
                 manual_override_payload=manual_override_payload,
+                governed_pin=governed_pin,
+                lane_state_root=state_root,
             )
 
         evidence = build_selection_evidence_v1(

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Mapping, Optional
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
@@ -51,6 +52,10 @@ from src.ops.single_selected_future_policy_v1.policy_v1 import (
     is_selection_eligible_v1,
     rank_of_instrument_v1,
     soft_degradation_codes_v1,
+)
+from src.ops.single_selected_future_policy_v1.governed_pin_v1 import (
+    GovernedCap23InstrumentPinV1,
+    resolve_governed_pin_candidate_v1,
 )
 from src.ops.single_selected_future_policy_v1.reason_codes_v1 import SelectionFailureCodeV1
 
@@ -268,6 +273,8 @@ def produce_single_selected_future_v1(
     allowlist_payload: Mapping[str, Any] | None = None,
     legacy_selection_payload: Mapping[str, Any] | None = None,
     manual_override_payload: Mapping[str, Any] | None = None,
+    governed_pin: GovernedCap23InstrumentPinV1 | None = None,
+    lane_state_root: Path | str | None = None,
 ) -> SelectionProduceResultV1:
     """Produce exactly one selected future (or NO_SELECTION) from Cap 2.2 ranking."""
     wall_rfc = _rfc3339(producer_observed_at_unix)
@@ -476,12 +483,26 @@ def produce_single_selected_future_v1(
         instrument_status_overlay=dict(instrument_status_by_id or {}),
     )
 
-    top, excl_codes, _evaluated = _pick_top_eligible(
-        ranked,
-        instrument_status_by_id=instrument_status_by_id,
-        min_history_samples=min_history_samples,
-        min_data_quality_status=min_data_quality_status,
-    )
+    if governed_pin is not None:
+        pinned_row, pin_excl_codes = resolve_governed_pin_candidate_v1(
+            governed_pin,
+            universe_snapshot_id=ranking.universe_snapshot_id,
+            ranking_snapshot_id=ranking.ranking_snapshot_id,
+            ranking_integrity_digest=ranking.integrity_digest,
+            ranked_candidates=ranked,
+            lane_state_root=lane_state_root,
+        )
+        if pinned_row is None:
+            top, excl_codes = None, pin_excl_codes
+        else:
+            top, excl_codes = pinned_row, ()
+    else:
+        top, excl_codes, _evaluated = _pick_top_eligible(
+            ranked,
+            instrument_status_by_id=instrument_status_by_id,
+            min_history_samples=min_history_samples,
+            min_data_quality_status=min_data_quality_status,
+        )
 
     open_pos = str(open_position_instrument_id or "").strip()
     open_present = bool(open_pos)
