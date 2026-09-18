@@ -1,17 +1,20 @@
 """CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing join.
 
-S2 exports occupied-lane store-root resolution only. Persist, restore,
-Cap61 live bind, consumer invoke, and S3 isolation remain out of scope.
+S3 exports pre-cycle consumption-seam bind. Persist, restore, Cap61 live
+bind, consumer invoke, and S4 remain out of scope.
 """
 
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
+    bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.constants_v1 import (
     ADDRESSING_CONSUMER_OWNER,
+    CONSUMPTION_SEAM,
     CONTRACT_ID,
     CURSOR_BUNDLE_TYPE,
+    FIRST_DECISION_STATE_CONSUMER,
     FIRST_TRADING_DECISION_CONSUMER,
     GLOBAL_N1_CURSOR_REJECTED,
     HOST_JOIN,
@@ -36,6 +39,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S2_IMPLEMENTED,
     S2_JOIN_SYMBOL,
     S3_IMPLEMENTED,
+    S3_JOIN_SYMBOL,
+    S4_IMPLEMENTED,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -45,8 +50,10 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
 
 __all__ = [
     "ADDRESSING_CONSUMER_OWNER",
+    "CONSUMPTION_SEAM",
     "CONTRACT_ID",
     "CURSOR_BUNDLE_TYPE",
+    "FIRST_DECISION_STATE_CONSUMER",
     "FIRST_TRADING_DECISION_CONSUMER",
     "GLOBAL_N1_CURSOR_REJECTED",
     "HOST_JOIN",
@@ -71,11 +78,14 @@ __all__ = [
     "S2_IMPLEMENTED",
     "S2_JOIN_SYMBOL",
     "S3_IMPLEMENTED",
+    "S3_JOIN_SYMBOL",
+    "S4_IMPLEMENTED",
     "SAME_TRADING_CONFIGURATION_ACROSS_LANES",
     "SHARED_MUTABLE_STATE_ACROSS_LANES",
     "SLICE_ID",
     "THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER",
     "UNIQUE_MUTABLE_ROOTS_ENFORCED",
     "FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError",
+    "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1",
     "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
 ]

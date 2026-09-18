@@ -1,7 +1,7 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S2 implements occupied-lane store-root resolution only. Does not persist,
-restore, bind Cap61, invoke the consumer, or prove S3 isolation.
+S3 binds resolver output to the pre-cycle consumption seam and proves
+per-lane isolation. Does not persist, restore, bind Cap61, or invoke.
 """
 
 from __future__ import annotations
@@ -60,10 +60,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S2_RESOLVER_ONLY"
+SLICE_ID = "S3_ISOLATION_PROOF"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S2_RESOLVER"
+    "_S3_ISOLATION_PROOF"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -105,11 +105,23 @@ FIRST_TRADING_DECISION_CONSUMER = HANDOFF_FIRST_TRADING_DECISION_CONSUMER
 S2_JOIN_SYMBOL = "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1"
 S2_IMPLEMENTED = True
 S2_INTENDED_EGRESS = "dict[lane_id, str]"
-S3_IMPLEMENTED = False
+S3_JOIN_SYMBOL = "bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1"
+S3_IMPLEMENTED = True
+S3_INTENDED_EGRESS = "dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]"
+S4_IMPLEMENTED = False
 RESOLUTION_RULE = "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
 OCCUPIED_LANES_ONLY = True
 UNIQUE_MUTABLE_ROOTS_ENFORCED = True
 GLOBAL_N1_CURSOR_REJECTED = True
+FIRST_DECISION_STATE_CONSUMER = FIRST_TRADING_DECISION_CONSUMER
+CONSUMPTION_SEAM = "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
+CONSUMER_CYCLE_INPUTS = ("bound_instrument", "incoming_cursor")
+CONSUMER_CYCLE_TAKES_STORE_ROOT = False
+CURSOR_FILENAME_SHARED_ACROSS_LANES = True
+CURSOR_DISK_ADDRESSING_RULE = (
+    "{store_root}/current_productive_sidestate_confirmation_cursor_v1.json"
+)
+CAP61_CYCLE_STATE_ROOT_BOUND = False
 
 CURSOR_BUNDLE_CYCLE_CROSSING_SURFACES = (
     "SideState",
@@ -226,11 +238,17 @@ assert JOIN_RANKING_AUTHORITY is False
 assert JOIN_PERSISTENCE_AUTHORITY is False
 assert JOIN_FULL_AUTONOMY_HOST_AUTHORITY is False
 assert S2_IMPLEMENTED is True
-assert S3_IMPLEMENTED is False
+assert S3_IMPLEMENTED is True
+assert S4_IMPLEMENTED is False
 assert OCCUPIED_LANES_ONLY is True
 assert UNIQUE_MUTABLE_ROOTS_ENFORCED is True
 assert GLOBAL_N1_CURSOR_REJECTED is True
 assert RESOLUTION_RULE == "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
+assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
+assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
+assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
+assert CURSOR_FILENAME_SHARED_ACROSS_LANES is True
+assert CAP61_CYCLE_STATE_ROOT_BOUND is False
 assert NEW_COLLECTION_DTO_CREATED is False
 assert NEW_TOP5_HANDOFF_DTO_CREATED is False
 assert NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED is False
@@ -273,6 +291,10 @@ FAILURE_INVALID_STORE_ROOT = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_INV
 FAILURE_SHARED_STORE_ROOT = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SHARED_STORE_ROOT"
 FAILURE_N1_GLOBAL_CURSOR_STORE = (
     "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_N1_GLOBAL_CURSOR_STORE_FORBIDDEN"
+)
+FAILURE_CURSOR_ADDRESS_ALIAS = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_CURSOR_ADDRESS_ALIAS"
+FAILURE_SEAM_STORE_ROOT_MISMATCH = (
+    "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SEAM_STORE_ROOT_MISMATCH"
 )
 
 FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
