@@ -980,6 +980,43 @@ entities:
       Cap21-24 reinvoke, host join, or cardinality raise. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Full-Autonomy occupied-lane N=1 host-join readiness
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_N1_HOST_JOIN_READINESS_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_N1_HOST_JOIN_READINESS_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py
+      - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1.py
+    notes: >-
+      N1_HOST_JOIN_READINESS_ADDRESS_STOP_BEFORE_OWNER_BOUNDARY consumes
+      the N1 governed-cycle consumer and addresses lane-local host-join
+      path params onto stateful_no_order_host_join_v1 /
+      ensure_host_activation_binding_v1 without invoking that symbol.
+      native_id is BoundInstrumentV1.venue_native_id. Cursor owner and
+      cycle-exclusion lock remain the existing owners. Cap61 stays
+      unbound. HOST_JOIN=false. HOST_JOIN_INVOKED=false.
+      N1_CONSUMER_JOIN_READY=true. MF_PRODUCTIVE_JOIN=false.
+      PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED.
+      MAX_POSITIONS_EFFECTIVE remains 1.
+      MULTI_FUTURE_RUNTIME_AUTHORIZED=false.
+      EXECUTION_CONCURRENCY_AUTHORIZED=false.
+      EXTERNAL_EFFECT_AUTHORIZED=false. No POST, permit, host enable,
+      Cap72 live-port join, productive host entry, or cardinality raise.
+      FIRST_TRUE_OWNER_BOUNDARY is the actual host-join invoke or flag
+      flip. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
