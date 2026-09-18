@@ -14,6 +14,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
 
+from src.data.safety import DataSourceKind
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     METHOD_GET,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
@@ -133,18 +134,26 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             except (ValueError, json.JSONDecodeError):
                 error_class = error_class or "MALFORMED_JSON"
                 payload = None
+        get_performed = status == 200 and payload is not None
+        venue_live_contact = bool(self.venue_live_contact and status == 200)
+        # S1: REAL only from this producer's direct eea.okx.com acquisition evidence.
+        # Do not derive from endpoint path, payload shape, or foreign vocabularies.
+        data_safety_source_kind = (
+            DataSourceKind.REAL.value if get_performed and venue_live_contact else None
+        )
         result = FreshPretradeGetTransportResultV1(
-            get_performed=status == 200 and payload is not None,
+            get_performed=get_performed,
             method=METHOD_GET,
             endpoint=endpoint,
             http_status=status,
             payload=payload,
             auth_header_sent=auth_sent,
             transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
-            venue_live_contact=bool(self.venue_live_contact and status == 200),
+            venue_live_contact=venue_live_contact,
             historical_reuse=False,
             error_class=error_class,
             body_sha256=hashlib.sha256(body).hexdigest() if body else "",
+            data_safety_source_kind=data_safety_source_kind,
         )
         self._cache[str(endpoint)] = result
         path_only = str(endpoint).split("?", 1)[0]
