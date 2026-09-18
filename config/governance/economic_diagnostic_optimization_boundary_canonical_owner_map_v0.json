@@ -1170,6 +1170,7 @@
         "src/research/panel_sequential_signal_density_research_adapter_v0.py",
         "src/research/versioned_final_fleet_bindings_offline_economic_evaluation_v0.py",
         "src/research/final_research_fleet_offline_economic_evaluation_execution_v0.py",
+        "src/research/cross_sectional_offline_economic_evaluation_decision_funnel_v0.py",
         "scripts/ops/run_*offline_economic_evaluation_execution_v0.py",
         "scripts/ops/materialize_*offline_economic_evaluation_baseline_execution_implementation_v0.py",
         "scripts/ops/materialize_*offline_economic_evaluation_execution_*_implementation_v0.py",

@@ -44,6 +44,16 @@ nonproductive contract change, the fifth mapping-bind class, and the
 sixth generator-fallback class. Does not reopen those grants. Does not
 waive MASTER_V2_MUTATION_ALLOWED=false. Does not create live, testnet,
 canary, order, or execution authority.
+
+Eighth, semantically distinct override:
+EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_V1.
+Exact-file, evidence-digest-bound Owner-adjudicated OD1 productive
+single-lane confirmation. Distinct from wiring, restoration,
+decommission, nonproductive contract change, the fifth mapping-bind
+class, the sixth generator-fallback class, and the seventh SideState
+ARMED identity-split class. Does not reopen those grants. Does not
+waive MASTER_V2_MUTATION_ALLOWED=false. Does not create live, testnet,
+canary, order, or execution authority.
 """
 
 from __future__ import annotations
@@ -75,6 +85,13 @@ from .explicit_owner_adjudicated_scope_direction_generator_fallback_authorizatio
     GeneratorFallbackAuthorizationDecision,
     evaluate_generator_fallback_authorization,
     validate_generator_fallback_authorization,
+)
+from .explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1 import (
+    DEFAULT_OD1_SINGLE_LANE_CONFIRMATION_AUTH_PATH,
+    REASON_OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZED,
+    Od1SingleLaneConfirmationAuthorizationDecision,
+    evaluate_od1_single_lane_confirmation_authorization,
+    validate_od1_single_lane_confirmation_authorization,
 )
 from .explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1 import (
     DEFAULT_ARMED_IDENTITY_SPLIT_AUTH_PATH,
@@ -288,6 +305,9 @@ class BoundaryReport:
     sidestate_armed_identity_split_authorization_applied: bool = False
     sidestate_armed_identity_split_authorization_version: str | None = None
     sidestate_armed_identity_split_mutation_purpose_class: str | None = None
+    od1_single_lane_confirmation_authorization_applied: bool = False
+    od1_single_lane_confirmation_authorization_version: str | None = None
+    od1_single_lane_confirmation_mutation_purpose_class: str | None = None
     decommission_admission_count: int = 0
     owner_adjudicated_nonproductive_change_count: int = 0
     unclassified_touch_count: int = 0
@@ -382,6 +402,18 @@ class BoundaryReport:
             ),
             "new_sidestate_armed_identity_split_authorization_applied": (
                 self.sidestate_armed_identity_split_authorization_applied
+            ),
+            "od1_single_lane_confirmation_authorization_applied": (
+                self.od1_single_lane_confirmation_authorization_applied
+            ),
+            "od1_single_lane_confirmation_authorization_version": (
+                self.od1_single_lane_confirmation_authorization_version
+            ),
+            "od1_single_lane_confirmation_mutation_purpose_class": (
+                self.od1_single_lane_confirmation_mutation_purpose_class
+            ),
+            "new_od1_single_lane_confirmation_authorization_applied": (
+                self.od1_single_lane_confirmation_authorization_applied
             ),
             "decommission_admission_count": self.decommission_admission_count,
             "owner_adjudicated_nonproductive_change_count": (
@@ -612,6 +644,37 @@ def load_armed_identity_split_authorization(
 ) -> dict[str, Any] | None:
     root = repo_root or repo_root_from_module()
     path = authorization_path or resolve_armed_identity_split_authorization_path(contract, root)
+    if not path.is_file():
+        return None
+    return load_json(path)
+
+
+def resolve_od1_single_lane_confirmation_authorization_path(
+    contract: Mapping[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> Path:
+    root = repo_root or repo_root_from_module()
+    relative = DEFAULT_OD1_SINGLE_LANE_CONFIRMATION_AUTH_PATH
+    if contract is not None:
+        relative = str(
+            contract.get(
+                "explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization",
+                relative,
+            )
+        )
+    return root / relative
+
+
+def load_od1_single_lane_confirmation_authorization(
+    repo_root: Path | None = None,
+    *,
+    contract: Mapping[str, Any] | None = None,
+    authorization_path: Path | None = None,
+) -> dict[str, Any] | None:
+    root = repo_root or repo_root_from_module()
+    path = authorization_path or resolve_od1_single_lane_confirmation_authorization_path(
+        contract, root
+    )
     if not path.is_file():
         return None
     return load_json(path)
@@ -1134,6 +1197,9 @@ def build_boundary_report(
     armed_identity_split_authorization: Mapping[str, Any] | None = None,
     armed_identity_split_authorization_path: Path | None = None,
     skip_armed_identity_split_authorization: bool = False,
+    od1_single_lane_confirmation_authorization: Mapping[str, Any] | None = None,
+    od1_single_lane_confirmation_authorization_path: Path | None = None,
+    skip_od1_single_lane_confirmation_authorization: bool = False,
     file_diffs: Mapping[str, str] | None = None,
     evidence_repo_root: Path | None = None,
     diff_base_sha: str | None = None,
@@ -1239,6 +1305,18 @@ def build_boundary_report(
             authorization_path=armed_identity_split_authorization_path,
         )
 
+    od1_single_lane_confirmation_payload: Mapping[str, Any] | None
+    if skip_od1_single_lane_confirmation_authorization:
+        od1_single_lane_confirmation_payload = None
+    elif od1_single_lane_confirmation_authorization is not None:
+        od1_single_lane_confirmation_payload = od1_single_lane_confirmation_authorization
+    else:
+        od1_single_lane_confirmation_payload = load_od1_single_lane_confirmation_authorization(
+            root,
+            contract=contract,
+            authorization_path=od1_single_lane_confirmation_authorization_path,
+        )
+
     for path in normalized_files:
         if is_boundary_governed_path(path):
             any_boundary_governed = True
@@ -1313,6 +1391,15 @@ def build_boundary_report(
         grant_active=False,
     )
     armed_identity_split_decision = ArmedIdentitySplitAuthorizationDecision(
+        applied=False,
+        valid=True,
+        version=None,
+        reason_codes=(),
+        authorized_paths=(),
+        unauthorized_forbidden_paths=(),
+        grant_active=False,
+    )
+    od1_single_lane_confirmation_decision = Od1SingleLaneConfirmationAuthorizationDecision(
         applied=False,
         valid=True,
         version=None,
@@ -1511,6 +1598,53 @@ def build_boundary_report(
                 if path in authorized_path_set:
                     allowed_hits.update(classify_allowed_surfaces(path, rules))
 
+    od1_single_lane_confirmation_candidates = list(blocking_forbidden)
+    if (
+        not od1_single_lane_confirmation_candidates
+        and auth_decision.applied
+        and forbidden_matches
+        and not decommission_decision.applied
+        and not restoration_decision.applied
+        and not mapping_bind_decision.applied
+        and not generator_fallback_decision.applied
+        and not armed_identity_split_decision.applied
+    ):
+        # Standing wiring subset grants may already have emptied
+        # blocking_forbidden. The eighth class still evaluates the original
+        # forbidden matches so a digest-bound exact slice is not silently
+        # admitted as technical wiring.
+        od1_single_lane_confirmation_candidates = list(forbidden_matches)
+    if (
+        od1_single_lane_confirmation_candidates
+        and not decommission_decision.applied
+        and not restoration_decision.applied
+        and not mapping_bind_decision.applied
+        and not generator_fallback_decision.applied
+        and not armed_identity_split_decision.applied
+        and not skip_od1_single_lane_confirmation_authorization
+    ):
+        od1_single_lane_confirmation_decision = evaluate_od1_single_lane_confirmation_authorization(
+            od1_single_lane_confirmation_candidates,
+            auth=od1_single_lane_confirmation_payload,
+            changed_files=normalized_files,
+            file_diffs=file_diffs,
+            diff_base_sha=diff_base_sha,
+            repo_root=root,
+        )
+        if od1_single_lane_confirmation_decision.applied:
+            authorized_path_set = frozenset(od1_single_lane_confirmation_decision.authorized_paths)
+            blocking_forbidden = [
+                match
+                for match in od1_single_lane_confirmation_candidates
+                if match.matched_path not in authorized_path_set
+            ]
+            remaining_unclassified = [
+                path for path in remaining_unclassified if path not in authorized_path_set
+            ]
+            for path in normalized_files:
+                if path in authorized_path_set:
+                    allowed_hits.update(classify_allowed_surfaces(path, rules))
+
     if remaining_unclassified and not skip_owner_adjudication_authorization:
         owner_adjudication_decision = evaluate_owner_adjudication_authorization(
             auth=owner_adjudication_payload,
@@ -1535,6 +1669,7 @@ def build_boundary_report(
         or mapping_bind_decision.applied
         or generator_fallback_decision.applied
         or armed_identity_split_decision.applied
+        or od1_single_lane_confirmation_decision.applied
     ):
         flag_source = forbidden_matches
         canonical_trading_semantics_changed = True
@@ -1571,6 +1706,7 @@ def build_boundary_report(
     mapping_applied = mapping_bind_decision.applied
     generator_fallback_applied = generator_fallback_decision.applied
     armed_identity_split_applied = armed_identity_split_decision.applied
+    od1_single_lane_confirmation_applied = od1_single_lane_confirmation_decision.applied
 
     if all_governance_self and normalized_files:
         reason_codes.append(REASON_GOVERNANCE_SELF)
@@ -1613,6 +1749,10 @@ def build_boundary_report(
             for code in armed_identity_split_decision.reason_codes:
                 if code not in reason_codes:
                     reason_codes.append(code)
+        if od1_single_lane_confirmation_decision.reason_codes:
+            for code in od1_single_lane_confirmation_decision.reason_codes:
+                if code not in reason_codes:
+                    reason_codes.append(code)
         fail_closed = True
         admissible = False
         economic_or_diagnostic_only = False
@@ -1623,6 +1763,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
     elif unclassified:
         reason_codes.append(REASON_IMPACT_UNKNOWN)
         if decommission_decision.reason_codes:
@@ -1645,6 +1786,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
     elif restoration_decision.applied:
         reason_codes.append(REASON_RESTORATION_AUTHORIZED)
         if allowed_hits:
@@ -1657,6 +1799,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
     elif mapping_bind_decision.applied:
         reason_codes.append(REASON_MAPPING_BIND_AUTHORIZED)
         if owner_adjudication_decision.applied:
@@ -1670,6 +1813,7 @@ def build_boundary_report(
         mapping_applied = True
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
         owner_applied = owner_adjudication_decision.applied
     elif generator_fallback_decision.applied:
         reason_codes.append(REASON_GENERATOR_FALLBACK_AUTHORIZED)
@@ -1684,6 +1828,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = True
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
         owner_applied = owner_adjudication_decision.applied
     elif armed_identity_split_decision.applied:
         reason_codes.append(REASON_ARMED_IDENTITY_SPLIT_AUTHORIZED)
@@ -1698,6 +1843,22 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = True
+        od1_single_lane_confirmation_applied = False
+        owner_applied = owner_adjudication_decision.applied
+    elif od1_single_lane_confirmation_decision.applied:
+        reason_codes.append(REASON_OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZED)
+        if owner_adjudication_decision.applied:
+            reason_codes.append(REASON_OWNER_ADJUDICATION_AUTHORIZED)
+        if allowed_hits:
+            reason_codes.append(REASON_ALLOWED_ONLY)
+        economic_or_diagnostic_only = False
+        auth_applied = False
+        restoration_applied = False
+        decommission_applied = False
+        mapping_applied = False
+        generator_fallback_applied = False
+        armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = True
         owner_applied = owner_adjudication_decision.applied
     elif auth_decision.applied and decommission_decision.applied:
         reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
@@ -1714,6 +1875,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
     elif decommission_decision.applied or owner_adjudication_decision.applied:
         if decommission_decision.applied:
             reason_codes.append(REASON_DECOMMISSION_AUTHORIZED)
@@ -1729,6 +1891,7 @@ def build_boundary_report(
         mapping_applied = False
         generator_fallback_applied = False
         armed_identity_split_applied = False
+        od1_single_lane_confirmation_applied = False
     elif auth_decision.applied:
         reason_codes.append(REASON_TECHNICAL_WIRING_AUTHORIZED)
         if allowed_hits:
@@ -1828,6 +1991,17 @@ def build_boundary_report(
             if armed_identity_split_applied
             else None
         ),
+        od1_single_lane_confirmation_authorization_applied=od1_single_lane_confirmation_applied,
+        od1_single_lane_confirmation_authorization_version=(
+            od1_single_lane_confirmation_decision.version
+            if od1_single_lane_confirmation_applied
+            else None
+        ),
+        od1_single_lane_confirmation_mutation_purpose_class=(
+            od1_single_lane_confirmation_decision.mutation_purpose_class
+            if od1_single_lane_confirmation_applied
+            else None
+        ),
         decommission_admission_count=decommission_admission_count,
         owner_adjudicated_nonproductive_change_count=(owner_adjudicated_nonproductive_change_count),
         unclassified_touch_count=len(unclassified),
@@ -1858,6 +2032,7 @@ def forbidden_surface_changed_count(report: BoundaryReport) -> int:
         or report.productive_mapping_contract_runtime_bind_authorization_applied
         or report.scope_direction_generator_fallback_authorization_applied
         or report.sidestate_armed_identity_split_authorization_applied
+        or report.od1_single_lane_confirmation_authorization_applied
     ):
         return 0
     return len({match.matched_path for match in report.forbidden_surface_matches})
@@ -1892,6 +2067,14 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
     armed_identity_split = load_armed_identity_split_authorization(root, contract=contract)
     armed_identity_split_valid, armed_identity_split_reasons = (
         validate_armed_identity_split_authorization(armed_identity_split, repo_root=root)
+    )
+    od1_single_lane_confirmation = load_od1_single_lane_confirmation_authorization(
+        root, contract=contract
+    )
+    od1_single_lane_confirmation_valid, od1_single_lane_confirmation_reasons = (
+        validate_od1_single_lane_confirmation_authorization(
+            od1_single_lane_confirmation, repo_root=root
+        )
     )
     return {
         "contract_version": CONTRACT_VERSION,
@@ -2046,5 +2229,29 @@ def export_canonical_owner_inventory(repo_root: Path | None = None) -> dict[str,
             "grant_active": None
             if armed_identity_split is None
             else armed_identity_split.get("grant_active"),
+        },
+        "explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization": {
+            "path": contract.get(
+                "explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization"
+            ),
+            "present": od1_single_lane_confirmation is not None,
+            "valid": od1_single_lane_confirmation_valid,
+            "validation_reasons": list(od1_single_lane_confirmation_reasons),
+            "contract_version": None
+            if od1_single_lane_confirmation is None
+            else od1_single_lane_confirmation.get("contract_version"),
+            "authorized_scope_class": (
+                None
+                if od1_single_lane_confirmation is None
+                else od1_single_lane_confirmation.get("authorized_scope_class")
+            ),
+            "mutation_purpose_class": (
+                None
+                if od1_single_lane_confirmation is None
+                else od1_single_lane_confirmation.get("mutation_purpose_class")
+            ),
+            "grant_active": None
+            if od1_single_lane_confirmation is None
+            else od1_single_lane_confirmation.get("grant_active"),
         },
     }

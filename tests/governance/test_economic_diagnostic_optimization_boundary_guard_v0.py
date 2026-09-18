@@ -652,6 +652,7 @@ def _composed_report(
         skip_mapping_bind_authorization=True,
         skip_generator_fallback_authorization=True,
         skip_armed_identity_split_authorization=True,
+        skip_od1_single_lane_confirmation_authorization=True,
         file_diffs=diffs,
         diff_base_sha=TEST_DIFF_BASE_SHA,
     )
