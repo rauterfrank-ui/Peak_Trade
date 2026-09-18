@@ -508,6 +508,32 @@ relations:
       iterates LANE_IDS only. No second lane identity. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_fa_bound_ingest
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+    notes: >
+      S1 handoff contract consumes the already-admitted #6600
+      BoundInstrumentV1 map. It must not reinvoke ingest Cap23/Cap24.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+    notes: >
+      Slot identity remains existing lane_id, IsolatedLaneSlotV1, and
+      lane_state_root_for. No second lane identity. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY

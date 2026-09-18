@@ -869,6 +869,41 @@ entities:
       PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. CROSS_UNIVERSE_*
       remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+      - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.py
+    notes: >-
+      S1 contract/authority bind only. Names the non-authorizing Full
+      Autonomy to MV2/DP per-lane handoff from the already-admitted
+      dict[lane_id, BoundInstrumentV1] plus existing IsolatedLaneTopologyV1
+      / IsolatedLaneSlotV1. S2 compose_occupied_lane_mv2_dp_handoff_v1 is
+      named not implemented. MV2/DP ingress remains singular
+      BoundInstrumentV1. FIRST_TRADING_DECISION_CONSUMER remains
+      run_current_productive_master_v2_runtime_cycle_v1 and is not invoked.
+      No pick-one; no new ingress/Top-5/multi-bound authority DTO. Not
+      ranking, selection, Cap24 binding, trading, host, runtime-activation,
+      or execution authority. No Cap23/Cap24 reinvoke, no Master V2/Double
+      Play mutation, no Cap61 state_root bind, no cursor persist/restore,
+      no productive MF join, no five-lane runtime,
+      MAX_POSITIONS_EFFECTIVE remains 1. PREPARED_BOUND_CARDINALITY remains
+      0..5. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED.
+      CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
