@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1
 status: active
-scope: S1 contract/authority bind for non-productive Full-Autonomy ingest of #6598 BoundInstrumentV1 map; no S2 join; no host; no five-lane runtime
+scope: S2 identity-preserving Full-Autonomy ingest of #6598 BoundInstrumentV1 map; no host; no MV2/DP; no five-lane runtime
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,10 +19,10 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_BOUND_INGEST
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_V1_S1_CONTRACT_BIND
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_V1_S2_TYPED_INGEST_JOIN
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1
-SLICE_ID=S1_CONTRACT_BIND
-S2_IMPLEMENTED=false
+SLICE_ID=S2_TYPED_INGEST_JOIN
+S2_IMPLEMENTED=true
 AUTHORITY_EFFECT=NONE
 JOIN_RANKING_AUTHORITY=false
 JOIN_SELECTION_AUTHORITY=false
@@ -78,7 +78,10 @@ INSTRUMENT_ID_ALONE_SUFFICIENT=false
 ATLAS_AUTHORITY=NONE
 ```
 
-S1 typed constants:
+Typed ingest:
+`src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1&#47;ingest_join_v1.py`.
+
+S1 typed constants remain:
 `src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1&#47;constants_v1.py`.
 
 Input producer remains:
@@ -90,11 +93,12 @@ Lane identity and root resolver remain:
 Existing ingest value type remains:
 `src&#47;ops&#47;single_selected_future_runtime_binding_v1&#47;models_v1.py`.
 
-This slice does **not** implement `admit_occupied_lane_bound_instruments_v1`,
-does **not** reinvoke Cap 2.3 or Cap 2.4, does **not** join the Full-Autonomy
-host or wallclock bind-through, does **not** invoke Master V2 or Double Play,
-does **not** create five isolated executing lanes, and does **not** invent a
-collection or Top-5 handoff DTO.
+This slice implements identity-preserving
+`admit_occupied_lane_bound_instruments_v1`. It does **not** reinvoke Cap 2.3
+or Cap 2.4, does **not** join the Full-Autonomy host or wallclock
+bind-through, does **not** invoke Master V2 or Double Play, does **not**
+create five isolated executing lanes, and does **not** invent a collection
+or Top-5 handoff DTO.
 
 ## 1. Purpose
 
@@ -107,10 +111,12 @@ bind_occupied_lane_cap24_n1_instruments_v1
 dict[lane_id, BoundInstrumentV1]
         │
         ▼
-S1 CONTRACT BIND — Full Autonomy ingest consumer
+admit_occupied_lane_bound_instruments_v1
+  LANE_IDS order; unknown lane fail-closed; empty -> {}
+  same BoundInstrumentV1 objects; no pick-one
         │
         ▼
-STOP — S2 ingest function not implemented
+STOP — admitted dict[lane_id, BoundInstrumentV1]
 ```
 
 Ranking authority already ended at `#6597`. `#6598` already closed the
@@ -150,18 +156,18 @@ objects.
 ## 3. S1 versus S2
 
 ```text
-S1_CONTRACT_BIND=this slice
+S1_CONTRACT_BIND=closed
 S2_JOIN_SYMBOL=admit_occupied_lane_bound_instruments_v1
-S2_IMPLEMENTED=false
+S2_IMPLEMENTED=true
+S2_STOP=admitted dict[lane_id, BoundInstrumentV1]
 ```
 
-S2 remains a later Owner-GO. Naming the symbol here does not implement
-it and does not authorize host, Master V2, Double Play, or execution.
+S2 does not authorize host, Master V2, Double Play, or the later
+operative Full Autonomy → MV2/DP handoff.
 
 ## 4. Non-goals
 
 ```text
-NO_S2_INGEST_FUNCTION
 NO_PRODUCTIVE_MF_HOST_JOIN
 NO_FIVE_LANE_CONTINUOUS_RUNTIME
 NO_FIVE_LANE_RUNTIME_CREATED
