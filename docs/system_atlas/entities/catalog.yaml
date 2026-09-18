@@ -747,6 +747,37 @@ entities:
       remains 1. CROSS_UNIVERSE_* remain false. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 occupied-lane pin consumer join
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_OCCUPIED_LANE_PIN_CONSUMER_JOIN_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/__init__.py
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_OCCUPIED_LANE_PIN_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/__init__.py
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+      - tests/ops/test_current_mf_n5_occupied_lane_pin_consumer_join_v1.py
+    notes: >-
+      Non-productive consume-recovered-topology then occupied-lane pin-build
+      orchestration. Feeds IsolatedLaneTopologyV1 returned by
+      consume_recovered_isolated_lane_topology_v1 into
+      build_occupied_lane_pins_v1. Not ranking, membership, lane-mapping,
+      persistence, pin, Cap23 selection, Cap24 binding, trading, or
+      execution authority. No productive MF join, no five-lane runtime, no
+      continuous host join, MAX_POSITIONS_EFFECTIVE remains 1.
+      CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
