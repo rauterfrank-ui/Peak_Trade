@@ -1,0 +1,287 @@
+"""Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
+
+S1 binds contract and census only. The S2 store-root resolver is named, not
+implemented. Does not persist, restore, bind Cap61, or invoke the consumer.
+"""
+
+from __future__ import annotations
+
+from src.ops.current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1.constants_v1 import (
+    HOST_JOIN as BOUNDARY_HOST_JOIN,
+    PREPARED_BOUND_CARDINALITY as BOUNDARY_PREPARED_BOUND_CARDINALITY,
+    PRODUCTIVE_RUNTIME_CARDINALITY as BOUNDARY_PRODUCTIVE_RUNTIME_CARDINALITY,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.constants_v1 import (
+    FIRST_TRADING_DECISION_CONSUMER as HANDOFF_FIRST_TRADING_DECISION_CONSUMER,
+    HANDOFF_EGRESS_OBJECT as PAIR_MAP_OBJECT_VALUE,
+    HANDOFF_SLOT_TYPE as PAIR_MAP_SLOT_TYPE_VALUE,
+    HOST_JOIN as HANDOFF_HOST_JOIN,
+    OWNER as PAIR_MAP_PRODUCER_OWNER_VALUE,
+    S2_IMPLEMENTED as HANDOFF_S2_IMPLEMENTED,
+    S2_JOIN_SYMBOL as PAIR_MAP_PRODUCER_VALUE,
+    SLOT_STATE_ROOT_RESOLVER as HANDOFF_SLOT_STATE_ROOT_RESOLVER,
+    THIS_SLICE_MAY_BIND_CAP61_STATE_ROOT as HANDOFF_MAY_BIND_CAP61_STATE_ROOT,
+    THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER as HANDOFF_MAY_INVOKE,
+    THIS_SLICE_MAY_RESTORE_CURSOR as HANDOFF_MAY_RESTORE_CURSOR,
+)
+from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 import (
+    CROSS_UNIVERSE_CANDIDATE_BORROWING as TOPOLOGY_CROSS_UNIVERSE_CANDIDATE_BORROWING,
+    CROSS_UNIVERSE_FALLBACK as TOPOLOGY_CROSS_UNIVERSE_FALLBACK,
+    CROSS_UNIVERSE_PIN as TOPOLOGY_CROSS_UNIVERSE_PIN,
+    CROSS_UNIVERSE_REPLACEMENT as TOPOLOGY_CROSS_UNIVERSE_REPLACEMENT,
+    CROSS_UNIVERSE_RERANKING as TOPOLOGY_CROSS_UNIVERSE_RERANKING,
+    CROSS_UNIVERSE_SELECTION as TOPOLOGY_CROSS_UNIVERSE_SELECTION,
+    FIVE_LANE_RUNTIME_CREATED as TOPOLOGY_FIVE_LANE_RUNTIME_CREATED,
+    INSTRUMENT_ID_ALONE_SUFFICIENT as TOPOLOGY_INSTRUMENT_ID_ALONE_SUFFICIENT,
+    LANE_MAPPING_OWNER as TOPOLOGY_LANE_MAPPING_OWNER,
+    MAX_POSITIONS_EFFECTIVE as TOPOLOGY_MAX_POSITIONS_EFFECTIVE,
+    MF_PRODUCTIVE_JOIN as TOPOLOGY_MF_PRODUCTIVE_JOIN,
+    MULTI_UNIVERSE_MERGE as TOPOLOGY_MULTI_UNIVERSE_MERGE,
+)
+from src.ops.current_mf_n5_occupied_lane_pin_consumer_join_v1.constants_v1 import (
+    FIVE_LANE_CONTINUOUS_HOST_JOIN as PIN_CONSUMER_FIVE_LANE_CONTINUOUS_HOST_JOIN,
+)
+from src.ops.single_selected_future_policy_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE as CAP23_MAX_POSITIONS_EFFECTIVE,
+    MULTI_FUTURE_RUNTIME_AUTHORIZED as CAP23_MULTI_FUTURE_RUNTIME_AUTHORIZED,
+    OWNER as CAP23_OWNER_VALUE,
+)
+from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
+    MAX_POSITIONS_EFFECTIVE as CAP24_MAX_POSITIONS_EFFECTIVE,
+    MULTI_FUTURE_RUNTIME_AUTHORIZED as CAP24_MULTI_FUTURE_RUNTIME_AUTHORIZED,
+    OWNER as CAP24_OWNER_VALUE,
+    RUNTIME_ACTIVATION_ALLOWED as CAP24_RUNTIME_ACTIVATION_ALLOWED,
+)
+
+OWNER = "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
+CONTRACT_ID = (
+    "CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1"
+)
+SCHEMA_VERSION = (
+    "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
+)
+SLICE_ID = "S1_CONTRACT_BIND"
+OWNER_GO_THIS_SLICE = (
+    "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
+    "_S1_CONTRACT_BIND"
+)
+
+LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
+CAP23_SELECTION_OWNER = CAP23_OWNER_VALUE
+CAP24_BINDING_OWNER = CAP24_OWNER_VALUE
+PAIR_MAP_PRODUCER_OWNER = PAIR_MAP_PRODUCER_OWNER_VALUE
+ADDRESSING_CONSUMER_OWNER = OWNER
+CURSOR_OWNER = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_sidestate_confirmation_cursor_v1"
+)
+CAP61_CONFIRMATION_OWNER = "ops.stateful_confirmation_and_c1_productive_binding_v1"
+CAP62_DYNAMIC_SCOPE_OWNER = "ops.dynamic_scope_persistence_binding_v1"
+G17_CHECKPOINT_OWNER = (
+    "ops.full_core_live_path_composition_root_v1."
+    "current_productive_g17_typed_vol_mark_history_checkpoint_v1"
+)
+EXIT_POLICY_OWNER = "ops.exit_policy_producer_binding_v1"
+FULL_AUTONOMY_HOST_OWNER = "stateful_no_order_host_join_v1"
+FULL_CORE_LIVE_PATH_AUTHORITY = "full_core_live_path_authority_v1"
+
+PAIR_MAP_PRODUCER = PAIR_MAP_PRODUCER_VALUE
+PAIR_MAP_OBJECT = PAIR_MAP_OBJECT_VALUE
+PAIR_MAP_SLOT_TYPE = PAIR_MAP_SLOT_TYPE_VALUE
+SLOT_IDENTITY = "lane_id"
+SLOT_STATE_ROOT_RESOLVER = HANDOFF_SLOT_STATE_ROOT_RESOLVER
+INTENDED_PER_LANE_STORE_ROOT = "IsolatedLaneSlotV1.lane_state_root"
+INTENDED_PER_LANE_STORE_ROOT_FIELD = "lane_state_root"
+N1_GLOBAL_CURSOR_STORE_RELPATH = (
+    "evidence/ops/full_core_current_productive_sidestate_confirmation_cursor_current_v1"
+)
+N1_GLOBAL_CURSOR_LANE_SAFE = False
+CURSOR_BUNDLE_TYPE = "CurrentProductiveSideStateConfirmationCursorV1"
+CURSOR_FILENAME = "current_productive_sidestate_confirmation_cursor_v1.json"
+CURSOR_HAS_LANE_ID_FIELD = False
+CURSOR_SCHEMA_CHANGED = False
+NEW_CURSOR_LANE_ID_FIELD = False
+FIRST_TRADING_DECISION_CONSUMER = HANDOFF_FIRST_TRADING_DECISION_CONSUMER
+S2_JOIN_SYMBOL = "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1"
+S2_IMPLEMENTED = False
+S2_INTENDED_EGRESS = "dict[lane_id, str]"
+
+CURSOR_BUNDLE_CYCLE_CROSSING_SURFACES = (
+    "SideState",
+    "RuntimeScopeState",
+    "CanonicalScopeSnapshotV1",
+    "ScopeConfirmationStateV1",
+    "CanonicalConfirmationStateV1",
+)
+CONSUMER_USED_EPHEMERAL_NOT_REQUIRED_CYCLE_CROSSING_STORE = (
+    "HostConfirmationBindingV1_in_memory",
+    "HostExitPolicyBindingV1_ephemeral",
+    "optional_G17_producer_in_memory",
+)
+DURABLE_SIBLING_NOT_REQUIRED_CYCLE_CROSSING_STORE = (
+    "Cap61_confirmation_state_v1.json",
+    "Cap62_dynamic_scope_state_v1.json",
+    "G17_mark_history_checkpoint",
+    "exit_policy_state_v1.json",
+)
+
+SAME_TRADING_CONFIGURATION_ACROSS_LANES = True
+SHARED_MUTABLE_STATE_ACROSS_LANES = False
+NEW_STATE_OWNER_CREATED = False
+NEW_COLLECTION_DTO_CREATED = False
+NEW_TOP5_HANDOFF_DTO_CREATED = False
+NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED = False
+NEW_MV2_DP_INGRESS_DTO_CREATED = False
+NEW_CURSOR_SCHEMA_CREATED = False
+
+AUTHORITY_EFFECT = "NONE"
+RUNTIME_AUTHORIZATION_EFFECT = "NONE"
+JOIN_SELECTION_AUTHORITY = False
+JOIN_CAP23_SELECTION_AUTHORITY = False
+JOIN_CAP24_BINDING_AUTHORITY = False
+JOIN_TRADING_AUTHORITY = False
+JOIN_RUNTIME_ACTIVATION_AUTHORITY = False
+JOIN_EXECUTION_AUTHORITY = False
+JOIN_RANKING_AUTHORITY = False
+JOIN_MEMBERSHIP_AUTHORITY = False
+JOIN_MAPPING_AUTHORITY = False
+JOIN_PERSISTENCE_AUTHORITY = False
+JOIN_FULL_AUTONOMY_HOST_AUTHORITY = False
+PARALLEL_AUTHORITY_CREATED = False
+THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER = False
+THIS_SLICE_MAY_REINVOKE_CAP23 = False
+THIS_SLICE_MAY_REINVOKE_CAP24 = False
+MAY_PERSIST_CURSOR = False
+MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK = False
+MAY_BIND_CAP61_STATE_ROOT = False
+MAY_CAP61_PERSIST = False
+MAY_CAP62_PERSIST = False
+MAY_G17_CHECKPOINT = False
+MAY_EXIT_POLICY_PERSIST = False
+THIS_SLICE_MAY_BIND_CAP61_STATE_ROOT = MAY_BIND_CAP61_STATE_ROOT
+THIS_SLICE_MAY_RESTORE_CURSOR = MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK
+
+CROSS_UNIVERSE_SELECTION = TOPOLOGY_CROSS_UNIVERSE_SELECTION
+CROSS_UNIVERSE_PIN = TOPOLOGY_CROSS_UNIVERSE_PIN
+CROSS_UNIVERSE_REPLACEMENT = TOPOLOGY_CROSS_UNIVERSE_REPLACEMENT
+CROSS_UNIVERSE_FALLBACK = TOPOLOGY_CROSS_UNIVERSE_FALLBACK
+CROSS_UNIVERSE_CANDIDATE_BORROWING = TOPOLOGY_CROSS_UNIVERSE_CANDIDATE_BORROWING
+CROSS_UNIVERSE_RERANKING = TOPOLOGY_CROSS_UNIVERSE_RERANKING
+MULTI_UNIVERSE_MERGE = TOPOLOGY_MULTI_UNIVERSE_MERGE
+INSTRUMENT_ID_ALONE_SUFFICIENT = TOPOLOGY_INSTRUMENT_ID_ALONE_SUFFICIENT
+UNIVERSE_ISOLATION = "HARD"
+UNIVERSE_ISOLATION_ENFORCED = True
+
+MF_PRODUCTIVE_JOIN = TOPOLOGY_MF_PRODUCTIVE_JOIN
+FIVE_LANE_RUNTIME_CREATED = TOPOLOGY_FIVE_LANE_RUNTIME_CREATED
+FIVE_LANE_CONTINUOUS_HOST_JOIN = PIN_CONSUMER_FIVE_LANE_CONTINUOUS_HOST_JOIN
+EXECUTION_CONCURRENCY_AUTHORIZED = False
+HOST_JOIN = False
+MF_SINGLE_EGRESS_REWIRED = False
+MAX_POSITIONS_EFFECTIVE = int(TOPOLOGY_MAX_POSITIONS_EFFECTIVE)
+MULTI_FUTURE_RUNTIME_AUTHORIZED = bool(CAP23_MULTI_FUTURE_RUNTIME_AUTHORIZED)
+PREPARED_BOUND_CARDINALITY = BOUNDARY_PREPARED_BOUND_CARDINALITY
+PRODUCTIVE_RUNTIME_CARDINALITY = BOUNDARY_PRODUCTIVE_RUNTIME_CARDINALITY
+
+assert HOST_JOIN is False
+assert BOUNDARY_HOST_JOIN is False
+assert HANDOFF_HOST_JOIN is False
+assert HANDOFF_S2_IMPLEMENTED is True
+assert HANDOFF_MAY_INVOKE is False
+assert HANDOFF_MAY_BIND_CAP61_STATE_ROOT is False
+assert HANDOFF_MAY_RESTORE_CURSOR is False
+assert PAIR_MAP_PRODUCER == "compose_occupied_lane_mv2_dp_handoff_v1"
+assert PAIR_MAP_OBJECT == "dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)]"
+assert PAIR_MAP_SLOT_TYPE == "IsolatedLaneSlotV1"
+assert SLOT_STATE_ROOT_RESOLVER == "lane_state_root_for"
+assert INTENDED_PER_LANE_STORE_ROOT == "IsolatedLaneSlotV1.lane_state_root"
+assert N1_GLOBAL_CURSOR_LANE_SAFE is False
+assert CURSOR_HAS_LANE_ID_FIELD is False
+assert CURSOR_SCHEMA_CHANGED is False
+assert NEW_CURSOR_LANE_ID_FIELD is False
+assert SAME_TRADING_CONFIGURATION_ACROSS_LANES is True
+assert SHARED_MUTABLE_STATE_ACROSS_LANES is False
+assert NEW_STATE_OWNER_CREATED is False
+assert NEW_CURSOR_SCHEMA_CREATED is False
+assert MAX_POSITIONS_EFFECTIVE == int(CAP23_MAX_POSITIONS_EFFECTIVE)
+assert MAX_POSITIONS_EFFECTIVE == int(CAP24_MAX_POSITIONS_EFFECTIVE) == 1
+assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+assert CAP24_MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+assert CAP24_RUNTIME_ACTIVATION_ALLOWED is False
+assert MF_PRODUCTIVE_JOIN is False
+assert FIVE_LANE_RUNTIME_CREATED is False
+assert FIVE_LANE_CONTINUOUS_HOST_JOIN is False
+assert PARALLEL_AUTHORITY_CREATED is False
+assert JOIN_SELECTION_AUTHORITY is False
+assert JOIN_CAP23_SELECTION_AUTHORITY is False
+assert JOIN_CAP24_BINDING_AUTHORITY is False
+assert JOIN_TRADING_AUTHORITY is False
+assert JOIN_RUNTIME_ACTIVATION_AUTHORITY is False
+assert JOIN_RANKING_AUTHORITY is False
+assert JOIN_PERSISTENCE_AUTHORITY is False
+assert JOIN_FULL_AUTONOMY_HOST_AUTHORITY is False
+assert S2_IMPLEMENTED is False
+assert NEW_COLLECTION_DTO_CREATED is False
+assert NEW_TOP5_HANDOFF_DTO_CREATED is False
+assert NEW_MULTI_BOUND_AUTHORITY_DTO_CREATED is False
+assert NEW_MV2_DP_INGRESS_DTO_CREATED is False
+assert THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER is False
+assert MAY_PERSIST_CURSOR is False
+assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is False
+assert MAY_BIND_CAP61_STATE_ROOT is False
+assert MAY_CAP61_PERSIST is False
+assert MAY_CAP62_PERSIST is False
+assert MAY_G17_CHECKPOINT is False
+assert MAY_EXIT_POLICY_PERSIST is False
+assert PREPARED_BOUND_CARDINALITY == "0..5"
+assert PRODUCTIVE_RUNTIME_CARDINALITY == "1_UNJOINED"
+assert FIRST_TRADING_DECISION_CONSUMER == "run_current_productive_master_v2_runtime_cycle_v1"
+assert CAP23_SELECTION_OWNER == "ops.single_selected_future_policy_v1"
+assert CAP24_BINDING_OWNER == "ops.single_selected_future_runtime_binding_v1"
+assert PAIR_MAP_PRODUCER_OWNER == (
+    "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1"
+)
+assert ADDRESSING_CONSUMER_OWNER == OWNER
+assert S2_JOIN_SYMBOL != PAIR_MAP_PRODUCER
+
+CAP23_CHANGE_REQUIRED = False
+CAP24_CHANGE_REQUIRED = False
+MASTER_V2_CHANGE_REQUIRED = False
+DOUBLE_PLAY_CHANGE_REQUIRED = False
+FULL_AUTONOMY_HOST_CHANGE_REQUIRED = False
+CURSOR_OWNER_CHANGE_REQUIRED = False
+
+FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
+    {
+        "produce_occupied_lane_cap23_n1_selections_v1",
+        "run_single_selected_future_policy_v1",
+        "produce_single_selected_future_v1",
+        "produce_from_ranking_state_root_v1",
+        "persist_selection_bundle_atomic_v1",
+        "_pick_top_eligible",
+        "run_single_selected_future_runtime_binding_gate_v1",
+        "ensure_single_selected_future_runtime_binding_v1",
+        "persist_binding_evidence_atomic_v1",
+        "compose_occupied_lane_mv2_dp_handoff_v1",
+        "resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1",
+        "run_current_productive_master_v2_runtime_cycle_v1",
+        "run_integrated_offline_trading_logic_replay_v1",
+        "ensure_host_confirmation_binding_v1",
+        "commit_host_confirmation_after_replay_v1",
+        "persist_current_productive_sidestate_confirmation_cursor_v1",
+        "load_current_productive_sidestate_confirmation_cursor_v1",
+        "restore_current_productive_sidestate_confirmation_cursor_v1",
+        "persist_dynamic_scope_state_atomic_v1",
+        "load_dynamic_scope_state_v1",
+        "apply_current_productive_g17_typed_vol_mark_history_checkpoint_v1",
+        "persist_exit_policy_state_atomic_v1",
+        "commit_host_exit_policy_state_v1",
+        "compose_core_live_execution_intent_v1",
+        "mf_canonical_single_egress_authority_handoff_contract_v1",
+        "master_v2",
+        "double_play",
+        "execution",
+        "top_n_active_set",
+        "LiveExecutionPort",
+    }
+)
