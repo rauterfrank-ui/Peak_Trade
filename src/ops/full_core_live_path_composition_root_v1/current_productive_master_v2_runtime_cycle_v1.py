@@ -71,6 +71,10 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     parse_persisted_side_state_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from trading.market_state.elementary_direction_v1 import (
+    ElementaryDirectionResultV1,
+    evaluate_elementary_direction_from_observation_acceptance_v1,
+)
 from trading.master_v2.canonical_market_context_v1 import (
     BarFinalityStatus,
     CanonicalMarketContextBindingStateV1,
@@ -143,6 +147,7 @@ class CurrentProductiveMasterV2CycleResultV1:
     input_blocker: str
     cursor_restore_status: str = "missing"
     outgoing_cursor: Optional[CurrentProductiveSideStateConfirmationCursorV1] = None
+    elementary_direction: Optional[ElementaryDirectionResultV1] = None
 
 
 def _finite_positive(value: object) -> float | None:
@@ -457,6 +462,11 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             event_ts_unix=float(last_finalized_event_ts_unix),
             cycle_index=int(now_tick),
         )
+        elementary_direction = evaluate_elementary_direction_from_observation_acceptance_v1(
+            observation_acceptance_result,
+            bound_instrument_key=cap61_binding.instrument_key(),
+            current_mark=float(mark_px),
+        )
     except (ConfirmationPersistenceError, RuntimeError, ValueError) as exc:
         return _blocked_cycle_result(
             cycle_id=cycle_id,
@@ -662,4 +672,5 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             replay=replay,
             cap61_binding=cap61_binding,
         ),
+        elementary_direction=elementary_direction,
     )
