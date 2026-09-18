@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1
 status: active
-scope: S1 contract/authority bind for non-productive Full-Autonomy to MV2/DP per-lane handoff composition; no S2 join; no host; no trading; no five-lane runtime
+scope: S2 identity-preserving Full-Autonomy to MV2/DP per-lane handoff composition; no host; no trading; no five-lane runtime
 capability: NONE
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-18
@@ -19,10 +19,10 @@ HARD_STOP: true
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_NON_AUTHORIZING_FULL_AUTONOMY_MV2_DP_HANDOFF
 AUTHORITY_RELATION=SUBORDINATE_TO_PEAK_TRADE_MASTER_RUNBOOK
-OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_V1_S1_CONTRACT_BIND
+OWNER_GO_THIS_SLICE=OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_V1_S2_TYPED_COMPOSE_JOIN
 CONTRACT_ID=CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1
-SLICE_ID=S1_CONTRACT_BIND
-S2_IMPLEMENTED=false
+SLICE_ID=S2_TYPED_COMPOSE_JOIN
+S2_IMPLEMENTED=true
 AUTHORITY_EFFECT=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 JOIN_RANKING_AUTHORITY=false
@@ -85,7 +85,10 @@ INSTRUMENT_ID_ALONE_SUFFICIENT=false
 ATLAS_AUTHORITY=NONE
 ```
 
-S1 typed constants:
+Typed compose:
+`src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1&#47;handoff_join_v1.py`.
+
+S1 typed constants remain:
 `src&#47;ops&#47;current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1&#47;constants_v1.py`.
 
 Admitted-map producer remains:
@@ -100,11 +103,12 @@ Existing MV2&#47;DP ingress value type remains:
 Existing trading-decision consumer remains named, not invoked:
 `src&#47;ops&#47;full_core_live_path_composition_root_v1&#47;current_productive_master_v2_runtime_cycle_v1.py`.
 
-This slice does **not** implement `compose_occupied_lane_mv2_dp_handoff_v1`,
-does **not** reinvoke Cap 2.3 or Cap 2.4, does **not** join the Full-Autonomy
-host or wallclock bind-through, does **not** invoke Master V2 or Double Play,
-does **not** bind Cap61 `state_root`, does **not** persist or restore cursors,
-does **not** create five isolated executing lanes, and does **not** invent a
+This slice implements identity-preserving
+`compose_occupied_lane_mv2_dp_handoff_v1`. It does **not** reinvoke Cap 2.3
+or Cap 2.4, does **not** join the Full-Autonomy host or wallclock
+bind-through, does **not** invoke Master V2 or Double Play, does **not**
+bind Cap61 `state_root`, does **not** persist or restore cursors, does
+**not** create five isolated executing lanes, and does **not** invent a
 collection, Top-5, multi-bound, or new MV2&#47;DP ingress DTO.
 
 ## 1. Purpose
@@ -121,10 +125,13 @@ dict[lane_id, BoundInstrumentV1]
         + IsolatedLaneTopologyV1 / IsolatedLaneSlotV1
         │
         ▼
-S1 CONTRACT BIND — per-lane MV2/DP ingress composition
+compose_occupied_lane_mv2_dp_handoff_v1
+  LANE_IDS order; unknown lane fail-closed; empty -> {}
+  OCCUPIED only; occupied without admitted omitted
+  same BoundInstrumentV1 objects; exact lane_state_root
         │
         ▼
-STOP — S2 compose function not implemented
+STOP — dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)]
 ```
 
 Ranking authority already ended at `#6597`. `#6598` already closed the
@@ -163,8 +170,8 @@ Slot state root is the existing resolver
 `IsolatedLaneSlotV1.lane_state_root`.
 
 This contract does not invent a second lane identity, a slot DTO, or a
-multi-bound collection type. Later S2 must reuse existing
-`IsolatedLaneSlotV1` plus existing `BoundInstrumentV1` objects.
+multi-bound collection type. S2 reuses existing `IsolatedLaneSlotV1`
+plus existing `BoundInstrumentV1` objects.
 
 `lane_state_root` is addressing only in this WP. This slice does not
 persist MV2&#47;DP durable decision state, restore
@@ -174,20 +181,18 @@ persist MV2&#47;DP durable decision state, restore
 ## 3. S1 versus S2
 
 ```text
-S1_CONTRACT_BIND=this slice
+S1_CONTRACT_BIND=closed
 S2_JOIN_SYMBOL=compose_occupied_lane_mv2_dp_handoff_v1
-S2_IMPLEMENTED=false
-S2_INTENDED_EGRESS=dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)]
+S2_IMPLEMENTED=true
+S2_STOP=dict[lane_id, (IsolatedLaneSlotV1, BoundInstrumentV1)]
 ```
 
-S2 remains a later Owner-GO. Naming the symbol here does not implement
-it and does not authorize host, Master V2, Double Play, Cap61 rewiring,
-cursor restore, or execution.
+S2 does not authorize host, Master V2, Double Play, Cap61 rewiring,
+cursor restore, execution, or the later trading-cycle invoke.
 
 ## 4. Non-goals
 
 ```text
-NO_S2_COMPOSE_FUNCTION
 NO_PRODUCTIVE_MF_HOST_JOIN
 NO_FIVE_LANE_CONTINUOUS_RUNTIME
 NO_FIVE_LANE_RUNTIME_CREATED
