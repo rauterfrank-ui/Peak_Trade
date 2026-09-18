@@ -90,6 +90,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`
 - transitive_downstream: `(none)`
 
+### CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+
+- direct_upstream: `CAPABILITY:cap_2_4_runtime_binding, CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1`
+- transitive_upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1, CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1, CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1, CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1, CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1, CONTRACT:mf_selection_and_anti_churn_semantics_v1, CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection, SELECTOR:single_selected_future_policy`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
 
 - direct_upstream: `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1`

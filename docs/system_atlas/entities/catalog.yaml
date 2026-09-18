@@ -808,6 +808,36 @@ entities:
       remains 1. CROSS_UNIVERSE_* remain false. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Boundary occupied-lane Cap24 N=1 bind join
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/__init__.py
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/__init__.py
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+      - tests/ops/test_current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1.py
+    notes: >-
+      Non-productive Boundary join from already-produced occupied-lane Cap23
+      SSF map to isolated Cap24 N=1 bind. Sequences existing
+      run_single_selected_future_runtime_binding_gate_v1 per occupied
+      lane_state_root. Failure policy A_ABSENT_AND_CONTINUE. Not selection,
+      Cap24 binding, trading, runtime-activation, or execution authority.
+      No Cap23 reinvoke, no productive MF join, no five-lane runtime, no
+      continuous host join, MAX_POSITIONS_EFFECTIVE remains 1.
+      CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
