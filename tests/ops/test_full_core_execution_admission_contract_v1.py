@@ -21,6 +21,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     CapitalAdmissionStatusV1,
+    DataSafetyAdmissionStatusV1,
     DurableKillSwitchEvidenceStatusV1,
     ExecutionAdmissionInputsV1,
     FreshPretradeGetStatusV1,
@@ -249,6 +250,7 @@ def test_complete_trusted_live_conjunction_admits_without_port_or_send() -> None
             capital_admission_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
             capital_authority_class=CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
             step_29p_risk_admissible=True,
+            data_safety_admission_status=DataSafetyAdmissionStatusV1.SATISFIED.value,
         )
     )
     assert decision.admitted is True

@@ -6,7 +6,9 @@ OWNER_ONE_SHOT permit evidence is joined via owner_one_shot_permit_v1.
 Fresh pretrade GET evidence is joined via fresh_pretrade_runtime_get_v1.
 LIVE_ACCOUNT_BOUND evidence is joined via live_account_bound_v1.
 Capital Admission evidence is joined via capital_admission_v1.
-Does not construct LiveExecutionPort. Does not send wire.
+DataSafetyGate evidence is joined as a conjunct via
+datasafety_gate_join_into_execution_admission_v1. DataSafetyGate is not
+an admission owner. Does not construct LiveExecutionPort. Does not send wire.
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -91,6 +93,16 @@ class CapitalAdmissionStatusV1(str, Enum):
     NOT_REQUIRED_OFFLINE = "NOT_REQUIRED_OFFLINE"
 
 
+class DataSafetyAdmissionStatusV1(str, Enum):
+    """Dedicated DataSafety conjunct status. Not GET/CAPITAL vocabulary."""
+
+    SATISFIED = "SATISFIED"
+    UNBOUND = "UNBOUND"
+    DENIED = "DENIED"
+    ERROR = "ERROR"
+    MISSING = "MISSING"
+
+
 CAPITAL_SOURCE_OFFLINE_ALGEBRA = "OFFLINE_ALGEBRA"
 CAPITAL_SOURCE_OBSERVED_VENUE = "OBSERVED_VENUE"
 CAPITAL_SOURCE_FIXTURE = "FIXTURE"
@@ -127,6 +139,7 @@ class ExecutionAdmissionInputsV1:
     capital_admission_status: str = CapitalAdmissionStatusV1.MISSING.value
     capital_authority_class: str = CAPITAL_AUTHORITY_NONE
     step_29p_risk_admissible: bool = False
+    data_safety_admission_status: str = DataSafetyAdmissionStatusV1.MISSING.value
     provenance_refs: Tuple[str, ...] = ()
     runtime_authority_effect: str = RUNTIME_AUTHORITY_EFFECT_NONE
 
@@ -329,6 +342,18 @@ def evaluate_execution_admission_v1(
             reasons.append("LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P")
     else:
         reasons.append("OFFLINE_FULL_CORE_PROOF_NOT_LIVE_ADMISSION")
+
+    ds_status = str(inputs.data_safety_admission_status or "").strip()
+    if ds_status == DataSafetyAdmissionStatusV1.SATISFIED.value:
+        pass
+    elif ds_status == DataSafetyAdmissionStatusV1.UNBOUND.value:
+        reasons.append("DATA_SAFETY_ADMISSION_UNBOUND")
+    elif ds_status == DataSafetyAdmissionStatusV1.DENIED.value:
+        reasons.append("DATA_SAFETY_ADMISSION_DENIED")
+    elif ds_status == DataSafetyAdmissionStatusV1.ERROR.value:
+        reasons.append("DATA_SAFETY_ADMISSION_ERROR")
+    else:
+        reasons.append("DATA_SAFETY_ADMISSION_MISSING")
 
     unique = tuple(dict.fromkeys(reasons))
     admitted = len(unique) == 0

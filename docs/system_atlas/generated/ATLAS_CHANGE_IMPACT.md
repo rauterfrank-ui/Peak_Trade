@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,7 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `REL:r_full_core_path_calls_live_account_bound` |
+| `GATE:full_core_live_path_execution_boundary_halt_before_wire_v1` |
+| `REL:r_full_core_path_calls_fresh_pretrade_runtime_get` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
@@ -94,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- S2B runtime usage binding at FreshPretradeGetTransportResultV1 (WP S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1). Binder ops.full_core_live_path_composition_root_v1 composes DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp only before A1/A2/A3 unwrap. Fail-closed unbound when stamp is None. No DataSafetyGate join, no foreign live-vocab inference, no S2C, no admission/activation/POST/wire. Atlas is not canonical authority.
+- S2C DataSafetyGate productive admission join (WP S2C_DATASAFETYGATE_PRODUCTIVE_ADMISSION_JOIN_V1). DataSafetyGate.check is a fail-closed conjunct of evaluate_execution_admission_v1. DataSafetyGate=CONJUNCT_NOT_OWNER. ALLOW is not admission. Prior S2C unauthorized / join=false notes are superseded for this implemented coupling. No activation/POST/wire. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

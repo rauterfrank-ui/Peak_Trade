@@ -30,6 +30,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CapitalAdmissionStatusV1,
+    DataSafetyAdmissionStatusV1,
     DurableKillSwitchEvidenceStatusV1,
     FreshPretradeGetStatusV1,
     LiveAccountBoundStatusV1,
@@ -315,7 +316,10 @@ def test_gate_independence_when_risk_admissible() -> None:
     )
     assert complete.risk_admissible is True
     decision = evaluate_execution_admission_v1(
-        _all_modelable_live_gates_true(step_29p_risk_admissible=True)
+        _all_modelable_live_gates_true(
+            step_29p_risk_admissible=True,
+            data_safety_admission_status=DataSafetyAdmissionStatusV1.SATISFIED.value,
+        )
     )
     assert decision.admitted is True
     assert "LIVE_VENUE_CAPITAL_NOT_ADMITTED_TO_STEP_29P" not in decision.reason_codes
@@ -423,11 +427,11 @@ def test_zero_submit_wire_port_on_full_core_path(
     assert result.boundary is not None
     assert result.boundary.halt_before_wire is True
     assert result.wire_send_occurred is False
-    assert result.boundary.live_execution_port_constructed is True
     assert result.boundary.admission is not None
-    assert result.boundary.admission.admitted is True
+    assert result.boundary.admission.admitted is False
+    assert "DATA_SAFETY_ADMISSION_UNBOUND" in result.boundary.admission.reason_codes
     assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
-    assert "LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN" not in result.reason_codes
+    assert result.boundary.halt_before_wire is True
 
 
 def test_requirement_matrix_covers_required_gets_and_unresolved_equity() -> None:
