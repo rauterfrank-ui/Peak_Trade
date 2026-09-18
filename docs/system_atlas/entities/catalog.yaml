@@ -778,6 +778,36 @@ entities:
       CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Ranking-domain occupied-lane Cap23 N=1 produce join
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/__init__.py
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/__init__.py
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+      - tests/ops/test_current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1.py
+    notes: >-
+      Non-productive Ranking-domain join from occupied-lane pins to isolated
+      Cap23 N=1 produce/persist. Sequences consume_occupied_lane_pins_v1 then
+      run_single_selected_future_policy_v1 per occupied lane_state_root.
+      Not ranking, membership, lane-mapping, pin, Cap23 selection, Cap24
+      binding, trading, or execution authority. No productive MF join, no
+      five-lane runtime, no continuous host join, MAX_POSITIONS_EFFECTIVE
+      remains 1. CROSS_UNIVERSE_* remain false. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary

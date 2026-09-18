@@ -156,6 +156,32 @@ relations:
       the same current ranking snapshot. Not PRODUCES/SELECTS/BINDS.
       Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_occupied_lane_pin_consumer
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: CALLS
+    target: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+    notes: >-
+      Calls consume_occupied_lane_pins_v1 exactly once. Not PRODUCES/SELECTS/BINDS.
+      Not a second Cap23 writer. CROSS_UNIVERSE_* remain false.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_cap23
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: CALLS
+    target: SELECTOR:single_selected_future_policy
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+    notes: >-
+      Calls existing run_single_selected_future_policy_v1 once per occupied
+      lane with that lane's governed pin and lane_state_root. Join is not
+      selection owner. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_cap24_binds
     source: BINDER:bound_instrument_v1
     type: BINDS
