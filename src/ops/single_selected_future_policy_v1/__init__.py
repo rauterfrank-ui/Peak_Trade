@@ -28,6 +28,9 @@ from src.ops.single_selected_future_policy_v1.producer_v1 import (
     produce_from_ranking_state_root_v1,
     run_single_selected_future_policy_v1,
 )
+from src.ops.single_selected_future_policy_v1.governed_pin_v1 import (
+    GovernedCap23InstrumentPinV1,
+)
 from src.ops.single_selected_future_policy_v1.selection_v1 import (
     produce_single_selected_future_v1,
 )
@@ -40,6 +43,7 @@ __all__ = [
     "SCHEMA_VERSION",
     "SELECTION_POLICY_ID",
     "SELECTION_POLICY_VERSION",
+    "GovernedCap23InstrumentPinV1",
     "SingleSelectedFutureSelectionV1",
     "load_and_validate_selection_v1",
     "produce_from_ranking_state_root_v1",

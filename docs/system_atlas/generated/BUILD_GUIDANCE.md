@@ -89,7 +89,7 @@ If you change X, inspect the listed contracts and invariants.
 
 ### CLOSURE:productive_selection — PRODUCTIVE_SELECTION
 
-- inspect: `CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1`
+- inspect: `CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1`
 - upstream: `CAPABILITY:cap_2_2_ranking, SELECTOR:productive_futures_ranking`
 - downstream: `CAPABILITY:cap_2_4_runtime_binding`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md`
@@ -98,6 +98,7 @@ If you change X, inspect the listed contracts and invariants.
   - `SELECTOR:single_selected_future_policy` transitive upstream: `(none)`
   - `OWNER_DECISION:cap23_exclusive_selection` transitive upstream: `CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`
   - `SCHEMA:single_selected_future_selection_v1` transitive upstream: `(none)`
+  - `CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1` transitive upstream: `(none)`
 
 ### CLOSURE:productive_universe — PRODUCTIVE_UNIVERSE
 

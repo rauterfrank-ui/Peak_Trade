@@ -324,6 +324,19 @@ relations:
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority.
 
+  - id: REL:s_cap23_optionally_uses_current_mf_member_pinned_cap23_n1_adapter
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: OPTIONALLY_USES
+    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_MEMBER_TO_PINNED_CAP23_N1_ADAPTER_CONTRACT_V1.md
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+    notes: >
+      Optional same-universe pin. Not a second selection authority.
+      Not an MF productive join. CROSS_UNIVERSE_* remain false.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
