@@ -1,7 +1,7 @@
 """Constants for CURRENT MF N=5 occupied-lane MV2/DP decision-state addressing.
 
-S4 invokes the existing N=1 MV2+DP cycle lane-isolated from the S3 seam
-in a bounded test harness. Does not persist, restore, or bind Cap61.
+S5 carries each occupied lane's existing outgoing cursor in memory into the
+next cycle's incoming cursor. Does not persist, restore from disk, or bind Cap61.
 """
 
 from __future__ import annotations
@@ -60,10 +60,10 @@ CONTRACT_ID = (
 SCHEMA_VERSION = (
     "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join.v1"
 )
-SLICE_ID = "S4_LANE_ADDRESSED_CONSUMER_INVOKE"
+SLICE_ID = "S5_CYCLE_CROSSING_IN_MEMORY_STATE"
 OWNER_GO_THIS_SLICE = (
     "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-    "_S4_CONSUMER_INVOKE"
+    "_S5_CYCLE_CROSSING_IN_MEMORY_STATE"
 )
 
 LANE_MAPPING_OWNER = TOPOLOGY_LANE_MAPPING_OWNER
@@ -92,6 +92,7 @@ SLOT_IDENTITY = "lane_id"
 SLOT_STATE_ROOT_RESOLVER = HANDOFF_SLOT_STATE_ROOT_RESOLVER
 INTENDED_PER_LANE_STORE_ROOT = "IsolatedLaneSlotV1.lane_state_root"
 INTENDED_PER_LANE_STORE_ROOT_FIELD = "lane_state_root"
+LANE_STATE_ROOT_ROLE = "EXTERNAL_ADDRESSING_ONLY"
 N1_GLOBAL_CURSOR_STORE_RELPATH = (
     "evidence/ops/full_core_current_productive_sidestate_confirmation_cursor_current_v1"
 )
@@ -111,7 +112,13 @@ S3_INTENDED_EGRESS = "dict[lane_id, (BoundInstrumentV1, store_root, cursor_addre
 S4_JOIN_SYMBOL = "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
 S4_IMPLEMENTED = True
 S4_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
-S5_IMPLEMENTED = False
+S5_JOIN_SYMBOL = "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
+S5_IMPLEMENTED = True
+S5_INTENDED_EGRESS = "dict[lane_id, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]"
+IN_MEMORY_CURSOR_HOLDER = (
+    "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
+)
+IN_MEMORY_CURSOR_HOLDER_OWNER = CURSOR_OWNER
 INVOCATION_CONTEXT = "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
 CONSUMER_INVOKED = True
 RESOLUTION_RULE = "occupied_lane_id -> IsolatedLaneSlotV1.lane_state_root"
@@ -245,8 +252,16 @@ assert JOIN_FULL_AUTONOMY_HOST_AUTHORITY is False
 assert S2_IMPLEMENTED is True
 assert S3_IMPLEMENTED is True
 assert S4_IMPLEMENTED is True
-assert S5_IMPLEMENTED is False
+assert S5_IMPLEMENTED is True
 assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
+assert S5_JOIN_SYMBOL == "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
+assert S5_JOIN_SYMBOL != S4_JOIN_SYMBOL
+assert IN_MEMORY_CURSOR_HOLDER == (
+    "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
+)
+assert IN_MEMORY_CURSOR_HOLDER_OWNER == CURSOR_OWNER
+assert LANE_STATE_ROOT_ROLE == "EXTERNAL_ADDRESSING_ONLY"
+assert NEW_STATE_OWNER_CREATED is False
 assert INVOCATION_CONTEXT == "BOUNDED_TEST_HARNESS_LANE_ISOLATED"
 assert CONSUMER_INVOKED is True
 assert OCCUPIED_LANES_ONLY is True
@@ -284,6 +299,10 @@ assert S3_JOIN_SYMBOL != PAIR_MAP_PRODUCER
 assert S4_JOIN_SYMBOL != PAIR_MAP_PRODUCER
 assert S4_JOIN_SYMBOL != S2_JOIN_SYMBOL
 assert S4_JOIN_SYMBOL != S3_JOIN_SYMBOL
+assert S5_JOIN_SYMBOL != S2_JOIN_SYMBOL
+assert S5_JOIN_SYMBOL != S3_JOIN_SYMBOL
+assert S5_JOIN_SYMBOL != S4_JOIN_SYMBOL
+assert S5_JOIN_SYMBOL != PAIR_MAP_PRODUCER
 
 CAP23_CHANGE_REQUIRED = False
 CAP24_CHANGE_REQUIRED = False
@@ -312,6 +331,15 @@ FAILURE_SEAM_STORE_ROOT_MISMATCH = (
 FAILURE_INCOMING_CURSOR_FORBIDDEN = (
     "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_INCOMING_CURSOR_FORBIDDEN"
 )
+FAILURE_MISSING_LANE_STATE = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_MISSING_LANE_STATE"
+FAILURE_MISMATCHED_LANE_STATE = (
+    "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_MISMATCHED_LANE_STATE"
+)
+FAILURE_ALIASED_LANE_STATE = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_ALIASED_LANE_STATE"
+FAILURE_PRIOR_INVOCATION_TYPE = (
+    "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_PRIOR_INVOCATION_TYPE"
+)
+FAILURE_SHARED_G17_PRODUCER = "FULL_AUTONOMY_MV2_DP_DECISION_STATE_ADDRESSING_SHARED_G17_PRODUCER"
 
 FORBIDDEN_CALL_GRAPH_TARGETS = frozenset(
     {

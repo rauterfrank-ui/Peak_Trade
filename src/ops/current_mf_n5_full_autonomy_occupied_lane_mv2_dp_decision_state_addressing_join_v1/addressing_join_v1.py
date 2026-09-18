@@ -1,8 +1,10 @@
-"""Occupied-lane MV2/DP decision-state addressing: resolve, seam bind, bounded invoke.
+"""Occupied-lane MV2/DP decision-state addressing: resolve, seam bind, invoke, in-memory carry.
 
 Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
 bound to the pre-cycle consumption seam, then lane-isolated invocation of
-the existing N=1 MV2+DP cycle. Does not persist, restore, bind Cap61, or
+the existing N=1 MV2+DP cycle. S5 keeps each lane's outgoing cursor in the
+existing invocation record and passes that same object as the next cycle's
+incoming cursor. Does not persist, load, restore from disk, bind Cap61, or
 join a host.
 """
 
@@ -21,20 +23,26 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     CROSS_UNIVERSE_REPLACEMENT,
     CROSS_UNIVERSE_RERANKING,
     CROSS_UNIVERSE_SELECTION,
+    CURSOR_BUNDLE_TYPE,
     CURSOR_FILENAME,
     CURSOR_OWNER_CHANGE_REQUIRED,
     DOUBLE_PLAY_CHANGE_REQUIRED,
+    FAILURE_ALIASED_LANE_STATE,
     FAILURE_AUTHORITY,
     FAILURE_BOUND_TYPE,
     FAILURE_CURSOR_ADDRESS_ALIAS,
     FAILURE_IDENTITY_MISMATCH,
     FAILURE_INCOMING_CURSOR_FORBIDDEN,
     FAILURE_INVALID_STORE_ROOT,
+    FAILURE_MISSING_LANE_STATE,
     FAILURE_MISSING_STORE_ROOT,
+    FAILURE_MISMATCHED_LANE_STATE,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
     FAILURE_OCCUPANCY,
     FAILURE_PAIR_TYPE,
+    FAILURE_PRIOR_INVOCATION_TYPE,
     FAILURE_SEAM_STORE_ROOT_MISMATCH,
+    FAILURE_SHARED_G17_PRODUCER,
     FAILURE_SHARED_STORE_ROOT,
     FAILURE_SLOT_TYPE,
     FAILURE_UNKNOWN_LANE_ID,
@@ -107,7 +115,7 @@ class OccupiedLaneMv2DpDecisionStateConsumerInvocationV1:
     bound_instrument: BoundInstrumentV1
     store_root: str
     cursor_address: str
-    incoming_cursor: None
+    incoming_cursor: object | None
     persist_enabled: bool
     cap61_state_root_bound: bool
     cycle_result: CurrentProductiveMasterV2CycleResultV1
@@ -122,7 +130,7 @@ def _assert_non_authority() -> None:
         not S2_IMPLEMENTED
         or not S3_IMPLEMENTED
         or not S4_IMPLEMENTED
-        or S5_IMPLEMENTED
+        or not S5_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -290,6 +298,70 @@ def bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(
     return bound_seam
 
 
+def _resolve_lane_g17_producers(
+    occupied_lane_ids: Sequence[str],
+    producers: Mapping[str, object] | None,
+) -> dict[str, object | None]:
+    if producers is None:
+        return {lane_id: None for lane_id in occupied_lane_ids}
+    unknown = sorted(set(producers) - set(LANE_IDS))
+    if unknown:
+        _fail(FAILURE_UNKNOWN_LANE_ID, ",".join(unknown))
+    if set(producers) != set(occupied_lane_ids):
+        _fail(
+            FAILURE_MISMATCHED_LANE_STATE,
+            ",".join(sorted(set(producers) ^ set(occupied_lane_ids))),
+        )
+    resolved: dict[str, object | None] = {}
+    seen_ids: dict[int, str] = {}
+    for lane_id in occupied_lane_ids:
+        producer = producers[lane_id]
+        if producer is None:
+            _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+        prior_lane = seen_ids.get(id(producer))
+        if prior_lane is not None:
+            _fail(FAILURE_SHARED_G17_PRODUCER, f"{prior_lane},{lane_id}")
+        seen_ids[id(producer)] = lane_id
+        resolved[lane_id] = producer
+    return resolved
+
+
+def _cursor_from_prior_invocation(
+    *,
+    lane_id: str,
+    bound: BoundInstrumentV1,
+    store_root: str,
+    prior: object,
+) -> object:
+    if not isinstance(prior, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1):
+        _fail(FAILURE_PRIOR_INVOCATION_TYPE, lane_id)
+    if prior.lane_id != lane_id or prior.store_root != store_root:
+        _fail(FAILURE_IDENTITY_MISMATCH, lane_id)
+    prior_bound = prior.bound_instrument
+    if (
+        prior_bound.instrument_id != bound.instrument_id
+        or prior_bound.venue_native_id != bound.venue_native_id
+        or prior_bound.universe_snapshot_id != bound.universe_snapshot_id
+        or prior_bound.ranking_snapshot_id != bound.ranking_snapshot_id
+        or prior_bound.ranking_integrity_digest != bound.ranking_integrity_digest
+    ):
+        _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+    cursor = prior.cycle_result.outgoing_cursor
+    if cursor is None:
+        _fail(FAILURE_MISSING_LANE_STATE, lane_id)
+    if isinstance(cursor, Mapping) or type(cursor).__name__ != CURSOR_BUNDLE_TYPE:
+        _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+    cursor_fields = getattr(type(cursor), "__dataclass_fields__", {})
+    if "lane_id" in cursor_fields or "lane_state_root" in cursor_fields:
+        _fail(FAILURE_AUTHORITY, "cursor_schema")
+    if (
+        getattr(cursor, "instrument_id", None) != bound.instrument_id
+        or getattr(cursor, "venue_native_id", None) != bound.venue_native_id
+    ):
+        _fail(FAILURE_MISMATCHED_LANE_STATE, lane_id)
+    return cursor
+
+
 def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     *,
@@ -307,6 +379,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     incoming_cursor: object | None = None,
+    g17_typed_vol_producers: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Lane-isolated bounded harness invoke of the existing N=1 MV2+DP cycle.
 
@@ -323,6 +396,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     if not prefix:
         _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    producers = _resolve_lane_g17_producers(tuple(bound_seam), g17_typed_vol_producers)
     invoked: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
     for lane_id in LANE_IDS:
         item = bound_seam.get(lane_id)
@@ -345,6 +419,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             venue_flat=venue_flat,
             existing_position_side=existing_position_side,
             incoming_cursor=None,
+            g17_typed_vol_producer=producers[lane_id],
         )
         invoked[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -357,3 +432,100 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             cycle_result=cycle_result,
         )
     return invoked
+
+
+def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    prior_invocations: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+    *,
+    cycle_id_prefix: str,
+    observed_unix: float,
+    mark_px: float,
+    index_px: float,
+    bid_px: float,
+    ask_px: float,
+    volume: float,
+    open_interest: float,
+    funding_rate: float,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+    venue_flat: bool,
+    existing_position_side: ExistingPositionSide,
+    g17_typed_vol_producers: Mapping[str, object] | None = None,
+) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
+    """Pass each occupied lane's prior outgoing cursor as the next incoming cursor.
+
+    The in-memory holder is the existing invocation record's outgoing cursor.
+    Lane state roots stay external addressing and are not passed into the cycle.
+    """
+    _assert_non_authority()
+    if not THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER:
+        _fail(FAILURE_AUTHORITY, OWNER)
+    prefix = str(cycle_id_prefix or "").strip()
+    if not prefix:
+        _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
+    unknown_prior = sorted(set(prior_invocations) - set(LANE_IDS))
+    if unknown_prior:
+        _fail(FAILURE_UNKNOWN_LANE_ID, ",".join(unknown_prior))
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    if set(prior_invocations) != set(bound_seam):
+        missing = sorted(set(bound_seam) - set(prior_invocations))
+        extra = sorted(set(prior_invocations) - set(bound_seam))
+        if missing:
+            _fail(FAILURE_MISSING_LANE_STATE, ",".join(missing))
+        _fail(FAILURE_MISMATCHED_LANE_STATE, ",".join(extra))
+    lane_cursors: dict[str, object] = {}
+    seen_cursor_ids: dict[int, str] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        bound, store_root, _cursor_address = item
+        cursor = _cursor_from_prior_invocation(
+            lane_id=lane_id,
+            bound=bound,
+            store_root=store_root,
+            prior=prior_invocations[lane_id],
+        )
+        prior_lane = seen_cursor_ids.get(id(cursor))
+        if prior_lane is not None:
+            _fail(FAILURE_ALIASED_LANE_STATE, f"{prior_lane},{lane_id}")
+        seen_cursor_ids[id(cursor)] = lane_id
+        lane_cursors[lane_id] = cursor
+    producers = _resolve_lane_g17_producers(tuple(bound_seam), g17_typed_vol_producers)
+    carried: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
+    for lane_id in LANE_IDS:
+        item = bound_seam.get(lane_id)
+        if item is None:
+            continue
+        bound, store_root, cursor_address = item
+        lane_cursor = lane_cursors[lane_id]
+        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+            bound_instrument=bound,
+            cycle_id=f"{prefix}:{lane_id}",
+            observed_unix=observed_unix,
+            mark_px=mark_px,
+            index_px=index_px,
+            bid_px=bid_px,
+            ask_px=ask_px,
+            volume=volume,
+            open_interest=open_interest,
+            funding_rate=funding_rate,
+            finalized_closes=finalized_closes,
+            last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+            venue_flat=venue_flat,
+            existing_position_side=existing_position_side,
+            incoming_cursor=lane_cursor,
+            g17_typed_vol_producer=producers[lane_id],
+        )
+        carried[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
+            lane_id=lane_id,
+            bound_instrument=bound,
+            store_root=store_root,
+            cursor_address=cursor_address,
+            incoming_cursor=lane_cursor,
+            persist_enabled=False,
+            cap61_state_root_bound=False,
+            cycle_result=cycle_result,
+        )
+    return carried

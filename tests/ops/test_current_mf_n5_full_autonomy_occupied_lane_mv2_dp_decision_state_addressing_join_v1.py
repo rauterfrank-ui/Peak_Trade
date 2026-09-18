@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import ast
 import inspect
-from dataclasses import fields
+import math
+from dataclasses import fields, replace
 from pathlib import Path
 
 import pytest
@@ -20,6 +21,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
+    carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
     invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
 )
@@ -48,15 +50,21 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     DOUBLE_PLAY_CHANGE_REQUIRED,
     DURABLE_SIBLING_NOT_REQUIRED_CYCLE_CROSSING_STORE,
     EXECUTION_CONCURRENCY_AUTHORIZED,
+    FAILURE_ALIASED_LANE_STATE,
     FAILURE_BOUND_TYPE,
     FAILURE_CURSOR_ADDRESS_ALIAS,
     FAILURE_IDENTITY_MISMATCH,
     FAILURE_INCOMING_CURSOR_FORBIDDEN,
     FAILURE_INVALID_STORE_ROOT,
+    FAILURE_MISSING_LANE_STATE,
     FAILURE_MISSING_STORE_ROOT,
+    FAILURE_MISMATCHED_LANE_STATE,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
     FAILURE_OCCUPANCY,
     FAILURE_PAIR_TYPE,
+    FAILURE_PRIOR_INVOCATION_TYPE,
+    FAILURE_SEAM_STORE_ROOT_MISMATCH,
+    FAILURE_SHARED_G17_PRODUCER,
     FAILURE_SHARED_STORE_ROOT,
     FAILURE_SLOT_TYPE,
     FAILURE_UNKNOWN_LANE_ID,
@@ -124,6 +132,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S4_INTENDED_EGRESS,
     S4_JOIN_SYMBOL,
     S5_IMPLEMENTED,
+    S5_JOIN_SYMBOL,
+    IN_MEMORY_CURSOR_HOLDER,
+    LANE_STATE_ROOT_ROLE,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
     SHARED_MUTABLE_STATE_ACROSS_LANES,
     SLICE_ID,
@@ -183,6 +194,16 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     OWNER as CAP24_OWNER,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from trading.market_state.distinct_market_observation_acceptor_v1 import (
+    ObservationTransportMetadataV1,
+)
+from trading.market_state.time_sample_epoch_semantics_v1 import (
+    EventTimeInstantV1,
+    MarketSampleIdentityV1,
+)
+from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+    CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
+)
 
 PACKAGE_DIR = Path(addressing_constants.__file__).resolve().parent
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -344,7 +365,7 @@ def _topology(
 
 
 def test_s2_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S4_LANE_ADDRESSED_CONSUMER_INVOKE"
+    assert SLICE_ID == "S5_CYCLE_CROSSING_IN_MEMORY_STATE"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -353,7 +374,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S4_CONSUMER_INVOKE"
+        "_S5_CYCLE_CROSSING_IN_MEMORY_STATE"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -435,7 +456,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert PREPARED_BOUND_CARDINALITY != "5_PRODUCTIVE_LANES"
     assert S3_IMPLEMENTED is True
     assert S4_IMPLEMENTED is True
-    assert S5_IMPLEMENTED is False
+    assert S5_IMPLEMENTED is True
     assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
@@ -535,7 +556,7 @@ def test_s2_join_is_implemented() -> None:
     assert S2_INTENDED_EGRESS == "dict[lane_id, str]"
     assert S3_IMPLEMENTED is True
     assert S4_IMPLEMENTED is True
-    assert S5_IMPLEMENTED is False
+    assert S5_IMPLEMENTED is True
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
     assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
@@ -562,7 +583,7 @@ def test_s3_join_is_implemented() -> None:
     assert S3_IMPLEMENTED is True
     assert S3_INTENDED_EGRESS == ("dict[lane_id, (BoundInstrumentV1, store_root, cursor_address)]")
     assert S4_IMPLEMENTED is True
-    assert S5_IMPLEMENTED is False
+    assert S5_IMPLEMENTED is True
     addressing_pkg = __import__(
         "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
         fromlist=["*"],
@@ -850,7 +871,7 @@ def test_s2_forbidden_graph_and_protected_imports() -> None:
     assert lane_state_root_key
     assert S3_IMPLEMENTED is True
     assert S4_IMPLEMENTED is True
-    assert S5_IMPLEMENTED is False
+    assert S5_IMPLEMENTED is True
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
     assert CONSUMER_CYCLE_TAKES_STORE_ROOT is False
@@ -1105,3 +1126,302 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert EXECUTION_CONCURRENCY_AUTHORIZED is False
     assert MAX_POSITIONS_EFFECTIVE == 1
+
+
+def _memory_g17_producer(*, instrument_id: str, venue_native_id: str) -> object:
+    venue = "OKX"
+    t0 = 1_700_000_000.0
+    producer = CanonicalVolatilityTypedRuntimeProducerScaffoldV1.create(
+        venue=venue,
+        canonical_instrument_id=instrument_id,
+        venue_instrument_id=venue_native_id,
+        persistence_path=None,
+    )
+    for index in range(61):
+        sample = MarketSampleIdentityV1(
+            venue=venue,
+            canonical_instrument_id=instrument_id,
+            venue_instrument_id=venue_native_id,
+            event_time=EventTimeInstantV1(unix_seconds=t0 + float(index * 60)),
+            mark_price=100.0 * math.exp(0.001 * index),
+        )
+        producer.ingest_finalized_pt1m_mark_sample_v1(
+            sample=sample,
+            transport=ObservationTransportMetadataV1(receive_time=t0 + index * 60 + 0.5),
+        )
+    return producer
+
+
+def _lane_g17_producers(
+    pairs: dict[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+) -> dict[str, object]:
+    return {
+        lane_id: _memory_g17_producer(
+            instrument_id=bound.instrument_id,
+            venue_native_id=bound.venue_native_id,
+        )
+        for lane_id, (_slot, bound) in pairs.items()
+    }
+
+
+def _carry_kwargs(*, cycle_id_prefix: str = "s5-cycle-2") -> dict[str, object]:
+    kwargs = _invoke_kwargs()
+    kwargs["cycle_id_prefix"] = cycle_id_prefix
+    return kwargs
+
+
+def test_s5_reuses_existing_invocation_cursor_without_new_owner() -> None:
+    assert S5_JOIN_SYMBOL == "carry_occupied_lane_mv2_dp_decision_state_in_memory_v1"
+    assert S5_IMPLEMENTED is True
+    assert IN_MEMORY_CURSOR_HOLDER == (
+        "OccupiedLaneMv2DpDecisionStateConsumerInvocationV1.cycle_result.outgoing_cursor"
+    )
+    assert NEW_STATE_OWNER_CREATED is False
+    assert LANE_STATE_ROOT_ROLE == "EXTERNAL_ADDRESSING_ONLY"
+    assert CURSOR_SCHEMA_CHANGED is False
+    addressing_pkg = __import__(
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
+        fromlist=["*"],
+    )
+    assert getattr(addressing_pkg, S5_JOIN_SYMBOL) is (
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
+    )
+    carry_source = inspect.getsource(carry_occupied_lane_mv2_dp_decision_state_in_memory_v1)
+    cycle_call = carry_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
+        1
+    ].split(")", 1)[0]
+    assert "incoming_cursor=lane_cursor" in cycle_call
+    assert "store_root=" not in cycle_call
+    assert "persist=" not in carry_source
+    assert "state_root=" not in carry_source
+    assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
+    assert "load_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
+    assert "restore_current_productive_sidestate_confirmation_cursor_v1(" not in JOIN_SOURCE
+    assert "open(" not in JOIN_SOURCE
+    assert "write_text" not in JOIN_SOURCE
+    assert "CurrentProductiveSideStateConfirmationCursorV1" not in JOIN_SOURCE
+
+
+def test_s5_n1_two_cycle_parity(tmp_path: Path) -> None:
+    pair = _pair(tmp_path, "LANE_3")
+    producers = _lane_g17_producers({"LANE_3": pair})
+    first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_3": pair},
+        g17_typed_vol_producers=producers,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    outgoing = first["LANE_3"].cycle_result.outgoing_cursor
+    assert outgoing is not None
+    second_kwargs = _carry_kwargs()
+    second = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+        {"LANE_3": pair},
+        first,
+        g17_typed_vol_producers=producers,
+        **second_kwargs,  # type: ignore[arg-type]
+    )
+    direct = run_current_productive_master_v2_runtime_cycle_v1(
+        bound_instrument=pair[1],
+        cycle_id="s5-cycle-2:LANE_3",
+        observed_unix=second_kwargs["observed_unix"],  # type: ignore[arg-type]
+        mark_px=second_kwargs["mark_px"],  # type: ignore[arg-type]
+        index_px=second_kwargs["index_px"],  # type: ignore[arg-type]
+        bid_px=second_kwargs["bid_px"],  # type: ignore[arg-type]
+        ask_px=second_kwargs["ask_px"],  # type: ignore[arg-type]
+        volume=second_kwargs["volume"],  # type: ignore[arg-type]
+        open_interest=second_kwargs["open_interest"],  # type: ignore[arg-type]
+        funding_rate=second_kwargs["funding_rate"],  # type: ignore[arg-type]
+        finalized_closes=second_kwargs["finalized_closes"],  # type: ignore[arg-type]
+        last_finalized_event_ts_unix=second_kwargs["last_finalized_event_ts_unix"],  # type: ignore[arg-type]
+        venue_flat=second_kwargs["venue_flat"],  # type: ignore[arg-type]
+        existing_position_side=second_kwargs["existing_position_side"],  # type: ignore[arg-type]
+        incoming_cursor=outgoing,
+        g17_typed_vol_producer=producers["LANE_3"],
+    )
+    record = second["LANE_3"]
+    assert record.incoming_cursor is outgoing
+    assert record.persist_enabled is False
+    assert record.cap61_state_root_bound is False
+    assert record.store_root == pair[0].lane_state_root
+    assert record.cycle_result.decision_outcome == direct.decision_outcome
+    assert record.cycle_result.fail_reasons == direct.fail_reasons
+    assert record.cycle_result.cursor_restore_status == direct.cursor_restore_status
+    assert record.cycle_result.cursor_restore_status == "restored"
+    assert record.cycle_result.outgoing_cursor is not None
+    assert direct.outgoing_cursor is not None
+    assert record.cycle_result.outgoing_cursor.to_dict() == direct.outgoing_cursor.to_dict()
+    assert not (Path(record.store_root) / CURSOR_FILENAME).exists()
+
+
+def test_s5_n_gt_1_isolation_and_permutation(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in ("LANE_1", "LANE_4")}
+    producers = _lane_g17_producers(pairs)
+    shuffled_producers = {"LANE_4": producers["LANE_4"], "LANE_1": producers["LANE_1"]}
+    first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_4": pairs["LANE_4"], "LANE_1": pairs["LANE_1"]},
+        g17_typed_vol_producers=shuffled_producers,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    assert list(first) == ["LANE_1", "LANE_4"]
+    second = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+        {"LANE_4": pairs["LANE_4"], "LANE_1": pairs["LANE_1"]},
+        {"LANE_4": first["LANE_4"], "LANE_1": first["LANE_1"]},
+        g17_typed_vol_producers=shuffled_producers,
+        **_carry_kwargs(),  # type: ignore[arg-type]
+    )
+    assert list(second) == ["LANE_1", "LANE_4"]
+    for lane_id in ("LANE_1", "LANE_4"):
+        outgoing = first[lane_id].cycle_result.outgoing_cursor
+        assert outgoing is not None
+        assert second[lane_id].incoming_cursor is outgoing
+        assert second[lane_id].bound_instrument.instrument_id == f"INST-{lane_id}"
+        assert not (Path(second[lane_id].store_root) / CURSOR_FILENAME).exists()
+    assert second["LANE_1"].incoming_cursor is not second["LANE_4"].incoming_cursor
+    assert first["LANE_1"].cycle_result.outgoing_cursor is not second["LANE_4"].incoming_cursor
+    third = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+        pairs,
+        second,
+        g17_typed_vol_producers=producers,
+        **_carry_kwargs(cycle_id_prefix="s5-cycle-3"),  # type: ignore[arg-type]
+    )
+    assert third["LANE_1"].incoming_cursor is second["LANE_1"].cycle_result.outgoing_cursor
+    assert third["LANE_4"].incoming_cursor is second["LANE_4"].cycle_result.outgoing_cursor
+    assert "LANE_2" not in third
+
+
+def test_s5_interleaved_subset_does_not_leak(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in ("LANE_2", "LANE_5")}
+    producers = _lane_g17_producers(pairs)
+    first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        pairs,
+        g17_typed_vol_producers=producers,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    later_5 = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+        {"LANE_5": pairs["LANE_5"]},
+        {"LANE_5": first["LANE_5"]},
+        g17_typed_vol_producers={"LANE_5": producers["LANE_5"]},
+        **_carry_kwargs(cycle_id_prefix="s5-interleave-5"),  # type: ignore[arg-type]
+    )
+    later_2 = carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+        {"LANE_2": pairs["LANE_2"]},
+        {"LANE_2": first["LANE_2"]},
+        g17_typed_vol_producers={"LANE_2": producers["LANE_2"]},
+        **_carry_kwargs(cycle_id_prefix="s5-interleave-2"),  # type: ignore[arg-type]
+    )
+    assert later_5["LANE_5"].incoming_cursor is first["LANE_5"].cycle_result.outgoing_cursor
+    assert later_2["LANE_2"].incoming_cursor is first["LANE_2"].cycle_result.outgoing_cursor
+    assert later_2["LANE_2"].incoming_cursor is not later_5["LANE_5"].incoming_cursor
+    assert "LANE_5" not in later_2
+    assert "LANE_2" not in later_5
+
+
+def test_s5_missing_mismatched_and_aliased_lane_state_fail_closed(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in ("LANE_1", "LANE_2")}
+    producers = _lane_g17_producers(pairs)
+    first = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        pairs,
+        g17_typed_vol_producers=producers,
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            pairs,
+            {"LANE_1": first["LANE_1"]},
+            g17_typed_vol_producers=producers,
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISSING_LANE_STATE
+    blocked = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_1": pairs["LANE_1"]},
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    assert blocked["LANE_1"].cycle_result.outgoing_cursor is None
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            {"LANE_1": pairs["LANE_1"]},
+            blocked,
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISSING_LANE_STATE
+    cursor = first["LANE_1"].cycle_result.outgoing_cursor
+    assert cursor is not None
+    mismatched_cursor = replace(cursor, instrument_id="INST-OTHER")
+    mismatched = replace(
+        first["LANE_1"],
+        cycle_result=replace(first["LANE_1"].cycle_result, outgoing_cursor=mismatched_cursor),
+    )
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            {"LANE_1": pairs["LANE_1"]},
+            {"LANE_1": mismatched},
+            g17_typed_vol_producers={"LANE_1": producers["LANE_1"]},
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISMATCHED_LANE_STATE
+    shared = _bound(lane_id="LANE_1", instrument_id="INST-SHARED")
+    shared_2 = BoundInstrumentV1(
+        instrument_id=shared.instrument_id,
+        venue_native_id=shared.venue_native_id,
+        ranking_snapshot_id=shared.ranking_snapshot_id,
+        ranking_integrity_digest=shared.ranking_integrity_digest,
+        universe_snapshot_id=shared.universe_snapshot_id,
+        selection_id="sel-shared-2",
+        selection_integrity_digest="sel-digest-shared-2",
+        selection_state="SELECTED",
+    )
+    pair_1 = _pair(tmp_path, "LANE_1", bound=shared)
+    pair_2 = _pair(tmp_path, "LANE_2", bound=shared_2)
+    alias_producers = {
+        "LANE_1": _memory_g17_producer(
+            instrument_id=shared.instrument_id,
+            venue_native_id=shared.venue_native_id,
+        ),
+        "LANE_2": _memory_g17_producer(
+            instrument_id=shared_2.instrument_id,
+            venue_native_id=shared_2.venue_native_id,
+        ),
+    }
+    origin = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_1": pair_1},
+        g17_typed_vol_producers={"LANE_1": alias_producers["LANE_1"]},
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )["LANE_1"]
+    aliased = replace(
+        origin,
+        lane_id="LANE_2",
+        store_root=pair_2[0].lane_state_root,
+        bound_instrument=shared_2,
+    )
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            {"LANE_1": pair_1, "LANE_2": pair_2},
+            {"LANE_1": origin, "LANE_2": aliased},
+            g17_typed_vol_producers=alias_producers,
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_ALIASED_LANE_STATE
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            {"LANE_1": pairs["LANE_1"]},
+            {"LANE_1": object()},  # type: ignore[dict-item]
+            g17_typed_vol_producers={"LANE_1": producers["LANE_1"]},
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_PRIOR_INVOCATION_TYPE
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            pairs,
+            first,
+            g17_typed_vol_producers={"LANE_1": producers["LANE_1"], "LANE_2": producers["LANE_1"]},
+            **_carry_kwargs(),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_SHARED_G17_PRODUCER
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+    assert EXECUTION_CONCURRENCY_AUTHORIZED is False
+    assert MAX_POSITIONS_EFFECTIVE == 1
+    assert MAY_PERSIST_CURSOR is False
+    assert MAY_BIND_CAP61_STATE_ROOT is False
+    assert "state_root=None" in CYCLE_SOURCE
+    assert "persist=False" in CYCLE_SOURCE
