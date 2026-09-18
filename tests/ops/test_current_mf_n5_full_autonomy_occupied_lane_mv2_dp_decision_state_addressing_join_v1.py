@@ -23,6 +23,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1,
     carry_occupied_lane_mv2_dp_decision_state_in_memory_v1,
+    compose_occupied_lane_mv2_dp_durable_cycle_v1,
     invoke_occupied_lane_mv2_dp_decision_state_consumer_v1,
     persist_occupied_lane_mv2_dp_decision_state_cursor_v1,
     resolve_occupied_lane_mv2_dp_decision_state_store_roots_v1,
@@ -143,6 +144,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S6_JOIN_SYMBOL,
     S6_PERSIST_SYMBOL,
     S6_RESTORE_SYMBOL,
+    S7_IMPLEMENTED,
+    S7_JOIN_SYMBOL,
     IN_MEMORY_CURSOR_HOLDER,
     LANE_STATE_ROOT_ROLE,
     SAME_TRADING_CONFIGURATION_ACROSS_LANES,
@@ -181,6 +184,7 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CurrentProductiveCursorError,
+    load_current_productive_sidestate_confirmation_cursor_v1,
     persist_current_productive_sidestate_confirmation_cursor_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
@@ -379,7 +383,7 @@ def _topology(
 
 
 def test_s2_authority_flags_and_addressing_census_bind() -> None:
-    assert SLICE_ID == "S6_DURABLE_PER_LANE_CURSOR_PERSIST_RESTORE"
+    assert SLICE_ID == "S7_DURABLE_PER_LANE_LOAD_CYCLE_PERSIST_COMPOSE"
     assert OWNER == (
         "ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
     )
@@ -388,7 +392,7 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     )
     assert OWNER_GO_THIS_SLICE == (
         "OWNER_GO_CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_V1"
-        "_S6_DURABLE_CURSOR_PERSIST_RESTORE"
+        "_S7_DURABLE_LOAD_CYCLE_PERSIST_COMPOSE"
     )
     assert AUTHORITY_EFFECT == "NONE"
     assert RUNTIME_AUTHORIZATION_EFFECT == "NONE"
@@ -474,6 +478,8 @@ def test_s2_authority_flags_and_addressing_census_bind() -> None:
     assert S3_IMPLEMENTED is True
     assert S4_IMPLEMENTED is True
     assert S5_IMPLEMENTED is True
+    assert S6_IMPLEMENTED is True
+    assert S7_IMPLEMENTED is True
     assert S4_JOIN_SYMBOL == "invoke_occupied_lane_mv2_dp_decision_state_consumer_v1"
     assert FIRST_DECISION_STATE_CONSUMER == FIRST_TRADING_DECISION_CONSUMER
     assert CONSUMPTION_SEAM == "pre_invoke_run_current_productive_master_v2_runtime_cycle_v1"
@@ -1684,6 +1690,185 @@ def test_s6_n1_global_root_still_rejected(tmp_path: Path) -> None:
             **_carry_kwargs(cycle_id_prefix="s6-n1"),  # type: ignore[arg-type]
         )
     assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
+    assert HOST_JOIN is False
+    assert MF_PRODUCTIVE_JOIN is False
+    assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+    assert EXECUTION_CONCURRENCY_AUTHORIZED is False
+    assert MAX_POSITIONS_EFFECTIVE == 1
+
+
+def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
+    assert S7_IMPLEMENTED is True
+    assert S7_JOIN_SYMBOL == "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+    assert ATOMICITY_SEMANTICS == "NON_ATOMIC_DIRECT_WRITE_TEXT"
+    assert NEW_STATE_OWNER_CREATED is False
+    assert CURSOR_OWNER_CHANGE_REQUIRED is False
+    assert MAY_BIND_CAP61_STATE_ROOT is False
+    assert CAP61_CYCLE_STATE_ROOT_BOUND is False
+    assert HOST_JOIN is False
+    addressing_pkg = __import__(
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
+        fromlist=["*"],
+    )
+    assert getattr(addressing_pkg, S7_JOIN_SYMBOL) is compose_occupied_lane_mv2_dp_durable_cycle_v1
+    compose_source = inspect.getsource(compose_occupied_lane_mv2_dp_durable_cycle_v1)
+    restore_source = inspect.getsource(restore_occupied_lane_mv2_dp_decision_state_cursor_v1)
+    restore_idx = compose_source.find("restore_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    assert 0 <= restore_idx < persist_idx
+    assert "run_current_productive_master_v2_runtime_cycle_v1(" not in compose_source
+    assert "store_root=" not in compose_source
+    assert "persist_enabled=True" in compose_source
+    assert "cap61_state_root_bound=False" in compose_source
+    assert "persist_enabled=False" in restore_source
+    assert "persist_occupied_lane_mv2_dp_decision_state_cursor_v1(" not in restore_source
+    restore_cycle = restore_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
+        1
+    ].split(")", 1)[0]
+    assert "incoming_cursor=incoming" in restore_cycle
+    assert "store_root=" not in restore_cycle
+    assert "os.replace" not in compose_source
+    assert "write_text" not in JOIN_SOURCE
+    called = _called_names(JOIN_SOURCE)
+    assert called & FORBIDDEN_CALL_GRAPH_TARGETS == set()
+    assert "produce_occupied_lane_cap23_n1_selections_v1" not in JOIN_SOURCE
+    assert "stateful_no_order_host_join_v1" not in JOIN_SOURCE
+    assert "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation" not in (
+        JOIN_SOURCE
+    )
+
+
+def test_s7_n1_durable_load_cycle_persist_then_restore(tmp_path: Path) -> None:
+    pairs, first, _written = _seed_outgoing(tmp_path, ("LANE_3",))
+    first_outgoing = first["LANE_3"].cycle_result.outgoing_cursor
+    assert first_outgoing is not None
+    del first
+    composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-compose"),  # type: ignore[arg-type]
+    )
+    second_outgoing = composed["LANE_3"].cycle_result.outgoing_cursor
+    assert second_outgoing is not None
+    assert composed["LANE_3"].incoming_cursor == first_outgoing.to_dict()
+    assert composed["LANE_3"].persist_enabled is True
+    assert composed["LANE_3"].cap61_state_root_bound is False
+    loaded_after_s7 = load_current_productive_sidestate_confirmation_cursor_v1(
+        Path(pairs["LANE_3"][0].lane_state_root)
+    )
+    assert loaded_after_s7 == second_outgoing.to_dict()
+    del composed
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-after"),  # type: ignore[arg-type]
+    )
+    assert restored["LANE_3"].incoming_cursor == second_outgoing.to_dict()
+    assert restored["LANE_3"].persist_enabled is False
+    assert restored["LANE_3"].cap61_state_root_bound is False
+
+
+def test_s7_missing_file_none_then_persists_new_outgoing(tmp_path: Path) -> None:
+    pairs = {"LANE_2": _pair(tmp_path, "LANE_2")}
+    cursor_path = Path(pairs["LANE_2"][0].lane_state_root) / CURSOR_FILENAME
+    assert cursor_path.exists() is False
+    composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-missing"),  # type: ignore[arg-type]
+    )
+    assert composed["LANE_2"].incoming_cursor is None
+    assert composed["LANE_2"].cycle_result.cursor_restore_status == "missing"
+    assert composed["LANE_2"].persist_enabled is True
+    assert composed["LANE_2"].cap61_state_root_bound is False
+    outgoing = composed["LANE_2"].cycle_result.outgoing_cursor
+    assert outgoing is not None
+    assert cursor_path.is_file() is True
+    loaded = load_current_productive_sidestate_confirmation_cursor_v1(
+        Path(pairs["LANE_2"][0].lane_state_root)
+    )
+    assert loaded == outgoing.to_dict()
+
+
+def test_s7_n_gt_1_distinct_roots_and_no_cross_lane_leak(tmp_path: Path) -> None:
+    pairs, _first, _written = _seed_outgoing(tmp_path, ("LANE_1", "LANE_5"))
+    composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-n5"),  # type: ignore[arg-type]
+    )
+    left_root = Path(pairs["LANE_1"][0].lane_state_root)
+    right_root = Path(pairs["LANE_5"][0].lane_state_root)
+    assert left_root != right_root
+    left_loaded = load_current_productive_sidestate_confirmation_cursor_v1(left_root)
+    right_loaded = load_current_productive_sidestate_confirmation_cursor_v1(right_root)
+    assert left_loaded == composed["LANE_1"].cycle_result.outgoing_cursor.to_dict()
+    assert right_loaded == composed["LANE_5"].cycle_result.outgoing_cursor.to_dict()
+    assert left_loaded != right_loaded
+    assert composed["LANE_1"].persist_enabled is True
+    assert composed["LANE_5"].persist_enabled is True
+    foreign = right_root / CURSOR_FILENAME
+    foreign.write_text((left_root / CURSOR_FILENAME).read_text(encoding="utf-8"), encoding="utf-8")
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        compose_occupied_lane_mv2_dp_durable_cycle_v1(
+            {"LANE_5": pairs["LANE_5"]},
+            g17_typed_vol_producers=_lane_g17_producers({"LANE_5": pairs["LANE_5"]}),
+            **_carry_kwargs(cycle_id_prefix="s7-foreign"),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISMATCHED_LANE_STATE
+    assert exc.value.detail == "LANE_5"
+
+
+def test_s7_corrupt_schema_and_n1_global_follow_existing_contract(tmp_path: Path) -> None:
+    pairs, _first, _written = _seed_outgoing(tmp_path, ("LANE_4",))
+    path = Path(pairs["LANE_4"][0].lane_state_root) / CURSOR_FILENAME
+    original = path.read_text(encoding="utf-8")
+    payload = json.loads(original)
+    payload["schema_name"] = "not-the-canonical-schema"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-schema"),  # type: ignore[arg-type]
+    )
+    assert composed["LANE_4"].cycle_result.cursor_restore_status == "refused_mismatch"
+    assert composed["LANE_4"].persist_enabled is True
+    payload["schema_name"] = json.loads(original)["schema_name"]
+    payload["side_state"] = "NOT_A_SIDESTATE"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    restored_invalid = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-invalid-restore"),  # type: ignore[arg-type]
+    )
+    assert restored_invalid["LANE_4"].cycle_result.cursor_restore_status == (
+        "fail_closed_invalid_sidestate"
+    )
+    assert restored_invalid["LANE_4"].persist_enabled is False
+    assert restored_invalid["LANE_4"].cycle_result.outgoing_cursor is None
+    with pytest.raises(
+        FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError
+    ) as invalid_exc:
+        compose_occupied_lane_mv2_dp_durable_cycle_v1(
+            pairs,
+            g17_typed_vol_producers=_lane_g17_producers(pairs),
+            **_carry_kwargs(cycle_id_prefix="s7-invalid"),  # type: ignore[arg-type]
+        )
+    assert invalid_exc.value.failure_code == FAILURE_MISSING_LANE_STATE
+    path.write_text("{", encoding="utf-8")
+    with pytest.raises(CurrentProductiveCursorError) as exc:
+        compose_occupied_lane_mv2_dp_durable_cycle_v1(
+            pairs,
+            **_carry_kwargs(cycle_id_prefix="s7-corrupt"),  # type: ignore[arg-type]
+        )
+    assert exc.value.reason_code == "CURSOR_FILE_CORRUPT"
+    blocked = {"LANE_1": _pair(tmp_path, "LANE_1", lane_state_root=N1_GLOBAL_CURSOR_STORE_RELPATH)}
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as n1_exc:
+        compose_occupied_lane_mv2_dp_durable_cycle_v1(
+            blocked,
+            **_carry_kwargs(cycle_id_prefix="s7-n1"),  # type: ignore[arg-type]
+        )
+    assert n1_exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
     assert HOST_JOIN is False
     assert MF_PRODUCTIVE_JOIN is False
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False

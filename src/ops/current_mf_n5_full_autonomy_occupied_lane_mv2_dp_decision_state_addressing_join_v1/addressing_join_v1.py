@@ -2,15 +2,15 @@
 
 Deterministic occupied-lane → IsolatedLaneSlotV1.lane_state_root mapping,
 bound to the pre-cycle consumption seam, then lane-isolated invocation of
-the existing N=1 MV2+DP cycle. S6 writes and reloads each lane's existing
-outgoing cursor through the existing cursor persist/load owner under that
-lane's lane_state_root. The cycle still does not take store_root. Cap61
-stays unbound. This is harness durability, not a host or productive MF join.
+the existing N=1 MV2+DP cycle. S7 composes S6 restore (load + cycle) with
+S6 persist of the new outgoing cursor under the same lane_state_root.
+The cycle still does not take store_root. Cap61 stays unbound. This is
+harness durability, not a host or productive MF join.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Mapping, NoReturn, Sequence
 
@@ -79,6 +79,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     S4_IMPLEMENTED,
     S5_IMPLEMENTED,
     S6_IMPLEMENTED,
+    S7_IMPLEMENTED,
     THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER,
     THIS_SLICE_MAY_REINVOKE_CAP23,
     THIS_SLICE_MAY_REINVOKE_CAP24,
@@ -137,6 +138,7 @@ def _assert_non_authority() -> None:
         or not S4_IMPLEMENTED
         or not S5_IMPLEMENTED
         or not S6_IMPLEMENTED
+        or not S7_IMPLEMENTED
         or not OCCUPIED_LANES_ONLY
         or not UNIQUE_MUTABLE_ROOTS_ENFORCED
         or not GLOBAL_N1_CURSOR_REJECTED
@@ -680,3 +682,58 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             cycle_result=cycle_result,
         )
     return restored
+
+
+def compose_occupied_lane_mv2_dp_durable_cycle_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    *,
+    cycle_id_prefix: str,
+    observed_unix: float,
+    mark_px: float,
+    index_px: float,
+    bid_px: float,
+    ask_px: float,
+    volume: float,
+    open_interest: float,
+    funding_rate: float,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+    venue_flat: bool,
+    existing_position_side: ExistingPositionSide,
+    g17_typed_vol_producers: Mapping[str, object] | None = None,
+) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
+    """Load, run the existing N=1 cycle, then persist the new outgoing cursor.
+
+    Reuses S6 restore (load + cycle) and S6 persist. lane_state_root stays
+    external addressing. Cap61 remains unbound. S6 restore itself is unchanged.
+    """
+    _assert_non_authority()
+    restored = restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
+        composed_pairs,
+        cycle_id_prefix=cycle_id_prefix,
+        observed_unix=observed_unix,
+        mark_px=mark_px,
+        index_px=index_px,
+        bid_px=bid_px,
+        ask_px=ask_px,
+        volume=volume,
+        open_interest=open_interest,
+        funding_rate=funding_rate,
+        finalized_closes=finalized_closes,
+        last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+        venue_flat=venue_flat,
+        existing_position_side=existing_position_side,
+        g17_typed_vol_producers=g17_typed_vol_producers,
+    )
+    persist_occupied_lane_mv2_dp_decision_state_cursor_v1(composed_pairs, restored)
+    composed: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
+    for lane_id in LANE_IDS:
+        record = restored.get(lane_id)
+        if record is None:
+            continue
+        composed[lane_id] = replace(
+            record,
+            persist_enabled=True,
+            cap61_state_root_bound=False,
+        )
+    return composed
