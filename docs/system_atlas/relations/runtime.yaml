@@ -105,6 +105,31 @@ relations:
       Recovery stops there. Missing/corrupt restart state must not bootstrap.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_recovered_topology_consumer_calls_n5_lane_topology
+    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+    type: CALLS
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >-
+      Calls apply_isolated_lane_topology_v1 with recovered prior_topology
+      or None. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer.
+      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_recovered_topology_consumer_calls_durable_lane_assignment
+    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+    type: CALLS
+    target: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+    notes: >-
+      Calls recover then persist. Does not map lanes. Not PRODUCES/SELECTS/BINDS.
+      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_cap24_binds
     source: BINDER:bound_instrument_v1
     type: BINDS
