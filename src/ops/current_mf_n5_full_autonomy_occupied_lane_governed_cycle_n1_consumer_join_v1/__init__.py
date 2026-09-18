@@ -1,0 +1,76 @@
+"""CURRENT MF N=5 occupied-lane governed-cycle N=1 consumer join.
+
+Consumes S8 governed-cycle roots and invokes the existing one-cycle
+orchestrator lane-local with NON-V5 EG and S7 T2. Cap61, host join, and
+productive MF join remain out of scope.
+"""
+
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.constants_v1 import (
+    AUTHORITY_EFFECT,
+    CAP61_CYCLE_STATE_ROOT_BOUND,
+    CONSUMPTION_SEAM,
+    CONTRACT_ID,
+    CURSOR_OWNER,
+    EG_DISPATCH_SYMBOL,
+    EG_V5_USED,
+    EXECUTION_CONCURRENCY_AUTHORIZED,
+    GOVERNED_CYCLE_INVOKED,
+    HOST_JOIN,
+    JOIN_IMPLEMENTED,
+    JOIN_SYMBOL,
+    MAX_POSITIONS_EFFECTIVE,
+    MAY_BIND_CAP61_STATE_ROOT,
+    MAY_INVOKE_GOVERNED_CYCLE,
+    MF_PRODUCTIVE_JOIN,
+    MULTI_FUTURE_RUNTIME_AUTHORIZED,
+    OWNER,
+    OWNER_GO_THIS_SLICE,
+    PRODUCTIVE_RUNTIME_CARDINALITY,
+    RUNTIME_AUTHORIZATION_EFFECT,
+    S7_JOIN_SYMBOL,
+    S8_CONSUMED,
+    S8_JOIN_SYMBOL,
+    SLICE_ID,
+    T2_DISPATCH_SYMBOL,
+    T2_S7_USED,
+)
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+    FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError,
+    OccupiedLaneGovernedCycleN1ConsumerResultV1,
+    invoke_occupied_lane_governed_cycle_n1_consumer_v1,
+    non_v5_eg_dispatch_v1,
+)
+
+__all__ = [
+    "AUTHORITY_EFFECT",
+    "CAP61_CYCLE_STATE_ROOT_BOUND",
+    "CONSUMPTION_SEAM",
+    "CONTRACT_ID",
+    "CURSOR_OWNER",
+    "EG_DISPATCH_SYMBOL",
+    "EG_V5_USED",
+    "EXECUTION_CONCURRENCY_AUTHORIZED",
+    "GOVERNED_CYCLE_INVOKED",
+    "HOST_JOIN",
+    "JOIN_IMPLEMENTED",
+    "JOIN_SYMBOL",
+    "MAX_POSITIONS_EFFECTIVE",
+    "MAY_BIND_CAP61_STATE_ROOT",
+    "MAY_INVOKE_GOVERNED_CYCLE",
+    "MF_PRODUCTIVE_JOIN",
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED",
+    "OWNER",
+    "OWNER_GO_THIS_SLICE",
+    "PRODUCTIVE_RUNTIME_CARDINALITY",
+    "RUNTIME_AUTHORIZATION_EFFECT",
+    "S7_JOIN_SYMBOL",
+    "S8_CONSUMED",
+    "S8_JOIN_SYMBOL",
+    "SLICE_ID",
+    "T2_DISPATCH_SYMBOL",
+    "T2_S7_USED",
+    "FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError",
+    "OccupiedLaneGovernedCycleN1ConsumerResultV1",
+    "invoke_occupied_lane_governed_cycle_n1_consumer_v1",
+    "non_v5_eg_dispatch_v1",
+]

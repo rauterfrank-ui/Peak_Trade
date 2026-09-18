@@ -566,6 +566,20 @@ relations:
       and is not passed into the cycle. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+    notes: >
+      This consumer consumes S8 bind_occupied_lane_governed_cycle_store_roots_v1
+      and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the
+      producer. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY

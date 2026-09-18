@@ -945,6 +945,41 @@ entities:
       CROSS_UNIVERSE_* remain false. Shared mutable state remains false.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+      - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py
+    notes: >-
+      GOVERNED_CYCLE_N1_CONSUMER_JOIN_TO_PRE_EXTERNAL_EFFECT consumes S8
+      lane-local cursor_store_root, lock_root, and evidence_root and
+      invokes the existing governed cycle once per occupied lane. EG is
+      NON-V5. T2 is S7 compose_occupied_lane_mv2_dp_durable_cycle_v1.
+      native_id is BoundInstrumentV1.venue_native_id. Cap61 stays
+      state_root=None persist=False. Cursor owner remains the existing
+      sidestate confirmation cursor. N1 global cursor is rejected.
+      HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false.
+      PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED.
+      MAX_POSITIONS_EFFECTIVE remains 1.
+      MULTI_FUTURE_RUNTIME_AUTHORIZED=false.
+      EXECUTION_CONCURRENCY_AUTHORIZED=false. No POST, permit, V5,
+      Cap21-24 reinvoke, host join, or cardinality raise. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary
