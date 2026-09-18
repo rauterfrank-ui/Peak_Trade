@@ -480,6 +480,32 @@ relations:
       remains VALIDATE_AND_BIND_EXISTING_SELECTED_IDENTITY. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_cap24_bind_join
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/constants_v1.py
+    notes: >
+      S1 ingest contract consumes the already-produced #6598 BoundInstrumentV1
+      map. It must not reinvoke Cap24. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/constants_v1.py
+    notes: >
+      Slot identity remains existing lane_id plus lane_state_root_for. No
+      second lane identity. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
