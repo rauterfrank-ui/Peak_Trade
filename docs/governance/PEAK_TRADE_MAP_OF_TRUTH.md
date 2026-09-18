@@ -95,6 +95,7 @@ in the Master Runbook and the named packages.
 | `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |
 | Single Selected Future binding | `src/ops/single_selected_future_runtime_binding_v1/` |
+| Elementary C1 mark direction identity | `src/trading/market_state/elementary_direction_v1.py` |
 | Governed universe | `src/ops/governed_futures_universe_producer_v1/` |
 | Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
@@ -116,6 +117,7 @@ authority and must not be read as activation or next-step instructions.
 | [`docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md`](../ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md) | Local CI dedup navigation |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Landscape Dashboard consumer docs; read-only / non-authority |
 | [`docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](../runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md) | Python launcher/interpreter contract |
+| [`docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md`](../ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md) | Navigation to C1 mark-to-mark identity primitive; not a trading-decision owner |
 
 ------------------------------------------------------------------------
 

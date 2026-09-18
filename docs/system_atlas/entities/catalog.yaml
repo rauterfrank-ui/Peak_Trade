@@ -140,6 +140,7 @@ entities:
       - docs/ops/specs/DIRECTIONAL_MAPPING_CONTRACT_REPAIR_V1.md
       - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
       - docs/ops/specs/SECTION_11_14_LIVE_HANDOFF_CURRENT_ORIGIN_MAIN_BOUND_GET_ONLY_PRETRADE_ACCOUNT_NETWORK_AND_INSTRUMENT_READINESS_V1.md
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
     notes: >-
       WP-04 mechanical navigation inventory only. Decision Map is listed as a
       navigation sibling, not a second SSOT and not selection authority.
@@ -214,6 +215,9 @@ entities:
       RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 is a
       navigation pointer only; AUTHORITY_EFFECT=NONE; not selection
       authority; not a second SSOT.
+      ELEMENTARY_DIRECTION_PRIMITIVE_V1 is a navigation pointer only;
+      AUTHORITY_EFFECT=NONE; C1 mark-to-mark identity, not a
+      trading-decision owner; not Double Play / ScopeEvent / Entry consumer.
       Notion is not a Peak_Trade component; NOTION_PEAK_TRADE_COMPONENT=false;
       NOTION_REPOSITORY_MIRROR_CURRENT=false; CURRENT truth is Runtime Truth Map.
       Atlas is not trading authority.
@@ -236,6 +240,50 @@ entities:
       RUNTIME_AUTHORIZATION_EFFECT=NONE.
       MUST_INTEGRATE_CANONICAL_COUNT=0.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:elementary_direction_primitive_v1
+    kind: CONTRACT
+    name: Elementary Direction Primitive V1
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    authority_sources: []
+    evidence_sources:
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >-
+      Navigation/topology record for the passive C1 mark-to-mark identity
+      {BULL, BEAR, NEUTRAL}. AUTHORITY_EFFECT=NONE. Not a trading-decision
+      owner. Not consumed by Replay, Double Play, ScopeEvent, SideState,
+      Entry, Risk, Intent, Execution, or POST. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:elementary_direction_v1
+    kind: RUNTIME_COMPONENT
+    name: Elementary C1 mark direction identity
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    semantic_authority: false
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/trading/market_state/elementary_direction_v1.py
+      - src/trading/market_state/__init__.py
+    evidence_sources:
+      - src/trading/market_state/elementary_direction_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+      - tests/trading/market_state/test_elementary_direction_v1.py
+      - tests/ops/test_elementary_direction_passive_cycle_join_v1.py
+    notes: >-
+      Passive cycle-evidence identity only. previous=C1
+      state_before.last_accepted_observation_identity.mark_price;
+      current=bound selected-Future markPx. None/equal=NEUTRAL;
+      greater=BULL; lower=BEAR. Invalid numeric fail-closed via C1
+      convention. Not Replay input. Not Double Play rewire.
+      AUTHORITY_EFFECT=NONE. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: FORENSIC_REFERENCE:information_corpus_persistence_base
     kind: FORENSIC_REFERENCE
@@ -5946,6 +5994,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # ELEMENTARY_DIRECTION_PRIMITIVE_V1: CONTRACT_VERSION=v1; PASSIVE_CYCLE_EVIDENCE_ONLY=true; REPLAY_CONSUMED=false; DOUBLE_PLAY_REWIRED=false; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE; owner=src/trading/market_state/elementary_direction_v1.py; seam=src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py.
     # S2C_DATASAFETYGATE_PRODUCTIVE_ADMISSION_JOIN_V1: CONTRACT_VERSION=v1; DATASAFETYGATE_JOIN=CONJUNCT_NOT_OWNER; ADMISSION_OWNER=evaluate_execution_admission_v1; INVOCATION=per_fetch_group_bind_then_DataSafetyGate.check_before_A1; CONJUNCT_ONCE_AT_evaluate_execution_admission_v1; ENSURE_ALLOWED=false; ALLOW_IS_NOT_ADMIT; FAIL_CLOSED_UNBOUND_DENIED_ERROR_MISSING=true; PRIOR_S2C_UNAUTHORIZED_AND_JOIN_FALSE_SUPERSEDED=true; S2B_LIVE_TRADE_SOURCE_UNCHANGED=true; AUTHORITY_EFFECT=NONE; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/datasafety_gate_join_into_execution_admission_v1.py.
     # S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1: CONTRACT_VERSION=v1; BINDER_AUTHORITY=ops.full_core_live_path_composition_root_v1; BINDING_BOUNDARY=FreshPretradeGetTransportResultV1 IMMEDIATELY_AFTER_TRANSPORT_GET_BEFORE_A1_A2_A3; USAGE=DataUsageContextKind.LIVE_TRADE; SOURCE_KIND=S1_stamp_exact_REAL_only; FAIL_CLOSED_UNBOUND=true; FOREIGN_VOCAB_EQUIVALENCE=false; DATASAFETYGATE_JOIN=false; S2C_UNAUTHORIZED=true; AUTHORITY_EFFECT=RATIFIED_CONTEXT_BINDER_IMPLEMENTATION_ONLY; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: CONTRACT_VERSION=v1; DATA_SAFETY_SOURCE_KIND_FIELD=FreshPretradeGetTransportResultV1.data_safety_source_kind; REAL_PRODUCER=FullCoreProductiveReadOnlyGetTransportV1.get; REAL_ONLY_WITH_DIRECT_VENUE_ACQUISITION_EVIDENCE=true; INJECTED_FAILED_UNBOUND=true; VENUE_NATIVE_REMAP=false; DATASAFETYGATE_JOIN=false; USAGE_CONTEXT_UNCHANGED=true; V5_C1_TRANSPORT=false; AUTHORITY_EFFECT=NONE; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py|fresh_pretrade_runtime_get_v1.py.

@@ -996,6 +996,20 @@ relations:
       merge not authorized. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_full_core_cycle_observes_elementary_direction
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: OBSERVES
+    target: RUNTIME_COMPONENT:elementary_direction_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+      - src/trading/market_state/elementary_direction_v1.py
+    notes: >-
+      Passive cycle-result evidence field only. Not Replay input.
+      Not Double Play / ScopeEvent / SideState / Entry consumption.
+      AUTHORITY_EFFECT=NONE. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_path_calls_venue_translation
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
