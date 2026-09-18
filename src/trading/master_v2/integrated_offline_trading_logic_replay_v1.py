@@ -82,15 +82,16 @@ from trading.master_v2.deterministic_scope_event_generator_v1 import (
 )
 from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
     DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID,
+    DirectionalAssessmentConfirmationIntegrationInputV1,
     DirectionalConfirmationSideStateCarrierV1,
     assert_c3_confirmation_authority_exclusive_v1,
-    evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1,
+    evaluate_directional_assessment_with_confirmation_progress_v1,
     initial_directional_confirmation_side_state_carrier_v1,
     non_advancing_observation_acceptance_result_v1,
 )
 from trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1 import (
     POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID,
-    assert_c4_c3_assessment_identity_binding_v1,
+    assert_c4_single_lane_assessment_identity_binding_v1,
     assert_post_c3_downstream_confirmation_non_authority_v1,
 )
 from trading.master_v2.directional_assessment_v1 import (
@@ -105,15 +106,27 @@ from trading.master_v2.directional_assessment_v1 import (
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     ObservationAcceptanceResultV1,
 )
+from trading.market_state.elementary_direction_v1 import (
+    evaluate_elementary_direction_from_observation_acceptance_v1,
+)
 from trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
+from trading.market_state.directional_confirmation_progress_v1 import ConfirmationSideV1
+from trading.master_v2.single_lane_confirmation_activation_v1 import (
+    SingleLaneConfirmationPresenceV1,
+    active_single_lane_presence_v1,
+    apply_single_lane_confirmation_lifecycle_v1,
+    persist_single_lane_into_dual_carrier_v1,
+    prior_presence_from_dual_carrier_v1,
+)
 from trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_LAYER_VERSION,
     CompositionDirectionState,
     CompositionSelectedSide,
-    DoublePlayCompositionInputV1,
     DoublePlayCompositionPolicyV1,
     DoublePlayCompositionResultV1,
+    DoublePlaySingleLaneCompositionInputV1,
     PositionManagementContext,
+    build_single_lane_composition_candidate_v1,
     compute_composition_input_digest,
     evaluate_double_play_composition_matrix_v1,
 )
@@ -351,12 +364,12 @@ class IntegratedOfflineReplayIntermediateV1:
     market_context: CanonicalMarketContextV1
     scope_initialization: CanonicalScopeInitializationResultV1
     scope_event: ScopeEventEvidenceV1
-    bull_assessment: DirectionalAssessmentV1
-    bear_assessment: DirectionalAssessmentV1
-    bull_survival: SurvivalResultV1
-    bear_survival: SurvivalResultV1
-    bull_suitability: SuitabilityResultV1
-    bear_suitability: SuitabilityResultV1
+    bull_assessment: Optional[DirectionalAssessmentV1]
+    bear_assessment: Optional[DirectionalAssessmentV1]
+    bull_survival: Optional[SurvivalResultV1]
+    bear_survival: Optional[SurvivalResultV1]
+    bull_suitability: Optional[SuitabilityResultV1]
+    bear_suitability: Optional[SuitabilityResultV1]
     composition_result: DoublePlayCompositionResultV1
     entry_exit_decision: EntryExitPolicyDecisionV0
     capital_risk_sizing_decision: Optional[CapitalRiskSizingDecisionV1]
@@ -371,6 +384,7 @@ class IntegratedOfflineReplayIntermediateV1:
     directional_confirmation_progress_after: Optional[DirectionalConfirmationSideStateCarrierV1] = (
         None
     )
+    single_lane_confirmation_after: Optional[SingleLaneConfirmationPresenceV1] = None
     chop_binding_status: str = CHOP_BINDING_STATUS
     confirmation_integration_capability_id: str = (
         DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID
@@ -1621,8 +1635,6 @@ def run_integrated_offline_trading_logic_replay_v1(
     )
 
     scope_event_ref = _scope_event_ref_from_evidence(scope_event)
-    bull_inp = _directional_input_for_side(inp, DirectionalAssessmentSide.LONG, scope_event_ref)
-    bear_inp = _directional_input_for_side(inp, DirectionalAssessmentSide.SHORT, scope_event_ref)
     (
         prior_carrier,
         observation_acceptance_result,
@@ -1632,54 +1644,100 @@ def run_integrated_offline_trading_logic_replay_v1(
     ) = _resolve_c3_confirmation_binding_v1(inp)
     # LEGACY_NON_PRODUCTIVE_CONFIRMATION_AUTHORITY_NOTE:
     # evaluate_directional_assessment_v1 remains the isolated unit-test DA owner.
-    # Productive confirmation authority is C3 below (not evaluate_directional_assessment_v1).
-    bull_c3, bear_c3, confirmation_progress_after = (
-        evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1(
-            bull_input=bull_inp,
-            bear_input=bear_inp,
-            policy=inp.policies.directional,
-            prior_carrier=prior_carrier,
-            observation_acceptance_result=observation_acceptance_result,
-            session_id=confirmation_session_id,
-            venue=confirmation_venue,
-            instrument=confirmation_instrument,
-        )
+    # Productive confirmation authority is selected-lane C3 below
+    # (not evaluate_directional_assessment_v1, not dual-lane evaluate_bull_bear_...).
+    elementary_direction = evaluate_elementary_direction_from_observation_acceptance_v1(
+        observation_acceptance_result,
+        bound_instrument_key=observation_acceptance_result.state_before.bound_instrument_key,
+        current_mark=(
+            observation_acceptance_result.observation_identity.mark_price
+            if observation_acceptance_result.observation_identity is not None
+            else float(bound_context.mark_price)
+        ),
     )
-    bull_assessment = bull_c3.assessment
-    bear_assessment = bear_c3.assessment
+    lifecycle = apply_single_lane_confirmation_lifecycle_v1(
+        prior_presence=prior_presence_from_dual_carrier_v1(prior_carrier),
+        elementary=elementary_direction,
+        observation_acceptance_result=observation_acceptance_result,
+        session_id=confirmation_session_id,
+        venue=confirmation_venue,
+        instrument=confirmation_instrument,
+    )
+    bull_assessment = None
+    bear_assessment = None
+    bull_survival = None
+    bear_survival = None
+    bull_suitability = None
+    bear_suitability = None
+    presence_after = lifecycle.presence
+    if lifecycle.presence.is_active:
+        selected_side = lifecycle.presence.selected_side
+        da_side = (
+            DirectionalAssessmentSide.LONG
+            if selected_side is ConfirmationSideV1.LONG
+            else DirectionalAssessmentSide.SHORT
+        )
+        selected_inp = _directional_input_for_side(inp, da_side, scope_event_ref)
+        selected_c3 = evaluate_directional_assessment_with_confirmation_progress_v1(
+            DirectionalAssessmentConfirmationIntegrationInputV1(
+                directional_input=selected_inp,
+                policy=inp.policies.directional,
+                prior_confirmation_progress=(
+                    lifecycle.presence.authoritative_confirmation_progress()
+                ),
+                observation_acceptance_result=observation_acceptance_result,
+                session_id=confirmation_session_id,
+                venue=confirmation_venue,
+                instrument=confirmation_instrument,
+                side=selected_side,
+            )
+        )
+        presence_after = active_single_lane_presence_v1(
+            selected_side=selected_side,
+            confirmation_progress=selected_c3.confirmation_progress_after,
+        )
+        selected_survival = evaluate_survival_assessment_v1(
+            _survival_input_for_assessment(inp, selected_c3.assessment),
+            inp.policies.survival,
+        )
+        selected_suitability = evaluate_suitability_binding_v1(
+            _suitability_input_for_assessment(inp, selected_c3.assessment, selected_survival),
+            inp.policies.suitability,
+        )
+        if selected_side is ConfirmationSideV1.LONG:
+            bull_assessment = selected_c3.assessment
+            bull_survival = selected_survival
+            bull_suitability = selected_suitability
+        else:
+            bear_assessment = selected_c3.assessment
+            bear_survival = selected_survival
+            bear_suitability = selected_suitability
+    confirmation_progress_after = persist_single_lane_into_dual_carrier_v1(
+        presence=presence_after,
+        session_id=confirmation_session_id,
+        venue=confirmation_venue,
+        instrument=confirmation_instrument,
+        padding_epoch=observation_acceptance_result.state_before.market_observation_epoch,
+    )
 
     # C4: post-C3 Survival → Suitability → Composition binding.
-    # Survival/Suitability consume C3 assessments only; Composition remains the sole
-    # CONFIRMED admissibility gate. No confirmation recompute / no new taxonomy.
+    # Survival/Suitability consume selected-lane C3 assessments only.
+    # Composition remains the sole CONFIRMED admissibility gate.
     assert_post_c3_downstream_confirmation_non_authority_v1()
 
-    bull_survival = evaluate_survival_assessment_v1(
-        _survival_input_for_assessment(inp, bull_assessment),
-        inp.policies.survival,
+    composition_candidate = build_single_lane_composition_candidate_v1(
+        long_assessment=bull_assessment,
+        long_survival=bull_survival,
+        long_suitability=bull_suitability,
+        short_assessment=bear_assessment,
+        short_survival=bear_survival,
+        short_suitability=bear_suitability,
     )
-    bear_survival = evaluate_survival_assessment_v1(
-        _survival_input_for_assessment(inp, bear_assessment),
-        inp.policies.survival,
-    )
-    bull_suitability = evaluate_suitability_binding_v1(
-        _suitability_input_for_assessment(inp, bull_assessment, bull_survival),
-        inp.policies.suitability,
-    )
-    bear_suitability = evaluate_suitability_binding_v1(
-        _suitability_input_for_assessment(inp, bear_assessment, bear_survival),
-        inp.policies.suitability,
-    )
-
-    composition_inp = DoublePlayCompositionInputV1(
+    composition_inp = DoublePlaySingleLaneCompositionInputV1(
         instrument_id=inp.instrument_id,
         trading_epoch=inp.trading_epoch,
         context_reference=inp.context_reference,
-        bull_directional_assessment=bull_assessment,
-        bear_directional_assessment=bear_assessment,
-        bull_survival_result=bull_survival,
-        bear_survival_result=bear_survival,
-        bull_suitability_result=bull_suitability,
-        bear_suitability_result=bear_suitability,
+        candidate=composition_candidate,
         previous_direction_state=inp.previous_composition_direction_state,
         position_management_context=inp.position_management_context,
         last_evaluated_trading_epoch=inp.last_evaluated_trading_epoch,
@@ -1689,13 +1747,8 @@ def run_integrated_offline_trading_logic_replay_v1(
         scope_chop_policy_active=scope_chop_policy_active,
         policy_version=inp.policies.composition.policy_version,
     )
-    assert_c4_c3_assessment_identity_binding_v1(
-        bull_assessment=bull_assessment,
-        bear_assessment=bear_assessment,
-        bull_survival=bull_survival,
-        bear_survival=bear_survival,
-        bull_suitability=bull_suitability,
-        bear_suitability=bear_suitability,
+    assert_c4_single_lane_assessment_identity_binding_v1(
+        candidate=composition_candidate,
         composition_input=composition_inp,
         trading_epoch=inp.trading_epoch,
     )
@@ -1825,9 +1878,13 @@ def run_integrated_offline_trading_logic_replay_v1(
 
     selected_strategy_ref = ""
     if composition_result.selected_side is CompositionSelectedSide.LONG:
-        selected_strategy_ref = bull_suitability.selected_strategy_id or ""
+        selected_strategy_ref = (
+            bull_suitability.selected_strategy_id if bull_suitability is not None else ""
+        ) or ""
     elif composition_result.selected_side is CompositionSelectedSide.SHORT:
-        selected_strategy_ref = bear_suitability.selected_strategy_id or ""
+        selected_strategy_ref = (
+            bear_suitability.selected_strategy_id if bear_suitability is not None else ""
+        ) or ""
 
     input_digest = (
         inp.input_digest
@@ -1859,13 +1916,13 @@ def run_integrated_offline_trading_logic_replay_v1(
         market_context_ref=bound_context.context_id,
         scope_initialization_ref=current_scope.scope_id,
         scope_event_ref=scope_event.scope_event_id,
-        bull_assessment_ref=bull_assessment.assessment_id,
-        bear_assessment_ref=bear_assessment.assessment_id,
+        bull_assessment_ref="" if bull_assessment is None else bull_assessment.assessment_id,
+        bear_assessment_ref="" if bear_assessment is None else bear_assessment.assessment_id,
         state_switch_ref=state_switch.state_switch_id,
-        bull_survival_ref=bull_survival.survival_id,
-        bear_survival_ref=bear_survival.survival_id,
-        bull_suitability_ref=bull_suitability.suitability_id,
-        bear_suitability_ref=bear_suitability.suitability_id,
+        bull_survival_ref="" if bull_survival is None else bull_survival.survival_id,
+        bear_survival_ref="" if bear_survival is None else bear_survival.survival_id,
+        bull_suitability_ref="" if bull_suitability is None else bull_suitability.suitability_id,
+        bear_suitability_ref="" if bear_suitability is None else bear_suitability.suitability_id,
         composition_result_ref=composition_result.composition_id,
         entry_exit_policy_ref=entry_exit_decision.policy_decision_id,
         current_scope_ref=current_scope.scope_id,
@@ -2019,6 +2076,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         runtime_scope_reinitialized=runtime_scope_reinitialized,
         trailing_anchor_used=trailing_anchor_used,
         directional_confirmation_progress_after=confirmation_progress_after,
+        single_lane_confirmation_after=presence_after,
         chop_binding_status=CHOP_BINDING_STATUS,
         confirmation_integration_capability_id=(
             DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID

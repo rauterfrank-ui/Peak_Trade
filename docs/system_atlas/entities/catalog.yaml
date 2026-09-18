@@ -28,7 +28,9 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
     notes: Not a competing generation versus Double Play. Typed ReplayExecutionSafetyV1
-      is mapper-facing evidence, not a second compute owner. ATLAS_AUTHORITY=NONE.
+      is mapper-facing evidence, not a second compute owner. OD1 single-lane
+      confirmation activation is presence/lifecycle only and is not a second
+      direction evaluator. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:external_data_archive_locator_consumers
     kind: RUNTIME_COMPONENT
@@ -1094,6 +1096,9 @@ entities:
     evidence_sources:
       - src/trading/master_v2/double_play_composition.py
       - src/trading/master_v2/double_play_composition_matrix_v1.py
+    notes: Productive C4 path is single-candidate | NO_DIRECTION. Dual-candidate
+      construction is fail-closed on that typed path. Composition remains the
+      sole selected_side owner. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:ops_evaluate_double_play
     kind: RUNTIME_COMPONENT
@@ -4619,6 +4624,8 @@ entities:
       IMPLEMENTED_CAPTURE_SEAMS_V0.       Capture remains observation-only.
       Dynamic-Scope 50/500 non-collapse restore in Integrated Replay does
       not change DDO capture authority.
+      OD1 productive replay join does not change DDO observation-only
+      authority. ATLAS_AUTHORITY=NONE.
       Double-Play seam core.double_play_entry_exit now persists a sibling
       typed observation projection v1 of EntryExitPolicyDecisionV0
       and a sibling producer-input evidence record v1 of
@@ -5187,7 +5194,10 @@ entities:
     evidence_sources:
       - src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      Productive C4 bind is selected-lane Survival/Suitability then
+      single-candidate | NO_DIRECTION composition. Implementation is not
+      activation. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:mv2_decision_packet
     kind: RUNTIME_COMPONENT
@@ -5268,10 +5278,17 @@ entities:
     module_role: current_noncanonical
     source_paths:
       - src/trading/master_v2/directional_assessment_v1.py
+      - src/trading/master_v2/directional_assessment_confirmation_integration_v1.py
+      - src/trading/master_v2/single_lane_confirmation_activation_v1.py
     evidence_sources:
       - src/trading/master_v2/directional_assessment_v1.py
+      - src/trading/master_v2/directional_assessment_confirmation_integration_v1.py
+      - src/trading/master_v2/single_lane_confirmation_activation_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+    notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
+      single_lane_confirmation_activation_v1 is presence/lifecycle only; C3
+      remains confirmation-only. Implementation is not activation.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:mv2_capital_risk_sizing
     kind: RUNTIME_COMPONENT
@@ -5399,9 +5416,11 @@ entities:
       submission/wire permission. Generator ScopeDirectionState is a SideState
       projection via scope_direction_from_side_state_v1; composition
       selected_side and inp.scope_direction_state are not generator-fallback
-      authority. Neutral-Start and Switch-Terminal ARMED identities keep
+      authority.       Neutral-Start and Switch-Terminal ARMED identities keep
       the same bound LONG/SHORT destination-prefix projection; LIVE_ARMED
-      is unchanged. Implementation is not activation.
+      is unchanged. OD1 productive join selects one ElementaryDirection lane,
+      evaluates selected-lane C3 only, and composes single-candidate |
+      NO_DIRECTION. Implementation is not activation. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:mv2_parity_gap_assessment
     kind: RUNTIME_COMPONENT

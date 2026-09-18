@@ -9,7 +9,7 @@ domain_census_payloads_fresh_exhaustive_recensus: false
 scope: origin/main src/trading/master_v2/**/*.py plus docs/ops/specs/MASTER_V2_CAPABILITY_*.md
 file_inventory_complete: true
 entity_mapping_complete: true
-python_file_count: 102
+python_file_count: 103
 double_play_named_file_count: 17
 capability_spec_file_count: 7
 capability_spec_inventory_complete: true
@@ -212,6 +212,8 @@ files:
   - path: src/trading/master_v2/scenario_matrix_v1.py
     double_play_named: false
   - path: src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py
+    double_play_named: false
+  - path: src/trading/master_v2/single_lane_confirmation_activation_v1.py
     double_play_named: false
   - path: src/trading/master_v2/staged_execution_enablement_v1.py
     double_play_named: false

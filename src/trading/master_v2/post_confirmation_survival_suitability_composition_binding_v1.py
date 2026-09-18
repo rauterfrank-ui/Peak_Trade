@@ -26,10 +26,14 @@ Owner decisions (immutable for this capability):
   SURVIVAL_SEMANTICS_CHANGE=false
   SUITABILITY_SEMANTICS_CHANGE=false
   COMPOSITION_SEMANTICS_CHANGE=false
+  COMPOSITION_SINGLE_LANE_NO_DIRECTION_GEOMETRY=true
   DOWNSTREAM_CONTRACT_CHANGE=false
 
 C4 has no new persistent state carrier. DirectionalConfirmationSideStateCarrierV1
-remains caller-owned and Bull/Bear-isolated via C3.
+remains caller-owned Cap-61 persistence padding. Typed
+`SingleLaneConfirmationPresenceV1` is the productive presence authority.
+COMPOSITION_SEMANTICS_CHANGE remains false except the bounded lift
+COMPOSITION_SINGLE_LANE_NO_DIRECTION_GEOMETRY=true.
 """
 
 from __future__ import annotations
@@ -42,7 +46,13 @@ from trading.master_v2.directional_assessment_v1 import (
     DirectionalAssessmentSide,
     DirectionalAssessmentV1,
 )
-from trading.master_v2.double_play_composition_matrix_v1 import DoublePlayCompositionInputV1
+from trading.master_v2.double_play_composition_matrix_v1 import (
+    DoublePlayCompositionInputV1,
+    DoublePlaySingleLaneCompositionInputV1,
+    SingleLaneLongCandidateV1,
+    SingleLaneNoDirectionV1,
+    SingleLaneShortCandidateV1,
+)
 from trading.master_v2.suitability_binding_v1 import SuitabilityResultV1
 from trading.master_v2.survival_assessment_v1 import SurvivalResultV1
 
@@ -60,6 +70,7 @@ SUITABILITY_CONFIRMED_EARLY_GATE = False
 SURVIVAL_SEMANTICS_CHANGE = False
 SUITABILITY_SEMANTICS_CHANGE = False
 COMPOSITION_SEMANTICS_CHANGE = False
+COMPOSITION_SINGLE_LANE_NO_DIRECTION_GEOMETRY = True
 DOWNSTREAM_CONTRACT_CHANGE = False
 C4_INTRODUCES_PERSISTENT_STATE_CARRIER = False
 PARALLEL_CONFIRMATION_AUTHORITY_FORBIDDEN = True
@@ -252,6 +263,51 @@ def assert_c4_c3_assessment_identity_binding_v1(
             )
 
 
+def assert_c4_single_lane_assessment_identity_binding_v1(
+    *,
+    candidate: SingleLaneNoDirectionV1 | SingleLaneLongCandidateV1 | SingleLaneShortCandidateV1,
+    composition_input: DoublePlaySingleLaneCompositionInputV1,
+    trading_epoch: int,
+) -> None:
+    """Runtime binding: single-lane C4 consumes exact selected-lane C3 artifacts or absence."""
+    if composition_input.candidate is not candidate:
+        raise PostC3DownstreamConfirmationAuthorityErrorV1(
+            "C4_COMPOSITION_SINGLE_LANE_CANDIDATE_IDENTITY_DRIFT"
+        )
+    if isinstance(candidate, SingleLaneNoDirectionV1):
+        if not isinstance(composition_input.candidate, SingleLaneNoDirectionV1):
+            raise PostC3DownstreamConfirmationAuthorityErrorV1("C4_NO_DIRECTION_NOT_ABSENCE")
+        return
+    assessment = candidate.directional_assessment
+    survival = candidate.survival_result
+    suitability = candidate.suitability_result
+    if assessment.trading_epoch != trading_epoch:
+        raise PostC3DownstreamConfirmationAuthorityErrorV1("C4_SELECTED_TRADING_EPOCH_MISMATCH")
+    if isinstance(candidate, SingleLaneLongCandidateV1):
+        if assessment.side is not DirectionalAssessmentSide.LONG:
+            raise PostC3DownstreamConfirmationAuthorityErrorV1("C4_BULL_CANNOT_ADMIT_SHORT")
+    elif assessment.side is not DirectionalAssessmentSide.SHORT:
+        raise PostC3DownstreamConfirmationAuthorityErrorV1("C4_BEAR_CANNOT_ADMIT_LONG")
+    surv_ref = survival.directional_assessment_ref
+    if (
+        surv_ref.assessment_id != assessment.assessment_id
+        or surv_ref.semantic_digest != assessment.semantic_digest
+        or surv_ref.side != assessment.side
+    ):
+        raise PostC3DownstreamConfirmationAuthorityErrorV1(
+            "C4_SELECTED_SURVIVAL_ASSESSMENT_IDENTITY_DRIFT"
+        )
+    suit_ref = suitability.directional_assessment_ref
+    if (
+        suit_ref.assessment_id != assessment.assessment_id
+        or suit_ref.semantic_digest != assessment.semantic_digest
+        or suit_ref.side != assessment.side
+    ):
+        raise PostC3DownstreamConfirmationAuthorityErrorV1(
+            "C4_SELECTED_SUITABILITY_ASSESSMENT_IDENTITY_DRIFT"
+        )
+
+
 def _call_names_from_ast(tree: ast.AST) -> Set[str]:
     names: set[str] = set()
     for node in ast.walk(tree):
@@ -308,7 +364,7 @@ def assert_productive_c4_modules_confirmation_non_authority_v1(
         # Composition must not. Research may call C1 commit (observation authority only).
         if rel.endswith("integrated_offline_trading_logic_replay_v1.py"):
             allow = {
-                "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1",
+                "evaluate_directional_assessment_with_confirmation_progress_v1",
             }
             forbidden = collect_forbidden_downstream_confirmation_calls_v1(
                 source, allow_calls=allow
@@ -356,6 +412,7 @@ __all__ = [
     "SURVIVAL_SEMANTICS_CHANGE",
     "SUITABILITY_SEMANTICS_CHANGE",
     "COMPOSITION_SEMANTICS_CHANGE",
+    "COMPOSITION_SINGLE_LANE_NO_DIRECTION_GEOMETRY",
     "DOWNSTREAM_CONTRACT_CHANGE",
     "C4_INTRODUCES_PERSISTENT_STATE_CARRIER",
     "PARALLEL_CONFIRMATION_AUTHORITY_FORBIDDEN",
@@ -369,6 +426,7 @@ __all__ = [
     "PostC3DownstreamConfirmationAuthorityErrorV1",
     "assert_post_c3_downstream_confirmation_non_authority_v1",
     "assert_c4_c3_assessment_identity_binding_v1",
+    "assert_c4_single_lane_assessment_identity_binding_v1",
     "collect_forbidden_downstream_confirmation_calls_v1",
     "collect_forbidden_scenario_legacy_imports_v1",
     "assert_productive_c4_modules_confirmation_non_authority_v1",

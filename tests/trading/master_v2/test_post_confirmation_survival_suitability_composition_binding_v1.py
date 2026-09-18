@@ -127,8 +127,24 @@ def _carrier_from_sides(
     )
 
 
-def _distinct_acceptor(*, event_time: float = 1_700_000_000.0, mark: float = 10.0):
+def _distinct_acceptor(
+    *,
+    event_time: float = 1_700_000_000.0,
+    mark: float = 10.0,
+    previous_mark: float | None = None,
+):
     state = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
+    if previous_mark is not None:
+        first = ObservationCandidateV1(
+            venue=_key().venue,
+            canonical_instrument_id=_key().canonical_instrument_id,
+            venue_instrument_id=_key().venue_instrument_id,
+            venue_event_time=event_time - 1.0,
+            mark_price=previous_mark,
+        )
+        first_result = evaluate_distinct_market_observation_v1(state, first)
+        assert first_result.classification is ObservationClassification.DISTINCT
+        state = commit_observation_acceptance_v1(current_state=state, result=first_result)
     candidate = ObservationCandidateV1(
         venue=_key().venue,
         canonical_instrument_id=_key().canonical_instrument_id,
@@ -165,17 +181,22 @@ def test_c4_capability_constants() -> None:
 def test_a1_both_observe_no_selection() -> None:
     result = _run()
     assert result.intermediate is not None
-    assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.OBSERVE
-    assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.OBSERVE
+    assert result.intermediate.bull_assessment is None
+    assert result.intermediate.bear_assessment is None
+    assert result.intermediate.bull_survival is None
+    assert result.intermediate.bear_survival is None
+    assert result.intermediate.bull_suitability is None
+    assert result.intermediate.bear_suitability is None
     assert result.intermediate.composition_result.selected_side is CompositionSelectedSide.NONE
+    assert result.intermediate.composition_result.composition_status is CompositionStatus.NO_ACTION
     assert result.intermediate.post_confirmation_binding_capability_id == (
         POST_CONFIRMATION_SURVIVAL_SUITABILITY_COMPOSITION_BINDING_CAPABILITY_ID
     )
 
 
 def test_a2_bull_candidate_bear_observe_no_selection() -> None:
-    # confirmation_epochs=2: first DISTINCT CONFIRMED-signal → CANDIDATE
-    acceptor, _ = _distinct_acceptor()
+    # confirmation_epochs=2: first selected-lane DISTINCT CONFIRMED-signal → CANDIDATE
+    acceptor, _ = _distinct_acceptor(previous_mark=9.0, mark=11.0)
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
@@ -190,13 +211,14 @@ def test_a2_bull_candidate_bear_observe_no_selection() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert result.intermediate is not None
+    assert result.intermediate.bull_assessment is not None
     assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.CANDIDATE
-    assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.OBSERVE
+    assert result.intermediate.bear_assessment is None
     assert result.intermediate.composition_result.selected_side is CompositionSelectedSide.NONE
 
 
 def test_a3_bull_confirmed_survival_suitability_pass_long_selected() -> None:
-    acceptor, _ = _distinct_acceptor()
+    acceptor, _ = _distinct_acceptor(previous_mark=9.0, mark=11.0)
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
@@ -212,9 +234,12 @@ def test_a3_bull_confirmed_survival_suitability_pass_long_selected() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert result.intermediate is not None
+    assert result.intermediate.bull_assessment is not None
     assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.OBSERVE
+    assert result.intermediate.bear_assessment is None
+    assert result.intermediate.bull_survival is not None
     assert result.intermediate.bull_survival.status is SurvivalAssessmentStatus.PASS
+    assert result.intermediate.bull_suitability is not None
     assert result.intermediate.bull_suitability.status is SuitabilityBindingStatus.PASS
     assert (
         result.intermediate.composition_result.composition_status is CompositionStatus.LONG_SELECTED
@@ -223,7 +248,7 @@ def test_a3_bull_confirmed_survival_suitability_pass_long_selected() -> None:
 
 
 def test_a4_bear_confirmed_survival_suitability_pass_short_selected() -> None:
-    acceptor, _ = _distinct_acceptor()
+    acceptor, _ = _distinct_acceptor(previous_mark=11.0, mark=9.0)
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
@@ -239,8 +264,9 @@ def test_a4_bear_confirmed_survival_suitability_pass_short_selected() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert result.intermediate is not None
+    assert result.intermediate.bear_assessment is not None
     assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.OBSERVE
+    assert result.intermediate.bull_assessment is None
     assert (
         result.intermediate.composition_result.composition_status
         is CompositionStatus.SHORT_SELECTED
@@ -266,25 +292,23 @@ def test_a5_both_confirmed_chop_guard_block() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert result.intermediate is not None
-    assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.CONFIRMED
-    assert (
-        result.intermediate.composition_result.composition_status
-        is CompositionStatus.CHOP_GUARD_BLOCK
-    )
+    assert result.intermediate.bull_assessment is None
+    assert result.intermediate.bear_assessment is None
     assert result.intermediate.composition_result.selected_side is CompositionSelectedSide.NONE
+    assert result.intermediate.composition_result.conflict_status.value != "both_sides_confirmed"
 
 
 def test_a6_bull_invalid_bear_confirmed_short_selectable() -> None:
+    acceptor, _ = _distinct_acceptor(previous_mark=11.0, mark=9.0)
     carrier = _carrier_from_sides(
         bull=_invalid_side_state(side=ConfirmationSideV1.LONG),
-        bear=_confirmed_side_state(side=ConfirmationSideV1.SHORT),
-    )
-    acceptor = non_advancing_observation_acceptance_result_v1(
-        bound_instrument_key=_key(),
-        market_observation_epoch=MarketObservationEpoch(value=1),
+        bear=_confirmed_side_state(
+            side=ConfirmationSideV1.SHORT,
+            epoch=acceptor.state_before.market_observation_epoch.value,
+        ),
     )
     result = _run(
+        policies=_policies_confirm_once(),
         price_path=(3500.0, 3430.0),
         directional_confirmation_progress=carrier,
         observation_acceptance_result=acceptor,
@@ -293,7 +317,8 @@ def test_a6_bull_invalid_bear_confirmed_short_selectable() -> None:
         confirmation_progress_instrument=_key(),
     )
     assert result.intermediate is not None
-    assert result.intermediate.bull_assessment.status is DirectionalAssessmentStatus.INVALID
+    assert result.intermediate.bull_assessment is None
+    assert result.intermediate.bear_assessment is not None
     assert result.intermediate.bear_assessment.status is DirectionalAssessmentStatus.CONFIRMED
     assert (
         result.intermediate.composition_result.composition_status
@@ -302,7 +327,7 @@ def test_a6_bull_invalid_bear_confirmed_short_selectable() -> None:
 
 
 def test_a7_confirmed_survival_fail_no_long_selection() -> None:
-    acceptor, _ = _distinct_acceptor()
+    acceptor, _ = _distinct_acceptor(previous_mark=9.0, mark=11.0)
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
@@ -329,7 +354,7 @@ def test_a7_confirmed_survival_fail_no_long_selection() -> None:
 
 
 def test_a8_confirmed_suitability_fail_no_long_selection() -> None:
-    acceptor, _ = _distinct_acceptor()
+    acceptor, _ = _distinct_acceptor(previous_mark=9.0, mark=11.0)
     carrier = initial_directional_confirmation_side_state_carrier_v1(
         session_id=_session(),
         venue="okx_eea",
@@ -427,9 +452,12 @@ def test_c20_productive_replay_does_not_call_legacy_da_evaluator() -> None:
             elif isinstance(func, ast.Attribute):
                 call_names.add(func.attr)
     assert "evaluate_directional_assessment_v1" not in call_names
-    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_directional_assessment_with_confirmation_progress_v1" in call_names
+    assert "evaluate_bull_bear_directional_assessment_with_confirmation_progress_v1" not in (
+        call_names
+    )
     assert "assert_post_c3_downstream_confirmation_non_authority_v1" in call_names
-    assert "assert_c4_c3_assessment_identity_binding_v1" in call_names
+    assert "assert_c4_single_lane_assessment_identity_binding_v1" in call_names
 
 
 def test_c21_research_wiring_no_scenario_status_stub_in_productive_path() -> None:
@@ -496,7 +524,7 @@ def test_c24_no_cross_side_projection_in_orchestrator_binding() -> None:
             venue="okx_eea",
             instrument=_key(),
         ),
-        observation_acceptance_result=_distinct_acceptor()[0],
+        observation_acceptance_result=_distinct_acceptor(previous_mark=9.0, mark=11.0)[0],
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
         confirmation_progress_instrument=_key(),
@@ -504,16 +532,13 @@ def test_c24_no_cross_side_projection_in_orchestrator_binding() -> None:
     assert result.intermediate is not None
     bull = result.intermediate.bull_assessment
     bear = result.intermediate.bear_assessment
+    assert bull is not None
+    assert bear is None
     assert bull.side.value == "long"
-    assert bear.side.value == "short"
-    assert bull.assessment_id != bear.assessment_id
     assert (
-        result.intermediate.bull_survival.directional_assessment_ref.assessment_id
+        result.intermediate.bull_survival is not None
+        and result.intermediate.bull_survival.directional_assessment_ref.assessment_id
         == bull.assessment_id
-    )
-    assert (
-        result.intermediate.bear_survival.directional_assessment_ref.assessment_id
-        == bear.assessment_id
     )
 
 

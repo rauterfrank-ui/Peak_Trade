@@ -166,7 +166,7 @@ def _enter_long_replay_kwargs() -> dict[str, object]:
     return {
         "policies": _policies_confirm_once(),
         "price_path": (3500.0, 3570.0),
-        "observation_acceptance_result": _injected_c1(),
+        "observation_acceptance_result": _injected_c1(previous_mark=3400.0, mark=3500.0),
         "scope_confirmation_state": _empty_scope_confirmation(),
         "confirmation_progress_session_id": _session(),
         "confirmation_progress_venue": "okx_eea",
@@ -179,7 +179,7 @@ def _enter_short_replay_kwargs() -> dict[str, object]:
     return {
         "policies": _policies_confirm_once(),
         "price_path": (3500.0, 3430.0),
-        "observation_acceptance_result": _injected_c1(),
+        "observation_acceptance_result": _injected_c1(previous_mark=3600.0, mark=3500.0),
         "scope_confirmation_state": _empty_scope_confirmation(),
         "confirmation_progress_session_id": _session(),
         "confirmation_progress_venue": "okx_eea",

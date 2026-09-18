@@ -351,6 +351,7 @@ def test_no_runtime_order_imports_in_replay_owner() -> None:
     allowed_adapter_modules = (
         "scope_event_generator_scenario_binding_adapter_v0",
         "reversal_preparation_scenario_binding_adapter_v0",
+        "replay_execution_safety_contract_v1",
     )
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
@@ -630,10 +631,10 @@ def test_provenance_chain_refs_populated() -> None:
     assert ev.market_context_ref
     assert ev.scope_initialization_ref
     assert ev.scope_event_ref
-    assert ev.bull_assessment_ref
-    assert ev.bear_assessment_ref
     assert ev.composition_result_ref
     assert ev.entry_exit_policy_ref
+    assert ev.bull_assessment_ref == ""
+    assert ev.bear_assessment_ref == ""
 
 
 def test_long_short_symmetry_structure() -> None:

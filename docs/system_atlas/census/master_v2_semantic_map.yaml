@@ -5,8 +5,8 @@ origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
 navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
-python_file_count_inventoried: 102
-python_file_count_semantically_mapped: 102
+python_file_count_inventoried: 103
+python_file_count_semantically_mapped: 103
 unmapped_file_count: 0
 entity_cluster_count: 35
 double_play_named_file_count: 17
@@ -1021,6 +1021,26 @@ clusters:
           - trading.market_state.observation_identity_v1
           - trading.master_v2.directional_assessment_v1
         runtime_reachability: OFFLINE_OR_LIBRARY
+      - path: src/trading/master_v2/single_lane_confirmation_activation_v1.py
+        primary_symbols:
+          - SingleLanePresenceKindV1
+          - SingleLaneLifecycleReasonV1
+          - InactiveLaneAuthorityErrorV1
+          - SingleLaneConfirmationPresenceV1
+          - SingleLaneLifecycleResultV1
+          - selected_lane_from_elementary_direction_v1
+          - inactive_single_lane_presence_v1
+          - active_single_lane_presence_v1
+          - prior_presence_from_dual_carrier_v1
+          - persist_single_lane_into_dual_carrier_v1
+          - apply_single_lane_confirmation_lifecycle_v1
+        master_v2_imports:
+          - trading.market_state.directional_confirmation_progress_v1
+          - trading.market_state.distinct_market_observation_acceptor_v1
+          - trading.market_state.elementary_direction_v1
+          - trading.market_state.observation_identity_v1
+          - trading.master_v2.directional_assessment_confirmation_integration_v1
+        runtime_reachability: OFFLINE_OR_LIBRARY
   - id: RUNTIME_COMPONENT:mv2_capital_risk_sizing
     name: Capital risk sizing restore/adapters
     module_role: current_noncanonical
@@ -1499,6 +1519,7 @@ clusters:
           - trading.master_v2.directional_assessment_confirmation_integration_v1
           - trading.master_v2.directional_assessment_v1
           - trading.master_v2.double_play_composition_matrix_v1
+          - trading.master_v2.single_lane_confirmation_activation_v1
           - trading.master_v2.double_play_entry_exit_policy_v0
           - trading.master_v2.double_play_state
           - trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1

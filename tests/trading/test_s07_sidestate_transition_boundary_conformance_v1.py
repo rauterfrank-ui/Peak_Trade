@@ -152,12 +152,12 @@ def _c3_confirmed_without_scope_confirmed():
         directional=replace(_default_policies().directional, confirmation_epochs=1),
     )
     inp = _replay_input(
-        observation_acceptance_result=_injected_c1(),
+        observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
         scope_confirmation_state=_empty_scope_confirmation(),
         policies=policies,
     )
     return inp, _run(
-        observation_acceptance_result=_injected_c1(),
+        observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
         scope_confirmation_state=_empty_scope_confirmation(),
         policies=policies,
     )
@@ -251,7 +251,7 @@ def test_s07_t04_selected_side_does_not_write_sidestate() -> None:
     inp = _replay_input(
         policies=_policies_confirm_once(),
         price_path=(3500.0, 3570.0),
-        observation_acceptance_result=_injected_c1(),
+        observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
         scope_confirmation_state=_empty_scope_confirmation(),
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
@@ -261,7 +261,7 @@ def test_s07_t04_selected_side_does_not_write_sidestate() -> None:
     replay = _run(
         policies=_policies_confirm_once(),
         price_path=(3500.0, 3570.0),
-        observation_acceptance_result=_injected_c1(),
+        observation_acceptance_result=_injected_c1(previous_mark=3400.0, mark=3500.0),
         scope_confirmation_state=_empty_scope_confirmation(),
         confirmation_progress_session_id=_session(),
         confirmation_progress_venue="okx_eea",
