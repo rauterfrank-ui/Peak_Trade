@@ -1,14 +1,13 @@
-"""S2B: Full-Core LIVE_TRADE binder ratification + offline binding-gap pin.
+"""S2B: Full-Core LIVE_TRADE binder ratification + binding-gap pin.
 
-Owner-GO (this WP) ratifies the governed Full-Core composition root as the
-binder of DataUsageContextKind.LIVE_TRADE at the S2A boundary
+Owner-GO ratifies the governed Full-Core composition root as the binder of
+DataUsageContextKind.LIVE_TRADE at the S2A boundary
 (FreshPretradeGetTransportResultV1 immediately after transport.get, before
-A1/A2/A3). This file pins that ratification as an offline contract
-expectation only. It does not wire runtime binding and does not join
-DataSafetyGate.
+A1/A2/A3). Runtime binding is confined to the authorized seam module; this
+pin still forbids DataSafetyGate join and foreign-vocab equivalence.
 
 AUTHORITY_EFFECT=CONTEXT_BINDER_RATIFICATION_ONLY
-RUNTIME_BINDING_INTRODUCED=false
+RUNTIME_BINDING_AUTHORIZED_SEAM=datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py
 DATASAFETYGATE_JOIN=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -53,6 +52,10 @@ OWNER_RATIFIED_BINDING_BOUNDARY_MOMENT = "IMMEDIATELY_AFTER_TRANSPORT_GET_BEFORE
 OWNER_RATIFIED_USAGE_VALUE = DataUsageContextKind.LIVE_TRADE
 OWNER_RATIFIED_AUTHORITY_EFFECT = "CONTEXT_BINDER_RATIFICATION_ONLY"
 FAIL_CLOSED_UNBOUND_USAGE = "NO_DATASAFETYCONTEXT_FABRICATION_NO_LIVE_TRADE_FALLBACK"
+AUTHORIZED_RUNTIME_BIND_RELPATH = (
+    "src/ops/full_core_live_path_composition_root_v1/"
+    "datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py"
+)
 
 
 def _field_names(cls: type) -> set[str]:
@@ -177,8 +180,11 @@ def test_unbound_usage_fail_closed_no_silent_live_trade_fallback() -> None:
     # Contract: source_kind=None remains UNBOUND and must not synthesize REAL usage pairing.
     assert unbound.data_safety_source_kind is not DataSourceKind.REAL.value
     assert unbound.data_safety_source_kind is not DataSourceKind.REAL
-    # Full-Core modules must not contain a fallback assignment to LIVE_TRADE.
+    # Outside the authorized binder seam, no LIVE_TRADE assignment may appear.
+    authorized = (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve()
     for path in _composition_root_py_files():
+        if path.resolve() == authorized:
+            continue
         text = path.read_text(encoding="utf-8")
         assert "DataUsageContextKind.LIVE_TRADE" not in text
         assert "usage_context=DataUsageContextKind.LIVE_TRADE" not in text
@@ -209,20 +215,28 @@ def test_s1_real_none_provenance_unchanged() -> None:
     assert "data_safety_source_kind=" not in fresh_src.split("data_safety_source_kind:")[1][:200]
 
 
-def test_no_full_core_datasafetygate_productive_join_or_usage_runtime_binding() -> None:
-    forbidden_imports = re.compile(
-        r"from\s+src\.data\.safety\s+import\s+.*\b(DataUsageContextKind|DataSafetyGate|DataSafetyContext)\b"
-        r"|import\s+src\.data\.safety\.(data_safety_gate)"
-    )
+def test_no_full_core_datasafetygate_join_and_usage_confined_to_authorized_seam() -> None:
+    authorized = (REPO_ROOT / AUTHORIZED_RUNTIME_BIND_RELPATH).resolve()
+    assert authorized.is_file()
     hits: list[str] = []
+    gate_hits: list[str] = []
     for path in _composition_root_py_files():
+        rel = str(path.relative_to(REPO_ROOT))
         text = path.read_text(encoding="utf-8")
-        if forbidden_imports.search(text):
-            hits.append(str(path.relative_to(REPO_ROOT)))
-        if "DataUsageContextKind" in text or "LIVE_TRADE" in text:
-            # Allow only string-free productive modules; any hit is a runtime join/wiring signal.
-            hits.append(str(path.relative_to(REPO_ROOT)))
-    # productive_read_only_get_transport imports DataSourceKind only — verify separately.
+        tree = ast.parse(text)
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Name) and node.id == "DataSafetyGate":
+                gate_hits.append(rel)
+            if isinstance(node, ast.Attribute) and node.attr == "ensure_allowed":
+                gate_hits.append(rel)
+        if path.resolve() == authorized:
+            continue
+        if (
+            "DataUsageContextKind" in text
+            or re.search(r"\bLIVE_TRADE\b", text) is not None
+            or "DataSafetyContext" in text
+        ):
+            hits.append(rel)
     transport_src = _SRC_TRANSPORT.read_text(encoding="utf-8")
     tree = ast.parse(transport_src)
     imported: set[str] = set()
@@ -232,15 +246,16 @@ def test_no_full_core_datasafetygate_productive_join_or_usage_runtime_binding() 
                 imported.add(alias.name)
     assert imported == {"DataSourceKind"}
     assert "DataUsageContextKind" not in transport_src
-    assert not hits, f"unexpected Full-Core usage/gate wiring: {hits}"
+    assert not hits, f"usage/context wiring outside authorized seam: {hits}"
+    assert not gate_hits, f"DataSafetyGate join present in composition root: {gate_hits}"
 
 
-def test_pin_itself_does_not_wire_runtime_binding_or_gate_join() -> None:
+def test_pin_itself_does_not_wire_gate_join() -> None:
     pin_src = _THIS_TEST.read_text(encoding="utf-8")
-    assert "RUNTIME_BINDING_INTRODUCED=false" in pin_src
     assert "DATASAFETYGATE_JOIN=false" in pin_src
     assert "OWNER_RATIFIED_USAGE_BINDER" in pin_src
     assert "NO_DATASAFETYCONTEXT_FABRICATION_NO_LIVE_TRADE_FALLBACK" in pin_src
+    assert "AUTHORIZED_RUNTIME_BIND_RELPATH" in pin_src
     tree = ast.parse(pin_src)
     for node in ast.walk(tree):
         if isinstance(node, ast.Attribute) and node.attr == "ensure_allowed":
