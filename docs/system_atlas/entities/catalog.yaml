@@ -4982,6 +4982,8 @@ entities:
       - docs/ops/specs/DDO_DOUBLE_PLAY_PRODUCER_FUNCTION_REPLAY_V1.md
       - src/learning/mutation_critical_control_state_storage_v1/authority_v1.py
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
+      - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -5193,6 +5195,27 @@ entities:
       redefined. TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=OBSERVATION_ONLY.
       HINDSIGHT_LEAKAGE_ALLOWED=false. Not a second trading authority.
       Not WP-FA-08.
+
+  - id: RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO current Double-Play decision learning bundle join v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/contract_registry_v0.py
+      - src/learning/deterministic_decision_outcome_v0/lineage_v0.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+    notes: >-
+      Fail-closed offline join resolver for DecisionEvent envelope plus typed
+      Double-Play observation and optional input evidence. Authoritative
+      decision_outcome is read from producer canonical payload only.
+      TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=NONE. Not a second trading
+      authority. Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
     # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE historical at that persist; spec section 14 TRACK_CLOSE_READY FUNCTION_REPLAY_TRACK_CLOSED; Master Runbook
