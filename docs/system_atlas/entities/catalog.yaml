@@ -6594,6 +6594,8 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_canonical_okx_post_body_serialize_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
@@ -6773,6 +6775,15 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
       - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+      - src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1
+      - src/ops/section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1
+      - src/ops/section_11_13_2_live_private_read_only_v1
+      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1
+      - src/ops/section_11_13_4_live_dry_run_order_plan_v1
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1
     source_symbols:
       - compose_core_live_execution_intent_v1
       - run_full_core_live_path_offline_v1
