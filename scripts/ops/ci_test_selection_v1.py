@@ -1380,6 +1380,9 @@ PR_BOUNDED_FULL_PACKAGE_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1_PRODU
 PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_evaluation_engine_v0.py"
 )
+PR_BOUNDED_FULL_PACKAGE_DDO_REAL_OUTCOME_HORIZON_LEARNING_STRETCH_V1_TESTOWNER: str = (
+    "tests/learning/test_ddo_real_outcome_horizon_learning_stretch_v1.py"
+)
 PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER: str = (
     "tests/learning/test_deterministic_decision_outcome_learning_validation_shadow_v0.py"
 )
@@ -1433,6 +1436,8 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         "src/learning/deterministic_decision_outcome_v0/errors_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py",
+        "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py",
         "src/learning/deterministic_decision_outcome_v0/evaluation_v0.py",
         "src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py",
@@ -1462,6 +1467,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TRIGGER_PATHS: frozenset[str] = f
         PR_BOUNDED_FULL_PACKAGE_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1_PRODUCTION,
         PR_BOUNDED_FULL_PACKAGE_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
+        PR_BOUNDED_FULL_PACKAGE_DDO_REAL_OUTCOME_HORIZON_LEARNING_STRETCH_V1_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
         PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_PRODUCTION,
@@ -1481,6 +1487,7 @@ PR_BOUNDED_FULL_PACKAGE_DDO_CONTRACT_LEDGER_V0_TARGETS: tuple[str, ...] = (
     PR_BOUNDED_FULL_PACKAGE_DDO_DOUBLE_PLAY_SEMANTIC_REPLAY_PARITY_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_EVALUATION_ENGINE_V0_TESTOWNER,
+    PR_BOUNDED_FULL_PACKAGE_DDO_REAL_OUTCOME_HORIZON_LEARNING_STRETCH_V1_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_LEARNING_VALIDATION_SHADOW_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_OWNER_BINDINGS_AND_DRIFT_V0_TESTOWNER,
     PR_BOUNDED_FULL_PACKAGE_DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_V1_TESTOWNER,
