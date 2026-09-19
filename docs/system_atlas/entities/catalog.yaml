@@ -6429,6 +6429,25 @@ entities:
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md
     notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class remains a closed productive mapping-contract runtime bind. The sixth admission class remains a closed generator-fallback repair. The seventh admission class remains a closed SideState ARMED identity-split repair. The eighth admission class remains a closed OD1 productive single-lane confirmation grant; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
+    kind: RUNTIME_COMPONENT
+    name: Optimization proposal governance ingress v1 (M10)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/governance/optimization_proposal_governance_ingress_v1.py
+    evidence_sources:
+      - src/governance/optimization_proposal_governance_ingress_v1.py
+      - tests/governance/test_optimization_proposal_governance_ingress_v1.py
+      - docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md
+      - config/governance/optimization_proposal_governance_ingress_v1_decision_v1.json
+    notes: >-
+      Fail-closed M10 edge from optimization plane/evidence to governance review
+      admission only. Reuses promotion_loop and ConfigPatch projection without
+      productive apply or promotion authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT
     name: Offline observation / proposal contract fences v1
