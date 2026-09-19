@@ -6463,7 +6463,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: POST_M6640_GOVERNED_PRODUCTIVE_RUNTIME_SEAM_JOIN_V1
+    modified_by: GOVERNED_PRODUCTIVE_RUNTIME_SEAM_SESSION_BIND_TO_NEXT_REAL_BLOCKER_V1
     source_paths:
       - src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - src/governance/m9_volatility_numeric_max_age_ratified_threshold_capability_v1.py
@@ -6471,6 +6471,7 @@ entities:
       - src/governance/governed_productive_configuration_v1.py
       - src/governance/authorized_productive_parameter_seam_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
+      - src/governance/governed_productive_runtime_parameter_seam_session_bind_v1.py
     evidence_sources:
       - src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - src/governance/m9_volatility_numeric_max_age_ratified_threshold_capability_v1.py
@@ -6478,12 +6479,15 @@ entities:
       - src/governance/governed_productive_configuration_v1.py
       - src/governance/authorized_productive_parameter_seam_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
+      - src/governance/governed_productive_runtime_parameter_seam_session_bind_v1.py
       - tests/governance/test_m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - tests/governance/test_explicit_productive_authorization_v1.py
       - tests/governance/test_governed_productive_configuration_v1.py
       - tests/governance/test_authorized_productive_parameter_seam_v1.py
       - tests/governance/test_governed_productive_runtime_parameter_seam_join_v1.py
+      - tests/governance/test_governed_productive_runtime_parameter_seam_session_bind_v1.py
       - config/governance/governed_productive_runtime_parameter_seam_join_v1_decision_v1.json
+      - config/governance/governed_productive_runtime_parameter_seam_session_bind_v1_decision_v1.json
       - docs/ops/specs/M9_VOLATILITY_NUMERIC_MAX_AGE_NUMERIC_PRODUCTIVE_TARGET_NORMATIVE_V1.md
       - docs/ops/specs/M9_VOLATILITY_NUMERIC_MAX_AGE_RATIFIED_THRESHOLD_CAPABILITY_NORMATIVE_V1.md
       - docs/ops/specs/EXPLICIT_PRODUCTIVE_AUTHORIZATION_NORMATIVE_V1.md
