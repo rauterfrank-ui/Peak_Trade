@@ -58,7 +58,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     NON_EXECUTABLE_NEXT_OWNER_GO,
     POST_NEXT_OWNER_GO,
     PREVIOUS_C1_VENUE_EVENT_TIME,

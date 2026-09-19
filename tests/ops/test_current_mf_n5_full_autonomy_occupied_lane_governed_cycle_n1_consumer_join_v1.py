@@ -110,11 +110,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     CurrentProductiveCursorError,
     load_current_productive_sidestate_confirmation_cursor_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     PREVIOUS_C1_VENUE_EVENT_TIME,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     _candles,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (

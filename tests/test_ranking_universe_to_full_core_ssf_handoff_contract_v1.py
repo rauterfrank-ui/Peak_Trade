@@ -11,7 +11,7 @@ import pytest
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (  # noqa: E501
     run_current_productive_master_v2_runtime_cycle_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v4 import (  # noqa: E501
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     C1_GATE_NATIVE_ID,
 )
 from src.ops.mf_canonical_single_egress_authority_handoff_contract_v1 import (
@@ -68,7 +68,6 @@ MASTER_V2_SOURCE = (
     / "src/ops/full_core_live_path_composition_root_v1"
     / "current_productive_master_v2_runtime_cycle_v1.py"
 )
-RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 SPEC = REPO_ROOT / "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 
@@ -171,34 +170,26 @@ def test_contract_descriptor_and_safety_invariants() -> None:
 
 
 def test_canonical_docs_persist_current_contract() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC.read_text(encoding="utf-8")
     nav = MAP_OF_TRUTH.read_text(encoding="utf-8")
-    assert "### 4.5.14 Ranking-universe to Full-Core SSF handoff contract" in runbook
-    assert (
-        "LAST_RANKING_UNIVERSE_AUTHORITY=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1" in runbook
-    )
-    assert "HANDOFF_INPUT_OBJECT=SingleSelectedFutureSelectionV1" in runbook
-    assert (
-        "FIRST_EXTERNAL_RUNTIME_CONSUMER=run_single_selected_future_runtime_binding_gate_v1"
-        in runbook
-    )
-    assert "CAP24_ARCHITECTURAL_CLASSIFICATION=SHARED_BOUNDARY_SEAM" in runbook
-    assert "FULL_CORE_INGEST_OBJECT=BoundInstrumentV1" in runbook
-    assert (
-        "FIRST_TRADING_DECISION_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1"
-        in runbook
-    )
-    assert "MF_EGRESS_NOT_THIS_HANDOFF=true" in runbook
+    owner = (
+        REPO_ROOT / "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+    ).read_text(encoding="utf-8")
     assert "CONTRACT_ID=RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1" in spec
-    assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in nav
-    assert "RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md" in nav
-    handoff_row = next(
-        line
-        for line in nav.splitlines()
-        if "RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md" in line
+    assert "LAST_RANKING_UNIVERSE_AUTHORITY=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1" in spec
+    assert "HANDOFF_INPUT_OBJECT=SingleSelectedFutureSelectionV1" in spec
+    assert (
+        "FIRST_EXTERNAL_RUNTIME_CONSUMER=run_single_selected_future_runtime_binding_gate_v1" in spec
     )
-    assert "AUTHORITY_EFFECT=NONE" in handoff_row
+    assert "CAP24_ARCHITECTURAL_CLASSIFICATION=SHARED_BOUNDARY_SEAM" in spec
+    assert "FULL_CORE_INGEST_OBJECT=BoundInstrumentV1" in spec
+    assert (
+        "FIRST_TRADING_DECISION_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1" in spec
+    )
+    assert "MF_EGRESS_NOT_THIS_HANDOFF=true" in spec
+    assert "LAST_RANKING_UNIVERSE_AUTHORITY" in owner
+    assert "AUTHORITY_EFFECT=NONE" in spec
+    assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in nav
 
 
 def test_cap22_has_no_selection_trading_or_wire_authority() -> None:

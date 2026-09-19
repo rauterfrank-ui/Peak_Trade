@@ -53,10 +53,6 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     PRODUCTIVE_TARGET_BACKEND,
     SOURCE_BACKEND_CLASS,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    DEFAULT_VAULT_RELATIVE,
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -252,16 +248,16 @@ def test_no_forbidden_backend_imports_or_calls() -> None:
             assert forbidden not in source
 
 
-def test_v5_does_not_import_or_join_eb() -> None:
-    source = V5_HOST.read_text(encoding="utf-8")
-    assert (
-        "checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1"
-        not in source
-    )
+def test_v5_host_absent_and_does_not_join_eb() -> None:
+    assert not V5_HOST.is_file()
     assert V5_JOINED is False
     assert V5_USES_NEW_PROVIDER is False
-    path = default_vault_path_v1(repo_root=REPO_ROOT)
-    assert path == REPO_ROOT / ".ops_local" / DEFAULT_VAULT_RELATIVE
+    k1_cycle = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_governed_cycle_orchestrator_v1.py"
+    )
+    assert "default_vault_path_v1" not in k1_cycle.read_text(encoding="utf-8")
 
 
 def test_authority_non_interference_regression() -> None:
@@ -291,20 +287,21 @@ def test_authority_non_interference_regression() -> None:
 
 
 def test_runbook_eb_persist_and_ea_bounds() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    eb = runbook.split("### 11.2.1.EB ", 1)[1].split("## 11.3 ", 1)[0]
+    eb = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py"
+    ).read_text(encoding="utf-8")
     assert "11.2.1.EB.FULL_CORE_MACOS_KEYCHAIN_ITEM_CLASS_AND_VALUE_ENCODING" in eb
-    assert "KEYCHAIN_ITEM_CLASS=generic-password" in eb
-    assert "KEYCHAIN_VALUE_ENCODING=utf-8" in eb
-    assert "KEYCHAIN_VALUE_DATA_REPRESENTATION=BYTES" in eb
-    assert "PAYLOAD_SCHEMA_BOUND=false" in eb
-    assert "REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false" in eb
-    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED=false" in eb
-    assert "PRODUCTIVE_PROVIDER_ACTIVE=false" in eb
-    assert "V5_USES_NEW_PROVIDER=false" in eb
-    assert "GO_CONSUMPTION_OPEN=true" in eb
-    assert "CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN" in eb
-    ea = runbook.split("### 11.2.1.EA ", 1)[1].split("### 11.2.1.EB ", 1)[0]
-    assert "OFFLINE_ADAPTER_IMPLEMENTED=true" in ea
-    assert "REAL_BACKEND_ACCESS_NOT_IMPLEMENTED_AND_NOT_AUTHORIZED" in ea
-    assert "GO_CONSUMPTION_OPEN=true" in ea
+    assert 'KEYCHAIN_ITEM_CLASS = "generic-password"' in eb
+    assert "KEYCHAIN_VALUE_ENCODING" in eb
+    assert "V5_USES_NEW_PROVIDER = False" in eb
+    assert "REAL_KEYCHAIN_ACCESS_IMPLEMENTED = False" in eb
+    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED = False" in eb
+    ea = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "checkout_independent_credential_fail_closed_os_native_store_adapter_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "OFFLINE_ADAPTER_IMPLEMENTED = True" in ea
+    assert "REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE" in ea

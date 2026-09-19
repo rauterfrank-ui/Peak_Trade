@@ -39,10 +39,9 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
     UrllibEeaPublicUniverseGetTransportV1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     OCCUPANCY_NEXT_OWNER_GO,
-    OWNER_GO as V5_OWNER_GO,
-    execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
+    V5_OWNER_GO,
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
@@ -291,13 +290,16 @@ def _inject_occupancy_gate_input_join(kwargs: dict[str, Any]) -> dict[str, Any]:
     return kwargs
 
 
-def _default_v5_dispatch(**kwargs: Any) -> Any:
-    kwargs.setdefault("owner_go", V5_OWNER_GO)
-    kwargs = _inject_productive_acquisition_join(kwargs)
-    kwargs = _inject_occupancy_gate_input_join(kwargs)
-    return execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-        **kwargs
-    )
+def _default_v5_dispatch(**_kwargs: Any) -> Any:
+    return type(
+        "RetiredV5ExecuteHostStub",
+        (),
+        {
+            "permit_created": FALSE_TOKEN,
+            "post_count": "0",
+            "disposition": "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED",
+        },
+    )()
 
 
 def _no_dispatch_result(

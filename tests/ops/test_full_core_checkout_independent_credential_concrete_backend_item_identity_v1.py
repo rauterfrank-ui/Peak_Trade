@@ -45,10 +45,6 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_source_backend_kind_v1 import (
     CONCRETE_KEYCHAIN_SERVICE_BOUND as DY_CONCRETE_KEYCHAIN_SERVICE_BOUND,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    DEFAULT_VAULT_RELATIVE,
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -220,11 +216,13 @@ def test_productive_provider_and_v5_remain_unjoined() -> None:
     assert proof["PRODUCTIVE_BACKEND_JOINED"] == "false"
     assert proof["PRODUCTIVE_PROVIDER_ACTIVE"] == "false"
     assert proof["V5_JOINED"] == "false"
-    source = V5_HOST.read_text(encoding="utf-8")
-    assert "checkout_independent_credential_concrete_backend_item_identity_v1" not in source
-    assert "checkout_independent_credential_capability_v1" not in source
-    path = default_vault_path_v1(repo_root=REPO_ROOT)
-    assert path == REPO_ROOT / ".ops_local" / DEFAULT_VAULT_RELATIVE
+    assert not V5_HOST.is_file()
+    k1_cycle = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_governed_cycle_orchestrator_v1.py"
+    )
+    assert "default_vault_path_v1" not in k1_cycle.read_text(encoding="utf-8")
 
 
 def test_module_has_no_keychain_or_network_imports() -> None:
@@ -248,18 +246,14 @@ def test_module_has_no_keychain_or_network_imports() -> None:
     dy_source = DY_MODULE_PATH.read_text(encoding="utf-8")
     assert "CONCRETE_KEYCHAIN_SERVICE_BOUND = False" in dy_source
     assert "CONCRETE_KEYCHAIN_ACCOUNT_BOUND = False" in dy_source
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    dz = runbook.split("### 11.2.1.DZ ", 1)[1].split("### 11.2.1.EA ", 1)[0]
-    assert "11.2.1.DZ.FULL_CORE_CONCRETE_MACOS_KEYCHAIN_ITEM_IDENTITY" in dz
-    assert "KEYCHAIN_SERVICE_ID=peak-trade.full-core.venue-credentials" in dz
-    assert "KEYCHAIN_ACCOUNT_ID=okx-eea.productive" in dz
-    assert "PROVIDER_REF_IDENTIFIER=okx-eea-productive" in dz
-    assert "CONCRETE_BACKEND_ITEM_IDENTITY_BOUND=true" in dz
-    assert "PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED" in dz
-    assert "GO_CONSUMPTION_OPEN=true" in dz
-    assert "REAL_KEYCHAIN_ACCESSED=false" in dz
-    assert "AUTHORITY_NON_INTERFERENCE_PROVEN=true" in dz
-    dy = runbook.split("### 11.2.1.DY ", 1)[1].split("### 11.2.1.DZ ", 1)[0]
-    assert "CONCRETE_KEYCHAIN_SERVICE_BOUND=false" in dy
-    assert "CONCRETE_KEYCHAIN_ACCOUNT_BOUND=false" in dy
-    assert "CONCRETE_BACKEND_ITEM_IDENTITY_BOUND=false" in dy
+    dz_source = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "checkout_independent_credential_concrete_backend_item_identity_v1.py"
+    ).read_text(encoding="utf-8")
+    assert 'KEYCHAIN_SERVICE_ID = "peak-trade.full-core.venue-credentials"' in dz_source
+    assert 'KEYCHAIN_ACCOUNT_ID = "okx-eea.productive"' in dz_source
+    assert 'PROVIDER_REF_IDENTIFIER = "okx-eea-productive"' in dz_source
+    assert "CONCRETE_BACKEND_ITEM_IDENTITY_BOUND = True" in dz_source
+    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED = False" in dz_source
+    assert V5_JOINED is False

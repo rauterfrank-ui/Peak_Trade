@@ -241,11 +241,11 @@ CYCLE_SOURCE = (
     / "src/ops/full_core_live_path_composition_root_v1"
     / "current_productive_master_v2_runtime_cycle_v1.py"
 ).read_text(encoding="utf-8")
-ONESHOT_V1_SOURCE = (
+ONESHOT_V1_HOST = (
     REPO_ROOT
     / "src/ops/governed_productive_account_equity_authority_producer_v1"
     / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1.py"
-).read_text(encoding="utf-8")
+)
 CURSOR_SOURCE = (
     REPO_ROOT
     / "src/ops/full_core_live_path_composition_root_v1"
@@ -520,8 +520,7 @@ def test_s1_n1_global_cursor_path_is_not_lane_safe() -> None:
     assert N1_GLOBAL_CURSOR_STORE_RELPATH == (
         "evidence/ops/full_core_current_productive_sidestate_confirmation_cursor_current_v1"
     )
-    assert "CURRENT_CURSOR_STORE_RELPATH" in ONESHOT_V1_SOURCE
-    assert N1_GLOBAL_CURSOR_STORE_RELPATH in ONESHOT_V1_SOURCE
+    assert not ONESHOT_V1_HOST.is_file()
     assert CURSOR_FILENAME == EXISTING_CURSOR_FILENAME
     assert CURSOR_FILENAME == "current_productive_sidestate_confirmation_cursor_v1.json"
 

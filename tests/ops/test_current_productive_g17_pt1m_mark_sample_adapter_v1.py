@@ -44,17 +44,6 @@ from tests.ops.test_economic_md_input_producer_v1 import (
     test_missing_mark_and_non_finalized_fail_closed,
     test_sixty_marks_not_rankable_sixty_one_finalized_eligible,
 )
-from tests.ops.test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1 import (
-    _eligible_transport,
-    _fresh_get_transport,
-)
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    SATISFIED_TS_MS,
-    OWNER_GO,
-    V5_HOST,
-    _candles,
-    _execute,
-)
 from tests.trading.master_v2.test_canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     test_duplicate_noop_preserves_history_and_estimate_digests,
     test_gap_exceeds_pt1m_rejects_estimate,
@@ -353,43 +342,14 @@ def test_reuse_existing_g17_duplicate_out_of_order_and_gap() -> None:
     test_gap_exceeds_pt1m_rejects_estimate()
 
 
-def test_v5_cycle_issues_bounded_mark_history_get_without_ingest_or_missing_gate(
-    tmp_path: Path,
-) -> None:
-    transport = _fresh_get_transport()
-    recorded: list[str] = []
-    original_get = transport.get
-
-    def _record(*, endpoint, auth_required, pretrade_decision_id):
-        recorded.append(str(endpoint))
-        return original_get(
-            endpoint=endpoint,
-            auth_required=auth_required,
-            pretrade_decision_id=pretrade_decision_id,
-        )
-
-    transport.get = _record  # type: ignore[method-assign]
-    result = _execute(
-        owner_go=OWNER_GO,
-        evidence_root=tmp_path / "store",
-        acquisition_transport=_eligible_transport(),
-        fresh_get_transport=transport,
-        c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
-        producer_observed_at_unix=1_700_000_100.0,
-    )
-    mark_gets = [
-        endpoint
-        for endpoint in recorded
-        if endpoint.split("?", 1)[0] == ENDPOINT_HISTORY_MARK_PRICE_CANDLES
-    ]
-    assert mark_gets, recorded
-    assert "bar=1m" in mark_gets[0]
-    assert "limit=100" in mark_gets[0]
-    assert result.post_count == "0"
-    host = V5_HOST.read_text(encoding="utf-8")
+def test_v5_host_absent_and_g17_adapter_owns_mark_extract() -> None:
+    assert not V5_SRC.is_file()
+    host = ADAPTER_SRC.read_text(encoding="utf-8")
     assert "ENDPOINT_HISTORY_MARK_PRICE_CANDLES" in host
     assert "extract_full_core_g17_pt1m_mark_ingest_fields_v1" in host
-    assert "ingest_finalized_pt1m_mark_sample_v1" not in host
     assert 'missing.append("G17' not in host
     assert "run_economic_md_input_producer_v1" not in host
     assert "bind_typed_canonical_volatility_estimate" not in host
+    query = mark_history_get_query_v1(venue_native_id=NATIVE)
+    assert query["bar"] == "1m"
+    assert query["limit"] == "100"

@@ -366,17 +366,15 @@ def test_pre_external_effect_still_reached_without_get_or_post(tmp_path: Path) -
         )
 
 
-def test_protected_trading_owners_and_v5_credential_path_unchanged() -> None:
+def test_protected_trading_owners_and_v5_host_absent() -> None:
     for path in PROTECTED_ALGORITHM_FILES:
         assert (REPO_ROOT / path).is_file()
-    v5 = (
+    v5_host = (
         REPO_ROOT
         / "src/ops/governed_productive_account_equity_authority_producer_v1"
         / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
-    ).read_text(encoding="utf-8")
-    assert "default_vault_path_v1" in v5
-    assert "checkout_independent_credential_governed_cycle_occupancy_bind_v1" not in v5
-    assert "bind_k1_credential_capability_for_governed_cycle_occupancy_v1" not in v5
+    )
+    assert not v5_host.is_file()
     cycle_source = CYCLE_PATH.read_text(encoding="utf-8")
     assert "live_credential_ephemeral_v1" not in cycle_source
     assert "default_vault_path_v1" not in cycle_source
