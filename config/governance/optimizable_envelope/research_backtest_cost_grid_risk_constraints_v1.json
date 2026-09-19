@@ -1,0 +1,20 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_RISK_CONSTRAINTS_V1",
+  "schema_version": "canonical_research_backtest_cost_grid_risk_constraints/v1",
+  "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "authority_scope": "RESEARCH_EVIDENCE_ONLY",
+  "non_authority_scope": "NOT_TRADING_AUTHORITY;NOT_ALPHA_AUTHORITY;NOT_POLICY_DEFAULT;NOT_CONFIG_DEFAULT;NOT_ORDER_AUTHORITY;NOT_LIVE_AUTHORITY",
+  "parameter_promoted": false,
+  "enforcement_enabled": false,
+  "master_v2_mutation_forbidden": true,
+  "double_play_mutation_forbidden": true,
+  "trading_authority_forbidden": true,
+  "promotion_forbidden": true,
+  "execution_orders_forbidden": true,
+  "external_effect_forbidden": true,
+  "risk_per_trade_variation_forbidden": true,
+  "source_modules": [
+    "src/backtest/parameter_sensitivity_v1.py",
+    "src/research/linear_evidence/parameter_sensitivity_productive_contract_v0.py"
+  ]
+}
