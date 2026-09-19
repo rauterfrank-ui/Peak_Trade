@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=8
+ATLAS_CHANGED_RELATION_COUNT=6
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -43,7 +43,11 @@ Do not manually patch generated Markdown.
 | `PHASE:ddo_offline_foundation` |
 | `HOST:wallclock_decision_economics_cycle` |
 | `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:ddo_ledger_v0` |
+| `RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1` |
 | `TERM:ddo_non_semantic_capture` |
+| `TERM:ddo_offline_contract_and_ledger` |
+| `TERM:ddo_offline_evaluation_engine` |
 
 ## CHANGED_RELATIONS
 
@@ -51,12 +55,15 @@ Do not manually patch generated Markdown.
 | --- |
 | `REL:r_wallclock_calls_ddo_cycle_capture` |
 | `REL:r_wallclock_injects_ddo_capture_session` |
+| `REL:r_ddo_capture_persists_ledger` |
+| `REL:r_wallclock_calls_learning_outcome_ingest` |
+| `REL:s_ddo_phase_contains_ledger` |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_wallclock_calls_learning_outcome_ingest` |
 
 ## REMOVED_RELATIONS
 
@@ -96,7 +103,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST-6630 Slice 3 (pending PR): productive proof test only — C1→O4 auto-bind path asserts evaluation runtime wiring, durable horizon capture, and outcome ref parity without manual decision/snapshot/producer injection. No bridge or authority change. N_BARS chain terminus remains evaluation runtime per ddo_outcome_to_promotion_productive_binding_decision_v1.json. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- PR 6634 (pending): v1 self-learning productive closed loop — evaluation bundle ingest into learning_state_record_v0 and non-authorizing opaque next_cycle_economic_score_label feedback to horizon input only. LEARNING_PRODUCTIVE_AUTHORITY=NONE. promotion_join_authorized=false. EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

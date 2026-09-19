@@ -35,6 +35,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_INCIDENT_RECORD,
     SCHEMA_NAME_KNOWN_GOOD_REFERENCE,
     SCHEMA_NAME_LEARNING_HYPOTHESIS,
+    SCHEMA_NAME_LEARNING_STATE_RECORD,
     SCHEMA_NAME_LEDGER_ENVELOPE,
     SCHEMA_NAME_OUTCOME_RECORD,
     SCHEMA_NAME_PROMOTION_ELIGIBILITY,
@@ -59,6 +60,7 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_INCIDENT_RECORD_V0,
     SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0,
     SCHEMA_VERSION_LEARNING_HYPOTHESIS_V0,
+    SCHEMA_VERSION_LEARNING_STATE_RECORD_V0,
     SCHEMA_VERSION_LEDGER_ENVELOPE_V0,
     SCHEMA_VERSION_OUTCOME_RECORD_V0,
     SCHEMA_VERSION_PROMOTION_ELIGIBILITY_V0,
@@ -125,6 +127,9 @@ from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
     validate_candidate_artifact_v0,
     validate_learning_hypothesis_v0,
     validate_validation_evidence_pack_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
+    validate_learning_state_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.lineage_v0 import validate_record_lineage_v0
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import validate_outcome_record_v0
@@ -316,6 +321,10 @@ _VALIDATORS = {
         SCHEMA_NAME_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE,
         SCHEMA_VERSION_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE_V1,
     ): validate_real_outcome_horizon_observation_capture_v1,
+    (
+        SCHEMA_NAME_LEARNING_STATE_RECORD,
+        SCHEMA_VERSION_LEARNING_STATE_RECORD_V0,
+    ): validate_learning_state_record_v0,
 }
 
 _KNOWN_SCHEMA_NAMES = {schema for schema, _version in _VALIDATORS}

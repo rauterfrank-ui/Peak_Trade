@@ -4995,6 +4995,8 @@ entities:
       - config/governance/ddo_outcome_to_promotion_productive_binding_decision_v1.json
       - config/governance/ddo_n_bars_bar_evidence_supplier_authority_decision_v1.json
       - config/governance/ddo_o4_n_bars_bar_evidence_bridge_decision_v1.json
+      - docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md
+      - config/governance/learning_outcome_evidence_ingest_and_state_decision_v1.json
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -5007,6 +5009,8 @@ entities:
       records; blocker metadata only; no new runtime or promotion join.
       POST-6630 Slice 1: optional N_BARS upstream auto-bind (capture decision_event
       + O4 snapshot from CanonicalPublicMdBarProducerV1); explicit injection wins.
+      PR 6634: learning outcome evidence ingest + learning_state_record_v0;
+      closed-loop feedback is opaque economic_score label to horizon only.
       ATLAS_AUTHORITY=NONE.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
@@ -5325,6 +5329,8 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
+      - src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py
+      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
@@ -5336,6 +5342,8 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/a1_durability_failure_policy_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_durability_to_admission_and_replay_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_proof_or_explicit_nonprovability_closure_v1.py
+      - src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py
+      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
     notes: >-
       Append-only offline ledger. Persist occurs only when a capture binding
       has ledger_path set. DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1 is
@@ -5463,6 +5471,7 @@ entities:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_canonical_bar_producer_session_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_observation_host_scope_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
@@ -5512,6 +5521,31 @@ entities:
       fail-closed and is not activation. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
+      PR 6634 adds non-authorizing learning outcome ingest and opaque
+      next_cycle_economic_score_label feedback into horizon input only.
+      LEARNING_PRODUCTIVE_AUTHORITY=NONE. EXTERNAL_EFFECT_AUTHORIZED=false.
+
+  - id: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO learning outcome evidence ingest host
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
+      - src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py
+    evidence_sources:
+      - docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md
+      - config/governance/learning_outcome_evidence_ingest_and_state_decision_v1.json
+      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
+    notes: >-
+      Productive host binding for evaluation bundle ingest into
+      learning_state_record_v0. Feedback seam copies opaque
+      next_cycle_economic_score_label to ddo_n_bars_economic_score only.
+      LEARNING_PRODUCTIVE_AUTHORITY=NONE. promotion_join_authorized=false.
+      EXTERNAL_EFFECT_AUTHORIZED=false. Atlas is not trading authority.
 
   - id: RUNTIME_COMPONENT:recon_startup_gate_v1
     kind: RUNTIME_COMPONENT

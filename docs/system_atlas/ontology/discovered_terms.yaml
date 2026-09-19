@@ -232,11 +232,14 @@ terms:
       - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/lineage_v0.py
       - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+      - docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md
+      - src/learning/deterministic_decision_outcome_v0/learning_state_record_v0.py
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. WP-FA-01/WP-FA-02 remain offline contract
       foundation. Catalog presence is not activation. Slice 1 adds normative
       current Double-Play decision bundle join metadata only.
+      PR 6634 adds learning_state_record_v0 schema; no promotion join.
 
   - id: TERM:ddo_offline_control_plane
     kind: TERM
@@ -293,6 +296,7 @@ terms:
       - src/ops/single_selected_future_policy_v1/selection_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
       - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
       - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
     notes: >-
@@ -334,6 +338,8 @@ terms:
       - src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
       - docs/ops/specs/DDO_OUTCOME_TO_PROMOTION_PRODUCTIVE_BINDING_NORMATIVE_V1.md
+      - docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md
+      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Evaluation is offline and non-authorizing.
@@ -341,6 +347,8 @@ terms:
       authoritative decision_outcome via current_decision_learning_binding_v1.
       PR 6629 wires productive evaluation runtime join; terminus before promotion.
       NO_N_BARS_TO_PROMOTION_BINDING. PROMOTION_AUTHORITY_ACTIVATION=false.
+      PR 6634 adds evaluation-bundle ingest into learning_state_record_v0 only;
+      feedback seam is opaque economic_score label to horizon input.
 
   - id: TERM:ddo_offline_learning_validation_shadow
     kind: TERM

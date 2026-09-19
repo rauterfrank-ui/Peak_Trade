@@ -66,6 +66,8 @@ SCHEMA_NAME_KNOWN_GOOD_REFERENCE: Final[str] = "known_good_reference"
 SCHEMA_VERSION_KNOWN_GOOD_REFERENCE_V0: Final[str] = "known_good_reference_v0"
 SCHEMA_NAME_DRIFT_POLICY: Final[str] = "drift_policy"
 SCHEMA_VERSION_DRIFT_POLICY_V0: Final[str] = "drift_policy_v0"
+SCHEMA_NAME_LEARNING_STATE_RECORD: Final[str] = "learning_state_record"
+SCHEMA_VERSION_LEARNING_STATE_RECORD_V0: Final[str] = "learning_state_record_v0"
 SCHEMA_NAME_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION: Final[str] = "double_play_entry_exit_observation"
 SCHEMA_VERSION_DOUBLE_PLAY_ENTRY_EXIT_OBSERVATION_V1: Final[str] = (
     "double_play_entry_exit_observation_v1"

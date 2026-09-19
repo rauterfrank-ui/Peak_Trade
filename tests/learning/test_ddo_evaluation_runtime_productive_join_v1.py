@@ -30,6 +30,7 @@ from src.learning.deterministic_decision_outcome_v0.evaluation_runtime_productiv
     EXTERNAL_EFFECT_AUTHORIZED,
     produce_n_bars_evaluation_runtime_bundle_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_productive_host_v1 import (
     produce_real_outcome_horizon_evaluation_observation_v1,
 )
@@ -90,6 +91,26 @@ def test_productive_runtime_real_path(tmp_path: Path) -> None:
     assert first["runtime_wiring"] is True
     assert first["actual_outcome_ref"] == horizon["evaluation_observation"]["actual_outcome_ref"]
     assert first["hindsight_leakage"] is False
+
+
+def test_productive_runtime_durable_persist_idempotent(tmp_path: Path) -> None:
+    decision = build_decision_event_v0(_decision())
+    ledger = AppendOnlyDdoLedgerV0(tmp_path / "eval_persist.jsonl")
+    ledger.append(decision)
+    snap = _snapshot()
+    horizon = produce_real_outcome_horizon_evaluation_observation_v1(
+        decision, snap, economic_score="LABEL_PERSIST"
+    )
+    first = produce_n_bars_evaluation_runtime_bundle_v1(
+        horizon, decision, identity=_identity(), ledger=ledger
+    )
+    second = produce_n_bars_evaluation_runtime_bundle_v1(
+        horizon, decision, identity=_identity(), ledger=ledger
+    )
+    assert first["durable_persist"]["outcome"]["status"] == "APPENDED"
+    assert second["durable_persist"]["outcome"]["status"] == "IDEMPOTENT_REPLAY"
+    rows = ledger.read_all()
+    assert sum(1 for row in rows if row["schema_name"] == "outcome_record") == 1
 
 
 def test_unknown_gap_horizon_fail_closed_runtime() -> None:

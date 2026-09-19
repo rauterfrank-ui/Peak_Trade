@@ -9,22 +9,29 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  POST-6630 Slice 3 (pending PR): productive proof test only — C1→O4 auto-bind
-  path asserts evaluation runtime wiring, durable horizon capture, and outcome
-  ref parity without manual decision/snapshot/producer injection. No bridge or
-  authority change. N_BARS chain terminus remains evaluation runtime per
-  ddo_outcome_to_promotion_productive_binding_decision_v1.json.
-  EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not
-  canonical authority.
+  PR 6634 (pending): v1 self-learning productive closed loop — evaluation bundle
+  ingest into learning_state_record_v0 and non-authorizing opaque
+  next_cycle_economic_score_label feedback to horizon input only.
+  LEARNING_PRODUCTIVE_AUTHORITY=NONE. promotion_join_authorized=false.
+  EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change.
+  Atlas is not canonical authority.
 changed_entities:
   - PHASE:ddo_offline_foundation
   - HOST:wallclock_decision_economics_cycle
   - RUNTIME_COMPONENT:ddo_capture_v0
+  - RUNTIME_COMPONENT:ddo_ledger_v0
+  - RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
   - TERM:ddo_non_semantic_capture
+  - TERM:ddo_offline_contract_and_ledger
+  - TERM:ddo_offline_evaluation_engine
 changed_relations:
   - REL:r_wallclock_calls_ddo_cycle_capture
   - REL:r_wallclock_injects_ddo_capture_session
-new_relations: []
+  - REL:r_ddo_capture_persists_ledger
+  - REL:r_wallclock_calls_learning_outcome_ingest
+  - REL:s_ddo_phase_contains_ledger
+new_relations:
+  - REL:r_wallclock_calls_learning_outcome_ingest
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
@@ -35,6 +42,13 @@ reviewed_entities:
   - id: PHASE:ddo_offline_foundation
   - id: HOST:wallclock_decision_economics_cycle
   - id: RUNTIME_COMPONENT:ddo_capture_v0
+  - id: RUNTIME_COMPONENT:ddo_ledger_v0
+  - id: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
   - id: TERM:ddo_non_semantic_capture
+  - id: TERM:ddo_offline_contract_and_ledger
+  - id: TERM:ddo_offline_evaluation_engine
   - id: REL:r_wallclock_calls_ddo_cycle_capture
   - id: REL:r_wallclock_injects_ddo_capture_session
+  - id: REL:r_ddo_capture_persists_ledger
+  - id: REL:r_wallclock_calls_learning_outcome_ingest
+  - id: REL:s_ddo_phase_contains_ledger
