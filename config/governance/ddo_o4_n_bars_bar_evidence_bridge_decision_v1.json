@@ -24,7 +24,7 @@
         "artifact_schema_version": "ddo_n_bars_evaluation_time_information_set_v1",
         "ref_prefix": "ddo.eval_info_set.",
         "decision_time_ref_reuse": "FORBIDDEN",
-        "pit_boundary_field": "evaluation_boundary_time_utc",
+        "pit_boundary_field": "evaluation_boundary_time_utc"
     },
     "s2_measurement_evidence_decision": {
         "status": "CLOSED",
@@ -32,23 +32,23 @@
         "artifact_schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
         "outcome_scalar_kinds": ["LOG_RETURN", "ABS_RETURN", "HIT_TARGET"],
         "allowed_price_basis_kinds": ["O4_BAR_CLOSE_FINALIZED", "O4_BAR_CLOSE_CORRECTED"],
-        "implicit_mid_last_mark_forbidden": true,
+        "implicit_mid_last_mark_forbidden": true
     },
     "s3_bridge_package_decision": {
         "status": "CLOSED",
         "placement": "learning_ddo_package",
-        "parallel_bridge_authority_forbidden": true,
+        "parallel_bridge_authority_forbidden": true
     },
     "implementation_pipeline": [
         "validate_o4_n_bars_bar_evidence_snapshot_v1",
         "translate_o4_snapshot_to_ddo_n_bars_bindings_v1",
         "materialize_real_outcome_horizon_supplier_input_v1",
         "validate_real_outcome_horizon_supplier_input_v1",
-        "supply_n_bars_evaluation_observation_v1",
+        "supply_n_bars_evaluation_observation_v1"
     ],
     "bridge_io_contracts": {
         "input_schema_name": "o4_n_bars_bar_evidence_snapshot_v1",
-        "output_schema_name": "ddo_n_bars_bridge_translation_v1",
+        "output_schema_name": "ddo_n_bars_bridge_translation_v1"
     },
     "owner_decision_required_remaining": [],
     "fail_closed_rule": "MISSING_OR_UNPROVEN_EVIDENCE_IMPLIES_NO_REAL_CLAIM",
@@ -60,8 +60,9 @@
         "productive_host_join": true,
         "evaluation_runtime_wiring": true,
         "productive_evaluation_runtime_join": true,
-        "external_effect_authorized": false,
+        "external_effect_authorized": false
     },
-    "earliest_remaining_blocker": "PROMOTION_AUTHORITY_ACTIVATION_REQUIRES_SEPARATE_OWNER_GO",
-    "next_bounded_workpackage_candidate": "WP_DDO_OUTCOME_TO_PROMOTION_BOUNDARY_V1",
+    "earliest_remaining_blocker": "NONE_FOR_N_BARS_PRODUCTIVE_CHAIN",
+    "next_bounded_workpackage_candidate": "OPTIONAL_FUTURE_SEPARATE_OWNER_GO_IF_LEARNING_PROMOTION_MUST_CONSUME_OUTCOMES",
+    "outcome_to_promotion_binding_decision": "config/governance/ddo_outcome_to_promotion_productive_binding_decision_v1.json"
 }

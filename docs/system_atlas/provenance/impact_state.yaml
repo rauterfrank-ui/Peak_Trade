@@ -9,19 +9,14 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR 6629 DDO N_BARS productive capture and evaluation runtime terminus
-  (post-#6628). REAL_OUTCOME_HORIZON_ENGINE_WIRED=true and
-  EVALUATION_RUNTIME_WIRING=true with single bridge joins each.
-  NO_N_BARS_TO_PROMOTION_BINDING. PROMOTION_AUTHORITY_ACTIVATION=false.
-  EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not
-  canonical authority.
+  Post-#6629 governance JSON strict-parse repair (pending PR). Three DDO N_BARS
+  decision records are strict JSON (json.loads); bridge/supplier blocker
+  metadata aligned to ratified NO_N_BARS_TO_PROMOTION_BINDING adjudication.
+  No productive authority change. N_BARS chain terminus unchanged at evaluation
+  runtime. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false.
+  AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 changed_entities:
   - PHASE:ddo_offline_foundation
-  - RUNTIME_COMPONENT:ddo_capture_v0
-  - RUNTIME_COMPONENT:ddo_ledger_v0
-  - HOST:wallclock_decision_economics_cycle
-  - TERM:ddo_non_semantic_capture
-  - TERM:ddo_offline_evaluation_engine
 changed_relations: []
 new_relations: []
 removed_relations: []
@@ -32,8 +27,3 @@ affected_schemas: []
 review_required_items: []
 reviewed_entities:
   - id: PHASE:ddo_offline_foundation
-  - id: RUNTIME_COMPONENT:ddo_capture_v0
-  - id: RUNTIME_COMPONENT:ddo_ledger_v0
-  - id: HOST:wallclock_decision_economics_cycle
-  - id: TERM:ddo_non_semantic_capture
-  - id: TERM:ddo_offline_evaluation_engine

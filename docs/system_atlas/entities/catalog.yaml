@@ -4954,7 +4954,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: PHASE:ddo_offline_foundation
-    # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE historical at that persist; spec section 14 TRACK_CLOSE_READY FUNCTION_REPLAY_TRACK_CLOSED; Master Runbook
+    # NAVIGATION_ONLY: post-6629 governance JSON repair; spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE historical at that persist; spec section 14 TRACK_CLOSE_READY FUNCTION_REPLAY_TRACK_CLOSED; Master Runbook
     kind: PHASE
     name: 11.13.5 Parallel-track DDO offline foundation
     epistemic_class: FORENSIC_RAW
@@ -4993,6 +4993,8 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
       - docs/ops/specs/DDO_OUTCOME_TO_PROMOTION_PRODUCTIVE_BINDING_NORMATIVE_V1.md
       - config/governance/ddo_outcome_to_promotion_productive_binding_decision_v1.json
+      - config/governance/ddo_n_bars_bar_evidence_supplier_authority_decision_v1.json
+      - config/governance/ddo_o4_n_bars_bar_evidence_bridge_decision_v1.json
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
@@ -5001,6 +5003,8 @@ entities:
       single horizon capture join and single evaluation-runtime join on the
       wallclock bridge; chain terminus at evaluation runtime bundle.
       NO_N_BARS_TO_PROMOTION_BINDING; promotion remains independent dry-run.
+      Post-#6629 governance JSON repair: strict json.loads for three decision
+      records; blocker metadata only; no new runtime or promotion join.
       ATLAS_AUTHORITY=NONE.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
