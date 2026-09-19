@@ -20,6 +20,9 @@ from src.ops.canonical_durable_authorization_lifecycle_and_revocation_v1.lifecyc
     AuthorizationLifecycleLockV1,
     LifecycleLockError,
 )
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_governed_cycle_occupancy_bind_v1 import (
+    bind_k1_credential_capability_for_governed_cycle_occupancy_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
     POST_ALLOWED,
@@ -359,6 +362,7 @@ def run_current_productive_governed_cycle_v1(
     t2_consumed = False
     occupancy_disposition = "NOT_REACHED"
     occupancy_used = ""
+    k1_ledger_extra: dict[str, str] = {}
     decision_result = "NOT_REACHED"
     eligible = FALSE_TOKEN
     master_v2_decision = ""
@@ -394,6 +398,7 @@ def run_current_productive_governed_cycle_v1(
             "POST_COUNT": "0",
             "PERMIT_CREATED": FALSE_TOKEN,
         }
+        payload.update(k1_ledger_extra)
         if extra:
             payload.update(dict(extra))
         _persist_json(path=Path(evidence_root) / LEDGER_FILENAME, payload=payload)
@@ -588,6 +593,42 @@ def run_current_productive_governed_cycle_v1(
                 c1_used=c1_used,
                 cursor_floor_before=cursor_floor_before,
             )
+
+        k1_bind = bind_k1_credential_capability_for_governed_cycle_occupancy_v1()
+        if k1_bind.material_loaded != FALSE_TOKEN:
+            first_blocker = "K1_CREDENTIAL_MATERIAL_LOADED_FORBIDDEN"
+            reason_code = first_blocker
+            _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
+            return _result(
+                disposition=DISPOSITION_FAIL_CLOSED,
+                reason_code=reason_code,
+                terminal_class="K1_BIND_FAILURE",
+                get_consumed=True,
+                eg_consumed=True,
+                eg_dispatch_count=eg_dispatch_count,
+                first_genuine_blocker=first_blocker,
+                blocker_class="UNKNOWN_OR_CONFLICTING",
+                next_required_owner_decision=(
+                    "K1 occupancy bind must not load credential material. Do not resume."
+                ),
+                lock_released=_token(True),
+                ledger_state=STATE_FAILED_STOP,
+                transitions=tuple(transitions + [STATE_FAILED_STOP]),
+                c1_used=c1_used,
+                cursor_floor_before=cursor_floor_before,
+            )
+        k1_ledger_extra.update(
+            {
+                "K1_CREDENTIAL_BIND": k1_bind.disposition,
+                "K1_RESOLVE_FAIL_CLOSED": k1_bind.resolve_fail_closed,
+                "K1_MATERIAL_LOADED": k1_bind.material_loaded,
+                "K1_SEND_HANDLE_JOINED": k1_bind.send_handle_joined,
+                "K1_V5_JOINED": k1_bind.v5_joined,
+                "K1_PERMIT_CREATED": k1_bind.permit_created,
+                "K1_POST_COUNT": k1_bind.post_count,
+            }
+        )
+        _write_ledger(state=STATE_IN_PROGRESS)
 
         if occupancy_payloads is None:
             first_blocker = "OCCUPANCY_PAYLOADS_REQUIRED_OFFLINE"
