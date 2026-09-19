@@ -5446,7 +5446,7 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
 
   - id: HOST:wallclock_decision_economics_cycle
-    # NAVIGATION_ONLY: POST-6630 Slice 2 C1→O4 session producer + N_BARS refresh.
+    # NAVIGATION_ONLY: POST-6630 Slice 3 productive E2E proof (tests); prior S1–S2 merged.
     # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT: Cap-7.2 (§11.2.1.D) and
     # hardening-v2 (§11.2.1.E) project ScopeDirectionState from SideState.
     kind: HOST
