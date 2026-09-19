@@ -1,0 +1,16 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_EVIDENCE_REQUIREMENTS_V1",
+  "schema_version": "canonical_research_backtest_cost_grid_evidence_requirements/v1",
+  "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "required_evidence_classes": [
+    "GRID_IDENTITY",
+    "GRID_DIGEST",
+    "BASELINE_COST_BINDING",
+    "ECONOMIC_EVALUATION_BINDING",
+    "REPRODUCIBILITY_DIGEST"
+  ],
+  "economic_validity_policy_required": true,
+  "pipeline_pass_not_imply_policy_pass": true,
+  "promotion_evidence_forbidden": true,
+  "productive_apply_evidence_forbidden": true
+}

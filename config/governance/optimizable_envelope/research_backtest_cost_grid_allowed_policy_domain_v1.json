@@ -1,0 +1,17 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_ALLOWED_POLICY_DOMAIN_V1",
+  "schema_version": "canonical_research_backtest_cost_grid_allowed_policy_domain/v1",
+  "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "grid_id": "okx_eth_perp_research_cost_grid_v1",
+  "parameter_unit": "BASIS_POINTS",
+  "parameter_class": "EXPLICITLY_CALIBRATABLE_RESEARCH_PARAMETER",
+  "fee_bps": [8.0, 10.0, 12.0],
+  "slippage_bps": [4.0, 5.0, 6.0],
+  "baseline_fee_bps": 10.0,
+  "baseline_slippage_bps": 5.0,
+  "interpolation_allowed": false,
+  "extrapolation_allowed": false,
+  "implicit_defaults_allowed": false,
+  "productive_config_literal_allowed": false,
+  "source_constant_module": "src/backtest/okx_eth_perp_research_cost_grid_v1_constants.py"
+}

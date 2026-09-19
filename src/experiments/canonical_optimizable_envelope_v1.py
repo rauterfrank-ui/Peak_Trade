@@ -95,21 +95,34 @@ _LOGGER = logging.getLogger(__name__)
 
 _ENVELOPE_CATALOG_BY_SURFACE: dict[str, MappingProxyType[str, Any]] = {}
 _AUTHORIZED_SURFACE_IDS: frozenset[str] = frozenset()
-_M9_SURFACE_REGISTRY_BOOTSTRAPPED: bool = False
+_AUTHORIZED_SURFACE_REGISTRY_BOOTSTRAPPED: bool = False
 
 
-def _ensure_m9_surface_registry_v1() -> None:
-    global _M9_SURFACE_REGISTRY_BOOTSTRAPPED, _AUTHORIZED_SURFACE_IDS
-    if _M9_SURFACE_REGISTRY_BOOTSTRAPPED:
+def _ensure_authorized_surface_registry_v1() -> None:
+    global _AUTHORIZED_SURFACE_REGISTRY_BOOTSTRAPPED, _AUTHORIZED_SURFACE_IDS
+    if _AUTHORIZED_SURFACE_REGISTRY_BOOTSTRAPPED:
         return
+    from src.experiments.canonical_f2_research_backtest_cost_grid_optimizable_surface_v1 import (
+        apply_research_backtest_cost_grid_surface_registry_v1,
+    )
     from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1 import (
         apply_volatility_numeric_max_age_surface_registry_v1,
     )
 
-    _AUTHORIZED_SURFACE_IDS = apply_volatility_numeric_max_age_surface_registry_v1(
+    surface_ids: set[str] = set()
+    surface_ids |= apply_volatility_numeric_max_age_surface_registry_v1(
         catalog=_ENVELOPE_CATALOG_BY_SURFACE,
     )
-    _M9_SURFACE_REGISTRY_BOOTSTRAPPED = True
+    surface_ids |= apply_research_backtest_cost_grid_surface_registry_v1(
+        catalog=_ENVELOPE_CATALOG_BY_SURFACE,
+    )
+    _AUTHORIZED_SURFACE_IDS = frozenset(surface_ids)
+    _AUTHORIZED_SURFACE_REGISTRY_BOOTSTRAPPED = True
+
+
+def _ensure_m9_surface_registry_v1() -> None:
+    """Backward-compatible alias for registry bootstrap."""
+    _ensure_authorized_surface_registry_v1()
 
 
 class CanonicalOptimizableEnvelopeError(ValueError):

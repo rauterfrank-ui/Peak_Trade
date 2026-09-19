@@ -1,0 +1,21 @@
+{
+  "artifact_class": "F2_OPTIMIZABLE_SURFACE_OWNER_GRANT_V1",
+  "workpackage_id": "F2_RESEARCH_BACKTEST_COST_GRID_END_TO_END_V1",
+  "owner_selection": "B",
+  "authorized_surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+  "surface_owner_ref": "backtest.parameter_sensitivity_v1",
+  "target_family": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE",
+  "owner_boundary": "RESEARCH_OPTIMIZATION_ONLY",
+  "domain_semantics": "OKX_ETH_PERP_RESEARCH_COST_GRID_V1_DISCRETE_FEE_SLIPPAGE_ONLY",
+  "bound_origin_main_sha": "25b0518b93f91a9609d70c30fb8cd3bf96401a46",
+  "threshold_selection_authorized": false,
+  "enforcement_authorized": false,
+  "parameter_promoted_authorized": false,
+  "master_v2_mutation_authorized": false,
+  "trading_authority_authorized": false,
+  "promotion_authorized": false,
+  "execution_orders_authorized": false,
+  "external_effect_authorized": false,
+  "productive_trading_effect": "NONE",
+  "research_optimization_only": true
+}
