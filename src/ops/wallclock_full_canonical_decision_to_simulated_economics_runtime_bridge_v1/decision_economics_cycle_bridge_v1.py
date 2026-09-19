@@ -31,6 +31,15 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_observation_host_binding_v1 import (
     invoke_productive_n_bars_horizon_observation_v1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_upstream_from_cycle_capture_v1 import (
+    maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1 import (
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1,
+)
+from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.canonical_bar_producer_v1 import (
+    CanonicalPublicMdBarProducerV1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
     DdoHostScopeInputError,
     DdoObservationHostScopeInputsV1,
@@ -461,6 +470,8 @@ class BridgeSessionStateV1:
     last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
     ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
     ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
+    ddo_canonical_public_md_bar_producer: Optional[CanonicalPublicMdBarProducerV1] = None
+    ddo_n_bars_horizon_n_bars: int = 2
     ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN"
     ddo_n_bars_economic_score: Optional[str] = None
     last_ddo_n_bars_horizon_observation: Optional[dict[str, Any]] = None
@@ -1847,6 +1858,24 @@ def run_bridge_cycle_v1(
     elif state.last_ddo_capture is not None:
         annotate_ddo_host_ledger_binding_on_capture_v1(state)
 
+    capture_binding = state.ddo_capture_binding
+    ddo_corr = (
+        capture_binding.capture_correlation_id
+        if isinstance(capture_binding, DdoCaptureBindingV0)
+        and capture_binding.capture_correlation_id
+        else None
+    )
+    if ddo_corr:
+        maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1(state, correlation_id=ddo_corr)
+    decision_ref: str | None = None
+    if state.ddo_n_bars_horizon_decision_event is not None:
+        decision_ref = str(state.ddo_n_bars_horizon_decision_event.get("record_id") or "") or None
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1(
+        state,
+        decision_event_ref=decision_ref,
+        n_bars=state.ddo_n_bars_horizon_n_bars,
+    )
+
     try:
         state.last_ddo_n_bars_horizon_observation = invoke_productive_n_bars_horizon_observation_v1(
             state,
@@ -1909,6 +1938,8 @@ def run_bridge_cycles_from_mids_v1(
     ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN",
     ddo_n_bars_economic_score: str | None = None,
     ddo_n_bars_evaluation_identity: Optional[Mapping[str, Any]] = None,
+    ddo_canonical_public_md_bar_producer: CanonicalPublicMdBarProducerV1 | None = None,
+    ddo_n_bars_horizon_n_bars: int = 2,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
     if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
         if not allow_direct_instrument_override:
@@ -1944,6 +1975,10 @@ def run_bridge_cycles_from_mids_v1(
     state.ddo_n_bars_economic_score = ddo_n_bars_economic_score
     if ddo_n_bars_evaluation_identity is not None:
         state.ddo_n_bars_evaluation_identity = dict(ddo_n_bars_evaluation_identity)
+    if ddo_canonical_public_md_bar_producer is not None:
+        state.ddo_canonical_public_md_bar_producer = ddo_canonical_public_md_bar_producer
+    if ddo_n_bars_horizon_n_bars > 0:
+        state.ddo_n_bars_horizon_n_bars = int(ddo_n_bars_horizon_n_bars)
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(
