@@ -580,6 +580,20 @@ relations:
       and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the
       producer. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+    notes: >
+      Optional portfolio_budget_owner threads slot_id, decision_id, and
+      cycle_id into ENTER Live-29P join and commits or releases reservations
+      at PRE_EXTERNAL boundary. Orchestration only. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_fa_occupied_lane_n1_host_join_readiness_depends_on_n1_consumer
     source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
     type: DEPENDS_ON
