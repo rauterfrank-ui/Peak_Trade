@@ -1052,6 +1052,40 @@ entities:
       productive host entry, Cap23/Cap24 reinvoke, or trading-decision
       authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 Full-Autonomy productive runtime orchestrator
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+      - tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py
+    notes: >-
+      PRODUCTIVE_FULL_AUTONOMY_N5_RUNTIME_ORCHESTRATOR composes existing
+      current_mf_n5 join owners from finished ranking/membership through
+      Cap23/Cap24/ingest/MV2+DP handoff, sequential governed cycles, and
+      shared portfolio budget owner (PR #6621 seam). Terminal rollup is
+      PRE_EXTERNAL readiness by default. AUTONOMY_TRADING_DECISION_AUTHORITY=false.
+      MF_PRODUCTIVE_JOIN=false. HOST_JOIN=false.
+      PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED productively.
+      target_cardinality 2..5 is architectural/test harness only.
+      MAX_POSITIONS_EFFECTIVE=1. N_GT_1_ENABLED=false.
+      MULTI_FUTURE_RUNTIME_AUTHORIZED=false.
+      EXTERNAL_EFFECT_AUTHORIZED=false. POST_ALLOWED=false.
+      PORTFOLIO_RESTART_STATUS=FAIL_CLOSED_NO_UNPROVEN_RESTORE.
+      Does not replace per-lane harness joins. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:mf_selection_context_boundary_v1
     kind: CONTRACT
     name: Non-authoritative membership context-only boundary

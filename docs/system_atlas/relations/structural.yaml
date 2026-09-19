@@ -624,6 +624,42 @@ relations:
       Cap 7.2 live execution port or minting permits.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+    notes: >
+      Productive FA orchestrator invokes compose_occupied_lane_n1_host_join_readiness_v1
+      for sequential PRE_EXTERNAL rollup. No host join invoke. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+    notes: >
+      Shared PortfolioCapitalReservationBudgetOwnerV1 threads through readiness
+      governed cycles. Single budget owner; no per-lane capital pools.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+    notes: >
+      Compose-only handoff pair map before governed cycles. MV2+DP remain
+      decision owners. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
     source: CAPABILITY:cap_2_4_runtime_binding
     type: GOVERNED_BY
