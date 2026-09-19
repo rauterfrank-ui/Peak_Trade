@@ -179,6 +179,7 @@ def run_productive_bridge_accumulation_session_v1(
     campaign_authorization_artifact_path: Path | None = None,
     campaign_authorization_evidence_root: Path | None = None,
     require_campaign_authorization: bool | None = None,
+    governed_authorized_productive_parameter_seam_record: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Execute one productive session through the canonical hardened bridge call graph."""
     from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
@@ -299,6 +300,24 @@ def run_productive_bridge_accumulation_session_v1(
     )
     acc = bridge_state.productive_evidence_accumulation_state
     assert acc is not None
+
+    if governed_authorized_productive_parameter_seam_record is not None:
+        from src.governance.governed_productive_runtime_parameter_seam_session_bind_v1 import (
+            STATUS_BOUND as _SESSION_SEAM_BOUND,
+            bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1,
+        )
+
+        bridge_state, seam_bind = (
+            bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1(
+                bridge_state,
+                dict(governed_authorized_productive_parameter_seam_record),
+                session_id=session_id,
+            )
+        )
+        if seam_bind.bind_status != _SESSION_SEAM_BOUND:
+            raise ProductiveEvidenceAccumulationError(
+                "session_seam_bind_denied:" + ",".join(seam_bind.reason_codes)
+            )
 
     cycle_results: list[dict[str, Any]] = []
     for sample in samples:
