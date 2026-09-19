@@ -44,6 +44,11 @@ from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
     AppendResultV0,
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import build_outcome_record_v0
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+    REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN,
+    resolve_later_horizon_outcome_fields_v1,
+    validate_n_bars_observation_for_decision_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.replay_evaluator_v0 import (
     classify_decision_event_v0,
     classify_incident_record_v0,
@@ -253,10 +258,12 @@ def evaluate_offline_bundle_v0(
 
     horizon = str(obs["evaluation_horizon"])
     if horizon in _LATER_HORIZONS:
-        actual_outcome_ref = obs["actual_outcome_ref"]
-        economic_score = obs["economic_score"]
-        if actual_outcome_ref is None:
-            actual_outcome_ref = UNKNOWN
+        if horizon == REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN:
+            validate_n_bars_observation_for_decision_v1(decision, obs)
+        actual_outcome_ref, economic_score = resolve_later_horizon_outcome_fields_v1(
+            obs,
+            decision_event=decision,
+        )
         if economic_score is None:
             economic_score = UNKNOWN
     else:

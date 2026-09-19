@@ -99,6 +99,20 @@ OUTCOME_LINK_STATUS_V0: Final[tuple[str, ...]] = (
     UNKNOWN,
 )
 
+HORIZON_OBSERVATION_STATUS_V0: Final[tuple[str, ...]] = (
+    "OK",
+    "MISSING",
+    "STALE",
+    "GAP",
+    "PARTIAL",
+)
+
+OUTCOME_SCALAR_KIND_V0: Final[tuple[str, ...]] = (
+    "LOG_RETURN",
+    "ABS_RETURN",
+    "HIT_TARGET",
+)
+
 # Explicit evaluation horizons. Numeric bar/count policy remains unbound.
 EVALUATION_HORIZON_V0: Final[tuple[str, ...]] = (
     "DECISION_TIME",

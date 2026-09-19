@@ -168,7 +168,6 @@ def test_kill_switch_true_positive_ignores_later_favorable_move() -> None:
             kill_switch_timing_label="ACCEPTABLE",
             later_favorable_price_move=True,
             later_economic_path={"net_pnl_token": "POSITIVE"},
-            actual_outcome_ref="econ-obs-1",
             economic_score="POSITIVE",
         ),
         incident_record=incident,

@@ -25,6 +25,7 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     COUNTERFACTUAL_ADMISSIBILITY_V0,
     DECISION_SCORE_V0,
     EVALUATION_HORIZON_V0,
+    UNKNOWN,
     KILL_SWITCH_TIMING_LABEL_V0,
     OUTCOME_ROOT_CAUSE_V0,
     PROTECTED_CONDITION_V0,
@@ -33,6 +34,13 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.hindsight_guard_v0 import (
     assert_no_hindsight_safety_relabel_v0,
+)
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+    REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN,
+    assert_deferred_horizon_rejects_real_fields_v1,
+    assert_no_n_bars_fields_on_non_n_bars_horizon_v1,
+    classify_n_bars_real_eligibility_v1,
+    normalize_n_bars_extension_fields_v1,
 )
 
 EVALUATION_OBSERVATION_SCHEMA_NAME: Final[str] = "evaluation_observation"
@@ -61,6 +69,15 @@ EVALUATION_OBSERVATION_ALLOWED_FIELDS: Final[frozenset[str]] = frozenset(
         "later_economic_path",
         "later_favorable_price_move",
         "confidence",
+        "horizon_start_time_utc",
+        "instrument_ref",
+        "bar_spec_ref",
+        "n_bars",
+        "horizon_observation_status",
+        "horizon_observation_reason",
+        "outcome_scalar_kind",
+        "bar_close_times_utc",
+        "bar_identity_refs",
     }
 )
 
@@ -78,6 +95,16 @@ def validate_evaluation_observation_v0(payload: Mapping[str, Any]) -> MappingPro
     if later is not None and not isinstance(later, Mapping):
         raise DdoValidationError("LATER_ECONOMIC_PATH_MUST_BE_OBJECT")
     assert_no_hindsight_safety_relabel_v0(raw)
+    horizon_token = raw.get("evaluation_horizon")
+    assert_no_n_bars_fields_on_non_n_bars_horizon_v1(
+        str(horizon_token) if horizon_token is not None else UNKNOWN,
+        raw,
+    )
+    assert_deferred_horizon_rejects_real_fields_v1(
+        str(horizon_token) if horizon_token is not None else UNKNOWN,
+        actual_outcome_ref=raw.get("actual_outcome_ref"),
+    )
+    n_bars_extension = normalize_n_bars_extension_fields_v1(raw)
     claim = raw.get("counterfactual_admissibility_claim")
     alternative_event = raw.get("alternative_decision_event")
     if alternative_event is not None and not isinstance(alternative_event, Mapping):
@@ -138,5 +165,9 @@ def validate_evaluation_observation_v0(payload: Mapping[str, Any]) -> MappingPro
         "later_economic_path": None if later is None else dict(later),
         "later_favorable_price_move": later_move,
         "confidence": optional_string_or_unknown(raw.get("confidence"), "confidence"),
+        **n_bars_extension,
     }
-    return freeze_record(canonical)
+    frozen = freeze_record(canonical)
+    if frozen["evaluation_horizon"] == REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN:
+        classify_n_bars_real_eligibility_v1(frozen)
+    return frozen
