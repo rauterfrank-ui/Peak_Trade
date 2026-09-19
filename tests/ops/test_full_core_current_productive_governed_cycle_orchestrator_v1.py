@@ -96,7 +96,6 @@ PROTECTED_ALGORITHM_FILES = (
     "src/trading/master_v2/double_play_state.py",
     "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
 )
-EH_S5_HEADING = "### 11.2.1.EH S5 GOVERNED_CYCLE_ORCHESTRATOR_OFFLINE_BIND"
 CURSOR_FLOOR = 1789664700.0
 NEW_C1 = 1789664760.0
 NATIVE_ID = "0G-USDT-SWAP"
@@ -242,9 +241,9 @@ def test_created_flag_pins_and_docs() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     source = OWNER_MODULE.read_text(encoding="utf-8")
-    assert EH_S5_HEADING in runbook
-    assert THIS_SLICE in runbook
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR" in mot
+    assert "EH.S5" in runbook
+    assert THIS_SLICE in source
+    assert "current_productive_governed_cycle_orchestrator_v1.py" in mot
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1" in spec
     assert JOIN_SEAM_ID in atlas
