@@ -24,6 +24,7 @@ from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_
     AGE_REFERENCE_CLOCK,
     ENFORCEMENT_ENABLED as POLICY_ENFORCEMENT_ENABLED,
     NUMERIC_MAX_AGE_DECIDED as POLICY_NUMERIC_MAX_AGE_DECIDED,
+    THRESHOLD_STATUS_RATIFIED_NUMERIC,
     THRESHOLD_STATUS_UNRESOLVED,
     CanonicalVolatilityMaxAgePolicyEvidenceV1,
     evaluate_canonical_volatility_estimate_age_policy_v1,
@@ -703,6 +704,41 @@ def _join_digest_v1(payload: Mapping[str, Any]) -> str:
     return _sha256_hex(body)
 
 
+def project_max_age_policy_evidence_for_research_evidence_join_v1(
+    age: Union[CanonicalVolatilityMaxAgePolicyEvidenceV1, Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Build research-join lane input from presence-gate age telemetry.
+
+    Productive telemetry may carry ``RATIFIED_NUMERIC_THRESHOLD`` (authorized
+    seam, non-enforcing). Research-evidence join records remain
+    ``UNRESOLVED_MAX_AGE`` until separate parameter research — same epistemic
+    separation as productive ``join_projection_v1``. Does not mutate source
+    telemetry objects.
+    """
+    if isinstance(age, CanonicalVolatilityMaxAgePolicyEvidenceV1):
+        payload = age.to_dict()
+    else:
+        payload = dict(age)
+
+    threshold_status = _require_nonempty_identity(
+        payload.get("threshold_status") or THRESHOLD_STATUS,
+        field_name="threshold_status",
+    )
+    if threshold_status == THRESHOLD_STATUS_UNRESOLVED:
+        return payload
+
+    if threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC:
+        if payload.get("enforcement_applied") is True:
+            raise MaxAgeResearchDesignContractError("join_forbids_enforcement_applied_true")
+        if payload.get("numeric_threshold_selected") is True:
+            raise MaxAgeResearchDesignContractError("join_forbids_numeric_threshold_selected")
+        projected = dict(payload)
+        projected["threshold_status"] = THRESHOLD_STATUS_UNRESOLVED
+        return projected
+
+    raise MaxAgeResearchDesignContractError("join_requires_unresolved_threshold_status")
+
+
 def build_max_age_research_evidence_join_v1(
     *,
     session_id: str,
@@ -867,10 +903,11 @@ def build_max_age_research_evidence_join_from_cycle_v1(
     """Project a hardening-bridge cycle dict into the typed research join."""
     binding = dict(cycle.get("canonical_volatility_typed_binding") or {})
     gate = dict(cycle.get("double_play_typed_volatility_presence_gate") or {})
-    age = dict(gate.get("max_age_policy_evidence") or {})
+    age_raw = dict(gate.get("max_age_policy_evidence") or {})
     feature_regime = dict(cycle.get("feature_regime") or {})
-    if not age:
+    if not age_raw:
         raise MaxAgeResearchDesignContractError("cycle_missing_max_age_policy_evidence")
+    age = project_max_age_policy_evidence_for_research_evidence_join_v1(age_raw)
 
     session_id = _require_nonempty_identity(cycle.get("session_id"), field_name="session_id")
     cycle_id = _require_nonempty_identity(cycle.get("cycle_id"), field_name="cycle_id")
@@ -1492,6 +1529,7 @@ __all__ = [
     "assert_capability_non_goals_v1",
     "build_max_age_research_evidence_join_from_cycle_v1",
     "build_max_age_research_evidence_join_v1",
+    "project_max_age_policy_evidence_for_research_evidence_join_v1",
     "build_ratified_max_age_research_design_contract_v1",
     "evaluate_counterfactual_from_age_evidence_v1",
     "evaluate_counterfactual_max_age_threshold_diagnostic_v1",

@@ -6459,11 +6459,11 @@ entities:
 
   - id: RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1
     kind: RUNTIME_COMPONENT
-    name: M10 productive parameter lineage closure v1 (M9 target + slices A/B/C)
+    name: M10 productive parameter lineage closure v1 (M9 target, seam, research join)
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: GOVERNED_PRODUCTIVE_RUNTIME_SEAM_SESSION_BIND_TO_NEXT_REAL_BLOCKER_V1
+    modified_by: M10_RUNTIME_SEAM_RESEARCH_JOIN_RECONCILIATION_TO_NEXT_REAL_BLOCKER_V1
     source_paths:
       - src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - src/governance/m9_volatility_numeric_max_age_ratified_threshold_capability_v1.py
@@ -6472,6 +6472,7 @@ entities:
       - src/governance/authorized_productive_parameter_seam_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_session_bind_v1.py
+      - src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py
     evidence_sources:
       - src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - src/governance/m9_volatility_numeric_max_age_ratified_threshold_capability_v1.py
@@ -6480,14 +6481,17 @@ entities:
       - src/governance/authorized_productive_parameter_seam_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
       - src/governance/governed_productive_runtime_parameter_seam_session_bind_v1.py
+      - src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py
       - tests/governance/test_m9_volatility_numeric_max_age_numeric_productive_target_v1.py
       - tests/governance/test_explicit_productive_authorization_v1.py
       - tests/governance/test_governed_productive_configuration_v1.py
       - tests/governance/test_authorized_productive_parameter_seam_v1.py
       - tests/governance/test_governed_productive_runtime_parameter_seam_join_v1.py
       - tests/governance/test_governed_productive_runtime_parameter_seam_session_bind_v1.py
+      - tests/trading/master_v2/test_canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py
       - config/governance/governed_productive_runtime_parameter_seam_join_v1_decision_v1.json
       - config/governance/governed_productive_runtime_parameter_seam_session_bind_v1_decision_v1.json
+      - docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_DESIGN_AND_EVIDENCE_ACCUMULATION_CONTRACT_V1.md
       - docs/ops/specs/M9_VOLATILITY_NUMERIC_MAX_AGE_NUMERIC_PRODUCTIVE_TARGET_NORMATIVE_V1.md
       - docs/ops/specs/M9_VOLATILITY_NUMERIC_MAX_AGE_RATIFIED_THRESHOLD_CAPABILITY_NORMATIVE_V1.md
       - docs/ops/specs/EXPLICIT_PRODUCTIVE_AUTHORIZATION_NORMATIVE_V1.md
@@ -6501,8 +6505,10 @@ entities:
       - config/governance/governed_productive_configuration_v1_decision_v1.json
       - config/governance/authorized_productive_parameter_seam_v1_decision_v1.json
     notes: >-
-      Configuration and authorized parameter seam only; no runtime apply, enforcement,
-      trading-decision authority shift, or external effect. ATLAS_AUTHORITY=NONE.
+      Configuration, authorized parameter seam, and research-evidence join epistemic
+      lane (UNRESOLVED join vs RATIFIED productive gate telemetry); no runtime apply,
+      enforcement, trading-decision authority shift, or external effect.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT
