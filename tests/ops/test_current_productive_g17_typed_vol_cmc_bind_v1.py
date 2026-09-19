@@ -47,11 +47,13 @@ from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 
     _apply,
     _sixty_one_samples,
 )
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    V5_HOST,
-)
 
 REPO = Path(__file__).resolve().parents[2]
+V5_HOST = (
+    REPO
+    / "src/ops/governed_productive_account_equity_authority_producer_v1"
+    / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
+)
 BIND_SRC = (
     REPO
     / "src/ops/full_core_live_path_composition_root_v1"
@@ -398,7 +400,7 @@ def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
 def test_source_freeze_no_second_owner_ingest_or_presence_gate() -> None:
     bind_src = BIND_SRC.read_text(encoding="utf-8")
     master_src = MASTER_V2_SRC.read_text(encoding="utf-8")
-    v5 = V5_HOST.read_text(encoding="utf-8")
+    assert not V5_HOST.is_file()
     join1 = JOIN1_SRC.read_text(encoding="utf-8")
     join2 = JOIN2_SRC.read_text(encoding="utf-8")
     assert "ingest_finalized_pt1m_mark_sample_v1" not in bind_src
@@ -413,10 +415,7 @@ def test_source_freeze_no_second_owner_ingest_or_presence_gate() -> None:
     assert "ingest_finalized_pt1m_mark_sample_v1" not in master_src
     assert "require_productive_typed_volatility_presence_gate=True" in master_src
     assert "HardenedBridgeSessionStateV2" not in master_src
-    assert "g17_typed_vol_producer=g17_checkpoint.producer" in v5
-    assert "bind_typed_canonical_volatility_estimate" not in v5
-    assert "ingest_finalized_pt1m_mark_sample_v1" not in v5
-    assert "require_productive_typed_volatility_presence_gate=True" not in v5
+    assert "producer=g17_typed_vol_producer" in master_src
     assert "CMC_BINDING_PERFORMED = False" in join1
     assert "PRESENCE_GATE_MUTATED = False" in join1
     assert "CMC_BINDING_PERFORMED = False" in join2

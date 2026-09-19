@@ -50,14 +50,6 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
     FullCoreSendCredentialHandleV1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryEphemeralCredentialHandleV1,
-    LiveCanaryVaultBackendPortV1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    DEFAULT_VAULT_RELATIVE,
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -68,10 +60,16 @@ V5_HOST = (
     / "src/ops/governed_productive_account_equity_authority_producer_v1"
     / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
 )
-CANARY_EPHEMERAL = (
+K1_OWNERS = (
     REPO_ROOT
-    / "src/ops/section_11_13_5_live_canary_minimum_exposure_v1"
-    / "live_credential_ephemeral_v1.py"
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "checkout_independent_credential_capability_v1.py",
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "checkout_independent_credential_governed_cycle_occupancy_bind_v1.py",
+    REPO_ROOT
+    / "src/ops/full_core_live_path_composition_root_v1"
+    / "current_productive_governed_cycle_orchestrator_v1.py",
 )
 VALID_REF = "fullcore-cred://provider-ref/phase-a-offline-contract"
 
@@ -213,36 +211,30 @@ def test_signing_capability_does_not_imply_send_authority() -> None:
     assert SIGNING_CAPABILITY_IMPLIES_SEND_AUTHORITY is False
 
 
-def test_v5_productive_runtime_source_unchanged() -> None:
-    source = V5_HOST.read_text(encoding="utf-8")
-    assert "default_vault_path_v1" in source
-    assert "checkout_independent_credential_capability_v1" not in source
-    assert "FullCoreCheckoutIndependentCredentialCapabilityV1" not in source
+def test_v5_host_absent() -> None:
+    assert not V5_HOST.is_file()
     assert V5_JOINED is False
 
 
-def test_existing_default_file_vault_path_unchanged() -> None:
-    path = default_vault_path_v1(repo_root=REPO_ROOT)
-    assert path == REPO_ROOT / ".ops_local" / DEFAULT_VAULT_RELATIVE
-    assert DEFAULT_VAULT_RELATIVE.endswith("secretref_vault.json")
+def test_k1_does_not_use_file_vault_path() -> None:
+    for path in K1_OWNERS:
+        source = path.read_text(encoding="utf-8")
+        assert "default_vault_path_v1" not in source
+        assert "credential_presence_v1" not in source
 
 
-def test_existing_canary_types_unchanged_and_not_full_core_authority() -> None:
-    assert CANARY_EPHEMERAL.is_file()
-    assert hasattr(LiveCanaryVaultBackendPortV1, "resolve_secretref_material_v1")
-    handle = LiveCanaryEphemeralCredentialHandleV1(
-        handle_id="offline-canary-handle",
-        secret_reference="secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
-        material_digest="0" * 64,
-        runtime_mode="LIVE",
-        credential_class="LIVE_CANARY_MINIMUM_EXPOSURE_TRADE_API_KEY",
-        bound=True,
-    )
+def test_k1_capability_is_not_send_handle_or_k2_canary_type() -> None:
     send = FullCoreSendCredentialHandleV1(handle_id="full-core-send-handle", bound=True)
     capability = _capability()
-    assert type(capability) is not type(handle)
     assert type(capability) is not type(send)
     assert not isinstance(capability, FullCoreSendCredentialHandleV1)
+    capability_source = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "checkout_independent_credential_capability_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "live_credential_ephemeral_v1" not in capability_source
+    assert "LiveCanaryEphemeralCredentialHandleV1" not in capability_source
 
 
 def test_max_positions_unchanged() -> None:

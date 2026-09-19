@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=7
-ATLAS_CHANGED_RELATION_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,12 +40,6 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:elementary_direction_primitive_v1` |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
-| `REL:s_elementary_direction_implements_primitive_contract` |
-| `REL:s_map_navigates_elementary_direction_primitive` |
-| `RUNTIME_COMPONENT:elementary_direction_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
@@ -58,9 +52,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
-| `REL:s_elementary_direction_implements_primitive_contract` |
-| `REL:s_map_navigates_elementary_direction_primitive` |
+| _(none)_ |
 
 ## REMOVED_RELATIONS
 
@@ -100,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Passive elementary C1 mark-to-mark direction identity (WP ELEMENTARY_DIRECTION_PRIMITIVE_V1). Cycle evidence only. Not Replay / Double Play / ScopeEvent / Entry consumption. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- PR 6617 docs-drift-guard repair. V1-V5 execute hosts retired. Occupancy classify/C1-gate extracted. EG default dispatch fail-closed. K1_BIND unchanged. K2_TO_K1_REWIRE=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

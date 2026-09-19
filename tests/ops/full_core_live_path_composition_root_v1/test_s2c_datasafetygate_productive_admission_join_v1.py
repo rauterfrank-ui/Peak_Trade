@@ -509,8 +509,7 @@ def test_a1_a2_a3_remain_stamp_lossy() -> None:
     assert "data_safety_source_kind" not in {
         f.name for f in dataclasses.fields(FreshPretradeGetItemEvidenceV1)
     }
-    v5_src = _V5_SRC.read_text(encoding="utf-8")
-    assert 'return result.payload, ""' in v5_src or "return result.payload, ''" in v5_src
+    assert not _V5_SRC.is_file()
     transport_src = _SRC_TRANSPORT.read_text(encoding="utf-8")
     assert "self.payloads_by_path[path_only] = payload" in transport_src
     fresh_src = _SRC_FRESH.read_text(encoding="utf-8")

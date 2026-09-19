@@ -62,7 +62,7 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_CREATED,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     POST_NEXT_OWNER_GO,
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
@@ -74,7 +74,7 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
 from tests.ops.test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     _seed_cursor,
 )
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     _candles,
 )
 

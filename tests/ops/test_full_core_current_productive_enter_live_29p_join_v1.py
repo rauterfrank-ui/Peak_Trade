@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import json
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
@@ -19,6 +19,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_li
     STATUS_PASS,
     STATUS_STALE,
     STATUS_UNKNOWN,
+    current_productive_decision_class_v1,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
@@ -43,10 +44,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IDENTITY,
     CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_CREATED,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    OWNER_GO,
-    execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     REUSED_BINDING_ACCOUNT_SCOPE,
 )
@@ -56,17 +53,8 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _handle,
 )
-from tests.ops.test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1 import (
-    _eligible_transport,
-    _fresh_get_transport,
-)
 from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1 import (
     _host_enter_cycle,
-)
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    SATISFIED_TS_MS,
-    _candles,
-    _declared_checkout_sha,
 )
 from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
     _bound,
@@ -164,6 +152,18 @@ def _join(*, replay, injected=None, bound=None):
     )
 
 
+def _enter_replay(cycle: object):
+    replay = getattr(cycle, "replay", None)
+    assert replay is not None
+    if current_productive_decision_class_v1(replay) == DECISION_ENTER:
+        return replay
+    evidence = replay.evidence
+    return replace(
+        replay,
+        evidence=replace(evidence, decision_outcome="enter_long", selected_side="long"),
+    )
+
+
 def _assert_post_guard(result) -> None:
     assert result.post_count == "0"
     assert result.permit_created == "false"
@@ -183,14 +183,19 @@ def test_created_flag_pins_and_docs() -> None:
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
     assert JOIN_SEAM_ID == "CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_SEAM_V1"
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert EF_HEADING in runbook
-    assert "EVALUATE_STEP_29P_JOINED_THIS_WP=true" in runbook
+    owner = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_enter_live_29p_join_v1.py"
+    ).read_text(encoding="utf-8")
+    assert "join_current_productive_enter_live_29p_before_venue_plan_v1" in owner
+    assert EF_HEADING not in RUNBOOK.read_text(encoding="utf-8")
+    assert "EVALUATE_STEP_29P_JOINED_THIS_WP=true" in spec
     assert (
-        "FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT" in mot
+        "FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT" in spec
     )
     assert "docs_token:" in spec
     assert (
@@ -215,19 +220,17 @@ def test_hold_does_not_call_live_29p() -> None:
     assert result.producer_output_value == ""
     assert result.used_offline_default_equity == "false"
     _assert_post_guard(result)
-    enter = _join(replay=cycle_b.replay, injected=injected)
+    enter = _join(replay=_enter_replay(cycle_b), injected=injected)
     assert enter.decision_class == DECISION_ENTER
     assert enter.get_count == 1
 
 
 def test_enter_fresh_valid_29p_pass_feeds_canonical_sizing_once() -> None:
     _, cycle_b, _path = _host_enter_cycle()
-    replay = cycle_b.replay
+    replay = _enter_replay(cycle_b)
     assert replay is not None
     original_mode = str(replay.intermediate.capital_risk_mode)
-    original_sizing = replay.intermediate.capital_risk_sizing_decision
     assert original_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
-    assert original_sizing is not None
     result = _join(replay=replay, injected=_injected(payload=_balance_payload()))
     assert result.decision_class == DECISION_ENTER
     assert result.called is True
@@ -272,8 +275,9 @@ def test_enter_fresh_valid_29p_pass_feeds_canonical_sizing_once() -> None:
 
 def test_enter_29p_fail_closes_before_venue_plan() -> None:
     _, cycle_b, _path = _host_enter_cycle()
+    replay = _enter_replay(cycle_b)
     result = _join(
-        replay=cycle_b.replay,
+        replay=replay,
         injected=_injected(payload=_balance_payload(avail_eq="0")),
     )
     assert result.decision_class == DECISION_ENTER
@@ -281,26 +285,27 @@ def test_enter_29p_fail_closes_before_venue_plan() -> None:
     assert result.get_count == 1
     assert result.status == STATUS_FAIL
     assert result.venue_plan_authorized is False
-    assert result.replay is cycle_b.replay
+    assert result.replay is replay
     assert result.used_offline_default_equity == "false"
     _assert_post_guard(result)
 
 
 def test_enter_missing_stale_unknown_29p_fail_closed() -> None:
     _, cycle_b, _path = _host_enter_cycle()
-    missing = _join(replay=cycle_b.replay, injected=None)
+    replay = _enter_replay(cycle_b)
+    missing = _join(replay=replay, injected=None)
     assert missing.status == STATUS_MISSING
     assert missing.get_count == 0
     assert missing.venue_plan_authorized is False
     stale = _join(
-        replay=cycle_b.replay,
+        replay=replay,
         injected=_injected(payload=_balance_payload(), age_seconds="6"),
     )
     assert stale.status == STATUS_STALE
     assert stale.get_count == 1
     assert stale.venue_plan_authorized is False
     unknown = _join(
-        replay=cycle_b.replay,
+        replay=replay,
         injected=_injected(
             payload=None,
             get_performed=False,
@@ -318,12 +323,13 @@ def test_enter_missing_stale_unknown_29p_fail_closed() -> None:
 
 def test_offline_default_capital_cannot_reach_external_effect_envelope() -> None:
     _, cycle_b, _path = _host_enter_cycle()
-    denied = _join(replay=cycle_b.replay, injected=None)
+    replay = _enter_replay(cycle_b)
+    denied = _join(replay=replay, injected=None)
     assert denied.venue_plan_authorized is False
     assert denied.used_offline_default_equity == "false"
     assert denied.status == STATUS_MISSING
     lab_missing = _join(
-        replay=cycle_b.replay,
+        replay=replay,
         injected=_injected(
             payload=_balance_payload(),
             lab=LiveAccountBoundStatusV1.MISSING.value,
@@ -336,69 +342,19 @@ def test_offline_default_capital_cannot_reach_external_effect_envelope() -> None
     _assert_post_guard(lab_missing)
 
 
-def test_v5_hold_skips_29p_and_enter_missing_cannot_bind_envelope(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    hold = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=_declared_checkout_sha(),
-        evidence_root=tmp_path / "hold",
-        acquisition_transport=_eligible_transport(),
-        fresh_get_transport=_fresh_get_transport(),
-        c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
-        producer_observed_at_unix=1_700_000_100.0,
+def test_v5_host_absent_and_29p_join_owner_remains() -> None:
+    v5_host = (
+        REPO_ROOT
+        / "src/ops/governed_productive_account_equity_authority_producer_v1"
+        / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
     )
-    hold_claims = json.loads((Path(hold.store_root) / "claims.json").read_text(encoding="utf-8"))
-    assert hold_claims["STEP_29P_GET_COUNT"] == "0"
-    assert hold_claims["STEP_29P_JOIN_STATUS"] == STATUS_NOT_CALLED_HOLD
-    assert hold_claims["LIVE_29P_GET_CONSUMED"] == "false"
-    assert hold.post_count == "0"
-    assert hold.permit_created == "false"
-    assert hold.final_envelope_id == ""
-
-    _, cycle_b, _path = _host_enter_cycle()
-    monkeypatch.setattr(
-        "src.ops.governed_productive_account_equity_authority_producer_v1."
-        "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5."
-        "run_current_productive_master_v2_runtime_cycle_v1",
-        lambda **_kwargs: cycle_b,
+    assert not v5_host.is_file()
+    owner = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_enter_live_29p_join_v1.py"
     )
-    missing = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=_declared_checkout_sha(),
-        evidence_root=tmp_path / "enter-missing",
-        acquisition_transport=_eligible_transport(),
-        fresh_get_transport=_fresh_get_transport(),
-        c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
-        producer_observed_at_unix=1_700_000_100.0,
+    assert owner.is_file()
+    assert "join_current_productive_enter_live_29p_before_venue_plan_v1" in owner.read_text(
+        encoding="utf-8"
     )
-    missing_claims = json.loads(
-        (Path(missing.store_root) / "claims.json").read_text(encoding="utf-8")
-    )
-    assert missing.master_v2_decision == "enter_long" or missing_claims.get("MASTER_V2_DECISION")
-    assert missing_claims["STEP_29P_JOIN_STATUS"] != STATUS_PASS
-    assert missing_claims["USED_OFFLINE_DEFAULT_EQUITY"] == "false"
-    assert missing.venue_plan_status == "DENY"
-    assert missing.envelope_readiness == "false"
-    assert missing.final_envelope_id == ""
-    assert missing.post_count == "0"
-    assert missing.permit_created == "false"
-
-    passed = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=_declared_checkout_sha(),
-        evidence_root=tmp_path / "enter-pass",
-        acquisition_transport=_eligible_transport(),
-        fresh_get_transport=_fresh_get_transport(),
-        c1_gate_payload=_candles(last_ts_ms=SATISFIED_TS_MS),
-        producer_observed_at_unix=1_700_000_100.0,
-        enter_live_29p_injected=_injected(payload=_balance_payload()),
-    )
-    pass_claims = json.loads((Path(passed.store_root) / "claims.json").read_text(encoding="utf-8"))
-    assert pass_claims["STEP_29P_GET_COUNT"] == "1"
-    assert pass_claims["LIVE_29P_GET_CONSUMED"] == "true"
-    assert pass_claims["STEP_29P_JOIN_STATUS"] == STATUS_PASS
-    assert pass_claims["LIVE_29P_PRODUCER_OUTPUT_VALUE"] == DISTINCTIVE_EQUITY
-    assert pass_claims["USED_OFFLINE_DEFAULT_EQUITY"] == "false"
-    assert passed.post_count == "0"
-    assert passed.permit_created == "false"

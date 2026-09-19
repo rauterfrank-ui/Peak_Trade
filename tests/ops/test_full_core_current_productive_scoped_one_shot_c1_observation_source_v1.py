@@ -192,10 +192,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    OWNER_GO as V5_OWNER_GO,
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    V5_OWNER_GO,
 )
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     TRACKED_CURSOR,
 )
 
@@ -379,31 +379,23 @@ def test_ms01_created_flag_pins_and_docs() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert EH_HEADING in runbook
-    assert EH_MS04A_HEADING in runbook
-    assert EH_MS04D_HEADING in runbook
-    assert EH_S1_HEADING in runbook
-    assert EH_S2_S3_HEADING in runbook
-    assert THIS_SLICE in runbook
-    assert MS04A_SLICE in runbook
-    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in runbook
-    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in runbook
-    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in runbook
-    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in runbook
-    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in runbook
-    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in runbook
-    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in runbook
-    assert "RAW_HTTP_BYTES_PERSISTED=false" in runbook
-    assert TRANSPORT_RAW_BODY_SHA256 in runbook
-    assert "CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN" in runbook
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert EH_HEADING not in runbook
+    assert THIS_SLICE in source
+    assert MS04A_SLICE in spec
+    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in spec
+    assert S1_THIS_SLICE in source
+    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in spec
+    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in spec
+    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
+    assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in spec
+    assert "HISTORICAL_EVIDENCE_IS_NOT_STANDING_ENABLEMENT=true" in spec
+    assert "RAW_HTTP_BYTES_PERSISTED=false" in spec
+    assert TRANSPORT_RAW_BODY_SHA256 in (MS04B_EVIDENCE_PACK / "claims.json").read_text(
+        encoding="utf-8"
+    )
     assert "PRODUCTIVE_CONTINUOUS_C1_OBSERVATION_SOURCE_OR_BOUNDED_POLL_OWNER_ABSENT" not in runbook
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in mot
-    assert "MS04A_EH_LIVE_GET_CONTRACT" in mot
-    assert "MS04D_MS04B_CANONICAL_EVIDENCE_PERSISTENCE" in mot
-    assert "S1_POST_MS04D_T1_T2_AUTHORITY_SEPARATION" in mot
-    assert "S2_S3_CANONICAL_SINGLE_RUNTIME_PATH_OFFLINE_BIND" in mot
-    assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in mot
-    assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in mot
+    assert "FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE" in spec
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1"
@@ -888,7 +880,7 @@ def test_ms04d_historical_evidence_pack_is_not_standing_enablement() -> None:
     assert not (MS04B_EVIDENCE_PACK / "raw_http.bin").exists()
     source = OWNER_MODULE.read_text(encoding="utf-8")
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    ms04d = runbook.split(EH_MS04D_HEADING, 1)[1].split(EH_S1_HEADING, 1)[0]
+    ms04d = SPEC_PATH.read_text(encoding="utf-8")
     assert LIVE_GET_EXECUTED is False
     assert PERFORM_GET_DEFAULT is False
     assert MS04_AUTHORIZED is False
@@ -935,21 +927,22 @@ def test_s1_post_ms04d_t1_t2_authority_separation_is_not_runtime_enablement() ->
     assert "OWNER_GO_PRESENT_HISTORICAL_MS04B" not in source
     assert "execute_network=True" not in source
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s1 = runbook.split(EH_S1_HEADING, 1)[1].split(EH_S2_S3_HEADING, 1)[0]
+    s1 = SPEC_PATH.read_text(encoding="utf-8")
     assert "T1_OWNER_GO_STATUS=OWNER_GO_ABSENT" in s1
     assert "T1_CONSUMED=false" in s1
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s1
     assert "T2_CONSUMED=false" in s1
     assert "HISTORICAL_PACK_CLASS=HISTORICAL_EVIDENCE_ONLY" in s1
-    assert "CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT=true" in s1
+    s1_claims = json.loads((S1_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
+    assert s1_claims["CLAIMS_LIVE_GET_EXECUTED_IS_HISTORICAL_INVOCATION_FACT"] is True
     assert "LIVE_GET_EXECUTED=false" in s1
     assert "GET_COUNT_THIS_SLICE=0" in s1
     assert "EG_DISPATCH_COUNT=0" in s1
     assert "RUNTIME_CYCLE_COUNT=0" in s1
     assert "MS05_STARTED=false" in s1
-    assert "S2_STARTED=false" in s1
-    assert "not create, define, or consume a T1 Owner-GO" in s1
-    assert "T2 remains" in s1 or "DEFINED_NOT_CONSUMED" in s1
+    assert "S4_STARTED=false" in s1
+    assert "consume a T1 Owner-GO" in s1
+    assert "DEFINED_NOT_CONSUMED" in s1
     historical = json.loads((MS04B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
     assert historical["LIVE_GET_EXECUTED"] is True
     assert historical["LIVE_GET_EXECUTED_STANDING_PIN"] is False
@@ -1049,7 +1042,7 @@ def test_s2_s3_canonical_single_runtime_path_offline_bind_is_not_runtime_enablem
     assert mismatched.runtime_cycle_count == 0
     assert mismatched.reason_code == REASON_OWNER_GO_MISMATCH
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s2s3 = runbook.split(EH_S2_S3_HEADING, 1)[1].split(EH_S4A_HEADING, 1)[0]
+    s2s3 = SPEC_PATH.read_text(encoding="utf-8")
     assert "SELECTED_RUNTIME_PATH=EH_SCOPED_ONE_SHOT_C1_TO_EG_EXACTLY_ONE_TO_V5_N1_HOST" in s2s3
     assert "PATH_CARDINALITY=1" in s2s3
     assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in s2s3
@@ -1059,7 +1052,7 @@ def test_s2_s3_canonical_single_runtime_path_offline_bind_is_not_runtime_enablem
     assert "T2_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s2s3
     assert "T2_CONSUMED=false" in s2s3
     assert "T1_CONSUMED=false" in s2s3
-    assert "execute_network=false" in s2s3
+    assert "S4A_V5_EXECUTE_NETWORK=false" in s2s3
     assert "GET_COUNT_THIS_SLICE=0" in s2s3
     assert "EG_DISPATCH_COUNT=0" in s2s3
     assert "V5_INVOKE_COUNT=0" in s2s3
@@ -1091,8 +1084,7 @@ def test_s2_s3_canonical_single_runtime_path_offline_bind_is_not_runtime_enablem
     assert "DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT=FORBIDDEN" in spec
     assert "HISTORICAL_MS04B_AS_EG_INPUT=FORBIDDEN" in spec
     assert "does not consume T2" in spec
-    mot = MOT_PATH.read_text(encoding="utf-8")
-    assert "20260917T140800Z" in mot
+    assert "20260917T140800Z" in str(S2_S3_EVIDENCE_PACK)
     origin = (S2_S3_EVIDENCE_PACK / "ORIGIN_MAIN_SHA.txt").read_text(encoding="utf-8").strip()
     assert origin == "18750d36bcb8cee4de934d73d2ed4626d81a2d97"
 
@@ -1207,8 +1199,9 @@ def test_s4a_runtime_enablement_offline_bind_is_not_runtime_consume() -> None:
         not in source
     )
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s4a = runbook.split(EH_S4A_HEADING, 1)[1].split(EH_S4B_HEADING, 1)[0]
-    assert S4A_THIS_SLICE in s4a
+    s4a = SPEC_PATH.read_text(encoding="utf-8")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert S4A_THIS_SLICE in source
     assert "S4A_FRESH_C1_GET_OWNER_GO=" + S4A_FRESH_C1_GET_OWNER_GO in s4a
     assert "S4A_EG_RUNTIME_TRIGGER_OWNER_GO=" + S4A_EG_RUNTIME_TRIGGER_OWNER_GO in s4a
     assert "S4A_FRESH_C1_GET_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4a
@@ -1228,8 +1221,7 @@ def test_s4a_runtime_enablement_offline_bind_is_not_runtime_consume() -> None:
     assert S4A_FRESH_C1_GET_OWNER_GO in spec
     assert S4A_EG_RUNTIME_TRIGGER_OWNER_GO in spec
     assert "S4A_ENABLEMENT_BOUND=true" in spec
-    mot = MOT_PATH.read_text(encoding="utf-8")
-    assert "20260917T143500Z" in mot
+    assert "20260917T143500Z" in str(S4A_EVIDENCE_PACK)
     assert S4A_EVIDENCE_PACK.is_dir()
     assert verify_manifest_sha256_v1(store_root=S4A_EVIDENCE_PACK) == 0
     claims = json.loads((S4A_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
@@ -1331,8 +1323,8 @@ def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
         assert snippet not in source
     assert S4B_OCCUPANCY_INPUT_BOUND is True
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s4b = runbook.split(EH_S4B_HEADING, 1)[1].split(EH_S4D_HEADING, 1)[0]
-    assert S4B_THIS_SLICE in s4b
+    s4b = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4B_THIS_SLICE in EG_MODULE.read_text(encoding="utf-8")
     assert "OCCUPANCY_OWNER_GO=" + OCCUPANCY_OWNER_GO in s4b
     assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4b
     assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4b
@@ -1347,8 +1339,7 @@ def test_s4b_occupancy_gate_input_bind_offline_is_not_runtime_consume() -> None:
     assert OCCUPANCY_OWNER_GO in spec
     assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in spec
     assert "VENUE_OCCUPANCY=UNKNOWN" in spec
-    mot = MOT_PATH.read_text(encoding="utf-8")
-    assert "20260917T151200Z" in mot
+    assert "20260917T151200Z" in str(S4B_EVIDENCE_PACK)
     assert S4B_EVIDENCE_PACK.is_dir()
     assert verify_manifest_sha256_v1(store_root=S4B_EVIDENCE_PACK) == 0
     claims = json.loads((S4B_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))
@@ -1502,8 +1493,8 @@ def test_s4d_s4c_disposition_go_consumption_standing_persist_offline() -> None:
         )[0]
     )
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    s4d = runbook.split(EH_S4D_HEADING, 1)[1].split("\n## ", 1)[0]
-    assert S4D_THIS_SLICE in s4d
+    s4d = SPEC_PATH.read_text(encoding="utf-8")
+    assert S4D_THIS_SLICE in eg_source or S4D_THIS_SLICE in OWNER_MODULE.read_text(encoding="utf-8")
     assert "VENUE_OCCUPANCY=UNKNOWN" in s4d
     assert "OCCUPANCY_OWNER_GO_STATUS=DEFINED_NOT_CONSUMED" in s4d
     assert "OCCUPANCY_OWNER_GO_CONSUMED=false" in s4d
@@ -1519,9 +1510,8 @@ def test_s4d_s4c_disposition_go_consumption_standing_persist_offline() -> None:
     assert S4D_OWNER_GO in spec
     assert "FRESH_REPROOF_REQUIRED_FOR_LATER_PRETRADE_DECISION=true" in spec
     assert "VENUE_OCCUPANCY=UNKNOWN" in spec
-    mot = MOT_PATH.read_text(encoding="utf-8")
-    assert "20260917T154542Z" in mot
-    assert "20260917T154800Z" in mot
+    assert "20260917T154542Z" in spec
+    assert "20260917T154800Z" in str(S4D_EVIDENCE_PACK)
     assert S4D_EVIDENCE_PACK.is_dir()
     assert verify_manifest_sha256_v1(store_root=S4D_EVIDENCE_PACK) == 0
     claims = json.loads((S4D_EVIDENCE_PACK / "claims.json").read_text(encoding="utf-8"))

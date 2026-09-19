@@ -48,10 +48,6 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     SOURCE_BACKEND_CLASS,
     refuse_real_keychain_access_v1,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    DEFAULT_VAULT_RELATIVE,
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -255,20 +251,16 @@ def test_material_loaded_remains_false_and_true_unreachable() -> None:
         )
 
 
-def test_v5_does_not_import_or_join_adapter() -> None:
-    source = V5_HOST.read_text(encoding="utf-8")
-    assert "checkout_independent_credential_fail_closed_os_native_store_adapter_v1" not in source
-    assert "checkout_independent_credential_capability_v1" not in source
-    assert "checkout_independent_credential_concrete_backend_item_identity_v1" not in source
-    assert "checkout_independent_credential_source_backend_kind_v1" not in source
-    assert (
-        "checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1"
-        not in source
-    )
+def test_v5_host_absent_and_does_not_join_adapter() -> None:
+    assert not V5_HOST.is_file()
     assert V5_JOINED is False
     assert V5_USES_NEW_PROVIDER is False
-    path = default_vault_path_v1(repo_root=REPO_ROOT)
-    assert path == REPO_ROOT / ".ops_local" / DEFAULT_VAULT_RELATIVE
+    k1_cycle = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_governed_cycle_orchestrator_v1.py"
+    )
+    assert "default_vault_path_v1" not in k1_cycle.read_text(encoding="utf-8")
 
 
 def test_no_network_or_venue_imports() -> None:
@@ -322,21 +314,17 @@ def test_dx_dy_dz_semantics_remain() -> None:
     dx_source = DX_MODULE_PATH.read_text(encoding="utf-8")
     assert "provider.resolve_capability_v1" in dx_source or "resolve_fn(" in dx_source
     assert "PRODUCTIVE_BACKEND_ABSENT" in dx_source
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    ea = runbook.split("### 11.2.1.EA ", 1)[1].split("### 11.2.1.EB ", 1)[0]
+    ea_source = MODULE_PATH.read_text(encoding="utf-8")
     assert (
-        "11.2.1.EA.FULL_CORE_CHECKOUT_INDEPENDENT_FAIL_CLOSED_MACOS_KEYCHAIN_PROVIDER_ADAPTER" in ea
+        "11.2.1.EA.FULL_CORE_CHECKOUT_INDEPENDENT_FAIL_CLOSED_MACOS_KEYCHAIN_PROVIDER_ADAPTER"
+        in ea_source
     )
-    assert "OFFLINE_ADAPTER_IMPLEMENTED=true" in ea
-    assert "REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false" in ea
-    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED=false" in ea
-    assert "PRODUCTIVE_PROVIDER_ACTIVE=false" in ea
-    assert "V5_USES_NEW_PROVIDER=false" in ea
-    assert "REAL_BACKEND_ACCESS_NOT_IMPLEMENTED_AND_NOT_AUTHORIZED" in ea
-    assert "GO_CONSUMPTION_OPEN=true" in ea
-    dz = runbook.split("### 11.2.1.DZ ", 1)[1].split("### 11.2.1.EA ", 1)[0]
-    assert "CONCRETE_BACKEND_ITEM_IDENTITY_BOUND=true" in dz
-    assert "GO_CONSUMPTION_OPEN=true" in dz
+    assert "OFFLINE_ADAPTER_IMPLEMENTED = True" in ea_source
+    assert "REAL_KEYCHAIN_ACCESS_IMPLEMENTED = False" in ea_source
+    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED" in ea_source
+    assert "V5_USES_NEW_PROVIDER = False" in ea_source
+    dz_source = DZ_MODULE_PATH.read_text(encoding="utf-8")
+    assert "CONCRETE_BACKEND_ITEM_IDENTITY_BOUND = True" in dz_source
 
 
 def test_process_local_release_is_not_backend_deletion() -> None:

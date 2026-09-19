@@ -77,7 +77,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_CREATED,
     CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_CREATED,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     POST_NEXT_OWNER_GO,
 )
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
@@ -96,7 +96,7 @@ from tests.ops.test_full_core_current_productive_governed_cycle_orchestrator_v1 
 from tests.ops.test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     _seed_cursor,
 )
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     _candles,
 )
 
@@ -260,15 +260,14 @@ def test_created_flag_pins_and_docs() -> None:
         ]
         == REASON_OWNER_GO_MISMATCH
     )
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     source = OWNER_MODULE.read_text(encoding="utf-8")
     s5_source = S5_MODULE.read_text(encoding="utf-8")
-    assert EH_S6_HEADING in runbook
-    assert THIS_SLICE in runbook
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR" in mot
+    assert "EH.S6" in source
+    assert THIS_SLICE in source
+    assert "FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR" in spec
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1" in spec

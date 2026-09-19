@@ -43,10 +43,6 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     release_offline_ephemeral_capability_v1,
     use_offline_ephemeral_capability_v1,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    DEFAULT_VAULT_RELATIVE,
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -191,11 +187,13 @@ def test_productive_provider_and_v5_remain_unjoined() -> None:
     assert proof["PRODUCTIVE_BACKEND_JOINED"] == "false"
     assert proof["PRODUCTIVE_PROVIDER_ACTIVE"] == "false"
     assert proof["V5_JOINED"] == "false"
-    source = V5_HOST.read_text(encoding="utf-8")
-    assert "checkout_independent_credential_source_backend_kind_v1" not in source
-    assert "checkout_independent_credential_capability_v1" not in source
-    path = default_vault_path_v1(repo_root=REPO_ROOT)
-    assert path == REPO_ROOT / ".ops_local" / DEFAULT_VAULT_RELATIVE
+    assert not V5_HOST.is_file()
+    k1_cycle = (
+        REPO_ROOT
+        / "src/ops/full_core_live_path_composition_root_v1"
+        / "current_productive_governed_cycle_orchestrator_v1.py"
+    )
+    assert "default_vault_path_v1" not in k1_cycle.read_text(encoding="utf-8")
 
 
 def test_capability_still_cannot_mint_or_mutate_gates() -> None:
@@ -229,11 +227,6 @@ def test_module_has_no_keychain_or_network_imports() -> None:
         "Security.framework",
     ):
         assert forbidden not in source
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    assert "11.2.1.DY.FULL_CORE_CHECKOUT_INDEPENDENT_CREDENTIAL_SOURCE_BACKEND_KIND" in (runbook)
-    assert "PREVIOUS_V5_RUNTIME_GO_STATUS=DEFINED_NOT_CONSUMED" in runbook
-    assert "GO_CONSUMPTION_OPEN=true" in runbook
-    dy = runbook.split("### 11.2.1.DY ", 1)[1].split("### 11.2.1.DZ ", 1)[0]
-    assert "GO_CONSUMPTION_OPEN=true" in dy
-    assert "DEFINED_NOT_CONSUMED" in dy
-    assert "REAL_KEYCHAIN_ACCESSED=false" in dy
+    assert "CONCRETE_KEYCHAIN_SERVICE_BOUND = False" in source
+    assert REAL_KEYCHAIN_ACCESS_AUTHORIZED is False
+    assert V5_JOINED is False

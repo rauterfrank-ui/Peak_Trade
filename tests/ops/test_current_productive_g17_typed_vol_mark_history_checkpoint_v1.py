@@ -42,9 +42,6 @@ from trading.master_v2.canonical_volatility_runtime_mark_history_v1 import (
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     TypedRuntimeProducerOutcomeV1,
 )
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    V5_HOST,
-)
 from tests.trading.master_v2.test_canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     test_duplicate_noop_preserves_history_and_estimate_digests,
     test_gap_exceeds_pt1m_rejects_estimate,
@@ -54,6 +51,11 @@ from tests.trading.master_v2.test_canonical_volatility_typed_runtime_producer_sc
 )
 
 REPO = Path(__file__).resolve().parents[2]
+V5_HOST = (
+    REPO
+    / "src/ops/governed_productive_account_equity_authority_producer_v1"
+    / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
+)
 CHECKPOINT_SRC = (
     REPO
     / "src/ops/full_core_live_path_composition_root_v1"
@@ -125,9 +127,10 @@ def test_checkpoint_path_is_sibling_to_sidestate_cursor() -> None:
     assert CHECKPOINT_FILENAME != CURSOR_FILENAME
     assert CHECKPOINT_PER_RUN_DIRNAME != "cursor"
     assert CHECKPOINT_FILENAME.endswith(".json")
-    v5 = V5_HOST.read_text(encoding="utf-8")
-    assert "CURRENT_G17_CHECKPOINT_STORE_RELPATH" in v5
-    assert "CURRENT_CURSOR_STORE_RELPATH" in v5
+    assert not V5_HOST.is_file()
+    checkpoint_src = CHECKPOINT_SRC.read_text(encoding="utf-8")
+    assert "current_productive_g17_checkpoint_path_v1" in checkpoint_src
+    assert "assert_checkpoint_is_sibling_to_sidestate_cursor_v1" in checkpoint_src
     assert CHECKPOINT_FILENAME not in CURSOR_FILENAME
     cursor_src = (
         REPO
@@ -260,9 +263,10 @@ def test_extra_persist_root_mirrors_after_distinct(tmp_path: Path) -> None:
     )
 
 
-def test_v5_has_no_inline_ingest_missing_gate_or_cmc_bind() -> None:
-    host = V5_HOST.read_text(encoding="utf-8")
-    assert "ingest_finalized_pt1m_mark_sample_v1" not in host
+def test_v5_host_absent_and_checkpoint_has_no_inline_ingest_missing_gate_or_cmc_bind() -> None:
+    assert not V5_HOST.is_file()
+    host = CHECKPOINT_SRC.read_text(encoding="utf-8")
+    assert "ingest_finalized_pt1m_mark_sample_v1" in host
     assert 'missing.append("G17' not in host
     assert "bind_typed_canonical_volatility_estimate" not in host
     assert "apply_current_productive_g17_typed_vol_mark_history_checkpoint_v1" in host

@@ -9,23 +9,14 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Passive elementary C1 mark-to-mark direction identity
-  (WP ELEMENTARY_DIRECTION_PRIMITIVE_V1). Cycle evidence only.
-  Not Replay / Double Play / ScopeEvent / Entry consumption.
+  PR 6617 docs-drift-guard repair. V1-V5 execute hosts retired.
+  Occupancy classify/C1-gate extracted. EG default dispatch fail-closed.
+  K1_BIND unchanged. K2_TO_K1_REWIRE=false. EXTERNAL_EFFECT_AUTHORIZED=false.
   AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 changed_entities:
-- CONTRACT:elementary_direction_primitive_v1
-- NAVIGATION_INDEX:map_of_truth
-- REL:r_full_core_cycle_observes_elementary_direction
-- REL:s_elementary_direction_implements_primitive_contract
-- REL:s_map_navigates_elementary_direction_primitive
-- RUNTIME_COMPONENT:elementary_direction_v1
 - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []
-new_relations:
-- REL:r_full_core_cycle_observes_elementary_direction
-- REL:s_elementary_direction_implements_primitive_contract
-- REL:s_map_navigates_elementary_direction_primitive
+new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
@@ -33,10 +24,4 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-- id: CONTRACT:elementary_direction_primitive_v1
-- id: NAVIGATION_INDEX:map_of_truth
-- id: REL:r_full_core_cycle_observes_elementary_direction
-- id: REL:s_elementary_direction_implements_primitive_contract
-- id: REL:s_map_navigates_elementary_direction_primitive
-- id: RUNTIME_COMPONENT:elementary_direction_v1
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1

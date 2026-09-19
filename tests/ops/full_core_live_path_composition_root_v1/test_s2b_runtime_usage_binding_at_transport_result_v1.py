@@ -183,8 +183,7 @@ def test_binding_occurs_before_a1_a2_a3_on_transport_result_carrier() -> None:
     assert list(sig.parameters) == ["result"]
     annotation = sig.parameters["result"].annotation
     assert annotation in {FreshPretradeGetTransportResultV1, "FreshPretradeGetTransportResultV1"}
-    v5_src = _V5_SRC.read_text(encoding="utf-8")
-    assert 'return result.payload, ""' in v5_src or "return result.payload, ''" in v5_src
+    assert not _V5_SRC.is_file()
     transport_src = _TRANSPORT_SRC.read_text(encoding="utf-8")
     assert "self.payloads_by_path[path_only] = payload" in transport_src
 

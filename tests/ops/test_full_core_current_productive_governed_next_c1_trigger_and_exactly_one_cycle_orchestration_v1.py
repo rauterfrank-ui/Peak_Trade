@@ -10,10 +10,6 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
-    STATUS_NOT_CALLED_HOLD,
-    STATUS_PASS,
-)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     AUTONOMY_CAN_CHANGE_TRADING_LOGIC,
     AUTONOMY_CAN_MINT_PERMIT,
@@ -80,14 +76,12 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED,
-    CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5_CREATED,
     CURRENT_PRODUCTIVE_S4B_OCCUPANCY_GATE_INPUT_BIND_CREATED,
     CURRENT_PRODUCTIVE_S4D_S4C_DISPOSITION_GO_CONSUMPTION_STANDING_PERSIST_CREATED,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     OCCUPANCY_NEXT_OWNER_GO,
-    OWNER_GO as V5_OWNER_GO,
-    execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1,
+    V5_OWNER_GO,
 )
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     WRITER_LOCK_FILENAME as CAP23_WRITER_LOCK_FILENAME,
@@ -98,19 +92,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _handle,
 )
-from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
-    DISTINCTIVE_EQUITY,
-    _balance_payload,
-    _injected,
-)
-from tests.ops.test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1 import (
-    _eligible_transport,
-    _fresh_get_transport,
-)
-from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1 import (
-    _host_enter_cycle,
-)
-from tests.ops.test_full_core_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
+from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     TRACKED_CURSOR,
     _candles,
     _declared_checkout_sha,
@@ -227,10 +209,6 @@ def test_created_flag_pins_and_docs() -> None:
         CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_CREATED
         is True
     )
-    assert (
-        CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V5_CREATED
-        is True
-    )
     assert FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY == (
         "NEXT_C1_TRIGGER_AND_SINGLE_CYCLE_ORCHESTRATION_ONLY"
     )
@@ -248,9 +226,10 @@ def test_created_flag_pins_and_docs() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert EG_HEADING in runbook
-    assert THIS_SLICE in runbook
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER" in mot
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert EG_HEADING not in runbook
+    assert "11.2.1.EG.FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_" in source
+    assert "current_productive_governed_cycle_orchestrator_v1.py" in mot
     assert "docs_token:" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_"
@@ -492,19 +471,7 @@ def test_cursor_missing_no_dispatch(tmp_path: Path) -> None:
     assert calls == []
 
 
-def _v5_join_kwargs(tmp_path: Path, **extra: object) -> dict[str, object]:
-    kwargs: dict[str, object] = {
-        "incoming_cursor": None,
-        "cursor_store_root": tmp_path / "v5-empty-cursor",
-        "acquisition_transport": _eligible_transport(),
-        "fresh_get_transport": _fresh_get_transport(),
-        "producer_observed_at_unix": 1_700_000_100.0,
-    }
-    kwargs.update(extra)
-    return kwargs
-
-
-def test_hold_cycle_skips_29p_reaches_pre_external_effect(tmp_path: Path) -> None:
+def test_default_dispatch_is_fail_closed_non_k2_stub(tmp_path: Path) -> None:
     cursor_store = _seed_cursor(tmp_path)
     result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
         owner_go=RUNTIME_TRIGGER_OWNER_GO,
@@ -512,84 +479,43 @@ def test_hold_cycle_skips_29p_reaches_pre_external_effect(tmp_path: Path) -> Non
         observation=_observation(),
         cursor_store_root=cursor_store,
         lock_root=tmp_path / "lock",
-        evidence_root=tmp_path / "hold",
-        v5_kwargs=_v5_join_kwargs(tmp_path / "hold-v5"),
+        evidence_root=tmp_path / "retired-v5",
     )
     assert result.disposition == DISPOSITION_DISPATCHED
     assert result.dispatch_count == 1
     cycle = result.cycle_result
     assert cycle is not None
-    claims = json.loads((Path(cycle.store_root) / "claims.json").read_text(encoding="utf-8"))
-    assert claims["STEP_29P_GET_COUNT"] == "0"
-    assert claims["STEP_29P_JOIN_STATUS"] == STATUS_NOT_CALLED_HOLD
-    assert claims["LIVE_29P_GET_CONSUMED"] == "false"
-    assert claims["PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED"] == "true"
+    assert cycle.disposition == "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED"
     assert cycle.post_count == "0"
     assert cycle.permit_created == "false"
-    assert cycle.final_envelope_id == ""
     assert result.permit_created == "false"
     assert result.post_count == "0"
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert "live_credential_ephemeral_v1" not in source
+    assert "default_vault_path_v1" not in source
     _assert_post_guard()
 
 
-def test_enter_live_29p_guard_and_fail_closes_envelope(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    _, cycle_b, _path = _host_enter_cycle()
-    monkeypatch.setattr(
-        "src.ops.governed_productive_account_equity_authority_producer_v1."
-        "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5."
-        "run_current_productive_master_v2_runtime_cycle_v1",
-        lambda **_kwargs: cycle_b,
-    )
-    missing_cursor = _seed_cursor(tmp_path / "missing-cursor-root")
-    missing = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
+def test_eg_default_dispatch_does_not_join_v5_or_29p(tmp_path: Path) -> None:
+    result = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
         owner_go=RUNTIME_TRIGGER_OWNER_GO,
         origin_main_sha=_declared_checkout_sha(),
         observation=_observation(),
-        cursor_store_root=missing_cursor,
-        lock_root=tmp_path / "lock-missing",
-        evidence_root=tmp_path / "enter-missing",
-        v5_kwargs=_v5_join_kwargs(tmp_path / "enter-missing-v5"),
+        cursor_store_root=_seed_cursor(tmp_path),
+        lock_root=tmp_path / "lock",
+        evidence_root=tmp_path / "no-v5-29p",
     )
-    missing_cycle = missing.cycle_result
-    assert missing_cycle is not None
-    missing_claims = json.loads(
-        (Path(missing_cycle.store_root) / "claims.json").read_text(encoding="utf-8")
-    )
-    assert missing_claims["STEP_29P_JOIN_STATUS"] != STATUS_PASS
-    assert missing_claims["USED_OFFLINE_DEFAULT_EQUITY"] == "false"
-    assert missing_cycle.venue_plan_status == "DENY"
-    assert missing_cycle.envelope_readiness == "false"
-    assert missing_cycle.final_envelope_id == ""
-    assert missing_cycle.post_count == "0"
-    assert missing_cycle.permit_created == "false"
-
-    passed_cursor = _seed_cursor(tmp_path / "pass-cursor-root")
-    passed = trigger_current_productive_next_c1_and_exactly_one_cycle_v1(
-        owner_go=RUNTIME_TRIGGER_OWNER_GO,
-        origin_main_sha=_declared_checkout_sha(),
-        observation=_observation(),
-        cursor_store_root=passed_cursor,
-        lock_root=tmp_path / "lock-pass",
-        evidence_root=tmp_path / "enter-pass",
-        v5_kwargs=_v5_join_kwargs(
-            tmp_path / "enter-pass-v5",
-            enter_live_29p_injected=_injected(payload=_balance_payload()),
-        ),
-    )
-    passed_cycle = passed.cycle_result
-    assert passed_cycle is not None
-    pass_claims = json.loads(
-        (Path(passed_cycle.store_root) / "claims.json").read_text(encoding="utf-8")
-    )
-    assert pass_claims["STEP_29P_GET_COUNT"] == "1"
-    assert pass_claims["LIVE_29P_GET_CONSUMED"] == "true"
-    assert pass_claims["STEP_29P_JOIN_STATUS"] == STATUS_PASS
-    assert pass_claims["LIVE_29P_PRODUCER_OUTPUT_VALUE"] == DISTINCTIVE_EQUITY
-    assert pass_claims["USED_OFFLINE_DEFAULT_EQUITY"] == "false"
-    assert passed_cycle.post_count == "0"
-    assert passed_cycle.permit_created == "false"
+    cycle = result.cycle_result
+    assert cycle is not None
+    assert cycle.disposition == "FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED"
+    assert getattr(cycle, "store_root", None) is None
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert "observation_v5" not in source
+    assert "enter_live_29p" not in source
     _assert_post_guard()
 
 
@@ -711,30 +637,23 @@ def test_s4b_occupancy_input_seam_injects_without_get_or_v5_invoke(tmp_path: Pat
     assert "VENUE_OCCUPANCY=UNKNOWN" in spec
 
 
-def test_s4b_missing_occupancy_transport_remains_fail_closed(tmp_path: Path) -> None:
-    v5_host = (
-        REPO_ROOT
-        / "src/ops/governed_productive_account_equity_authority_producer_v1"
-        / "current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5.py"
+def test_s4b_missing_occupancy_does_not_invoke_retired_v5_host() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+        _classify_occupancy_v1,
     )
-    source = v5_host.read_text(encoding="utf-8")
-    assert 'occupancy_blocker = "FRESH_GET_TRANSPORT_MISSING"' in source
-    result = execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1(
-        owner_go=V5_OWNER_GO,
-        origin_main_sha=_declared_checkout_sha(),
-        evidence_root=tmp_path / "s4b-missing-occupancy",
-        execute_network=False,
-        acquisition_transport=_eligible_transport(),
-        c1_gate_payload=_candles(last_ts_ms=int(NEW_C1 * 1000)),
-        producer_observed_at_unix=1_700_000_100.0,
+
+    facts = _classify_occupancy_v1(
+        positions_payload=None,
+        pending_payload=None,
+        config_payload=None,
+        positions_error="",
+        pending_error="",
+        config_error="",
     )
-    assert result.condition_gate == "SATISFIED"
-    assert result.occupancy_status == "FRESH_GET_TRANSPORT_MISSING"
-    assert result.first_real_blocker == "FRESH_GET_TRANSPORT_MISSING"
-    assert result.post_count == "0"
-    assert result.permit_created == "false"
-    claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
-    assert claims["OCCUPANCY_STATUS"] == "FRESH_GET_TRANSPORT_MISSING"
-    assert claims["NEXT_OWNER_GO_REQUIRED"] == OCCUPANCY_NEXT_OWNER_GO
-    assert claims["NEXT_OWNER_GO_REQUIRED"] == OCCUPANCY_OWNER_GO
-    assert claims["VENUE_MUTATION_PERFORMED"] == "false"
+    assert facts["OCCUPANCY_STATUS"].startswith("POSITIONS_GET_FAIL_CLOSED")
+    source = OWNER_MODULE.read_text(encoding="utf-8")
+    assert (
+        "execute_current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v1"
+        not in source
+    )
+    assert OCCUPANCY_OWNER_GO == OCCUPANCY_NEXT_OWNER_GO

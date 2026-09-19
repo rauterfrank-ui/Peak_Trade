@@ -19,7 +19,8 @@ import dataclasses
 import inspect
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
+from urllib.parse import urlencode
 from unittest.mock import MagicMock
 
 import pytest
@@ -44,9 +45,6 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
     AUTHORIZED_HOST,
     FullCoreProductiveReadOnlyGetTransportV1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_one_runtime_cycle_after_new_finalized_1m_c1_observation_v5 import (
-    _transport_payload,
-)
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 _SRC_FRESH = (
@@ -65,6 +63,25 @@ _THIS_TEST = Path(__file__)
 _PUBLIC_CANDLES = "/api/v5/market/candles?instId=0G-USDT-SWAP&bar=1m"
 _FORENSIC_STAMP = DataSourceKind.REAL.value
 _TRUSTED_PAYLOAD: dict[str, Any] = {"code": "0", "data": [{"instId": "BTC-USDT-SWAP"}]}
+
+
+def _transport_payload(
+    transport: Any,
+    *,
+    path: str,
+    query: Mapping[str, str],
+    auth_required: bool,
+    native_id: str,
+) -> tuple[Any, str]:
+    endpoint = f"{path}?{urlencode(dict(query))}" if query else path
+    result = transport.get(
+        endpoint=endpoint,
+        auth_required=auth_required,
+        pretrade_decision_id=native_id,
+    )
+    if result.get_performed is not True or result.payload is None:
+        return None, str(result.error_class or "GET_NOT_PERFORMED")
+    return result.payload, ""
 
 
 def _field_names(cls: type) -> set[str]:
@@ -214,8 +231,7 @@ def test_a2_transport_payload_unwrap_is_stamp_lossy() -> None:
     assert payload == _TRUSTED_PAYLOAD
     assert not isinstance(payload, FreshPretradeGetTransportResultV1)
     assert getattr(payload, "data_safety_source_kind", None) is None
-    v5_src = _SRC_V5.read_text(encoding="utf-8")
-    assert 'return result.payload, ""' in v5_src or "return result.payload, ''" in v5_src
+    assert not _SRC_V5.is_file()
     assert "data_safety_source_kind" not in inspect.getsource(_transport_payload)
 
 
