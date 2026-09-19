@@ -55,6 +55,9 @@ from src.experiments.canonical_robustness_suite_v1 import (
     build_failure_records_for_failed_gates_v1,
     canonical_robustness_policy_v1,
 )
+from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
+    zero_authorized_productive_targets_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 SCHEMA_VERSION: Final[str] = "canonical_optimization_universe_experiment_plane_v1"
@@ -79,7 +82,7 @@ PLANE_STATUS_REJECTED_NO_CANDIDATE: Final[str] = "PLANE_REJECTED_NO_PROPOSED_CAN
 OPTIMIZATION_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 LEARNING_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 AUTHORIZED_PRODUCTIVE_SURFACES: Final[int] = 0
-ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = True
+ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = zero_authorized_productive_targets_v1()
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 PROPOSAL_NOT_AUTHORITY: Final[bool] = True
 NO_SELF_DEPLOY: Final[bool] = True

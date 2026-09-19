@@ -48,15 +48,15 @@ def test_registry_digest_is_deterministic() -> None:
     b = build_optimization_universe_capability_registry_v1()
     assert a["registry_digest"] == b["registry_digest"]
     assert a["registered_capability_count"] == 8
-    assert a["zero_authorized_productive_targets"] is True
-    assert tuple(a["authorized_productive_targets"]) == ()
+    assert a["zero_authorized_productive_targets"] is False
+    assert len(a["authorized_productive_targets"]) == 1
 
 
-def test_zero_authorized_productive_targets_in_foundation() -> None:
+def test_m9_productive_target_registered_in_foundation() -> None:
     result = validate_canonical_optimization_universe_v1()
-    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is True
-    assert result["zero_authorized_productive_targets"] is True
-    assert tuple(result["authorized_productive_targets"]) == ()
+    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is False
+    assert result["zero_authorized_productive_targets"] is False
+    assert len(result["authorized_productive_targets"]) == 1
     assert result["optimizable_envelope_defined"] is False
     assert result["optimizable_envelope_ref"] == "peak_trade.canonical_optimizable_envelope.v1"
 

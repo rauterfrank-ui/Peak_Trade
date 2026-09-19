@@ -1,0 +1,17 @@
+{
+  "artifact_class": "GOVERNED_PRODUCTIVE_CONFIGURATION_DECISION_V1",
+  "workpackage_id": "M10_PRODUCTIVE_PARAMETER_LINEAGE_CLOSURE_V1",
+  "slice": "B_GOVERNED_PRODUCTIVE_CONFIGURATION_V1",
+  "bound_origin_main_sha": "590256130cd9b2fa08fc6c115010686a48c3d4b8",
+  "normative_spec": "docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_NORMATIVE_V1.md",
+  "predecessor_edge": "AUTHORIZED_FOR_PRODUCTIVE_CONFIGURATION_BOUNDARY",
+  "successor_edge_not_in_scope": "AUTHORIZED_PRODUCTIVE_PARAMETER_SEAM_V1",
+  "configuration_owner_module": "src/governance/governed_productive_configuration_v1.py",
+  "value_authorization_scope": "OWNER_EXPLICIT_RECORD_BOUND_CANDIDATE_VALUE_DIGEST",
+  "global_threshold_value_ratified": false,
+  "configuration_implies_runtime_apply": false,
+  "configuration_implies_policy_mutation": false,
+  "configuration_implies_enforcement": false,
+  "optimization_can_materialize_configuration": false,
+  "external_effect_authorized": false
+}

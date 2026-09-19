@@ -46,12 +46,21 @@ Owner: `src/governance/optimization_proposal_governance_ingress_v1.py` (governan
 - Live/POST/Testnet
 - Economic gate full strategy evaluation (incompatible input domain)
 
+## Implemented successor edge (Slice A)
+
+```text
+ADMITTED_FOR_GOVERNANCE_REVIEW + explicit Owner authorization input
+  → explicit_productive_authorization_v1
+  → AUTHORIZED_FOR_PRODUCTIVE_CONFIGURATION_BOUNDARY | DENIED_FAIL_CLOSED
+```
+
+Normative: `docs/ops/specs/EXPLICIT_PRODUCTIVE_AUTHORIZATION_NORMATIVE_V1.md`
+
 ## Next missing edge (NOT implemented)
 
 ```text
-GOVERNANCE/RISK REVIEW ARTIFACT + EXPLICIT OWNER AUTHORIZATION
-  → EXPLICIT_PRODUCTIVE_AUTHORIZATION_V1
-  → (future) productive config ingest under separate governed WP
+EXPLICIT_PRODUCTIVE_AUTHORIZATION (AUTHORIZATION_ONLY)
+  → GOVERNED_PRODUCTIVE_CONFIGURATION_V1
 ```
 
 Required future binding (minimum):

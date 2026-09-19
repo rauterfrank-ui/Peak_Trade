@@ -57,6 +57,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_arithmetic_decimal | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_arithmetic_decimal | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_canonical_market_context | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_canonical_market_context | STATUS=OPEN (not proven) |  |
