@@ -8,6 +8,10 @@ from __future__ import annotations
 
 from typing import Final
 
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+    EVALUATION_RUNTIME_WIRING,
+)
+
 PACKAGE_ID: Final[str] = "peak_trade.learning.deterministic_decision_outcome_v0"
 WORKPACKAGE_ID: Final[str] = "WP_FA_07_OFFLINE_OWNER_BINDINGS_AND_DRIFT_CONTRACTS_V1"
 AUTHORITY_CLASS: Final[str] = "OFFLINE_OBSERVATION_ADAPTER_WITH_PRODUCTIVE_HOST_HOOK"
@@ -73,7 +77,6 @@ DRIFT_CAN_MUTATE_RISK: Final[bool] = False
 DRIFT_CAN_MUTATE_SAFETY: Final[bool] = False
 VALIDATOR_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 SHADOW_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
-EVALUATION_RUNTIME_WIRING: Final[bool] = False
 PRODUCTIVE_CAPTURE_ADAPTERS: Final[bool] = True
 PRODUCTIVE_RUNTIME_WIRING: Final[bool] = True
 AUTONOMY_SUPERVISOR_CODE_PRESENT: Final[bool] = True

@@ -5,7 +5,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.learning.deterministic_decision_outcome_v0.capture_v0 import BLOCKED_CAPTURE_SEAMS_V0
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    IMPLEMENTED_CAPTURE_SEAMS_V0,
+    SEAM_REAL_OUTCOME_HORIZON,
+)
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
     REAL_OUTCOME_HORIZON_ENGINE_WIRED,
 )
@@ -39,10 +42,14 @@ def test_machine_readable_decision_aligns_with_runtime_guards() -> None:
     )
     assert decision["reuse_options"]["A_direct_existing_producer_reuse"] == "REJECTED"
     guards = decision["capture_and_runtime_guards"]
-    assert guards["real_outcome_horizon_engine_wired"] is False
-    assert guards["capture_seam_unlock"] is False
-    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is False
-    assert guards["blocked_capture_seam_id"] in BLOCKED_CAPTURE_SEAMS_V0
+    assert guards["real_outcome_horizon_engine_wired"] is True
+    assert guards["capture_seam_unlock"] is True
+    assert guards["productive_host_join"] is True
+    assert guards["evaluation_runtime_wiring"] is True
+    assert guards["productive_evaluation_runtime_join"] is True
+    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is True
+    assert SEAM_REAL_OUTCOME_HORIZON in IMPLEMENTED_CAPTURE_SEAMS_V0
+    assert guards["blocked_capture_seam_id"] is None
 
 
 def test_fail_closed_and_dependency_preserved_in_decision() -> None:

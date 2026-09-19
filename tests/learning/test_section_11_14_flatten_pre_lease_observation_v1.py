@@ -74,9 +74,9 @@ def test_blocked_seams_remain_blocked_and_new_seam_is_explicit_pre_mutation() ->
     )
     assert "venue_execution" in BLOCKED_CAPTURE_SEAMS_V0
     assert "execution_permission_controller" in BLOCKED_CAPTURE_SEAMS_V0
-    assert "real_outcome_horizon_engine" in BLOCKED_CAPTURE_SEAMS_V0
-    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 21
-    assert len(BLOCKED_CAPTURE_SEAMS_V0) == 8
+    assert "real_outcome_horizon_engine" not in BLOCKED_CAPTURE_SEAMS_V0
+    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 22
+    assert len(BLOCKED_CAPTURE_SEAMS_V0) == 7
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
     assert SECOND_TRADING_AUTHORITY_CREATED is False
     assert SECOND_EXECUTION_AUTHORITY_CREATED is False

@@ -151,7 +151,7 @@ def test_wp_fa_05_authority_markers_remain_non_authorizing() -> None:
     assert ATTRIBUTION_ENGINE_PRESENT is True
     assert COUNTERFACTUAL_ENGINE_PRESENT is True
     assert REPLAY_ENGINE_PRESENT is True
-    assert EVALUATION_RUNTIME_WIRING is False
+    assert EVALUATION_RUNTIME_WIRING is True
     assert RUNTIME_EFFECT == "NONE"
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
     assert PROMOTION_AUTHORITY_ACTIVATION is False

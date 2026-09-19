@@ -274,8 +274,8 @@ def test_ic_02_one_authoritative_producer_per_domain() -> None:
     assert PRODUCTIVE_CAPTURE_ADAPTERS is True
     assert PRODUCTIVE_RUNTIME_WIRING is True
     assert LEARNING_PRODUCTIVE_AUTHORITY == "NONE"
-    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 21
-    assert len(BLOCKED_CAPTURE_SEAMS_V0) == 8
+    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 22
+    assert len(BLOCKED_CAPTURE_SEAMS_V0) == 7
     assert "independent_killswitch_layer" in BLOCKED_CAPTURE_SEAMS_V0
 
 
@@ -451,7 +451,7 @@ def _decorator_seam_ids(node: ast.AST) -> set[str]:
 
 def test_wp_fs_b1_all_implemented_seams_have_proven_host_decorator() -> None:
     assert HOST_DECORATOR_SPINE_COMPLETE_V0 is True
-    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 21
+    assert len(IMPLEMENTED_CAPTURE_SEAMS_V0) == 22
     bound = {item.seam_id: item for item in PROVEN_HOST_DECORATOR_BINDINGS_V0}
     assert set(bound) == set(IMPLEMENTED_CAPTURE_SEAMS_V0)
     for seam_id in IMPLEMENTED_CAPTURE_SEAMS_V0:

@@ -10,7 +10,10 @@ from typing import Any
 
 import pytest
 
-from src.learning.deterministic_decision_outcome_v0.capture_v0 import BLOCKED_CAPTURE_SEAMS_V0
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    IMPLEMENTED_CAPTURE_SEAMS_V0,
+    SEAM_REAL_OUTCOME_HORIZON,
+)
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
 )
@@ -151,9 +154,9 @@ def _identity(**overrides: Any) -> dict[str, Any]:
     return payload
 
 
-def test_capture_and_engine_wired_remain_blocked() -> None:
-    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is False
-    assert "real_outcome_horizon_engine" in BLOCKED_CAPTURE_SEAMS_V0
+def test_capture_unlock_and_engine_wired() -> None:
+    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is True
+    assert SEAM_REAL_OUTCOME_HORIZON in IMPLEMENTED_CAPTURE_SEAMS_V0
 
 
 def test_log_return_offline_e2e_real_claim() -> None:
