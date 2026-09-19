@@ -47,8 +47,8 @@ ENVELOPE_MODULE = REPO_ROOT / "src/experiments/canonical_optimizable_envelope_v1
 
 def test_m9_surface_in_two_surface_registry() -> None:
     registry = build_authorized_surface_registry_v1()
-    assert registry["authorized_surface_count"] == 2
-    assert registry["catalog_surface_count"] == 2
+    assert registry["authorized_surface_count"] == 3
+    assert registry["catalog_surface_count"] == 3
     assert SURFACE_ID in registry["authorized_surface_ids"]
 
 

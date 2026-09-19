@@ -105,6 +105,9 @@ def _ensure_authorized_surface_registry_v1() -> None:
     from src.experiments.canonical_f2_research_backtest_cost_grid_optimizable_surface_v1 import (
         apply_research_backtest_cost_grid_surface_registry_v1,
     )
+    from src.experiments.canonical_f5_fresh_futures_input_freshness_optimizable_surface_v1 import (
+        apply_f5_fresh_futures_input_freshness_surface_registry_v1,
+    )
     from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1 import (
         apply_volatility_numeric_max_age_surface_registry_v1,
     )
@@ -114,6 +117,9 @@ def _ensure_authorized_surface_registry_v1() -> None:
         catalog=_ENVELOPE_CATALOG_BY_SURFACE,
     )
     surface_ids |= apply_research_backtest_cost_grid_surface_registry_v1(
+        catalog=_ENVELOPE_CATALOG_BY_SURFACE,
+    )
+    surface_ids |= apply_f5_fresh_futures_input_freshness_surface_registry_v1(
         catalog=_ENVELOPE_CATALOG_BY_SURFACE,
     )
     _AUTHORIZED_SURFACE_IDS = frozenset(surface_ids)
