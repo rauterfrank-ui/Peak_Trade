@@ -450,6 +450,19 @@ clusters:
         master_v2_imports:
           []
         runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening
+    name: Naked MV2+Double Play core authority hardening v1
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/naked_mv2_double_play_core_authority_hardening_v1.py
+        primary_symbols:
+          - deny_independent_trading_decision_authority_v1
+          - assert_downstream_preserves_terminal_decision_outcome_v1
+          - assert_optimization_core_touch_surface_admitted_v1
+          - build_naked_mv2_double_play_core_authority_status_fields_v1
+        master_v2_imports:
+          - trading.master_v2.double_play_sole_authority_quarantine_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
   - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
     name: evaluate_double_play authority boundary (v0)
     module_role: double_play_quarantine
