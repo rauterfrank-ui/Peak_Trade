@@ -32,7 +32,7 @@ import json
 import re
 from dataclasses import dataclass, replace
 from decimal import Decimal
-from typing import Mapping, Optional, Tuple
+from typing import Any, Mapping, Optional, Tuple
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
     observe_after_producer_v0,
@@ -338,6 +338,8 @@ class IntegratedOfflineReplayInputV1:
     productive_typed_volatility_binding_eligibility: Optional[
         CanonicalMarketContextEligibilityV1
     ] = None
+    # Optional governed runtime transport: pre-bound authorized parameter seam only.
+    governed_authorized_productive_parameter_seam_record: Optional[Mapping[str, Any]] = None
     # Optional explicit path for EVIDENCE_ONLY regime/bull-bear/switch capture.
     # Never a trading state root; unused by decision evaluation.
     regime_bull_bear_switch_evidence_path: Optional[str] = None
@@ -542,6 +544,7 @@ def build_integrated_offline_replay_input_v1(
     productive_typed_volatility_binding_eligibility: Optional[
         CanonicalMarketContextEligibilityV1
     ] = None,
+    governed_authorized_productive_parameter_seam_record: Optional[Mapping[str, Any]] = None,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -829,6 +832,9 @@ def build_integrated_offline_replay_input_v1(
         ),
         productive_typed_volatility_binding_eligibility=(
             productive_typed_volatility_binding_eligibility
+        ),
+        governed_authorized_productive_parameter_seam_record=(
+            governed_authorized_productive_parameter_seam_record
         ),
     )
 
@@ -1452,10 +1458,18 @@ def run_integrated_offline_trading_logic_replay_v1(
             protection_authority_required_v1,
         )
 
+        from src.governance.governed_productive_runtime_parameter_seam_join_v1 import (
+            resolve_governed_runtime_seam_for_presence_gate_v1,
+        )
+
+        _seam_transport = resolve_governed_runtime_seam_for_presence_gate_v1(
+            inp.governed_authorized_productive_parameter_seam_record
+        )
         presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
             bound_context,
             binding_outcome=binding.eligibility.binding_outcome,
             eligibility=inp.productive_typed_volatility_binding_eligibility,
+            authorized_productive_parameter_seam=_seam_transport.seam_for_consumer,
         )
         # Eligibility result is consumed via presence_gate.eligibility (never discarded).
         _ = presence_gate.eligibility

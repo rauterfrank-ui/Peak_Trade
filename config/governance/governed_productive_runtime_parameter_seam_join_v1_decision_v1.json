@@ -1,0 +1,11 @@
+{
+  "artifact_class": "GOVERNED_PRODUCTIVE_RUNTIME_PARAMETER_SEAM_JOIN_DECISION_V1",
+  "workpackage_id": "POST_M6640_GOVERNED_PRODUCTIVE_RUNTIME_SEAM_JOIN_V1",
+  "bound_origin_main_sha": "5d701e1b5e18fb8d87ed282c35550a1e561c73f9",
+  "runtime_join_owner_module": "src/governance/governed_productive_runtime_parameter_seam_join_v1.py",
+  "productive_consumer_module": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+  "transport_implies_enforcement": false,
+  "transport_implies_trading_decision_authority": false,
+  "transport_implies_external_effect": false,
+  "optimization_direct_runtime_write": false
+}
