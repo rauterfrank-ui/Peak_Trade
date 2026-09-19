@@ -1,0 +1,67 @@
+{
+  "artifact_class": "DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_DECISION_V1",
+  "workpackage_id": "WP_DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1",
+  "bound_origin_main_sha": "5320a087f4c4d58a54b9710ac663bb9cd355bcea",
+  "owner_go_token": "OWNER_GO_WP_DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1",
+  "owner_adjudication_bound": true,
+  "predecessor_supplier_authority_decision": "config/governance/ddo_n_bars_bar_evidence_supplier_authority_decision_v1.json",
+  "normative_spec": "docs/ops/specs/DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1.md",
+  "bridge_contract_id": "peak_trade.learning.ddo.o4_n_bars_bar_evidence_bridge_v1",
+  "bridge_package": "src/learning/deterministic_decision_outcome_v0",
+  "bridge_contracts_path_future": "src/learning/deterministic_decision_outcome_v0/o4_n_bars_bar_evidence_bridge_contracts_v1.py",
+  "bridge_implementation_authorized": false,
+  "bridge_authority_role": "TRANSLATE_AND_BIND_EVIDENCE_ONLY",
+  "bridge_mints_evaluation_time_information_set_ref": false,
+  "bridge_mints_actual_outcome_ref": false,
+  "ddo_supplier_authority_owner": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+  "o4_authority_domain": "CAPABILITY_O4_CANONICAL_PUBLIC_MD_AND_OHLCV_TRANSPORT_RECONCILIATION_V1",
+  "o4_bar_producer_surface": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/canonical_bar_producer_v1.py",
+  "direct_o4_envelope_to_ddo_supplier_input": "FORBIDDEN",
+  "s1_information_set_ref_decision": {
+    "status": "CLOSED",
+    "minting_authority": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+    "artifact_schema_name": "ddo_n_bars_evaluation_time_information_set",
+    "artifact_schema_version": "ddo_n_bars_evaluation_time_information_set_v1",
+    "ref_prefix": "ddo.eval_info_set.",
+    "decision_time_ref_reuse": "FORBIDDEN",
+    "pit_boundary_field": "evaluation_boundary_time_utc"
+  },
+  "s2_measurement_evidence_decision": {
+    "status": "CLOSED",
+    "artifact_schema_name": "ddo_n_bars_outcome_measurement_evidence",
+    "artifact_schema_version": "ddo_n_bars_outcome_measurement_evidence_v1",
+    "outcome_scalar_kinds": ["LOG_RETURN", "ABS_RETURN", "HIT_TARGET"],
+    "allowed_price_basis_kinds": ["O4_BAR_CLOSE_FINALIZED", "O4_BAR_CLOSE_CORRECTED"],
+    "implicit_mid_last_mark_forbidden": true
+  },
+  "s3_bridge_package_decision": {
+    "status": "CLOSED",
+    "placement": "learning_ddo_package",
+    "parallel_bridge_authority_forbidden": true
+  },
+  "implementation_pipeline": [
+    "validate_o4_n_bars_bar_evidence_snapshot_v1",
+    "translate_o4_snapshot_to_ddo_n_bars_bindings_v1",
+    "materialize_real_outcome_horizon_supplier_input_v1",
+    "validate_real_outcome_horizon_supplier_input_v1",
+    "supply_n_bars_evaluation_observation_v1"
+  ],
+  "bridge_io_contracts": {
+    "input_schema_name": "o4_n_bars_bar_evidence_snapshot_v1",
+    "output_schema_name": "ddo_n_bars_bridge_translation_v1"
+  },
+  "owner_decision_required_remaining": [],
+  "fail_closed_rule": "MISSING_OR_UNPROVEN_EVIDENCE_IMPLIES_NO_REAL_CLAIM",
+  "dependency_order": {
+    "a_before_b": true
+  },
+  "capture_and_runtime_guards": {
+    "real_outcome_horizon_engine_wired": false,
+    "capture_seam_unlock": false,
+    "blocked_capture_seam_id": "real_outcome_horizon_engine",
+    "productive_host_join": false,
+    "external_effect_authorized": false
+  },
+  "earliest_remaining_blocker": "DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_AND_SUPPLIER_NOT_IMPLEMENTED",
+  "next_bounded_workpackage_candidate": "WP_DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_AND_SUPPLIER_IMPLEMENTATION_V1"
+}
