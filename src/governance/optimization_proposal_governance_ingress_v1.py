@@ -79,7 +79,7 @@ PRODUCTIVE_APPLY_AUTHORITY: Final[str] = "NONE"
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 OPTIMIZATION_CAN_WRITE_PRODUCTIVE_CONFIG: Final[bool] = False
 
-_REPO_ROOT = Path(__file__).resolve().parents[3]
+_REPO_ROOT = Path(__file__).resolve().parents[2]
 _LOGGER = logging.getLogger(__name__)
 
 _REQUIRED_INGRESS_KEYS: Final[frozenset[str]] = frozenset(

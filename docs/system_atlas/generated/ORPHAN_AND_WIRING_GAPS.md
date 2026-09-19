@@ -84,6 +84,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:operative_venue_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:operative_venue_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_evaluate_double_play | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_evaluate_double_play | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ops_failclosed_venue_cleanup_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:owner_disposition_removed_p53_p72_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:owner_disposition_removed_p53_p72_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_distinct_first_party_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p08_empty_data_not_zero_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p08_empty_data_not_zero_v1 | STATUS=OPEN (not proven) |  |

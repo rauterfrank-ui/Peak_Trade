@@ -29,7 +29,7 @@ M4_PLANE + M5_EVIDENCE
   → ADMITTED_FOR_GOVERNANCE_REVIEW | DENIED_FAIL_CLOSED
 ```
 
-Owner: `src/governance/promotion_loop/optimization_proposal_governance_ingress_v1.py`
+Owner: `src/governance/optimization_proposal_governance_ingress_v1.py` (governance ingress; reuses promotion_loop contracts)
 
 ## Reuse (no parallel authority)
 

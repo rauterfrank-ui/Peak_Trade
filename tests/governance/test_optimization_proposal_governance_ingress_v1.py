@@ -18,7 +18,7 @@ from src.experiments.canonical_optimization_universe_experiment_plane_v1 import 
 )
 from src.experiments.canonical_optimizable_envelope_v1 import SYNTHETIC_OFFLINE_SURFACE_ID
 from src.governance.promotion_loop.engine import apply_proposals_to_live_overrides
-from src.governance.promotion_loop.optimization_proposal_governance_ingress_v1 import (
+from src.governance.optimization_proposal_governance_ingress_v1 import (
     ADMISSION_ADMITTED,
     ADMISSION_DENIED,
     DISPOSITION_PROPOSAL_ONLY,
