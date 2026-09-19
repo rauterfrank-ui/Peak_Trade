@@ -8639,3 +8639,28 @@ entities:
       docs.registry is bound to docs/README.md. Not trading, live, order,
       strategy-selection, ranking, Master V2, or promotion authority.
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:portfolio_capital_reservation_budget_v1
+    kind: GATE
+    name: Portfolio capital reservation budget owner v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    fail_closed: true
+    source_paths:
+      - src/ops/portfolio_capital_reservation_budget_v1/__init__.py
+      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+    source_symbols:
+      - PortfolioCapitalReservationBudgetOwnerV1
+      - admit_sized_slot_reservation_v1
+    evidence_sources:
+      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+      - tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py
+    notes: >-
+      Shared in-memory capital budget upstream of capital_risk_sizing_v1.
+      Admits or denies a quantity. Does not rank, reselect, or create ENTER.
+      Does not replace the sizing owner. Does not enable N>1. Does not
+      authorize external effect, POST, or venue fill. Restart without a
+      fresh producer fact fails closed. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.

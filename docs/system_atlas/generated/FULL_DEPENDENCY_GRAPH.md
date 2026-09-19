@@ -258,6 +258,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1`
 - transitive_downstream: `(none)`
 
+### GATE:portfolio_capital_reservation_budget_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:mv2_capital_risk_sizing`
+- transitive_upstream: `RUNTIME_COMPONENT:mv2_capital_risk_sizing`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### GATE:treasury_phase_1_offline_contracts_v1
 
 - direct_upstream: `GATE:full_core_capital_admission_v1`
