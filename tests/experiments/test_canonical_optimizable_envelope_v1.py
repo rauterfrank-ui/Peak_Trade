@@ -81,8 +81,9 @@ def test_envelope_identity_is_deterministic() -> None:
 def test_authorized_surface_registry_includes_m9_and_f2_surfaces() -> None:
     registry = build_authorized_surface_registry_v1()
     assert registry["authorized_surface_count"] == 3
-    assert registry["zero_authorized_productive_targets"] is True
-    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is True
+    assert registry["zero_authorized_productive_targets"] is False
+    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is False
+    assert len(registry["authorized_productive_target_ids"]) == 1
 
 
 def test_unknown_surface_fail_closed() -> None:
@@ -243,7 +244,7 @@ def test_authorized_research_optimization_only_when_registry_and_owner_explicit(
     )
     assert result["resolution"] == RESOLUTION_AUTHORIZED_RESEARCH_OPTIMIZATION
     assert result["reason"] == STATUS_AUTHORIZED_RESEARCH_OPTIMIZATION
-    assert result["zero_authorized_productive_targets"] is True
+    assert result["zero_authorized_productive_targets"] is False
 
 
 def test_no_runtime_promotion_execution_or_forbidden_paths() -> None:

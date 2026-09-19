@@ -19,6 +19,10 @@ from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     CanonicalOptimizationUniverseLearningInputRequestV1,
     validate_canonical_optimization_universe_learning_input_v1,
 )
+from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
+    authorized_productive_target_ids_v1,
+    zero_authorized_productive_targets_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 SCHEMA_VERSION: Final[str] = "canonical_optimization_universe_v1"
@@ -51,7 +55,7 @@ OPTIMIZATION_CAN_TRIGGER_SEARCH: Final[bool] = False
 OPTIMIZABLE_ENVELOPE_CONTRACT_PRESENT: Final[bool] = True
 OPTIMIZABLE_ENVELOPE_DEFINED: Final[bool] = False
 OPTIMIZABLE_ENVELOPE_REF: Final[str] = "peak_trade.canonical_optimizable_envelope.v1"
-ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = True
+ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = zero_authorized_productive_targets_v1()
 UNIVERSE_MEMBERSHIP_IMPLIES_OPTIMIZATION_AUTHORIZATION: Final[bool] = False
 SELF_LEARNING_NOT_SELF_AUTHORIZING: Final[bool] = True
 PROMOTION_AUTHORITY: Final[str] = "NONE"
@@ -190,8 +194,8 @@ def build_optimization_universe_capability_registry_v1() -> MappingProxyType[str
             **registry_body,
             "registry_digest": registry_digest,
             "registered_capability_count": len(by_id),
-            "authorized_productive_targets": (),
-            "zero_authorized_productive_targets": True,
+            "authorized_productive_targets": tuple(sorted(authorized_productive_target_ids_v1())),
+            "zero_authorized_productive_targets": ZERO_AUTHORIZED_PRODUCTIVE_TARGETS,
         }
     )
 
@@ -358,7 +362,7 @@ def _foundation_payload(
         "capability_registry_version": CAPABILITY_REGISTRY_VERSION,
         "capability_registry_digest": registry["registry_digest"],
         "registered_capability_count": registry["registered_capability_count"],
-        "authorized_productive_targets": (),
+        "authorized_productive_targets": tuple(sorted(authorized_productive_target_ids_v1())),
         "zero_authorized_productive_targets": ZERO_AUTHORIZED_PRODUCTIVE_TARGETS,
         "universe_membership_implies_optimization_authorization": (
             UNIVERSE_MEMBERSHIP_IMPLIES_OPTIMIZATION_AUTHORIZATION

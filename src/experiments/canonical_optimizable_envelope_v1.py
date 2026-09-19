@@ -12,6 +12,10 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
+from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
+    authorized_productive_target_ids_v1,
+    zero_authorized_productive_targets_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import (
     compute_content_sha256,
     is_valid_sha256_hex,
@@ -61,7 +65,7 @@ REASON_SURFACE_NOT_IN_AUTHORIZED_REGISTRY: Final[str] = "SURFACE_NOT_IN_AUTHORIZ
 
 OPTIMIZATION_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 LEARNING_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
-ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = True
+ZERO_AUTHORIZED_PRODUCTIVE_TARGETS: Final[bool] = zero_authorized_productive_targets_v1()
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 PROPOSAL_NOT_AUTHORITY: Final[bool] = True
 NO_SELF_DEPLOY: Final[bool] = True
@@ -154,6 +158,9 @@ def build_authorized_surface_registry_v1() -> MappingProxyType[str, Any]:
             "authorized_surface_ids": tuple(sorted(_AUTHORIZED_SURFACE_IDS)),
             "authorized_surface_count": len(_AUTHORIZED_SURFACE_IDS),
             "zero_authorized_productive_targets": ZERO_AUTHORIZED_PRODUCTIVE_TARGETS,
+            "authorized_productive_target_ids": tuple(
+                sorted(authorized_productive_target_ids_v1())
+            ),
             "catalog_surface_count": len(_ENVELOPE_CATALOG_BY_SURFACE),
         }
     )

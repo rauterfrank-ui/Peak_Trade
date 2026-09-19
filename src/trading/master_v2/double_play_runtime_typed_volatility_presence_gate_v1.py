@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Optional, Tuple
+from typing import Any, Mapping, Optional, Tuple
 
 from trading.master_v2.canonical_market_context_v1 import (
     CanonicalMarketContextBindingOutcome,
@@ -167,6 +167,7 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
     eligibility: CanonicalMarketContextEligibilityV1 | None = None,
     reuse_status: VolatilityReuseStatusV1 = VolatilityReuseStatusV1.NOT_APPLICABLE,
     restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_APPLICABLE,
+    authorized_productive_parameter_seam: Mapping[str, Any] | None = None,
 ) -> DoublePlayTypedVolatilityPresenceGateResultV1:
     """Evaluate productive DP presence gate; reuse (never discard) eligibility."""
     typed_blocks = collect_typed_volatility_binding_block_reasons_v1(context)
@@ -221,15 +222,31 @@ def evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
             restart_status is VolatilityRestartStatusV1.RESTART_WITHOUT_ESTIMATE
         ),
     )
-    max_age_policy_evidence = evaluate_canonical_volatility_estimate_age_policy_v1(
-        estimate=context.canonical_volatility_estimate,
-        reference_market_event_time=context.market_event_time,
-        presence_status=presence_for_age,
-        reuse_status=reuse_status,
-        restart_status=restart_status,
-        clock_trust_status=context.clock_trust_status,
-        data_integrity_status=context.data_integrity_status,
-    )
+    if authorized_productive_parameter_seam is None:
+        max_age_policy_evidence = evaluate_canonical_volatility_estimate_age_policy_v1(
+            estimate=context.canonical_volatility_estimate,
+            reference_market_event_time=context.market_event_time,
+            presence_status=presence_for_age,
+            reuse_status=reuse_status,
+            restart_status=restart_status,
+            clock_trust_status=context.clock_trust_status,
+            data_integrity_status=context.data_integrity_status,
+        )
+    else:
+        from src.governance.authorized_productive_parameter_seam_v1 import (
+            evaluate_age_policy_at_consumer_boundary_v1,
+        )
+
+        max_age_policy_evidence = evaluate_age_policy_at_consumer_boundary_v1(
+            seam_record=authorized_productive_parameter_seam,
+            estimate=context.canonical_volatility_estimate,
+            reference_market_event_time=context.market_event_time,
+            presence_status=presence_for_age,
+            reuse_status=reuse_status,
+            restart_status=restart_status,
+            clock_trust_status=context.clock_trust_status,
+            data_integrity_status=context.data_integrity_status,
+        )
     # Presence Alpha authority is unchanged by age evidence (non-enforcing).
     assert max_age_policy_evidence.enforcement_applied is False
 

@@ -50,6 +50,7 @@ AGE_TIMESTAMP_FIELD = "CanonicalVolatilityEstimateV1.as_of_event_time"
 AGE_FORMULA = "reference_market_event_time_-_estimate.as_of_event_time"
 
 THRESHOLD_STATUS_UNRESOLVED = "UNRESOLVED_MAX_AGE"
+THRESHOLD_STATUS_RATIFIED_NUMERIC = "RATIFIED_NUMERIC_THRESHOLD"
 REMATERIALIZATION_FORBIDDEN = "FORBIDDEN"
 RESTART_AGE_POLICY = "UNDEFINED_FAIL_CLOSED_UNTIL_PRODUCED"
 RESTORE_POLICY = "HISTORY_ONLY_NO_ESTIMATE_NO_FRESH_MARK"
@@ -220,19 +221,34 @@ def validate_canonical_volatility_numeric_max_age_policy_contract_v1(
             raise CanonicalVolatilityMaxAgePolicyContractError(
                 "unresolved_threshold_forbids_enforcement"
             )
-    elif policy.enforcement_enabled and policy.numeric_max_age_seconds is None:
-        raise CanonicalVolatilityMaxAgePolicyContractError(
-            "enforcement_requires_ratified_numeric_threshold"
+    elif policy.threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC:
+        if policy.numeric_max_age_seconds is None:
+            raise CanonicalVolatilityMaxAgePolicyContractError(
+                "ratified_numeric_threshold_requires_numeric_max_age_seconds"
+            )
+        if policy.enforcement_enabled is not False:
+            raise CanonicalVolatilityMaxAgePolicyContractError(
+                "ratified_numeric_threshold_forbids_enforcement_in_this_capability"
+            )
+        from src.governance.m9_volatility_numeric_max_age_ratified_threshold_capability_v1 import (
+            validate_numeric_max_age_seconds_domain_v1,
         )
-    elif policy.enforcement_enabled:
-        # This capability never admits a ratified threshold path.
-        raise CanonicalVolatilityMaxAgePolicyContractError(
-            "enforcement_forbidden_while_numeric_max_age_undecided"
+
+        domain_ok, domain_reason = validate_numeric_max_age_seconds_domain_v1(
+            policy.numeric_max_age_seconds
         )
+        if not domain_ok:
+            raise CanonicalVolatilityMaxAgePolicyContractError(domain_reason)
+    else:
+        raise CanonicalVolatilityMaxAgePolicyContractError("threshold_status_unknown")
 
     if policy.enforcement_enabled is True and NUMERIC_MAX_AGE_DECIDED is False:
         raise CanonicalVolatilityMaxAgePolicyContractError(
             "enforcement_forbidden_while_numeric_max_age_undecided"
+        )
+    if policy.enforcement_enabled is True:
+        raise CanonicalVolatilityMaxAgePolicyContractError(
+            "enforcement_forbidden_in_non_enforcing_policy_capability"
         )
 
     return policy
@@ -744,8 +760,67 @@ def assert_capability_non_goals_v1() -> Mapping[str, Any]:
         "hard_stop": HARD_STOP,
         "next_after_this_capability": NEXT_AFTER_THIS_CAPABILITY,
         "package_marker": PACKAGE_MARKER,
-        "gaps_remaining": ("C1_G10_NUMERIC_MAX_AGE_THRESHOLD_VALUE",),
+        "gaps_remaining": (
+            "M10_EXPLICIT_PRODUCTIVE_AUTHORIZATION_V1",
+            "THRESHOLD_VALUE_OWNER_RATIFICATION",
+        ),
     }
+
+
+def build_ratified_numeric_threshold_policy_contract_v1(
+    *,
+    numeric_max_age_seconds: float,
+) -> CanonicalVolatilityNumericMaxAgePolicyContractV1:
+    """Build non-enforcing ratified numeric policy (requires explicit admission upstream)."""
+    policy = CanonicalVolatilityNumericMaxAgePolicyContractV1(
+        policy_name=POLICY_NAME,
+        policy_version=POLICY_VERSION,
+        reference_clock=AGE_REFERENCE_CLOCK,
+        reference_field=AGE_REFERENCE_FIELD,
+        estimate_timestamp_field=AGE_TIMESTAMP_FIELD,
+        age_formula=AGE_FORMULA,
+        threshold_status=THRESHOLD_STATUS_RATIFIED_NUMERIC,
+        numeric_max_age_seconds=float(numeric_max_age_seconds),
+        enforcement_enabled=False,
+        rematerialization_policy=REMATERIALIZATION_FORBIDDEN,
+        duplicate_reuse_refreshes=False,
+        no_sample_reuse_refreshes=False,
+        restart_age_policy=RESTART_AGE_POLICY,
+        restore_policy=RESTORE_POLICY,
+    )
+    return validate_canonical_volatility_numeric_max_age_policy_contract_v1(policy)
+
+
+def resolve_canonical_volatility_max_age_policy_for_evaluation_v1(
+    admission: Any | None = None,
+) -> CanonicalVolatilityNumericMaxAgePolicyContractV1:
+    """Fail-closed policy resolution for age evaluation (hot path uses default None)."""
+    from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
+        ProductiveNumericMaxAgePolicyAdmissionV1,
+        validate_policy_admission_request_v1,
+    )
+    from src.governance.m9_volatility_numeric_max_age_ratified_threshold_capability_v1 import (
+        ThresholdValueAuthorizationStatusV1,
+        materialize_ratified_numeric_max_age_threshold_value_v1,
+    )
+
+    if admission is None:
+        return build_ratified_unresolved_max_age_policy_contract_v1()
+    if not isinstance(admission, ProductiveNumericMaxAgePolicyAdmissionV1):
+        return build_ratified_unresolved_max_age_policy_contract_v1()
+    admission_ok, reasons = validate_policy_admission_request_v1(admission)
+    if not admission_ok:
+        return build_ratified_unresolved_max_age_policy_contract_v1()
+    if "GOVERNANCE_REVIEW_ADMISSION_NOT_PRODUCTIVE_AUTHORIZATION" in reasons:
+        return build_ratified_unresolved_max_age_policy_contract_v1()
+    threshold_value = materialize_ratified_numeric_max_age_threshold_value_v1(
+        numeric_max_age_seconds=float(admission.threshold_numeric_max_age_seconds or 0.0),
+        authorization_status=ThresholdValueAuthorizationStatusV1.AUTHORIZED,
+        authorization_digest=admission.threshold_value_authorization_digest,
+    )
+    return build_ratified_numeric_threshold_policy_contract_v1(
+        numeric_max_age_seconds=threshold_value.numeric_max_age_seconds,
+    )
 
 
 __all__ = [
@@ -767,6 +842,7 @@ __all__ = [
     "POLICY_OWNER",
     "POLICY_VERSION",
     "PRESENCE_GATE_OWNER",
+    "THRESHOLD_STATUS_RATIFIED_NUMERIC",
     "THRESHOLD_STATUS_UNRESOLVED",
     "VolatilityMaxAgeDecisionV1",
     "VolatilityMaxAgeReasonCodeV1",
@@ -776,7 +852,9 @@ __all__ = [
     "VolatilityReuseStatusV1",
     "assert_architecture_guards_v1",
     "assert_capability_non_goals_v1",
+    "build_ratified_numeric_threshold_policy_contract_v1",
     "build_ratified_unresolved_max_age_policy_contract_v1",
+    "resolve_canonical_volatility_max_age_policy_for_evaluation_v1",
     "derive_presence_status_for_age_policy_v1",
     "derive_reuse_and_restart_status_for_age_policy_v1",
     "evaluate_canonical_volatility_estimate_age_policy_v1",

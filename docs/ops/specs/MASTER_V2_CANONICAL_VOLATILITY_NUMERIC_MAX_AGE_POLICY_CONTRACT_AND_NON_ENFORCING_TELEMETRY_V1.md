@@ -134,6 +134,14 @@ threshold the productive diagnostic reason is
 4. Volatility Age unresolved
 5. Fresh &#47; Stale only after a separate ratified threshold capability
 
+## M9 productive target admission seam (non-enforcing)
+
+Ratified numeric threshold **semantic** capability (no default value, no enforcement):
+
+- `src/governance/m9_volatility_numeric_max_age_ratified_threshold_capability_v1.py`
+- `resolve_canonical_volatility_max_age_policy_for_evaluation_v1` fail-closed; CURRENT hot path unchanged without explicit admission
+- Optimization ingress / governance review admission **do not** authorize policy mutation
+
 DataIntegrity and ClockTrust remain primary CMC authorities. Age evidence is
 secondary &#47; diagnostic only.
 

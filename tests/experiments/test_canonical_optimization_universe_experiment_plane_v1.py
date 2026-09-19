@@ -128,7 +128,7 @@ def test_offline_plane_chain_complete(tmp_path: Path) -> None:
     assert first["status"] == PLANE_STATUS_COMPLETE
     assert first["plane_identity"] == second["plane_identity"]
     assert first["authorized_productive_surfaces"] == 0
-    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is True
+    assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is False
     chain = first["chain"]
     assert chain is not None
     assert chain["offline_research_context"]["envelope_not_productive_authorization"] is True
