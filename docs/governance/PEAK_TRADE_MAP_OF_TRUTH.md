@@ -93,6 +93,8 @@ in the Master Runbook and the named packages.
 | Cap 7.2 host activation binding implementation | `src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py` |
 | Occupied-lane N=5 Full-Autonomy runtime completion | `src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/` |
 | `send_capable_adapter_v1` | `src/ops/governed_productive_account_equity_authority_producer_v1/` and Full-Core composition root |
+| K1 governed-cycle credential bind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py` |
+| K1 macOS Keychain backend kind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py` |
 | Exactly-one governed cycle | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
 | `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |

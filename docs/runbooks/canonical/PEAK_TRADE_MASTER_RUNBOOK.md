@@ -6,7 +6,7 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-BOUND_ORIGIN_MAIN_SHA=916cf8f7cca6315c1b2060effd9bf3b80b8d41f9
+BOUND_ORIGIN_MAIN_SHA=1c164e906771287d978ba3bd49e7c58f85e5da88
 STALE_IF_HEAD_DIFFERS=true
 ```
 
@@ -391,6 +391,26 @@ REAL_VENUE_POST_ALLOWED=false
 POST_ALLOWED=false
 ```
 
+Checkout-independent K1 credential seam (existing; not a trading-decision owner):
+
+```text
+CREDENTIAL_SEAM=CURRENT_PRODUCTIVE_GOVERNED_CYCLE_K1_CREDENTIAL_BIND_SEAM_V1
+SOURCE_BACKEND_CLASS=OS_NATIVE_SECRET_STORE
+PRODUCTIVE_TARGET_BACKEND=MACOS_KEYCHAIN
+REAL_KEYCHAIN_ACCESS_AUTHORIZED=false
+REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false
+CREDENTIAL_RESOLVE=FAIL_CLOSED
+CREDENTIAL_MATERIAL_LOADED=false
+K1_IS_TRADING_DECISION_OWNER=false
+```
+
+The governed cycle binds
+`checkout_independent_credential_governed_cycle_occupancy_bind_v1` after
+exactly-one cycle dispatch and before occupancy classify. Backend kind is
+`checkout_independent_credential_source_backend_kind_v1`. Resolve stays
+fail-closed while Keychain access is unauthorized. This document does not
+authorize Keychain access, credential load, signing, GET, permit mint, or POST.
+
 Permit mint, envelope-bound single-use send, and venue POST require their
 own scoped Owner-GO and CURRENT gate satisfaction. This runbook consumes
 none of those authorizations.
@@ -483,7 +503,7 @@ TREASURY_IS_TRADING_DECISION_OWNER=false
 Bound baseline for this SSOT revision:
 
 ```text
-BOUND_ORIGIN_MAIN_SHA=916cf8f7cca6315c1b2060effd9bf3b80b8d41f9
+BOUND_ORIGIN_MAIN_SHA=1c164e906771287d978ba3bd49e7c58f85e5da88
 ```
 
 Every later mutation task must revalidate actual `origin/main`.
