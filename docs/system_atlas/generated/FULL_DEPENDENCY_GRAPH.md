@@ -295,8 +295,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 ### HOST:wallclock_decision_economics_cycle
 
-- direct_upstream: `RUNTIME_COMPONENT:ddo_capture_v0`
-- transitive_upstream: `RUNTIME_COMPONENT:ddo_capture_v0`
+- direct_upstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -361,6 +361,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_upstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:dp_entry_exit_policy`
 - transitive_upstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:dp_entry_exit_policy`
 - direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
+### RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `HOST:wallclock_decision_economics_cycle`
 - transitive_downstream: `(none)`
 
 ### RUNTIME_COMPONENT:dp_composition
