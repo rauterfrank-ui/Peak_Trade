@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,11 +41,6 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `PHASE:ddo_offline_foundation` |
-| `RUNTIME_COMPONENT:ddo_capture_v0` |
-| `RUNTIME_COMPONENT:ddo_ledger_v0` |
-| `HOST:wallclock_decision_economics_cycle` |
-| `TERM:ddo_non_semantic_capture` |
-| `TERM:ddo_offline_evaluation_engine` |
 
 ## CHANGED_RELATIONS
 
@@ -97,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6629 DDO N_BARS productive capture and evaluation runtime terminus (post-#6628). REAL_OUTCOME_HORIZON_ENGINE_WIRED=true and EVALUATION_RUNTIME_WIRING=true with single bridge joins each. NO_N_BARS_TO_PROMOTION_BINDING. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- Post-#6629 governance JSON strict-parse repair (pending PR). Three DDO N_BARS decision records are strict JSON (json.loads); bridge/supplier blocker metadata aligned to ratified NO_N_BARS_TO_PROMOTION_BINDING adjudication. No productive authority change. N_BARS chain terminus unchanged at evaluation runtime. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
