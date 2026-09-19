@@ -28,12 +28,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.authenticated_produ
     construct_okx_signing_input_v1,
     signing_input_digest_v1,
 )
-from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.hmac_signed_network_session_bind_v1 import (
-    BIND_ATTR,
-)
 
 SEAM_CORRELATION_ID = "ddo.corr.s1114.prelease"
 EVENT_TYPE = "flatten_pre_lease_send_intent_observed"
+BIND_ATTR = "_hmac_signed_network_session_bind_v1"
 
 
 def _flag(value: Any) -> str:

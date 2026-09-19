@@ -92,13 +92,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     LiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    release_live_canary_ephemeral_material_v1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-    inspect_credential_material_presence_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = "OWNER_GO_FULL_CORE_OPTION_D_GATE_A_INDEPENDENTLY_ATTESTED_PRODUCTIVE_NONZERO_LIABILITY_STOCK_V1"
 EXPECTED_ORIGIN_MAIN_SHA = "6ee0df2c645b66afa9c9e6b45482d276c241d42a"
@@ -421,9 +419,11 @@ def execute_gate_a_independently_attested_productive_nonzero_liability_stock_v1(
     resolved_vault: Path | None = None
     if productive:
         resolved_vault = (
-            Path(vault_file) if vault_file is not None else default_vault_path_v1(repo_root=repo)
+            Path(vault_file)
+            if vault_file is not None
+            else _fail_closed_credential_unavailable_v1(repo_root=repo)
         )
-        presence = inspect_credential_material_presence_v1(vault_file=resolved_vault)
+        presence = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
         if presence.get("VALUES_INCLUDED") is not False:
             raise GateAIndependentlyAttestedProductiveNonzeroLiabilityStockError(
                 "SECRET_VALUES_MUST_NOT_BE_INCLUDED"
@@ -460,7 +460,7 @@ def execute_gate_a_independently_attested_productive_nonzero_liability_stock_v1(
             ) from exc
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     http_status_int = int(capture["http_status"])
     if http_status_int != 200:
         raise GateAIndependentlyAttestedProductiveNonzeroLiabilityStockError(

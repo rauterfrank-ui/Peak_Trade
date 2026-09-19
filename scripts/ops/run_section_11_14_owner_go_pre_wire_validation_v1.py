@@ -9,6 +9,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    assert_no_plaintext_in_payload_v1,
+)
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
@@ -75,9 +78,6 @@ def main() -> int:
         verify_manifest_v1,
         write_json_v1,
         write_manifest_v1,
-    )
-    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-        assert_no_plaintext_in_payload_v1,
     )
     from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.capture_wiring_v1 import (
         capture_readiness_v1,

@@ -83,11 +83,6 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.pro
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.safety_preflight_v1 import (
     evaluate_safety_preflight_v1,
 )
-from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
-    VaultBackendPortV1,
-    release_ephemeral_material_v1,
-    resolve_and_load_secretref_ephemeral_v1,
-)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.testnet_authorization_v1 import (
     authorize_testnet_runtime_v1,
 )
@@ -98,6 +93,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.tes
 from src.ops.section_11_12_8_okx_eea_demo_xperp_campaign_private_write_gate_v1.gate_v1 import (
     evaluate_ephemeral_campaign_private_write_gate_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class ActualStartConsumerError(RuntimeError):
@@ -214,7 +213,7 @@ def execute_productive_section_11_12_8_campaign_run_v1(
     force_kill_switch: bool = False,
     live_endpoint_configured: bool = False,
     runtime_mode: str = "TESTNET",
-    vault_backend: VaultBackendPortV1 | None = None,
+    vault_backend: Any | None = None,
     http_client: Any | None = None,
     http_client_factory: Any | None = None,
     allow_wire_send: bool = False,
@@ -310,7 +309,7 @@ def execute_productive_section_11_12_8_campaign_run_v1(
         confirm_latched=True,
     )
 
-    credential = resolve_and_load_secretref_ephemeral_v1(
+    credential = _fail_closed_credential_unavailable_v1(
         secret_reference=secret_reference,
         stub_material=stub_credential_material,
         allow_real_vault=False,
@@ -480,7 +479,7 @@ def execute_productive_section_11_12_8_campaign_run_v1(
     closeout = evaluate_section_11_12_8_closeout_v1(
         stubbed_acceptance=True, real_productive_evidence=False
     )
-    release_ephemeral_material_v1(credential)
+    _fail_closed_credential_unavailable_v1(credential)
 
     ok = all(
         [
@@ -531,7 +530,7 @@ def _execute_productive_real_network_v1(
     force_kill_switch: bool,
     live_endpoint_configured: bool,
     runtime_mode: str,
-    vault_backend: VaultBackendPortV1 | None,
+    vault_backend: Any | None,
     http_client: Any | None,
     http_client_factory: Any | None,
     allow_wire_send: bool,
@@ -611,7 +610,7 @@ def _execute_productive_real_network_v1(
         confirm_latched=True,
     )
 
-    credential = resolve_and_load_secretref_ephemeral_v1(
+    credential = _fail_closed_credential_unavailable_v1(
         secret_reference=secret_reference,
         allow_real_vault=True,
         vault_backend=vault_backend,
@@ -841,7 +840,7 @@ def _execute_productive_real_network_v1(
         evidence_seal_ok=True,
         long_running_bound_reached=bool(lifecycle.bound_reached_reason) and lifecycle.completed,
     )
-    release_ephemeral_material_v1(credential)
+    _fail_closed_credential_unavailable_v1(credential)
 
     ok = all(
         [

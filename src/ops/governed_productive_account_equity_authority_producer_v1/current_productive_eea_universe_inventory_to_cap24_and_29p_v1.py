@@ -135,15 +135,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_REST_HOST,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     CAPABILITY_ID as CAP23_ID,
     SELECTION_FILENAME,
@@ -161,6 +152,11 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     SELECTION_AUTHORITY_OWNER,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = "CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_TO_FIRST_REAL_BLOCKER_V1"
 PIN_OWNER_GO = (
@@ -583,16 +579,16 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             resolved_vault = (
                 Path(str(vault_file))
                 if vault_file is not None and str(vault_file).strip()
-                else default_vault_path_v1(repo_root=_REPO_ROOT)
+                else _fail_closed_credential_unavailable_v1(repo_root=_REPO_ROOT)
             )
             try:
-                backend = build_file_secretref_vault_backend_v1(vault_file=resolved_vault)
-                handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+                backend = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
+                handle = _fail_closed_credential_unavailable_v1(
                     secret_reference=REQUIRED_SECRETREF_URI,
                     vault_backend=backend,
                     credential_class=REQUIRED_CREDENTIAL_CLASS,
                 )
-            except LiveCanaryCredentialError:
+            except RuntimeError:
                 return _persist_terminal_v1(
                     store=store,
                     acquisition=acquisition_result,
@@ -662,7 +658,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             )
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
 
     package_finished = _utc_now_iso_v1()
     uid_config = _extract_uid(config_payload if isinstance(config_payload, dict) else None)

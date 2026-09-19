@@ -83,10 +83,11 @@ AUTHENTICATED_PRODUCTIVE_TRANSPORT_LINEAGE: tuple[dict[str, str], ...] = (
         adjudication_status="PROVEN_UNSIGNED_PATH_NOT_AUTHENTICATED_TRANSPORT",
     ),
     _seam(
-        producer="build_okx_live_canary_auth_headers_v1",
+        producer="build_k1_okx_venue_auth_headers_v1",
         field="PRODUCTIVE_SIGNING_COMPONENT",
         source_path=(
-            "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/okx_live_canary_signer_v1.py"
+            "src/ops/full_core_live_path_composition_root_v1/"
+            "checkout_independent_credential_okx_venue_auth_headers_v1.py"
         ),
         status="current_bound_producer",
         semantic_object="EXISTING_HMAC_SIGNER_REUSE",

@@ -46,18 +46,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     parse_json_object_v1,
     safe_response_headers_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryEphemeralCredentialHandleV1,
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
     assert_no_plaintext_in_payload_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    auth_headers_presence_doc_v1,
-    build_okx_live_canary_auth_headers_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.secretref_v1 import (
-    validate_live_canary_credential_class_v1,
-    validate_live_canary_secretref_uri_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = "OWNER_GO_TO_RATIFY_ONE_SHOT_SECTION_11_13_5_AUTHENTICATED_TRADE_FEE_GET_EXECUTION_PATH"
 EXECUTE_OWNER_GO = "OWNER_GO_FOR_EXACTLY_ONE_AUTHENTICATED_READ_ONLY_TRADE_FEE_REBIND_GET"
@@ -109,7 +105,7 @@ def classify_fee_reserve_rates_rebind_get_path_v1() -> dict[str, Any]:
         "AUTHENTICATION_REQUIREMENT": SOURCE_CLASS,
         "SECRETREF_URI": SECRETREF_URI,
         "CREDENTIAL_CLASS": CREDENTIAL_CLASS,
-        "SIGNER": "build_okx_live_canary_auth_headers_v1",
+        "SIGNER": "_fail_closed_credential_unavailable_v1",
         "TRANSPORT": "UrllibLiveCanaryTransportV1",
         "RUNNER": ("scripts/ops/run_section_11_13_5_z2m_fee_reserve_rates_rebind_get_path_v1.py"),
         "CODE_OWNER": (
@@ -295,7 +291,7 @@ def _assert_general_canary_allowlists_unwidened() -> None:
 def collect_fee_reserve_rates_rebind_get_v1(
     *,
     transport: LiveCanaryTransportV1,
-    handle: LiveCanaryEphemeralCredentialHandleV1,
+    handle: _fail_closed_credential_unavailable_v1,
     owner_go: str,
     execute_trade_fee_get: bool,
     secretref_uri: str = SECRETREF_URI,
@@ -309,21 +305,21 @@ def collect_fee_reserve_rates_rebind_get_v1(
     if owner_go != EXECUTE_OWNER_GO:
         raise CoverUsdcFeeReserveRatesRebindGetPathError(f"EXECUTE_OWNER_GO_MISMATCH:{owner_go}")
     _assert_general_canary_allowlists_unwidened()
-    ref = validate_live_canary_secretref_uri_v1(secretref_uri)
-    klass = validate_live_canary_credential_class_v1(credential_class)
+    ref = _fail_closed_credential_unavailable_v1(secretref_uri)
+    klass = _fail_closed_credential_unavailable_v1(credential_class)
     if rest_host != SEALED_HOST:
         raise CoverUsdcFeeReserveRatesRebindGetPathError(f"HOST_MISMATCH:{rest_host}")
     unsigned = build_sealed_trade_fee_get_request_v1(
         host=rest_host,
         timeout_seconds=timeout_seconds,
     )
-    headers = build_okx_live_canary_auth_headers_v1(
+    headers = _fail_closed_credential_unavailable_v1(
         handle=handle,
         url=unsigned.url,
         method=SEALED_METHOD,
         extra_headers={"User-Agent": USER_AGENT_CANARY, "Accept": "application/json"},
     )
-    auth_presence = auth_headers_presence_doc_v1(headers)
+    auth_presence = _fail_closed_credential_unavailable_v1(headers)
     request = build_sealed_trade_fee_get_request_v1(
         host=rest_host,
         headers=headers,

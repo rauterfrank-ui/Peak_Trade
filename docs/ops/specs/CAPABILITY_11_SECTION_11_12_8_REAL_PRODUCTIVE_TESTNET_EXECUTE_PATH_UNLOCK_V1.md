@@ -76,7 +76,6 @@ OWNER_GO_EXECUTE
 | Surface | Owner |
 | --- | --- |
 | Unlock package | `ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1` |
-| Real execute entrypoint | `scripts&#47;ops&#47;run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py` |
 | Predecessor start package | `ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1` |
 
 ## Pre-merge boundary

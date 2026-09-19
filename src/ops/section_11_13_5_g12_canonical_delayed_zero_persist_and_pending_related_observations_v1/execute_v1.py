@@ -75,14 +75,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     parse_json_object_v1,
     safe_response_headers_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     default_local_monotonic_ms_v1,
 )
@@ -95,6 +87,10 @@ from src.ops.section_11_13_5_p08_position_observation_v1.execute_v1 import (
 from src.ops.section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1.execute_v1 import (
     sanitize_okx_message_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 def _utc_now_iso_v1() -> str:
@@ -201,7 +197,7 @@ def _issue_signed_get_v1(
     try:
         if productive:
             url = f"{REUSED_REST_BASE}{endpoint}"
-            auth_headers = build_okx_live_canary_auth_headers_v1(
+            auth_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=url, method="GET"
             )
             auth_headers["User-Agent"] = REUSED_USER_AGENT
@@ -393,8 +389,8 @@ def run_g12_canonical_delayed_zero_persist_and_observations_v1(
     productive = transport is None
     if productive:
         vault = vault_file or (Path(repo_root) / ".ops_local" / DEFAULT_VAULT_RELATIVE)
-        backend = build_file_secretref_vault_backend_v1(vault_file=Path(vault))
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        backend = _fail_closed_credential_unavailable_v1(vault_file=Path(vault))
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=REUSED_SECRETREF_URI,
             vault_backend=backend,
             credential_class=REUSED_CREDENTIAL_CLASS,
@@ -444,7 +440,7 @@ def run_g12_canonical_delayed_zero_persist_and_observations_v1(
             raise G12CanonicalDelayedZeroPersistError("RELATED_TIMESTAMP_NOT_AFTER_DELAYED_ZERO")
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     if pending_record is None or related_record is None:
         raise G12CanonicalDelayedZeroPersistError("P7_P9_INCOMPLETE")
     if int(client.counters.get_request_count) != 2:

@@ -110,7 +110,6 @@ PRODUCTIVE_LIFECYCLE_IS_SINGLE_SUBMIT_THEN_COMPLETE
 
 | Surface | Semantic state | Productive long-running? |
 | --- | --- | --- |
-| `scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py` | PRODUCTIVE | No — dispatches one-shot lifecycle |
 | `unlock_orchestrator_v1.execute_unlocked_productive_path_v1` | PRODUCTIVE | No |
 | `productive_consumer_v1._execute_productive_real_network_v1` | PRODUCTIVE | No — calls one-shot executor |
 | `campaign_executor_v1.run_campaign_lifecycle_v1` | PRODUCTIVE / MISWIRED_AS_CAMPAIGN | **Prevents** long-running: single submit → `completed=True` |
@@ -131,7 +130,6 @@ Directed graph of the **merged productive** path on `origin/main`:
 
 ```text
 OWNER_GO EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
- → scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py::main
  → unlock_orchestrator_v1.execute_unlocked_productive_path_v1
  → productive_consumer_v1.execute_productive_section_11_12_8_campaign_run_v1(mode=PRODUCTIVE_REAL_NETWORK)
  → _execute_productive_real_network_v1
@@ -156,7 +154,6 @@ OWNER_GO EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW
 | Node | File | Symbol / key | Semantic state | Long-running support | Required change |
 | --- | --- | --- | --- | --- | --- |
 | OWNER_GO | Master Runbook §11.12.8 + entrypoint argv | `EXECUTE_PRODUCTIVE_TESTNET_CAMPAIGN_NOW` | PRODUCTIVE auth token | Permits execute; does not define duration | Add SSOT numeric duration (+ optional cycle) bound |
-| Command/consumer entry | `scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py` | `main` | PRODUCTIVE | No campaign-duration CLI/config | Wire long-running executor; bind duration from SSOT |
 | Unlock orchestrator | `...&#47;unlock_orchestrator_v1.py` | `execute_unlocked_productive_path_v1` | PRODUCTIVE | Still one-shot | Dispatch long-running lifecycle; keep unlock reuse |
 | Authorization | `...&#47;owner_go_consumer_v1.py` | `consume_actual_start_owner_go_v1` | PRODUCTIVE | One-time GO consume OK | Preserve; campaign must not re-consume GO per cycle |
 | Enabled/Armed | `...&#47;productive_consumer_v1.py` + `durable_state_v1.py` | `STATE_ENABLED` / `STATE_ARMED` | PRODUCTIVE | Ephemeral once | Persist across cycles; re-check each cycle |
@@ -915,8 +912,7 @@ TEST_REQUIRED=positive + negative closeout tests
 
 ```text
 CATEGORY=COMMAND_CONSUMER / WIRING
-FILE=scripts/ops/run_section_11_12_8_real_productive_testnet_execute_operator_entrypoint_v1.py
- + unlock_orchestrator_v1.py
+FILE=unlock_orchestrator_v1.py
 SYMBOL=main / execute_unlocked_productive_path_v1
 CURRENT_BEHAVIOR=PRODUCTIVE_TESTNET_CAMPAIGN_STARTED forced false; one-shot
 REQUIRED_BEHAVIOR=long-running path; truthful campaign started flags for runtime evidence (package constants may remain historical—runtime evidence must be truthful)

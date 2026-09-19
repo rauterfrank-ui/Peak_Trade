@@ -61,14 +61,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     PRE_SEND_EVIDENCE_KIND,
     PositionObservationFreshnessEvidenceV1,
@@ -116,6 +108,10 @@ from src.ops.section_11_13_5_productive_flatten_post_and_reconciliation_v1.contr
     assert_no_retry_v1,
     assert_standing_live_flags_remain_false_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class ProductiveFlattenPostExecuteError(RuntimeError):
@@ -252,7 +248,7 @@ def _signed_get_v1(
         if hmac_required:
             if handle is None:
                 raise ProductiveFlattenPostExecuteError("CREDENTIAL_HANDLE_REQUIRED")
-            auth_headers = build_okx_live_canary_auth_headers_v1(
+            auth_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=url, method="GET"
             )
             auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -408,8 +404,8 @@ def execute_productive_flatten_post_and_reconciliation_v1(
 
     try:
         if productive:
-            backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+            handle = _fail_closed_credential_unavailable_v1(
                 secret_reference=REUSED_SECRETREF_URI,
                 vault_backend=backend,
                 credential_class=REUSED_CREDENTIAL_CLASS,
@@ -578,7 +574,7 @@ def execute_productive_flatten_post_and_reconciliation_v1(
                         credential_handle = handle
 
                         def _sign_approved_body(receipt: Any) -> dict[str, str]:
-                            headers = build_okx_live_canary_auth_headers_v1(
+                            headers = _fail_closed_credential_unavailable_v1(
                                 handle=credential_handle,
                                 url=str(receipt.approved_url),
                                 method="POST",
@@ -651,7 +647,7 @@ def execute_productive_flatten_post_and_reconciliation_v1(
         fail_closed_reason = str(exc)
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
             handle = None
 
     recon_attempted = False
@@ -661,8 +657,8 @@ def execute_productive_flatten_post_and_reconciliation_v1(
         recon_handle = None
         try:
             if productive:
-                backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-                recon_handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+                backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+                recon_handle = _fail_closed_credential_unavailable_v1(
                     secret_reference=REUSED_SECRETREF_URI,
                     vault_backend=backend,
                     credential_class=REUSED_CREDENTIAL_CLASS,
@@ -690,7 +686,7 @@ def execute_productive_flatten_post_and_reconciliation_v1(
             )
         finally:
             if recon_handle is not None:
-                release_live_canary_ephemeral_material_v1(recon_handle)
+                _fail_closed_credential_unavailable_v1(recon_handle)
 
         post_pos = observations.get("GET_ACCOUNT_POSITIONS_POST") or {}
         post_pending = observations.get("GET_ORDERS_PENDING_POST") or {}
@@ -886,8 +882,8 @@ def recovery_read_only_reobservation_v1(
     )
     handle = None
     if productive:
-        backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=REUSED_SECRETREF_URI,
             vault_backend=backend,
             credential_class=REUSED_CREDENTIAL_CLASS,
@@ -917,7 +913,7 @@ def recovery_read_only_reobservation_v1(
         )
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     counters = client.counters.to_dict()
     if int(counters.get("WRITE_REQUEST_COUNT", 0) or 0) != 0:
         raise ProductiveFlattenPostExecuteError("GET_CLIENT_WRITE_DETECTED")

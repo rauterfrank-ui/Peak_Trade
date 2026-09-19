@@ -49,11 +49,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     account_leverage_info_query_path_v1,
     acquire_fresh_leverage_observation_from_payload_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     LiveCanaryMaxAvailableObservationError,
     account_max_size_query_path_v1,
@@ -61,9 +56,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_obser
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_size_observation_v1 import (
     acquire_fresh_max_size_observation_from_payload_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
@@ -116,6 +108,10 @@ from src.ops.section_11_13_5_z2dp_post_z2do_fresh_create_readiness_evidence_v1.r
     query_parameters_v1,
     sanitize_account_config_row_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class Z2DPCreateReadinessGetError(RuntimeError):
@@ -299,7 +295,7 @@ def execute_fresh_create_readiness_evidence_v1(
         redirect_followed = False
         try:
             if signed and handle is not None:
-                headers = build_okx_live_canary_auth_headers_v1(
+                headers = _fail_closed_credential_unavailable_v1(
                     handle=handle, url=url, method="GET"
                 )
                 headers["User-Agent"] = USER_AGENT_CANARY
@@ -352,8 +348,8 @@ def execute_fresh_create_readiness_evidence_v1(
 
     try:
         if productive:
-            backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+            handle = _fail_closed_credential_unavailable_v1(
                 secret_reference=REUSED_SECRETREF_URI,
                 vault_backend=backend,
                 credential_class=REUSED_CREDENTIAL_CLASS,
@@ -653,7 +649,7 @@ def execute_fresh_create_readiness_evidence_v1(
         def _algo_header_factory(url: str) -> dict[str, str]:
             if handle is None:
                 return {"User-Agent": USER_AGENT_CANARY}
-            headers = build_okx_live_canary_auth_headers_v1(handle=handle, url=url, method="GET")
+            headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url, method="GET")
             headers["User-Agent"] = USER_AGENT_CANARY
             return headers
 
@@ -707,7 +703,7 @@ def execute_fresh_create_readiness_evidence_v1(
             parsed_surfaces["PENDING_ALGO_PARSE_ERROR"] = str(exc)[:200]
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
 
     for method in FORBIDDEN_HTTP_METHODS:
         if method in list(client.counters.methods_used):

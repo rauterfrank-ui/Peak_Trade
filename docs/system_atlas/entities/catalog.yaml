@@ -3817,49 +3817,6 @@ entities:
       generation. No GET. No POST. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
-  - id: PHASE:section_11_14_hmac_generation
-    kind: PHASE
-    name: 11.14.HMAC_GENERATION
-    epistemic_class: FORENSIC_RAW
-    current_canonical: false
-    current_status: CURRENT_NONCANONICAL
-    source_paths:
-      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/hmac_generation_v1.py
-      - tests/ops/test_section_11_14_hmac_generation_v1.py
-    evidence_sources:
-      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-      - docs/ops/specs/SECTION_11_14_HMAC_GENERATION_V1.md
-      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-      - tests/ops/test_section_11_14_hmac_generation_v1.py
-      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
-    notes: >-
-      §11.14 HMAC_GENERATION typed request-identity-bound HMAC/header
-      artifact. Reuses build_okx_live_canary_auth_headers_v1. Requires
-      attached receipt and wire-send verify/accept. No consume. No GET.
-      No POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: PHASE:section_11_14_productive_network_session_not_authorized
-    kind: PHASE
-    name: 11.14.PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED
-    epistemic_class: FORENSIC_RAW
-    current_canonical: false
-    current_status: CURRENT_NONCANONICAL
-    source_paths:
-      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/hmac_signed_network_session_bind_v1.py
-      - tests/ops/test_section_11_14_hmac_signed_network_session_bind_v1.py
-    evidence_sources:
-      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-      - docs/ops/specs/SECTION_11_14_PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED_V1.md
-      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-      - tests/ops/test_section_11_14_hmac_signed_network_session_bind_v1.py
-      - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
-    notes: >-
-      §11.14 PRODUCTIVE_NETWORK_SESSION_NOT_AUTHORIZED HMAC-signed
-      Owner network-session bind. Reuses
-      authorize_network_session_instance_v1. Host eea.okx.com. No
-      consume. No GET. No POST. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
   - id: PHASE:section_11_14_pre_lease_ddo_observation
     kind: PHASE
     name: 11.14.PRE_LEASE_DDO_OBSERVATION
@@ -3871,13 +3828,11 @@ entities:
       - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py
       - src/learning/deterministic_decision_outcome_v0/section_11_14_flatten_pre_lease_observation_v1.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-      - tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py
       - tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/SECTION_11_14_PRE_LEASE_DDO_OBSERVATION_V1.md
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
-      - tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py
       - tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py
       - tests/ops/test_section_11_14_live_order_and_economic_evidence_ladder_persist_v1.py
     notes: >-
@@ -4722,7 +4677,6 @@ entities:
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/reachability_graphs_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/reachability_private_get_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/runtime_gate_classification_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/credential_presence_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_gets_v1.py
       - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_adjudication_v1.py
@@ -6640,6 +6594,8 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_canonical_okx_post_body_serialize_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
@@ -6819,6 +6775,15 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/path_v1.py
       - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
       - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+      - src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1
+      - src/ops/section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1
+      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1
+      - src/ops/section_11_13_2_live_private_read_only_v1
+      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1
+      - src/ops/section_11_13_4_live_dry_run_order_plan_v1
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1
+      - src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1
+      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1
     source_symbols:
       - compose_core_live_execution_intent_v1
       - run_full_core_live_path_offline_v1

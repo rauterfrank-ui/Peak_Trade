@@ -22,13 +22,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
     account_leverage_info_query_path_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    assert_no_plaintext_in_payload_v1,
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_available_observation_v1 import (
     account_max_size_query_path_v1,
     acquire_fresh_max_available_observation_from_payload_v1,
@@ -103,6 +96,13 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
     POST_ALLOWED,
     SECTION_11_14_RUNTIME_EXECUTION_AUTHORIZED,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    assert_no_plaintext_in_payload_v1,
+)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class FlattenGetOnlyPreflightError(RuntimeError):
@@ -619,8 +619,8 @@ def execute_flatten_get_only_preflight_v1(
 ) -> dict[str, Any]:
     handle = None
     try:
-        vault = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        vault = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=secret_reference,
             vault_backend=vault,
         )
@@ -635,8 +635,8 @@ def execute_flatten_get_only_preflight_v1(
             header_provider=header_provider,
             persist_root=persist_root,
         )
-    except LiveCanaryCredentialError as exc:
+    except RuntimeError as extra:
         raise FlattenGetOnlyPreflightError(f"CREDENTIAL_RESOLVE_FAILED:{exc}") from exc
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)

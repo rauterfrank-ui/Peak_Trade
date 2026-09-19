@@ -90,19 +90,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
-    REQUIRED_CREDENTIAL_CLASS,
-    REQUIRED_SECRETREF_URI,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
@@ -271,11 +258,11 @@ def execute_current_productive_exact_object_disposition_to_one_shot_flatten_post
             resolved_vault = (
                 Path(str(vault_file))
                 if vault_file is not None and str(vault_file).strip()
-                else default_vault_path_v1(repo_root=root)
+                else _fail_closed_credential_unavailable_v1(repo_root=root)
             )
             try:
-                backend = build_file_secretref_vault_backend_v1(vault_file=resolved_vault)
-                handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+                backend = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
+                handle = _fail_closed_credential_unavailable_v1(
                     secret_reference=REQUIRED_SECRETREF_URI,
                     vault_backend=backend,
                     credential_class=REQUIRED_CREDENTIAL_CLASS,
@@ -283,7 +270,7 @@ def execute_current_productive_exact_object_disposition_to_one_shot_flatten_post
                 transport = FullCoreProductiveReadOnlyGetTransportV1(
                     handle=handle, max_request_count=8
                 )
-            except LiveCanaryCredentialError:
+            except RuntimeError:
                 get_status = "CREDENTIAL_HANDLE_FAIL_CLOSED"
                 first_blocker = get_status
         if transport is not None and not first_blocker:
@@ -460,7 +447,7 @@ def execute_current_productive_exact_object_disposition_to_one_shot_flatten_post
             first_blocker = get_status
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
 
     send_handle = FullCoreSendCredentialHandleV1(
         handle_id="full-core-dl-flatten-readiness-handle", bound=True

@@ -41,15 +41,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observatio
     account_leverage_info_query_path_v1,
     acquire_fresh_leverage_observation_from_payload_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    assert_no_plaintext_in_payload_v1,
-    borrow_live_canary_ephemeral_material_for_session_auth_v1,
-    build_file_secretref_vault_backend_v1,
-    parse_okx_live_canary_material_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.margin_mode_observation_v1 import (
     POSITION_MGN_MODE_STATUS_NOT_OBSERVED,
     acquire_fresh_margin_mode_observation_from_payload_v1,
@@ -145,6 +136,13 @@ from src.ops.section_11_14_live_handoff_standing_fee_slippage_and_exact_executio
     OfflineExactOrderPlanError,
     build_offline_exact_order_plan_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    assert_no_plaintext_in_payload_v1,
+)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class GetOnlyPretradeError(RuntimeError):
@@ -223,8 +221,8 @@ def build_get_only_auth_headers_v1(
     material: str | None = None
     creds: dict[str, str] | None = None
     try:
-        material = borrow_live_canary_ephemeral_material_for_session_auth_v1(handle)
-        creds = parse_okx_live_canary_material_v1(material)
+        material = _fail_closed_credential_unavailable_v1(handle)
+        creds = _fail_closed_credential_unavailable_v1(material)
         timestamp = assert_okx_access_timestamp_iso_ms_v1(format_okx_access_timestamp_iso_ms_v1())
         parsed = urlparse(url)
         request_path = parsed.path or ""
@@ -1691,8 +1689,8 @@ def execute_current_origin_main_bound_get_only_pretrade_v1(
     """Productive GET-only execute. No Owner-GO. No POST."""
     handle = None
     try:
-        vault = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        vault = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=secret_reference,
             vault_backend=vault,
         )
@@ -1707,8 +1705,8 @@ def execute_current_origin_main_bound_get_only_pretrade_v1(
             header_provider=header_provider,
             persist_root=persist_root,
         )
-    except LiveCanaryCredentialError as exc:
+    except RuntimeError as extra:
         raise GetOnlyPretradeError(f"CREDENTIAL_RESOLVE_FAILED:{exc}") from exc
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)

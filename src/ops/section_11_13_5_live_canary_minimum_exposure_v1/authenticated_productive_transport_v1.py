@@ -13,6 +13,11 @@ from dataclasses import dataclass, field
 from typing import Any, Iterable, Mapping, Sequence
 from urllib.parse import urlparse
 
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    FullCoreK1BoundVenueAuthHandleV1,
+    FullCoreK1OkxVenueAuthError,
+    build_k1_okx_venue_auth_headers_v1,
+)
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1 import (
     assert_okx_access_timestamp_iso_ms_v1,
     sign_okx_request_v1,
@@ -27,21 +32,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     LiveCanaryHttpResponseV1,
     sanitize_redirect_location_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryEphemeralCredentialHandleV1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.no_additional_owner_decision_required_v1 import (
     PASS_OFFLINE_CONTRACT,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    LiveCanarySignerError,
-    build_okx_live_canary_auth_headers_v1,
 )
 
 APT_IMPLEMENTATION_OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_AUTHENTICATED_PRODUCTIVE_TRANSPORT_MAXIMUM_SAFE_LEVERAGE_V1"
 )
-PRODUCTIVE_SIGNING_COMPONENT = "build_okx_live_canary_auth_headers_v1"
+PRODUCTIVE_SIGNING_COMPONENT = "build_k1_okx_venue_auth_headers_v1"
 TRANSPORT_CLASS_AUTHENTICATED_PRODUCTIVE_FLATTEN_GATED = "AUTHENTICATED_PRODUCTIVE_FLATTEN_GATED"
 TRANSPORT_CLASS_AUTHENTICATED_PRODUCTIVE_FLATTEN_RECORDING = (
     "AUTHENTICATED_PRODUCTIVE_FLATTEN_RECORDING"
@@ -251,27 +249,27 @@ def assert_authenticated_productive_headers_v1(headers: Mapping[str, str] | None
 
 def attach_authenticated_headers_via_existing_signer_v1(
     *,
-    handle: LiveCanaryEphemeralCredentialHandleV1 | None,
+    handle: FullCoreK1BoundVenueAuthHandleV1 | None,
     url: str,
     method: str,
     body: str = "",
     extra_headers: Mapping[str, str] | None = None,
 ) -> dict[str, str]:
-    """Reuse build_okx_live_canary_auth_headers_v1. Missing handle fails closed."""
+    """Reuse the CURRENT K1 venue-auth header builder. Missing handle fails closed."""
     if handle is None:
         raise AuthenticatedProductiveTransportError("AUTH_HANDLE_MISSING")
-    if not isinstance(handle, LiveCanaryEphemeralCredentialHandleV1):
+    if not isinstance(handle, FullCoreK1BoundVenueAuthHandleV1):
         raise AuthenticatedProductiveTransportError("AUTH_HANDLE_TYPE_MISMATCH")
     try:
-        headers = build_okx_live_canary_auth_headers_v1(
+        headers = build_k1_okx_venue_auth_headers_v1(
             handle=handle,
             url=url,
             method=method,
             body=body,
             extra_headers=extra_headers,
         )
-    except LiveCanarySignerError as exc:
-        raise AuthenticatedProductiveTransportError(str(exc)) from exc
+    except FullCoreK1OkxVenueAuthError as extra:
+        raise AuthenticatedProductiveTransportError(str(extra)) from extra
     return assert_authenticated_productive_headers_v1(headers)
 
 

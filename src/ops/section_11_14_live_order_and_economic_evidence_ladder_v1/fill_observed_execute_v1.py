@@ -12,9 +12,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.fill_observed_adjudication_v1 import (
     adjudicate_live_fill_observed_v1,
 )
@@ -33,6 +30,11 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.fill_obser
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.persist_v1 import (
     assert_no_secrets_in_payload_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 EVIDENCE_DIRNAME = "section_11_14_live_order_and_economic_evidence_ladder_v1"
 
@@ -57,7 +59,7 @@ def execute_live_fill_observed_v1(
     productive = transport is None
     resolved_vault = vault_file
     if productive and resolved_vault is None:
-        resolved_vault = default_vault_path_v1(repo_root=Path(repo_root))
+        resolved_vault = _fail_closed_credential_unavailable_v1(repo_root=Path(repo_root))
     started = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     pack_run_id = str(run_id or _utc_now_compact_v1())
     gets = execute_fill_observed_gets_v1(

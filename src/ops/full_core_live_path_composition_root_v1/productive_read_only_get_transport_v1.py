@@ -1,7 +1,7 @@
 """Full-Core productive READ-ONLY GET transport for Fresh Pretrade.
 
 GET only. No POST. Does not construct LiveExecutionPort. Does not import
-canary instrument authority. Signer reuse is transport plumbing only.
+canary instrument authority. Auth headers use the K1 venue-auth contract.
 """
 
 from __future__ import annotations
@@ -15,6 +15,9 @@ from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
 
 from src.data.safety import DataSourceKind
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    build_k1_okx_venue_auth_headers_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     METHOD_GET,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
@@ -22,9 +25,6 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     parse_json_object_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
 )
 
 AUTHORIZED_HOST = "eea.okx.com"
@@ -92,7 +92,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         if auth_required:
             if self._handle is None:
                 raise FullCoreProductiveReadOnlyGetError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
-            headers = build_okx_live_canary_auth_headers_v1(
+            headers = build_k1_okx_venue_auth_headers_v1(
                 handle=self._handle, url=url, method=METHOD_GET
             )
             headers["User-Agent"] = USER_AGENT

@@ -28,6 +28,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.max_size_observatio
     utc_now_iso_v1,
 )
 
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
+
 POS_MODE_ENDPOINT_PATH = ENDPOINT_ACCOUNT_CONFIG
 POS_MODE_OUTPUT_DOMAIN = "ACCOUNT_POS_MODE"
 POS_MODE_COMPARISON_DOMAIN = "ACCOUNT_POS_MODE"
@@ -394,14 +399,6 @@ def persist_authorized_fresh_pos_mode_observation_v1(
         UrllibLiveCanaryTransportV1,
         parse_json_object_v1,
     )
-    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-        build_file_secretref_vault_backend_v1,
-        release_live_canary_ephemeral_material_v1,
-        resolve_and_load_live_canary_secretref_ephemeral_v1,
-    )
-    from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-        build_okx_live_canary_auth_headers_v1,
-    )
 
     owned = str(owner_go or "").strip()
     if owned != OWNER_GO_THIS_SLICE:
@@ -414,8 +411,8 @@ def persist_authorized_fresh_pos_mode_observation_v1(
         max_retries=0,
         timeout_seconds=10.0,
     )
-    backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-    handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+    backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+    handle = _fail_closed_credential_unavailable_v1(
         secret_reference=REQUIRED_SECRETREF_URI,
         vault_backend=backend,
         credential_class=REQUIRED_CREDENTIAL_CLASS,
@@ -430,14 +427,14 @@ def persist_authorized_fresh_pos_mode_observation_v1(
             raise LiveCanaryPosModeObservationError(
                 f"SIGNED_REQUEST_TARGET_MISMATCH:{signed_target}"
             )
-        auth_headers = build_okx_live_canary_auth_headers_v1(handle=handle, url=url, method="GET")
+        auth_headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url, method="GET")
         auth_headers["User-Agent"] = USER_AGENT_CANARY
         response = client.get(endpoint=endpoint, headers=auth_headers)
     except LiveCanaryHttpError as exc:
         raise LiveCanaryPosModeObservationError(f"POS_MODE_FRESH_GET_FAILED:{exc}") from exc
     finally:
         auth_headers.clear()
-        release_live_canary_ephemeral_material_v1(handle)
+        _fail_closed_credential_unavailable_v1(handle)
     response_time = utc_now_iso_v1()
     payload = parse_json_object_v1(response.body_bytes)
     observation_class = classify_pos_mode_observation_class_v1(

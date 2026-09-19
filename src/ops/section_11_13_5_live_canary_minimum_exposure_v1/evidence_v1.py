@@ -28,6 +28,20 @@ class LiveCanaryEvidenceError(RuntimeError):
     """Fail-closed evidence violation."""
 
 
+def assert_no_plaintext_in_payload_v1(payload: Any) -> None:
+    text = str(payload).lower()
+    for needle in ("sk-", "plaintext:", "authorization: bearer"):
+        if needle in text:
+            raise LiveCanaryEvidenceError(f"PLAINTEXT_LEAK_DETECTED:{needle}")
+    if isinstance(payload, Mapping):
+        for key, value in payload.items():
+            kl = str(key).lower()
+            if kl in {"api_secret", "passphrase", "api_key", "secret", "ok-access-key"}:
+                if isinstance(value, str) and value and value not in {"<REDACTED>", "<REF_ONLY>"}:
+                    if not value.startswith("secretref-digest:") and not value.startswith("<"):
+                        raise LiveCanaryEvidenceError(f"PLAINTEXT_LEAK_DETECTED:{kl}")
+
+
 def _sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 

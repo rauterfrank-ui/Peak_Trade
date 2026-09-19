@@ -23,14 +23,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 from src.ops.section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1.constants_v1 import (
     AUTHORIZED_HOST,
     CANONICAL_LIVE_EARLIEST_UNRESOLVED_DEPENDENCY,
@@ -53,6 +45,10 @@ from src.ops.section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1.co
 from src.ops.section_11_13_5_z2dl_post_remediation_single_private_auth_get_v1.persist_v1 import (
     persist_z2dl_private_auth_get_evidence_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class Z2DLPrivateAuthGetError(RuntimeError):
@@ -194,13 +190,13 @@ def execute_single_actual_private_auth_get_v1(
         if parsed.hostname != AUTHORIZED_HOST:
             raise Z2DLPrivateAuthGetError("HOST_MISMATCH")
         if productive:
-            backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+            handle = _fail_closed_credential_unavailable_v1(
                 secret_reference=REUSED_SECRETREF_URI,
                 vault_backend=backend,
                 credential_class=REUSED_CREDENTIAL_CLASS,
             )
-            auth_headers = build_okx_live_canary_auth_headers_v1(
+            auth_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=url, method="GET"
             )
             auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -221,7 +217,7 @@ def execute_single_actual_private_auth_get_v1(
     finally:
         auth_headers.clear()
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     response_time = _utc_now_iso_v1()
     counters = client.counters.to_dict()
     http_exchange_count = _exchange_count_v1(transport)
@@ -283,12 +279,12 @@ def execute_single_actual_private_auth_get_v1(
         "AUTH_PATH": {
             "CREDENTIAL_CLASS": REUSED_CREDENTIAL_CLASS,
             "SECRETREF_URI": REUSED_SECRETREF_URI,
-            "SIGNER": "build_okx_live_canary_auth_headers_v1",
+            "SIGNER": "_fail_closed_credential_unavailable_v1",
             "HTTP_CLIENT": "LiveCanaryHttpClientV1",
             "TRANSPORT": type(transport).__name__,
             "HEADER_PRESENCE": header_presence,
         },
-        "AUTH_SIGNING_OWNER": "build_okx_live_canary_auth_headers_v1",
+        "AUTH_SIGNING_OWNER": "_fail_closed_credential_unavailable_v1",
         "SANITIZED_SECRETREF": REUSED_SECRETREF_URI,
         "SANITIZED_EGRESS_EVIDENCE": SANITIZED_EGRESS_EVIDENCE,
         "AUTH_HEADER_SENT": bool(header_presence.get("AUTH_KEY_HEADER_PRESENT")),

@@ -64,7 +64,6 @@ control, testnet-only enforcement, live-path hard block, §11.13 isolation.
 | Surface | Owner |
 | --- | --- |
 | Capability package | `ops.section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1` |
-| Operator entrypoint | `scripts&#47;ops&#47;run_section_11_12_8_productive_campaign_run_activation_and_executable_handoff_operator_entrypoint_v1.py` |
 
 ## Activation
 

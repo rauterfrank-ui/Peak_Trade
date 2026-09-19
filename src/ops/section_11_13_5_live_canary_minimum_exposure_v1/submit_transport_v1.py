@@ -6,6 +6,9 @@ from datetime import datetime, timezone
 from typing import Any, Mapping
 from uuid import uuid4
 
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
+    serialize_canonical_okx_post_body_v1,
+)
 from src.ops.pre_submit_open_position_cap_v1 import (
     PreSubmitOpenPositionCapErrorV1,
     assert_pre_submit_open_position_cap_allows_v1,
@@ -56,16 +59,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.incident_classification_v1 import (
     attach_canary_post_401_classification_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryEphemeralCredentialHandleV1,
-    LiveCanaryVaultBackendPortV1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-    serialize_signed_post_body_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.leverage_observation_v1 import (
     LEVERAGE_EXPECTED_MGN_MODE,
     LiveCanaryLeverageObservationError,
@@ -112,6 +105,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
     LiveCanaryVenueContractCountError,
     assert_identity_sz_after_contract_sizing_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class LiveCanarySubmitTransportError(RuntimeError):
@@ -241,7 +238,7 @@ def _entry_submit_returned_payload_v1(
 def _signed_get(
     *,
     client: LiveCanaryHttpClientV1,
-    handle: LiveCanaryEphemeralCredentialHandleV1 | None,
+    handle: _fail_closed_credential_unavailable_v1 | None,
     endpoint: str,
 ) -> dict[str, Any]:
     path = endpoint.split("?", 1)[0]
@@ -250,7 +247,7 @@ def _signed_get(
         if handle is None:
             raise LiveCanarySubmitTransportError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
         url = f"{client.rest_base.rstrip('/')}{endpoint}"
-        headers = build_okx_live_canary_auth_headers_v1(handle=handle, url=url, method="GET")
+        headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url, method="GET")
     response = client.get(endpoint=endpoint, headers=headers)
     if headers is not None:
         headers.clear()
@@ -271,8 +268,8 @@ def run_canary_submit_transport_v1(
     transport: LiveCanaryTransportV1 | None,
     allow_productive_wire_send: bool = False,
     live_canary_cybersecurity_gate: str = "PASS",
-    vault_backend: LiveCanaryVaultBackendPortV1 | None = None,
-    credential_handle: LiveCanaryEphemeralCredentialHandleV1 | None = None,
+    vault_backend: Any | None = None,
+    credential_handle: _fail_closed_credential_unavailable_v1 | None = None,
     observe_order_plan_only: bool = False,
 ) -> dict[str, Any]:
     """Gated canary execute path. Standing LIVE_AUTHORIZED remains false.
@@ -319,7 +316,7 @@ def run_canary_submit_transport_v1(
         if handle is None:
             if vault_backend is None:
                 raise LiveCanarySubmitTransportError("VAULT_BACKEND_OR_HANDLE_REQUIRED")
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            handle = _fail_closed_credential_unavailable_v1(
                 secret_reference=str(cfg.payload.get("secretref_uri") or REQUIRED_SECRETREF_URI),
                 vault_backend=vault_backend,
                 credential_class=str(
@@ -404,7 +401,7 @@ def run_canary_submit_transport_v1(
         max_avail_headers = {"User-Agent": USER_AGENT_CANARY}
         try:
             max_avail_url = f"{client.rest_base.rstrip('/')}{max_avail_ep}"
-            max_avail_headers = build_okx_live_canary_auth_headers_v1(
+            max_avail_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=max_avail_url, method="GET"
             )
             max_avail_response = client.get(endpoint=max_avail_ep, headers=max_avail_headers)
@@ -430,7 +427,7 @@ def run_canary_submit_transport_v1(
         leverage_headers = {"User-Agent": USER_AGENT_CANARY}
         try:
             leverage_url = f"{client.rest_base.rstrip('/')}{leverage_ep}"
-            leverage_headers = build_okx_live_canary_auth_headers_v1(
+            leverage_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=leverage_url, method="GET"
             )
             leverage_response = client.get(endpoint=leverage_ep, headers=leverage_headers)
@@ -450,7 +447,7 @@ def run_canary_submit_transport_v1(
         pos_mode_headers = {"User-Agent": USER_AGENT_CANARY}
         try:
             pos_mode_url = f"{client.rest_base.rstrip('/')}{pos_mode_ep}"
-            pos_mode_headers = build_okx_live_canary_auth_headers_v1(
+            pos_mode_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=pos_mode_url, method="GET"
             )
             pos_mode_response = client.get(endpoint=pos_mode_ep, headers=pos_mode_headers)
@@ -645,10 +642,10 @@ def run_canary_submit_transport_v1(
                 "RETRY_SAFE_NOW": False,
             }
 
-        body_text = serialize_signed_post_body_v1(plan.venue_native_payload)
+        body_text = serialize_canonical_okx_post_body_v1(plan.venue_native_payload)
         venue_native_request = extract_canary_venue_native_request_evidence_v1(body_text=body_text)
         url = f"{client.rest_base.rstrip('/')}{ENDPOINT_SUBMIT}"
-        headers = build_okx_live_canary_auth_headers_v1(
+        headers = _fail_closed_credential_unavailable_v1(
             handle=handle,
             url=url,
             method="POST",
@@ -743,4 +740,4 @@ def run_canary_submit_transport_v1(
         )
     finally:
         if created_handle and handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)

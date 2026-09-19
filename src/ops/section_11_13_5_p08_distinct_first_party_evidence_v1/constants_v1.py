@@ -1,7 +1,7 @@
 """Standing constants for P08 distinct first-party evidence V2.
 
 Reuses LiveCanaryHttpClientV1, UrllibLiveCanaryTransportV1,
-build_okx_live_canary_auth_headers_v1, classify_target_position_state_v1,
+_fail_closed_credential_unavailable_v1, classify_target_position_state_v1,
 classify_position_observation_v1, and build_account_positions_query_v1
 (posId path only). Does not mint a second HTTP client, signer, SecretRef
 owner, live/testnet/canary authority, or mutation path. Does not repeat
@@ -158,7 +158,7 @@ REUSED_VENUE = REUSED_BINDING_VENUE
 REUSED_REST_BASE = f"https://{REUSED_BINDING_REST_HOST}"
 REUSED_HTTP_CLIENT = "LiveCanaryHttpClientV1"
 REUSED_TRANSPORT = "UrllibLiveCanaryTransportV1"
-REUSED_SIGNER = "build_okx_live_canary_auth_headers_v1"
+REUSED_SIGNER = "_fail_closed_credential_unavailable_v1"
 REUSED_SECRETREF_URI = REQUIRED_SECRETREF_URI
 REUSED_CREDENTIAL_CLASS = REQUIRED_CREDENTIAL_CLASS
 REUSED_USER_AGENT = USER_AGENT_CANARY

@@ -79,14 +79,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 
 _PROXY_ENV_KEYS = (
     "HTTP_PROXY",
@@ -287,9 +279,7 @@ def execute_step_29p_fresh_venue_evidence_gets_v1(
 
     productive = transport is None
     if productive:
-        if vault_file is None or not str(vault_file).strip():
-            raise Step29PFreshVenueEvidenceGetError("VAULT_FILE_REQUIRED")
-        transport = UrllibLiveCanaryTransportV1(wire_send_enabled=True)
+        raise Step29PFreshVenueEvidenceGetError("CREDENTIAL_HANDLE_FAIL_CLOSED")
     if isinstance(transport, UrllibLiveCanaryTransportV1) and not bool(
         getattr(transport, "wire_send_enabled", False)
     ):
@@ -311,12 +301,7 @@ def execute_step_29p_fresh_venue_evidence_gets_v1(
     gets_succeeded = 0
     try:
         if productive:
-            backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
-                secret_reference=REUSED_SECRETREF_URI,
-                vault_backend=backend,
-                credential_class=REUSED_CREDENTIAL_CLASS,
-            )
+            raise Step29PFreshVenueEvidenceGetError("CREDENTIAL_HANDLE_FAIL_CLOSED")
         planned = _planned_gets(limit_px="")
         for item in planned:
             endpoint = str(item["endpoint"])
@@ -350,11 +335,6 @@ def execute_step_29p_fresh_venue_evidence_gets_v1(
                         raise Step29PFreshVenueEvidenceGetError(
                             "PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE"
                         )
-                    if handle is not None:
-                        headers = build_okx_live_canary_auth_headers_v1(
-                            handle=handle, url=url, method="GET"
-                        )
-                        headers["User-Agent"] = USER_AGENT_STEP_29P_FRESH_GET
                 response = client.get(endpoint=endpoint, headers=headers)
                 http_status = int(response.status_code)
                 body_bytes = bytes(response.body_bytes)
@@ -430,7 +410,7 @@ def execute_step_29p_fresh_venue_evidence_gets_v1(
             )
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            handle = None
 
     counters = _assert_get_only_client(client)
     package_finished = _utc_now_iso_v1()
