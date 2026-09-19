@@ -292,10 +292,14 @@ terms:
       - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
       - src/ops/single_selected_future_policy_v1/selection_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Capture is observation-only. Listed src/ops paths
       are fail-open host hooks, not new trading or execution semantics.
+      PR 6629 adds REAL N_BARS horizon capture seam wiring only; not promotion.
       Cap23 governed pin does not make DDO a selection or routing bridge.
       Double-Play typed observation projection v1 stores exact producer tokens
       without copying them into DECISION_TYPE_V0 / DECISION_RESULT_V0.
@@ -327,12 +331,16 @@ terms:
       - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py
       - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
       - docs/ops/specs/DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md
+      - src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
+      - docs/ops/specs/DDO_OUTCOME_TO_PROMOTION_PRODUCTIVE_BINDING_NORMATIVE_V1.md
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Evaluation is offline and non-authorizing.
       Double-Play semantic evaluation requires records_by_id and reads
       authoritative decision_outcome via current_decision_learning_binding_v1.
-      REAL N_BARS later-horizon economics are fail-closed and S1-bound only.
+      PR 6629 wires productive evaluation runtime join; terminus before promotion.
+      NO_N_BARS_TO_PROMOTION_BINDING. PROMOTION_AUTHORITY_ACTIVATION=false.
 
   - id: TERM:ddo_offline_learning_validation_shadow
     kind: TERM

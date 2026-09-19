@@ -9,18 +9,19 @@ modified_by: PENDING_CHANGE
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR 6627 DDO REAL N_BARS horizon learning stretch (S2-S4). Offline supplier
-  and evaluation binding only. REAL_OUTCOME_HORIZON_ENGINE_WIRED=false.
-  BLOCKED_CAPTURE_SEAMS_V0 unchanged. EXTERNAL_EFFECT_AUTHORIZED=false.
-  AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+  PR 6629 DDO N_BARS productive capture and evaluation runtime terminus
+  (post-#6628). REAL_OUTCOME_HORIZON_ENGINE_WIRED=true and
+  EVALUATION_RUNTIME_WIRING=true with single bridge joins each.
+  NO_N_BARS_TO_PROMOTION_BINDING. PROMOTION_AUTHORITY_ACTIVATION=false.
+  EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not
+  canonical authority.
 changed_entities:
-- PHASE:ddo_offline_foundation
-- RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
-- RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1
-- TERM:ddo_offline_contract_and_ledger
-- TERM:ddo_offline_control_plane
-- TERM:ddo_offline_evaluation_engine
-- TERM:focused_full_noop
+  - PHASE:ddo_offline_foundation
+  - RUNTIME_COMPONENT:ddo_capture_v0
+  - RUNTIME_COMPONENT:ddo_ledger_v0
+  - HOST:wallclock_decision_economics_cycle
+  - TERM:ddo_non_semantic_capture
+  - TERM:ddo_offline_evaluation_engine
 changed_relations: []
 new_relations: []
 removed_relations: []
@@ -30,10 +31,9 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-- id: PHASE:ddo_offline_foundation
-- id: RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
-- id: RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1
-- id: TERM:ddo_offline_contract_and_ledger
-- id: TERM:ddo_offline_control_plane
-- id: TERM:ddo_offline_evaluation_engine
-- id: TERM:focused_full_noop
+  - id: PHASE:ddo_offline_foundation
+  - id: RUNTIME_COMPONENT:ddo_capture_v0
+  - id: RUNTIME_COMPONENT:ddo_ledger_v0
+  - id: HOST:wallclock_decision_economics_cycle
+  - id: TERM:ddo_non_semantic_capture
+  - id: TERM:ddo_offline_evaluation_engine

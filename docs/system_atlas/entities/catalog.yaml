@@ -4988,12 +4988,20 @@ entities:
       - docs/ops/specs/DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md
       - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py
       - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
+      - src/learning/deterministic_decision_outcome_v0/evaluation_runtime_productive_host_v1.py
+      - docs/ops/specs/DDO_OUTCOME_TO_PROMOTION_PRODUCTIVE_BINDING_NORMATIVE_V1.md
+      - config/governance/ddo_outcome_to_promotion_productive_binding_decision_v1.json
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
       decision-outcome observation and evaluation contract surface.
-      REAL N_BARS horizon supplier and evaluation binding remain offline-only;
-      capture seam real_outcome_horizon_engine stays blocked. ATLAS_AUTHORITY=NONE.
+      PR 6629 productive N_BARS chain: REAL_OUTCOME_HORIZON_ENGINE_WIRED=true,
+      single horizon capture join and single evaluation-runtime join on the
+      wallclock bridge; chain terminus at evaluation runtime bundle.
+      NO_N_BARS_TO_PROMOTION_BINDING; promotion remains independent dry-run.
+      ATLAS_AUTHORITY=NONE.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.
@@ -5096,10 +5104,14 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
       - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
     evidence_sources:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
       - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
       - src/governance/canonical_order_intent_v1.py
       - src/governance/capital_risk_sizing_v1.py
@@ -5300,6 +5312,7 @@ entities:
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
@@ -5310,6 +5323,7 @@ entities:
       - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
       - src/learning/deterministic_decision_outcome_v0/durable_evidence_path_v0.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_observation_capture_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_runtime_authorization_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py
@@ -5437,6 +5451,8 @@ entities:
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_observation_host_scope_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py

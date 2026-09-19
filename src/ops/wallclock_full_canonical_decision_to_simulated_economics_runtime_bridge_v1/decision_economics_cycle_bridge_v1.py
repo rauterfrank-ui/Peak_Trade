@@ -25,6 +25,12 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
     AccountIdentityRecordV1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_evaluation_runtime_host_binding_v1 import (
+    invoke_productive_n_bars_evaluation_runtime_v1,
+)
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_observation_host_binding_v1 import (
+    invoke_productive_n_bars_horizon_observation_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_observation_host_scope_binding_v1 import (
     DdoHostScopeInputError,
     DdoObservationHostScopeInputsV1,
@@ -453,6 +459,13 @@ class BridgeSessionStateV1:
     # ratified input authorities — absent authorities fail closed).
     last_replay_intermediate: Optional[Any] = None
     last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
+    ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
+    ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
+    ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN"
+    ddo_n_bars_economic_score: Optional[str] = None
+    last_ddo_n_bars_horizon_observation: Optional[dict[str, Any]] = None
+    ddo_n_bars_evaluation_identity: Optional[dict[str, Any]] = None
+    last_ddo_n_bars_evaluation_runtime: Optional[dict[str, Any]] = None
     # Capital-slot display state: no ratified init authority → remains unbound.
     capital_slot_config_bound: bool = False
     capital_slot_state_bound: bool = False
@@ -1834,6 +1847,40 @@ def run_bridge_cycle_v1(
     elif state.last_ddo_capture is not None:
         annotate_ddo_host_ledger_binding_on_capture_v1(state)
 
+    try:
+        state.last_ddo_n_bars_horizon_observation = invoke_productive_n_bars_horizon_observation_v1(
+            state,
+            decision_event=state.ddo_n_bars_horizon_decision_event,
+            o4_snapshot=state.ddo_o4_n_bars_bar_evidence_snapshot,
+            event_ts_unix=float(event_ts_unix),
+            outcome_scalar_kind=state.ddo_n_bars_outcome_scalar_kind,
+            economic_score=state.ddo_n_bars_economic_score,
+        )
+    except Exception as _horizon_exc:  # noqa: BLE001
+        state.last_ddo_n_bars_horizon_observation = {
+            "ok": False,
+            "error": f"{type(_horizon_exc).__name__}:{_horizon_exc}",
+            "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+        }
+
+    try:
+        corr = f"ddo.corr.{session_id}"[:128]
+        state.last_ddo_n_bars_evaluation_runtime = invoke_productive_n_bars_evaluation_runtime_v1(
+            state,
+            decision_event=state.ddo_n_bars_horizon_decision_event,
+            identity=state.ddo_n_bars_evaluation_identity,
+            horizon_result=state.last_ddo_n_bars_horizon_observation,
+            correlation_id=corr,
+        )
+    except Exception as _eval_exc:  # noqa: BLE001
+        state.last_ddo_n_bars_evaluation_runtime = {
+            "ok": False,
+            "error": f"{type(_eval_exc).__name__}:{_eval_exc}",
+            "decision_unchanged": True,
+            "capture_failure_changes_current_decision": False,
+        }
+
     state.cycle_ledger.append(cycle.to_dict())
     return cycle
 
@@ -1857,6 +1904,11 @@ def run_bridge_cycles_from_mids_v1(
     ddo_evidence_environment: Optional[ExecutionEnvironment] = None,
     ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None,
     ddo_runtime_state_root_config: Optional[Mapping[str, Any]] = None,
+    ddo_n_bars_horizon_decision_event: Optional[Mapping[str, Any]] = None,
+    ddo_o4_n_bars_bar_evidence_snapshot: Optional[Mapping[str, Any]] = None,
+    ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN",
+    ddo_n_bars_economic_score: str | None = None,
+    ddo_n_bars_evaluation_identity: Optional[Mapping[str, Any]] = None,
 ) -> tuple[BridgeSessionStateV1, list[BridgeCycleResultV1]]:
     if require_selection_binding and instrument_id != PRODUCTION_INSTRUMENT_ID:
         if not allow_direct_instrument_override:
@@ -1884,6 +1936,14 @@ def run_bridge_cycles_from_mids_v1(
         account_identity_record=ddo_account_identity_record,
         runtime_state_root_config=ddo_runtime_state_root_config,
     )
+    if ddo_n_bars_horizon_decision_event is not None:
+        state.ddo_n_bars_horizon_decision_event = dict(ddo_n_bars_horizon_decision_event)
+    if ddo_o4_n_bars_bar_evidence_snapshot is not None:
+        state.ddo_o4_n_bars_bar_evidence_snapshot = dict(ddo_o4_n_bars_bar_evidence_snapshot)
+    state.ddo_n_bars_outcome_scalar_kind = ddo_n_bars_outcome_scalar_kind
+    state.ddo_n_bars_economic_score = ddo_n_bars_economic_score
+    if ddo_n_bars_evaluation_identity is not None:
+        state.ddo_n_bars_evaluation_identity = dict(ddo_n_bars_evaluation_identity)
     results: list[BridgeCycleResultV1] = []
     for i, mid in enumerate(mid_prices):
         results.append(

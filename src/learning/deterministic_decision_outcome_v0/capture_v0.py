@@ -48,6 +48,13 @@ from src.learning.deterministic_decision_outcome_v0.double_play_observation_proj
     producer_canonical_payload_from_decision_v1,
     project_entry_exit_policy_decision_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_engine_v1 import (
+    REAL_OUTCOME_HORIZON_ENGINE_CAPTURE_SEAM,
+    REAL_OUTCOME_HORIZON_ENGINE_ID,
+)
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_observation_capture_v1 import (
+    project_real_outcome_horizon_observation_capture_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.section_11_14_flatten_pre_lease_observation_v1 import (
     project_section_11_14_flatten_pre_lease_observation_v1,
 )
@@ -112,6 +119,7 @@ SEAM_SIMULATED_EXECUTION_OUTCOME: str = "execution.simulated_outcome"
 SEAM_SECTION_11_14_FLATTEN_PRE_LEASE_SEND_INTENT: str = (
     "section_11_14.flatten_pre_lease_send_intent"
 )
+SEAM_REAL_OUTCOME_HORIZON: str = REAL_OUTCOME_HORIZON_ENGINE_CAPTURE_SEAM
 
 IMPLEMENTED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     SEAM_SELECTION_UNIVERSE,
@@ -135,6 +143,7 @@ IMPLEMENTED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     SEAM_MAPPER,
     SEAM_RECONCILIATION_STARTUP_GATE,
     SEAM_SIMULATED_EXECUTION_OUTCOME,
+    SEAM_REAL_OUTCOME_HORIZON,
 )
 
 # Explicit pre-mutation observation. Host adapter calls observe_producer_result_v0
@@ -150,7 +159,6 @@ BLOCKED_CAPTURE_SEAMS_V0: tuple[str, ...] = (
     "venue_execution",
     "promotion_authority",
     "supervisor_productive_runtime",
-    "real_outcome_horizon_engine",
     "stale_root_cause_inference",
     "decision_result_trade_token_expansion",
 )
@@ -218,6 +226,9 @@ SRC_S1114_PRE_LEASE: str = (
     "src/ops/section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1/"
     "flatten_pre_lease_ddo_observation_v1.py"
 )
+SRC_REAL_OUTCOME_HORIZON: str = (
+    "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py"
+)
 
 _LONG_SIDE_TOKENS: frozenset[str] = frozenset({"long", "bull", "long_armed", "long_active", "buy"})
 _SHORT_SIDE_TOKENS: frozenset[str] = frozenset(
@@ -253,6 +264,9 @@ _VIEW_KEYS: tuple[str, ...] = (
     "master_v2_reconciliation_state",
     "replay_pass",
     "fail_reasons",
+    "evaluation_observation",
+    "horizon_observation_status",
+    "producer_observed_at_unix",
     "safety_blocked",
     "intent_action",
     "quantity_source",
@@ -438,6 +452,13 @@ SEAM_SPECS_V0: dict[str, SeamSpecV0] = {
         SRC_S1114_PRE_LEASE,
         UNKNOWN,
     ),
+    SEAM_REAL_OUTCOME_HORIZON: SeamSpecV0(
+        SEAM_REAL_OUTCOME_HORIZON,
+        "real_outcome_horizon_engine_v1",
+        REAL_OUTCOME_HORIZON_ENGINE_ID,
+        SRC_REAL_OUTCOME_HORIZON,
+        UNKNOWN,
+    ),
 }
 
 
@@ -531,6 +552,10 @@ PROVEN_HOST_DECORATOR_BINDINGS_V0: tuple[HostDecoratorBindingV0, ...] = (
     HostDecoratorBindingV0(
         SEAM_SIMULATED_EXECUTION_OUTCOME,
         SRC_SIM_EXEC,
+    ),
+    HostDecoratorBindingV0(
+        SEAM_REAL_OUTCOME_HORIZON,
+        "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_productive_host_v1.py",
     ),
 )
 
@@ -631,13 +656,13 @@ def with_ddo_capture_session_v0(fn: F) -> F:
     @functools.wraps(fn)
     def wrapped(state: Any, *args: Any, **kwargs: Any) -> Any:
         binding = getattr(state, "ddo_capture_binding", None)
-        token = bind_capture_session_v0(
+        capture_session_handle = bind_capture_session_v0(
             binding if isinstance(binding, DdoCaptureBindingV0) else None
         )
         try:
             return fn(state, *args, **kwargs)
         finally:
-            reset_capture_session_v0(token)
+            reset_capture_session_v0(capture_session_handle)
 
     return wrapped  # type: ignore[return-value]
 
@@ -917,6 +942,29 @@ def observe_producer_result_v0(
         observation_record = dict(
             project_section_11_14_flatten_pre_lease_observation_v1(
                 view,
+                record_id=observation_id,
+                event_time_utc=event_time,
+                correlation_id=corr,
+                cycle_id=cycle_ref,
+                decision_event_ref=record_id,
+                producer_id=spec.producer_id,
+                authority_owner=spec.authority_owner,
+            )
+        )
+        observation_failure = _persist_and_classify(binding, observation_record)
+        if observation_failure is not None:
+            durable_failure = observation_failure
+    elif spec.seam_id == SEAM_REAL_OUTCOME_HORIZON:
+        nested = view.get("evaluation_observation")
+        if not isinstance(nested, Mapping):
+            raise ValueError("HORIZON_EVALUATION_OBSERVATION_MISSING")
+        observation_identity = dict(identity)
+        observation_identity["kind"] = "real_outcome_horizon_observation_capture_v1"
+        observation_identity["evaluation_horizon"] = nested.get("evaluation_horizon")
+        observation_id = _stable_record_id("ddo.roh", observation_identity)
+        observation_record = dict(
+            project_real_outcome_horizon_observation_capture_v1(
+                nested,
                 record_id=observation_id,
                 event_time_utc=event_time,
                 correlation_id=corr,

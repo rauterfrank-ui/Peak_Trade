@@ -8,7 +8,10 @@ from typing import Any
 
 import pytest
 
-from src.learning.deterministic_decision_outcome_v0.capture_v0 import BLOCKED_CAPTURE_SEAMS_V0
+from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
+    IMPLEMENTED_CAPTURE_SEAMS_V0,
+    SEAM_REAL_OUTCOME_HORIZON,
+)
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     build_decision_event_v0,
 )
@@ -102,8 +105,8 @@ def _valid_n_bars_supplier(**overrides: Any) -> dict[str, Any]:
 def test_authority_markers_remain_non_authorizing() -> None:
     assert SUPPLIER_MINTS_ACTUAL_OUTCOME_REF is False
     assert SUPPLIER_COMPUTES_ECONOMIC_SCORE is False
-    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is False
-    assert "real_outcome_horizon_engine" in BLOCKED_CAPTURE_SEAMS_V0
+    assert REAL_OUTCOME_HORIZON_ENGINE_WIRED is True
+    assert SEAM_REAL_OUTCOME_HORIZON in IMPLEMENTED_CAPTURE_SEAMS_V0
 
 
 def test_valid_n_bars_real_claim_end_to_end() -> None:

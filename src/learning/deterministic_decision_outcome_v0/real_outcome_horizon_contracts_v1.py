@@ -52,8 +52,8 @@ N_BARS_OBSERVATION_FIELD_NAMES_V1: Final[frozenset[str]] = frozenset(
 
 SUPPLIER_MINTS_ACTUAL_OUTCOME_REF: Final[bool] = False
 SUPPLIER_COMPUTES_ECONOMIC_SCORE: Final[bool] = False
-REAL_OUTCOME_HORIZON_ENGINE_WIRED: Final[bool] = False
-EVALUATION_RUNTIME_WIRING: Final[bool] = False
+REAL_OUTCOME_HORIZON_ENGINE_WIRED: Final[bool] = True
+EVALUATION_RUNTIME_WIRING: Final[bool] = True
 
 
 def require_opaque_ref(value: Any, field: str) -> str:

@@ -45,6 +45,7 @@ from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import build_outcome_record_v0
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
+    EVALUATION_RUNTIME_WIRING,
     REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN,
     resolve_later_horizon_outcome_fields_v1,
     validate_n_bars_observation_for_decision_v1,
@@ -59,7 +60,6 @@ EVALUATION_ENGINE_ID: Final[str] = "peak_trade.learning.ddo.evaluation_engine_v0
 EVALUATION_ENGINE_PRODUCER_ID: Final[str] = EVALUATION_ENGINE_ID
 EVALUATION_ENGINE_PRODUCER_VERSION: Final[str] = "evaluation_engine_v0"
 EVALUATION_TRADING_CORE_REACHABLE: Final[bool] = False
-EVALUATION_RUNTIME_WIRING: Final[bool] = False
 
 _SAFETY_DECISION_TYPES: Final[frozenset[str]] = frozenset(
     {"KILL_SWITCH", "STALE_BLOCK", "RISK_BLOCK", "RECONCILIATION_BLOCK"}
@@ -417,7 +417,7 @@ def evaluate_offline_bundle_v0(
             "hindsight_leakage": False,
             "unknown_collapsed": False,
             "trading_core_reachable": False,
-            "runtime_wiring": False,
+            "runtime_wiring": EVALUATION_RUNTIME_WIRING,
             "replay": replay_payload,
             "outcome_record": dict(outcome),
             "attribution_record": dict(attribution),

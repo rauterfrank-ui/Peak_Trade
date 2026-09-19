@@ -78,6 +78,11 @@ from src.learning.deterministic_decision_outcome_v0.double_play_input_evidence_v
 from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
     validate_double_play_entry_exit_observation_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_observation_capture_v1 import (
+    SCHEMA_NAME as SCHEMA_NAME_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE,
+    SCHEMA_VERSION as SCHEMA_VERSION_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE_V1,
+    validate_real_outcome_horizon_observation_capture_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.section_11_14_flatten_pre_lease_observation_v1 import (
     validate_section_11_14_flatten_pre_lease_observation_v1,
 )
@@ -307,6 +312,10 @@ _VALIDATORS = {
         SCHEMA_NAME_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION,
         SCHEMA_VERSION_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1,
     ): validate_section_11_14_flatten_pre_lease_observation_v1,
+    (
+        SCHEMA_NAME_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE,
+        SCHEMA_VERSION_REAL_OUTCOME_HORIZON_OBSERVATION_CAPTURE_V1,
+    ): validate_real_outcome_horizon_observation_capture_v1,
 }
 
 _KNOWN_SCHEMA_NAMES = {schema for schema, _version in _VALIDATORS}
