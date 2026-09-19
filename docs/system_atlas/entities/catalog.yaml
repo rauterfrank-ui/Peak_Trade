@@ -5005,6 +5005,8 @@ entities:
       NO_N_BARS_TO_PROMOTION_BINDING; promotion remains independent dry-run.
       Post-#6629 governance JSON repair: strict json.loads for three decision
       records; blocker metadata only; no new runtime or promotion join.
+      POST-6630 Slice 1: optional N_BARS upstream auto-bind (capture decision_event
+      + O4 snapshot from CanonicalPublicMdBarProducerV1); explicit injection wins.
       ATLAS_AUTHORITY=NONE.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
@@ -5444,6 +5446,7 @@ entities:
       RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
 
   - id: HOST:wallclock_decision_economics_cycle
+    # NAVIGATION_ONLY: POST-6630 Slice 1 optional DDO N_BARS upstream auto-bind.
     # SCOPE_DIRECTION_OVERLAY_GENERATOR_INERT: Cap-7.2 (§11.2.1.D) and
     # hardening-v2 (§11.2.1.E) project ScopeDirectionState from SideState.
     kind: HOST
@@ -5456,6 +5459,8 @@ entities:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_upstream_from_cycle_capture_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_observation_host_scope_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/sidestate_restore_v1.py

@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,12 +41,16 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `PHASE:ddo_offline_foundation` |
+| `HOST:wallclock_decision_economics_cycle` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `TERM:ddo_non_semantic_capture` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_wallclock_calls_ddo_cycle_capture` |
+| `REL:r_wallclock_injects_ddo_capture_session` |
 
 ## NEW_RELATIONS
 
@@ -92,7 +96,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-#6629 governance JSON strict-parse repair (pending PR). Three DDO N_BARS decision records are strict JSON (json.loads); bridge/supplier blocker metadata aligned to ratified NO_N_BARS_TO_PROMOTION_BINDING adjudication. No productive authority change. N_BARS chain terminus unchanged at evaluation runtime. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- POST-6630 Slice 1 (pending PR): optional DDO N_BARS upstream auto-bind on the wallclock bridge — decision_event from same-cycle capture binding; O4 snapshot from bound CanonicalPublicMdBarProducerV1 when not injected. Explicit injection still wins. Chain terminus unchanged at evaluation runtime. NO_N_BARS_TO_PROMOTION_BINDING unchanged. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
