@@ -656,13 +656,13 @@ def with_ddo_capture_session_v0(fn: F) -> F:
     @functools.wraps(fn)
     def wrapped(state: Any, *args: Any, **kwargs: Any) -> Any:
         binding = getattr(state, "ddo_capture_binding", None)
-        token = bind_capture_session_v0(
+        capture_session_handle = bind_capture_session_v0(
             binding if isinstance(binding, DdoCaptureBindingV0) else None
         )
         try:
             return fn(state, *args, **kwargs)
         finally:
-            reset_capture_session_v0(token)
+            reset_capture_session_v0(capture_session_handle)
 
     return wrapped  # type: ignore[return-value]
 

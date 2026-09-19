@@ -83,7 +83,7 @@ def test_productive_real_happy_path_single_capture(tmp_path: Path) -> None:
     decision = build_decision_event_v0(_decision())
     snap = _snapshot()
     binding = _session(tmp_path)
-    token = bind_capture_session_v0(binding)
+    capture_session_handle = bind_capture_session_v0(binding)
     try:
         first = produce_real_outcome_horizon_evaluation_observation_v1(
             decision, snap, economic_score="LABEL_1"
@@ -92,7 +92,7 @@ def test_productive_real_happy_path_single_capture(tmp_path: Path) -> None:
             decision, snap, economic_score="LABEL_1"
         )
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(capture_session_handle)
     assert first == second
     assert first["ok"] is True
     horizon_records = [
@@ -177,13 +177,13 @@ def test_gap_horizon_fail_closed_unknown_outcome(tmp_path: Path) -> None:
     ]
     snap = _snapshot(o4_bars=bars)
     binding = _session(tmp_path)
-    token = bind_capture_session_v0(binding)
+    capture_session_handle = bind_capture_session_v0(binding)
     try:
         result = produce_real_outcome_horizon_evaluation_observation_v1(
             decision, snap, outcome_scalar_kind="LOG_RETURN"
         )
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(capture_session_handle)
     assert result["ok"] is False
     obs = result["evaluation_observation"]
     bundle = evaluate_offline_bundle_v0(decision, obs, identity=_identity())

@@ -74,7 +74,7 @@ def test_productive_runtime_real_path(tmp_path: Path) -> None:
     decision = build_decision_event_v0(_decision())
     snap = _snapshot()
     binding = _session(tmp_path)
-    token = bind_capture_session_v0(binding)
+    capture_session_handle = bind_capture_session_v0(binding)
     try:
         horizon = produce_real_outcome_horizon_evaluation_observation_v1(
             decision, snap, economic_score="LABEL_RT"
@@ -84,7 +84,7 @@ def test_productive_runtime_real_path(tmp_path: Path) -> None:
             horizon, decision, identity=_identity()
         )
     finally:
-        reset_capture_session_v0(token)
+        reset_capture_session_v0(capture_session_handle)
     assert horizon["ok"] is True
     assert first == second
     assert first["runtime_wiring"] is True
