@@ -8,10 +8,11 @@
     "envelope_contract_version": "optimizable_envelope_contract_v1",
     "learning_productive_authority": "NONE",
     "optimization_productive_authority": "NONE",
-    "authorized_surface_count": 2,
+    "authorized_surface_count": 3,
     "authorized_surface_ids": [
         "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
-        "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1"
+        "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+        "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
     ],
     "authorized_surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
     "zero_authorized_productive_targets": true,

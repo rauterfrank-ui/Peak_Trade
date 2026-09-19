@@ -1,0 +1,22 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_ALLOWED_POLICY_DOMAIN_V1",
+  "schema_version": "canonical_f5_fresh_futures_input_freshness_allowed_policy_domain/v1",
+  "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+  "owner_value_token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
+  "candidate_domain_schema_version": "canonical_f5_fresh_futures_input_freshness_candidate_domain/v1",
+  "age_unit": "SECONDS",
+  "age_reference_clock": "BAR_EVENT_TIME",
+  "age_semantic": "FUTURES_INPUT_READINESS_SAFETY_FRESHNESS_STATE",
+  "f1_m9_volatility_max_age_deduplication_forbidden": true,
+  "cmc_volatility_max_age_alpha_reuse_forbidden": true,
+  "candidate_authority": "EXPLICIT_OPERATOR_OR_CALLER_SUPPLIED_CANDIDATE_ARGUMENTS_ONLY",
+  "candidate_freshness_max_age_seconds": [30, 45, 90, 180, 240, 450, 1200, 2400],
+  "interpolation_allowed": false,
+  "extension_allowed": false,
+  "implicit_defaults_allowed": false,
+  "productive_policy_literal_allowed": false,
+  "productive_freshness_state_binding_allowed": false,
+  "input_authority_flip_allowed": false,
+  "source_constant": "OPERATOR_BOUND_CANDIDATE_FRESHNESS_MAX_AGE_SECONDS",
+  "source_module": "src/experiments/f5_fresh_research_candidate_domain_constants_v1.py"
+}

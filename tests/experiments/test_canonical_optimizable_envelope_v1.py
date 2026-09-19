@@ -80,7 +80,7 @@ def test_envelope_identity_is_deterministic() -> None:
 
 def test_authorized_surface_registry_includes_m9_and_f2_surfaces() -> None:
     registry = build_authorized_surface_registry_v1()
-    assert registry["authorized_surface_count"] == 2
+    assert registry["authorized_surface_count"] == 3
     assert registry["zero_authorized_productive_targets"] is True
     assert ZERO_AUTHORIZED_PRODUCTIVE_TARGETS is True
 
