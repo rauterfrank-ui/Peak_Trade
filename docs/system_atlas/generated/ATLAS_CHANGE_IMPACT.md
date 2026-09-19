@@ -96,7 +96,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST-6630 Slice 1 (pending PR): optional DDO N_BARS upstream auto-bind on the wallclock bridge — decision_event from same-cycle capture binding; O4 snapshot from bound CanonicalPublicMdBarProducerV1 when not injected. Explicit injection still wins. Chain terminus unchanged at evaluation runtime. NO_N_BARS_TO_PROMOTION_BINDING unchanged. PROMOTION_AUTHORITY_ACTIVATION=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- POST-6630 Slice 2 (pending PR): session CanonicalPublicMdBarProducer fed from accepted C1 host observations; O4 N_BARS snapshot refresh from producer until post-decision bars suffice; cycle-scoped capture bind for decision_event. Explicit snapshot/producer injection still wins. Chain terminus unchanged. NO_N_BARS_TO_PROMOTION_BINDING unchanged. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 

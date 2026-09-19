@@ -34,6 +34,7 @@ def resolve_decision_event_from_capture_binding_v1(
     binding: DdoCaptureBindingV0 | None,
     *,
     correlation_id: str,
+    cycle_id: str | None = None,
 ) -> dict[str, Any] | None:
     """Pick the best decision_event row for this correlation from in-memory capture."""
     if binding is None or not binding.enabled:
@@ -47,6 +48,10 @@ def resolve_decision_event_from_capture_binding_v1(
         candidates.append(dict(record))
     if not candidates:
         return None
+    if cycle_id:
+        cycle_matches = [row for row in candidates if row.get("cycle_id") == cycle_id]
+        if cycle_matches:
+            candidates = cycle_matches
     candidates.sort(key=_seam_rank)
     return candidates[0]
 
@@ -55,6 +60,7 @@ def maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1(
     state: Any,
     *,
     correlation_id: str,
+    cycle_id: str | None = None,
 ) -> dict[str, Any] | None:
     """Fill ``ddo_n_bars_horizon_decision_event`` when not explicitly injected."""
     existing = getattr(state, "ddo_n_bars_horizon_decision_event", None)
@@ -64,7 +70,7 @@ def maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1(
     if not isinstance(binding, DdoCaptureBindingV0):
         return None
     resolved = resolve_decision_event_from_capture_binding_v1(
-        binding, correlation_id=correlation_id
+        binding, correlation_id=correlation_id, cycle_id=cycle_id
     )
     if resolved is None:
         return None

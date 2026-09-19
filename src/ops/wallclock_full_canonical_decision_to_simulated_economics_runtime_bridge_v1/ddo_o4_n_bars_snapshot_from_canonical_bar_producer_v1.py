@@ -5,8 +5,10 @@ Uses authoritative O4 envelopes only. Explicit snapshot injection wins.
 
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any, Final, Mapping, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.common_v0 import require_event_time_utc
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.o4_n_bars_bar_evidence_bridge_contracts_v1 import (
     O4_SNAPSHOT_SCHEMA_NAME,
@@ -48,11 +50,31 @@ def _envelope_to_o4_bar_element_v1(envelope: Mapping[str, Any]) -> dict[str, Any
     }
 
 
+def _decision_event_unix_v1(decision_event: Mapping[str, Any]) -> float:
+    text = require_event_time_utc(decision_event.get("event_time_utc"), "event_time_utc")
+    dt = datetime.fromisoformat(text.replace("Z", "+00:00"))
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.timestamp()
+
+
+def _select_gapless_chain_v1(
+    finalized: list[dict[str, Any]], *, n_bars: int, decision_unix: float | None
+) -> list[dict[str, Any]]:
+    if decision_unix is None:
+        return finalized[-n_bars:]
+    anchored = [row for row in finalized if float(row["bar_open_time"]) >= float(decision_unix)]
+    if len(anchored) >= n_bars:
+        return anchored[:n_bars]
+    raise DdoValidationError("O4_FINALIZED_BAR_COUNT_INSUFFICIENT_AFTER_DECISION")
+
+
 def materialize_o4_n_bars_bar_evidence_snapshot_v1(
     *,
     decision_event_ref: str,
     producer: CanonicalPublicMdBarProducerV1,
     n_bars: int,
+    decision_event: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Build a validated O4 snapshot from the producer's finalized bar chain tail."""
     if n_bars <= 0:
@@ -65,7 +87,10 @@ def materialize_o4_n_bars_bar_evidence_snapshot_v1(
     finalized.sort(key=lambda row: float(row["bar_open_time"]))
     if len(finalized) < n_bars:
         raise DdoValidationError("O4_FINALIZED_BAR_COUNT_INSUFFICIENT")
-    tail = finalized[-n_bars:]
+    decision_unix = None if decision_event is None else _decision_event_unix_v1(decision_event)
+    tail = _select_gapless_chain_v1(finalized, n_bars=n_bars, decision_unix=decision_unix)
+    if len(tail) < n_bars:
+        raise DdoValidationError("O4_FINALIZED_BAR_COUNT_INSUFFICIENT")
     for index, bar in enumerate(tail):
         open_t = float(bar["bar_open_time"])
         if index > 0:
@@ -92,8 +117,8 @@ def maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1(
     decision_event_ref: str | None,
     n_bars: int | None = None,
 ) -> dict[str, Any] | None:
-    """Fill ``ddo_o4_n_bars_bar_evidence_snapshot`` when producer is bound on state."""
-    if getattr(state, "ddo_o4_n_bars_bar_evidence_snapshot", None) is not None:
+    """Fill or refresh ``ddo_o4_n_bars_bar_evidence_snapshot`` from session producer."""
+    if getattr(state, "ddo_o4_n_bars_bar_evidence_snapshot_locked", False):
         return None
     if not decision_event_ref:
         return None
@@ -101,11 +126,13 @@ def maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1(
     if not isinstance(producer, CanonicalPublicMdBarProducerV1):
         return None
     count = n_bars if n_bars is not None else int(getattr(state, "ddo_n_bars_horizon_n_bars", 2))
+    decision_event = getattr(state, "ddo_n_bars_horizon_decision_event", None)
     try:
         snapshot = materialize_o4_n_bars_bar_evidence_snapshot_v1(
             decision_event_ref=decision_event_ref,
             producer=producer,
             n_bars=count,
+            decision_event=decision_event if isinstance(decision_event, Mapping) else None,
         )
     except DdoValidationError as exc:
         return {
