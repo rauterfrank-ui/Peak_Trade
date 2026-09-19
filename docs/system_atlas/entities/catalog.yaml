@@ -4960,6 +4960,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
@@ -4984,10 +4985,15 @@ entities:
       - docs/ops/specs/DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1.md
       - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
       - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+      - docs/ops/specs/DDO_REAL_OUTCOME_EVALUATION_HORIZON_NORMATIVE_SEMANTICS_V1.md
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py
+      - src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_engine_v1.py
     notes: >-
       Parallel Full-Autonomy/DDO track covering
       src/learning/deterministic_decision_outcome_v0. Offline learning /
       decision-outcome observation and evaluation contract surface.
+      REAL N_BARS horizon supplier and evaluation binding remain offline-only;
+      capture seam real_outcome_horizon_engine stays blocked. ATLAS_AUTHORITY=NONE.
       AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0.
       SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false.
       SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false.

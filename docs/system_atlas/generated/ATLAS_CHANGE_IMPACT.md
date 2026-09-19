@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=7
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `PHASE:ddo_offline_foundation` |
+| `RUNTIME_COMPONENT:ddo_current_decision_consumer_v1` |
+| `RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1` |
+| `TERM:ddo_offline_contract_and_ledger` |
+| `TERM:ddo_offline_control_plane` |
+| `TERM:ddo_offline_evaluation_engine` |
+| `TERM:focused_full_noop` |
 
 ## CHANGED_RELATIONS
 
@@ -92,7 +98,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6617 docs-drift-guard repair. V1-V5 execute hosts retired. Occupancy classify/C1-gate extracted. EG default dispatch fail-closed. K1_BIND unchanged. K2_TO_K1_REWIRE=false. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- PR 6627 DDO REAL N_BARS horizon learning stretch (S2-S4). Offline supplier and evaluation binding only. REAL_OUTCOME_HORIZON_ENGINE_WIRED=false. BLOCKED_CAPTURE_SEAMS_V0 unchanged. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
