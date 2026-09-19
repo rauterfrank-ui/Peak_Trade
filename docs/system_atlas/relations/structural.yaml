@@ -624,6 +624,30 @@ relations:
       Cap 7.2 live execution port or minting permits.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_fa_staged_control_plane_depends_on_productive_orchestrator
+    source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+    notes: >
+      Staged control plane invokes run_productive_full_autonomy_n5_runtime_orchestrator_v1
+      only after explicit admission. Does not replace MV2+DP decision owners.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_staged_control_plane_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+    notes: >
+      Shared portfolio budget owner threads through admitted orchestrator invocations.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness
     source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
     type: DEPENDS_ON

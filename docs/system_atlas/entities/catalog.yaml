@@ -1052,6 +1052,37 @@ entities:
       productive host entry, Cap23/Cap24 reinvoke, or trading-decision
       authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    kind: CONTRACT
+    name: CURRENT MF N=5 staged productive runtime admission recovery audit
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
+    source_paths:
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/__init__.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/aggregate_admission_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/audit_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/constants_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/recovery_classification_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/staged_cardinality_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/staged_cardinality_v1.py
+      - tests/ops/test_current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1.py
+    notes: >-
+      STAGED_N5_ADMISSION_RECOVERY_AUDIT wraps the productive FA orchestrator
+      with explicit staged target cardinality 1..5, productive admission capped
+      at 1 while N_GT_1_ENABLED=false, conservative aggregate disposition,
+      portfolio fail-closed restart classification, and typed audit evidence.
+      Architectural N>1 harness is explicit and non-productive.
+      EXTERNAL_EFFECT_AUTHORIZED=false. POST_ALLOWED=false.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy productive runtime orchestrator
