@@ -547,6 +547,8 @@ class HardenedBridgeSessionStateV2:
     decision_config_state_root: str | None = None
     decision_config_repository_sha: str = _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
     exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
+    # Optional: pre-bound authorized productive parameter seam (transport-only join).
+    governed_authorized_productive_parameter_seam_record: Mapping[str, Any] | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -814,11 +816,19 @@ def run_hardened_bridge_cycle_v2(
     # Wire producer/binding reuse+restart labels into non-enforcing age telemetry.
     binding_reuse = VolatilityReuseStatusV1(str(typed_binding.telemetry.reuse_status))
     binding_restart = VolatilityRestartStatusV1(str(typed_binding.telemetry.restart_status))
+    from src.governance.governed_productive_runtime_parameter_seam_join_v1 import (
+        resolve_governed_runtime_seam_for_presence_gate_v1,
+    )
+
+    runtime_seam_transport = resolve_governed_runtime_seam_for_presence_gate_v1(
+        state.governed_authorized_productive_parameter_seam_record
+    )
     presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
         market_context,
         eligibility=typed_binding.typed_binding_eligibility,
         reuse_status=binding_reuse,
         restart_status=binding_restart,
+        authorized_productive_parameter_seam=runtime_seam_transport.seam_for_consumer,
     )
     effective_trading_gate = safety.trading_gate_enum
     if not presence_gate.alpha_scope_entry_authority_allowed:
@@ -901,6 +911,9 @@ def run_hardened_bridge_cycle_v2(
         now_tick=state.cycle_index,
         require_productive_typed_volatility_presence_gate=True,
         productive_typed_volatility_binding_eligibility=(typed_binding.typed_binding_eligibility),
+        governed_authorized_productive_parameter_seam_record=(
+            state.governed_authorized_productive_parameter_seam_record
+        ),
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
