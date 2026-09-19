@@ -24,7 +24,7 @@ from src.experiments.canonical_optimizable_envelope_v1 import (
     build_optimizable_envelope_v1,
     resolve_optimizable_envelope_v1,
 )
-from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.f5_fresh_research_candidate_domain_constants_v1 import (
+from src.experiments.f5_fresh_research_candidate_domain_constants_v1 import (
     OPERATOR_BOUND_CANDIDATE_FRESHNESS_MAX_AGE_SECONDS,
 )
 

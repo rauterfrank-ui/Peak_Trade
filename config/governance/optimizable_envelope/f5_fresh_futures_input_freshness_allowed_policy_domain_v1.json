@@ -18,5 +18,5 @@
   "productive_freshness_state_binding_allowed": false,
   "input_authority_flip_allowed": false,
   "source_constant": "OPERATOR_BOUND_CANDIDATE_FRESHNESS_MAX_AGE_SECONDS",
-  "source_module": "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/f5_fresh_research_candidate_domain_constants_v1.py"
+  "source_module": "src/experiments/f5_fresh_research_candidate_domain_constants_v1.py"
 }

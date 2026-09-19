@@ -5,7 +5,7 @@
   "workpackage_id": "OPTIMIZATION_SURFACE_OWNER_GRANTS_MATERIALIZATION_V1",
   "authorized_surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
   "owner_value_token": "OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS",
-  "surface_owner_ref": "ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.f5_fresh_research_candidate_domain_constants_v1",
+  "surface_owner_ref": "src.experiments.f5_fresh_research_candidate_domain_constants_v1",
   "target_family": "PURE_STACK_FUTURES_INPUT_FRESHNESS_SHADOW_RESEARCH",
   "owner_boundary": "SHADOW_RESEARCH_EVIDENCE_CALIBRATION_ONLY",
   "f1_m9_deduplication_forbidden": true,

@@ -20,6 +20,6 @@
   "optimizer_search_over_safety_bounds_forbidden": true,
   "source_modules": [
     "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/shadow_futures_input_freshness_age_collector_v1.py",
-    "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/f5_fresh_research_candidate_domain_constants_v1.py"
+    "src/experiments/f5_fresh_research_candidate_domain_constants_v1.py"
   ]
 }

@@ -18,7 +18,6 @@ AGE_SEMANTIC: Final[str] = "FUTURES_INPUT_READINESS_SAFETY_FRESHNESS_STATE"
 F1_M9_DEDUPLICATION_FORBIDDEN: Final[bool] = True
 CMC_VOLATILITY_MAX_AGE_ALPHA_REUSE_FORBIDDEN: Final[bool] = True
 
-# Documented discrete research/shadow grid (not identical to M9 candidate set semantics).
 OPERATOR_BOUND_CANDIDATE_FRESHNESS_MAX_AGE_SECONDS: Final[tuple[int, ...]] = (
     30,
     45,

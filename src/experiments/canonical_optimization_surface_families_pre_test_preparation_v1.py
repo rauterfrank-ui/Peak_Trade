@@ -217,7 +217,7 @@ _FAMILY_RECORDS: tuple[OptimizationSurfaceFamilyRecordV1, ...] = (
         preparation_status=PreparationStatus.TEST_READY_SHADOW_RESEARCH,
         owner_refs=(
             "src/experiments/canonical_f5_fresh_futures_input_freshness_optimizable_surface_v1.py",
-            "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/f5_fresh_research_candidate_domain_constants_v1.py",
+            "src/experiments/f5_fresh_research_candidate_domain_constants_v1.py",
             "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/shadow_futures_input_freshness_age_collector_v1.py",
         ),
         parameter_domain_summary="OWNER_VALUE_FUTURES_INPUT_FRESHNESS_MAX_AGE_SECONDS (not F1 dedupe)",

@@ -11,7 +11,7 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
-from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.f5_fresh_research_candidate_domain_constants_v1 import (
+from src.experiments.f5_fresh_research_candidate_domain_constants_v1 import (
     CANDIDATE_DOMAIN_SCHEMA_VERSION,
     OPERATOR_BOUND_CANDIDATE_FRESHNESS_MAX_AGE_SECONDS,
     OWNER_VALUE_TOKEN,
@@ -19,10 +19,7 @@ from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.f5_fresh_re
 
 SCHEMA_VERSION: Final[str] = "canonical_f5_fresh_futures_input_freshness_optimizable_surface_v1"
 SURFACE_ID: Final[str] = "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
-SURFACE_OWNER_REF: Final[str] = (
-    "ops.productive_pure_stack_numeric_policy_shadow_campaign_v1."
-    "f5_fresh_research_candidate_domain_constants_v1"
-)
+SURFACE_OWNER_REF: Final[str] = "src.experiments.f5_fresh_research_candidate_domain_constants_v1"
 TARGET_FAMILY: Final[str] = "PURE_STACK_FUTURES_INPUT_FRESHNESS_SHADOW_RESEARCH"
 ENVELOPE_ID: Final[str] = "envelope.f5_fresh_futures_input_freshness_shadow_research.v1"
 OWNER_GRANT_CONFIG: Final[str] = (
