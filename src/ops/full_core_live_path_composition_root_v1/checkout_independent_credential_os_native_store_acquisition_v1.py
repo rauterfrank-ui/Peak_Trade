@@ -4,10 +4,12 @@ Input identity is the already-bound DZ/EB tuple. The OS lookup returns opaque
 bytes only. No payload schema, no UTF-8 field parse, no capability material
 flag, no V5 join, no GET, no sign, no POST.
 
-REAL_KEYCHAIN_ACCESS_AUTHORIZED remains false. The default adapter resolve
-path is unchanged and still fail-closed. Tests must inject a lookup backend.
+The canonical default lookup backend is MacosSecurityFrameworkLookupBackendV1.
+Default wiring does not authorize OS access. REAL_KEYCHAIN_ACCESS_AUTHORIZED
+is the explicit Keychain-access gate: false fails closed before
+SecItemCopyMatching. resolve_capability_v1 remains fail-closed.
 
-OWNER_GO=OWNER_GO_K1_REAL_MACOS_KEYCHAIN_ACQUISITION_V1
+OWNER_GO=OWNER_GO_K1_PRODUCTIVE_MACOS_KEYCHAIN_CREDENTIAL_CLOSEOUT_V1
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
 
@@ -38,12 +40,11 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_source_backend_kind_v1 import (
     PRODUCTIVE_TARGET_BACKEND,
-    REAL_KEYCHAIN_ACCESS_AUTHORIZED as DY_REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     SOURCE_BACKEND_CLASS,
 )
 
-OWNER_GO = "OWNER_GO_K1_REAL_MACOS_KEYCHAIN_ACQUISITION_V1"
-THIS_SLICE = "K1_REAL_MACOS_KEYCHAIN_ACQUISITION_V1"
+OWNER_GO = "OWNER_GO_K1_PRODUCTIVE_MACOS_KEYCHAIN_CREDENTIAL_CLOSEOUT_V1"
+THIS_SLICE = "K1_PRODUCTIVE_MACOS_KEYCHAIN_CREDENTIAL_CLOSEOUT_V1"
 CONTRACT_VERSION = "v1"
 K1_REAL_KEYCHAIN_ACQUISITION_IMPLEMENTED = True
 REAL_KEYCHAIN_ACCESS_IMPLEMENTED = False
@@ -61,6 +62,7 @@ REASON_OS_NATIVE_STORE_ERROR = "KEYCHAIN_OS_NATIVE_STORE_ERROR"
 REASON_UNEXPECTED_REPRESENTATION = "KEYCHAIN_VALUE_UNEXPECTED_REPRESENTATION"
 REASON_IDENTITY_MISMATCH = "KEYCHAIN_IDENTITY_MISMATCH"
 REASON_BACKEND_REQUIRED = "OS_NATIVE_STORE_LOOKUP_BACKEND_REQUIRED"
+REASON_ACCESS_FORBIDDEN = "REAL_KEYCHAIN_ACCESS_FORBIDDEN"
 
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
@@ -138,6 +140,13 @@ def _error(code: str) -> NoReturn:
     raise FullCoreCheckoutIndependentOsNativeStoreAcquisitionError(code)
 
 
+def assert_real_keychain_access_authorized_for_os_lookup_v1() -> None:
+    """Fail closed before SecItemCopyMatching unless the K1 access gate is true."""
+
+    if REAL_KEYCHAIN_ACCESS_AUTHORIZED is not True:
+        _error(REASON_ACCESS_FORBIDDEN)
+
+
 def wipe_opaque_os_native_store_material_v1(holder_id: int) -> None:
     buf = _HELD_OPAQUE.pop(int(holder_id), None)
     if buf is None:
@@ -186,8 +195,7 @@ def coerce_opaque_value_data_v1(raw: object) -> bytes:
 def _proof_for_bound_identity_v1() -> FullCoreOsNativeStoreAcquisitionProofV1:
     if PAYLOAD_SCHEMA_BOUND is True or PAYLOAD_SCHEMA_INTRODUCED is True:
         _error("PAYLOAD_SCHEMA_MUST_REMAIN_UNBOUND")
-    if REAL_KEYCHAIN_ACCESS_AUTHORIZED is True or DY_REAL_KEYCHAIN_ACCESS_AUTHORIZED is True:
-        _error("REAL_KEYCHAIN_ACCESS_MUST_REMAIN_UNAUTHORIZED")
+    authorized = TRUE_TOKEN if REAL_KEYCHAIN_ACCESS_AUTHORIZED is True else FALSE_TOKEN
     return FullCoreOsNativeStoreAcquisitionProofV1(
         acquired=TRUE_TOKEN,
         source_ref_uri=SOURCE_REF_URI,
@@ -200,7 +208,7 @@ def _proof_for_bound_identity_v1() -> FullCoreOsNativeStoreAcquisitionProofV1:
         material_emitted=FALSE_TOKEN,
         material_loaded_on_capability=FALSE_TOKEN,
         utf8_payload_parsed=FALSE_TOKEN,
-        real_keychain_access_authorized=FALSE_TOKEN,
+        real_keychain_access_authorized=authorized,
         productive_provider_active=FALSE_TOKEN,
         v5_joined=FALSE_TOKEN,
     )
@@ -238,7 +246,7 @@ def run_opaque_os_native_store_acquisition_v1(
     """Acquire opaque bytes inside the credential boundary. No public emit."""
 
     if backend is None:
-        _error(REASON_BACKEND_REQUIRED)
+        backend = MacosSecurityFrameworkLookupBackendV1()
     copy_fn = getattr(backend, "copy_matching_generic_password_value_data_v1", None)
     if not callable(copy_fn):
         _error(REASON_BACKEND_REQUIRED)
@@ -294,6 +302,7 @@ class MacosSecurityFrameworkLookupBackendV1:
             account=account,
             item_class=item_class,
         )
+        assert_real_keychain_access_authorized_for_os_lookup_v1()
         payloads = copy_matching_generic_password_payloads_v1(
             service=service,
             account=account,
@@ -323,6 +332,7 @@ def copy_matching_generic_password_payloads_v1(
         account=account,
         item_class=item_class,
     )
+    assert_real_keychain_access_authorized_for_os_lookup_v1()
     if sys.platform != "darwin":
         _error(REASON_OS_NATIVE_STORE_ERROR)
     return _sec_item_copy_matching_generic_password_payloads_v1(
