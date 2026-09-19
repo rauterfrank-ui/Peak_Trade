@@ -1,4 +1,4 @@
-"""POST_6630 Slice 1 — auto-bind DDO N_BARS upstream from capture + O4 producer."""
+"""POST_6630 — DDO N_BARS upstream auto-bind (capture, O4 producer, C1 feed)."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from src.ops.capability_11_2_credential_authorization_and_account_identity_bound
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (
     NormalizedPublicMarketDataV1,
 )
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.decision_economics_cycle_bridge_v1 import (
     run_bridge_cycle_v1,
     run_bridge_cycles_from_mids_v1,
@@ -156,7 +157,20 @@ def test_c1_observation_feeds_o4_enabling_n_bars_without_manual_producer(tmp_pat
     horizon = state.last_ddo_n_bars_horizon_observation
     runtime = state.last_ddo_n_bars_evaluation_runtime
     assert horizon is not None and horizon.get("ok") is True
+    assert horizon.get("external_effect_authorized") is False
     assert runtime is not None and runtime.get("ok") is True
+    assert runtime.get("runtime_wiring") is True
+    assert runtime.get("external_effect_authorized") is False
+    assert runtime["actual_outcome_ref"] == horizon["evaluation_observation"]["actual_outcome_ref"]
+    ledger_path = state.ddo_capture_binding.ledger_path
+    assert ledger_path is not None
+    records = AppendOnlyDdoLedgerV0(ledger_path).read_all()
+    horizon_caps = [
+        row
+        for row in records
+        if row.get("schema_name") == "real_outcome_horizon_observation_capture"
+    ]
+    assert len(horizon_caps) >= 1
 
 
 def test_explicit_injection_still_wins_over_auto_bind(tmp_path: Path) -> None:

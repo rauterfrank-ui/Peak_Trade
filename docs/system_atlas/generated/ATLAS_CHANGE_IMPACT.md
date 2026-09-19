@@ -96,7 +96,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST-6630 Slice 2 (pending PR): session CanonicalPublicMdBarProducer fed from accepted C1 host observations; O4 N_BARS snapshot refresh from producer until post-decision bars suffice; cycle-scoped capture bind for decision_event. Explicit snapshot/producer injection still wins. Chain terminus unchanged. NO_N_BARS_TO_PROMOTION_BINDING unchanged. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
+- POST-6630 Slice 3 (pending PR): productive proof test only — C1→O4 auto-bind path asserts evaluation runtime wiring, durable horizon capture, and outcome ref parity without manual decision/snapshot/producer injection. No bridge or authority change. N_BARS chain terminus remains evaluation runtime per ddo_outcome_to_promotion_productive_binding_decision_v1.json. EXTERNAL_EFFECT_AUTHORIZED=false. AUTHORITY_EFFECT=NONE. Atlas is not canonical authority.
 - introduced_by=PENDING_CHANGE
 - modified_by=PENDING_CHANGE
 
