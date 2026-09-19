@@ -27,7 +27,7 @@ ACCEPTED_OFFLINE_EVIDENCE_INPUT (M5)
 Owners:
 
 - `src/learning/deterministic_decision_outcome_v0/meta_learning_evidence_v1.py`
-- `src/learning/deterministic_decision_outcome_v0/meta_learning_ingest_v1.py`
+- `src/experiments/canonical_meta_learning_ingest_v1.py`
 
 Bounded reuse: `canonical_meta_learning_v1` constants/lineage refs only — not the Phase-11 analyzer executor.
 

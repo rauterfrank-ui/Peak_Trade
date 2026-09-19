@@ -9,7 +9,10 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
-from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
+from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
+    compute_content_hash_v0,
+    is_valid_sha256_hex_v0,
+)
 
 SCHEMA_VERSION: Final[str] = "meta_learning_evidence_v1"
 META_LEARNING_EVIDENCE_DOMAIN: Final[str] = "peak_trade.learning.ddo.meta_learning_evidence.v1"
@@ -56,7 +59,7 @@ class MetaLearningEvidenceValidationError(ValueError):
 
 
 def derive_meta_evidence_id_v1(*, reproducibility_digest: str) -> str:
-    return compute_content_sha256(
+    return compute_content_hash_v0(
         {
             "digest_domain": f"{META_LEARNING_EVIDENCE_DOMAIN}.meta_evidence_id",
             "reproducibility_digest": reproducibility_digest,
@@ -76,7 +79,7 @@ def validate_meta_learning_evidence_v1(payload: Mapping[str, Any]) -> MappingPro
     if payload.get("meta_evidence_authority") != META_EVIDENCE_AUTHORITY:
         raise MetaLearningEvidenceValidationError("META_EVIDENCE_AUTHORITY_MUST_BE_NONE")
     digest = payload.get("reproducibility_digest")
-    if not is_valid_sha256_hex(str(digest or "")):
+    if not is_valid_sha256_hex_v0(str(digest or "")):
         raise MetaLearningEvidenceValidationError("REPRODUCIBILITY_DIGEST_INVALID")
     meta_id = payload.get("meta_evidence_id")
     if meta_id != derive_meta_evidence_id_v1(reproducibility_digest=str(digest)):

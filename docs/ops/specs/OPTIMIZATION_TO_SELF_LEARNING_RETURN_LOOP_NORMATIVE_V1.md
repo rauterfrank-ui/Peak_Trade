@@ -29,7 +29,7 @@ M4_EXPERIMENT_PLANE_RESULT
 Owners:
 
 - `src/experiments/canonical_optimization_experiment_evidence_v1.py`
-- `src/learning/deterministic_decision_outcome_v0/self_learning_optimization_return_input_v1.py`
+- `src/experiments/canonical_self_learning_optimization_return_input_v1.py`
 
 Evidence transfer is not authority, promotion, or shared universe state.
 

@@ -35,7 +35,7 @@ from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 im
     derive_meta_evidence_id_v1,
     validate_meta_learning_evidence_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.self_learning_optimization_return_input_v1 import (
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT,
     SCHEMA_VERSION as RETURN_INPUT_SCHEMA_VERSION,
 )

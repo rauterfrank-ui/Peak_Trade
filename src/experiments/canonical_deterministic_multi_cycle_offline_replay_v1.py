@@ -37,13 +37,13 @@ from src.experiments.canonical_optimization_universe_learning_input_v1 import (
 from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 import (
     SCHEMA_VERSION as M6_EVIDENCE_SCHEMA_VERSION,
 )
-from src.learning.deterministic_decision_outcome_v0.meta_learning_ingest_v1 import (
+from src.experiments.canonical_meta_learning_ingest_v1 import (
     INGEST_STATUS_COMPLETE,
     SCHEMA_VERSION as M6_INGEST_SCHEMA_VERSION,
     MetaLearningIngestRequestV1,
     ingest_meta_learning_evidence_from_return_input_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.self_learning_optimization_return_input_v1 import (
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     SCHEMA_VERSION as M5_RETURN_SCHEMA_VERSION,
     STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT,
     SelfLearningOptimizationReturnInputRequestV1,

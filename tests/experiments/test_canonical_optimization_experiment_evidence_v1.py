@@ -21,7 +21,7 @@ from src.experiments.canonical_optimization_universe_experiment_plane_v1 import 
 from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
     export_learning_evidence_from_state_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.self_learning_optimization_return_input_v1 import (
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     AUTHORIZED_PRODUCTIVE_SURFACES,
     LEARNING_STATE_MUTATION_PERFORMED,
     META_LEARNING_INGEST_PERFORMED,
@@ -40,11 +40,7 @@ from tests.learning.test_learning_evidence_export_v1 import _learning_state
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RETURN_MODULE = (
-    REPO_ROOT
-    / "src"
-    / "learning"
-    / "deterministic_decision_outcome_v0"
-    / "self_learning_optimization_return_input_v1.py"
+    REPO_ROOT / "src" / "experiments" / "canonical_self_learning_optimization_return_input_v1.py"
 )
 
 

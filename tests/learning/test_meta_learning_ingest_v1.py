@@ -23,7 +23,7 @@ from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 im
     UNKNOWN_UNAVAILABLE,
     validate_meta_learning_evidence_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.meta_learning_ingest_v1 import (
+from src.experiments.canonical_meta_learning_ingest_v1 import (
     AUTHORIZED_PRODUCTIVE_SURFACES,
     CANONICAL_ANALYZER_INVOKED,
     INGEST_STATUS_COMPLETE,
@@ -36,7 +36,7 @@ from src.learning.deterministic_decision_outcome_v0.meta_learning_ingest_v1 impo
     build_meta_learning_evidence_from_optimization_experiment_v1,
     ingest_meta_learning_evidence_from_return_input_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.self_learning_optimization_return_input_v1 import (
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT,
     SelfLearningOptimizationReturnInputRequestV1,
     validate_self_learning_optimization_return_input_v1,
@@ -47,13 +47,7 @@ from tests.experiments.test_canonical_optimization_universe_experiment_plane_v1 
 from tests.learning.test_learning_evidence_export_v1 import _learning_state
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-INGEST_MODULE = (
-    REPO_ROOT
-    / "src"
-    / "learning"
-    / "deterministic_decision_outcome_v0"
-    / "meta_learning_ingest_v1.py"
-)
+INGEST_MODULE = REPO_ROOT / "src" / "experiments" / "canonical_meta_learning_ingest_v1.py"
 
 
 def _m5_outputs(tmp_path: Path):

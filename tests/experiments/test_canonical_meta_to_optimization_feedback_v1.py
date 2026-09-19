@@ -23,7 +23,7 @@ from src.experiments.canonical_meta_to_optimization_feedback_v1 import (
     MetaToOptimizationFeedbackInputRequestV1,
     validate_meta_to_optimization_feedback_input_v1,
 )
-from src.learning.deterministic_decision_outcome_v0.meta_learning_ingest_v1 import (
+from src.experiments.canonical_meta_learning_ingest_v1 import (
     INGEST_STATUS_COMPLETE,
     MetaLearningIngestRequestV1,
     ingest_meta_learning_evidence_from_return_input_v1,
@@ -42,7 +42,7 @@ from tests.experiments.test_canonical_optimization_universe_experiment_plane_v1 
     _plane_request,
 )
 from tests.learning.test_learning_evidence_export_v1 import _learning_state
-from src.learning.deterministic_decision_outcome_v0.self_learning_optimization_return_input_v1 import (
+from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     SelfLearningOptimizationReturnInputRequestV1,
     validate_self_learning_optimization_return_input_v1,
 )
