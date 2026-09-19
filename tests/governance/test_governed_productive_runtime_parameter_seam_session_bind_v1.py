@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from src.governance.governed_productive_runtime_parameter_seam_join_v1 import (
     resolve_governed_runtime_seam_for_presence_gate_v1,
 )
@@ -46,9 +44,6 @@ from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 
     bind_typed_canonical_volatility_estimate_into_market_context_v1,
     evaluate_typed_volatility_binding_eligibility_v1,
 )
-from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
-    MaxAgeResearchDesignContractError,
-)
 
 
 def test_valid_seam_session_bind_reaches_bridge_presence_gate(tmp_path: Path) -> None:
@@ -87,25 +82,33 @@ def test_valid_seam_session_bind_reaches_bridge_presence_gate(tmp_path: Path) ->
     )
 
 
-def test_bridge_cycle_research_join_blocks_ratified_seam_telemetry(tmp_path: Path) -> None:
-    """Documents REAL_BLOCKER: research join requires UNRESOLVED threshold on cycle output."""
+def test_bridge_cycle_research_join_epistemic_lane_with_ratified_seam_telemetry(
+    tmp_path: Path,
+) -> None:
+    """Gate keeps RATIFIED telemetry; research join stays UNRESOLVED (separate lane)."""
     seam_record = _valid_seam_record(tmp_path)
     state = HardenedBridgeSessionStateV2()
     state.typed_volatility_persistence_path = tmp_path / "hist.json"
     state, _ = bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1(
         state,
         seam_record,
-        session_id="seam-research-join-blocker",
+        session_id="seam-research-join-reconciled",
     )
-    with pytest.raises(MaxAgeResearchDesignContractError, match="join_requires_unresolved"):
-        for i in range(61):
-            run_hardened_bridge_cycle_v2(
-                state,
-                mid_price=_price_at(i),
-                event_ts_unix=T0 + float(i),
-                session_id="seam-research-join-blocker",
-                finalized_pt1m_mark_sample=_sample(i),
-            )
+    last = None
+    for i in range(61):
+        last = run_hardened_bridge_cycle_v2(
+            state,
+            mid_price=_price_at(i),
+            event_ts_unix=T0 + float(i),
+            session_id="seam-research-join-reconciled",
+            finalized_pt1m_mark_sample=_sample(i),
+        )
+    assert last is not None
+    gate = last["double_play_typed_volatility_presence_gate"]
+    assert gate["max_age_policy_evidence"]["threshold_status"] == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    join = last["canonical_volatility_max_age_research_evidence_join"]
+    assert join["threshold_status"] == THRESHOLD_STATUS_UNRESOLVED
+    assert join["enforcement_applied"] is False
 
 
 def test_missing_seam_fail_closed() -> None:

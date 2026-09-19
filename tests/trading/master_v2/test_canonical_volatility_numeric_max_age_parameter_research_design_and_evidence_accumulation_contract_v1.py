@@ -49,6 +49,7 @@ from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_d
     assert_capability_non_goals_v1,
     build_max_age_research_evidence_join_from_cycle_v1,
     build_max_age_research_evidence_join_v1,
+    project_max_age_policy_evidence_for_research_evidence_join_v1,
     build_ratified_max_age_research_design_contract_v1,
     evaluate_counterfactual_max_age_threshold_diagnostic_v1,
     load_max_age_research_evidence_ledger_v1,
@@ -56,6 +57,8 @@ from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_d
     validate_max_age_research_design_contract_v1,
 )
 from trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
+    THRESHOLD_STATUS_RATIFIED_NUMERIC,
+    THRESHOLD_STATUS_UNRESOLVED,
     VolatilityPresenceStatusV1,
     VolatilityRestartStatusV1,
     VolatilityReuseStatusV1,
@@ -459,6 +462,25 @@ def test_06_join_rejects_enforcement_resolved_and_empty_identities() -> None:
             raise AssertionError(f"expected fail-closed for {kwargs}")
         except MaxAgeResearchDesignContractError:
             pass
+
+
+def test_06a_join_projects_ratified_gate_telemetry_to_unresolved_research_lane() -> None:
+    age = _age_evidence()
+    ratified = age.to_dict()
+    ratified["threshold_status"] = THRESHOLD_STATUS_RATIFIED_NUMERIC
+    projected = project_max_age_policy_evidence_for_research_evidence_join_v1(ratified)
+    assert projected["threshold_status"] == THRESHOLD_STATUS_UNRESOLVED
+    assert ratified["threshold_status"] == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    assert projected["computed_age_seconds"] == ratified["computed_age_seconds"]
+    assert projected["decision"] == ratified["decision"]
+    join = build_max_age_research_evidence_join_v1(
+        session_id="s1",
+        cycle_id="c1",
+        instrument_id=CANON,
+        regime_id="trending",
+        max_age_policy_evidence=projected,
+    )
+    assert join.threshold_status == THRESHOLD_STATUS_UNRESOLVED
 
 
 def test_06b_join_rejects_cross_identity_mismatches() -> None:
