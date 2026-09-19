@@ -112,19 +112,6 @@ from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
-    REQUIRED_CREDENTIAL_CLASS,
-    REQUIRED_SECRETREF_URI,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-)
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     CAPABILITY_ID as CAP23_ID,
     SELECTION_FILENAME,
@@ -453,17 +440,17 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
                 resolved_vault = (
                     Path(str(vault_file))
                     if vault_file is not None and str(vault_file).strip()
-                    else default_vault_path_v1(repo_root=root)
+                    else _fail_closed_credential_unavailable_v1(repo_root=root)
                 )
                 try:
-                    backend = build_file_secretref_vault_backend_v1(vault_file=resolved_vault)
-                    handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+                    backend = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
+                    handle = _fail_closed_credential_unavailable_v1(
                         secret_reference=REQUIRED_SECRETREF_URI,
                         vault_backend=backend,
                         credential_class=REQUIRED_CREDENTIAL_CLASS,
                     )
                     fresh_get_transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle)
-                except LiveCanaryCredentialError:
+                except RuntimeError:
                     get_status = "CREDENTIAL_HANDLE_FAIL_CLOSED"
             if fresh_get_transport is not None:
                 try:
@@ -483,7 +470,7 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
                 get_status = "FRESH_GET_TRANSPORT_MISSING"
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
 
     decision_result = "NO_EXECUTABLE_DECISION"
     decision_provenance = CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT

@@ -21,9 +21,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_limit_price
     FlattenPricePermitV1,
     evaluate_canary_flatten_limit_price_contract_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    serialize_signed_post_body_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.order_plan_v1 import (
     LiveCanaryOrderPlanError,
     build_minimum_valid_canary_flatten_order_plan_v1,
@@ -52,6 +49,9 @@ from src.ops.section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload
     PX_SOURCE_CLASS_VALUE,
     STANDING_TD_MODE,
     TARGET_INSTRUMENT_ID,
+)
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
+    serialize_canonical_okx_post_body_v1,
 )
 from src.ops.section_11_13_5_p13_execution_prerequisite_12_exact_flatten_payload_v1.contract_v1 import (
     ExactFlattenPayloadError,
@@ -195,7 +195,7 @@ def build_exact_flatten_payload_from_observed_position_v1(
         px=permit_px,
         clordid=plan.clordid,
     )
-    canonical_json = serialize_signed_post_body_v1(body)
+    canonical_json = serialize_canonical_okx_post_body_v1(body)
     digest = hashlib.sha256(canonical_json.encode("utf-8")).hexdigest()
     return ExactFlattenPayloadV1(
         body=dict(body),

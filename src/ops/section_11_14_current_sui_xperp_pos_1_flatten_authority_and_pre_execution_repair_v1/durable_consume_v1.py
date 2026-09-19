@@ -9,9 +9,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import write_json_v1
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
     assert_no_plaintext_in_payload_v1,
+    write_json_v1,
 )
 from src.ops.section_11_14_current_sui_xperp_pos_1_flatten_authority_and_pre_execution_repair_v1.constants_v1 import (
     DURABLE_CONSUME_FILENAME,

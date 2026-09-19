@@ -116,16 +116,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     parse_json_object_v1,
     safe_response_headers_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    release_live_canary_ephemeral_material_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-    inspect_credential_material_presence_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = (
     "OWNER_GO_REQUIRED_TO_EXECUTE_EXACTLY_ONE_BOUND_U05_PRIMARY_PROOF_GET_OR_WITNESS_ACQUISITION_V1"
@@ -415,7 +410,7 @@ def _one_authorized_interest_accrued_get_v1(
     send_attempted = FALSE_TOKEN
     try:
         if handle is not None:
-            auth_headers = build_okx_live_canary_auth_headers_v1(
+            auth_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=url, method=HTTP_METHOD
             )
             auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -534,9 +529,11 @@ def execute_u05_primary_proof_bound_interest_accrued_get_acquisition_v1(
     secret_resolution_status = "NOT_ATTEMPTED"
     if productive:
         resolved_vault = (
-            Path(vault_file) if vault_file is not None else default_vault_path_v1(repo_root=repo)
+            Path(vault_file)
+            if vault_file is not None
+            else _fail_closed_credential_unavailable_v1(repo_root=repo)
         )
-        presence = inspect_credential_material_presence_v1(vault_file=resolved_vault)
+        presence = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
         if presence.get("VALUES_INCLUDED") is not False:
             raise U05PrimaryProofBoundInterestAccruedGetAcquisitionError(
                 "SECRET_VALUES_MUST_NOT_BE_INCLUDED"
@@ -556,7 +553,7 @@ def execute_u05_primary_proof_bound_interest_accrued_get_acquisition_v1(
         capture = _one_authorized_interest_accrued_get_v1(transport=opened_transport, handle=handle)
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     if capture["send_attempted"] != TRUE_TOKEN:
         raise U05PrimaryProofBoundInterestAccruedGetAcquisitionError("GET_NOT_ATTEMPTED")
     body_bytes = bytes(capture["body_bytes"])

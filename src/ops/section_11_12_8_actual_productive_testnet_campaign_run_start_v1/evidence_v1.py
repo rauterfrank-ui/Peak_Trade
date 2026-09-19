@@ -13,7 +13,7 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     MANIFEST_FILENAME,
     OWNER,
 )
-from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
     assert_no_plaintext_in_payload_v1,
 )
 

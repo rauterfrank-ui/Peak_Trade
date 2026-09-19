@@ -51,6 +51,10 @@ from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immu
 )
 
 
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PREP_EVIDENCE = (
     REPO_ROOT / "docs" / "evidence" / "capability_11_long_running_testnet_proven_prep_eval_v1"
@@ -107,10 +111,6 @@ def test_hidden_confirm_replay_refused() -> None:
 
 
 def test_query_sign_includes_query_string() -> None:
-    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
-        resolve_and_load_secretref_ephemeral_v1,
-    )
-
     secret = "test-secret"
     ts = "2026-08-11T00:00:00.000Z"
     path_only = sign_okx_request_v1(
@@ -133,7 +133,7 @@ def test_query_sign_includes_query_string() -> None:
         {"api_key": "k", "api_secret": secret, "passphrase": "p"},
         separators=(",", ":"),
     )
-    handle = resolve_and_load_secretref_ephemeral_v1(stub_material=material)
+    handle = _fail_closed_credential_unavailable_v1(stub_material=material)
     client = BoundOkxTestnetHttpClientV1(credential_handle=handle, wire_send_enabled=False)
     result = client.request(
         method="GET",
@@ -147,15 +147,11 @@ def test_query_sign_includes_query_string() -> None:
 
 
 def test_live_host_hard_block() -> None:
-    from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
-        resolve_and_load_secretref_ephemeral_v1,
-    )
-
     material = json.dumps(
         {"api_key": "k", "api_secret": "s", "passphrase": "p"},
         separators=(",", ":"),
     )
-    handle = resolve_and_load_secretref_ephemeral_v1(stub_material=material)
+    handle = _fail_closed_credential_unavailable_v1(stub_material=material)
     client = BoundOkxTestnetHttpClientV1(credential_handle=handle, wire_send_enabled=False)
     with pytest.raises(BoundTestnetHttpClientError, match="LIVE_HOST_HARD_BLOCK"):
         client.request(method="GET", url="https://www.okx.com/api/v5/account/balance")

@@ -194,10 +194,11 @@ EXACT_FLATTEN_PAYLOAD_LINEAGE: tuple[dict[str, str], ...] = (
         adjudication_status="PROVEN",
     ),
     _seam(
-        producer="serialize_signed_post_body_v1",
+        producer="serialize_canonical_okx_post_body_v1",
         field="CONTRACT_BOUNDARY",
         source_path=(
-            "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/okx_live_canary_signer_v1.py"
+            "src/ops/full_core_live_path_composition_root_v1/"
+            "checkout_independent_canonical_okx_post_body_serialize_v1.py"
         ),
         status="canonical_json_before_hmac",
         semantic_object="EXACT_PAYLOAD_CONTRACT_BOUNDARY",

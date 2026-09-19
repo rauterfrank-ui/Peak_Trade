@@ -19,6 +19,12 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import OpenerDirector, ProxyHandler, Request, build_opener
 
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_canonical_okx_post_body_serialize_v1 import (
+    serialize_canonical_okx_post_body_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    build_k1_okx_venue_auth_headers_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
 )
@@ -28,10 +34,6 @@ from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 imp
 from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
     AUTHORIZED_HOST,
     FullCoreSendCredentialHandleV1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-    serialize_signed_post_body_v1,
 )
 
 USER_AGENT = "PeakTrade-FullCore-DJ-EnvelopeBound-Productive-POST/1"
@@ -162,8 +164,8 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("HOST_NOT_EEA_OKX")
         if "www.okx.com" in str(parsed.hostname or ""):
             raise FullCoreProductiveHttpPostError("WWW_OKX_FORBIDDEN")
-        body = serialize_signed_post_body_v1(payload)
-        headers = build_okx_live_canary_auth_headers_v1(
+        body = serialize_canonical_okx_post_body_v1(payload)
+        headers = build_k1_okx_venue_auth_headers_v1(
             handle=self._signing_handle,
             url=url,
             method="POST",

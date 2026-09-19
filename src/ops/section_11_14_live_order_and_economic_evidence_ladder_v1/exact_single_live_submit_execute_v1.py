@@ -26,9 +26,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     LiveCanaryTransportV1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.submit_gates_v1 import (
     LiveCanarySubmitGateError,
 )
@@ -50,9 +47,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.order_plan_observe_execute_v1 import (
     productive_canary_execute_config_dict_v1,
 )
@@ -62,6 +56,11 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.submit_ack
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.submit_ack_observed_predicate_v1 import (
     ADMISSIBLE_SOURCE_KIND,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 THIS_OWNER_GO = "PEAK_TRADE_OWNER_GO_SECTION_11_14_EXACT_SINGLE_LIVE_SUBMIT_POST_V1"
 EXPECTED_ORIGIN_MAIN_SHA = "d6d3fa2970aafc9517cff9c0b8c1685dabd9791b"
@@ -207,9 +206,11 @@ def execute_exact_single_live_submit_post_v1(
         path = (
             Path(vault_file)
             if vault_file is not None
-            else default_vault_path_v1(repo_root=Path(__file__).resolve().parents[3])
+            else _fail_closed_credential_unavailable_v1(
+                repo_root=Path(__file__).resolve().parents[3]
+            )
         )
-        backend = build_file_secretref_vault_backend_v1(vault_file=path)
+        backend = _fail_closed_credential_unavailable_v1(vault_file=path)
 
     started = _utc_now_iso_v1()
     blocked_reason: str | None = None

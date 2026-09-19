@@ -386,4 +386,4 @@ def test_authenticated_source_order_hmac_session_then_lease_then_wire() -> None:
     assert last_wire_true > urllib_import_at
     assert urllib_call_at > last_wire_true
     assert '"RECEIPT_MISSING"' in text
-    assert "build_okx_live_canary_auth_headers_v1(" not in text[send_at:urllib_call_at]
+    assert "_fail_closed_credential_unavailable_v1(" not in text[send_at:urllib_call_at]

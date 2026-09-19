@@ -15,10 +15,10 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     TESTNET_PRIVATE_REST_BASE,
     TESTNET_REST_HOSTS,
 )
-from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
-    EphemeralCredentialHandleV1,
-    borrow_ephemeral_material_for_session_auth_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class ActualStartBindingError(RuntimeError):
@@ -69,7 +69,7 @@ def assert_endpoint_allowlisted_v1(
 
 def bind_and_verify_testnet_account_v1(
     *,
-    credential_handle: EphemeralCredentialHandleV1,
+    credential_handle: _fail_closed_credential_unavailable_v1,
     account_identity: str = CANONICAL_ACCOUNT_IDENTITY,
     venue: str = CANONICAL_VENUE,
     runtime_mode: str = CANONICAL_RUNTIME_MODE,
@@ -88,7 +88,7 @@ def bind_and_verify_testnet_account_v1(
         raise ActualStartBindingError("ACCOUNT_IDENTITY_REQUIRED")
     _assert_testnet_host(rest_base)
     # Prove SecretRef material is available for session auth without leaking it.
-    material = borrow_ephemeral_material_for_session_auth_v1(credential_handle)
+    material = _fail_closed_credential_unavailable_v1(credential_handle)
     if not material:
         raise ActualStartBindingError("SESSION_AUTH_MATERIAL_ABSENT")
     # Observed identity comes from stubbed transport response in acceptance tests.

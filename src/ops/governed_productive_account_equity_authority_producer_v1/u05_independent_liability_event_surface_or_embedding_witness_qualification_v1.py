@@ -101,10 +101,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.scoped_rea
 from src.ops.governed_productive_account_equity_authority_producer_v1.u05_independent_liability_event_and_non_algebraic_embedding_identity_primary_proof_acquisition_v1 import (
     CANDIDATE_SURFACE_BILLS_ARCHIVE,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-    inspect_credential_material_presence_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = (
     "QUALIFY_AND_BIND_EXACTLY_ONE_NEW_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_"
@@ -317,8 +318,12 @@ def _assert_parent_cb_pack(*, sealed_cb_pack: Path) -> None:
 
 
 def _inspect_vault_presence(*, repo: Path, vault_file: Path | str | None) -> dict[str, str]:
-    resolved = Path(vault_file) if vault_file is not None else default_vault_path_v1(repo_root=repo)
-    presence = inspect_credential_material_presence_v1(vault_file=resolved)
+    resolved = (
+        Path(vault_file)
+        if vault_file is not None
+        else _fail_closed_credential_unavailable_v1(repo_root=repo)
+    )
+    presence = _fail_closed_credential_unavailable_v1(vault_file=resolved)
     if presence.get("VALUES_INCLUDED") is not False:
         raise U05IndependentLiabilityEventSurfaceQualificationError(
             "SECRET_VALUES_MUST_NOT_BE_INCLUDED"

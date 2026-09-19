@@ -26,15 +26,6 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.http_cl
     LiveShadowReconHttpResponseV1,
     TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP,
 )
-from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.live_credential_ephemeral_v1 import (
-    assert_no_plaintext_in_payload_v1,
-    build_file_secretref_vault_backend_v1,
-    release_live_ephemeral_material_v1,
-    resolve_and_load_live_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.okx_live_ro_signer_v1 import (
-    build_okx_live_ro_get_auth_headers_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.account_positions_query_grammar_v1 import (
     build_account_positions_query_v1,
 )
@@ -79,6 +70,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1
     TARGET_POSITION_ZERO_PROVEN,
     classify_target_position_state_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.evidence_v1 import (
+    assert_no_plaintext_in_payload_v1,
+)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = (
     "PEAK_TRADE_OWNER_GO_SECTION_11_13_5_PREREQUISITE_08_FRESH_POSITION_OBSERVATION_CLUSTER_V1"
@@ -443,8 +442,8 @@ def run_authorized_fresh_position_observation_v1(
         max_retries=0,
         timeout_seconds=10.0,
     )
-    backend = build_file_secretref_vault_backend_v1(vault_file=Path(vault_file))
-    handle = resolve_and_load_live_secretref_ephemeral_v1(
+    backend = _fail_closed_credential_unavailable_v1(vault_file=Path(vault_file))
+    handle = _fail_closed_credential_unavailable_v1(
         secret_reference=SHADOW_RECON_SECRETREF,
         vault_backend=backend,
         credential_class=SHADOW_RECON_CREDENTIAL_CLASS,
@@ -461,7 +460,7 @@ def run_authorized_fresh_position_observation_v1(
     authenticated_get_status = "NOT_PERFORMED"
     try:
         url = f"{PRODUCTION_REST_BASE}{endpoint}"
-        auth_headers = build_okx_live_ro_get_auth_headers_v1(handle=handle, url=url)
+        auth_headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url)
         request_header_names = sorted(auth_headers)
         response = client.get(endpoint=endpoint, headers=auth_headers)
         http_status = int(response.status_code)
@@ -476,7 +475,7 @@ def run_authorized_fresh_position_observation_v1(
         authenticated_get_status = "TRANSPORT_OR_CLIENT_FAIL"
     finally:
         auth_headers.clear()
-        release_live_ephemeral_material_v1(handle)
+        _fail_closed_credential_unavailable_v1(handle)
     capture_finished = utc_now_iso_v1()
     received_ms = transport.received_monotonic_ms
     if received_ms is None and authenticated_get_status == "HTTP_RESPONSE_RECEIVED":
@@ -574,9 +573,9 @@ def run_authorized_fresh_position_observation_v1(
             "HEADER_NAMES_ONLY": request_header_names,
             "HTTP_CLIENT": "LiveShadowReconHttpClientV1",
             "SECRETREF_URI": SHADOW_RECON_SECRETREF,
-            "SIGNER": "build_okx_live_ro_get_auth_headers_v1",
+            "SIGNER": "_fail_closed_credential_unavailable_v1",
             "TRANSPORT": "ProvenanceUrllibLiveTransportV1",
-            "VAULT_BACKEND": "FileSecretRefVaultBackendV1",
+            "VAULT_BACKEND": "_fail_closed_credential_unavailable_v1",
         },
         "COUNTERS": counters,
         "GET_REQUEST_COUNT": counters.get("GET_REQUEST_COUNT", 0),

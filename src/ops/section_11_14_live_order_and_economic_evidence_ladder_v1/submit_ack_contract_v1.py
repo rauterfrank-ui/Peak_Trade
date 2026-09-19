@@ -146,7 +146,7 @@ def build_exact_mutation_contract_v1() -> dict[str, Any]:
         "host": REUSED_BINDING_REST_HOST,
         "url": f"https://{REUSED_BINDING_REST_HOST}{ENDPOINT_SUBMIT}",
         "auth_path": (
-            "build_okx_live_canary_auth_headers_v1 method=POST body=serialized_json "
+            "_fail_closed_credential_unavailable_v1 method=POST body=serialized_json "
             "headers=OK-ACCESS-KEY/SIGN/TIMESTAMP/PASSPHRASE"
         ),
         "auth_header_presence_keys": list(AUTH_HEADER_PRESENCE_KEYS),
@@ -175,7 +175,6 @@ def build_exact_mutation_contract_v1() -> dict[str, Any]:
             "evaluate_canary_submit_gates_v1 + refuse_submit_unless_gates_pass_v1 (pre-sizing)",
             "UrllibLiveCanaryTransportV1 constructible",
             "REST_HOST_NOT_PRODUCTION_EEA",
-            "ephemeral SecretRef load",
             "instrument binding",
             "GET instruments/ticker/price-limit/max-size/leverage/config/positions/balance",
             "build_minimum_valid_canary_order_plan_v1",
@@ -184,7 +183,7 @@ def build_exact_mutation_contract_v1() -> dict[str, Any]:
             "evaluate_pre_submit_exchange_state_v1",
             "assert_pre_submit_open_position_cap_allows_v1",
             "evaluate_canary_submit_gates_v1 + refuse_submit_unless_gates_pass_v1 (post-plan)",
-            "serialize_signed_post_body_v1 + CanaryEntrySubmitPermitV1",
+            "serialize_canonical_okx_post_body_v1 + CanaryEntrySubmitPermitV1",
             "LiveCanaryHttpClientV1.post_entry_order pre-send locks",
             "_build_request POST allowlist/host",
             "_entry_send_attempted=True",

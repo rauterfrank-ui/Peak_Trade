@@ -30,14 +30,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 from src.ops.section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1.execute_v1 import (
     sanitize_okx_message_v1,
 )
@@ -54,6 +46,11 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.reachabili
     _header_presence_v1,
     _sanitize_account_config_payload_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 PRIVATE_READ_ONLY_GET_ENDPOINTS: tuple[str, ...] = (
     ENDPOINT_ACCOUNT_CONFIG,
@@ -194,8 +191,8 @@ def execute_private_read_only_gets_v1(
     if productive:
         if vault_file is None:
             raise Section1114OfflineSurfaceError("VAULT_FILE_REQUIRED")
-        backend = build_file_secretref_vault_backend_v1(vault_file=Path(vault_file))
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        backend = _fail_closed_credential_unavailable_v1(vault_file=Path(vault_file))
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=REQUIRED_SECRETREF_URI,
             vault_backend=backend,
             credential_class=REQUIRED_CREDENTIAL_CLASS,
@@ -239,7 +236,7 @@ def execute_private_read_only_gets_v1(
                         raise Section1114OfflineSurfaceError("HOST_MISMATCH")
                     if parsed.path != endpoint:
                         raise Section1114OfflineSurfaceError("ENDPOINT_PATH_MISMATCH")
-                    auth_headers = build_okx_live_canary_auth_headers_v1(
+                    auth_headers = _fail_closed_credential_unavailable_v1(
                         handle=handle, url=url, method="GET"
                     )
                     auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -327,7 +324,7 @@ def execute_private_read_only_gets_v1(
             raise Section1114OfflineSurfaceError("POST_INVOKED_BY_PRIVATE_READ_ONLY_PROOF")
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     by_endpoint = {str(row["ENDPOINT"]): row for row in observations}
     config_row = by_endpoint.get(ENDPOINT_ACCOUNT_CONFIG) or {}
     balance_row = by_endpoint.get(ENDPOINT_ACCOUNT_BALANCE) or {}

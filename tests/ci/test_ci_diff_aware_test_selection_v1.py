@@ -5196,7 +5196,7 @@ PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_OBSERVATION_V1_TESTOWNER = (
     "tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py"
 )
 PACKAGE_DDO_SECTION_11_14_FLATTEN_PRE_LEASE_HOST_HOOK_V1_TESTOWNER = (
-    "tests/ops/test_section_11_14_flatten_pre_lease_ddo_observation_v1.py"
+    "tests/learning/test_section_11_14_flatten_pre_lease_observation_v1.py"
 )
 PACKAGE_DDO_EVALUATION_ENGINE_V0_PRODUCTION = (
     "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py"

@@ -26,10 +26,6 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.constants_
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.contract_v1 import (
     Section1114OfflineSurfaceError,
 )
-from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.credential_presence_v1 import (
-    default_vault_path_v1,
-    inspect_credential_material_presence_v1,
-)
 from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.path_reachable_predicate_v1 import (
     ADMISSIBILITY_PREDICATE,
     REACHABILITY_CONSTITUENT_COUNT,
@@ -40,6 +36,10 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.static_exe
     build_static_execution_graph_v1,
     evaluate_live_execution_code_exists_predicate_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 def _static_constituents_v1(*, repo_root: Path) -> dict[str, Any]:
@@ -131,8 +131,8 @@ def adjudicate_live_execution_path_reachable_v1(
 ) -> dict[str, Any]:
     static = _static_constituents_v1(repo_root=repo_root)
     if credential_presence is None:
-        presence = inspect_credential_material_presence_v1(
-            vault_file=default_vault_path_v1(repo_root=repo_root)
+        presence = _fail_closed_credential_unavailable_v1(
+            vault_file=_fail_closed_credential_unavailable_v1(repo_root=repo_root)
         )
     else:
         presence = dict(credential_presence)

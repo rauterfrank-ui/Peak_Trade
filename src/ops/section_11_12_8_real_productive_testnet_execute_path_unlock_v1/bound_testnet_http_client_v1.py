@@ -23,10 +23,6 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.con
     TESTNET_PRIVATE_REST_BASE,
     TESTNET_REST_HOSTS,
 )
-from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.secretref_credential_v1 import (
-    EphemeralCredentialHandleV1,
-    borrow_ephemeral_material_for_session_auth_v1,
-)
 from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.constants_v1 import (
     BOUND_CLIENT_KIND,
     BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
@@ -111,7 +107,7 @@ def assert_okx_access_timestamp_iso_ms_v1(timestamp: str) -> str:
 class BoundOkxTestnetHttpClientV1:
     """Real Testnet HTTP client. Wire send is gated; pre-merge keeps it disabled."""
 
-    credential_handle: EphemeralCredentialHandleV1
+    credential_handle: Any
     rest_base: str = TESTNET_PRIVATE_REST_BASE
     wire_send_enabled: bool = False
     timeout_seconds: float = 10.0
@@ -134,103 +130,8 @@ class BoundOkxTestnetHttpClientV1:
         # Single serialization used for BOTH OKX prehash body and wire bytes.
         body_text = "" if method_u == "GET" else json.dumps(body_obj, separators=(",", ":"))
         wire_body_bytes = body_text.encode("utf-8") if body_text else b""
-        signed_body_sha256 = hashlib.sha256(wire_body_bytes).hexdigest()
-        material = borrow_ephemeral_material_for_session_auth_v1(self.credential_handle)
-        creds = _parse_okx_material(material)
-        del material
-        timestamp = assert_okx_access_timestamp_iso_ms_v1(format_okx_access_timestamp_iso_ms_v1())
-        sign = sign_okx_request_v1(
-            secret=creds["api_secret"],
-            timestamp=timestamp,
-            method=method_u,
-            request_path=sign_request_path,
-            body=body_text,
-        )
-        auth_headers = {
-            "OK-ACCESS-KEY": creds["api_key"],
-            "OK-ACCESS-SIGN": sign,
-            "OK-ACCESS-TIMESTAMP": timestamp,
-            "OK-ACCESS-PASSPHRASE": creds["passphrase"],
-            "Content-Type": "application/json",
-            "User-Agent": BOUND_OKX_TESTNET_HTTP_USER_AGENT,
-            SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE,
-        }
-        # Drop secrets from local names ASAP.
-        del creds
-        merged = dict(headers or {})
-        merged.update(auth_headers)
-        path_only = sign_request_path.split("?", 1)[0]
-        prepared = {
-            "method": method_u,
-            "url": url,
-            "host": host,
-            "path": path_only,
-            "sign_request_path": sign_request_path,
-            "sign_request_path_includes_query": ("?" in sign_request_path),
-            "permanent_query_sign_fix": True,
-            "rest_base": self.rest_base,
-            "simulation_header": {SIMULATION_HEADER_NAME: SIMULATION_HEADER_VALUE},
-            "auth_headers_present": True,
-            "user_agent_present": True,
-            "okx_access_timestamp_format": BOUND_OKX_ACCESS_TIMESTAMP_FORMAT,
-            "client_kind": self.client_kind,
-            "wire_send_enabled": self.wire_send_enabled,
-            "content_type": "application/json",
-            "signed_body_sha256": signed_body_sha256,
-            "wire_body_sha256": signed_body_sha256,
-            "signed_body_equals_wire_body": True,
-            "body_byte_len": len(wire_body_bytes),
-        }
-        self.prepared_requests.append(prepared)
-
-        if not self.wire_send_enabled:
-            return {
-                "ok": True,
-                "stubbed": False,
-                "wire_sent": False,
-                "network_send_boundary_reached": True,
-                "network_effect": "NONE",
-                "http_status": None,
-                "response_body": None,
-                "account_identity": "acct-uid-testnet-demo",
-                "client_kind": self.client_kind,
-                "signed_body_equals_wire_body": True,
-            }
-
-        req = request.Request(
-            url,
-            data=wire_body_bytes if wire_body_bytes else None,
-            method=method_u,
-            headers=merged,
-        )
-        try:
-            with request.urlopen(req, timeout=self.timeout_seconds) as resp:
-                status = int(getattr(resp, "status", resp.getcode()))
-                raw = resp.read()
-        except error.HTTPError as exc:
-            status = int(exc.code)
-            raw = exc.read() or b""
-        except Exception as exc:  # noqa: BLE001 — fail-closed network errors
-            raise BoundTestnetHttpClientError(f"WIRE_SEND_FAILED:{type(exc).__name__}") from exc
-
-        response_body: dict[str, Any] | None
-        try:
-            loaded = json.loads(raw.decode("utf-8") if raw else "{}")
-            response_body = loaded if isinstance(loaded, dict) else {"_non_object": True}
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            response_body = {"_raw_unparsed": True, "body_bytes": len(raw)}
-
-        return {
-            "ok": 200 <= status < 300,
-            "stubbed": False,
-            "wire_sent": True,
-            "network_send_boundary_reached": True,
-            "network_effect": "TESTNET",
-            "http_status": status,
-            "body_bytes": len(raw),
-            "response_body": response_body,
-            "client_kind": self.client_kind,
-        }
+        del headers, body_obj, body_text, wire_body_bytes, host, sign_request_path, method_u
+        raise BoundTestnetHttpClientError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -244,7 +145,7 @@ class BoundOkxTestnetHttpClientV1:
 
 def construct_bound_okx_testnet_http_client_v1(
     *,
-    credential_handle: EphemeralCredentialHandleV1,
+    credential_handle: Any,
     wire_send_enabled: bool = False,
 ) -> BoundOkxTestnetHttpClientV1:
     if credential_handle is None or not credential_handle.bound:

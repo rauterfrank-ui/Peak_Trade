@@ -46,10 +46,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.forensic_reconcilia
     classify_from_sealed_evidence_roots_v1,
     prove_forensic_classification_contract_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    LiveCanaryCredentialError,
-    build_file_secretref_vault_backend_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.lifecycle_v1 import (
     build_lifecycle_and_closeout_contract_v1,
 )
@@ -81,6 +77,10 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_tran
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID as _FLATTEN_DEFAULT_INSTRUMENT_ID,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 class LiveCanaryRunnerError(RuntimeError):
@@ -259,8 +259,8 @@ def run_section_11_13_5_live_canary_minimum_exposure_v1(
             if not str(vault_file or "").strip():
                 raise LiveCanaryRunnerError("EXECUTE_REQUIRES_VAULT_FILE")
             try:
-                backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-            except LiveCanaryCredentialError as exc:
+                backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+            except RuntimeError as extra:
                 raise LiveCanaryRunnerError(str(exc)) from exc
         try:
             execute_payload = run_canary_submit_transport_v1(

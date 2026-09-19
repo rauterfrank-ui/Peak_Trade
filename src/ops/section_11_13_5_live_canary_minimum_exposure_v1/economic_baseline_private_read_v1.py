@@ -17,14 +17,6 @@ from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.http_cl
     LiveShadowReconHttpClientV1,
     UrllibLiveTransportV1,
 )
-from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_ephemeral_material_v1,
-    resolve_and_load_live_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.okx_live_ro_signer_v1 import (
-    build_okx_live_ro_get_auth_headers_v1,
-)
 from src.ops.section_11_13_3_live_shadow_with_exchange_reconciliation_v1.reconciliation_v1 import (
     build_exchange_snapshot_from_endpoint_payloads_v1,
     build_local_expected_flat_shadow_state_v1,
@@ -43,6 +35,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.economic_baseline_and_okx_clearance_v1 import (
     adopt_exchange_economic_baseline_local_state_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 REQUIRED_ENDPOINTS: tuple[str, ...] = (
     "/api/v5/account/config",
@@ -75,8 +72,8 @@ def run_economic_baseline_productive_private_read_v1(
         account_scope=REUSED_BINDING_ACCOUNT_SCOPE,
         instrument_scope=None,
     )
-    backend = build_file_secretref_vault_backend_v1(vault_file=Path(vault_file))
-    handle = resolve_and_load_live_secretref_ephemeral_v1(
+    backend = _fail_closed_credential_unavailable_v1(vault_file=Path(vault_file))
+    handle = _fail_closed_credential_unavailable_v1(
         secret_reference=secretref_uri,
         vault_backend=backend,
         credential_class=credential_class,
@@ -94,7 +91,7 @@ def run_economic_baseline_productive_private_read_v1(
         endpoint_summaries: dict[str, Any] = {}
         for endpoint in REQUIRED_ENDPOINTS:
             url = f"{binding.rest_base.rstrip('/')}{endpoint}"
-            headers = build_okx_live_ro_get_auth_headers_v1(handle=handle, url=url)
+            headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url)
             response = client.get(endpoint=endpoint, headers=headers)
             headers.clear()
             assert_authenticated_private_read_success_v1(
@@ -154,4 +151,4 @@ def run_economic_baseline_productive_private_read_v1(
             "ok": True,
         }
     finally:
-        release_live_ephemeral_material_v1(handle)
+        _fail_closed_credential_unavailable_v1(handle)

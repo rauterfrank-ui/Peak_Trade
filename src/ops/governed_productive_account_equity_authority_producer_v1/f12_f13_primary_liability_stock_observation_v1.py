@@ -98,14 +98,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = "OWNER_GO_D6_F12_F13_PRIMARY_LIABILITY_STOCK_OBSERVATION_V1"
 EXPECTED_ORIGIN_MAIN_SHA = "d8e707647e4ab845a0cffa1e0a12ccaff38ab3b6"
@@ -417,8 +414,8 @@ def _open_transport_v1(
         raise F12F13PrimaryLiabilityStockObservationError("PRODUCTIVE_WIRE_DISABLED")
     handle = None
     if productive:
-        backend = build_file_secretref_vault_backend_v1(vault_file=vault_file)
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        backend = _fail_closed_credential_unavailable_v1(vault_file=vault_file)
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=REQUIRED_SECRETREF_URI,
             vault_backend=backend,
             credential_class=REQUIRED_CREDENTIAL_CLASS,
@@ -445,7 +442,7 @@ def _one_authorized_balance_get_v1(
     auth_headers: dict[str, str] = {}
     try:
         if handle is not None:
-            auth_headers = build_okx_live_canary_auth_headers_v1(
+            auth_headers = _fail_closed_credential_unavailable_v1(
                 handle=handle, url=url, method="GET"
             )
             auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -704,7 +701,7 @@ def execute_f12_f13_primary_liability_stock_observation_v1(
         counters = _assert_get_counters_v1(client=client)
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     body_bytes = bytes(capture["body_bytes"])
     pack_root = Path(evidence_root) / _folder_from_as_of(as_of)
     pack_root.mkdir(parents=True, exist_ok=True)

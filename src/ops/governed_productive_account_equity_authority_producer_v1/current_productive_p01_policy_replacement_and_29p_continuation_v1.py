@@ -108,14 +108,11 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     UrllibLiveCanaryTransportV1,
     parse_json_object_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 OWNER_GO = POLICY_OWNER_GO
 PIN_OWNER_GO = (
@@ -299,7 +296,7 @@ def _signed_get(
     request_time = _utc_now_iso_v1()
     headers = {"User-Agent": USER_AGENT}
     if handle is not None:
-        headers = build_okx_live_canary_auth_headers_v1(handle=handle, url=url, method="GET")
+        headers = _fail_closed_credential_unavailable_v1(handle=handle, url=url, method="GET")
         headers["User-Agent"] = USER_AGENT
     elif productive:
         raise CurrentProductiveP01PolicyContinuationError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
@@ -387,8 +384,8 @@ def execute_current_productive_p01_policy_replacement_and_29p_continuation_v1(
     balance_error: str | None = None
     try:
         if productive:
-            backend = build_file_secretref_vault_backend_v1(vault_file=Path(str(vault_file)))
-            handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+            backend = _fail_closed_credential_unavailable_v1(vault_file=Path(str(vault_file)))
+            handle = _fail_closed_credential_unavailable_v1(
                 secret_reference=REQUIRED_SECRETREF_URI,
                 vault_backend=backend,
                 credential_class=REQUIRED_CREDENTIAL_CLASS,
@@ -423,7 +420,7 @@ def execute_current_productive_p01_policy_replacement_and_29p_continuation_v1(
         balance_digest = _sha256_bytes(balance_bytes) if balance_bytes else ""
     finally:
         if handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
     counters = _assert_get_only_client(client)
     package_finished = _utc_now_iso_v1()
     config_code, _config_msg = _okx_code_msg(config_payload)

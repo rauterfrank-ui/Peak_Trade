@@ -28,14 +28,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
     parse_json_object_v1,
     safe_response_headers_v1,
 )
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.live_credential_ephemeral_v1 import (
-    build_file_secretref_vault_backend_v1,
-    release_live_canary_ephemeral_material_v1,
-    resolve_and_load_live_canary_secretref_ephemeral_v1,
-)
-from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.okx_live_canary_signer_v1 import (
-    build_okx_live_canary_auth_headers_v1,
-)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.position_observation_freshness_contract_v1 import (
     default_local_monotonic_ms_v1,
 )
@@ -108,6 +100,11 @@ from src.ops.section_11_13_5_p08_read_only_closure_v1.query_grammar_v1 import (
 from src.ops.section_11_13_5_post_z2ds_private_get_current_50110_egress_capture_v1.execute_v1 import (
     sanitize_okx_message_v1,
 )
+
+
+def _fail_closed_credential_unavailable_v1(*_a, **_k):
+    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
 
 _ID_ROW_ALLOWLIST = frozenset(
     {
@@ -233,8 +230,8 @@ def execute_p08_read_only_closure_gets_v1(
     if productive:
         if vault_file is None:
             raise P08ReadOnlyClosureError("VAULT_FILE_REQUIRED")
-        backend = build_file_secretref_vault_backend_v1(vault_file=Path(vault_file))
-        handle = resolve_and_load_live_canary_secretref_ephemeral_v1(
+        backend = _fail_closed_credential_unavailable_v1(vault_file=Path(vault_file))
+        handle = _fail_closed_credential_unavailable_v1(
             secret_reference=REUSED_SECRETREF_URI,
             vault_backend=backend,
             credential_class=REUSED_CREDENTIAL_CLASS,
@@ -300,7 +297,7 @@ def execute_p08_read_only_closure_gets_v1(
         try:
             if productive:
                 url = f"{REUSED_REST_BASE}{endpoint}"
-                auth_headers = build_okx_live_canary_auth_headers_v1(
+                auth_headers = _fail_closed_credential_unavailable_v1(
                     handle=handle, url=url, method="GET"
                 )
                 auth_headers["User-Agent"] = USER_AGENT_CANARY
@@ -524,7 +521,7 @@ def execute_p08_read_only_closure_gets_v1(
             "AUTH_PATH": {
                 "HTTP_CLIENT": "LiveCanaryHttpClientV1",
                 "TRANSPORT": "UrllibLiveCanaryTransportV1",
-                "SIGNER": "build_okx_live_canary_auth_headers_v1",
+                "SIGNER": "_fail_closed_credential_unavailable_v1",
                 "SECRETREF_URI": REUSED_SECRETREF_URI,
                 "CREDENTIAL_CLASS": REUSED_CREDENTIAL_CLASS,
             },
@@ -626,4 +623,4 @@ def execute_p08_read_only_closure_gets_v1(
         }
     finally:
         if productive and handle is not None:
-            release_live_canary_ephemeral_material_v1(handle)
+            _fail_closed_credential_unavailable_v1(handle)
