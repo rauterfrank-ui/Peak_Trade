@@ -11,6 +11,9 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping, Sequence
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import freeze_record, require_mapping
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    authoritative_decision_outcome_for_row_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN, VALIDATION_GATE_IDS_V0
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.learning_records_v0 import (
@@ -96,6 +99,9 @@ def _token_or_unknown(value: Any) -> str:
 def _decision_deltas(
     incumbent_rows: Sequence[Mapping[str, Any]],
     candidate_rows: Sequence[Mapping[str, Any]],
+    *,
+    incumbent_records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    candidate_records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     left = _index_by_record_id(incumbent_rows, label="incumbent_decision")
     right = _index_by_record_id(candidate_rows, label="candidate_decision")
@@ -103,17 +109,53 @@ def _decision_deltas(
     for record_id in sorted(set(left) | set(right)):
         incumbent_row = left.get(record_id)
         candidate_row = right.get(record_id)
+        incumbent_authoritative = (
+            authoritative_decision_outcome_for_row_v1(
+                incumbent_row,
+                records_by_id=incumbent_records_by_id,
+            )
+            if incumbent_row is not None
+            else None
+        )
+        candidate_authoritative = (
+            authoritative_decision_outcome_for_row_v1(
+                candidate_row,
+                records_by_id=candidate_records_by_id,
+            )
+            if candidate_row is not None
+            else None
+        )
         incumbent_type = (
-            _token_or_unknown(incumbent_row.get("decision_type")) if incumbent_row else UNKNOWN
+            incumbent_authoritative
+            if incumbent_authoritative is not None
+            else (
+                _token_or_unknown(incumbent_row.get("decision_type")) if incumbent_row else UNKNOWN
+            )
         )
         candidate_type = (
-            _token_or_unknown(candidate_row.get("decision_type")) if candidate_row else UNKNOWN
+            candidate_authoritative
+            if candidate_authoritative is not None
+            else (
+                _token_or_unknown(candidate_row.get("decision_type")) if candidate_row else UNKNOWN
+            )
         )
         incumbent_result = (
-            _token_or_unknown(incumbent_row.get("decision_result")) if incumbent_row else UNKNOWN
+            incumbent_authoritative
+            if incumbent_authoritative is not None
+            else (
+                _token_or_unknown(incumbent_row.get("decision_result"))
+                if incumbent_row
+                else UNKNOWN
+            )
         )
         candidate_result = (
-            _token_or_unknown(candidate_row.get("decision_result")) if candidate_row else UNKNOWN
+            candidate_authoritative
+            if candidate_authoritative is not None
+            else (
+                _token_or_unknown(candidate_row.get("decision_result"))
+                if candidate_row
+                else UNKNOWN
+            )
         )
         deltas.append(
             {
@@ -124,6 +166,12 @@ def _decision_deltas(
                 "candidate_decision_type": candidate_type,
                 "incumbent_decision_result": incumbent_result,
                 "candidate_decision_result": candidate_result,
+                "incumbent_authoritative_decision_outcome": (
+                    incumbent_authoritative if incumbent_authoritative is not None else UNKNOWN
+                ),
+                "candidate_authoritative_decision_outcome": (
+                    candidate_authoritative if candidate_authoritative is not None else UNKNOWN
+                ),
                 "changed": (
                     incumbent_row is None
                     or candidate_row is None
@@ -201,6 +249,8 @@ def compare_shadow_challenger_v0(
     incumbent_metrics: Mapping[str, Any] | None = None,
     candidate_metrics: Mapping[str, Any] | None = None,
     incumbent_gates: Mapping[str, Any] | None = None,
+    incumbent_records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    candidate_records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> MappingProxyType[str, Any]:
     incumbent_rec, candidate_rec, pack = _require_same_pack(
         incumbent=incumbent, candidate=candidate, evidence_pack=evidence_pack
@@ -237,7 +287,10 @@ def compare_shadow_challenger_v0(
             "identical_evidence_pack": True,
             "gate_deltas": gate_deltas,
             "decision_deltas": _decision_deltas(
-                incumbent_decisions or (), candidate_decisions or ()
+                incumbent_decisions or (),
+                candidate_decisions or (),
+                incumbent_records_by_id=incumbent_records_by_id,
+                candidate_records_by_id=candidate_records_by_id,
             ),
             "incident_deltas": _incident_deltas(
                 incumbent_incidents or (), candidate_incidents or ()

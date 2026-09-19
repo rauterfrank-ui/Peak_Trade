@@ -65,15 +65,35 @@ JOIN_USES_EXISTING_REFS_AND_DIGESTS_ONLY=true
 MISSING_SIBLING_FAIL_CLOSED=true
 ```
 
-## 3. Explicit non-goals (Slice 1)
+## 3. Slice 2 — downstream consumer rebind (bounded)
 
 ```text
+SLICE_ID=SLICE_2_LEARNING_CURRENT_DECISION_DOWNSTREAM_CONSUMER_REALIGNMENT_V1
+OWNER_GO=OWNER_GO_LEARNING_CURRENT_DECISION_DOWNSTREAM_REALIGNMENT_TO_NEXT_BLOCKER_V1
+BOUND_ORIGIN_MAIN_SHA=2446760832031abed7bc48dbec8825ed53b6d2ab
 NO_CAPTURE_BEHAVIOR_CHANGE=true
-NO_EVALUATION_ENGINE_CHANGE=true
-NO_CHALLENGER_CHANGE=true
-NO_OUTCOME_HORIZON=true
+NO_DECISION_EVENT_ENUM_EXPANSION=true
 NO_PRODUCTIVE_HOST_JOIN=true
 EXTERNAL_EFFECT_AUTHORIZED=false
 ```
 
-Slice 2 (consumer rebind) requires separate Owner-GO.
+Rebound consumers (Learning-only):
+
+| Consumer | Change |
+|----------|--------|
+| `current_decision_consumer_v1` | Shared fail-closed bundle helpers + DECISION_TIME observation builder |
+| `evaluation_engine_v0` | Optional `records_by_id`; Double-Play requires index; authoritative `decision_score` |
+| `replay_evaluator_v0` | `classify_current_double_play_decision_bundle_v0` (distinct from envelope replay) |
+| `challenger_v0` | Shadow decision deltas prefer authoritative producer outcome when bundle resolvable |
+
+Explicit non-goals (Slice 2):
+
+```text
+NO_OUTCOME_HORIZON_ENGINE=true
+NO_REAL_OUTCOME_SEMANTICS=true
+NO_RUNTIME_TO_LEARNING_INPUT_CHANGE=true
+NO_PROMOTION_ACTIVATION=true
+```
+
+Next true blocker (expected): normative `real_outcome_horizon_engine` / outcome horizon semantics
+before economic evaluation beyond DECISION_TIME structural records.
