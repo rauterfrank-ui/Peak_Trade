@@ -2,7 +2,9 @@
 
 Binds MACOS_KEYCHAIN behind FullCoreCheckoutIndependentCredentialProviderPortV1.
 Consumes the canonical DZ identifier-only mapping and EB item-class/encoding
-metadata. Does not access Keychain, load material, join V5, GET, sign, or POST.
+metadata. resolve_capability_v1 still does not access Keychain. Opaque
+acquisition is a separate adapter method, requires an injected lookup backend,
+and never emits material. No V5 join, GET, sign, or POST.
 
 OWNER_GO=OWNER_GO_FULL_CORE_CHECKOUT_INDEPENDENT_FAIL_CLOSED_MACOS_KEYCHAIN_PROVIDER_ADAPTER_OFFLINE_CONTRACT_V1
 RUNTIME_AUTHORIZATION_EFFECT=NONE
@@ -29,6 +31,12 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     prove_authority_non_interference_v1,
     prove_concrete_keychain_item_identity_bound_v1,
     resolve_bound_keychain_item_identity_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
+    FullCoreOsNativeStoreAcquisitionProofV1,
+    OsNativeStoreLookupBackendV1,
+    run_opaque_os_native_store_acquisition_v1,
+    wipe_opaque_os_native_store_material_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_item_class_and_value_encoding_v1 import (
     KEYCHAIN_ITEM_CLASS,
@@ -136,10 +144,25 @@ class FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1:
                 _error("MAPPING_MUST_NOT_TRANSPORT_AUTHORITY")
         _error(REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE)
 
+    def acquire_opaque_os_native_store_material_v1(
+        self,
+        *,
+        source_ref: FullCoreCheckoutIndependentCredentialSourceRefV1 | str,
+        backend: OsNativeStoreLookupBackendV1 | None,
+    ) -> FullCoreOsNativeStoreAcquisitionProofV1:
+        """Acquire opaque bytes inside this adapter. Never returns material."""
+
+        return run_opaque_os_native_store_acquisition_v1(
+            source_ref=source_ref,
+            backend=backend,
+            holder_id=id(self),
+        )
+
     def release_capability_v1(
         self, capability: FullCoreCheckoutIndependentCredentialCapabilityV1
     ) -> None:
         self.release_dispatch_count += 1
+        wipe_opaque_os_native_store_material_v1(id(self))
         if capability is None:
             _error("CAPABILITY_MISSING")
         if capability.material_loaded is True:
