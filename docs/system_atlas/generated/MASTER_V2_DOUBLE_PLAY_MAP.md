@@ -47,6 +47,7 @@ Not competing generations. Historical Vollautonomie ordering vs current Master R
 | REL:s_mv2_contains_dp_entry_exit_policy | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_evaluate_authority_boundary | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_evaluate_authority_boundary | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_futures_input | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_futures_input | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
+| REL:s_mv2_contains_dp_naked_mv2_double_play_core_authority_hardening | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_offline_scenario_replay | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_offline_scenario_replay | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_sole_authority_quarantine | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_sole_authority_quarantine | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_state | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
