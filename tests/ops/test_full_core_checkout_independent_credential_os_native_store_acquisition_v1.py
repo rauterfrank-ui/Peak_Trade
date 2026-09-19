@@ -15,6 +15,7 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     FullCoreCheckoutIndependentCredentialCapabilityError,
     bind_offline_contract_capability_v1,
     prove_capability_cannot_mutate_standing_gates_v1,
+    refuse_mint_external_effect_permit_from_credential_capability_v1,
     resolve_checkout_independent_credential_capability_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_fail_closed_os_native_store_adapter_v1 import (
@@ -40,6 +41,7 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     REASON_ITEM_AMBIGUOUS,
     REASON_OS_NATIVE_STORE_ERROR,
     REASON_UNEXPECTED_REPRESENTATION,
+    REASON_ACCESS_FORBIDDEN,
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
     MacosSecurityFrameworkLookupBackendV1,
@@ -155,6 +157,16 @@ class FakeOsNativeStoreLookupBackendV1:
         if len(found) > 1:
             raise FullCoreCheckoutIndependentCredentialCapabilityError(REASON_ITEM_AMBIGUOUS)
         return coerce_opaque_value_data_v1(found[0])
+
+
+ACQ_MOD = (
+    "src.ops.full_core_live_path_composition_root_v1."
+    "checkout_independent_credential_os_native_store_acquisition_v1"
+)
+
+
+def _authorize(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(f"{ACQ_MOD}.REAL_KEYCHAIN_ACCESS_AUTHORIZED", True)
 
 
 def _bound_fake() -> FakeOsNativeStoreLookupBackendV1:
@@ -278,7 +290,10 @@ def test_missing_ambiguous_os_error_and_unexpected_representation_fail_closed() 
     assert opaque_os_native_store_material_is_held_v1(id(adapter)) is False
 
 
-def test_backend_required_and_identity_mismatch_on_unbound_query() -> None:
+def test_non_callable_backend_and_identity_mismatch_on_unbound_query() -> None:
+    class _MissingMethod:
+        pass
+
     adapter = FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1()
     with pytest.raises(
         FullCoreCheckoutIndependentCredentialCapabilityError,
@@ -286,7 +301,7 @@ def test_backend_required_and_identity_mismatch_on_unbound_query() -> None:
     ):
         adapter.acquire_opaque_os_native_store_material_v1(
             source_ref=OWNER_URI,
-            backend=None,
+            backend=_MissingMethod(),  # type: ignore[arg-type]
         )
     with pytest.raises(
         FullCoreCheckoutIndependentCredentialCapabilityError,
@@ -413,6 +428,7 @@ def test_no_authority_escalation_or_n5_join() -> None:
 def test_real_backend_uses_substituted_os_boundary_only(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    _authorize(monkeypatch)
     recorded: list[tuple[str, str, str]] = []
 
     def _absent(*, service: str, account: str, item_class: str) -> list[bytes]:
@@ -420,9 +436,7 @@ def test_real_backend_uses_substituted_os_boundary_only(
         return []
 
     monkeypatch.setattr(
-        "src.ops.full_core_live_path_composition_root_v1."
-        "checkout_independent_credential_os_native_store_acquisition_v1."
-        "copy_matching_generic_password_payloads_v1",
+        f"{ACQ_MOD}.copy_matching_generic_password_payloads_v1",
         _absent,
     )
     backend = MacosSecurityFrameworkLookupBackendV1()
@@ -441,9 +455,7 @@ def test_real_backend_uses_substituted_os_boundary_only(
         return [FAKE_OPAQUE, FAKE_OTHER]
 
     monkeypatch.setattr(
-        "src.ops.full_core_live_path_composition_root_v1."
-        "checkout_independent_credential_os_native_store_acquisition_v1."
-        "copy_matching_generic_password_payloads_v1",
+        f"{ACQ_MOD}.copy_matching_generic_password_payloads_v1",
         _ambiguous,
     )
     with pytest.raises(
@@ -472,20 +484,185 @@ def test_copy_matching_payloads_does_not_run_against_operator_keychain(
         raise AssertionError("operator-keychain-must-not-be-reached")
 
     monkeypatch.setattr(
-        "src.ops.full_core_live_path_composition_root_v1."
-        "checkout_independent_credential_os_native_store_acquisition_v1."
-        "_sec_item_copy_matching_generic_password_payloads_v1",
+        f"{ACQ_MOD}._sec_item_copy_matching_generic_password_payloads_v1",
         _forbidden,
     )
-    monkeypatch.setattr(
-        "src.ops.full_core_live_path_composition_root_v1."
-        "checkout_independent_credential_os_native_store_acquisition_v1.sys.platform",
-        "darwin",
-    )
-    with pytest.raises(AssertionError, match="operator-keychain-must-not-be-reached"):
+    monkeypatch.setattr(f"{ACQ_MOD}.sys.platform", "darwin")
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match=REASON_ACCESS_FORBIDDEN,
+    ):
         copy_matching_generic_password_payloads_v1(
             service=KEYCHAIN_SERVICE_ID,
             account=KEYCHAIN_ACCOUNT_ID,
             item_class=KEYCHAIN_ITEM_CLASS,
         )
     wipe_opaque_os_native_store_material_v1(0)
+
+
+def test_unauthorized_default_backend_is_macos_and_does_not_call_os(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    os_calls: list[tuple[str, str]] = []
+    constructed: list[str] = []
+
+    class _SpyBackend(MacosSecurityFrameworkLookupBackendV1):
+        def __init__(self) -> None:
+            constructed.append("macos")
+            super().__init__()
+
+    def _forbidden(*, service: str, account: str) -> list[bytes]:
+        os_calls.append((service, account))
+        raise AssertionError("operator-keychain-must-not-be-reached")
+
+    monkeypatch.setattr(f"{ACQ_MOD}.MacosSecurityFrameworkLookupBackendV1", _SpyBackend)
+    monkeypatch.setattr(
+        f"{ACQ_MOD}._sec_item_copy_matching_generic_password_payloads_v1",
+        _forbidden,
+    )
+    adapter = FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1()
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match=REASON_ACCESS_FORBIDDEN,
+    ):
+        adapter.acquire_opaque_os_native_store_material_v1(
+            source_ref=OWNER_URI,
+            backend=None,
+        )
+    assert constructed == ["macos"]
+    assert os_calls == []
+    assert REAL_KEYCHAIN_ACCESS_AUTHORIZED is False
+    assert opaque_os_native_store_material_is_held_v1(id(adapter)) is False
+
+
+def test_authorized_default_backend_reaches_substituted_os_boundary(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _authorize(monkeypatch)
+    recorded: list[tuple[str, str, str]] = []
+
+    def _one(*, service: str, account: str, item_class: str) -> list[bytes]:
+        recorded.append((service, account, item_class))
+        return [FAKE_OPAQUE]
+
+    monkeypatch.setattr(f"{ACQ_MOD}.copy_matching_generic_password_payloads_v1", _one)
+    adapter = FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1()
+    proof = adapter.acquire_opaque_os_native_store_material_v1(
+        source_ref=OWNER_URI,
+        backend=None,
+    )
+    assert proof.acquired == "true"
+    assert proof.real_keychain_access_authorized == "true"
+    assert proof.material_emitted == "false"
+    assert recorded == [
+        (
+            "peak-trade.full-core.venue-credentials",
+            "okx-eea.productive",
+            "generic-password",
+        )
+    ]
+    assert opaque_os_native_store_material_is_held_v1(id(adapter)) is True
+    public_surfaces_must_not_contain_opaque_material_v1(
+        proof,
+        proof.to_dict(),
+        adapter,
+        adapter.__dict__,
+        sentinel=FAKE_OPAQUE,
+    )
+
+
+def test_authorized_wrong_identity_fail_closed_without_os(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _authorize(monkeypatch)
+    os_calls: list[tuple[str, str, str]] = []
+
+    def _must_not_run(*, service: str, account: str, item_class: str) -> list[bytes]:
+        os_calls.append((service, account, item_class))
+        return [FAKE_OPAQUE]
+
+    monkeypatch.setattr(
+        f"{ACQ_MOD}.copy_matching_generic_password_payloads_v1",
+        _must_not_run,
+    )
+    adapter = FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1()
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match="KEYCHAIN_IDENTITY_UNKNOWN_IDENTIFIER",
+    ):
+        adapter.acquire_opaque_os_native_store_material_v1(
+            source_ref=UNKNOWN_URI,
+            backend=None,
+        )
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match="MALFORMED_PROVIDER_REFERENCE",
+    ):
+        adapter.acquire_opaque_os_native_store_material_v1(
+            source_ref=FORBIDDEN_KIND_URI,
+            backend=None,
+        )
+    assert os_calls == []
+
+
+def test_default_wiring_does_not_authorize_or_lift_resolve(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = ACQUISITION_PATH.read_text(encoding="utf-8")
+    assert "if backend is None:" in source
+    assert "MacosSecurityFrameworkLookupBackendV1()" in source
+    assert "REAL_KEYCHAIN_ACCESS_AUTHORIZED = False" in source
+    assert REAL_KEYCHAIN_ACCESS_AUTHORIZED is False
+    adapter = FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterV1()
+    with pytest.raises(
+        FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterError,
+        match=REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE,
+    ):
+        resolve_checkout_independent_credential_capability_v1(
+            source_ref=OWNER_URI,
+            provider=adapter,
+        )
+    _authorize(monkeypatch)
+    with pytest.raises(
+        FullCoreCheckoutIndependentFailClosedOsNativeStoreAdapterError,
+        match=REAL_BACKEND_ACCESS_FAIL_CLOSED_CODE,
+    ):
+        resolve_checkout_independent_credential_capability_v1(
+            source_ref=OWNER_URI,
+            provider=adapter,
+        )
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match="CREDENTIAL_CAPABILITY_CANNOT_MINT_PERMIT",
+    ):
+        refuse_mint_external_effect_permit_from_credential_capability_v1()
+    assert EXTERNAL_EFFECT_AUTHORIZED is False
+    assert REAL_VENUE_POST_ALLOWED is False
+    assert POST_ALLOWED is False
+    assert REAL_KEYCHAIN_ACCESS_IMPLEMENTED is False
+    assert PRODUCTIVE_PROVIDER_ACTIVE is False
+    assert V5_JOINED is False
+
+
+def test_authorized_direct_os_boundary_substitution_reaches_secitem_hook(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _authorize(monkeypatch)
+    seen: list[tuple[str, str]] = []
+
+    def _substituted(*, service: str, account: str) -> list[bytes]:
+        seen.append((service, account))
+        return [FAKE_OPAQUE]
+
+    monkeypatch.setattr(
+        f"{ACQ_MOD}._sec_item_copy_matching_generic_password_payloads_v1",
+        _substituted,
+    )
+    monkeypatch.setattr(f"{ACQ_MOD}.sys.platform", "darwin")
+    payloads = copy_matching_generic_password_payloads_v1(
+        service=KEYCHAIN_SERVICE_ID,
+        account=KEYCHAIN_ACCOUNT_ID,
+        item_class=KEYCHAIN_ITEM_CLASS,
+    )
+    assert payloads == [FAKE_OPAQUE]
+    assert seen == [("peak-trade.full-core.venue-credentials", "okx-eea.productive")]
