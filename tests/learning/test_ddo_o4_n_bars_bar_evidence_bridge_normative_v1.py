@@ -21,7 +21,8 @@ BRIDGE_SPEC = REPO_ROOT / "docs/ops/specs/DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORM
 
 def test_bridge_normative_spec_present() -> None:
     text = BRIDGE_SPEC.read_text(encoding="utf-8")
-    assert "docs_token: DOCS_TOKEN_DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1" in text
+    assert "DOCS_TOKEN_DDO_O4_N_BARS_BAR_EVIDENCE_BRIDGE_NORMATIVE_V1" in text
+    assert text.lstrip().startswith("---")
     assert "S1_INFORMATION_SET_REF_DECISION=CLOSED" in text
     assert "S2_MEASUREMENT_EVIDENCE_DECISION=CLOSED" in text
     assert "A_BEFORE_B=true" in text

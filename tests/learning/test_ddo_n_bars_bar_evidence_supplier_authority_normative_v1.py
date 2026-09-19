@@ -23,7 +23,8 @@ def test_normative_spec_and_decision_record_present() -> None:
     assert NORMATIVE_SPEC.is_file()
     assert DECISION_PATH.is_file()
     text = NORMATIVE_SPEC.read_text(encoding="utf-8")
-    assert "docs_token: DOCS_TOKEN_DDO_N_BARS_BAR_EVIDENCE_SUPPLIER_AUTHORITY_NORMATIVE_V1" in text
+    assert "DOCS_TOKEN_DDO_N_BARS_BAR_EVIDENCE_SUPPLIER_AUTHORITY_NORMATIVE_V1" in text
+    assert text.lstrip().startswith("---")
     assert "OWNER_ADJUDICATION_BOUND=true" in text
     assert "A_BEFORE_B=true" in text
 
