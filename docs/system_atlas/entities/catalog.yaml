@@ -1063,11 +1063,16 @@ entities:
       - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
     source_paths:
       - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/__init__.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/aggregate_admission_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/audit_v1.py
       - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/constants_v1.py
       - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/recovery_classification_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/staged_cardinality_v1.py
     evidence_sources:
       - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
       - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/staged_cardinality_v1.py
       - tests/ops/test_current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1.py
     notes: >-
       STAGED_N5_ADMISSION_RECOVERY_AUDIT wraps the productive FA orchestrator
