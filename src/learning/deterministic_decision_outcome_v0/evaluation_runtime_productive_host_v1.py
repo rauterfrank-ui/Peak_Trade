@@ -12,6 +12,7 @@ from typing import Any, Final, Mapping
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     validate_decision_event_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
 from src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0 import (
@@ -31,6 +32,13 @@ EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 def _require_runtime_wired_v1() -> None:
     if not EVALUATION_RUNTIME_WIRING:
         raise DdoValidationError("EVALUATION_RUNTIME_NOT_WIRED")
+
+
+def ledger_records_index_v1(
+    ledger: AppendOnlyDdoLedgerV0,
+) -> dict[str, dict[str, Any]]:
+    """Build a fail-closed records index for Double-Play semantic evaluation."""
+    return {str(row["record_id"]): dict(row) for row in ledger.read_all()}
 
 
 def derive_productive_n_bars_evaluation_identity_v1(
@@ -57,6 +65,8 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
     horizon_producer_result: Mapping[str, Any],
     decision_event: Mapping[str, Any],
     identity: Mapping[str, Any],
+    *,
+    ledger: AppendOnlyDdoLedgerV0 | None = None,
 ) -> dict[str, Any]:
     """Single evaluation consume of the authorized horizon observation payload."""
     _require_runtime_wired_v1()
@@ -68,7 +78,20 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
     decision = validate_decision_event_v0(decision_event)
     if str(observation.get("decision_event_ref")) != str(decision["record_id"]):
         raise DdoValidationError("EVALUATION_RUNTIME_DECISION_REF_MISMATCH")
-    bundle = evaluate_offline_bundle_v0(decision, observation, identity=identity)
+    records_by_id = ledger_records_index_v1(ledger) if ledger is not None else None
+    bundle = evaluate_offline_bundle_v0(
+        decision,
+        observation,
+        identity=identity,
+        ledger=ledger,
+        records_by_id=records_by_id,
+    )
+    persist = bundle.get("persist")
+    durable_persist = (
+        dict(persist)
+        if isinstance(persist, Mapping)
+        else {"status": "SKIPPED_NO_LEDGER", "reason": "LEDGER_NOT_BOUND"}
+    )
     return {
         "ok": True,
         "evaluator_id": EVALUATION_ENGINE_ID,
@@ -78,6 +101,7 @@ def produce_n_bars_evaluation_runtime_bundle_v1(
         "economic_score": bundle["outcome_record"]["economic_score"],
         "hindsight_leakage": bundle["hindsight_leakage"],
         "bundle": dict(bundle),
+        "durable_persist": durable_persist,
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         "producer_host_id": PRODUCTIVE_EVALUATION_HOST_ID,
     }

@@ -171,6 +171,18 @@ def test_c1_observation_feeds_o4_enabling_n_bars_without_manual_producer(tmp_pat
         if row.get("schema_name") == "real_outcome_horizon_observation_capture"
     ]
     assert len(horizon_caps) >= 1
+    outcome_rows = [row for row in records if row.get("schema_name") == "outcome_record"]
+    attribution_rows = [row for row in records if row.get("schema_name") == "attribution_record"]
+    counterfactual_rows = [
+        row for row in records if row.get("schema_name") == "counterfactual_record"
+    ]
+    assert len(outcome_rows) >= 1
+    assert len(attribution_rows) >= 1
+    assert len(counterfactual_rows) >= 1
+    assert runtime.get("durable_persist", {}).get("outcome", {}).get("status") in {
+        "APPENDED",
+        "IDEMPOTENT_REPLAY",
+    }
 
 
 def test_explicit_injection_still_wins_over_auto_bind(tmp_path: Path) -> None:

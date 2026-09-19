@@ -25,6 +25,10 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from src.ops.capability_11_2_credential_authorization_and_account_identity_boundary_v1.account_identity_boundary_v1 import (
     AccountIdentityRecordV1,
 )
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_learning_outcome_evidence_ingest_host_binding_v1 import (
+    apply_learning_state_feedback_to_next_cycle_v1,
+    invoke_productive_learning_outcome_evidence_ingest_v1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_evaluation_runtime_host_binding_v1 import (
     invoke_productive_n_bars_evaluation_runtime_v1,
 )
@@ -482,6 +486,9 @@ class BridgeSessionStateV1:
     last_ddo_n_bars_horizon_observation: Optional[dict[str, Any]] = None
     ddo_n_bars_evaluation_identity: Optional[dict[str, Any]] = None
     last_ddo_n_bars_evaluation_runtime: Optional[dict[str, Any]] = None
+    ddo_account_identity_record: Optional[AccountIdentityRecordV1] = None
+    last_ddo_learning_state: Optional[dict[str, Any]] = None
+    last_ddo_learning_outcome_ingest: Optional[dict[str, Any]] = None
     # Capital-slot display state: no ratified init authority → remains unbound.
     capital_slot_config_bound: bool = False
     capital_slot_state_bound: bool = False
@@ -1009,6 +1016,9 @@ def run_bridge_cycle_v1(
         account_identity_record=ddo_account_identity_record,
         runtime_state_root_config=ddo_runtime_state_root_config,
     )
+    if ddo_account_identity_record is not None:
+        state.ddo_account_identity_record = ddo_account_identity_record
+    apply_learning_state_feedback_to_next_cycle_v1(state)
 
     if reconciliation_state_root is not None:
         state.reconciliation_state_root = str(reconciliation_state_root)
@@ -1934,6 +1944,23 @@ def run_bridge_cycle_v1(
             "error": f"{type(_eval_exc).__name__}:{_eval_exc}",
             "decision_unchanged": True,
             "capture_failure_changes_current_decision": False,
+        }
+
+    try:
+        state.last_ddo_learning_outcome_ingest = (
+            invoke_productive_learning_outcome_evidence_ingest_v1(
+                state,
+                evaluation_runtime=state.last_ddo_n_bars_evaluation_runtime,
+                session_id=session_id,
+                correlation_id=ddo_corr,
+                cycle_id=f"{session_id}:cycle:{state.cycle_index}",
+            )
+        )
+    except Exception as _ingest_exc:  # noqa: BLE001
+        state.last_ddo_learning_outcome_ingest = {
+            "ok": False,
+            "error": f"{type(_ingest_exc).__name__}:{_ingest_exc}",
+            "decision_unchanged": True,
         }
 
     state.cycle_ledger.append(cycle.to_dict())
