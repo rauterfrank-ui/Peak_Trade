@@ -11,6 +11,13 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 from src.learning.deterministic_decision_outcome_v0.common_v0 import freeze_record
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    classify_current_double_play_decision_v0,
+    decision_score_from_current_bundle_v1,
+    is_double_play_decision_event_v0,
+    require_current_double_play_bundle_v1,
+    require_records_index_for_double_play_semantic_evaluation_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     validate_decision_event_v0,
 )
@@ -164,6 +171,7 @@ def evaluate_offline_bundle_v0(
     incident_record: Mapping[str, Any] | None = None,
     identity: Mapping[str, Any],
     ledger: AppendOnlyDdoLedgerV0 | None = None,
+    records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> MappingProxyType[str, Any]:
     """Produce outcome, attribution, and counterfactual records offline.
 
@@ -171,8 +179,20 @@ def evaluate_offline_bundle_v0(
     exist in the ledger when persistence is requested.
     """
     decision = validate_decision_event_v0(decision_event)
+    require_records_index_for_double_play_semantic_evaluation_v1(decision, records_by_id)
     obs = validate_evaluation_observation_v0(observation)
     ids = _require_identity(identity)
+    current_dp_bundle = None
+    current_dp_classification: Mapping[str, Any] | None = None
+    if is_double_play_decision_event_v0(decision):
+        assert records_by_id is not None
+        current_dp_bundle = require_current_double_play_bundle_v1(
+            records_by_id=records_by_id,
+            decision_event_ref=str(decision["record_id"]),
+        )
+        current_dp_classification = dict(
+            classify_current_double_play_decision_v0(current_dp_bundle)
+        )
     if obs["decision_event_ref"] != decision["record_id"]:
         raise DdoValidationError("EVALUATION_DECISION_REF_MISMATCH")
     incident: Mapping[str, Any] | None = None
@@ -219,6 +239,11 @@ def evaluate_offline_bundle_v0(
 
     if obs["declared_decision_score"] is not None:
         decision_score = str(obs["declared_decision_score"])
+    elif current_dp_bundle is not None:
+        decision_score = decision_score_from_current_bundle_v1(
+            bundle=current_dp_bundle,
+            declared_decision_score=None,
+        )
     else:
         decision_score = (
             "REPLAY_CLASSIFICATION_MATCH"
@@ -376,6 +401,9 @@ def evaluate_offline_bundle_v0(
             counterfactual=counterfactual,
         )
 
+    replay_payload: dict[str, Any] = dict(replayed)
+    if current_dp_classification is not None:
+        replay_payload["current_double_play_decision"] = current_dp_classification
     return freeze_record(
         {
             "evaluator_id": EVALUATION_ENGINE_ID,
@@ -383,7 +411,7 @@ def evaluate_offline_bundle_v0(
             "unknown_collapsed": False,
             "trading_core_reachable": False,
             "runtime_wiring": False,
-            "replay": dict(replayed),
+            "replay": replay_payload,
             "outcome_record": dict(outcome),
             "attribution_record": dict(attribution),
             "counterfactual_record": dict(counterfactual),

@@ -47,6 +47,12 @@ from src.learning.deterministic_decision_outcome_v0.contract_registry_v0 import 
     get_schema_contract_v0,
     hash_scope_fields_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    CONSUMER_BINDING_ID,
+    build_decision_time_evaluation_observation_v1,
+    classify_current_double_play_decision_v0,
+    is_double_play_decision_event_v0,
+)
 from src.learning.deterministic_decision_outcome_v0.current_decision_learning_binding_v1 import (
     BINDING_ID,
     CURRENT_DECISION_LEARNING_ROLES_V1,
@@ -143,6 +149,7 @@ from src.learning.deterministic_decision_outcome_v0.double_play_semantic_replay_
     replay_double_play_typed_observation_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.replay_evaluator_v0 import (
+    classify_current_double_play_decision_bundle_v0,
     classify_decision_event_v0,
     classify_incident_record_v0,
     replay_ledger_record_v0,
@@ -183,6 +190,7 @@ __all__ = [
     "AppendOnlyDdoLedgerV0",
     "AppendResultV0",
     "BINDING_ID",
+    "CONSUMER_BINDING_ID",
     "CONTRACT_REGISTRY_V0",
     "CURRENT_DECISION_LEARNING_ROLES_V1",
     "CurrentDecisionLearningBindingError",
@@ -233,6 +241,7 @@ __all__ = [
     "build_candidate_artifact_v0",
     "build_counterfactual_record_v0",
     "build_decision_event_v0",
+    "build_decision_time_evaluation_observation_v1",
     "build_deployment_record_v0",
     "build_drift_assessment_record_v0",
     "build_drift_observation_record_v0",
@@ -250,6 +259,8 @@ __all__ = [
     "build_validation_evidence_pack_v0",
     "canonical_json_dumps_v0",
     "classifier_replay_is_distinct_from_semantic_replay_v1",
+    "classify_current_double_play_decision_bundle_v0",
+    "classify_current_double_play_decision_v0",
     "classify_decision_event_v0",
     "classify_incident_record_v0",
     "compare_challenger_v0",
@@ -266,6 +277,7 @@ __all__ = [
     "get_schema_contract_v0",
     "hash_scope_fields_v0",
     "ingest_existing_owner_artifact_v0",
+    "is_double_play_decision_event_v0",
     "observe_unbound_experiment_ref_v0",
     "persist_evaluation_bundle_v0",
     "reconstruct_typed_double_play_entry_exit_policy_input_v1",

@@ -321,10 +321,14 @@ terms:
       - src/learning/deterministic_decision_outcome_v0/evaluation_observation_v0.py
       - src/learning/deterministic_decision_outcome_v0/hindsight_guard_v0.py
       - src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py
+      - src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py
       - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
     notes: >-
       Navigation-only. Atlas does not confer trading, promotion, risk, safety,
       or execution authority. Evaluation is offline and non-authorizing.
+      Double-Play semantic evaluation requires records_by_id and reads
+      authoritative decision_outcome via current_decision_learning_binding_v1.
 
   - id: TERM:ddo_offline_learning_validation_shadow
     kind: TERM

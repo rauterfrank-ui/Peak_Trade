@@ -1,9 +1,12 @@
 """Offline deterministic classifier replay evaluator v0.
 
-Replays stored DecisionEvent/IncidentRecord classification tokens. This is
-NOT typed Double-Play producer semantic replay. Semantic reconstruction of
-producer output lives in double_play_semantic_replay_v1 and uses a distinct
-evaluator_id. This module does not call the trading core, does not invent
+Replays stored DecisionEvent/IncidentRecord **envelope** classification tokens.
+For Double-Play producer semantics use classify_current_double_play_decision_v0
+(current_decision_consumer_v1) with the canonical bundle resolver — never infer
+actionable outcomes from collapsed DecisionEvent UNKNOWN tokens.
+
+Typed producer function replay lives in double_play_semantic_replay_v1 (distinct
+evaluator_id). This module does not call the trading core, does not invent
 labels, and does not consume evaluation-time information.
 """
 
@@ -25,12 +28,29 @@ from src.learning.deterministic_decision_outcome_v0.incident_record_v0 import (
     validate_incident_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
+from src.learning.deterministic_decision_outcome_v0.current_decision_consumer_v1 import (
+    classify_current_double_play_decision_v0,
+    require_current_double_play_bundle_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import compute_content_hash_v0
 
 REPLAY_EVALUATOR_ID: Final[str] = "peak_trade.learning.ddo.replay_evaluator_v0"
 REPLAY_USES_DECISION_TIME_INFORMATION_SET: Final[bool] = True
 REPLAY_HINDSIGHT_LEAKAGE_ALLOWED: Final[bool] = False
 REPLAY_TRADING_CORE_REACHABLE: Final[bool] = False
+
+
+def classify_current_double_play_decision_bundle_v0(
+    *,
+    records_by_id: Mapping[str, Mapping[str, Any]],
+    decision_event_ref: str,
+) -> MappingProxyType[str, Any]:
+    """Classify authoritative Double-Play decision via CURRENT bundle join."""
+    bundle = require_current_double_play_bundle_v1(
+        records_by_id=records_by_id,
+        decision_event_ref=decision_event_ref,
+    )
+    return classify_current_double_play_decision_v0(bundle)
 
 
 def classify_decision_event_v0(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:

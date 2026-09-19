@@ -5217,6 +5217,26 @@ entities:
       TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=NONE. Not a second trading
       authority. Not WP-FA-08.
 
+  - id: RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+    kind: RUNTIME_COMPONENT
+    name: DDO current decision learning consumer helpers v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_CHANGE
+    source_paths:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py
+      - src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py
+      - src/learning/deterministic_decision_outcome_v0/replay_evaluator_v0.py
+      - src/learning/deterministic_decision_outcome_v0/challenger_v0.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+    notes: >-
+      Shared fail-closed helpers for offline consumers that require authoritative
+      Double-Play decision_outcome from the canonical bundle join. Not trading
+      authority. TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=NONE.
+
   - id: RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1
     # NAVIGATION_ONLY: spec section 3 HISTORICAL_AT_OWNER_POLICY_PERSIST; spec section 10 timeout UNSPECIFIED is historical at implementation persist; current isolation from spec section 10; current timeout policy from spec section 11 EXPLICIT_NONREQUIREMENT; spec section 12 open-positions consolidation C_NO_NEXT_SCOPE_SELECTED historical at that persist; spec section 13 B_REJECTED_IDENTITY_NOT_PROVABLE historical at that persist; spec section 14 TRACK_CLOSE_READY FUNCTION_REPLAY_TRACK_CLOSED; Master Runbook
     kind: RUNTIME_COMPONENT

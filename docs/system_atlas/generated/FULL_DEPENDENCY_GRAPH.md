@@ -318,8 +318,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 - direct_upstream: `(none)`
 - transitive_upstream: `(none)`
-- direct_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1, RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
-- transitive_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1, RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
+- direct_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_current_decision_consumer_v1, RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1, RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
+- transitive_downstream: `RUNTIME_COMPONENT:ddo_capture_v0, RUNTIME_COMPONENT:ddo_current_decision_consumer_v1, RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1, RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1, RUNTIME_COMPONENT:ddo_experiment_identity_binding, RUNTIME_COMPONENT:ddo_ledger_v0, RUNTIME_COMPONENT:ddo_validation_producer_bindings`
 
 ### RUNBOOK:canonical_master_runbook
 
@@ -341,6 +341,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - transitive_upstream: `(none)`
 - direct_downstream: `HOST:wallclock_decision_economics_cycle, RUNTIME_COMPONENT:ddo_ledger_v0`
 - transitive_downstream: `RUNTIME_COMPONENT:ddo_ledger_v0`
+
+### RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
 
 ### RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
 
