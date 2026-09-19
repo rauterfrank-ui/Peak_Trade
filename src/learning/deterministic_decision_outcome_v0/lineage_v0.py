@@ -26,6 +26,10 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_NAME_ROLLBACK_RECORD,
     SCHEMA_NAME_VALIDATION_EVIDENCE_PACK,
 )
+from src.learning.deterministic_decision_outcome_v0.current_decision_learning_binding_v1 import (
+    CurrentDoublePlayDecisionBundleV1,
+    resolve_current_double_play_decision_bundle_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoLineageError
 
 _MAX_LINEAGE_WALK = 1024
@@ -148,6 +152,18 @@ def _codes_for(schema_name: str, field: str) -> tuple[str, str]:
     missing = _MISSING_CODES.get((schema_name, field), f"{field.upper()}_MISSING")
     type_code = _TYPE_CODES.get((schema_name, field), f"{field.upper()}_TYPE_MISMATCH")
     return missing, type_code
+
+
+def verify_double_play_decision_triple_v1(
+    *,
+    existing_by_id: Mapping[str, Mapping[str, Any]],
+    decision_event_ref: str,
+) -> CurrentDoublePlayDecisionBundleV1:
+    """Fail-closed Double-Play decision triple join (envelope + observation + input)."""
+    return resolve_current_double_play_decision_bundle_v1(
+        records_by_id=existing_by_id,
+        decision_event_ref=decision_event_ref,
+    )
 
 
 def validate_record_lineage_v0(

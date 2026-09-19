@@ -68,6 +68,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
     SCHEMA_VERSION_VALIDATION_EVIDENCE_PACK_V0,
     FieldSpecV0,
 )
+from src.learning.deterministic_decision_outcome_v0.current_decision_learning_binding_v1 import (
+    CURRENT_DECISION_LEARNING_ROLES_V1,
+)
 from src.learning.deterministic_decision_outcome_v0.decision_event_v0 import (
     DECISION_EVENT_FIELD_SPECS_V0,
 )
@@ -499,6 +502,7 @@ CONTRACT_REGISTRY_V0: Final[Mapping[str, Any]] = MappingProxyType(
             "counterfactual_refs",
             "candidate_refs",
         ),
+        "current_decision_learning_roles_v1": CURRENT_DECISION_LEARNING_ROLES_V1,
     }
 )
 
