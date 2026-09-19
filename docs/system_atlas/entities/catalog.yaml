@@ -972,7 +972,9 @@ entities:
       native_id is BoundInstrumentV1.venue_native_id. Cap61 stays
       state_root=None persist=False. Cursor owner remains the existing
       sidestate confirmation cursor. N1 global cursor is rejected.
-      HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false.
+      Optional portfolio_budget_owner threads slot-scoped reservations
+      through ENTER Live-29P join without enabling N>1. HOST_JOIN=false.
+      MF_PRODUCTIVE_JOIN=false.
       PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED.
       MAX_POSITIONS_EFFECTIVE remains 1.
       MULTI_FUTURE_RUNTIME_AUTHORIZED=false.
@@ -6849,6 +6851,7 @@ entities:
       - tests/ops/test_full_core_current_productive_occupancy_classify_and_c1_gate_v1.py
       - tests/ops/current_productive_c1_cycle_test_fixtures_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
       - tests/ops/test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - tests/ops/test_full_core_current_productive_scoped_one_shot_c1_observation_source_v1.py
       - tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py
@@ -8657,6 +8660,8 @@ entities:
     evidence_sources:
       - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
       - tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
     notes: >-
       Shared in-memory capital budget upstream of capital_risk_sizing_v1.
       Admits or denies a quantity. Does not rank, reselect, or create ENTER.

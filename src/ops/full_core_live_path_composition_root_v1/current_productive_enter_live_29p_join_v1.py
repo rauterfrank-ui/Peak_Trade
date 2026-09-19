@@ -68,18 +68,34 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_REST_HOST,
 )
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
+    ReserveDispositionV1,
+    admit_sized_slot_reservation_v1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
     CanonicalCoreRuntimeCapitalContextV0,
+    build_capital_risk_sizing_input_from_decision_v0,
+)
+from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+    finalize_offline_replay_decision_evidence_v1,
 )
 from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
     bind_canonical_order_intent_offline_replay_evidence_v0,
 )
+from src.governance.canonical_order_intent_v1 import compute_quantity_provenance_ref
+from src.governance.capital_risk_sizing_v1 import (
+    CapitalRiskSizingDecisionV1,
+    CapitalRiskSizingOutcome,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    RISK_SIZING_EFFECT_BOUND_OFFLINE,
     _DEFAULT_ACCOUNT_EQUITY,
     bind_capital_risk_sizing_offline_replay_evidence_v0,
+    compute_risk_sizing_decision_ref_v0,
     default_offline_replay_capital_context_v0,
     derive_protective_stop_price_from_adverse_exit_v0,
 )
@@ -121,6 +137,15 @@ class CurrentProductiveEnterLive29PJoinError(RuntimeError):
 
 
 @dataclass(frozen=True)
+class CurrentProductiveEnterLive29PPortfolioSlotContextV1:
+    """Canonical slot/decision/cycle identity for portfolio reservation."""
+
+    slot_id: str
+    decision_id: str
+    cycle_id: str
+
+
+@dataclass(frozen=True)
 class CurrentProductiveEnterLive29PInjectedGetV1:
     payload: Mapping[str, Any] | None = None
     get_performed: bool = False
@@ -152,6 +177,8 @@ class CurrentProductiveEnterLive29PJoinResultV1:
     replay: Optional[IntegratedOfflineReplayResultV1]
     post_count: str = "0"
     permit_created: str = "false"
+    portfolio_reservation_id: str = ""
+    portfolio_reservation_disposition: str = ""
     reason_codes: tuple[str, ...] = ()
 
 
@@ -227,6 +254,55 @@ def _deny(
     )
 
 
+def _quantity_status_from_sizing_v1(decision: CapitalRiskSizingDecisionV1) -> str:
+    provenance = decision.quantity_provenance
+    if provenance is not None:
+        return provenance.final_quantity_status.value
+    if decision.outcome is CapitalRiskSizingOutcome.BLOCKED:
+        return "BLOCK"
+    return "NOT_BOUND"
+
+
+def _rebound_replay_with_sizing_decision_v1(
+    replay: IntegratedOfflineReplayResultV1,
+    *,
+    sizing_decision: CapitalRiskSizingDecisionV1,
+    live_ctx: CanonicalCoreRuntimeCapitalContextV0,
+) -> IntegratedOfflineReplayResultV1:
+    evidence = replay.evidence
+    quantity_provenance_ref = ""
+    provenance = sizing_decision.quantity_provenance
+    if provenance is not None:
+        quantity_provenance_ref = compute_quantity_provenance_ref(provenance)
+    risk_sizing_ref = compute_risk_sizing_decision_ref_v0(sizing_decision)
+    quantity_status = _quantity_status_from_sizing_v1(sizing_decision)
+    bound_evidence = replace(
+        evidence,
+        quantity_status=quantity_status,
+        quantity_provenance_ref=quantity_provenance_ref,
+        risk_sizing_ref=risk_sizing_ref,
+        risk_sizing_effect=RISK_SIZING_EFFECT_BOUND_OFFLINE,
+    )
+    finalized = finalize_offline_replay_decision_evidence_v1(bound_evidence)
+    intent_binding = bind_canonical_order_intent_offline_replay_evidence_v0(
+        finalized,
+        sizing_decision=sizing_decision,
+        capital_context=live_ctx,
+    )
+    rebound_intermediate = replace(
+        replay.intermediate,
+        capital_risk_sizing_decision=sizing_decision,
+        canonical_order_intent=intent_binding.canonical_intent,
+        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+    )
+    return replace(
+        replay,
+        evidence=intent_binding.evidence,
+        intermediate=rebound_intermediate,
+        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+    )
+
+
 def _classify_fail_status(reasons: tuple[str, ...], *, error_class: str) -> str:
     joined = " ".join(reasons) + " " + str(error_class or "")
     if "STALE" in joined:
@@ -242,9 +318,20 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     bound_instrument: BoundInstrumentV1 | None,
     injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     decision_epoch: str,
+    portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    portfolio_slot: CurrentProductiveEnterLive29PPortfolioSlotContextV1 | None = None,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Consume Live-29P only on ENTER. HOLD does not private-GET."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
+    if (portfolio_budget_owner is None) ^ (portfolio_slot is None):
+        raise CurrentProductiveEnterLive29PJoinError("PORTFOLIO_OWNER_SLOT_CONTEXT_PAIR_REQUIRED")
+    if portfolio_slot is not None:
+        if not str(portfolio_slot.slot_id or "").strip():
+            raise CurrentProductiveEnterLive29PJoinError("PORTFOLIO_SLOT_ID_MISSING")
+        if not str(portfolio_slot.decision_id or "").strip():
+            raise CurrentProductiveEnterLive29PJoinError("PORTFOLIO_DECISION_ID_MISSING")
+        if not str(portfolio_slot.cycle_id or "").strip():
+            raise CurrentProductiveEnterLive29PJoinError("PORTFOLIO_CYCLE_ID_MISSING")
     if ENDPOINT != AVAILABLE_MARGIN_ENDPOINT_PATH:
         raise CurrentProductiveEnterLive29PJoinError("ENDPOINT_DRIFT")
     decision_class = current_productive_decision_class_v1(replay)
@@ -532,34 +619,114 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     ):
         raise CurrentProductiveEnterLive29PJoinError("OFFLINE_DEFAULT_EQUITY_LEAK")
 
-    sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
-        replay.evidence,
-        capital_context=live_ctx,
-    )
-    intent_binding = bind_canonical_order_intent_offline_replay_evidence_v0(
-        sizing_binding.evidence,
-        sizing_decision=sizing_binding.sizing_decision,
-        capital_context=live_ctx,
-    )
-    rebound_intermediate = replace(
-        replay.intermediate,
-        capital_risk_sizing_decision=sizing_binding.sizing_decision,
-        canonical_order_intent=intent_binding.canonical_intent,
-        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
-    )
-    rebound = replace(
-        replay,
-        evidence=intent_binding.evidence,
-        intermediate=rebound_intermediate,
-        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
-    )
+    portfolio_reservation_id = ""
+    portfolio_reservation_disposition = ""
+    sizing_decision: CapitalRiskSizingDecisionV1 | None = None
+    if portfolio_budget_owner is not None and portfolio_slot is not None:
+        assert replay is not None and replay.evidence is not None
+        sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
+            decision=replay.evidence,
+            capital_context=live_ctx,
+        )
+        if sizing_input is None:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=build_errors[0] if build_errors else "SIZING_INPUT_BUILD_FAIL_CLOSED",
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=tuple(build_errors),
+            )
+        seam = admit_sized_slot_reservation_v1(
+            portfolio_budget_owner,
+            observation=observation,
+            p01=p01_fact,
+            eligibility=eligibility,
+            slot_id=portfolio_slot.slot_id,
+            decision_id=portfolio_slot.decision_id,
+            cycle_id=portfolio_slot.cycle_id,
+            instrument_id=selected_instrument,
+            account_identity=expected_uid,
+            sizing_input=sizing_input,
+            fresh_pretrade_get_status=get_status,
+            live_account_bound_status=lab_status,
+            fresh_evidence_fetched=True,
+            fresh_evidence_validated=trusted and produced,
+        )
+        portfolio_reservation_disposition = str(seam.disposition.value)
+        if seam.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY:
+            sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+                replay.evidence,
+                capital_context=live_ctx,
+            )
+            sizing_decision = sizing_binding.sizing_decision
+            if seam.reservation is not None:
+                portfolio_reservation_id = str(seam.reservation.reservation_id)
+        elif seam.disposition is ReserveDispositionV1.ADMITTED:
+            sizing_decision = seam.sizing_decision
+            if seam.reservation is not None:
+                portfolio_reservation_id = str(seam.reservation.reservation_id)
+        else:
+            blocker = (
+                seam.reason_codes[0] if seam.reason_codes else "PORTFOLIO_RESERVATION_FAIL_CLOSED"
+            )
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=blocker,
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=seam.reason_codes,
+            )
+        if sizing_decision is None:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker="PORTFOLIO_SIZING_DECISION_MISSING",
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+            )
+        rebound = _rebound_replay_with_sizing_decision_v1(
+            replay,
+            sizing_decision=sizing_decision,
+            live_ctx=live_ctx,
+        )
+    else:
+        sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+            replay.evidence,
+            capital_context=live_ctx,
+        )
+        sizing_decision = sizing_binding.sizing_decision
+        intent_binding = bind_canonical_order_intent_offline_replay_evidence_v0(
+            sizing_binding.evidence,
+            sizing_decision=sizing_binding.sizing_decision,
+            capital_context=live_ctx,
+        )
+        rebound_intermediate = replace(
+            replay.intermediate,
+            capital_risk_sizing_decision=sizing_binding.sizing_decision,
+            canonical_order_intent=intent_binding.canonical_intent,
+            capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        )
+        rebound = replace(
+            replay,
+            evidence=intent_binding.evidence,
+            intermediate=rebound_intermediate,
+            capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        )
     sizing_outcome = ""
-    if sizing_binding.sizing_decision is not None:
+    if sizing_decision is not None:
         sizing_outcome = str(
             getattr(
-                sizing_binding.sizing_decision.outcome,
+                sizing_decision.outcome,
                 "value",
-                sizing_binding.sizing_decision.outcome,
+                sizing_decision.outcome,
             )
         )
     return CurrentProductiveEnterLive29PJoinResultV1(
@@ -576,5 +743,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         used_offline_default_equity=FALSE_TOKEN,
         sizing_outcome=sizing_outcome,
         replay=rebound,
+        portfolio_reservation_id=portfolio_reservation_id,
+        portfolio_reservation_disposition=portfolio_reservation_disposition,
         reason_codes=(JOIN_SEAM_ID, STATUS_PASS, PRODUCER_IDENTITY),
     )

@@ -1464,3 +1464,18 @@ relations:
       Portfolio budget calls the existing quantity owner after a snapshot.
       It does not become a second sizing authority. N>1 stays unauthorized.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_enter_live_29p_join_consumes_portfolio_budget
+    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    type: CONSUMES
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+    notes: >-
+      ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1
+      when portfolio_budget_owner and slot context are paired. Legacy path
+      unchanged without the pair. Does not authorize external effect or N>1.
+      ATLAS_AUTHORITY=NONE.

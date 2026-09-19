@@ -559,7 +559,8 @@ def test_j_existing_n1_sizing_path_is_unchanged() -> None:
     assert seam.sizing_owner == SIZING_OWNER
     assert evaluate_capital_risk_sizing_v1.__module__ == SIZING_OWNER
     join_source = JOIN_PATH.read_text(encoding="utf-8")
-    assert "portfolio_capital_reservation_budget_v1" not in join_source
+    assert "admit_sized_slot_reservation_v1" in join_source
+    assert "portfolio_capital_reservation_budget_v1" in join_source
     assert "bind_capital_risk_sizing_offline_replay_evidence_v0" in join_source
     assert POLICY_MAX_POSITIONS == 1
     assert POLICY_MULTI_FUTURE is False

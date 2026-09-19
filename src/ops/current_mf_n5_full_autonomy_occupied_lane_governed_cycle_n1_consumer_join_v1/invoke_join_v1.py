@@ -82,9 +82,14 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.constants_v1 impor
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import IsolatedLaneSlotV1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
     CurrentProductiveEnterLive29PInjectedGetV1,
+    CurrentProductiveEnterLive29PPortfolioSlotContextV1,
     DECISION_ENTER,
+    STATUS_PASS,
     current_productive_decision_class_v1,
     join_current_productive_enter_live_29p_before_venue_plan_v1,
+)
+from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
+    PortfolioCapitalReservationBudgetOwnerV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_HOLD,
@@ -273,13 +278,30 @@ def _s7_kwargs(
     }
 
 
+def _finalize_portfolio_reservation_after_enter_join_v1(
+    owner: PortfolioCapitalReservationBudgetOwnerV1 | None,
+    *,
+    reservation_id: str,
+    enter_status: str,
+    venue_plan_pass: bool,
+) -> None:
+    if owner is None or not str(reservation_id or "").strip():
+        return
+    if enter_status == STATUS_PASS and venue_plan_pass:
+        owner.commit_internal_pre_external_effect_v1(str(reservation_id))
+        return
+    owner.release_plan_failure_v1(str(reservation_id))
+
+
 def _t2_from_s7(
     *,
     lane_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     native_id: str,
+    lane_id: str,
     s7_base: Mapping[str, Any],
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None,
     candles_payload: Mapping[str, Any],
+    portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         observation = kwargs.get("observation")
@@ -311,11 +333,24 @@ def _t2_from_s7(
             _fail(FAILURE_IDENTITY_MISMATCH, native_id)
         replay = invocation.cycle_result.replay
         epoch = _iso_utc(float(s7_base["observed_unix"]))
+        portfolio_slot = None
+        if portfolio_budget_owner is not None:
+            evidence = getattr(replay, "evidence", None)
+            decision_id = str(getattr(evidence, "decision_id", "") or "").strip()
+            if not decision_id:
+                _fail(FAILURE_AUTHORITY, "portfolio_decision_id")
+            portfolio_slot = CurrentProductiveEnterLive29PPortfolioSlotContextV1(
+                slot_id=lane_id,
+                decision_id=decision_id,
+                cycle_id=str(s7_base["cycle_id_prefix"]),
+            )
         live_29p = join_current_productive_enter_live_29p_before_venue_plan_v1(
             replay=replay,
             bound_instrument=bound,
             injected=live_29p_injected,
             decision_epoch=epoch,
+            portfolio_budget_owner=portfolio_budget_owner,
+            portfolio_slot=portfolio_slot,
         )
         decision_class = current_productive_decision_class_v1(live_29p.replay)
         master_decision = str(
@@ -329,7 +364,14 @@ def _t2_from_s7(
                 run_id=f"{s7_base['cycle_id_prefix']}:{next(iter(composed))}",
                 composed_epoch=epoch,
             )
-            if status is CompositionStatusV1.PASS and plan is not None:
+            venue_plan_pass = status is CompositionStatusV1.PASS and plan is not None
+            _finalize_portfolio_reservation_after_enter_join_v1(
+                portfolio_budget_owner,
+                reservation_id=live_29p.portfolio_reservation_id,
+                enter_status=live_29p.status,
+                venue_plan_pass=venue_plan_pass,
+            )
+            if venue_plan_pass:
                 envelope = bind_final_order_envelope_from_venue_plan_v1(
                     plan,
                     admission_ref=f"{s7_base['cycle_id_prefix']}:admission",
@@ -392,6 +434,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     occupancy_payloads: Mapping[str, Any] | None = None,
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -464,9 +507,11 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         t2_dispatch = _t2_from_s7(
             lane_pairs=lane_pairs,
             native_id=native_id,
+            lane_id=lane_id,
             s7_base={**lane_s7, "cycle_id_prefix": f"{prefix}:{lane_id}"},
             live_29p_injected=live_29p_injected,
             candles_payload=dict(candles_payload),
+            portfolio_budget_owner=portfolio_budget_owner,
         )
         cycle_result = run_current_productive_governed_cycle_v1(
             authorization=CurrentProductiveGovernedCycleAuthorizationV1(
