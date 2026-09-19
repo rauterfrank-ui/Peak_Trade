@@ -1,0 +1,12 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_BOUNDS_V1",
+  "schema_version": "canonical_volatility_numeric_max_age_discrete_bounds/v1",
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "bound_semantics": "DISCRETE_CANDIDATE_SET_ONLY",
+  "not_included": "ROBUSTNESS_REJECTION_THRESHOLDS",
+  "candidate_max_age_seconds": [60, 120, 300, 600, 900, 1800, 3600, 7200],
+  "continuous_range_allowed": false,
+  "extrapolation_allowed": false,
+  "source_constant": "OPERATOR_BOUND_CANDIDATE_MAX_AGE_SECONDS",
+  "source_module": "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/constants_v1.py"
+}

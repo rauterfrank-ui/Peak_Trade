@@ -1,0 +1,19 @@
+{
+    "artifact_class": "OPTIMIZABLE_ENVELOPE_V1_DECISION_V1",
+    "workpackage_id": "OPTIMIZABLE_ENVELOPE_V1_CONTRACT_AND_RESOLVER",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_V1",
+    "normative_spec": "docs/ops/specs/OPTIMIZABLE_ENVELOPE_V1_NORMATIVE_V1.md",
+    "optimizable_envelope_contract_id": "peak_trade.canonical_optimizable_envelope.v1",
+    "envelope_contract_version": "optimizable_envelope_contract_v1",
+    "learning_productive_authority": "NONE",
+    "optimization_productive_authority": "NONE",
+    "authorized_surface_count": 1,
+    "authorized_surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "zero_authorized_productive_targets": true,
+    "research_optimization_only": true,
+    "external_effect_authorized": false,
+    "owner_map_auto_authorization": false,
+    "search_join_authorized": false,
+    "promotion_join_authorized": false
+}

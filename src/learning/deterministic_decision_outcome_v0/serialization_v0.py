@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from typing import Any, Mapping, Sequence
 
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import (
@@ -42,6 +43,7 @@ CANONICAL_JSON_ALGORITHM_EQUIVALENT_TO = (
 )
 CONTENT_HASH_ALGORITHM_ID = "sha256"
 CONTENT_HASH_ENCODING = "utf-8"
+_SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
 ADAPTER_DEVIATION_ALLOW_NAN_FALSE = True
 ADAPTER_DEVIATION_NO_DEFAULT_COERCION = True
 LEARNING_LOOP_ENSURE_ASCII_FALSE_DIALECT_IMPORTED = False
@@ -98,6 +100,10 @@ def canonical_json_dumps_v0(payload: Mapping[str, Any] | Sequence[Any]) -> str:
 
 def sha256_hex_v0(text: str) -> str:
     return hashlib.sha256(text.encode(CONTENT_HASH_ENCODING)).hexdigest()
+
+
+def is_valid_sha256_hex_v0(value: str) -> bool:
+    return bool(_SHA256_HEX_RE.match(str(value or "")))
 
 
 def compute_content_hash_v0(

@@ -1,0 +1,17 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_CHANGE_RATE_V1",
+  "schema_version": "canonical_volatility_numeric_max_age_change_rate/v1",
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "numeric_change_rate": null,
+  "productive_apply_allowed": false,
+  "intra_experiment_parameter_mutation_allowed": false,
+  "intra_experiment_domain_mutation_allowed": false,
+  "allowed_change_context": "SEPARATE_OFFLINE_RESEARCH_EXPERIMENTS_ONLY",
+  "forbidden_change_context": [
+    "WITHIN_SINGLE_OFFLINE_RESEARCH_EXPERIMENT",
+    "PRODUCTIVE_RUNTIME",
+    "MASTER_V2_POLICY",
+    "LIVE_CONFIG"
+  ],
+  "research_optimization_only": true
+}

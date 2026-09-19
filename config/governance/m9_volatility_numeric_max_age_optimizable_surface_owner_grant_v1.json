@@ -1,0 +1,21 @@
+{
+  "artifact_class": "M9_OPTIMIZABLE_SURFACE_OWNER_GRANT_V1",
+  "workpackage_id": "M9_VOLATILITY_MAX_AGE_OPTIMIZABLE_SURFACE_IMPLEMENTATION_V1",
+  "owner_selection": "A",
+  "authorized_surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "surface_owner_ref": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1",
+  "target_family": "MASTER_V2_VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION",
+  "owner_boundary": "RESEARCH_OPTIMIZATION_ONLY",
+  "domain_semantics": "EXISTING_OPERATOR_BOUND_CANDIDATE_MAX_AGE_SECONDS_ONLY",
+  "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+  "threshold_selection_authorized": false,
+  "enforcement_authorized": false,
+  "parameter_promoted_authorized": false,
+  "master_v2_mutation_authorized": false,
+  "trading_authority_authorized": false,
+  "promotion_authorized": false,
+  "execution_orders_authorized": false,
+  "external_effect_authorized": false,
+  "productive_trading_effect": "NONE",
+  "research_optimization_only": true
+}

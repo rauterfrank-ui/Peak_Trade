@@ -1,0 +1,13 @@
+{
+    "artifact_class": "OPTIMIZATION_META_M8_OFFLINE_REPLAY_DECISION_V1",
+    "workpackage_id": "OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_V1",
+    "bound_origin_main_sha": "c889577bef56300f74039d921472f0638cbb8810",
+    "predecessor_slice": "META_TO_OPTIMIZATION_M7_RESEARCH_FEEDBACK_V1",
+    "normative_spec": "docs/ops/specs/OPTIMIZATION_META_M8_DETERMINISTIC_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
+    "replay_contract_id": "peak_trade.canonical_deterministic_multi_cycle_offline_replay.v1",
+    "minimum_cycle_count": 2,
+    "search_execution_authorized": false,
+    "learning_state_mutation_authorized": false,
+    "authorized_productive_surfaces": 0,
+    "external_effect_authorized": false
+}

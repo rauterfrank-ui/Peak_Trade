@@ -1,0 +1,22 @@
+{
+  "artifact_class": "OPTIMIZABLE_ENVELOPE_RISK_CONSTRAINTS_V1",
+  "schema_version": "canonical_volatility_numeric_max_age_risk_constraints/v1",
+  "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+  "authority_scope": "RESEARCH_EVIDENCE_ONLY",
+  "non_authority_scope": "NOT_TRADING_AUTHORITY;NOT_ALPHA_AUTHORITY;NOT_POLICY_DEFAULT;NOT_CONFIG_DEFAULT;NOT_ORDER_AUTHORITY;NOT_LIVE_AUTHORITY",
+  "enforcement_during_research": false,
+  "parameter_promoted": false,
+  "numeric_max_age_decided": false,
+  "enforcement_enabled": false,
+  "threshold_selection_forbidden": true,
+  "master_v2_mutation_forbidden": true,
+  "double_play_mutation_forbidden": true,
+  "trading_authority_forbidden": true,
+  "promotion_forbidden": true,
+  "execution_orders_forbidden": true,
+  "external_effect_forbidden": true,
+  "source_modules": [
+    "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/constants_v1.py",
+    "src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py"
+  ]
+}
