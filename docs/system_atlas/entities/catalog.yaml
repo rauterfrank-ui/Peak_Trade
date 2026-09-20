@@ -8850,6 +8850,48 @@ entities:
       context, not balance-derived. CREDIBLE_DEPLETION only with confirmed
       history. No withdraw POST, sizing, or STEP-29P mint. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+    kind: RUNTIME_COMPONENT
+    name: Treasury capital admission to account-equity orchestration v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_E4_S1
+    source_paths:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/__init__.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/constants_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/errors_v1.py
+    source_symbols:
+      - join_treasury_capital_admission_into_account_equity_orchestration_v1
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+      - tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_v1.py
+      - docs/ops/specs/TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_V1.md
+    notes: >-
+      E4 binding only: TreasuryCapitalAdmissionJoinV1 to
+      AccountEquityOrchestrationIngressV1. No STEP-29P or sizing mint.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: DATA_CONTRACT:account_equity_orchestration_ingress_v1
+    kind: DATA_CONTRACT
+    name: Account-equity orchestration ingress v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_E4_S1
+    unit: mixed
+    source_paths:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
+    source_symbols:
+      - AccountEquityOrchestrationIngressV1
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
+    notes: >-
+      Typed ingress handoff toward governed_productive_account_equity_authority_producer_v1.
+      Not sizing authority. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
     kind: GATE
