@@ -8822,6 +8822,34 @@ entities:
       are typed context, not balance-derived. No sizing or STEP-29P mint.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
+    kind: RUNTIME_COMPONENT
+    name: Treasury Phase-2 read-only external capital decrease observation binding v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6649_TREASURY_EXTERNAL_CAPITAL_DECREASE_S1
+    source_paths:
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/__init__.py
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/constants_v1.py
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/context_v1.py
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/depletion_signal_v1.py
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/errors_v1.py
+    source_symbols:
+      - produce_treasury_external_capital_decrease_observation_via_funding_balance_get_v1
+      - build_treasury_venue_observation_for_external_capital_decrease_v1
+      - resolve_external_depletion_signal_for_decrease_context_v1
+    evidence_sources:
+      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
+      - tests/ops/test_treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1.py
+      - docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_EXTERNAL_CAPITAL_DECREASE_OBSERVATION_BINDING_V1.md
+    notes: >-
+      S1 binding only: read-only funding balance GET to TreasuryVenueObservationV1
+      for external capital decrease. Withdrawal-history semantics are typed
+      context, not balance-derived. CREDIBLE_DEPLETION only with confirmed
+      history. No withdraw POST, sizing, or STEP-29P mint. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:kill_switch_durable_filegate_v1
     # KS_THIN_01 inventory: unwired auto-trip library removed. ATLAS_AUTHORITY=NONE
     kind: GATE
