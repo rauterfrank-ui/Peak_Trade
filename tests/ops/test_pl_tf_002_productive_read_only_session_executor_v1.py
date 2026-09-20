@@ -94,6 +94,10 @@ def test_wrong_origin_sha_denied() -> None:
         )
 
 
+def test_expected_origin_main_sha_matches_k1_secitem_closeout_main() -> None:
+    assert EXPECTED_ORIGIN_MAIN_SHA == "b58f622de2b82be664b2ea2eeee76db90d529a92"
+
+
 def test_preflight_pass_without_credential_load() -> None:
     pre = build_pl_tf_002_read_only_get_session_preflight_v1(
         owner_go=OWNER_GO,
