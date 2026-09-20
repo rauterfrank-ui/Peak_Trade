@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:k1_productive_macos_credential_store_provisioning_authority_v1` |
+| `GATE:pl_tf_002_productive_read_only_get_complete_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -76,7 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:k1_productive_macos_credential_store_provisioning_authority_v1` |
+| `GATE:pl_tf_002_productive_read_only_get_complete_v1` |
 
 ## AFFECTED_SCHEMAS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- K1 macOS Keychain upsert backend: CFDictionaryCreate callback refs via byref (ctypes binding fix). Synthetic non-productive Keychain regression tests. No productive tuple write. Atlas is not canonical authority.
-- introduced_by=PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
-- modified_by=PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
+- PL-TF-002 persist manifest contract repair (write_manifest_v1 relative_files), offline manifest finalize for capture 20260920T224203Z, closure navigation only after verifier PASS. No network recapture. Atlas is not canonical authority.
+- introduced_by=PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1
+- modified_by=PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

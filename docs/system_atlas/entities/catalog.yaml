@@ -8883,7 +8883,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PL_TF_002_PRODUCTIVE_READ_ONLY_GET_COMPLETE_V1
+    modified_by: PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1
     fail_closed: true
     source_paths:
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/__init__.py
@@ -8895,15 +8895,19 @@ entities:
     source_symbols:
       - execute_pl_tf_002_productive_read_only_get_capture_v1
       - persist_pl_tf_002_network_evidence_pack_v1
+      - complete_pl_tf_002_network_evidence_pack_manifest_v1
       - apply_pl_tf_002_closure_status_navigation_v1
+      - EVIDENCE_PACK_MANIFEST_FILES
     evidence_sources:
       - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_GET_COMPLETE_V1.md
       - tests/ops/test_pl_tf_002_productive_read_only_get_complete_v1.py
+      - evidence/ops/pl_tf_002_productive_read_only_get_complete_v1/20260920T224203Z/
     notes: >-
       Bounded F1/F2 productive GET capture, verifier adjudication, evidence
-      persist, and closure navigation flip after PRODUCTIVE_VENUE_EVIDENCE PASS.
-      Requires WP Owner-GO and session executor Owner-GO. No standing authority
-      mint. ATLAS_AUTHORITY=NONE.
+      persist (write_manifest_v1 relative_files contract), offline manifest
+      finalize for existing packs, and closure navigation after PASS. No network
+      recapture in manifest-repair WP. Requires WP Owner-GO and session executor
+      Owner-GO. No standing authority mint. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
     kind: GATE
