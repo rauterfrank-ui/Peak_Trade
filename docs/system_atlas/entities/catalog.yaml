@@ -8877,6 +8877,33 @@ entities:
       macOS SecItem upsert CFDictionaryCreate callbacks passed byref (ctypes fix).
       ATLAS_AUTHORITY=NONE.
 
+  - id: GATE:pl_tf_002_productive_read_only_get_complete_v1
+    kind: GATE
+    name: PL-TF-002 productive read-only GET complete v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PL_TF_002_PRODUCTIVE_READ_ONLY_GET_COMPLETE_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/__init__.py
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/constants_v1.py
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/capture_v1.py
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/persist_v1.py
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/pre_network_jit_v1.py
+    source_symbols:
+      - execute_pl_tf_002_productive_read_only_get_capture_v1
+      - persist_pl_tf_002_network_evidence_pack_v1
+      - apply_pl_tf_002_closure_status_navigation_v1
+    evidence_sources:
+      - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_GET_COMPLETE_V1.md
+      - tests/ops/test_pl_tf_002_productive_read_only_get_complete_v1.py
+    notes: >-
+      Bounded F1/F2 productive GET capture, verifier adjudication, evidence
+      persist, and closure navigation flip after PRODUCTIVE_VENUE_EVIDENCE PASS.
+      Requires WP Owner-GO and session executor Owner-GO. No standing authority
+      mint. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
     kind: GATE
     name: PL-TF-002 productive read-only session executor v1
