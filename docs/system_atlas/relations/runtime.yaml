@@ -1392,6 +1392,18 @@ relations:
       mint RISK_ADMISSIBLE. Atlas is not trading authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_phase_2_consumes_capital_admission
+    source: GATE:treasury_phase_2_read_only_reconciliation_v1
+    type: CONSUMES
+    target: GATE:full_core_capital_admission_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+    notes: >-
+      Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1
+      only. No STEP-29P or execution authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
     source: GATE:full_core_live_path_standing_live_gates_v1
     type: DENIES
