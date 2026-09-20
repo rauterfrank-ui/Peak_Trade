@@ -31,6 +31,7 @@
 | GATE:kill_switch_durable_filegate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:live_authorized_false | GATE | True | CURRENT_CANONICAL |
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
+| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:position_observation_freshness | GATE | True | CURRENT_NONCANONICAL |
 | GATE:target_position_state | GATE | True | CURRENT_NONCANONICAL |

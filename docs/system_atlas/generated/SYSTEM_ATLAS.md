@@ -355,6 +355,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | PL-TF-002 network evidence contract v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -386,6 +387,7 @@ SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carrie
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1 | DATA_CONTRACT | PL-TF-002 network evidence bundle v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -449,7 +451,7 @@ Architectural-kind count in this bucket: `20`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `161`.
+Architectural-kind count in this bucket: `163`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -463,6 +465,7 @@ Architectural-kind count in this bucket: `161`.
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1 | DATA_CONTRACT | PL-TF-002 network evidence bundle v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -487,14 +490,13 @@ Architectural-kind count in this bucket: `161`.
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | PL-TF-002 network evidence contract v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `161` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `163` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -730,7 +732,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=561
+ENTITY_TOTAL=563
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=122
@@ -809,14 +811,14 @@ Remaining census domains:
 | CAPABILITY | 10 |
 | CHILD | 1 |
 | CONTRACT | 31 |
-| DATA_CONTRACT | 7 |
+| DATA_CONTRACT | 8 |
 | DOD | 8 |
 | EXECUTION_COMPONENT | 1 |
 | EXPERIMENT | 2 |
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 22 |
+| GATE | 23 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |

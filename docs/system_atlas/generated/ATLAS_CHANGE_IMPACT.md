@@ -16,14 +16,14 @@ This view is topology change-coupling, not canonical authority.
 ```text
 ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=8
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1`.
 
 ## Workflow
 
@@ -40,27 +40,21 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `GATE:pl_tf_002_network_evidence_contract_v1` |
+| `DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1` |
 | `GATE:treasury_phase_3_shadow_enforcement_v1` |
-| `DATA_CONTRACT:treasury_shadow_enforcement_result_v1` |
-| `RUNTIME_COMPONENT:treasury_separation_gate_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_phase_3_consumes_phase_2_reconciliation` |
-| `REL:r_treasury_phase_3_consumes_separation_gate` |
-| `REL:r_treasury_phase_3_produces_shadow_enforcement_result` |
-| `REL:r_treasury_phase_3_wires_shadow_http_surfaces` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_phase_3_consumes_phase_2_reconciliation` |
-| `REL:r_treasury_phase_3_consumes_separation_gate` |
-| `REL:r_treasury_phase_3_produces_shadow_enforcement_result` |
-| `REL:r_treasury_phase_3_wires_shadow_http_surfaces` |
+| _(none)_ |
 
 ## REMOVED_RELATIONS
 
@@ -84,7 +78,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:treasury_phase_3_shadow_enforcement_v1` |
+| `GATE:pl_tf_002_network_evidence_contract_v1` |
 
 ## AFFECTED_SCHEMAS
 
@@ -100,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6653: Treasury Phase-3 shadow read-only enforcement on §11.13 HTTP surfaces; minimal CURRENT Treasury phase bindings in Master Runbook. Reuses Phase-2 reconciliation and treasury_separation_gate. No Full-Core capital authority, POST, or external effect. Atlas is not canonical authority.
-- introduced_by=PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
-- modified_by=PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
+- PR 6654: PL-TF-002 network evidence contract and offline verifier (NE-TF-001 GET semantics, F1-F4 closure predicate). Runbook navigation token only; standing PL_TF_002 frozen status unchanged. No network, credential load, or authority mint. Atlas is not canonical authority.
+- introduced_by=PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+- modified_by=PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

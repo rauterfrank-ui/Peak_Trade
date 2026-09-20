@@ -8813,7 +8813,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
+    modified_by: PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
     fail_closed: true
     source_paths:
       - src/ops/treasury_phase_3_shadow_enforcement_v1/__init__.py
@@ -8840,7 +8840,59 @@ entities:
       treasury_separation_gate on governed §11.13 read-only/shadow HTTP
       surfaces. TREASURY_SEPARATION_GATE_WIRED=true in Phase-3 owner only.
       Does not mint RISK_ADMISSIBLE, POST, or Full-Core capital authority.
+      Runbook Treasury bindings add PL_TF_002 network evidence contract nav
+      only; PL_TF_002 remains FROZEN_PENDING_NETWORK_EVIDENCE. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:pl_tf_002_network_evidence_contract_v1
+    kind: GATE
+    name: PL-TF-002 network evidence contract v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/pl_tf_002_network_evidence_contract_v1/__init__.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/constants_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/errors_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/normalize_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/redaction_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/verifier_v1.py
+    source_symbols:
+      - verify_pl_tf_002_network_evidence_v1
+      - normalize_okx_account_config_perm_v1
+    evidence_sources:
+      - src/ops/pl_tf_002_network_evidence_contract_v1/verifier_v1.py
+      - tests/ops/test_pl_tf_002_network_evidence_contract_v1.py
+      - docs/ops/specs/PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1.md
+      - docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Offline verifier and NE-TF-001 GET contract for PL-TF-002 closure
+      predicate. No network. No credential load. Does not flip standing
+      PL_TF_002_STATUS or mint LIVE/RISK_ADMISSIBLE/Treasury authority.
       ATLAS_AUTHORITY=NONE.
+
+  - id: DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1
+    kind: DATA_CONTRACT
+    name: PL-TF-002 network evidence bundle v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+    unit: mixed
+    source_paths:
+      - src/ops/pl_tf_002_network_evidence_contract_v1/constants_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/normalize_v1.py
+      - src/ops/pl_tf_002_network_evidence_contract_v1/verifier_v1.py
+    source_symbols:
+      - PL_TF_002_STATUS_CLOSED
+      - NE_TF_001_ENDPOINT_PATH
+    evidence_sources:
+      - docs/ops/specs/PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1.md
+    notes: >-
+      Typed F1-F4 evidence bundle, normalization, and closure result layers.
+      Synthetic verifier PASS is not productive evidence. ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:treasury_shadow_enforcement_result_v1
     kind: DATA_CONTRACT
