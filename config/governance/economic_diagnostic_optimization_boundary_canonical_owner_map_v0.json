@@ -390,6 +390,16 @@
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_EXECUTION_V1.md"
       ]
     },
+    "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1": {
+      "note": "M9-S1 passive durable market session evidence accumulation at the existing productive bridge seam: source-class-separated observation ledger, join reuse, offline 8-candidate counterfactual replay, owner-review artifacts; no numeric max-age selection, no Alpha/policy enforcement, no Master-V2/Double-Play/risk/sizing/execution semantic change, no promotion/runtime/orders; REAL_SESSION_EVIDENCE_ACCUMULATED remains evidence-gated.",
+      "path_prefixes": [
+        "src/research/m9_s1_durable_market_session_evidence_accumulation_v1/",
+        "scripts/ops/run_m9_s1_durable_market_session_evidence_accumulation_v1.py",
+        "tests/research/test_m9_s1_durable_market_session_evidence_accumulation_v1.py",
+        "docs/ops/specs/M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_NORMATIVE_V1.md",
+        "config/governance/m9_s1_durable_market_session_evidence_accumulation_v1_decision_v1.json"
+      ]
+    },
     "CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_RESEARCH_EVIDENCE_ACCUMULATION_V1": {
       "note": "Productive non-enforcing research evidence accumulation capability for numeric max-age (session/regime join projection, append-only ledger, coverage readiness, counterfactual age-grid evaluability); no numeric threshold selection, no Alpha/policy enforcement, no Master-V2/Double-Play/risk/sizing/execution mutation, no promotion/runtime/orders; parameter decision remains BLOCKED_FOR_PARAMETER_DECISION.",
       "path_prefixes": [

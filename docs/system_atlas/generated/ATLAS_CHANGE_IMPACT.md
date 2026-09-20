@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=8
-ATLAS_CHANGED_RELATION_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PENDING_CHANGE`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6645_M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1`.
 
 ## Workflow
 
@@ -40,30 +40,20 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `PHASE:ddo_offline_foundation` |
 | `HOST:wallclock_decision_economics_cycle` |
-| `RUNTIME_COMPONENT:ddo_capture_v0` |
-| `RUNTIME_COMPONENT:ddo_ledger_v0` |
-| `RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1` |
-| `TERM:ddo_non_semantic_capture` |
-| `TERM:ddo_offline_contract_and_ledger` |
-| `TERM:ddo_offline_evaluation_engine` |
+| `RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_wallclock_calls_ddo_cycle_capture` |
-| `REL:r_wallclock_injects_ddo_capture_session` |
-| `REL:r_ddo_capture_persists_ledger` |
-| `REL:r_wallclock_calls_learning_outcome_ingest` |
-| `REL:s_ddo_phase_contains_ledger` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| `REL:r_wallclock_calls_learning_outcome_ingest` |
+| _(none)_ |
 
 ## REMOVED_RELATIONS
 
@@ -103,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6634 (pending): v1 self-learning productive closed loop — evaluation bundle ingest into learning_state_record_v0 and non-authorizing opaque next_cycle_economic_score_label feedback to horizon input only. LEARNING_PRODUCTIVE_AUTHORITY=NONE. promotion_join_authorized=false. EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change. Atlas is not canonical authority.
-- introduced_by=PENDING_CHANGE
-- modified_by=PENDING_CHANGE
+- PR 6645: M9-S1 passive durable market session evidence accumulation at the existing hardened-bridge productive accumulation seam. Observation-only M9-S1 ledger, join reuse, offline counterfactual replay, owner-review artifacts. NUMERIC_MAX_AGE_DECIDED=false. ENFORCEMENT_ENABLED=false. EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change. Atlas is not canonical authority.
+- introduced_by=PR_6645_M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
+- modified_by=M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

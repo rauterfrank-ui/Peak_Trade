@@ -1,37 +1,24 @@
 # ATLAS_AUTHORITY=NONE
 # Committed snapshot for generated ATLAS_CHANGE_IMPACT.md.
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
-# Do not invent commit or PR identifiers before they exist.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: PENDING_CHANGE
-modified_by: PENDING_CHANGE
+introduced_by: PR_6645_M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
+modified_by: M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR 6634 (pending): v1 self-learning productive closed loop — evaluation bundle
-  ingest into learning_state_record_v0 and non-authorizing opaque
-  next_cycle_economic_score_label feedback to horizon input only.
-  LEARNING_PRODUCTIVE_AUTHORITY=NONE. promotion_join_authorized=false.
+  PR 6645: M9-S1 passive durable market session evidence accumulation at the
+  existing hardened-bridge productive accumulation seam. Observation-only M9-S1
+  ledger, join reuse, offline counterfactual replay, owner-review artifacts.
+  NUMERIC_MAX_AGE_DECIDED=false. ENFORCEMENT_ENABLED=false.
   EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change.
   Atlas is not canonical authority.
 changed_entities:
-  - PHASE:ddo_offline_foundation
   - HOST:wallclock_decision_economics_cycle
-  - RUNTIME_COMPONENT:ddo_capture_v0
-  - RUNTIME_COMPONENT:ddo_ledger_v0
-  - RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
-  - TERM:ddo_non_semantic_capture
-  - TERM:ddo_offline_contract_and_ledger
-  - TERM:ddo_offline_evaluation_engine
-changed_relations:
-  - REL:r_wallclock_calls_ddo_cycle_capture
-  - REL:r_wallclock_injects_ddo_capture_session
-  - REL:r_ddo_capture_persists_ledger
-  - REL:r_wallclock_calls_learning_outcome_ingest
-  - REL:s_ddo_phase_contains_ledger
-new_relations:
-  - REL:r_wallclock_calls_learning_outcome_ingest
+  - RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1
+changed_relations: []
+new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
@@ -39,16 +26,5 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-  - id: PHASE:ddo_offline_foundation
   - id: HOST:wallclock_decision_economics_cycle
-  - id: RUNTIME_COMPONENT:ddo_capture_v0
-  - id: RUNTIME_COMPONENT:ddo_ledger_v0
-  - id: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
-  - id: TERM:ddo_non_semantic_capture
-  - id: TERM:ddo_offline_contract_and_ledger
-  - id: TERM:ddo_offline_evaluation_engine
-  - id: REL:r_wallclock_calls_ddo_cycle_capture
-  - id: REL:r_wallclock_injects_ddo_capture_session
-  - id: REL:r_ddo_capture_persists_ledger
-  - id: REL:r_wallclock_calls_learning_outcome_ingest
-  - id: REL:s_ddo_phase_contains_ledger
+  - id: RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1

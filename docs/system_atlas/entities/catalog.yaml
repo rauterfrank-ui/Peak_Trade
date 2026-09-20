@@ -5462,7 +5462,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: POST_M6640_GOVERNED_PRODUCTIVE_RUNTIME_SEAM_JOIN_V1
+    modified_by: M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
@@ -6509,6 +6509,26 @@ entities:
       lane (UNRESOLVED join vs RATIFIED productive gate telemetry); no runtime apply,
       enforcement, trading-decision authority shift, or external effect.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1
+    kind: RUNTIME_COMPONENT
+    name: M9-S1 durable market session evidence accumulation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
+    source_paths:
+      - src/research/m9_s1_durable_market_session_evidence_accumulation_v1/
+    evidence_sources:
+      - src/research/m9_s1_durable_market_session_evidence_accumulation_v1/passive_accumulation_v1.py
+      - config/governance/m9_s1_durable_market_session_evidence_accumulation_v1_decision_v1.json
+      - docs/ops/specs/M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_NORMATIVE_V1.md
+      - tests/research/test_m9_s1_durable_market_session_evidence_accumulation_v1.py
+    notes: >-
+      Passive observation-only market session evidence at the existing productive
+      bridge accumulation seam; source-class-separated observation ledger;
+      offline 8-candidate counterfactual replay; no numeric max-age selection,
+      enforcement, trading semantics mutation, or external effect. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1
     kind: RUNTIME_COMPONENT
