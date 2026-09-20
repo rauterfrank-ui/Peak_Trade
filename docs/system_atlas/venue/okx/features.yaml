@@ -259,7 +259,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:account_balance
     kind: OKX_FEATURE
     name: account_balance
@@ -279,7 +279,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:account_positions
     kind: OKX_FEATURE
     name: account_positions
@@ -299,7 +299,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:orders_pending
     kind: OKX_FEATURE
     name: orders_pending
@@ -319,7 +319,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:place_order
     kind: OKX_FEATURE
     name: place_order
@@ -339,7 +339,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:cancel_order
     kind: OKX_FEATURE
     name: cancel_order
@@ -359,7 +359,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:close_position
     kind: OKX_FEATURE
     name: close_position
@@ -439,7 +439,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:demo_simulated_trading_header
     kind: OKX_FEATURE
     name: demo_simulated_trading_header
@@ -459,7 +459,7 @@ features:
     forensic_evidence: bounded
     open_gaps: census_not_complete
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_FEATURE:quote_identity_from_quoteCcy_or_instId
     kind: OKX_FEATURE
     name: quote_identity_from_quoteCcy_or_instId

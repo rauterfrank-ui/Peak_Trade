@@ -89,7 +89,6 @@ src_families:
   src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1: 12
   src/ops/phase_9_2_step_6_governed_adverse_stale_data_session_execution_v1: 12
   src/ops/section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1: 12
-  src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1: 12
   src/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_contract_v2: 12
   src/webui/market_dashboard_landscape_v2: 12
   src/data/shadow: 11

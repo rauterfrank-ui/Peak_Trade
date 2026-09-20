@@ -9,10 +9,7 @@ CONTRACT_VERSION = "v1"
 SCHEMA_VERSION = "capability_11_long_running_testnet_proven_prep_eval.v1"
 
 # Reuse execute surface; do not reopen §11.12.8.
-REUSED_EXECUTE_SURFACE = (
-    "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1"
-    "+ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1"
-)
+REUSED_EXECUTE_SURFACE = "ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1"
 SECTION_11_12_8_CLOSED = True
 SECTION_11_12_8_REOPENED = False
 CAP_11_12_TESTNET_PROGRAM_CLOSED = True

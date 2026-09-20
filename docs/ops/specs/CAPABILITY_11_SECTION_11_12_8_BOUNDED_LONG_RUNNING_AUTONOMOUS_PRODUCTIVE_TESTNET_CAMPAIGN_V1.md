@@ -43,6 +43,6 @@ NO_ADDITIONAL_IMPLEMENTATION_GO_REQUIRED_BEFORE_EXECUTE=true
 | Surface | Owner |
 | --- | --- |
 | Productive consumer/executor | `ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1` |
-| Unlock / HTTP client | `ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1` |
+| OKX HMAC primitive (K1) | `checkout_independent_credential_okx_venue_auth_headers_v1` |
 | Forensic design | `docs/implementation/SECTION_11_12_8_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_FORENSIC_IMPLEMENTATION_SPEC.md` |
 | SSOT bounds | Master Runbook §11.12.8.1 |

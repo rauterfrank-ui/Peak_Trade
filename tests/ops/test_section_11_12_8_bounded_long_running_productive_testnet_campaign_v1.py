@@ -59,8 +59,8 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.saf
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.testnet_transport_v1 import (
     build_stubbed_testnet_transport_v1,
 )
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.constants_v1 import (
-    CANONICAL_NEXT_STEP_AFTER_MERGE,
+from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
+    CANONICAL_NEXT_STEP_AFTER_BOUNDED_LONG_RUNNING_PATH_MERGE,
     LIVE_HARD_BLOCK_PRESERVED,
 )
 
@@ -89,7 +89,7 @@ def test_canonical_bounds_and_path_flags() -> None:
     assert ONE_SHOT_AUTOCOMPLETE_REMOVED is True
     assert SECTION_11_13_STARTED is False
     assert LIVE_HARD_BLOCK_PRESERVED is True
-    assert CANONICAL_NEXT_STEP_AFTER_MERGE == (
+    assert CANONICAL_NEXT_STEP_AFTER_BOUNDED_LONG_RUNNING_PATH_MERGE == (
         "SEPARATE_OWNER_GO_EXECUTE_BOUNDED_LONG_RUNNING_PRODUCTIVE_TESTNET_CAMPAIGN_NOW"
     )
 

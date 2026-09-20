@@ -1670,15 +1670,6 @@ entities:
     evidence_sources:
       - src/ops/okx_europe_adapter_lifecycle_contract_v0.py
 
-  - id: TRANSPORT:bound_okx_testnet_http
-    kind: TRANSPORT
-    name: BoundOkxTestnetHttpClientV1
-    epistemic_class: FORENSIC_RAW
-    current_canonical: false
-    current_status: CURRENT_NONCANONICAL
-    evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
-
   - id: AUTH_PRIMITIVE:okx_hmac_sign
     kind: AUTH_PRIMITIVE
     name: sign_okx_request_v1 HMAC-SHA256
@@ -1686,7 +1677,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
 
   - id: GATE:flatten_execute_authority
     kind: GATE
@@ -7086,7 +7077,6 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
       - src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1
       - src/ops/section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1
       - src/ops/section_11_13_2_live_private_read_only_v1
       - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1
       - src/ops/section_11_13_4_live_dry_run_order_plan_v1

@@ -6,7 +6,7 @@ headers:
   - OK-ACCESS-TIMESTAMP
   - OK-ACCESS-PASSPHRASE
 signer: sign_okx_request_v1
-owner_module: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+owner_module: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
 reused_by:
   - section_11_13_2
   - section_11_13_3
@@ -19,7 +19,7 @@ components:
   - auth_component: HMAC_REQUEST_SIGNER
     source_symbol: sign_okx_request_v1
     consumers:
-      - BoundOkxTestnetHttpClientV1
+      - checkout_independent_credential_okx_venue_auth_headers_v1
       - section_11_13_2
       - section_11_13_3
       - section_11_13_4
@@ -34,23 +34,22 @@ components:
       - OK-ACCESS-SIGN
       - OK-ACCESS-TIMESTAMP
       - OK-ACCESS-PASSPHRASE
-    environment: bound_testnet_or_demo_gated
-    current_runtime_reachability: IMPLEMENTED_NOT_LIVE_UNLOCKED
+    environment: k1_venue_auth_headers_fail_closed
+    current_runtime_reachability: IMPLEMENTED_NOT_KEYCHAIN_AUTHORIZED
     status: CURRENT_NONCANONICAL
     evidence:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - auth_component: HEADER_CONSTRUCTION
-    source_symbol: BoundOkxTestnetHttpClientV1
+    source_symbol: build_k1_okx_venue_auth_headers_v1
     consumers:
-      - section_11_12_8
       - section_11_13_5
+      - full_core_productive_read_only_get_transport_v1
     headers:
       - OK-ACCESS-KEY
       - OK-ACCESS-SIGN
       - OK-ACCESS-TIMESTAMP
       - OK-ACCESS-PASSPHRASE
-      - x-simulated-trading
-    environment: demo_or_testnet_header_gated
+    environment: k1_governed_cycle_fail_closed
     status: CURRENT_NONCANONICAL
     notes: Passphrase/key referenced by config binding only; secrets are not recorded in Atlas.
   - auth_component: TIMESTAMP_SOURCE
@@ -63,7 +62,7 @@ components:
     environment: demo
     status: CURRENT_NONCANONICAL
     evidence:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/constants_v1.py
   - auth_component: NETWORK_AUTHORIZATION_GATES
     source_symbol: LIVE_AUTHORIZED / TESTNET_AUTHORIZED
     environment: fail_closed_default
@@ -91,5 +90,5 @@ components:
       - config/config.toml
 credentials_policy: NEVER_RECORD_SECRETS
 evidence:
-  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md

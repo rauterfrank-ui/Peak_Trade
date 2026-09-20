@@ -11,6 +11,6 @@ fields:
   - mmr
   - lever
 evidence:
-  - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
 open_gaps:
   - OBSERVER:post_action_canary not wired in flatten execute

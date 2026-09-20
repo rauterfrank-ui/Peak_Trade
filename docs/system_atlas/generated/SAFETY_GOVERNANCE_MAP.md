@@ -64,7 +64,7 @@
 ### CHAIN:order_submit_standing_deny
 
 - epistemic: `STATUS=ADJUDICATED`
-- chain: `GATE:live_authorized_false -> TRANSPORT:bound_okx_testnet_http -> VENUE_ENDPOINT:okx_trade_order`
+- chain: `GATE:live_authorized_false -> AUTH_PRIMITIVE:okx_hmac_sign -> VENUE_ENDPOINT:okx_trade_order`
 - missing: `(none recorded)`
 - evidence: `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 

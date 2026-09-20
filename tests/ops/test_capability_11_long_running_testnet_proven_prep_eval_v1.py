@@ -1,4 +1,4 @@
-"""Tests for LONG_RUNNING_TESTNET_PROVEN prep/eval, query-sign, and baseline preflight."""
+"""Tests for LONG_RUNNING_TESTNET_PROVEN prep/eval and K1 OKX query-sign contract."""
 
 from __future__ import annotations
 
@@ -20,6 +20,9 @@ from src.ops.capability_11_long_running_testnet_proven_prep_eval_v1.evaluator_v1
 from src.ops.capability_11_long_running_testnet_proven_prep_eval_v1.verifier_v1 import (
     verify_capability_11_long_running_testnet_proven_prep_eval_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    sign_okx_request_v1,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.constants_v1 import (
     ACCEPTED_OWNER_GO_SCOPES,
     SCOPED_OWNER_GO_SCOPE,
@@ -37,23 +40,6 @@ from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.own
     consume_actual_start_owner_go_v1,
     reset_owner_go_consumption_registry_v1,
 )
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1 import (
-    BoundOkxTestnetHttpClientV1,
-    BoundTestnetHttpClientError,
-    sign_okx_request_v1,
-)
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.governance_acceptance_v1 import (
-    prove_governance_acceptance_v1,
-)
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immutable_baseline_preflight_v1 import (
-    ImmutableBaselinePreflightError,
-    evaluate_immutable_baseline_preflight_v1,
-)
-
-
-def _fail_closed_credential_unavailable_v1(*_a, **_k):
-    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
-
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PREP_EVIDENCE = (
@@ -93,7 +79,6 @@ def test_owner_go_consume_and_refuse_replay() -> None:
             owner_go_authorization=SCOPED_OWNER_GO_SCOPE,
             consumption_id="lr-prep-1",
         )
-    # Legacy XPerp alias still consumable (same surface; not section reopen).
     legacy = consume_actual_start_owner_go_v1(
         owner_go_token=SCOPED_OWNER_GO_TOKEN,
         owner_go_scope=SCOPED_OWNER_GO_SCOPE_LEGACY_XPERP,
@@ -110,7 +95,7 @@ def test_hidden_confirm_replay_refused() -> None:
         latch_and_consume_confirm_digest_v1(confirm_token_digest=digest)
 
 
-def test_query_sign_includes_query_string() -> None:
+def test_k1_query_sign_includes_query_string() -> None:
     secret = "test-secret"
     ts = "2026-08-11T00:00:00.000Z"
     path_only = sign_okx_request_v1(
@@ -129,56 +114,6 @@ def test_query_sign_includes_query_string() -> None:
     )
     assert path_only != with_query
 
-    material = json.dumps(
-        {"api_key": "k", "api_secret": secret, "passphrase": "p"},
-        separators=(",", ":"),
-    )
-    handle = _fail_closed_credential_unavailable_v1(stub_material=material)
-    client = BoundOkxTestnetHttpClientV1(credential_handle=handle, wire_send_enabled=False)
-    result = client.request(
-        method="GET",
-        url=("https://eea.okx.com/api/v5/trade/orders-pending?instId=BTC-USD_UM_XPERP-310328"),
-    )
-    assert result["wire_sent"] is False
-    prepared = client.prepared_requests[-1]
-    assert prepared["sign_request_path_includes_query"] is True
-    assert prepared["permanent_query_sign_fix"] is True
-    assert prepared["sign_request_path"].endswith("?instId=BTC-USD_UM_XPERP-310328")
-
-
-def test_live_host_hard_block() -> None:
-    material = json.dumps(
-        {"api_key": "k", "api_secret": "s", "passphrase": "p"},
-        separators=(",", ":"),
-    )
-    handle = _fail_closed_credential_unavailable_v1(stub_material=material)
-    client = BoundOkxTestnetHttpClientV1(credential_handle=handle, wire_send_enabled=False)
-    with pytest.raises(BoundTestnetHttpClientError, match="LIVE_HOST_HARD_BLOCK"):
-        client.request(method="GET", url="https://www.okx.com/api/v5/account/balance")
-
-
-def test_immutable_baseline_preflight_ignores_untracked(tmp_path: Path) -> None:
-    # Against real repo: untracked evidence must not fail tracked-clean check.
-    result = evaluate_immutable_baseline_preflight_v1(repo_root=REPO_ROOT)
-    assert result.untracked_ignored_for_preflight is True
-    # On a dirty tracked feature branch this may be false; do not require ok here.
-    # Explicit expected-SHA mismatch must fail closed.
-    with pytest.raises(ImmutableBaselinePreflightError):
-        from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.immutable_baseline_preflight_v1 import (
-            assert_immutable_baseline_preflight_v1,
-        )
-
-        assert_immutable_baseline_preflight_v1(
-            repo_root=REPO_ROOT,
-            expected_origin_main_sha="0" * 40,
-        )
-
-
-def test_governance_acceptance_includes_prep_markers() -> None:
-    proof = prove_governance_acceptance_v1()
-    assert proof["ok"] is True
-    assert proof["GOVERNANCE_ACCEPTANCE"] == "PASS"
-
 
 def test_prep_verifier_keeps_proven_false() -> None:
     result = verify_capability_11_long_running_testnet_proven_prep_eval_v1(
@@ -190,7 +125,6 @@ def test_prep_verifier_keeps_proven_false() -> None:
 
 
 def test_evaluator_refuses_historical_and_transport_403(tmp_path: Path) -> None:
-    # Minimal sealed-looking dir for non-historical path.
     root = tmp_path / "campaign"
     root.mkdir()
     payload = {

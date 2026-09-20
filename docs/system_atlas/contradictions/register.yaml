@@ -75,11 +75,11 @@ contradictions:
     claim_a: 2026-07-17 audit claimed signed private REST absent
     status_a: HISTORICAL
     source_a: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
-    claim_b: BoundOkxTestnetHttpClientV1 HMAC signer exists and is reused by later 11.13.x modules
-    status_b: FORENSIC_RAW
-    source_b: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
-    resolved: false
-    current_adjudication: Supersession, not silent overwrite. Audit document date is not git-introduction proof.
+    claim_b: K1 checkout_independent_credential_okx_venue_auth_headers_v1 owns sign_okx_request_v1
+    status_b: CURRENT_IMPLEMENTED
+    source_b: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+    resolved: true
+    current_adjudication: Historical K2 BoundOkxTestnetHttpClientV1 removed; K1 owns the HMAC primitive fail-closed.
     next_proof_needed: None for Atlas usage; do not treat July-17 audit as current absence proof
 
   - id: C-VERSION-V2.2-V2.3-001

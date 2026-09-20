@@ -22,7 +22,7 @@ chains:
   - id: CHAIN:order_submit_standing_deny
     steps:
       - GATE:live_authorized_false
-      - TRANSPORT:bound_okx_testnet_http
+      - AUTH_PRIMITIVE:okx_hmac_sign
       - VENUE_ENDPOINT:okx_trade_order
     missing_edges: []
     epistemic_status: ADJUDICATED

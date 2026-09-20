@@ -275,6 +275,11 @@ def _sign_okx_request_v1(
     return base64.b64encode(digest).decode("ascii")
 
 
+sign_okx_request_v1 = _sign_okx_request_v1
+format_okx_access_timestamp_iso_ms_v1 = format_k1_okx_access_timestamp_iso_ms_v1
+assert_okx_access_timestamp_iso_ms_v1 = assert_k1_okx_access_timestamp_iso_ms_v1
+
+
 def _borrow_session_fields_v1(
     handle: FullCoreK1BoundVenueAuthHandleV1,
 ) -> tuple[str, str, str]:
