@@ -76,6 +76,8 @@ VENUE_PERMISSION_UNKNOWN=true
 HTTP_TREASURY_MUTATION_REACHABILITY=false
 FROZEN_PENDING_OWNER_POLICY=live 29P capital substitution, haircuts, reserve, depletion
 FROZEN_PENDING_NETWORK_EVIDENCE=productive venue GET, NE-TF-001 permission GET
+PL_TF_002_NETWORK_EVIDENCE_CONTRACT=docs/ops/specs/PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1.md
+NE_TF_001_DEFINED_BY=PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
 ```
 
 Treasury Full Feature remains separate. `treasury_separation_gate` remains
