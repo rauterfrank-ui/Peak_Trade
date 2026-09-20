@@ -23,7 +23,6 @@ affected_safety_surfaces:
   - GATE:pl_tf_002_productive_read_only_session_executor_v1
 affected_schemas: []
 review_required_items: []
-material_untracked: []
 reviewed_entities:
   - id: GATE:k1_productive_macos_credential_store_provisioning_authority_v1
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
