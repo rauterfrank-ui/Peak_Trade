@@ -150,8 +150,8 @@ def bound_keychain_sec_item_upsert_v1(*, service: str, account: str, opaque: byt
             ctypes.cast(keys, POINTER(c_void_p)),
             ctypes.cast(vals, POINTER(c_void_p)),
             n,
-            ctypes.cast(key_cbs, c_void_p),
-            ctypes.cast(val_cbs, c_void_p),
+            ctypes.byref(key_cbs),
+            ctypes.byref(val_cbs),
         )
         if not ref:
             raise K1ProductiveMacosKeychainProvisioningError("CF_DICTIONARY_CREATE_FAILED")
