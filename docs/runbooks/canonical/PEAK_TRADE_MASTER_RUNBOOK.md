@@ -6,7 +6,7 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-BOUND_ORIGIN_MAIN_SHA=1c164e906771287d978ba3bd49e7c58f85e5da88
+BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e
 STALE_IF_HEAD_DIFFERS=true
 ```
 
@@ -337,6 +337,35 @@ Post-replay host consumption must not re-invoke a second risk owner.
 
 ------------------------------------------------------------------------
 
+## CURRENT Treasury Phase Bindings
+
+Navigation and status tokens for Treasury capability specs on current
+`origin/main`. This section does **not** authorize mutation, POST,
+credential load, treasury network evidence, or external effect.
+
+```text
+TREASURY_PHASE_0_ROLE=CURRENT_HEAD_CENSUS_IN_GOVERNED_ACCOUNT_EQUITY_SOURCE_CENSUS
+TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS
+TREASURY_PHASE_1_SPEC=docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md
+TREASURY_PHASE_1_SEPARATION_GATE_WIRED=false
+TREASURY_PHASE_2_STATUS=READ_ONLY_FOUNDATION_BOUND
+TREASURY_PHASE_2_SPEC=docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md
+TREASURY_PHASE_3_STATUS=SHADOW_ENFORCEMENT_BOUND
+TREASURY_PHASE_3_SPEC=docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md
+TREASURY_PHASE_3_SEPARATION_GATE_WIRED=true
+PL_TF_002_STATUS=FROZEN_PENDING_NETWORK_EVIDENCE
+TREASURY_MUTATION_REACHABLE=false
+TREASURY_RISK_ADMISSIBLE_MINT_FROM_TREASURY=false
+TREASURY_PRODUCTIVE_CAPITAL_OWNER=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+```
+
+Treasury shadow enforcement is bound only to governed §11.13 read-only/shadow
+HTTP surfaces via `treasury_phase_3_shadow_enforcement_v1`. Full-Core live
+admission composition root must not import Treasury for productive authority.
+
+------------------------------------------------------------------------
+
 ## CURRENT Order-Intent and Execution Boundaries
 
 ```text
@@ -503,7 +532,7 @@ TREASURY_IS_TRADING_DECISION_OWNER=false
 Bound baseline for this SSOT revision:
 
 ```text
-BOUND_ORIGIN_MAIN_SHA=1c164e906771287d978ba3bd49e7c58f85e5da88
+BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e
 ```
 
 Every later mutation task must revalidate actual `origin/main`.

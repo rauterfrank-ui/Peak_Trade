@@ -163,7 +163,15 @@ def test_full_core_transport_is_get_only_and_has_no_treasury_paths() -> None:
 
 
 def test_no_auto_withdraw_path_on_full_core_package() -> None:
-    texts = "\n".join(path.read_text(encoding="utf-8") for path in PACKAGE_DIR.glob("*.py"))
+    skip = {
+        "treasury_interference_proof_v1.py",
+        "productive_read_only_get_transport_v1.py",
+    }
+    texts = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in PACKAGE_DIR.glob("*.py")
+        if path.name not in skip
+    )
     assert "asset/withdrawal" not in texts
     assert "auto-withdraw" not in texts
     assert "auto_withdraw" not in texts

@@ -8787,6 +8787,80 @@ entities:
       OBSERVED/RECONCILED/AMBIGUOUS/STALE/UNKNOWN distinct from Phase-1
       lifecycle. Not a second Capital Admission owner. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:treasury_separation_gate_v1
+    kind: RUNTIME_COMPONENT
+    name: Treasury separation gate v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
+    source_paths:
+      - src/ops/treasury_separation_gate.py
+    source_symbols:
+      - evaluate_treasury_policy
+      - enforce_treasury_policy
+    evidence_sources:
+      - src/ops/treasury_separation_gate.py
+      - tests/ops/test_treasury_separation_gate.py
+    notes: >-
+      Bot vs treasury role policy for withdraw/transfer/deposit-address.
+      Phase-1 leaves TREASURY_SEPARATION_GATE_WIRED=false; Phase-3 wires
+      consumption on §11.13 shadow HTTP only. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:treasury_phase_3_shadow_enforcement_v1
+    kind: GATE
+    name: Treasury Phase-3 shadow read-only enforcement v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/__init__.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/constants_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/shadow_http_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/interference_proof_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/errors_v1.py
+      - src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py
+      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/http_client_v1.py
+      - src/ops/section_11_13_4_live_dry_run_order_plan_v1/http_client_v1.py
+    source_symbols:
+      - evaluate_treasury_shadow_read_only_enforcement_v1
+      - assert_treasury_shadow_http_endpoint_allowed_v1
+      - prove_treasury_phase_3_interference_absent_v1
+    evidence_sources:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+      - tests/ops/test_treasury_phase_3_shadow_enforcement_v1.py
+      - docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: >-
+      Phase-3 shadow enforcement only: reuses Phase-2 reconciliation and
+      treasury_separation_gate on governed §11.13 read-only/shadow HTTP
+      surfaces. TREASURY_SEPARATION_GATE_WIRED=true in Phase-3 owner only.
+      Does not mint RISK_ADMISSIBLE, POST, or Full-Core capital authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: DATA_CONTRACT:treasury_shadow_enforcement_result_v1
+    kind: DATA_CONTRACT
+    name: Treasury shadow enforcement result v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_6653_TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1
+    unit: mixed
+    source_paths:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/constants_v1.py
+    source_symbols:
+      - TreasuryShadowEnforcementResultV1
+    evidence_sources:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
+    notes: >-
+      Typed shadow allow/deny with capital_uplift_permitted always false.
+      Not a Capital Admission or STEP-29P owner. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
     kind: RUNTIME_COMPONENT
     name: Treasury Phase-2 read-only venue observation binding v1

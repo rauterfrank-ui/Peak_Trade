@@ -22,6 +22,15 @@ from src.ops.section_11_13_4_live_dry_run_order_plan_v1.constants_v1 import (
     RETRY_BACKOFF_SECONDS,
     TRANSPORT_CLASS_LIVE_PRODUCTIVE_HTTP,
 )
+from src.ops.treasury_phase_3_shadow_enforcement_v1.constants_v1 import (
+    SHADOW_HTTP_SURFACE_11_13_4,
+)
+from src.ops.treasury_phase_3_shadow_enforcement_v1.errors_v1 import (
+    TreasuryPhase3ShadowEnforcementError,
+)
+from src.ops.treasury_phase_3_shadow_enforcement_v1.shadow_http_v1 import (
+    assert_treasury_shadow_http_endpoint_allowed_v1,
+)
 
 
 class LiveDryRunOrderPlanHttpError(RuntimeError):
@@ -114,6 +123,14 @@ def assert_endpoint_allowlisted_v1(endpoint: str) -> str:
         raise LiveDryRunOrderPlanHttpError(f"MUTATION_ENDPOINT_HARD_BLOCK:{ep}")
     if path not in ENDPOINT_ALLOWLIST:
         raise LiveDryRunOrderPlanHttpError(f"ENDPOINT_NOT_ALLOWLISTED:{ep}")
+    try:
+        assert_treasury_shadow_http_endpoint_allowed_v1(
+            endpoint=path,
+            method="GET",
+            shadow_surface=SHADOW_HTTP_SURFACE_11_13_4,
+        )
+    except TreasuryPhase3ShadowEnforcementError as exc:
+        raise LiveDryRunOrderPlanHttpError(str(exc)) from exc
     return ep
 
 
