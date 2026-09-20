@@ -1463,10 +1463,7 @@ def assert_capability_non_goals_v1() -> Mapping[str, Any]:
         "hard_stop": HARD_STOP,
         "next_after_this_capability": NEXT_AFTER_THIS_CAPABILITY,
         "package_marker": PACKAGE_MARKER,
-        "gaps_remaining": (
-            "C1_G10_NUMERIC_MAX_AGE_THRESHOLD_VALUE",
-            "OPERATOR_AUTHORIZED_PARAMETER_RESEARCH_AND_SELECTION",
-        ),
+        "gaps_remaining": ("C1_G10_NUMERIC_MAX_AGE_THRESHOLD_VALUE",),
     }
 
 

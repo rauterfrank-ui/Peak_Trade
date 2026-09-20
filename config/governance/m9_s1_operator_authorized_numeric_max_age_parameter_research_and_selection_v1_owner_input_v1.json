@@ -1,0 +1,26 @@
+{
+  "artifact_class": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_OWNER_INPUT_V1",
+  "workpackage_id": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_V1",
+  "bound_origin_main_sha": "798bb481c60f619cec34ee8f408626725921e544",
+  "owner_authorization_record": {
+    "authorizer_identity": "OWNER_M9_S1_OPERATOR_AUTHORIZED_PARAMETER_RESEARCH",
+    "bound_authorized_surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "bound_discrete_bounds_config_ref": "config/governance/optimizable_envelope/volatility_numeric_max_age_discrete_bounds_v1.json",
+    "bound_discrete_candidate_max_age_seconds": [60, 120, 300, 600, 900, 1800, 3600, 7200],
+    "bound_m9_owner_grant_config_ref": "config/governance/m9_volatility_numeric_max_age_optimizable_surface_owner_grant_v1.json",
+    "bound_optimization_surface_owner_ref": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1",
+    "bound_origin_main_sha": "798bb481c60f619cec34ee8f408626725921e544",
+    "bound_preregistration_digest": "965f6e09e50e434e363d380c2d62e43041a37ad7d87956e590609a16f011b537",
+    "bound_workpackage_id": "M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_V1",
+    "enforcement_authorized": false,
+    "external_effect_authorized": false,
+    "numeric_threshold_selection_authorized": false,
+    "owner_authorization_id": "m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_owner_input/v1",
+    "owner_authorization_version": "m9_s1_operator_authorized_numeric_max_age_research_selection_owner_input/v1",
+    "parameter_promotion_authorized": false,
+    "productive_configuration_authorization": false,
+    "research_execution_authorized": true,
+    "schema_version": "m9_s1_operator_authorized_numeric_max_age_research_selection_owner_input/v1"
+  },
+  "owner_authorization_record_digest": "786bfe280e9468d686f230a5064ac121936c8d046adfff7a7a5f0a904828ff5c"
+}

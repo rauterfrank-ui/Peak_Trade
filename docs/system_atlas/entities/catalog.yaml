@@ -6510,6 +6510,29 @@ entities:
       enforcement, trading-decision authority shift, or external effect.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1
+    kind: RUNTIME_COMPONENT
+    name: M9-S1 operator-authorized numeric max-age parameter research and selection boundary v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_V1
+    source_paths:
+      - src/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1.py
+      - src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/
+    evidence_sources:
+      - src/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1.py
+      - config/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1_decision_v1.json
+      - config/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1_owner_boundary_v1.json
+      - config/governance/m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1_owner_input_v1.json
+      - docs/ops/specs/M9_S1_OPERATOR_AUTHORIZED_NUMERIC_MAX_AGE_PARAMETER_RESEARCH_AND_SELECTION_NORMATIVE_V1.md
+      - tests/governance/test_m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1.py
+    notes: >-
+      Operator-gated reuse of canonical max-age parameter research execution with
+      owner-review selection boundary only (UNRESOLVED_OWNER_DECISION); no numeric
+      ratification, productive seam materialization, enforcement, or external effect.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT
     name: Offline observation / proposal contract fences v1
