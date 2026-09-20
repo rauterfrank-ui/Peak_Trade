@@ -51,6 +51,9 @@ secrets.toml
 !docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md
 !tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py
 *_key*
+!src/ops/k1_productive_macos_keychain_provisioning_authority_v1/**
+!tests/ops/test_k1_productive_macos_keychain_provisioning_authority_v1.py
+!docs/ops/specs/K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1.md
 
 # Logs
 *.log
