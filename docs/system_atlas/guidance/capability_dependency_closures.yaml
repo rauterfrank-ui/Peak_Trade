@@ -79,23 +79,23 @@ closures:
   - id: CLOSURE:position_observation
     title: POSITION_OBSERVATION
     inspect:
-      - TRANSPORT:bound_okx_testnet_http
+      - AUTH_PRIMITIVE:okx_hmac_sign
       - VENUE_ENDPOINT:okx_account_positions
     upstream:
       - AUTH_PRIMITIVE:okx_hmac_sign
     downstream: []
-    evidence: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    evidence: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
 
   - id: CLOSURE:order_submit
     title: ORDER_SUBMIT
     inspect:
-      - TRANSPORT:bound_okx_testnet_http
+      - AUTH_PRIMITIVE:okx_hmac_sign
       - VENUE_ENDPOINT:okx_trade_order
       - GATE:live_authorized_false
     upstream:
       - AUTH_PRIMITIVE:okx_hmac_sign
     downstream: []
-    evidence: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    evidence: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     open: Presence of client != LIVE/TESTNET authorization
 
   - id: CLOSURE:post_action_success

@@ -88,7 +88,7 @@ PRODUCTIVE_LIFECYCLE_IS_SINGLE_SUBMIT_THEN_COMPLETE
 | SSOT | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` | Semantic authority |
 | Map of Truth | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` | Navigation only |
 | Canonical productive start consumer | `src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/` | PRODUCTIVE consumer/executor |
-| Unlock package | `src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/` | Real wire client + operator entry |
+| K1 venue auth (CURRENT) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py` | HMAC headers only; historical K2 unlock removed |
 | Fixture long-running residual | `src/ops/capability_11_section_11_12_8_long_running_autonomous_testnet_campaign_v1/` | FIXTURE_ONLY |
 | Terminal consumer | `src/ops/section_11_12_8_productive_long_running_autonomous_testnet_campaign_terminal_v1/` | IMPLEMENTATION_ONLY |
 | Cap 11.4 adapter contracts | `src/ops/capability_11_4_testnet_execution_adapter_and_lifecycle_closure_v1/` | Venue-native serialization (fixture) |

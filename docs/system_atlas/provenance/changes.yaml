@@ -8,7 +8,7 @@ changes:
     evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - id: CHANGE:signed_rest_after_july17_audit
     from: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
-    to: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    to: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     type: SUPERSESSION
     epistemic_status: ADJUDICATED
     evidence: C-OKX-AUDIT-SIGNED-REST-001

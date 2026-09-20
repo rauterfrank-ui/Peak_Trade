@@ -41,13 +41,13 @@ _MATRIX: dict[str, dict[str, str]] = {
         "status": "CLOSED",
     },
     "B07": {
-        "location": "secretref_credential_v1.resolve_and_load_secretref_ephemeral_v1",
-        "test": "test_secretref_and_plaintext_leak_negatives",
+        "location": "K1 checkout_independent_credential (historical K2 SecretRef chain removed)",
+        "test": "test_k1_does_not_use_file_vault_path",
         "status": "CLOSED",
     },
     "B08": {
-        "location": "secretref_credential_v1",
-        "test": "test_secretref_and_plaintext_leak_negatives",
+        "location": "K1 checkout_independent_credential_capability_v1 (no SecretRef resolve)",
+        "test": "test_k1_does_not_use_file_vault_path",
         "status": "CLOSED",
     },
     "B09": {

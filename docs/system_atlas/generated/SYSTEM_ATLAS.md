@@ -76,7 +76,6 @@ flowchart TB
   n_SELECTOR_single_selected_future_policy["SELECTOR:single_selected_future_policy<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_SUBSYSTEM_master_v2["SUBSYSTEM:master_v2<br/>CURRENT_CANONICAL"]
   n_SYSTEM_peak_trade["SYSTEM:peak_trade<br/>CURRENT_CANONICAL"]
-  n_TRANSPORT_bound_okx_testnet_http["TRANSPORT:bound_okx_testnet_http<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_UNIVERSE_governed_futures_universe["UNIVERSE:governed_futures_universe<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_VENUE_okx["VENUE:okx<br/>ADJUDICATED"]
   n_VENUE_okx_eea["VENUE:okx_eea<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
@@ -88,6 +87,7 @@ flowchart TB
   n_RUNBOOK_canonical_master_runbook -->|"DOES_NOT_AUTHORIZE"| n_GATE_live_authorized_false
   n_RUNBOOK_canonical_master_runbook -->|"GOVERNS"| n_SYSTEM_peak_trade
   n_CAPABILITY_cap_2_1_gfu -->|"CLAIMS_TO_IMPLEMENT (CONTRADICTED)"| n_INVARIANT_missing_metadata_never_defaulted
+  n_CAPABILITY_cap_11_13_5_live_canary -->|"SIGNS"| n_AUTH_PRIMITIVE_okx_hmac_sign
   n_CAPABILITY_cap_2_1_gfu -->|"PRODUCES (ADJUDICATED)"| n_UNIVERSE_governed_futures_universe
   n_SELECTOR_productive_futures_ranking -->|"RANKS (ADJUDICATED)"| n_UNIVERSE_governed_futures_universe
   n_SELECTOR_single_selected_future_policy -->|"SELECTS (ADJUDICATED)"| n_SELECTOR_productive_futures_ranking
@@ -112,7 +112,6 @@ flowchart TB
   n_OBSERVER_post_action_canary -->|"OBSERVES (OPEN)"| n_GATE_flatten_execute_authority
   n_SCRIPT_run_cap23_policy -->|"CALLS"| n_CAPABILITY_cap_2_3_single_selected_future
   n_SCRIPT_run_gfu_producer -->|"CALLS"| n_CAPABILITY_cap_2_1_gfu
-  n_TRANSPORT_bound_okx_testnet_http -->|"SIGNS"| n_AUTH_PRIMITIVE_okx_hmac_sign
   n_HOST_wallclock_decision_economics_cycle -->|"CALLS"| n_RUNTIME_COMPONENT_ddo_capture_v0
   n_HOST_wallclock_decision_economics_cycle -->|"INJECTS"| n_RUNTIME_COMPONENT_ddo_capture_v0
   n_CAPABILITY_cap_2_1_gfu -->|"GOVERNED_BY"| n_GATE_btc_exclusion
@@ -167,6 +166,7 @@ Hub relations shown: `74`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:a_runbook_does_not_authorize_live | RUNBOOK:canonical_master_runbook | DOES_NOT_AUTHORIZE | GATE:live_authorized_false | STATUS=CANONICAL_AUTHORITY |
 | REL:a_runbook_governs_system | RUNBOOK:canonical_master_runbook | GOVERNS | SYSTEM:peak_trade | STATUS=CANONICAL_AUTHORITY |
 | REL:a_spec_claims_cap21 | CAPABILITY:cap_2_1_gfu | CLAIMS_TO_IMPLEMENT | INVARIANT:missing_metadata_never_defaulted | STATUS=CONTRADICTED (both sides preserved) |
+| REL:r_canary_uses_k1_hmac | CAPABILITY:cap_11_13_5_live_canary | SIGNS | AUTH_PRIMITIVE:okx_hmac_sign | STATUS=FORENSIC_RAW |
 | REL:r_cap21_produces_universe | CAPABILITY:cap_2_1_gfu | PRODUCES | UNIVERSE:governed_futures_universe | STATUS=ADJUDICATED |
 | REL:r_cap22_ranks_universe | SELECTOR:productive_futures_ranking | RANKS | UNIVERSE:governed_futures_universe | STATUS=ADJUDICATED |
 | REL:r_cap23_selects | SELECTOR:single_selected_future_policy | SELECTS | SELECTOR:productive_futures_ranking | STATUS=ADJUDICATED |
@@ -191,7 +191,6 @@ Hub relations shown: `74`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:r_post_action_observes | OBSERVER:post_action_canary | OBSERVES | GATE:flatten_execute_authority | STATUS=OPEN (not proven) |
 | REL:r_script_cap23_calls | SCRIPT:run_cap23_policy | CALLS | CAPABILITY:cap_2_3_single_selected_future | STATUS=FORENSIC_RAW |
 | REL:r_script_gfu_calls_cap21 | SCRIPT:run_gfu_producer | CALLS | CAPABILITY:cap_2_1_gfu | STATUS=FORENSIC_RAW |
-| REL:r_transport_signs | TRANSPORT:bound_okx_testnet_http | SIGNS | AUTH_PRIMITIVE:okx_hmac_sign | STATUS=FORENSIC_RAW |
 | REL:r_wallclock_calls_ddo_cycle_capture | HOST:wallclock_decision_economics_cycle | CALLS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
 | REL:r_wallclock_injects_ddo_capture_session | HOST:wallclock_decision_economics_cycle | INJECTS | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=FORENSIC_RAW |
 | REL:s_cap21_governed_by_btc | CAPABILITY:cap_2_1_gfu | GOVERNED_BY | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY |
@@ -448,7 +447,7 @@ Architectural-kind count in this bucket: `20`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `160`.
+Architectural-kind count in this bucket: `159`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -493,7 +492,7 @@ Architectural-kind count in this bucket: `160`.
 | HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | PHASE:authenticated_private_runtime_read_and_runtime_permit_issuance | PHASE | 11.13.5.AUTHENTICATED_PRIVATE_RUNTIME_READ_AND_RUNTIME_PERMI | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `160` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `159` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -576,7 +575,7 @@ Timeline events: `5`. Document-internal dates are not git-introduction proof. Dr
 
 ## 14. Contradictions
 
-Unresolved contradiction records: `9`. Both sides are preserved. Drill-down: [CONTRADICTION_REGISTER.md](CONTRADICTION_REGISTER.md).
+Unresolved contradiction records: `8`. Both sides are preserved. Drill-down: [CONTRADICTION_REGISTER.md](CONTRADICTION_REGISTER.md).
 
 | id | subject | resolved |
 | --- | --- | --- |
@@ -586,7 +585,7 @@ Unresolved contradiction records: `9`. Both sides are preserved. Drill-down: [CO
 | C-FAMILY-POLYVALENT-001 | Family | False |
 | C-FUNCTIONAL-CORE-TOKEN-001 | FUNCTIONAL_CORE / HAS_FUNCTIONAL_CORE as Atlas labels | False |
 | C-MMR-POLYVALENT-001 | MMR | False |
-| C-OKX-AUDIT-SIGNED-REST-001 | Signed private OKX REST | False |
+| C-OKX-AUDIT-SIGNED-REST-001 | Signed private OKX REST | True |
 | C-OKX-QUOTE-ULY-001 | Cap 2.1 quote/base identity versus never-defaulted invariant | False |
 | C-VERSION-V2.2-V2.3-001 | Master Runbook display version token | False |
 
@@ -630,7 +629,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `102`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `101`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -656,8 +655,8 @@ If you change a listed inspect target, also inspect its stored upstream/downstre
 | CLOSURE:flatten | FLATTEN | GATE:flatten_execute_authority, CAPABILITY:cap_11_13_5_live_canary |
 | CLOSURE:live_readiness | LIVE_READINESS | GATE:live_authorized_false, DOD:program_final, RUNBOOK:canonical_master_runbook |
 | CLOSURE:native_instrument_binding | NATIVE_INSTRUMENT_BINDING | CAPABILITY:cap_2_4_runtime_binding, BINDER:bound_instrument_v1, DATA_CONTRACT:bound_instrument_v1, SCHEMA:runtime_binding_v1 |
-| CLOSURE:order_submit | ORDER_SUBMIT | TRANSPORT:bound_okx_testnet_http, VENUE_ENDPOINT:okx_trade_order, GATE:live_authorized_false |
-| CLOSURE:position_observation | POSITION_OBSERVATION | TRANSPORT:bound_okx_testnet_http, VENUE_ENDPOINT:okx_account_positions |
+| CLOSURE:order_submit | ORDER_SUBMIT | AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_trade_order, GATE:live_authorized_false |
+| CLOSURE:position_observation | POSITION_OBSERVATION | AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_account_positions |
 | CLOSURE:post_action_success | POST_ACTION_SUCCESS | OBSERVER:post_action_canary, GATE:flatten_execute_authority |
 | CLOSURE:productive_selection | PRODUCTIVE_SELECTION | CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1 |
 | CLOSURE:productive_universe | PRODUCTIVE_UNIVERSE | CAPABILITY:cap_2_1_gfu, UNIVERSE:governed_futures_universe, INVARIANT:missing_metadata_never_defaulted, GATE:btc_exclusion, SCHEMA:gfu_snapshot_v1 |
@@ -729,12 +728,12 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=559
+ENTITY_TOTAL=558
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=118
 AUTHORITY_RELATION_COUNT=10
-UNRESOLVED_CONTRADICTION_COUNT=9
+UNRESOLVED_CONTRADICTION_COUNT=8
 OKX_CENSUS_COMPLETE=true
 MASTER_V2_CENSUS_COMPLETE=true
 DOUBLE_PLAY_CENSUS_COMPLETE=true
@@ -837,7 +836,6 @@ Remaining census domains:
 | SYSTEM | 1 |
 | TERM | 52 |
 | TEST | 1 |
-| TRANSPORT | 1 |
 | UNIVERSE | 1 |
 | VENUE | 2 |
 | VENUE_ENDPOINT | 50 |

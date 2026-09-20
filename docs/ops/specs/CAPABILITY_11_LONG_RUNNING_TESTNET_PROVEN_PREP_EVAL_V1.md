@@ -45,7 +45,7 @@ CORE_LOGIC_CHANGE=false
 | --- | --- |
 | Prep/eval capability | `ops.capability_11_long_running_testnet_proven_prep_eval_v1` |
 | Reused productive consumer/executor | `ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1` |
-| Reused unlock / HTTP client | `ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1` |
+| Reused execute surface | `ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1` |
 | SSOT | Master Runbook §11.12.9.21 |
 
 ## Execute authorization

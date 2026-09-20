@@ -593,9 +593,9 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     definition: HMAC-SHA256 OKX REST signer. Implemented; not live-unlocked.
-    definition_source: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    definition_source: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     do_not_confuse_with: "July-17 audit claimed absence; C-OKX-AUDIT-SIGNED-REST-001"
 
   - id: TERM:x_simulated_trading
@@ -606,9 +606,9 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     definition: OKX demo/simulated-trading HTTP header token. Not a credential.
-    definition_source: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    definition_source: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
     do_not_confuse_with: "LIVE_AUTHORIZED; TESTNET_AUTHORIZED"
 
   - id: TERM:live_authorized

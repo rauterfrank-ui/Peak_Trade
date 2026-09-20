@@ -52,9 +52,9 @@ events:
   - id: OKX_CHRONO:hmac_signer
     sort_key: "2026-08-08"
     when: "2026-08-08 35519be26 (#5830)"
-    what: sign_okx_request_v1 HMAC signer on §11.12.8 Testnet execute path
+    what: sign_okx_request_v1 HMAC primitive (K1 venue-auth; historical K2 execute client removed)
     epistemic_status: FORENSIC_RAW
-    evidence: src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+    evidence: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
   - id: OKX_CHRONO:okx_named_deletions
     sort_key: "2026-08-30"
     when: "census after unshallow"

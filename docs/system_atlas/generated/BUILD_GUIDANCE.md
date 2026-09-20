@@ -58,23 +58,23 @@ If you change X, inspect the listed contracts and invariants.
 
 ### CLOSURE:order_submit — ORDER_SUBMIT
 
-- inspect: `TRANSPORT:bound_okx_testnet_http, VENUE_ENDPOINT:okx_trade_order, GATE:live_authorized_false`
+- inspect: `AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_trade_order, GATE:live_authorized_false`
 - upstream: `AUTH_PRIMITIVE:okx_hmac_sign`
 - downstream: ``
-- evidence: `src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py`
+- evidence: `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py`
 
-  - `TRANSPORT:bound_okx_testnet_http` transitive upstream: `(none)`
+  - `AUTH_PRIMITIVE:okx_hmac_sign` transitive upstream: `(none)`
   - `VENUE_ENDPOINT:okx_trade_order` transitive upstream: `(none)`
   - `GATE:live_authorized_false` transitive upstream: `(none)`
 
 ### CLOSURE:position_observation — POSITION_OBSERVATION
 
-- inspect: `TRANSPORT:bound_okx_testnet_http, VENUE_ENDPOINT:okx_account_positions`
+- inspect: `AUTH_PRIMITIVE:okx_hmac_sign, VENUE_ENDPOINT:okx_account_positions`
 - upstream: `AUTH_PRIMITIVE:okx_hmac_sign`
 - downstream: ``
-- evidence: `src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py`
+- evidence: `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py`
 
-  - `TRANSPORT:bound_okx_testnet_http` transitive upstream: `(none)`
+  - `AUTH_PRIMITIVE:okx_hmac_sign` transitive upstream: `(none)`
   - `VENUE_ENDPOINT:okx_account_positions` transitive upstream: `(none)`
 
 ### CLOSURE:post_action_success — POST_ACTION_SUCCESS

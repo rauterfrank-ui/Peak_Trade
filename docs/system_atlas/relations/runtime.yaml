@@ -222,13 +222,13 @@ relations:
     evidence_sources:
       - src/ops/okx_public_market_data_client_v1.py
 
-  - id: REL:r_transport_signs
-    source: TRANSPORT:bound_okx_testnet_http
+  - id: REL:r_canary_uses_k1_hmac
+    source: CAPABILITY:cap_11_13_5_live_canary
     type: SIGNS
     target: AUTH_PRIMITIVE:okx_hmac_sign
     epistemic_status: FORENSIC_RAW
     evidence_sources:
-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/bound_testnet_http_client_v1.py
+      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py
 
   - id: REL:r_flatten_gates
     source: GATE:flatten_execute_authority

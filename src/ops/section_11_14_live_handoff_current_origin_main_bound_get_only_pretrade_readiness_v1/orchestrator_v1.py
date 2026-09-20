@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.parse import urlparse
 
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1 import (
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     assert_okx_access_timestamp_iso_ms_v1,
     format_okx_access_timestamp_iso_ms_v1,
     sign_okx_request_v1,

@@ -16,10 +16,8 @@ from urllib.parse import urlparse
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     FullCoreK1BoundVenueAuthHandleV1,
     FullCoreK1OkxVenueAuthError,
-    build_k1_okx_venue_auth_headers_v1,
-)
-from src.ops.section_11_12_8_real_productive_testnet_execute_path_unlock_v1.bound_testnet_http_client_v1 import (
     assert_okx_access_timestamp_iso_ms_v1,
+    build_k1_okx_venue_auth_headers_v1,
     sign_okx_request_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (

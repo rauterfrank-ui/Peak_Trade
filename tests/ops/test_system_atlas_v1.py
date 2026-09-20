@@ -428,13 +428,13 @@ def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
         "CAPABILITY:cap_1_1_reconciliation",
     ) in rel_targets
     inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
-    assert inv["python_file_count"] == 102
+    assert inv["python_file_count"] == 103
     assert inv["capability_spec_file_count"] == 7
     assert inv["file_inventory_complete"] is True
     assert inv["entity_mapping_complete"] is True
     sem = atlas["records"]["census/master_v2_semantic_map.yaml"]
-    assert sem["python_file_count_inventoried"] == 102
-    assert sem["python_file_count_semantically_mapped"] == 102
+    assert sem["python_file_count_inventoried"] == 103
+    assert sem["python_file_count_semantically_mapped"] == 103
     assert sem["unmapped_file_count"] == 0
 
 
