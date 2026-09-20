@@ -117,7 +117,7 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" in section
     assert "TREASURY_PHASE_2_STATUS=READ_ONLY_FOUNDATION_BOUND" in section
     assert "TREASURY_PHASE_3_STATUS=SHADOW_ENFORCEMENT_BOUND" in section
-    assert "PL_TF_002_STATUS=FROZEN_PENDING_NETWORK_EVIDENCE" in section
+    assert "PL_TF_002_STATUS=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN" in section
     assert "TREASURY_MUTATION_REACHABLE=false" in section
     assert "TREASURY_PHASE_1_SEPARATION_GATE_WIRED=false" in section
     assert "TREASURY_PHASE_3_SEPARATION_GATE_WIRED=true" in section
@@ -126,7 +126,7 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     assert "DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1" in spec
     assert "TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md" in mot
     assert TREASURY_PHASE_1_STATUS == "CLOSED_OFFLINE_CONTRACTS"
-    assert PL_TF_002_STATUS == "FROZEN_PENDING_NETWORK_EVIDENCE"
+    assert PL_TF_002_STATUS == "CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN"
 
 
 def test_capital_admission_runbook_slice_excludes_phase1() -> None:

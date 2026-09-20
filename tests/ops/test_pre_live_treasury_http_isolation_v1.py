@@ -1,7 +1,7 @@
 """Treasury HTTP isolation for currently reachable pre-live / trading clients.
 
 No network. No Permission-GET. Does not wire treasury_separation_gate.
-PL-TF-002 remains FROZEN_PENDING_NETWORK_EVIDENCE.
+PL-TF-002 navigation status CLOSED per #6662; network contract standing unchanged.
 """
 
 from __future__ import annotations

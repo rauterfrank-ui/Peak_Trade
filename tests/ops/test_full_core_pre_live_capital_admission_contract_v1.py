@@ -360,17 +360,18 @@ def test_offline_injected_path_still_halts_before_wire(
 def test_runbook_and_spec_bind_without_live_arming() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    start = runbook.index("11.2.1.N PRE_LIVE_CAPITAL_ADMISSION_CONTRACT")
-    section = runbook[start : runbook.index("11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS", start)]
-    assert "CAPITAL_ADMISSION_IMPLEMENTED=true" in section
-    assert "OBSERVED_CAPITAL != RISK_ADMISSIBLE_CAPITAL" in section
-    assert "PL_TF_001_STATUS=CLOSED_TYPED_ADMISSION_SEAM" in section
-    assert "PL_TF_002_STATUS=FROZEN_PENDING_NETWORK_EVIDENCE" in section
-    assert "LIVE_ENABLED=false" in section
-    assert "LIVE_ARMED=false" in section
-    assert "WIRE_SEND_PERMITTED=false" in section
-    assert "TREASURY_MUTATION_REACHABLE_FROM_TRADING=false" in section
-    assert "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ENABLED" in section
+    tb_start = runbook.index("## CURRENT Treasury Phase Bindings")
+    tb_section = runbook[tb_start : runbook.index("## CURRENT Order-Intent", tb_start)]
+    assert "PL_TF_002_STATUS=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN" in tb_section
+    assert "CAPITAL_ADMISSION_IMPLEMENTED=true" in spec
+    assert "OBSERVED_CAPITAL != RISK_ADMISSIBLE_CAPITAL" in spec
+    assert "PL_TF_001_STATUS=CLOSED_TYPED_ADMISSION_SEAM" in spec
+    assert "PL_TF_002_STATUS=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN" in spec
+    assert "LIVE_ENABLED=false" in spec
+    assert "LIVE_ARMED=false" in spec
+    assert "WIRE_SEND_PERMITTED=false" in spec
+    assert "TREASURY_MUTATION_REACHABLE_FROM_TRADING=false" in spec
+    assert "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ENABLED" in spec
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1" in spec
     assert CAPITAL_AUTHORITY_NONE == "NONE"
