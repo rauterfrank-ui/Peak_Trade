@@ -14,7 +14,7 @@
 This Atlas does not claim universe completeness because generation succeeded.
 
 ```text
-ENTITY_TOTAL=563
+ENTITY_TOTAL=564
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=122
 AUTHORITY_RELATION_COUNT=10
@@ -131,7 +131,7 @@ OKX_EVIDENCE_CENSUS_COMPLETE=true
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 23 |
+| GATE | 24 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |
