@@ -27,7 +27,8 @@ JOIN_SEAM_ID = "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
 
 WP_ID = "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
 OWNER_GO = "OWNER_GO_PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
-EXPECTED_ORIGIN_MAIN_SHA = "b58f622de2b82be664b2ea2eeee76db90d529a92"
+# Runtime gate: declared origin/main must match git origin/main, HEAD, and protected wire paths.
+# Hardcoded commit pins are forbidden (self-invalidate on squash merge of the rebind PR itself).
 
 AUTHORIZED_HOST = "eea.okx.com"
 METHOD_ALLOWLIST = ("GET",)

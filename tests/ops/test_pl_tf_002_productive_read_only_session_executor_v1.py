@@ -25,12 +25,12 @@ from src.ops.pl_tf_002_network_evidence_contract_v1.verifier_v1 import (
     verify_pl_tf_002_network_evidence_v1,
 )
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.constants_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
     K1_KEYCHAIN_UTF8_JSON_FIELD_API_KEY,
     K1_KEYCHAIN_UTF8_JSON_FIELD_PASSPHRASE,
     K1_KEYCHAIN_UTF8_JSON_FIELD_SECRET_KEY,
     OWNER_GO,
 )
+from tests.ops.test_pl_tf_002_runtime_integrity_v1 import _FakeIntegrityBackend
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.errors_v1 import (
     PlTf002ProductiveReadOnlySessionError,
 )
@@ -43,6 +43,12 @@ from src.ops.pl_tf_002_productive_read_only_session_executor_v1.session_executor
     open_pl_tf_002_productive_read_only_get_session_v1,
     prove_pl_tf_002_session_does_not_authorize_post_v1,
     public_session_proof_v1,
+)
+
+_TEST_ORIGIN_MAIN = "9bd633bb175dab27dc383b91a512e379bd31cefa"
+_TEST_INTEGRITY = _FakeIntegrityBackend(
+    origin_main=_TEST_ORIGIN_MAIN,
+    head=_TEST_ORIGIN_MAIN,
 )
 
 FAKE_OPAQUE = json.dumps(
@@ -82,7 +88,8 @@ def test_no_owner_go_denied() -> None:
     with pytest.raises(PlTf002ProductiveReadOnlySessionError, match="OWNER_GO_MISMATCH"):
         build_pl_tf_002_read_only_get_session_preflight_v1(
             owner_go="OWNER_GO_WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=_TEST_ORIGIN_MAIN,
+            integrity_backend=_TEST_INTEGRITY,
         )
 
 
@@ -91,17 +98,15 @@ def test_wrong_origin_sha_denied() -> None:
         build_pl_tf_002_read_only_get_session_preflight_v1(
             owner_go=OWNER_GO,
             origin_main_sha="0" * 40,
+            integrity_backend=_TEST_INTEGRITY,
         )
-
-
-def test_expected_origin_main_sha_matches_k1_secitem_closeout_main() -> None:
-    assert EXPECTED_ORIGIN_MAIN_SHA == "b58f622de2b82be664b2ea2eeee76db90d529a92"
 
 
 def test_preflight_pass_without_credential_load() -> None:
     pre = build_pl_tf_002_read_only_get_session_preflight_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=_TEST_ORIGIN_MAIN,
+        integrity_backend=_TEST_INTEGRITY,
     )
     assert pre.disposition == "PREFLIGHT_PASS"
     assert pre.authorized_host == AUTHORIZED_HOST
@@ -114,9 +119,10 @@ def test_credential_unavailable_fail_closed() -> None:
     with pytest.raises(PlTf002ProductiveReadOnlySessionError, match="K1_CREDENTIAL_ACQUISITION"):
         with open_pl_tf_002_productive_read_only_get_session_v1(
             owner_go=OWNER_GO,
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=_TEST_ORIGIN_MAIN,
             acquire_credential=True,
             backend=_AbsentKeychainBackend(),
+            integrity_backend=_TEST_INTEGRITY,
         ):
             pass  # pragma: no cover
 
@@ -124,9 +130,10 @@ def test_credential_unavailable_fail_closed() -> None:
 def test_credential_acquisition_success_binds_transport() -> None:
     with open_pl_tf_002_productive_read_only_get_session_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=_TEST_ORIGIN_MAIN,
         acquire_credential=True,
         backend=_FakeKeychainBackend(),
+        integrity_backend=_TEST_INTEGRITY,
     ) as session:
         assert session.credential_acquired is True
         assert session.network_executed_by_executor is False
@@ -221,9 +228,10 @@ def test_opaque_wiped_after_session(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sess_mod, "wipe_opaque_os_native_store_material_v1", _spy_wipe)
     with open_pl_tf_002_productive_read_only_get_session_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=_TEST_ORIGIN_MAIN,
         acquire_credential=True,
         backend=_FakeKeychainBackend(),
+        integrity_backend=_TEST_INTEGRITY,
     ):
         pass
     assert len(wipe_calls) >= 1
