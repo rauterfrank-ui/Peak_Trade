@@ -607,6 +607,7 @@ def join_capital_admission_into_admission_inputs_v1(
     inst_type: str = "FUTURES",
     expected_account_identity: Any = "",
     capital_admission_claim: CapitalAdmissionClaimV1 | None = None,
+    treasury_external_capital_decrease_observation: Any = None,
     step_29p_risk_claim: Any = None,
 ) -> ExecutionAdmissionInputsV1:
     inputs = join_live_account_bound_into_admission_inputs_v1(
@@ -629,12 +630,33 @@ def join_capital_admission_into_admission_inputs_v1(
         inst_type=inst_type,
         expected_account_identity=expected_account_identity,
     )
-    evidence = evaluate_capital_admission_v1(
-        claim=capital_admission_claim,
-        expected_account_identity=expected_account_identity,
-        expected_instrument_id=instrument_id,
-        admission_context=admission_context,
-    )
+    s2_provenance: Tuple[str, ...] = ()
+    if treasury_external_capital_decrease_observation is not None:
+        if capital_admission_claim is not None:
+            raise ValueError("TREASURY_DECREASE_OBSERVATION_AND_CLAIM_MUTUALLY_EXCLUSIVE")
+        from src.ops.treasury_external_capital_decrease_s2_admission_runtime_join_v1.join_v1 import (
+            join_treasury_external_capital_decrease_into_capital_admission_runtime_v1,
+        )
+
+        runtime_join = join_treasury_external_capital_decrease_into_capital_admission_runtime_v1(
+            treasury_external_capital_decrease_observation,
+            expected_account_identity=str(expected_account_identity or ""),
+            expected_instrument_id=instrument_id,
+            admission_context=admission_context,
+        )
+        evidence = runtime_join.capital_admission_evidence
+        s2_provenance = (
+            runtime_join.join_seam_id,
+            *runtime_join.contract.reason_codes,
+            *runtime_join.treasury_join.treasury_reason_codes,
+        )
+    else:
+        evidence = evaluate_capital_admission_v1(
+            claim=capital_admission_claim,
+            expected_account_identity=expected_account_identity,
+            expected_instrument_id=instrument_id,
+            admission_context=admission_context,
+        )
     from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
         evaluate_step_29p_capital_risk_admissibility_v1,
     )
@@ -675,5 +697,6 @@ def join_capital_admission_into_admission_inputs_v1(
             LIVE_ACCOUNT_BOUND_JOIN_SEAM_ID,
             *evidence.reason_codes,
             *admissibility.reason_codes,
+            *s2_provenance,
         ),
     )

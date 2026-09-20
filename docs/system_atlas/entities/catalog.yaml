@@ -8850,6 +8850,33 @@ entities:
       context, not balance-derived. CREDIBLE_DEPLETION only with confirmed
       history. No withdraw POST, sizing, or STEP-29P mint. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
+    kind: RUNTIME_COMPONENT
+    name: Treasury external capital decrease S2 admission runtime join v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_TREASURY_EXTERNAL_CAPITAL_DECREASE_S2_ADMISSION_RUNTIME_JOIN_V1
+    source_paths:
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/__init__.py
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/constants_v1.py
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/contract_v1.py
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/models_v1.py
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/errors_v1.py
+    source_symbols:
+      - join_treasury_external_capital_decrease_into_capital_admission_runtime_v1
+      - evaluate_treasury_external_capital_decrease_s2_admission_contract_v1
+    evidence_sources:
+      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
+      - tests/ops/test_treasury_external_capital_decrease_s2_admission_runtime_join_v1.py
+      - docs/ops/specs/TREASURY_EXTERNAL_CAPITAL_DECREASE_S2_ADMISSION_RUNTIME_JOIN_V1.md
+    notes: >-
+      S2 only: typed runtime join from S1 decrease observation into
+      join_capital_admission_into_admission_inputs_v1. Reuses Phase-2 capital
+      admission join; fail-closed contract conjunct, not owner. No deposit/E5.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
     kind: RUNTIME_COMPONENT
     name: Treasury capital admission to account-equity orchestration v1
