@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1`.
 
 ## Workflow
 
@@ -40,7 +40,10 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:pl_tf_002_productive_read_only_get_complete_v1` |
+| `GATE:full_core_capital_admission_v1` |
+| `GATE:treasury_phase_1_offline_contracts_v1` |
+| `GATE:pl_tf_002_network_evidence_contract_v1` |
+| `DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -76,13 +79,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:pl_tf_002_productive_read_only_get_complete_v1` |
+| `GATE:full_core_capital_admission_v1` |
+| `GATE:treasury_phase_1_offline_contracts_v1` |
+| `GATE:pl_tf_002_network_evidence_contract_v1` |
 
 ## AFFECTED_SCHEMAS
 
 | id |
 | --- |
-| _(none)_ |
+| `DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1` |
 
 ## REVIEW_REQUIRED_ITEMS
 
@@ -92,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PL-TF-002 persist manifest contract repair (write_manifest_v1 relative_files), offline manifest finalize for capture 20260920T224203Z, closure navigation only after verifier PASS. No network recapture. Atlas is not canonical authority.
-- introduced_by=PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1
-- modified_by=PR_6662_PL_TF_002_MANIFEST_CONTRACT_REPAIR_AND_OFFLINE_CLOSURE_V1
+- PL-TF-002 post-#6662 standing vs navigation alignment: tests/spec/comment only. PL_TF_002_STATUS_STANDING remains FROZEN_PENDING_NETWORK_EVIDENCE; canonical navigation CLOSED unchanged. No network recapture. Atlas is not canonical authority.
+- introduced_by=PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
+- modified_by=PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
