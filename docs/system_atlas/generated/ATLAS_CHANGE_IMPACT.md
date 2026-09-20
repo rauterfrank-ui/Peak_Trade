@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1`.
 
 ## Workflow
 
@@ -40,9 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:pl_tf_002_network_evidence_contract_v1` |
-| `DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1` |
-| `GATE:treasury_phase_3_shadow_enforcement_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -78,7 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:pl_tf_002_network_evidence_contract_v1` |
+| _(none)_ |
 
 ## AFFECTED_SCHEMAS
 
@@ -94,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6654: PL-TF-002 network evidence contract and offline verifier (NE-TF-001 GET semantics, F1-F4 closure predicate). Runbook navigation token only; standing PL_TF_002 frozen status unchanged. No network, credential load, or authority mint. Atlas is not canonical authority.
-- introduced_by=PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
-- modified_by=PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+- PR 6656: K1 macOS SecItem generic-password query shape fix only (ReturnData + MatchLimitOne; no ReturnAttributes/MatchLimitAll). Fail-closed K1 Keychain read path; no authority, service/account, or schema change. No Keychain mutation, network, or productive credential use. Atlas is not canonical authority.
+- introduced_by=PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1
+- modified_by=PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

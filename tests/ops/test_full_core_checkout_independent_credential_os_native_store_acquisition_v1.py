@@ -666,3 +666,37 @@ def test_authorized_direct_os_boundary_substitution_reaches_secitem_hook(
     )
     assert payloads == [FAKE_OPAQUE]
     assert seen == [("peak-trade.full-core.venue-credentials", "okx-eea.productive")]
+
+
+def test_secitem_query_shape_uses_return_data_and_match_limit_one_only() -> None:
+    source = ACQUISITION_PATH.read_text(encoding="utf-8")
+    assert '_symbol(security, "kSecReturnAttributes")' not in source
+    assert '_symbol(security, "kSecMatchLimitAll")' not in source
+    assert '_symbol(security, "kSecMatchLimitOne")' in source
+    assert '_symbol(security, "kSecReturnData")' in source
+
+
+def test_secitem_malformed_empty_payload_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _authorize(monkeypatch)
+
+    def _empty(*, service: str, account: str) -> list[bytes]:
+        del service, account
+        return [b""]
+
+    monkeypatch.setattr(
+        f"{ACQ_MOD}._sec_item_copy_matching_generic_password_payloads_v1",
+        _empty,
+    )
+    monkeypatch.setattr(f"{ACQ_MOD}.sys.platform", "darwin")
+    backend = MacosSecurityFrameworkLookupBackendV1()
+    with pytest.raises(
+        FullCoreCheckoutIndependentCredentialCapabilityError,
+        match=REASON_UNEXPECTED_REPRESENTATION,
+    ):
+        backend.copy_matching_generic_password_value_data_v1(
+            service=KEYCHAIN_SERVICE_ID,
+            account=KEYCHAIN_ACCOUNT_ID,
+            item_class=KEYCHAIN_ITEM_CLASS,
+        )

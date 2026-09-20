@@ -502,12 +502,13 @@ def _sec_item_copy_matching_generic_password_payloads_v1(
         service_ref = _cf_string(service)
         account_ref = _cf_string(account)
         retained.extend((service_ref, account_ref))
+        # SecItem: kSecReturnData + kSecReturnAttributes + kSecMatchLimitAll is invalid (-50 paramErr).
+        # Closed-world single generic-password payload: ReturnData + MatchLimitOne only.
         keys = (
             _symbol(security, "kSecClass"),
             _symbol(security, "kSecAttrService"),
             _symbol(security, "kSecAttrAccount"),
             _symbol(security, "kSecReturnData"),
-            _symbol(security, "kSecReturnAttributes"),
             _symbol(security, "kSecMatchLimit"),
         )
         values = (
@@ -515,8 +516,7 @@ def _sec_item_copy_matching_generic_password_payloads_v1(
             service_ref,
             account_ref,
             _symbol(core, "kCFBooleanTrue"),
-            _symbol(core, "kCFBooleanTrue"),
-            _symbol(security, "kSecMatchLimitAll"),
+            _symbol(security, "kSecMatchLimitOne"),
         )
         n = len(keys)
         key_arr = (c_void_p * n)(*[c_void_p(int(k.value or 0)) for k in keys])
