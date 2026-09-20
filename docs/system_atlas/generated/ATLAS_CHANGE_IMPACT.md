@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6649_TREASURY_EXTERNAL_CAPITAL_DECREASE_S1`.
 
 ## Workflow
 
@@ -40,21 +40,21 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1` |
+| `RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_e1_binding_consumes_funding_balance_read` |
-| `REL:r_treasury_e1_binding_feeds_phase_2_observation` |
+| `REL:r_treasury_s1_decrease_binding_consumes_funding_balance_read` |
+| `REL:r_treasury_s1_decrease_binding_feeds_phase_2_observation` |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_e1_binding_consumes_funding_balance_read` |
-| `REL:r_treasury_e1_binding_feeds_phase_2_observation` |
+| `REL:r_treasury_s1_decrease_binding_consumes_funding_balance_read` |
+| `REL:r_treasury_s1_decrease_binding_feeds_phase_2_observation` |
 
 ## REMOVED_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1: E1 binding from read-only funding GET to TreasuryVenueObservationV1. No sizing, STEP-29P, or execution authority. Atlas is not canonical authority.
-- introduced_by=PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1
-- modified_by=PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1
+- WP TREASURY_EXTERNAL_CAPITAL_DECREASE_GOVERNANCE_V1 S1: read-only external capital decrease observation binding (funding GET + typed withdrawal-history context). No withdraw POST, sizing, STEP-29P, or execution authority. Atlas is not canonical authority.
+- introduced_by=PR_6649_TREASURY_EXTERNAL_CAPITAL_DECREASE_S1
+- modified_by=PR_6649_TREASURY_EXTERNAL_CAPITAL_DECREASE_S1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
