@@ -70,7 +70,7 @@ from src.ops.pl_tf_002_productive_read_only_session_executor_v1.constants_v1 imp
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.errors_v1 import (
     PlTf002ProductiveReadOnlySessionError,
 )
-from src.ops.pl_tf_002_productive_read_only_session_executor_v1.k1_keychain_utf8_json_material_v1 import (
+from src.ops.pl_tf_002_productive_read_only_session_executor_v1.k1_macos_opaque_utf8_json_material_v1 import (
     parse_k1_keychain_utf8_json_material_v1,
 )
 

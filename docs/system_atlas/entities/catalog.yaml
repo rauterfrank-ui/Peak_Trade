@@ -8855,7 +8855,7 @@ entities:
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/__init__.py
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/constants_v1.py
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py
-      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_keychain_utf8_json_material_v1.py
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_macos_opaque_utf8_json_material_v1.py
     source_symbols:
       - open_pl_tf_002_productive_read_only_get_session_v1
       - build_pl_tf_002_read_only_get_session_preflight_v1
