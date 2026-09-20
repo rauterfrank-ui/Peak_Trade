@@ -8889,6 +8889,7 @@ entities:
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/__init__.py
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/constants_v1.py
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/capture_v1.py
+      - src/ops/pl_tf_002_productive_read_only_get_complete_v1/errors_v1.py
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/persist_v1.py
       - src/ops/pl_tf_002_productive_read_only_get_complete_v1/pre_network_jit_v1.py
     source_symbols:
