@@ -342,6 +342,30 @@ def _relation_add_remove(atlas_diff: str) -> tuple[list[str], list[str]]:
     return sorted(set(added)), sorted(set(removed))
 
 
+def _removed_atlas_bound_paths(atlas_diff: str) -> set[str]:
+    """File-like paths removed from Atlas entity records in this diff."""
+    removed: set[str] = set()
+    for line in (atlas_diff or "").splitlines():
+        if not line.startswith("-") or line.startswith("---"):
+            continue
+        stripped = line[1:].lstrip()
+        if stripped.startswith("- "):
+            candidate = _norm(stripped[2:].strip())
+        else:
+            candidate = _norm(stripped)
+        if _is_file_like(candidate):
+            removed.add(candidate)
+    return removed
+
+
+def _atlas_reviewed_path_removal(path: str, removed_bounds: set[str]) -> bool:
+    p = _norm(path)
+    for bound in removed_bounds:
+        if p == bound or _path_hits(p, bound):
+            return True
+    return False
+
+
 def classify_atlas_impact_v1(
     *,
     atlas: dict[str, Any],
@@ -364,14 +388,17 @@ def classify_atlas_impact_v1(
         diff_by_file=diff_by_file,
         atlas=atlas,
     )
+    atlas_source_changed = any(_is_atlas_source(p) for p in changed_files)
+    removed_atlas_paths = _removed_atlas_bound_paths(atlas_yaml_diff)
     material_untracked = sorted(
         {
             _norm(p)
             for p in changed_files
-            if _is_material(p) and _norm(p) not in hits["tracked_paths"]
+            if _is_material(p)
+            and _norm(p) not in hits["tracked_paths"]
+            and not (atlas_source_changed and _atlas_reviewed_path_removal(p, removed_atlas_paths))
         }
     )
-    atlas_source_changed = any(_is_atlas_source(p) for p in changed_files)
     atlas_owned_only = bool(changed_files) and all(_is_atlas_owned(p) for p in changed_files)
     proven_ids = _ids_in_atlas_diff(atlas_yaml_diff)
     new_rels, removed_rels = _relation_add_remove(atlas_yaml_diff)

@@ -69,6 +69,34 @@ def test_tracked_runtime_with_entity_id_in_yaml_diff_is_updated() -> None:
     assert report.review_required_items == []
 
 
+def test_deleted_runtime_paths_removed_in_atlas_yaml_are_not_material_untracked() -> None:
+    atlas = load_atlas_v1(repo_root=REPO_ROOT)
+    yaml_diff = (
+        "diff --git a/docs/system_atlas/entities/catalog.yaml "
+        "b/docs/system_atlas/entities/catalog.yaml\n"
+        "@@\n"
+        "-  - id: TRANSPORT:bound_okx_testnet_http\n"
+        "-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/"
+        "bound_testnet_http_client_v1.py\n"
+        "-      - src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1\n"
+        "+  - id: AUTH_PRIMITIVE:okx_hmac_sign\n"
+    )
+    deleted_client = (
+        "src/ops/section_11_12_8_real_productive_testnet_execute_path_unlock_v1/"
+        "bound_testnet_http_client_v1.py"
+    )
+    report = classify_atlas_impact_v1(
+        atlas=atlas,
+        changed_files=[
+            deleted_client,
+            "docs/system_atlas/entities/catalog.yaml",
+        ],
+        atlas_yaml_diff=yaml_diff,
+    )
+    assert not any(item.startswith("MATERIAL_UNTRACKED:") for item in report.review_required_items)
+    assert report.drift_detected is False
+
+
 def test_material_untracked_src_ops_is_review_required() -> None:
     atlas = load_atlas_v1(repo_root=REPO_ROOT)
     report = classify_atlas_impact_v1(
