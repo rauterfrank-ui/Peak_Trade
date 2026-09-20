@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.constants_v1 import (
     AUTHORIZED_HOST,
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     WP_ID,
 )
@@ -19,7 +18,6 @@ from src.ops.pl_tf_002_productive_read_only_session_executor_v1.session_executor
 
 __all__ = [
     "AUTHORIZED_HOST",
-    "EXPECTED_ORIGIN_MAIN_SHA",
     "OWNER_GO",
     "WP_ID",
     "PlTf002ProductiveReadOnlyGetSessionV1",

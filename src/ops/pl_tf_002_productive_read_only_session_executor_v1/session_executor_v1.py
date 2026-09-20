@@ -58,7 +58,6 @@ from src.ops.pl_tf_002_productive_read_only_session_executor_v1.constants_v1 imp
     ALLOWED_PRODUCTIVE_TRANSPORT_CLASSES,
     AUTHORIZED_HOST as CONTRACT_AUTHORIZED_HOST,
     EPHEMERAL_KEYCHAIN_CONSUMER,
-    EXPECTED_ORIGIN_MAIN_SHA,
     FORBIDDEN_HTTP_METHODS,
     FORBIDDEN_MUTATION_ENDPOINTS,
     JOIN_SEAM_ID,
@@ -72,6 +71,11 @@ from src.ops.pl_tf_002_productive_read_only_session_executor_v1.errors_v1 import
 )
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.k1_macos_opaque_utf8_json_material_v1 import (
     parse_k1_keychain_utf8_json_material_v1,
+)
+from src.ops.pl_tf_002_productive_read_only_session_executor_v1.runtime_integrity_v1 import (
+    PlTf002RuntimeIntegrityBackendV1,
+    assert_pl_tf_002_runtime_integrity_v1,
+    default_integrity_backend_v1,
 )
 
 FALSE_TOKEN = "false"
@@ -158,11 +162,19 @@ def _assert_standing_pins_v1() -> None:
         raise PlTf002ProductiveReadOnlySessionError("EPHEMERAL_CONSUMER_DRIFT")
 
 
-def _validate_owner_go_and_sha_v1(*, owner_go: str, origin_main_sha: str) -> None:
-    if str(owner_go or "").strip() != OWNER_GO:
-        raise PlTf002ProductiveReadOnlySessionError("OWNER_GO_MISMATCH")
-    if str(origin_main_sha or "").strip() != EXPECTED_ORIGIN_MAIN_SHA:
-        raise PlTf002ProductiveReadOnlySessionError("ORIGIN_MAIN_SHA_MISMATCH")
+def _validate_owner_go_and_runtime_integrity_v1(
+    *,
+    owner_go: str,
+    origin_main_sha: str,
+    integrity_backend: PlTf002RuntimeIntegrityBackendV1 | None,
+) -> str:
+    backend = integrity_backend if integrity_backend is not None else default_integrity_backend_v1()
+    return assert_pl_tf_002_runtime_integrity_v1(
+        owner_go=owner_go,
+        declared_origin_main_sha=origin_main_sha,
+        required_owner_go=OWNER_GO,
+        integrity_backend=backend,
+    )
 
 
 def _f1_endpoint_paths_v1() -> tuple[str, ...]:
@@ -188,11 +200,16 @@ def build_pl_tf_002_read_only_get_session_preflight_v1(
     *,
     owner_go: str,
     origin_main_sha: str,
+    integrity_backend: PlTf002RuntimeIntegrityBackendV1 | None = None,
 ) -> PlTf002ReadOnlyGetSessionPreflightV1:
     """Preflight without credential load or network."""
 
     _assert_standing_pins_v1()
-    _validate_owner_go_and_sha_v1(owner_go=owner_go, origin_main_sha=origin_main_sha)
+    bound_sha = _validate_owner_go_and_runtime_integrity_v1(
+        owner_go=owner_go,
+        origin_main_sha=origin_main_sha,
+        integrity_backend=integrity_backend,
+    )
     for path in _f1_endpoint_paths_v1():
         _assert_get_only_surface_v1(endpoint_path=path, method="GET")
     _assert_get_only_surface_v1(endpoint_path=NE_TF_001_ENDPOINT_PATH, method="GET")
@@ -200,7 +217,7 @@ def build_pl_tf_002_read_only_get_session_preflight_v1(
         disposition="PREFLIGHT_PASS",
         wp_id=WP_ID,
         owner_go_accepted=TRUE_TOKEN,
-        origin_main_sha_bound=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha_bound=bound_sha,
         authorized_host=AUTHORIZED_HOST,
         http_method_allowlist=METHOD_ALLOWLIST,
         f1_endpoint_paths=_f1_endpoint_paths_v1(),
@@ -224,12 +241,14 @@ def open_pl_tf_002_productive_read_only_get_session_v1(
     origin_main_sha: str,
     acquire_credential: bool,
     backend: OsNativeStoreLookupBackendV1 | None = None,
+    integrity_backend: PlTf002RuntimeIntegrityBackendV1 | None = None,
 ) -> Iterator[PlTf002ProductiveReadOnlyGetSessionV1]:
     """Ephemeral K1 bind + GET transport. Wipes opaque material and K1 handle on exit."""
 
     preflight = build_pl_tf_002_read_only_get_session_preflight_v1(
         owner_go=owner_go,
         origin_main_sha=origin_main_sha,
+        integrity_backend=integrity_backend,
     )
     if acquire_credential is not True:
         raise PlTf002ProductiveReadOnlySessionError("ACQUIRE_CREDENTIAL_REQUIRED_FOR_OPEN")
