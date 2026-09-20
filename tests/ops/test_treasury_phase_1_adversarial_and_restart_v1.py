@@ -259,5 +259,5 @@ def test_network_gaps_are_not_claimed_closed() -> None:
     assert TRANSFER_RECONCILIATION is False
     assert CURRENT_END_TO_END_TREASURY_GATE is False
     assert TREASURY_COMPLETE_PRODUCTIVE_SUBSYSTEM_PROVEN is False
-    assert TREASURY_PHASE_2_STATUS == "NOT_STARTED"
+    assert TREASURY_PHASE_2_STATUS == "READ_ONLY_FOUNDATION_BOUND"
     assert VENUE_PERMISSION_GET_PERFORMED is False

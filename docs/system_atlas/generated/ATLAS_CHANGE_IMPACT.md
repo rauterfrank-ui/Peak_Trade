@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6645_M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1`.
 
 ## Workflow
 
@@ -40,20 +40,21 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `HOST:wallclock_decision_economics_cycle` |
-| `RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1` |
+| `GATE:treasury_phase_1_offline_contracts_v1` |
+| `GATE:treasury_phase_2_read_only_reconciliation_v1` |
+| `DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_treasury_phase_2_consumes_capital_admission` |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_treasury_phase_2_consumes_capital_admission` |
 
 ## REMOVED_RELATIONS
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6645: M9-S1 passive durable market session evidence accumulation at the existing hardened-bridge productive accumulation seam. Observation-only M9-S1 ledger, join reuse, offline counterfactual replay, owner-review artifacts. NUMERIC_MAX_AGE_DECIDED=false. ENFORCEMENT_ENABLED=false. EXTERNAL_EFFECT_AUTHORIZED=false. No Master V2 / Double Play semantic change. Atlas is not canonical authority.
-- introduced_by=PR_6645_M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
-- modified_by=M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
+- PR 6646: Treasury Phase-2 read-only reconciliation foundation — typed observation/reconciliation join into capital_admission_contract_v1. No network, mutation, or RISK_ADMISSIBLE mint. Full-Core execution path unchanged. Atlas is not canonical authority.
+- introduced_by=PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1
+- modified_by=PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
