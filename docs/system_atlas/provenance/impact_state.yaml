@@ -3,26 +3,24 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
-modified_by: PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
+introduced_by: PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
+modified_by: PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  K1 productive macOS Keychain provisioning authority: bounded Owner-GO gated
-  upsert contract for DZ tuple only. Standing write remains false. No venue wire.
-  Atlas is not canonical authority.
+  K1 macOS Keychain upsert backend: CFDictionaryCreate callback refs via byref
+  (ctypes binding fix). Synthetic non-productive Keychain regression tests.
+  No productive tuple write. Atlas is not canonical authority.
 changed_entities:
   - GATE:k1_productive_macos_credential_store_provisioning_authority_v1
-  - GATE:pl_tf_002_productive_read_only_session_executor_v1
 changed_relations: []
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
 affected_safety_surfaces:
-  - GATE:pl_tf_002_productive_read_only_session_executor_v1
+  - GATE:k1_productive_macos_credential_store_provisioning_authority_v1
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
   - id: GATE:k1_productive_macos_credential_store_provisioning_authority_v1
-  - id: GATE:pl_tf_002_productive_read_only_session_executor_v1

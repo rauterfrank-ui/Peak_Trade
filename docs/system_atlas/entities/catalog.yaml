@@ -8853,7 +8853,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
+    modified_by: PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
     fail_closed: true
     source_paths:
       - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/__init__.py
@@ -8866,12 +8866,15 @@ entities:
     source_symbols:
       - provision_bound_k1_productive_macos_keychain_material_v1
       - prove_provisioning_standing_gates_v1
+      - bound_keychain_sec_item_upsert_v1
     evidence_sources:
       - docs/ops/specs/K1_PRODUCTIVE_MACOS_CREDENTIAL_STORE_PROVISIONING_AUTHORITY_V1.md
       - tests/ops/test_k1_productive_macos_credential_store_provisioning_authority_v1.py
+      - tests/ops/test_k1_macos_security_framework_upsert_ctypes_binding_v1.py
     notes: >-
       Bounded Owner-GO gated upsert for DZ Keychain tuple only. Standing write
       unauthorized. Placeholder material classes rejected. No venue wire.
+      macOS SecItem upsert CFDictionaryCreate callbacks passed byref (ctypes fix).
       ATLAS_AUTHORITY=NONE.
 
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
