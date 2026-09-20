@@ -15,7 +15,8 @@ TREASURY_MUTATION_AUTHORIZED = False
 EXTERNAL_EFFECT_AUTHORIZED = False
 STEP_29P_AUTHORITY_CHANGED = False
 
-# Standing runtime truth (unchanged by verifier outcomes).
+# Verifier-package standing label (unchanged by verify_pl_tf_002_network_evidence_v1).
+# Canonical navigation status after governed closure: treasury_phase_1 PL_TF_002_STATUS.
 PL_TF_002_STATUS_STANDING = "FROZEN_PENDING_NETWORK_EVIDENCE"
 VENUE_PERMISSION_UNKNOWN_STANDING = True
 VENUE_PERMISSION_GET_PERFORMED_STANDING = False

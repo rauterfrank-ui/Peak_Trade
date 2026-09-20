@@ -8576,12 +8576,13 @@ entities:
 
   - id: GATE:full_core_capital_admission_v1
     # 11.2.1.S ADJUDICATION_RESULT=NO_CANONICALLY_VALID_MAPPING_AVAILABLE; MAPPING_PROVEN=false.
+    # PR_6663: NAVIGATION_ONLY test bind fix; PL_TF_002 CLOSED vs STANDING; ATLAS_AUTHORITY=NONE.
     kind: GATE
     name: Full-core Pre-Live Capital Admission seam v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
@@ -8680,12 +8681,13 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:treasury_phase_1_offline_contracts_v1
+    # PR_6663: canonical bind tests only; navigation PL_TF_002 CLOSED unchanged; ATLAS_AUTHORITY=NONE.
     kind: GATE
     name: Treasury Phase-1 offline contracts v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1
+    modified_by: PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
     fail_closed: true
     source_paths:
       - src/ops/treasury_phase_1_offline_contracts_v1/__init__.py
@@ -8940,12 +8942,13 @@ entities:
       must match origin/main (no hardcoded commit pin). ATLAS_AUTHORITY=NONE.
 
   - id: GATE:pl_tf_002_network_evidence_contract_v1
+    # PR_6663: comment clarifies STANDING frozen; spec dual-token; no verifier semantic change.
     kind: GATE
     name: PL-TF-002 network evidence contract v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+    modified_by: PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
     fail_closed: true
     source_paths:
       - src/ops/pl_tf_002_network_evidence_contract_v1/__init__.py
@@ -8970,12 +8973,13 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1
+    # PR_6663: standing_status_unchanged documentation only; ATLAS_AUTHORITY=NONE.
     kind: DATA_CONTRACT
     name: PL-TF-002 network evidence bundle v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_6654_PL_TF_002_NETWORK_EVIDENCE_CONTRACT_V1
+    modified_by: PR_6663_PL_TF_002_CURRENT_HEAD_STANDING_ALIGNMENT_V1
     unit: mixed
     source_paths:
       - src/ops/pl_tf_002_network_evidence_contract_v1/constants_v1.py

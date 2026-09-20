@@ -22,7 +22,7 @@ from src.ops.pl_tf_002_network_evidence_contract_v1.verifier_v1 import (
     verify_pl_tf_002_network_evidence_v1,
 )
 from src.ops.treasury_phase_1_offline_contracts_v1.constants_v1 import (
-    PL_TF_002_STATUS,
+    PL_TF_002_STATUS as TREASURY_NAVIGATION_PL_TF_002_STATUS,
     VENUE_PERMISSION_GET_PERFORMED,
     VENUE_PERMISSION_UNKNOWN,
 )
@@ -74,10 +74,13 @@ def test_standing_constants_remain_frozen_after_synthetic_pass() -> None:
     assert result["VERIFICATION_RESULT"] == "PASS"
     assert result["PL_TF_002_CLOSURE_RESULT"]["closed"] is True
     assert result["PL_TF_002_CLOSURE_RESULT"]["status_if_closed"] == PL_TF_002_STATUS_CLOSED
-    assert PL_TF_002_STATUS == "FROZEN_PENDING_NETWORK_EVIDENCE"
+    assert (
+        result["PL_TF_002_CLOSURE_RESULT"]["standing_status_unchanged"] == PL_TF_002_STATUS_STANDING
+    )
     assert PL_TF_002_STATUS_STANDING == "FROZEN_PENDING_NETWORK_EVIDENCE"
-    assert VENUE_PERMISSION_UNKNOWN is True
-    assert VENUE_PERMISSION_GET_PERFORMED is False
+    assert TREASURY_NAVIGATION_PL_TF_002_STATUS == PL_TF_002_STATUS_CLOSED
+    assert VENUE_PERMISSION_UNKNOWN is False
+    assert VENUE_PERMISSION_GET_PERFORMED is True
     assert result["LIVE_MINTED"] is False
     assert result["RISK_ADMISSIBLE_MINTED"] is False
     assert result["TREASURY_AUTHORITY_MINTED"] is False

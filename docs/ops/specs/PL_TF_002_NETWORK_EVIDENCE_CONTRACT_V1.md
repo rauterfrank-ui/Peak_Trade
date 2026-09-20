@@ -16,12 +16,18 @@ productive network-evidence session. This persist does not perform GETs,
 load credentials, or flip standing runtime status tokens.
 
 ```text
-PL_TF_002_STATUS=FROZEN_PENDING_NETWORK_EVIDENCE
+PL_TF_002_STATUS_STANDING=FROZEN_PENDING_NETWORK_EVIDENCE
+NAVIGATION_PL_TF_002_STATUS_AFTER_GOVERNED_CLOSURE=CLOSED_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN
 VENUE_PERMISSION_UNKNOWN=true
 VENUE_PERMISSION_GET_PERFORMED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NETWORK_EXECUTION_AUTHORIZED=false
 ```
+
+This capability keeps `PL_TF_002_STATUS_STANDING` frozen in-package. Governed
+closure navigation (`PL_TF_002_STATUS`, venue permission tokens) flips only in
+`treasury_phase_1_offline_contracts_v1`, Master Runbook, and bound specs via
+`apply_pl_tf_002_closure_status_navigation_v1` after productive evidence (#6662).
 
 ## NE-TF-001 evidence surface
 
