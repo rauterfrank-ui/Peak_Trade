@@ -8852,7 +8852,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
+    modified_by: PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
     fail_closed: true
     source_paths:
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/__init__.py
@@ -8860,12 +8860,15 @@ entities:
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/errors_v1.py
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py
       - src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_macos_opaque_utf8_json_material_v1.py
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/runtime_integrity_v1.py
     source_symbols:
       - open_pl_tf_002_productive_read_only_get_session_v1
       - build_pl_tf_002_read_only_get_session_preflight_v1
+      - assert_pl_tf_002_runtime_integrity_v1
     evidence_sources:
       - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1.md
       - tests/ops/test_pl_tf_002_productive_read_only_session_executor_v1.py
+      - tests/ops/test_pl_tf_002_runtime_integrity_v1.py
     notes: >-
       Governed OWNER_GO transition to ephemeral K1 Keychain acquisition and
       FullCoreProductiveReadOnlyGetTransportV1 bind for later F1/F2 capture.

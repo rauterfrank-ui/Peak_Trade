@@ -3,8 +3,8 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
-modified_by: PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
+introduced_by: PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
+modified_by: PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-

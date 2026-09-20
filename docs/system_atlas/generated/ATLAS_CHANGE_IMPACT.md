@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1`.
 
 ## Workflow
 
@@ -93,7 +93,7 @@ Do not manually patch generated Markdown.
 ## Notes
 
 - PL-TF-002 SHA gate self-invalidation closeout: replace hardcoded EXPECTED_ORIGIN_MAIN_SHA with runtime integrity (git origin/main + HEAD + protected wire-surface diff). Fail-closed drift preserved. No NE-TF-001 endpoint, host, K1 Keychain seam, auth/signer, or transport allowlist change. Atlas is not canonical authority.
-- introduced_by=PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
-- modified_by=PENDING_PR_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
+- introduced_by=PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
+- modified_by=PR_6658_PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
