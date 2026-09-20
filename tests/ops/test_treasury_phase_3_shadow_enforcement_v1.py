@@ -180,7 +180,9 @@ def test_treasury_mutation_not_reachable_from_shadow_http_join() -> None:
             method="GET",
             shadow_surface=SHADOW_HTTP_SURFACE_11_13_3,
         )
-    with pytest.raises(LiveShadowReconHttpError, match="MUTATION_ENDPOINT_HARD_BLOCK|TREASURY_SHADOW_GATE_DENY"):
+    with pytest.raises(
+        LiveShadowReconHttpError, match="MUTATION_ENDPOINT_HARD_BLOCK|TREASURY_SHADOW_GATE_DENY"
+    ):
         assert_endpoint_allowlisted_v1("/api/v5/asset/transfer")
 
 

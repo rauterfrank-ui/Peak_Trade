@@ -21,6 +21,7 @@
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
+| DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 
 ## Lineage (see DATA_LINEAGE_MAP.md)
 

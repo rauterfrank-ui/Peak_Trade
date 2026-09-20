@@ -122,6 +122,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:strategy_switch_sanity_check | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:strategy_switch_sanity_check | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:test_health_runner | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:test_health_runner | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:treasury_separation_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:treasury_separation_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | STATUS=OPEN (not proven) |  |

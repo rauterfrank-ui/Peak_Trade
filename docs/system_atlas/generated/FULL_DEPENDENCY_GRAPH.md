@@ -293,6 +293,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### GATE:treasury_phase_3_shadow_enforcement_v1
+
+- direct_upstream: `GATE:treasury_phase_2_read_only_reconciliation_v1, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, RUNTIME_COMPONENT:treasury_separation_gate_v1`
+- transitive_upstream: `DATA_CONTRACT:full_core_live_path_models_v1, GATE:full_core_capital_admission_v1, GATE:full_core_durable_filegate_join_v1, GATE:full_core_fresh_pretrade_runtime_get_v1, GATE:full_core_live_account_bound_v1, GATE:full_core_live_path_execution_boundary_halt_before_wire_v1, GATE:full_core_live_path_frozen_pretrade_conjunction_v1, GATE:full_core_live_path_identity_v1, GATE:full_core_live_path_restart_gate_v1, GATE:full_core_live_path_standing_live_gates_v1, GATE:full_core_owner_one_shot_permit_v1, GATE:kill_switch_durable_filegate_v1, GATE:portfolio_capital_reservation_budget_v1, GATE:treasury_phase_2_read_only_reconciliation_v1, RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1, RUNTIME_COMPONENT:full_core_live_path_composition_root_v1, RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1, RUNTIME_COMPONENT:mv2_capital_risk_sizing, RUNTIME_COMPONENT:treasury_separation_gate_v1`
+- direct_downstream: `DATA_CONTRACT:treasury_shadow_enforcement_result_v1`
+- transitive_downstream: `DATA_CONTRACT:treasury_shadow_enforcement_result_v1`
+
 ### HOST:cap72_stateful_host
 
 - direct_upstream: `BINDER:bound_instrument_v1`

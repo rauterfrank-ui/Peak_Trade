@@ -1513,6 +1513,57 @@ relations:
       Emits AccountEquityOrchestrationIngressV1 for governed account-equity
       orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_phase_3_consumes_phase_2_reconciliation
+    source: GATE:treasury_phase_3_shadow_enforcement_v1
+    type: CONSUMES
+    target: GATE:treasury_phase_2_read_only_reconciliation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+      - src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py
+    notes: >-
+      Phase-3 reuses evaluate_treasury_read_only_reconciliation_v1 only.
+      Does not call capital admission join or STEP-29P. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_phase_3_consumes_separation_gate
+    source: GATE:treasury_phase_3_shadow_enforcement_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:treasury_separation_gate_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/shadow_http_v1.py
+      - src/ops/treasury_separation_gate.py
+    notes: >-
+      Reuses evaluate_treasury_policy for bot-role treasury mutation deny.
+      Wired on §11.13 read-only HTTP clients only. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_phase_3_produces_shadow_enforcement_result
+    source: GATE:treasury_phase_3_shadow_enforcement_v1
+    type: PRODUCES
+    target: DATA_CONTRACT:treasury_shadow_enforcement_result_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+      - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
+    notes: >-
+      Shadow observe/enforce result only. capital_uplift_permitted remains
+      false. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_phase_3_wires_shadow_http_surfaces
+    source: GATE:treasury_phase_3_shadow_enforcement_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py
+      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/http_client_v1.py
+      - src/ops/section_11_13_4_live_dry_run_order_plan_v1/http_client_v1.py
+    notes: >-
+      Binding is limited to §11.13 read-only/shadow HTTP allowlist checks.
+      Full-Core composition root productive authority graph unchanged.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
     source: GATE:full_core_live_path_standing_live_gates_v1
     type: DENIES
