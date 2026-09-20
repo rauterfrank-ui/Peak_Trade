@@ -392,7 +392,7 @@ def test_treasury_interference_proof_pass() -> None:
     assert TREASURY_MUTATION_REACHABLE_FROM_TRADING is False
     assert TREASURY_PHASE_1_CAN_MINT_RISK_ADMISSIBLE_CAPITAL is False
     assert TREASURY_PHASE_1_CAN_MOVE_FUNDS is False
-    assert TREASURY_PHASE_2_STATUS == "NOT_STARTED"
+    assert TREASURY_PHASE_2_STATUS == "READ_ONLY_FOUNDATION_BOUND"
 
 
 def test_full_core_package_still_forbids_canary_http_import() -> None:
