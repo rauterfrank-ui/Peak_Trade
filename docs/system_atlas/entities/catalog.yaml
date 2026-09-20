@@ -6749,6 +6749,7 @@ entities:
     # K1_GOVERNED_CYCLE_CREDENTIAL_BIND_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; SEAM_LOCATION=GOVERNED_CYCLE_AFTER_EG_BEFORE_OCCUPANCY_CLASSIFY; JOIN_SEMANTICS=FAIL_CLOSED_AUTHORITY_NEUTRAL_K1_CAPABILITY_BIND; PRODUCTIVE_CONSUMER_JOINED=true; PRODUCTIVE_PROVIDER_ACTIVE=false; REAL_KEYCHAIN_ACCESS_AUTHORIZED=false; REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false; MATERIAL_LOADED=false; V5_JOINED=false; SEND_HANDLE_JOINED=false; PERFORM_GET=false; EXECUTE_NETWORK=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; PERMIT_CREATED=false; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py.
     # K1_REAL_MACOS_KEYCHAIN_ACQUISITION_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py.
     # K1_SECITEM_QUERY_SHAPE_FIX_V1 PR_6656: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; SecItemCopyMatching query=kSecReturnData+kSecMatchLimitOne only (removes invalid kSecReturnAttributes+kSecMatchLimitAll paramErr -50); REMEDIATION_CLASS=C; SERVICE_ACCOUNT_SCHEMA_UNCHANGED=true; REAL_KEYCHAIN_ACCESS_AUTHORIZED=false; KEYCHAIN_MUTATION=false; EXTERNAL_EFFECT_AUTHORIZED=false; OKX_NETWORK=false; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py.
+    # K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; WRITE_AUTHORIZATION_DEFAULT=false; REAL_KEYCHAIN_WRITE_AUTHORIZED=false; OWNER_GO=OWNER_GO_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_V1; TARGET=peak-trade.full-core.venue-credentials/okx-eea.productive; ALLOWED=BOUNDED_UPSERT_UTF8_JSON_ONLY; STANDING_WRITE=false; KEYCHAIN_MUTATION_ONLY_UNDER_EXPLICIT_OWNER_GO_AND_EPHEMERAL_SCOPE=true; K2_NOT_REUSED=true; EXTERNAL_EFFECT_AUTHORIZED=false; OKX_NETWORK=false; owner=src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/provisioning_authority_v1.py.
     # PL_TF_002_CURRENT_MAIN_SHA_REBIND_V1 PR_6657: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; EXPECTED_ORIGIN_MAIN_SHA=b58f622 only; no endpoint/host/auth/transport change; GATE=pl_tf_002_productive_read_only_session_executor_v1.
     # PL_TF_002_SHA_GATE_SELF_INVALIDATION_CLOSEOUT_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; runtime integrity replaces hardcoded SHA pin; protected wire surface diff; no NE-TF-001/auth/K1 semantic change; GATE=pl_tf_002_productive_read_only_session_executor_v1.
     # ELEMENTARY_DIRECTION_PRIMITIVE_V1: CONTRACT_VERSION=v1; PASSIVE_CYCLE_EVIDENCE_ONLY=true; REPLAY_CONSUMED=false; DOUBLE_PLAY_REWIRED=false; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE; owner=src/trading/market_state/elementary_direction_v1.py; seam=src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py.
@@ -8845,6 +8846,33 @@ entities:
       Does not mint RISK_ADMISSIBLE, POST, or Full-Core capital authority.
       Runbook Treasury bindings add PL_TF_002 network evidence contract nav
       only; PL_TF_002 remains FROZEN_PENDING_NETWORK_EVIDENCE. ATLAS_AUTHORITY=NONE.
+
+  - id: GATE:k1_productive_macos_credential_store_provisioning_authority_v1
+    kind: GATE
+    name: K1 productive macOS Keychain provisioning authority v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/__init__.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/constants_v1.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/errors_v1.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/provisioning_authority_v1.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/provisioning_backend_v1.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/material_policy_v1.py
+      - src/ops/k1_productive_macos_credential_store_provisioning_authority_v1/provisioning_context_v1.py
+    source_symbols:
+      - provision_bound_k1_productive_macos_keychain_material_v1
+      - prove_provisioning_standing_gates_v1
+    evidence_sources:
+      - docs/ops/specs/K1_PRODUCTIVE_MACOS_CREDENTIAL_STORE_PROVISIONING_AUTHORITY_V1.md
+      - tests/ops/test_k1_productive_macos_credential_store_provisioning_authority_v1.py
+    notes: >-
+      Bounded Owner-GO gated upsert for DZ Keychain tuple only. Standing write
+      unauthorized. Placeholder material classes rejected. No venue wire.
+      ATLAS_AUTHORITY=NONE.
 
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
     kind: GATE

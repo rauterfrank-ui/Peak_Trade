@@ -28,6 +28,7 @@
 | GATE:full_core_live_path_restart_gate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | True | CURRENT_NONCANONICAL |
+| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:kill_switch_durable_filegate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:live_authorized_false | GATE | True | CURRENT_CANONICAL |
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
