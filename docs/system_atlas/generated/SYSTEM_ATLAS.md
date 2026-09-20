@@ -352,6 +352,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | K1 productive macOS Keychain provisioning authority v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -452,7 +453,7 @@ Architectural-kind count in this bucket: `20`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `164`.
+Architectural-kind count in this bucket: `165`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -490,14 +491,14 @@ Architectural-kind count in this bucket: `164`.
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | K1 productive macOS Keychain provisioning authority v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:pl_tf_002_network_evidence_contract_v1 | GATE | PL-TF-002 network evidence contract v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | PL-TF-002 productive read-only session executor v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `164` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `165` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -733,7 +734,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=564
+ENTITY_TOTAL=565
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=122
@@ -819,7 +820,7 @@ Remaining census domains:
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 24 |
+| GATE | 25 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |
