@@ -16,8 +16,10 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import sys
+from contextlib import contextmanager
+from contextvars import ContextVar, Token
 from dataclasses import dataclass
-from typing import Any, Mapping, NoReturn, Protocol
+from typing import Any, Iterator, Mapping, NoReturn, Protocol
 
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_capability_v1 import (
     FullCoreCheckoutIndependentCredentialCapabilityError,
@@ -72,6 +74,41 @@ _ERR_SEC_ITEM_NOT_FOUND = -25300
 _CF_STRING_ENCODING_UTF8 = 0x08000100
 
 _HELD_OPAQUE: dict[int, bytearray] = {}
+
+# Bounded ephemeral Keychain access (module REAL_KEYCHAIN_ACCESS_AUTHORIZED stays false).
+_EPHEMERAL_KEYCHAIN_ACCESS_CTX: ContextVar[bool] = ContextVar(
+    "full_core_ephemeral_keychain_access_v1",
+    default=False,
+)
+EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_PL_TF_002 = "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
+
+
+def ephemeral_keychain_access_is_active_v1() -> bool:
+    return _EPHEMERAL_KEYCHAIN_ACCESS_CTX.get() is True
+
+
+@contextmanager
+def bounded_ephemeral_keychain_access_v1(*, consumer_id: str) -> Iterator[None]:
+    """Grant Keychain lookup only inside this context. Never flips module constants."""
+
+    if str(consumer_id or "") != EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_PL_TF_002:
+        _error("EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_FORBIDDEN")
+    token: Token[bool] = _EPHEMERAL_KEYCHAIN_ACCESS_CTX.set(True)
+    try:
+        yield
+    finally:
+        _EPHEMERAL_KEYCHAIN_ACCESS_CTX.reset(token)
+
+
+def borrow_held_opaque_bytes_for_bounded_parse_v1(*, holder_id: int) -> bytes:
+    """Return opaque Keychain bytes only during an active ephemeral access scope."""
+
+    if not ephemeral_keychain_access_is_active_v1():
+        _error("EPHEMERAL_KEYCHAIN_ACCESS_REQUIRED_FOR_OPAQUE_BORROW")
+    buf = _HELD_OPAQUE.get(int(holder_id))
+    if buf is None:
+        _error("OPAQUE_MATERIAL_NOT_HELD")
+    return bytes(buf)
 
 
 class FullCoreCheckoutIndependentOsNativeStoreAcquisitionError(
@@ -143,6 +180,8 @@ def _error(code: str) -> NoReturn:
 def assert_real_keychain_access_authorized_for_os_lookup_v1() -> None:
     """Fail closed before SecItemCopyMatching unless the K1 access gate is true."""
 
+    if ephemeral_keychain_access_is_active_v1():
+        return
     if REAL_KEYCHAIN_ACCESS_AUTHORIZED is not True:
         _error(REASON_ACCESS_FORBIDDEN)
 
@@ -195,7 +234,11 @@ def coerce_opaque_value_data_v1(raw: object) -> bytes:
 def _proof_for_bound_identity_v1() -> FullCoreOsNativeStoreAcquisitionProofV1:
     if PAYLOAD_SCHEMA_BOUND is True or PAYLOAD_SCHEMA_INTRODUCED is True:
         _error("PAYLOAD_SCHEMA_MUST_REMAIN_UNBOUND")
-    authorized = TRUE_TOKEN if REAL_KEYCHAIN_ACCESS_AUTHORIZED is True else FALSE_TOKEN
+    authorized = (
+        TRUE_TOKEN
+        if REAL_KEYCHAIN_ACCESS_AUTHORIZED is True or ephemeral_keychain_access_is_active_v1()
+        else FALSE_TOKEN
+    )
     return FullCoreOsNativeStoreAcquisitionProofV1(
         acquired=TRUE_TOKEN,
         source_ref_uri=SOURCE_REF_URI,

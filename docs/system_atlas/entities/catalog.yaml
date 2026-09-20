@@ -8843,6 +8843,30 @@ entities:
       Runbook Treasury bindings add PL_TF_002 network evidence contract nav
       only; PL_TF_002 remains FROZEN_PENDING_NETWORK_EVIDENCE. ATLAS_AUTHORITY=NONE.
 
+  - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
+    kind: GATE
+    name: PL-TF-002 productive read-only session executor v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/__init__.py
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/constants_v1.py
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py
+      - src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_keychain_utf8_json_material_v1.py
+    source_symbols:
+      - open_pl_tf_002_productive_read_only_get_session_v1
+      - build_pl_tf_002_read_only_get_session_preflight_v1
+    evidence_sources:
+      - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1.md
+      - tests/ops/test_pl_tf_002_productive_read_only_session_executor_v1.py
+    notes: >-
+      Governed OWNER_GO transition to ephemeral K1 Keychain acquisition and
+      FullCoreProductiveReadOnlyGetTransportV1 bind for later F1/F2 capture.
+      No GET by default. No status flip. ATLAS_AUTHORITY=NONE.
+
   - id: GATE:pl_tf_002_network_evidence_contract_v1
     kind: GATE
     name: PL-TF-002 network evidence contract v1
