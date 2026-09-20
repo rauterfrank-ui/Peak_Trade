@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1`.
 
 ## Workflow
 
@@ -41,7 +41,6 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `GATE:k1_productive_macos_credential_store_provisioning_authority_v1` |
-| `GATE:pl_tf_002_productive_read_only_session_executor_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -77,7 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:pl_tf_002_productive_read_only_session_executor_v1` |
+| `GATE:k1_productive_macos_credential_store_provisioning_authority_v1` |
 
 ## AFFECTED_SCHEMAS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- K1 productive macOS Keychain provisioning authority: bounded Owner-GO gated upsert contract for DZ tuple only. Standing write remains false. No venue wire. Atlas is not canonical authority.
-- introduced_by=PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
-- modified_by=PR_K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1
+- K1 macOS Keychain upsert backend: CFDictionaryCreate callback refs via byref (ctypes binding fix). Synthetic non-productive Keychain regression tests. No productive tuple write. Atlas is not canonical authority.
+- introduced_by=PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
+- modified_by=PR_6660_K1_MACOS_SECURITY_FRAMEWORK_UPSERT_CTYPES_FIX_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
