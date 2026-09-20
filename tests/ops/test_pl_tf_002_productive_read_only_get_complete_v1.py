@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import time
+from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
@@ -26,8 +27,15 @@ from src.ops.pl_tf_002_productive_read_only_get_complete_v1.constants_v1 import 
 from src.ops.pl_tf_002_productive_read_only_get_complete_v1.errors_v1 import (
     PlTf002ProductiveReadOnlyGetCompleteError,
 )
+from src.ops.pl_tf_002_productive_read_only_get_complete_v1.persist_v1 import (
+    complete_pl_tf_002_network_evidence_pack_manifest_v1,
+    persist_pl_tf_002_network_evidence_pack_v1,
+)
 from src.ops.pl_tf_002_productive_read_only_get_complete_v1.pre_network_jit_v1 import (
     build_pl_tf_002_pre_network_jit_proof_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
+    MANIFEST_FILENAME,
 )
 from tests.ops.test_pl_tf_002_runtime_integrity_v1 import _FakeIntegrityBackend
 
@@ -84,6 +92,30 @@ def _f1_items() -> dict[str, Any]:
         }
         for item_id in F1_REQUIRED_GET_ITEM_IDS
     }
+
+
+def test_persist_network_evidence_pack_writes_verifiable_manifest(tmp_path: Any) -> None:
+    now_ms = int(time.time() * 1000)
+    raw = {"code": "0", "msg": "", "data": [{"uid": "uid-1", "perm": "read_only"}]}
+    bundle = build_network_evidence_bundle_v1(
+        f1_items=_f1_items(),
+        f2_raw=raw,
+        expected_credential_uid="uid-1",
+        observed_at_unix_ms=now_ms,
+    )
+    verification = verify_pl_tf_002_network_evidence_v1(bundle, now_unix_ms=now_ms)
+    out = persist_pl_tf_002_network_evidence_pack_v1(
+        evidence_root=tmp_path,
+        origin_main_sha=_TEST_ORIGIN_MAIN,
+        capture_summary={"NETWORK_REQUEST_COUNT": 7},
+        verification=verification,
+        evidence_bundle=bundle,
+    )
+    pack = Path(out["EVIDENCE_PACK"])
+    assert (pack / MANIFEST_FILENAME).is_file()
+    assert int(out["MANIFEST_VERIFY_RC"]["MANIFEST_VERIFY_RC"]) == 0
+    complete = complete_pl_tf_002_network_evidence_pack_manifest_v1(pack_dir=pack)
+    assert int(complete["MANIFEST_VERIFY_RC"]["MANIFEST_VERIFY_RC"]) == 0
 
 
 def test_bundle_builder_verifier_pass() -> None:

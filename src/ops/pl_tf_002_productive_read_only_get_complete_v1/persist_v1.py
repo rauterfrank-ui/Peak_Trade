@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -28,6 +29,14 @@ TREASURY_CONSTANTS_PATH = Path("src/ops/treasury_phase_1_offline_contracts_v1/co
 RUNBOOK_PATH = Path("docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md")
 PRE_LIVE_SPEC_PATH = Path("docs/ops/specs/PRE_LIVE_CAPITAL_ADMISSION_CONTRACT_V1.md")
 TREASURY_PHASE1_SPEC_PATH = Path("docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md")
+
+EVIDENCE_PACK_MANIFEST_FILES: tuple[str, ...] = (
+    "adjudication.json",
+    "capture_summary.json",
+    "claims.json",
+    "evidence_bundle.sanitized.json",
+    "verification_result.json",
+)
 
 
 def _utc_stamp_v1() -> str:
@@ -86,8 +95,49 @@ def persist_pl_tf_002_network_evidence_pack_v1(
             "TRADING_AUTHORITY_CHANGED": False,
         },
     )
-    write_manifest_v1(pack)
+    write_manifest_v1(pack, EVIDENCE_PACK_MANIFEST_FILES)
     manifest_rc = verify_manifest_v1(pack)
+    if int(manifest_rc.get("MANIFEST_VERIFY_RC", 1)) != 0:
+        raise PlTf002ProductiveReadOnlyGetCompleteError("MANIFEST_VERIFY_FAILED")
+    return {
+        "EVIDENCE_PACK": str(pack),
+        "MANIFEST_VERIFY_RC": manifest_rc,
+    }
+
+
+def complete_pl_tf_002_network_evidence_pack_manifest_v1(*, pack_dir: Path) -> dict[str, Any]:
+    """Write MANIFEST.sha256 for an existing sanitized pack (offline; no network)."""
+
+    pack = Path(pack_dir)
+    if not pack.is_dir():
+        raise PlTf002ProductiveReadOnlyGetCompleteError("EVIDENCE_PACK_DIR_MISSING")
+    for rel in EVIDENCE_PACK_MANIFEST_FILES:
+        if not (pack / rel).is_file():
+            raise PlTf002ProductiveReadOnlyGetCompleteError(f"EVIDENCE_FILE_MISSING:{rel}")
+    extra = {
+        p.name for p in pack.iterdir() if p.is_file() and p.name not in EVIDENCE_PACK_MANIFEST_FILES
+    }
+    manifest_name = "MANIFEST.sha256"
+    extra.discard(manifest_name)
+    if extra:
+        raise PlTf002ProductiveReadOnlyGetCompleteError(
+            f"EVIDENCE_PACK_UNEXPECTED_FILES:{sorted(extra)}"
+        )
+
+    verification = json.loads((pack / "verification_result.json").read_text(encoding="utf-8"))
+    if str(verification.get("VERIFICATION_RESULT") or "") != "PASS":
+        raise PlTf002ProductiveReadOnlyGetCompleteError("VERIFICATION_NOT_PASS")
+    closure = verification.get("PL_TF_002_CLOSURE_RESULT")
+    if not isinstance(closure, Mapping) or closure.get("closed") is not True:
+        raise PlTf002ProductiveReadOnlyGetCompleteError("VERIFICATION_NOT_CLOSED")
+
+    bundle = json.loads((pack / "evidence_bundle.sanitized.json").read_text(encoding="utf-8"))
+    assert_evidence_redaction_invariant_v1(bundle)
+
+    write_manifest_v1(pack, EVIDENCE_PACK_MANIFEST_FILES)
+    manifest_rc = verify_manifest_v1(pack)
+    if int(manifest_rc.get("MANIFEST_VERIFY_RC", 1)) != 0:
+        raise PlTf002ProductiveReadOnlyGetCompleteError("MANIFEST_VERIFY_FAILED")
     return {
         "EVIDENCE_PACK": str(pack),
         "MANIFEST_VERIFY_RC": manifest_rc,
