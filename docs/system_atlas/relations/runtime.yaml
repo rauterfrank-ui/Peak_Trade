@@ -1453,6 +1453,30 @@ relations:
       Emits TreasuryVenueObservationV1 with conservative external depletion
       mapping for Phase-2 reconciliation only. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_e4_consumes_phase2_capital_admission_join
+    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+    type: CONSUMES
+    target: GATE:treasury_phase_2_read_only_reconciliation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+      - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
+    notes: >-
+      E4 edge: consumes TreasuryCapitalAdmissionJoinV1 from Phase-2 capital
+      admission join. Does not re-evaluate capital admission. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_e4_feeds_account_equity_orchestration_ingress
+    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+    type: PRODUCES
+    target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
+    notes: >-
+      Emits AccountEquityOrchestrationIngressV1 for governed account-equity
+      orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
     source: GATE:full_core_live_path_standing_live_gates_v1
     type: DENIES
