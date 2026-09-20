@@ -21,6 +21,7 @@ HEAD_RESOLUTION_SOURCE = "git_rev_parse_HEAD"
 
 # Closed-world PL_TF_002 / K1 / NE-TF-001 / productive GET transport surfaces.
 PROTECTED_WIRE_SURFACE_PATHS: tuple[str, ...] = (
+    "src/ops/pl_tf_002_productive_read_only_session_executor_v1/constants_v1.py",
     "src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py",
     "src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_macos_opaque_utf8_json_material_v1.py",
     "src/ops/pl_tf_002_productive_read_only_session_executor_v1/runtime_integrity_v1.py",

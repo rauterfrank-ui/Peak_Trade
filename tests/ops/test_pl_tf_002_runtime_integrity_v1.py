@@ -110,6 +110,41 @@ def test_protected_paths_include_ne_tf_001_constants() -> None:
     )
 
 
+_MANDATORY_PL_TF_002_WIRE_SAFETY_PATHS: frozenset[str] = frozenset(
+    {
+        "src/ops/pl_tf_002_productive_read_only_session_executor_v1/constants_v1.py",
+        "src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py",
+        "src/ops/pl_tf_002_productive_read_only_session_executor_v1/k1_macos_opaque_utf8_json_material_v1.py",
+        "src/ops/pl_tf_002_productive_read_only_session_executor_v1/runtime_integrity_v1.py",
+        "src/ops/pl_tf_002_network_evidence_contract_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_fail_closed_os_native_store_adapter_v1.py",
+    }
+)
+
+
+def test_mandatory_wire_safety_paths_subset_of_protected_surface_paths() -> None:
+    protected = frozenset(PROTECTED_WIRE_SURFACE_PATHS)
+    missing = sorted(_MANDATORY_PL_TF_002_WIRE_SAFETY_PATHS - protected)
+    assert missing == [], f"PROTECTED_WIRE_SURFACE_PATHS missing mandatory paths: {missing}"
+
+
+def test_constants_v1_drift_fail_closed_via_preflight() -> None:
+    backend = _FakeIntegrityBackend(
+        origin_main=_CANONICAL_MAIN,
+        head=_CANONICAL_MAIN,
+        drift="diff --git a/src/ops/pl_tf_002_productive_read_only_session_executor_v1/constants_v1.py",
+    )
+    with pytest.raises(PlTf002ProductiveReadOnlySessionError, match="PROTECTED_WIRE_SURFACE_DRIFT"):
+        build_pl_tf_002_read_only_get_session_preflight_v1(
+            owner_go=OWNER_GO,
+            origin_main_sha=_CANONICAL_MAIN,
+            integrity_backend=backend,
+        )
+
+
 def test_post_merge_main_advance_does_not_self_invalidate_when_surfaces_clean() -> None:
     """Squash merge advances origin/main; gate passes when HEAD matches and paths clean."""
     post_merge_main = "9bd633bb175dab27dc383b91a512e379bd31cefa"
