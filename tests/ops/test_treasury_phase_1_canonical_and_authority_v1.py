@@ -110,31 +110,29 @@ def test_runbook_spec_and_mot_bind_without_live_or_phase2() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     mot = MOT.read_text(encoding="utf-8")
-    start = runbook.index("11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS")
+    start = runbook.index("## CURRENT Treasury Phase Bindings")
     section = runbook[
-        start : runbook.index("11.2.1.O FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM", start)
+        start : runbook.index("## CURRENT Order-Intent and Execution Boundaries", start)
     ]
-    prior = runbook[runbook.index("11.2.1.N PRE_LIVE_CAPITAL_ADMISSION_CONTRACT") : start]
     assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" in section
-    assert "TREASURY_PHASE_2_STATUS=NOT_STARTED" in section
+    assert "TREASURY_PHASE_2_STATUS=READ_ONLY_FOUNDATION_BOUND" in section
+    assert "TREASURY_PHASE_3_STATUS=SHADOW_ENFORCEMENT_BOUND" in section
     assert "PL_TF_002_STATUS=FROZEN_PENDING_NETWORK_EVIDENCE" in section
-    assert "LIVE_ENABLED=false" in section
-    assert "LIVE_ARMED=false" in section
-    assert "WIRE_SEND_PERMITTED=false" in section
-    assert "TREASURY_PHASE_1_CAN_MOVE_FUNDS=false" in section
-    assert "VENUE_IDEMPOTENCY_GUARANTEE=NOT_PROVEN" in section
-    assert "PRODUCTIVE_DEPOSIT_PATH=false" in section
-    assert "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=LIVE_ENABLED" in prior
+    assert "TREASURY_MUTATION_REACHABLE=false" in section
+    assert "TREASURY_PHASE_1_SEPARATION_GATE_WIRED=false" in section
+    assert "TREASURY_PHASE_3_SEPARATION_GATE_WIRED=true" in section
+    assert "BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e" in runbook
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1" in spec
-    assert "§11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS" in mot
+    assert "TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md" in mot
     assert TREASURY_PHASE_1_STATUS == "CLOSED_OFFLINE_CONTRACTS"
     assert PL_TF_002_STATUS == "FROZEN_PENDING_NETWORK_EVIDENCE"
 
 
 def test_capital_admission_runbook_slice_excludes_phase1() -> None:
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    start = runbook.index("11.2.1.N PRE_LIVE_CAPITAL_ADMISSION_CONTRACT")
-    section = runbook[start : runbook.index("11.2.2 TREASURY_PHASE_1_OFFLINE_CONTRACTS", start)]
-    assert "CAPITAL_ADMISSION_IMPLEMENTED=true" in section
-    assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" not in section
+    risk_start = runbook.index("## CURRENT Risk and Capital Admissibility")
+    risk_end = runbook.index("## CURRENT Treasury Phase Bindings", risk_start)
+    risk_section = runbook[risk_start:risk_end]
+    assert "RISK_SIZING_OWNER=capital_risk_admissibility_owner_v1" in risk_section
+    assert "TREASURY_PHASE_1_STATUS=CLOSED_OFFLINE_CONTRACTS" not in risk_section

@@ -103,6 +103,9 @@ in the Master Runbook and the named packages.
 | Governed universe | `src/ops/governed_futures_universe_producer_v1/` |
 | Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
+| Treasury Phase 1 offline contracts | `docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md` / `src/ops/treasury_phase_1_offline_contracts_v1/` |
+| Treasury Phase 2 read-only reconciliation | `docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md` / `src/ops/treasury_phase_2_read_only_reconciliation_v1/` |
+| Treasury Phase 3 shadow enforcement | `docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md` / `src/ops/treasury_phase_3_shadow_enforcement_v1/` |
 | Canonical Python launcher | `scripts/pt` |
 | Canonical interpreter | `.venv&#47;bin&#47;python` |
 

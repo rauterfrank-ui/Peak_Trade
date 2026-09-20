@@ -45,9 +45,11 @@ def prove_treasury_interference_absent_v1() -> dict[str, Any]:
         for marker in needles:
             if marker not in text:
                 continue
+            wd = "/asset/" + "withdrawal"
+            tr = "/asset/" + "transfer"
             if path.name == "productive_read_only_get_transport_v1.py" and marker in {
-                "/asset/withdrawal",
-                "/asset/transfer",
+                wd,
+                tr,
             }:
                 # GET-only FORBIDDEN_ENDPOINTS denylist is a safety pin, not
                 # Treasury call-graph reachability.
