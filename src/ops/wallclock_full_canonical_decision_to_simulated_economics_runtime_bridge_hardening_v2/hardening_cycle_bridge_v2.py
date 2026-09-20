@@ -100,7 +100,12 @@ from trading.master_v2.canonical_market_context_v1 import (
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.runtime_v1 import (
     ProductiveEvidenceAccumulationStateV1,
-    accumulate_productive_research_evidence_from_cycle_v1,
+)
+from research.m9_s1_durable_market_session_evidence_accumulation_v1.models_v1 import (
+    ObservationSourceClassV1,
+)
+from research.m9_s1_durable_market_session_evidence_accumulation_v1.passive_accumulation_v1 import (
+    passive_accumulate_from_bridge_cycle_v1,
 )
 from trading.master_v2.canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1 import (
     accumulate_max_age_research_evidence_record_from_cycle_v1,
@@ -1147,10 +1152,17 @@ def run_hardened_bridge_cycle_v2(
                 receive_time=receive_time,
                 market_sample=sample_for_id.to_dict(),
             )
+            m9_obs_ledger = (
+                acc_state.productive_ledger_path.parents[1]
+                / "m9_s1_durable_market_session_evidence_accumulation_v1"
+                / "market_session_observations.jsonl"
+            )
             cycle["productive_research_evidence_accumulation"] = (
-                accumulate_productive_research_evidence_from_cycle_v1(
+                passive_accumulate_from_bridge_cycle_v1(
                     cycle,
                     state=acc_state,
+                    source_class=ObservationSourceClassV1.SHADOW_OBSERVED,
+                    m9_s1_observation_ledger_path=m9_obs_ledger,
                     project_to_join_ledger=True,
                 )
             )

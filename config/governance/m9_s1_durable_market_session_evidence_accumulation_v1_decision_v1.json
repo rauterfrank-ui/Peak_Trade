@@ -1,0 +1,14 @@
+{
+  "artifact_class": "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_DECISION_V1",
+  "workpackage_id": "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1",
+  "bound_origin_main_sha": "d801828dc3c1f8c4efd3c1fb50c05dfb9d79179c",
+  "normative_spec": "docs/ops/specs/M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_NORMATIVE_V1.md",
+  "owner_go_consumed": true,
+  "numeric_max_age_decided": false,
+  "enforcement_enabled": false,
+  "external_effect_authorized": false,
+  "observation_only": true,
+  "counterfactual_only": true,
+  "threshold_selection_authorized": false,
+  "parameter_promotion_authorized": false
+}
