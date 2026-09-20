@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=4
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1`.
 
 ## Workflow
 
@@ -40,21 +40,21 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:treasury_phase_1_offline_contracts_v1` |
-| `GATE:treasury_phase_2_read_only_reconciliation_v1` |
-| `DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1` |
+| `RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_phase_2_consumes_capital_admission` |
+| `REL:r_treasury_e1_binding_consumes_funding_balance_read` |
+| `REL:r_treasury_e1_binding_feeds_phase_2_observation` |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| `REL:r_treasury_phase_2_consumes_capital_admission` |
+| `REL:r_treasury_e1_binding_consumes_funding_balance_read` |
+| `REL:r_treasury_e1_binding_feeds_phase_2_observation` |
 
 ## REMOVED_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6646: Treasury Phase-2 read-only reconciliation foundation — typed observation/reconciliation join into capital_admission_contract_v1. No network, mutation, or RISK_ADMISSIBLE mint. Full-Core execution path unchanged. Atlas is not canonical authority.
-- introduced_by=PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1
-- modified_by=PR_6646_TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1
+- WP DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1: E1 binding from read-only funding GET to TreasuryVenueObservationV1. No sizing, STEP-29P, or execution authority. Atlas is not canonical authority.
+- introduced_by=PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1
+- modified_by=PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

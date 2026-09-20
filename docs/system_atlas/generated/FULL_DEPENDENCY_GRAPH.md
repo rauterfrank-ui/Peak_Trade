@@ -461,6 +461,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1`
+- direct_downstream: `DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1`
+- transitive_downstream: `DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1`
+
 ### SCRIPT:run_cap23_policy
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`
