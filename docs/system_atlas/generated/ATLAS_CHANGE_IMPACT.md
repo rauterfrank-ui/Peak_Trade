@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PR_6657_PL_TF_002_CURRENT_MAIN_SHA_REBIND_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `GATE:pl_tf_002_productive_read_only_session_executor_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -76,7 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `GATE:pl_tf_002_productive_read_only_session_executor_v1` |
 
 ## AFFECTED_SCHEMAS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR 6656: K1 macOS SecItem generic-password query shape fix only (ReturnData + MatchLimitOne; no ReturnAttributes/MatchLimitAll). Fail-closed K1 Keychain read path; no authority, service/account, or schema change. No Keychain mutation, network, or productive credential use. Atlas is not canonical authority.
-- introduced_by=PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1
-- modified_by=PR_6656_K1_SECITEM_QUERY_SHAPE_FIX_V1
+- PR 6657: PL-TF-002 EXPECTED_ORIGIN_MAIN_SHA rebind from de4c769 to b58f622 (current origin/main after K1 SecItem closeout). SHA gate constant, spec, and contract test only. No NE-TF-001 endpoint, host, K1 Keychain seam, auth/signer, transport allowlist, or execution authority change. Atlas is not canonical authority.
+- introduced_by=PR_6657_PL_TF_002_CURRENT_MAIN_SHA_REBIND_V1
+- modified_by=PR_6657_PL_TF_002_CURRENT_MAIN_SHA_REBIND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
