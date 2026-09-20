@@ -1404,6 +1404,31 @@ relations:
       Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1
       only. No STEP-29P or execution authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_e1_binding_consumes_funding_balance_read
+    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
+      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+    notes: >-
+      E1 edge: single allowlisted funding balance GET via existing offline
+      producer. No POST or transfer. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_e1_binding_feeds_phase_2_observation
+    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
+    type: PRODUCES
+    target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
+      - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
+    notes: >-
+      Emits TreasuryVenueObservationV1 for Phase-2 reconciliation only.
+      Does not evaluate reconciliation or capital admission here.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
     source: GATE:full_core_live_path_standing_live_gates_v1
     type: DENIES
