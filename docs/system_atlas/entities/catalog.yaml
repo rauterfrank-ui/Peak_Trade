@@ -8763,6 +8763,7 @@ entities:
       - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
       - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
       - src/ops/treasury_phase_2_read_only_reconciliation_v1/constants_v1.py
+      - src/ops/treasury_phase_2_read_only_reconciliation_v1/errors_v1.py
     source_symbols:
       - evaluate_treasury_read_only_reconciliation_v1
       - join_treasury_reconciliation_into_capital_admission_v1
