@@ -73,6 +73,7 @@ Master Runbook CURRENT section navigation (headings, not historical phase IDs):
 | Autonomy limits | CURRENT Autonomy Boundaries |
 | Operating / activation facts | CURRENT Operating and Activation State |
 | Dashboard role | CURRENT Observability and Landscape Dashboard |
+| Learning / STEP29M / Optimization boundaries | CURRENT Learning, STEP29M, and Optimization Universe Boundaries |
 | Historical names still in code | CURRENT Compatibility Identifiers |
 | Remaining productive boundary | CURRENT Productive Boundary |
 
@@ -102,6 +103,9 @@ in the Master Runbook and the named packages.
 | Elementary C1 mark direction identity | `src/trading/market_state/elementary_direction_v1.py` |
 | Governed universe | `src/ops/governed_futures_universe_producer_v1/` |
 | Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |
+| STEP29M post-selection offline binding | `src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py` |
+| Optimization Universe (first-class offline) | `src/experiments/canonical_optimization_universe_v1.py` |
+| Learning / DDO capture and export | `src/learning/deterministic_decision_outcome_v0/` |
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
 | Treasury Phase 1 offline contracts | `docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md` / `src/ops/treasury_phase_1_offline_contracts_v1/` |
 | Treasury Phase 2 read-only reconciliation | `docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md` / `src/ops/treasury_phase_2_read_only_reconciliation_v1/` |
