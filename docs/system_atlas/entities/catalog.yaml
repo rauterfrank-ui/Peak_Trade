@@ -1947,10 +1947,12 @@ entities:
       - templates/peak_trade_dashboard/market_landscape_v2.html
     evidence_sources:
       - tests/webui/test_landscape_universe_top20_selection_rail_fidelity_v1.py
+      - tests/webui/test_market_landscape_universe_selection_rail_facts_presentation_bind_v1.py
       - src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py
     notes: >-
       Dashboard-only consumer presentation for universe_selection_readmodel.v1
-      (TOP-20 board, selected future, membership descriptive labels). No ranking/
+      (TOP-20 board, selected future, membership descriptive labels, Universe
+      Context selection_reason summary from projected selection_reason). No ranking/
       selection authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_system_observability_completion_v1

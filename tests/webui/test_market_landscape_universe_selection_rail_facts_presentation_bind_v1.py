@@ -12,6 +12,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
+from fastapi.testclient import TestClient
 
 from scripts.ops.primary_evidence_retention_v0 import is_under_tmp
 from scripts.ops.primary_evidence_retention_v0 import (
@@ -21,6 +22,7 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     LANDSCAPE_PHASE41_MAX_AGE_SECONDS,
     bind_market_universe_slots,
 )
+from src.webui.app import create_app
 from src.webui.market_dashboard_landscape_v2 import (
     Availability,
     MarketDashboardReadServiceV1,
@@ -30,6 +32,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 from src.webui.market_dashboard_landscape_v2.unavailable import (
     unavailable_universe_ranking,
 )
+from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     READMODEL_FILENAME,
     READMODELS_DIRNAME,
@@ -302,6 +305,57 @@ def test_projection_helper_does_not_fabricate_optional_fields() -> None:
     assert view["universe_rail"]["rank_label"] == "NOT_AVAILABLE"
     assert view["universe_rail"]["session_label"] == "—"
     assert view["universe_rail"]["session_availability"] == Availability.MISSING_SOURCE.value
+
+
+def _selection_reason_html_text(html: str) -> str:
+    chunk = html.split('data-mdl-field="selection_reason"', 1)[1]
+    return chunk.split(">", 1)[1].split("<", 1)[0].strip()
+
+
+def test_ssr_binds_universe_context_selection_reason_from_snapshot(
+    archive_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _write_universe_readmodel(
+        archive_root,
+        _complete_payload(generated_at=PRODUCER_FRESH.isoformat().replace("+00:00", "Z")),
+    )
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive_root))
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        git_sha=None,
+        archive_root=archive_root,
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        git_sha=None,
+        slot_overrides=slots,
+    )
+    expected = present_market_landscape_v2(page)["universe_rail"]["selection_reason_label"]
+    assert expected == "upstream_explicit_selection"
+
+    html = TestClient(create_app()).get("/market").text
+    assert 'data-mdl-field="selection_reason"' in html
+    assert _selection_reason_html_text(html) == expected
+
+
+def test_ssr_selection_reason_missing_source_shows_availability_token(
+    archive_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive_root))
+    slots = bind_market_universe_slots(
+        generated_at=STAMP,
+        git_sha=None,
+        archive_root=archive_root,
+    )
+    page = MarketDashboardReadServiceV1().load_page_snapshot(
+        generated_at=STAMP,
+        slot_overrides=slots,
+    )
+    expected = present_market_landscape_v2(page)["universe_rail"]["selection_reason_label"]
+    assert expected == "MISSING_SOURCE"
+    html = TestClient(create_app()).get("/market").text
+    assert 'data-mdl-field="selection_reason"' in html
+    assert _selection_reason_html_text(html) == expected
 
 
 def test_no_presentation_boundary_imports_trading_runtime() -> None:
