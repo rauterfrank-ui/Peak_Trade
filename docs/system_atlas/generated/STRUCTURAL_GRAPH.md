@@ -15,6 +15,7 @@ Membership, hierarchy, supersession. Inverse edges are not inferred.
 
 | id | source | type | target | epistemic | evidence |
 | --- | --- | --- | --- | --- | --- |
+| REL:dp_naked_mechanical_core_depends_on_purification_primitives | RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core | DEPENDS_ON | RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification | STATUS=FORENSIC_RAW | src/trading/master_v2/naked_mv2_dp_mechanical_core_v1.py |
 | REL:s_binder_uses_schema | BINDER:bound_instrument_v1 | USES_SCHEMA | SCHEMA:runtime_binding_v1 | STATUS=FORENSIC_RAW | src/ops/single_selected_future_runtime_binding_v1/constants_v1.py |
 | REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap23_produce_join | CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 | DEPENDS_ON | CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1 | STATUS=ADJUDICATED | docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md,src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py |
 | REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap24 | CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1 | DEPENDS_ON | CAPABILITY:cap_2_4_runtime_binding | STATUS=ADJUDICATED | docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md,src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py |
@@ -102,6 +103,8 @@ Membership, hierarchy, supersession. Inverse edges are not inferred.
 | REL:s_mv2_contains_dp_evaluate_authority_boundary | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_evaluate_authority_boundary | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_futures_input | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_futures_input | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_naked_mv2_double_play_core_authority_hardening | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
+| REL:s_mv2_contains_dp_naked_mv2_dp_mechanical_core | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
+| REL:s_mv2_contains_dp_naked_mv2_dp_single_boundary_purification | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_offline_scenario_replay | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_offline_scenario_replay | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_sole_authority_quarantine | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_sole_authority_quarantine | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_state | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
