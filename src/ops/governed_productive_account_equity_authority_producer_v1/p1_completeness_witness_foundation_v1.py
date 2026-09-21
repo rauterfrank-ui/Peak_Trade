@@ -57,6 +57,9 @@ CANONICAL_P1_LIABILITY_EVENT_CLASS_WITNESS_PACK = (
 CANONICAL_P1_BOUNDED_TRAVERSAL_WITNESS_PACK = (
     "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z"
 )
+CANONICAL_P1_FINAL_CLOSEOUT_PR1_WITNESS_PACK = (
+    "evidence/ops/full_core_p1_final_closeout_pr1_of_2_v1/2026-09-21T050000Z"
+)
 
 SCHEMA_CLASS = "P1_COMPLETENESS_WITNESS_FOUNDATION_V1"
 CONTRACT_VERSION = "v1"
@@ -145,6 +148,9 @@ class P1SealedWitnessEvidenceV1:
     currency_domain_witness: Mapping[str, Any]
     liability_event_class_witness: Mapping[str, Any]
     bounded_traversal_witness: Mapping[str, Any]
+    d5_checkpoint_freshness_witness: Mapping[str, Any]
+    time_domain_witness: Mapping[str, Any]
+    restart_durability_witness: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -450,6 +456,20 @@ def evaluate_event_ordering_witness_v1(
 def evaluate_observation_freshness_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    freshness_witness = evidence.d5_checkpoint_freshness_witness
+    if freshness_witness and _as_bool_token(
+        freshness_witness.get("P1_OBSERVATION_FRESHNESS_COMPLETENESS_PROVEN")
+    ):
+        return _root_eval(
+            root_id=ROOT_OBSERVATION_FRESHNESS,
+            status=WITNESS_COMPLETE,
+            detail=str(
+                freshness_witness.get(
+                    "P1_OBSERVATION_FRESHNESS_DETAIL",
+                    "P1 D5 checkpoint-bound observation freshness witness proven",
+                )
+            ),
+        )
     traversal = evidence.bounded_traversal_witness
     if traversal and _as_bool_token(traversal.get("P1_OBSERVATION_FRESHNESS_COMPLETENESS_PROVEN")):
         return _root_eval(
@@ -510,13 +530,37 @@ def evaluate_observation_freshness_witness_v1(
 def evaluate_restart_durability_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
-    del evidence
+    restart_witness = evidence.restart_durability_witness
+    if restart_witness and _as_bool_token(
+        restart_witness.get("P1_RESTART_DURABILITY_COMPLETENESS_PROVEN")
+    ):
+        return _root_eval(
+            root_id=ROOT_RESTART_DURABILITY,
+            status=WITNESS_COMPLETE,
+            detail=str(
+                restart_witness.get(
+                    "P1_RESTART_DURABILITY_DETAIL",
+                    "P1 observation restart durability witness proven offline",
+                )
+            ),
+        )
+    if restart_witness and _as_bool_token(
+        restart_witness.get("PRODUCTIVE_RUNTIME_RESTART_CAMPAIGN_REQUIRED")
+    ):
+        return _root_eval(
+            root_id=ROOT_RESTART_DURABILITY,
+            status=WITNESS_INCOMPLETE,
+            blocker_class=BLOCKER_RESTART,
+            missing_evidence="PRODUCTIVE_RUNTIME_RESTART_CAMPAIGN",
+            detail=str(restart_witness.get("P1_RESTART_DURABILITY_DETAIL", "")),
+            restart_required=True,
+        )
     return _root_eval(
         root_id=ROOT_RESTART_DURABILITY,
         status=WITNESS_INCOMPLETE,
         blocker_class=BLOCKER_RESTART,
         missing_evidence="OBSERVATION_RESTART_DURABILITY_WITNESS_V1",
-        detail="Restart durability completeness requires restart-campaign proof; not persisted alone",
+        detail="Restart durability completeness requires restart witness; not persisted alone",
         restart_required=True,
     )
 
@@ -526,6 +570,19 @@ def derive_time_domain_witness_v1(
     pagination: P1RootWitnessEvaluationV1,
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1DerivedWitnessEvaluationV1:
+    time_witness = evidence.time_domain_witness
+    if time_witness and _as_bool_token(time_witness.get("P1_TIME_DOMAIN_EXHAUSTION_PROVEN")):
+        return _derived_eval(
+            predicate_id=DERIVED_TIME_DOMAIN,
+            status=WITNESS_COMPLETE,
+            derived_from=(ROOT_PAGINATION,),
+            detail=str(
+                time_witness.get(
+                    "P1_TIME_DOMAIN_DETAIL",
+                    "P1 bound time-domain exhaustion witness proven",
+                )
+            ),
+        )
     traversal = evidence.bounded_traversal_witness
     if traversal and _as_bool_token(traversal.get("P1_TIME_DOMAIN_EXHAUSTION_PROVEN")):
         return _derived_eval(
@@ -688,6 +745,26 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         if verify_manifest_sha256_v1(store_root=traversal_pack) == 0:
             bounded_traversal_witness = _read_json(traversal_witness_path)
 
+    d5_checkpoint_freshness_witness: dict[str, Any] = {}
+    time_domain_witness: dict[str, Any] = {}
+    restart_durability_witness: dict[str, Any] = {}
+    closeout_pr1_pack = root / CANONICAL_P1_FINAL_CLOSEOUT_PR1_WITNESS_PACK
+    closeout_manifest = closeout_pr1_pack / "MANIFEST.sha256"
+    if closeout_manifest.is_file() and verify_manifest_sha256_v1(store_root=closeout_pr1_pack) == 0:
+        freshness_path = (
+            closeout_pr1_pack / "p1_d5_checkpoint_freshness_witness_adjudication_v1.json"
+        )
+        time_path = closeout_pr1_pack / "p1_time_domain_completeness_witness_adjudication_v1.json"
+        restart_path = (
+            closeout_pr1_pack / "p1_observation_restart_durability_witness_adjudication_v1.json"
+        )
+        if freshness_path.is_file():
+            d5_checkpoint_freshness_witness = _read_json(freshness_path)
+        if time_path.is_file():
+            time_domain_witness = _read_json(time_path)
+        if restart_path.is_file():
+            restart_durability_witness = _read_json(restart_path)
+
     return P1SealedWitnessEvidenceV1(
         cd_claims=_read_json(root / CANONICAL_CD_PACK / "claims.json"),
         usdc_claims=_read_json(usdc_pack / "claims.json"),
@@ -703,6 +780,9 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         currency_domain_witness=currency_domain_witness,
         liability_event_class_witness=liability_event_class_witness,
         bounded_traversal_witness=bounded_traversal_witness,
+        d5_checkpoint_freshness_witness=d5_checkpoint_freshness_witness,
+        time_domain_witness=time_domain_witness,
+        restart_durability_witness=restart_durability_witness,
     )
 
 

@@ -6860,13 +6860,71 @@ entities:
       not domain completeness; does not mint time or genesis-point freshness.
       AUTHORITY_EFFECT=NONE.
 
+  - id: RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 final closeout PR1 of 2 v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_final_closeout_pr1_of_2_v1.py
+      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+      - docs/ops/specs/FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1.md
+    evidence_sources:
+      - evidence/ops/full_core_p1_final_closeout_pr1_of_2_v1/2026-09-21T050000Z
+    notes: >-
+      P1 closeout PR 1/2 orchestrator: freshness, time, restart witnesses and
+      #6665 re-evaluation. AUTHORITY_EFFECT=NONE.
+
+  - id: RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 D5 checkpoint freshness witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_d5_checkpoint_freshness_witness_v1.py
+      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+    notes: >-
+      P1-bound observation freshness under D5 checkpoint lineage and explicit
+      capture timestamps; not genesis-point window alone.
+
+  - id: RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 time domain completeness witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_time_domain_completeness_witness_v1.py
+      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+    notes: >-
+      Bound P1 time-domain exhaustion from sealed query snapshots; not venue
+      past-year full traversal.
+
+  - id: RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 observation restart durability witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_observation_restart_durability_witness_v1.py
+      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+    notes: >-
+      Offline persist-reload-reconstruct proof for D4/D5 and raw capture chain.
+
   - id: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
     kind: RUNTIME_COMPONENT
     name: P1 completeness witness foundation v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: FULL_CORE_P1_LIABILITY_GOVERNANCE_AND_MAX_CLOSEOUT_TO_NEXT_REAL_BLOCKER_V1
+    modified_by: FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
       - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py

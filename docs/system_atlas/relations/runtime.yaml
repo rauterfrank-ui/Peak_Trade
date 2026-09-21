@@ -1723,6 +1723,19 @@ relations:
       P1 bounded query traversal witness persists pagination and ordering roots
       from sealed interest-accrued packs for #6666 and #6665. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_p1_final_closeout_pr1_consumes_witness_foundation
+    source: RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_final_closeout_pr1_of_2_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+    notes: >-
+      P1 final closeout PR 1/2 persists freshness/time/restart witnesses and
+      re-evaluates #6665 via foundation bundle. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
     source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
     type: CONSUMES
