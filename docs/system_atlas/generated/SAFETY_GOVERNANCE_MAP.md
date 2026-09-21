@@ -41,6 +41,7 @@
 | GATE:treasury_phase_1_offline_contracts_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | True | CURRENT_NONCANONICAL |
+| GATE:treasury_productive_read_only_venue_observation_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GUARD:economic_diagnostic_optimization_boundary | GUARD | True | CURRENT_NONCANONICAL |
 
 ## Mutation-path chains (actual wiring; missing edges explicit)

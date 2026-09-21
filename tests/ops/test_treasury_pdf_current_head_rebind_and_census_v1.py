@@ -41,9 +41,9 @@ def test_adjudication_covers_phases_and_blocker() -> None:
     assert matrix["TREASURY_PHASE_2_READ_ONLY_RECONCILIATION"]["classification"] == "IMPLEMENTED"
     assert matrix["TREASURY_PHASE_3_SHADOW_ENFORCEMENT"]["classification"] == "IMPLEMENTED"
     assert adj["TREASURY_INTERFERENCE_PROOF"]["TREASURY_INTERFERENCE_PROOF"] == "PASS"
-    assert (
-        "PRODUCTIVE_READ_ONLY_TREASURY_VENUE_OBSERVATION" in adj["EARLIEST_REAL_TREASURY_BLOCKER"]
-    )
+    assert "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION" in adj[
+        "EARLIEST_REAL_TREASURY_BLOCKER"
+    ]
     at = adj["PDF_AUDIT_TESTS_AT01_AT15"]
     assert at["AT03"]["classification"] == "IMPLEMENTED"
     assert at["AT13"]["classification"] == "NOT_PROVEN"

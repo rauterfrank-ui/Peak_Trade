@@ -365,6 +365,7 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_productive_read_only_venue_observation_v1 | GATE | Treasury productive read-only venue observation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GUARD:economic_diagnostic_optimization_boundary | GUARD | Economic diagnostic optimization boundary guard | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Safety chains recorded: `4`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
@@ -454,7 +455,7 @@ Architectural-kind count in this bucket: `20`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `166`.
+Architectural-kind count in this bucket: `167`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -499,7 +500,7 @@ Architectural-kind count in this bucket: `166`.
 | GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | PL-TF-002 productive read-only session executor v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `166` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `167` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -735,7 +736,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=578
+ENTITY_TOTAL=579
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=129
@@ -821,7 +822,7 @@ Remaining census domains:
 | FAMILY | 8 |
 | FORENSIC_REFERENCE | 2 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 26 |
+| GATE | 27 |
 | GUARD | 1 |
 | HOST | 2 |
 | INVARIANT | 1 |

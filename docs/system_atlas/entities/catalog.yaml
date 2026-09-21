@@ -9129,6 +9129,35 @@ entities:
       recapture in manifest-repair WP. Requires WP Owner-GO and session executor
       Owner-GO. No standing authority mint. ATLAS_AUTHORITY=NONE.
 
+  - id: GATE:treasury_productive_read_only_venue_observation_v1
+    kind: GATE
+    name: Treasury productive read-only venue observation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: WP_TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION_V1
+    fail_closed: true
+    source_paths:
+      - src/ops/treasury_productive_read_only_venue_observation_v1/__init__.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/capture_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/chain_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/constants_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/funding_get_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/persist_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/pre_network_gate_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/separation_matrix_v1.py
+    source_symbols:
+      - execute_treasury_productive_read_only_venue_observation_v1
+      - persist_treasury_productive_observation_evidence_pack_v1
+    evidence_sources:
+      - docs/ops/specs/TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION_V1.md
+      - tests/ops/test_treasury_productive_read_only_venue_observation_v1.py
+    notes: >-
+      Owner-GO scoped productive read-only OKX-EEA funding balance and account
+      config GET via PL_TF_002 session; Phase-2/3/E4 offline reconciliation
+      chain; stops before E4 productive host join. No mutation or risk mint.
+      ATLAS_AUTHORITY=NONE.
+
   - id: GATE:pl_tf_002_productive_read_only_session_executor_v1
     kind: GATE
     name: PL-TF-002 productive read-only session executor v1

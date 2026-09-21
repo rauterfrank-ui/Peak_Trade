@@ -15,7 +15,7 @@ WP_ID = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
 OWNER_GO = WP_ID
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}", "OWNER_GO=true"})
 
-EXPECTED_ORIGIN_MAIN_SHA = "3199376fa27eb28572a0f255c6d99d312cb46768"
+EXPECTED_ORIGIN_MAIN_SHA = "402dbee646c85400c525acd14bc38f4c16e0a17f"
 CANONICAL_PACK_RELPATH = "evidence/ops/treasury_pdf_current_head_rebind_and_census_v1"
 CANONICAL_PACK_AS_OF_FOLDER = "2026-09-21T010000Z"
 SCHEMA_CLASS = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
@@ -31,12 +31,14 @@ CURRENT_CANONICAL_TREASURY_AUTHORITY = (
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#CURRENT-Treasury-Phase-Bindings"
 )
 
-EARLIEST_REAL_TREASURY_BLOCKER = "PRODUCTIVE_READ_ONLY_TREASURY_VENUE_OBSERVATION_REQUIRES_OWNER_SCOPED_NETWORK_AND_CREDENTIAL_GO"
-BLOCKER_CLASS = "AUTHORITY_AND_EXTERNAL_EFFECT"
+EARLIEST_REAL_TREASURY_BLOCKER = (
+    "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN_NOT_WIRED"
+)
+BLOCKER_CLASS = "PRODUCTIVE_HOST_JOIN_AND_ORCHESTRATION"
 MISSING_FACT_OR_AUTHORITY = (
-    "Scoped Owner-GO for productive read-only OKX-EEA treasury/funding observation "
-    "(PL_TF_002-class session) with credential load; EXTERNAL_EFFECT_AUTHORIZED=false "
-    "on current HEAD forbids execution in this WP."
+    "Governed productive host wiring for E4 treasury capital admission → account-equity "
+    "orchestration join; offline joins proven after productive read-only venue observation; "
+    "no sizing or STEP-29P mint authorized."
 )
 
 FULL_CORE_P1_STATUS = "CLOSED"
