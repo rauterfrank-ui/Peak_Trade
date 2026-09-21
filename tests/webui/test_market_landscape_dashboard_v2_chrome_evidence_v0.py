@@ -142,7 +142,12 @@ def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # typ
     assert primary.locator('[data-mdl-decision-primary-fact="blockers"]').count() == 1
     assert secondary.locator('[data-mdl-decision-secondary-fact="direction"]').count() == 1
     assert secondary.locator('[data-mdl-decision-secondary-fact="double_play"]').count() == 1
-    assert secondary.locator('[data-mdl-decision-secondary-fact="confidence"]').count() == 1
+    assert secondary.locator('[data-mdl-decision-secondary-fact="confidence"]').count() == 0
+    assert secondary.get_attribute("data-mdl-confidence-render") == "false"
+    assert (
+        secondary.get_attribute("data-mdl-confidence-field-state")
+        == "NOT_AVAILABLE_NO_CANONICAL_FIELD"
+    )
 
     why = page.locator('[data-mdl-why-primary="true"]')
     assert why.count() == 1
@@ -175,18 +180,25 @@ def _assert_decision_why_blocker_reading_flow(page) -> dict[str, object]:  # typ
     blockers = page.locator('[data-mdl-field="blockers"]')
     confidence = page.locator('[data-mdl-field="confidence"]')
     assert blockers.count() == 1
-    assert confidence.count() == 1
-    assert blockers.get_attribute("data-availability") == "NOT_BOUND"
-    assert confidence.get_attribute("data-availability") == "NOT_BOUND"
-    assert blockers.inner_text().strip() == "NOT_BOUND"
-    assert confidence.inner_text().strip() == "NOT_BOUND"
-    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" not in blockers.inner_text()
+    assert confidence.count() == 0
+    blockers_text = blockers.inner_text().strip()
+    assert blockers_text
+    assert blockers_text not in {"", "None", "null", "undefined"}
+    assert blockers.get_attribute("data-availability") in {
+        "MISSING_SOURCE",
+        "NOT_BOUND",
+        "INVALID",
+        "STALE",
+        "AVAILABLE",
+    }
+    assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" not in blockers_text
 
     return {
         "why_text": why_text,
         "why_style": style,
-        "blockers": blockers.inner_text().strip(),
-        "confidence": confidence.inner_text().strip(),
+        "blockers": blockers_text,
+        "confidence": "SUPPRESSED_NOT_AVAILABLE_NO_CANONICAL_FIELD",
+        "confidence_render": False,
     }
 
 

@@ -12,6 +12,7 @@ from typing import Any, Mapping, Sequence
 from .availability import Availability
 from .contracts import CanonicalDecisionSnapshotV1, DoublePlaySnapshotV1
 from .landscape_observability_common_v1 import (
+    AVAILABILITY_LABELS,
     OPTIONAL_FIELD_ABSENT_DISPLAY,
     fail_closed_component_display_v1,
     fail_closed_scalar_display_v1,
@@ -22,14 +23,8 @@ from .source_health_projection_fidelity_v1 import format_freshness_display_v1
 CAPABILITY_ID = "LANDSCAPE_DOUBLE_PLAY_AND_DECISION_OBSERVABILITY_FIDELITY_V1"
 MULTI_DECISION_TIMELINE_STATUS = "MISSING_DASHBOARD_OBSERVABILITY"
 JOIN_CONTRACT_PRESENT = False
-
-_AVAILABILITY_LABELS: Mapping[Availability, str] = {
-    Availability.AVAILABLE: "AVAILABLE",
-    Availability.NOT_BOUND: "NOT_BOUND",
-    Availability.MISSING_SOURCE: "MISSING_SOURCE",
-    Availability.STALE: "STALE",
-    Availability.INVALID: "INVALID",
-}
+# No proven confidence field on CanonicalTradingDecisionEvidenceV1.
+CONFIDENCE_FIELD_STATE = "NOT_AVAILABLE_NO_CANONICAL_FIELD"
 
 _PANEL_SUMMARY_KEYS: tuple[str, ...] = ("name", "status", "summary", "blockers")
 
@@ -63,14 +58,14 @@ def _codes_display(codes: Sequence[str], availability: Availability) -> list[str
 
 def _codes_display_label(codes: Sequence[str], availability: Availability) -> str:
     if availability not in (Availability.AVAILABLE, Availability.STALE):
-        label = _AVAILABILITY_LABELS[availability]
+        label = AVAILABILITY_LABELS[availability]
         if codes:
             return f"{label} · {', '.join(str(c) for c in codes)}"
         return label
     if not codes:
         if availability in (Availability.AVAILABLE, Availability.STALE):
             return OPTIONAL_FIELD_ABSENT_DISPLAY
-        return _AVAILABILITY_LABELS[availability]
+        return AVAILABILITY_LABELS[availability]
     return ", ".join(str(c) for c in codes)
 
 
@@ -86,15 +81,15 @@ def build_canonical_decision_observability_v1(
         "slot": "canonical_decision",
         "schema_id": snap.schema_id,
         "availability": availability.value,
-        "availability_label": _AVAILABILITY_LABELS[availability],
+        "availability_label": AVAILABILITY_LABELS[availability],
         "is_available": availability is Availability.AVAILABLE,
         "is_stale": availability is Availability.STALE,
         "decision_display": _scalar_display(snap.decision, availability)
-        or _AVAILABILITY_LABELS[availability],
+        or AVAILABILITY_LABELS[availability],
         "direction_display": _scalar_display(snap.direction, availability)
-        or _AVAILABILITY_LABELS[availability],
+        or AVAILABILITY_LABELS[availability],
         "instrument_id_display": _scalar_display(snap.instrument_id, availability)
-        or _AVAILABILITY_LABELS[availability],
+        or AVAILABILITY_LABELS[availability],
         "decision_id_display": fail_closed_scalar_display_v1(
             snap.decision_id, availability=availability
         ),
@@ -173,11 +168,11 @@ def build_double_play_observability_v1(snap: DoublePlaySnapshotV1) -> dict[str, 
         "slot": "double_play",
         "schema_id": snap.schema_id,
         "availability": availability.value,
-        "availability_label": _AVAILABILITY_LABELS[availability],
+        "availability_label": AVAILABILITY_LABELS[availability],
         "is_available": availability is Availability.AVAILABLE,
         "is_stale": availability is Availability.STALE,
         "overall_status_display": _scalar_display(snap.overall_status, availability)
-        or _AVAILABILITY_LABELS[availability],
+        or AVAILABILITY_LABELS[availability],
         "display_only": snap.display_only
         if availability in (Availability.AVAILABLE, Availability.STALE)
         else None,
@@ -222,6 +217,52 @@ def build_s05_s06_relationship_observability_v1(
     }
 
 
+def build_decision_strip_blockers_presentation_v1(
+    double_play: DoublePlaySnapshotV1,
+) -> dict[str, Any]:
+    """Decision-strip Blockers from Double Play display blockers only.
+
+    Never copies Decision reason_codes into blockers. Canonical decision evidence
+    has no blockers field; DoublePlayDashboardDisplaySnapshot does.
+    """
+    availability = double_play.availability
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        # Unavailable: availability token only — do not leak unavailable reason codes.
+        return {
+            "source_slot": "double_play",
+            "source_field": "blockers",
+            "availability": availability.value,
+            "display": AVAILABILITY_LABELS[availability],
+            "codes": [],
+            "render": True,
+        }
+    codes = [str(code) for code in double_play.blockers if str(code).strip()]
+    if codes:
+        display = ", ".join(codes)
+    else:
+        display = OPTIONAL_FIELD_ABSENT_DISPLAY
+    return {
+        "source_slot": "double_play",
+        "source_field": "blockers",
+        "availability": availability.value,
+        "display": display,
+        "codes": codes,
+        "render": True,
+    }
+
+
+def build_decision_strip_confidence_presentation_v1() -> dict[str, Any]:
+    """Confidence has no CURRENT canonical field — do not render a placeholder."""
+    return {
+        "source_slot": None,
+        "source_field": None,
+        "field_state": CONFIDENCE_FIELD_STATE,
+        "availability": Availability.NOT_BOUND.value,
+        "display": "",
+        "render": False,
+    }
+
+
 def build_decision_double_play_observability_v1(
     *,
     decision: CanonicalDecisionSnapshotV1,
@@ -241,4 +282,6 @@ def build_decision_double_play_observability_v1(
         "double_play": s06,
         "relationship": relationship,
         "multi_decision_timeline_status": MULTI_DECISION_TIMELINE_STATUS,
+        "decision_strip_blockers": build_decision_strip_blockers_presentation_v1(double_play),
+        "decision_strip_confidence": build_decision_strip_confidence_presentation_v1(),
     }
