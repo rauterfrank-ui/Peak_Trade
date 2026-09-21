@@ -3,17 +3,17 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
-modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+introduced_by: STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
+modified_by: STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Docs-only SSOT rebind and offline-domain boundary registration in Master
-  Runbook plus Map of Truth navigation pointers. No runtime, trading,
-  selection, promotion, or live authority. Atlas is not canonical authority.
+  STEP29M evaluation template binds canonical mandatory MV2 backtest boundary
+  state-file section for offline economic_viability_evidence_v1 MV2 replay
+  wiring. Navigation-only Atlas record; no runtime, trading, selection,
+  promotion, or live authority. ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNBOOK:canonical_master_runbook
-  - NAVIGATION_INDEX:map_of_truth
+  - CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
 changed_relations: []
 new_relations: []
 removed_relations: []
@@ -23,5 +23,4 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-  - id: RUNBOOK:canonical_master_runbook
-  - id: NAVIGATION_INDEX:map_of_truth
+  - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1

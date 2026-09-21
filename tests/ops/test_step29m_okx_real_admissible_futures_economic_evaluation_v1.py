@@ -15,6 +15,10 @@ import pandas as pd
 import pytest
 
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+    resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 RUNNER_SCRIPT = ROOT / "scripts" / "ops" / "run_economic_viability_evidence_evaluation_v1.py"
@@ -39,6 +43,18 @@ def _load_runner():
 @pytest.fixture
 def runner():
     return _load_runner()
+
+
+def test_evaluation_config_binds_mandatory_mv2_boundary_state_files() -> None:
+    cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+    section = cfg.get(MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION)
+    assert isinstance(section, dict)
+    assert section.get("schema_version") == (
+        "mv2_research_backtest_mandatory_boundary_state_file_binding_v0"
+    )
+    resolved, reasons = resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(ROOT, cfg)
+    assert resolved is not None
+    assert reasons == ()
 
 
 def test_evaluation_config_exists_and_binds_costs() -> None:
