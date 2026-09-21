@@ -19,9 +19,9 @@ RESEARCH_HARNESS=dynamic_scope_empirical_calibration_research_v1 (unchanged)
 
 | Source | Class | Use in WP |
 |--------|-------|-----------|
-| `config/ops/fixtures/single_future_*` (cap51) | Fixture | Unit tests only — **not REAL evidence** |
+| `config&#47;ops&#47;fixtures&#47;single_future_*` (cap51) | Fixture | Unit tests only — **not REAL evidence** |
 | `exact_known_61_price_fixture_v1` (materializer) | Synthetic test vector | **not REAL evidence** |
-| `docs/ops/artifacts/.../observation_pack.json` (Surface B) | **OBSERVED** OKX public PT1M ETH-USDT-SWAP | **Bound REAL series** |
+| `docs&#47;ops&#47;artifacts&#47;productive_pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_v1&#47;observation_pack.json` (Surface B) | **OBSERVED** OKX public PT1M ETH-USDT-SWAP | **Bound REAL series** |
 | `scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py` | Authorized fetcher (GO-gated) | Not invoked in CI; existing sealed pack reused |
 | PIT OKX PT1H panel (`pit_okx_pt1h_panel_ohlcv_dataset_v1`) | Validation core | No long single-future PT1M panel committed beyond Surface B pack |
 
@@ -39,4 +39,4 @@ RESEARCH_HARNESS=dynamic_scope_empirical_calibration_research_v1 (unchanged)
 
 `src/trading/master_v2/dynamic_scope_governed_real_market_evidence_v1.py`
 
-Artifacts: `docs/evidence/dynamic_scope_governed_real_market_evidence_v1/`
+Artifacts: `docs&#47;evidence&#47;dynamic_scope_governed_real_market_evidence_v1&#47;`
