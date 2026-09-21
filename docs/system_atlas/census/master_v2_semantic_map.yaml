@@ -1113,6 +1113,15 @@ clusters:
           - trading.master_v2.canonical_trading_decision_evidence_v1
           - trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0
         runtime_reachability: BOUND_NOT_ACTIVATED_OR_OFFLINE_ADAPTER
+      - path: src/trading/master_v2/capital_risk_sizing_historical_default_deauthorization_v1.py
+        primary_symbols:
+          - ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1
+          - CAPITAL_RISK_CONTEXT_UNRESOLVED
+          - CAPITAL_RISK_STATIC_LIMITS_UNRESOLVED
+          - DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED
+          - PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED
+        master_v2_imports: []
+        runtime_reachability: OFFLINE_OR_LIBRARY
       - path: src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
         primary_symbols:
           - CapitalRiskSizingOfflineReplayBindingResultV0
