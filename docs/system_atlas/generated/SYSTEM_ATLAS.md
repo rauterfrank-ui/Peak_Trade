@@ -456,7 +456,7 @@ Architectural-kind count in this bucket: `20`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `167`.
+Architectural-kind count in this bucket: `168`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -501,7 +501,7 @@ Architectural-kind count in this bucket: `167`.
 | GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | PL-TF-002 productive read-only session executor v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
-Truncated to 40 of `167` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+Truncated to 40 of `168` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -738,7 +738,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=592
+ENTITY_TOTAL=593
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=144
 RUNTIME_RELATION_COUNT=131
@@ -836,7 +836,7 @@ Remaining census domains:
 | OWNER_DECISION | 2 |
 | PHASE | 99 |
 | REGISTRY | 1 |
-| RUNBOOK | 4 |
+| RUNBOOK | 5 |
 | RUNTIME_COMPONENT | 137 |
 | SCHEMA | 18 |
 | SCRIPT | 4 |
