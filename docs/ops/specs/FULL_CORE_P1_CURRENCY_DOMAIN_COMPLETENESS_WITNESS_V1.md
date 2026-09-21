@@ -10,7 +10,7 @@ last_updated: 2026-09-21
 # Full Core P1 Currency Domain Completeness Witness V1
 
 Derived spec. Non-SSOT. Closes `CURRENCY_DOMAIN_COMPLETE` via closed-world
-enumeration from `GET /api/v5/account/interest-limits?type=2` composed with
+enumeration from `GET &#47;api&#47;v5&#47;account&#47;interest-limits?type=2` composed with
 sealed zero-row interest-accrued packs. Settlement USDC, optional `ccy=USDC`
 filter, and zero rows alone do not mint completeness.
 
