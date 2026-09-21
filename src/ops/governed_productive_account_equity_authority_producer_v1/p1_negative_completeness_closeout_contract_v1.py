@@ -20,9 +20,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     PAGINATION_EXHAUSTION_PROVES_COMPLETENESS,
     RAW_EQ_SOURCE_AUTHORITY,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.equity_affecting_event_taxonomy_contract_v1 import (
-    RATIFIED_CLASSIFIED_KIND_SET,
-    RATIFIED_CLASSIFIED_KIND_SET_RESOLVED,
+from src.ops.governed_productive_account_equity_authority_producer_v1.p1_completeness_witness_foundation_v1 import (
+    evaluate_sealed_p1_completeness_witness_bundle_v1,
+    witness_flags_for_p1_closeout_v1,
 )
 
 SCHEMA_CLASS = "P1_NEGATIVE_COMPLETENESS_CLOSEOUT_CONTRACT_V1"
@@ -434,9 +434,6 @@ def load_sealed_interest_accrued_p1_input_v1(
     root = Path(repo_root)
     cd = _read_json(root / CANONICAL_CD_PACK / "claims.json")
     usdc = _read_json(root / CANONICAL_USDC_P1_PACK / "claims.json")
-    reopen = _read_json(
-        root / CANONICAL_USDC_P1_PACK / "interest_accrued_reopen_adjudication_v1.json"
-    )
     discovery = _read_json(root / CANONICAL_USDC_P1_PACK / "futures_p1_surface_discovery_v1.json")
     binding = _read_json(root / CANONICAL_USDC_P1_PACK / "p1_surface_binding_v1.json")
     offline = _read_json(root / CANONICAL_USDC_P1_PACK / "p1_offline_qualification_v1.json")
@@ -461,10 +458,7 @@ def load_sealed_interest_accrued_p1_input_v1(
         and str(usdc.get("HTTP_STATUS", "")) == "200"
     )
 
-    pagination_complete = _as_bool_token(reopen.get("CD_EXHAUSTION_PROVEN"))
-    time_domain_complete = pagination_complete and not _as_bool_token(
-        reopen.get("CD_CURSOR_USED", FALSE_TOKEN)
-    )
+    witness_bundle = evaluate_sealed_p1_completeness_witness_bundle_v1(repo_root=root)
 
     surface_coverage_complete = True
     for record in discovery.get("records", []):
@@ -476,11 +470,6 @@ def load_sealed_interest_accrued_p1_input_v1(
                 surface_coverage_complete = False
                 break
 
-    currency_domain_complete = False
-    liability_event_class_complete = (
-        bool(RATIFIED_CLASSIFIED_KIND_SET) and RATIFIED_CLASSIFIED_KIND_SET_RESOLVED
-    )
-
     independence_balance = str(usdc.get("P1_EVENT_SURFACE_ROLE", "")) == (
         "INDEPENDENT_LIABILITY_EVENT_EVIDENCE_ONLY"
     )
@@ -489,14 +478,19 @@ def load_sealed_interest_accrued_p1_input_v1(
         and str(cd.get("VENUE_EQ_SOURCE_AUTHORITY", TRUE_TOKEN)) == FALSE_TOKEN
         and str(usdc.get("RAW_EQ_SOURCE_AUTHORITY", TRUE_TOKEN)) == FALSE_TOKEN
     )
-    provenance_complete = (
-        _as_bool_token(cd.get("RAW_EVIDENCE_PERSISTED"))
-        and _as_bool_token(usdc.get("RAW_EVIDENCE_PERSISTED"))
-        and bool(str(cd.get("RAW_EVIDENCE_SHA256", "")))
-        and bool(str(usdc.get("RAW_EVIDENCE_SHA256", "")))
-        and currency_domain_complete
-        and time_domain_complete
-        and pagination_complete
+
+    witness_flags = witness_flags_for_p1_closeout_v1(
+        witness_bundle,
+        account_identity_bound=account_identity_bound,
+        account_mode_futures_ratified=account_mode_futures,
+        venue_binding_complete=venue_complete,
+        surface_coverage_complete=surface_coverage_complete,
+        independence_from_balance_snapshot=independence_balance,
+        independence_from_raw_eq=independence_raw_eq,
+        qualifying_event_count=qualifying,
+        nonqualifying_event_count=nonqualifying,
+        cd_row_count=cd_rows,
+        usdc_scoped_row_count=usdc_rows,
     )
 
     return P1NegativeCompletenessInputV1(
@@ -504,20 +498,20 @@ def load_sealed_interest_accrued_p1_input_v1(
         nonqualifying_event_count=nonqualifying,
         cd_row_count=cd_rows,
         usdc_scoped_row_count=usdc_rows,
-        account_identity_bound=account_identity_bound,
-        account_mode_futures_ratified=account_mode_futures,
-        venue_binding_complete=venue_complete,
-        currency_domain_complete=currency_domain_complete,
-        liability_event_class_complete=liability_event_class_complete,
-        time_domain_complete=time_domain_complete,
-        surface_coverage_complete=surface_coverage_complete,
-        pagination_complete=pagination_complete,
-        event_ordering_complete=False,
-        observation_freshness_complete=False,
-        restart_durability_complete=False,
-        independence_from_balance_snapshot=independence_balance,
-        independence_from_raw_eq=independence_raw_eq,
-        provenance_complete=provenance_complete,
+        account_identity_bound=witness_flags["account_identity_bound"],
+        account_mode_futures_ratified=witness_flags["account_mode_futures_ratified"],
+        venue_binding_complete=witness_flags["venue_binding_complete"],
+        currency_domain_complete=witness_flags["currency_domain_complete"],
+        liability_event_class_complete=witness_flags["liability_event_class_complete"],
+        time_domain_complete=witness_flags["time_domain_complete"],
+        surface_coverage_complete=witness_flags["surface_coverage_complete"],
+        pagination_complete=witness_flags["pagination_complete"],
+        event_ordering_complete=witness_flags["event_ordering_complete"],
+        observation_freshness_complete=witness_flags["observation_freshness_complete"],
+        restart_durability_complete=witness_flags["restart_durability_complete"],
+        independence_from_balance_snapshot=witness_flags["independence_from_balance_snapshot"],
+        independence_from_raw_eq=witness_flags["independence_from_raw_eq"],
+        provenance_complete=witness_flags["provenance_complete"],
         applicability_account_spot_only=False,
         applicability_surface_futures_incapable=False,
         applicability_reason="",
