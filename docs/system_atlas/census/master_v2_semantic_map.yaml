@@ -463,6 +463,31 @@ clusters:
         master_v2_imports:
           - trading.master_v2.double_play_sole_authority_quarantine_v1
         runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification
+    name: Naked MV2+DP single-boundary purification primitives v1
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/naked_mv2_dp_single_boundary_purification_v1.py
+        primary_symbols:
+          - compute_counter_move_v1
+          - update_scope_internal_reference_state_v1
+          - naked_boundary_fail_closed_reasons_from_distance
+        master_v2_imports:
+          - trading.master_v2.deterministic_scope_event_generator_v1
+          - trading.master_v2.double_play_state
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core
+    name: Naked MV2+DP mechanical core step owner v1
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/naked_mv2_dp_mechanical_core_v1.py
+        primary_symbols:
+          - execute_naked_mechanical_step_v1
+          - next_naked_mechanical_state_v1
+          - NakedMechanicalStateV1
+        master_v2_imports:
+          - trading.master_v2.naked_mv2_dp_single_boundary_purification_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
   - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
     name: evaluate_double_play authority boundary (v0)
     module_role: double_play_quarantine
