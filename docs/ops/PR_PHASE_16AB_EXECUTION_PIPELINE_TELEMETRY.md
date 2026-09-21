@@ -20,7 +20,7 @@ Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **P
 **New:**
 - `src/execution_simple/` (8 files, ~500 LOC) - Standalone learning module
 - `tests/execution_simple/` (2 files, 16 tests)
-- `scripts/run_execution_simple_dry_run.py` - Interactive demo
+- ~~`scripts/run_execution_simple_dry_run.py`~~ - Removed post-census (was Phase 16A demo) <!-- pt:ref-target-ignore -->
 - `docs/execution/EXECUTION_SIMPLE_V1.md` - Learning guide
 
 ### Phase 16B (Telemetry & Bridge)
@@ -331,7 +331,7 @@ ruff check src tests scripts
 - Phase 16B: `tests/live/test_execution_bridge.py` (10 tests)
 
 **Demo Scripts:**
-- Phase 16A: `scripts/run_execution_simple_dry_run.py`
+- Phase 16A: ~~`scripts/run_execution_simple_dry_run.py`~~ (removed post-census) <!-- pt:ref-target-ignore -->
 - Phase 16B: Programmatic usage (see doc examples)
 
 ---

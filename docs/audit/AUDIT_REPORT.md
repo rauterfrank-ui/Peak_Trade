@@ -153,7 +153,7 @@ No P0 blockers identified. The system has strong safety architecture and no crit
 
 - **FND-0003:** Multiple Execution Paths - Documentation Needed → **✅ FIXED**
   - **Resolution:** README files created for both `src/execution/` and `src/execution_simple/`
-  - **Evidence:** EV-9005 (src/execution/README.md, src/execution_simple/README.md)
+  - **Evidence:** EV-9005 (src/execution/README.md; execution_simple README removed post-census) <!-- pt:ref-target-ignore -->
   - **Fixed Date:** 2025-12-30
 
 **🎉 ALL FINDINGS RESOLVED! 5/5 FIXED ✅**

@@ -23,7 +23,7 @@
 
 **Files Created:**
 1. `src/execution/README.md` - Documentation for production execution module
-2. `src/execution_simple/README.md` - Documentation for legacy/simple execution
+2. ~~`src/execution_simple/README.md`~~ - Removed post-census (historical snapshot) <!-- pt:ref-target-ignore -->
 
 **Summary:**
 - **`src/execution/`** = Production execution (full-featured, live-ready)

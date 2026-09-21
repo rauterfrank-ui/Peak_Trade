@@ -84,7 +84,7 @@ Repo-wide forensic inventory of order-intent producers, transformers, routers, a
 | Unguarded shadow script | `scripts/run_shadow_execution.py` | PRODUCTIVE_BYPASS | REACHABLE_PRODUCTIVE | Yes | Shadow/paper |
 | Historical `KrakenLiveClient` | `src&#47;exchange&#47;kraken_live.py` | ABSENT from current tree | NOT_REACHABLE | No | No | <!-- pt:ref-target-ignore -->
 | `LiveSessionRunner` | `src/execution/live_session.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Indirect | Guarded |
-| `execution_simple` | `src/execution_simple/pipeline.py` | PRODUCTIVE_BYPASS | UNREACHABLE | Yes | Guarded |
+| `execution_simple` | _(removed post-census)_ | PRODUCTIVE_BYPASS | NOT_IN_TREE | — | — | <!-- pt:ref-target-ignore -->
 | Legacy entrypoint guard | `src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | Blocks |
 | Meta lifecycle / idempotency | `src&#47;meta&#47;learning_loop&#47;*order*` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | No |
 | `go_no_go` live map | `src/governance/go_no_go.py` | REPORTING_OR_OBSERVABILITY | REACHABLE_PRODUCTIVE | No | Unlock map only |
