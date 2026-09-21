@@ -6208,6 +6208,31 @@ entities:
       CAPABILITY_PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1; does not export
       siblings or mutate trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1
+    kind: RUNTIME_COMPONENT
+    name: D3.1 fresh universe ranking refresh v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: governed_okx_public_md_universe_readmodel_regeneration_witness
+    modified_by: D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1
+    source_paths:
+      - scripts/ops/refresh_okx_market_dashboard_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d3_1_fresh_universe_ranking_refresh_v1/REGENERATION_VERIFY.json
+      - docs/ops/market_dashboard/d3_1_fresh_universe_ranking_refresh_v1/REFRESH_RUN_ENVELOPE.json
+      - docs/ops/market_dashboard/PEAK_TRADE_PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1.md
+      - tests/webui/test_universe_selection_contract_v1.py
+    notes: >-
+      Operator-witness for Professional Dashboard program D3.1: genuine regeneration
+      of universe_selection_readmodel.v1 via existing refresh_okx_market_dashboard_v1
+      (OKX public market data only). Landscape universe_ranking and market_instrument
+      consume the readmodel; dashboard does not rerank. Does not implement D3.2/D3.3.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1
