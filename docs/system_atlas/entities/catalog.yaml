@@ -6338,6 +6338,33 @@ entities:
       reconciliation_status not exported unless present on source (optional partial).
       AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d4_3_economic_explicit_bundle_archive_binding_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: D4.3 economic explicit bundle archive binding witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: archive_sibling_export
+    modified_by: D4_3_ECONOMIC_EXPLICIT_BUNDLE_ARCHIVE_BINDING_V1
+    source_paths:
+      - src/ops/economic_summary_archive_sibling_exporter_v1/__init__.py
+      - src/ops/economic_summary_archive_sibling_exporter_v1/constants_v1.py
+      - src/ops/economic_summary_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/economic_summary_archive_sibling_exporter_v1/explicit_bundle_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/economic_summary_presentation_projection_materializer_v1.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d4_3_economic_explicit_bundle_archive_binding_witness_v1/REGENERATION_VERIFY.json
+      - tests/ops/test_economic_summary_archive_sibling_exporter_v1.py
+    notes: >-
+      Bounded D4.3 witness: post-commit export of manifest-verified STEP29M
+      EconomicViabilityEvidenceV1 from an explicit pinned bundle directory only
+      to readmodels/economic_summary.v1.json via productive decision host
+      family_export_adapter_v1; in-host materialization, loader, and
+      bind_market_universe_slots consumer availability proven in bounded tests.
+      No registry/latest/filesystem discovery; cross-sectional-shaped artifacts
+      rejected. AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1
