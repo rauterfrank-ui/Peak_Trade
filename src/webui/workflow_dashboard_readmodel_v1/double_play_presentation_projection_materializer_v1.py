@@ -39,6 +39,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
+from .readmodels_manifest_coherence_v1 import finalize_manifest_for_readmodel_artifact_v1
 from .double_play_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
     DOUBLE_PLAY_AUTHORITY_EFFECT,
@@ -364,6 +365,12 @@ def write_double_play_presentation_projection_v1(
     try:
         _atomic_write_text(destination=path, body=body)
     except OSError:
+        return _empty_result(
+            status=STATUS_FAIL_CLOSED,
+            errors=(MATERIALIZE_ERROR_WRITE_FAILED,),
+        )
+
+    if not finalize_manifest_for_readmodel_artifact_v1(path):
         return _empty_result(
             status=STATUS_FAIL_CLOSED,
             errors=(MATERIALIZE_ERROR_WRITE_FAILED,),

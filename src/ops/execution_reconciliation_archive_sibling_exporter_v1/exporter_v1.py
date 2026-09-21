@@ -210,6 +210,20 @@ def export_execution_reconciliation_fields_payload_to_archive_sibling_v1(
             replaced_existing=replaced_existing,
         )
 
+    from src.ops.archive_sibling_export_contract_v1.manifest_finalize_v1 import (
+        finalize_manifest_for_sibling_target_v1,
+    )
+
+    manifest_ok, manifest_msg = finalize_manifest_for_sibling_target_v1(target_path)
+    if not manifest_ok:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=ERROR_WRITE_FAILED,
+            failure_reason=f"manifest_finalize_failed:{manifest_msg}",
+            replaced_existing=replaced_existing,
+        )
+
     return ExecutionReconciliationArchiveSiblingExportResultV1(
         exported=True,
         source_path=label,

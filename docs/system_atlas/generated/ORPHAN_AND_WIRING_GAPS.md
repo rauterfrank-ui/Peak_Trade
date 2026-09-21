@@ -130,6 +130,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_9_1_strategy_registry_gates | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_9_1_strategy_registry_gates | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_v_manifest_coherence_recovery_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_v_manifest_coherence_recovery_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2do_fresh_create_readiness_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2dr_runtime_read_only_evidence_max_leverage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_post_whitelist_private_auth_attestation_v1 | STATUS=OPEN (not proven) |  |
