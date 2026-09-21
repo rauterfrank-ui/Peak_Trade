@@ -16,6 +16,7 @@ from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
 from .source_health import DashboardSourceHealthSnapshotV1
 from .decision_double_play_observability_v1 import build_decision_double_play_observability_v1
+from .landscape_observability_common_v1 import fail_closed_component_display_v1
 from .landscape_system_observability_completion_v1 import (
     build_landscape_system_observability_completion_v1,
 )
@@ -679,8 +680,11 @@ def _risk_ops_display(page: MarketDashboardPageSnapshotV1) -> dict[str, str]:
             ),
         }
     quantity_display = "—"
-    if snap.availability is Availability.AVAILABLE and snap.quantity is not None:
-        quantity_display = str(snap.quantity)
+    if snap.quantity is not None and snap.availability in (
+        Availability.AVAILABLE,
+        Availability.STALE,
+    ):
+        quantity_display = fail_closed_component_display_v1(snap.quantity)
     reasons = ", ".join(str(code) for code in snap.reason_codes) if snap.reason_codes else "—"
     risk_status = (
         str(snap.risk_status)
@@ -911,13 +915,18 @@ def _regime_context_views(snap: Any) -> tuple[dict[str, Any], dict[str, Any], di
         empty = {**base, "value_display": label, "fields": {}}
         return empty, dict(empty), dict(empty)
 
-    regime_display = str(snap.regime_id)
+    regime_display = fail_closed_component_display_v1(snap.regime_id)
     if snap.regime_status is not None:
-        regime_display = f"{snap.regime_id} ({snap.regime_status})"
-    bull_bear_display = str(snap.side_state)
+        regime_display = (
+            f"{fail_closed_component_display_v1(snap.regime_id)} "
+            f"({fail_closed_component_display_v1(snap.regime_status)})"
+        )
+    bull_bear_display = fail_closed_component_display_v1(snap.side_state)
     switch_display = (
-        f"{snap.previous_side_state}→{snap.next_side_state} "
-        f"allowed={snap.transition_allowed} ({snap.transition_reason_code})"
+        f"{fail_closed_component_display_v1(snap.previous_side_state)}→"
+        f"{fail_closed_component_display_v1(snap.next_side_state)} "
+        f"allowed={fail_closed_component_display_v1(snap.transition_allowed)} "
+        f"({fail_closed_component_display_v1(snap.transition_reason_code)})"
     )
     regime = {
         **base,

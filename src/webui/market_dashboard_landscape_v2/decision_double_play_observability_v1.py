@@ -11,6 +11,11 @@ from typing import Any, Mapping, Sequence
 
 from .availability import Availability
 from .contracts import CanonicalDecisionSnapshotV1, DoublePlaySnapshotV1
+from .landscape_observability_common_v1 import (
+    OPTIONAL_FIELD_ABSENT_DISPLAY,
+    fail_closed_component_display_v1,
+    fail_closed_scalar_display_v1,
+)
 from .serialization import serialize_projection
 from .source_health_projection_fidelity_v1 import format_freshness_display_v1
 
@@ -63,7 +68,9 @@ def _codes_display_label(codes: Sequence[str], availability: Availability) -> st
             return f"{label} · {', '.join(str(c) for c in codes)}"
         return label
     if not codes:
-        return "—"
+        if availability in (Availability.AVAILABLE, Availability.STALE):
+            return OPTIONAL_FIELD_ABSENT_DISPLAY
+        return _AVAILABILITY_LABELS[availability]
     return ", ".join(str(c) for c in codes)
 
 
@@ -88,11 +95,12 @@ def build_canonical_decision_observability_v1(
         or _AVAILABILITY_LABELS[availability],
         "instrument_id_display": _scalar_display(snap.instrument_id, availability)
         or _AVAILABILITY_LABELS[availability],
-        "decision_id_display": _scalar_display(snap.decision_id, availability) or "—",
-        "evidence_schema_version_display": _scalar_display(
-            snap.evidence_schema_version, availability
-        )
-        or "—",
+        "decision_id_display": fail_closed_scalar_display_v1(
+            snap.decision_id, availability=availability
+        ),
+        "evidence_schema_version_display": fail_closed_scalar_display_v1(
+            snap.evidence_schema_version, availability=availability
+        ),
         "reason_codes": _codes_display(snap.reason_codes, availability),
         "reason_codes_display": _codes_display_label(snap.reason_codes, availability),
         "blockers": _codes_display(snap.blockers, availability),
@@ -116,24 +124,24 @@ def _panel_row_display(row: Mapping[str, Any]) -> dict[str, Any]:
     for key in _PANEL_SUMMARY_KEYS:
         if key not in row:
             out[key] = None
-            out[f"{key}_display"] = "—"
+            out[f"{key}_display"] = OPTIONAL_FIELD_ABSENT_DISPLAY
             continue
         raw = row.get(key)
         if key == "blockers":
             if isinstance(raw, (list, tuple)):
                 items = [str(x) for x in raw]
                 out[key] = items
-                out[f"{key}_display"] = ", ".join(items) if items else "—"
+                out[f"{key}_display"] = ", ".join(items) if items else OPTIONAL_FIELD_ABSENT_DISPLAY
             else:
                 out[key] = None
-                out[f"{key}_display"] = "—"
+                out[f"{key}_display"] = OPTIONAL_FIELD_ABSENT_DISPLAY
             continue
         if raw is None or raw == "":
             out[key] = None
-            out[f"{key}_display"] = "—"
+            out[f"{key}_display"] = OPTIONAL_FIELD_ABSENT_DISPLAY
         else:
             out[key] = raw
-            out[f"{key}_display"] = str(raw)
+            out[f"{key}_display"] = fail_closed_component_display_v1(raw)
     return out
 
 
@@ -150,10 +158,10 @@ def build_double_play_observability_v1(snap: DoublePlaySnapshotV1) -> dict[str, 
                     {
                         "panel_index": index,
                         "invalid_row": True,
-                        "name_display": "—",
-                        "status_display": "—",
-                        "summary_display": "—",
-                        "blockers_display": "—",
+                        "name_display": "INVALID",
+                        "status_display": "INVALID",
+                        "summary_display": "INVALID",
+                        "blockers_display": "INVALID",
                     }
                 )
                 continue

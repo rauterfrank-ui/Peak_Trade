@@ -14,12 +14,15 @@ from .contracts import (
 )
 from .landscape_observability_common_v1 import (
     AVAILABILITY_LABELS,
+    fail_closed_component_display_v1,
+    fail_closed_scalar_display_v1,
     field_row_v1,
     metric_field_display_v1,
     provenance_and_freshness_envelope_v1,
     reason_codes_display_v1,
     scalar_field_display_v1,
 )
+from .source_health_projection_fidelity_v1 import FRESHNESS_UNAVAILABLE
 
 CAPABILITY_ID = "LANDSCAPE_CURRENT_SYSTEM_OBSERVABILITY_COMPLETION_V1"
 
@@ -84,11 +87,13 @@ def build_s04_regime_bull_bear_observability_v1(
             field_id="switch",
             label="Switch",
             display=(
-                scalar_field_display_v1(snap.previous_side_state, availability=av)
+                fail_closed_scalar_display_v1(None, availability=av)
                 if av not in (Availability.AVAILABLE, Availability.STALE)
                 else (
-                    f"{snap.previous_side_state}→{snap.next_side_state} "
-                    f"allowed={snap.transition_allowed} ({snap.transition_reason_code})"
+                    f"{fail_closed_component_display_v1(snap.previous_side_state)}→"
+                    f"{fail_closed_component_display_v1(snap.next_side_state)} "
+                    f"allowed={fail_closed_component_display_v1(snap.transition_allowed)} "
+                    f"({fail_closed_component_display_v1(snap.transition_reason_code)})"
                 )
             ),
         ),
@@ -118,11 +123,7 @@ def build_s08_risk_sizing_capital_observability_v1(
 ) -> dict[str, Any]:
     env = provenance_and_freshness_envelope_v1(snap)
     av = snap.availability
-    quantity_display = "—"
-    if av is Availability.AVAILABLE and snap.quantity is not None:
-        quantity_display = str(snap.quantity)
-    elif av not in (Availability.AVAILABLE, Availability.STALE):
-        quantity_display = scalar_field_display_v1(None, availability=av)
+    quantity_display = fail_closed_scalar_display_v1(snap.quantity, availability=av)
     fields = [
         field_row_v1(
             field_id="risk_status",
@@ -250,7 +251,10 @@ def build_s10_economic_summary_observability_v1(
         field_row_v1(
             field_id="evidence_digest",
             label="Evidence digest",
-            display="—" if evidence_digest in (None, "") else str(evidence_digest),
+            display=fail_closed_scalar_display_v1(
+                None if evidence_digest in (None, "") else evidence_digest,
+                availability=av,
+            ),
         ),
         field_row_v1(
             field_id="reason_codes",
@@ -283,16 +287,32 @@ def build_v07_ohlcv_live_mark_fidelity_v1(*, chart: Mapping[str, Any]) -> dict[s
     freshness_state = chart.get("freshness_state")
     is_stale = bool(chart.get("is_stale"))
     captured = chart.get("captured_at")
-    observed_display = "—"
-    if isinstance(captured, str) and captured.strip():
-        observed_display = captured
-    elif chart.get("last_timestamp"):
-        observed_display = str(chart.get("last_timestamp"))
+    observed_display = (
+        str(captured).strip()
+        if isinstance(captured, str) and captured.strip()
+        else FRESHNESS_UNAVAILABLE
+    )
+    bar_count = chart.get("bar_count")
+    bar_count_display = (
+        str(bar_count)
+        if isinstance(bar_count, int) and not isinstance(bar_count, bool) and bar_count > 0
+        else fail_closed_scalar_display_v1(None, availability=availability)
+    )
+    bound_raw = chart.get("bound")
+    if bound_raw is True:
+        bound_display = "BOUND"
+    else:
+        bound_display = fail_closed_scalar_display_v1(None, availability=availability)
+        if availability in (Availability.AVAILABLE, Availability.STALE):
+            bound_display = Availability.NOT_BOUND.value
     fields = [
         field_row_v1(
             field_id="data_connection_state",
             label="Connection",
-            display=str(chart.get("data_connection_state") or "—"),
+            display=fail_closed_scalar_display_v1(
+                chart.get("data_connection_state") or None,
+                availability=availability,
+            ),
         ),
         field_row_v1(
             field_id="chart_availability",
@@ -302,41 +322,47 @@ def build_v07_ohlcv_live_mark_fidelity_v1(*, chart: Mapping[str, Any]) -> dict[s
         field_row_v1(
             field_id="bound",
             label="Series bound",
-            display=str(chart.get("bound")),
+            display=bound_display,
         ),
         field_row_v1(
             field_id="bar_count",
             label="Bar count",
-            display="—" if chart.get("bar_count") is None else str(chart.get("bar_count")),
+            display=bar_count_display,
         ),
         field_row_v1(
             field_id="interval",
             label="Interval",
-            display="—" if chart.get("interval") in (None, "") else str(chart.get("interval")),
+            display=fail_closed_scalar_display_v1(
+                chart.get("interval") or None, availability=availability
+            ),
         ),
         field_row_v1(
             field_id="freshness_state",
             label="Freshness state",
-            display="—" if freshness_state in (None, "") else str(freshness_state),
+            display=fail_closed_scalar_display_v1(
+                freshness_state or None, availability=availability
+            ),
         ),
         field_row_v1(
             field_id="captured_at",
             label="Captured at",
-            display="—" if captured in (None, "") else str(captured),
+            display=fail_closed_scalar_display_v1(captured or None, availability=availability),
         ),
         field_row_v1(
             field_id="live_mark_price",
             label="Live mark",
-            display="—"
-            if chart.get("live_mark_price") in (None, "")
-            else str(chart.get("live_mark_price")),
+            display=fail_closed_scalar_display_v1(
+                chart.get("live_mark_price"),
+                availability=availability,
+            ),
         ),
         field_row_v1(
             field_id="last_timestamp",
             label="Last candle",
-            display="—"
-            if chart.get("last_timestamp") in (None, "")
-            else str(chart.get("last_timestamp")),
+            display=fail_closed_scalar_display_v1(
+                chart.get("last_timestamp") or None,
+                availability=availability,
+            ),
         ),
     ]
     return {
@@ -387,7 +413,7 @@ def build_landscape_system_observability_completion_v1(
             {
                 "family_id": f["family_id"],
                 "availability": f["availability"],
-                "freshness_display": f.get("freshness_display", "—"),
+                "freshness_display": f.get("freshness_display") or FRESHNESS_UNAVAILABLE,
             }
             for f in families
         ],

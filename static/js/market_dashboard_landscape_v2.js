@@ -714,6 +714,12 @@
     return payload.bars[payload.bars.length - 1];
   }
 
+  function absentChartFact(availability) {
+    if (availability === "AVAILABLE" || availability === "STALE") return "NOT_AVAILABLE";
+    if (availability) return String(availability);
+    return "NOT_AVAILABLE";
+  }
+
   function updateMetaFromPayload(payload, availability, connectionState) {
     var intervalNode = root.querySelector('[data-mdl-field="ohlcv_interval"]');
     var latestNode = root.querySelector('[data-mdl-field="ohlcv_latest_candle_at"]');
@@ -729,53 +735,55 @@
     var availNode = root.querySelector("[data-mdl-chart-availability]");
     var last = lastBarFromPayload(payload);
     var tickSize = resolvePresentationTickSize(payload);
+    var absent = absentChartFact(availability);
     if (intervalNode) {
-      intervalNode.textContent = (payload && payload.interval) || "—";
+      intervalNode.textContent = (payload && payload.interval) || absent;
     }
     if (latestNode) {
-      latestNode.textContent = (payload && payload.last_timestamp) || "—";
+      latestNode.textContent = (payload && payload.last_timestamp) || absent;
     }
     if (capturedNode) {
       capturedNode.textContent =
-        (payload && (payload.candle_captured_at || payload.captured_at)) || "—";
+        (payload && (payload.candle_captured_at || payload.captured_at)) || absent;
     }
     if (markNode) {
-      // Absent optional mark → em dash. Never substitute candle close.
+      // Absent optional mark stays an explicit token. Never substitute candle close.
       if (
         payload &&
         payload.live_mark_price !== undefined &&
-        payload.live_mark_price !== null
+        payload.live_mark_price !== null &&
+        payload.live_mark_price !== ""
       ) {
         markNode.textContent = formatMarketPriceDisplay(payload.live_mark_price, tickSize);
       } else {
-        markNode.textContent = "—";
+        markNode.textContent = absent;
       }
     }
     if (revisionNode) {
       revisionNode.textContent =
         (payload && payload.ohlcv_revision_kind) ||
         root.getAttribute("data-mdl-ohlcv-update-class") ||
-        "—";
+        absent;
     }
     if (openNode) {
-      openNode.textContent = last ? formatMarketPriceDisplay(last.open, tickSize) : "—";
+      openNode.textContent = last ? formatMarketPriceDisplay(last.open, tickSize) : absent;
     }
     if (highNode) {
-      highNode.textContent = last ? formatMarketPriceDisplay(last.high, tickSize) : "—";
+      highNode.textContent = last ? formatMarketPriceDisplay(last.high, tickSize) : absent;
     }
     if (lowNode) {
-      lowNode.textContent = last ? formatMarketPriceDisplay(last.low, tickSize) : "—";
+      lowNode.textContent = last ? formatMarketPriceDisplay(last.low, tickSize) : absent;
     }
     if (closeNode) {
-      closeNode.textContent = last ? formatMarketPriceDisplay(last.close, tickSize) : "—";
+      closeNode.textContent = last ? formatMarketPriceDisplay(last.close, tickSize) : absent;
     }
     if (changeNode) {
       changeNode.textContent = last
         ? formatMarketChangePctDisplay(last.open, last.close)
-        : "—";
+        : absent;
     }
     if (volumeNode) {
-      volumeNode.textContent = last ? formatMarketVolumeDisplay(last.volume) : "—";
+      volumeNode.textContent = last ? formatMarketVolumeDisplay(last.volume) : absent;
     }
     if (availNode && availability) {
       availNode.textContent = availability;
