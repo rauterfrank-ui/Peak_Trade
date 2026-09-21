@@ -476,6 +476,7 @@ class BridgeSessionStateV1:
     last_replay_intermediate: Optional[Any] = None
     last_replay_regime_id: Optional[str] = None
     last_replay_regime_status: Optional[str] = None
+    last_replay_execution_safety: Optional[Any] = None
     last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
     ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
     ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
@@ -1459,6 +1460,7 @@ def run_bridge_cycle_v1(
     state.last_replay_intermediate = replay.intermediate
     state.last_replay_regime_id = str(replay_input.regime_id)
     state.last_replay_regime_status = replay_input.regime_status.value
+    state.last_replay_execution_safety = replay.replay_execution_safety
     try:
         from src.ops.productive_pure_stack_display_decision_host_binding_v1.host_cycle_v1 import (
             run_pure_stack_display_decision_host_cycle_v1,

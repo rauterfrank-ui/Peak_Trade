@@ -58,6 +58,7 @@ FAMILY_REGIME_BULL_BEAR_SWITCH = "regime_bull_bear_switch"
 FAMILY_RISK_SIZING_CAPITAL = "risk_sizing_capital"
 FAMILY_EXECUTION_RECONCILIATION = "execution_reconciliation"
 FAMILY_ECONOMIC_SUMMARY = "economic_summary"
+FAMILY_SAFETY_AUTHORITY = "safety_authority"
 
 DYNAMIC_SCOPE_SIBLING_RELATIVE = "readmodels/dynamic_scope_state_v1.json"
 CANONICAL_DECISION_SIBLING_RELATIVE = "readmodels/canonical_trading_decision_evidence.v1.json"
@@ -66,6 +67,7 @@ REGIME_BULL_BEAR_SWITCH_SIBLING_RELATIVE = "readmodels/regime_bull_bear_switch.v
 RISK_SIZING_CAPITAL_SIBLING_RELATIVE = "readmodels/risk_sizing_capital.v1.json"
 EXECUTION_RECONCILIATION_SIBLING_RELATIVE = "readmodels/execution_reconciliation.v1.json"
 ECONOMIC_SUMMARY_SIBLING_RELATIVE = "readmodels/economic_summary.v1.json"
+SAFETY_AUTHORITY_SIBLING_RELATIVE = "readmodels/safety_authority_fields.v1.json"
 
 # Productive integrated replay yields ResultV1 intermediates by default. Export binds
 # only when a complete PureStackDisplayDecisionBundleV1 (or equivalent Decision

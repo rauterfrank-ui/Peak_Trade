@@ -44,6 +44,7 @@ from .safety_authority_presentation_projection_v1 import (
     SAFETY_AUTHORITY_EFFECT,
     SCHEMA_NAME,
     SCHEMA_VERSION,
+    SOURCE_FIELDS_RELATIVE_PATH,
     STORAGE_RELATIVE_PATH,
     map_safety_authority_fields_to_binder_fields_v1,
     project_safety_authority_presentation_projection_v1,
@@ -300,6 +301,31 @@ def write_safety_authority_presentation_projection_v1(
     )
 
 
+def try_load_safety_authority_fields_source_v1(
+    archive_root: str | Path,
+) -> tuple[dict[str, Any] | None, tuple[str, ...], str | None]:
+    """Load the sole durable Safety Authority fields sibling without inventing content."""
+    root = Path(archive_root).expanduser().resolve()
+    path = root / SOURCE_FIELDS_RELATIVE_PATH
+    source_path = str(path)
+    if not path.is_file():
+        return None, (MATERIALIZE_ERROR_MISSING_SOURCE,), source_path
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError:
+        return None, (MATERIALIZE_ERROR_INVALID_JSON,), source_path
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError:
+        return None, (MATERIALIZE_ERROR_INVALID_JSON,), source_path
+    if not isinstance(payload, dict):
+        return None, (MATERIALIZE_ERROR_INVALID_SOURCE,), source_path
+    fields, errors = coerce_safety_authority_fields_mapping_v1(payload)
+    if fields is None:
+        return None, errors, source_path
+    return fields, (), source_path
+
+
 def materialize_safety_authority_presentation_projection_v1(
     archive_root: str | Path,
     *,
@@ -309,14 +335,29 @@ def materialize_safety_authority_presentation_projection_v1(
     saved_at: str | None = None,
     source_reference: str | None = None,
 ) -> SafetyAuthorityPresentationMaterializeResultV1:
-    """Materialize the presentation projection from Safety binder-compatible fields.
+    """Materialize the presentation projection from Safety fields or durable source.
 
     Missing source yields MISSING_SOURCE and does not write an artifact.
     Invalid source or missing required timestamps fail closed without writing.
     Caller-owned Safety inputs are never mutated.
     Never reads productive/live KillSwitch state files.
     """
-    if safety_authority is None:
+    source_path: str | None = None
+    source_obj: object | None = safety_authority
+    if source_obj is None:
+        loaded, load_errors, source_path = try_load_safety_authority_fields_source_v1(archive_root)
+        if loaded is None:
+            status = (
+                STATUS_MISSING_SOURCE
+                if MATERIALIZE_ERROR_MISSING_SOURCE in load_errors
+                else STATUS_FAIL_CLOSED
+            )
+            return _empty_result(status=status, errors=load_errors, source_path=source_path)
+        source_obj = loaded
+        if source_reference is None and source_path is not None:
+            source_reference = source_path
+
+    if source_obj is None:
         return _empty_result(
             status=STATUS_MISSING_SOURCE,
             errors=(MATERIALIZE_ERROR_MISSING_SOURCE,),
@@ -329,17 +370,17 @@ def materialize_safety_authority_presentation_projection_v1(
         )
 
     # Snapshot caller-owned mapping to prove / preserve non-mutation.
-    caller_snapshot = deepcopy(safety_authority) if isinstance(safety_authority, Mapping) else None
+    caller_snapshot = deepcopy(source_obj) if isinstance(source_obj, Mapping) else None
 
     payload, build_errors = build_safety_authority_presentation_projection_payload_v1(
-        safety_authority=safety_authority,
+        safety_authority=source_obj,
         generated_at=generated_at,
         effective_at=effective_at,
         saved_at=saved_at,
         source_reference=source_reference,
     )
-    if isinstance(safety_authority, Mapping) and caller_snapshot is not None:
-        if dict(safety_authority) != dict(caller_snapshot):
+    if isinstance(source_obj, Mapping) and caller_snapshot is not None:
+        if dict(source_obj) != dict(caller_snapshot):
             return _empty_result(
                 status=STATUS_FAIL_CLOSED,
                 errors=(MATERIALIZE_ERROR_INVALID_SOURCE,),

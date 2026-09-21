@@ -296,6 +296,7 @@ def run_productive_host_smoke_session_v1(
                         if economic_viability_evidence_bundle_path is not None
                         else None
                     ),
+                    replay_execution_safety=getattr(state, "last_replay_execution_safety", None),
                 )
                 last_ds = families.get("dynamic_scope")
                 last_cd = families.get("canonical_decision")

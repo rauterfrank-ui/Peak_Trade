@@ -24,6 +24,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     FAMILY_EXECUTION_RECONCILIATION,
     FAMILY_ECONOMIC_SUMMARY,
     FAMILY_RISK_SIZING_CAPITAL,
+    FAMILY_SAFETY_AUTHORITY,
 )
 from src.ops.regime_bull_bear_switch_archive_sibling_exporter_v1.exporter_v1 import (
     export_regime_bull_bear_switch_to_archive_sibling_v1,
@@ -36,6 +37,9 @@ from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.exporter_v1 import 
 )
 from src.ops.economic_summary_archive_sibling_exporter_v1.exporter_v1 import (
     export_economic_summary_to_archive_sibling_from_explicit_bundle_v1,
+)
+from src.ops.safety_authority_archive_sibling_exporter_v1.exporter_v1 import (
+    export_safety_authority_to_archive_sibling_from_replay_commit_v1,
 )
 from src.ops.double_play_archive_sibling_exporter_v1.exporter_v1 import (
     export_double_play_display_to_archive_sibling_from_replay_commit_v1,
@@ -95,6 +99,13 @@ from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_pro
 from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as ECONOMIC_SUMMARY_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_economic_summary_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_materializer_v1 import (
+    materialize_safety_authority_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
+    STORAGE_RELATIVE_PATH as SAFETY_AUTHORITY_PRESENTATION_STORAGE_RELATIVE_PATH,
+    try_load_safety_authority_presentation_projection_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as REGIME_PRESENTATION_STORAGE_RELATIVE_PATH,
@@ -156,6 +167,7 @@ def export_families_after_runtime_commit_v1(
     replay_regime_status: str | None = None,
     generated_at: str | None = None,
     economic_viability_evidence_bundle_path: str | None = None,
+    replay_execution_safety: object | None = None,
 ) -> dict[str, FamilyExportResultV1]:
     """Export siblings after runtime commit. Projection errors never roll back runtime."""
     ts = generated_at or _utc_now_iso()
@@ -514,6 +526,60 @@ def export_families_after_runtime_commit_v1(
                 cursor["economic_summary_cycle_id"] = cycle_id
                 cursor["economic_summary_digest"] = eco.source_digest
     results[FAMILY_ECONOMIC_SUMMARY] = eco
+
+    # --- safety_authority (ReplayExecutionSafetyV1 + killswitch boundary ref on evidence) ---
+    sa = FamilyExportResultV1(
+        family_id=FAMILY_SAFETY_AUTHORITY,
+        exportable=bool(evidence_payload and replay_execution_safety is not None),
+        exported=False,
+        materialized=False,
+        loader_ok=False,
+        cycle_id=cycle_id,
+    )
+    if not evidence_payload:
+        sa.skipped_reason = "canonical_decision_evidence_missing"
+        sa.error_code = "SAFETY_AUTHORITY_EVIDENCE_REQUIRED"
+    elif replay_execution_safety is None:
+        sa.skipped_reason = "typed_replay_execution_safety_missing"
+        sa.error_code = "SAFETY_AUTHORITY_TYPED_REPLAY_SAFETY_REQUIRED"
+    else:
+        prior = str(cursor.get("safety_authority_cycle_id") or "")
+        if prior and prior > cycle_id:
+            sa.error_code = "STALE_CYCLE_EXPORT_REJECTED"
+            sa.detail = f"cursor={prior}:cycle={cycle_id}"
+        else:
+            out = export_safety_authority_to_archive_sibling_from_replay_commit_v1(
+                archive_root=archive.archive_root,
+                replay_execution_safety=replay_execution_safety,
+                decision_evidence=evidence_payload,
+                source_label=f"replay_commit:{cycle_id}",
+            )
+            sa.exported = bool(out.exported)
+            sa.source_digest = str(out.source_payload_digest or "")
+            sa.target_path = str(out.target_path or "")
+            sa.error_code = str(out.error_code or "")
+            sa.detail = str(out.failure_reason or "")
+            if sa.exported:
+                mat = materialize_safety_authority_presentation_projection_v1(
+                    archive.archive_root,
+                    generated_at=ts,
+                    effective_at=ts,
+                    saved_at=ts,
+                    source_reference=sa.target_path or None,
+                )
+                sa.materialized = bool(mat.written)
+                sa.projection_path = str(
+                    Path(archive.archive_root) / SAFETY_AUTHORITY_PRESENTATION_STORAGE_RELATIVE_PATH
+                )
+                if not mat.written:
+                    sa.detail = f"materialize:{mat.status}:{','.join(mat.errors)}"
+                loaded = try_load_safety_authority_presentation_projection_v1(
+                    Path(archive.archive_root)
+                )
+                sa.loader_ok = bool(getattr(loaded, "loaded", False))
+                cursor["safety_authority_cycle_id"] = cycle_id
+                cursor["safety_authority_digest"] = sa.source_digest
+    results[FAMILY_SAFETY_AUTHORITY] = sa
 
     persist_export_cursor_v1(Path(state_roots.evidence_session_root), cursor)
     return results

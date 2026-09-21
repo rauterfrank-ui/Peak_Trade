@@ -28,6 +28,7 @@ from typing import Any, Mapping
 
 SCHEMA_NAME = "safety_authority_presentation_projection.v1"
 SCHEMA_VERSION = 1
+SOURCE_FIELDS_RELATIVE_PATH = "readmodels/safety_authority_fields.v1.json"
 STORAGE_RELATIVE_PATH = "readmodels/safety_authority.v1.json"
 AUTHORITY_EFFECT = "NONE"
 SAFETY_AUTHORITY_EFFECT = "NONE"

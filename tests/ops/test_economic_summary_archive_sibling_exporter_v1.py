@@ -257,6 +257,6 @@ def test_producer_binding_forbids_economic_discovery() -> None:
     assert "AUTHORITY_EFFECT=NONE" in text or "authority_effect" in text
 
 
-def test_d4_4_witness_not_started_in_repo_tree() -> None:
-    """Witness G: no D4.4 safety archive witness tree added by this capability slice."""
-    assert not list(Path("docs/ops/market_dashboard").glob("d4_4_*"))
+def test_d4_4_witness_started_separately() -> None:
+    """D4.3 slice must not claim D4.4 witness; D4.4 owns d4_4_* tree."""
+    assert list(Path("docs/ops/market_dashboard").glob("d4_4_*"))
