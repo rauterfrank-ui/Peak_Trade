@@ -200,10 +200,19 @@ def test_existing_json_routes_semantic_keys_unchanged(empty_app: Any) -> None:
         "trading_authority",
         "independent_authoritative_recompute",
         "parallel_ohlcv_producer",
+        "dashboard_host_mode",
+        "ohlcv_source_class",
+        "landscape_poll_contract_id",
+        "is_o2_supervised_host_poll",
+        "is_canonical_landscape_html_host_poll",
     ):
         assert key in ohlcv_body
 
     assert market_body["schema_name"] == "o2_dashboard_market_json_v1"
+    assert ohlcv_body["dashboard_host_mode"] == "O2_SUPERVISED_DASHBOARD_HOST"
+    assert ohlcv_body["ohlcv_source_class"] == "O5_DURABLE_DERIVED_READ_MODEL_V1"
+    assert ohlcv_body["is_o2_supervised_host_poll"] is True
+    assert ohlcv_body["is_canonical_landscape_html_host_poll"] is False
     assert market_body["trading_authority"] is False
     assert market_body["orders"] is False
     assert market_body["write_methods"] == []
@@ -231,6 +240,8 @@ def test_landscape_route_returns_text_html(empty_app: Any) -> None:
     assert 'data-canonical-market-path="/market"' in html
     assert 'data-canonical-ohlcv-path="/api/market/landscape/ohlcv"' in html
     assert 'data-mdl-ohlcv-poll-path="/api/market/landscape/ohlcv"' in html
+    assert 'data-dashboard-host-mode="O2_SUPERVISED_DASHBOARD_HOST"' in html
+    assert 'data-ohlcv-source-class="O5_DURABLE_DERIVED_READ_MODEL_V1"' in html
     assert "NOT_BOUND" in html
     assert 'data-orders="false"' in html
     assert 'data-live-authorized="false"' in html

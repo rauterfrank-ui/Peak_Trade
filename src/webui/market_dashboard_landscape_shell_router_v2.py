@@ -39,6 +39,12 @@ from .market_dashboard_landscape_producer_binding_v2 import (
 )
 from .market_dashboard_landscape_v2.availability import Availability
 from .market_dashboard_landscape_v2.page_aggregate import MarketDashboardReadServiceV1
+from .market_dashboard_landscape_host_contract_v1 import (
+    canonical_landscape_html_host_contract_v1,
+    html_root_host_contract_attributes,
+    merge_host_contract_into_poll_payload,
+    poll_response_headers_from_contract,
+)
 from .market_dashboard_landscape_v2.presenter import (
     OHLCV_POLL_PATH,
     _chart_availability_for_ohlcv,
@@ -46,6 +52,16 @@ from .market_dashboard_landscape_v2.presenter import (
     present_market_landscape_v2,
     serialize_ohlcv_browser_payload_v1,
 )
+
+_CANONICAL_POLL_HOST_CONTRACT = canonical_landscape_html_host_contract_v1()
+
+
+def _finalize_canonical_poll_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    return merge_host_contract_into_poll_payload(
+        payload,
+        contract=_CANONICAL_POLL_HOST_CONTRACT,
+    )
+
 
 router = APIRouter(tags=["market-dashboard-landscape-v2", "read-only"])
 
@@ -106,35 +122,37 @@ def build_ohlcv_poll_response_v1(
             projection_time_unix=generated_at.timestamp(),
             availability=Availability.MISSING_SOURCE.value,
         )
-        return {
-            "schema_name": "market_landscape_ohlcv_poll_response.v1",
-            "schema_version": 1,
-            "status": "MISSING_SOURCE",
-            "availability": Availability.MISSING_SOURCE.value,
-            "poll_path": OHLCV_POLL_PATH,
-            "poll_interval_seconds": DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
-            "selected_instrument_id": selected,
-            "venue": selected_venue,
-            "refresh": refresh_meta,
-            "browser_payload": None,
-            "write_methods": [],
-            "orders": False,
-            "runtime_activation": False,
-            "direct_browser_okx": False,
-            "data_connection_state": "MISSING_SOURCE",
-            "connection_state": "MISSING_SOURCE",
-            "source_session_id": None,
-            "repository_sha": None,
-            "config_digest": None,
-            "last_event_time": None,
-            "last_projection_time": missing_rm.get("last_projection_time"),
-            "freshness_age_seconds": None,
-            "o5_read_model": missing_rm,
-            "o5_backend_binding": bind_dashboard_backend_to_read_model_v1(missing_rm),
-            "trading_authority": False,
-            "risk_authority": False,
-            "runtime_mutation": False,
-        }
+        return _finalize_canonical_poll_payload(
+            {
+                "schema_name": "market_landscape_ohlcv_poll_response.v1",
+                "schema_version": 1,
+                "status": "MISSING_SOURCE",
+                "availability": Availability.MISSING_SOURCE.value,
+                "poll_path": OHLCV_POLL_PATH,
+                "poll_interval_seconds": DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
+                "selected_instrument_id": selected,
+                "venue": selected_venue,
+                "refresh": refresh_meta,
+                "browser_payload": None,
+                "write_methods": [],
+                "orders": False,
+                "runtime_activation": False,
+                "direct_browser_okx": False,
+                "data_connection_state": "MISSING_SOURCE",
+                "connection_state": "MISSING_SOURCE",
+                "source_session_id": None,
+                "repository_sha": None,
+                "config_digest": None,
+                "last_event_time": None,
+                "last_projection_time": missing_rm.get("last_projection_time"),
+                "freshness_age_seconds": None,
+                "o5_read_model": missing_rm,
+                "o5_backend_binding": bind_dashboard_backend_to_read_model_v1(missing_rm),
+                "trading_authority": False,
+                "risk_authority": False,
+                "runtime_mutation": False,
+            }
+        )
 
     try:
         refresh_meta = refresh_selected_okx_ohlcv_readmodel_from_archive_v1(
@@ -227,64 +245,68 @@ def build_ohlcv_poll_response_v1(
         o5_read_model["connection_state"] = "HEALTHY"
         o5_read_model["is_stale"] = False
 
-    return {
-        "schema_name": "market_landscape_ohlcv_poll_response.v1",
-        "schema_version": 1,
-        "status": status,
-        "availability": availability.value,
-        "poll_path": OHLCV_POLL_PATH,
-        "poll_interval_seconds": DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
-        "selected_instrument_id": selected
-        or (None if ohlcv is None else ohlcv.get("instrument_id")),
-        "venue": "OKX"
-        if (selected_venue and str(selected_venue).lower().startswith("okx"))
-        or (ohlcv and str(ohlcv.get("venue") or "").lower().startswith("okx"))
-        else selected_venue,
-        "interval": None if ohlcv is None else ohlcv.get("interval"),
-        "captured_at": None if ohlcv is None else ohlcv.get("captured_at"),
-        "effective_at": None if ohlcv is None else ohlcv.get("effective_at"),
-        "last_timestamp": None if ohlcv is None else ohlcv.get("last_timestamp"),
-        "last_closed_timestamp": None if ohlcv is None else ohlcv.get("last_closed_timestamp"),
-        "freshness_state": None if ohlcv is None else ohlcv.get("freshness_state"),
-        "is_stale": False if ohlcv is None else bool(ohlcv.get("is_stale")),
-        "payload_digest": None
-        if browser_payload is None
-        else browser_payload.get("payload_digest"),
-        "chart_digest": None if browser_payload is None else browser_payload.get("chart_digest"),
-        "candle_series_digest": None
-        if browser_payload is None
-        else browser_payload.get("candle_series_digest"),
-        "metadata_digest": None
-        if browser_payload is None
-        else browser_payload.get("metadata_digest"),
-        "live_mark_price": None
-        if browser_payload is None
-        else browser_payload.get("live_mark_price"),
-        "refresh": {
-            "status": refresh_meta.get("status"),
-            "refresh_attempted": bool(refresh_meta.get("refresh_attempted")),
-            "refresh_error": refresh_meta.get("refresh_error"),
-            "fabricated": bool(refresh_meta.get("fabricated", False)),
-        },
-        "browser_payload": browser_payload,
-        "write_methods": [],
-        "orders": False,
-        "runtime_activation": False,
-        "direct_browser_okx": False,
-        "data_connection_state": data_connection_state,
-        "connection_state": data_connection_state,
-        "source_session_id": o5_read_model.get("source_session_id"),
-        "repository_sha": o5_read_model.get("repository_sha"),
-        "config_digest": o5_read_model.get("config_digest"),
-        "last_event_time": o5_read_model.get("last_event_time"),
-        "last_projection_time": o5_read_model.get("last_projection_time"),
-        "freshness_age_seconds": o5_read_model.get("freshness_age_seconds"),
-        "o5_read_model": o5_read_model,
-        "o5_backend_binding": backend_binding,
-        "trading_authority": False,
-        "risk_authority": False,
-        "runtime_mutation": False,
-    }
+    return _finalize_canonical_poll_payload(
+        {
+            "schema_name": "market_landscape_ohlcv_poll_response.v1",
+            "schema_version": 1,
+            "status": status,
+            "availability": availability.value,
+            "poll_path": OHLCV_POLL_PATH,
+            "poll_interval_seconds": DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
+            "selected_instrument_id": selected
+            or (None if ohlcv is None else ohlcv.get("instrument_id")),
+            "venue": "OKX"
+            if (selected_venue and str(selected_venue).lower().startswith("okx"))
+            or (ohlcv and str(ohlcv.get("venue") or "").lower().startswith("okx"))
+            else selected_venue,
+            "interval": None if ohlcv is None else ohlcv.get("interval"),
+            "captured_at": None if ohlcv is None else ohlcv.get("captured_at"),
+            "effective_at": None if ohlcv is None else ohlcv.get("effective_at"),
+            "last_timestamp": None if ohlcv is None else ohlcv.get("last_timestamp"),
+            "last_closed_timestamp": None if ohlcv is None else ohlcv.get("last_closed_timestamp"),
+            "freshness_state": None if ohlcv is None else ohlcv.get("freshness_state"),
+            "is_stale": False if ohlcv is None else bool(ohlcv.get("is_stale")),
+            "payload_digest": None
+            if browser_payload is None
+            else browser_payload.get("payload_digest"),
+            "chart_digest": None
+            if browser_payload is None
+            else browser_payload.get("chart_digest"),
+            "candle_series_digest": None
+            if browser_payload is None
+            else browser_payload.get("candle_series_digest"),
+            "metadata_digest": None
+            if browser_payload is None
+            else browser_payload.get("metadata_digest"),
+            "live_mark_price": None
+            if browser_payload is None
+            else browser_payload.get("live_mark_price"),
+            "refresh": {
+                "status": refresh_meta.get("status"),
+                "refresh_attempted": bool(refresh_meta.get("refresh_attempted")),
+                "refresh_error": refresh_meta.get("refresh_error"),
+                "fabricated": bool(refresh_meta.get("fabricated", False)),
+            },
+            "browser_payload": browser_payload,
+            "write_methods": [],
+            "orders": False,
+            "runtime_activation": False,
+            "direct_browser_okx": False,
+            "data_connection_state": data_connection_state,
+            "connection_state": data_connection_state,
+            "source_session_id": o5_read_model.get("source_session_id"),
+            "repository_sha": o5_read_model.get("repository_sha"),
+            "config_digest": o5_read_model.get("config_digest"),
+            "last_event_time": o5_read_model.get("last_event_time"),
+            "last_projection_time": o5_read_model.get("last_projection_time"),
+            "freshness_age_seconds": o5_read_model.get("freshness_age_seconds"),
+            "o5_read_model": o5_read_model,
+            "o5_backend_binding": backend_binding,
+            "trading_authority": False,
+            "risk_authority": False,
+            "runtime_mutation": False,
+        }
+    )
 
 
 @router.get("/market", response_class=HTMLResponse, name="market_landscape_v2")
@@ -336,6 +358,7 @@ async def market_landscape_dashboard(request: Request) -> Any:
             "bar_count": ohlcv.get("bar_count"),
             "gap_count": ohlcv.get("gap_count"),
         }
+    context.update(html_root_host_contract_attributes(contract=_CANONICAL_POLL_HOST_CONTRACT))
     return get_templates().TemplateResponse(
         request,
         "market_landscape_v2.html",
@@ -344,6 +367,7 @@ async def market_landscape_dashboard(request: Request) -> Any:
             "status": get_project_status(),
             **context,
         },
+        headers=poll_response_headers_from_contract(_CANONICAL_POLL_HOST_CONTRACT),
     )
 
 
@@ -353,4 +377,7 @@ async def market_landscape_ohlcv_poll(
 ) -> JSONResponse:
     """Read-only OHLCV snapshot poll; may rematerialize public OKX candles server-side."""
     payload = build_ohlcv_poll_response_v1(force_refresh=force)
-    return JSONResponse(payload)
+    return JSONResponse(
+        payload,
+        headers=poll_response_headers_from_contract(_CANONICAL_POLL_HOST_CONTRACT),
+    )
