@@ -13,6 +13,7 @@ LANDSCAPE_COMPLETE_DOES_NOT_MEAN_TRADING_RUNTIME_ACTIVATED=true
 **Dokumenttyp:** Kanonisches Planungs-, Übergabe- und Ausführungsrunbook  
 **Ziel:** Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems  
 **Status:** `MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE`
+**Landscape current completion:** `LANDSCAPE_CURRENT_COMPLETION_STATUS=COMPLETE` (consumer-closeout census V1; see `docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_CURRENT_COMPLETION_CENSUS_V1.md`)
 **Geltung:** Ab dem ratifizierten Architekturstand `RATIFICATION_COMPLETE_NO_CLASS_A`; Workstream Phases 0–8 executed and sealed
 **Primärbrowser:** Google Chrome / Playwright Real Chrome
 **Oberflächenprinzip:** Landscape · eine zusammenhängende Market-Workspace-Komposition · keine Card-Wand
@@ -33,8 +34,11 @@ STATUS=MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE
 VERDICT=LANDSCAPE_V2_COMPLETE_READ_ONLY_CONSUMER_RATIFIED
 WORKSTREAM_ALREADY_COMPLETE=true
 PHASE_0_THROUGH_PHASE_8_COMPLETE=true
-CURRENT_MAIN_SHA=4361a19407291618faae99681abfd8a562134308
-LAST_MERGED_PR=5581
+CURRENT_MAIN_SHA=b81d03a4e7169b20f212e8cf80bd581e96e19fc4
+LANDSCAPE_CURRENT_COMPLETION_STATUS=COMPLETE
+LANDSCAPE_CURRENT_COMPLETION_CENSUS=docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_CURRENT_COMPLETION_CENSUS_V1.md
+LAST_MERGED_PR=6690
+LAST_MERGED_LANDSCAPE_CONSUMER_CLOSEOUT_PR=6690
 LAST_MERGED_CAPABILITY_PR=5577  # Regime/Bull-Bear/Switch read-only binding (last product capability)
 LAST_MERGED_DOCS_CLOSEOUT_PR=5581  # final runbook reconciliation on current main
 LAST_MERGED_DOCS_SEAL_PR=5570  # final product-state truth seal (docs-only; historical)
