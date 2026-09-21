@@ -3,18 +3,24 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
-modified_by: STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
+introduced_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  STEP29M evaluation template binds canonical mandatory MV2 backtest boundary
-  state-file section for offline economic_viability_evidence_v1 MV2 replay
-  wiring. Navigation-only Atlas record; no runtime, trading, selection,
-  promotion, or live authority. ATLAS_AUTHORITY=NONE.
+  STEP29M CURRENT instrument MV2 offline boundary materialization and admission:
+  dynamic CRS/COI price/stop binding, decouple historical offline fixture
+  scalars 25/100 from CURRENT economic evaluation wiring. Navigation-only Atlas
+  updates; no runtime, trading, selection, promotion, or live authority.
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
   - CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
-changed_relations: []
+  - RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+  - RUNTIME_COMPONENT:mv2_integrated_replay
+  - RUNTIME_COMPONENT:ddo_capture_v0
+  - SUBSYSTEM:master_v2
+changed_relations:
+  - REL:r_ddo_capture_observes_integrated_replay
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
@@ -24,3 +30,9 @@ affected_schemas: []
 review_required_items: []
 reviewed_entities:
   - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
+  - id: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+  - id: RUNTIME_COMPONENT:mv2_integrated_replay
+  - id: RUNTIME_COMPONENT:ddo_capture_v0
+  - id: SUBSYSTEM:master_v2
+reviewed_relations:
+  - id: REL:r_ddo_capture_observes_integrated_replay

@@ -288,6 +288,68 @@ def _resolve_repo_root_v1(repo_root: Optional[Path]) -> Path:
     return Path(__file__).resolve().parents[2]
 
 
+def _is_current_okx_eea_instrument_v1(instrument_id: str) -> bool:
+    from src.backtest.current_instrument_mv2_offline_boundary_materialization_v1 import (
+        is_current_okx_eea_canonical_instrument_id_v1,
+    )
+
+    return is_current_okx_eea_canonical_instrument_id_v1(instrument_id)
+
+
+def _maybe_overlay_current_instrument_boundary_materialization_v1(
+    *,
+    cfg: Mapping[str, Any],
+    instrument_id: str,
+    repo_root: Path,
+) -> Mapping[str, Any]:
+    if not _is_current_okx_eea_instrument_v1(instrument_id):
+        return cfg
+    from src.backtest.current_instrument_mv2_offline_boundary_materialization_v1 import (
+        materialize_current_instrument_crs_coi_boundary_state_files_v1,
+    )
+
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1")
+    if not isinstance(binding, dict):
+        raise EconomicViabilityEvidenceError(
+            "current_instrument_boundary_materialization_binding_missing"
+        )
+    manifest_rel = binding.get("dataset_manifest_path")
+    dataset_rel = binding.get("dataset_path")
+    if not manifest_rel and not dataset_rel:
+        raise EconomicViabilityEvidenceError(
+            "current_instrument_boundary_materialization_dataset_ref_missing"
+        )
+    manifest_path = (
+        (repo_root / str(manifest_rel)).resolve()
+        if manifest_rel
+        else (repo_root / str(dataset_rel)).resolve().parent / "manifest.json"
+    )
+    backtest_section = cfg.get("backtest")
+    initial_cash = (
+        backtest_section.get("initial_cash", 10_000.0)
+        if isinstance(backtest_section, dict)
+        else 10_000.0
+    )
+    output_dir = manifest_path.parent / "current_mv2_offline_boundary_state_files_v1"
+    materialized = materialize_current_instrument_crs_coi_boundary_state_files_v1(
+        canonical_instrument_id=instrument_id,
+        dataset_manifest_path=manifest_path,
+        output_dir=output_dir,
+        account_equity=initial_cash,
+    )
+    overlay = materialized.mandatory_binding_overlay_v0()
+    cfg_copy = dict(cfg)
+    mandatory = dict(
+        cfg_copy.get("mv2_research_backtest_mandatory_boundary_state_file_binding_v0") or {}
+    )
+    for key in ("capital_risk_sizing", "canonical_order_intent"):
+        entry = dict(mandatory.get(key) or {})
+        entry.update(overlay[key])
+        mandatory[key] = entry
+    cfg_copy["mv2_research_backtest_mandatory_boundary_state_file_binding_v0"] = mandatory
+    return cfg_copy
+
+
 def _mv2_mandatory_boundary_wiring_kwargs_v0(
     *,
     cfg: Mapping[str, Any],
@@ -708,18 +770,29 @@ def build_economic_viability_evidence_v1(
         effective_profile = default_runtime_profile_binding_v1()
 
     resolved_repo_root = _resolve_repo_root_v1(repo_root)
-    mandatory_boundary_kwargs = _mv2_mandatory_boundary_wiring_kwargs_v0(
+    effective_cfg = _maybe_overlay_current_instrument_boundary_materialization_v1(
         cfg=cfg,
+        instrument_id=instrument_id,
         repo_root=resolved_repo_root,
+    )
+    mandatory_boundary_kwargs = _mv2_mandatory_boundary_wiring_kwargs_v0(
+        cfg=effective_cfg,
+        repo_root=resolved_repo_root,
+    )
+    step29l_admission_mode = (
+        mv2_wiring.STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1
+        if _is_current_okx_eea_instrument_v1(instrument_id)
+        else mv2_wiring.STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
     )
 
     wiring_result = mv2_wiring.run_mv2_research_backtest_wiring_v1(
         bars,
         strategy_id=strategy_id,
-        cfg=cfg,
+        cfg=effective_cfg,
         instrument_id=instrument_id,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
         profile_binding=effective_profile,
+        step29l_instrument_admission_mode=step29l_admission_mode,
         **mandatory_boundary_kwargs,
     )
     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring_result.backtest_result)
@@ -740,13 +813,14 @@ def build_economic_viability_evidence_v1(
         wf_result = mv2_wiring.run_mv2_walk_forward_wiring_v1(
             bars,
             strategy_id=strategy_id,
-            cfg=cfg,
+            cfg=effective_cfg,
             train_bars=walk_forward_train_bars,
             test_bars=walk_forward_test_bars,
             step_bars=walk_forward_step_bars,
             instrument_id=instrument_id,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
             profile_binding=effective_profile,
+            step29l_instrument_admission_mode=step29l_admission_mode,
         )
     else:
         reason_codes.append("walk_forward_insufficient_bars")
@@ -867,13 +941,17 @@ def build_economic_viability_evidence_v1(
         try:
             sensitivity_result = run_parameter_sensitivity_v1(
                 bars=bars,
-                cfg=cfg,
+                cfg=effective_cfg,
                 strategy_id=strategy_id,
                 strategy_version=strategy_version,
                 data_digest=computed_data_digest,
                 instrument_id=instrument_id,
                 explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
                 policy=policy,
+                mv2_wiring_extra_kwargs={
+                    **mandatory_boundary_kwargs,
+                    "step29l_instrument_admission_mode": step29l_admission_mode,
+                },
             )
             parameter_sensitivity_payload = serialize_parameter_sensitivity_results_v1(
                 sensitivity_result
