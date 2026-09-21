@@ -486,7 +486,18 @@ clusters:
           - next_naked_mechanical_state_v1
           - NakedMechanicalStateV1
         master_v2_imports:
+          - trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.running_mechanics_pipeline_v1
           - trading.master_v2.naked_mv2_dp_single_boundary_purification_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core
+    name: Naked MV2+DP explicit L1-L10 layered core v1
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py
+        primary_symbols:
+          - orchestrate_naked_layered_core_v1
+        master_v2_imports:
+          - trading.master_v2.naked_mv2_dp_regime_v1
         runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     name: Dynamic Scope empirical calibration research harness v1
