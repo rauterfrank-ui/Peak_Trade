@@ -64,6 +64,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_universe_rail_presentation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_universe_rail_presentation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1 | STATUS=OPEN (not proven) |  |
