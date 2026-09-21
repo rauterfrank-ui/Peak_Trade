@@ -473,6 +473,67 @@
       </div>
     </section>
 
+    <section
+      class="mdl-v2-fidelity"
+      data-mdl-region="SOURCE_PROJECTION_FIDELITY"
+      data-mdl-source-projection-fidelity="true"
+      aria-label="Source health and presentation projection fidelity"
+    >
+      <div class="mdl-v2-fidelity__head">
+        <h2>Source &amp; Projection Fidelity</h2>
+        <span
+          class="mdl-v2-state"
+          data-mdl-field="source_health_aggregate"
+          data-availability="{{ source_health.availability }}"
+        >{{ source_health.summary_display }}</span>
+      </div>
+      <div class="mdl-v2-fidelity__grids">
+        <div class="mdl-v2-fidelity__panel" data-mdl-fidelity-panel="v03_slot_matrix">
+          <h3 class="mdl-v2-fidelity__title">V03 · Source slot matrix</h3>
+          <ul
+            class="mdl-v2-fidelity__matrix"
+            aria-label="Landscape projection slot availability and freshness"
+            data-mdl-slot-matrix="true"
+          >
+            {% for row in source_health.slot_matrix %}
+            <li
+              data-mdl-source-slot="{{ row.slot }}"
+              data-availability="{{ row.availability }}"
+              data-freshness="{{ row.freshness_display }}"
+              {% if row.is_stale %}data-is-stale="true"{% endif %}
+            >
+              <span class="mdl-v2-fidelity__slot">{{ row.label }}</span>
+              <span class="mdl-v2-fidelity__state">{{ row.availability }}</span>
+              <span class="mdl-v2-fidelity__freshness">{{ row.freshness_display }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="mdl-v2-fidelity__panel" data-mdl-fidelity-panel="v04_projection_presence">
+          <h3 class="mdl-v2-fidelity__title">V04 · Presentation projection presence</h3>
+          <ul
+            class="mdl-v2-fidelity__matrix mdl-v2-fidelity__matrix--projections"
+            aria-label="Presentation projection family presence and freshness"
+            data-mdl-projection-matrix="true"
+          >
+            {% for fam in presentation_projection_fidelity.families %}
+            <li
+              data-mdl-projection-family="{{ fam.family_id }}"
+              data-presence="{{ fam.presence }}"
+              data-availability="{{ fam.availability }}"
+              data-freshness="{{ fam.freshness_display }}"
+              {% if fam.is_stale %}data-is-stale="true"{% endif %}
+            >
+              <span class="mdl-v2-fidelity__slot">{{ fam.schema_name }}</span>
+              <span class="mdl-v2-fidelity__state">{{ fam.presence }}</span>
+              <span class="mdl-v2-fidelity__freshness">{{ fam.freshness_display }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <section class="mdl-v2-gov" data-mdl-region="GOVERNANCE_DIAGNOSTICS_REGION" aria-label="Governance and diagnostics">
       <div class="mdl-v2-gov__col" data-mdl-ops="diagnostics_summary">
         <h3>Diagnostics</h3>
