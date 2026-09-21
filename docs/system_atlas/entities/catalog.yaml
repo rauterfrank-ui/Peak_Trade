@@ -9019,6 +9019,7 @@ entities:
     current_status: CURRENT_NONCANONICAL
     modified_by: TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1
     source_paths:
+      - src/ops/treasury_pdf_current_head_rebind_and_census_v1/__init__.py
       - src/ops/treasury_pdf_current_head_rebind_and_census_v1/census_v1.py
       - src/ops/treasury_pdf_current_head_rebind_and_census_v1/constants_v1.py
       - tests/ops/test_treasury_pdf_current_head_rebind_and_census_v1.py
@@ -9026,10 +9027,9 @@ entities:
     evidence_sources:
       - evidence/ops/treasury_pdf_current_head_rebind_and_census_v1/2026-09-21T010000Z
     notes: >-
-      Offline forensic rebind of Owner Treasury PDF (PDF_AUTHORITY=NONE) against
-      CURRENT HEAD capability matrix and AT01-AT15 evidence map; stops at
-      productive read-only venue observation blocker. AUTHORITY_EFFECT=NONE.
-      ATLAS_AUTHORITY=NONE.
+      Offline forensic current-head census: capability matrix and AT01-AT15
+      evidence map from repo constants/tests; stops at productive read-only
+      venue observation blocker. AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:treasury_phase_3_shadow_enforcement_v1
     kind: GATE
