@@ -34,7 +34,9 @@ def test_duplicate_timeline_note_removed_honest_region_remains() -> None:
 def test_confidence_template_has_no_unreachable_render_branch() -> None:
     html = TEMPLATE.read_text(encoding="utf-8")
     assert 'data-mdl-field="confidence"' not in html
-    assert "{% if decision_double_play_observability.decision_strip_confidence.render %}" not in html
+    assert (
+        "{% if decision_double_play_observability.decision_strip_confidence.render %}" not in html
+    )
     assert "data-mdl-confidence-render" in html
 
 
