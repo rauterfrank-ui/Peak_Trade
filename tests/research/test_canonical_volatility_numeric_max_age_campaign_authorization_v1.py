@@ -27,23 +27,31 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     write_campaign_authorization_artifact_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+    ABANDONED_CAMPAIGN_ID,
+    ABANDONED_SESSION_IDS,
     AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS,
     AUTHORIZATION_SCOPE,
     AUTHORIZATION_SINGLE_USE_PER_SESSION,
-    BOUND_CAMPAIGN_ID,
     BOUND_INSTRUMENT_ALLOWLIST,
-    BOUND_PREREGISTRATION_DIGEST,
     BOUND_PUBLIC_MD_ENDPOINT_ALLOWLIST,
     BOUND_PUBLIC_MD_HOST,
     BOUND_PUBLIC_MD_METHOD_ALLOWLIST,
     BOUND_PUBLIC_MD_VENUE,
-    BOUND_SESSION_IDS,
     CAMPAIGN_AUTHORIZATION_TTL_SECONDS,
     CREDENTIALS_REQUIRED,
     MAXIMUM_SESSION_COUNT,
     ORDERS_TECHNICALLY_EXCLUDED,
     PRIVATE_ENDPOINTS_EXCLUDED,
     SCHEMA_VERSION,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
+    R1_MATERIALIZED_REPOSITORY_SHA,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.identity_v1 import (
+    derive_r1_campaign_identity_v1,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.preregistration_v1 import (
+    build_r1_active_preregistration_payload_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.consume_v1 import (
     assert_no_foreign_side_effects_before_release_v1,
@@ -66,17 +74,26 @@ CLI = (
     ROOT
     / "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
 )
-REPO_SHA = "109119ea10c183489e554c8e656f6f6160c6c077"
+REPO_SHA = R1_MATERIALIZED_REPOSITORY_SHA
+_IDENTITY = derive_r1_campaign_identity_v1(repository_sha=REPO_SHA)
+ACTIVE_CAMPAIGN_ID = str(_IDENTITY["campaign_id"])
+ACTIVE_SESSION_IDS: tuple[str, ...] = (
+    str(_IDENTITY["session_01_id"]),
+    str(_IDENTITY["session_02_id"]),
+)
+ACTIVE_PREREGISTRATION_DIGEST = str(
+    build_r1_active_preregistration_payload_v1(repository_sha=REPO_SHA)["preregistration_digest"]
+)
 ISSUED = datetime(2026, 8, 1, 12, 0, 0, tzinfo=timezone.utc)
-S1, S2 = BOUND_SESSION_IDS
+S1, S2 = ACTIVE_SESSION_IDS
 
 
 def _write_auth(tmp_path: Path, **overrides):
     kwargs = {
         "repository_sha": REPO_SHA,
-        "campaign_id": BOUND_CAMPAIGN_ID,
-        "session_ids": BOUND_SESSION_IDS,
-        "preregistration_digest": BOUND_PREREGISTRATION_DIGEST,
+        "campaign_id": ACTIVE_CAMPAIGN_ID,
+        "session_ids": ACTIVE_SESSION_IDS,
+        "preregistration_digest": ACTIVE_PREREGISTRATION_DIGEST,
         "issued_at": ISSUED,
         "earliest_start": ISSUED,
     }
@@ -90,17 +107,17 @@ def _write_auth(tmp_path: Path, **overrides):
 def test_01_deterministic_rendering_identical_inputs(tmp_path: Path) -> None:
     a = build_campaign_authorization_artifact_v1(
         repository_sha=REPO_SHA,
-        campaign_id=BOUND_CAMPAIGN_ID,
-        session_ids=BOUND_SESSION_IDS,
-        preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+        campaign_id=ACTIVE_CAMPAIGN_ID,
+        session_ids=ACTIVE_SESSION_IDS,
+        preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
         issued_at=ISSUED,
         earliest_start=ISSUED,
     )
     b = build_campaign_authorization_artifact_v1(
         repository_sha=REPO_SHA,
-        campaign_id=BOUND_CAMPAIGN_ID,
-        session_ids=tuple(reversed(BOUND_SESSION_IDS)),
-        preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+        campaign_id=ACTIVE_CAMPAIGN_ID,
+        session_ids=tuple(reversed(ACTIVE_SESSION_IDS)),
+        preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
         issued_at=ISSUED,
         earliest_start=ISSUED,
     )
@@ -122,9 +139,9 @@ def test_03_roundtrip_writer_parser_verifier(tmp_path: Path) -> None:
     verified = verify_campaign_authorization_artifact_v1(
         parsed,
         expected_repository_sha=REPO_SHA,
-        expected_campaign_id=BOUND_CAMPAIGN_ID,
-        expected_session_ids=BOUND_SESSION_IDS,
-        expected_preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+        expected_campaign_id=ACTIVE_CAMPAIGN_ID,
+        expected_session_ids=ACTIVE_SESSION_IDS,
+        expected_preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
     )
     assert verified.authorization_id == artifact.authorization_id
 
@@ -160,9 +177,9 @@ def test_07_additional_session_id() -> None:
     with pytest.raises(CampaignAuthorizationError):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
             session_ids=(S1, S2, "extra_session"),
-            preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=ISSUED,
             earliest_start=ISSUED,
         )
@@ -172,21 +189,32 @@ def test_08_wrong_session_count() -> None:
     with pytest.raises(CampaignAuthorizationError, match="maximum_session_count|session"):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
             session_ids=(S1,),
-            preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=ISSUED,
             earliest_start=ISSUED,
         )
 
 
-def test_09_wrong_preregistration_digest() -> None:
+def test_09_wrong_preregistration_digest(tmp_path: Path) -> None:
+    path, _ = _write_auth(tmp_path)
     with pytest.raises(CampaignAuthorizationError, match="preregistration_digest"):
+        verify_campaign_authorization_artifact_v1(
+            load_campaign_authorization_artifact_v1(path),
+            expected_preregistration_digest="0" * 64,
+        )
+
+
+def test_09b_abandoned_campaign_reactivation_forbidden() -> None:
+    with pytest.raises(
+        CampaignAuthorizationError, match="abandoned_campaign_reactivation_forbidden"
+    ):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
-            session_ids=BOUND_SESSION_IDS,
-            preregistration_digest="0" * 64,
+            campaign_id=ABANDONED_CAMPAIGN_ID,
+            session_ids=ABANDONED_SESSION_IDS,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=ISSUED,
             earliest_start=ISSUED,
         )
@@ -213,9 +241,9 @@ def test_12_naive_datetime_rejected() -> None:
     with pytest.raises(CampaignAuthorizationError, match="naive_datetime"):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
-            session_ids=BOUND_SESSION_IDS,
-            preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
+            session_ids=ACTIVE_SESSION_IDS,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=datetime(2026, 8, 1, 12, 0, 0),
             earliest_start=ISSUED,
         )
@@ -225,9 +253,9 @@ def test_13_earliest_before_issuance() -> None:
     with pytest.raises(CampaignAuthorizationError, match="earliest_start_before"):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
-            session_ids=BOUND_SESSION_IDS,
-            preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
+            session_ids=ACTIVE_SESSION_IDS,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=ISSUED,
             earliest_start=ISSUED - timedelta(seconds=1),
         )
@@ -237,9 +265,9 @@ def test_14_earliest_after_expiry() -> None:
     with pytest.raises(CampaignAuthorizationError, match="earliest_start_after"):
         build_campaign_authorization_artifact_v1(
             repository_sha=REPO_SHA,
-            campaign_id=BOUND_CAMPAIGN_ID,
-            session_ids=BOUND_SESSION_IDS,
-            preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
+            session_ids=ACTIVE_SESSION_IDS,
+            preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
             issued_at=ISSUED,
             earliest_start=ISSUED + timedelta(seconds=CAMPAIGN_AUTHORIZATION_TTL_SECONDS + 1),
         )
@@ -573,7 +601,7 @@ def test_34_accumulation_gate_rejects_missing_authorization(tmp_path: Path) -> N
         require_campaign_authorization_runtime_release_v1(
             authorization_artifact_path=None,
             session_id=S1,
-            campaign_id=BOUND_CAMPAIGN_ID,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
             evidence_root=tmp_path,
             repository_sha=REPO_SHA,
         )
@@ -585,7 +613,7 @@ def test_35_accumulation_gate_rejects_unconsumed_authorization(tmp_path: Path) -
         require_campaign_authorization_runtime_release_v1(
             authorization_artifact_path=path,
             session_id=S1,
-            campaign_id=BOUND_CAMPAIGN_ID,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
             evidence_root=tmp_path,
             repository_sha=REPO_SHA,
         )
@@ -602,7 +630,7 @@ def test_36_accumulation_gate_accepts_only_consumed_bound_session(tmp_path: Path
     release = require_campaign_authorization_runtime_release_v1(
         authorization_artifact_path=path,
         session_id=S1,
-        campaign_id=BOUND_CAMPAIGN_ID,
+        campaign_id=ACTIVE_CAMPAIGN_ID,
         evidence_root=tmp_path,
         repository_sha=REPO_SHA,
     )
@@ -610,7 +638,7 @@ def test_36_accumulation_gate_accepts_only_consumed_bound_session(tmp_path: Path
     with pytest.raises(ProductiveEvidenceAccumulationError, match="campaign_authorization_gate"):
         run_productive_bridge_accumulation_session_v1(
             session_id=S2,
-            campaign_id=BOUND_CAMPAIGN_ID,
+            campaign_id=ACTIVE_CAMPAIGN_ID,
             repository_sha=REPO_SHA,
             samples=deterministic_productive_mark_path_v1(count=2),
             repo_root=ROOT,
@@ -640,9 +668,9 @@ def test_38_private_endpoints_excluded() -> None:
     assert PRIVATE_ENDPOINTS_EXCLUDED is True
     artifact = build_campaign_authorization_artifact_v1(
         repository_sha=REPO_SHA,
-        campaign_id=BOUND_CAMPAIGN_ID,
-        session_ids=BOUND_SESSION_IDS,
-        preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+        campaign_id=ACTIVE_CAMPAIGN_ID,
+        session_ids=ACTIVE_SESSION_IDS,
+        preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
         issued_at=ISSUED,
         earliest_start=ISSUED,
     )
@@ -658,9 +686,9 @@ def test_39_credentials_not_required() -> None:
 def test_40_get_only_public_md_allowlist_bound() -> None:
     artifact = build_campaign_authorization_artifact_v1(
         repository_sha=REPO_SHA,
-        campaign_id=BOUND_CAMPAIGN_ID,
-        session_ids=BOUND_SESSION_IDS,
-        preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
+        campaign_id=ACTIVE_CAMPAIGN_ID,
+        session_ids=ACTIVE_SESSION_IDS,
+        preregistration_digest=ACTIVE_PREREGISTRATION_DIGEST,
         issued_at=ISSUED,
         earliest_start=ISSUED,
     )

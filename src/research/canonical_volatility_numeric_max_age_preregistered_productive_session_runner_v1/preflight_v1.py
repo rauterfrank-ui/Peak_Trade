@@ -7,9 +7,6 @@ import subprocess
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
-from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
-    load_and_verify_session_preregistration_artifact_v1,
-)
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.artifact_v1 import (
     load_campaign_authorization_artifact_v1,
     verify_campaign_authorization_artifact_v1,
@@ -24,13 +21,9 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.led
     resolve_ledger_path_v1,
 )
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID_V1,
     BOUND_EVIDENCE_SCOPE,
     BOUND_INSTRUMENT_ID,
-    BOUND_PREREGISTRATION_ARTIFACT_PATH,
-    BOUND_PREREGISTRATION_DIGEST_V1,
     BOUND_PREREGISTRATION_ID,
-    BOUND_SESSION_IDS_V1,
     BOUND_VENUE,
     BOUND_VENUE_SCOPE,
     DERIVED_SESSION_ID_MARKERS,
@@ -40,12 +33,25 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
     PUBLIC_MD_ENDPOINT_ALLOWLIST,
     PUBLIC_MD_METHOD_ALLOWLIST,
     QUARANTINE_LEDGER_REL_PATH,
-    SESSION_02_ID,
+    TOMBSTONE_ABANDONED_CAMPAIGN_ID,
+    TOMBSTONE_ABANDONED_SESSION_IDS,
 )
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.models_v1 import (
     GitBaselineSnapshotV1,
     PreflightResultV1,
     PreregisteredSessionRunnerError,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
+    assert_late_age_session_has_s01_persistence_v1,
+    assert_not_additional_evidence_routing_v1,
+    assert_runtime_matches_active_binding_v1,
+    resolve_active_campaign_binding_for_runtime_v1,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.models_v1 import (
+    ProductiveCampaignR1RecoveryError,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.preregistration_v1 import (
+    verify_r1_active_preregistration_payload_v1,
 )
 
 
@@ -57,40 +63,44 @@ def capture_git_baseline_v1(*, repo_root: Path) -> GitBaselineSnapshotV1:
     head = _run(["git", "rev-parse", "HEAD"])
     origin_main = _run(["git", "rev-parse", "origin/main"])
     porcelain = _run(["git", "status", "--porcelain"])
+    # Authorization artifact under the active campaign is the only tolerated untracked delta.
+    # Campaign id is resolved later; accept any campaign authorization path under the ledger root.
     allowed_prefix = (
         "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/"
-        f"campaigns/{BOUND_CAMPAIGN_ID_V1}/authorization/"
+        "campaigns/"
     )
     allowed = True
     if porcelain:
         for line in porcelain.splitlines():
             path = line[3:].strip() if len(line) >= 3 else line.strip()
             if path.endswith("/"):
-                # Directory untracked: only allowed when sole contents are under auth.
                 continue
-            if not path.startswith(allowed_prefix) and path != allowed_prefix.rstrip("/"):
-                # Allow the parent untracked tree marker when only auth files exist.
-                if path.rstrip("/") == (
-                    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
-                ):
+            if path.startswith(allowed_prefix) and path.endswith(
+                "authorization/campaign_authorization.json"
+            ):
+                continue
+            if path.rstrip("/") == (
+                "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
+            ):
+                continue
+            if "canonical_volatility_max_age_productive_research_evidence_ledger_v1" in path:
+                if "/authorization/" in path and path.endswith("campaign_authorization.json"):
                     continue
-                if "canonical_volatility_max_age_productive_research_evidence_ledger_v1" in path:
-                    # Only authorization campaign_authorization.json is tolerated.
-                    if not path.endswith("authorization/campaign_authorization.json"):
-                        # Parent dirs are OK when they only exist for the auth artifact.
-                        if "/authorization/" not in path and not path.endswith("/authorization"):
-                            if path.count("/") <= 3:
-                                continue
+                if path.count("/") <= 3:
+                    continue
+                if "/authorization/" in path and path.endswith(".json"):
                     if path.endswith("campaign_authorization.json"):
                         continue
-                    if "/authorization/" in path and path.endswith(".json"):
-                        if path.endswith("campaign_authorization.json"):
-                            continue
-                        allowed = False
-                        break
-                else:
                     allowed = False
                     break
+                if "/authorization/" not in path and not path.endswith("/authorization"):
+                    if path.count("/") <= 3:
+                        continue
+                    allowed = False
+                    break
+            else:
+                allowed = False
+                break
     return GitBaselineSnapshotV1(
         branch=branch,
         head_sha=head,
@@ -99,14 +109,16 @@ def capture_git_baseline_v1(*, repo_root: Path) -> GitBaselineSnapshotV1:
     )
 
 
-def assert_session_id_exact_v1(session_id: str) -> str:
+def assert_session_id_exact_v1(session_id: str, *, allowed_session_ids: tuple[str, ...]) -> str:
     sid = str(session_id or "").strip()
     if not sid:
         raise PreregisteredSessionRunnerError("session_id_required")
     for marker in DERIVED_SESSION_ID_MARKERS:
         if marker in sid:
             raise PreregisteredSessionRunnerError("derived_session_id_forbidden")
-    if sid not in BOUND_SESSION_IDS_V1:
+    if sid in TOMBSTONE_ABANDONED_SESSION_IDS:
+        raise PreregisteredSessionRunnerError("abandoned_session_reactivation_forbidden")
+    if sid not in allowed_session_ids:
         raise PreregisteredSessionRunnerError("unknown_or_unpreregistered_session_id")
     return sid
 
@@ -148,6 +160,49 @@ def run_static_preflight_v1(
     if allow_offline_synthetic_mark_source:
         raise PreregisteredSessionRunnerError("offline_synthetic_mark_source_forbidden")
 
+    if campaign_id == TOMBSTONE_ABANDONED_CAMPAIGN_ID:
+        raise PreregisteredSessionRunnerError("abandoned_campaign_reactivation_forbidden")
+    if session_id in TOMBSTONE_ABANDONED_SESSION_IDS:
+        raise PreregisteredSessionRunnerError("abandoned_session_reactivation_forbidden")
+
+    # Exact session-id shape before active-binding match (derived wildcards fail closed).
+    for marker in DERIVED_SESSION_ID_MARKERS:
+        if marker in str(session_id or ""):
+            raise PreregisteredSessionRunnerError("derived_session_id_forbidden")
+
+    try:
+        assert_not_additional_evidence_routing_v1(campaign_id=campaign_id)
+        binding = resolve_active_campaign_binding_for_runtime_v1(
+            repo_root=root,
+            repository_sha=repository_sha,
+        )
+    except ProductiveCampaignR1RecoveryError as exc:
+        raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
+
+    try:
+        sid = assert_session_id_exact_v1(session_id, allowed_session_ids=binding.session_ids)
+        if require_exact_session_id is not None and sid != require_exact_session_id:
+            raise PreregisteredSessionRunnerError("session_id_not_required_exact_target")
+    except PreregisteredSessionRunnerError:
+        raise
+
+    try:
+        assert_runtime_matches_active_binding_v1(
+            binding,
+            campaign_id=campaign_id,
+            session_id=sid,
+            preregistration_digest=preregistration_digest,
+            repository_sha=repository_sha,
+        )
+        assert_late_age_session_has_s01_persistence_v1(
+            binding,
+            session_id=sid,
+            repo_root=root,
+            evidence_root=evi_root,
+        )
+    except ProductiveCampaignR1RecoveryError as exc:
+        raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
+
     baseline = git_baseline or capture_git_baseline_v1(repo_root=root)
     if baseline.branch != expected_branch:
         blockers.append("branch_mismatch")
@@ -158,11 +213,11 @@ def run_static_preflight_v1(
     if not baseline.worktree_allowed_delta_only:
         blockers.append("worktree_delta_not_allowed")
 
-    if campaign_id != BOUND_CAMPAIGN_ID_V1:
+    if campaign_id != binding.campaign_id:
         blockers.append("campaign_id_mismatch")
     if preregistration_id != BOUND_PREREGISTRATION_ID:
         blockers.append("preregistration_id_mismatch")
-    if preregistration_digest != BOUND_PREREGISTRATION_DIGEST_V1:
+    if preregistration_digest != binding.preregistration_digest:
         blockers.append("preregistration_digest_mismatch")
     if venue != BOUND_VENUE:
         blockers.append("venue_mismatch")
@@ -173,24 +228,19 @@ def run_static_preflight_v1(
     if evidence_scope != BOUND_EVIDENCE_SCOPE:
         blockers.append("evidence_scope_mismatch")
 
+    preg_path = root / binding.preregistration_artifact_path
     try:
-        sid = assert_session_id_exact_v1(session_id)
-        if require_exact_session_id is not None and sid != require_exact_session_id:
-            blockers.append("session_id_not_required_exact_target")
-    except PreregisteredSessionRunnerError as exc:
-        blockers.append(str(exc))
-        sid = str(session_id or "")
-
-    preg_path = root / BOUND_PREREGISTRATION_ARTIFACT_PATH
-    try:
-        preg_verify = load_and_verify_session_preregistration_artifact_v1(artifact_path=preg_path)
-        if preg_verify.get("status") != "PASS":
-            blockers.append("preregistration_verify_failed")
-        if preg_verify.get("preregistration_digest") != preregistration_digest:
-            blockers.append("preregistration_digest_binding_mismatch")
-        if preg_verify.get("campaign_id") != campaign_id:
-            blockers.append("preregistration_campaign_mismatch")
         preg_payload = json.loads(preg_path.read_text(encoding="utf-8"))
+        verify_r1_active_preregistration_payload_v1(
+            preg_payload,
+            expected_repository_sha=repository_sha,
+            expected_campaign_id=binding.campaign_id,
+            expected_session_ids=binding.session_ids,
+        )
+        if preg_payload.get("preregistration_digest") != preregistration_digest:
+            blockers.append("preregistration_digest_binding_mismatch")
+        if preg_payload.get("campaign_id") != campaign_id:
+            blockers.append("preregistration_campaign_mismatch")
         session_entry = _session_entry_v1(preg_payload, sid) if sid else {}
         md = preg_payload.get("public_md_plan") or {}
         if md.get("venue") != BOUND_VENUE:
@@ -225,8 +275,16 @@ def run_static_preflight_v1(
         typed_persist = str(expected_paths.get("typed_volatility_persistence_path") or "")
         if not session_manifest or not typed_persist:
             blockers.append("session_durable_paths_missing")
+        if typed_persist and typed_persist != binding.typed_volatility_persistence_path:
+            blockers.append("typed_persistence_path_mismatch")
     except PreregisteredSessionRunnerError as exc:
         blockers.append(str(exc))
+        resolved_max = int(max_cycles or 0)
+        session_manifest = ""
+        typed_persist = ""
+        preg_payload = {}
+    except ProductiveCampaignR1RecoveryError as exc:
+        blockers.append(f"preregistration_verify_failed:{exc}")
         resolved_max = int(max_cycles or 0)
         session_manifest = ""
         typed_persist = ""
@@ -244,7 +302,7 @@ def run_static_preflight_v1(
             load_campaign_authorization_artifact_v1(auth_path),
             expected_repository_sha=repository_sha,
             expected_campaign_id=campaign_id,
-            expected_session_ids=BOUND_SESSION_IDS_V1,
+            expected_session_ids=binding.session_ids,
             expected_preregistration_digest=preregistration_digest,
         )
         if artifact.authorization_id != authorization_id:
@@ -297,7 +355,7 @@ def run_static_preflight_v1(
         blockers.append("evidence_scope_ledger_mismatch")
 
     # Session-02 isolation: target session must not imply the other session.
-    other = SESSION_02_ID if sid == BOUND_SESSION_IDS_V1[0] else BOUND_SESSION_IDS_V1[0]
+    other = binding.session_02_id if sid == binding.session_01_id else binding.session_01_id
     if sid and other == sid:
         blockers.append("session_isolation_invariant_broken")
 
@@ -326,7 +384,7 @@ def run_static_preflight_v1(
         quarantine_ledger_path=str(quarantine),
         typed_volatility_persistence_path=str(evi_root / typed_persist) if typed_persist else "",
         session_manifest_path=str(evi_root / session_manifest) if session_manifest else "",
-        session_02_id=SESSION_02_ID,
+        session_02_id=binding.session_02_id,
         blockers=tuple(blockers),
     )
     if blockers:

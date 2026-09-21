@@ -13,10 +13,8 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     verify_campaign_authorization_artifact_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+    ABANDONED_CAMPAIGN_ID,
     AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS,
-    BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST,
-    BOUND_SESSION_IDS,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.expiry_v1 import (
     assert_clock_within_authorization_window_v1,
@@ -72,9 +70,9 @@ def consume_campaign_authorization_session_v1(
     session_id: str,
     evidence_root: Path,
     expected_repository_sha: Optional[str] = None,
-    expected_campaign_id: str = BOUND_CAMPAIGN_ID,
-    expected_session_ids: tuple[str, ...] = BOUND_SESSION_IDS,
-    expected_preregistration_digest: str = BOUND_PREREGISTRATION_DIGEST,
+    expected_campaign_id: Optional[str] = None,
+    expected_session_ids: Optional[tuple[str, ...]] = None,
+    expected_preregistration_digest: Optional[str] = None,
     now: Optional[datetime] = None,
     clock: Optional[Clock] = None,
     side_effect_probe: Optional[list[str]] = None,
@@ -88,6 +86,10 @@ def consume_campaign_authorization_session_v1(
 
     # 1) Load artifact
     artifact = load_campaign_authorization_artifact_v1(Path(authorization_artifact_path))
+    if artifact.campaign_id == ABANDONED_CAMPAIGN_ID or (
+        expected_campaign_id is not None and expected_campaign_id == ABANDONED_CAMPAIGN_ID
+    ):
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
     # 2–3) Digest + full bindings
     artifact = verify_campaign_authorization_artifact_v1(
         artifact,
@@ -242,11 +244,13 @@ def load_verified_runtime_release_for_session_v1(
     session_id: str,
     evidence_root: Path,
     expected_repository_sha: Optional[str] = None,
-    expected_campaign_id: Optional[str] = BOUND_CAMPAIGN_ID,
-    expected_session_ids: Optional[tuple[str, ...]] = BOUND_SESSION_IDS,
-    expected_preregistration_digest: Optional[str] = BOUND_PREREGISTRATION_DIGEST,
+    expected_campaign_id: Optional[str] = None,
+    expected_session_ids: Optional[tuple[str, ...]] = None,
+    expected_preregistration_digest: Optional[str] = None,
 ) -> RuntimeReleaseV1:
     """Gate helper: require an already-persisted atomic consumption for the session."""
+    if expected_campaign_id == ABANDONED_CAMPAIGN_ID:
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
     artifact = verify_campaign_authorization_artifact_v1(
         load_campaign_authorization_artifact_v1(Path(authorization_artifact_path)),
         expected_repository_sha=expected_repository_sha,
@@ -254,6 +258,8 @@ def load_verified_runtime_release_for_session_v1(
         expected_session_ids=expected_session_ids,
         expected_preregistration_digest=expected_preregistration_digest,
     )
+    if artifact.campaign_id == ABANDONED_CAMPAIGN_ID:
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
     revocation_path = resolve_ledger_path_v1(
         evidence_root=evidence_root,
         relative_or_absolute=artifact.revocation_ledger_path,

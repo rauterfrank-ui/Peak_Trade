@@ -9,16 +9,14 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+    ABANDONED_CAMPAIGN_ID,
+    ABANDONED_SESSION_IDS,
     AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS,
     AUTHORIZATION_SCOPE,
     AUTHORIZATION_SINGLE_USE_PER_SESSION,
-    BOUND_CAMPAIGN_ID,
-    BOUND_CONSUMPTION_LEDGER_PATH,
     BOUND_DURABLE_LEDGER_PATH,
     BOUND_INSTRUMENT_ALLOWLIST,
     BOUND_JOIN_PATH,
-    BOUND_PREREGISTRATION_ARTIFACT_PATH,
-    BOUND_PREREGISTRATION_DIGEST,
     BOUND_PRODUCTIVE_ACCUMULATION_CONTRACT_VERSION,
     BOUND_PRODUCTIVE_DESIGN_ID,
     BOUND_PUBLIC_MD_ENDPOINT_ALLOWLIST,
@@ -26,13 +24,15 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.con
     BOUND_PUBLIC_MD_METHOD_ALLOWLIST,
     BOUND_PUBLIC_MD_VENUE,
     BOUND_QUARANTINE_PATH,
-    BOUND_REVOCATION_LEDGER_PATH,
-    BOUND_SESSION_IDS,
     CAMPAIGN_AUTHORIZATION_TTL_SECONDS,
     MAXIMUM_SESSION_COUNT,
     REQUIRED_ARTIFACT_FIELDS,
     SCHEMA_VERSION,
     UNKNOWN_FIELD_POLICY,
+    authorization_ledger_paths_v1,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
+    R1_PREREGISTRATION_REL_PATH,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.expiry_v1 import (
     compute_expires_at_v1,
@@ -97,12 +97,12 @@ def build_campaign_authorization_artifact_v1(
     issued_at: datetime | str,
     earliest_start: datetime | str,
     authorization_id: Optional[str] = None,
-    preregistration_artifact_path: str = BOUND_PREREGISTRATION_ARTIFACT_PATH,
+    preregistration_artifact_path: str = R1_PREREGISTRATION_REL_PATH,
     durable_ledger_path: str = BOUND_DURABLE_LEDGER_PATH,
     join_path: str = BOUND_JOIN_PATH,
     quarantine_path: str = BOUND_QUARANTINE_PATH,
-    revocation_ledger_path: str = BOUND_REVOCATION_LEDGER_PATH,
-    consumption_ledger_path: str = BOUND_CONSUMPTION_LEDGER_PATH,
+    revocation_ledger_path: Optional[str] = None,
+    consumption_ledger_path: Optional[str] = None,
 ) -> CampaignAuthorizationArtifactV1:
     """Deterministic writer. No productive defaults for operator identity fields."""
     repo_sha = str(repository_sha or "").strip()
@@ -111,6 +111,8 @@ def build_campaign_authorization_artifact_v1(
     camp = str(campaign_id or "").strip()
     if not camp:
         raise CampaignAuthorizationError("campaign_id_required")
+    if camp == ABANDONED_CAMPAIGN_ID:
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
     preg = str(preregistration_digest or "").strip()
     if not preg:
         raise CampaignAuthorizationError("preregistration_digest_required")
@@ -129,10 +131,13 @@ def build_campaign_authorization_artifact_v1(
     sessions = canonicalize_session_ids_v1(session_ids)
     if len(sessions) != MAXIMUM_SESSION_COUNT:
         raise CampaignAuthorizationError("maximum_session_count_mismatch")
-    if camp == BOUND_CAMPAIGN_ID and sessions != canonicalize_session_ids_v1(BOUND_SESSION_IDS):
-        raise CampaignAuthorizationError("bound_session_ids_mismatch")
-    if camp == BOUND_CAMPAIGN_ID and preg != BOUND_PREREGISTRATION_DIGEST:
-        raise CampaignAuthorizationError("bound_preregistration_digest_mismatch")
+    abandoned_sessions = set(canonicalize_session_ids_v1(ABANDONED_SESSION_IDS))
+    if abandoned_sessions.intersection(sessions):
+        raise CampaignAuthorizationError("abandoned_session_reactivation_forbidden")
+
+    default_rev, default_cons = authorization_ledger_paths_v1(camp)
+    rev_path = str(revocation_ledger_path or default_rev)
+    cons_path = str(consumption_ledger_path or default_cons)
 
     auth_id = (
         str(authorization_id).strip()
@@ -175,8 +180,8 @@ def build_campaign_authorization_artifact_v1(
         "durable_ledger_path": str(durable_ledger_path),
         "join_path": str(join_path),
         "quarantine_path": str(quarantine_path),
-        "revocation_ledger_path": str(revocation_ledger_path),
-        "consumption_ledger_path": str(consumption_ledger_path),
+        "revocation_ledger_path": rev_path,
+        "consumption_ledger_path": cons_path,
         "campaign_authorization_ttl_seconds": CAMPAIGN_AUTHORIZATION_TTL_SECONDS,
         "authorization_single_use_per_session": AUTHORIZATION_SINGLE_USE_PER_SESSION,
         "authorization_maximum_total_consumptions": AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS,
@@ -307,45 +312,47 @@ def verify_campaign_authorization_artifact_v1(
         if set(expected) - set(parsed.session_ids):
             raise CampaignAuthorizationError("missing_session_id")
 
-    # Productive / design / public-md / path bindings for the bound campaign.
-    if parsed.campaign_id == BOUND_CAMPAIGN_ID:
-        if parsed.session_ids != canonicalize_session_ids_v1(BOUND_SESSION_IDS):
-            raise CampaignAuthorizationError("bound_session_ids_mismatch")
-        if parsed.preregistration_digest != BOUND_PREREGISTRATION_DIGEST:
-            raise CampaignAuthorizationError("bound_preregistration_digest_mismatch")
-        if parsed.preregistration_artifact_path != BOUND_PREREGISTRATION_ARTIFACT_PATH:
-            raise CampaignAuthorizationError("preregistration_artifact_path_mismatch")
-        if parsed.productive_design_id != BOUND_PRODUCTIVE_DESIGN_ID:
-            raise CampaignAuthorizationError("productive_design_id_mismatch")
-        if (
-            parsed.productive_accumulation_contract_version
-            != BOUND_PRODUCTIVE_ACCUMULATION_CONTRACT_VERSION
-        ):
-            raise CampaignAuthorizationError("productive_accumulation_contract_version_mismatch")
-        if parsed.public_md_venue != BOUND_PUBLIC_MD_VENUE:
-            raise CampaignAuthorizationError("public_md_venue_mismatch")
-        if parsed.public_md_host != BOUND_PUBLIC_MD_HOST:
-            raise CampaignAuthorizationError("public_md_host_mismatch")
-        if tuple(parsed.public_md_endpoint_allowlist) != BOUND_PUBLIC_MD_ENDPOINT_ALLOWLIST:
-            raise CampaignAuthorizationError("public_md_endpoint_allowlist_mismatch")
-        if tuple(parsed.public_md_method_allowlist) != BOUND_PUBLIC_MD_METHOD_ALLOWLIST:
-            raise CampaignAuthorizationError("public_md_method_allowlist_mismatch")
-        if "GET" not in parsed.public_md_method_allowlist:
-            raise CampaignAuthorizationError("public_md_method_not_get_only")
-        if any(m != "GET" for m in parsed.public_md_method_allowlist):
-            raise CampaignAuthorizationError("public_md_non_get_forbidden")
-        if tuple(parsed.instrument_allowlist) != BOUND_INSTRUMENT_ALLOWLIST:
-            raise CampaignAuthorizationError("instrument_allowlist_mismatch")
-        if parsed.durable_ledger_path != BOUND_DURABLE_LEDGER_PATH:
-            raise CampaignAuthorizationError("durable_ledger_path_mismatch")
-        if parsed.join_path != BOUND_JOIN_PATH:
-            raise CampaignAuthorizationError("join_path_mismatch")
-        if parsed.quarantine_path != BOUND_QUARANTINE_PATH:
-            raise CampaignAuthorizationError("quarantine_path_mismatch")
-        if parsed.revocation_ledger_path != BOUND_REVOCATION_LEDGER_PATH:
-            raise CampaignAuthorizationError("revocation_ledger_path_mismatch")
-        if parsed.consumption_ledger_path != BOUND_CONSUMPTION_LEDGER_PATH:
-            raise CampaignAuthorizationError("consumption_ledger_path_mismatch")
+    # Productive / design / public-md / path bindings for any authorizeable campaign.
+    # Abandoned tombstone campaign is never authorizeable (checked above).
+    if parsed.campaign_id == ABANDONED_CAMPAIGN_ID:
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
+    abandoned_sessions = set(canonicalize_session_ids_v1(ABANDONED_SESSION_IDS))
+    if abandoned_sessions.intersection(parsed.session_ids):
+        raise CampaignAuthorizationError("abandoned_session_reactivation_forbidden")
+    if parsed.preregistration_artifact_path != R1_PREREGISTRATION_REL_PATH:
+        raise CampaignAuthorizationError("preregistration_artifact_path_mismatch")
+    if parsed.productive_design_id != BOUND_PRODUCTIVE_DESIGN_ID:
+        raise CampaignAuthorizationError("productive_design_id_mismatch")
+    if (
+        parsed.productive_accumulation_contract_version
+        != BOUND_PRODUCTIVE_ACCUMULATION_CONTRACT_VERSION
+    ):
+        raise CampaignAuthorizationError("productive_accumulation_contract_version_mismatch")
+    if parsed.public_md_venue != BOUND_PUBLIC_MD_VENUE:
+        raise CampaignAuthorizationError("public_md_venue_mismatch")
+    if parsed.public_md_host != BOUND_PUBLIC_MD_HOST:
+        raise CampaignAuthorizationError("public_md_host_mismatch")
+    if tuple(parsed.public_md_endpoint_allowlist) != BOUND_PUBLIC_MD_ENDPOINT_ALLOWLIST:
+        raise CampaignAuthorizationError("public_md_endpoint_allowlist_mismatch")
+    if tuple(parsed.public_md_method_allowlist) != BOUND_PUBLIC_MD_METHOD_ALLOWLIST:
+        raise CampaignAuthorizationError("public_md_method_allowlist_mismatch")
+    if "GET" not in parsed.public_md_method_allowlist:
+        raise CampaignAuthorizationError("public_md_method_not_get_only")
+    if any(m != "GET" for m in parsed.public_md_method_allowlist):
+        raise CampaignAuthorizationError("public_md_non_get_forbidden")
+    if tuple(parsed.instrument_allowlist) != BOUND_INSTRUMENT_ALLOWLIST:
+        raise CampaignAuthorizationError("instrument_allowlist_mismatch")
+    if parsed.durable_ledger_path != BOUND_DURABLE_LEDGER_PATH:
+        raise CampaignAuthorizationError("durable_ledger_path_mismatch")
+    if parsed.join_path != BOUND_JOIN_PATH:
+        raise CampaignAuthorizationError("join_path_mismatch")
+    if parsed.quarantine_path != BOUND_QUARANTINE_PATH:
+        raise CampaignAuthorizationError("quarantine_path_mismatch")
+    expected_rev, expected_cons = authorization_ledger_paths_v1(parsed.campaign_id)
+    if parsed.revocation_ledger_path != expected_rev:
+        raise CampaignAuthorizationError("revocation_ledger_path_mismatch")
+    if parsed.consumption_ledger_path != expected_cons:
+        raise CampaignAuthorizationError("consumption_ledger_path_mismatch")
 
     return parsed
 

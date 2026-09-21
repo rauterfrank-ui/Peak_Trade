@@ -6,9 +6,7 @@ from pathlib import Path
 from typing import Any, Mapping, Optional
 
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST,
-    BOUND_SESSION_IDS,
+    ABANDONED_CAMPAIGN_ID,
     CAPABILITY_ID,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.consume_v1 import (
@@ -27,14 +25,18 @@ def require_campaign_authorization_runtime_release_v1(
     campaign_id: str,
     evidence_root: Path,
     repository_sha: str,
-    expected_preregistration_digest: str = BOUND_PREREGISTRATION_DIGEST,
+    expected_preregistration_digest: Optional[str] = None,
+    expected_session_ids: Optional[tuple[str, ...]] = None,
 ) -> RuntimeReleaseV1:
     """Fail-closed gate for the productive accumulation entrypoint.
 
     - Missing authorization → reject
     - Present but unconsumed authorization → reject
+    - Abandoned tombstone campaign → reject
     - Accept only atomically consumed, exactly bound session context
     """
+    if campaign_id == ABANDONED_CAMPAIGN_ID:
+        raise CampaignAuthorizationError("abandoned_campaign_reactivation_forbidden")
     if authorization_artifact_path is None:
         raise CampaignAuthorizationError("campaign_authorization_missing")
     path = Path(authorization_artifact_path)
@@ -47,10 +49,8 @@ def require_campaign_authorization_runtime_release_v1(
         evidence_root=Path(evidence_root),
         expected_repository_sha=repository_sha,
         expected_campaign_id=campaign_id,
-        expected_session_ids=BOUND_SESSION_IDS if campaign_id == BOUND_CAMPAIGN_ID else None,
-        expected_preregistration_digest=(
-            expected_preregistration_digest if campaign_id == BOUND_CAMPAIGN_ID else None
-        ),
+        expected_session_ids=expected_session_ids,
+        expected_preregistration_digest=expected_preregistration_digest,
     )
     if release.session_id != session_id:
         raise CampaignAuthorizationError("runtime_release_session_mismatch")

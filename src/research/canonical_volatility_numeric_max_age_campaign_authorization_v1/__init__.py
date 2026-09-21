@@ -12,6 +12,7 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     write_campaign_authorization_artifact_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
+    ABANDONED_CAMPAIGN_ID,
     AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS,
     AUTHORIZATION_SCOPE,
     AUTHORIZATION_SINGLE_USE_PER_SESSION,
@@ -38,6 +39,7 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.mod
 )
 
 __all__ = [
+    "ABANDONED_CAMPAIGN_ID",
     "AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS",
     "AUTHORIZATION_SCOPE",
     "AUTHORIZATION_SINGLE_USE_PER_SESSION",
