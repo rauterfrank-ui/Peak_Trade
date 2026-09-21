@@ -435,7 +435,7 @@ relations:
     type: OBSERVES
     target: RUNTIME_COMPONENT:mv2_integrated_replay
     epistemic_status: FORENSIC_RAW
-    modified_by: PENDING_CHANGE
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     evidence_sources:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py

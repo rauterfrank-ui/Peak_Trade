@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1`.
 
 ## Workflow
 
@@ -41,12 +41,16 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1` |
+| `RUNTIME_COMPONENT:mv2_offline_boundary_adapters` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `SUBSYSTEM:master_v2` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_ddo_capture_observes_integrated_replay` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- STEP29M evaluation template binds canonical mandatory MV2 backtest boundary state-file section for offline economic_viability_evidence_v1 MV2 replay wiring. Navigation-only Atlas record; no runtime, trading, selection, promotion, or live authority. ATLAS_AUTHORITY=NONE.
-- introduced_by=STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
-- modified_by=STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
+- STEP29M CURRENT instrument MV2 offline boundary materialization and admission: dynamic CRS/COI price/stop binding, decouple historical offline fixture scalars 25/100 from CURRENT economic evaluation wiring. Navigation-only Atlas updates; no runtime, trading, selection, promotion, or live authority. ATLAS_AUTHORITY=NONE.
+- introduced_by=STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+- modified_by=STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

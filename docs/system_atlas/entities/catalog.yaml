@@ -21,7 +21,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
-    modified_by: PENDING_CHANGE
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -1402,9 +1402,10 @@ entities:
   - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
     kind: CONTRACT
     name: STEP29M current single selected future dynamic binding v1
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     atlas_review_note: >-
-      STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1;
-      evaluation template binds mandatory MV2 boundary state files. ATLAS_AUTHORITY=NONE.
+      STEP29M CURRENT instrument offline boundary materialization/admission;
+      dynamic CRS/COI without historical fixture 25/100 authority. ATLAS_AUTHORITY=NONE.
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
@@ -1413,7 +1414,9 @@ entities:
     evidence_sources:
       - config/governance/step29m_current_single_selected_future_dynamic_binding_v1.json
       - config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json
+      - src/backtest/current_instrument_mv2_offline_boundary_materialization_v1.py
       - src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py
+      - tests/backtest/test_current_instrument_mv2_offline_boundary_dynamic_context_v1.py
       - tests/backtest/test_step29m_current_single_selected_future_dynamic_binding_v1.py
     notes: >-
       Bounded post-selection consumer for STEP29M instrument identity and
@@ -5326,7 +5329,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
@@ -6522,7 +6525,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: POST_M6640_GOVERNED_PRODUCTIVE_RUNTIME_SEAM_JOIN_V1
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
@@ -6626,11 +6629,18 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
     module_role: offline_replay_adapter
     source_paths:
+      - src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py
+      - src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py
       - src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+      - src/trading/master_v2/mv2_offline_boundary_dynamic_price_context_v1.py
     evidence_sources:
+      - src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py
+      - src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py
       - src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py
+      - src/trading/master_v2/mv2_offline_boundary_dynamic_price_context_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
       Offline KS binder produces post-29Q evidence/mode fields with
