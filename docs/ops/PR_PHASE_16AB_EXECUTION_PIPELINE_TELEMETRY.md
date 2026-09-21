@@ -5,7 +5,7 @@
 Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **Phase 16B (Execution Telemetry & Live-Track Bridge)**.
 
 **Kern-Features:**
-- ✅ **Phase 16A:** Standalone Learning-Module `src/execution_simple/` mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo
+- ✅ **Phase 16A:** Standalone Learning-Module `src&#47;execution_simple&#47;` mit Gates (PriceSanity, ResearchOnly, LotSize, MinNotional), SimulatedBrokerAdapter, dry-run demo (removed post-census)
 - ✅ **Phase 16B:** Execution Telemetry (ExecutionEvent schema, JsonlExecutionLogger), Live-Track Bridge (timeline + summary), Dashboard widget (`/live/execution/{session_id}`)
 - ✅ **Tests:** 33 neue Tests (16 Phase 16A + 17 Phase 16B), alle grün
 - ✅ **Docs:** 3 neue Docs (EXECUTION_SIMPLE_V1.md, EXECUTION_TELEMETRY_LIVE_TRACK_V1.md, Status-Update)
@@ -18,9 +18,9 @@ Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **P
 
 ### Phase 16A (Learning Module)
 **New:**
-- `src/execution_simple/` (8 files, ~500 LOC) - Standalone learning module
-- `tests/execution_simple/` (2 files, 16 tests)
-- ~~`scripts/run_execution_simple_dry_run.py`~~ - Removed post-census (was Phase 16A demo) <!-- pt:ref-target-ignore -->
+- `src&#47;execution_simple&#47;` (8 files, ~500 LOC) - Standalone learning module (removed post-census)
+- `tests&#47;execution_simple&#47;` (2 files, 16 tests) (removed post-census)
+- ~~`scripts&#47;run_execution_simple_dry_run.py`~~ - Removed post-census (was Phase 16A demo) <!-- pt:ref-target-ignore -->
 - `docs/execution/EXECUTION_SIMPLE_V1.md` - Learning guide
 
 ### Phase 16B (Telemetry & Bridge)
@@ -326,12 +326,12 @@ ruff check src tests scripts
 - [PEAK_TRADE_STATUS_OVERVIEW.md](../PEAK_TRADE_STATUS_OVERVIEW.md) - Updated with Phase 16A/B entries
 
 **Tests:**
-- Phase 16A: `tests/execution_simple/test_execution_pipeline.py` (16 tests)
+- Phase 16A: `tests&#47;execution_simple&#47;test_execution_pipeline.py` (16 tests; removed post-census)
 - Phase 16B: `tests/execution/test_execution_telemetry.py` (7 tests)
 - Phase 16B: `tests/live/test_execution_bridge.py` (10 tests)
 
 **Demo Scripts:**
-- Phase 16A: ~~`scripts/run_execution_simple_dry_run.py`~~ (removed post-census) <!-- pt:ref-target-ignore -->
+- Phase 16A: ~~`scripts&#47;run_execution_simple_dry_run.py`~~ (removed post-census) <!-- pt:ref-target-ignore -->
 - Phase 16B: Programmatic usage (see doc examples)
 
 ---

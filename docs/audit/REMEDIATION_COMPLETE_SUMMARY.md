@@ -68,12 +68,12 @@
 1. `src/risk/README.md` (143 lines)
 2. `src/risk_layer/README.md` (194 lines)
 3. `src/execution/README.md` (61 lines)
-4. ~~`src/execution_simple/README.md`~~ (removed post-census; was 36 lines) <!-- pt:ref-target-ignore -->
+4. ~~`src&#47;execution_simple&#47;README.md`~~ (removed post-census; was 36 lines) <!-- pt:ref-target-ignore -->
 
 **Deliverables:**
 - Clear distinction: `src/risk/` (backtest) vs `src/risk_layer/` (live)
 - Usage guidelines and examples
-- Clear distinction: `src/execution/` (production) vs `src/execution_simple/` (legacy)
+- Clear distinction: `src/execution/` (production) vs `src&#47;execution_simple&#47;` (legacy, removed)
 
 ---
 

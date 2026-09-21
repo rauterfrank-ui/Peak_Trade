@@ -65,7 +65,7 @@ The system demonstrates **strong engineering practices** with defense-in-depth s
    - `src/governance/` - Trading governance policies
 5. **Live Trading (Critical):** `src/live/` - Shadow/paper sessions, safety guards, risk limits, drills
 6. **Execution:** `src/execution/` - ExecutionPipeline, order state machine, retry policy
-7. **Monitoring:** `src/observability/`, `src/reporting/` (29 modules), `src/notifications/`
+7. **Monitoring:** `src/observability/`, `src/reporting/` (29 modules), `src&#47;notifications&#47;`
 
 ### Live-Critical Paths
 
@@ -152,7 +152,7 @@ No P0 blockers identified. The system has strong safety architecture and no crit
 **Count: 0** ✅ (All Resolved)
 
 - **FND-0003:** Multiple Execution Paths - Documentation Needed → **✅ FIXED**
-  - **Resolution:** README files created for both `src/execution/` and `src/execution_simple/`
+  - **Resolution:** README files created for both `src/execution/` and `src&#47;execution_simple&#47;`
   - **Evidence:** EV-9005 (src/execution/README.md; execution_simple README removed post-census) <!-- pt:ref-target-ignore -->
   - **Fixed Date:** 2025-12-30
 

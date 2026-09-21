@@ -23,11 +23,11 @@
 
 **Files Created:**
 1. `src/execution/README.md` - Documentation for production execution module
-2. ~~`src/execution_simple/README.md`~~ - Removed post-census (historical snapshot) <!-- pt:ref-target-ignore -->
+2. ~~`src&#47;execution_simple&#47;README.md`~~ - Removed post-census (historical snapshot) <!-- pt:ref-target-ignore -->
 
 **Summary:**
 - **`src/execution/`** = Production execution (full-featured, live-ready)
-- **`src/execution_simple/`** = Legacy execution (simplified, use for backtest only)
+- **`src&#47;execution_simple&#47;`** = Legacy execution (removed post-census; historical snapshot)
 - Recommendation: Use `src/execution/` for all new code
 
 ## Remediation Status
