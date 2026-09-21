@@ -65,6 +65,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_professional_workstation_presentation_v2 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_professional_workstation_presentation_v2 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_system_observability_completion_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_system_observability_completion_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_universe_rail_presentation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_universe_rail_presentation_v1 | STATUS=OPEN (not proven) |  |
