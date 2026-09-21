@@ -637,12 +637,13 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `11`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `111`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `111`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
 | GAP:architectural_mmr | TERM_WITHOUT_FORMAL_KIND | TERM:mmr_polyvalent | STATUS=OPEN (not proven) |
 | GAP:cap23_not_wired_to_canary | PARALLEL_INSTRUMENT_AUTHORITY | CAPABILITY:cap_2_3_single_selected_future | STATUS=ADJUDICATED |
+| GAP:ct_sizing_u04_p01_eligibility_inputs_unbound | DEFINED_BUT_NO_CONSUMER | CAPABILITY:current_productive_available_for_sizing_producer_v1 | STATUS=ADJUDICATED |
 | GAP:ddo_declared_seams_without_host_decorator | DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE | RUNTIME_COMPONENT:ddo_capture_v0 | STATUS=ADJUDICATED |
 | GAP:flatten_live_wire_disabled | IMPLEMENTED_BUT_UNREACHABLE | GATE:flatten_live_wire | STATUS=FORENSIC_RAW |
 | GAP:live_ws_client | CONFIGURED_BUT_NO_CLIENT | OKX_FEATURE:websocket_hosts_configured | STATUS=OPEN (not proven) |
