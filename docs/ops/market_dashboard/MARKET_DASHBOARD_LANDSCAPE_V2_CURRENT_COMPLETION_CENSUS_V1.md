@@ -42,6 +42,11 @@ STALE_INVENTORY_SUPERSEDED=docs/ops/market_dashboard/market_dashboard_missing_so
 - **event_decision_timeline** — no durable ordered history producer (`NOT_CANONICALLY_AVAILABLE`)  
 - **confidence (decision strip)** — `NOT_AVAILABLE_NO_CANONICAL_FIELD` (`INTENTIONAL_NOT_BOUND`; suppressed in UI)
 
+## Excluded-surfaces cleanup (follow-on)
+
+See `MARKET_DASHBOARD_LANDSCAPE_V2_EXCLUDED_SURFACES_CLEANUP_ADJUDICATION_V1.md` — removes
+only dead duplicate timeline note and unreachable confidence render branch; excluded semantics unchanged.
+
 ## Post-census close items (this PR)
 
 - CSS composition guard: remove solid structural divider lines introduced in S01 panel styling; restore chart-meta ellipsis contract.  

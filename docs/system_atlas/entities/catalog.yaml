@@ -2008,21 +2008,25 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     module_role: read_only_s05_s06_consumer_presentation_only
-    modified_by: PENDING_CHANGE
+    modified_by: MARKET_DASHBOARD_LANDSCAPE_V2_EXCLUDED_SURFACES_CLEANUP_V1
     source_paths:
       - src/webui/market_dashboard_landscape_v2/decision_double_play_observability_v1.py
       - templates/peak_trade_dashboard/market_landscape_v2.html
+      - static/css/market_dashboard_landscape_v2.css
     evidence_sources:
       - tests/webui/test_landscape_decision_double_play_observability_fidelity_v1.py
       - tests/webui/test_landscape_operator_information_fidelity_v1.py
       - tests/webui/test_landscape_ui_completeness_fail_closed_v1.py
+      - tests/webui/test_landscape_v2_excluded_surfaces_cleanup_v1.py
+      - docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_EXCLUDED_SURFACES_CLEANUP_ADJUDICATION_V1.md
       - src/webui/market_dashboard_landscape_v2/contracts.py
     notes: >-
       S05/S06 observability from bound Landscape snapshots only; no decision/DP
       recomputation or artificial join. Decision-strip Blockers bind read-only from
       DoublePlaySnapshotV1.blockers; Confidence remains unrendered
-      (NOT_AVAILABLE_NO_CANONICAL_FIELD). Absent optional fields stay explicit
-      fail-closed display tokens. ATLAS_AUTHORITY=NONE.
+      (NOT_AVAILABLE_NO_CANONICAL_FIELD). Removed duplicate S06 timeline status note;
+      deferred timeline remains EVENT_DECISION_TIMELINE NOT_BOUND only.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1
     kind: RUNTIME_COMPONENT

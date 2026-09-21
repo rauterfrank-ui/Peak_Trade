@@ -755,8 +755,7 @@
   color: #cbd5e1;
 }
 
-.mdl-v2-decision-dp-obs__note,
-.mdl-v2-decision-dp-obs__timeline-note {
+.mdl-v2-decision-dp-obs__note {
   margin: 0;
   font-size: 10px;
   color: var(--mdl-muted);

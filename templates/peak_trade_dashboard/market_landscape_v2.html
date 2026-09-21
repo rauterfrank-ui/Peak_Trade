@@ -366,12 +366,6 @@
             {% if double_play.is_available or double_play.is_stale %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
           </dd>
         </div>
-        {% if decision_double_play_observability.decision_strip_confidence.render %}
-        <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="confidence">
-          <dt>Confidence</dt>
-          <dd data-mdl-field="confidence" data-availability="{{ decision_double_play_observability.decision_strip_confidence.availability }}">{{ decision_double_play_observability.decision_strip_confidence.display }}</dd>
-        </div>
-        {% endif %}
       </dl>
     </section>
 
@@ -439,9 +433,6 @@
           {% endif %}
         </article>
       </div>
-      <p class="mdl-v2-decision-dp-obs__timeline-note" data-mdl-field="multi_decision_timeline_status">
-        Timeline: {{ decision_double_play_observability.multi_decision_timeline_status }}
-      </p>
     </section>
 
     <section
