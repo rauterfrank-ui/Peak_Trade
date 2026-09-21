@@ -23,7 +23,6 @@ from src.webui.market_dashboard_landscape_v2 import (
 from src.webui.market_dashboard_landscape_v2.decision_double_play_observability_v1 import (
     CAPABILITY_ID,
     JOIN_CONTRACT_PRESENT,
-    MULTI_DECISION_TIMELINE_STATUS,
     build_decision_double_play_observability_v1,
 )
 from src.webui.market_dashboard_landscape_v2.unavailable import (
@@ -181,13 +180,6 @@ def test_stale_preserves_producer_facts() -> None:
     assert obs["canonical_decision"]["decision_display"] == "observe"
 
 
-def test_multi_decision_timeline_missing_observability() -> None:
-    assert (
-        _ctx()["decision_double_play_observability"]["multi_decision_timeline_status"]
-        == MULTI_DECISION_TIMELINE_STATUS
-    )
-
-
 def test_standalone_builder_matches_presenter() -> None:
     decision = _decision_snap()
     double_play = _dp_snap()
@@ -206,7 +198,8 @@ def test_ssr_renders_when_s05_s06_missing() -> None:
     html = client.get("/market").text
     assert 'data-mdl-decision-dp-observability="true"' in html
     assert "SEPARATE_NO_SHARED_IDENTIFIER" in html
-    assert MULTI_DECISION_TIMELINE_STATUS in html
+    assert 'data-mdl-region="EVENT_DECISION_TIMELINE"' in html
+    assert 'data-mdl-field="multi_decision_timeline_status"' not in html
 
 
 def test_host_contract_regression_6681() -> None:

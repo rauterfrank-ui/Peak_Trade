@@ -21,7 +21,6 @@ from .serialization import serialize_projection
 from .source_health_projection_fidelity_v1 import format_freshness_display_v1
 
 CAPABILITY_ID = "LANDSCAPE_DOUBLE_PLAY_AND_DECISION_OBSERVABILITY_FIDELITY_V1"
-MULTI_DECISION_TIMELINE_STATUS = "MISSING_DASHBOARD_OBSERVABILITY"
 JOIN_CONTRACT_PRESENT = False
 # No proven confidence field on CanonicalTradingDecisionEvidenceV1.
 CONFIDENCE_FIELD_STATE = "NOT_AVAILABLE_NO_CANONICAL_FIELD"
@@ -281,7 +280,6 @@ def build_decision_double_play_observability_v1(
         "canonical_decision": s05,
         "double_play": s06,
         "relationship": relationship,
-        "multi_decision_timeline_status": MULTI_DECISION_TIMELINE_STATUS,
         "decision_strip_blockers": build_decision_strip_blockers_presentation_v1(double_play),
         "decision_strip_confidence": build_decision_strip_confidence_presentation_v1(),
     }

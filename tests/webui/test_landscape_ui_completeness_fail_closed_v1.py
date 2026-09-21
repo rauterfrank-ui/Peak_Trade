@@ -12,9 +12,6 @@ from src.webui.market_dashboard_landscape_v2 import (
     MarketDashboardReadServiceV1,
     present_market_landscape_v2,
 )
-from src.webui.market_dashboard_landscape_v2.decision_double_play_observability_v1 import (
-    MULTI_DECISION_TIMELINE_STATUS,
-)
 from src.webui.market_dashboard_landscape_v2.landscape_observability_common_v1 import (
     OPTIONAL_FIELD_ABSENT_DISPLAY,
     fail_closed_scalar_display_v1,
@@ -75,8 +72,7 @@ def test_market_route_stays_available_without_sources() -> None:
     assert "<canvas" not in timeline
     assert "NOT_BOUND" in timeline
     assert "no invented history" in timeline
-    note = html.split('data-mdl-field="multi_decision_timeline_status"', 1)[1]
-    assert MULTI_DECISION_TIMELINE_STATUS in note
+    assert 'data-mdl-field="multi_decision_timeline_status"' not in html
     assert "timeline-chart" not in html
     page = MarketDashboardReadServiceV1().load_page_snapshot(generated_at=STAMP)
     ctx = present_market_landscape_v2(page)
