@@ -64,7 +64,7 @@ As of `CURRENT_ORIGIN_MAIN_DOC_POINTER_SHA`:
 - Archive sibling exporters and D4 witnesses (#6701–#6705) prove bounded non-authoritative writes under operator archive roots; **not** automatic productive activation.
 - Landscape dashboard remains `PURE_READ_ONLY_CONSUMER`; missing archive artifacts still correctly render `MISSING_SOURCE`.
 
-Frozen discovery evidence (`market_dashboard_projection_octet_materialization_path_discovery_v1/`) is **historical** at its recorded `origin_main_sha`; do not silently rewrite.
+Frozen discovery evidence (`market_dashboard_projection_octet_materialization_path_discovery_v1&#47;`) is **historical** at its recorded `origin_main_sha`; do not silently rewrite.
 
 ## Explicit non-claims
 

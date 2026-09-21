@@ -64,7 +64,7 @@ The table rows above through **Implementation authorized by this document = NO**
 | Landscape dashboard consumer | N/A here | **COMPLETE** at **#6690**; `NEXT_ACTION=STOP_IDLE`; `CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT=0` |
 | Productive activation | Blocked | **Still blocked** without separate scoped Owner-GO; governed ops paths do not authorize live/testnet/order effect |
 
-Missing projection files in a given operator archive still correctly yield dashboard `MISSING_SOURCE`. Frozen discovery JSON under `market_dashboard_projection_octet_materialization_path_discovery_v1/` keeps its recorded `origin_main_sha`; reconcile via this supersession block, not silent rewrite.
+Missing projection files in a given operator archive still correctly yield dashboard `MISSING_SOURCE`. Frozen discovery JSON under `market_dashboard_projection_octet_materialization_path_discovery_v1&#47;` keeps its recorded `origin_main_sha`; reconcile via this supersession block, not silent rewrite.
 
 ### Authority boundary (immutable)
 
