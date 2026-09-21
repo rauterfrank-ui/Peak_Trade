@@ -500,6 +500,17 @@ clusters:
         master_v2_imports:
           - trading.master_v2.naked_mv2_dp_mechanical_core_v1
         runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
+  - id: RUNTIME_COMPONENT:dp_dynamic_scope_governed_real_market_evidence
+    name: Dynamic Scope governed REAL market evidence v1
+    module_role: double_play_quarantine
+    files:
+      - path: src/trading/master_v2/dynamic_scope_governed_real_market_evidence_v1.py
+        primary_symbols:
+          - run_governed_real_market_evidence_v1
+          - load_governed_real_market_observation_series_v1
+        master_v2_imports:
+          - trading.master_v2.dynamic_scope_empirical_calibration_research_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
   - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
     name: evaluate_double_play authority boundary (v0)
     module_role: double_play_quarantine
