@@ -38,11 +38,13 @@ from tests.ops.test_full_core_live_path_offline_full_chain_v1 import (
     _confirmed_replay_input,
     _patch_replay_owners,
 )
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
-    _DEFAULT_PROTECTIVE_STOP,
     bind_capital_risk_sizing_offline_replay_evidence_v0,
-    default_offline_replay_capital_context_v0,
     derive_protective_stop_price_from_adverse_exit_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
 )
 from trading.master_v2.deterministic_scope_event_generator_v1 import (
     ScopeDirectionState,
@@ -94,7 +96,7 @@ def test_created_flag_and_protected_thresholds_unchanged() -> None:
     assert CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_CREATED is True
     assert float(CANONICAL_ADVERSE_EXIT_DISTANCE) == 80.0
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
-    assert _DEFAULT_PROTECTIVE_STOP == Decimal("3400")
+    assert ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP == Decimal("3400")
 
 
 @pytest.mark.parametrize(
@@ -158,12 +160,12 @@ def test_fixture_stop_against_host_mark_is_invalid_stop_price() -> None:
     assert cycle_b.replay is not None
     mark = Decimal(str(path[-1]))
     assert mark == Decimal("1630")
-    assert _DEFAULT_PROTECTIVE_STOP >= mark
-    fixture_ctx = default_offline_replay_capital_context_v0(
+    assert ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP >= mark
+    fixture_ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=cycle_b.replay.evidence.instrument_id,
         reference_price=mark,
     )
-    assert fixture_ctx.protective_stop_price == _DEFAULT_PROTECTIVE_STOP
+    assert fixture_ctx.protective_stop_price == ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
     binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
         cycle_b.replay.evidence,
         capital_context=fixture_ctx,
@@ -187,7 +189,7 @@ def test_fixture_stop_against_host_mark_is_invalid_stop_price() -> None:
 def test_invalid_or_direction_invalid_stop_cannot_pass_29p(stop: Decimal | None) -> None:
     _, cycle_b, path = _host_enter_cycle()
     mark = Decimal(str(path[-1]))
-    ctx = default_offline_replay_capital_context_v0(
+    ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=cycle_b.replay.evidence.instrument_id,
         reference_price=mark,
         protective_stop_price=stop,
@@ -225,7 +227,7 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
         adverse_exit_distance=CANONICAL_ADVERSE_EXIT_DISTANCE,
     )
     assert expected_stop == Decimal("1550")
-    assert expected_stop != _DEFAULT_PROTECTIVE_STOP
+    assert expected_stop != ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP
     intent = replay.intermediate.canonical_order_intent
     assert intent is not None
     assert intent.execution_eligible is False

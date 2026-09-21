@@ -33,7 +33,7 @@ from trading.master_v2.capital_risk_sizing_intent_restore_v1 import (
     compose_capital_risk_sizing_intent_from_core_evidence_v1,
 )
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
-    default_offline_replay_capital_context_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
 )
 from trading.master_v2.decision_packet_from_integrated_replay_v1 import (
     DECISION_PACKET_ROLE_HANDOFF_EVIDENCE_ONLY,
@@ -79,6 +79,13 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 RESTORE_MODULE = REPO_ROOT / "src/trading/master_v2/capital_risk_sizing_intent_restore_v1.py"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/MASTER_V2_A06_CAPITAL_RISK_SIZING_INTENT_RESTORE_V1.md"
 CRS_OWNER = REPO_ROOT / "src/governance/capital_risk_sizing_v1.py"
+
+
+def _fixture_capital_context_for_core(core) -> object:
+    return isolated_offline_replay_fixture_capital_context_v0(
+        instrument_id=core.replay.evidence.instrument_id,
+        reference_price=Decimal("3500"),
+    )
 
 
 def _enter_long_core():
@@ -150,8 +157,9 @@ def test_a01_a05_evidence_feeds_29p_then_29q_plan_only() -> None:
     assert core.snapshot.runtime_promoted is False
     with pytest.raises(StrategyIdentityBindingError, match=REASON_UNKNOWN_STRATEGY_ID):
         bind_strategy_identity_v1("armstrong_cycle")
-    first = compose_capital_risk_sizing_intent_from_core_evidence_v1(core)
-    second = compose_capital_risk_sizing_intent_from_core_evidence_v1(core)
+    ctx = _fixture_capital_context_for_core(core)
+    first = compose_capital_risk_sizing_intent_from_core_evidence_v1(core, capital_context=ctx)
+    second = compose_capital_risk_sizing_intent_from_core_evidence_v1(core, capital_context=ctx)
     evidence = core.replay.evidence
     assert first.compute_owner == INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER
     assert first.compute_owner == CANONICAL_OFFLINE_ORCHESTRATOR
@@ -188,10 +196,14 @@ def test_a01_a05_evidence_feeds_29p_then_29q_plan_only() -> None:
 
 def test_29p_is_the_quantity_chain_owner_used() -> None:
     core = _enter_long_core()
-    composed = compose_capital_risk_sizing_intent_from_core_evidence_v1(core)
-    ctx = default_offline_replay_capital_context_v0(
+    fixture_ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=core.replay.evidence.instrument_id,
+        reference_price=Decimal("3500"),
     )
+    composed = compose_capital_risk_sizing_intent_from_core_evidence_v1(
+        core, capital_context=fixture_ctx
+    )
+    ctx = fixture_ctx
     context, policy = capital_context_to_quantity_chain_inputs_v1(ctx)
     direct = evaluate_quantity_chain_v1(core.replay.evidence, context, policy)
     assert composed.quantity_chain_owner == QUANTITY_CHAIN_OWNER
@@ -206,8 +218,9 @@ def test_29p_is_the_quantity_chain_owner_used() -> None:
 def test_29p_rejection_stays_fail_closed_and_skips_29q() -> None:
     core = _enter_long_core()
     blocked_ctx = replace(
-        default_offline_replay_capital_context_v0(
+        isolated_offline_replay_fixture_capital_context_v0(
             instrument_id=core.replay.evidence.instrument_id,
+            reference_price=Decimal("3500"),
         ),
         daily_loss_remaining_budget=Decimal("0"),
         per_trade_risk_limit=Decimal("0"),
@@ -225,7 +238,9 @@ def test_29p_rejection_stays_fail_closed_and_skips_29q() -> None:
 
 def test_packet_is_not_the_evidence_source() -> None:
     core = _enter_long_core()
-    composed = compose_capital_risk_sizing_intent_from_core_evidence_v1(core)
+    composed = compose_capital_risk_sizing_intent_from_core_evidence_v1(
+        core, capital_context=_fixture_capital_context_for_core(core)
+    )
     assert composed.chain.scope_capital_envelope.decision_id == (core.replay.evidence.decision_id)
     assert composed.chain.scope_capital_envelope.decision_id != ""
     assert core.packet.doubleplay is not None

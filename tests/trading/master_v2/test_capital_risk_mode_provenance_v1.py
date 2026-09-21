@@ -6,10 +6,14 @@ from decimal import Decimal
 
 import pytest
 
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY,
+    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
-    default_offline_replay_capital_context_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
 )
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
@@ -20,19 +24,13 @@ from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_inte
 )
 
 
-def test_default_offline_context_is_offline_algebra_with_unchanged_numeric_defaults() -> None:
-    ctx = default_offline_replay_capital_context_v0(instrument_id="ETH-USDT-SWAP")
+def test_isolated_fixture_context_is_offline_algebra_not_current_authority() -> None:
+    ctx = isolated_offline_replay_fixture_capital_context_v0(instrument_id="ETH-USDT-SWAP")
     assert ctx.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
-    assert ctx.account_equity == Decimal("10000")
-    assert ctx.scope_capital_limit == Decimal("500")
-    assert ctx.per_trade_risk_limit == Decimal("25")
-    assert ctx.total_capital_limit == Decimal("500")
-    assert ctx.daily_loss_remaining_budget == Decimal("25")
-    assert ctx.reference_price == Decimal("3500")
-    assert ctx.protective_stop_price == Decimal("3400")
+    assert ctx.account_equity == ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY
 
 
-def test_integrated_replay_emits_offline_algebra_mode(
+def test_integrated_replay_without_boundary_fail_closed_sizing_context(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     _patch_replay_owners(monkeypatch)
@@ -41,6 +39,7 @@ def test_integrated_replay_emits_offline_algebra_mode(
     assert replay.intermediate is not None
     assert replay.intermediate.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
     assert replay.capital_risk_mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED in replay.evidence.reason_codes
 
 
 def test_offline_algebra_is_not_live_account_bound_token() -> None:

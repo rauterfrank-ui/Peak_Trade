@@ -1988,11 +1988,7 @@ def run_integrated_offline_trading_logic_replay_v1(
             dynamic_price_context=dynamic_price,
         )
     else:
-        capital_context = _crs_binding.default_offline_replay_capital_context_v0(
-            instrument_id=inp.instrument_id,
-            reference_price=reference_price,
-            protective_stop_price=protective_stop_price,
-        )
+        capital_context = None
     sizing_binding = _crs_binding.bind_capital_risk_sizing_offline_replay_evidence_v0(
         evidence,
         capital_context=capital_context,

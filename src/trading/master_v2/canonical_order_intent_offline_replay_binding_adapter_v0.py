@@ -86,9 +86,11 @@ def bind_canonical_order_intent_offline_replay_evidence_v0(
         map_decision_outcome_to_intent_action,
         map_selected_side_to_sizing_side,
     )
+    from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+        REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+    )
     from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
         RISK_SIZING_EFFECT_BOUND_OFFLINE,
-        default_offline_replay_capital_context_v0,
     )
 
     if not decision_outcome_is_actionable(evidence.decision_outcome):
@@ -130,9 +132,24 @@ def bind_canonical_order_intent_offline_replay_evidence_v0(
             intent_outcome="BLOCKED",
         )
 
-    ctx = capital_context or default_offline_replay_capital_context_v0(
-        instrument_id=evidence.instrument_id,
-    )
+    if capital_context is None:
+        finalized = finalize_offline_replay_decision_evidence_v1(
+            replace(
+                evidence,
+                reason_codes=tuple(
+                    dict.fromkeys((*evidence.reason_codes, REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED))
+                ),
+            )
+        )
+        return CanonicalOrderIntentOfflineReplayBindingResultV0(
+            evidence=finalized,
+            canonical_intent=None,
+            binding_applied=False,
+            order_intent_ref="",
+            order_intent_effect=ORDER_INTENT_EFFECT_NONE,
+            intent_outcome="BLOCKED",
+        )
+    ctx = capital_context
     sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
         decision=evidence,
         capital_context=ctx,
@@ -220,10 +237,10 @@ def evaluate_scenario_canonical_order_intent_v0(
     from decimal import Decimal
 
     from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
-        default_offline_replay_capital_context_v0,
+        isolated_offline_replay_fixture_capital_context_v0,
     )
 
-    ctx = default_offline_replay_capital_context_v0(
+    ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=evidence.instrument_id,
         reference_price=reference_price if reference_price is not None else Decimal("3500"),
     )

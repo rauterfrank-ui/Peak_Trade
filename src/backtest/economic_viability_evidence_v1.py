@@ -331,11 +331,16 @@ def _maybe_overlay_current_instrument_boundary_materialization_v1(
         else 10_000.0
     )
     output_dir = manifest_path.parent / "current_mv2_offline_boundary_state_files_v1"
+    from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+        ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
+    )
+
     materialized = materialize_current_instrument_crs_coi_boundary_state_files_v1(
         canonical_instrument_id=instrument_id,
         dataset_manifest_path=manifest_path,
         output_dir=output_dir,
         account_equity=initial_cash,
+        static_capital_risk_limits_lineage_ref=ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
     )
     overlay = materialized.mandatory_binding_overlay_v0()
     cfg_copy = dict(cfg)
