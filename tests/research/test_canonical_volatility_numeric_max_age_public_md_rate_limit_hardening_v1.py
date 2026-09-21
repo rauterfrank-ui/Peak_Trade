@@ -14,10 +14,13 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     build_campaign_authorization_artifact_v1,
     write_campaign_authorization_artifact_v1,
 )
-from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST,
-    BOUND_SESSION_IDS,
+from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
+    BOUND_CAMPAIGN_ID_V1 as BOUND_CAMPAIGN_ID,
+    BOUND_PREREGISTRATION_DIGEST_V1 as BOUND_PREREGISTRATION_DIGEST,
+    BOUND_SESSION_IDS_V1 as BOUND_SESSION_IDS,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
+    R1_MATERIALIZED_REPOSITORY_SHA,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.ledgers_v1 import (
     load_consumption_records_v1,
@@ -56,7 +59,7 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
 )
 
 ROOT = Path(__file__).resolve().parents[2]
-REPO_SHA = "4e587f8dbf72a77f6bef96c042c804d8fd6ba7dd"
+REPO_SHA = R1_MATERIALIZED_REPOSITORY_SHA
 ISSUED = datetime.now(timezone.utc) - timedelta(minutes=5)
 S1, S2 = BOUND_SESSION_IDS
 

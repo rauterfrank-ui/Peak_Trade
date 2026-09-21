@@ -1,0 +1,22 @@
+{
+  "artifact_digest": "8051f53ce6cbdea958b08f903af502df1ef33487801afdb0130b273174827404",
+  "campaign_id": "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387",
+  "early_estimate_producer_session_id": "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s01_10f3ae5d5e01",
+  "evidence_write_authorized": false,
+  "execution_authorized": false,
+  "late_age_observation_session_id": "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s02_21f278386d21",
+  "network_authorized": false,
+  "owner_policy": "R1_ABANDON_OLD_CAMPAIGN_AND_START_NEW_CAMPAIGN_FROM_FRESH_S01",
+  "preregistration_artifact_path": "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
+  "preregistration_digest": "68bbfdcbcc707e7e7992f800189c1824ee9ec3966dfa5864379685f09c2913a1",
+  "repository_sha": "90c1ffbcfe04482f1ed9c7ac424918dfea76e5c0",
+  "schema_version": "canonical_volatility_numeric_max_age_productive_campaign_active_binding/v1",
+  "session_01_id": "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s01_10f3ae5d5e01",
+  "session_02_id": "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s02_21f278386d21",
+  "session_ids": [
+    "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s01_10f3ae5d5e01",
+    "cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387_s02_21f278386d21"
+  ],
+  "status": "ACTIVE",
+  "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_b3d611d5ae819387/typed_volatility_persistence.jsonl"
+}

@@ -14,7 +14,6 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     DEFAULT_PRODUCTIVE_BRIDGE_VENUE_INSTRUMENT_ID,
     DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH,
     DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH,
-    SESSION_PREREGISTRATION_ARTIFACT_REL_PATH,
     SESSION_PREREGISTRATION_CAPABILITY_ID,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
@@ -23,13 +22,22 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     PUBLIC_MD_VENUE_SCOPE,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST,
+    ABANDONED_CAMPAIGN_ID,
+    ABANDONED_SESSION_IDS,
     BOUND_PUBLIC_MD_ENDPOINT_ALLOWLIST,
     BOUND_PUBLIC_MD_HOST,
     BOUND_PUBLIC_MD_METHOD_ALLOWLIST,
     BOUND_PUBLIC_MD_VENUE,
-    BOUND_SESSION_IDS,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
+    R1_MATERIALIZED_REPOSITORY_SHA,
+    R1_PREREGISTRATION_REL_PATH,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.identity_v1 import (
+    derive_r1_campaign_identity_v1,
+)
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.preregistration_v1 import (
+    build_r1_active_preregistration_payload_v1,
 )
 
 PACKAGE_MARKER = (
@@ -47,13 +55,27 @@ REVIEW_MODE_ID = (
 CLI_MODE = "productive-preregistered-session-run"
 PRODUCTIVE_BRIDGE_ACCUMULATE_CLI_MODE = "productive-bridge-accumulate"
 
+# Active identity mirrors governed R1 binding for the materialized repository SHA.
+# Runtime still loads/verifies the sole ACTIVE binding file (fail closed on drift).
+_R1_IDENTITY = derive_r1_campaign_identity_v1(repository_sha=R1_MATERIALIZED_REPOSITORY_SHA)
+_R1_PREREG = build_r1_active_preregistration_payload_v1(
+    repository_sha=R1_MATERIALIZED_REPOSITORY_SHA
+)
+
 BOUND_PREREGISTRATION_ID = SESSION_PREREGISTRATION_CAPABILITY_ID
-BOUND_PREREGISTRATION_DIGEST_V1 = BOUND_PREREGISTRATION_DIGEST
-BOUND_PREREGISTRATION_ARTIFACT_PATH = SESSION_PREREGISTRATION_ARTIFACT_REL_PATH
-BOUND_CAMPAIGN_ID_V1 = BOUND_CAMPAIGN_ID
-BOUND_SESSION_IDS_V1: tuple[str, ...] = BOUND_SESSION_IDS
-SESSION_01_ID = BOUND_SESSION_IDS[0]
-SESSION_02_ID = BOUND_SESSION_IDS[1]
+BOUND_PREREGISTRATION_DIGEST_V1 = str(_R1_PREREG["preregistration_digest"])
+BOUND_PREREGISTRATION_ARTIFACT_PATH = R1_PREREGISTRATION_REL_PATH
+BOUND_CAMPAIGN_ID_V1 = str(_R1_IDENTITY["campaign_id"])
+BOUND_SESSION_IDS_V1: tuple[str, ...] = (
+    str(_R1_IDENTITY["session_01_id"]),
+    str(_R1_IDENTITY["session_02_id"]),
+)
+SESSION_01_ID = BOUND_SESSION_IDS_V1[0]
+SESSION_02_ID = BOUND_SESSION_IDS_V1[1]
+
+# Tombstone aliases — never active; reactivation fail-closed via R1 gates.
+TOMBSTONE_ABANDONED_CAMPAIGN_ID = ABANDONED_CAMPAIGN_ID
+TOMBSTONE_ABANDONED_SESSION_IDS: tuple[str, ...] = ABANDONED_SESSION_IDS
 
 BOUND_VENUE = PUBLIC_MD_VENUE
 BOUND_VENUE_SCOPE = PUBLIC_MD_VENUE_SCOPE

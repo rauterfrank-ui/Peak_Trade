@@ -50,13 +50,23 @@ AUTHORIZATION_SINGLE_USE_PER_SESSION = True
 AUTHORIZATION_MAXIMUM_TOTAL_CONSUMPTIONS = 2
 MAXIMUM_SESSION_COUNT = 2
 
-BOUND_CAMPAIGN_ID = "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe"
-BOUND_SESSION_IDS: tuple[str, ...] = (
+# R1: previous productive campaign is a terminal tombstone only (never authorizeable).
+# Active campaign identity is resolved exclusively from the governed active-binding seam.
+ABANDONED_CAMPAIGN_ID = "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe"
+ABANDONED_SESSION_IDS: tuple[str, ...] = (
     "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s01_8a97f48c839c",
     "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe_s02_c02312c99747",
 )
-BOUND_PREREGISTRATION_DIGEST = "1cfc1698796b1b931077cd692c7b0e97bc401f626d7e7b17bba1a777b62a252f"
-BOUND_PREREGISTRATION_ARTIFACT_PATH = SESSION_PREREGISTRATION_ARTIFACT_REL_PATH
+ABANDONED_PREREGISTRATION_DIGEST = (
+    "1cfc1698796b1b931077cd692c7b0e97bc401f626d7e7b17bba1a777b62a252f"
+)
+ABANDONED_PREREGISTRATION_ARTIFACT_PATH = SESSION_PREREGISTRATION_ARTIFACT_REL_PATH
+
+# Backward-compat aliases — tombstone identity only; reactivation is fail-closed.
+BOUND_CAMPAIGN_ID = ABANDONED_CAMPAIGN_ID
+BOUND_SESSION_IDS: tuple[str, ...] = ABANDONED_SESSION_IDS
+BOUND_PREREGISTRATION_DIGEST = ABANDONED_PREREGISTRATION_DIGEST
+BOUND_PREREGISTRATION_ARTIFACT_PATH = ABANDONED_PREREGISTRATION_ARTIFACT_PATH
 
 BOUND_PRODUCTIVE_DESIGN_ID = PRODUCTIVE_DESIGN_ID
 BOUND_PRODUCTIVE_ACCUMULATION_CONTRACT_VERSION = PRODUCTIVE_ACCUMULATION_CONTRACT_VERSION
@@ -71,13 +81,23 @@ BOUND_DURABLE_LEDGER_PATH = DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH
 BOUND_JOIN_PATH = DEFAULT_JOIN_LEDGER_RELATIVE_PATH
 BOUND_QUARANTINE_PATH = DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH
 
-# Planned authorization ledger paths (typed here; not materialized by this capability).
-_AUTHORIZATION_DIR = (
+
+def authorization_ledger_paths_v1(campaign_id: str) -> tuple[str, str]:
+    """Campaign-scoped authorization ledger paths (not a second identity authority)."""
+    auth_dir = (
+        "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/"
+        f"campaigns/{str(campaign_id).strip()}/authorization"
+    )
+    return f"{auth_dir}/revocation_ledger.jsonl", f"{auth_dir}/consumption_ledger.jsonl"
+
+
+# Tombstone ledger path aliases (historical; not usable for active issuance).
+_ABANDONED_AUTHORIZATION_DIR = (
     "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/"
-    f"campaigns/{BOUND_CAMPAIGN_ID}/authorization"
+    f"campaigns/{ABANDONED_CAMPAIGN_ID}/authorization"
 )
-BOUND_REVOCATION_LEDGER_PATH = f"{_AUTHORIZATION_DIR}/revocation_ledger.jsonl"
-BOUND_CONSUMPTION_LEDGER_PATH = f"{_AUTHORIZATION_DIR}/consumption_ledger.jsonl"
+BOUND_REVOCATION_LEDGER_PATH = f"{_ABANDONED_AUTHORIZATION_DIR}/revocation_ledger.jsonl"
+BOUND_CONSUMPTION_LEDGER_PATH = f"{_ABANDONED_AUTHORIZATION_DIR}/consumption_ledger.jsonl"
 
 UNKNOWN_FIELD_POLICY = "REJECT_UNKNOWN_FIELDS"
 ORDERS_TECHNICALLY_EXCLUDED = True
