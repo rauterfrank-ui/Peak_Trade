@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1` |
+| `RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -70,7 +70,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GET_&#47;api&#47;v5&#47;public&#47;` |
+| _(none)_ |
 
 ## AFFECTED_SAFETY_SURFACES
 
@@ -82,7 +82,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `DATA_CONTRACT:universe_selection_readmodel_v1` |
+| `DATA_CONTRACT:dynamic_scope_state_v1` |
+| `DATA_CONTRACT:canonical_trading_decision_evidence_v1` |
 
 ## REVIEW_REQUIRED_ITEMS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- D3.1 bounded witness: operator regeneration of universe_selection_readmodel.v1 via scripts/ops/refresh_okx_market_dashboard_v1 on pinned workflow dashboard archive root. Market identity remains projection-only from universe selection. No D3.2/D3.3 or three-family host. Atlas is not canonical authority.
-- introduced_by=D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1
-- modified_by=D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1
+- D3.2 bounded witness: one productive decision host smoke on D3.1-pinned workflow dashboard archive root; genuine runtime regeneration and sibling export of dynamic_scope_state_v1.json and canonical_trading_decision_evidence.v1.json with in-host presentation materialization. No D3.3 invocation. Atlas is not canonical authority.
+- introduced_by=D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1
+- modified_by=D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

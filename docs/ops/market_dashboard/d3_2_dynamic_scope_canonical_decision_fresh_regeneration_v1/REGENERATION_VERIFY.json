@@ -1,0 +1,77 @@
+{
+  "wp_id": "D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "80700cb074fa0e49dfc9befbb4921a7ac21f0274",
+  "entrypoint": "scripts/ops/run_productive_decision_host_active_archive_three_family_binding_v1.py",
+  "entrypoint_subcommand": "smoke",
+  "archive_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/workflow_dashboard_v1_okx_fresh_20260724T214822Z",
+  "runtime_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_d3_2_runtime_80700cb",
+  "session_id": "d3-2-dynamic-scope-canonical-decision-80700cb",
+  "smoke_execution_count": 1,
+  "preflight_status": "PASS",
+  "smoke_status": "PASS",
+  "selected_future_symbol": "SATS-USDT-SWAP",
+  "selected_future_source": "archive:readmodels/universe_selection_readmodel.v1.json:selected_future.symbol",
+  "universe_reranking_performed": false,
+  "execution_reselection_performed": false,
+  "activation_enabled": true,
+  "network_session_allowed": false,
+  "genuine_regeneration_proven": true,
+  "old_timestamp_relabeled": false,
+  "same_cycle_proven": true,
+  "same_cycle_id": "d3-2-dynamic-scope-canonical-decision-80700cb:cycle:7",
+  "dynamic_scope": {
+    "runtime_state_root": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_d3_2_runtime_80700cb/runtime_state/v1/dynamic_scope",
+    "sibling_path": "readmodels/dynamic_scope_state_v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "source_producer_markers": {
+      "last_market_event_time": 1700000007.0,
+      "host_trading_epoch": 9,
+      "instrument_id": "SATS-USDT-SWAP",
+      "scope_session_id": "scsess-okx-SATS-USDT-SWAP-77bb72c34bbe5bd251c9efd0"
+    },
+    "presentation_generated_at": "2026-09-21T12:12:09.042582Z",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "canonical_decision": {
+    "runtime_source_dir": "/Users/frnkhrz/Library/Application Support/Peak_Trade/productive_decision_host_d3_2_runtime_80700cb/runtime_state/v1/canonical_decision_source",
+    "sibling_path": "readmodels/canonical_trading_decision_evidence.v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "source_producer_markers": {
+      "decision_id": "decision-c0d3ba06631ed0f0586ae8846c1c3743",
+      "decision_outcome": "enter_long",
+      "instrument_id": "SATS-USDT-SWAP",
+      "replay_id": "d3-2-dynamic-scope-canonical-decision-80700cb-cycle-8",
+      "trading_epoch": 8,
+      "order_effect": "NONE",
+      "runtime_effect": "NONE"
+    },
+    "presentation_generated_at": "2026-09-21T12:12:09.042582Z",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "optional_regime_bull_bear_switch": {
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "note": "Existing family_export_adapter side effect; not D3.2 program completion scope"
+  },
+  "optional_double_play": {
+    "exported": false,
+    "error_code": "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE",
+    "fail_closed": true
+  },
+  "d3_3_required_for_ds_cd": false,
+  "d3_3_started": false,
+  "trading_effects": false,
+  "execution_effects": false,
+  "orders": false,
+  "evidence_paths": {
+    "smoke_session_result": "docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/SMOKE_SESSION_RESULT.json",
+    "cycle_commit_trace": "docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/cycle_commit_trace.jsonl"
+  }
+}
