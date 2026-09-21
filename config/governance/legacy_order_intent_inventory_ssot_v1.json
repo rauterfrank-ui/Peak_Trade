@@ -269,19 +269,6 @@
       "rationale": "Bounded-pilot wiring to KrakenLive exists but legacy entrypoint guard blocks productive start."
     },
     {
-      "owner_id": "blocked.execution_simple",
-      "module_path": "src/execution_simple/pipeline.py",
-      "primary_symbols": [
-        "OrderIntent",
-        "ExecutionPipeline"
-      ],
-      "role": "PRODUCTIVE_BYPASS",
-      "reachability": "UNREACHABLE",
-      "authoritative_order_intent_decision": true,
-      "can_submit_orders": true,
-      "rationale": "Creates local OrderIntent; require_legacy_runtime_entrypoint_deauthorized blocks productive use."
-    },
-    {
       "owner_id": "src.trading.master_v2.legacy_runtime_entrypoint_guard_v0",
       "module_path": "src/trading/master_v2/legacy_runtime_entrypoint_guard_v0.py",
       "primary_symbols": [

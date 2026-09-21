@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Any, Union
 
-from src.execution_simple.types import Order, OrderSide, OrderType
+from src.risk_layer.order_input import Order, OrderSide, OrderType
 
 
 def to_order(order_input: Union[Order, dict]) -> Order:

@@ -27,7 +27,6 @@ PRODUCTIVE_CONSUMER_ROOTS: tuple[str, ...] = (
     "src/trading",
     "src/live",
     "src/execution",
-    "src/execution_simple",
 )
 
 _R6_PORTFOLIO_NON_AUTHORITY_HELPERS: frozenset[str] = frozenset(

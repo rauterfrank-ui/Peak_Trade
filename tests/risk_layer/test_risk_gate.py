@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.core.peak_config import PeakConfig
-from src.execution_simple.types import Order, OrderSide, OrderType
+from src.risk_layer.order_input import Order, OrderSide, OrderType
 from src.risk_layer.risk_gate import RiskGate
 
 

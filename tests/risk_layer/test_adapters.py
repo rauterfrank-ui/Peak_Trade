@@ -4,7 +4,7 @@ Tests for Risk Layer Adapters
 
 import pytest
 
-from src.execution_simple.types import Order, OrderSide, OrderType
+from src.risk_layer.order_input import Order, OrderSide, OrderType
 from src.risk_layer.adapters import order_to_dict, to_order
 
 

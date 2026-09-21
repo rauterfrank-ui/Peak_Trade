@@ -68,12 +68,12 @@
 1. `src/risk/README.md` (143 lines)
 2. `src/risk_layer/README.md` (194 lines)
 3. `src/execution/README.md` (61 lines)
-4. `src/execution_simple/README.md` (36 lines)
+4. ~~`src&#47;execution_simple&#47;README.md`~~ (removed post-census; was 36 lines) <!-- pt:ref-target-ignore -->
 
 **Deliverables:**
 - Clear distinction: `src/risk/` (backtest) vs `src/risk_layer/` (live)
 - Usage guidelines and examples
-- Clear distinction: `src/execution/` (production) vs `src/execution_simple/` (legacy)
+- Clear distinction: `src/execution/` (production) vs `src&#47;execution_simple&#47;` (legacy, removed)
 
 ---
 
@@ -93,7 +93,7 @@
 | EV-9002 | Ops drills & procedures | KILL_SWITCH_DRILL_PROCEDURE.md, ROLLBACK_PROCEDURE.md | FND-0005 |
 | EV-9003 | CI policy documentation | CI_POLICY_ENFORCEMENT.md | FND-0004 |
 | EV-9004 | Risk module clarity | src/risk/README.md, src/risk_layer/README.md | FND-0002 |
-| EV-9005 | Execution module clarity | src/execution/README.md, src/execution_simple/README.md | FND-0003 |
+| EV-9005 | Execution module clarity | src/execution/README.md | FND-0003 | <!-- pt:ref-target-ignore -->
 
 ---
 

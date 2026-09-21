@@ -146,7 +146,7 @@ The Peak_Trade system demonstrates **strong engineering practices** with a robus
    - READMEs created: src/risk/README.md, src/risk_layer/README.md
 
 3. **FND-0003 (P3) - Execution Module Clarity:** ✅ FIXED
-   - READMEs created: src/execution/README.md, src/execution_simple/README.md
+   - READMEs created: src/execution/README.md (execution_simple removed post-census) <!-- pt:ref-target-ignore -->
 
 4. **FND-0004 (P2) - CI Evidence:** ✅ FIXED
    - Documentation created: docs/ci/CI_POLICY_ENFORCEMENT.md

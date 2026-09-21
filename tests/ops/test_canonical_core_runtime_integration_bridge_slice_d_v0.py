@@ -12,13 +12,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-from datetime import datetime, timezone
-
 import pytest
 
 from src.execution.live_session import LiveSessionConfig, LiveSessionRunner
-from src.execution_simple import ExecutionContext, ExecutionMode, ExecutionPipeline
-from src.execution_simple.gates import ResearchOnlyGate
 from src.governance.runbook_progress_registry_v1 import (
     RegistryEntryClass,
     SLICE_D_HEADING,
@@ -68,9 +64,8 @@ LIVE_GATES_MODULE = REPO_ROOT / "src" / "live" / "live_gates.py"
 RUN_EXECUTION_SESSION = REPO_ROOT / "scripts" / "run_execution_session.py"
 RUN_SHADOW_PAPER_SESSION = REPO_ROOT / "scripts" / "run_shadow_paper_session.py"
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
-RUN_EXECUTION_SIMPLE = REPO_ROOT / "scripts" / "run_execution_simple_dry_run.py"
-
 TEST_PACKAGE_MARKER = "CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_D_GUARD_V0=true"
+EXECUTION_SIMPLE_ROOT = REPO_ROOT / "src" / "execution_simple"
 
 
 def _load_script(path: Path):
@@ -180,40 +175,22 @@ def test_live_session_runner_from_config_blocked_productively(
         LiveSessionRunner.from_config(config)
 
 
-def test_execution_simple_pipeline_execute_blocked(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv(PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY_ENV, raising=False)
-    pipeline = ExecutionPipeline(gates=[ResearchOnlyGate(block_research_in_live=True)])
-    context = ExecutionContext(
-        mode=ExecutionMode.PAPER,
-        ts=datetime.now(timezone.utc),
-        symbol="ETH-USD",
-        price=100.0,
-        tags=set(),
-    )
-    with pytest.raises(LegacyRuntimeEntrypointBlockedError):
-        pipeline.execute(target_position=1.0, current_position=0.0, context=context)
+def test_execution_simple_package_absent_from_tree() -> None:
+    assert not EXECUTION_SIMPLE_ROOT.exists()
 
 
-def test_execution_simple_builder_blocked(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delenv(PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY_ENV, raising=False)
-
-    class _Cfg:
-        def get(self, key: str, default=None):
-            defaults = {
-                "execution.mode": "paper",
-                "execution.slippage_bps": 2.0,
-                "execution.fee_bps": 0.0,
-                "execution.min_notional": 10.0,
-                "execution.lot_size": 0.0001,
-                "execution.min_qty": 0.0001,
-                "execution.gates.block_research_in_live": True,
-            }
-            return defaults.get(key, default)
-
-    from src.execution_simple.builder import build_execution_pipeline_from_config
-
-    with pytest.raises(LegacyRuntimeEntrypointBlockedError):
-        build_execution_pipeline_from_config(_Cfg())
+def test_legacy_execution_simple_entrypoints_remain_deauthorized() -> None:
+    for entrypoint_id in (
+        ENTRYPOINT_EXECUTION_SIMPLE_PIPELINE,
+        ENTRYPOINT_EXECUTION_SIMPLE_BUILDER,
+        ENTRYPOINT_RUN_EXECUTION_SIMPLE_DRY_RUN_CLI,
+    ):
+        blocked = evaluate_legacy_runtime_entrypoint_block(
+            entrypoint_id,
+            operation="post_removal_inventory",
+            allow_test_only=False,
+        )
+        assert blocked.blocked is True
 
 
 @pytest.mark.parametrize(
@@ -222,10 +199,6 @@ def test_execution_simple_builder_blocked(monkeypatch: pytest.MonkeyPatch) -> No
         ("scripts/run_execution_session.py", ["--strategy", "ma_crossover", "--steps", "1"]),
         ("scripts/run_shadow_paper_session.py", ["--strategy", "ma_crossover", "--duration", "1"]),
         ("scripts/run_testnet_session.py", ["--strategy", "ma_crossover", "--duration", "1"]),
-        (
-            "scripts/run_execution_simple_dry_run.py",
-            ["--symbol", "ETH-USD", "--target", "1", "--current", "0", "--price", "100"],
-        ),
     ],
 )
 def test_legacy_runtime_cli_start_blocked(
@@ -239,7 +212,6 @@ def test_legacy_runtime_cli_start_blocked(
         "scripts/run_execution_session.py": ENTRYPOINT_RUN_EXECUTION_SESSION_CLI,
         "scripts/run_shadow_paper_session.py": ENTRYPOINT_RUN_SHADOW_PAPER_SESSION_CLI,
         "scripts/run_testnet_session.py": ENTRYPOINT_RUN_TESTNET_SESSION_CLI,
-        "scripts/run_execution_simple_dry_run.py": ENTRYPOINT_RUN_EXECUTION_SIMPLE_DRY_RUN_CLI,
     }
     assert legacy_runtime_cli_start_exit_code(entrypoint_map[script_relpath]) == 1
     result = subprocess.run(
