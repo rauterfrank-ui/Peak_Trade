@@ -1935,6 +1935,26 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md
     notes: No PEAK_TRADE_CANONICAL_PRESENTATION_*_RATIFICATION.json on origin/main.
 
+  - id: RUNTIME_COMPONENT:o2_supervised_landscape_dashboard_http_host_v1
+    kind: RUNTIME_COMPONENT
+    name: O2 supervised landscape dashboard HTTP host v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: presentation_only_not_trading_authority
+    source_paths:
+      - src/ops/canonical_local_launcher_and_process_supervision_v1/dashboard_http_host_v1.py
+    evidence_sources:
+      - src/ops/canonical_local_launcher_and_process_supervision_v1/dashboard_http_host_v1.py
+      - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+      - src/webui/market_dashboard_landscape_host_contract_v1.py
+    notes: >-
+      O2 supervised graphical market landscape HTTP host (presentation-only).
+      Serves /landscape HTML and /api/market/landscape/ohlcv poll from O5 durable
+      read model with host contract O2_SUPERVISED_DASHBOARD_HOST isolated from
+      canonical landscape shell archive poll. Not trading authority. Implementation
+      is not activation. ATLAS_AUTHORITY=NONE.
+
   - id: PHASE:z2cn
     kind: PHASE
     name: 11.13.5.Z2CN
