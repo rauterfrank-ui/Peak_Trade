@@ -6174,8 +6174,15 @@ entities:
     current_status: CURRENT_NONCANONICAL
     module_role: archive_sibling_export
     source_paths:
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/__init__.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/constants_v1.py
       - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/replay_commit_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_binding_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/constants_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/cycle_session_v1.py
       - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/models_v1.py
     evidence_sources:
       - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/constants_v1.py
       - tests/ops/test_regime_bull_bear_switch_archive_sibling_exporter_v1.py
