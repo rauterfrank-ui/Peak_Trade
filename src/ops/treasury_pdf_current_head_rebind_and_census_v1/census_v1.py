@@ -303,6 +303,14 @@ def _capability_matrix() -> dict[str, dict[str, str]]:
                 "c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1"
             ),
         },
+        "CURRENT_PRODUCTIVE_BASE_NUMERIC_BINDING": {
+            "classification": IMPLEMENTED,
+            "reachability": "E4_PRODUCTIVE_HOST_JOIN_BASE_NUMERIC_BOUND",
+            "authority_owner": (
+                "governed_productive_account_equity_authority_producer_v1/"
+                "current_productive_available_for_sizing_base_binding_v1"
+            ),
+        },
     }
 
 
@@ -317,6 +325,7 @@ def _pdf_requirement_buckets() -> dict[str, list[str]]:
         "PL_TF_002_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN_CONSTANT",
         "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN",
         "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_TRANSPORT_BOUND",
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_NUMERIC_BINDING_WIRED",
     ]
     partial = [
         "TS_INV_THEMATIC_OFFLINE_AND_CONTRACT_SEAMS_WITHOUT_PRODUCTIVE_E2E",
@@ -324,7 +333,7 @@ def _pdf_requirement_buckets() -> dict[str, list[str]]:
         "AT08_AT09_OFFLINE_DRAFT_VALIDATION_WITHOUT_POST_SUBMIT_VENUE_CONFIRMATION",
         "EXTERNAL_CAPITAL_DECREASE_S2_RUNTIME_JOIN_OFFLINE_INJECTED_ONLY",
         "CREDIBLE_DEPLETION_TO_RISK_CAPACITY_PRODUCTIVE_LOOP",
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_NUMERIC_VALUE_UNBOUND",
+        "CURRENT_PRODUCTIVE_CT_U04_P01_ELIGIBILITY_INPUTS_FOR_SIZING_PRODUCE",
     ]
     not_proven = [
         "CURRENT_END_TO_END_TREASURY_GATE",

@@ -41,9 +41,10 @@ def test_adjudication_covers_phases_and_blocker() -> None:
     assert matrix["TREASURY_PHASE_2_READ_ONLY_RECONCILIATION"]["classification"] == "IMPLEMENTED"
     assert matrix["TREASURY_PHASE_3_SHADOW_ENFORCEMENT"]["classification"] == "IMPLEMENTED"
     assert adj["TREASURY_INTERFERENCE_PROOF"]["TREASURY_INTERFERENCE_PROOF"] == "PASS"
+    assert adj["EARLIEST_REAL_TREASURY_BLOCKER"] == "NONE"
     assert (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_UNBOUND"
-        in (adj["EARLIEST_REAL_TREASURY_BLOCKER"])
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_NUMERIC_BINDING_WIRED"
+        in adj["PDF_REQUIREMENTS_ALREADY_SATISFIED"]
     )
     assert adj["CURRENT_RISK_ADMISSION_BINDING"]["C08_SIZING_SOURCE_BOUND"] == "true"
     assert (
