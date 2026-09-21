@@ -6311,6 +6311,33 @@ entities:
       bind_market_universe_slots consumer availability proven on D3-pinned archive.
       AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d4_2_execution_reconciliation_archive_sibling_export_and_presentation_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: D4.2 execution reconciliation archive sibling export and presentation witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: archive_sibling_export
+    modified_by: D4_2_EXECUTION_RECONCILIATION_ARCHIVE_SIBLING_EXPORT_AND_PRESENTATION_WITNESS_V1
+    source_paths:
+      - src/ops/execution_reconciliation_archive_sibling_exporter_v1/__init__.py
+      - src/ops/execution_reconciliation_archive_sibling_exporter_v1/constants_v1.py
+      - src/ops/execution_reconciliation_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/execution_reconciliation_archive_sibling_exporter_v1/replay_commit_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/execution_reconciliation_presentation_projection_materializer_v1.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d4_2_execution_reconciliation_archive_sibling_export_and_presentation_witness_v1/REGENERATION_VERIFY.json
+      - tests/ops/test_execution_reconciliation_archive_sibling_exporter_v1.py
+    notes: >-
+      Bounded D4.2 witness: post-commit export of order-intent binding facts
+      (order_intent_effect/order_intent_ref plus canonical_order_intent cross-check)
+      to readmodels/execution_reconciliation.v1.json via productive decision host
+      family_export_adapter_v1; in-host materialization, loader, and
+      bind_market_universe_slots consumer availability proven in bounded tests.
+      reconciliation_status not exported unless present on source (optional partial).
+      AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1
