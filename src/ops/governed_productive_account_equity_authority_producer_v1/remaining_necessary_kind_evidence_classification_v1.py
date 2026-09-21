@@ -353,7 +353,9 @@ def _assert_standing_pins() -> None:
     if RATIFIED_CLASSIFIED_KIND_SET:
         raise RemainingNecessaryKindEvidenceClassificationError("KIND_SET_MUST_REMAIN_EMPTY")
     if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
-        raise RemainingNecessaryKindEvidenceClassificationError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
+        raise RemainingNecessaryKindEvidenceClassificationError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise RemainingNecessaryKindEvidenceClassificationError(
             "MAPPING_MUST_REMAIN_NOT_CANONICALLY_VALID"

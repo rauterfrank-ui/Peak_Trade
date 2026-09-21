@@ -391,7 +391,9 @@ def _assert_standing_pins() -> None:
     if EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError("EQ_TREATED_AS_SOURCE")
     if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
-        raise CurrentProductiveAccountEquitySourceArchitectureError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
+        raise CurrentProductiveAccountEquitySourceArchitectureError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError("MAPPING_MUST_REMAIN_INVALID")
     if MAPPING_PROVEN is not False:

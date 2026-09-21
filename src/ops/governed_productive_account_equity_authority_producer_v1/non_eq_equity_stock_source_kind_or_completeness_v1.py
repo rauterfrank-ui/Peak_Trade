@@ -348,7 +348,9 @@ def _assert_standing_pins() -> None:
     if SOURCE_KIND_COMPLETENESS_RATIFICATION != "INSUFFICIENT_NOT_KIND_SET_CLOSURE":
         raise NonEqEquityStockSourceKindOrCompletenessError("COMPLETENESS_RATIFICATION_DRIFT")
     if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
-        raise NonEqEquityStockSourceKindOrCompletenessError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
+        raise NonEqEquityStockSourceKindOrCompletenessError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise NonEqEquityStockSourceKindOrCompletenessError("MAPPING_MUST_REMAIN_INVALID")
     if MAPPING_PROVEN is not False:

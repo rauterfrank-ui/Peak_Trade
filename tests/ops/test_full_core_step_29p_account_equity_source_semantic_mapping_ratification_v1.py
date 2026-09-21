@@ -127,9 +127,7 @@ def test_adjudication_no_canonically_valid_mapping() -> None:
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER_CANDIDATE == (
         "ops.governed_productive_account_equity_authority_producer_v1"
     )
-    assert RUNNING_EQUITY_SOURCE_OBJECT == (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1"
-    )
+    assert RUNNING_EQUITY_SOURCE_OBJECT == ("CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1")
     assert "details[ccy=USDC].availEq" in RUNNING_EQUITY_SOURCE_FIELD_OR_DERIVATION
     assert RUNNING_EQUITY_SOURCE_SEMANTICS == "CURRENCY_SCOPED_CROSS_MARGIN_FREE_MARGIN"
     assert MAPPING_PROVEN is True
@@ -152,9 +150,7 @@ def test_adjudication_no_canonically_valid_mapping() -> None:
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     assert NEXT_STEP_REQUIRES_OWNER_GO is True
     dag = live_admission_gap_dag_v1()
-    assert dag["ADJUDICATION_RESULT"] == (
-        "CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSED"
-    )
+    assert dag["ADJUDICATION_RESULT"] == ("CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSED")
     assert dag["SOURCE_CANDIDATE_COUNT"] == 16
     assert dag["MAPPING_PROVEN"] is True
     assert dag["IMPLEMENTATION_OF_VALUE_BINDING"] is True

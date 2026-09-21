@@ -296,7 +296,9 @@ def _assert_standing_pins() -> None:
             "KIND_SET_MUST_REMAIN_EMPTY"
         )
     if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
-        raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
+        raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
             "MAPPING_MUST_REMAIN_NOT_CANONICALLY_VALID"
@@ -429,7 +431,9 @@ def adjudicate_candidate_architectures_v1() -> dict[str, Any]:
             "KIND_SET_RESOLVED_NOT_FALSE"
         )
     if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
-        raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
+        raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise KindSetAndAccountEquitySourceMappingArchitectureRatificationError(
             "MAPPING_MUST_REMAIN_NOT_CANONICALLY_VALID"

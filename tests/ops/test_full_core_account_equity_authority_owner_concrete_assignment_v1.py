@@ -117,9 +117,7 @@ def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> N
     assert PRODUCER_IMPLEMENTATION_PRESENT is False
     assert GOVERNED_PRODUCER_CREATED is False
     assert GOVERNED_PRODUCTIVE_SOURCE_PRESENT is False
-    assert RUNNING_EQUITY_SOURCE_OBJECT == (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1"
-    )
+    assert RUNNING_EQUITY_SOURCE_OBJECT == ("CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1")
     assert SOURCE_SELECTED is False
     assert MAPPING_PROVEN is True
     assert IMPLEMENTATION_OF_VALUE_BINDING is True
