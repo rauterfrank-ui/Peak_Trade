@@ -33,6 +33,7 @@ from src.webui.market_dashboard_landscape_v2.universe_rail_presentation_v1 impor
 from src.webui.market_dashboard_landscape_v2.unavailable import (
     unavailable_universe_ranking,
 )
+from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     READMODEL_FILENAME,
     READMODELS_DIRNAME,
@@ -268,6 +269,52 @@ def test_membership_descriptive_not_eligibility_label() -> None:
     view = _present(snap)
     assert view["universe_rail"]["membership_in_universe_label"] == "IN_UNIVERSE"
     assert "eligibility_label" not in view["universe_rail"]
+
+
+def _ranking_board_empty_html_text(html: str) -> str:
+    chunk = html.split('data-mdl-field="ranking_board_empty"', 1)[1]
+    return chunk.split(">", 1)[1].split("<", 1)[0].strip()
+
+
+def test_empty_ranking_board_uses_display_state_not_slot_availability() -> None:
+    snap = unavailable_universe_ranking(
+        availability=Availability.NOT_BOUND,
+        generated_at=STAMP,
+        reason="UNIVERSE_NOT_BOUND",
+    )
+    view = _present(snap)
+    board = view["universe_rail"]["ranking_board"]
+    assert board["row_count"] == 0
+    assert board["display_state"] == "MISSING"
+    assert view["universe"]["availability_label"] == "NOT_BOUND"
+    assert board["display_state"] != view["universe"]["availability_label"]
+
+
+def test_ssr_ranking_board_empty_binds_display_state(
+    archive_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(archive_root))
+    slots = bind_market_universe_slots(generated_at=STAMP, archive_root=archive_root)
+    view = _present(slots["universe_ranking"])
+    expected = view["universe_rail"]["ranking_board"]["display_state"]
+    assert expected == "MISSING"
+    assert view["universe"]["availability_label"] == "MISSING_SOURCE"
+
+    html = TestClient(create_app()).get("/market").text
+    assert 'data-mdl-field="ranking_board_empty"' in html
+    assert _ranking_board_empty_html_text(html) == expected
+    assert _ranking_board_empty_html_text(html) != view["universe"]["availability_label"]
+
+
+def test_invalid_empty_board_display_state_matches_template_field() -> None:
+    snap = unavailable_universe_ranking(
+        availability=Availability.INVALID,
+        generated_at=STAMP,
+        reason="INVALID_PROVENANCE",
+    )
+    view = _present(snap)
+    assert view["universe_rail"]["ranking_board"]["display_state"] == "INVALID"
+    assert view["universe"]["availability_label"] == "INVALID"
 
 
 def test_market_route_html_includes_top20_panel(archive_root: Path) -> None:

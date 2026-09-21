@@ -1952,8 +1952,9 @@ entities:
     notes: >-
       Dashboard-only consumer presentation for universe_selection_readmodel.v1
       (TOP-20 board, selected future, membership descriptive labels, Universe
-      Context selection_reason summary from projected selection_reason). No ranking/
-      selection authority. ATLAS_AUTHORITY=NONE.
+      Context selection_reason summary from projected selection_reason; empty TOP-20
+      panel message from ranking_board.display_state). No ranking/ selection
+      authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_system_observability_completion_v1
     kind: RUNTIME_COMPONENT
