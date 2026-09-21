@@ -19,6 +19,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     EMPTY_ROWS_PROVE_KIND_ABSENCE,
     EMPTY_ROWS_PROVE_ZERO_EVENTS,
     PAGINATION_EXHAUSTION_PROVES_COMPLETENESS,
+    PAGINATION_EXHAUSTION_PROVES_QUERY_TRAVERSAL_COMPLETED,
     RAW_EQ_SOURCE_AUTHORITY,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.equity_affecting_event_taxonomy_contract_v1 import (
@@ -49,6 +50,12 @@ CANONICAL_P1_MAX_EVIDENCE_CAMPAIGN_PACK = (
 )
 CANONICAL_P1_CURRENCY_DOMAIN_WITNESS_PACK = (
     "evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z"
+)
+CANONICAL_P1_LIABILITY_EVENT_CLASS_WITNESS_PACK = (
+    "evidence/ops/full_core_p1_liability_event_class_governance_witness_v1/2026-09-21T040000Z"
+)
+CANONICAL_P1_BOUNDED_TRAVERSAL_WITNESS_PACK = (
+    "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z"
 )
 
 SCHEMA_CLASS = "P1_COMPLETENESS_WITNESS_FOUNDATION_V1"
@@ -136,6 +143,8 @@ class P1SealedWitnessEvidenceV1:
     d5_binding_present: bool
     campaign_witness: Mapping[str, Any]
     currency_domain_witness: Mapping[str, Any]
+    liability_event_class_witness: Mapping[str, Any]
+    bounded_traversal_witness: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -273,7 +282,37 @@ def evaluate_currency_domain_witness_v1(
 def evaluate_liability_event_class_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
-    del evidence
+    liability_witness = evidence.liability_event_class_witness
+    if liability_witness and _as_bool_token(
+        liability_witness.get("P1_LIABILITY_EVENT_CLASS_COMPLETENESS_PROVEN")
+    ):
+        if not _as_bool_token(liability_witness.get("GLOBAL_KIND_SET_UNCHANGED")):
+            return _root_eval(
+                root_id=ROOT_LIABILITY_EVENT_CLASS,
+                status=WITNESS_CONFLICTED,
+                blocker_class=BLOCKER_GOVERNANCE,
+                missing_evidence="GLOBAL_KIND_SET_UNCHANGED_REQUIRED",
+                detail="P1 liability witness must not uplift global EQUITY_STOCK kind set",
+                governance_required=True,
+            )
+        return _root_eval(
+            root_id=ROOT_LIABILITY_EVENT_CLASS,
+            status=WITNESS_COMPLETE,
+            detail=(
+                "P1 ratified liability event query-class set resolved without global "
+                "EQUITY_STOCK kind-set uplift"
+            ),
+        )
+    if liability_witness:
+        missing = str(liability_witness.get("LIABILITY_EVENT_CLASS_MISSING_FACT", ""))
+        return _root_eval(
+            root_id=ROOT_LIABILITY_EVENT_CLASS,
+            status=WITNESS_INCOMPLETE,
+            blocker_class=BLOCKER_GOVERNANCE,
+            missing_evidence="P1_LIABILITY_EVENT_CLASS_GOVERNANCE_WITNESS_V1",
+            detail=missing or "P1 liability event-class witness adjudication incomplete",
+            governance_required=True,
+        )
     if RATIFIED_CLASSIFIED_KIND_SET and RATIFIED_CLASSIFIED_KIND_SET_RESOLVED:
         return _root_eval(
             root_id=ROOT_LIABILITY_EVENT_CLASS,
@@ -284,10 +323,10 @@ def evaluate_liability_event_class_witness_v1(
         root_id=ROOT_LIABILITY_EVENT_CLASS,
         status=WITNESS_INCOMPLETE,
         blocker_class=BLOCKER_GOVERNANCE,
-        missing_evidence="RATIFIED_CLASSIFIED_KIND_SET",
+        missing_evidence="RATIFIED_P1_LIABILITY_EVENT_QUERY_CLASS_SET",
         detail=(
-            "Liability event class completeness requires ratified classified kind set; "
-            "seam present, ratification absent"
+            "Liability event class completeness requires P1-scoped ratified query-class "
+            "set or global classified kind set; seam present, ratification absent"
         ),
         governance_required=True,
     )
@@ -296,6 +335,28 @@ def evaluate_liability_event_class_witness_v1(
 def evaluate_pagination_exhaustion_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    traversal = evidence.bounded_traversal_witness
+    if traversal and _as_bool_token(
+        traversal.get("P1_PAGINATION_QUERY_TRAVERSAL_EXHAUSTION_PROVEN")
+    ):
+        if PAGINATION_EXHAUSTION_PROVES_QUERY_TRAVERSAL_COMPLETED is not True:
+            return _root_eval(
+                root_id=ROOT_PAGINATION,
+                status=WITNESS_INCOMPLETE,
+                blocker_class=BLOCKER_EVIDENCE,
+                missing_evidence="P1_QUERY_TRAVERSAL_LAW_PIN_DRIFT",
+                detail="Repository law requires query traversal pin for P1 pagination witness",
+            )
+        return _root_eval(
+            root_id=ROOT_PAGINATION,
+            status=WITNESS_COMPLETE,
+            detail=str(
+                traversal.get(
+                    "P1_PAGINATION_DETAIL",
+                    "P1 bound query traversal exhaustion proven; not domain completeness",
+                )
+            ),
+        )
     campaign = evidence.campaign_witness
     if campaign and _as_bool_token(campaign.get("PAGINATION_QUERY_TRAVERSAL_EXHAUSTION_PROVEN")):
         if PAGINATION_EXHAUSTION_PROVES_COMPLETENESS is not True:
@@ -345,6 +406,18 @@ def evaluate_pagination_exhaustion_witness_v1(
 def evaluate_event_ordering_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    traversal = evidence.bounded_traversal_witness
+    if traversal and _as_bool_token(traversal.get("P1_EVENT_ORDERING_COMPLETENESS_PROVEN")):
+        return _root_eval(
+            root_id=ROOT_EVENT_ORDERING,
+            status=WITNESS_COMPLETE,
+            detail=str(
+                traversal.get(
+                    "P1_EVENT_ORDERING_DETAIL",
+                    "P1 event ordering witness proven under bound query-class semantics",
+                )
+            ),
+        )
     campaign = evidence.campaign_witness
     if campaign and _as_bool_token(campaign.get("EVENT_ORDERING_COMPLETENESS_PROVEN")):
         return _root_eval(
@@ -377,6 +450,18 @@ def evaluate_event_ordering_witness_v1(
 def evaluate_observation_freshness_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    traversal = evidence.bounded_traversal_witness
+    if traversal and _as_bool_token(traversal.get("P1_OBSERVATION_FRESHNESS_COMPLETENESS_PROVEN")):
+        return _root_eval(
+            root_id=ROOT_OBSERVATION_FRESHNESS,
+            status=WITNESS_COMPLETE,
+            detail=str(
+                traversal.get(
+                    "P1_OBSERVATION_FRESHNESS_DETAIL",
+                    "P1-bound observation freshness witness proven",
+                )
+            ),
+        )
     campaign = evidence.campaign_witness
     if campaign and _as_bool_token(campaign.get("D5_CHECKPOINT_FRESHNESS_PROVEN")):
         return _root_eval(
@@ -441,6 +526,19 @@ def derive_time_domain_witness_v1(
     pagination: P1RootWitnessEvaluationV1,
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1DerivedWitnessEvaluationV1:
+    traversal = evidence.bounded_traversal_witness
+    if traversal and _as_bool_token(traversal.get("P1_TIME_DOMAIN_EXHAUSTION_PROVEN")):
+        return _derived_eval(
+            predicate_id=DERIVED_TIME_DOMAIN,
+            status=WITNESS_COMPLETE,
+            derived_from=(ROOT_PAGINATION,),
+            detail=str(
+                traversal.get(
+                    "P1_TIME_DOMAIN_DETAIL",
+                    "P1 time-domain exhaustion proven under bound witness semantics",
+                )
+            ),
+        )
     campaign = evidence.campaign_witness
     if campaign and _as_bool_token(campaign.get("TIME_DOMAIN_EXHAUSTION_PROVEN")):
         return _derived_eval(
@@ -570,6 +668,26 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         if verify_manifest_sha256_v1(store_root=currency_pack) == 0:
             currency_domain_witness = _read_json(currency_witness_path)
 
+    liability_event_class_witness: dict[str, Any] = {}
+    liability_pack = root / CANONICAL_P1_LIABILITY_EVENT_CLASS_WITNESS_PACK
+    liability_witness_path = (
+        liability_pack / "p1_liability_event_class_witness_adjudication_v1.json"
+    )
+    liability_manifest_path = liability_pack / "MANIFEST.sha256"
+    if liability_witness_path.is_file() and liability_manifest_path.is_file():
+        if verify_manifest_sha256_v1(store_root=liability_pack) == 0:
+            liability_event_class_witness = _read_json(liability_witness_path)
+
+    bounded_traversal_witness: dict[str, Any] = {}
+    traversal_pack = root / CANONICAL_P1_BOUNDED_TRAVERSAL_WITNESS_PACK
+    traversal_witness_path = (
+        traversal_pack / "p1_bounded_query_traversal_witness_adjudication_v1.json"
+    )
+    traversal_manifest_path = traversal_pack / "MANIFEST.sha256"
+    if traversal_witness_path.is_file() and traversal_manifest_path.is_file():
+        if verify_manifest_sha256_v1(store_root=traversal_pack) == 0:
+            bounded_traversal_witness = _read_json(traversal_witness_path)
+
     return P1SealedWitnessEvidenceV1(
         cd_claims=_read_json(root / CANONICAL_CD_PACK / "claims.json"),
         usdc_claims=_read_json(usdc_pack / "claims.json"),
@@ -583,6 +701,8 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         d5_binding_present=d5_present,
         campaign_witness=campaign_witness,
         currency_domain_witness=currency_domain_witness,
+        liability_event_class_witness=liability_event_class_witness,
+        bounded_traversal_witness=bounded_traversal_witness,
     )
 
 

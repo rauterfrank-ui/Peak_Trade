@@ -118,17 +118,27 @@ def test_sealed_cd_and_usdc_evidence_stays_unknown() -> None:
         REPO_ROOT
         / "evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z"
     )
+    traversal_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z"
+    )
     payload = load_sealed_interest_accrued_p1_input_v1(repo_root=REPO_ROOT)
     assert payload.cd_row_count == 0
     assert payload.usdc_scoped_row_count == 0
     assert payload.qualifying_event_count == 0
-    assert payload.pagination_complete is False
+    traversal_pack_present = (traversal_pack / "MANIFEST.sha256").is_file()
+    assert payload.pagination_complete is traversal_pack_present
     currency_pack_present = (currency_witness_pack / "MANIFEST.sha256").is_file()
     assert payload.currency_domain_complete is currency_pack_present
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
     assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
     assert evaluation.p1_status_after == P1_STATUS_UNKNOWN
-    if currency_pack_present:
+    if traversal_pack_present:
+        assert evaluation.first_missing_completeness_predicate in (
+            "TIME_DOMAIN_COMPLETE",
+            "OBSERVATION_FRESHNESS_COMPLETE",
+        )
+    elif currency_pack_present:
         assert evaluation.first_missing_completeness_predicate == REQUIREMENT_LIABILITY_EVENT_CLASS
     else:
         assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
