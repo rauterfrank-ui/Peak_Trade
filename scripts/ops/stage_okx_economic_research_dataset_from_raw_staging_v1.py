@@ -42,9 +42,112 @@ DEFAULT_CONSERVATIVE_HALF_SPREAD_BPS = 5.0
 CANONICAL_FEE_BPS = 10.0
 CANONICAL_SLIPPAGE_BPS = 5.0
 
+# Offline research staging has no selection/trading authority and must not
+# invent, reselect, or substitute instrument identity.
+ECONOMIC_RESEARCH_STAGING_SELECTION_AUTHORITY = False
+ECONOMIC_RESEARCH_STAGING_TRADING_AUTHORITY = False
+ECONOMIC_RESEARCH_STAGING_MAY_RESELECT = False
+ECONOMIC_RESEARCH_STAGING_MAY_SUBSTITUTE_INSTRUMENT = False
+INSTRUMENT_BINDING_FILENAME = "INSTRUMENT_BINDING.json"
+DEFAULT_CONTRACT_TYPE = "perpetual"
+
 
 class StagingError(Exception):
     """Fail-closed economic research dataset staging error."""
+
+
+@dataclass(frozen=True)
+class EconomicResearchStagingInstrumentIdentityV1:
+    """Validated instrument identity sourced from raw INSTRUMENT_BINDING.json."""
+
+    native_instrument_id: str
+    canonical_instrument_id: str
+    selection_id: str
+    selection_integrity_digest: str
+    contract_type: str
+    source_artifact: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "native_instrument_id": self.native_instrument_id,
+            "canonical_instrument_id": self.canonical_instrument_id,
+            "selection_id": self.selection_id,
+            "selection_integrity_digest": self.selection_integrity_digest,
+            "contract_type": self.contract_type,
+            "source_artifact": self.source_artifact,
+        }
+
+
+def _require_nonempty_str(payload: Mapping[str, Any], key: str) -> str:
+    value = payload.get(key)
+    if not isinstance(value, str) or not value.strip():
+        raise StagingError(f"instrument_binding_{key}_missing_or_invalid")
+    text = value.strip()
+    if text != value:
+        raise StagingError(f"instrument_binding_{key}_untrimmed_forbidden")
+    return text
+
+
+def resolve_economic_research_staging_instrument_identity_v1(
+    *,
+    instrument_binding: Mapping[str, Any],
+    ingestion_config: Mapping[str, Any],
+    instrument_binding_path: Path,
+) -> EconomicResearchStagingInstrumentIdentityV1:
+    """Fail-closed identity from INSTRUMENT_BINDING.json; no ETH/default fallback."""
+    if ECONOMIC_RESEARCH_STAGING_SELECTION_AUTHORITY is not False:
+        raise StagingError("economic_research_staging_selection_authority_not_false")
+    if ECONOMIC_RESEARCH_STAGING_TRADING_AUTHORITY is not False:
+        raise StagingError("economic_research_staging_trading_authority_not_false")
+    if ECONOMIC_RESEARCH_STAGING_MAY_RESELECT is not False:
+        raise StagingError("economic_research_staging_may_reselect_not_false")
+    if ECONOMIC_RESEARCH_STAGING_MAY_SUBSTITUTE_INSTRUMENT is not False:
+        raise StagingError("economic_research_staging_may_substitute_not_false")
+    if not isinstance(instrument_binding, Mapping):
+        raise StagingError("instrument_binding_not_object")
+    if instrument_binding.get("validated") is not True:
+        raise StagingError("instrument_binding_not_validated")
+
+    native = _require_nonempty_str(instrument_binding, "native_instrument_id")
+    canonical = _require_nonempty_str(instrument_binding, "canonical_instrument_id")
+    selection_id = str(instrument_binding.get("selection_id") or "").strip()
+    selection_digest = str(instrument_binding.get("selection_integrity_digest") or "").strip()
+
+    if not native.endswith("-SWAP"):
+        raise StagingError("instrument_binding_native_not_swap")
+    if okx_ingest.is_forbidden_instrument(native, "SWAP", native.split("-", 1)[0]):
+        raise StagingError(f"instrument_binding_native_forbidden:{native}")
+
+    config_native = str(ingestion_config.get("native_instrument_id") or "").strip()
+    config_canonical = str(ingestion_config.get("canonical_instrument_id") or "").strip()
+    if not config_native or not config_canonical:
+        raise StagingError("ingestion_config_instrument_identity_missing")
+    if config_native != native:
+        raise StagingError("instrument_binding_native_ingestion_config_mismatch")
+    if config_canonical != canonical:
+        raise StagingError("instrument_binding_canonical_ingestion_config_mismatch")
+
+    metadata = instrument_binding.get("instrument_metadata")
+    contract_type = DEFAULT_CONTRACT_TYPE
+    if isinstance(metadata, Mapping):
+        meta_contract = str(metadata.get("canonical_contract_type") or "").strip()
+        if meta_contract:
+            contract_type = meta_contract
+        meta_native = str(metadata.get("instId") or "").strip()
+        if meta_native and meta_native != native:
+            raise StagingError("instrument_binding_metadata_native_mismatch")
+        meta_canonical = str(metadata.get("canonical_instrument_id") or "").strip()
+        if meta_canonical and meta_canonical != canonical:
+            raise StagingError("instrument_binding_metadata_canonical_mismatch")
+
+    return EconomicResearchStagingInstrumentIdentityV1(
+        native_instrument_id=native,
+        canonical_instrument_id=canonical,
+        selection_id=selection_id,
+        selection_integrity_digest=selection_digest,
+        contract_type=contract_type,
+        source_artifact=str(instrument_binding_path),
+    )
 
 
 @dataclass(frozen=True)
@@ -448,12 +551,31 @@ def run_economic_research_staging_from_raw(
         }
 
     ingestion_config_path = raw_staging_root / "INGESTION_CONFIG.json"
-    instrument_binding_path = raw_staging_root / "INSTRUMENT_BINDING.json"
-    if not ingestion_config_path.is_file() or not instrument_binding_path.is_file():
-        raise StagingError("raw_staging_metadata_missing")
+    instrument_binding_path = raw_staging_root / INSTRUMENT_BINDING_FILENAME
+    if not ingestion_config_path.is_file():
+        raise StagingError("raw_staging_ingestion_config_missing")
+    if not instrument_binding_path.is_file():
+        raise StagingError("instrument_binding_missing")
 
-    ingestion_config = json.loads(ingestion_config_path.read_text(encoding="utf-8"))
-    instrument_binding = json.loads(instrument_binding_path.read_text(encoding="utf-8"))
+    try:
+        ingestion_config = json.loads(ingestion_config_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise StagingError("ingestion_config_malformed") from exc
+    try:
+        instrument_binding = json.loads(instrument_binding_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise StagingError("instrument_binding_malformed") from exc
+    if not isinstance(ingestion_config, dict):
+        raise StagingError("ingestion_config_not_object")
+    if not isinstance(instrument_binding, dict):
+        raise StagingError("instrument_binding_not_object")
+
+    identity = resolve_economic_research_staging_instrument_identity_v1(
+        instrument_binding=instrument_binding,
+        ingestion_config=ingestion_config,
+        instrument_binding_path=instrument_binding_path,
+    )
+
     data_period = ingestion_config["data_period"]
     start_utc = str(data_period["start_utc"])
     end_utc = str(data_period["end_utc"])
@@ -483,9 +605,12 @@ def run_economic_research_staging_from_raw(
     provenance_payload = {
         "source_type": "operator_staged_futures_v1",
         "source_venue": "OKX",
-        "native_instrument_id": okx_ingest.NATIVE_INSTRUMENT_ID,
-        "canonical_instrument_id": okx_ingest.CANONICAL_INSTRUMENT_ID,
-        "contract_type": okx_ingest.CANONICAL_CONTRACT_TYPE,
+        "native_instrument_id": identity.native_instrument_id,
+        "canonical_instrument_id": identity.canonical_instrument_id,
+        "contract_type": identity.contract_type,
+        "selection_id": identity.selection_id,
+        "selection_integrity_digest": identity.selection_integrity_digest,
+        "instrument_identity_source": INSTRUMENT_BINDING_FILENAME,
         "acquisition_method": "okx_public_rest_api_v5",
         "authenticated": False,
         "credentials_used": False,
@@ -509,12 +634,12 @@ def run_economic_research_staging_from_raw(
         provenance_ref=str(raw_staging_root / "reports" / "PROVENANCE.json"),
     )
     descriptor = ds.VersionedFuturesDatasetDescriptorV1(
-        dataset_id=f"{okx_ingest.CANONICAL_INSTRUMENT_ID}_{ds.DEFAULT_DATASET_VERSION}",
+        dataset_id=f"{identity.canonical_instrument_id}_{ds.DEFAULT_DATASET_VERSION}",
         dataset_version=ds.DEFAULT_DATASET_VERSION,
         dataset_schema_version=ds.DATASET_SCHEMA_VERSION,
         dataset_digest=dataset_digest,
-        instrument_id=okx_ingest.CANONICAL_INSTRUMENT_ID,
-        contract_type=okx_ingest.CANONICAL_CONTRACT_TYPE,
+        instrument_id=identity.canonical_instrument_id,
+        contract_type=identity.contract_type,
         futures_only=True,
         bitcoin_direction_allowed=False,
         venue_id="OKX",
@@ -537,14 +662,14 @@ def run_economic_research_staging_from_raw(
         bars=bars,
         descriptor=descriptor,
         provenance=provenance,
-        instrument_id=okx_ingest.CANONICAL_INSTRUMENT_ID,
+        instrument_id=identity.canonical_instrument_id,
         profile_binding=profile_binding,
     )
     runtime_rejection = ds.evaluate_admissible_versioned_futures_dataset_v1(
         bars=bars,
         descriptor=descriptor,
         provenance=provenance,
-        instrument_id=okx_ingest.CANONICAL_INSTRUMENT_ID,
+        instrument_id=identity.canonical_instrument_id,
         profile_binding=ds.default_runtime_profile_binding_v1(),
     )
 
@@ -594,6 +719,16 @@ def run_economic_research_staging_from_raw(
         "raw_staging_root": str(raw_staging_root),
         "target_dataset_root": str(resolved_target),
         "dataset_version": dataset_version,
+        "native_instrument_id": identity.native_instrument_id,
+        "canonical_instrument_id": identity.canonical_instrument_id,
+        "selection_id": identity.selection_id,
+        "instrument_identity_source": INSTRUMENT_BINDING_FILENAME,
+        "economic_research_staging_selection_authority": ECONOMIC_RESEARCH_STAGING_SELECTION_AUTHORITY,
+        "economic_research_staging_trading_authority": ECONOMIC_RESEARCH_STAGING_TRADING_AUTHORITY,
+        "economic_research_staging_may_reselect": ECONOMIC_RESEARCH_STAGING_MAY_RESELECT,
+        "economic_research_staging_may_substitute_instrument": (
+            ECONOMIC_RESEARCH_STAGING_MAY_SUBSTITUTE_INSTRUMENT
+        ),
         "join_policies": ingestion_config.get("join_policies", {}),
         "economic_research_execution_cost": {
             "spread_model_version": cost.RESEARCH_SPREAD_MODEL_VERSION,
@@ -629,9 +764,11 @@ def run_economic_research_staging_from_raw(
         "dataset_profile": DATASET_PROFILE,
         "dataset_version": dataset_version,
         "dataset_schema_version": ds.DATASET_SCHEMA_VERSION,
-        "instrument_id": okx_ingest.CANONICAL_INSTRUMENT_ID,
-        "native_instrument_id": okx_ingest.NATIVE_INSTRUMENT_ID,
-        "contract_type": okx_ingest.CANONICAL_CONTRACT_TYPE,
+        "instrument_id": identity.canonical_instrument_id,
+        "native_instrument_id": identity.native_instrument_id,
+        "contract_type": identity.contract_type,
+        "selection_id": identity.selection_id,
+        "instrument_identity_source": INSTRUMENT_BINDING_FILENAME,
         "futures_only": True,
         "data_period": integrity.data_period,
         "bar_granularity": integrity.bar_granularity,
@@ -727,6 +864,10 @@ def run_economic_research_staging_from_raw(
         "manifest_digest": manifest_digest,
         "dataset_version": dataset_version,
         "version_conflict_note": conflict_note,
+        "native_instrument_id": identity.native_instrument_id,
+        "canonical_instrument_id": identity.canonical_instrument_id,
+        "selection_id": identity.selection_id,
+        "instrument_identity_source": INSTRUMENT_BINDING_FILENAME,
         "admissibility_status": admissibility.admissibility_status.value,
         "runtime_rejection_status": runtime_rejection.admissibility_status.value,
         "integrity_report": integrity.__dict__,
