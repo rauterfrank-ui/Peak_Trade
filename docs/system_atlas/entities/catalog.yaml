@@ -6285,6 +6285,31 @@ entities:
       for Universe/Ranking and Market Identity without repeating D3.2 smoke.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d4_1_risk_sizing_capital_archive_sibling_export_and_presentation_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: D4.1 risk sizing capital archive sibling export and presentation witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: archive_sibling_export
+    modified_by: D4_1_RISK_SIZING_CAPITAL_ARCHIVE_SIBLING_EXPORT_AND_PRESENTATION_WITNESS_V1
+    source_paths:
+      - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/constants_v1.py
+      - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/replay_commit_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/risk_sizing_capital_presentation_projection_materializer_v1.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d4_1_risk_sizing_capital_archive_sibling_export_and_presentation_witness_v1/REGENERATION_VERIFY.json
+      - docs/ops/market_dashboard/d4_1_risk_sizing_capital_archive_sibling_export_and_presentation_witness_v1/SMOKE_SESSION_RESULT.json
+      - tests/ops/test_risk_sizing_capital_archive_sibling_exporter_v1.py
+    notes: >-
+      Bounded D4.1 witness: post-commit export of CapitalRiskSizingDecisionV1 from
+      replay intermediate to readmodels/risk_sizing_capital.v1.json via productive
+      decision host family_export_adapter_v1; in-host materialization and loader;
+      bind_market_universe_slots consumer availability proven on D3-pinned archive.
+      AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1

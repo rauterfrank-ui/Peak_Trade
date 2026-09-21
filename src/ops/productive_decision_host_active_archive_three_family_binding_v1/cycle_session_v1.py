@@ -233,6 +233,7 @@ def run_productive_host_smoke_session_v1(
             last_ds = None
             last_cd = None
             last_dp = None
+            last_rs = None
             mids = list(mid_prices)[: int(max_cycles)]
             if not mids:
                 raise ProductiveHostAuthorizationError("SMOKE_MIDS_REQUIRED")
@@ -294,6 +295,7 @@ def run_productive_host_smoke_session_v1(
                 last_cd = families.get("canonical_decision")
                 last_rg = families.get("regime_bull_bear_switch")
                 last_dp = families.get("double_play")
+                last_rs = families.get("risk_sizing_capital")
 
                 trace = CycleCommitTraceV1(
                     cycle_id=cycle_id,
@@ -324,6 +326,7 @@ def run_productive_host_smoke_session_v1(
             result.dynamic_scope = last_ds
             result.canonical_decision = last_cd
             result.double_play = last_dp
+            result.risk_sizing_capital = last_rs
             result.notes = tuple(notes)
             result.errors = tuple(errors)
             result.ok = committed > 0 and not any(

@@ -21,9 +21,13 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     FAMILY_DOUBLE_PLAY,
     FAMILY_DYNAMIC_SCOPE,
     FAMILY_REGIME_BULL_BEAR_SWITCH,
+    FAMILY_RISK_SIZING_CAPITAL,
 )
 from src.ops.regime_bull_bear_switch_archive_sibling_exporter_v1.exporter_v1 import (
     export_regime_bull_bear_switch_to_archive_sibling_v1,
+)
+from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.exporter_v1 import (
+    export_risk_sizing_capital_to_archive_sibling_from_replay_commit_v1,
 )
 from src.ops.double_play_archive_sibling_exporter_v1.exporter_v1 import (
     export_double_play_display_to_archive_sibling_from_replay_commit_v1,
@@ -62,6 +66,13 @@ from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projec
 )
 from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     materialize_bull_bear_regime_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
+    materialize_risk_sizing_capital_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
+    STORAGE_RELATIVE_PATH as RISK_SIZING_PRESENTATION_STORAGE_RELATIVE_PATH,
+    try_load_risk_sizing_capital_presentation_projection_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as REGIME_PRESENTATION_STORAGE_RELATIVE_PATH,
@@ -327,6 +338,55 @@ def export_families_after_runtime_commit_v1(
                 cursor["double_play_cycle_id"] = cycle_id
                 cursor["double_play_digest"] = dp.source_digest
     results[FAMILY_DOUBLE_PLAY] = dp
+
+    # --- risk_sizing_capital (CapitalRiskSizingDecisionV1 on replay intermediate) ---
+    rs = FamilyExportResultV1(
+        family_id=FAMILY_RISK_SIZING_CAPITAL,
+        exportable=replay_intermediate is not None,
+        exported=False,
+        materialized=False,
+        loader_ok=False,
+        cycle_id=cycle_id,
+    )
+    if replay_intermediate is None:
+        rs.skipped_reason = "replay_intermediate_missing"
+        rs.error_code = "RISK_SIZING_REPLAY_COMMIT_REQUIRED"
+    else:
+        prior = str(cursor.get("risk_sizing_capital_cycle_id") or "")
+        if prior and prior > cycle_id:
+            rs.error_code = "STALE_CYCLE_EXPORT_REJECTED"
+            rs.detail = f"cursor={prior}:cycle={cycle_id}"
+        else:
+            out = export_risk_sizing_capital_to_archive_sibling_from_replay_commit_v1(
+                archive_root=archive.archive_root,
+                replay_intermediate=replay_intermediate,
+                source_label=f"replay_commit:{cycle_id}",
+            )
+            rs.exported = bool(out.exported)
+            rs.source_digest = str(out.source_payload_digest or "")
+            rs.target_path = str(out.target_path or "")
+            rs.error_code = str(out.error_code or "")
+            rs.detail = str(out.failure_reason or "")
+            if rs.exported:
+                mat = materialize_risk_sizing_capital_presentation_projection_v1(
+                    archive.archive_root,
+                    generated_at=ts,
+                    effective_at=ts,
+                    source_reference=rs.target_path or None,
+                )
+                rs.materialized = bool(mat.written)
+                rs.projection_path = str(
+                    Path(archive.archive_root) / RISK_SIZING_PRESENTATION_STORAGE_RELATIVE_PATH
+                )
+                if not mat.written:
+                    rs.detail = f"materialize:{mat.status}:{','.join(mat.errors)}"
+                loaded = try_load_risk_sizing_capital_presentation_projection_v1(
+                    Path(archive.archive_root)
+                )
+                rs.loader_ok = bool(getattr(loaded, "loaded", False))
+                cursor["risk_sizing_capital_cycle_id"] = cycle_id
+                cursor["risk_sizing_capital_digest"] = rs.source_digest
+    results[FAMILY_RISK_SIZING_CAPITAL] = rs
 
     persist_export_cursor_v1(Path(state_roots.evidence_session_root), cursor)
     return results
