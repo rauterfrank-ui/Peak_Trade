@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=10
-ATLAS_CHANGED_RELATION_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CURRENT_CAPITAL_RISK_SIZING_HISTORICAL_DEFAULT_DEAUTHORIZATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1`.
 
 ## Workflow
 
@@ -40,24 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1` |
-| `GATE:full_core_capital_admission_v1` |
-| `GATE:portfolio_capital_reservation_budget_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:mv2_capital_risk_sizing` |
-| `RUNTIME_COMPONENT:mv2_integrated_replay` |
-| `RUNTIME_COMPONENT:mv2_offline_boundary_adapters` |
-| `RUNTIME_COMPONENT:ddo_capture_v0` |
-| `SUBSYSTEM:master_v2` |
+| `RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_ddo_capture_observes_integrated_replay` |
-| `REL:r_enter_live_29p_join_consumes_portfolio_budget` |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -87,8 +76,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:full_core_capital_admission_v1` |
-| `GATE:portfolio_capital_reservation_budget_v1` |
+| _(none)_ |
 
 ## AFFECTED_SCHEMAS
 
@@ -104,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Deauthorize historical technical defaults 25/500/100/10000 from CURRENT capital/risk/sizing decision paths; isolated offline-replay fixture binding only; productive limits fail-closed until authorized producer. Navigation-only Atlas updates; no new risk policy; adverse_exit_distance=80.0 unchanged; no live/testnet/order authority. ATLAS_AUTHORITY=NONE.
-- introduced_by=CURRENT_CAPITAL_RISK_SIZING_HISTORICAL_DEFAULT_DEAUTHORIZATION_V1
-- modified_by=CURRENT_CAPITAL_RISK_SIZING_HISTORICAL_DEFAULT_DEAUTHORIZATION_V1
+- Docs-only pointer reconciliation: Landscape closeout #6690 vs post-closeout Presentation-Ops #6697-#6705; CURRENT origin/main doc pointer f3ced3c5; no Landscape UI slice; STOP_IDLE preserved; ATLAS_AUTHORITY=NONE.
+- introduced_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
+- modified_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

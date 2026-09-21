@@ -128,6 +128,7 @@ authority and must not be read as activation or next-step instructions.
 | [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../ops/registry/DOCS_TRUTH_MAP.md) | Docs drift registry; not a runbook |
 | [`docs/ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md`](../ops/specs/GOVERNANCE_VERIFICATION_MINIMUM_LOCAL_CI_DEDUP_V1.md) | Local CI dedup navigation |
 | [`docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md`](../ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md) | Landscape Dashboard consumer docs; read-only / non-authority |
+| [`docs/ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md`](../ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md) | Factual pointer reconciliation (Landscape closeout vs post-closeout Presentation-Ops); navigation only |
 | [`docs/ops/market_dashboard/PEAK_TRADE_PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1.md`](../ops/market_dashboard/PEAK_TRADE_PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1.md) | Professional workstation plan/boundary for Landscape V2; navigation only; read-only / non-authority |
 | [`docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md`](../runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md) | Python launcher/interpreter contract |
 | [`docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md`](../ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md) | Navigation to C1 mark-to-mark identity primitive; not a trading-decision owner |

@@ -3,52 +3,24 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CURRENT_CAPITAL_RISK_SIZING_HISTORICAL_DEFAULT_DEAUTHORIZATION_V1
-modified_by: CURRENT_CAPITAL_RISK_SIZING_HISTORICAL_DEFAULT_DEAUTHORIZATION_V1
+introduced_by: LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
+modified_by: LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Deauthorize historical technical defaults 25/500/100/10000 from CURRENT
-  capital/risk/sizing decision paths; isolated offline-replay fixture binding
-  only; productive limits fail-closed until authorized producer. Navigation-only
-  Atlas updates; no new risk policy; adverse_exit_distance=80.0 unchanged; no
-  live/testnet/order authority. ATLAS_AUTHORITY=NONE.
+  Docs-only pointer reconciliation: Landscape closeout #6690 vs post-closeout
+  Presentation-Ops #6697-#6705; CURRENT origin/main doc pointer f3ced3c5; no
+  Landscape UI slice; STOP_IDLE preserved; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  - CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
-  - GATE:full_core_capital_admission_v1
-  - GATE:portfolio_capital_reservation_budget_v1
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  - RUNTIME_COMPONENT:mv2_capital_risk_sizing
-  - RUNTIME_COMPONENT:mv2_integrated_replay
-  - RUNTIME_COMPONENT:mv2_offline_boundary_adapters
-  - RUNTIME_COMPONENT:ddo_capture_v0
-  - SUBSYSTEM:master_v2
-changed_relations:
-  - REL:r_ddo_capture_observes_integrated_replay
-  - REL:r_enter_live_29p_join_consumes_portfolio_budget
-  - REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
+  - RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1
+changed_relations: []
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
-affected_safety_surfaces:
-  - GATE:full_core_capital_admission_v1
-  - GATE:portfolio_capital_reservation_budget_v1
+affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-  - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
-  - id: GATE:full_core_capital_admission_v1
-  - id: GATE:portfolio_capital_reservation_budget_v1
-  - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  - id: RUNTIME_COMPONENT:mv2_capital_risk_sizing
-  - id: RUNTIME_COMPONENT:mv2_integrated_replay
-  - id: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
-  - id: RUNTIME_COMPONENT:ddo_capture_v0
-  - id: SUBSYSTEM:master_v2
-reviewed_relations:
-  - id: REL:r_ddo_capture_observes_integrated_replay
-  - id: REL:r_enter_live_29p_join_consumes_portfolio_budget
-  - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
+  - id: RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1
+reviewed_relations: []

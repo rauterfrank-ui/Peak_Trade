@@ -50,6 +50,22 @@ Discovery / archive evidence owners (reuse; not parallel SSOT):
 - `docs/ops/market_dashboard/market_dashboard_projection_octet_runtime_verify_v1/` (B2; `#5711`)
 - `docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/` (path discovery; `#5712`)
 
+### CURRENT pointer supersession (LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1)
+
+The table rows above through **Implementation authorized by this document = NO** describe the **import / discovery snapshot** (SHA `6a9a3f10b81ab8d870245dc10ea74433e1f5365b`, `#5712`). They remain frozen historical inventory; do not silently delete them.
+
+**Superseding CURRENT facts** (verified on `origin/main` at `f3ced3c5ba146b6f7f26f7c6587fa44947270ee1`; navigation: `docs/ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md`):
+
+| Topic | Import-time table claim | CURRENT `origin/main` fact |
+| --- | --- | --- |
+| Governed materializer invocation | Non-test call-sites `0`; `TEST_ONLY_PATH` | **#6697** adds Owner-GO-gated operational invocation: `scripts/ops/run_operational_presentation_materializer_invocation_v1.py` → `run_operational_presentation_materializer_invocation_v1` → octet orchestrator (`AUTHORITY_EFFECT=NONE`; not trading activation) |
+| Octet orchestrator CLI | Not in import table | `scripts/ops/run_presentation_projection_octet_orchestrator_v1.py` (library + CLI; dry-run default) |
+| Archive sibling export + witnesses | Not executed at discovery | **#6701–#6705** bounded D4 witnesses + MANIFEST finalize under operator archive roots (non-authoritative presentation artifacts) |
+| Landscape dashboard consumer | N/A here | **COMPLETE** at **#6690**; `NEXT_ACTION=STOP_IDLE`; `CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT=0` |
+| Productive activation | Blocked | **Still blocked** without separate scoped Owner-GO; governed ops paths do not authorize live/testnet/order effect |
+
+Missing projection files in a given operator archive still correctly yield dashboard `MISSING_SOURCE`. Frozen discovery JSON under `market_dashboard_projection_octet_materialization_path_discovery_v1/` keeps its recorded `origin_main_sha`; reconcile via this supersession block, not silent rewrite.
+
 ### Authority boundary (immutable)
 
 ``` text

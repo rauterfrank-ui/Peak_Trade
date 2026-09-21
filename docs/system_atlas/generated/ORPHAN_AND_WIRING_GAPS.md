@@ -71,6 +71,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_professional_workstation_presentation_v2 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_professional_workstation_presentation_v2 | STATUS=OPEN (not proven) |  |

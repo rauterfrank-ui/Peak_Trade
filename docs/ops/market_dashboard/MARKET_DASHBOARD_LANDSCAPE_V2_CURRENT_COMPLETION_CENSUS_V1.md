@@ -9,7 +9,8 @@ CENSUS_MODE=READ_ONLY_POST_SLICE_RECONCILIATION
 STALE_INVENTORY_SUPERSEDED=docs/ops/market_dashboard/market_dashboard_missing_source_not_bound_inventory_v1/INVENTORY.json
 ```
 
-**Base:** `origin/main` at census time `b81d03a4e7169b20f212e8cf80bd581e96e19fc4`  
+**Historical evidence base (frozen):** `origin/main` at census time `b81d03a4e7169b20f212e8cf80bd581e96e19fc4` (PR **#6690** tip; do not rewrite this line to a newer SHA).  
+**CURRENT doc pointer reconciliation:** `docs/ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md`  
 **Scope:** Consumer-closeout only — no new producers, no authority, no domain recomputation.
 
 ## Surface census (12 UI regions)
