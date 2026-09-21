@@ -1,0 +1,34 @@
+{
+  "wp_id": "D4_4_SAFETY_END_TO_END_TO_NEXT_REAL_BLOCKER_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "536c5d3595e7b94c62acd53cde01e1f6f30c0ffa",
+  "invocation_path": "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py:export_families_after_runtime_commit_v1",
+  "domain_authority": "src.risk_layer.kill_switch",
+  "domain_source_primary": "ReplayExecutionSafetyV1 at integrated replay commit (typed_enter_hold_required_v1 / reason_codes)",
+  "domain_source_cross_check": "CanonicalTradingDecisionEvidenceV1.killswitch_boundary_ref when killswitch_boundary_effect=BOUND_OFFLINE",
+  "presentation_field_mapping": "veto_active=typed_enter_hold_required_v1; kill_switch_state=KillSwitchState.KILLED|ACTIVE.name",
+  "bounded_test_witness": {
+    "test_module": "tests/ops/test_safety_authority_archive_sibling_exporter_v1.py",
+    "scenario": "integrated_offline_replay_normal_boundary",
+    "sibling_path": "readmodels/safety_authority_fields.v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "bind_market_universe_slots_availability": "AVAILABLE",
+    "kill_switch_state": "ACTIVE",
+    "veto_active": false,
+    "presentation_path": "readmodels/safety_authority.v1.json",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "trading_effects": false,
+  "execution_effects": false,
+  "orders": false,
+  "evidence_chain": [
+    "replay_execution_safety_v1",
+    "readmodels/safety_authority_fields.v1.json",
+    "materialize_safety_authority_presentation_projection_v1",
+    "try_load_safety_authority_presentation_projection_v1",
+    "bind_market_universe_slots.safety_authority"
+  ]
+}

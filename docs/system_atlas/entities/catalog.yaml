@@ -6365,6 +6365,33 @@ entities:
       No registry/latest/filesystem discovery; cross-sectional-shaped artifacts
       rejected. AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d4_4_safety_archive_sibling_export_and_presentation_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: D4.4 safety archive sibling export and presentation witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: archive_sibling_export
+    modified_by: D4_4_SAFETY_END_TO_END_TO_NEXT_REAL_BLOCKER_V1
+    source_paths:
+      - src/ops/safety_authority_archive_sibling_exporter_v1/__init__.py
+      - src/ops/safety_authority_archive_sibling_exporter_v1/constants_v1.py
+      - src/ops/safety_authority_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/safety_authority_archive_sibling_exporter_v1/replay_commit_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/safety_authority_presentation_projection_materializer_v1.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d4_4_safety_archive_sibling_export_and_presentation_witness_v1/REGENERATION_VERIFY.json
+      - tests/ops/test_safety_authority_archive_sibling_exporter_v1.py
+    notes: >-
+      Bounded D4.4 witness: post-commit export of ReplayExecutionSafetyV1 plus
+      killswitch_boundary_ref from CanonicalTradingDecisionEvidenceV1 to
+      readmodels/safety_authority_fields.v1.json via productive decision host
+      family_export_adapter_v1; in-host materialization, loader, and
+      bind_market_universe_slots consumer availability proven in bounded tests.
+      Family-specific adapter mapping only; no KillSwitch instantiation or
+      boundary re-evaluation. AUTHORITY_EFFECT=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1
