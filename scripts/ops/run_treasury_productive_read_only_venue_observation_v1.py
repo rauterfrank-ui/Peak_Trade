@@ -12,6 +12,18 @@ from pathlib import Path
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def _head_sha() -> str:
+    proc = subprocess.run(
+        ["git", "-C", str(_REPO_ROOT), "rev-parse", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        raise SystemExit("HEAD_SHA_RESOLVE_FAILED")
+    return (proc.stdout or "").strip()
+
+
 def _origin_main_sha() -> str:
     proc = subprocess.run(
         ["git", "-C", str(_REPO_ROOT), "rev-parse", "origin/main"],
@@ -47,7 +59,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--execute-network", action="store_true")
     args = parser.parse_args(argv)
 
-    bound_sha = str(args.bound_origin_main_sha or "").strip() or _origin_main_sha()
+    bound_sha = str(args.bound_origin_main_sha or "").strip()
+    if not bound_sha:
+        bound_sha = _head_sha() if args.execute_network else _origin_main_sha()
     if str(args.wp_owner_go or "").strip() not in ALLOWED_WP_OWNER_GOS:
         print(f"WP_OWNER_GO_NOT_AUTHORIZED:{args.wp_owner_go}", file=sys.stderr)
         return 2

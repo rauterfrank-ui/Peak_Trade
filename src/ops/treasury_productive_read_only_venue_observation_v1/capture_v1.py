@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import time
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any
 
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
@@ -49,9 +50,15 @@ from src.ops.treasury_productive_read_only_venue_observation_v1.pre_network_gate
     build_treasury_productive_pre_network_gate_proof_v1,
     merge_session_gate_facts_v1,
 )
+from src.ops.treasury_productive_read_only_venue_observation_v1.runtime_integrity_v1 import (
+    TreasuryProductiveBranchTipIntegrityBackendV1,
+    assert_treasury_productive_branch_tip_integrity_v1,
+)
 from src.ops.treasury_productive_read_only_venue_observation_v1.separation_matrix_v1 import (
     build_treasury_separation_matrix_v1,
 )
+
+_REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
 def _observation_identity_v1(*, origin_main_sha: str, funding_body_sha256: str) -> str:
@@ -70,11 +77,22 @@ def execute_treasury_productive_read_only_venue_observation_v1(
 ) -> dict[str, Any]:
     if str(wp_owner_go or "").strip() not in ALLOWED_WP_OWNER_GOS:
         raise TreasuryProductiveReadOnlyVenueObservationError("WP_OWNER_GO_NOT_AUTHORIZED")
+    effective_integrity = integrity_backend
+    bound_sha = str(origin_main_sha or "").strip().lower()
+    if execute_network is True and effective_integrity is None:
+        bound_sha = assert_treasury_productive_branch_tip_integrity_v1(
+            declared_origin_main_sha=bound_sha,
+            repo_root=_REPO_ROOT,
+        )
+        effective_integrity = TreasuryProductiveBranchTipIntegrityBackendV1(
+            repo_root=_REPO_ROOT,
+            declared_sha=bound_sha,
+        )
     gate = build_treasury_productive_pre_network_gate_proof_v1(
         wp_owner_go=wp_owner_go,
         session_owner_go=session_owner_go,
-        origin_main_sha=origin_main_sha,
-        integrity_backend=integrity_backend,
+        origin_main_sha=bound_sha if execute_network is True else origin_main_sha,
+        integrity_backend=effective_integrity,
     )
     if execute_network is not True:
         sep = build_treasury_separation_matrix_v1(
@@ -94,10 +112,10 @@ def execute_treasury_productive_read_only_venue_observation_v1(
     decision_id = f"treasury-ro-obs-{str(origin_main_sha or '')[:12]}"
     with open_pl_tf_002_productive_read_only_get_session_v1(
         owner_go=session_owner_go,
-        origin_main_sha=origin_main_sha,
+        origin_main_sha=bound_sha,
         acquire_credential=True,
         backend=os_native_backend,
-        integrity_backend=integrity_backend,  # type: ignore[arg-type]
+        integrity_backend=effective_integrity,  # type: ignore[arg-type]
     ) as session:
         gate = merge_session_gate_facts_v1(
             gate,
@@ -110,9 +128,9 @@ def execute_treasury_productive_read_only_venue_observation_v1(
         transport = session.transport
         if not isinstance(transport, FullCoreProductiveReadOnlyGetTransportV1):
             raise TreasuryProductiveReadOnlyVenueObservationError("TRANSPORT_TYPE_MISMATCH")
-        if transport.max_request_count > MAX_NETWORK_REQUEST_COUNT:
+        if transport.max_request_count < MAX_NETWORK_REQUEST_COUNT:
             raise TreasuryProductiveReadOnlyVenueObservationError(
-                "TRANSPORT_MAX_REQUEST_BUDGET_DRIFT"
+                "TRANSPORT_MAX_REQUEST_BUDGET_TOO_LOW"
             )
 
         account_uid = resolve_account_identity_uid_from_config_get_v1(
@@ -126,6 +144,8 @@ def execute_treasury_productive_read_only_venue_observation_v1(
         network_count = int(transport.request_count)
         if network_count < 1:
             raise TreasuryProductiveReadOnlyVenueObservationError("NETWORK_REQUEST_COUNT_ZERO")
+        if network_count > MAX_NETWORK_REQUEST_COUNT:
+            raise TreasuryProductiveReadOnlyVenueObservationError("NETWORK_REQUEST_COUNT_EXCEEDED")
         if "POST" in {m.upper() for m in transport.methods_used}:
             raise TreasuryProductiveReadOnlyVenueObservationError("POST_METHOD_DETECTED")
 
