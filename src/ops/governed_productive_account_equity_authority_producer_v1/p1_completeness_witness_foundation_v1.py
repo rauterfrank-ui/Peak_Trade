@@ -28,6 +28,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.equity_aff
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_observation_s0_runtime_binding_gate_v1 import (
     resolve_canonical_d4_d5_genesis_runtime_store_root_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
+    verify_manifest_sha256_v1,
+)
 
 CANONICAL_CD_PACK = (
     "evidence/ops/full_core_u05_primary_proof_bound_interest_accrued_get_acquisition_v1/"
@@ -40,6 +43,9 @@ CANONICAL_USDC_P1_PACK = (
 CANONICAL_U01_PACK = (
     "evidence/ops/full_core_current_productive_u01_account_mode_semantic_ratification_v1/"
     "20260915T113345Z"
+)
+CANONICAL_P1_MAX_EVIDENCE_CAMPAIGN_PACK = (
+    "evidence/ops/full_core_p1_max_evidence_campaign_to_next_real_blocker_v1/2026-09-21T020000Z"
 )
 
 SCHEMA_CLASS = "P1_COMPLETENESS_WITNESS_FOUNDATION_V1"
@@ -125,6 +131,7 @@ class P1SealedWitnessEvidenceV1:
     raw_http_capture: Mapping[str, Any]
     d5_event_completeness_from_window: str
     d5_binding_present: bool
+    campaign_witness: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -194,6 +201,25 @@ def _derived_eval(
 def evaluate_currency_domain_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    campaign = evidence.campaign_witness
+    if campaign and _as_bool_token(
+        campaign.get("APPLICABLE_LOAN_CURRENCY_DOMAIN_EXHAUSTION_PROVEN")
+    ):
+        return _root_eval(
+            root_id=ROOT_CURRENCY_DOMAIN,
+            status=WITNESS_COMPLETE,
+            detail="Campaign witness: applicable loan currency domain exhaustion proven",
+        )
+    if campaign:
+        missing = str(campaign.get("CURRENCY_DOMAIN_MISSING_FACT", ""))
+        return _root_eval(
+            root_id=ROOT_CURRENCY_DOMAIN,
+            status=WITNESS_INCOMPLETE,
+            blocker_class=BLOCKER_EVIDENCE,
+            missing_evidence="APPLICABLE_LOAN_CURRENCY_DOMAIN_EXHAUSTION_WITNESS",
+            detail=missing or "Campaign adjudication: currency domain not exhausted",
+            network_required=True,
+        )
     settlement = str(evidence.surface_binding.get("SETTLEMENT_CCY", ""))
     scoped_ccy = str(evidence.usdc_claims.get("EXACT_REQUEST", ""))
     if settlement == "USDC" and "ccy=USDC" in scoped_ccy:
@@ -244,6 +270,16 @@ def evaluate_liability_event_class_witness_v1(
 def evaluate_pagination_exhaustion_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    campaign = evidence.campaign_witness
+    if campaign and _as_bool_token(campaign.get("PAGINATION_QUERY_TRAVERSAL_EXHAUSTION_PROVEN")):
+        if PAGINATION_EXHAUSTION_PROVES_COMPLETENESS is not True:
+            return _root_eval(
+                root_id=ROOT_PAGINATION,
+                status=WITNESS_INCOMPLETE,
+                blocker_class=BLOCKER_EVIDENCE,
+                missing_evidence="PAGINATION_EXHAUSTION_DOES_NOT_PROVE_COMPLETENESS_LAW",
+                detail=str(campaign.get("PAGINATION_DETAIL", "")),
+            )
     exhaustion = _as_bool_token(evidence.reopen_adjudication.get("CD_EXHAUSTION_PROVEN"))
     max_pages = str(evidence.surface_binding.get("MAX_PAGES", ""))
     page_scope = str(evidence.reopen_adjudication.get("CD_PAGE_SCOPE", ""))
@@ -283,6 +319,13 @@ def evaluate_pagination_exhaustion_witness_v1(
 def evaluate_event_ordering_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    campaign = evidence.campaign_witness
+    if campaign and _as_bool_token(campaign.get("EVENT_ORDERING_COMPLETENESS_PROVEN")):
+        return _root_eval(
+            root_id=ROOT_EVENT_ORDERING,
+            status=WITNESS_COMPLETE,
+            detail=str(campaign.get("EVENT_ORDERING_DETAIL", "")),
+        )
     row_count = int(str(evidence.offline_qualification.get("row_count", "0")))
     if row_count == 0 and (EMPTY_ROWS_PROVE_ZERO_EVENTS or EMPTY_ROWS_PROVE_KIND_ABSENCE):
         raise P1CompletenessWitnessFoundationError("ABSENCE_LAW_DRIFT")
@@ -308,6 +351,13 @@ def evaluate_event_ordering_witness_v1(
 def evaluate_observation_freshness_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    campaign = evidence.campaign_witness
+    if campaign and _as_bool_token(campaign.get("D5_CHECKPOINT_FRESHNESS_PROVEN")):
+        return _root_eval(
+            root_id=ROOT_OBSERVATION_FRESHNESS,
+            status=WITNESS_COMPLETE,
+            detail=str(campaign.get("D5_FRESHNESS_DETAIL", "")),
+        )
     if not evidence.d5_binding_present:
         return _root_eval(
             root_id=ROOT_OBSERVATION_FRESHNESS,
@@ -365,6 +415,14 @@ def derive_time_domain_witness_v1(
     pagination: P1RootWitnessEvaluationV1,
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1DerivedWitnessEvaluationV1:
+    campaign = evidence.campaign_witness
+    if campaign and _as_bool_token(campaign.get("TIME_DOMAIN_EXHAUSTION_PROVEN")):
+        return _derived_eval(
+            predicate_id=DERIVED_TIME_DOMAIN,
+            status=WITNESS_COMPLETE,
+            derived_from=(ROOT_PAGINATION,),
+            detail=str(campaign.get("TIME_DOMAIN_DETAIL", "")),
+        )
     if not pagination.complete:
         return _derived_eval(
             predicate_id=DERIVED_TIME_DOMAIN,
@@ -470,6 +528,14 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
                 d5_payload.get("event_completeness_from_window", FALSE_TOKEN)
             )
 
+    campaign_witness: dict[str, Any] = {}
+    campaign_pack = root / CANONICAL_P1_MAX_EVIDENCE_CAMPAIGN_PACK
+    campaign_witness_path = campaign_pack / "p1_campaign_witness_adjudication_v1.json"
+    manifest_path = campaign_pack / "MANIFEST.sha256"
+    if campaign_witness_path.is_file() and manifest_path.is_file():
+        if verify_manifest_sha256_v1(store_root=campaign_pack) == 0:
+            campaign_witness = _read_json(campaign_witness_path)
+
     return P1SealedWitnessEvidenceV1(
         cd_claims=_read_json(root / CANONICAL_CD_PACK / "claims.json"),
         usdc_claims=_read_json(usdc_pack / "claims.json"),
@@ -481,6 +547,7 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         raw_http_capture=raw_http,
         d5_event_completeness_from_window=d5_event_completeness,
         d5_binding_present=d5_present,
+        campaign_witness=campaign_witness,
     )
 
 

@@ -6784,6 +6784,24 @@ entities:
       P1_STATUS remains UNKNOWN when completeness predicates missing.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 max evidence campaign to next real blocker v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_MAX_EVIDENCE_CAMPAIGN_TO_NEXT_REAL_BLOCKER_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_max_evidence_campaign_to_next_real_blocker_v1.py
+      - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
+      - docs/ops/specs/FULL_CORE_P1_MAX_EVIDENCE_CAMPAIGN_TO_NEXT_REAL_BLOCKER_V1.md
+    evidence_sources:
+      - evidence/ops/full_core_p1_max_evidence_campaign_to_next_real_blocker_v1/2026-09-21T020000Z
+      - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
+    notes: >-
+      One bounded read-only GET on interest-accrued; offline witness adjudication;
+      sealed campaign pack; #6666 consumption; #6665 re-evaluation. AUTHORITY_EFFECT=NONE.
+
   - id: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
     kind: RUNTIME_COMPONENT
     name: P1 completeness witness foundation v1
