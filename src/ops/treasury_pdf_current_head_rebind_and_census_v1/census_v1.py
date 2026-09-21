@@ -381,9 +381,13 @@ def build_treasury_pdf_current_head_census_adjudication_v1(
         "CURRENT_PRODUCTIVE_REACHABILITY": productive_reachability,
         "CURRENT_OKX_EEA_OBSERVATION_SURFACES": {
             "OFFLINE_FIXTURE_BINDINGS": IMPLEMENTED,
-            "PL_TF_002_PRODUCTIVE_GET_SESSION": PARTIAL,
+            "PL_TF_002_PRODUCTIVE_GET_SESSION": IMPLEMENTED,
+            "TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION": IMPLEMENTED,
             "TREASURY_FUNDING_HISTORY_DEPOSIT_WITHDRAW_SURFACES_PRODUCTIVE": NOT_PROVEN,
-            "EVIDENCE": "offline_funding_balance_read_producer_v1; pl_tf_002 contract surfaces",
+            "EVIDENCE": (
+                "treasury_productive_read_only_venue_observation_v1; "
+                "offline_funding_balance_read_producer_v1; pl_tf_002 session executor"
+            ),
         },
         "CURRENT_MUTATION_SURFACES": {
             "TREASURY_MUTATION_AUTHORIZED": str(False),
@@ -398,7 +402,10 @@ def build_treasury_pdf_current_head_census_adjudication_v1(
         "CURRENT_RECONCILIATION_PATH": {
             "OFFLINE": "TreasuryVenueObservationV1 -> evaluate_treasury_read_only_reconciliation_v1 "
             "-> join_treasury_reconciliation_into_capital_admission_v1",
-            "PRODUCTIVE": NOT_PROVEN,
+            "PRODUCTIVE": (
+                "PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION -> Phase-2 join -> Phase-3 shadow -> "
+                "E4 offline orchestration ingress (host join NOT_PROVEN)"
+            ),
             "CAPITAL_DECREASE_S2": PARTIAL,
         },
         "CURRENT_RISK_ADMISSION_BINDING": {

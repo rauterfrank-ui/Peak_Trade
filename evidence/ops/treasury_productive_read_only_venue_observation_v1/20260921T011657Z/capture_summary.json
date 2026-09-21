@@ -1,0 +1,62 @@
+{
+  "NETWORK_METHODS_USED": [
+    "GET"
+  ],
+  "NETWORK_READ_ONLY_USED": true,
+  "NETWORK_REQUESTS_PERFORMED": 2,
+  "pre_network_gate": {
+    "ACCOUNT_CONFIG_ENDPOINT": "/api/v5/account/config",
+    "CREDENTIAL_LOAD_PERFORMED": true,
+    "FUNDING_GET_ENDPOINT": "/api/v5/asset/balances",
+    "HOST": "eea.okx.com",
+    "HTTP_METHOD_ALLOWLIST": [
+      "GET"
+    ],
+    "K1_ACQUISITION": "PASS",
+    "K1_HANDLE_BOUND": true,
+    "NETWORK_EXECUTION_AUTHORIZED_STANDING": false,
+    "NETWORK_READ_ONLY_AUTHORIZED": true,
+    "ORDER": false,
+    "PL_TF_002_PREFLIGHT": {
+      "authorized_host": "eea.okx.com",
+      "credential_class": "FULL_CORE_VENUE_AUTH_CLASS",
+      "disposition": "PREFLIGHT_PASS",
+      "ephemeral_keychain_consumer": "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1",
+      "external_effect_authorized": "false",
+      "f1_endpoint_paths": "/api/v5/account/balance,/api/v5/account/config,/api/v5/account/leverage-info,/api/v5/account/max-size,/api/v5/account/positions,/api/v5/public/instruments,/api/v5/public/price-limit",
+      "f2_endpoint_path": "/api/v5/account/config",
+      "http_method_allowlist": "GET",
+      "join_seam_id": "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1",
+      "k1_may_perform_get_standing": "false",
+      "k1_real_keychain_access_standing": "false",
+      "origin_main_sha_bound": "8f1b2d846e518651d2d4fba25c13bf31843f2139",
+      "owner_go_accepted": "true",
+      "post_allowed_standing": "false",
+      "source_ref_uri": "fullcore-cred://provider-ref/okx-eea-productive",
+      "transport_class": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+      "wp_id": "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
+    },
+    "POST": false,
+    "POST_STANDING_PROOF": {
+      "EXTERNAL_EFFECT_AUTHORIZED": "false",
+      "K1_MAY_POST": "false",
+      "POST_ALLOWED": "false",
+      "REAL_VENUE_POST_ALLOWED": "false",
+      "TRANSPORT_FORBIDDEN_METHODS": "DELETE,PATCH,POST,PUT"
+    },
+    "READ_ONLY_ENDPOINT_CLASSES": [
+      "PRIVATE_READ_ONLY_FUNDING_BALANCE",
+      "PRIVATE_READ_ONLY_ACCOUNT_CONFIG_IDENTITY"
+    ],
+    "SESSION_OWNER_GO_ACCEPTED": true,
+    "SESSION_OWNER_GO_REQUIRED": "OWNER_GO_PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1",
+    "TRANSFER": false,
+    "TRANSPORT": "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+    "TREASURY_MUTATION": false,
+    "UNEXPECTED_MUTATION_CAPABILITY_DETECTED": false,
+    "WITHDRAWAL": false,
+    "WP_ID": "TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION_V1",
+    "WP_OWNER_GO_ACCEPTED": true,
+    "WP_OWNER_GO_CANONICAL": "OWNER_GO_TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION_V1"
+  }
+}
