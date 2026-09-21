@@ -7802,6 +7802,8 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_mapping_closure_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/historical_account_equity_wp_standing_guard_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py
@@ -9923,6 +9925,24 @@ entities:
       S2 only: typed runtime join from S1 decrease observation into
       join_capital_admission_into_admission_inputs_v1. Reuses Phase-2 capital
       admission join; fail-closed contract conjunct, not owner. No deposit/E5.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:current_productive_account_equity_source_mapping_closure_v1
+    kind: RUNTIME_COMPONENT
+    name: CURRENT productive account-equity source mapping closure v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_mapping_closure_v1.py
+    evidence_sources:
+      - tests/ops/test_full_core_current_productive_account_equity_source_mapping_closure_v1.py
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_V1.md
+      - evidence/ops/full_core_current_productive_account_equity_source_mapping_closure_v1/20260921T201900Z/claims.json
+    notes: >-
+      11.2.1.EZ closure: CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true for
+      USDC availEq to 29P producer chain only. No Treasury mint. No POST.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
