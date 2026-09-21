@@ -1135,9 +1135,7 @@ def present_market_landscape_v2(
         if live_mark_raw is None
         else format_market_price_display_v1(live_mark_raw, tick_size=tick_size_raw),
         "live_price_kind": (browser_payload or {}).get("live_price_kind"),
-        "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get(
-            "ohlcv_revision_kind"
-        ),
+        "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get("ohlcv_revision_kind"),
         "open_price": None
         if open_raw is None
         else format_market_price_display_v1(open_raw, tick_size=tick_size_raw),
