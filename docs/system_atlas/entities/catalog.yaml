@@ -1935,6 +1935,25 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md
     notes: No PEAK_TRADE_CANONICAL_PRESENTATION_*_RATIFICATION.json on origin/main.
 
+  - id: RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1
+    kind: RUNTIME_COMPONENT
+    name: Landscape Dashboard V2 persistent loopback host v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: operator_local_presentation_host_not_trading_authority
+    source_paths:
+      - scripts/webui/landscape_dashboard_persistent_local_host.sh
+      - src/webui/landscape_dashboard_persistent_local_host_v1/constants_v1.py
+    evidence_sources:
+      - docs/webui/LANDSCAPE_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md
+      - tests/webui/test_landscape_dashboard_persistent_local_host_v1.py
+    notes: >-
+      macOS LaunchAgent-backed loopback uvicorn host for GET /market Landscape V2
+      at fixed http://127.0.0.1:8765/market. Reuses WEBUI_LOCAL_MARKET_DASHBOARD
+      supervision pattern; independent of Full-Core/OKX for HTTP reachability.
+      Not trading authority. Implementation is not activation. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:o2_supervised_landscape_dashboard_http_host_v1
     kind: RUNTIME_COMPONENT
     name: O2 supervised landscape dashboard HTTP host v1

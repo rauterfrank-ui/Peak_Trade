@@ -70,3 +70,19 @@ entrypoints:
       and still does not bind typed equity. 11.2.1.W adds the typed sample
       schema only and still does not bind typed equity. Still no LiveExecutionPort construction.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  - id: EP:landscape_dashboard_persistent_local_host_v1
+    name: Landscape Dashboard V2 persistent loopback host
+    path: scripts/webui/landscape_dashboard_persistent_local_host.sh
+    entrypoint_class: OPERATOR_LOCAL_LOOPBACK_SERVICE
+    epistemic_status: FORENSIC_RAW
+    network_io: loopback_http_only_127_0_0_1_8765
+    evidence: docs/webui/LANDSCAPE_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md
+    steps:
+      - caller: OPERATOR
+        callee: RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1
+        gate: GATE:localhost_only
+        failure_mode: refuse non-loopback bind
+    missing_wiring: []
+    notes: >-
+      LaunchAgent KeepAlive; canonical bookmark /market on 8765. Not coupled to
+      Full-Core or OKX for HTTP availability. ATLAS_AUTHORITY=NONE.
