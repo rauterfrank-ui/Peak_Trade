@@ -15,6 +15,7 @@ from .contracts import _ProjectionBase
 from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
 from .source_health import DashboardSourceHealthSnapshotV1
+from .decision_double_play_observability_v1 import build_decision_double_play_observability_v1
 from .source_health_projection_fidelity_v1 import (
     build_presentation_projection_presence_matrix_v1,
     build_source_health_presentation_v1,
@@ -1098,6 +1099,10 @@ def present_market_landscape_v2(
     presentation_projection_fidelity = build_presentation_projection_presence_matrix_v1(
         slot_views_for_health,
     )
+    decision_double_play_observability = build_decision_double_play_observability_v1(
+        decision=page.canonical_decision,
+        double_play=page.double_play,
+    )
 
     return {
         "page_schema_id": page.schema_id,
@@ -1161,6 +1166,7 @@ def present_market_landscape_v2(
         "governance": governance_ops,
         "source_health": source_health_ctx,
         "presentation_projection_fidelity": presentation_projection_fidelity,
+        "decision_double_play_observability": decision_double_play_observability,
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],

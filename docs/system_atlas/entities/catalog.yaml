@@ -1953,6 +1953,23 @@ entities:
       (TOP-20 board, selected future, membership descriptive labels). No ranking/
       selection authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1
+    kind: RUNTIME_COMPONENT
+    name: Landscape canonical decision and Double Play observability v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: read_only_s05_s06_consumer_presentation_only
+    source_paths:
+      - src/webui/market_dashboard_landscape_v2/decision_double_play_observability_v1.py
+      - templates/peak_trade_dashboard/market_landscape_v2.html
+    evidence_sources:
+      - tests/webui/test_landscape_decision_double_play_observability_fidelity_v1.py
+      - src/webui/market_dashboard_landscape_v2/contracts.py
+    notes: >-
+      S05/S06 observability from bound Landscape snapshots only; no decision/DP
+      recomputation or artificial join. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1
     kind: RUNTIME_COMPONENT
     name: Landscape source health and presentation projection fidelity v1

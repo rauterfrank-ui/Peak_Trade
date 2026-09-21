@@ -362,6 +362,75 @@
       </dl>
     </section>
 
+    <section
+      class="mdl-v2-decision-dp-obs"
+      data-mdl-region="DECISION_DOUBLE_PLAY_OBSERVABILITY"
+      data-mdl-decision-dp-observability="true"
+      aria-label="Canonical decision and Double Play observability"
+    >
+      <div class="mdl-v2-decision-dp-obs__head">
+        <h2>Decision &amp; Double Play Observability</h2>
+        <span
+          class="mdl-v2-state"
+          data-mdl-field="s05_s06_join_status"
+        >{{ decision_double_play_observability.relationship.join_status }}</span>
+      </div>
+      <p class="mdl-v2-decision-dp-obs__note">{{ decision_double_play_observability.relationship.message }}</p>
+      <div class="mdl-v2-decision-dp-obs__grids">
+        <article
+          class="mdl-v2-decision-dp-obs__panel"
+          data-mdl-obs-panel="s05_canonical_decision"
+          data-availability="{{ decision_double_play_observability.canonical_decision.availability }}"
+        >
+          <h3 class="mdl-v2-decision-dp-obs__title">S05 · Canonical Decision</h3>
+          <dl class="mdl-v2-decision-dp-obs__facts">
+            <div><dt>Decision</dt><dd data-mdl-field="s05_decision">{{ decision_double_play_observability.canonical_decision.decision_display }}</dd></div>
+            <div><dt>Direction</dt><dd data-mdl-field="s05_direction">{{ decision_double_play_observability.canonical_decision.direction_display }}</dd></div>
+            <div><dt>Instrument</dt><dd data-mdl-field="s05_instrument">{{ decision_double_play_observability.canonical_decision.instrument_id_display }}</dd></div>
+            <div><dt>Decision ID</dt><dd data-mdl-field="s05_decision_id">{{ decision_double_play_observability.canonical_decision.decision_id_display }}</dd></div>
+            <div><dt>Schema</dt><dd data-mdl-field="s05_schema">{{ decision_double_play_observability.canonical_decision.evidence_schema_version_display }}</dd></div>
+            <div><dt>Reasons</dt><dd data-mdl-field="s05_reasons">{{ decision_double_play_observability.canonical_decision.reason_codes_display }}</dd></div>
+            <div><dt>Blockers</dt><dd data-mdl-field="s05_blockers">{{ decision_double_play_observability.canonical_decision.blockers_display }}</dd></div>
+            <div><dt>Availability</dt><dd data-mdl-field="s05_availability">{{ decision_double_play_observability.canonical_decision.availability_label }}</dd></div>
+            <div><dt>Freshness</dt><dd data-mdl-field="s05_freshness">{{ decision_double_play_observability.canonical_decision.freshness_display }}</dd></div>
+            <div><dt>Source kind</dt><dd data-mdl-field="s05_source_kind">{% if decision_double_play_observability.canonical_decision.source_kind %}{{ decision_double_play_observability.canonical_decision.source_kind }}{% else %}—{% endif %}</dd></div>
+            <div><dt>Source ref</dt><dd data-mdl-field="s05_source_reference">{% if decision_double_play_observability.canonical_decision.source_reference %}{{ decision_double_play_observability.canonical_decision.source_reference }}{% else %}—{% endif %}</dd></div>
+          </dl>
+        </article>
+        <article
+          class="mdl-v2-decision-dp-obs__panel"
+          data-mdl-obs-panel="s06_double_play"
+          data-availability="{{ decision_double_play_observability.double_play.availability }}"
+        >
+          <h3 class="mdl-v2-decision-dp-obs__title">S06 · Double Play</h3>
+          <dl class="mdl-v2-decision-dp-obs__facts">
+            <div><dt>Overall</dt><dd data-mdl-field="s06_overall">{{ decision_double_play_observability.double_play.overall_status_display }}</dd></div>
+            <div><dt>Blockers</dt><dd data-mdl-field="s06_blockers">{{ decision_double_play_observability.double_play.blockers_display }}</dd></div>
+            <div><dt>display_only</dt><dd data-mdl-field="s06_display_only">{% if decision_double_play_observability.double_play.display_only is not none %}{{ decision_double_play_observability.double_play.display_only | tojson }}{% else %}—{% endif %}</dd></div>
+            <div><dt>Availability</dt><dd data-mdl-field="s06_availability">{{ decision_double_play_observability.double_play.availability_label }}</dd></div>
+            <div><dt>Freshness</dt><dd data-mdl-field="s06_freshness">{{ decision_double_play_observability.double_play.freshness_display }}</dd></div>
+            <div><dt>Source kind</dt><dd data-mdl-field="s06_source_kind">{% if decision_double_play_observability.double_play.source_kind %}{{ decision_double_play_observability.double_play.source_kind }}{% else %}—{% endif %}</dd></div>
+          </dl>
+          {% if decision_double_play_observability.double_play.panels %}
+          <ul class="mdl-v2-decision-dp-obs__panels" aria-label="Double Play panel summaries" data-mdl-dp-panels="true">
+            {% for panel in decision_double_play_observability.double_play.panels %}
+            <li data-mdl-dp-panel-index="{{ panel.panel_index }}">
+              <span class="mdl-v2-decision-dp-obs__panel-name">{{ panel.name_display }}</span>
+              <span class="mdl-v2-decision-dp-obs__panel-status">{{ panel.status_display }}</span>
+              <span class="mdl-v2-decision-dp-obs__panel-summary">{{ panel.summary_display }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="mdl-v2-decision-dp-obs__empty" data-mdl-field="s06_panels_empty">{{ decision_double_play_observability.double_play.availability_label }}</p>
+          {% endif %}
+        </article>
+      </div>
+      <p class="mdl-v2-decision-dp-obs__timeline-note" data-mdl-field="multi_decision_timeline_status">
+        Timeline: {{ decision_double_play_observability.multi_decision_timeline_status }}
+      </p>
+    </section>
+
     <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
       <div class="mdl-v2-ops__col" data-mdl-ops="risk_sizing_capital">
         <h3>Risk / Sizing / Capital</h3>
