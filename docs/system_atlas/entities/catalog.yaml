@@ -6261,6 +6261,30 @@ entities:
       readmodels/canonical_trading_decision_evidence.v1.json with in-host presentation
       materialization. Does not execute D3.3. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d3_remaining_completion_bounded_workpackage_v1
+    kind: RUNTIME_COMPONENT
+    name: D3 remaining completion bounded workpackage v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: governed_okx_universe_manifest_integrity_replay_witness
+    modified_by: D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1
+    source_paths:
+      - scripts/ops/refresh_okx_market_dashboard_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py
+      - src/webui/market_dashboard_landscape_producer_binding_v2.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d3_remaining_completion_bounded_workpackage_v1/REGENERATION_VERIFY.json
+      - docs/ops/market_dashboard/d3_remaining_completion_bounded_workpackage_v1/REFRESH_RUN_ENVELOPE.json
+      - docs/ops/market_dashboard/d3_1_fresh_universe_ranking_refresh_v1/REGENERATION_VERIFY.json
+      - docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/REGENERATION_VERIFY.json
+    notes: >-
+      Operator-witness after D3.2: replay D3.1 governed OKX universe refresh on the
+      same archive root to restore MANIFEST.sha256 integrity after D3.2 presentation
+      materialization changed sibling checksums; dashboard consumer bind path re-proven
+      for Universe/Ranking and Market Identity without repeating D3.2 smoke.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1
