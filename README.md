@@ -207,7 +207,7 @@ Peak_Trade ist in mehrere Layer strukturiert:
 - **Backtest- & Research-Layer** (`src/backtest/`, `scripts/research_cli.py`) – Backtest-Engine, Research-Pipeline
 - **Strategy- & Portfolio-Layer** (`src/strategies/`, `config/config.toml`, `config/portfolio_recipes.toml`) – Strategien, Portfolio-Recipes
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
-- **Autonomous Workflow-Layer** (`src/autonomous/`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
+- **Autonomous Workflow-Layer** (`src&#47;autonomous&#47;`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
 - **Reporting & Status-Reports** (`src/reporting/`, `scripts/generate_live_status_report.py`) – Reports, Visualisierung
 - **Governance, Safety & Runbooks** (`docs&#47;*.md`) – Dokumentation, Prozesse, Drills
 

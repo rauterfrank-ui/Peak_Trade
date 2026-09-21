@@ -25,7 +25,7 @@ Use the env file that matches the operational path:
   - do not assume it is the bounded-pilot launcher input
 
 - `.bounded_pilot.env`
-  - local bounded-pilot launcher input used by `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+  - local bounded-pilot launcher input used by `scripts&#47;ops&#47;run_bounded_pilot_session.py`
   - intended for bounded/acceptance-oriented local secret loading
 
 - `~/.peak_trade_live_env`
