@@ -16,7 +16,7 @@ ATLAS_AUTHORITY=NONE
 
 **Status:** Canonical product/architecture runbook (P0 ratification target)  
 **Scope:** Market Dashboard Landscape V2 → Professional Read-Only Trading Workstation  
-**Baseline:** `origin/main@422b27305970a83f73b886cd7ab6f5db2180fa08`  
+**Baseline:** `origin&#47;main@422b27305970a83f73b886cd7ab6f5db2180fa08`  
 **Authority:** Dashboard `AUTHORITY=NONE`; read-only visual consumer  
 **Reference class:** Professional trading workstations such as OKX/Kraken Pro — reference class only, not a visual clone.
 
@@ -36,7 +36,7 @@ No Cursor or terminal is required for normal viewing. The dashboard never become
 
 Data flow remains one-way:
 
-`CURRENT Peak_Trade System → canonical/read-only outputs → dashboard binding/adapter → presentation → UI`
+`CURRENT Peak_Trade System → canonical&#47;read-only outputs → dashboard binding&#47;adapter → presentation → UI`
 
 Never:
 
