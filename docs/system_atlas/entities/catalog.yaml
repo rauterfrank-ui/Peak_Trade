@@ -1399,6 +1399,29 @@ entities:
       merge, borrow, or fall back across ranking universes. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
+    kind: CONTRACT
+    name: STEP29M current single selected future dynamic binding v1
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    authority_sources: []
+    evidence_sources:
+      - config/governance/step29m_current_single_selected_future_dynamic_binding_v1.json
+      - src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py
+      - tests/backtest/test_step29m_current_single_selected_future_dynamic_binding_v1.py
+    notes: >-
+      Bounded post-selection consumer for STEP29M instrument identity and
+      evaluation-config overlay. Consumes Cap 2.3 persisted
+      single_selected_future_selection_v1.json only; does not read ranking or
+      universe snapshots; no rerank/reselect/fallback instrument paths.
+      OKX futures public dataset ingest may bind via the same resolver when
+      --selection-state-root is supplied; ingest does not gain selection
+      authority. Authority order preserved: ranking/universe → Cap 2.3
+      selection → STEP29M/ingest downstream bind. AUTHORITY_EFFECT=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CAPABILITY:cap_2_4_runtime_binding
     kind: CAPABILITY
     name: Single Selected Future Runtime Binding
