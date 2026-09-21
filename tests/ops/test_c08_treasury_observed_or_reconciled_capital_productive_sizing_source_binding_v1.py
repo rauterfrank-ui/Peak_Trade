@@ -164,7 +164,10 @@ def test_standing_binding_constants_and_runbook() -> None:
     assert C08_INPUT_CLASS.endswith("RECONCILED_BASE_CANDIDATE_EVIDENCE")
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "UNBOUND"
     assert "C08_PRODUCTIVE_BINDING_IMPLEMENTED=true" in runbook
-    assert EARLIEST_NEW_REAL_BLOCKER_AFTER_WP.endswith("BASE_UNBOUND_AFTER_PRODUCER_DEFINED")
+    assert (
+        EARLIEST_NEW_REAL_BLOCKER_AFTER_WP
+        == "CURRENT_PRODUCTIVE_CT_SIZING_PRODUCE_BLOCKED_U04_P01_ELIGIBILITY_INPUTS_UNBOUND"
+    )
 
 
 def test_6672_unknown_absent_not_zero_fail_closed_e2e() -> None:

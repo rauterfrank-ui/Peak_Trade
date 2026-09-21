@@ -99,6 +99,16 @@ def execute_treasury_productive_reconciliation_chain_v1(
             "sizing_increase": productive_host.c08_sizing_source_binding.sizing_increase,
             "fail_closed": productive_host.c08_sizing_source_binding.fail_closed,
         },
+        "BASE_NUMERIC_BINDING": {
+            "binding_implemented": productive_host.base_numeric_binding.base_binding_implemented,
+            "numeric_base_bound": productive_host.base_numeric_binding.numeric_base_bound,
+            "observation_schema_class": (
+                productive_host.base_numeric_binding.observation_schema_class
+            ),
+            "risk_admissible": productive_host.base_numeric_binding.risk_admissible,
+            "sizing_increase": productive_host.base_numeric_binding.sizing_increase,
+            "fail_closed": productive_host.base_numeric_binding.fail_closed,
+        },
         "EARLIEST_NEW_REAL_BLOCKER": EARLIEST_NEW_REAL_BLOCKER_AFTER_WP,
         "TREASURY_INTERFERENCE_PROOF": interference.get("TREASURY_INTERFERENCE_PROOF"),
     }
