@@ -32,9 +32,9 @@ class TreasuryProductiveBranchTipIntegrityBackendV1:
         return GitPlTf002RuntimeIntegrityBackendV1(repo_root=self.repo_root).resolve_head_sha_v1()
 
     def diff_origin_main_for_paths_v1(self, paths: tuple[str, ...]) -> str:
-        return GitPlTf002RuntimeIntegrityBackendV1(repo_root=self.repo_root).diff_origin_main_for_paths_v1(
-            paths
-        )
+        return GitPlTf002RuntimeIntegrityBackendV1(
+            repo_root=self.repo_root
+        ).diff_origin_main_for_paths_v1(paths)
 
 
 def assert_treasury_productive_branch_tip_integrity_v1(

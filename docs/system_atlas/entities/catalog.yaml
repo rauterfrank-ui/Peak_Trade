@@ -9142,7 +9142,9 @@ entities:
       - src/ops/treasury_productive_read_only_venue_observation_v1/capture_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/chain_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/constants_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/errors_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/funding_get_v1.py
+      - src/ops/treasury_productive_read_only_venue_observation_v1/runtime_integrity_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/persist_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/pre_network_gate_v1.py
       - src/ops/treasury_productive_read_only_venue_observation_v1/separation_matrix_v1.py
