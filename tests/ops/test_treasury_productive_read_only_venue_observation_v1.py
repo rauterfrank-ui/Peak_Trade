@@ -115,7 +115,9 @@ def test_reconciliation_chain_fail_closed_without_deposit_confirm() -> None:
     chain = execute_treasury_productive_reconciliation_chain_v1(observation)
     assert chain["RISK_ADMISSION_BINDING_STATUS"] == "NO_RISK_ADMISSIBLE_MINT"
     assert chain["ACCOUNT_STATE_JOIN_STATUS"]["orchestration_admitted"] is False
-    assert "E4_TREASURY" in chain["EARLIEST_NEW_REAL_BLOCKER"]
+    assert chain["PRODUCTIVE_HOST_JOIN_STATUS"] == "PRODUCTIVE_HOST_JOIN_WIRED"
+    assert chain["PRODUCTIVE_HOST_EVALUATION"]["fail_closed"] is True
+    assert "C08_TREASURY" in chain["EARLIEST_NEW_REAL_BLOCKER"]
 
 
 def test_separation_matrix_all_pass_offline() -> None:

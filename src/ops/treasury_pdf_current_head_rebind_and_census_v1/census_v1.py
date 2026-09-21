@@ -312,14 +312,15 @@ def _pdf_requirement_buckets() -> dict[str, list[str]]:
         "TREASURY_TRADING_AUTHORITY_SEPARATION_NEGATIVE_PROOF",
         "OPS_COCKPIT_TRANSFER_AMBIGUITY_LOCAL_READ_MODEL",
         "PL_TF_002_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN_CONSTANT",
+        "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN",
     ]
     partial = [
         "TS_INV_THEMATIC_OFFLINE_AND_CONTRACT_SEAMS_WITHOUT_PRODUCTIVE_E2E",
         "AT06_PERMISSION_ATTESTATION_HTTP_ISOLATION_WITHOUT_LIVE_PERMISSION_DRIFT_TEST",
         "AT08_AT09_OFFLINE_DRAFT_VALIDATION_WITHOUT_POST_SUBMIT_VENUE_CONFIRMATION",
         "EXTERNAL_CAPITAL_DECREASE_S2_RUNTIME_JOIN_OFFLINE_INJECTED_ONLY",
-        "E4_TREASURY_TO_ACCOUNT_EQUITY_ORCHESTRATION_JOIN_NOT_PRODUCTIVE_HOST_WIRED",
         "CREDIBLE_DEPLETION_TO_RISK_CAPACITY_PRODUCTIVE_LOOP",
+        "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_NOT_BOUND",
     ]
     not_proven = [
         "CURRENT_END_TO_END_TREASURY_GATE",
@@ -404,7 +405,7 @@ def build_treasury_pdf_current_head_census_adjudication_v1(
             "-> join_treasury_reconciliation_into_capital_admission_v1",
             "PRODUCTIVE": (
                 "PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION -> Phase-2 join -> Phase-3 shadow -> "
-                "E4 offline orchestration ingress (host join NOT_PROVEN)"
+                "E4 orchestration ingress -> governed productive account-equity host evaluation"
             ),
             "CAPITAL_DECREASE_S2": PARTIAL,
         },
