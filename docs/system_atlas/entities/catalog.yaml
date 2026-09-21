@@ -1942,19 +1942,43 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     module_role: read_only_s01_consumer_presentation_only
+    modified_by: MARKET_DASHBOARD_LANDSCAPE_V2_FINAL_COMPLETION_V1
     source_paths:
       - src/webui/market_dashboard_landscape_v2/universe_rail_presentation_v1.py
       - templates/peak_trade_dashboard/market_landscape_v2.html
+      - static/css/market_dashboard_landscape_v2.css
     evidence_sources:
       - tests/webui/test_landscape_universe_top20_selection_rail_fidelity_v1.py
       - tests/webui/test_market_landscape_universe_selection_rail_facts_presentation_bind_v1.py
+      - docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_CURRENT_COMPLETION_CENSUS_V1.md
       - src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py
     notes: >-
       Dashboard-only consumer presentation for universe_selection_readmodel.v1
       (TOP-20 board, selected future, membership descriptive labels, Universe
       Context selection_reason summary from projected selection_reason; empty TOP-20
-      panel message from ranking_board.display_state). No ranking/ selection
-      authority. ATLAS_AUTHORITY=NONE.
+      panel message from ranking_board.display_state). Selected-row emphasis uses
+      background tint only (no solid structural divider lines in Landscape CSS).
+      No ranking/ selection authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:landscape_v2_current_completion_census_v1
+    kind: RUNTIME_COMPONENT
+    name: Landscape V2 current completion census v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: consumer_closeout_evidence_not_authority
+    modified_by: MARKET_DASHBOARD_LANDSCAPE_V2_FINAL_COMPLETION_V1
+    source_paths:
+      - docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_CURRENT_COMPLETION_CENSUS_V1.md
+    evidence_sources:
+      - tests/webui/test_pkg_landscape_current_consumer_boundary_v1.py
+      - tests/webui/test_landscape_ui_completeness_fail_closed_v1.py
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+    notes: >-
+      Read-only census artifact for Landscape V2 consumer-closeout (WP
+      MARKET_DASHBOARD_LANDSCAPE_V2_FINAL_COMPLETION_V1). Records COMPLETE
+      surfaces, intentional NOT_BOUND slots, and excluded timeline/diagnostics/
+      autonomy producers. Not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_system_observability_completion_v1
     kind: RUNTIME_COMPONENT

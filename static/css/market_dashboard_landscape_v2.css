@@ -243,14 +243,13 @@
 
 .mdl-v2-rail-rows--ranked li.is-selected {
   font-weight: 600;
-  border-left: 3px solid var(--mdl-accent, #3b82f6);
   padding-left: 6px;
+  background: color-mix(in srgb, var(--mdl-accent, #3b82f6) 14%, transparent);
 }
 
 .mdl-v2-universe-panel {
   margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px solid var(--mdl-border, rgba(255, 255, 255, 0.08));
 }
 
 .mdl-v2-universe-panel__title {
@@ -376,11 +375,9 @@
   min-height: 1.25em;
   max-height: none;
   color: #cbd5e1;
-  white-space: normal;
-  overflow: visible;
-  text-overflow: clip;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .mdl-v2-chart__meta-ohlc {

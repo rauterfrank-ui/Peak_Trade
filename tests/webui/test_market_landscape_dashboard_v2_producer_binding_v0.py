@@ -500,9 +500,12 @@ def test_missing_ranking_and_selected_still_fail_closed(archive_root: Path) -> N
     assert slots2["market_instrument"].availability is Availability.MISSING_SOURCE
 
 
-def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_injection() -> None:
+def test_page_aggregate_applies_phase41_and_phase42_scope_missing_without_injection(
+    tmp_path: Path,
+) -> None:
     slots = bind_market_universe_slots(
         generated_at=STAMP,
+        archive_root=tmp_path,
         market_instrument_fields={
             "instrument_id": "BTC-USDT-SWAP",
             "venue": "OKX",

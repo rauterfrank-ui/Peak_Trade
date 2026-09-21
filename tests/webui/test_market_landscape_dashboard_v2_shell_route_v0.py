@@ -44,7 +44,11 @@ FORBIDDEN_UI = (
 
 
 @pytest.fixture()
-def client() -> TestClient:
+def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
+    """Isolate default /market SSR from operator-local durable archive autobind."""
+    from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
+
+    monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
     return TestClient(create_app())
 
 
@@ -71,7 +75,7 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert "btc_usd_dummy" not in html.lower()
     assert 'data-mdl-outer-workspace="true"' in html
     assert "mdl-v2-ops" in html
-    assert 'data-mdl-field="selected_instrument"' in html
+    assert 'data-mdl-field="selected_future_instrument"' in html
     assert 'data-mdl-field="universe_membership"' in html
     assert 'data-mdl-field="scope_lifecycle"' in html
     assert 'data-mdl-field="current_scope_ref"' in html
