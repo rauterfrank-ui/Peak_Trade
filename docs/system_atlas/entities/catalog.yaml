@@ -6189,6 +6189,25 @@ entities:
     notes: Post-commit export to readmodels/regime_bull_bear_switch.v1.json bound in
       productive decision host family_export_adapter_v1. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:presentation_projection_operational_materializer_invocation_v1
+    kind: RUNTIME_COMPONENT
+    name: Presentation projection operational materializer invocation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: dashboard_presentation_invocation
+    source_paths:
+      - scripts/ops/run_operational_presentation_materializer_invocation_v1.py
+      - src/ops/presentation_projection_operational_materializer_invocation_v1/__init__.py
+      - src/ops/presentation_projection_operational_materializer_invocation_v1/constants_v1.py
+      - src/ops/presentation_projection_operational_materializer_invocation_v1/invocation_v1.py
+    evidence_sources:
+      - src/ops/presentation_projection_operational_materializer_invocation_v1/constants_v1.py
+      - tests/ops/test_presentation_projection_operational_materializer_invocation_v1.py
+    notes: Governed sibling-only operational path delegating to
+      CAPABILITY_PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1; does not export
+      siblings or mutate trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1

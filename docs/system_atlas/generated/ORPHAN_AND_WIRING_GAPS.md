@@ -129,6 +129,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_z2ds_private_get_current_50110_egress_capture_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_z2ds_private_get_current_50110_egress_capture_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:pr_6252_merge_closeout_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:pr_6252_merge_closeout_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:prerequisite_08_position_source_policy_rebind_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:presentation_projection_operational_materializer_invocation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:presentation_projection_operational_materializer_invocation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
