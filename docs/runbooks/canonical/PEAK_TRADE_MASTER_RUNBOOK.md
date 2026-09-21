@@ -6,7 +6,7 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e
+BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b
 STALE_IF_HEAD_DIFFERS=true
 ```
 
@@ -122,6 +122,9 @@ governed_continuous_cycle_orchestrator_v1
 | Bounded continuous sequencing | `governed_continuous_cycle_orchestrator_v1` |
 | Persistence | Durable single-writer state owners |
 | Observability / Landscape Dashboard | Read-only consumer; `AUTHORITY_EFFECT=NONE` |
+| Learning / DDO (Deterministic Decision Outcome) | Outcome capture and durable evidence; `LEARNING_TRADING_AUTHORITY=NONE` |
+| STEP29M (offline economic evaluation) | Post-selection offline research binding; no selection authority |
+| Optimization Universe | First-class offline research domain; `OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE` |
 | Treasury | Required for full autonomy; not a trading-decision owner |
 
 ### Authority chain
@@ -563,7 +566,7 @@ TREASURY_IS_TRADING_DECISION_OWNER=false
 Bound baseline for this SSOT revision:
 
 ```text
-BOUND_ORIGIN_MAIN_SHA=e0897205ab3b4feb1fe8a733a8ac2f832273b79e
+BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b
 ```
 
 Every later mutation task must revalidate actual `origin/main`.
@@ -631,6 +634,110 @@ Forbidden:
 ```text
 Dashboard → Runtime Decision / Intent / Order
 ```
+
+------------------------------------------------------------------------
+
+## CURRENT Learning, STEP29M, and Optimization Universe Boundaries
+
+These are **separate CURRENT domains** from the productive trading authority
+chain. They do not replace Cap 2.1–2.4, Master V2, Double Play, risk,
+safety, intent, or execution owners. Subordinate normative specs and typed
+owners on current `origin/main` carry boundary detail; this section registers
+location and authority limits only.
+
+```text
+LEARNING_TRADING_AUTHORITY=NONE
+STEP29M_SELECTION_AUTHORITY=false
+STEP29M_CONSUMES_POST_SELECTION_OUTPUT_ONLY=true
+OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE
+OPTIMIZATION_PROMOTION_AUTHORITY=NONE
+OPTIMIZATION_EXTERNAL_EFFECT_AUTHORITY=false
+DASHBOARD_AUTHORITY_EFFECT=NONE
+```
+
+### Learning / DDO
+
+Learning and DDO surfaces observe or export from productive producers and
+runtime outcomes. They do **not** rerank, reselect, resize, mint permits,
+POST, or substitute trading decisions.
+
+- Durable evidence storage owner (navigation contract):
+  `docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`
+- Observation-only capture after authoritative producers (capture failure
+  must not change the productive producer result):
+  `src/learning/deterministic_decision_outcome_v0/capture_v0.py`
+- Offline learning evidence export (research input only):
+  `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`
+- Three-universe boundary and learning-evidence export (subordinate):
+  `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md`
+
+```text
+RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY
+PROMOTION_REQUIRED_BEFORE_RUNTIME_AUTHORITY=true
+```
+
+### STEP29M
+
+STEP29M is an **offline** economic-evaluation and parameter-sensitivity
+research surface. It is not part of the productive trading chain and does
+not grant selection, binding, or execution authority.
+
+CURRENT post-selection instrument binding for offline evaluation consumes
+**persisted Cap 2.3 output only** (merged STEP29M dynamic binding on
+`origin/main`):
+
+- Typed owner:
+  `src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py`
+- Governance contract record (read-only reference):
+  `config/governance/step29m_current_single_selected_future_dynamic_binding_v1.json`
+
+```text
+STEP29M_SELECTION_AUTHORITY=false
+STEP29M_CONSUMES_POST_SELECTION_OUTPUT_ONLY=true
+STEP29M_RANKING_UNIVERSE_CONSUMPTION_FORBIDDEN=true
+STEP29M_RUNTIME_EFFECT=false
+STEP29M_ORDER_EFFECT=false
+```
+
+Admissibility and fleet inventory (navigation):
+`docs/governance/STEP29M_SYSTEM_ECONOMIC_BINDING_ADMISSIBILITY_INVENTORY_V0.md`
+
+### Optimization Universe (first-class)
+
+Optimization Universe is a **first-class** offline research domain distinct
+from Learning/DDO export and from STEP29M economic evaluation. Universe
+membership and experiment-plane completion do **not** authorize productive
+apply, promotion, search join on productive surfaces, or external effect.
+
+- Identity and research capability registry owner:
+  `src/experiments/canonical_optimization_universe_v1.py`
+- Foundation (subordinate):
+  `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md`
+- Boundary and learning-input ack (subordinate):
+  `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md`
+- Offline experiment plane M4 (subordinate):
+  `docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md`
+- Proposal → governance review ingress (no productive apply):
+  `docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md`
+  / `src/governance/optimization_proposal_governance_ingress_v1.py`
+
+```text
+OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE
+OPTIMIZATION_PROMOTION_AUTHORITY=NONE
+OPTIMIZATION_EXTERNAL_EFFECT_AUTHORITY=false
+OPTIMIZABLE_ENVELOPE_DEFINED=false
+ZERO_AUTHORIZED_PRODUCTIVE_TARGETS=true
+PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false
+```
+
+Forbidden backflow (same class as Dashboard inversion):
+
+```text
+Optimization / Learning evidence / STEP29M diagnostics → Selection / Trading / Risk / Safety / Execution / Promotion / Live
+```
+
+without explicit scoped Owner-GO and CURRENT gate satisfaction for that exact
+scope. This section does not authorize any such scope.
 
 ------------------------------------------------------------------------
 

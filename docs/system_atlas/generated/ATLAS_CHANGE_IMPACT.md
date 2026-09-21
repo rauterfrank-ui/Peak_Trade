@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1`.
 
 ## Workflow
 
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:d3_remaining_completion_bounded_workpackage_v1` |
+| `RUNBOOK:canonical_master_runbook` |
+| `NAVIGATION_INDEX:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -82,7 +83,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `DATA_CONTRACT:universe_selection_readmodel_v1` |
+| _(none)_ |
 
 ## REVIEW_REQUIRED_ITEMS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- D3 remaining completion: one governed OKX universe refresh replay on the D3.1/D3.2 pinned archive root to restore readmodels MANIFEST.sha256 integrity after D3.2 presentation materialization; consumer bind re-proven for Universe/Ranking and Market Identity alongside already-fresh Dynamic Scope and Canonical Decision. No D3.2 smoke repeat. Atlas is not canonical authority.
-- introduced_by=D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1
-- modified_by=D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1
+- Docs-only SSOT rebind and offline-domain boundary registration in Master Runbook plus Map of Truth navigation pointers. No runtime, trading, selection, promotion, or live authority. Atlas is not canonical authority.
+- introduced_by=MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+- modified_by=MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
