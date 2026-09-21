@@ -8,8 +8,10 @@
   "legacy_paths_functionally_changed": false,
   "non_canonical_observers_preserved": [
     "scripts/serve_live_dashboard.py",
-    "scripts/live_web_server.py",
     "src/live/web/app.py"
+  ],
+  "non_canonical_observers_removed_governed_dedup_v1": [
+    "scripts/live_web_server.py"
   ],
   "required_compatibility_paths_preserved": [
     "scripts/run_web_dashboard.py",

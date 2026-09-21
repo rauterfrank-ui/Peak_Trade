@@ -207,7 +207,7 @@ Peak_Trade ist in mehrere Layer strukturiert:
 - **Backtest- & Research-Layer** (`src/backtest/`, `scripts/research_cli.py`) – Backtest-Engine, Research-Pipeline
 - **Strategy- & Portfolio-Layer** (`src/strategies/`, `config/config.toml`, `config/portfolio_recipes.toml`) – Strategien, Portfolio-Recipes
 - **Live-/Testnet-Layer** (`src/live/`, `scripts/live_ops.py`) – Live-Ops, Alerts, Risk-Limits
-- **Autonomous Workflow-Layer** (`src/autonomous/`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
+- **Autonomous Workflow-Layer** (`src&#47;autonomous&#47;`, `scripts/run_autonomous_workflow.py`) – AI-gesteuerter autonomer Workflow, Decision Engine
 - **Reporting & Status-Reports** (`src/reporting/`, `scripts/generate_live_status_report.py`) – Reports, Visualisierung
 - **Governance, Safety & Runbooks** (`docs&#47;*.md`) – Dokumentation, Prozesse, Drills
 
@@ -323,16 +323,14 @@ RELOAD=1 ./scripts/ops/run_live_webui.sh
 
 **Alternativen (nicht alle starten dieselbe App):**
 
-- `./scripts/pt scripts/live_web_server.py` → `src.live.web.app` (Live-Dashboard mit `/api/v0/*`, `/runs/*`, `/dashboard`)
 - `bash scripts/ops/run_live_webui.sh` → `src.live.web.app` (Wrapper für das Live-Dashboard)
 - `bash scripts/ops/run_webui.sh` → `src.webui.app` (Operator-WebUI mit `/api/live_sessions`, `/api/execution/*`, `/ops`, `/r_and_d`)
-- `./scripts/pt scripts/serve_live_dashboard.py` → `src.live.web.app` (alternativer Live-Dashboard-Entrypoint)
+- `./scripts/pt -m scripts.serve_live_dashboard` → `src.live.web.app` (Live-Dashboard-Launcher mit Config aus `config/config.toml`)
 
 | Entrypoint | Port | Hinweis |
 |------------|------|---------|
 | `run_live_webui.sh` | 8010 | Shell-Wrapper mit `uv` (oben) |
-| `./scripts/pt scripts/live_web_server.py` | 8000 | Empfohlen in Runbooks, CLI-Argumente |
-| `./scripts/pt -m scripts.serve_live_dashboard` | 8000 | Config aus `config/config.toml` |
+| `./scripts/pt -m scripts.serve_live_dashboard` | 8000 | Empfohlener Python-Launcher für `src.live.web.app` |
 
 ### HTTP-Routen — Operator-WebUI, Ops-Hub & live.web (Local Defaults)
 

@@ -833,17 +833,18 @@ python3 scripts/live_alerts_cli.py run-rules \
 
 ```bash
 # Web-Server starten (Standard: http://127.0.0.1:8000)
-python3 scripts/live_web_server.py
+./scripts/pt -m scripts.serve_live_dashboard
 
 # Mit Custom-Parametern
-python3 scripts/live_web_server.py \
+./scripts/pt -m scripts.serve_live_dashboard \
   --host 0.0.0.0 \
   --port 9000 \
-  --base-runs-dir /path/to/live_runs \
-  --auto-refresh-seconds 10
+  --base-runs-dir /path/to/live_runs
+
+# Auto-Refresh-Intervall: config/config.toml → web_ui.auto_refresh_seconds
 
 # Mit Auto-Reload (Development)
-python3 scripts/live_web_server.py --reload
+./scripts/pt -m scripts.serve_live_dashboard --reload
 ```
 
 **Wichtige URLs:**
@@ -894,7 +895,7 @@ python3 scripts/testnet_orchestrator_cli.py status
 python3 scripts/live_monitor_cli.py overview --only-active
 
 # 6. Web-Dashboard starten
-python3 scripts/live_web_server.py
+./scripts/pt -m scripts.serve_live_dashboard
 ```
 
 **Mit diesen Commands weißt du sofort:**

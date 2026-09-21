@@ -25,7 +25,7 @@ Use the env file that matches the operational path:
   - do not assume it is the bounded-pilot launcher input
 
 - `.bounded_pilot.env`
-  - local bounded-pilot launcher input used by `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+  - local bounded-pilot launcher input used by `scripts&#47;ops&#47;run_bounded_pilot_session.py`
   - intended for bounded/acceptance-oriented local secret loading
 
 - `~/.peak_trade_live_env`
@@ -1466,7 +1466,7 @@ Das **Live Web Dashboard v0** bietet ein einfaches, read-only Web-Interface für
 
 **Option 1: Mit Script (empfohlen)**
 ```bash
-python3 scripts/live_web_server.py
+./scripts/pt -m scripts.serve_live_dashboard
 ```
 
 **Option 2: Mit uvicorn direkt**
@@ -1476,11 +1476,10 @@ uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000 --reload
 
 **Option 3: Mit Custom-Parametern**
 ```bash
-python3 scripts/live_web_server.py \
+./scripts/pt -m scripts.serve_live_dashboard \
   --host 0.0.0.0 \
   --port 9000 \
-  --base-runs-dir /path/to/live_runs \
-  --auto-refresh-seconds 10
+  --base-runs-dir /path/to/live_runs
 ```
 
 ### 10d.3 Wichtige URLs
@@ -1552,7 +1551,7 @@ Das HTML-Dashboard bietet:
 python3 scripts/orchestrate_testnet_runs.py --profile quick_smoke
 
 # Terminal 2: Web-Dashboard starten
-python3 scripts/live_web_server.py
+./scripts/pt -m scripts.serve_live_dashboard
 
 # Browser: http://localhost:8000 öffnen
 ```

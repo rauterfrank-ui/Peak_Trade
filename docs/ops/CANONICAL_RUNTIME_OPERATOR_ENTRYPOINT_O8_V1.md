@@ -53,12 +53,19 @@ scripts/run_web_dashboard.py
 scripts/ops/refresh_okx_market_dashboard_v1.py
 ```
 
-Non-canonical observer stacks remain present and must not be deleted by O8:
+Non-canonical observer stack (read-only parallel live.web host) remains present;
+O8 `legacy_path_policy.deletion_allowed` stays `false` (fail-closed against
+ad-hoc legacy deletion). Governed dedup removed the duplicate launcher only:
 
 ```text
 scripts/serve_live_dashboard.py
-scripts/live_web_server.py
 src/live/web/app.py
+```
+
+Removed duplicate (must not be reintroduced):
+
+```text
+scripts/live_web_server.py
 ```
 
 Operator recommendation deauthorization (documentation/operator pointers only):

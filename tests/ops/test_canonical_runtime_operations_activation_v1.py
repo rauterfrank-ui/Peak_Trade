@@ -243,10 +243,20 @@ def test_legacy_paths_preserved(repo_root: Path) -> None:
         "scripts/run_web_dashboard.py",
         "scripts/ops/refresh_okx_market_dashboard_v1.py",
         "scripts/serve_live_dashboard.py",
-        "scripts/live_web_server.py",
         "src/live/web/app.py",
     ):
         assert (repo_root / rel).exists(), rel
+    assert not (repo_root / "scripts/live_web_server.py").exists()
+
+
+def test_governed_dedup_live_web_server_not_reintroduced(repo_root: Path) -> None:
+    contract = load_activation_contract_v1(default_activation_contract_path(repo_root))
+    legacy = contract["legacy_path_policy"]
+    observers = legacy["non_canonical_observers"]
+    assert "scripts/live_web_server.py" not in observers
+    removed = legacy.get("non_canonical_observers_removed_governed_dedup_v1")
+    assert isinstance(removed, list)
+    assert "scripts/live_web_server.py" in removed
 
 
 def test_unknown_dependency_deauthorization_fail_closed(repo_root: Path) -> None:

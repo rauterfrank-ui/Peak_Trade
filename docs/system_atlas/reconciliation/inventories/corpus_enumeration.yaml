@@ -798,7 +798,6 @@ current_scripts_top:
 - live_monitor_cli.py
 - live_operator_status.py
 - live_ops.py
-- live_web_server.py
 - markets
 - monitor_live_run.py
 - new_idea_strategy.py

@@ -214,8 +214,9 @@ CANONICAL_CURRENT_MARKET_SURFACE:
   dedicated_supervisor=false
 
 PARALLEL_LEGACY_WEB_STACK:
-  launchers=scripts/serve_live_dashboard.py,scripts/live_web_server.py
+  launchers=scripts/serve_live_dashboard.py
   app=src/live/web/app.py
+  removed_duplicate_launcher=scripts/live_web_server.py
   authority=READ_ONLY_OBSERVER
   classification=NON_CANONICAL_PARALLEL_STACK
 

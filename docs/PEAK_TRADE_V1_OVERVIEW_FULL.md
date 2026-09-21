@@ -343,7 +343,7 @@ bevor echte Orders jemals das Haus verlassen.
 - `scripts/testnet_orchestrator_cli.py` – Testnet-Orchestrator CLI
 - `scripts/live_monitor_cli.py` – Live Monitor CLI
 - `scripts/live_alerts_cli.py` – Live Alerts CLI
-- `scripts/live_web_server.py` – Web-Dashboard Server
+- `scripts/serve_live_dashboard.py` – Web-Dashboard Server (live.web)
 
 ### 4.6 Risk & Alerts
 

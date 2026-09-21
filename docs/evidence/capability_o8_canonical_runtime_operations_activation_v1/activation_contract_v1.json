@@ -31,8 +31,10 @@
     "functional_change_allowed": false,
     "non_canonical_observers": [
       "scripts/serve_live_dashboard.py",
-      "scripts/live_web_server.py",
       "src/live/web/app.py"
+    ],
+    "non_canonical_observers_removed_governed_dedup_v1": [
+      "scripts/live_web_server.py"
     ],
     "operator_recommendation_deauthorization_allowed": true,
     "required_compatibility_paths": [
