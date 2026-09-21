@@ -6784,6 +6784,25 @@ entities:
       P1_STATUS remains UNKNOWN when completeness predicates missing.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 completeness witness foundation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+      - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
+      - docs/ops/specs/FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1.md
+    evidence_sources:
+      - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
+      - docs/ops/specs/FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1.md
+    notes: >-
+      Six fail-closed P1 completeness root witnesses plus derived TIME and
+      PROVENANCE; sealed CD+USDC offline composition; #6665 consumer binding;
+      no GET; no kind-set ratification. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # K2_V5_CREDENTIAL_RETIREMENT_SINGLE_PR_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; V1_V5_EXECUTE_HOSTS_RETIRED=true; V1_V5_HOST_FILES_ABSENT=true; V1_V5_HOST_CODE_PATHS_REMOVED=true; EG_DEFAULT_DISPATCH=FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED; EXISTING_V5_REUSE=false; OCCUPANCY_CLASSIFY_EXTRACTED=true; K1_BIND_UNCHANGED=true; K2_TO_K1_REWIRE=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; PERMIT_CREATED=false; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py; seam=src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py.
     # K1_PRODUCTIVE_MACOS_KEYCHAIN_CREDENTIAL_CLOSEOUT_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; DEFAULT_LOOKUP_BACKEND=MacosSecurityFrameworkLookupBackendV1; REAL_KEYCHAIN_ACCESS_AUTHORIZED=false; REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false; PRODUCTIVE_PROVIDER_ACTIVE=false; PRODUCTIVE_CONSUMER_JOINED=false; RESOLVE_CAPABILITY_V1=FAIL_CLOSED; V5_JOINED=false; K2_NOT_REUSED=true; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; owner=src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py.
