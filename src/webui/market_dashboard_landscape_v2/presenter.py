@@ -16,6 +16,9 @@ from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
 from .source_health import DashboardSourceHealthSnapshotV1
 from .decision_double_play_observability_v1 import build_decision_double_play_observability_v1
+from .landscape_system_observability_completion_v1 import (
+    build_landscape_system_observability_completion_v1,
+)
 from .source_health_projection_fidelity_v1 import (
     build_presentation_projection_presence_matrix_v1,
     build_source_health_presentation_v1,
@@ -1104,6 +1107,72 @@ def present_market_landscape_v2(
         double_play=page.double_play,
     )
 
+    chart_ctx = {
+        "availability": chart_availability.value,
+        "availability_label": AVAILABILITY_LABELS[chart_availability],
+        "bound": bool(browser_payload)
+        or ohlcv_bound
+        or chart_availability in (Availability.AVAILABLE, Availability.STALE),
+        "message": chart_message,
+        "ohlcv": ohlcv_payload,
+        "browser_payload": browser_payload,
+        "has_browser_series": browser_payload is not None,
+        "interval": (browser_payload or ohlcv_payload or {}).get("interval"),
+        "bar_count": (browser_payload or ohlcv_payload or {}).get("bar_count"),
+        "gap_count": (ohlcv_payload or {}).get("gap_count"),
+        "freshness_state": (ohlcv_payload or {}).get("freshness_state"),
+        "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
+        "first_timestamp": (browser_payload or {}).get("first_timestamp"),
+        "last_timestamp": (browser_payload or {}).get("last_timestamp"),
+        "captured_at": (browser_payload or ohlcv_payload or {}).get("candle_captured_at")
+        or (browser_payload or ohlcv_payload or {}).get("captured_at"),
+        "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
+        "payload_digest": (browser_payload or {}).get("payload_digest"),
+        "chart_digest": (browser_payload or {}).get("chart_digest"),
+        "candle_series_digest": (browser_payload or {}).get("candle_series_digest"),
+        "metadata_digest": (browser_payload or {}).get("metadata_digest"),
+        "live_mark_price": None
+        if live_mark_raw is None
+        else format_market_price_display_v1(live_mark_raw, tick_size=tick_size_raw),
+        "live_price_kind": (browser_payload or {}).get("live_price_kind"),
+        "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get("ohlcv_revision_kind"),
+        "open_price": None
+        if open_raw is None
+        else format_market_price_display_v1(open_raw, tick_size=tick_size_raw),
+        "high_price": None
+        if high_raw is None
+        else format_market_price_display_v1(high_raw, tick_size=tick_size_raw),
+        "low_price": None
+        if low_raw is None
+        else format_market_price_display_v1(low_raw, tick_size=tick_size_raw),
+        "close_price": None
+        if close_raw is None
+        else format_market_price_display_v1(close_raw, tick_size=tick_size_raw),
+        "change_pct": None
+        if open_raw is None or close_raw is None
+        else format_market_change_pct_display_v1(open_raw, close_raw),
+        "volume": None if volume_raw is None else format_market_volume_display_v1(volume_raw),
+        "volume_panel_state": volume_panel_state,
+        "volume_panel_message": volume_panel_message,
+        "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
+        "poll_path": OHLCV_POLL_PATH,
+        "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
+        "data_connection_state": _ohlcv_data_connection_state(
+            browser_payload=browser_payload,
+            ohlcv_payload=ohlcv_payload,
+            chart_availability=chart_availability,
+            adapted_connection_state=adapted_ohlcv_connection_state,
+        ),
+    }
+    system_observability_completion = build_landscape_system_observability_completion_v1(
+        dynamic_scope=page.dynamic_scope,
+        regime_bull_bear_switch=page.regime_bull_bear_switch,
+        risk_sizing_capital=page.risk_sizing_capital,
+        execution_reconciliation=page.execution_reconciliation,
+        economic_summary=page.economic_summary,
+        chart=chart_ctx,
+    )
+
     return {
         "page_schema_id": page.schema_id,
         "generated_at": page.generated_at.isoformat().replace("+00:00", "Z"),
@@ -1167,65 +1236,8 @@ def present_market_landscape_v2(
         "source_health": source_health_ctx,
         "presentation_projection_fidelity": presentation_projection_fidelity,
         "decision_double_play_observability": decision_double_play_observability,
-        "chart": {
-            "availability": chart_availability.value,
-            "availability_label": AVAILABILITY_LABELS[chart_availability],
-            "bound": bool(browser_payload)
-            or ohlcv_bound
-            or chart_availability in (Availability.AVAILABLE, Availability.STALE),
-            "message": chart_message,
-            "ohlcv": ohlcv_payload,
-            "browser_payload": browser_payload,
-            "has_browser_series": browser_payload is not None,
-            "interval": (browser_payload or ohlcv_payload or {}).get("interval"),
-            "bar_count": (browser_payload or ohlcv_payload or {}).get("bar_count"),
-            "gap_count": (ohlcv_payload or {}).get("gap_count"),
-            "freshness_state": (ohlcv_payload or {}).get("freshness_state"),
-            "last_closed_timestamp": (ohlcv_payload or {}).get("last_closed_timestamp"),
-            "first_timestamp": (browser_payload or {}).get("first_timestamp"),
-            "last_timestamp": (browser_payload or {}).get("last_timestamp"),
-            "captured_at": (browser_payload or ohlcv_payload or {}).get("candle_captured_at")
-            or (browser_payload or ohlcv_payload or {}).get("captured_at"),
-            "effective_at": (browser_payload or ohlcv_payload or {}).get("effective_at"),
-            "payload_digest": (browser_payload or {}).get("payload_digest"),
-            "chart_digest": (browser_payload or {}).get("chart_digest"),
-            "candle_series_digest": (browser_payload or {}).get("candle_series_digest"),
-            "metadata_digest": (browser_payload or {}).get("metadata_digest"),
-            "live_mark_price": None
-            if live_mark_raw is None
-            else format_market_price_display_v1(live_mark_raw, tick_size=tick_size_raw),
-            "live_price_kind": (browser_payload or {}).get("live_price_kind"),
-            "ohlcv_revision_kind": (browser_payload or ohlcv_payload or {}).get(
-                "ohlcv_revision_kind"
-            ),
-            "open_price": None
-            if open_raw is None
-            else format_market_price_display_v1(open_raw, tick_size=tick_size_raw),
-            "high_price": None
-            if high_raw is None
-            else format_market_price_display_v1(high_raw, tick_size=tick_size_raw),
-            "low_price": None
-            if low_raw is None
-            else format_market_price_display_v1(low_raw, tick_size=tick_size_raw),
-            "close_price": None
-            if close_raw is None
-            else format_market_price_display_v1(close_raw, tick_size=tick_size_raw),
-            "change_pct": None
-            if open_raw is None or close_raw is None
-            else format_market_change_pct_display_v1(open_raw, close_raw),
-            "volume": None if volume_raw is None else format_market_volume_display_v1(volume_raw),
-            "volume_panel_state": volume_panel_state,
-            "volume_panel_message": volume_panel_message,
-            "is_stale": bool((ohlcv_payload or {}).get("is_stale")),
-            "poll_path": OHLCV_POLL_PATH,
-            "poll_interval_seconds": _ohlcv_poll_interval_seconds(),
-            "data_connection_state": _ohlcv_data_connection_state(
-                browser_payload=browser_payload,
-                ohlcv_payload=ohlcv_payload,
-                chart_availability=chart_availability,
-                adapted_connection_state=adapted_ohlcv_connection_state,
-            ),
-        },
+        "system_observability_completion": system_observability_completion,
+        "chart": chart_ctx,
         "timeline": {
             "availability": Availability.NOT_BOUND.value,
             "availability_label": AVAILABILITY_LABELS[Availability.NOT_BOUND],
