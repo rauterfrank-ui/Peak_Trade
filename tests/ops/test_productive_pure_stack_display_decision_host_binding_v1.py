@@ -509,6 +509,9 @@ def test_export_accepts_non_none_replay_intermediate_and_keeps_dp_hard_stop(
         double_play_sibling_path=str(
             (readmodels / "double_play_dashboard_display.v1.json").resolve()
         ),
+        regime_bull_bear_switch_sibling_path=str(
+            (readmodels / "regime_bull_bear_switch.v1.json").resolve()
+        ),
         writable=True,
     )
 

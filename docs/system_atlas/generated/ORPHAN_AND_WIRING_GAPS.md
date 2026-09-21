@@ -131,6 +131,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:productive_flatten_post_and_reconciliation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:promotion_loop_safety | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:promotion_loop_safety | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:regime_bull_bear_switch_archive_sibling_exporter_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:regime_bull_bear_switch_archive_sibling_exporter_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:remaining_execution_path_end_to_end_census_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:remaining_execution_path_end_to_end_census_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_create_path_blocker_census_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:route_c_net_mode_posside_first_party_contract_evidence_v1 | STATUS=OPEN (not proven) |  |

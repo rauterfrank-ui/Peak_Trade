@@ -45,6 +45,7 @@ class ArchiveBindingV1:
     dynamic_scope_sibling_path: str
     canonical_decision_sibling_path: str
     double_play_sibling_path: str
+    regime_bull_bear_switch_sibling_path: str
     writable: bool
 
     def to_dict(self) -> dict[str, Any]:

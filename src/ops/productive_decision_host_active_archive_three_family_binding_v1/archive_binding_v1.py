@@ -14,6 +14,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     CANONICAL_DECISION_SIBLING_RELATIVE,
     DOUBLE_PLAY_SIBLING_RELATIVE,
     DYNAMIC_SCOPE_SIBLING_RELATIVE,
+    REGIME_BULL_BEAR_SWITCH_SIBLING_RELATIVE,
 )
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.models_v1 import (
     ArchiveBindingV1,
@@ -90,6 +91,7 @@ def bind_active_archive_v1(
         dynamic_scope_sibling_path=str(root / DYNAMIC_SCOPE_SIBLING_RELATIVE),
         canonical_decision_sibling_path=str(root / CANONICAL_DECISION_SIBLING_RELATIVE),
         double_play_sibling_path=str(root / DOUBLE_PLAY_SIBLING_RELATIVE),
+        regime_bull_bear_switch_sibling_path=str(root / REGIME_BULL_BEAR_SWITCH_SIBLING_RELATIVE),
         writable=True,
     )
 

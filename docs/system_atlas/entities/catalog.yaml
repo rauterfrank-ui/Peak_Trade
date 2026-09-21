@@ -6166,6 +6166,29 @@ entities:
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 
+  - id: RUNTIME_COMPONENT:regime_bull_bear_switch_archive_sibling_exporter_v1
+    kind: RUNTIME_COMPONENT
+    name: Regime bull/bear switch archive sibling exporter v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: archive_sibling_export
+    source_paths:
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/__init__.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/constants_v1.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/replay_commit_source_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_binding_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/constants_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/cycle_session_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/models_v1.py
+    evidence_sources:
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/constants_v1.py
+      - tests/ops/test_regime_bull_bear_switch_archive_sibling_exporter_v1.py
+    notes: Post-commit export to readmodels/regime_bull_bear_switch.v1.json bound in
+      productive decision host family_export_adapter_v1. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:mv2_local_evaluator
     kind: RUNTIME_COMPONENT
     name: Local evaluator / debug CLI

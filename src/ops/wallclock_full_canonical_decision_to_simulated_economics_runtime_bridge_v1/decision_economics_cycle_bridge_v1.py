@@ -474,6 +474,8 @@ class BridgeSessionStateV1:
     # (TransitionDecision passthrough; full seven-Decision bundle requires Owner-
     # ratified input authorities — absent authorities fail closed).
     last_replay_intermediate: Optional[Any] = None
+    last_replay_regime_id: Optional[str] = None
+    last_replay_regime_status: Optional[str] = None
     last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
     ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
     ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
@@ -1455,6 +1457,8 @@ def run_bridge_cycle_v1(
     # Retain intermediate for Pure-Stack display Decision passthrough/export wiring.
     # Does not alter trading authority or ResultV1 Decision path.
     state.last_replay_intermediate = replay.intermediate
+    state.last_replay_regime_id = str(replay_input.regime_id)
+    state.last_replay_regime_status = replay_input.regime_status.value
     try:
         from src.ops.productive_pure_stack_display_decision_host_binding_v1.host_cycle_v1 import (
             run_pure_stack_display_decision_host_cycle_v1,

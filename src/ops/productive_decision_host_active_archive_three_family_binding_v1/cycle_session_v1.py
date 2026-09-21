@@ -287,9 +287,12 @@ def run_productive_host_smoke_session_v1(
                         dict(evidence_payload) if isinstance(evidence_payload, Mapping) else None
                     ),
                     replay_intermediate=getattr(state, "last_replay_intermediate", None),
+                    replay_regime_id=getattr(state, "last_replay_regime_id", None),
+                    replay_regime_status=getattr(state, "last_replay_regime_status", None),
                 )
                 last_ds = families.get("dynamic_scope")
                 last_cd = families.get("canonical_decision")
+                last_rg = families.get("regime_bull_bear_switch")
                 last_dp = families.get("double_play")
 
                 trace = CycleCommitTraceV1(

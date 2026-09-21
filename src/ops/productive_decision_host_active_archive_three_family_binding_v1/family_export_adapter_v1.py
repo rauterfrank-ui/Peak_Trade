@@ -20,6 +20,10 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     FAMILY_CANONICAL_DECISION,
     FAMILY_DOUBLE_PLAY,
     FAMILY_DYNAMIC_SCOPE,
+    FAMILY_REGIME_BULL_BEAR_SWITCH,
+)
+from src.ops.regime_bull_bear_switch_archive_sibling_exporter_v1.exporter_v1 import (
+    export_regime_bull_bear_switch_to_archive_sibling_v1,
 )
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.double_play_input_gate_v1 import (
     classify_double_play_canonical_inputs_v1,
@@ -45,6 +49,13 @@ from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projec
 )
 from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_v1 import (
     try_load_dynamic_scope_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
+    materialize_bull_bear_regime_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
+    STORAGE_RELATIVE_PATH as REGIME_PRESENTATION_STORAGE_RELATIVE_PATH,
+    try_load_bull_bear_regime_presentation_projection_v1,
 )
 
 
@@ -98,6 +109,8 @@ def export_families_after_runtime_commit_v1(
     dynamic_scope_persisted: bool,
     evidence_payload: Mapping[str, Any] | None,
     replay_intermediate: object | None = None,
+    replay_regime_id: str | None = None,
+    replay_regime_status: str | None = None,
     generated_at: str | None = None,
 ) -> dict[str, FamilyExportResultV1]:
     """Export siblings after runtime commit. Projection errors never roll back runtime."""
@@ -209,6 +222,58 @@ def export_families_after_runtime_commit_v1(
                 cursor["canonical_decision_cycle_id"] = cycle_id
                 cursor["canonical_decision_digest"] = cd.source_digest
     results[FAMILY_CANONICAL_DECISION] = cd
+
+    # --- regime_bull_bear_switch ---
+    rg = FamilyExportResultV1(
+        family_id=FAMILY_REGIME_BULL_BEAR_SWITCH,
+        exportable=bool(replay_intermediate and replay_regime_id and replay_regime_status),
+        exported=False,
+        materialized=False,
+        loader_ok=False,
+        cycle_id=cycle_id,
+    )
+    if not rg.exportable:
+        rg.skipped_reason = "regime_replay_commit_facts_missing"
+        rg.error_code = "REGIME_REPLAY_COMMIT_REQUIRED"
+    else:
+        prior = str(cursor.get("regime_bull_bear_switch_cycle_id") or "")
+        if prior and prior > cycle_id:
+            rg.error_code = "STALE_CYCLE_EXPORT_REJECTED"
+            rg.detail = f"cursor={prior}:cycle={cycle_id}"
+        else:
+            assert replay_regime_id is not None
+            assert replay_regime_status is not None
+            out = export_regime_bull_bear_switch_to_archive_sibling_v1(
+                archive_root=archive.archive_root,
+                regime_id=replay_regime_id,
+                regime_status=replay_regime_status,
+                replay_intermediate=replay_intermediate,
+                source_label=f"replay_commit:{cycle_id}",
+            )
+            rg.exported = bool(out.exported)
+            rg.source_digest = str(out.source_payload_digest or "")
+            rg.target_path = str(out.target_path or "")
+            rg.error_code = str(out.error_code or "")
+            rg.detail = str(out.failure_reason or "")
+            if rg.exported:
+                mat = materialize_bull_bear_regime_presentation_projection_v1(
+                    archive.archive_root,
+                    generated_at=ts,
+                    source_reference=rg.target_path or None,
+                )
+                rg.materialized = bool(mat.written)
+                rg.projection_path = str(
+                    Path(archive.archive_root) / REGIME_PRESENTATION_STORAGE_RELATIVE_PATH
+                )
+                if not mat.written:
+                    rg.detail = f"materialize:{mat.status}:{','.join(mat.errors)}"
+                loaded = try_load_bull_bear_regime_presentation_projection_v1(
+                    Path(archive.archive_root)
+                )
+                rg.loader_ok = bool(getattr(loaded, "loaded", False))
+                cursor["regime_bull_bear_switch_cycle_id"] = cycle_id
+                cursor["regime_bull_bear_switch_digest"] = rg.source_digest
+    results[FAMILY_REGIME_BULL_BEAR_SWITCH] = rg
 
     # --- double_play (fail-closed without new semantics) ---
     dp_inputs = try_extract_double_play_decision_inputs_from_replay_intermediate_v1(
