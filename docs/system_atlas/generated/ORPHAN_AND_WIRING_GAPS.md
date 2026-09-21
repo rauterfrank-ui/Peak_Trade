@@ -44,6 +44,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_current_decision_consumer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_current_decision_consumer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | STATUS=OPEN (not proven) |  |

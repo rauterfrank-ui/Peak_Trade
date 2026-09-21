@@ -6233,6 +6233,34 @@ entities:
       consume the readmodel; dashboard does not rerank. Does not implement D3.2/D3.3.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1
+    kind: RUNTIME_COMPONENT
+    name: D3.2 dynamic scope and canonical decision fresh regeneration v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: governed_productive_decision_host_smoke_witness
+    modified_by: D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1
+    source_paths:
+      - scripts/ops/run_productive_decision_host_active_archive_three_family_binding_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/cycle_session_v1.py
+      - src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py
+      - src/ops/dynamic_scope_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/canonical_decision_archive_sibling_exporter_v1/exporter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/dynamic_scope_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/canonical_decision_presentation_projection_materializer_v1.py
+    evidence_sources:
+      - docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/REGENERATION_VERIFY.json
+      - docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/SMOKE_SESSION_RESULT.json
+      - docs/ops/market_dashboard/d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1/cycle_commit_trace.jsonl
+      - tests/ops/test_productive_decision_host_active_archive_three_family_binding_v1.py
+    notes: >-
+      Operator-witness D3.2: one bounded productive decision host smoke (Cap 7.2
+      activation enabled, analytical mids, no network session) on D3.1-pinned archive
+      root; exports readmodels/dynamic_scope_state_v1.json and
+      readmodels/canonical_trading_decision_evidence.v1.json with in-host presentation
+      materialization. Does not execute D3.3. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1
     kind: RUNTIME_COMPONENT
     name: Double Play dashboard display archive sibling replay export v1

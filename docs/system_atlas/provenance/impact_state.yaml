@@ -3,26 +3,27 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1
-modified_by: D3_1_FRESH_UNIVERSE_RANKING_REFRESH_V1
+introduced_by: D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1
+modified_by: D3_2_DYNAMIC_SCOPE_CANONICAL_DECISION_FRESH_REGENERATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  D3.1 bounded witness: operator regeneration of universe_selection_readmodel.v1
-  via scripts/ops/refresh_okx_market_dashboard_v1 on pinned workflow dashboard
-  archive root. Market identity remains projection-only from universe selection.
-  No D3.2/D3.3 or three-family host. Atlas is not canonical authority.
+  D3.2 bounded witness: one productive decision host smoke on D3.1-pinned workflow
+  dashboard archive root; genuine runtime regeneration and sibling export of
+  dynamic_scope_state_v1.json and canonical_trading_decision_evidence.v1.json with
+  in-host presentation materialization. No D3.3 invocation. Atlas is not canonical
+  authority.
 changed_entities:
-  - RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1
+  - RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1
 changed_relations: []
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
-affected_okx_surfaces:
-  - GET_/api/v5/public/
+affected_okx_surfaces: []
 affected_safety_surfaces: []
 affected_schemas:
-  - DATA_CONTRACT:universe_selection_readmodel_v1
+  - DATA_CONTRACT:dynamic_scope_state_v1
+  - DATA_CONTRACT:canonical_trading_decision_evidence_v1
 review_required_items: []
 reviewed_entities:
-  - id: RUNTIME_COMPONENT:d3_1_fresh_universe_ranking_refresh_v1
+  - id: RUNTIME_COMPONENT:d3_2_dynamic_scope_canonical_decision_fresh_regeneration_v1
