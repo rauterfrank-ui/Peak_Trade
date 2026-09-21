@@ -210,7 +210,10 @@ def test_injected_and_offline_equity_are_not_live_capital_authority() -> None:
     adapter = (
         REPO_ROOT / "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py"
     ).read_text(encoding="utf-8")
-    assert '_DEFAULT_ACCOUNT_EQUITY = Decimal("10000")' in adapter
+    assert "ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY" in (
+        REPO_ROOT
+        / "src/trading/master_v2/capital_risk_sizing_historical_default_deauthorization_v1.py"
+    ).read_text(encoding="utf-8")
     assert RUNNING_EQUITY_SOURCE_OBJECT != "OFFLINE_ALGEBRA"
     assert RUNNING_EQUITY_SOURCE_SEMANTICS != "LIVE_CAPITAL_AUTHORITY"
 

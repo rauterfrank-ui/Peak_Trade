@@ -48,7 +48,7 @@ from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
 from src.trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA as REPLAY_OFFLINE_ALGEBRA,
-    default_offline_replay_capital_context_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
 )
 from tests.ops.test_full_core_execution_admission_contract_v1 import _live_inputs
 from tests.ops.test_full_core_live_account_bound_and_remaining_closeout_v1 import (
@@ -309,7 +309,7 @@ def test_forged_risk_admissible_cannot_override_gates() -> None:
 
 
 def test_offline_algebra_replay_is_not_live_capital() -> None:
-    ctx = default_offline_replay_capital_context_v0(instrument_id=_TEST_INST)
+    ctx = isolated_offline_replay_fixture_capital_context_v0(instrument_id=_TEST_INST)
     assert ctx.capital_risk_mode == REPLAY_OFFLINE_ALGEBRA
     evidence = evaluate_capital_admission_v1(
         claim=None,

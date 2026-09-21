@@ -251,9 +251,13 @@ def compose_capital_risk_sizing_safety_intent_from_core_evidence_v1(
             "SafetyKernelOfflineReplayContextV0 is required; no implicit Safety default"
         )
     evidence = core.replay.evidence
-    ctx = capital_context or default_offline_replay_capital_context_v0(
-        instrument_id=evidence.instrument_id,
-    )
+    if capital_context is None:
+        from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+            REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+        )
+
+        raise ValueError(REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED)
+    ctx = capital_context
     context, policy = capital_context_to_quantity_chain_inputs_v1(ctx)
     chain = evaluate_quantity_chain_v1(evidence, context, policy)
     safety_binding = bind_safety_kernel_offline_replay_evidence_v0(

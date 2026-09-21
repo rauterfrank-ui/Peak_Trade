@@ -32,6 +32,17 @@ from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CanonicalTradingDecisionEvidenceV1,
     finalize_offline_replay_decision_evidence_v1,
 )
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_DAILY_LOSS_REMAINING_BUDGET,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_MAXIMUM_QUANTITY,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_PER_TRADE_RISK_LIMIT,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_PROTECTIVE_STOP as _ISOLATED_FIXTURE_PROTECTIVE_STOP,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_REFERENCE_PRICE as _ISOLATED_FIXTURE_REFERENCE_PRICE,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_SCOPE_CAPITAL_LIMIT,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_TOTAL_CAPITAL_LIMIT,
+    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+)
 
 CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_LAYER_VERSION = "v0"
 CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER = (
@@ -51,19 +62,16 @@ _OFFLINE_BINDING_CONFIG_DIGEST = hashlib.sha256(
 ).hexdigest()
 DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST = _OFFLINE_BINDING_CONFIG_DIGEST
 
-_DEFAULT_REFERENCE_PRICE = Decimal("3500")
-_DEFAULT_PROTECTIVE_STOP = Decimal("3400")
 _UNSET_PROTECTIVE_STOP = object()
-_DEFAULT_ACCOUNT_EQUITY = Decimal("10000")
-_DEFAULT_SCOPE_CAPITAL = Decimal("500")
-_DEFAULT_PER_TRADE_RISK = Decimal("25")
-_DEFAULT_TOTAL_CAPITAL = Decimal("500")
-_DEFAULT_DAILY_LOSS_BUDGET = Decimal("25")
+
+# Leak-detection alias for productive paths (fixture literal only; not CURRENT authority).
+_DEFAULT_ACCOUNT_EQUITY = ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY
 
 
 def default_offline_replay_instrument_v0(
     instrument_id: str,
 ) -> InstrumentQuantityConstraintsV1:
+    """CURRENT-neutral instrument metadata: no historical maximum_quantity cap."""
     return InstrumentQuantityConstraintsV1(
         instrument_id=instrument_id,
         market_type="futures",
@@ -71,10 +79,28 @@ def default_offline_replay_instrument_v0(
         contract_multiplier=Decimal("1"),
         lot_size=Decimal("0.01"),
         minimum_quantity=Decimal("0.01"),
-        maximum_quantity=Decimal("100"),
+        maximum_quantity=None,
         minimum_notional=Decimal("5"),
         tick_size=Decimal("0.01"),
         instrument_metadata_version="offline_replay_futures_metadata_v0",
+    )
+
+
+def isolated_offline_replay_fixture_instrument_v0(
+    instrument_id: str,
+) -> InstrumentQuantityConstraintsV1:
+    """Explicit isolated fixture instrument constraints (not CURRENT authority)."""
+    return InstrumentQuantityConstraintsV1(
+        instrument_id=instrument_id,
+        market_type="futures",
+        contract_kind="LINEAR",
+        contract_multiplier=Decimal("1"),
+        lot_size=Decimal("0.01"),
+        minimum_quantity=Decimal("0.01"),
+        maximum_quantity=ISOLATED_OFFLINE_REPLAY_FIXTURE_MAXIMUM_QUANTITY,
+        minimum_notional=Decimal("5"),
+        tick_size=Decimal("0.01"),
+        instrument_metadata_version="isolated_offline_replay_fixture_futures_metadata_v0",
     )
 
 
@@ -115,29 +141,68 @@ def derive_protective_stop_price_from_adverse_exit_v0(
 def default_offline_replay_capital_context_v0(
     *,
     instrument_id: str,
+    account_equity: Decimal,
+    scope_capital_limit: Decimal,
+    per_trade_risk_limit: Decimal,
+    total_capital_limit: Decimal,
+    daily_loss_remaining_budget: Decimal,
     reference_price: Decimal | None = None,
     protective_stop_price: Decimal | None | object = _UNSET_PROTECTIVE_STOP,
+    instrument: InstrumentQuantityConstraintsV1 | None = None,
+    capital_risk_mode: str = CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
+    config_digest: str = DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST,
 ) -> "CanonicalCoreRuntimeCapitalContextV0":
+    """Build capital context only from explicit caller-supplied limits (no implicit defaults)."""
     from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
         CanonicalCoreRuntimeCapitalContextV0,
     )
 
-    price = reference_price if reference_price is not None else _DEFAULT_REFERENCE_PRICE
+    if reference_price is None:
+        raise ValueError("reference_price_required_for_capital_risk_context")
+    stop: Decimal | None
+    if protective_stop_price is _UNSET_PROTECTIVE_STOP:
+        stop = None
+    else:
+        stop = protective_stop_price  # type: ignore[assignment]
+    inst = instrument or default_offline_replay_instrument_v0(instrument_id)
+    return CanonicalCoreRuntimeCapitalContextV0(
+        reference_price=reference_price,
+        protective_stop_price=stop,
+        account_equity=account_equity,
+        scope_capital_limit=scope_capital_limit,
+        per_trade_risk_limit=per_trade_risk_limit,
+        total_capital_limit=total_capital_limit,
+        daily_loss_remaining_budget=daily_loss_remaining_budget,
+        current_reconciled_exposure=Decimal("0"),
+        instrument=inst,
+        config_digest=config_digest,
+        capital_risk_mode=capital_risk_mode,
+    )
+
+
+def isolated_offline_replay_fixture_capital_context_v0(
+    *,
+    instrument_id: str,
+    reference_price: Decimal | None = None,
+    protective_stop_price: Decimal | None | object = _UNSET_PROTECTIVE_STOP,
+) -> "CanonicalCoreRuntimeCapitalContextV0":
+    """Isolated offline/test fixture only — explicit historical literals, not CURRENT authority."""
+    price = reference_price if reference_price is not None else _ISOLATED_FIXTURE_REFERENCE_PRICE
     stop = (
-        _DEFAULT_PROTECTIVE_STOP
+        _ISOLATED_FIXTURE_PROTECTIVE_STOP
         if protective_stop_price is _UNSET_PROTECTIVE_STOP
         else protective_stop_price
     )
-    return CanonicalCoreRuntimeCapitalContextV0(
+    return default_offline_replay_capital_context_v0(
+        instrument_id=instrument_id,
         reference_price=price,
         protective_stop_price=stop,
-        account_equity=_DEFAULT_ACCOUNT_EQUITY,
-        scope_capital_limit=_DEFAULT_SCOPE_CAPITAL,
-        per_trade_risk_limit=_DEFAULT_PER_TRADE_RISK,
-        total_capital_limit=_DEFAULT_TOTAL_CAPITAL,
-        daily_loss_remaining_budget=_DEFAULT_DAILY_LOSS_BUDGET,
-        current_reconciled_exposure=Decimal("0"),
-        instrument=default_offline_replay_instrument_v0(instrument_id),
+        account_equity=ISOLATED_OFFLINE_REPLAY_FIXTURE_ACCOUNT_EQUITY,
+        scope_capital_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_SCOPE_CAPITAL_LIMIT,
+        per_trade_risk_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_PER_TRADE_RISK_LIMIT,
+        total_capital_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_TOTAL_CAPITAL_LIMIT,
+        daily_loss_remaining_budget=ISOLATED_OFFLINE_REPLAY_FIXTURE_DAILY_LOSS_REMAINING_BUDGET,
+        instrument=isolated_offline_replay_fixture_instrument_v0(instrument_id),
         config_digest=_OFFLINE_BINDING_CONFIG_DIGEST,
         capital_risk_mode=CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
     )
@@ -195,11 +260,29 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
         decision_outcome_is_actionable,
     )
 
-    ctx = capital_context or default_offline_replay_capital_context_v0(
-        instrument_id=evidence.instrument_id,
-    )
+    capital_risk_mode = CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    if capital_context is None:
+        finalized = finalize_offline_replay_decision_evidence_v1(
+            replace(
+                evidence,
+                reason_codes=tuple(
+                    dict.fromkeys((*evidence.reason_codes, REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED))
+                ),
+            )
+        )
+        return CapitalRiskSizingOfflineReplayBindingResultV0(
+            evidence=finalized,
+            sizing_decision=None,
+            binding_applied=False,
+            quantity_provenance_ref="",
+            risk_sizing_ref="",
+            quantity_status=_QUANTITY_STATUS_NOT_BOUND,
+            risk_sizing_effect=RISK_SIZING_EFFECT_NONE,
+            capital_risk_mode=capital_risk_mode,
+        )
+
     capital_risk_mode = str(
-        getattr(ctx, "capital_risk_mode", CAPITAL_RISK_MODE_OFFLINE_ALGEBRA)
+        getattr(capital_context, "capital_risk_mode", CAPITAL_RISK_MODE_OFFLINE_ALGEBRA)
         or CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
     )
     if not decision_outcome_is_actionable(evidence.decision_outcome):
@@ -217,7 +300,7 @@ def bind_capital_risk_sizing_offline_replay_evidence_v0(
 
     sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
         decision=evidence,
-        capital_context=ctx,
+        capital_context=capital_context,
     )
     if sizing_input is None:
         finalized = finalize_offline_replay_decision_evidence_v1(
@@ -331,7 +414,7 @@ def evaluate_scenario_capital_risk_sizing_v0(
     *,
     reference_price: Decimal | None = None,
 ) -> CapitalRiskSizingOfflineReplayBindingResultV0:
-    ctx = default_offline_replay_capital_context_v0(
+    ctx = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id=evidence.instrument_id,
         reference_price=reference_price,
     )
@@ -378,3 +461,26 @@ def system_economic_evidence_admissible_v0(
     if ev.risk_sizing_effect != RISK_SIZING_EFFECT_BOUND_OFFLINE:
         return False
     return False
+
+
+__all__ = [
+    "CANONICAL_CAPITAL_RISK_SIZING_OWNER",
+    "CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND",
+    "CAPITAL_RISK_MODE_OFFLINE_ALGEBRA",
+    "CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_LAYER_VERSION",
+    "CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER",
+    "DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST",
+    "REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED",
+    "_DEFAULT_ACCOUNT_EQUITY",
+    "bind_capital_risk_sizing_offline_replay_evidence_v0",
+    "build_scenario_tick_decision_evidence_v0",
+    "capital_risk_sizing_binding_non_authority_boundary_ok_v0",
+    "compute_risk_sizing_decision_ref_v0",
+    "default_offline_replay_capital_context_v0",
+    "default_offline_replay_instrument_v0",
+    "derive_protective_stop_price_from_adverse_exit_v0",
+    "evaluate_scenario_capital_risk_sizing_v0",
+    "isolated_offline_replay_fixture_capital_context_v0",
+    "isolated_offline_replay_fixture_instrument_v0",
+    "system_economic_evidence_admissible_v0",
+]

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 
@@ -18,9 +19,13 @@ from src.backtest.mv2_research_wiring_v1 import (
 from trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
     parse_capital_risk_sizing_backtest_state_file_v0,
 )
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
+    REASON_DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
-    default_offline_replay_capital_context_v0,
     default_offline_replay_instrument_v0,
+    isolated_offline_replay_fixture_capital_context_v0,
 )
 from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
     MV2_OFFLINE_BOUNDARY_DYNAMIC_PRICE_CONTEXT_BINDING_REF_V1,
@@ -75,6 +80,7 @@ def test_materialized_state_file_uses_dynamic_binding_without_static_prices(
         dataset_manifest_path=manifest,
         output_dir=tmp_path / "boundary",
         account_equity="10000",
+        static_capital_risk_limits_lineage_ref=ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
     )
     crs = json.loads(result.capital_risk_sizing_path.read_text(encoding="utf-8"))
     assert crs["dynamic_price_context_binding_ref"] == (
@@ -99,13 +105,7 @@ def test_dynamic_payload_forbids_digest_pinned_daily_loss_and_max_quantity() -> 
         validate_dynamic_price_context_binding_ref_v0(payload)
 
 
-def test_current_dynamic_boundary_excludes_offline_adapter_fixture_scalars(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    import trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 as crs_adapter
-
-    monkeypatch.setattr(crs_adapter, "_DEFAULT_DAILY_LOSS_BUDGET", Decimal("999"))
-
+def test_current_dynamic_boundary_excludes_offline_adapter_fixture_scalars() -> None:
     state = CapitalRiskSizingBacktestStateFileRecordV0(
         instrument_id="okx_eea:linear_perpetual:TEST:USDT:USDT:test-usdt-swap",
         reference_price="",
@@ -114,7 +114,7 @@ def test_current_dynamic_boundary_excludes_offline_adapter_fixture_scalars(
         scope_capital_limit="500",
         per_trade_risk_limit="40",
         total_capital_limit="500",
-        daily_loss_remaining_budget="",
+        daily_loss_remaining_budget="40",
         current_reconciled_exposure="0",
         lot_size="1",
         minimum_quantity="1",
@@ -138,16 +138,22 @@ def test_current_dynamic_boundary_excludes_offline_adapter_fixture_scalars(
         dynamic_price_context=dynamic,
     )
     assert ctx.daily_loss_remaining_budget == Decimal("40")
-    assert ctx.daily_loss_remaining_budget != Decimal("999")
     assert ctx.instrument.maximum_quantity is None
 
-    replay_fixture = default_offline_replay_capital_context_v0(
+    replay_fixture = isolated_offline_replay_fixture_capital_context_v0(
         instrument_id="okx_eea:linear_perpetual:TEST:USDT:USDT:test-usdt-swap",
         reference_price=Decimal("100"),
         protective_stop_price=Decimal("99"),
     )
-    assert replay_fixture.daily_loss_remaining_budget == Decimal("999")
+    assert replay_fixture.daily_loss_remaining_budget == Decimal("25")
     assert replay_fixture.instrument.maximum_quantity == Decimal("100")
+
+    state_missing_daily = replace(state, daily_loss_remaining_budget="")
+    with pytest.raises(ValueError, match=REASON_DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED):
+        build_mv2_dynamic_boundary_capital_context_v1(
+            state_file=state_missing_daily,
+            dynamic_price_context=dynamic,
+        )
 
 
 def test_materialization_fail_closed_on_manifest_identity_mismatch(tmp_path: Path) -> None:

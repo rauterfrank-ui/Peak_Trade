@@ -11,6 +11,9 @@ from decimal import Decimal
 from typing import Any, Mapping
 
 from src.governance.capital_risk_sizing_v1 import InstrumentQuantityConstraintsV1
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    REASON_DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     derive_protective_stop_price_from_adverse_exit_v0,
 )
@@ -34,8 +37,8 @@ _DYNAMIC_FORBIDDEN_CURRENT_AUTHORITY_FIELDS = frozenset(
     }
 )
 CURRENT_DYNAMIC_BOUNDARY_DAILY_LOSS_LINEAGE_REF_V1 = (
-    "capital_risk_sizing_boundary_backtest_state_file_v0.per_trade_risk_limit"
-    "_when_daily_loss_omitted_on_dynamic_path"
+    "capital_risk_sizing_boundary_backtest_state_file_v0."
+    "daily_loss_remaining_budget_required_on_current_dynamic_path"
 )
 CURRENT_DYNAMIC_BOUNDARY_MAX_QUANTITY_LINEAGE_REF_V1 = (
     "instrument_quantity_constraints_v1.maximum_quantity_none"
@@ -98,8 +101,7 @@ def build_mv2_dynamic_boundary_capital_context_v1(
     """Boundary + CURRENT eval CRS capital context from digest-pinned state file + dynamic price.
 
     Omits historical offline-replay fixture scalars (adapter daily_loss=25, max_qty=100).
-    When daily_loss is absent on the dynamic state file, daily envelope aligns to
-    per_trade_risk_limit from the same file (CRS required Decimal; no tighter daily cap).
+    When daily_loss is absent on the dynamic state file, fail-closed (no per_trade alias).
     maximum_quantity uses canonical Optional absence (None = no configured max cap).
     """
     from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
@@ -110,6 +112,11 @@ def build_mv2_dynamic_boundary_capital_context_v1(
     )
 
     per_trade = Decimal(str(state_file.per_trade_risk_limit))
+    daily_raw = getattr(state_file, "daily_loss_remaining_budget", None)
+    daily_text = "" if daily_raw is None else str(daily_raw).strip()
+    if daily_text == "":
+        raise ValueError(REASON_DAILY_LOSS_REMAINING_BUDGET_UNRESOLVED)
+    daily_remaining = Decimal(daily_text)
     instrument = InstrumentQuantityConstraintsV1(
         instrument_id=str(state_file.instrument_id),
         market_type="futures",
@@ -129,7 +136,7 @@ def build_mv2_dynamic_boundary_capital_context_v1(
         scope_capital_limit=Decimal(str(state_file.scope_capital_limit)),
         per_trade_risk_limit=per_trade,
         total_capital_limit=Decimal(str(state_file.total_capital_limit)),
-        daily_loss_remaining_budget=per_trade,
+        daily_loss_remaining_budget=daily_remaining,
         current_reconciled_exposure=Decimal(str(state_file.current_reconciled_exposure)),
         instrument=instrument,
         maximum_positions=int(state_file.maximum_positions),

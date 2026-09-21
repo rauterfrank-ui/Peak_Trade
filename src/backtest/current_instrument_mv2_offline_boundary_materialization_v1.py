@@ -25,6 +25,14 @@ from trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_
     CAPITAL_RISK_SIZING_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
     compute_backtest_state_file_digest_from_payload_v0 as crs_digest,
 )
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_DAILY_LOSS_REMAINING_BUDGET,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_PER_TRADE_RISK_LIMIT,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_SCOPE_CAPITAL_LIMIT,
+    ISOLATED_OFFLINE_REPLAY_FIXTURE_TOTAL_CAPITAL_LIMIT,
+    REASON_CAPITAL_RISK_STATIC_LIMITS_UNRESOLVED,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     default_offline_replay_capital_context_v0,
     default_offline_replay_instrument_v0,
@@ -43,8 +51,8 @@ CONTRACT_OWNER = "backtest.current_instrument_mv2_offline_boundary_materializati
 # Scope/per-trade/total limits remain digest-pinned; daily_loss and maximum_quantity are
 # never materialized on the CURRENT dynamic path (no historical 25/100 fixture authority).
 STATIC_SCOPE_LIMIT_LINEAGE_REF_V1 = (
-    "capital_risk_sizing_offline_replay_binding_adapter_v0."
-    "default_offline_replay_capital_context_v0.scope_limits_only"
+    "current_instrument_mv2_offline_boundary_materialization_v1."
+    "explicit_static_capital_risk_limits_v1"
 )
 CURRENT_DYNAMIC_BOUNDARY_SCALAR_LINEAGE_REF_V1 = (
     "mv2_offline_boundary_dynamic_price_context_v1.build_mv2_dynamic_boundary_capital_context_v1"
@@ -59,6 +67,36 @@ STATIC_INSTRUMENT_CONSTRAINT_LINEAGE_ADAPTER_V1 = (
 
 class CurrentInstrumentBoundaryMaterializationError(ValueError):
     """Fail-closed CURRENT boundary materialization error."""
+
+
+@dataclass(frozen=True)
+class CurrentInstrumentStaticCapitalRiskLimitsV1:
+    scope_capital_limit: Decimal
+    per_trade_risk_limit: Decimal
+    total_capital_limit: Decimal
+    daily_loss_remaining_budget: Decimal
+
+
+def _resolve_static_capital_risk_limits_v1(
+    *,
+    static_capital_risk_limits: CurrentInstrumentStaticCapitalRiskLimitsV1 | None,
+    static_capital_risk_limits_lineage_ref: str | None,
+) -> tuple[CurrentInstrumentStaticCapitalRiskLimitsV1, str]:
+    if static_capital_risk_limits is not None:
+        return static_capital_risk_limits, STATIC_SCOPE_LIMIT_LINEAGE_REF_V1
+    if static_capital_risk_limits_lineage_ref == ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1:
+        return (
+            CurrentInstrumentStaticCapitalRiskLimitsV1(
+                scope_capital_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_SCOPE_CAPITAL_LIMIT,
+                per_trade_risk_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_PER_TRADE_RISK_LIMIT,
+                total_capital_limit=ISOLATED_OFFLINE_REPLAY_FIXTURE_TOTAL_CAPITAL_LIMIT,
+                daily_loss_remaining_budget=ISOLATED_OFFLINE_REPLAY_FIXTURE_DAILY_LOSS_REMAINING_BUDGET,
+            ),
+            ISOLATED_OFFLINE_REPLAY_FIXTURE_LINEAGE_REF_V1,
+        )
+    raise CurrentInstrumentBoundaryMaterializationError(
+        REASON_CAPITAL_RISK_STATIC_LIMITS_UNRESOLVED
+    )
 
 
 @dataclass(frozen=True)
@@ -176,6 +214,8 @@ def materialize_current_instrument_crs_coi_boundary_state_files_v1(
     dataset_manifest_path: Path,
     output_dir: Path,
     account_equity: Decimal | float | str,
+    static_capital_risk_limits: CurrentInstrumentStaticCapitalRiskLimitsV1 | None = None,
+    static_capital_risk_limits_lineage_ref: str | None = None,
 ) -> CurrentInstrumentBoundaryMaterializationResultV1:
     """Write CRS + COI boundary JSON for CURRENT instrument (dynamic price binding)."""
     canon = str(canonical_instrument_id or "").strip()
@@ -189,12 +229,21 @@ def materialize_current_instrument_crs_coi_boundary_state_files_v1(
         canonical_instrument_id=canon,
         manifest_metadata=manifest_metadata,
     )
+    limits, limit_lineage_ref = _resolve_static_capital_risk_limits_v1(
+        static_capital_risk_limits=static_capital_risk_limits,
+        static_capital_risk_limits_lineage_ref=static_capital_risk_limits_lineage_ref,
+    )
+    equity = Decimal(str(account_equity))
     capital_ctx = default_offline_replay_capital_context_v0(
         instrument_id=canon,
         reference_price=Decimal("1"),
         protective_stop_price=Decimal("0.99"),
+        account_equity=equity,
+        scope_capital_limit=limits.scope_capital_limit,
+        per_trade_risk_limit=limits.per_trade_risk_limit,
+        total_capital_limit=limits.total_capital_limit,
+        daily_loss_remaining_budget=limits.daily_loss_remaining_budget,
     )
-    equity = Decimal(str(account_equity))
 
     out = Path(output_dir).expanduser().resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -234,7 +283,7 @@ def materialize_current_instrument_crs_coi_boundary_state_files_v1(
         capital_risk_sizing_digest_ref=crs_digest_ref,
         canonical_order_intent_path=coi_path,
         canonical_order_intent_digest_ref=coi_digest_ref,
-        static_scope_limit_lineage_ref=STATIC_SCOPE_LIMIT_LINEAGE_REF_V1,
+        static_scope_limit_lineage_ref=limit_lineage_ref,
         current_dynamic_boundary_scalar_lineage_ref=CURRENT_DYNAMIC_BOUNDARY_SCALAR_LINEAGE_REF_V1,
         instrument_constraint_lineage_ref=constraint_lineage,
         dynamic_price_context_binding_ref=MV2_OFFLINE_BOUNDARY_DYNAMIC_PRICE_CONTEXT_BINDING_REF_V1,
