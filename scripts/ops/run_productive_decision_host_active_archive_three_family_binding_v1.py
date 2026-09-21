@@ -79,6 +79,9 @@ def cmd_smoke(args: argparse.Namespace) -> int:
         max_cycles=int(args.max_cycles),
         network_session_allowed=bool(args.network_session_allowed),
         repo_root=REPO_ROOT,
+        economic_viability_evidence_bundle_path=(
+            args.economic_viability_evidence_bundle_path or None
+        ),
     )
     print(json.dumps(result.to_dict(), sort_keys=True, indent=2))
     return 0 if result.ok else 2
@@ -111,6 +114,11 @@ def main(argv: list[str] | None = None) -> int:
     p_smoke.add_argument("--min-interval", default="0.05")
     p_smoke.add_argument("--max-cycles", default=str(DEFAULT_SMOKE_MAX_CYCLES))
     p_smoke.add_argument("--network-session-allowed", action="store_true")
+    p_smoke.add_argument(
+        "--economic-viability-evidence-bundle-path",
+        default="",
+        help="Explicit STEP29M bundle directory (manifest-verified); no discovery",
+    )
     p_smoke.set_defaults(func=cmd_smoke)
 
     args = parser.parse_args(argv)

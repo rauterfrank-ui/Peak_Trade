@@ -133,6 +133,7 @@ def run_productive_host_smoke_session_v1(
     network_session_allowed: bool = False,
     start_ts_unix: float = 1_700_000_000.0,
     repo_root: Path | None = None,
+    economic_viability_evidence_bundle_path: str | Path | None = None,
 ) -> SmokeSessionResultV1:
     """Owner-authorized bounded smoke: host cycles + three-family export binding.
 
@@ -290,6 +291,11 @@ def run_productive_host_smoke_session_v1(
                     replay_intermediate=getattr(state, "last_replay_intermediate", None),
                     replay_regime_id=getattr(state, "last_replay_regime_id", None),
                     replay_regime_status=getattr(state, "last_replay_regime_status", None),
+                    economic_viability_evidence_bundle_path=(
+                        str(economic_viability_evidence_bundle_path)
+                        if economic_viability_evidence_bundle_path is not None
+                        else None
+                    ),
                 )
                 last_ds = families.get("dynamic_scope")
                 last_cd = families.get("canonical_decision")

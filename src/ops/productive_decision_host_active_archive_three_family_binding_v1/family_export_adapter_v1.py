@@ -22,6 +22,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     FAMILY_DYNAMIC_SCOPE,
     FAMILY_REGIME_BULL_BEAR_SWITCH,
     FAMILY_EXECUTION_RECONCILIATION,
+    FAMILY_ECONOMIC_SUMMARY,
     FAMILY_RISK_SIZING_CAPITAL,
 )
 from src.ops.regime_bull_bear_switch_archive_sibling_exporter_v1.exporter_v1 import (
@@ -32,6 +33,9 @@ from src.ops.execution_reconciliation_archive_sibling_exporter_v1.exporter_v1 im
 )
 from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.exporter_v1 import (
     export_risk_sizing_capital_to_archive_sibling_from_replay_commit_v1,
+)
+from src.ops.economic_summary_archive_sibling_exporter_v1.exporter_v1 import (
+    export_economic_summary_to_archive_sibling_from_explicit_bundle_v1,
 )
 from src.ops.double_play_archive_sibling_exporter_v1.exporter_v1 import (
     export_double_play_display_to_archive_sibling_from_replay_commit_v1,
@@ -84,6 +88,13 @@ from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presenta
 from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as RISK_SIZING_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_risk_sizing_capital_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_materializer_v1 import (
+    materialize_economic_summary_presentation_projection_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_v1 import (
+    STORAGE_RELATIVE_PATH as ECONOMIC_SUMMARY_PRESENTATION_STORAGE_RELATIVE_PATH,
+    try_load_economic_summary_presentation_projection_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as REGIME_PRESENTATION_STORAGE_RELATIVE_PATH,
@@ -144,6 +155,7 @@ def export_families_after_runtime_commit_v1(
     replay_regime_id: str | None = None,
     replay_regime_status: str | None = None,
     generated_at: str | None = None,
+    economic_viability_evidence_bundle_path: str | None = None,
 ) -> dict[str, FamilyExportResultV1]:
     """Export siblings after runtime commit. Projection errors never roll back runtime."""
     ts = generated_at or _utc_now_iso()
@@ -449,6 +461,59 @@ def export_families_after_runtime_commit_v1(
                 cursor["execution_reconciliation_cycle_id"] = cycle_id
                 cursor["execution_reconciliation_digest"] = er.source_digest
     results[FAMILY_EXECUTION_RECONCILIATION] = er
+
+    # --- economic_summary (explicit manifest-verified STEP29M bundle only) ---
+    eco_path_provided = bool(
+        economic_viability_evidence_bundle_path
+        and str(economic_viability_evidence_bundle_path).strip()
+    )
+    eco = FamilyExportResultV1(
+        family_id=FAMILY_ECONOMIC_SUMMARY,
+        exportable=eco_path_provided,
+        exported=False,
+        materialized=False,
+        loader_ok=False,
+        cycle_id=cycle_id,
+    )
+    if not eco_path_provided:
+        eco.skipped_reason = "economic_viability_evidence_bundle_path_not_provided"
+        eco.error_code = "ECONOMIC_EXPLICIT_BUNDLE_REFERENCE_REQUIRED"
+    else:
+        prior = str(cursor.get("economic_summary_cycle_id") or "")
+        if prior and prior > cycle_id:
+            eco.error_code = "STALE_CYCLE_EXPORT_REJECTED"
+            eco.detail = f"cursor={prior}:cycle={cycle_id}"
+        else:
+            out = export_economic_summary_to_archive_sibling_from_explicit_bundle_v1(
+                archive_root=archive.archive_root,
+                economic_viability_evidence_bundle_path=economic_viability_evidence_bundle_path,
+                source_label=f"explicit_bundle:{cycle_id}",
+            )
+            eco.exported = bool(out.exported)
+            eco.source_digest = str(out.source_payload_digest or "")
+            eco.target_path = str(out.target_path or "")
+            eco.error_code = str(out.error_code or "")
+            eco.detail = str(out.failure_reason or "")
+            if eco.exported:
+                mat = materialize_economic_summary_presentation_projection_v1(
+                    archive.archive_root,
+                    generated_at=ts,
+                    effective_at=ts,
+                    source_reference=eco.target_path or None,
+                )
+                eco.materialized = bool(mat.written)
+                eco.projection_path = str(
+                    Path(archive.archive_root) / ECONOMIC_SUMMARY_PRESENTATION_STORAGE_RELATIVE_PATH
+                )
+                if not mat.written:
+                    eco.detail = f"materialize:{mat.status}:{','.join(mat.errors)}"
+                loaded = try_load_economic_summary_presentation_projection_v1(
+                    Path(archive.archive_root)
+                )
+                eco.loader_ok = bool(getattr(loaded, "loaded", False))
+                cursor["economic_summary_cycle_id"] = cycle_id
+                cursor["economic_summary_digest"] = eco.source_digest
+    results[FAMILY_ECONOMIC_SUMMARY] = eco
 
     persist_export_cursor_v1(Path(state_roots.evidence_session_root), cursor)
     return results

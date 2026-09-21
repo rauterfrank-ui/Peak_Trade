@@ -1,0 +1,37 @@
+{
+  "wp_id": "D4_3_ECONOMIC_EXPLICIT_BUNDLE_ARCHIVE_BINDING_V1",
+  "atlas_authority": "NONE",
+  "dashboard_authority": "NONE",
+  "canonical_base_sha": "642dcf7d62a6db5cdfa96bd7e1a20fe6664ec9b3",
+  "invocation_path": "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py:export_families_after_runtime_commit_v1",
+  "domain_authority": "backtest.economic_viability_evidence_v1.EconomicViabilityEvidenceV1",
+  "domain_source_primary": "load_economic_viability_evidence_bundle_v1(explicit pinned bundle directory, verify_manifest=true)",
+  "explicit_bundle_reference_required": true,
+  "selection_discovery_added": false,
+  "cross_sectional_mapping_added": false,
+  "promotion_binding_added": false,
+  "bounded_test_witness": {
+    "test_module": "tests/ops/test_economic_summary_archive_sibling_exporter_v1.py",
+    "scenario": "synthetic_step29m_bundle_explicit_pin",
+    "sibling_path": "readmodels/economic_summary.v1.json",
+    "exported": true,
+    "materialized": true,
+    "loader_ok": true,
+    "bind_market_universe_slots_availability": "AVAILABLE",
+    "economic_viability_status": "RESEARCH_ONLY",
+    "source_digest": "6b79f7b462eb2e75ba3a6217af548bb17c07173060e13f9a90e8c1127643dc7d",
+    "presentation_path": "readmodels/economic_summary_presentation_projection.v1.json",
+    "presentation_timestamp_class": "MATERIALIZATION_WALLCLOCK_NOT_DOMAIN_PRODUCER"
+  },
+  "trading_effects": false,
+  "execution_effects": false,
+  "orders": false,
+  "evidence_chain": [
+    "explicit economic_viability_evidence_bundle_path",
+    "load_economic_viability_evidence_bundle_v1",
+    "readmodels/economic_summary.v1.json",
+    "materialize_economic_summary_presentation_projection_v1",
+    "try_load_economic_summary_presentation_projection_v1",
+    "bind_market_universe_slots.economic_summary"
+  ]
+}
