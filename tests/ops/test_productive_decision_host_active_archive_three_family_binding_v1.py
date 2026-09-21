@@ -39,7 +39,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 )
 
 
-REPO_SHA = "41f1c2d1ac4d82cb665935eb90029dfd8ef2d5fd"
+REPO_SHA = "0d67f30fdb54424d144445b2131ce4f451859aae"
 
 
 def _universe_payload(symbol: str = "SATS-USDT-SWAP") -> dict[str, object]:
@@ -102,7 +102,7 @@ def _seed_archive(tmp_path: Path, symbol: str = "SATS-USDT-SWAP") -> Path:
 def test_capability_and_host_symbol_stable() -> None:
     assert CAPABILITY_ID.endswith("THREE_FAMILY_BINDING_V1")
     assert PRODUCTIVE_HOST_SYMBOL == "run_bridge_cycle_v1"
-    assert HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH is True
+    assert HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH is False
 
 
 def test_owner_go_missing_fail_closed() -> None:
@@ -168,7 +168,7 @@ def test_second_writer_fail_closed(tmp_path: Path) -> None:
 def test_double_play_missing_inputs_fail_closed() -> None:
     out = classify_double_play_canonical_inputs_v1(None)
     assert out.exportable is False
-    assert out.error_code == "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH"
+    assert out.error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
 
 
 def test_smoke_without_owner_go_fails(tmp_path: Path) -> None:
@@ -223,7 +223,7 @@ def test_productive_smoke_commits_and_exports_ds_cd(tmp_path: Path) -> None:
     assert result.order_path_reachable is False
     assert result.credential_path_reachable is False
     assert result.long_running_phase_9_2_proven is False
-    assert result.hard_stop_double_play is True
+    assert result.hard_stop_double_play is False
     assert result.double_play is not None
     assert result.double_play.exportable is False
     # At least one analytical cycle should commit under Cap 7.2 + warm-up path.
