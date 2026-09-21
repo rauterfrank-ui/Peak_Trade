@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1` |
+| `RUNTIME_COMPONENT:current_productive_account_equity_source_mapping_closure_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Docs-only pointer reconciliation: Landscape closeout #6690 vs post-closeout Presentation-Ops #6697-#6705; CURRENT origin/main doc pointer f3ced3c5; no Landscape UI slice; STOP_IDLE preserved; ATLAS_AUTHORITY=NONE.
-- introduced_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
-- modified_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
+- 11.2.1.EZ factual pin: CURRENT productive account-equity source mapping closure to STEP-29P producer chain; CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true; no Treasury mint; ATLAS_AUTHORITY=NONE.
+- introduced_by=CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_V1
+- modified_by=PENDING_PR_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
