@@ -22,6 +22,10 @@ from src.ops.archive_sibling_export_contract_v1.canonical_digest import (
     canonical_digest_v1,
     canonical_json_file_body_v1,
 )
+from src.ops.archive_sibling_export_contract_v1.manifest_finalize_v1 import (
+    finalize_readmodels_manifest_after_write_v1,
+    readmodels_dir_from_artifact_path,
+)
 from src.ops.archive_sibling_export_contract_v1.path_guard import (
     ArchiveSiblingPathErrorV1,
     resolve_archive_sibling_target_v1,
@@ -45,6 +49,7 @@ BLOCK_TARGET_INVALID_JSON = "ARCHIVE_SIBLING_EXPORT_TARGET_INVALID_JSON"
 BLOCK_TARGET_NOT_OBJECT = "ARCHIVE_SIBLING_EXPORT_TARGET_NOT_OBJECT"
 BLOCK_WRITE_FAILED = "ARCHIVE_SIBLING_EXPORT_WRITE_FAILED"
 BLOCK_POST_WRITE_VERIFY_FAILED = "ARCHIVE_SIBLING_EXPORT_POST_WRITE_VERIFY_FAILED"
+BLOCK_MANIFEST_FINALIZE_FAILED = "ARCHIVE_SIBLING_EXPORT_MANIFEST_FINALIZE_FAILED"
 BLOCK_CONTRACT_NAME_EMPTY = "ARCHIVE_SIBLING_EXPORT_CONTRACT_NAME_EMPTY"
 
 
@@ -262,6 +267,32 @@ def export_archive_sibling_json_v1(
             dry_run=False,
             contract_name=name,
             reason=BLOCK_POST_WRITE_VERIFY_FAILED,
+            target_path=target_str,
+            source_digest=source_digest,
+            target_digest_before=digest_before,
+            expected_target_digest=source_digest,
+            schema_name=schema_name,
+        )
+
+    try:
+        readmodels_dir = readmodels_dir_from_artifact_path(target_path)
+    except ValueError as exc:
+        return _blocked(
+            dry_run=False,
+            contract_name=name,
+            reason=f"{BLOCK_MANIFEST_FINALIZE_FAILED}:{exc}",
+            target_path=target_str,
+            source_digest=source_digest,
+            target_digest_before=digest_before,
+            expected_target_digest=source_digest,
+            schema_name=schema_name,
+        )
+    manifest_ok, manifest_msg = finalize_readmodels_manifest_after_write_v1(readmodels_dir)
+    if not manifest_ok:
+        return _blocked(
+            dry_run=False,
+            contract_name=name,
+            reason=f"{BLOCK_MANIFEST_FINALIZE_FAILED}:{manifest_msg}",
             target_path=target_str,
             source_digest=source_digest,
             target_digest_before=digest_before,

@@ -5,7 +5,7 @@ CAPABILITY_ID=CAPABILITY_PRESENTATION_PROJECTION_OCTET_ORCHESTRATOR_V1
 Dispatches to the eight existing presentation projection materializers.
 Never recomputes trading/regime/risk/safety/execution/economic truth.
 Never autoloads live KillSwitch state. Never invents timestamps.
-Never discovers latest artifacts. Never updates MANIFEST.sha256.
+Never discovers latest artifacts. Materializers finalize MANIFEST.sha256 after writes.
 
 Invariants:
 - AUTHORITY_EFFECT=NONE

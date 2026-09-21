@@ -16,6 +16,11 @@ from src.ops.archive_sibling_export_contract_v1.contracts import (
     CONTRACT_ID,
     export_archive_sibling_json_v1,
 )
+from src.ops.archive_sibling_export_contract_v1.manifest_finalize_v1 import (
+    MANIFEST_FINALIZE_FAILED,
+    finalize_readmodels_manifest_after_write_v1,
+    readmodels_dir_from_artifact_path,
+)
 from src.ops.archive_sibling_export_contract_v1.path_guard import (
     ArchiveSiblingPathErrorV1,
     READMODELS_DIRNAME,
@@ -35,7 +40,10 @@ __all__ = [
     "CAPABILITY_ID",
     "CONTRACT_ID",
     "CanonicalJsonErrorV1",
+    "MANIFEST_FINALIZE_FAILED",
     "READMODELS_DIRNAME",
+    "finalize_readmodels_manifest_after_write_v1",
+    "readmodels_dir_from_artifact_path",
     "atomic_write_text_v1",
     "canonical_digest_v1",
     "canonical_json_file_body_v1",

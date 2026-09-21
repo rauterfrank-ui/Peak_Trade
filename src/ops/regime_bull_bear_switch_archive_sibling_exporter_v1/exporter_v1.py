@@ -204,6 +204,20 @@ def export_regime_bull_bear_switch_to_archive_sibling_v1(
             replaced_existing=replaced_existing,
         )
 
+    from src.ops.archive_sibling_export_contract_v1.manifest_finalize_v1 import (
+        finalize_manifest_for_sibling_target_v1,
+    )
+
+    manifest_ok, manifest_msg = finalize_manifest_for_sibling_target_v1(target_path)
+    if not manifest_ok:
+        return _fail(
+            source_label=label,
+            target_path=str(target_path),
+            error_code=ERROR_WRITE_FAILED,
+            failure_reason=f"manifest_finalize_failed:{manifest_msg}",
+            replaced_existing=replaced_existing,
+        )
+
     side = str(payload.get("side_state") or "")
     return RegimeBullBearSwitchArchiveSiblingExportResultV1(
         exported=True,
