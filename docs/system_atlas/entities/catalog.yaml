@@ -1935,6 +1935,24 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md
     notes: No PEAK_TRADE_CANONICAL_PRESENTATION_*_RATIFICATION.json on origin/main.
 
+  - id: RUNTIME_COMPONENT:landscape_universe_rail_presentation_v1
+    kind: RUNTIME_COMPONENT
+    name: Landscape universe TOP-20 selection rail presentation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: read_only_s01_consumer_presentation_only
+    source_paths:
+      - src/webui/market_dashboard_landscape_v2/universe_rail_presentation_v1.py
+      - templates/peak_trade_dashboard/market_landscape_v2.html
+    evidence_sources:
+      - tests/webui/test_landscape_universe_top20_selection_rail_fidelity_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py
+    notes: >-
+      Dashboard-only consumer presentation for universe_selection_readmodel.v1
+      (TOP-20 board, selected future, membership descriptive labels). No ranking/
+      selection authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1
     kind: RUNTIME_COMPONENT
     name: Landscape Dashboard V2 persistent loopback host v1

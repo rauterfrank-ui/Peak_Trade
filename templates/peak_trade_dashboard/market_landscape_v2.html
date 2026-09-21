@@ -74,44 +74,73 @@
     <div class="mdl-v2-workspace" data-mdl-workspace="true">
       <aside class="mdl-v2-rail mdl-v2-rail--left" data-mdl-region="UNIVERSE_RANK_RAIL" aria-label="Universe and rank">
         <h2>Universe</h2>
-        <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
-          <li>
-            <span class="mdl-v2-rail-rows__label">Watchlist</span>
-            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_watchlist">{{ universe_rail.watchlist_label }}</span>
-          </li>
-          <li>
-            <span class="mdl-v2-rail-rows__label">Selected</span>
-            <span class="mdl-v2-state" data-mdl-field="selected_instrument">
-              {% if universe_rail.selected_instrument_id %}{{ universe_rail.selected_instrument_id }}{% else %}{{ universe.availability_label }}{% endif %}
-            </span>
-          </li>
-          <li>
-            <span class="mdl-v2-rail-rows__label">Membership</span>
-            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_membership">{{ universe_rail.membership_label }}</span>
-          </li>
-          <li>
-            <span class="mdl-v2-rail-rows__label">Rank</span>
-            <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="rank_status">{{ universe_rail.rank_label }}</span>
-          </li>
-          <li>
-            <span class="mdl-v2-rail-rows__label">Selection Reason</span>
-            <span
-              class="mdl-v2-state"
-              data-availability="{{ universe_rail.selection_reason_availability }}"
-              data-mdl-field="selection_reason"
-            >{{ universe_rail.selection_reason_label }}</span>
-          </li>
-        </ul>
-        {% if universe_ranking_rows %}
-        <ul class="mdl-v2-rail-rows mdl-v2-rail-rows--ranked" aria-label="Ranking rows" data-mdl-ranking-rows="true">
-          {% for row in universe_ranking_rows[:12] %}
-          <li>
-            <span class="mdl-v2-rail-rows__label">#{{ row.rank }} {{ row.symbol }}</span>
-            <span class="mdl-v2-state">{% if row.display_score is not none %}{{ row.display_score }}{% else %}—{% endif %}</span>
-          </li>
-          {% endfor %}
-        </ul>
-        {% endif %}
+
+        <section
+          class="mdl-v2-universe-panel mdl-v2-universe-panel--selected"
+          aria-label="Selected future"
+          data-mdl-universe-panel="selected_future"
+          data-display-state="{{ universe_rail.selected_future.display_state }}"
+        >
+          <h3 class="mdl-v2-universe-panel__title">Selected Future</h3>
+          <dl class="mdl-v2-universe-panel__facts">
+            <div><dt>Instrument</dt><dd data-mdl-field="selected_future_instrument">{{ universe_rail.selected_future.instrument_id }}</dd></div>
+            <div><dt>Rank</dt><dd data-mdl-field="selected_future_rank">{{ universe_rail.selected_future.rank_display }}</dd></div>
+            <div><dt>Score</dt><dd data-mdl-field="selected_future_score">{{ universe_rail.selected_future.score_display }}</dd></div>
+            <div><dt>Reason</dt><dd data-mdl-field="selected_future_selection_reason">{{ universe_rail.selected_future.selection_reason_display }}</dd></div>
+          </dl>
+        </section>
+
+        <section
+          class="mdl-v2-universe-panel mdl-v2-universe-panel--top20"
+          aria-label="TOP-20 ranking board"
+          data-mdl-universe-panel="top20_board"
+          data-display-state="{{ universe_rail.ranking_board.display_state }}"
+          data-row-count="{{ universe_rail.ranking_board.row_count }}"
+        >
+          <div class="mdl-v2-universe-panel__head">
+            <h3 class="mdl-v2-universe-panel__title">TOP-20 Ranking</h3>
+            <span class="mdl-v2-state" data-mdl-field="ranking_board_state">{{ universe_rail.ranking_board.display_state }}</span>
+          </div>
+          {% if universe_rail.ranking_board.rows %}
+          <ul class="mdl-v2-rail-rows mdl-v2-rail-rows--ranked" aria-label="Ranking rows" data-mdl-ranking-rows="true">
+            {% for row in universe_rail.ranking_board.rows %}
+            <li{% if row.is_selected %} class="is-selected" data-mdl-selected-row="true"{% endif %} data-row-order-index="{{ row.row_order_index }}">
+              <span class="mdl-v2-rail-rows__label">#{{ row.rank }} {{ row.symbol }}</span>
+              <span class="mdl-v2-state" data-mdl-field="ranking_row_score">{{ row.display_score_label }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="mdl-v2-universe-panel__empty" data-mdl-field="ranking_board_empty">{{ universe.availability_label }}</p>
+          {% endif %}
+        </section>
+
+        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--context" aria-label="Universe context">
+          <h3 class="mdl-v2-universe-panel__title">Universe Context</h3>
+          <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
+            <li>
+              <span class="mdl-v2-rail-rows__label">Universe size</span>
+              <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_watchlist">{{ universe_rail.watchlist_label }}</span>
+            </li>
+            <li>
+              <span class="mdl-v2-rail-rows__label">Membership (descriptive)</span>
+              <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="universe_membership">{{ universe_rail.membership_in_universe_label }}</span>
+            </li>
+            <li>
+              <span class="mdl-v2-rail-rows__label">Selected rank (summary)</span>
+              <span class="mdl-v2-state" data-availability="{{ universe_rail.watchlist_availability }}" data-mdl-field="rank_status">{{ universe_rail.rank_label }}</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--provenance" aria-label="Source and freshness">
+          <h3 class="mdl-v2-universe-panel__title">Source / Freshness</h3>
+          <dl class="mdl-v2-universe-panel__facts mdl-v2-universe-panel__facts--compact">
+            <div><dt>Source run</dt><dd data-mdl-field="source_run_id">{{ universe_rail.provenance.source_run_id }}</dd></div>
+            <div><dt>Producer time</dt><dd data-mdl-field="producer_generated_at">{{ universe_rail.provenance.producer_generated_at }}</dd></div>
+            <div><dt>State</dt><dd data-mdl-field="universe_provenance_state">{{ universe_rail.provenance.freshness_label }}</dd></div>
+          </dl>
+        </section>
       </aside>
 
       <section
