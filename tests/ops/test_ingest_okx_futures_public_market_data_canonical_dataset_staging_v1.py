@@ -261,6 +261,26 @@ class TestRunIngestionMocked:
                 skip_network=True,
             )
 
+    def test_post_selection_instrument_binding_not_eth_fallback(self, tmp_path: Path) -> None:
+        mod = _load_mod()
+        target = tmp_path / "datasets/admissible_futures/inst-0g-usdt-perp/v1"
+        evidence = tmp_path / "evidence"
+        binding = mod.OkxFuturesIngestInstrumentBindingV1(
+            native_instrument_id="0G-USDT-SWAP",
+            canonical_instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
+            selection_id="ssf_test_0g",
+            selection_integrity_digest="digest",
+        )
+        result = mod.run_ingestion(
+            confirm=_GO_TOKEN,
+            target_dataset_root=target,
+            durable_evidence_root=evidence,
+            skip_network=True,
+            instrument_binding=binding,
+        )
+        assert result["instrument_binding"]["native_instrument_id"] == "0G-USDT-SWAP"
+        assert "0g-usdt-swap" in result["instrument_binding"]["canonical_instrument_id"]
+
 
 class TestCli:
     def test_cli_skip_network(self, tmp_path: Path) -> None:

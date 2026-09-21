@@ -268,14 +268,21 @@ def is_forbidden_instrument(inst_id: str, inst_type: str, base_ccy: str) -> bool
     return any(token in combined for token in _FORBIDDEN_INSTRUMENT_SUBSTRINGS)
 
 
-def validate_eth_usdt_swap_instrument(inst: Mapping[str, Any]) -> Dict[str, Any]:
+def validate_okx_usdt_linear_swap_instrument(
+    inst: Mapping[str, Any],
+    *,
+    expected_native_instrument_id: str,
+    expected_canonical_instrument_id: str,
+) -> Dict[str, Any]:
     inst_id = str(inst.get("instId", ""))
     inst_type = str(inst.get("instType", ""))
-    if inst_id != NATIVE_INSTRUMENT_ID:
+    if inst_id != expected_native_instrument_id:
         raise IngestionError(f"instrument_id_mismatch:{inst_id}")
     if inst_type != INST_TYPE:
         raise IngestionError(f"inst_type_mismatch:{inst_type}")
-    base = str(inst.get("baseCcy") or inst.get("uly") or "ETH")
+    base = str(inst.get("baseCcy") or inst.get("uly") or "").strip()
+    if not base and inst.get("uly"):
+        base = str(inst.get("uly", "")).split("-")[0]
     settle = str(inst.get("settleCcy") or "USDT")
     if is_forbidden_instrument(inst_id, inst_type, base):
         raise IngestionError("instrument_forbidden_token")
@@ -289,6 +296,7 @@ def validate_eth_usdt_swap_instrument(inst: Mapping[str, Any]) -> Dict[str, Any]
         "instType": inst_type,
         "baseCcy": base,
         "settleCcy": settle,
+        "uly": str(inst.get("uly") or ""),
         "ctVal": str(inst.get("ctVal", "")),
         "ctValCcy": str(inst.get("ctValCcy", "")),
         "tickSz": str(inst.get("tickSz", "")),
@@ -297,16 +305,39 @@ def validate_eth_usdt_swap_instrument(inst: Mapping[str, Any]) -> Dict[str, Any]
         "state": str(inst.get("state", "")),
         "listTime": str(inst.get("listTime", "")),
         "expTime": str(exp),
-        "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+        "canonical_instrument_id": expected_canonical_instrument_id,
         "canonical_contract_type": CANONICAL_CONTRACT_TYPE,
     }
 
 
+def validate_eth_usdt_swap_instrument(inst: Mapping[str, Any]) -> Dict[str, Any]:
+    """Legacy explicit ETH binding (not a CURRENT-selection fallback)."""
+    return validate_okx_usdt_linear_swap_instrument(
+        inst,
+        expected_native_instrument_id=NATIVE_INSTRUMENT_ID,
+        expected_canonical_instrument_id=CANONICAL_INSTRUMENT_ID,
+    )
+
+
 def validate_index_candle_inst_id(inst_id: str) -> None:
-    if inst_id != OKX_INDEX_CANDLE_INST_ID:
-        raise IngestionError(f"index_inst_id_mismatch:{inst_id}")
     if is_forbidden_instrument(inst_id, "INDEX", inst_id.split("-")[0]):
         raise IngestionError("index_instrument_forbidden")
+
+
+def resolve_okx_index_candle_inst_id_from_swap_metadata_v1(
+    instrument_metadata: Mapping[str, Any],
+) -> str:
+    uly = str(instrument_metadata.get("uly") or "").strip()
+    if uly:
+        validate_index_candle_inst_id(uly)
+        return uly
+    base = str(instrument_metadata.get("baseCcy") or "").strip()
+    settle = str(instrument_metadata.get("settleCcy") or "USDT").strip()
+    if base and settle:
+        candidate = f"{base}-{settle}"
+        validate_index_candle_inst_id(candidate)
+        return candidate
+    raise IngestionError("index_candle_inst_id_unresolvable")
 
 
 def fetch_instrument_metadata(
@@ -317,8 +348,10 @@ def fetch_instrument_metadata(
     max_response_bytes: int,
     raw_dir: Path,
     request_log: List[RequestRecord],
+    native_instrument_id: str,
+    expected_canonical_instrument_id: str,
 ) -> Dict[str, Any]:
-    params = {"instType": INST_TYPE, "instId": NATIVE_INSTRUMENT_ID}
+    params = {"instType": INST_TYPE, "instId": native_instrument_id}
     url = _build_url("/api/v5/public/instruments", params)
     req_at = _utc_now_z()
     status, body, _ = fetch_with_retry(
@@ -357,7 +390,11 @@ def fetch_instrument_metadata(
     first = data[0]
     if not isinstance(first, Mapping):
         raise IngestionError("instrument_record_invalid")
-    return validate_eth_usdt_swap_instrument(first)
+    return validate_okx_usdt_linear_swap_instrument(
+        first,
+        expected_native_instrument_id=native_instrument_id,
+        expected_canonical_instrument_id=expected_canonical_instrument_id,
+    )
 
 
 def _oldest_ts(rows: Sequence[Sequence[Any]]) -> Optional[str]:
@@ -462,9 +499,10 @@ def paginate_funding_history(
     request_log: List[RequestRecord],
     start_ms: int,
     end_ms: int,
+    native_instrument_id: str,
 ) -> List[Dict[str, Any]]:
     path = "/api/v5/public/funding-rate-history"
-    params_base = {"instId": NATIVE_INSTRUMENT_ID}
+    params_base = {"instId": native_instrument_id}
     all_rows: List[Dict[str, Any]] = []
     after: Optional[str] = None
     page = 0
@@ -673,6 +711,23 @@ def classify_verdict(
     return "OKX_CANONICAL_DATASET_STAGING_COMPLETE"
 
 
+@dataclass(frozen=True)
+class OkxFuturesIngestInstrumentBindingV1:
+    native_instrument_id: str
+    canonical_instrument_id: str
+    selection_id: str = ""
+    selection_integrity_digest: str = ""
+
+
+def _legacy_explicit_eth_ingest_binding_v1() -> OkxFuturesIngestInstrumentBindingV1:
+    return OkxFuturesIngestInstrumentBindingV1(
+        native_instrument_id=NATIVE_INSTRUMENT_ID,
+        canonical_instrument_id=CANONICAL_INSTRUMENT_ID,
+        selection_id="legacy_explicit_eth_binding",
+        selection_integrity_digest="",
+    )
+
+
 def run_ingestion(
     *,
     confirm: str,
@@ -683,11 +738,17 @@ def run_ingestion(
     max_response_bytes: int = MAX_RESPONSE_BYTES_HARD_CAP,
     fetcher: PublicGetFetcher = okx_public_fetch_v1,
     skip_network: bool = False,
+    instrument_binding: Optional[OkxFuturesIngestInstrumentBindingV1] = None,
 ) -> Dict[str, Any]:
     if confirm != CONFIRM_TOKEN:
         _die("ERR: confirm token required")
     if target_dataset_root.exists():
         _die(f"ERR: target_dataset_root_exists:{target_dataset_root}")
+
+    binding = instrument_binding or _legacy_explicit_eth_ingest_binding_v1()
+    native_instrument_id = binding.native_instrument_id
+    canonical_instrument_id = binding.canonical_instrument_id
+    index_candle_inst_id = OKX_INDEX_CANDLE_INST_ID
 
     ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     tmp_root = target_dataset_root.parent / f".tmp_{ts_slug}"
@@ -728,12 +789,13 @@ def run_ingestion(
 
     if skip_network:
         instrument_metadata = {
-            "instId": NATIVE_INSTRUMENT_ID,
+            "instId": native_instrument_id,
             "instType": INST_TYPE,
-            "baseCcy": "ETH",
+            "baseCcy": native_instrument_id.split("-")[0],
             "settleCcy": "USDT",
+            "uly": index_candle_inst_id,
             "listTime": "0",
-            "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+            "canonical_instrument_id": canonical_instrument_id,
         }
         start_ms, end_ms, start_utc, end_utc = compute_staging_window_ms(
             instrument_metadata=instrument_metadata,
@@ -764,6 +826,8 @@ def run_ingestion(
             series_counts={"ohlcv": 0, "mark": 0, "index": 0, "funding": 0},
             bid_ask_capability=bid_ask_capability,
             domain_decision=domain_decision,
+            ingest_binding=binding,
+            okx_index_candle_inst_id=index_candle_inst_id,
         )
 
     instrument_metadata = fetch_instrument_metadata(
@@ -773,13 +837,18 @@ def run_ingestion(
         max_response_bytes=max_response_bytes,
         raw_dir=raw_dir,
         request_log=request_log,
+        native_instrument_id=native_instrument_id,
+        expected_canonical_instrument_id=canonical_instrument_id,
+    )
+    index_candle_inst_id = resolve_okx_index_candle_inst_id_from_swap_metadata_v1(
+        instrument_metadata
     )
     start_ms, end_ms, start_utc, end_utc = compute_staging_window_ms(
         instrument_metadata=instrument_metadata,
         staging_window_days=staging_window_days,
     )
 
-    candle_params = {"instId": NATIVE_INSTRUMENT_ID, "bar": BAR_GRANULARITY}
+    candle_params = {"instId": native_instrument_id, "bar": BAR_GRANULARITY}
     ohlcv_rows = paginate_candles(
         path="/api/v5/market/history-candles",
         params_base=candle_params,
@@ -806,10 +875,10 @@ def run_ingestion(
         end_ms=end_ms,
         series_name="mark",
     )
-    validate_index_candle_inst_id(OKX_INDEX_CANDLE_INST_ID)
+    validate_index_candle_inst_id(index_candle_inst_id)
     index_rows = paginate_candles(
         path="/api/v5/market/history-index-candles",
-        params_base={"instId": OKX_INDEX_CANDLE_INST_ID, "bar": BAR_GRANULARITY},
+        params_base={"instId": index_candle_inst_id, "bar": BAR_GRANULARITY},
         fetcher=fetcher,
         rate_limiter=rate_limiter,
         timeout_seconds=timeout_seconds,
@@ -829,6 +898,7 @@ def run_ingestion(
         request_log=request_log,
         start_ms=start_ms,
         end_ms=end_ms,
+        native_instrument_id=native_instrument_id,
     )
 
     matrix = build_availability_matrix(
@@ -863,6 +933,8 @@ def run_ingestion(
         },
         bid_ask_capability=bid_ask_capability,
         domain_decision=domain_decision,
+        ingest_binding=binding,
+        okx_index_candle_inst_id=index_candle_inst_id,
     )
 
 
@@ -882,13 +954,17 @@ def _finalize_reports(
     series_counts: Mapping[str, int],
     bid_ask_capability: Mapping[str, Any],
     domain_decision: Mapping[str, Any],
+    ingest_binding: OkxFuturesIngestInstrumentBindingV1,
+    okx_index_candle_inst_id: str,
 ) -> Dict[str, Any]:
     reports_dir = tmp_root / "reports"
     ingestion_config = {
         "go_token": GO_TOKEN,
         "provider_id": PROVIDER_ID,
-        "native_instrument_id": NATIVE_INSTRUMENT_ID,
-        "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+        "native_instrument_id": ingest_binding.native_instrument_id,
+        "canonical_instrument_id": ingest_binding.canonical_instrument_id,
+        "selection_id": ingest_binding.selection_id,
+        "selection_integrity_digest": ingest_binding.selection_integrity_digest,
         "bar_granularity": BAR_GRANULARITY,
         "staging_window_days": staging_window_days,
         "data_period": {"start_utc": start_utc, "end_utc": end_utc},
@@ -920,13 +996,15 @@ def _finalize_reports(
     )
 
     instrument_binding = {
-        "native_instrument_id": NATIVE_INSTRUMENT_ID,
-        "okx_index_candle_inst_id": OKX_INDEX_CANDLE_INST_ID,
+        "native_instrument_id": ingest_binding.native_instrument_id,
+        "okx_index_candle_inst_id": okx_index_candle_inst_id,
         "index_candle_inst_id_rationale": (
-            "OKX history-index-candles requires the index pair instId (ETH-USDT), "
-            "not the SWAP instId; mapped to ETH-USDT-SWAP perpetual via instrument family."
+            "OKX history-index-candles uses the index pair instId from public "
+            "instrument metadata (uly or base-settle), not the SWAP instId."
         ),
-        "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+        "canonical_instrument_id": ingest_binding.canonical_instrument_id,
+        "selection_id": ingest_binding.selection_id,
+        "selection_integrity_digest": ingest_binding.selection_integrity_digest,
         "validated": True,
         "mapping_basis": "okx_public_instruments_specification",
         "venue": "OKX",
@@ -981,8 +1059,8 @@ def _finalize_reports(
     provenance = {
         "source_type": "operator_staged_futures_v1",
         "source_venue": "OKX",
-        "native_instrument_id": NATIVE_INSTRUMENT_ID,
-        "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+        "native_instrument_id": ingest_binding.native_instrument_id,
+        "canonical_instrument_id": ingest_binding.canonical_instrument_id,
         "acquisition_method": "okx_public_rest_api_v5",
         "authenticated": False,
         "credentials_used": False,
@@ -1104,7 +1182,63 @@ def main(argv: Optional[List[str]] = None) -> int:
         action="store_true",
         help="Offline contract path for tests only.",
     )
+    parser.add_argument(
+        "--selection-state-root",
+        type=Path,
+        default=None,
+        help=(
+            "Cap 2.3 persisted selection state root; binds ingest instrument from "
+            "post-selection output only (no ranking/universe consumption)."
+        ),
+    )
+    parser.add_argument(
+        "--native-instrument-id",
+        default="",
+        help="Explicit OKX SWAP instId binding (requires --canonical-instrument-id).",
+    )
+    parser.add_argument(
+        "--canonical-instrument-id",
+        default="",
+        help="Explicit canonical instrument id binding (requires --native-instrument-id).",
+    )
     ns = parser.parse_args(argv)
+    instrument_binding: Optional[OkxFuturesIngestInstrumentBindingV1] = None
+    if ns.selection_state_root is not None:
+        from src.backtest import (  # noqa: PLC0415
+            step29m_current_single_selected_future_dynamic_binding_v1 as step29m_bind,
+        )
+
+        step29m_binding = (
+            step29m_bind.resolve_step29m_instrument_binding_from_selection_state_root_v1(
+                ns.selection_state_root
+            )
+        )
+        ingest_payload = step29m_bind.to_public_market_data_ingest_instrument_binding_v1(
+            step29m_binding
+        )
+        instrument_binding = OkxFuturesIngestInstrumentBindingV1(
+            native_instrument_id=ingest_payload.native_instrument_id,
+            canonical_instrument_id=ingest_payload.canonical_instrument_id,
+            selection_id=ingest_payload.selection_id,
+            selection_integrity_digest=ingest_payload.selection_integrity_digest,
+        )
+    native_explicit = str(ns.native_instrument_id or "").strip()
+    canon_explicit = str(ns.canonical_instrument_id or "").strip()
+    if native_explicit or canon_explicit:
+        if not native_explicit or not canon_explicit:
+            _die("ERR: native_instrument_id_and_canonical_instrument_id_required_together")
+        explicit = OkxFuturesIngestInstrumentBindingV1(
+            native_instrument_id=native_explicit,
+            canonical_instrument_id=canon_explicit,
+            selection_id="explicit_operator_instrument_binding",
+            selection_integrity_digest="",
+        )
+        if instrument_binding is not None and (
+            instrument_binding.native_instrument_id != explicit.native_instrument_id
+            or instrument_binding.canonical_instrument_id != explicit.canonical_instrument_id
+        ):
+            _die("ERR: selection_state_root_binding_conflicts_with_explicit_instrument_binding")
+        instrument_binding = explicit
     try:
         run_ingestion(
             confirm=ns.confirm_go_token,
@@ -1114,6 +1248,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             timeout_seconds=ns.timeout_seconds,
             max_response_bytes=ns.max_response_bytes,
             skip_network=ns.skip_network,
+            instrument_binding=instrument_binding,
         )
     except (IngestionError, SystemExit) as exc:
         if isinstance(exc, SystemExit):
