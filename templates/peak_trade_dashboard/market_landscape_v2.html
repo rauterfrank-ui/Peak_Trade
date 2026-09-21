@@ -53,9 +53,9 @@
           <dd
             data-mdl-field="session_id"
             data-availability="{{ universe_rail.session_availability }}"
-          >{% if universe_rail.session_label %}{{ universe_rail.session_label }}{% elif bootstrap_session_id %}{{ bootstrap_session_id }}{% else %}—{% endif %}</dd>
+          >{% if universe_rail.session_label %}{{ universe_rail.session_label }}{% elif bootstrap_session_id %}{{ bootstrap_session_id }}{% else %}NOT_AVAILABLE{% endif %}</dd>
         </div>
-        <div><dt>Repo SHA</dt><dd data-mdl-field="repository_sha">{% if bootstrap_repository_sha %}{{ bootstrap_repository_sha }}{% else %}—{% endif %}</dd></div>
+        <div><dt>Repo SHA</dt><dd data-mdl-field="repository_sha">{% if bootstrap_repository_sha %}{{ bootstrap_repository_sha }}{% else %}NOT_AVAILABLE{% endif %}</dd></div>
         <div>
           <dt>Runtime</dt>
           <dd data-mdl-field="runtime" title="{{ shell_authority_class }}">{{ global_strip.runtime_state }}</dd>
@@ -171,47 +171,47 @@
           <dl class="mdl-v2-chart__meta" data-mdl-ohlcv-meta="true" aria-label="Open candle OHLCV and freshness">
             <div>
               <dt>Interval</dt>
-              <dd data-mdl-field="ohlcv_interval">{% if chart.interval %}{{ chart.interval }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_interval">{% if chart.interval %}{{ chart.interval }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div>
               <dt>Candle start</dt>
-              <dd data-mdl-field="ohlcv_latest_candle_at">{% if chart.last_timestamp %}{{ chart.last_timestamp }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_latest_candle_at">{% if chart.last_timestamp %}{{ chart.last_timestamp }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div>
               <dt>Captured</dt>
-              <dd data-mdl-field="ohlcv_captured_at">{% if chart.captured_at %}{{ chart.captured_at }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_captured_at">{% if chart.captured_at %}{{ chart.captured_at }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div>
               <dt>Mark</dt>
-              <dd data-mdl-field="ohlcv_live_mark">{% if chart.live_mark_price is not none %}{{ chart.live_mark_price }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_live_mark">{% if chart.live_mark_price is not none %}{{ chart.live_mark_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div>
               <dt>Revision</dt>
-              <dd data-mdl-field="ohlcv_revision">{% if chart.ohlcv_revision_kind %}{{ chart.ohlcv_revision_kind }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_revision">{% if chart.ohlcv_revision_kind %}{{ chart.ohlcv_revision_kind }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>Open</dt>
-              <dd data-mdl-field="ohlcv_open">{% if chart.open_price is not none %}{{ chart.open_price }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_open">{% if chart.open_price is not none %}{{ chart.open_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>High</dt>
-              <dd data-mdl-field="ohlcv_high">{% if chart.high_price is not none %}{{ chart.high_price }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_high">{% if chart.high_price is not none %}{{ chart.high_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>Low</dt>
-              <dd data-mdl-field="ohlcv_low">{% if chart.low_price is not none %}{{ chart.low_price }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_low">{% if chart.low_price is not none %}{{ chart.low_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>Close</dt>
-              <dd data-mdl-field="ohlcv_close">{% if chart.close_price is not none %}{{ chart.close_price }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_close">{% if chart.close_price is not none %}{{ chart.close_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>Change</dt>
-              <dd data-mdl-field="ohlcv_change">{% if chart.change_pct is not none %}{{ chart.change_pct }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_change">{% if chart.change_pct is not none %}{{ chart.change_pct }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
             <div class="mdl-v2-chart__meta-ohlc">
               <dt>Volume</dt>
-              <dd data-mdl-field="ohlcv_volume">{% if chart.volume is not none %}{{ chart.volume }}{% else %}—{% endif %}</dd>
+              <dd data-mdl-field="ohlcv_volume">{% if chart.volume is not none %}{{ chart.volume }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
             </div>
           </dl>
           <div class="mdl-v2-chart__stage" role="img" aria-label="{% if chart.message %}{{ chart.message }}{% else %}OHLCV chart{% endif %}" data-mdl-chart-stage="true">
@@ -240,6 +240,7 @@
               data-mdl-volume-geometry="absent"
               aria-hidden="true"
             ></canvas>
+            <p class="mdl-v2-volume__message" data-mdl-volume-message="true">{{ chart.volume_panel_message }}</p>
           </div>
         </div>
       </section>
@@ -327,7 +328,7 @@
             data-availability="{{ decision.availability }}"
           >
             {% if decision.is_available or decision.is_stale %}
-              {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}—{% endif %}
+              {% if decision.reason_codes %}{{ decision.reason_codes|join(", ") }}{% else %}NOT_AVAILABLE{% endif %}
             {% else %}
               {{ decision.availability_label }}{% if decision.reason_codes %} · {{ decision.reason_codes|join(", ") }}{% endif %}
             {% endif %}
@@ -393,8 +394,8 @@
             <div><dt>Blockers</dt><dd data-mdl-field="s05_blockers">{{ decision_double_play_observability.canonical_decision.blockers_display }}</dd></div>
             <div><dt>Availability</dt><dd data-mdl-field="s05_availability">{{ decision_double_play_observability.canonical_decision.availability_label }}</dd></div>
             <div><dt>Freshness</dt><dd data-mdl-field="s05_freshness">{{ decision_double_play_observability.canonical_decision.freshness_display }}</dd></div>
-            <div><dt>Source kind</dt><dd data-mdl-field="s05_source_kind">{% if decision_double_play_observability.canonical_decision.source_kind %}{{ decision_double_play_observability.canonical_decision.source_kind }}{% else %}—{% endif %}</dd></div>
-            <div><dt>Source ref</dt><dd data-mdl-field="s05_source_reference">{% if decision_double_play_observability.canonical_decision.source_reference %}{{ decision_double_play_observability.canonical_decision.source_reference }}{% else %}—{% endif %}</dd></div>
+            <div><dt>Source kind</dt><dd data-mdl-field="s05_source_kind">{% if decision_double_play_observability.canonical_decision.source_kind %}{{ decision_double_play_observability.canonical_decision.source_kind }}{% elif decision_double_play_observability.canonical_decision.is_available or decision_double_play_observability.canonical_decision.is_stale %}NOT_AVAILABLE{% else %}{{ decision_double_play_observability.canonical_decision.availability_label }}{% endif %}</dd></div>
+            <div><dt>Source ref</dt><dd data-mdl-field="s05_source_reference">{% if decision_double_play_observability.canonical_decision.source_reference %}{{ decision_double_play_observability.canonical_decision.source_reference }}{% elif decision_double_play_observability.canonical_decision.is_available or decision_double_play_observability.canonical_decision.is_stale %}NOT_AVAILABLE{% else %}{{ decision_double_play_observability.canonical_decision.availability_label }}{% endif %}</dd></div>
           </dl>
         </article>
         <article
@@ -406,10 +407,10 @@
           <dl class="mdl-v2-decision-dp-obs__facts">
             <div><dt>Overall</dt><dd data-mdl-field="s06_overall">{{ decision_double_play_observability.double_play.overall_status_display }}</dd></div>
             <div><dt>Blockers</dt><dd data-mdl-field="s06_blockers">{{ decision_double_play_observability.double_play.blockers_display }}</dd></div>
-            <div><dt>display_only</dt><dd data-mdl-field="s06_display_only">{% if decision_double_play_observability.double_play.display_only is not none %}{{ decision_double_play_observability.double_play.display_only | tojson }}{% else %}—{% endif %}</dd></div>
+            <div><dt>display_only</dt><dd data-mdl-field="s06_display_only">{% if decision_double_play_observability.double_play.display_only is not none %}{{ decision_double_play_observability.double_play.display_only | tojson }}{% elif decision_double_play_observability.double_play.is_available or decision_double_play_observability.double_play.is_stale %}NOT_AVAILABLE{% else %}{{ decision_double_play_observability.double_play.availability_label }}{% endif %}</dd></div>
             <div><dt>Availability</dt><dd data-mdl-field="s06_availability">{{ decision_double_play_observability.double_play.availability_label }}</dd></div>
             <div><dt>Freshness</dt><dd data-mdl-field="s06_freshness">{{ decision_double_play_observability.double_play.freshness_display }}</dd></div>
-            <div><dt>Source kind</dt><dd data-mdl-field="s06_source_kind">{% if decision_double_play_observability.double_play.source_kind %}{{ decision_double_play_observability.double_play.source_kind }}{% else %}—{% endif %}</dd></div>
+            <div><dt>Source kind</dt><dd data-mdl-field="s06_source_kind">{% if decision_double_play_observability.double_play.source_kind %}{{ decision_double_play_observability.double_play.source_kind }}{% elif decision_double_play_observability.double_play.is_available or decision_double_play_observability.double_play.is_stale %}NOT_AVAILABLE{% else %}{{ decision_double_play_observability.double_play.availability_label }}{% endif %}</dd></div>
           </dl>
           {% if decision_double_play_observability.double_play.panels %}
           <ul class="mdl-v2-decision-dp-obs__panels" aria-label="Double Play panel summaries" data-mdl-dp-panels="true">
@@ -741,7 +742,7 @@
         <p><strong>Generated:</strong> <span class="font-mono">{{ generated_at }}</span></p>
         <p><strong>Page schema:</strong> <span class="font-mono">{{ page_schema_id }}</span></p>
         <p><strong>Runtime bridge:</strong> <span class="font-mono">{{ runtime_bridge_display }}</span> ({{ shell_authority_class }})</p>
-        <p><strong>Incomplete slots:</strong> {{ source_health.incomplete_slots|join(", ") }}</p>
+        <p><strong>Incomplete slots:</strong> {% if source_health.incomplete_slots %}{{ source_health.incomplete_slots|join(", ") }}{% else %}NOT_AVAILABLE{% endif %}</p>
         {% if engineering.missing_state_hints %}
         <p>
           <strong>Missing-state vocabulary:</strong>
@@ -771,47 +772,47 @@
               </div>
               <div>
                 <dt>producer_module</dt>
-                <dd data-mdl-eng-field="producer_module" class="font-mono">{% if view.provenance and view.provenance.producer_module is not none %}{{ view.provenance.producer_module }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="producer_module" class="font-mono">{% if view.provenance and view.provenance.producer_module is not none %}{{ view.provenance.producer_module }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>source_kind</dt>
-                <dd data-mdl-eng-field="source_kind" class="font-mono">{% if view.provenance and view.provenance.source_kind is not none %}{{ view.provenance.source_kind }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="source_kind" class="font-mono">{% if view.provenance and view.provenance.source_kind is not none %}{{ view.provenance.source_kind }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>source_reference</dt>
-                <dd data-mdl-eng-field="source_reference" class="font-mono">{% if view.provenance and view.provenance.source_reference is not none %}{{ view.provenance.source_reference }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="source_reference" class="font-mono">{% if view.provenance and view.provenance.source_reference is not none %}{{ view.provenance.source_reference }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>provenance.generated_at</dt>
-                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">{% if view.provenance and view.provenance.generated_at is not none %}{{ view.provenance.generated_at }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="provenance_generated_at" class="font-mono">{% if view.provenance and view.provenance.generated_at is not none %}{{ view.provenance.generated_at }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>provenance.effective_at</dt>
-                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">{% if view.provenance and view.provenance.effective_at is not none %}{{ view.provenance.effective_at }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="provenance_effective_at" class="font-mono">{% if view.provenance and view.provenance.effective_at is not none %}{{ view.provenance.effective_at }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>freshness.observed_at</dt>
-                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">{% if view.freshness and view.freshness.observed_at is not none %}{{ view.freshness.observed_at }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="freshness_observed_at" class="font-mono">{% if view.freshness and view.freshness.observed_at is not none %}{{ view.freshness.observed_at }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>freshness.is_stale</dt>
-                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">{% if view.freshness and view.freshness.is_stale is not none %}{{ view.freshness.is_stale | tojson }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="freshness_is_stale" class="font-mono">{% if view.freshness and view.freshness.is_stale is not none %}{{ view.freshness.is_stale | tojson }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>freshness.stale_reason</dt>
-                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">{% if view.freshness and view.freshness.stale_reason is not none %}{{ view.freshness.stale_reason }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="freshness_stale_reason" class="font-mono">{% if view.freshness and view.freshness.stale_reason is not none %}{{ view.freshness.stale_reason }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>reason_codes</dt>
-                <dd data-mdl-eng-field="reason_codes" class="font-mono">{% if view.reason_codes %}{{ view.reason_codes|join(", ") }}{% endif %}</dd>
+                <dd data-mdl-eng-field="reason_codes" class="font-mono">{% if view.reason_codes %}{{ view.reason_codes|join(", ") }}{% elif view.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ view.availability }}{% endif %}</dd>
               </div>
               <div>
                 <dt>evidence_digest</dt>
-                <dd data-mdl-eng-field="evidence_digest" class="font-mono">{% if view.provenance and view.provenance.evidence_digest is not none %}{{ view.provenance.evidence_digest }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="evidence_digest" class="font-mono">{% if view.provenance and view.provenance.evidence_digest is not none %}{{ view.provenance.evidence_digest }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
               <div>
                 <dt>git_sha</dt>
-                <dd data-mdl-eng-field="git_sha" class="font-mono">{% if view.provenance and view.provenance.git_sha is not none %}{{ view.provenance.git_sha }}{% else %}null{% endif %}</dd>
+                <dd data-mdl-eng-field="git_sha" class="font-mono">{% if view.provenance and view.provenance.git_sha is not none %}{{ view.provenance.git_sha }}{% else %}NOT_AVAILABLE{% endif %}</dd>
               </div>
             </dl>
           </article>

@@ -17,6 +17,28 @@ AVAILABILITY_LABELS: Mapping[Availability, str] = {
     Availability.INVALID: "INVALID",
 }
 
+# Existing universe-rail token for an optional projected field that is absent.
+# Not a new Availability enum value and not a reconstructed domain fact.
+OPTIONAL_FIELD_ABSENT_DISPLAY = "NOT_AVAILABLE"
+_LEAKED_ABSENT_TOKENS = frozenset({"", "None", "null", "undefined"})
+
+
+def fail_closed_component_display_v1(value: Any) -> str:
+    """One already-projected component. Never emits None, null, or undefined."""
+    if value is None:
+        return OPTIONAL_FIELD_ABSENT_DISPLAY
+    text = str(value).strip()
+    if text in _LEAKED_ABSENT_TOKENS:
+        return OPTIONAL_FIELD_ABSENT_DISPLAY
+    return text
+
+
+def fail_closed_scalar_display_v1(value: Any, *, availability: Availability) -> str:
+    """Slot-aware scalar. Unavailable slots keep their availability label."""
+    if availability not in (Availability.AVAILABLE, Availability.STALE):
+        return AVAILABILITY_LABELS[availability]
+    return fail_closed_component_display_v1(value)
+
 
 def provenance_and_freshness_envelope_v1(snap: _ProjectionBase) -> dict[str, Any]:
     payload = serialize_projection(snap)
@@ -46,12 +68,7 @@ def provenance_and_freshness_envelope_v1(snap: _ProjectionBase) -> dict[str, Any
 
 
 def scalar_field_display_v1(value: Any, *, availability: Availability) -> str:
-    if availability not in (Availability.AVAILABLE, Availability.STALE):
-        return AVAILABILITY_LABELS[availability]
-    if value is None:
-        return "—"
-    text = str(value).strip()
-    return text if text else "—"
+    return fail_closed_scalar_display_v1(value, availability=availability)
 
 
 def reason_codes_display_v1(codes: Sequence[str], *, availability: Availability) -> str:
@@ -61,7 +78,7 @@ def reason_codes_display_v1(codes: Sequence[str], *, availability: Availability)
             return f"{label} · {', '.join(str(c) for c in codes)}"
         return label
     if not codes:
-        return "—"
+        return OPTIONAL_FIELD_ABSENT_DISPLAY
     return ", ".join(str(c) for c in codes)
 
 
@@ -73,18 +90,18 @@ def metric_field_display_v1(
     if availability not in (Availability.AVAILABLE, Availability.STALE):
         return AVAILABILITY_LABELS[availability]
     if metric is None or not isinstance(metric, Mapping):
-        return "—"
+        return OPTIONAL_FIELD_ABSENT_DISPLAY
     if metric.get("value") is not None:
-        return str(metric["value"])
+        return fail_closed_component_display_v1(metric["value"])
     semantic = metric.get("semantic")
     reason = metric.get("reason_code")
     if semantic is not None and reason is not None:
-        return f"{semantic}:{reason}"
+        return f"{fail_closed_component_display_v1(semantic)}:{fail_closed_component_display_v1(reason)}"
     if semantic is not None:
-        return str(semantic)
+        return fail_closed_component_display_v1(semantic)
     if reason is not None:
-        return str(reason)
-    return "—"
+        return fail_closed_component_display_v1(reason)
+    return OPTIONAL_FIELD_ABSENT_DISPLAY
 
 
 def field_row_v1(*, field_id: str, label: str, display: str) -> dict[str, str]:

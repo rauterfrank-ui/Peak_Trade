@@ -507,8 +507,21 @@
 }
 
 .mdl-v2-volume[data-mdl-volume-state="MISSING_SOURCE"] .mdl-v2-volume__canvas,
-.mdl-v2-volume[data-mdl-volume-state="NOT_BOUND"] .mdl-v2-volume__canvas {
-  opacity: 0.35;
+.mdl-v2-volume[data-mdl-volume-state="NOT_BOUND"] .mdl-v2-volume__canvas,
+.mdl-v2-volume[data-mdl-volume-state="INVALID"] .mdl-v2-volume__canvas {
+  display: none;
+}
+
+.mdl-v2-volume[data-mdl-volume-state="MISSING_SOURCE"] .mdl-v2-volume__message,
+.mdl-v2-volume[data-mdl-volume-state="NOT_BOUND"] .mdl-v2-volume__message,
+.mdl-v2-volume[data-mdl-volume-state="INVALID"] .mdl-v2-volume__message {
+  display: block;
+  margin: 0;
+  max-height: var(--mdl-volume-height);
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--mdl-warn);
 }
 
 .mdl-v2-state {
