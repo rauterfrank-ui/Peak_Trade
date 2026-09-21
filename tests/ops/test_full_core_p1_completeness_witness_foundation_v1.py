@@ -36,6 +36,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.p1_complet
     witness_bundle_to_mapping_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.p1_negative_completeness_closeout_contract_v1 import (
+    P1_CLOSEOUT_PROVEN_NEGATIVE,
     P1_CLOSEOUT_UNKNOWN,
     REQUIREMENT_CURRENCY_DOMAIN,
     REQUIREMENT_LIABILITY_EVENT_CLASS,
@@ -51,6 +52,15 @@ _CURRENCY_WITNESS_PACK = (
 
 def _sealed_evidence() -> P1SealedWitnessEvidenceV1:
     return load_sealed_p1_witness_evidence_v1(repo_root=REPO_ROOT)
+
+
+def _sealed_evidence_without_closeout_pr1_extension() -> P1SealedWitnessEvidenceV1:
+    return replace(
+        _sealed_evidence(),
+        d5_checkpoint_freshness_witness={},
+        time_domain_witness={},
+        restart_durability_witness={},
+    )
 
 
 def _currency_witness_pack_present() -> bool:
@@ -100,7 +110,7 @@ def test_pagination_witness_max_pages_one_fail_closed() -> None:
 
 
 def test_derived_time_incomplete_when_pagination_incomplete() -> None:
-    evidence = _sealed_evidence()
+    evidence = _sealed_evidence_without_closeout_pr1_extension()
     pagination = evaluate_pagination_exhaustion_witness_v1(evidence)
     derived = derive_time_domain_witness_v1(pagination=pagination, evidence=evidence)
     assert derived.complete is False
@@ -108,7 +118,7 @@ def test_derived_time_incomplete_when_pagination_incomplete() -> None:
 
 
 def test_derived_provenance_incomplete_without_domain_closure() -> None:
-    evidence = _sealed_evidence()
+    evidence = _sealed_evidence_without_closeout_pr1_extension()
     bundle = compose_p1_completeness_witness_bundle_v1(evidence)
     provenance = derive_provenance_witness_v1(
         evidence=evidence,
@@ -138,7 +148,15 @@ def test_sealed_bundle_first_blocker_follows_root_order() -> None:
         REPO_ROOT
         / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z/MANIFEST.sha256"
     )
-    if traversal_pack.is_file():
+    closeout_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_final_closeout_pr1_of_2_v1/2026-09-21T050000Z/MANIFEST.sha256"
+    )
+    if closeout_pack.is_file():
+        assert root_id == ""
+        assert missing == ""
+        return
+    elif traversal_pack.is_file():
         assert root_id == ROOT_OBSERVATION_FRESHNESS
     elif _currency_witness_pack_present():
         assert root_id == ROOT_LIABILITY_EVENT_CLASS
@@ -151,16 +169,31 @@ def test_sealed_bundle_first_blocker_follows_root_order() -> None:
 
 def test_p1_conjunction_stays_unknown_on_sealed_evidence() -> None:
     bundle = evaluate_sealed_p1_completeness_witness_bundle_v1(repo_root=REPO_ROOT)
-    assert p1_conjunction_status_from_bundle_v1(bundle) == "UNKNOWN_INCOMPLETE"
+    closeout_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_final_closeout_pr1_of_2_v1/2026-09-21T050000Z/MANIFEST.sha256"
+    )
+    if closeout_pack.is_file():
+        assert p1_conjunction_status_from_bundle_v1(bundle) == "ALL_ROOTS_AND_TIME_DERIVED_COMPLETE"
+    else:
+        assert p1_conjunction_status_from_bundle_v1(bundle) == "UNKNOWN_INCOMPLETE"
 
 
 def test_6665_consumer_sealed_closeout_still_unknown() -> None:
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
-    assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
     traversal_pack = (
         REPO_ROOT
         / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z/MANIFEST.sha256"
     )
+    closeout_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_final_closeout_pr1_of_2_v1/2026-09-21T050000Z/MANIFEST.sha256"
+    )
+    if closeout_pack.is_file():
+        assert evaluation.closeout_decision == P1_CLOSEOUT_PROVEN_NEGATIVE
+        assert evaluation.p1_status_after == "PROVEN_FALSE"
+        return
+    assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
     if traversal_pack.is_file():
         assert evaluation.first_missing_completeness_predicate in (
             "TIME_DOMAIN_COMPLETE",
@@ -199,7 +232,10 @@ def test_positive_pagination_complete_hypothesis_still_blocked_by_law() -> None:
 
 
 def test_conflict_d5_event_completeness_from_window() -> None:
-    evidence = replace(_sealed_evidence(), d5_event_completeness_from_window="true")
+    evidence = replace(
+        _sealed_evidence_without_closeout_pr1_extension(),
+        d5_event_completeness_from_window="true",
+    )
     bundle = compose_p1_completeness_witness_bundle_v1(evidence)
     freshness = root_by_id_v1(bundle, "OBSERVATION_FRESHNESS_COMPLETE")
     assert freshness.status == "CONFLICTED"

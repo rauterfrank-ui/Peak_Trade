@@ -101,6 +101,9 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p13_execution_prerequisite_12_exact_flatten_payload_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p16_execution_prerequisite_16_bounded_activation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p20_execution_prerequisite_20_mutation_limited_to_proven_position_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p25_execution_prerequisite_25_no_additional_owner_decision_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_9_1_strategy_registry_classifications | STATUS=OPEN (not proven) |  |
