@@ -307,7 +307,7 @@
       data-mdl-decision-strip="true"
       aria-label="Canonical decision strip"
     >
-      {# Phase 5 PR2: Decision → Why → Blockers primary; Direction/DP/Confidence secondary. #}
+      {# Decision → Why → Blockers primary; Direction/DP secondary. Confidence suppressed (no canonical field). #}
       <dl
         class="mdl-v2-decision__primary"
         data-mdl-decision-primary="true"
@@ -336,12 +336,18 @@
         </div>
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--primary" data-mdl-decision-primary-fact="blockers">
           <dt>Blockers</dt>
-          <dd data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          <dd
+            data-mdl-field="blockers"
+            data-availability="{{ decision_double_play_observability.decision_strip_blockers.availability }}"
+            data-mdl-blockers-source="{{ decision_double_play_observability.decision_strip_blockers.source_slot }}"
+          >{{ decision_double_play_observability.decision_strip_blockers.display }}</dd>
         </div>
       </dl>
       <dl
         class="mdl-v2-decision__secondary"
         data-mdl-decision-secondary="true"
+        data-mdl-confidence-field-state="{{ decision_double_play_observability.decision_strip_confidence.field_state }}"
+        data-mdl-confidence-render="{{ decision_double_play_observability.decision_strip_confidence.render|lower }}"
         aria-label="Secondary decision context"
       >
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="direction">
@@ -356,10 +362,12 @@
             {% if double_play.is_available or double_play.is_stale %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}
           </dd>
         </div>
+        {% if decision_double_play_observability.decision_strip_confidence.render %}
         <div class="mdl-v2-decision__fact mdl-v2-decision__fact--secondary" data-mdl-decision-secondary-fact="confidence">
           <dt>Confidence</dt>
-          <dd data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>
+          <dd data-mdl-field="confidence" data-availability="{{ decision_double_play_observability.decision_strip_confidence.availability }}">{{ decision_double_play_observability.decision_strip_confidence.display }}</dd>
         </div>
+        {% endif %}
       </dl>
     </section>
 

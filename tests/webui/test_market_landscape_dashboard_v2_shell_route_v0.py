@@ -79,8 +79,9 @@ def test_get_market_returns_200_with_landmarks(client: TestClient) -> None:
     assert 'data-mdl-field="bull_bear"' in html
     assert 'data-mdl-field="switch"' in html
     assert 'data-mdl-field="source_health"' in html
-    assert 'data-mdl-field="blockers" data-availability="NOT_BOUND"' in html
-    assert 'data-mdl-field="confidence" data-availability="NOT_BOUND"' in html
+    assert 'data-mdl-field="blockers"' in html
+    assert 'data-mdl-confidence-render="false"' in html
+    assert 'data-mdl-field="confidence"' not in html
     # Decision + DP + Safety wired but absent without injection; Regime / Switch stay NOT_BOUND
     assert "NOT_BOUND" in html
     assert "MISSING_SOURCE" in html
@@ -233,7 +234,7 @@ def test_get_market_duplicate_status_facts_have_single_primary_location(
 
 
 def test_get_market_decision_why_blocker_primary_reading_flow(client: TestClient) -> None:
-    """Phase 5 PR2: Decision → Why → Blockers are the primary hierarchy; no semantic enrichment."""
+    """Decision → Why → Blockers primary; Direction/DP secondary; Confidence suppressed."""
     html = client.get("/market").text
     decision = _region_html(html, "CANONICAL_DECISION_STRIP")
 
@@ -244,7 +245,9 @@ def test_get_market_decision_why_blocker_primary_reading_flow(client: TestClient
     assert 'data-mdl-decision-primary-fact="blockers"' in decision
     assert 'data-mdl-decision-secondary-fact="direction"' in decision
     assert 'data-mdl-decision-secondary-fact="double_play"' in decision
-    assert 'data-mdl-decision-secondary-fact="confidence"' in decision
+    assert 'data-mdl-decision-secondary-fact="confidence"' not in decision
+    assert 'data-mdl-confidence-render="false"' in decision
+    assert 'data-mdl-confidence-field-state="NOT_AVAILABLE_NO_CANONICAL_FIELD"' in decision
     assert 'data-mdl-why-primary="true"' in decision
 
     primary = decision.split('data-mdl-decision-primary="true"', 1)[1].split(
@@ -263,20 +266,29 @@ def test_get_market_decision_why_blocker_primary_reading_flow(client: TestClient
     assert 'data-mdl-field="double_play"' not in primary
     assert 'data-mdl-field="confidence"' not in primary
 
-    # Secondary retains Direction / Double Play / Confidence only.
+    # Secondary retains Direction / Double Play only; Confidence suppressed.
     assert 'data-mdl-field="direction"' in secondary
     assert 'data-mdl-field="double_play"' in secondary
-    assert 'data-mdl-field="confidence"' in secondary
+    assert 'data-mdl-field="confidence"' not in secondary
     assert 'data-mdl-field="decision"' not in secondary
     assert 'data-mdl-field="reason_codes"' not in secondary
     assert 'data-mdl-field="blockers"' not in secondary
 
-    # Honest NOT_BOUND; no reason_codes copied into blockers.
-    assert 'data-mdl-field="blockers" data-availability="NOT_BOUND">NOT_BOUND</dd>' in decision
-    assert 'data-mdl-field="confidence" data-availability="NOT_BOUND">NOT_BOUND</dd>' in decision
+    # Blockers bind from Double Play slot fail-closed; never invent from Decision reasons.
     blockers_dd = decision.split('data-mdl-field="blockers"', 1)[1].split("</dd>", 1)[0]
+    assert 'data-availability="' in blockers_dd
+    blockers_text = blockers_dd.split(">", 1)[1].strip()
+    assert blockers_text in {
+        "MISSING_SOURCE",
+        "NOT_BOUND",
+        "INVALID",
+        "STALE",
+        "NOT_AVAILABLE",
+    } or (blockers_text != "")
     assert "CANONICAL_DECISION_EVIDENCE_NOT_PERSISTED_FOR_DASHBOARD" not in blockers_dd
     assert "MISSING_SOURCE ·" not in blockers_dd
+    assert 'data-mdl-field="confidence"' not in decision
+    assert "CANONICAL_DOUBLE_PLAY_DISPLAY_NOT_PERSISTED_FOR_DASHBOARD" not in blockers_dd
 
 
 def test_get_market_engineering_drawer_renders_existing_slot_diagnostics(

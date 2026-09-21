@@ -1987,12 +1987,15 @@ entities:
       - templates/peak_trade_dashboard/market_landscape_v2.html
     evidence_sources:
       - tests/webui/test_landscape_decision_double_play_observability_fidelity_v1.py
+      - tests/webui/test_landscape_operator_information_fidelity_v1.py
       - tests/webui/test_landscape_ui_completeness_fail_closed_v1.py
       - src/webui/market_dashboard_landscape_v2/contracts.py
     notes: >-
       S05/S06 observability from bound Landscape snapshots only; no decision/DP
-      recomputation or artificial join. Absent optional decision fields stay
-      explicit fail-closed display tokens. ATLAS_AUTHORITY=NONE.
+      recomputation or artificial join. Decision-strip Blockers bind read-only from
+      DoublePlaySnapshotV1.blockers; Confidence remains unrendered
+      (NOT_AVAILABLE_NO_CANONICAL_FIELD). Absent optional fields stay explicit
+      fail-closed display tokens. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1
     kind: RUNTIME_COMPONENT
