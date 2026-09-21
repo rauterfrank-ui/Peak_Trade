@@ -323,7 +323,7 @@ python3 scripts/live_alerts_cli.py run-rules \
 1. **Web-Server starten**
 
 ```bash
-python3 scripts/live_web_server.py
+./scripts/pt -m scripts.serve_live_dashboard
 # oder:
 # uvicorn src.live.web.app:app --host 127.0.0.1 --port 8000 --reload
 ```
