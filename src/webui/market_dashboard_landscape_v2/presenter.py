@@ -15,6 +15,10 @@ from .contracts import _ProjectionBase
 from .page_aggregate import MarketDashboardPageSnapshotV1
 from .serialization import serialize_projection
 from .source_health import DashboardSourceHealthSnapshotV1
+from .source_health_projection_fidelity_v1 import (
+    build_presentation_projection_presence_matrix_v1,
+    build_source_health_presentation_v1,
+)
 
 # Presentation-only poll contract; server owns refresh cadence/materialization.
 OHLCV_POLL_PATH = "/api/market/landscape/ohlcv"
@@ -750,56 +754,6 @@ def _source_line_display(*, availability: str, freshness_display: str) -> str:
     return f"{availability} · {freshness_display}"
 
 
-def _present_source_health_compact(
-    *,
-    health: DashboardSourceHealthSnapshotV1,
-    slot_views: Mapping[str, Mapping[str, Any]],
-) -> dict[str, Any]:
-    """Compact Context-rail projection from existing Source Health + slot freshness."""
-    freshness = health.freshness.to_json_dict()
-    freshness_display = _format_freshness_display(freshness)
-    availability = health.availability.value
-    sources: list[dict[str, Any]] = []
-    for slot, state in sorted(health.slot_availability.items()):
-        view = slot_views.get(slot) or {}
-        slot_availability = str(view.get("availability") or state.value)
-        slot_freshness_display = _format_freshness_display(
-            view.get("freshness") if isinstance(view.get("freshness"), Mapping) else None
-        )
-        sources.append(
-            {
-                "slot": slot,
-                "label": _SOURCE_SLOT_LABELS.get(slot, slot),
-                "availability": slot_availability,
-                "freshness_display": slot_freshness_display,
-                "line_display": _source_line_display(
-                    availability=slot_availability,
-                    freshness_display=slot_freshness_display,
-                ),
-                "is_stale": bool(
-                    isinstance(view.get("freshness"), Mapping)
-                    and view.get("freshness", {}).get("is_stale") is True
-                ),
-            }
-        )
-    return {
-        "availability": availability,
-        "availability_label": AVAILABILITY_LABELS[health.availability],
-        "slot_availability": {
-            slot: state.value for slot, state in sorted(health.slot_availability.items())
-        },
-        "incomplete_slots": list(health.incomplete_slots),
-        "provenance": health.provenance.to_json_dict(),
-        "freshness": freshness,
-        "freshness_display": freshness_display,
-        "summary_display": _source_line_display(
-            availability=availability,
-            freshness_display=freshness_display,
-        ),
-        "sources": sources,
-    }
-
-
 def _open_candle_projection_is_valid(
     browser_payload: Mapping[str, Any] | None,
     ohlcv_payload: Mapping[str, Any] | None,
@@ -1123,6 +1077,28 @@ def present_market_landscape_v2(
     risk_ops = _risk_ops_display(page)
     execution_ops = _execution_ops_display(page)
 
+    slot_views_for_health: dict[str, Mapping[str, Any]] = {
+        "market_instrument": market,
+        "universe_ranking": universe,
+        "dynamic_scope": scope,
+        "regime_bull_bear_switch": regime_bbs,
+        "canonical_decision": decision,
+        "double_play": double_play,
+        "risk_sizing_capital": risk,
+        "safety_authority": safety,
+        "execution_reconciliation": execution,
+        "economic_summary": economic,
+        "autonomy_stage": autonomy,
+        "diagnostics_summary": diagnostics,
+    }
+    source_health_ctx = build_source_health_presentation_v1(
+        health=health,
+        slot_views=slot_views_for_health,
+    )
+    presentation_projection_fidelity = build_presentation_projection_presence_matrix_v1(
+        slot_views_for_health,
+    )
+
     return {
         "page_schema_id": page.schema_id,
         "generated_at": page.generated_at.isoformat().replace("+00:00", "Z"),
@@ -1183,23 +1159,8 @@ def present_market_landscape_v2(
             **diagnostics_ops,
         },
         "governance": governance_ops,
-        "source_health": _present_source_health_compact(
-            health=health,
-            slot_views={
-                "market_instrument": market,
-                "universe_ranking": universe,
-                "dynamic_scope": scope,
-                "regime_bull_bear_switch": regime_bbs,
-                "canonical_decision": decision,
-                "double_play": double_play,
-                "risk_sizing_capital": risk,
-                "safety_authority": safety,
-                "execution_reconciliation": execution,
-                "economic_summary": economic,
-                "autonomy_stage": autonomy,
-                "diagnostics_summary": diagnostics,
-            },
-        ),
+        "source_health": source_health_ctx,
+        "presentation_projection_fidelity": presentation_projection_fidelity,
         "chart": {
             "availability": chart_availability.value,
             "availability_label": AVAILABILITY_LABELS[chart_availability],

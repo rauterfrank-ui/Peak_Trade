@@ -628,6 +628,99 @@
   color: #f87171;
 }
 
+/* V03/V04 Source & Projection Fidelity matrix (consumer-only observability) */
+.mdl-v2-fidelity {
+  padding: 8px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mdl-v2-fidelity__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mdl-v2-fidelity__head h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #cbd5e1;
+}
+
+.mdl-v2-fidelity__grids {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mdl-v2-fidelity__title {
+  margin: 0 0 6px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mdl-muted);
+}
+
+.mdl-v2-fidelity__matrix {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.mdl-v2-fidelity__matrix li {
+  display: grid;
+  grid-template-columns: minmax(120px, 1.4fr) minmax(72px, 0.7fr) minmax(140px, 1fr);
+  gap: 8px;
+  align-items: baseline;
+  font-size: 10px;
+}
+
+.mdl-v2-fidelity__slot {
+  color: #94a3b8;
+  overflow-wrap: anywhere;
+}
+
+.mdl-v2-fidelity__state {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  color: var(--mdl-warn);
+  text-align: left;
+}
+
+.mdl-v2-fidelity__freshness {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  color: #64748b;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.mdl-v2-fidelity__matrix li[data-availability="AVAILABLE"] .mdl-v2-fidelity__state,
+.mdl-v2-fidelity__matrix li[data-presence="PRESENT"][data-availability="AVAILABLE"] .mdl-v2-fidelity__state {
+  color: #86efac;
+}
+
+.mdl-v2-fidelity__matrix li[data-availability="STALE"] .mdl-v2-fidelity__state,
+.mdl-v2-fidelity__matrix li[data-presence="PRESENT"][data-availability="STALE"] .mdl-v2-fidelity__state {
+  color: #fbbf24;
+}
+
+.mdl-v2-fidelity__matrix li[data-availability="INVALID"] .mdl-v2-fidelity__state,
+.mdl-v2-fidelity__matrix li[data-presence="INVALID"] .mdl-v2-fidelity__state {
+  color: #f87171;
+}
+
+@media (max-width: 960px) {
+  .mdl-v2-fidelity__grids {
+    grid-template-columns: 1fr;
+  }
+}
+
 .mdl-v2-decision {
   background: transparent;
   padding: 6px 0 6px;
