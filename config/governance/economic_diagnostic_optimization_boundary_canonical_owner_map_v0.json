@@ -448,6 +448,17 @@
         "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
       ]
     },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_ACTIVE_BINDING_V1": {
+      "note": "R1 recovery seam: abandoned incomplete campaign is tombstone-only; exactly one ACTIVE campaign binding; runner/preflight consume that binding. No optimization, threshold selection, enforcement, promotion, network, session execution, or trading-semantics change.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/",
+        "tests/research/test_canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
+        "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
+        "config/governance/canonical_volatility_numeric_max_age_productive_campaign_r1_disposition_v1.json",
+        "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json"
+      ]
+    },
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1": {
       "note": "Closes typed volatility contract + single productive producer + Double-Play hot-path wiring; quarantines competing bridge ddof=1\u00d7sqrt(n) producer and naked float productive bindings; numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no promotion/runtime/orders.",
       "path_prefixes": [
