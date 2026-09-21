@@ -431,6 +431,54 @@
       </p>
     </section>
 
+    <section
+      class="mdl-v2-obs-completion"
+      data-mdl-region="SYSTEM_OBSERVABILITY_COMPLETION"
+      data-mdl-system-observability-completion="true"
+      aria-label="Current system observability completion"
+    >
+      <div class="mdl-v2-obs-completion__head">
+        <h2>System Observability</h2>
+        <span class="mdl-v2-obs-completion__summary">{{ system_observability_completion.summary_display }}</span>
+      </div>
+      <ul class="mdl-v2-obs-completion__ribbon" aria-label="Family availability ribbon" data-mdl-obs-ribbon="true">
+        {% for chip in system_observability_completion.status_ribbon %}
+        <li data-mdl-obs-family="{{ chip.family_id }}" data-availability="{{ chip.availability }}">
+          <span class="mdl-v2-obs-completion__chip-id">{{ chip.family_id }}</span>
+          <span class="mdl-v2-obs-completion__chip-state">{{ chip.availability }}</span>
+          <span class="mdl-v2-obs-completion__chip-freshness">{{ chip.freshness_display }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      <div class="mdl-v2-obs-completion__grid" data-mdl-obs-families="true">
+        {% for family in system_observability_completion.families %}
+        <article
+          class="mdl-v2-obs-completion__panel"
+          data-mdl-obs-family="{{ family.family_id }}"
+          data-availability="{{ family.availability }}"
+        >
+          <h3 class="mdl-v2-obs-completion__title">{{ family.title }}</h3>
+          <p class="mdl-v2-obs-completion__meta">
+            <span data-mdl-field="availability">{{ family.availability_label }}</span>
+            · <span data-mdl-field="freshness">{{ family.freshness_display }}</span>
+            {% if family.source_kind %} · <span data-mdl-field="source_kind">{{ family.source_kind }}</span>{% endif %}
+          </p>
+          <dl class="mdl-v2-obs-completion__facts">
+            {% for field in family.fields %}
+            <div>
+              <dt>{{ field.label }}</dt>
+              <dd data-mdl-obs-field="{{ field.field_id }}">{{ field.display }}</dd>
+            </div>
+            {% endfor %}
+          </dl>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="mdl-v2-obs-completion__related">
+        Related surfaces on this page: S05/S06 Decision &amp; Double Play, V03/V04 Source &amp; Projection Fidelity (separate regions).
+      </p>
+    </section>
+
     <section class="mdl-v2-ops" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
       <div class="mdl-v2-ops__col" data-mdl-ops="risk_sizing_capital">
         <h3>Risk / Sizing / Capital</h3>
