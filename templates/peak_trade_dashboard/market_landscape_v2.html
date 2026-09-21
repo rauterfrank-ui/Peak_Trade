@@ -34,6 +34,9 @@
   data-non-authoritative-bootstrap="{{ 'true' if non_authoritative_bootstrap|default(false) else 'false' }}"
   data-session-id="{{ bootstrap_session_id|default('') }}"
   data-repository-sha="{{ bootstrap_repository_sha|default('') }}"
+  data-dashboard-host-mode="{{ dashboard_host_mode|default('') }}"
+  data-ohlcv-source-class="{{ ohlcv_source_class|default('') }}"
+  data-landscape-poll-contract-id="{{ landscape_poll_contract_id|default('') }}"
 >
   <div class="mdl-v2-shell" data-mdl-outer-workspace="true">
     <header class="mdl-v2-strip" data-mdl-region="GLOBAL_SYSTEM_STRIP" aria-label="Global system strip">

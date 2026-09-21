@@ -1473,6 +1473,45 @@
     renderOhlcvCanvas(payload, { mode: "FULL_SERIES" });
   }
 
+  function assertPollHostContract(body) {
+    if (!body || typeof body !== "object") {
+      throw new Error("poll_host_contract_missing_body");
+    }
+    var bodyHost = String(body.dashboard_host_mode || "");
+    var bodySource = String(body.ohlcv_source_class || "");
+    if (!bodyHost || !bodySource) {
+      throw new Error("poll_host_contract_fields_missing");
+    }
+    var supervised =
+      root.getAttribute("data-supervised-presentation-only") === "true";
+    var expectedHost = String(root.getAttribute("data-dashboard-host-mode") || "");
+    var expectedSource = String(root.getAttribute("data-ohlcv-source-class") || "");
+    if (supervised) {
+      if (bodyHost !== "O2_SUPERVISED_DASHBOARD_HOST") {
+        throw new Error("poll_host_contract_o2_host_required");
+      }
+      if (bodySource !== "O5_DURABLE_DERIVED_READ_MODEL_V1") {
+        throw new Error("poll_host_contract_o5_source_required");
+      }
+      return;
+    }
+    if (isCanonicalHtmlShellHostDocument()) {
+      if (bodyHost !== "CANONICAL_LANDSCAPE_HTML_HOST") {
+        throw new Error("poll_host_contract_canonical_host_required");
+      }
+      if (bodySource !== "ARCHIVE_OKX_SELECTED_INSTRUMENT_OHLCV_READMODEL_V1") {
+        throw new Error("poll_host_contract_archive_source_required");
+      }
+      return;
+    }
+    if (expectedHost && bodyHost !== expectedHost) {
+      throw new Error("poll_host_contract_host_mismatch");
+    }
+    if (expectedSource && bodySource !== expectedSource) {
+      throw new Error("poll_host_contract_source_mismatch");
+    }
+  }
+
   function startOhlcvPolling() {
     var chart = root.querySelector("[data-mdl-chart]");
     if (!chart) return;
@@ -1533,6 +1572,7 @@
           if (body.direct_browser_okx) {
             throw new Error("poll_forbidden_direct_okx");
           }
+          assertPollHostContract(body);
           failStreak = 0;
           backoffSeconds = 0;
           applyPollPayload(body);

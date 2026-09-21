@@ -42,6 +42,14 @@ from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 
     bind_dashboard_backend_to_read_model_v1,
     build_missing_source_read_model_v1,
 )
+from src.webui.market_dashboard_landscape_host_contract_v1 import (
+    html_root_host_contract_attributes,
+    merge_host_contract_into_poll_payload,
+    o2_supervised_dashboard_host_contract_v1,
+    poll_response_headers_from_contract,
+)
+
+_O2_HOST_CONTRACT = o2_supervised_dashboard_host_contract_v1()
 
 
 LOOPBACK_HOSTS = frozenset({"127.0.0.1", "::1", "localhost"})
@@ -105,6 +113,7 @@ def render_supervised_landscape_html_v1(*, session_id: str) -> str:
         generated_at=_LANDSCAPE_BOOTSTRAP_STAMP
     )
     context = present_market_landscape_v2(page)
+    context.update(html_root_host_contract_attributes(contract=_O2_HOST_CONTRACT))
     # Presentation-only overlays — never authoritative, never persisted.
     # Use bare URL paths (constants include a "GET " prefix for contracts).
     context["supervised_presentation_only"] = True
@@ -201,7 +210,9 @@ def create_o2_dashboard_http_app_v1(*, state_root: Path, session_id: str) -> Fas
                 "trading_authority": False,
                 "orders": False,
                 "write_methods": [],
-            }
+                **_O2_HOST_CONTRACT,
+            },
+            headers=poll_response_headers_from_contract(_O2_HOST_CONTRACT),
         )
 
     @app.get("/api/market/landscape/ohlcv")
@@ -223,7 +234,7 @@ def create_o2_dashboard_http_app_v1(*, state_root: Path, session_id: str) -> Fas
             "instrument_id": rm.get("instrument_id"),
             "venue": rm.get("venue"),
         }
-        return JSONResponse(
+        payload = merge_host_contract_into_poll_payload(
             {
                 "schema_name": "market_landscape_ohlcv_poll_response.v1",
                 "schema_version": 1,
@@ -242,7 +253,12 @@ def create_o2_dashboard_http_app_v1(*, state_root: Path, session_id: str) -> Fas
                 "trading_authority": False,
                 "independent_authoritative_recompute": False,
                 "parallel_ohlcv_producer": False,
-            }
+            },
+            contract=_O2_HOST_CONTRACT,
+        )
+        return JSONResponse(
+            payload,
+            headers=poll_response_headers_from_contract(_O2_HOST_CONTRACT),
         )
 
     @app.get("/landscape", response_class=HTMLResponse)
@@ -256,6 +272,7 @@ def create_o2_dashboard_http_app_v1(*, state_root: Path, session_id: str) -> Fas
                 "Cache-Control": "no-store",
                 "X-Peak-Trade-Dashboard-Authority": "NONE",
                 "X-Peak-Trade-Trading-Authority": "false",
+                **poll_response_headers_from_contract(_O2_HOST_CONTRACT),
             },
         )
 
