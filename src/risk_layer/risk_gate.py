@@ -12,7 +12,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional, Union
 
 from src.core.peak_config import PeakConfig
-from src.execution_simple.types import Order
+from src.risk_layer.order_input import Order
 from src.risk_layer.adapters import order_to_dict, to_order
 from src.risk_layer.audit_log import AuditLogWriter
 from src.risk_layer.kill_switch import KillSwitch

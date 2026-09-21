@@ -56,3 +56,13 @@ changes:
       615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not
       freshly exhaustively rerun. Does not define WP-FA-08. Atlas is not
       trading authority.
+  - id: CHANGE:execution_simple_removed_post_census_decouple
+    from: src/execution_simple
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: FORENSIC_RAW
+    evidence: src/risk_layer/order_input.py
+    notes: >-
+      Parallel execution_simple package removed after risk_layer decoupled to
+      src/risk_layer/order_input.py. Legacy runtime entrypoint guard identifiers
+      retained. Atlas is not trading authority.
