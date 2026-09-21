@@ -6045,6 +6045,21 @@ entities:
       - docs/ops/specs/DYNAMIC_SCOPE_EMPIRICAL_CALIBRATION_AND_VOLATILITY_NORMALIZATION_SPEC_V1.md
     notes: AUTHORITY=NONE research D_t candidates; consumes execute_naked_mechanical_step_v1 only.
 
+  - id: RUNTIME_COMPONENT:dp_dynamic_scope_governed_real_market_evidence
+    kind: RUNTIME_COMPONENT
+    name: Dynamic Scope governed REAL market evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_quarantine
+    source_paths:
+      - src/trading/master_v2/dynamic_scope_governed_real_market_evidence_v1.py
+    evidence_sources:
+      - src/trading/master_v2/dynamic_scope_governed_real_market_evidence_v1.py
+      - docs/ops/specs/DYNAMIC_SCOPE_GOVERNED_REAL_MARKET_EVIDENCE_SPEC_V1.md
+      - docs/evidence/dynamic_scope_governed_real_market_evidence_v1/SUMMARY.json
+    notes: AUTHORITY=NONE; binds sealed OKX REAL PT1M; runs empirical calibration harness unchanged.
+
   - id: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
     kind: RUNTIME_COMPONENT
     name: evaluate_double_play authority boundary v0
