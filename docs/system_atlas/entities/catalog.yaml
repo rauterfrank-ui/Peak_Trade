@@ -72,6 +72,8 @@ entities:
     # CURRENT-only operational SSOT rewrite (PR #6583): development chronology
     # removed from SSOT; Clean Trading Core CLOSED; Atlas impact review for
     # docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md path coupling.
+    # Treasury earliest blocker remainder navigation: U04/P01 eligibility bound;
+    # next TRUSTED_29P_PRETRADE_AND_EXTERNAL_EFFECT_OWNER_GOS.
     # ATLAS_AUTHORITY=NONE; RUNTIME_AUTHORIZATION_EFFECT=NONE
     kind: RUNBOOK
     name: Peak_Trade Master Runbook
@@ -9415,8 +9417,10 @@ entities:
       - docs/ops/specs/TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN_V1.md
     notes: >-
       E4 productive host join: TreasuryVenueObservationV1 through Phase-2 and E4
-      into governed productive account-equity host evaluation. Transport only; no
-      sizing or risk-admissible mint. ATLAS_AUTHORITY=NONE.
+      into governed productive account-equity host evaluation. Optional
+      CurrentProductiveU04P01EligibilityHostInputsV1 wires U04/P01/eligibility
+      into CT sizing produce after BASE bind. Transport only; no sizing or
+      risk-admissible mint. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1
     kind: RUNTIME_COMPONENT
@@ -9457,7 +9461,28 @@ entities:
     notes: >-
       Productive transport binding: Treasury E4 orchestration ingress to unbound
       CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE slot; RECONCILED-only base candidacy;
-      STEP-29P boundary unchanged. ATLAS_AUTHORITY=NONE.
+      STEP-29P boundary unchanged. Earliest remainder after U04/P01 eligibility bind:
+      TRUSTED_29P_PRETRADE_AND_EXTERNAL_EFFECT_OWNER_GOS. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1
+    kind: RUNTIME_COMPONENT
+    name: Current productive U04 P01 eligibility inputs CT sizing produce binding v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: CURRENT_PRODUCTIVE_U04_P01_ELIGIBILITY_INPUTS_FOR_CT_SIZING_PRODUCE_BINDING_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py
+    source_symbols:
+      - bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1
+    evidence_sources:
+      - tests/ops/test_current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_BINDING_V1.md
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+    notes: >-
+      Typed U04/P01/eligibility host inputs to produce_current_productive_available_for_sizing_v1;
+      fail-closed; no BASE mint or authority change. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1
     kind: RUNTIME_COMPONENT

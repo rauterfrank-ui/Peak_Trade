@@ -8,6 +8,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.c08_treasu
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_base_binding_v1 import (
     bind_current_productive_available_for_sizing_base_from_treasury_host_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1 import (
+    CurrentProductiveU04P01EligibilityHostInputsV1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 import (
+    bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1 import (
     evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1,
 )
@@ -40,6 +46,7 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
     expected_account_identity: str,
     expected_instrument_id: str,
     usdc_row_status: str = "",
+    u04_p01_eligibility_host_inputs: CurrentProductiveU04P01EligibilityHostInputsV1 | None = None,
 ) -> TreasuryE4ProductiveHostJoinResultV1:
     """Full E4 productive host join chain. No network. No authority expansion."""
     if PARALLEL_ACCOUNT_EQUITY_AUTHORITY_ADDED or SECOND_ACCOUNT_EQUITY_AUTHORITY_ADDED:
@@ -83,6 +90,10 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
         usdc_row_status=usdc_row_status,
         capital_admission_evidence=admission_evidence,
     )
+    u04_p01_binding = bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1(
+        base=base_binding.base_fact,
+        host_inputs=u04_p01_eligibility_host_inputs,
+    )
 
     return TreasuryE4ProductiveHostJoinResultV1(
         treasury_join=treasury_join,
@@ -90,5 +101,6 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
         host_evaluation=host_evaluation,
         c08_sizing_source_binding=c08_binding,
         base_numeric_binding=base_binding,
+        u04_p01_eligibility_binding=u04_p01_binding,
         join_seam_id=JOIN_SEAM_ID,
     )

@@ -150,6 +150,28 @@ gaps:
     repair_owner: OPEN
     repair_performed: false
     notes: CBK-FAMILY-PROJECTION KIND=NO_FAMILY_ONTOLOGY blocks 5-family projection completeness only
+  - id: GAP:ct_sizing_u04_p01_eligibility_inputs_unbound
+    class: DEFINED_BUT_NO_CONSUMER
+    entity: CAPABILITY:current_productive_available_for_sizing_producer_v1
+    epistemic_status: ADJUDICATED
+    expected_relation_if_authority_proves_one: >-
+      CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1 CONSUMES bound U04/P01/eligibility
+      facts on the treasury productive host join path
+    observed_relation: >-
+      WP CURRENT_PRODUCTIVE_U04_P01_ELIGIBILITY_INPUTS_FOR_CT_SIZING_PRODUCE_BINDING_V1
+      added bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1 on
+      join_treasury_observation_through_e4_into_productive_account_equity_host_v1
+    missing_edge: NONE
+    impact: Prior CT sizing produce blocker for missing U04/P01/eligibility inputs closed on bound host path
+    current_runtime_effect: Produce reachable only when host supplies CurrentProductiveU04P01EligibilityHostInputsV1
+    authority: NONE
+    evidence: >-
+      src/ops/governed_productive_account_equity_authority_producer_v1/
+      current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py
+    repair_required: false
+    repair_owner: CURRENT_PRODUCTIVE_U04_P01_ELIGIBILITY_INPUTS_FOR_CT_SIZING_PRODUCE_BINDING_V1
+    repair_performed: true
+    notes: Navigation only. ATLAS_AUTHORITY=NONE. External effect and trusted 29P remain separate fail-closed gates.
   - id: GAP:ddo_declared_seams_without_host_decorator
     class: DECLARED_SEAM_WITHOUT_PROVEN_HOST_EDGE
     entity: RUNTIME_COMPONENT:ddo_capture_v0
