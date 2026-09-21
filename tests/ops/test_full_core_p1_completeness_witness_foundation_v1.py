@@ -50,6 +50,7 @@ def _sealed_evidence() -> P1SealedWitnessEvidenceV1:
 
 def test_sealed_currency_domain_witness_rejects_usdc_alone() -> None:
     evidence = _sealed_evidence()
+    assert evidence.campaign_witness == {} or isinstance(evidence.campaign_witness, dict)
     result = evaluate_currency_domain_witness_v1(evidence)
     assert result.complete is False
     assert result.status == WITNESS_INCOMPLETE
@@ -170,3 +171,16 @@ def test_validate_bundle_rejects_duplicate_roots() -> None:
 def test_closeout_missing_set_includes_liability_class() -> None:
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
     assert REQUIREMENT_LIABILITY_EVENT_CLASS in evaluation.minimal_missing_completeness_set
+
+
+def test_campaign_witness_currency_incomplete_with_explicit_missing_fact() -> None:
+    evidence = replace(
+        _sealed_evidence(),
+        campaign_witness={
+            "APPLICABLE_LOAN_CURRENCY_DOMAIN_EXHAUSTION_PROVEN": "false",
+            "CURRENCY_DOMAIN_MISSING_FACT": "TEST_MISSING_FACT",
+        },
+    )
+    result = evaluate_currency_domain_witness_v1(evidence)
+    assert result.complete is False
+    assert "TEST_MISSING_FACT" in result.detail

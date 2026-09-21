@@ -461,6 +461,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_core_wiring`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`

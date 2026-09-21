@@ -1668,6 +1668,20 @@ relations:
       unchanged without the pair. Does not authorize external effect or N>1.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_p1_max_evidence_campaign_consumes_witness_foundation
+    source: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_max_evidence_campaign_to_next_real_blocker_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+      - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
+    notes: >-
+      Bounded read-only P1 evidence campaign persists witness adjudication and
+      consumes sealed #6666 witness foundation for #6665 re-evaluation.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
     source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
     type: CONSUMES
