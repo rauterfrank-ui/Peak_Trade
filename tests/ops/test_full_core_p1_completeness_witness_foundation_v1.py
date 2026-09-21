@@ -16,6 +16,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.p1_complet
     ROOT_CURRENCY_DOMAIN,
     ROOT_EVENT_ORDERING,
     ROOT_LIABILITY_EVENT_CLASS,
+    ROOT_OBSERVATION_FRESHNESS,
     ROOT_PAGINATION,
     WITNESS_COMPLETE,
     WITNESS_INCOMPLETE,
@@ -71,15 +72,30 @@ def test_sealed_currency_domain_witness_rejects_usdc_alone() -> None:
 def test_liability_event_class_witness_governance_blocker() -> None:
     evidence = _sealed_evidence()
     result = evaluate_liability_event_class_witness_v1(evidence)
-    assert result.complete is False
-    assert result.governance_required is True
-    assert result.blocker_class == BLOCKER_GOVERNANCE
+    liability_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_liability_event_class_governance_witness_v1/2026-09-21T040000Z/MANIFEST.sha256"
+    )
+    if liability_pack.is_file():
+        assert result.complete is True
+        assert result.status == WITNESS_COMPLETE
+    else:
+        assert result.complete is False
+        assert result.governance_required is True
+        assert result.blocker_class == BLOCKER_GOVERNANCE
 
 
 def test_pagination_witness_max_pages_one_fail_closed() -> None:
     evidence = _sealed_evidence()
     result = evaluate_pagination_exhaustion_witness_v1(evidence)
-    assert result.complete is False
+    traversal_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z/MANIFEST.sha256"
+    )
+    if traversal_pack.is_file():
+        assert result.complete is True
+    else:
+        assert result.complete is False
     assert result.root_id == ROOT_PAGINATION
 
 
@@ -118,7 +134,13 @@ def test_sealed_witness_bundle_validate_and_digest_stable() -> None:
 def test_sealed_bundle_first_blocker_follows_root_order() -> None:
     bundle = evaluate_sealed_p1_completeness_witness_bundle_v1(repo_root=REPO_ROOT)
     root_id, blocker_class, missing = first_real_blocker_from_bundle_v1(bundle)
-    if _currency_witness_pack_present():
+    traversal_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z/MANIFEST.sha256"
+    )
+    if traversal_pack.is_file():
+        assert root_id == ROOT_OBSERVATION_FRESHNESS
+    elif _currency_witness_pack_present():
         assert root_id == ROOT_LIABILITY_EVENT_CLASS
         assert blocker_class == BLOCKER_GOVERNANCE
     else:
@@ -135,14 +157,23 @@ def test_p1_conjunction_stays_unknown_on_sealed_evidence() -> None:
 def test_6665_consumer_sealed_closeout_still_unknown() -> None:
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
     assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
-    if _currency_witness_pack_present():
+    traversal_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z/MANIFEST.sha256"
+    )
+    if traversal_pack.is_file():
+        assert evaluation.first_missing_completeness_predicate in (
+            "TIME_DOMAIN_COMPLETE",
+            "OBSERVATION_FRESHNESS_COMPLETE",
+        )
+    elif _currency_witness_pack_present():
         assert evaluation.first_missing_completeness_predicate == REQUIREMENT_LIABILITY_EVENT_CLASS
     else:
         assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
 
 
 def test_event_ordering_witness_fail_closed_on_zero_rows() -> None:
-    evidence = _sealed_evidence()
+    evidence = replace(_sealed_evidence(), bounded_traversal_witness={})
     bundle = compose_p1_completeness_witness_bundle_v1(evidence)
     ordering = root_by_id_v1(bundle, ROOT_EVENT_ORDERING)
     assert ordering.complete is False
@@ -152,6 +183,7 @@ def test_positive_pagination_complete_hypothesis_still_blocked_by_law() -> None:
     evidence = _sealed_evidence()
     patched = replace(
         evidence,
+        bounded_traversal_witness={},
         reopen_adjudication={
             **dict(evidence.reopen_adjudication),
             "CD_EXHAUSTION_PROVEN": "true",
@@ -188,7 +220,14 @@ def test_validate_bundle_rejects_duplicate_roots() -> None:
 
 def test_closeout_missing_set_includes_liability_class() -> None:
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
-    assert REQUIREMENT_LIABILITY_EVENT_CLASS in evaluation.minimal_missing_completeness_set
+    liability_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_liability_event_class_governance_witness_v1/2026-09-21T040000Z/MANIFEST.sha256"
+    )
+    if liability_pack.is_file():
+        assert REQUIREMENT_LIABILITY_EVENT_CLASS not in evaluation.minimal_missing_completeness_set
+    else:
+        assert REQUIREMENT_LIABILITY_EVENT_CLASS in evaluation.minimal_missing_completeness_set
 
 
 def test_campaign_witness_currency_incomplete_with_explicit_missing_fact() -> None:

@@ -6822,25 +6822,65 @@ entities:
       interest-accrued packs; #6666 consumption; #6665 re-evaluation.
       AUTHORITY_EFFECT=NONE.
 
+  - id: RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 liability event class governance witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_LIABILITY_GOVERNANCE_AND_MAX_CLOSEOUT_TO_NEXT_REAL_BLOCKER_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_liability_event_class_governance_and_ratified_query_class_set_v1.py
+      - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
+      - docs/ops/specs/FULL_CORE_P1_LIABILITY_EVENT_CLASS_GOVERNANCE_AND_RATIFIED_QUERY_CLASS_SET_V1.md
+    evidence_sources:
+      - evidence/ops/full_core_p1_liability_event_class_governance_witness_v1/2026-09-21T040000Z
+      - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
+    notes: >-
+      Offline P1-scoped ratified interest-accrued Market-loan query-class set;
+      global EQUITY_STOCK kind set unchanged; #6666 LIABILITY root; #6665 consumer.
+      AUTHORITY_EFFECT=NONE.
+
+  - id: RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
+    kind: RUNTIME_COMPONENT
+    name: P1 bounded query traversal completeness witness v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: FULL_CORE_P1_LIABILITY_GOVERNANCE_AND_MAX_CLOSEOUT_TO_NEXT_REAL_BLOCKER_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_bounded_query_traversal_completeness_witness_v1.py
+      - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
+      - docs/ops/specs/FULL_CORE_P1_BOUNDED_QUERY_TRAVERSAL_COMPLETENESS_WITNESS_V1.md
+    evidence_sources:
+      - evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z
+      - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
+    notes: >-
+      Offline P1 pagination query-traversal and vacuous zero-row ordering witnesses;
+      not domain completeness; does not mint time or genesis-point freshness.
+      AUTHORITY_EFFECT=NONE.
+
   - id: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
     kind: RUNTIME_COMPONENT
     name: P1 completeness witness foundation v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: FULL_CORE_P1_CURRENCY_DOMAIN_BLOCKER_MAX_IMPLEMENTATION_TO_NEXT_REAL_BLOCKER_V1
+    modified_by: FULL_CORE_P1_LIABILITY_GOVERNANCE_AND_MAX_CLOSEOUT_TO_NEXT_REAL_BLOCKER_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
       - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
       - docs/ops/specs/FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1.md
     evidence_sources:
-      - evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z
+      - evidence/ops/full_core_p1_liability_event_class_governance_witness_v1/2026-09-21T040000Z
+      - evidence/ops/full_core_p1_bounded_query_traversal_completeness_witness_v1/2026-09-21T040500Z
       - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
       - docs/ops/specs/FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1.md
     notes: >-
       Six fail-closed P1 completeness root witnesses plus derived TIME and
-      PROVENANCE; sealed CD+USDC+currency-domain witness offline composition;
-      #6665 consumer binding; no GET; no kind-set ratification. ATLAS_AUTHORITY=NONE.
+      PROVENANCE; sealed CD+USDC+liability+traversal witness offline composition;
+      #6665 consumer binding; P1-scoped liability ratification without global
+      kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # K2_V5_CREDENTIAL_RETIREMENT_SINGLE_PR_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; V1_V5_EXECUTE_HOSTS_RETIRED=true; V1_V5_HOST_FILES_ABSENT=true; V1_V5_HOST_CODE_PATHS_REMOVED=true; EG_DEFAULT_DISPATCH=FAIL_CLOSED_V5_EXECUTE_HOST_RETIRED; EXISTING_V5_REUSE=false; OCCUPANCY_CLASSIFY_EXTRACTED=true; K1_BIND_UNCHANGED=true; K2_TO_K1_REWIRE=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; PERMIT_CREATED=false; owner=src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py; seam=src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py.

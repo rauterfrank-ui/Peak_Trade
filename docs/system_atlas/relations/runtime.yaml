@@ -1696,6 +1696,33 @@ relations:
       and sealed interest-accrued exhaustion composition for #6666 and #6665.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_p1_liability_governance_witness_consumes_witness_foundation
+    source: RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_liability_event_class_governance_and_ratified_query_class_set_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+      - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
+    notes: >-
+      P1 liability event-class governance witness persists ratified query-class
+      set without global EQUITY_STOCK kind-set uplift for #6666 LIABILITY root.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_p1_bounded_traversal_witness_consumes_witness_foundation
+    source: RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_bounded_query_traversal_completeness_witness_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+      - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
+    notes: >-
+      P1 bounded query traversal witness persists pagination and ordering roots
+      from sealed interest-accrued packs for #6666 and #6665. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
     source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
     type: CONSUMES

@@ -461,7 +461,21 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:dp_core_wiring`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:p1_currency_domain_completeness_witness_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
+### RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
 - transitive_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
