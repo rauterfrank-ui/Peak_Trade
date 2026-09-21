@@ -61,19 +61,17 @@ CANONICAL_DECISION_SIBLING_RELATIVE = "readmodels/canonical_trading_decision_evi
 DOUBLE_PLAY_SIBLING_RELATIVE = "readmodels/double_play_dashboard_display.v1.json"
 REGIME_BULL_BEAR_SWITCH_SIBLING_RELATIVE = "readmodels/regime_bull_bear_switch.v1.json"
 
-# Productive integrated replay yields ResultV1 intermediates, not the pure-stack
-# Decision types required by build_dashboard_display_snapshot. No ratified
-# productive adapter exists; inventing one would be NEW_SEMANTICS.
-HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH = True
+# Productive integrated replay yields ResultV1 intermediates by default. Export binds
+# only when a complete PureStackDisplayDecisionBundleV1 (or equivalent Decision
+# mapping) is already present on the replay intermediate. ResultV1→Decision mapping
+# remains unauthorized (see double_play_input_gate_v1 / replay_commit_source_v1).
+HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH = False
 DOUBLE_PLAY_BLOCK_REASON = (
-    "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH:"
-    "BLOCKED_CANONICAL_INPUT_AUTHORITY_ABSENT:"
-    "TransitionDecision passthrough available on Intermediate.transition_decision; "
-    "FuturesInputSnapshot/DoublePlaySurvivalEnvelope/SuitabilityProjectionInput/"
-    "CapitalSlotConfig/CapitalSlotState lack ratified productive input authorities; "
-    "ResultV1→Decision mapping unauthorized; fixture/scenario fallbacks forbidden; "
-    "build_dashboard_display_snapshot remains fail-closed until Owner ratifies "
-    "Pure-Stack input authorities and complete PureStackDisplayDecisionBundleV1"
+    "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE:"
+    "Pure-Stack display export requires all seven Decision types on "
+    "display_decision_bundle / pure_stack_display_decision_bundle or intermediate; "
+    "TransitionDecision passthrough alone is insufficient; "
+    "ResultV1→Decision mapping unauthorized; fixture/scenario fallbacks forbidden"
 )
 
 DEFAULT_MIN_CYCLE_INTERVAL_SECONDS = 1.0

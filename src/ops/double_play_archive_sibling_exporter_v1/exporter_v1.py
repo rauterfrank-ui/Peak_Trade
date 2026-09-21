@@ -145,6 +145,17 @@ def _panel_row_from_source(panel: object) -> dict[str, Any] | None:
     return row
 
 
+def _ensure_sibling_evidence_digest_v1(display: Mapping[str, Any]) -> dict[str, Any]:
+    """Attach content digest when absent so sibling↔projection loader guard can reconcile."""
+    out = deepcopy(dict(display))
+    existing = out.get("evidence_digest")
+    if isinstance(existing, str) and existing.strip():
+        return out
+    without_digest = {k: v for k, v in out.items() if k != "evidence_digest"}
+    out["evidence_digest"] = canonical_digest_v1(without_digest)
+    return out
+
+
 def coerce_double_play_display_export_payload_v1(
     source: object,
 ) -> tuple[dict[str, Any] | None, str | None]:
@@ -312,6 +323,7 @@ def export_double_play_display_to_archive_sibling_v1(
             error_code=load_error or ERROR_SOURCE_LOAD_FAILED,
             failure_reason=load_error or ERROR_SOURCE_LOAD_FAILED,
         )
+    display = _ensure_sibling_evidence_digest_v1(display)
 
     if source_path == target_path:
         return _fail(
@@ -463,4 +475,149 @@ def export_double_play_display_to_archive_sibling_v1(
         identical_existing=False,
         error_code=None,
         failure_reason=None,
+    )
+
+
+def export_double_play_display_payload_to_archive_sibling_v1(
+    *,
+    display_payload: dict[str, Any],
+    archive_root: str | Path,
+    source_label: str = "in_memory_display_payload",
+) -> DoublePlayArchiveSiblingExportResultV1:
+    """Export an already-coerced display dict 1:1 into the archive sibling path."""
+    archive = Path(archive_root).expanduser().resolve()
+    target_path = (archive / TARGET_RELATIVE_PATH).resolve()
+    label = source_label.strip() or "in_memory_display_payload"
+
+    display, error = coerce_double_play_display_export_payload_v1(display_payload)
+    if display is None:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=error or ERROR_SOURCE_INVALID,
+            failure_reason=error or ERROR_SOURCE_INVALID,
+        )
+    display = _ensure_sibling_evidence_digest_v1(display)
+
+    try:
+        source_digest = canonical_digest_v1(display)
+    except CanonicalJsonErrorV1 as exc:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=ERROR_SOURCE_INVALID,
+            failure_reason=str(exc),
+        )
+
+    replaced_existing = target_path.is_file()
+    if replaced_existing:
+        try:
+            existing_raw = target_path.read_text(encoding="utf-8")
+            existing_payload = json.loads(existing_raw)
+            existing_digest = canonical_digest_v1(existing_payload)
+            if existing_digest == source_digest:
+                return DoublePlayArchiveSiblingExportResultV1(
+                    exported=True,
+                    source_path=label,
+                    target_path=str(target_path),
+                    overall_status=str(display.get("overall_status") or ""),
+                    panel_count=len(display.get("panel_summaries") or ()),
+                    source_payload_digest=source_digest,
+                    target_payload_digest=existing_digest,
+                    bytes_written=0,
+                    replaced_existing=False,
+                    identical_existing=True,
+                    error_code=None,
+                    failure_reason=None,
+                )
+        except (OSError, json.JSONDecodeError, CanonicalJsonErrorV1):
+            return _fail(
+                source_path=label,
+                target_path=str(target_path),
+                error_code=ERROR_TARGET_CONFLICT,
+                failure_reason="existing target is corrupt or unreadable",
+                replaced_existing=True,
+            )
+
+    body = _serialize_payload(display)
+    try:
+        _atomic_write_text(destination=target_path, body=body)
+    except OSError as exc:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=ERROR_WRITE_FAILED,
+            failure_reason=str(exc),
+            replaced_existing=replaced_existing,
+        )
+
+    try:
+        written_payload = json.loads(target_path.read_text(encoding="utf-8"))
+        target_digest = canonical_digest_v1(written_payload)
+    except (OSError, json.JSONDecodeError, CanonicalJsonErrorV1) as exc:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=ERROR_WRITE_FAILED,
+            failure_reason=f"post-write verify failed: {exc}",
+            replaced_existing=replaced_existing,
+        )
+
+    if target_digest != source_digest:
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=ERROR_DIGEST_MISMATCH,
+            failure_reason=f"{source_digest}!={target_digest}",
+            replaced_existing=replaced_existing,
+        )
+
+    return DoublePlayArchiveSiblingExportResultV1(
+        exported=True,
+        source_path=label,
+        target_path=str(target_path),
+        overall_status=str(display.get("overall_status") or ""),
+        panel_count=len(display.get("panel_summaries") or ()),
+        source_payload_digest=source_digest,
+        target_payload_digest=target_digest,
+        bytes_written=len(body.encode("utf-8")),
+        replaced_existing=replaced_existing,
+        identical_existing=False,
+        error_code=None,
+        failure_reason=None,
+    )
+
+
+def export_double_play_display_to_archive_sibling_from_replay_commit_v1(
+    *,
+    archive_root: str | Path,
+    replay_intermediate: object | None,
+    source_label: str = "integrated_replay_commit",
+) -> DoublePlayArchiveSiblingExportResultV1:
+    """Export replay-attached Pure-Stack Decisions into the authorized archive sibling path."""
+    from src.ops.double_play_archive_sibling_exporter_v1.replay_commit_source_v1 import (
+        build_double_play_dashboard_display_sibling_payload_from_replay_commit_v1,
+    )
+
+    label = source_label.strip() or "integrated_replay_commit"
+    archive = Path(archive_root).expanduser().resolve()
+    target_path = (archive / TARGET_RELATIVE_PATH).resolve()
+
+    payload, build_errors = (
+        build_double_play_dashboard_display_sibling_payload_from_replay_commit_v1(
+            replay_intermediate=replay_intermediate,
+        )
+    )
+    if payload is None:
+        code = build_errors[0] if build_errors else ERROR_SOURCE_INVALID
+        return _fail(
+            source_path=label,
+            target_path=str(target_path),
+            error_code=code,
+            failure_reason=code,
+        )
+    return export_double_play_display_payload_to_archive_sibling_v1(
+        display_payload=payload,
+        archive_root=archive,
+        source_label=label,
     )

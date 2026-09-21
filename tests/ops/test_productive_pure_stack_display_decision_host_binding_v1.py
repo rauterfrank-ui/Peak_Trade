@@ -184,7 +184,7 @@ def test_partial_extract_fail_closed_even_with_transition_passthrough() -> None:
     assert try_extract_double_play_decision_inputs_from_replay_intermediate_v1(_Inter()) is None
     out = classify_double_play_canonical_inputs_v1(None)
     assert out.exportable is False
-    assert "HARD_STOP_DOUBLE_PLAY" in (out.error_code or "")
+    assert out.error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
 
 
 def test_bundle_extract_requires_all_seven() -> None:
@@ -428,10 +428,10 @@ def test_producer_symbols_are_pure_stack_only() -> None:
     assert "SurvivalResultV1" not in src
 
 
-def test_dashboard_consumer_gate_still_hard_stop_without_bundle() -> None:
+def test_dashboard_consumer_gate_fail_closed_without_bundle() -> None:
     out = classify_double_play_canonical_inputs_v1({})
     assert out.exportable is False
-    assert out.error_code == "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH"
+    assert out.error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
 
 
 def test_producer_bindings_invoke_all_seven_pure_stack_producers() -> None:
@@ -530,5 +530,5 @@ def test_export_accepts_non_none_replay_intermediate_and_keeps_dp_hard_stop(
     assert "double_play" in families
     dp = families["double_play"]
     assert dp.exportable is False
-    assert dp.error_code == "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH"
+    assert dp.error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
     assert not Path(archive.double_play_sibling_path).is_file()

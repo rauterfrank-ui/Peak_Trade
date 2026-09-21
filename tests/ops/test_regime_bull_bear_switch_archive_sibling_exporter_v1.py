@@ -213,10 +213,7 @@ def test_family_export_regime_does_not_break_double_play_hard_stop(tmp_path: Pat
         replay_regime_id="trending",
         replay_regime_status="known",
     )
-    assert (
-        families["double_play"].error_code
-        == "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH"
-    )
+    assert families["double_play"].error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
     assert families["regime_bull_bear_switch"].exported is False
 
     families_ok = export_families_after_runtime_commit_v1(
@@ -237,7 +234,7 @@ def test_family_export_regime_does_not_break_double_play_hard_stop(tmp_path: Pat
     assert rg.loader_ok is True
     assert (
         families_ok["double_play"].error_code
-        == "HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH"
+        == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
     )
 
 

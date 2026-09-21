@@ -43,17 +43,26 @@ def classify_double_play_canonical_inputs_v1(
     Productive ``IntegratedOfflineReplayIntermediateV1`` does not carry these types.
     Inventing ResultV1→Decision mapping is forbidden (NEW_SEMANTICS).
     """
-    if HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH and not _has_complete_inputs(
-        cycle_outputs
-    ):
+    if not _has_complete_inputs(cycle_outputs):
+        if HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH:
+            return FamilyExportResultV1(
+                family_id=FAMILY_DOUBLE_PLAY,
+                exportable=False,
+                exported=False,
+                materialized=False,
+                loader_ok=False,
+                error_code="HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH",
+                detail=DOUBLE_PLAY_BLOCK_REASON,
+                skipped_reason="canonical_display_inputs_incomplete",
+            )
         return FamilyExportResultV1(
             family_id=FAMILY_DOUBLE_PLAY,
             exportable=False,
             exported=False,
             materialized=False,
             loader_ok=False,
-            error_code="HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH",
-            detail=DOUBLE_PLAY_BLOCK_REASON,
+            error_code="DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE",
+            detail="Pure-Stack display Decision bundle incomplete on replay intermediate",
             skipped_reason="canonical_display_inputs_incomplete",
         )
     assert cycle_outputs is not None

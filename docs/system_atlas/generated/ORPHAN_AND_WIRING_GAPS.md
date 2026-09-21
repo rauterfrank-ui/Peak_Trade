@@ -48,6 +48,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_double_play_producer_function_replay_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_validation_producer_bindings | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_validation_producer_bindings | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dashboard_display | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dashboard_display | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_entry_exit_policy | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=OPEN (not proven) |  |
