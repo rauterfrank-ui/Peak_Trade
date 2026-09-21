@@ -1564,6 +1564,18 @@ relations:
       Full-Core composition root productive authority graph unchanged.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_pdf_rebind_census_consumes_treasury_phases
+    source: RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1
+    type: CONSUMES
+    target: GATE:treasury_phase_2_read_only_reconciliation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_pdf_current_head_rebind_and_census_v1/census_v1.py
+      - tests/ops/test_treasury_pdf_current_head_rebind_and_census_v1.py
+    notes: >-
+      Offline census reads Phase-1/2/3 constants and interference proof only.
+      Does not authorize network or mutation. ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
     source: GATE:full_core_live_path_standing_live_gates_v1
     type: DENIES

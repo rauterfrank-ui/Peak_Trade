@@ -1,0 +1,47 @@
+"""Standing constants for Treasury PDF current-head rebind census.
+
+No network. No mutation. PDF is never authority.
+"""
+
+from __future__ import annotations
+
+CAPABILITY_ID = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
+PACKAGE_MARKER = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1=true"
+OWNER = "ops.treasury_pdf_current_head_rebind_and_census_v1"
+SCHEMA_VERSION = "treasury_pdf_current_head_rebind_and_census.v1"
+CONTRACT_VERSION = "v1"
+
+WP_ID = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
+OWNER_GO = WP_ID
+ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}", "OWNER_GO=true"})
+
+EXPECTED_ORIGIN_MAIN_SHA = "3199376fa27eb28572a0f255c6d99d312cb46768"
+CANONICAL_PACK_RELPATH = "evidence/ops/treasury_pdf_current_head_rebind_and_census_v1"
+CANONICAL_PACK_AS_OF_FOLDER = "2026-09-21T010000Z"
+SCHEMA_CLASS = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
+AUTHORITY_EFFECT = "NONE"
+PDF_AUTHORITY = "NONE"
+ATLAS_AUTHORITY = "NONE"
+
+NETWORK_ALLOWED = False
+EXTERNAL_EFFECT_AUTHORIZED = False
+TREASURY_MUTATION_AUTHORIZED = False
+
+CURRENT_CANONICAL_TREASURY_AUTHORITY = (
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#CURRENT-Treasury-Phase-Bindings"
+)
+
+EARLIEST_REAL_TREASURY_BLOCKER = "PRODUCTIVE_READ_ONLY_TREASURY_VENUE_OBSERVATION_REQUIRES_OWNER_SCOPED_NETWORK_AND_CREDENTIAL_GO"
+BLOCKER_CLASS = "AUTHORITY_AND_EXTERNAL_EFFECT"
+MISSING_FACT_OR_AUTHORITY = (
+    "Scoped Owner-GO for productive read-only OKX-EEA treasury/funding observation "
+    "(PL_TF_002-class session) with credential load; EXTERNAL_EFFECT_AUTHORIZED=false "
+    "on current HEAD forbids execution in this WP."
+)
+
+FULL_CORE_P1_STATUS = "CLOSED"
+FULL_CORE_P1_PR_BUDGET_SLOT = "1_OF_2"
+FULL_CORE_P2_P3_ON_CURRENT_HEAD = "NOT_CANONICALLY_DEFINED"
+
+TRUE_TOKEN = "true"
+FALSE_TOKEN = "false"
