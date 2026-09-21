@@ -721,6 +721,121 @@
   }
 }
 
+/* S05/S06 Decision & Double Play observability (consumer-only) */
+.mdl-v2-decision-dp-obs {
+  padding: 8px 16px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mdl-v2-decision-dp-obs__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mdl-v2-decision-dp-obs__head h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #cbd5e1;
+}
+
+.mdl-v2-decision-dp-obs__note,
+.mdl-v2-decision-dp-obs__timeline-note {
+  margin: 0;
+  font-size: 10px;
+  color: var(--mdl-muted);
+  line-height: 1.4;
+}
+
+.mdl-v2-decision-dp-obs__grids {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.mdl-v2-decision-dp-obs__title {
+  margin: 0 0 6px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mdl-muted);
+}
+
+.mdl-v2-decision-dp-obs__facts {
+  margin: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.mdl-v2-decision-dp-obs__facts > div {
+  display: grid;
+  grid-template-columns: minmax(88px, 0.8fr) minmax(0, 1.4fr);
+  gap: 8px;
+  align-items: baseline;
+  font-size: 10px;
+}
+
+.mdl-v2-decision-dp-obs__facts dt {
+  margin: 0;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mdl-v2-decision-dp-obs__facts dd {
+  margin: 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  color: #e2e8f0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.mdl-v2-decision-dp-obs__panels {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.mdl-v2-decision-dp-obs__panels li {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.6fr) minmax(72px, 0.5fr) minmax(0, 1.4fr);
+  gap: 6px;
+  font-size: 9px;
+  align-items: baseline;
+}
+
+.mdl-v2-decision-dp-obs__panel-name {
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.mdl-v2-decision-dp-obs__panel-status,
+.mdl-v2-decision-dp-obs__panel-summary {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  color: #cbd5e1;
+  overflow-wrap: anywhere;
+}
+
+.mdl-v2-decision-dp-obs__empty {
+  margin: 6px 0 0;
+  font-size: 10px;
+  color: var(--mdl-muted);
+}
+
+@media (max-width: 960px) {
+  .mdl-v2-decision-dp-obs__grids {
+    grid-template-columns: 1fr;
+  }
+}
+
 .mdl-v2-decision {
   background: transparent;
   padding: 6px 0 6px;
