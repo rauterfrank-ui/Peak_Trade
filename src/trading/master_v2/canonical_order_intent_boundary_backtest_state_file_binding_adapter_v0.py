@@ -29,6 +29,12 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
 from trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
     CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0,
 )
+from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
+    MV2OfflineBoundaryDynamicPriceContextV1,
+    backtest_state_file_digest_stripped_payload_v0,
+    build_mv2_dynamic_boundary_capital_context_v1,
+    validate_dynamic_price_context_binding_ref_v0,
+)
 
 CANONICAL_ORDER_INTENT_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_LAYER_VERSION = "v0"
 CANONICAL_ORDER_INTENT_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER = (
@@ -64,6 +70,7 @@ class CanonicalOrderIntentBacktestStateFileRecordV0:
     reconciliation_status: str
     canonical_order_intent_owner_digest_ref: str
     state_file_digest_ref: str
+    dynamic_price_context_binding_ref: str | None = None
     raw_payload: Mapping[str, Any] | None = None
 
 
@@ -86,7 +93,7 @@ class CanonicalOrderIntentBoundaryBacktestStateFileEvidenceV0:
 
 
 def _canonical_payload_bytes(payload: Mapping[str, Any]) -> bytes:
-    stripped = {k: v for k, v in payload.items() if k != "state_file_digest_ref"}
+    stripped = backtest_state_file_digest_stripped_payload_v0(payload)
     return json.dumps(stripped, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
@@ -168,23 +175,30 @@ def parse_canonical_order_intent_backtest_state_file_v0(
     ):
         raise ValueError("canonical_order_intent_backtest_state_file_schema_version_mismatch")
 
+    validate_dynamic_price_context_binding_ref_v0(decoded)
+    dynamic_price_ref = str(decoded.get("dynamic_price_context_binding_ref", "") or "").strip()
+    dynamic_price = bool(dynamic_price_ref)
+
     instrument_id = _parse_required_str(decoded.get("instrument_id"), field_name="instrument_id")
-    _parse_positive_decimal(decoded.get("reference_price"), field_name="reference_price")
+    if not dynamic_price:
+        _parse_positive_decimal(decoded.get("reference_price"), field_name="reference_price")
     _parse_positive_decimal(decoded.get("account_equity"), field_name="account_equity")
     _parse_positive_decimal(decoded.get("scope_capital_limit"), field_name="scope_capital_limit")
     _parse_positive_decimal(decoded.get("per_trade_risk_limit"), field_name="per_trade_risk_limit")
     _parse_positive_decimal(decoded.get("total_capital_limit"), field_name="total_capital_limit")
-    _parse_non_negative_decimal(
-        decoded.get("daily_loss_remaining_budget"),
-        field_name="daily_loss_remaining_budget",
-    )
+    if not dynamic_price:
+        _parse_non_negative_decimal(
+            decoded.get("daily_loss_remaining_budget"),
+            field_name="daily_loss_remaining_budget",
+        )
     _parse_non_negative_decimal(
         decoded.get("current_reconciled_exposure"),
         field_name="current_reconciled_exposure",
     )
     _parse_positive_decimal(decoded.get("lot_size"), field_name="lot_size")
     _parse_positive_decimal(decoded.get("minimum_quantity"), field_name="minimum_quantity")
-    _parse_positive_decimal(decoded.get("maximum_quantity"), field_name="maximum_quantity")
+    if not dynamic_price:
+        _parse_positive_decimal(decoded.get("maximum_quantity"), field_name="maximum_quantity")
     _parse_positive_decimal(decoded.get("minimum_notional"), field_name="minimum_notional")
     _parse_positive_decimal(decoded.get("tick_size"), field_name="tick_size")
 
@@ -199,10 +213,13 @@ def parse_canonical_order_intent_backtest_state_file_v0(
         raise ValueError("canonical_order_intent_backtest_state_file_digest_mismatch")
 
     protective_stop = decoded.get("protective_stop_price")
-    if protective_stop is None or (
-        isinstance(protective_stop, str) and not protective_stop.strip()
-    ):
-        raise ValueError("protective_stop_price_missing")
+    if not dynamic_price:
+        if protective_stop is None or (
+            isinstance(protective_stop, str) and not protective_stop.strip()
+        ):
+            raise ValueError("protective_stop_price_missing")
+    elif protective_stop not in (None, ""):
+        raise ValueError("protective_stop_price_forbidden_with_dynamic_binding")
 
     maximum_positions = int(decoded.get("maximum_positions", 1))
     if maximum_positions <= 0:
@@ -211,19 +228,24 @@ def parse_canonical_order_intent_backtest_state_file_v0(
     if current_open_positions_count < 0:
         raise ValueError("current_open_positions_count_invalid")
 
+    reference_price = "" if dynamic_price else str(decoded["reference_price"])
+    protective_stop_price = "" if dynamic_price else str(protective_stop)
+
     return CanonicalOrderIntentBacktestStateFileRecordV0(
         instrument_id=instrument_id,
-        reference_price=str(decoded["reference_price"]),
-        protective_stop_price=str(protective_stop),
+        reference_price=reference_price,
+        protective_stop_price=protective_stop_price,
         account_equity=str(decoded["account_equity"]),
         scope_capital_limit=str(decoded["scope_capital_limit"]),
         per_trade_risk_limit=str(decoded["per_trade_risk_limit"]),
         total_capital_limit=str(decoded["total_capital_limit"]),
-        daily_loss_remaining_budget=str(decoded["daily_loss_remaining_budget"]),
+        daily_loss_remaining_budget=(
+            "" if dynamic_price else str(decoded["daily_loss_remaining_budget"])
+        ),
         current_reconciled_exposure=str(decoded["current_reconciled_exposure"]),
         lot_size=str(decoded["lot_size"]),
         minimum_quantity=str(decoded["minimum_quantity"]),
-        maximum_quantity=str(decoded["maximum_quantity"]),
+        maximum_quantity=("" if dynamic_price else str(decoded["maximum_quantity"])),
         minimum_notional=str(decoded["minimum_notional"]),
         tick_size=str(decoded["tick_size"]),
         maximum_positions=maximum_positions,
@@ -232,6 +254,7 @@ def parse_canonical_order_intent_backtest_state_file_v0(
         or "RECONCILED",
         canonical_order_intent_owner_digest_ref=owner_ref,
         state_file_digest_ref=state_file_digest_ref,
+        dynamic_price_context_binding_ref=dynamic_price_ref or None,
         raw_payload=dict(decoded),
     )
 
@@ -250,10 +273,20 @@ def verify_canonical_order_intent_backtest_state_file_digest_v0(
 
 def _capital_context_from_state_file(
     state_file: CanonicalOrderIntentBacktestStateFileRecordV0,
+    *,
+    dynamic_price_context: MV2OfflineBoundaryDynamicPriceContextV1 | None = None,
 ):
     from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
         CanonicalCoreRuntimeCapitalContextV0,
     )
+
+    if state_file.dynamic_price_context_binding_ref:
+        if dynamic_price_context is None:
+            raise ValueError("dynamic_price_context_required_for_boundary_bind")
+        return build_mv2_dynamic_boundary_capital_context_v1(
+            state_file=state_file,
+            dynamic_price_context=dynamic_price_context,
+        )
 
     instrument = InstrumentQuantityConstraintsV1(
         instrument_id=state_file.instrument_id,
@@ -289,6 +322,7 @@ def bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0(
     *,
     state_file: CanonicalOrderIntentBacktestStateFileRecordV0,
     sizing_evidence: CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0,
+    dynamic_price_context: MV2OfflineBoundaryDynamicPriceContextV1 | None = None,
 ) -> CanonicalOrderIntentBoundaryBacktestStateFileEvidenceV0:
     """Bind backtest state-file order intent through the Surface I offline adapter."""
     if not sizing_evidence.capital_risk_sizing_boundary_backtest_state_file_bound:
@@ -299,7 +333,10 @@ def bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0(
     offline_binding = bind_canonical_order_intent_offline_replay_evidence_v0(
         sized_evidence,
         sizing_decision=sizing_decision,
-        capital_context=_capital_context_from_state_file(state_file),
+        capital_context=_capital_context_from_state_file(
+            state_file,
+            dynamic_price_context=dynamic_price_context,
+        ),
     )
     if not canonical_order_intent_binding_non_authority_boundary_ok_v0(offline_binding):
         raise ValueError("canonical_order_intent_backtest_state_file_non_authority_boundary_failed")

@@ -222,6 +222,10 @@ from src.trading.master_v2.canonical_order_intent_boundary_backtest_state_file_b
     bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0,
     load_canonical_order_intent_backtest_state_file_record_v0,
 )
+from src.trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
+    MV2OfflineBoundaryDynamicPriceContextV1,
+    build_mv2_offline_boundary_dynamic_price_context_v1,
+)
 from src.trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
     SafetyKernelBacktestStateFileRecordV0,
     SafetyKernelBoundaryBacktestStateFileEvidenceV0,
@@ -268,6 +272,8 @@ ECONOMIC_RESEARCH_WARMUP_REQUIRED_SKIP_REASON = "warmup_required"
 ECONOMIC_RESEARCH_WARMUP_INVALID_BLOCK_REASON = "warmup_invalid_blocked"
 ECONOMIC_RESEARCH_NO_WARMUP_COMPLETE_BAR_REASON = "no_warmup_complete_bar"
 MV2_REQUIRED_INSTRUMENT_ID = "inst-eth-usdt-perp"
+STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0 = "legacy_research_singleton_v0"
+STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1 = "current_selected_instrument_v1"
 
 _REPLAY_IMPLEMENTATION_DIGEST = hashlib.sha256(
     b"trading.master_v2.integrated_offline_trading_logic_replay_v1"
@@ -611,13 +617,44 @@ def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
     )
 
 
-def _ensure_supported_instrument(instrument_id: str) -> None:
+def _ensure_supported_instrument(
+    instrument_id: str,
+    *,
+    admission_mode: str = STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0,
+) -> None:
     lowered = instrument_id.lower()
-    _fail_closed(
-        instrument_id != MV2_REQUIRED_INSTRUMENT_ID, "instrument_not_supported_for_step29l"
-    )
+    if admission_mode == STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0:
+        _fail_closed(
+            instrument_id != MV2_REQUIRED_INSTRUMENT_ID,
+            "instrument_not_supported_for_step29l",
+        )
+    elif admission_mode == STEP29L_INSTRUMENT_ADMISSION_CURRENT_SELECTED_INSTRUMENT_V1:
+        _fail_closed(
+            not instrument_id.startswith("okx_eea:"),
+            "instrument_not_okx_eea_canonical_for_current_admission",
+        )
+    else:
+        raise ValueError("step29l_instrument_admission_mode_unsupported")
     _fail_closed("btc" in lowered or "xbt" in lowered, "bitcoin_instrument_forbidden")
     _fail_closed("spot" in lowered, "spot_instrument_forbidden")
+
+
+def _resolve_boundary_dynamic_price_context_v1(
+    state_file: CapitalRiskSizingBacktestStateFileRecordV0
+    | CanonicalOrderIntentBacktestStateFileRecordV0
+    | None,
+    *,
+    mark_price: float,
+    selected_side: str,
+) -> MV2OfflineBoundaryDynamicPriceContextV1 | None:
+    if state_file is None or not getattr(state_file, "dynamic_price_context_binding_ref", None):
+        return None
+    scope_distances = compute_mv2_research_scope_distances_absolute_from_mark_v1(mark_price)
+    return build_mv2_offline_boundary_dynamic_price_context_v1(
+        mark_price=mark_price,
+        selected_side=selected_side,
+        adverse_exit_distance=scope_distances.adverse_exit_distance,
+    )
 
 
 def _ensure_no_lookahead(bars: pd.DataFrame) -> None:
@@ -716,9 +753,15 @@ def _bind_economic_research_warmup_observation_bar_v1(
     instrument_id: str,
     trading_epoch: int,
     research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0],
+    step29l_instrument_admission_mode: str = (
+        STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    ),
 ) -> tuple[CanonicalMarketContextV1, L1ObservationStatusV1, bool]:
     """Observation-only economic_research_v1 binding for WARMUP_REQUIRED bars."""
-    _ensure_supported_instrument(instrument_id)
+    _ensure_supported_instrument(
+        instrument_id,
+        admission_mode=step29l_instrument_admission_mode,
+    )
     _validate_economic_research_bar_structural_contract_v1(bar)
     ts = pd.Timestamp(bar.name)
     market_event_time = ts.isoformat()
@@ -855,6 +898,9 @@ def bind_bar_for_mv2_wiring_v1(
     trading_epoch: int,
     profile_binding: DatasetProfileBindingV1,
     research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0] = None,
+    step29l_instrument_admission_mode: str = (
+        STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    ),
 ) -> tuple[CanonicalMarketContextV1, L1ObservationStatusV1, bool]:
     profile = profile_binding.dataset_profile
     l1_status = profile_binding.l1_observation_status
@@ -866,6 +912,7 @@ def bind_bar_for_mv2_wiring_v1(
             bar=bar,
             instrument_id=instrument_id,
             trading_epoch=trading_epoch,
+            step29l_instrument_admission_mode=step29l_instrument_admission_mode,
         )
         return context, L1ObservationStatusV1.OBSERVED_HISTORICAL_L1, True
 
@@ -874,7 +921,10 @@ def bind_bar_for_mv2_wiring_v1(
     if l1_status is not L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED:
         raise ValueError("research_profile_requires_execution_model_bound_l1_status")
 
-    _ensure_supported_instrument(instrument_id)
+    _ensure_supported_instrument(
+        instrument_id,
+        admission_mode=step29l_instrument_admission_mode,
+    )
     is_final = bool(bar.get("is_final", True))
     _fail_closed(not is_final, "bar_unfinalized")
 
@@ -935,13 +985,19 @@ def bind_historical_bar_to_canonical_market_context_v1(
     bar: pd.Series,
     instrument_id: str,
     trading_epoch: int,
+    step29l_instrument_admission_mode: str = (
+        STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    ),
 ) -> CanonicalMarketContextV1:
     from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
         quarantine_historical_bar_volatility_v1,
         require_admitted_legacy_volatility_float_v1,
     )
 
-    _ensure_supported_instrument(instrument_id)
+    _ensure_supported_instrument(
+        instrument_id,
+        admission_mode=step29l_instrument_admission_mode,
+    )
     is_final = bool(bar.get("is_final", True))
     _fail_closed(not is_final, "bar_unfinalized")
 
@@ -2293,9 +2349,15 @@ def run_mv2_research_backtest_wiring_v1(
     system_economic_evidence_requested: bool | None = None,
     observational_bar_hook: Callable[..., None] | None = None,
     observational_panel_member_instrument_id: str | None = None,
+    step29l_instrument_admission_mode: str = (
+        STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    ),
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
-    _ensure_supported_instrument(instrument_id)
+    _ensure_supported_instrument(
+        instrument_id,
+        admission_mode=step29l_instrument_admission_mode,
+    )
     _ensure_no_lookahead(bars)
 
     resolved_engine_signal_source = resolve_mv2_research_engine_signal_source_v1(
@@ -2599,6 +2661,7 @@ def run_mv2_research_backtest_wiring_v1(
                         instrument_id=instrument_id,
                         trading_epoch=i,
                         research_execution_cost=research_execution_cost,
+                        step29l_instrument_admission_mode=step29l_instrument_admission_mode,
                     )
                 )
                 input_digest = _stable_digest(
@@ -2681,6 +2744,7 @@ def run_mv2_research_backtest_wiring_v1(
             trading_epoch=i,
             profile_binding=effective_profile,
             research_execution_cost=research_execution_cost,
+            step29l_instrument_admission_mode=step29l_instrument_admission_mode,
         )
         input_digest = _stable_digest(
             {
@@ -2755,6 +2819,16 @@ def run_mv2_research_backtest_wiring_v1(
                 directional_confirmation_progress=confirmation_progress,
             )
         )
+        if (
+            capital_risk_sizing_state_file_record is not None
+            and capital_risk_sizing_state_file_record.dynamic_price_context_binding_ref
+        ):
+            replay_input = replace(
+                replay_input,
+                current_instrument_capital_risk_sizing_boundary_state_file=(
+                    capital_risk_sizing_state_file_record
+                ),
+            )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
         decision_funnel_accumulator.accumulate_from_replay(
             intermediate=replay_result.intermediate,
@@ -2799,10 +2873,16 @@ def run_mv2_research_backtest_wiring_v1(
             CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0 | None
         ) = None
         if capital_risk_sizing_state_file_record is not None:
+            boundary_dynamic_price = _resolve_boundary_dynamic_price_context_v1(
+                capital_risk_sizing_state_file_record,
+                mark_price=float(context.mark_price),
+                selected_side=str(replay_result.evidence.selected_side),
+            )
             capital_risk_sizing_evidence = (
                 bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0(
                     replay_result.evidence,
                     state_file=capital_risk_sizing_state_file_record,
+                    dynamic_price_context=boundary_dynamic_price,
                 )
             )
             signal = apply_backtest_capital_risk_sizing_exposure_gate_v0(
@@ -2817,11 +2897,17 @@ def run_mv2_research_backtest_wiring_v1(
                 raise ValueError(
                     "canonical_order_intent_backtest_state_file_sizing_evidence_missing"
                 )
+            coi_boundary_dynamic_price = _resolve_boundary_dynamic_price_context_v1(
+                canonical_order_intent_state_file_record,
+                mark_price=float(context.mark_price),
+                selected_side=str(replay_result.evidence.selected_side),
+            )
             canonical_order_intent_evidence = (
                 bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0(
                     replay_result.evidence,
                     state_file=canonical_order_intent_state_file_record,
                     sizing_evidence=capital_risk_sizing_evidence,
+                    dynamic_price_context=coi_boundary_dynamic_price,
                 )
             )
             signal = apply_backtest_canonical_order_intent_exposure_gate_v0(
@@ -3072,6 +3158,9 @@ def run_mv2_walk_forward_wiring_v1(
     expected_implementation_digest: Optional[str] = None,
     explicit_zero_cost_non_economic: bool = False,
     profile_binding: Optional[DatasetProfileBindingV1] = None,
+    step29l_instrument_admission_mode: str = (
+        STEP29L_INSTRUMENT_ADMISSION_LEGACY_RESEARCH_SINGLETON_V0
+    ),
 ) -> MV2WalkForwardWiringResultV1:
     """Run MV2 replay on OOS test windows only; train windows bind split contract only."""
     windows = bind_walk_forward_windows_v1(
@@ -3105,6 +3194,7 @@ def run_mv2_walk_forward_wiring_v1(
         "expected_implementation_digest": expected_implementation_digest,
         "explicit_zero_cost_non_economic": explicit_zero_cost_non_economic,
         "profile_binding": profile_binding,
+        "step29l_instrument_admission_mode": step29l_instrument_admission_mode,
     }
 
     window_results: list[MV2WalkForwardWindowResultV1] = []

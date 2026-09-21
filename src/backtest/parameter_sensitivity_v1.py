@@ -587,6 +587,7 @@ def _evaluate_split(
     split_name: str,
     parameter_set_id: str,
     explicit_zero_cost_non_economic: bool,
+    mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
 ) -> tuple[str, Mapping[str, float], str, str]:
     ref = f"{parameter_set_id}:{split_name}"
     if bars.empty or len(bars) < MIN_BARS_PER_SPLIT:
@@ -597,6 +598,7 @@ def _evaluate_split(
         cfg=cfg,
         instrument_id=instrument_id,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        **dict(mv2_wiring_extra_kwargs or {}),
     )
     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring.backtest_result)
     cost_ref = wiring.effective_cost_config.cost_model_version
@@ -614,6 +616,7 @@ def _evaluate_parameter_point_v1(
     instrument_id: str,
     data_digest: str,
     explicit_zero_cost_non_economic: bool,
+    mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
 ) -> ParameterSensitivityPointV1:
     parameter_set_id = _stable_digest(
         {"grid_digest": grid.grid_digest, "parameter_values": dict(parameter_values)}
@@ -632,6 +635,7 @@ def _evaluate_parameter_point_v1(
             split_name="train",
             parameter_set_id=parameter_set_id,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+            mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
         )
         val_ref, val_stats, _, _ = _evaluate_split(
             bars=validation,
@@ -641,6 +645,7 @@ def _evaluate_parameter_point_v1(
             split_name="validation",
             parameter_set_id=parameter_set_id,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+            mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
         )
         oos_ref, oos_stats, _, _ = _evaluate_split(
             bars=oos,
@@ -650,6 +655,7 @@ def _evaluate_parameter_point_v1(
             split_name="out_of_sample",
             parameter_set_id=parameter_set_id,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+            mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
         )
         evaluation_status = EvaluationStatus.EVALUATED
         metric_stats = oos_stats
@@ -724,6 +730,7 @@ def run_parameter_sensitivity_v1(
     instrument_id: str = mv2_wiring.MV2_REQUIRED_INSTRUMENT_ID,
     explicit_zero_cost_non_economic: bool = False,
     policy: EconomicValidityPolicyV1 | None = None,
+    mv2_wiring_extra_kwargs: Mapping[str, Any] | None = None,
 ) -> ParameterSensitivityResultV1:
     _reject_forbidden_instrument(instrument_id)
     if bars.empty:
@@ -764,6 +771,7 @@ def run_parameter_sensitivity_v1(
             instrument_id=instrument_id,
             data_digest=data_digest,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+            mv2_wiring_extra_kwargs=mv2_wiring_extra_kwargs,
         )
         points.append(point)
         if point.evaluation_status is EvaluationStatus.FAILED:

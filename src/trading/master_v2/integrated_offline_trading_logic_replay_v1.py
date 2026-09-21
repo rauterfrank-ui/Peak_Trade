@@ -343,6 +343,8 @@ class IntegratedOfflineReplayInputV1:
     # Optional explicit path for EVIDENCE_ONLY regime/bull-bear/switch capture.
     # Never a trading state root; unused by decision evaluation.
     regime_bull_bear_switch_evidence_path: Optional[str] = None
+    # CURRENT instrument dynamic boundary state file (CRS/COI); non-authorizing wiring only.
+    current_instrument_capital_risk_sizing_boundary_state_file: Optional[Any] = None
     # EXPLICIT_INJECTION preserves fixture DI. REGISTRY_DERIVED enforces catalog identity.
     strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
     registry_snapshot_digest: str = ""
@@ -1967,11 +1969,30 @@ def run_integrated_offline_trading_logic_replay_v1(
         reference_price=reference_price,
         adverse_exit_distance=inp.adverse_exit_distance,
     )
-    capital_context = _crs_binding.default_offline_replay_capital_context_v0(
-        instrument_id=inp.instrument_id,
-        reference_price=reference_price,
-        protective_stop_price=protective_stop_price,
-    )
+    _boundary_sf = inp.current_instrument_capital_risk_sizing_boundary_state_file
+    if _boundary_sf is not None and getattr(
+        _boundary_sf, "dynamic_price_context_binding_ref", None
+    ):
+        from trading.master_v2.mv2_offline_boundary_dynamic_price_context_v1 import (
+            build_mv2_dynamic_boundary_capital_context_v1,
+            build_mv2_offline_boundary_dynamic_price_context_v1,
+        )
+
+        dynamic_price = build_mv2_offline_boundary_dynamic_price_context_v1(
+            mark_price=reference_price,
+            selected_side=str(evidence.selected_side),
+            adverse_exit_distance=inp.adverse_exit_distance,
+        )
+        capital_context = build_mv2_dynamic_boundary_capital_context_v1(
+            state_file=_boundary_sf,
+            dynamic_price_context=dynamic_price,
+        )
+    else:
+        capital_context = _crs_binding.default_offline_replay_capital_context_v0(
+            instrument_id=inp.instrument_id,
+            reference_price=reference_price,
+            protective_stop_price=protective_stop_price,
+        )
     sizing_binding = _crs_binding.bind_capital_risk_sizing_offline_replay_evidence_v0(
         evidence,
         capital_context=capital_context,
