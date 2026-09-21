@@ -42,19 +42,30 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.p1_negativ
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_CURRENCY_WITNESS_PACK = (
+    REPO_ROOT
+    / "evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z"
+)
 
 
 def _sealed_evidence() -> P1SealedWitnessEvidenceV1:
     return load_sealed_p1_witness_evidence_v1(repo_root=REPO_ROOT)
 
 
+def _currency_witness_pack_present() -> bool:
+    return (_CURRENCY_WITNESS_PACK / "MANIFEST.sha256").is_file()
+
+
 def test_sealed_currency_domain_witness_rejects_usdc_alone() -> None:
     evidence = _sealed_evidence()
-    assert evidence.campaign_witness == {} or isinstance(evidence.campaign_witness, dict)
     result = evaluate_currency_domain_witness_v1(evidence)
-    assert result.complete is False
-    assert result.status == WITNESS_INCOMPLETE
-    assert result.network_required is True
+    if _currency_witness_pack_present():
+        assert result.complete is True
+        assert result.status == WITNESS_COMPLETE
+    else:
+        assert result.complete is False
+        assert result.status == WITNESS_INCOMPLETE
+        assert result.network_required is True
 
 
 def test_liability_event_class_witness_governance_blocker() -> None:
@@ -104,11 +115,15 @@ def test_sealed_witness_bundle_validate_and_digest_stable() -> None:
     assert len(digest_a) == 64
 
 
-def test_sealed_bundle_first_blocker_is_currency_domain() -> None:
+def test_sealed_bundle_first_blocker_follows_root_order() -> None:
     bundle = evaluate_sealed_p1_completeness_witness_bundle_v1(repo_root=REPO_ROOT)
     root_id, blocker_class, missing = first_real_blocker_from_bundle_v1(bundle)
-    assert root_id == ROOT_CURRENCY_DOMAIN
-    assert blocker_class != "NONE"
+    if _currency_witness_pack_present():
+        assert root_id == ROOT_LIABILITY_EVENT_CLASS
+        assert blocker_class == BLOCKER_GOVERNANCE
+    else:
+        assert root_id == ROOT_CURRENCY_DOMAIN
+        assert blocker_class != "NONE"
     assert missing != ""
 
 
@@ -120,7 +135,10 @@ def test_p1_conjunction_stays_unknown_on_sealed_evidence() -> None:
 def test_6665_consumer_sealed_closeout_still_unknown() -> None:
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
     assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
-    assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
+    if _currency_witness_pack_present():
+        assert evaluation.first_missing_completeness_predicate == REQUIREMENT_LIABILITY_EVENT_CLASS
+    else:
+        assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
 
 
 def test_event_ordering_witness_fail_closed_on_zero_rows() -> None:
@@ -176,6 +194,7 @@ def test_closeout_missing_set_includes_liability_class() -> None:
 def test_campaign_witness_currency_incomplete_with_explicit_missing_fact() -> None:
     evidence = replace(
         _sealed_evidence(),
+        currency_domain_witness={},
         campaign_witness={
             "APPLICABLE_LOAN_CURRENCY_DOMAIN_EXHAUSTION_PROVEN": "false",
             "CURRENCY_DOMAIN_MISSING_FACT": "TEST_MISSING_FACT",

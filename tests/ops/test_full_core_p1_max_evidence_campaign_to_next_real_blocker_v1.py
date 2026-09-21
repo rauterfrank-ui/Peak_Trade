@@ -9,6 +9,8 @@ import pytest
 
 from src.ops.governed_productive_account_equity_authority_producer_v1.p1_max_evidence_campaign_to_next_real_blocker_v1 import (
     AUTHORIZED_QUERY,
+    CANONICAL_PACK_AS_OF_FOLDER,
+    CANONICAL_PACK_RELPATH,
     EXPECTED_ORIGIN_MAIN_SHA,
     MAX_AUTHORIZED_GET_COUNT,
     OWNER_GO,

@@ -47,6 +47,9 @@ CANONICAL_U01_PACK = (
 CANONICAL_P1_MAX_EVIDENCE_CAMPAIGN_PACK = (
     "evidence/ops/full_core_p1_max_evidence_campaign_to_next_real_blocker_v1/2026-09-21T020000Z"
 )
+CANONICAL_P1_CURRENCY_DOMAIN_WITNESS_PACK = (
+    "evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z"
+)
 
 SCHEMA_CLASS = "P1_COMPLETENESS_WITNESS_FOUNDATION_V1"
 CONTRACT_VERSION = "v1"
@@ -132,6 +135,7 @@ class P1SealedWitnessEvidenceV1:
     d5_event_completeness_from_window: str
     d5_binding_present: bool
     campaign_witness: Mapping[str, Any]
+    currency_domain_witness: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -201,6 +205,28 @@ def _derived_eval(
 def evaluate_currency_domain_witness_v1(
     evidence: P1SealedWitnessEvidenceV1,
 ) -> P1RootWitnessEvaluationV1:
+    currency_witness = evidence.currency_domain_witness
+    if currency_witness and _as_bool_token(
+        currency_witness.get("P1_CURRENCY_DOMAIN_COMPLETENESS_PROVEN")
+    ):
+        return _root_eval(
+            root_id=ROOT_CURRENCY_DOMAIN,
+            status=WITNESS_COMPLETE,
+            detail=(
+                "P1 currency-domain completeness witness: closed-world enumeration "
+                "and interest-accrued exhaustion proven"
+            ),
+        )
+    if currency_witness:
+        missing = str(currency_witness.get("CURRENCY_DOMAIN_MISSING_FACT", ""))
+        return _root_eval(
+            root_id=ROOT_CURRENCY_DOMAIN,
+            status=WITNESS_INCOMPLETE,
+            blocker_class=BLOCKER_EVIDENCE,
+            missing_evidence="P1_CURRENCY_DOMAIN_COMPLETENESS_WITNESS_V1",
+            detail=missing or "Currency-domain witness adjudication incomplete",
+            network_required=True,
+        )
     campaign = evidence.campaign_witness
     if campaign and _as_bool_token(
         campaign.get("APPLICABLE_LOAN_CURRENCY_DOMAIN_EXHAUSTION_PROVEN")
@@ -536,6 +562,14 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         if verify_manifest_sha256_v1(store_root=campaign_pack) == 0:
             campaign_witness = _read_json(campaign_witness_path)
 
+    currency_domain_witness: dict[str, Any] = {}
+    currency_pack = root / CANONICAL_P1_CURRENCY_DOMAIN_WITNESS_PACK
+    currency_witness_path = currency_pack / "p1_currency_domain_witness_adjudication_v1.json"
+    currency_manifest_path = currency_pack / "MANIFEST.sha256"
+    if currency_witness_path.is_file() and currency_manifest_path.is_file():
+        if verify_manifest_sha256_v1(store_root=currency_pack) == 0:
+            currency_domain_witness = _read_json(currency_witness_path)
+
     return P1SealedWitnessEvidenceV1(
         cd_claims=_read_json(root / CANONICAL_CD_PACK / "claims.json"),
         usdc_claims=_read_json(usdc_pack / "claims.json"),
@@ -548,6 +582,7 @@ def load_sealed_p1_witness_evidence_v1(*, repo_root: Path | str) -> P1SealedWitn
         d5_event_completeness_from_window=d5_event_completeness,
         d5_binding_present=d5_present,
         campaign_witness=campaign_witness,
+        currency_domain_witness=currency_domain_witness,
     )
 
 
