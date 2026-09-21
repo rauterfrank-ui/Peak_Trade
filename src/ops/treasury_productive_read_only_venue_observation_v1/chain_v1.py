@@ -90,6 +90,15 @@ def execute_treasury_productive_reconciliation_chain_v1(
             "reason_codes": list(host_eval.reason_codes),
         },
         "RISK_ADMISSION_BINDING_STATUS": "NO_RISK_ADMISSIBLE_MINT",
+        "C08_SIZING_SOURCE_BINDING": {
+            "binding_implemented": productive_host.c08_sizing_source_binding.c08_binding_implemented,
+            "base_candidate_created": (
+                productive_host.c08_sizing_source_binding.base_candidate_created
+            ),
+            "risk_admissible": productive_host.c08_sizing_source_binding.risk_admissible,
+            "sizing_increase": productive_host.c08_sizing_source_binding.sizing_increase,
+            "fail_closed": productive_host.c08_sizing_source_binding.fail_closed,
+        },
         "EARLIEST_NEW_REAL_BLOCKER": EARLIEST_NEW_REAL_BLOCKER_AFTER_WP,
         "TREASURY_INTERFERENCE_PROOF": interference.get("TREASURY_INTERFERENCE_PROOF"),
     }

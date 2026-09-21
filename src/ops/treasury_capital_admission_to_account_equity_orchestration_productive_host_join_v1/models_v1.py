@@ -8,6 +8,9 @@ from typing import Tuple
 from src.ops.treasury_capital_admission_to_account_equity_orchestration_v1.models_v1 import (
     TreasuryAccountEquityOrchestrationJoinV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_models_v1 import (
+    C08ProductiveSizingSourceBindingV1,
+)
 from src.ops.treasury_phase_2_read_only_reconciliation_v1.models_v1 import (
     TreasuryCapitalAdmissionJoinV1,
 )
@@ -39,4 +42,5 @@ class TreasuryE4ProductiveHostJoinResultV1:
     treasury_join: TreasuryCapitalAdmissionJoinV1
     orchestration_join: TreasuryAccountEquityOrchestrationJoinV1
     host_evaluation: ProductiveHostTreasuryCapitalAdmissionEvaluationV1
+    c08_sizing_source_binding: C08ProductiveSizingSourceBindingV1
     join_seam_id: str
