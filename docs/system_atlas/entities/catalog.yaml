@@ -9393,6 +9393,26 @@ entities:
       into governed productive account-equity host evaluation. Transport only; no
       sizing or risk-admissible mint. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1
+    kind: RUNTIME_COMPONENT
+    name: C08 treasury capital semantic authority closeout contract v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_C08_SEMANTIC_AUTHORITY_CLOSEOUT_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1.py
+    source_symbols:
+      - build_c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1
+      - c08_adversarial_semantic_matrix_v1
+    evidence_sources:
+      - docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md
+      - tests/ops/test_c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_v1.py
+    notes: >-
+      Semantic closeout for census candidate C08 before productive AVAILABLE_FOR_SIZING
+      BASE binding. Splits OBSERVED, RECONCILED, and RISK_ADMISSIBLE; no runtime wiring.
+      ATLAS_AUTHORITY=NONE.
+
   - id: DATA_CONTRACT:account_equity_orchestration_ingress_v1
     kind: DATA_CONTRACT
     name: Account-equity orchestration ingress v1

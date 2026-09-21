@@ -46,7 +46,10 @@ C01_C16_FINGERPRINTS: Mapping[str, str] = {
     "C07_FUNDING_ACCOUNT_BALANCE_OBSERVATION": (
         "FundingAccountBalanceObservationV1 asset/balances"
     ),
-    "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL": "treasury OBSERVED/RECONCILED capital",
+    "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL": (
+        "treasury capital census label; semantic split OBSERVED vs RECONCILED vs "
+        "RISK_ADMISSIBLE in C08_SEMANTIC_AUTHORITY_CLOSEOUT_V1; not merged sizing authority"
+    ),
     "C09_CAP11_3_FIXTURE_PRIVATE_ACCOUNT_STATE": "PrivateAccountStateSnapshotV1 fixture",
     "C10_LEDGER_SNAPSHOT_EQUITY_BY_CCY": "LedgerSnapshot.equity_by_ccy",
     "C11_CAP31_PRODUCTIVE_FUTURES_ACCOUNTING": "productive_futures_accounting kernel",
