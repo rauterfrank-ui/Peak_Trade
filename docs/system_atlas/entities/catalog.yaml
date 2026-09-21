@@ -6294,8 +6294,27 @@ entities:
     module_role: readmodels_manifest_coherence
     modified_by: PHASE_V_MANIFEST_COHERENCE_D4_REGEN_AND_ACCEPTANCE_RECOVERY_V1
     source_paths:
+      - src/ops/archive_sibling_export_contract_v1/__init__.py
+      - src/ops/archive_sibling_export_contract_v1/contracts.py
       - src/ops/archive_sibling_export_contract_v1/manifest_finalize_v1.py
+      - src/ops/canonical_decision_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/dynamic_scope_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/economic_summary_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/execution_reconciliation_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/presentation_projection_octet_orchestrator_v1/orchestrator_v1.py
+      - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/exporter_v1.py
+      - src/ops/safety_authority_archive_sibling_exporter_v1/exporter_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/bull_bear_regime_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/canonical_decision_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/double_play_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/dynamic_scope_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/economic_summary_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/execution_reconciliation_presentation_projection_materializer_v1.py
       - src/webui/workflow_dashboard_readmodel_v1/readmodels_manifest_coherence_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/risk_sizing_capital_presentation_projection_materializer_v1.py
+      - src/webui/workflow_dashboard_readmodel_v1/safety_authority_presentation_projection_materializer_v1.py
       - scripts/ops/primary_evidence_retention_v0.py
     evidence_sources:
       - docs/ops/market_dashboard/phase_v_manifest_coherence_recovery_v1/REGENERATION_VERIFY.json
