@@ -1398,9 +1398,13 @@ entities:
       merge, borrow, or fall back across ranking universes. Atlas is not
       runtime authority. ATLAS_AUTHORITY=NONE.
 
+  # ATLAS_AUTHORITY=NONE — post-selection STEP29M dynamic binding (Cap 2.3 consumer)
   - id: CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1
     kind: CONTRACT
     name: STEP29M current single selected future dynamic binding v1
+    atlas_review_note: >-
+      STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1;
+      evaluation template binds mandatory MV2 boundary state files. ATLAS_AUTHORITY=NONE.
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
@@ -1408,6 +1412,7 @@ entities:
     authority_sources: []
     evidence_sources:
       - config/governance/step29m_current_single_selected_future_dynamic_binding_v1.json
+      - config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json
       - src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py
       - tests/backtest/test_step29m_current_single_selected_future_dynamic_binding_v1.py
     notes: >-
@@ -1415,6 +1420,12 @@ entities:
       evaluation-config overlay. Consumes Cap 2.3 persisted
       single_selected_future_selection_v1.json only; does not read ranking or
       universe snapshots; no rerank/reselect/fallback instrument paths.
+      Evaluation template
+      config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json
+      includes mv2_research_backtest_mandatory_boundary_state_file_binding_v0
+      (canonical MV2 backtest boundary state files under
+      config/research/mv2_backtest_mandatory_boundary_state_files_v0/) for
+      offline mv2_decision_replay_series evidence wiring; no runtime authority.
       OKX futures public dataset ingest may bind via the same resolver when
       --selection-state-root is supplied; ingest does not gain selection
       authority. Authority order preserved: ranking/universe → Cap 2.3

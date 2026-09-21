@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1`.
 
 ## Workflow
 
@@ -40,8 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNBOOK:canonical_master_runbook` |
-| `NAVIGATION_INDEX:map_of_truth` |
+| `CONTRACT:step29m_current_single_selected_future_dynamic_binding_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Docs-only SSOT rebind and offline-domain boundary registration in Master Runbook plus Map of Truth navigation pointers. No runtime, trading, selection, promotion, or live authority. Atlas is not canonical authority.
-- introduced_by=MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
-- modified_by=MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+- STEP29M evaluation template binds canonical mandatory MV2 backtest boundary state-file section for offline economic_viability_evidence_v1 MV2 replay wiring. Navigation-only Atlas record; no runtime, trading, selection, promotion, or live authority. ATLAS_AUTHORITY=NONE.
+- introduced_by=STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
+- modified_by=STEP29M_EVALUATION_TEMPLATE_MV2_MANDATORY_BOUNDARY_BINDING_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
