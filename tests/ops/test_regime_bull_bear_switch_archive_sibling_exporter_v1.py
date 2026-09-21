@@ -233,8 +233,7 @@ def test_family_export_regime_does_not_break_double_play_hard_stop(tmp_path: Pat
     assert rg.materialized is True
     assert rg.loader_ok is True
     assert (
-        families_ok["double_play"].error_code
-        == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
+        families_ok["double_play"].error_code == "DOUBLE_PLAY_CANONICAL_DISPLAY_INPUTS_INCOMPLETE"
     )
 
 

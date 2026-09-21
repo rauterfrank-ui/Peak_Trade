@@ -6197,6 +6197,7 @@ entities:
     current_status: CURRENT_NONCANONICAL
     module_role: archive_sibling_export
     source_paths:
+      - src/ops/double_play_archive_sibling_exporter_v1/__init__.py
       - src/ops/double_play_archive_sibling_exporter_v1/constants_v1.py
       - src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py
       - src/ops/double_play_archive_sibling_exporter_v1/replay_commit_source_v1.py
