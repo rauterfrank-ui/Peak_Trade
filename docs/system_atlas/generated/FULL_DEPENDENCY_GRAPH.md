@@ -524,6 +524,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `GATE:full_core_capital_admission_v1`
 - transitive_downstream: `GATE:full_core_capital_admission_v1`
 
+### RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1
+
+- direct_upstream: `GATE:treasury_phase_2_read_only_reconciliation_v1`
+- transitive_upstream: `GATE:full_core_capital_admission_v1, GATE:full_core_durable_filegate_join_v1, GATE:full_core_fresh_pretrade_runtime_get_v1, GATE:full_core_live_account_bound_v1, GATE:full_core_owner_one_shot_permit_v1, GATE:kill_switch_durable_filegate_v1, GATE:treasury_phase_2_read_only_reconciliation_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1`
