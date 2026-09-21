@@ -6294,6 +6294,7 @@ entities:
     module_role: archive_sibling_export
     modified_by: D4_1_RISK_SIZING_CAPITAL_ARCHIVE_SIBLING_EXPORT_AND_PRESENTATION_WITNESS_V1
     source_paths:
+      - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/__init__.py
       - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/constants_v1.py
       - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/exporter_v1.py
       - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/replay_commit_source_v1.py
