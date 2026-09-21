@@ -54,3 +54,13 @@
   1. `SCRIPT:run_gfu_producer` -> `CAPABILITY:cap_2_1_gfu` gate=`GATE:btc_exclusion` fail=`fail-closed eligibility reject`
   2. `CAPABILITY:cap_2_1_gfu` -> `RUNTIME_COMPONENT:gfu_eligibility` gate=`INVARIANT:missing_metadata_never_defaulted` fail=`MISSING_QUOTE_CURRENCY &#47; exclusion codes`
 
+### EP:landscape_dashboard_persistent_local_host_v1 — Landscape Dashboard V2 persistent loopback host
+
+- path: `scripts/webui/landscape_dashboard_persistent_local_host.sh`
+- class: `OPERATOR_LOCAL_LOOPBACK_SERVICE`
+- epistemic: `STATUS=FORENSIC_RAW`
+- network: `loopback_http_only_127_0_0_1_8765`
+- evidence: `docs/webui/LANDSCAPE_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md`
+
+  1. `OPERATOR` -> `RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1` gate=`GATE:localhost_only` fail=`refuse non-loopback bind`
+
