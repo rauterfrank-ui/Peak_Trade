@@ -2,27 +2,26 @@
 # Committed snapshot for generated ATLAS_CHANGE_IMPACT.md.
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
-pending_change: false
-introduced_by: D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1
-modified_by: D3_REMAINING_COMPLETION_BOUNDED_WORKPACKAGE_V1
+pending_change: true
+introduced_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  D3 remaining completion: one governed OKX universe refresh replay on the D3.1/D3.2
-  pinned archive root to restore readmodels MANIFEST.sha256 integrity after D3.2
-  presentation materialization; consumer bind re-proven for Universe/Ranking and
-  Market Identity alongside already-fresh Dynamic Scope and Canonical Decision.
-  No D3.2 smoke repeat. Atlas is not canonical authority.
+  Docs-only SSOT rebind and offline-domain boundary registration in Master
+  Runbook plus Map of Truth navigation pointers. No runtime, trading,
+  selection, promotion, or live authority. Atlas is not canonical authority.
 changed_entities:
-  - RUNTIME_COMPONENT:d3_remaining_completion_bounded_workpackage_v1
+  - RUNBOOK:canonical_master_runbook
+  - NAVIGATION_INDEX:map_of_truth
 changed_relations: []
 new_relations: []
 removed_relations: []
 affected_dependency_closures: []
 affected_okx_surfaces: []
 affected_safety_surfaces: []
-affected_schemas:
-  - DATA_CONTRACT:universe_selection_readmodel_v1
+affected_schemas: []
 review_required_items: []
 reviewed_entities:
-  - id: RUNTIME_COMPONENT:d3_remaining_completion_bounded_workpackage_v1
+  - id: RUNBOOK:canonical_master_runbook
+  - id: NAVIGATION_INDEX:map_of_truth

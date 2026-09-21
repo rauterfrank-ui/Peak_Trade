@@ -69,18 +69,16 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
-    # CURRENT-only operational SSOT rewrite (PR #6583): development chronology
-    # removed from SSOT; Clean Trading Core CLOSED; Atlas impact review for
-    # docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md path coupling.
-    # Treasury earliest blocker remainder navigation: U04/P01 eligibility bound;
-    # next TRUSTED_29P_PRETRADE_AND_EXTERNAL_EFFECT_OWNER_GOS.
-    # ATLAS_AUTHORITY=NONE; RUNTIME_AUTHORIZATION_EFFECT=NONE
+    # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
+    # BOUND_ORIGIN_MAIN_SHA rebound to origin/main 0ceb48d; CURRENT section
+    # registers Learning/DDO, STEP29M, Optimization Universe boundaries only.
+    # ATLAS_AUTHORITY=NONE; no new runtime/trading authority.
     kind: RUNBOOK
     name: Peak_Trade Master Runbook
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -96,21 +94,22 @@ entities:
       stateful_no_order_host_join_v1, send_capable_adapter_v1,
       full_core_live_path_authority_v1, and
       governed_continuous_cycle_orchestrator_v1. Standing LIVE_* predicates
-      do not imply EXTERNAL_EFFECT or venue POST. Atlas is not canonical
-      authority and not runtime authority.
+      do not imply EXTERNAL_EFFECT or venue POST. BOUND_ORIGIN_MAIN_SHA tracks
+      revalidated origin/main head. Separate CURRENT boundaries document
+      Learning/DDO, STEP29M, and Optimization Universe with authority NONE.
+      Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
-    # CURRENT-only Master Runbook navigation sync (PR #6583): Map of Truth is
-    # navigation-only against the rewritten CURRENT operational SSOT.
-    # MAP_OF_TRUTH_AUTHORITY=NONE; MAP_OF_TRUTH_SEMANTIC_AUTHORITY_EFFECT=NONE;
-    # ATLAS_AUTHORITY=NONE; MOT not SSOT
+    # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
+    # navigation row for offline authority boundaries; MOT remains
+    # MAP_OF_TRUTH_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: PENDING_CHANGE
+    modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
