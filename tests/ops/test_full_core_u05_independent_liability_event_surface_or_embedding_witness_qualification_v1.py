@@ -380,5 +380,5 @@ def test_runbook_cc_persists_pre_acquisition_binding() -> None:
     assert WIRE_SEND_PERMITTED is True
     assert MS2_AUTHORIZED is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )

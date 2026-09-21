@@ -39,6 +39,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bj_future_
     TARGET_U06,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL,
     AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT,
     C17_CREATED,
@@ -277,6 +278,8 @@ def _assert_standing_pins() -> None:
         raise U05LegacyProofRetirementAndCanonicalReplacementError("KIND_SET_RESOLVED_NOT_FALSE")
     if RATIFIED_CLASSIFIED_KIND_SET:
         raise U05LegacyProofRetirementAndCanonicalReplacementError("KIND_SET_MUST_REMAIN_EMPTY")
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise U05LegacyProofRetirementAndCanonicalReplacementError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise U05LegacyProofRetirementAndCanonicalReplacementError("MAPPING_MUST_REMAIN_INVALID")
     if MAPPING_PROVEN is not False:

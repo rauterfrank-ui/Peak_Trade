@@ -66,6 +66,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_TOTAL_EQ_VERDICT,
     CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_U04_APPLICATION,
     CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_MODEL_VERSION,
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     CURRENT_PRODUCTIVE_ARCHITECTURE_IS_NOT_HISTORICAL_RECONSTRUCTION,
     CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED,
     CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_OUTPUT_CLASS,
@@ -809,6 +810,10 @@ def bind_step_29p_typed_equity_from_risk_capital_v1(
 
 
 def _assert_standing_pins() -> None:
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise CurrentProductive29PRiskCapitalModelError(
+            "MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN"
+        )
     if CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED is not True:
         raise CurrentProductive29PRiskCapitalModelError("ARCHITECTURE_NOT_RATIFIED")
     if CURRENT_PRODUCTIVE_ARCHITECTURE_IS_NOT_HISTORICAL_RECONSTRUCTION is not True:
@@ -897,7 +902,12 @@ def _assert_standing_pins() -> None:
         raise CurrentProductive29PRiskCapitalModelError("U06_UPLIFT")
     if STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER is not True:
         raise CurrentProductive29PRiskCapitalModelError("29P_MUST_NOT_OWN_EQUITY_AUTHORITY")
-    if DAG_PIN != "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING":
+    expected_dag_pin = (
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
+        if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True
+        else "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+    )
+    if DAG_PIN != expected_dag_pin:
         raise CurrentProductive29PRiskCapitalModelError("DAG_PIN_DRIFT")
     reject_legacy_reconstruction_as_live_requirement_v1(claimed="false")
     reject_eq_as_source_authority_v1(claimed="false")

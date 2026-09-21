@@ -117,10 +117,12 @@ def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> N
     assert PRODUCER_IMPLEMENTATION_PRESENT is False
     assert GOVERNED_PRODUCER_CREATED is False
     assert GOVERNED_PRODUCTIVE_SOURCE_PRESENT is False
-    assert RUNNING_EQUITY_SOURCE_OBJECT == "NONE"
+    assert RUNNING_EQUITY_SOURCE_OBJECT == (
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1"
+    )
     assert SOURCE_SELECTED is False
-    assert MAPPING_PROVEN is False
-    assert IMPLEMENTATION_OF_VALUE_BINDING is False
+    assert MAPPING_PROVEN is True
+    assert IMPLEMENTATION_OF_VALUE_BINDING is True
     assert RUNTIME_VALUE_BINDING_PRESENT is False
     assert LIVE_ACCOUNT_BOUND_JOIN_PRESENT is False
     assert ARCHITECTURE_RATIFIED is True
@@ -129,7 +131,7 @@ def test_owner_assigned_to_empty_governed_slot_without_source_or_producer() -> N
     assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == ASSIGNED_OWNER
     assert dag["ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS"] == ACCOUNT_EQUITY_AUTHORITY_OWNER_CLASS
     assert dag["SOURCE_SELECTED"] is False
-    assert dag["MAPPING_PROVEN"] is False
+    assert dag["MAPPING_PROVEN"] is True
     assert dag["GOVERNED_PRODUCTIVE_SOURCE_PRESENT"] is False
 
 
@@ -264,9 +266,9 @@ def test_c01_c16_not_elevated_and_forbidden_fields_deny() -> None:
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER not in _CENSUS_IDS
     assert C01_C16_REMAIN_REJECTED is True
     assert STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER is True
-    assert ADJUDICATION_RESULT == "NO_CANONICALLY_VALID_MAPPING_AVAILABLE"
+    assert ADJUDICATION_RESULT == "CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSED"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     capital = _capital()
     for field in _FORBIDDEN_EQUITY_FIELDS:

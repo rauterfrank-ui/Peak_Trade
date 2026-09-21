@@ -22,6 +22,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.bound_acco
     require_bound_account_identity_ref_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
     AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT,
     C17_CREATED,
@@ -264,6 +265,8 @@ def _assert_shared_pins() -> None:
         raise ClassifiedEventKindSetAndSourceSeamContractError("RAW_EQ_SOURCE_AUTHORITY_NOT_FALSE")
     if SOURCE_SELECTED is not False:
         raise ClassifiedEventKindSetAndSourceSeamContractError("SOURCE_SELECTED_NOT_FALSE")
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise ClassifiedEventKindSetAndSourceSeamContractError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise ClassifiedEventKindSetAndSourceSeamContractError("MAPPING_PROVEN_NOT_FALSE")
     if C17_CREATED is not False:

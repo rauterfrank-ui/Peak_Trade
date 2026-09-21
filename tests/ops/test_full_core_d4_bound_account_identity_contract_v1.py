@@ -351,7 +351,7 @@ def test_c01_c16_remain_fenced_and_no_source_or_engine() -> None:
     )
     assert EARLIEST_OPTION_D_DEPENDENCY == "D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()

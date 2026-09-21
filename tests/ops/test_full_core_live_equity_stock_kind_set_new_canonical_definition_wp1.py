@@ -426,7 +426,7 @@ def test_execute_persists_empty_kind_set_and_protected_surfaces(tmp_path: Path) 
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     store = Path(result.store_root)
     assert verify_manifest_sha256_v1(store_root=store) == 0

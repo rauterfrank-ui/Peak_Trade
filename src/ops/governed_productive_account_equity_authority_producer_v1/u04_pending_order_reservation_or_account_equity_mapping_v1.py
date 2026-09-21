@@ -38,6 +38,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.classified
     DISPOSITION_NOT_EQUITY_STOCK,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL,
     ACCOUNT_EQUITY_SOURCE_MAPPING_DENIED_THIS_WORKPACKAGE,
     AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT,
@@ -329,6 +330,8 @@ def _assert_standing_pins() -> None:
         raise U04PendingOrderReservationOrAccountEquityMappingError("KIND_SET_RESOLVED_NOT_FALSE")
     if RATIFIED_CLASSIFIED_KIND_SET:
         raise U04PendingOrderReservationOrAccountEquityMappingError("KIND_SET_MUST_REMAIN_EMPTY")
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise U04PendingOrderReservationOrAccountEquityMappingError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise U04PendingOrderReservationOrAccountEquityMappingError("MAPPING_MUST_REMAIN_INVALID")
     if MAPPING_PROVEN is not False:

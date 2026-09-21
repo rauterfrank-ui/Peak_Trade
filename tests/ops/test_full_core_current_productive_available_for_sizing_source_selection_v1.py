@@ -143,8 +143,8 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert WIRE_SEND_PERMITTED is True
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
-    assert MAPPING_PROVEN is False
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+    assert MAPPING_PROVEN is True
     assert KIND_SET_RESOLVED is False
     assert KIND_SET_UPLIFT_THIS_WORKPACKAGE is False
     assert SOURCE_SELECTED is False
@@ -179,7 +179,7 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert U05_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert U06_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
 
 

@@ -78,7 +78,7 @@ def test_permit_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("OWNER_ONE_SHOT_EXECUTION_PERMIT")

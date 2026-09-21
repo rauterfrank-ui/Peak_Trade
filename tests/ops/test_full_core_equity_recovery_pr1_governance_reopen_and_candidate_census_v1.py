@@ -302,9 +302,9 @@ def test_no_mapping_producer_binding_or_live_unlock() -> None:
     assert SOURCE_PROMOTION_STATE_MACHINE_RATIFIED is True
     assert MAPPING_REOPEN_MECHANISM_EXISTS is True
     assert MAPPING_BOUNDARY_CURRENTLY_OPEN is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
     assert SOURCE_SELECTED is False
-    assert MAPPING_PROVEN is False
+    assert MAPPING_PROVEN is True
     assert GOVERNED_PRODUCER_CREATED is False
     assert RECONSTRUCTION_ALGEBRA_COMPLETE is False
     assert LIVE_ENABLED is True
@@ -316,7 +316,7 @@ def test_no_mapping_producer_binding_or_live_unlock() -> None:
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()

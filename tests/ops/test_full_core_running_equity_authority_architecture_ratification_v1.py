@@ -162,7 +162,7 @@ def test_firewall_observation_identity_and_consumer_remain_separated() -> None:
     assert LIVE_ACCOUNT_BOUND_JOIN_PRESENT is False
     assert LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     dag = live_admission_gap_dag_v1()
     assert dag["OBSERVATION_IS_NOT_AUTHORITY"] is True

@@ -320,7 +320,7 @@ def test_a1_crash_durability_remains_unproven() -> None:
 
 def test_full_core_29p_authority_remains_unchanged() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
     assert CANARY_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False

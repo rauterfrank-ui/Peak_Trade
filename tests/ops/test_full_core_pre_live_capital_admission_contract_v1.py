@@ -138,7 +138,7 @@ def test_flags_and_standing_gates_remain_false() -> None:
     assert FULL_CORE_OFFLINE_E2E_PROVEN is True
     assert FULL_CORE_SYSTEM_E2E_PROVEN is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     node = gap_node_v1("CAPITAL_ADMISSION")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"

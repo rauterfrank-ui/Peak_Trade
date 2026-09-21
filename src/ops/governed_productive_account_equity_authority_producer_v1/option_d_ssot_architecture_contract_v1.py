@@ -16,6 +16,7 @@ from dataclasses import dataclass
 from typing import Any, Mapping, Tuple
 
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     ACCOUNT_EQUITY_AUTHORITY_OWNER,
     CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING,
     C17_CREATED,
@@ -209,6 +210,8 @@ def build_option_d_ssot_architecture_contract_v1(
         raise OptionDSSOTArchitectureContractError("AUTHORITY_OWNER_MUTATED")
     if C17_CREATED is not False:
         raise OptionDSSOTArchitectureContractError("C17_CREATED_NOT_FALSE")
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise OptionDSSOTArchitectureContractError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise OptionDSSOTArchitectureContractError("MAPPING_PROVEN_NOT_FALSE")
     if SOURCE_SELECTED is not False:

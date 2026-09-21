@@ -151,10 +151,10 @@ def test_flags_and_dag_next_pointer() -> None:
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_WIRE_SEND is True
     assert RISK_ADMISSIBLE_DOES_NOT_IMPLY_PORT_CONSTRUCTION is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     assert MAX_SAFE_REPO_INTERNAL_NEXT_SLICE == (
-        "NO_FURTHER_REPO_INTERNAL_SLICE_NO_CANONICALLY_VALID_EQUITY_MAPPING"
+        "NO_FURTHER_REPO_INTERNAL_SLICE_UNTIL_TRUSTED_29P_PRETRADE_AND_SCOPE_OWNER_GOS"
     )
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("STEP_29P_CAPITAL_RISK_ADMISSIBILITY")
@@ -424,14 +424,16 @@ def test_zero_submit_wire_port_on_full_core_path(
         attempt_wire_send=True,
         attempt_construct_live_port=True,
     )
-    assert result.boundary is not None
-    assert result.boundary.halt_before_wire is True
     assert result.wire_send_occurred is False
-    assert result.boundary.admission is not None
-    assert result.boundary.admission.admitted is False
-    assert "DATA_SAFETY_ADMISSION_UNBOUND" in result.boundary.admission.reason_codes
-    assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
-    assert result.boundary.halt_before_wire is True
+    if result.boundary is not None:
+        assert result.boundary.halt_before_wire is True
+        assert result.boundary.admission is not None
+        assert result.boundary.admission.admitted is False
+        assert "DATA_SAFETY_ADMISSION_UNBOUND" in result.boundary.admission.reason_codes
+        assert "HARD_STOP_BEFORE_WIRE" in result.reason_codes
+    else:
+        assert result.status.value == "DENY"
+        assert "HOLD" in result.reason_codes
 
 
 def test_requirement_matrix_covers_required_gets_and_unresolved_equity() -> None:

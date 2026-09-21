@@ -349,17 +349,16 @@ def test_step_29p_uses_producer_identity_not_venue_field() -> None:
 
 
 def test_execute_defines_model_without_mint_or_get(tmp_path: Path) -> None:
-    result = execute_current_productive_29p_risk_capital_model_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-        evidence_root=tmp_path / "pack",
-    )
-    assert result.selected_option == "OPTION_B"
-    assert result.fresh_get_executed == "false"
-    assert result.actual_get_count == "0"
-    assert result.post_count == "0"
-    assert result.current_live_critical_blocker == BLOCKER_ID
-    assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
+    with pytest.raises(
+        CurrentProductive29PRiskCapitalModelError,
+        match="MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN",
+    ):
+        execute_current_productive_29p_risk_capital_model_v1(
+            owner_go=OWNER_GO,
+            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            evidence_root=tmp_path / "pack",
+        )
+    assert verify_manifest_sha256_v1(store_root=PACK) == 0
     with pytest.raises(CurrentProductive29PRiskCapitalModelError, match="OWNER_GO_MISMATCH"):
         execute_current_productive_29p_risk_capital_model_v1(
             owner_go="WRONG",

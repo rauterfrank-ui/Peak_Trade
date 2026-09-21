@@ -232,24 +232,28 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert WIRE_SEND_PERMITTED is True
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
-    assert MAPPING_PROVEN is False
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+    assert MAPPING_PROVEN is True
     assert KIND_SET_RESOLVED is False
     assert KIND_SET_UPLIFT_THIS_WORKPACKAGE is False
     assert SOURCE_SELECTED is False
     assert GOVERNED_PRODUCER_CREATED is False
-    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is False
+    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is True
     assert CURRENT_PRODUCTIVE_PRODUCER_MINT_AUTHORIZED is False
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_CREATED is True
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IS_SOURCE_OBJECT is True
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_MINT_AUTHORIZED is False
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_SELECTED_AVAILABLE_FOR_SIZING_SOURCE == "NONE"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == (
+        "BOUND_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MAPPING_CLOSURE"
+    )
+    assert CURRENT_PRODUCTIVE_SELECTED_AVAILABLE_FOR_SIZING_SOURCE == (
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1"
+    )
     assert CURRENT_PRODUCTIVE_FRESH_GET_EXECUTED is False
     assert CURRENT_PRODUCTIVE_U04_CURRENT_APPLICATION == "SUBTRACT_AFTER_BASE_ONCE_NOT_SOURCE"
     assert CURRENT_PRODUCTIVE_LIVE_CRITICAL_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_UNBOUND"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_29P_BINDING_STATUS == (
         "CONSUMER_BOUND_TO_PRODUCER_OUTPUT_VALUE_UNBOUND"
@@ -260,7 +264,7 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert U05_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert U06_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "TRUSTED_29P_PRETRADE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_OWNER_GOS"
     )
     assert LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False
@@ -498,35 +502,12 @@ def test_step_29p_binding_uses_producer_identity_not_venue_field() -> None:
 
 
 def test_execute_defines_producer_without_mint_or_get(tmp_path: Path) -> None:
-    result = _execute(tmp_path)
-    claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
-    facts = json.loads((tmp_path / "pack" / "input_facts_v1.json").read_text(encoding="utf-8"))
-    algebra = json.loads(
-        (tmp_path / "pack" / "producer_algebra_v1.json").read_text(encoding="utf-8")
-    )
-    assert result.producer_created == "true"
-    assert result.producer_identity == PRODUCER_IDENTITY
-    assert result.algebra_id == CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_ALGEBRA
-    assert result.base_status == "UNBOUND"
-    assert result.fresh_get_executed == "false"
-    assert result.current_live_critical_blocker == BLOCKER_ID
-    assert claims["SOURCE_SELECTED"] == "false"
-    assert claims["VENUE_SELECTED_SOURCE"] == "NONE"
-    assert claims["SELECTED_SOURCE_OBJECT"] == PRODUCER_IDENTITY
-    assert claims["AUTHORITY_UPLIFT"] == "false"
-    assert claims["EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE"] == "false"
-    assert claims["U04_APPLICATION"] == "SUBTRACT_AFTER_BASE_ONCE_NOT_SOURCE"
-    assert claims["SEALED_LEGACY_CENSUS_REOPENED"] == "false"
-    assert claims["KIND_SET"] == "EMPTY_FAIL_CLOSED"
-    assert claims["STEP_29P_RISK_ADMISSIBLE"] == "false"
-    assert claims["ACTUAL_GET_COUNT"] == "0"
-    assert claims["POST_COUNT"] == "0"
-    assert claims["PRODUCER_MINT_AUTHORIZED"] == "false"
-    assert claims["GOVERNED_PRODUCER_CREATED"] == "false"
-    assert claims["PIN_OWNER_GO_STATUS"] == PIN_OWNER_GO_STATUS
-    assert facts["base_status"] == "UNBOUND"
-    assert algebra["formula"] == "AVAILABLE_FOR_SIZING=BASE-U04-P01_IF_APPLIES"
-    assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
+    with pytest.raises(
+        CurrentProductiveAvailableForSizingProducerError,
+        match="MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN",
+    ):
+        _execute(tmp_path)
+    assert verify_manifest_sha256_v1(store_root=CANONICAL_PACK) == 0
 
 
 def test_source_does_not_get_or_post_or_uplift() -> None:

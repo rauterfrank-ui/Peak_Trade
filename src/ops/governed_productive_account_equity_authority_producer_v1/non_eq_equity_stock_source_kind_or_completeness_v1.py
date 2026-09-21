@@ -48,6 +48,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.classified
     build_forensic_event_kind_census_findings_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
+    CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED,
     ACCOUNT_BILLS_REMAINS_CURRENT_NONCANONICAL,
     ACCOUNT_EQUITY_SOURCE_MAPPING_DENIED_THIS_WORKPACKAGE,
     AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM_PRESENT,
@@ -346,6 +347,8 @@ def _assert_standing_pins() -> None:
         raise NonEqEquityStockSourceKindOrCompletenessError("COMPLETENESS_STATUS_DRIFT")
     if SOURCE_KIND_COMPLETENESS_RATIFICATION != "INSUFFICIENT_NOT_KIND_SET_CLOSURE":
         raise NonEqEquityStockSourceKindOrCompletenessError("COMPLETENESS_RATIFICATION_DRIFT")
+    if CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_MAPPING_CLOSURE_CLOSED is True:
+        raise NonEqEquityStockSourceKindOrCompletenessError("MAPPING_CLOSURE_CONSUMED_REEXECUTE_FORBIDDEN")
     if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
         raise NonEqEquityStockSourceKindOrCompletenessError("MAPPING_MUST_REMAIN_INVALID")
     if MAPPING_PROVEN is not False:
