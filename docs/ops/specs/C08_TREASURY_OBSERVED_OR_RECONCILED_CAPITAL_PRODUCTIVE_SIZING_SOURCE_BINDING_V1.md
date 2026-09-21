@@ -1,0 +1,36 @@
+---
+docs_token: DOCS_TOKEN_C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_BINDING_V1
+status: active
+scope: C08 productive transport binding from Treasury E4 ingress to AVAILABLE_FOR_SIZING BASE slot; RECONCILED-only base candidacy; STEP-29P boundary unchanged
+capability: C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_BINDING_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-09-21
+---
+
+# C08 Treasury Observed Or Reconciled Capital Productive Sizing Source Binding V1
+
+Consumes Owner-GO `OWNER_GO_C08_PRODUCTIVE_SIZING_SOURCE_BINDING_AFTER_SEMANTIC_CLOSEOUT_V1`.
+
+```text
+WP_ID=C08_PRODUCTIVE_SIZING_SOURCE_BINDING_AFTER_SEMANTIC_CLOSEOUT_V1
+C08_CURRENT_BINDING=BOUND
+C08_CURRENT_CLASSIFICATION=PRODUCTIVE_TRANSPORT_BOUND
+C08_PRODUCTIVE_BINDING_AUTHORIZED=true
+C08_PRODUCTIVE_BINDING_IMPLEMENTED=true
+C08_INPUT_CLASS=TREASURY_ACCOUNT_EQUITY_ORCHESTRATION_INGRESS_V1_RECONCILED_BASE_CANDIDATE_EVIDENCE
+AVAILABLE_FOR_SIZING_BASE_VALUE_STATUS=UNBOUND
+NETWORK_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+```
+
+## Wiring (transport only)
+
+Treasury venue observation → Phase-2 reconciliation → capital admission → E4 orchestration ingress → **C08 binding** → unbound `CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE` slot transport → existing `evaluate_step_29p_capital_risk_admissibility_v1` boundary.
+
+Treasury does not mint `RISK_ADMISSIBLE` or `AVAILABLE_FOR_SIZING`. Positive sizing capacity requires STEP-29P admit with a separate typed claim.
+
+## Next blocker
+
+```text
+EARLIEST_NEW_REAL_BLOCKER=CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_UNBOUND_AFTER_PRODUCER_DEFINED
+```

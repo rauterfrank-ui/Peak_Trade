@@ -9413,6 +9413,27 @@ entities:
       BASE binding. Splits OBSERVED, RECONCILED, and RISK_ADMISSIBLE; no runtime wiring.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1
+    kind: RUNTIME_COMPONENT
+    name: C08 treasury capital productive sizing-source binding v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_C08_PRODUCTIVE_SIZING_SOURCE_BINDING_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_models_v1.py
+    source_symbols:
+      - bind_c08_productive_sizing_source_from_e4_host_join_v1
+    evidence_sources:
+      - docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_BINDING_V1.md
+      - tests/ops/test_c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+    notes: >-
+      Productive transport binding: Treasury E4 orchestration ingress to unbound
+      CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE slot; RECONCILED-only base candidacy;
+      STEP-29P boundary unchanged. ATLAS_AUTHORITY=NONE.
+
   - id: DATA_CONTRACT:account_equity_orchestration_ingress_v1
     kind: DATA_CONTRACT
     name: Account-equity orchestration ingress v1

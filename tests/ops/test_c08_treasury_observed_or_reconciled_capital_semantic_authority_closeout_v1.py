@@ -91,7 +91,8 @@ def test_closeout_contract_and_runbook_tokens() -> None:
 
     runbook = RUNBOOK.read_text(encoding="utf-8")
     assert "C08_SEMANTIC_CLOSEOUT=CLOSED" in runbook
-    assert "C08_PRODUCTIVE_BINDING_AUTHORIZED=false" in runbook
+    assert "C08_PRODUCTIVE_BINDING_AUTHORIZED=true" in runbook
+    assert "C08_PRODUCTIVE_BINDING_IMPLEMENTED=true" in runbook
     assert "C08_OBSERVED_CAPITAL_ALLOWED_AS_SIZING_SOURCE=false" in runbook
     assert "C08_RECONCILED_CAPITAL_ALLOWED_AS_SIZING_SOURCE=false" in runbook
     spec = SPEC.read_text(encoding="utf-8")

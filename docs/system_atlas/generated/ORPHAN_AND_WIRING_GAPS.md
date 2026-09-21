@@ -37,6 +37,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_economic_md_input | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_economic_md_input | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_productive_transport_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_productive_transport_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_current_decision_consumer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_current_decision_consumer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | STATUS=OPEN (not proven) |  |

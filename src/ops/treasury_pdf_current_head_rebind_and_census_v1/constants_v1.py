@@ -32,13 +32,13 @@ CURRENT_CANONICAL_TREASURY_AUTHORITY = (
 )
 
 EARLIEST_REAL_TREASURY_BLOCKER = (
-    "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_NOT_BOUND"
+    "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_UNBOUND_AFTER_PRODUCER_DEFINED"
 )
 BLOCKER_CLASS = "PRODUCTIVE_SIZING_SOURCE_BINDING"
 MISSING_FACT_OR_AUTHORITY = (
-    "C08 treasury observed/reconciled capital candidate not bound as productive "
-    "AVAILABLE_FOR_SIZING source on governed account-equity host; E4 productive host "
-    "join wired; no sizing or STEP-29P mint authorized."
+    "C08 reconciled base-candidate transport bound; numeric "
+    "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE value remains UNBOUND until "
+    "separate Owner-GO observation binding."
 )
 
 FULL_CORE_P1_STATUS = "CLOSED"

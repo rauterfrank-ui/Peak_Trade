@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from src.ops.governed_productive_account_equity_authority_producer_v1.c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 import (
+    bind_c08_productive_sizing_source_from_e4_host_join_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1 import (
     evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1,
 )
@@ -56,10 +59,18 @@ def join_treasury_observation_through_e4_into_productive_account_equity_host_v1(
             usdc_row_status=usdc_row_status,
         )
     )
+    c08_binding = bind_c08_productive_sizing_source_from_e4_host_join_v1(
+        treasury_join=treasury_join,
+        orchestration_join=orchestration_join,
+        host_evaluation=host_evaluation,
+        usdc_row_status=usdc_row_status,
+        balance_freshness=str(observation.balance_freshness or ""),
+    )
 
     return TreasuryE4ProductiveHostJoinResultV1(
         treasury_join=treasury_join,
         orchestration_join=orchestration_join,
         host_evaluation=host_evaluation,
+        c08_sizing_source_binding=c08_binding,
         join_seam_id=JOIN_SEAM_ID,
     )

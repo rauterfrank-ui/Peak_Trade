@@ -296,9 +296,12 @@ def _capability_matrix() -> dict[str, dict[str, str]]:
             "authority_owner": "src/ops/full_core_live_path_composition_root_v1/treasury_interference_proof_v1.py",
         },
         "C08_TREASURY_SIZING_SOURCE": {
-            "classification": NOT_PROVEN,
-            "reachability": "CANDIDATE_CENSUS_ONLY_UNBOUND",
-            "authority_owner": "governed_productive_account_equity_authority_producer_v1/source_candidate_census_v1",
+            "classification": IMPLEMENTED,
+            "reachability": "E4_PRODUCTIVE_HOST_JOIN_C08_TRANSPORT_BOUND",
+            "authority_owner": (
+                "governed_productive_account_equity_authority_producer_v1/"
+                "c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1"
+            ),
         },
     }
 
@@ -313,6 +316,7 @@ def _pdf_requirement_buckets() -> dict[str, list[str]]:
         "OPS_COCKPIT_TRANSFER_AMBIGUITY_LOCAL_READ_MODEL",
         "PL_TF_002_TRADING_KEY_TREASURY_CAPABILITY_VENUE_PROVEN_CONSTANT",
         "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN",
+        "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_TRANSPORT_BOUND",
     ]
     partial = [
         "TS_INV_THEMATIC_OFFLINE_AND_CONTRACT_SEAMS_WITHOUT_PRODUCTIVE_E2E",
@@ -320,7 +324,7 @@ def _pdf_requirement_buckets() -> dict[str, list[str]]:
         "AT08_AT09_OFFLINE_DRAFT_VALIDATION_WITHOUT_POST_SUBMIT_VENUE_CONFIRMATION",
         "EXTERNAL_CAPITAL_DECREASE_S2_RUNTIME_JOIN_OFFLINE_INJECTED_ONLY",
         "CREDIBLE_DEPLETION_TO_RISK_CAPACITY_PRODUCTIVE_LOOP",
-        "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_NOT_BOUND",
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_NUMERIC_VALUE_UNBOUND",
     ]
     not_proven = [
         "CURRENT_END_TO_END_TREASURY_GATE",
@@ -413,7 +417,7 @@ def build_treasury_pdf_current_head_census_adjudication_v1(
             "TREASURY_MINTS_RISK_ADMISSIBLE": FALSE_TOKEN,
             "CAPITAL_ADMISSION_OWNER": "capital_admission_contract_v1",
             "STEP_29P_UNTOUCHED": TRUE_TOKEN,
-            "C08_SIZING_SOURCE_BOUND": FALSE_TOKEN,
+            "C08_SIZING_SOURCE_BOUND": TRUE_TOKEN,
         },
         "CURRENT_PERSISTENCE_RESTART_STATUS": {
             "PHASE_1_OFFLINE_INTENT_STORE": IMPLEMENTED,

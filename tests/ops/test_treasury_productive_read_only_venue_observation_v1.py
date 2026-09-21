@@ -117,7 +117,9 @@ def test_reconciliation_chain_fail_closed_without_deposit_confirm() -> None:
     assert chain["ACCOUNT_STATE_JOIN_STATUS"]["orchestration_admitted"] is False
     assert chain["PRODUCTIVE_HOST_JOIN_STATUS"] == "PRODUCTIVE_HOST_JOIN_WIRED"
     assert chain["PRODUCTIVE_HOST_EVALUATION"]["fail_closed"] is True
-    assert "C08_TREASURY" in chain["EARLIEST_NEW_REAL_BLOCKER"]
+    assert "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_UNBOUND" in (
+        chain["EARLIEST_NEW_REAL_BLOCKER"]
+    )
 
 
 def test_separation_matrix_all_pass_offline() -> None:
