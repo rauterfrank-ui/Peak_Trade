@@ -8,6 +8,10 @@ from pathlib import Path
 import pytest
 
 from src.backtest import step29m_current_single_selected_future_dynamic_binding_v1 as binding
+from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+    MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION,
+    resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0,
+)
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     CAPABILITY_ID,
     PRODUCER_VERSION,
@@ -182,6 +186,44 @@ def test_evaluation_config_overlay_removes_frozen_digests(tmp_path: Path) -> Non
     assert "expected_dataset_digest" not in section
     assert "expected_manifest_digest" not in section
     assert cfg["economic_evaluation_v1"]["walk_forward"]["train_bars"] == 4320
+
+
+def test_materialized_config_preserves_mandatory_mv2_boundary_bindings(tmp_path: Path) -> None:
+    _persist_selection(tmp_path, _0g_selection())
+    instrument = binding.resolve_step29m_instrument_binding_from_selection_state_root_v1(tmp_path)
+    template = binding.resolve_evaluation_config_template_path_v1(ROOT)
+    cfg = binding.materialize_step29m_evaluation_config_for_instrument_binding_v1(
+        instrument,
+        template_config_path=template,
+        dataset_path="/tmp/0g/bars.parquet",
+        dataset_manifest_path="/tmp/0g/dataset_manifest.json",
+    )
+    eval_binding = cfg["real_admissible_futures_evaluation_binding_v1"]
+    assert eval_binding["native_instrument_id"] == "0G-USDT-SWAP"
+    assert "0g-usdt-swap" in eval_binding["canonical_instrument_id"]
+    assert eval_binding["current_selection_binding"]["selection_id"] == "ssf_test_0g"
+    mandatory_section = cfg.get(MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION)
+    assert isinstance(mandatory_section, dict)
+    resolved, reasons = resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(ROOT, cfg)
+    assert resolved is not None
+    assert reasons == ()
+
+
+def test_materialized_config_missing_mandatory_section_fail_closed(tmp_path: Path) -> None:
+    _persist_selection(tmp_path, _0g_selection())
+    instrument = binding.resolve_step29m_instrument_binding_from_selection_state_root_v1(tmp_path)
+    template = binding.resolve_evaluation_config_template_path_v1(ROOT)
+    cfg = binding.materialize_step29m_evaluation_config_for_instrument_binding_v1(
+        instrument,
+        template_config_path=template,
+        dataset_path="/tmp/0g/bars.parquet",
+        dataset_manifest_path="/tmp/0g/dataset_manifest.json",
+    )
+    cfg = dict(cfg)
+    cfg.pop(MV2_RESEARCH_BACKTEST_MANDATORY_BOUNDARY_STATE_FILE_BINDING_SECTION, None)
+    resolved, reasons = resolve_mandatory_mv2_backtest_boundary_state_file_bindings_v0(ROOT, cfg)
+    assert resolved is None
+    assert "MANDATORY_STATE_FILE_BINDING_SECTION_MISSING" in reasons
 
 
 def _write_eth_state(root: Path) -> Path:
