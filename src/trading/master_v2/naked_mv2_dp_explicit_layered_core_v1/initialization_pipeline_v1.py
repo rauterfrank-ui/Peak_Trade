@@ -12,6 +12,7 @@ from trading.market_state.distinct_market_observation_acceptor_v1 import (
 from trading.market_state.elementary_direction_v1 import ElementaryDirectionV1
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import (
     InitialDirectionInputV1,
+    InitialRegimeStateV1,
     InitialStateInitializationInputV1,
     MarketObservationInputV1,
     NullLineInputV1,
@@ -39,6 +40,7 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l5_nullline_v1 impo
 @dataclass(frozen=True)
 class InitializationPipelineResultV1:
     nullline: Optional[NullLineStateV1]
+    regime_state: Optional[InitialRegimeStateV1]
     fail_closed: bool
     fail_reasons: Tuple[str, ...]
     l4_reached: bool
@@ -86,6 +88,7 @@ def run_initialization_l1_through_l5_v1(
         if l4.fail_closed:
             return InitializationPipelineResultV1(
                 nullline=None,
+                regime_state=None,
                 fail_closed=True,
                 fail_reasons=l4.fail_reasons,
                 l4_reached=True,
@@ -102,6 +105,7 @@ def run_initialization_l1_through_l5_v1(
         )
         return InitializationPipelineResultV1(
             nullline=l5.nullline,
+            regime_state=l4.regime_state,
             fail_closed=False,
             fail_reasons=(),
             l4_reached=True,
@@ -110,6 +114,7 @@ def run_initialization_l1_through_l5_v1(
 
     return InitializationPipelineResultV1(
         nullline=None,
+        regime_state=None,
         fail_closed=True,
         fail_reasons=("l4_l5_not_reached_no_distinct_initial_direction",),
         l4_reached=False,

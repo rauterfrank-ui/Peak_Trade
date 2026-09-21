@@ -135,8 +135,7 @@ class DynamicScopeGeneratorV1(Protocol):
 
     generator_id: str
 
-    def generate(self, inp: DynamicScopeGeneratorInputV1) -> DynamicScopeGeneratorOutputV1:
-        ...
+    def generate(self, inp: DynamicScopeGeneratorInputV1) -> DynamicScopeGeneratorOutputV1: ...
 
 
 @dataclass(frozen=True)

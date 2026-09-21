@@ -39,9 +39,7 @@ def apply_l4_initial_state_initialization_v1(
             fail_reasons=(f"l4_no_distinct_initial_direction:{dr.reason_code}",),
         )
     regime = (
-        NakedRegimeV1.BULL
-        if dr.direction is ElementaryDirectionV1.BULL
-        else NakedRegimeV1.BEAR
+        NakedRegimeV1.BULL if dr.direction is ElementaryDirectionV1.BULL else NakedRegimeV1.BEAR
     )
     return InitialStateInitializationOutputV1(
         regime_state=InitialRegimeStateV1(

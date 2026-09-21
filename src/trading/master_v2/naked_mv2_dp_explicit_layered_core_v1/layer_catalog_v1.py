@@ -7,9 +7,7 @@ from enum import Enum
 from typing import Mapping, Tuple
 
 EXPLICIT_LAYERED_CORE_VERSION = "naked_mv2_dp_explicit_layered_core/v1"
-EXPLICIT_LAYERED_CORE_OWNER = (
-    "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1"
-)
+EXPLICIT_LAYERED_CORE_OWNER = "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1"
 
 
 class LayerIdV1(str, Enum):
