@@ -61,17 +61,17 @@ def test_candidate_families_research_only() -> None:
         family=ResearchCandidateFamily.ABSOLUTE, parameter_k=2.0, mark_price_m_t=100.0, sigma_t=None
     ) == pytest.approx(2.0)
     assert compute_research_d_t_v1(
-        family=ResearchCandidateFamily.RELATIVE, parameter_k=0.01, mark_price_m_t=200.0, sigma_t=None
+        family=ResearchCandidateFamily.RELATIVE,
+        parameter_k=0.01,
+        mark_price_m_t=200.0,
+        sigma_t=None,
     ) == pytest.approx(2.0)
-    assert (
-        compute_research_d_t_v1(
-            family=ResearchCandidateFamily.VOL_NORMALIZED,
-            parameter_k=1.0,
-            mark_price_m_t=100.0,
-            sigma_t=0.02,
-        )
-        == pytest.approx(2.0)
-    )
+    assert compute_research_d_t_v1(
+        family=ResearchCandidateFamily.VOL_NORMALIZED,
+        parameter_k=1.0,
+        mark_price_m_t=100.0,
+        sigma_t=0.02,
+    ) == pytest.approx(2.0)
 
 
 def test_vol_normalized_fail_closed_without_sigma() -> None:
@@ -186,7 +186,5 @@ def test_core_step_still_used_directly_unchanged() -> None:
     )
 
     st = NakedMechanicalStateV1("X", NakedRegimeV1.BULL, 100.0)
-    r = execute_naked_mechanical_step_v1(
-        NakedMechanicalStepInputV1("X", 95.0, st, 4.0)
-    )
+    r = execute_naked_mechanical_step_v1(NakedMechanicalStepInputV1("X", 95.0, st, 4.0))
     assert r.switch_condition_met
