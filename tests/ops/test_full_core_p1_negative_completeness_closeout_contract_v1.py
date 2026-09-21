@@ -20,6 +20,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.p1_negativ
     P1_STATUS_PROVEN_FALSE,
     P1_STATUS_UNKNOWN,
     REQUIREMENT_CURRENCY_DOMAIN,
+    REQUIREMENT_LIABILITY_EVENT_CLASS,
     REQUIREMENT_PAGINATION,
     ZERO_ROWS_ALONE_MAY_PROVE_NEGATIVE,
     evaluate_p1_negative_completeness_v1,
@@ -113,17 +114,25 @@ def test_does_not_apply_distinct_from_negative() -> None:
 
 
 def test_sealed_cd_and_usdc_evidence_stays_unknown() -> None:
+    currency_witness_pack = (
+        REPO_ROOT
+        / "evidence/ops/full_core_p1_currency_domain_completeness_witness_v1/2026-09-21T031500Z"
+    )
     payload = load_sealed_interest_accrued_p1_input_v1(repo_root=REPO_ROOT)
     assert payload.cd_row_count == 0
     assert payload.usdc_scoped_row_count == 0
     assert payload.qualifying_event_count == 0
     assert payload.pagination_complete is False
-    assert payload.currency_domain_complete is False
+    currency_pack_present = (currency_witness_pack / "MANIFEST.sha256").is_file()
+    assert payload.currency_domain_complete is currency_pack_present
     evaluation = evaluate_sealed_interest_accrued_p1_closeout_v1(repo_root=REPO_ROOT)
     assert evaluation.closeout_decision == P1_CLOSEOUT_UNKNOWN
     assert evaluation.p1_status_after == P1_STATUS_UNKNOWN
-    assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
-    assert evaluation.network_required is True
+    if currency_pack_present:
+        assert evaluation.first_missing_completeness_predicate == REQUIREMENT_LIABILITY_EVENT_CLASS
+    else:
+        assert evaluation.first_missing_completeness_predicate == REQUIREMENT_CURRENCY_DOMAIN
+        assert evaluation.network_required is True
     assert evaluation.new_producer_required is False
 
 
