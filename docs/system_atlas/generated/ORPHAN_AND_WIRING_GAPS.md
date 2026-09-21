@@ -58,6 +58,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:double_play_dashboard_display_archive_sibling_replay_export_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dashboard_display | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dashboard_display | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_entry_exit_policy | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_entry_exit_policy | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_evaluate_authority_boundary | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_evaluate_authority_boundary | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_futures_input | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_futures_input | STATUS=OPEN (not proven) |  |
