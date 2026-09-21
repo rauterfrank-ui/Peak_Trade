@@ -2016,6 +2016,25 @@ entities:
       surfaces, intentional NOT_BOUND slots, and excluded timeline/diagnostics/
       autonomy producers. Not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1
+    kind: RUNTIME_COMPONENT
+    name: Landscape current documentation reconciliation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: docs_pointer_reconciliation_not_authority
+    modified_by: LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
+    source_paths:
+      - docs/ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md
+    evidence_sources:
+      - tests/webui/test_landscape_current_documentation_reconciliation_v1.py
+      - docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+      - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md
+    notes: >-
+      Separates Landscape consumer-closeout PR #6690 from post-closeout
+      Presentation-Ops PRs #6697-#6705; updates CURRENT doc pointers without
+      changing STOP_IDLE or consumer completeness. ATLAS_AUTHORITY=NONE.
+
   - id: RUNBOOK:professional_trading_dashboard_v1
     kind: RUNBOOK
     name: Professional Trading Dashboard Runbook V1

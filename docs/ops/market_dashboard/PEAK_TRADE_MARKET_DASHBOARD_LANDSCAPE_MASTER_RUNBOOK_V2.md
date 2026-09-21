@@ -34,11 +34,15 @@ STATUS=MARKET_DASHBOARD_V2_WORKSTREAM_COMPLETE
 VERDICT=LANDSCAPE_V2_COMPLETE_READ_ONLY_CONSUMER_RATIFIED
 WORKSTREAM_ALREADY_COMPLETE=true
 PHASE_0_THROUGH_PHASE_8_COMPLETE=true
-CURRENT_MAIN_SHA=b81d03a4e7169b20f212e8cf80bd581e96e19fc4
+CURRENT_ORIGIN_MAIN_DOC_POINTER_SHA=f3ced3c5ba146b6f7f26f7c6587fa44947270ee1
+LANDSCAPE_CONSUMER_CLOSEOUT_MERGE_SHA=b81d03a4e7169b20f212e8cf80bd581e96e19fc4
 LANDSCAPE_CURRENT_COMPLETION_STATUS=COMPLETE
 LANDSCAPE_CURRENT_COMPLETION_CENSUS=docs/ops/market_dashboard/MARKET_DASHBOARD_LANDSCAPE_V2_CURRENT_COMPLETION_CENSUS_V1.md
-LAST_MERGED_PR=6690
+LANDSCAPE_CURRENT_DOC_RECONCILIATION=docs/ops/market_dashboard/LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md
 LAST_MERGED_LANDSCAPE_CONSUMER_CLOSEOUT_PR=6690
+POST_LANDSCAPE_PRESENTATION_OPS_MERGE_RANGE=#6697-#6705
+POST_LANDSCAPE_PRESENTATION_OPS_LAST_MERGED_PR=6705
+POST_LANDSCAPE_PRESENTATION_OPS_LAST_MERGE_SHA=d30aef8d4
 LAST_MERGED_CAPABILITY_PR=5577  # Regime/Bull-Bear/Switch read-only binding (last product capability)
 LAST_MERGED_DOCS_CLOSEOUT_PR=5581  # final runbook reconciliation on current main
 LAST_MERGED_DOCS_SEAL_PR=5570  # final product-state truth seal (docs-only; historical)
@@ -102,6 +106,8 @@ MISSING_READ_PROJECTIONS=[]
 **Unterscheidung (verbindlich):** Dashboard-Implementierung auf `origin&#47;main@4361a19407291618faae99681abfd8a562134308` ist vollständig und durch gemergte Capability-PRs bis **PR #5581** belegt. Das Dashboard ist ein reiner read-only Consumer. Trading-Runtime bleibt `BOUND_NOT_ACTIVATED`; Orders/Scheduler/Capital/Live bleiben false. Kein nächstes Capability-PR ist autorisiert. `IMPLEMENTATION_AUTHORIZED=false` in **historischen** Ratifikationsblöcken (z. B. Diagnostics 4.6C) bedeutet weiterhin „keine Autorisierung jener speziellen Bindung“, nicht „Dashboard existiert nicht“.
 
 **Phasen-/PR-Mapping (explizit, keine stille Geschichtsrewrite):** Runbook-**PHASE 2** ≡ **PR #5499**. Runbook-**PHASE 3** Shell ≡ **PR #5501**. Spätere Capability-PRs bis **PR #5548** (authentic OKX Futures intrabar) und **PR #5577** (Regime/Bull-Bear/Switch) sind gemergt; finaler Docs-Closeout **PR #5581**. Siehe §0.1 (historical ledger post-#5548) und §11 (authoritative current closeout). `PHASE_0_THROUGH_PHASE_8_COMPLETE=true`.
+
+**Post–Landscape-closeout Presentation-Ops (separater Handoff, kein Landscape-UI-Slice):** Consumer-closeout **PR #6690** (`b81d03a4…`) schloss die Landscape-V2-Consumer-Fläche (`CONNECTABLE_CURRENT_CONSUMER_GAP_COUNT=0`, `NEXT_ACTION=STOP_IDLE`). Nachgelagerte Archive→Projection→MANIFEST-Arbeit: **PR #6697–#6705** (D2–D4 + MANIFEST finalize). Das ist Presentation-/Ops-Evidenz und ändert weder `NEXT_ACTION=STOP_IDLE` noch die Landscape-Consumer-Vollständigkeit. Siehe `LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1.md`.
 
 ---
 
