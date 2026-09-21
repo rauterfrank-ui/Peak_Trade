@@ -55,11 +55,13 @@ FAMILY_DYNAMIC_SCOPE = "dynamic_scope"
 FAMILY_CANONICAL_DECISION = "canonical_decision"
 FAMILY_DOUBLE_PLAY = "double_play"
 FAMILY_REGIME_BULL_BEAR_SWITCH = "regime_bull_bear_switch"
+FAMILY_RISK_SIZING_CAPITAL = "risk_sizing_capital"
 
 DYNAMIC_SCOPE_SIBLING_RELATIVE = "readmodels/dynamic_scope_state_v1.json"
 CANONICAL_DECISION_SIBLING_RELATIVE = "readmodels/canonical_trading_decision_evidence.v1.json"
 DOUBLE_PLAY_SIBLING_RELATIVE = "readmodels/double_play_dashboard_display.v1.json"
 REGIME_BULL_BEAR_SWITCH_SIBLING_RELATIVE = "readmodels/regime_bull_bear_switch.v1.json"
+RISK_SIZING_CAPITAL_SIBLING_RELATIVE = "readmodels/risk_sizing_capital.v1.json"
 
 # Productive integrated replay yields ResultV1 intermediates by default. Export binds
 # only when a complete PureStackDisplayDecisionBundleV1 (or equivalent Decision

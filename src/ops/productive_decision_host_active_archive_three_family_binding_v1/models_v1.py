@@ -148,6 +148,7 @@ class SmokeSessionResultV1:
     dynamic_scope: Optional[FamilyExportResultV1] = None
     canonical_decision: Optional[FamilyExportResultV1] = None
     double_play: Optional[FamilyExportResultV1] = None
+    risk_sizing_capital: Optional[FamilyExportResultV1] = None
     hard_stop_double_play: bool = HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH
     long_running_phase_9_2_proven: bool = False
     order_path_reachable: bool = False
@@ -177,6 +178,9 @@ class SmokeSessionResultV1:
                 None if self.canonical_decision is None else self.canonical_decision.to_dict()
             ),
             "double_play": None if self.double_play is None else self.double_play.to_dict(),
+            "risk_sizing_capital": (
+                None if self.risk_sizing_capital is None else self.risk_sizing_capital.to_dict()
+            ),
             "hard_stop_double_play": self.hard_stop_double_play,
             "long_running_phase_9_2_proven": self.long_running_phase_9_2_proven,
             "order_path_reachable": self.order_path_reachable,
