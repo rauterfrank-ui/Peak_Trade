@@ -24,9 +24,10 @@ def test_ten_layers_separately_addressable() -> None:
         assert layer in LAYER_CATALOG_V1
         entry = LAYER_CATALOG_V1[layer]
         assert entry.layer_id is layer
-        assert entry.semantic_owner.endswith(
-            layer.value.split("_", 1)[1].lower().replace("_", "_")
-        ) or entry.semantic_owner  # owner string present
+        assert (
+            entry.semantic_owner.endswith(layer.value.split("_", 1)[1].lower().replace("_", "_"))
+            or entry.semantic_owner
+        )  # owner string present
 
 
 def test_layer_catalog_unique_owners_and_downstream_chain() -> None:
