@@ -19,8 +19,9 @@
 {% block content %}
 {# base.html already provides the page main landmark; do not nest another. #}
 <div
-  class="mdl-v2"
+  class="mdl-v2 mdl-v2--workstation-v2"
   data-market-landscape-v2="true"
+  data-mdl-composition="professional_workstation_v2"
   data-market-dashboard-authority="false"
   data-live-authorized="false"
   data-orders="false"
@@ -44,9 +45,45 @@
         <h1 class="mdl-v2-kicker">Market Landscape</h1>
         <span class="mdl-v2-chip mdl-v2-chip--quiet">READ-ONLY CONSUMER</span>
       </div>
-      <dl class="mdl-v2-strip__facts">
-        {# Strip = compact ops summary. Scope/Regime live in Context; do not alias availability as Freshness. #}
-        <div><dt>Instrument</dt><dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd></div>
+      <dl class="mdl-v2-strip__facts mdl-v2-strip__facts--operator">
+        {# Professional workstation strip: operator-first facts from existing bound snapshots only. #}
+        <div class="mdl-v2-strip__price">
+          <dt>Instrument</dt>
+          <dd data-mdl-field="instrument">{{ global_strip.instrument }}</dd>
+        </div>
+        <div class="mdl-v2-strip__price">
+          <dt>Mark</dt>
+          <dd data-mdl-field="strip_live_mark" data-availability="{{ chart.availability }}">{% if chart.live_mark_price is not none %}{{ chart.live_mark_price }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
+        </div>
+        <div class="mdl-v2-strip__price">
+          <dt>Change</dt>
+          <dd data-mdl-field="strip_change_pct" data-availability="{{ chart.availability }}">{% if chart.change_pct is not none %}{{ chart.change_pct }}{% elif chart.availability in ["AVAILABLE", "STALE"] %}NOT_AVAILABLE{% else %}{{ chart.availability_label }}{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Switch</dt>
+          <dd data-mdl-field="strip_switch" data-availability="{{ switch.availability }}">{{ switch.value_display }}</dd>
+        </div>
+        <div>
+          <dt>Decision</dt>
+          <dd data-mdl-field="strip_decision" data-availability="{{ decision.availability }}">{% if decision.is_available or decision.is_stale %}{{ decision.fields.decision }}{% else %}{{ decision.availability_label }}{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Double Play</dt>
+          <dd data-mdl-field="strip_double_play" data-availability="{{ double_play.availability }}">{% if double_play.is_available or double_play.is_stale %}{{ double_play.fields.overall_status }}{% else %}{{ double_play.availability_label }}{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Blockers</dt>
+          <dd
+            data-mdl-field="strip_blockers"
+            data-availability="{{ decision_double_play_observability.decision_strip_blockers.availability }}"
+          >{{ decision_double_play_observability.decision_strip_blockers.display }}</dd>
+        </div>
+        <div>
+          <dt>Source health</dt>
+          <dd data-mdl-field="strip_source_health" data-availability="{{ source_health.availability }}">{{ source_health.summary_display }}</dd>
+        </div>
+      </dl>
+      <dl class="mdl-v2-strip__facts mdl-v2-strip__facts--engineering">
         <div><dt>Venue</dt><dd data-mdl-field="venue">{{ global_strip.venue }}</dd></div>
         <div>
           <dt>Session</dt>
@@ -76,7 +113,7 @@
         <h2>Universe</h2>
 
         <section
-          class="mdl-v2-universe-panel mdl-v2-universe-panel--selected"
+          class="mdl-v2-universe-panel mdl-v2-universe-panel--selected mdl-v2-universe-panel--workstation-secondary"
           aria-label="Selected future"
           data-mdl-universe-panel="selected_future"
           data-display-state="{{ universe_rail.selected_future.display_state }}"
@@ -115,7 +152,7 @@
           {% endif %}
         </section>
 
-        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--context" aria-label="Universe context">
+        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--context mdl-v2-universe-panel--workstation-secondary" aria-label="Universe context">
           <h3 class="mdl-v2-universe-panel__title">Universe Context</h3>
           <ul class="mdl-v2-rail-rows" aria-label="Universe projection">
             <li>
@@ -137,7 +174,7 @@
           </ul>
         </section>
 
-        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--provenance" aria-label="Source and freshness">
+        <section class="mdl-v2-universe-panel mdl-v2-universe-panel--provenance mdl-v2-universe-panel--workstation-secondary" aria-label="Source and freshness">
           <h3 class="mdl-v2-universe-panel__title">Source / Freshness</h3>
           <dl class="mdl-v2-universe-panel__facts mdl-v2-universe-panel__facts--compact">
             <div><dt>Source run</dt><dd data-mdl-field="source_run_id">{{ universe_rail.provenance.source_run_id }}</dd></div>
@@ -249,8 +286,9 @@
         </div>
       </section>
 
+      <div class="mdl-v2-rail-stack" data-mdl-rail-stack="decision-panel">
       <aside class="mdl-v2-rail mdl-v2-rail--right" data-mdl-region="SYSTEM_CONTEXT_RAIL" aria-label="System context" tabindex="-1">
-        <h2>Context</h2>
+        <h2>Peak_Trade Decision</h2>
         <dl class="mdl-v2-kv">
           <div>
             <dt>Lifecycle</dt>
@@ -275,6 +313,22 @@
           <div>
             <dt>Switch</dt>
             <dd data-mdl-field="switch" data-availability="{{ switch.availability }}">{{ switch.value_display }}</dd>
+          </div>
+          <div>
+            <dt>Risk</dt>
+            <dd data-mdl-field="decision_panel_risk_status" data-availability="{{ risk.availability }}">{{ risk.risk_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Sizing</dt>
+            <dd data-mdl-field="decision_panel_sizing_status" data-availability="{{ risk.availability }}">{{ risk.sizing_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Capital</dt>
+            <dd data-mdl-field="decision_panel_capital_status" data-availability="{{ risk.availability }}">{{ risk.capital_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Safety</dt>
+            <dd data-mdl-field="decision_panel_safety" data-availability="{{ safety.availability }}">{{ global_strip.safety_status }}</dd>
           </div>
           <div class="mdl-v2-source-health" data-mdl-source-health="true">
             <dt>Source Health</dt>
@@ -303,10 +357,9 @@
           </div>
         </dl>
       </aside>
-    </div>
 
     <section
-      class="mdl-v2-decision"
+      class="mdl-v2-decision mdl-v2-decision--in-rail"
       data-mdl-region="CANONICAL_DECISION_STRIP"
       data-mdl-decision-strip="true"
       aria-label="Canonical decision strip"
@@ -368,6 +421,122 @@
         </div>
       </dl>
     </section>
+      </div>
+    </div>
+
+    <section class="mdl-v2-ops mdl-v2-ops--workstation-telemetry" data-mdl-region="SECONDARY_STATUS_REGION" aria-label="Operations band">
+      <div class="mdl-v2-ops__col" data-mdl-ops="risk_sizing_capital">
+        <h3>Risk / Sizing / Capital</h3>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ risk.availability }}"
+          data-mdl-field="risk_summary"
+        >{{ risk.summary_display }}</p>
+        <dl class="mdl-v2-kv mdl-v2-kv--compact">
+          <div>
+            <dt>Risk</dt>
+            <dd data-mdl-field="risk_status" data-availability="{{ risk.availability }}">{{ risk.risk_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Sizing</dt>
+            <dd data-mdl-field="sizing_status" data-availability="{{ risk.availability }}">{{ risk.sizing_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Capital</dt>
+            <dd data-mdl-field="capital_status" data-availability="{{ risk.availability }}">{{ risk.capital_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Quantity</dt>
+            <dd data-mdl-field="risk_quantity" data-availability="{{ risk.availability }}">{{ risk.quantity_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="risk_reasons" data-availability="{{ risk.availability }}">{{ risk.reasons_display }}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="mdl-v2-ops__col" data-mdl-ops="execution_reconciliation">
+        <h3>Execution / Reconciliation</h3>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ execution.availability }}"
+          data-mdl-field="execution_summary"
+        >{{ execution.summary_display }}</p>
+        <dl class="mdl-v2-kv mdl-v2-kv--compact">
+          <div>
+            <dt>Execution</dt>
+            <dd data-mdl-field="execution_status" data-availability="{{ execution.availability }}">{{ execution.execution_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Reconciliation</dt>
+            <dd data-mdl-field="reconciliation_status" data-availability="{{ execution.availability }}">{{ execution.reconciliation_status_display }}</dd>
+          </div>
+          <div>
+            <dt>Intent Ref</dt>
+            <dd data-mdl-field="order_intent_ref" data-availability="{{ execution.availability }}">{{ execution.order_intent_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="execution_reasons" data-availability="{{ execution.availability }}">{{ execution.reasons_display }}</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="mdl-v2-ops__col" data-mdl-ops="economic_summary">
+        <h3>Economic</h3>
+        <p
+          class="mdl-v2-state"
+          data-availability="{{ economic.availability }}"
+          data-mdl-field="economic"
+          data-mdl-classification="EVIDENCE_ONLY"
+        >{{ economic.status_display }}</p>
+        <p class="mdl-v2-ops__note" data-mdl-field="economic_classification">EVIDENCE_ONLY</p>
+        <dl class="mdl-v2-kv mdl-v2-kv--compact">
+          <div>
+            <dt>Validity</dt>
+            <dd data-mdl-field="economic_validity" data-availability="{{ economic.availability }}">{{ economic.validity_display }}</dd>
+          </div>
+          <div>
+            <dt>Policy Threshold</dt>
+            <dd data-mdl-field="economic_policy_threshold" data-availability="{{ economic.availability }}">{{ economic.policy_threshold_display }}</dd>
+          </div>
+          <div>
+            <dt>Profit Factor</dt>
+            <dd data-mdl-field="economic_profit_factor" data-availability="{{ economic.availability }}">{{ economic.profit_factor_display }}</dd>
+          </div>
+          <div>
+            <dt>Net Return</dt>
+            <dd data-mdl-field="economic_net_return" data-availability="{{ economic.availability }}">{{ economic.net_return_display }}</dd>
+          </div>
+          <div>
+            <dt>Max Drawdown</dt>
+            <dd data-mdl-field="economic_max_drawdown" data-availability="{{ economic.availability }}">{{ economic.max_drawdown_display }}</dd>
+          </div>
+          <div>
+            <dt>Funding Drag</dt>
+            <dd data-mdl-field="economic_funding_drag" data-availability="{{ economic.availability }}">{{ economic.funding_drag_display }}</dd>
+          </div>
+          <div>
+            <dt>Trade Count</dt>
+            <dd data-mdl-field="economic_trade_count" data-availability="{{ economic.availability }}">{{ economic.trade_count_display }}</dd>
+          </div>
+          <div>
+            <dt>Evidence Ref</dt>
+            <dd data-mdl-field="economic_evidence_ref" data-availability="{{ economic.availability }}">{{ economic.evidence_ref_display }}</dd>
+          </div>
+          <div>
+            <dt>Evidence Digest</dt>
+            <dd data-mdl-field="economic_evidence_digest" data-availability="{{ economic.availability }}">{{ economic.evidence_digest_display }}</dd>
+          </div>
+          <div>
+            <dt>Reasons</dt>
+            <dd data-mdl-field="economic_reasons" data-availability="{{ economic.availability }}">{{ economic.reasons_display }}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <details class="mdl-v2-workstation-surfaces">
+      <summary class="mdl-v2-workstation-surfaces__summary">Extended observability (engineering)</summary>
 
     <section
       class="mdl-v2-decision-dp-obs"
@@ -728,6 +897,8 @@
       </div>
       <p class="mdl-v2-timeline__empty">{{ timeline.message }}</p>
     </section>
+
+    </details>
 
     <details
       class="mdl-v2-engineering"

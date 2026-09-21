@@ -1987,7 +1987,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     module_role: landscape_v2_professional_workstation_plan_boundary_only
-    modified_by: PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1_CANONICALIZATION
+    modified_by: PROFESSIONAL_WORKSTATION_P2_PRESENTATION_V2
     source_paths:
       - docs/ops/market_dashboard/PEAK_TRADE_PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1.md
     evidence_sources:
@@ -1998,6 +1998,25 @@ entities:
       Plan/boundary authority for Market Dashboard Landscape V2 professional
       read-only workstation finalization (P0–V delivery program). Does not
       supersede Master Runbook SSOT or trading domains. DASHBOARD_AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:landscape_professional_workstation_presentation_v2
+    kind: RUNTIME_COMPONENT
+    name: Landscape professional workstation presentation v2
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: read_only_p2_composition_presentation_only
+    modified_by: PROFESSIONAL_WORKSTATION_P2_PRESENTATION_V2
+    source_paths:
+      - templates/peak_trade_dashboard/market_landscape_v2.html
+      - static/css/market_dashboard_landscape_v2.css
+    evidence_sources:
+      - tests/webui/test_professional_workstation_presentation_v2.py
+      - docs/ops/market_dashboard/PEAK_TRADE_PROFESSIONAL_TRADING_DASHBOARD_RUNBOOK_V1.md
+    notes: >-
+      P2 presentation composition for operator-first workstation layout; reuses
+      existing presenter bindings only. DASHBOARD_AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_system_observability_completion_v1

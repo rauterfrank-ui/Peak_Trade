@@ -1305,3 +1305,131 @@
 .mdl-v2[data-mdl-canonical-fail="true"] [data-mdl-data-connection-state] {
   color: #fca5a5;
 }
+
+/* Professional workstation V2 composition (P2 presentation-only; AUTHORITY=NONE) */
+.mdl-v2--workstation-v2 {
+  --mdl-stage-height: 420px;
+  --mdl-volume-height: 72px;
+  --mdl-chart-meta-band: 4.5rem;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: calc(100vh - 36px);
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 4px 0 6px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-strip__facts--operator {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  flex: 1 1 auto;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-strip__facts--operator .mdl-v2-strip__price dd {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-strip__facts--engineering {
+  display: none;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-workspace {
+  grid-template-columns: minmax(148px, 176px) minmax(0, 1fr) minmax(248px, 292px);
+  column-gap: 10px;
+  flex: 1 1 auto;
+  min-height: 520px;
+  align-items: stretch;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-universe-panel--workstation-secondary {
+  display: none;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-universe-panel--top20 {
+  margin-bottom: 0;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-rail-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  max-height: calc(
+    var(--mdl-stage-height) + var(--mdl-volume-height) + var(--mdl-chart-meta-band) +
+      var(--mdl-chart-chrome-band) + 28px
+  );
+  overflow: auto;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-rail--right {
+  max-height: none;
+  overflow: visible;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-decision--in-rail {
+  padding: 0;
+  margin: 0;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-decision--in-rail .mdl-v2-decision__primary,
+.mdl-v2--workstation-v2 .mdl-v2-decision--in-rail .mdl-v2-decision__secondary {
+  grid-template-columns: 1fr;
+  gap: 4px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-primary {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-chart {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-chart__stage {
+  flex: 1 1 auto;
+  min-height: var(--mdl-stage-height);
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-ops--workstation-telemetry {
+  flex: 0 0 auto;
+  padding: 2px 0 4px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-ops--workstation-telemetry .mdl-v2-kv--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2px 8px;
+  font-size: 11px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-workstation-surfaces {
+  flex: 0 0 auto;
+  color: var(--mdl-muted);
+  font-size: 11px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-workstation-surfaces__summary {
+  cursor: pointer;
+  color: #64748b;
+  padding: 2px 0 4px;
+}
+
+.mdl-v2--workstation-v2 .mdl-v2-source-health__sources {
+  max-height: 4.5rem;
+}
