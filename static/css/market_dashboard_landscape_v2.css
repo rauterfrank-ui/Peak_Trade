@@ -1308,8 +1308,20 @@
 
 /* Professional workstation V2 composition (P2 presentation-only; AUTHORITY=NONE) */
 .mdl-v2--workstation-v2 {
-  --mdl-stage-height: 420px;
-  --mdl-volume-height: 72px;
+  width: 100%;
+  max-width: 100%;
+  /*
+   * Responsive viewport fit: base .mdl-v2-chart__stage caps height at --mdl-stage-height.
+   * Workstation overrides max-height so the primary column can grow with the shell flex layout.
+   * --mdl-layout-reserve: strip + ops telemetry + workstation surfaces (not the chart band).
+   */
+  --mdl-layout-reserve: 17.5rem;
+  --mdl-volume-height: clamp(56px, 7vh, 80px);
+  --mdl-stage-height: clamp(
+    300px,
+    calc(100vh - var(--mdl-layout-reserve) - var(--mdl-volume-height) - 6rem),
+    960px
+  );
   --mdl-chart-meta-band: 4.5rem;
 }
 
@@ -1349,7 +1361,7 @@
   grid-template-columns: minmax(148px, 176px) minmax(0, 1fr) minmax(248px, 292px);
   column-gap: 10px;
   flex: 1 1 auto;
-  min-height: 520px;
+  min-height: 0;
   align-items: stretch;
 }
 
@@ -1366,11 +1378,9 @@
   flex-direction: column;
   gap: 6px;
   min-height: 0;
-  max-height: calc(
-    var(--mdl-stage-height) + var(--mdl-volume-height) + var(--mdl-chart-meta-band) +
-      var(--mdl-chart-chrome-band) + 28px
-  );
+  max-height: none;
   overflow: auto;
+  align-self: stretch;
 }
 
 .mdl-v2--workstation-v2 .mdl-v2-rail--right {
@@ -1390,6 +1400,7 @@
 }
 
 .mdl-v2--workstation-v2 .mdl-v2-primary {
+  flex: 1 1 auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -1405,6 +1416,8 @@
 .mdl-v2--workstation-v2 .mdl-v2-chart__stage {
   flex: 1 1 auto;
   min-height: var(--mdl-stage-height);
+  height: auto;
+  max-height: none;
 }
 
 .mdl-v2--workstation-v2 .mdl-v2-ops--workstation-telemetry {
