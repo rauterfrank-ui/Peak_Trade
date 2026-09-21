@@ -64,6 +64,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_evaluate_authority_boundary | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_evaluate_authority_boundary | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_futures_input | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_futures_input | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_offline_scenario_replay | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_offline_scenario_replay | STATUS=OPEN (not proven) |  |

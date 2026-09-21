@@ -6029,7 +6029,40 @@ entities:
     evidence_sources:
       - src/trading/master_v2/naked_mv2_dp_mechanical_core_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
-    notes: Deterministic M_t/R_t/CM_t step; sole price rule CM_t>=D_t. No integrated replay owner.
+    notes: Deterministic M_t/R_t/CM_t step; sole price rule CM_t>=D_t. Delegates L8-L10 to explicit layered core.
+
+  - id: RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core
+    kind: RUNTIME_COMPONENT
+    name: Naked MV2+DP explicit L1-L10 layered core v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    module_role: double_play_quarantine
+    source_paths:
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/__init__.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/evidence_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/initialization_pipeline_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/running_mechanics_pipeline_v1.py
+      - src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/scope_pipeline_v1.py
+      - src/trading/master_v2/naked_mv2_dp_regime_v1.py
+      - docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json
+    evidence_sources:
+      - docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Explicit L1-L10 naked chain; NullLine/Scope/R_t separation; replaceable L6 D_t passthrough only.
 
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT

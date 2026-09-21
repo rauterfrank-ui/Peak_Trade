@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1`.
 
 ## Workflow
 
@@ -40,19 +40,23 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1` |
+| `RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core` |
+| `RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core` |
+| `REL:dp_naked_mechanical_core_depends_on_explicit_layered_core` |
+| `REL:dp_naked_mechanical_core_depends_on_purification_primitives` |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core` |
+| `REL:dp_naked_mechanical_core_depends_on_explicit_layered_core` |
 
 ## REMOVED_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Docs-only pointer reconciliation: Landscape closeout #6690 vs post-closeout Presentation-Ops #6697-#6705; CURRENT origin/main doc pointer f3ced3c5; no Landscape UI slice; STOP_IDLE preserved; ATLAS_AUTHORITY=NONE.
-- introduced_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
-- modified_by=LANDSCAPE_CURRENT_DOCUMENTATION_RECONCILIATION_V1
+- PR #6718 explicit L1-L10 naked MV2+DP layered core; mechanical core delegates L8-L10; BWP evidence layer_separation_evidence_v1.json; ATLAS_AUTHORITY=NONE.
+- introduced_by=NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1
+- modified_by=NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
