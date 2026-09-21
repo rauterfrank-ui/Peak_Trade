@@ -13,7 +13,7 @@ from trading.market_state.distinct_market_observation_acceptor_v1 import (
 )
 from trading.market_state.elementary_direction_v1 import ElementaryDirectionResultV1
 from trading.market_state.observation_identity_v1 import InstrumentObservationKeyV1
-from trading.master_v2.naked_mv2_dp_mechanical_core_v1 import NakedRegimeV1
+from trading.master_v2.naked_mv2_dp_regime_v1 import NakedRegimeV1
 
 
 class LayerReachabilityV1(str, Enum):

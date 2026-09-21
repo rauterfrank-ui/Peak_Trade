@@ -10,15 +10,19 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from enum import Enum
 from typing import Optional, Tuple
 
-from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
-from trading.master_v2.double_play_state import ActiveSide, RuntimeScopeState
+from trading.master_v2.naked_mv2_dp_regime_v1 import NakedRegimeV1
+
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import ScopeStateV1
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l8_running_reference_v1 import (
+    initial_running_reference_state_v1,
+)
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.running_mechanics_pipeline_v1 import (
+    run_running_mechanics_l8_through_l10_v1,
+)
 from trading.master_v2.naked_mv2_dp_single_boundary_purification_v1 import (
-    compute_counter_move_v1,
     naked_boundary_fail_closed_reasons_from_distance,
-    update_scope_internal_reference_state_v1,
 )
 
 MECHANICAL_CORE_VERSION = "naked_mv2_dp_mechanical_core/v1"
@@ -26,11 +30,6 @@ MECHANICAL_CORE_OWNER = "trading.master_v2.naked_mv2_dp_mechanical_core_v1"
 D_T_ROLE = "EXPLICIT_EXTERNAL_REQUIRED_INPUT"
 D_T_INTERNAL_DERIVATION_PRESENT = False
 SOLE_PRICE_SWITCH_RULE = "CM_t>=D_t"
-
-
-class NakedRegimeV1(str, Enum):
-    BULL = "bull"
-    BEAR = "bear"
 
 
 @dataclass(frozen=True)
@@ -62,24 +61,6 @@ class NakedMechanicalStepResultV1:
     r_t_reset_performed: bool
     fail_closed: bool
     fail_reasons: Tuple[str, ...]
-
-
-def _regime_to_scope_direction(regime: NakedRegimeV1) -> ScopeDirectionState:
-    if regime is NakedRegimeV1.BULL:
-        return ScopeDirectionState.LONG
-    return ScopeDirectionState.SHORT
-
-
-def _regime_to_active_side(regime: NakedRegimeV1) -> ActiveSide:
-    if regime is NakedRegimeV1.BULL:
-        return ActiveSide.LONG
-    return ActiveSide.SHORT
-
-
-def _flip_regime(regime: NakedRegimeV1) -> NakedRegimeV1:
-    if regime is NakedRegimeV1.BULL:
-        return NakedRegimeV1.BEAR
-    return NakedRegimeV1.BULL
 
 
 def _validate_mark_price(m_t: float) -> Tuple[str, ...]:
@@ -127,41 +108,36 @@ def execute_naked_mechanical_step_v1(
     assert d_raw is not None  # fail-closed above when None
     d_t = float(d_raw)
 
-    runtime = RuntimeScopeState(anchor_price=r_t_pre)
-    side = _regime_to_active_side(prev.regime)
-    runtime_post = update_scope_internal_reference_state_v1(
-        mark_price=m_t,
-        side=side,
-        st=runtime,
+    scope = ScopeStateV1(
+        instrument_id=inp.instrument_id,
+        d_t=d_t,
+        nullline_price=0.0,
+        nullline_provenance_epoch=0,
+        generator_id="mechanical_core_legacy_scope_adapter/v1",
+        valid=True,
     )
-    r_t_post = float(runtime_post.anchor_price)
-    direction = _regime_to_scope_direction(prev.regime)
-    cm_t = compute_counter_move_v1(
-        direction=direction,
-        mark_price=m_t,
-        reference_price=r_t_post,
+    running = initial_running_reference_state_v1(
+        instrument_id=inp.instrument_id,
+        reference_price_r_t=r_t_pre,
     )
-    switch_met = cm_t >= d_t
-    if switch_met:
-        state_post = _flip_regime(prev.regime)
-        r_final = m_t
-        reset = True
-    else:
-        state_post = prev.regime
-        r_final = r_t_post
-        reset = False
+    layered = run_running_mechanics_l8_through_l10_v1(
+        scope=scope,
+        regime=prev.regime,
+        mark_price_m_t=m_t,
+        running_reference=running,
+    )
 
     return NakedMechanicalStepResultV1(
         instrument_id=inp.instrument_id,
         m_t=m_t,
-        r_t_pre=r_t_pre,
-        r_t_post=r_t_post,
-        cm_t=cm_t,
+        r_t_pre=layered.r_t_pre,
+        r_t_post=layered.r_t_post,
+        cm_t=layered.cm_t,
         d_t=d_t,
-        state_pre=prev.regime,
-        switch_condition_met=switch_met,
-        state_post=state_post,
-        r_t_reset_performed=reset,
+        state_pre=layered.state_pre,
+        switch_condition_met=layered.switch_condition_met,
+        state_post=layered.state_post,
+        r_t_reset_performed=layered.r_t_reset_performed,
         fail_closed=False,
         fail_reasons=(),
     )

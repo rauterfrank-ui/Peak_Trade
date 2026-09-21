@@ -6,7 +6,7 @@ from trading.market_state.elementary_direction_v1 import (
     ElementaryDirectionStatusV1,
     ElementaryDirectionV1,
 )
-from trading.master_v2.naked_mv2_dp_mechanical_core_v1 import NakedRegimeV1
+from trading.master_v2.naked_mv2_dp_regime_v1 import NakedRegimeV1
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import (
     InitialStateInitializationInputV1,
     InitialStateInitializationOutputV1,
