@@ -1960,14 +1960,18 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     module_role: read_only_s03_s04_s08_s09_s10_v07_consumer_presentation
+    modified_by: PENDING_CHANGE
     source_paths:
       - src/webui/market_dashboard_landscape_v2/landscape_system_observability_completion_v1.py
       - src/webui/market_dashboard_landscape_v2/landscape_observability_common_v1.py
       - templates/peak_trade_dashboard/market_landscape_v2.html
     evidence_sources:
       - tests/webui/test_landscape_system_observability_completion_v1.py
+      - tests/webui/test_landscape_ui_completeness_fail_closed_v1.py
     notes: >-
       S03–S10/V07 observability hub from bound snapshots and chart binding only.
+      Missing optional facts use fail-closed presentation labels (NOT_AVAILABLE /
+      availability tokens); V07 freshness is never reconstructed from candle time.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_decision_double_play_observability_v1
@@ -1977,15 +1981,18 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     module_role: read_only_s05_s06_consumer_presentation_only
+    modified_by: PENDING_CHANGE
     source_paths:
       - src/webui/market_dashboard_landscape_v2/decision_double_play_observability_v1.py
       - templates/peak_trade_dashboard/market_landscape_v2.html
     evidence_sources:
       - tests/webui/test_landscape_decision_double_play_observability_fidelity_v1.py
+      - tests/webui/test_landscape_ui_completeness_fail_closed_v1.py
       - src/webui/market_dashboard_landscape_v2/contracts.py
     notes: >-
       S05/S06 observability from bound Landscape snapshots only; no decision/DP
-      recomputation or artificial join. ATLAS_AUTHORITY=NONE.
+      recomputation or artificial join. Absent optional decision fields stay
+      explicit fail-closed display tokens. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:landscape_source_health_projection_fidelity_v1
     kind: RUNTIME_COMPONENT
