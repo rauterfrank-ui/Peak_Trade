@@ -1513,6 +1513,31 @@ relations:
       Emits AccountEquityOrchestrationIngressV1 for governed account-equity
       orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:r_treasury_e4_productive_host_consumes_e4_orchestration
+    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
+    type: CONSUMES
+    target: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+    notes: >-
+      Productive host join reuses E4 orchestration join output; no parallel E4
+      owner. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:r_treasury_e4_productive_host_consumes_orchestration_ingress
+    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
+    type: CONSUMES
+    target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+    notes: >-
+      Productive host evaluation consumes E4 AccountEquityOrchestrationIngressV1
+      at ops.governed_productive_account_equity_authority_producer_v1 boundary.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:r_treasury_phase_3_consumes_phase_2_reconciliation
     source: GATE:treasury_phase_3_shadow_enforcement_v1
     type: CONSUMES

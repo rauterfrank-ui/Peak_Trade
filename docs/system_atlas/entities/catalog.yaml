@@ -9367,6 +9367,32 @@ entities:
       AccountEquityOrchestrationIngressV1. No STEP-29P or sizing mint.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
+    kind: RUNTIME_COMPONENT
+    name: Treasury E4 productive account-equity host join v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PENDING_PR_TREASURY_E4_PRODUCTIVE_HOST_JOIN_V1
+    source_paths:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/__init__.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/constants_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/models_v1.py
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/errors_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1.py
+    source_symbols:
+      - join_treasury_observation_through_e4_into_productive_account_equity_host_v1
+      - evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1
+    evidence_sources:
+      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+      - tests/ops/test_treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1.py
+      - docs/ops/specs/TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN_V1.md
+    notes: >-
+      E4 productive host join: TreasuryVenueObservationV1 through Phase-2 and E4
+      into governed productive account-equity host evaluation. Transport only; no
+      sizing or risk-admissible mint. ATLAS_AUTHORITY=NONE.
+
   - id: DATA_CONTRACT:account_equity_orchestration_ingress_v1
     kind: DATA_CONTRACT
     name: Account-equity orchestration ingress v1

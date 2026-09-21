@@ -15,7 +15,7 @@ WP_ID = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
 OWNER_GO = WP_ID
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}", "OWNER_GO=true"})
 
-EXPECTED_ORIGIN_MAIN_SHA = "402dbee646c85400c525acd14bc38f4c16e0a17f"
+EXPECTED_ORIGIN_MAIN_SHA = "3d3262e17711703d71a3f349f1f49900f9984c10"
 CANONICAL_PACK_RELPATH = "evidence/ops/treasury_pdf_current_head_rebind_and_census_v1"
 CANONICAL_PACK_AS_OF_FOLDER = "2026-09-21T010000Z"
 SCHEMA_CLASS = "TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1"
@@ -32,13 +32,13 @@ CURRENT_CANONICAL_TREASURY_AUTHORITY = (
 )
 
 EARLIEST_REAL_TREASURY_BLOCKER = (
-    "E4_TREASURY_CAPITAL_ADMISSION_TO_ACCOUNT_EQUITY_ORCHESTRATION_PRODUCTIVE_HOST_JOIN_NOT_WIRED"
+    "C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_PRODUCTIVE_SIZING_SOURCE_NOT_BOUND"
 )
-BLOCKER_CLASS = "PRODUCTIVE_HOST_JOIN_AND_ORCHESTRATION"
+BLOCKER_CLASS = "PRODUCTIVE_SIZING_SOURCE_BINDING"
 MISSING_FACT_OR_AUTHORITY = (
-    "Governed productive host wiring for E4 treasury capital admission → account-equity "
-    "orchestration join; offline joins proven after productive read-only venue observation; "
-    "no sizing or STEP-29P mint authorized."
+    "C08 treasury observed/reconciled capital candidate not bound as productive "
+    "AVAILABLE_FOR_SIZING source on governed account-equity host; E4 productive host "
+    "join wired; no sizing or STEP-29P mint authorized."
 )
 
 FULL_CORE_P1_STATUS = "CLOSED"
