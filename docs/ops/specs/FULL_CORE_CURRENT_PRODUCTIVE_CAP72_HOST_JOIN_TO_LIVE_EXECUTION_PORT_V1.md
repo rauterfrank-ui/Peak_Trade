@@ -14,6 +14,11 @@ Consumes Owner-GO
 `OWNER_GO_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1`.
 Atlas remains `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
+Execution identity is merge-stable via
+`assert_current_productive_29p_execution_identity_v1` (same contract as
+§11.2.1.DD / §11.2.1.DE). DE epoch binding accepts legacy and post-6742
+`FIRST_REAL_BLOCKER` snapshots when host-join has not yet been performed.
+
 This persist closes the remaining Cap-7.2 host-join remainder after
 §11.2.1.DE. `join_cap72_host_to_live_execution_port_v1` attaches the
 already constructible fail-closed `LiveExecutionPort` handle to the
@@ -24,8 +29,10 @@ not STEP-29Q, not POST, and not submission.
 their own isolated send/arm constants.
 
 ```text
+THIS_SLICE=11.2.1.DF.FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT
 OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1
 OWNER_GO_STATUS=CONSUMED
+EXECUTION_IDENTITY_BINDING=current_productive_29p_chain_runtime_integrity.v1
 CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=true
 CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_IMPLEMENTED=true
 HOST_JOINED=true
@@ -46,6 +53,7 @@ STEP_29Q_STATUS=PLAN_ONLY
 SUBMISSION_AUTHORIZED=false
 PRODUCTIVE_WIRE_SEND_REACHABLE=false
 POST_COUNT=0
+EXTERNAL_EFFECT_AUTHORIZED=false
 STEP_29P_RISK_ADMISSIBLE=true
 FIRST_DEFINITIVE_BLOCK=SUBMISSION_AUTHORIZED_REMAINS_FALSE
 BLOCKER_CLASS=E

@@ -4,12 +4,13 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-modified_by: CURRENT_PRODUCTIVE_DE_DD_EXECUTION_LADDER_BASELINE_AND_CONTRACT_CONSISTENCY_REPAIR_V1
+modified_by: FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR_6742 DD/DE execution ladder merge-stable baseline and contract consistency
-  repair (offline contract/tests); no port construction; ATLAS_AUTHORITY=NONE.
+  PR_6743 DF Cap-7.2 host-join merge-stable ladder closure to external-effect
+  gate (offline contract/tests); side-effect-free host-join only;
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []

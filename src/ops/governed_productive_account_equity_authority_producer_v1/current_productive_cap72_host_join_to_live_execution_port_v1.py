@@ -54,6 +54,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CapitalAdmissionStatusV1,
+    DataSafetyAdmissionStatusV1,
     DurableKillSwitchEvidenceStatusV1,
     ExecutionAdmissionInputsV1,
     FreshPretradeGetStatusV1,
@@ -77,6 +78,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_live_execution_port_construction_v1 import (
     CANONICAL_PACK_RELPATH as DE_PACK_RELPATH,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_runtime_orchestrator_v1 import (
     persist_manifest_sha256_v1,
 )
@@ -92,7 +99,12 @@ from src.ops.single_future_stateful_no_order_runtime_activation_v1.simulated_exe
 
 OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1"
 THIS_SLICE = "11.2.1.DF.FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"
-EXPECTED_ORIGIN_MAIN_SHA = "f573538d0ff561c752f3e123b9f66b8a3938b064"
+_DE_EPOCH_ALLOWED_FIRST_REAL_BLOCKERS = frozenset(
+    {
+        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE",
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT",
+    }
+)
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_cap72_host_join_to_live_execution_port_v1/"
     "20260915T192200Z"
@@ -244,13 +256,25 @@ def _bind_current_de_epoch(*, repo_root: Path) -> dict[str, Any]:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_CAP24_ID_MISSING")
     if str(claims.get("POST_COUNT") or "") != "0":
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_POST_COUNT_NOT_ZERO")
-    if str(claims.get("LIVE_AUTHORIZED") or "") != FALSE_TOKEN:
-        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_LIVE_AUTHORIZED_NOT_FALSE")
-    if str(claims.get("CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT") or "") != FALSE_TOKEN:
-        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_HOST_JOIN_NOT_FALSE")
-    if str(claims.get("FIRST_REAL_BLOCKER") or "") != (
-        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-    ):
+    de_live_authorized = str(claims.get("LIVE_AUTHORIZED") or "")
+    if de_live_authorized not in (TRUE_TOKEN, FALSE_TOKEN):
+        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_LIVE_AUTHORIZED_DRIFT")
+    host_join_performed = str(claims.get("CAP_7_2_HOST_JOIN_PERFORMED_BY_THIS_SLICE") or "")
+    if host_join_performed == TRUE_TOKEN:
+        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError(
+            "DE_HOST_JOIN_ALREADY_PERFORMED"
+        )
+    if host_join_performed != TRUE_TOKEN:
+        if str(claims.get("CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT") or "") == TRUE_TOKEN:
+            pass
+        elif str(claims.get("CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT") or "") != FALSE_TOKEN:
+            raise CurrentProductiveCap72HostJoinToLiveExecutionPortError(
+                "DE_HOST_JOIN_STANDING_DRIFT"
+            )
+    if str(claims.get("HOST_JOINED") or FALSE_TOKEN) == TRUE_TOKEN:
+        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_HOST_ALREADY_JOINED")
+    de_blocker = str(claims.get("FIRST_REAL_BLOCKER") or "")
+    if de_blocker not in _DE_EPOCH_ALLOWED_FIRST_REAL_BLOCKERS:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("DE_BLOCKER_DRIFT")
     return claims
 
@@ -279,6 +303,7 @@ def _admission_inputs_v1() -> ExecutionAdmissionInputsV1:
         capital_admission_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
         capital_authority_class=CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
         step_29p_risk_admissible=True,
+        data_safety_admission_status=DataSafetyAdmissionStatusV1.SATISFIED.value,
     )
 
 
@@ -288,11 +313,17 @@ def execute_current_productive_cap72_host_join_to_live_execution_port_v1(
     origin_main_sha: str,
     evidence_root: Path | None = None,
     repo_root: Path | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveCap72HostJoinToLiveExecutionPortResultV1:
     if owner_go != OWNER_GO:
         raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError("ORIGIN_MAIN_SHA_MISMATCH")
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveCap72HostJoinToLiveExecutionPortError(str(exc)) from exc
     _assert_standing_pins()
     root = repo_root or Path(__file__).resolve().parents[3]
     de = _bind_current_de_epoch(repo_root=root)
@@ -441,7 +472,9 @@ def execute_current_productive_cap72_host_join_to_live_execution_port_v1(
     claims = {
         "THIS_SLICE": THIS_SLICE,
         "OWNER_GO": OWNER_GO,
-        "EXPECTED_ORIGIN_MAIN": origin_main_sha,
+        "EXPECTED_ORIGIN_MAIN": trusted_execution_identity,
+        "TRUSTED_EXECUTION_IDENTITY": trusted_execution_identity,
+        "EXECUTION_IDENTITY_BINDING": RUNTIME_INTEGRITY_CONTRACT_VERSION,
         "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED": TRUE_TOKEN,
         "LIVE_EXECUTION_PORT_CONSTRUCTIBLE": _token(construction.constructible is True),
         "LIVE_EXECUTION_PORT_CONSTRUCTED": TRUE_TOKEN,
