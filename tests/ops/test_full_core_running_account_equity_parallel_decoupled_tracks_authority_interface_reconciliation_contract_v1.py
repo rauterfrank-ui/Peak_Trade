@@ -70,19 +70,16 @@ def test_contract_builds_and_preserves_pins() -> None:
     assert ACCOUNT_EQUITY_AUTHORITY_OWNER == "UNRESOLVED"
     assert contract.account_equity_authority_chain_closed is False
     assert ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED is False
-    assert contract.canonically_valid_account_equity_source_mapping is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
-    assert contract.selected_source == "NONE"
-    assert contract.available_for_sizing_source_status == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == "UNBOUND"
+    assert contract.canonically_valid_account_equity_source_mapping is True
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+    assert contract.source_selected is True
+    assert SOURCE_SELECTED is True
     assert contract.legacy_reconstruction_required_for_live is False
     assert LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE is False
-    assert contract.source_selected is False
-    assert SOURCE_SELECTED is False
-    assert contract.mapping_proven is False
-    assert MAPPING_PROVEN is False
-    assert contract.mapped_to_running_account_equity_available_for_sizing is False
-    assert MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is False
+    assert contract.mapping_proven is True
+    assert MAPPING_PROVEN is True
+    assert contract.mapped_to_running_account_equity_available_for_sizing is True
+    assert MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is True
     assert contract.governed_producer_created is False
     assert GOVERNED_PRODUCER_CREATED is False
     assert contract.source_to_semantic_mapping_authorized_by_this_wp is False
@@ -95,7 +92,7 @@ def test_contract_builds_and_preserves_pins() -> None:
     assert ROOT_OBSERVATION_IS_NOT_AUTHORITY is True
     assert contract.next_unresolved_dependency == NEXT_UNRESOLVED_DEPENDENCY
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert contract.next_owner_go_required == NEXT_OWNER_GO_REQUIRED
 
@@ -141,8 +138,11 @@ def test_runbook_spec_and_mot_persist() -> None:
     assert "RECONCILIATION_CONTRACT_CREATED=false" in runbook
     assert "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED" in runbook
     assert "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=false" in runbook
-    assert "SELECTED_SOURCE=NONE" in runbook
-    assert "AVAILABLE_FOR_SIZING_SOURCE_STATUS=UNBOUND" in runbook
+    assert (
+        "OWNER_GO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_AND_BIND_AVAILABLE_FOR_SIZING_"
+        "PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1"
+    ) in runbook
+    assert "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true" in runbook
     assert "LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE=false" in runbook
     assert "SOURCE_TO_SEMANTIC_MAPPING_AUTHORIZED_BY_THIS_WP=false" in runbook
     assert "SIZING_MINT_AUTHORIZED_BY_THIS_WP=false" in runbook

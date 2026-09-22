@@ -4,15 +4,16 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-modified_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
+modified_by: OWNER_GO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_AND_BIND_AVAILABLE_FOR_SIZING_PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  OWNER_DECISION_1=C PARALLEL_DECOUPLED_TRACKS Authority/Interface/Reconciliation
-  contract persist for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING; no mapping mint,
-  no sizing mint, RECONCILIATION_CONTRACT_CREATED remains false; ATLAS_AUTHORITY=NONE.
+  OPTION_B Source→Semantic mapping and AVAILABLE_FOR_SIZING producer bind under
+  parallel-decoupled tracks (offline contract-only); no numeric venue bind;
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
   - RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1
+  - RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1
 changed_relations: []
 changed_wiring: []
 changed_venue: []

@@ -728,10 +728,17 @@ def execute_current_productive_available_for_sizing_source_selection_v1(
     persist_as_of: str = CANONICAL_PERSIST_AS_OF,
     repo_root: Path | str | None = None,
 ) -> CurrentProductiveAvailableForSizingSourceSelectionResultV1:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 import (
+        reject_consume_execute_after_mapping_ratification_v1,
+    )
+
     if owner_go != OWNER_GO:
         raise CurrentProductiveAvailableForSizingSourceSelectionError("OWNER_GO_MISMATCH")
     if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         raise CurrentProductiveAvailableForSizingSourceSelectionError("ORIGIN_MAIN_SHA_MISMATCH")
+    reject_consume_execute_after_mapping_ratification_v1(
+        wp_label="CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_V1"
+    )
     _assert_standing_pins()
     root = Path(repo_root) if repo_root is not None else _REPO_ROOT
     _assert_parent_cr_pack_sealed(repo_root=root)

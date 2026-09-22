@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1` |
+| `RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- OWNER_DECISION_1=C PARALLEL_DECOUPLED_TRACKS Authority/Interface/Reconciliation contract persist for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING; no mapping mint, no sizing mint, RECONCILIATION_CONTRACT_CREATED remains false; ATLAS_AUTHORITY=NONE.
+- OPTION_B Source→Semantic mapping and AVAILABLE_FOR_SIZING producer bind under parallel-decoupled tracks (offline contract-only); no numeric venue bind; ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
+- modified_by=OWNER_GO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_AND_BIND_AVAILABLE_FOR_SIZING_PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

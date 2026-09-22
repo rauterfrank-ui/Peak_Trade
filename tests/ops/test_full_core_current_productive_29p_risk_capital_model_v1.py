@@ -219,10 +219,8 @@ def test_produce_free_margin_minus_conditional_p01() -> None:
         p01=_p01(applicability_state="APPLIES", value="12.50"),
         eligibility=_eligibility(),
     )
-    assert reduced.produced == "true"
-    assert reduced.value == "87.50"
-    assert reduced.p01_applied == "true"
-    assert reduced.u04_applied == "false"
+    assert reduced.produced == "false"
+    assert "P01_APPLIES_WITHOUT_CANONICAL_DIRECTIVE_SOURCE" in reduced.reason_codes
 
 
 def test_u04_and_forbidden_surfaces_fail_closed() -> None:
@@ -349,22 +347,18 @@ def test_step_29p_uses_producer_identity_not_venue_field() -> None:
 
 
 def test_execute_defines_model_without_mint_or_get(tmp_path: Path) -> None:
-    result = execute_current_productive_29p_risk_capital_model_v1(
-        owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-        evidence_root=tmp_path / "pack",
+    from src.ops.governed_productive_account_equity_authority_producer_v1.source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 import (
+        SourceToSemanticMappingBindError,
     )
-    assert result.selected_option == "OPTION_B"
-    assert result.fresh_get_executed == "false"
-    assert result.actual_get_count == "0"
-    assert result.post_count == "0"
-    assert result.current_live_critical_blocker == BLOCKER_ID
-    assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
-    with pytest.raises(CurrentProductive29PRiskCapitalModelError, match="OWNER_GO_MISMATCH"):
+
+    with pytest.raises(
+        SourceToSemanticMappingBindError,
+        match="CONSUME_BASELINE_SUPERSEDED_BY_MAPPING_RATIFICATION_V1",
+    ):
         execute_current_productive_29p_risk_capital_model_v1(
-            owner_go="WRONG",
+            owner_go=OWNER_GO,
             origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
-            evidence_root=tmp_path / "bad",
+            evidence_root=tmp_path / "pack",
         )
 
 
@@ -381,10 +375,12 @@ def test_canonical_pack_and_ssot() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert CT_HEADING in runbook
-    assert CU_HEADING in runbook
+    assert "FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1" in spec
+    assert (
+        "FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_"
+        "UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md"
+    ) in mot
     assert "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1" in runbook
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1.md" in mot
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1" in spec
     assert "11.2.1.CU" in atlas
     assert "current_productive_29p_risk_capital_model_v1.py" in atlas

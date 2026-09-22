@@ -10414,6 +10414,29 @@ entities:
       mapping, no sizing mint, no Option-D RECONCILIATION_CONTRACT_CREATED flip, no quarantine/#6714
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1
+    kind: RUNTIME_COMPONENT
+    name: Source to semantic mapping and sizing producer bind under parallel decoupled tracks v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: OWNER_GO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_AND_BIND_AVAILABLE_FOR_SIZING_PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1.py
+      - docs/ops/specs/FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md
+      - tests/ops/test_source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1.py
+    source_symbols:
+      - execute_source_to_semantic_mapping_and_sizing_producer_bind_v1
+      - prove_u04_double_subtraction_absent_v1
+      - reject_reconstruction_as_sizing_source_v1
+    evidence_sources:
+      - docs/ops/specs/FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md
+      - tests/ops/test_source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1.py
+    notes: >-
+      OPTION_B producer Source→Semantic mapping ratification under OWNER_DECISION_1=C
+      parallel-decoupled tracks. Offline contract-only; no GET/POST; no numeric venue bind;
+      QUARANTINE_OR_PR_6714_USED_AS_AUTHORITY=false. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1
     kind: RUNTIME_COMPONENT
     name: C08 treasury capital semantic authority closeout contract v1

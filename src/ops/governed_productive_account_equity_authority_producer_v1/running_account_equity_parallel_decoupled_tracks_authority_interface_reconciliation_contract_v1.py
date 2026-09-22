@@ -72,10 +72,12 @@ SELECTED_SOURCE = "NONE"
 AVAILABLE_FOR_SIZING_SOURCE_STATUS = "UNBOUND"
 
 NEXT_OWNER_GO_REQUIRED = (
-    "OWNER_GO_REQUIRED_TO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_OR_BIND_"
-    "AVAILABLE_FOR_SIZING_PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1"
+    "OWNER_GO_REQUIRED_TO_PERFORM_FRESH_TRUSTED_READ_ONLY_GET_OF_DETAILS_USDC_"
+    "AVAILEQ_AND_PRODUCE_29P_SIZING_VALUE_V1"
 )
-NEXT_UNRESOLVED_DEPENDENCY = "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+NEXT_UNRESOLVED_DEPENDENCY = (
+    "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+)
 
 FORBIDDEN_SILENT_SUBSTITUTES = (
     "availEq",
@@ -136,38 +138,35 @@ class RunningAccountEquityParallelDecoupledTracksAuthorityInterfaceReconciliatio
     expected_origin_main_sha: str
 
 
-def _require_preserved_pins_v1() -> None:
+def _require_parallel_track_separation_pins_v1() -> None:
+    """Post-#6734 separation semantics; mapping may be ratified by a later Owner-GO."""
     if RECONCILIATION_CONTRACT_CREATED is not False:
         raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
             "OPTION_D_RECONCILIATION_CONTRACT_CREATED_MUST_REMAIN_FALSE"
-        )
-    if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
-        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
-            "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING_MUST_REMAIN_FALSE"
-        )
-    if SOURCE_SELECTED is not False or CURRENT_PRODUCTIVE_SOURCE_SELECTED is not False:
-        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
-            "SOURCE_SELECTED_MUST_REMAIN_FALSE"
-        )
-    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS != "UNBOUND":
-        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
-            "AVAILABLE_FOR_SIZING_SOURCE_STATUS_MUST_REMAIN_UNBOUND"
         )
     if LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE is not False:
         raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
             "LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE_MUST_REMAIN_FALSE"
         )
-    if MAPPING_PROVEN is not False:
-        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
-            "MAPPING_PROVEN_MUST_REMAIN_FALSE"
-        )
-    if MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is not False:
-        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
-            "MAPPED_TO_RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING_MUST_REMAIN_FALSE"
-        )
     if GOVERNED_PRODUCER_CREATED is not False:
         raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
             "GOVERNED_PRODUCER_CREATED_MUST_REMAIN_FALSE"
+        )
+    if PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_CREATED is not True:
+        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
+            "PARALLEL_DECOUPLED_TRACKS_CONTRACT_MUST_REMAIN_CREATED"
+        )
+    if OBSERVATION_IS_NOT_AUTHORITY is not True:
+        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
+            "OBSERVATION_IS_NOT_AUTHORITY_MUST_REMAIN_TRUE"
+        )
+    if SILENT_EQUIVALENCE_OR_SUBSTITUTION_FORBIDDEN is not True:
+        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
+            "SILENT_EQUIVALENCE_OR_SUBSTITUTION_FORBIDDEN_MUST_REMAIN_TRUE"
+        )
+    if ACCOUNT_EQUITY_AUTHORITY_OWNER != "UNRESOLVED":
+        raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
+            "ACCOUNT_EQUITY_AUTHORITY_OWNER_MUST_REMAIN_UNRESOLVED"
         )
 
 
@@ -179,7 +178,7 @@ def build_running_account_equity_parallel_decoupled_tracks_authority_interface_r
         raise ParallelDecoupledTracksAuthorityInterfaceReconciliationContractError(
             "CONTRACT_ID_REQUIRED"
         )
-    _require_preserved_pins_v1()
+    _require_parallel_track_separation_pins_v1()
     return RunningAccountEquityParallelDecoupledTracksAuthorityInterfaceReconciliationContractV1(
         contract_id=str(contract_id).strip(),
         contract_version=CONTRACT_VERSION,

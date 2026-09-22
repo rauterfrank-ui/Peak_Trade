@@ -48,6 +48,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.classified
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING,
+    P01_PRODUCTIVE_EXTERNAL_SOURCE_MAPPING_RESOLVED,
     CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_29P_BINDING_STATUS,
     CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ACCOUNT_LEVEL_AVAIL_EQ_VERDICT,
     CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ADJ_EQ_VERDICT,
@@ -659,6 +660,11 @@ def produce_current_productive_29p_risk_capital_v1(
     if p01_state == P01_UNKNOWN or p01_state == "":
         reasons.append("P01_UNKNOWN_FAIL_CLOSED")
     elif p01_state == P01_APPLIES:
+        if (
+            CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+            and P01_PRODUCTIVE_EXTERNAL_SOURCE_MAPPING_RESOLVED is not True
+        ):
+            reasons.append("P01_APPLIES_WITHOUT_CANONICAL_DIRECTIVE_SOURCE")
         parsed = _parse_non_negative_decimal(p01.value, field="P01")
         if parsed is None or parsed <= 0:
             reasons.append("P01_APPLIES_REQUIRES_POSITIVE_AMOUNT")
@@ -910,10 +916,17 @@ def execute_current_productive_29p_risk_capital_model_v1(
     origin_main_sha: str,
     evidence_root: Path | None = None,
 ) -> CurrentProductive29PRiskCapitalPersistResultV1:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 import (
+        reject_consume_execute_after_mapping_ratification_v1,
+    )
+
     if owner_go != OWNER_GO:
         raise CurrentProductive29PRiskCapitalModelError("OWNER_GO_MISMATCH")
     if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
         raise CurrentProductive29PRiskCapitalModelError("ORIGIN_MAIN_SHA_MISMATCH")
+    reject_consume_execute_after_mapping_ratification_v1(
+        wp_label="CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1"
+    )
     _assert_standing_pins()
     as_of = CANONICAL_PERSIST_AS_OF
     store = (
