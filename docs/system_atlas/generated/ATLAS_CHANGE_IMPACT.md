@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:whole_system_connection_closure_bounded_wp_v1` |
+| `CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Whole-system connection closure bounded WP v1: forensic census constants and static prove_whole_system_connection_closure_v1 for productive Decision→PRE_EXTERNAL; WHOLE_SYSTEM_CONNECTION_COMPLETE=true; no cutover or FINAL_D_T formula change; ATLAS_AUTHORITY=NONE.
-- introduced_by=WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1
-- modified_by=WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1
+- PRE_EXTERNAL to external-effect boundary bounded WP v1: forensic census constants and static prove_pre_external_to_external_effect_boundary_v1 after whole-system Decision→PRE_EXTERNAL closure; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true; no permit/STEP-29Q/POST; ATLAS_AUTHORITY=NONE.
+- introduced_by=PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
+- modified_by=PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
