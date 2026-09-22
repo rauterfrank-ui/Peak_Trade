@@ -340,7 +340,7 @@ def test_d4_d5_d6_prerequisites_and_existing_owner_unchanged() -> None:
         "RATIFIED_CLASSIFIED_EVENT_KIND_SET_AND_AUTHORIZED_PRODUCTIVE_EVENT_SOURCE_SEAM"
     )
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     with pytest.raises(ExecutionPortConstructionForbiddenError):
         construct_live_execution_port_v1()

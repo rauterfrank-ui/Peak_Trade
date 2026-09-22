@@ -209,7 +209,7 @@ def test_ratification_is_none_and_facts_remain_unknown(tmp_path: Path) -> None:
     assert WIRE_SEND_PERMITTED is True
     assert (
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
-        == "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        == "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
 
 

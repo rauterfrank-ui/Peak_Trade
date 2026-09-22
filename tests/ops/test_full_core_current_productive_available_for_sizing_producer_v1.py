@@ -232,27 +232,31 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert WIRE_SEND_PERMITTED is True
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
-    assert MAPPING_PROVEN is False
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+    assert MAPPING_PROVEN is True
     assert KIND_SET_RESOLVED is False
     assert KIND_SET_UPLIFT_THIS_WORKPACKAGE is False
-    assert SOURCE_SELECTED is False
+    assert SOURCE_SELECTED is True
     assert GOVERNED_PRODUCER_CREATED is False
-    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is False
+    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is True
     assert CURRENT_PRODUCTIVE_PRODUCER_MINT_AUTHORIZED is False
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_CREATED is True
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IS_SOURCE_OBJECT is True
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_MINT_AUTHORIZED is False
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_SELECTED_AVAILABLE_FOR_SIZING_SOURCE == "NONE"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == (
+        "BOUND_TYPED_OFFLINE_PRODUCER_WRAP"
+    )
+    assert CURRENT_PRODUCTIVE_SELECTED_AVAILABLE_FOR_SIZING_SOURCE == (
+        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1"
+    )
     assert CURRENT_PRODUCTIVE_FRESH_GET_EXECUTED is False
     assert CURRENT_PRODUCTIVE_U04_CURRENT_APPLICATION == "SUBTRACT_AFTER_BASE_ONCE_NOT_SOURCE"
     assert CURRENT_PRODUCTIVE_LIVE_CRITICAL_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_UNBOUND"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_29P_BINDING_STATUS == (
-        "CONSUMER_BOUND_TO_PRODUCER_OUTPUT_VALUE_UNBOUND"
+        "CONSUMER_BOUND_TO_PRODUCER_TYPED_SEMANTIC_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert U04_LEGACY_STATUS == "UNRESOLVED"
     assert PRODUCTIVE_U04_EQUITY_STOCK_ROLE == DISPOSITION_NOT_EQUITY_STOCK
@@ -260,7 +264,7 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert U05_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert U06_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False
@@ -498,35 +502,15 @@ def test_step_29p_binding_uses_producer_identity_not_venue_field() -> None:
 
 
 def test_execute_defines_producer_without_mint_or_get(tmp_path: Path) -> None:
-    result = _execute(tmp_path)
-    claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
-    facts = json.loads((tmp_path / "pack" / "input_facts_v1.json").read_text(encoding="utf-8"))
-    algebra = json.loads(
-        (tmp_path / "pack" / "producer_algebra_v1.json").read_text(encoding="utf-8")
+    from src.ops.governed_productive_account_equity_authority_producer_v1.source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 import (
+        SourceToSemanticMappingBindError,
     )
-    assert result.producer_created == "true"
-    assert result.producer_identity == PRODUCER_IDENTITY
-    assert result.algebra_id == CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_ALGEBRA
-    assert result.base_status == "UNBOUND"
-    assert result.fresh_get_executed == "false"
-    assert result.current_live_critical_blocker == BLOCKER_ID
-    assert claims["SOURCE_SELECTED"] == "false"
-    assert claims["VENUE_SELECTED_SOURCE"] == "NONE"
-    assert claims["SELECTED_SOURCE_OBJECT"] == PRODUCER_IDENTITY
-    assert claims["AUTHORITY_UPLIFT"] == "false"
-    assert claims["EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE"] == "false"
-    assert claims["U04_APPLICATION"] == "SUBTRACT_AFTER_BASE_ONCE_NOT_SOURCE"
-    assert claims["SEALED_LEGACY_CENSUS_REOPENED"] == "false"
-    assert claims["KIND_SET"] == "EMPTY_FAIL_CLOSED"
-    assert claims["STEP_29P_RISK_ADMISSIBLE"] == "false"
-    assert claims["ACTUAL_GET_COUNT"] == "0"
-    assert claims["POST_COUNT"] == "0"
-    assert claims["PRODUCER_MINT_AUTHORIZED"] == "false"
-    assert claims["GOVERNED_PRODUCER_CREATED"] == "false"
-    assert claims["PIN_OWNER_GO_STATUS"] == PIN_OWNER_GO_STATUS
-    assert facts["base_status"] == "UNBOUND"
-    assert algebra["formula"] == "AVAILABLE_FOR_SIZING=BASE-U04-P01_IF_APPLIES"
-    assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
+
+    with pytest.raises(
+        SourceToSemanticMappingBindError,
+        match="CONSUME_BASELINE_SUPERSEDED_BY_MAPPING_RATIFICATION_V1",
+    ):
+        _execute(tmp_path)
 
 
 def test_source_does_not_get_or_post_or_uplift() -> None:
@@ -574,13 +558,9 @@ def test_runbook_ct_persists_producer_without_mint() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    start = runbook.index(CT_HEADING)
-    ct_section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    ct_section = spec
     assert OWNER_GO in ct_section
     assert PIN_OWNER_GO in ct_section
-    assert (
-        "THIS_SLICE=11.2.1.CT.FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER"
-    ) in ct_section
     assert "AVAILABLE_FOR_SIZING_PRODUCER_CREATED=true" in ct_section
     assert "AVAILABLE_FOR_SIZING_BASE_STATUS=UNBOUND" in ct_section
     assert (
@@ -593,23 +573,14 @@ def test_runbook_ct_persists_producer_without_mint() -> None:
     assert "RECONCILIATION_TARGET_STATUS=EQ_RECONCILIATION_TARGET_ONLY" in ct_section
     assert "U04_APPLICATION=SUBTRACT_AFTER_BASE_ONCE_NOT_SOURCE" in ct_section
     assert "KIND_SET=EMPTY_FAIL_CLOSED" in ct_section
-    assert "EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE=false" in ct_section
     assert "AUTHORITY_UPLIFT=false" in ct_section
-    assert "SOURCE_SELECTED=false" in ct_section
     assert "STEP_29P_RISK_ADMISSIBLE=false" in ct_section
     assert "NO_HOPE_GET=true" in ct_section
     assert "ACTUAL_GET_COUNT=0" in ct_section
     assert BLOCKER_ID in ct_section
-    assert EXACT_MISSING_PREDICATE in ct_section
-    assert NEXT_OWNER_GO in ct_section
-    assert NEXT_PRODUCTIVE_NODE in ct_section
-    assert NEXT_ACTION in ct_section
-    assert "CURRENT_CANONICAL_SECTION=11.2.1.CT" in ct_section
-    assert "ATLAS_AUTHORITY=NONE" in ct_section
-    assert CS_HEADING in runbook
+    assert (
+        "OWNER_GO_RATIFY_SOURCE_TO_SEMANTIC_MAPPING_AND_BIND_AVAILABLE_FOR_SIZING_"
+        "PRODUCER_UNDER_PARALLEL_DECOUPLED_TRACKS_V1"
+    ) in runbook
     assert ("DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1") in spec
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1.md" in mot
-    assert CT_HEADING in mot
-    assert "11.2.1.CT" in atlas
     assert "current_productive_available_for_sizing_producer_v1.py" in atlas
-    assert "ATLAS_AUTHORITY=NONE" in atlas

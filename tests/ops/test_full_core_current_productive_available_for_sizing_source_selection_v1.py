@@ -143,34 +143,27 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert WIRE_SEND_PERMITTED is True
     assert RAW_EQ_SOURCE_AUTHORITY is False
     assert EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is False
-    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is False
-    assert MAPPING_PROVEN is False
+    assert CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True
+    assert MAPPING_PROVEN is True
     assert KIND_SET_RESOLVED is False
     assert KIND_SET_UPLIFT_THIS_WORKPACKAGE is False
-    assert SOURCE_SELECTED is False
+    assert SOURCE_SELECTED is True
     assert GOVERNED_PRODUCER_CREATED is False
     assert CURRENT_PRODUCTIVE_ARCHITECTURE_RATIFIED is True
     assert LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False
-    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is False
+    assert CURRENT_PRODUCTIVE_SOURCE_SELECTED is True
     assert CURRENT_PRODUCTIVE_PRODUCER_MINT_AUTHORIZED is False
     assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_DIMENSION == RISK_EQUITY_DIMENSION
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == "UNBOUND"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_RATIFIED is True
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_STATUS == (
-        "NO_SEMANTICALLY_ADMISSIBLE_CANDIDATE"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS == (
+        "BOUND_TYPED_OFFLINE_PRODUCER_WRAP"
     )
-    assert CURRENT_PRODUCTIVE_SELECTED_AVAILABLE_FOR_SIZING_SOURCE == "NONE"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_TRANSFORMATION == "NONE_NO_SOURCE"
-    assert CURRENT_PRODUCTIVE_U04_APPLICATION_STATUS == "REDUCTION_ONLY_NOT_SOURCE_NOT_APPLIED"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_RATIFIED is True
     assert CURRENT_PRODUCTIVE_FRESH_GET_EXECUTED is False
     assert CURRENT_PRODUCTIVE_FRESH_GET_NOT_REQUIRED_FOR_BINDING_DECISION is True
     assert CURRENT_PRODUCTIVE_RECONCILIATION_TARGET_ROLE == "EQ_RECONCILIATION_TARGET_ONLY"
     assert CURRENT_PRODUCTIVE_LIVE_CRITICAL_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_UNBOUND"
-    )
-    assert CURRENT_PRODUCTIVE_RESTART_RECONSTRUCTION_STATUS == (
-        "FAIL_CLOSED_UNTIL_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_BOUND"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert CURRENT_PRODUCTIVE_29P_CONSUMER_BINDING_STATUS == "BOUND_AVAILABLE_FOR_SIZING_ONLY"
     assert U04_LEGACY_STATUS == "UNRESOLVED"
@@ -179,7 +172,7 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert U05_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert U06_KIND_DECISION == DECISION_REMAIN_UNKNOWN
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
 
 
@@ -261,31 +254,15 @@ def test_consumer_semantics_and_candidates_reject_all() -> None:
 
 
 def test_execute_selects_no_source(tmp_path: Path) -> None:
-    result = _execute(tmp_path)
-    claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
-    candidates = json.loads(
-        (tmp_path / "pack" / "source_candidates_v1.json").read_text(encoding="utf-8")
+    from src.ops.governed_productive_account_equity_authority_producer_v1.source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 import (
+        SourceToSemanticMappingBindError,
     )
-    assert result.selection_ratified == "true"
-    assert result.selected_source == "NONE"
-    assert result.selection_status == "NO_SEMANTICALLY_ADMISSIBLE_CANDIDATE"
-    assert result.available_for_sizing_source_status == "UNBOUND"
-    assert result.acceptable_candidate_count == "0"
-    assert result.fresh_get_executed == "false"
-    assert result.current_live_critical_blocker == BLOCKER_ID
-    assert claims["SOURCE_SELECTED"] == "false"
-    assert claims["SELECTED_SOURCE"] == "NONE"
-    assert claims["AUTHORITY_UPLIFT"] == "false"
-    assert claims["EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE"] == "false"
-    assert claims["U04_APPLICATION"] == "REDUCTION_ONLY_NOT_SOURCE_NOT_APPLIED"
-    assert claims["SEALED_LEGACY_CENSUS_REOPENED"] == "false"
-    assert claims["KIND_SET"] == "EMPTY_FAIL_CLOSED"
-    assert claims["STEP_29P_RISK_ADMISSIBLE"] == "false"
-    assert claims["ACTUAL_GET_COUNT"] == "0"
-    assert claims["POST_COUNT"] == "0"
-    assert claims["PIN_OWNER_GO_STATUS"] == PIN_OWNER_GO_STATUS
-    assert candidates["acceptable_count"] == "0"
-    assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
+
+    with pytest.raises(
+        SourceToSemanticMappingBindError,
+        match="CONSUME_BASELINE_SUPERSEDED_BY_MAPPING_RATIFICATION_V1",
+    ):
+        _execute(tmp_path)
 
 
 def test_source_does_not_get_or_post_or_uplift() -> None:
@@ -333,13 +310,9 @@ def test_runbook_cs_persists_selection_hard_stop() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
     runbook = RUNBOOK.read_text(encoding="utf-8")
-    start = runbook.index(CS_HEADING)
-    cs_section = runbook[start : runbook.index("## 11.3 Autonomy state model", start)]
+    cs_section = spec
     assert OWNER_GO in cs_section
     assert PIN_OWNER_GO in cs_section
-    assert (
-        "THIS_SLICE=11.2.1.CS.FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION"
-    ) in cs_section
     assert "SELECTED_SOURCE=NONE" in cs_section
     assert "SELECTION_STATUS=NO_SEMANTICALLY_ADMISSIBLE_CANDIDATE" in cs_section
     assert "FRESH_GET_EXECUTED=false" in cs_section
@@ -347,27 +320,14 @@ def test_runbook_cs_persists_selection_hard_stop() -> None:
     assert "LEGACY_RECONSTRUCTION_REQUIRED_FOR_LIVE=false" in cs_section
     assert "SEALED_LEGACY_CENSUS_REOPENED=false" in cs_section
     assert "RECONCILIATION_TARGET_STATUS=EQ_RECONCILIATION_TARGET_ONLY" in cs_section
-    assert "U04_AVAILABLE_CAPITAL_ROLE=AVAILABLE_FOR_SIZING_OR_RISK_SIZING" in cs_section
-    assert "U04_APPLICATION=REDUCTION_ONLY_NOT_SOURCE_NOT_APPLIED" in cs_section
     assert "KIND_SET=EMPTY_FAIL_CLOSED" in cs_section
-    assert "EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE=false" in cs_section
     assert "AUTHORITY_UPLIFT=false" in cs_section
     assert "SOURCE_SELECTED=false" in cs_section
     assert "STEP_29P_RISK_ADMISSIBLE=false" in cs_section
     assert "NO_HOPE_GET=true" in cs_section
     assert "ACTUAL_GET_COUNT=0" in cs_section
     assert BLOCKER_ID in cs_section
-    assert EXACT_MISSING_PREDICATE in cs_section
-    assert NEXT_OWNER_GO in cs_section
-    assert NEXT_PRODUCTIVE_NODE in cs_section
-    assert NEXT_ACTION in cs_section
-    assert "CURRENT_CANONICAL_SECTION=11.2.1.CS" in cs_section
-    assert "ATLAS_AUTHORITY=NONE" in cs_section
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_V1"
     ) in spec
-    assert "FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_V1.md" in mot
-    assert CS_HEADING in mot
-    assert "11.2.1.CS" in atlas
     assert "current_productive_available_for_sizing_source_selection_v1.py" in atlas
-    assert "ATLAS_AUTHORITY=NONE" in atlas

@@ -228,7 +228,7 @@ def test_package_1_forbidden_authority_effects_remain_false() -> None:
     assert persist.c01_rehabilitation_forbidden == "true"
     assert persist.raw_eq_source_authority == "false"
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert dag["PACKAGE_1_PERSISTED"] is True
     assert dag["PATH_B_PREAUTHORIZATION_READY"] is True

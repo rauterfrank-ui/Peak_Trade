@@ -106,7 +106,7 @@ def test_standing_live_enabled_default_and_seam_flags() -> None:
     assert node.wiring_authorized is True
     assert node.standing_live_gates_would_change is False
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert HOST_JOIN_NOT_IN_LIVE_ADMISSION_GAP_DAG is True
     assert LIVE_EXECUTION_PORT_CONSTRUCTION_FORBIDDEN is False

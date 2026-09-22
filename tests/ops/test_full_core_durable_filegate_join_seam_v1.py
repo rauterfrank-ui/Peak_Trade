@@ -77,7 +77,7 @@ def test_join_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"
+        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
     )
     node = gap_node_v1("DURABLE_FILEGATE_RUNTIME_JOIN")
     assert node.implementation_status == "JOINED_TYPED_EVIDENCE_FAIL_CLOSED"
