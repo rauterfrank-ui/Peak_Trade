@@ -27,7 +27,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     build_cap24_mark_prices_sidecar_from_acquisition_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_selection_state_canonical_writer_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     PUBLISH_MANIFEST_FILENAME,
     THIS_SLICE,
@@ -42,13 +41,18 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
     MULTI_FUTURE_RUNTIME_AUTHORIZED,
 )
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
+)
 from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     _eligible_rows,
     _okx_envelope,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BASE_SHA = "e5396206530415b469fa345ec04322613c953c44"
+BASE_SHA = TRUSTED_TEST_ORIGIN_MAIN_SHA
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 HISTORICAL_EEA_EVIDENCE = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1/"
@@ -102,7 +106,6 @@ def _acquisition(*, include_mark_for: str | None = None) -> EeaUniverseAcquisiti
 
 def test_standing_constants_and_spec() -> None:
     assert CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_CREATED is True
-    assert EXPECTED_ORIGIN_MAIN_SHA == BASE_SHA
     assert OWNER_GO == "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1"
     assert THIS_SLICE.endswith("CAP24_SELECTION_STATE_CANONICAL_WRITER")
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
@@ -111,6 +114,7 @@ def test_standing_constants_and_spec() -> None:
     text = WRITER_SOURCE.read_text(encoding="utf-8")
     assert "run_single_selected_future_policy_v1" not in text
     assert "from src.ops.productive_futures_ranking_producer_v1.ranking_v1" not in text
+    assert "assert_current_productive_29p_execution_identity_v1" in text
 
 
 def test_writer_reuses_cap21_to_cap23_chain(tmp_path: Path) -> None:
@@ -132,6 +136,7 @@ def test_writer_reuses_cap21_to_cap23_chain(tmp_path: Path) -> None:
             productivity_root=tmp_path / "prod",
             repository_sha=BASE_SHA,
             producer_observed_at_unix=_OBSERVED_UNIX,
+            execution_integrity_backend=_INTEGRITY,
         )
         assert result.ok is True
         mock_chain.assert_called_once()
@@ -149,6 +154,7 @@ def test_productivity_layout_and_handoff(tmp_path: Path) -> None:
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,
         decision_epoch=_epoch_rfc(observed),
+        execution_integrity_backend=_INTEGRITY,
     )
     assert result.repository_sha == BASE_SHA
     state = prod / RUNTIME_STATE_DIRNAME
@@ -183,6 +189,7 @@ def test_origin_main_sha_mismatch_fail_closed(tmp_path: Path) -> None:
             acquisition_result=_acquisition(),
             productivity_root=tmp_path / "prod",
             repository_sha=BASE_SHA,
+            execution_integrity_backend=_INTEGRITY,
         )
 
 
@@ -197,6 +204,7 @@ def test_repository_sha_mismatch_fail_closed(tmp_path: Path) -> None:
             acquisition_result=_acquisition(),
             productivity_root=tmp_path / "prod",
             repository_sha="deadbeef" * 5,
+            execution_integrity_backend=_INTEGRITY,
         )
 
 
@@ -211,6 +219,7 @@ def test_stale_selection_handoff_fail_closed(tmp_path: Path) -> None:
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,
         decision_epoch=_epoch_rfc(observed),
+        execution_integrity_backend=_INTEGRITY,
     )
     sel_path = prod / RUNTIME_STATE_DIRNAME / "selection" / SELECTION_FILENAME
     payload = json.loads(sel_path.read_text(encoding="utf-8"))
@@ -253,6 +262,7 @@ def test_historical_evidence_root_forbidden(tmp_path: Path) -> None:
                 acquisition_result=_acquisition(),
                 productivity_root=evidence_root,
                 repository_sha=BASE_SHA,
+                execution_integrity_backend=_INTEGRITY,
             )
     finally:
         shutil.rmtree(evidence_root, ignore_errors=True)
@@ -268,6 +278,7 @@ def test_handoff_no_reselection(tmp_path: Path) -> None:
         productivity_root=prod,
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,
+        execution_integrity_backend=_INTEGRITY,
     )
     with patch(
         "src.ops.single_selected_future_policy_v1.producer_v1.run_single_selected_future_policy_v1"
@@ -297,4 +308,5 @@ def test_default_productivity_root_requires_explicit_allow() -> None:
             acquisition_result=_acquisition(),
             productivity_root=None,
             repository_sha=BASE_SHA,
+            execution_integrity_backend=_INTEGRITY,
         )

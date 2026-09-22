@@ -44,6 +44,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     RUNTIME_STATE_DIRNAME,
     default_current_productive_cap24_runtime_state_root_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+    assert_current_productive_29p_repository_sha_for_execution_v1,
+)
 from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
     load_and_validate_ranking_snapshot_v1,
@@ -63,7 +69,6 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 
 OWNER_GO = "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1"
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "e5396206530415b469fa345ec04322613c953c44"
 THIS_SLICE = "11.2.1.EK.FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1"
 CONTRACT_VERSION = "v1"
@@ -238,18 +243,30 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     producer_observed_at_unix: float | None = None,
     decision_epoch: str | None = None,
     allow_default_productivity_root: bool = False,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveCap24SelectionStateWriteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductiveCap24SelectionStateWriterError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveCap24SelectionStateWriterError("ORIGIN_MAIN_SHA_MISMATCH")
     if acquisition_result.ok is not True:
         raise CurrentProductiveCap24SelectionStateWriterError("ACQUISITION_INPUT_NOT_OK")
     _assert_protected_surfaces_v1()
 
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveCap24SelectionStateWriterError(str(exc)) from exc
+
     repo_sha = str(repository_sha or origin_main_sha).strip()
-    if repo_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveCap24SelectionStateWriterError("REPOSITORY_SHA_BASELINE_MISMATCH")
+    try:
+        assert_current_productive_29p_repository_sha_for_execution_v1(
+            repository_sha=repo_sha,
+            trusted_execution_identity=trusted_execution_identity,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveCap24SelectionStateWriterError(str(exc)) from exc
 
     prod_root = (
         Path(productivity_root)

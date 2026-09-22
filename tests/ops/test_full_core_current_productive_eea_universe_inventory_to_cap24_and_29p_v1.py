@@ -49,7 +49,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     ALLOWED_OWNER_GOS,
     CANONICAL_PACK_RELPATH,
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     CurrentProductiveEeaUniverseTo29PError,
     execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1,
@@ -64,9 +63,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
+)
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
 )
+
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK_PATH = REPO_ROOT / "docs" / "runbooks" / "canonical" / "PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -213,12 +218,13 @@ def _eligible_transport() -> FakeEeaPublicUniverseGetTransportV1:
 def _run(tmp_path: Path, **overrides):
     payload = {
         "owner_go": OWNER_GO,
-        "origin_main_sha": EXPECTED_ORIGIN_MAIN_SHA,
+        "origin_main_sha": TRUSTED_TEST_ORIGIN_MAIN_SHA,
         "evidence_root": tmp_path / "store",
         "acquisition_transport": _eligible_transport(),
         "fresh_get_transport": InjectedPayloadsFreshGetTransportV1(payloads=_identity_payloads()),
         "execute_network": False,
         "producer_observed_at_unix": 1_700_000_100.0,
+        "execution_integrity_backend": _INTEGRITY,
     }
     payload.update(overrides)
     return execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(**payload)
@@ -237,7 +243,6 @@ def test_flags_and_authority_bounds() -> None:
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert DEFAULT_INSTRUMENT_ID == CANARY_DEFAULT_INSTRUMENT_ID
     assert OWNER_GO in ALLOWED_OWNER_GOS
-    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
 
 
 def test_acquisition_rejects_www_okx_and_non_get() -> None:

@@ -69,6 +69,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
     default_current_productive_cap24_runtime_state_root_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+    resolve_cap24_persisted_repository_sha_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     CurrentProductiveLabInstrumentScopeError,
     require_current_productive_29p_bound_instrument_v1,
@@ -128,7 +134,6 @@ ALLOWED_OWNER_GOS = frozenset(
         f"OWNER_GO_{OWNER_GO}",
     }
 )
-EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
 THIS_SLICE = "11.2.1.EI.FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1"
 CONTRACT_VERSION = "v1"
@@ -649,11 +654,17 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
     inst_type: str = "FUTURES",
     offline_compose_only: bool = True,
     cap24_productivity_root: Path | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductive29PCommonEpochHandoffExecuteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductive29PCommonEpochHandoffError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductive29PCommonEpochHandoffError("ORIGIN_MAIN_SHA_MISMATCH")
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductive29PCommonEpochHandoffError(str(exc)) from exc
     if offline_compose_only is not True:
         raise CurrentProductive29PCommonEpochHandoffError("OFFLINE_COMPOSE_ONLY_REQUIRED")
     if fresh_get_transport is None:
@@ -704,17 +715,24 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         if prod_root is not None:
             cap24_handoff_status = "ATTEMPTED"
             try:
+                cap24_repository_sha = resolve_cap24_persisted_repository_sha_v1(
+                    productivity_root=prod_root,
+                    trusted_execution_identity=trusted_execution_identity,
+                )
                 cap24_handoff = (
                     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
                         productivity_root=prod_root,
-                        repository_sha=origin_main_sha,
+                        repository_sha=cap24_repository_sha,
                         binding_epoch=decision_epoch,
                     )
                 )
                 bound_input = cap24_handoff.bound_instrument
                 cap24_handoff_status = "ACQUIRED"
                 cap24_provenance_digest = cap24_handoff.selection_integrity_digest
-            except CurrentProductive29PCap24ProvenanceHandoffError:
+            except (
+                CurrentProductive29PCap24ProvenanceHandoffError,
+                CurrentProductive29PChainBaselineError,
+            ):
                 bound_input = None
                 cap24_handoff_status = "FAIL_CLOSED"
     try:

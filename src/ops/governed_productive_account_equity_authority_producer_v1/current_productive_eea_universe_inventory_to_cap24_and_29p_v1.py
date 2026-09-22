@@ -76,6 +76,12 @@ from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admis
 from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+    assert_current_productive_29p_repository_sha_for_execution_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED,
     CURRENT_PRODUCTIVE_29P_FRESH_GET_ENDPOINT,
@@ -163,7 +169,6 @@ PIN_OWNER_GO = (
     "FOR_29P_WITHOUT_CANARY_IMPORT_OR_RESELECTION_V1"
 )
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, PIN_OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
 THIS_SLICE = "11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P"
 CONTRACT_VERSION = "v1"
 AUTHORITY_EFFECT = "NONE"
@@ -330,11 +335,17 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
     execute_network: bool = False,
     repository_sha: str | None = None,
     producer_observed_at_unix: float | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveEeaUniverseTo29PResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductiveEeaUniverseTo29PError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveEeaUniverseTo29PError("ORIGIN_MAIN_SHA_MISMATCH")
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveEeaUniverseTo29PError(str(exc)) from exc
     if execute_network is not True and acquisition_result is None and acquisition_transport is None:
         raise CurrentProductiveEeaUniverseTo29PError("EXECUTE_NETWORK_OR_INJECTED_INPUT_REQUIRED")
     _assert_protected_surfaces_v1()
@@ -353,7 +364,14 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
     if REUSED_BINDING_REST_HOST != AUTHORIZED_HOST:
         raise CurrentProductiveEeaUniverseTo29PError("HOST_MISMATCH")
 
-    repo_sha = str(repository_sha or origin_main_sha)
+    repo_sha = str(repository_sha or origin_main_sha).strip()
+    try:
+        assert_current_productive_29p_repository_sha_for_execution_v1(
+            repository_sha=repo_sha,
+            trusted_execution_identity=trusted_execution_identity,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveEeaUniverseTo29PError(str(exc)) from exc
     observed_unix = (
         float(producer_observed_at_unix) if producer_observed_at_unix is not None else time()
     )

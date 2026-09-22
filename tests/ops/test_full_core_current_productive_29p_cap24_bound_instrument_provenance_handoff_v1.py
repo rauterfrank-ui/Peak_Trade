@@ -24,7 +24,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA,
     SCHEMA_CLASS,
     THIS_SLICE,
     CurrentProductive29PCap24ProvenanceHandoffError,
@@ -32,10 +31,13 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA as COMMON_EPOCH_ORIGIN_SHA,
     OWNER_GO,
     PIN_OWNER_GO,
     execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1,
+)
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
     persist_ranking_bundle_atomic_v1,
@@ -74,6 +76,7 @@ from tests.ops.test_single_selected_future_runtime_binding_v1 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 SPEC_PATH = (
     REPO_ROOT
     / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md"
@@ -178,7 +181,6 @@ def _materialize_productivity_root(tmp: Path, chain: dict) -> Path:
 
 def test_standing_constants_and_spec() -> None:
     assert CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED is True
-    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
     assert THIS_SLICE.endswith("CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF")
     assert SCHEMA_CLASS == "CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1"
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
@@ -318,7 +320,10 @@ def test_resolve_returns_none_without_root_or_bound() -> None:
 
 
 def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
-    chain = _build_fresh_chain(tmp_path / "build", repository_sha=COMMON_EPOCH_ORIGIN_SHA)
+    chain = _build_fresh_chain(
+        tmp_path / "build",
+        repository_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
+    )
     prod = _materialize_productivity_root(tmp_path, chain)
     inst = str(chain["venue_native_id"])
     transport = CountingInjectedFreshGetTransportV1(payloads=_identity_payloads(instrument_id=inst))
@@ -330,11 +335,12 @@ def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
     ):
         result = execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
             owner_go=PIN_OWNER_GO,
-            origin_main_sha=COMMON_EPOCH_ORIGIN_SHA,
+            origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             bound_instrument=None,
             fresh_get_transport=transport,
             evidence_root=tmp_path / "pack",
             cap24_productivity_root=prod,
+            execution_integrity_backend=_INTEGRITY,
         )
     assert result.bound_instrument_id == chain["instrument_id"]
     assert result.deduplicated_get_count == 7
@@ -344,7 +350,10 @@ def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
 
 
 def test_execute_cap24_fail_closed_when_handoff_invalid(tmp_path: Path) -> None:
-    chain = _build_fresh_chain(tmp_path / "build", repository_sha=COMMON_EPOCH_ORIGIN_SHA)
+    chain = _build_fresh_chain(
+        tmp_path / "build",
+        repository_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
+    )
     prod = _materialize_productivity_root(tmp_path, chain)
     shutil.rmtree(prod / "runtime_state" / "selection")
     transport = CountingInjectedFreshGetTransportV1(payloads=_identity_payloads())
@@ -356,11 +365,12 @@ def test_execute_cap24_fail_closed_when_handoff_invalid(tmp_path: Path) -> None:
     ):
         result = execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
             owner_go=OWNER_GO,
-            origin_main_sha=COMMON_EPOCH_ORIGIN_SHA,
+            origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             bound_instrument=None,
             fresh_get_transport=transport,
             evidence_root=tmp_path / "pack2",
             cap24_productivity_root=prod,
+            execution_integrity_backend=_INTEGRITY,
         )
     assert result.first_real_blocker == "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED"
     assert result.deduplicated_get_count == 0
