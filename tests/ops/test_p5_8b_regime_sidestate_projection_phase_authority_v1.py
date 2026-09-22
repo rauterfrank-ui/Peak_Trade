@@ -57,7 +57,7 @@ def _resolve(**overrides: object):
 def test_guard_constants_unchanged() -> None:
     assert PHASE_AUTHORITY_CONTRACT_V1_DEFINED is True
     assert PHASE_AUTHORITY_VARIANT == "PERSISTED_STATE_REQUIRED"
-    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
     assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 

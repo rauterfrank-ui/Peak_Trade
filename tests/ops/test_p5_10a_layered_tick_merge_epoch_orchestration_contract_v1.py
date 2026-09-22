@@ -65,7 +65,7 @@ def _bind_prep(
 
 def test_contract_flags_and_external_closure_ids() -> None:
     assert LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1_DEFINED is True
-    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
     assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert ExternalEpochClosureIdV1.B2_SCOPE_EVENT_PROVENANCE.value == "b2_scope_event_provenance"
     assert (
@@ -200,8 +200,28 @@ def test_activation_readiness_fail_closed_while_b2_b3_b4_open() -> None:
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B2_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B3_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B4_NOT_CLOSED.value in codes
-    assert EpochOrchestrationFailureCodeV1.ACTIVATION_MAPPING_NOT_AUTHORIZED.value in codes
+    assert EpochOrchestrationFailureCodeV1.ACTIVATION_MAPPING_NOT_AUTHORIZED.value not in codes
     assert EpochOrchestrationFailureCodeV1.ACTIVATION_PRODUCTIVE_BIND_NOT_ENABLED.value not in codes
+
+
+def test_activation_readiness_passes_when_b2_b3_b4_closed_and_mapping_authorized() -> None:
+    ready = LayeredEpochOrchestrationBindPrepRequestV1(
+        trading_epoch=1,
+        prior_side_state=SideState.NEUTRAL_OBSERVE,
+        canonical_next_side_state=SideState.LONG_ARMED_NEUTRAL_START,
+        c4_entry_exit_sidestate_epoch=C4EntryExitSideStateEpochV1.POST_CANONICAL_NEXT_SIDE_STATE,
+        c4_consumes_side_state=SideState.LONG_ARMED_NEUTRAL_START,
+        entry_exit_consumes_side_state=SideState.LONG_ARMED_NEUTRAL_START,
+        regime_bound_write_asserted=True,
+        mechanical_write_asserted=False,
+        legacy_transition_state_writer_would_run=False,
+        layered_bind_mode_active=True,
+        b2_scope_event_provenance_closed=True,
+        b3_lifecycle_persistence_closed=True,
+        b4_p57_state_switch_evidence_closed=True,
+    )
+    result = validate_layered_epoch_activation_readiness_v1(ready)
+    assert result.ok is True
 
 
 def test_productive_cycle_wires_p5_10_bind_not_p5_10a_contract() -> None:

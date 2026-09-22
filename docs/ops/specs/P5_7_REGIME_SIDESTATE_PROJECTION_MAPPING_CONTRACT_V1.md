@@ -8,7 +8,7 @@ scope: P5.7 regime→SideState projection mapping contract only (no cutover; no 
 
 ```text
 MAPPING_CONTRACT_V1_DEFINED=true
-REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=false
+REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true
 PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=false
 P5_AUTHORITY_CUTOVER_AUTHORIZED=false
 AUTHORITY_CUTOVER_OCCURRED=false
@@ -18,8 +18,9 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 Closes O-R2 **R-01** at the **contract** layer: explicit projection from layered-core
 ``regime_pre`` and ``regime_post`` (seal and L10 output) onto downstream ``SideState``.
 
-Does **not** set ``REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true`` (P5.2 remains fail-closed
-for CZ-4 switch until a separate activation WP). Does **not** wire replay, cycle, or CZ-4.
+Productive authorization is owned by P5.2 ``REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED``
+(authorized for layered-bind switch ticks via Owner-GO mapping slice). Does **not** imply
+cutover or default bind; cycle wiring unchanged.
 
 | Surface | Owner |
 | --- | --- |
