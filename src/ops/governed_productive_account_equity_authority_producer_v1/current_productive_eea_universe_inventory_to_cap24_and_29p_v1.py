@@ -86,6 +86,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+    compose_current_productive_29p_common_epoch_handoff_v1,
+    extract_usdc_details_availeq_from_balance_payload_v1,
+    payload_from_fresh_get_transport_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     require_current_productive_29p_bound_instrument_v1,
 )
@@ -292,29 +297,11 @@ def _extract_uid(payload: Mapping[str, Any] | None) -> str:
 
 
 def _extract_usdc_details_availeq_v1(payload: Mapping[str, Any]) -> str:
-    """CURRENT_PRODUCTIVE details[ccy=USDC].availEq. Not canary instrument authority."""
-    if str(payload.get("code") or "") != "0":
-        raise CurrentProductiveEeaUniverseTo29PError("BALANCE_VENUE_CODE_NOT_ZERO")
-    data = payload.get("data")
-    if not isinstance(data, list) or not data or not isinstance(data[0], Mapping):
-        raise CurrentProductiveEeaUniverseTo29PError("BALANCE_DATA_MISSING")
-    details = data[0].get("details")
-    if not isinstance(details, list):
-        raise CurrentProductiveEeaUniverseTo29PError("BALANCE_DETAILS_MISSING")
-    usdc_rows = [
-        item
-        for item in details
-        if isinstance(item, Mapping) and str(item.get("ccy") or "").strip() == "USDC"
-    ]
-    if len(usdc_rows) != 1:
-        raise CurrentProductiveEeaUniverseTo29PError("USDC_DETAILS_ROW_NOT_EXACTLY_ONE")
-    raw = "" if usdc_rows[0].get("availEq") is None else str(usdc_rows[0].get("availEq")).strip()
-    if not raw:
-        raise CurrentProductiveEeaUniverseTo29PError("USDC_AVAILEQ_EMPTY")
-    value = Decimal(raw)
-    if value < 0:
-        raise CurrentProductiveEeaUniverseTo29PError("USDC_AVAILEQ_NEGATIVE")
-    return raw
+    """CURRENT_PRODUCTIVE details[ccy=USDC].availEq via shared common-epoch handoff."""
+    try:
+        return extract_usdc_details_availeq_from_balance_payload_v1(payload)
+    except Exception as exc:
+        raise CurrentProductiveEeaUniverseTo29PError(str(exc)) from exc
 
 
 def _mark_price_by_native_id_v1(payload: Mapping[str, Any]) -> dict[str, str]:
@@ -624,163 +611,39 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
                 if raw_type:
                     inst_type = raw_type
                 break
-        get_evidence = collect_fresh_pretrade_runtime_get_v1(
-            pretrade_decision_id=decision_epoch,
-            instrument_id=bound.venue_native_id,
-            td_mode=REQUIRED_TD_MODE,
-            limit_px="",
-            inst_type=inst_type,
-            transport=fresh_get_transport,
-            require_collection=True,
-        )
-        get_status = str(get_evidence.evidence_status or "")
-        lab = evaluate_live_account_bound_v1(
-            get_evidence=get_evidence,
+        package_finished = _utc_now_iso_v1()
+        handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+            decision_epoch=decision_epoch,
+            bound_instrument=bound,
+            fresh_get_transport=fresh_get_transport,
             expected_account_identity=expected_uid,
-            expected_instrument_id=bound.venue_native_id,
-            expected_td_mode=REQUIRED_TD_MODE,
+            inst_type=inst_type,
+            package_finished_iso=package_finished,
+            p01_decision_state=p01_decision.decision_state,
         )
-        payloads = getattr(fresh_get_transport, "payloads_by_path", {}) or {}
-        config_payload = payloads.get(ENDPOINT_ACCOUNT_CONFIG)
-        balance_payload = payloads.get(ENDPOINT_ACCOUNT_BALANCE)
-        if config_payload is None or balance_payload is None:
-            config_payload = config_payload or _payload_from_transport(
-                fresh_get_transport,
-                endpoint=ENDPOINT_ACCOUNT_CONFIG,
-                auth_required=True,
-                decision_epoch=decision_epoch,
-            )
-            balance_payload = balance_payload or _payload_from_transport(
-                fresh_get_transport,
-                endpoint=account_balance_query_path_v1(),
-                auth_required=True,
-                decision_epoch=decision_epoch,
-            )
     finally:
         if handle is not None:
             _fail_closed_credential_unavailable_v1(handle)
 
-    package_finished = _utc_now_iso_v1()
-    uid_config = _extract_uid(config_payload if isinstance(config_payload, dict) else None)
-    uid_balance = _extract_uid(balance_payload if isinstance(balance_payload, dict) else None)
-    bound_uid = uid_config or uid_balance or expected_uid
-    if isinstance(config_payload, dict):
-        adaptation = extract_raw_acct_lv_from_account_config_payload_v1(config_payload)
-    else:
-        adaptation = adapt_current_productive_u01_account_mode_v1(None)
-    eligibility = None
-    if adaptation.status == "ELIGIBLE" and isinstance(config_payload, dict):
-        eligibility = build_current_productive_u01_eligibility_fact_v1(
-            adaptation=adaptation,
-            bound_account_identity=bound_uid,
-            bound_venue_identity="okx",
-            bound_td_mode=REQUIRED_TD_MODE,
-            decision_epoch=decision_epoch,
-            provenance_digest=_sha256_text(_canonical_json(config_payload)),
-        )
-    observation = None
-    raw_availeq = ""
-    if isinstance(balance_payload, dict):
-        try:
-            raw_availeq = _extract_usdc_details_availeq_v1(balance_payload)
-            observation = CurrentProductiveUsdcFreeMarginObservationV1(
-                fact_id=OBSERVATION_FACT_ID,
-                surface=OBSERVATION_SURFACE,
-                value=raw_availeq,
-                settlement_currency=AVAILABLE_MARGIN_REQUIRED_CCY,
-                selected_ccy=AVAILABLE_MARGIN_REQUIRED_CCY,
-                bound_account_identity=bound_uid,
-                bound_venue_identity="okx",
-                bound_td_mode=REQUIRED_TD_MODE,
-                decision_epoch=decision_epoch,
-                observed_at_as_of=package_finished,
-                age_seconds=_age_seconds(
-                    observed_at_as_of=package_finished, now_iso=package_finished
-                ),
-                freshness_max_age=str(NUMERIC_EQUITY_TTL_SECONDS),
-                provenance_digest=_sha256_text(_canonical_json(balance_payload)),
-                already_net_of_in_use=TRUE_TOKEN,
-                account_level_avail_eq_used=FALSE_TOKEN,
-                fallback_chain_used=FALSE_TOKEN,
-            )
-        except (
-            CurrentProductiveEeaUniverseTo29PError,
-            TypeError,
-            ValueError,
-            KeyError,
-        ):
-            observation = None
-            raw_availeq = ""
-    p01_fact = None
-    if observation is not None:
-        p01_fact = bind_current_productive_p01_policy_fact_v1(
-            bound_account_identity=observation.bound_account_identity,
-            bound_venue_identity=observation.bound_venue_identity,
-            bound_td_mode=observation.bound_td_mode,
-            decision_epoch=observation.decision_epoch,
-            observed_at_as_of=observation.observed_at_as_of,
-            age_seconds=observation.age_seconds,
-            freshness_max_age=observation.freshness_max_age,
-            provenance_digest=_sha256_text(
-                _canonical_json(
-                    {
-                        "policy": EVIDENCE_REF,
-                        "epoch": observation.decision_epoch,
-                        "account": observation.bound_account_identity,
-                        "instrument": bound.venue_native_id,
-                    }
-                )
-            ),
-        )
-    output = produce_current_productive_29p_risk_capital_v1(
-        observation=observation,
-        p01=p01_fact,
-        eligibility=eligibility,
-        eq_target=None,
-        u04=None,
-        restart_from_kind_set=FALSE_TOKEN,
-    )
-    produced = output.produced == TRUE_TOKEN
-    lab_status = lab.evidence_status
-    lab_trusted = lab_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
-    observed_instrument_id = ""
-    if lab.observed_inst_ids == (bound.venue_native_id,):
-        observed_instrument_id = bound.venue_native_id
-    instrument_bound = (
-        bool(observed_instrument_id)
-        and observed_instrument_id == bound.venue_native_id
-        and bound.selection_state == STATE_SELECTED_ACTIVE
-    )
-    claim = bind_step_29p_typed_equity_from_risk_capital_v1(
-        output=output,
-        fresh_pretrade_get_status=get_status,
-        live_account_bound_status=lab_status,
-        expected_instrument_id=bound.venue_native_id,
-        observed_instrument_id=observed_instrument_id,
-        fresh_evidence_fetched=get_status != FreshPretradeGetStatusV1.MISSING.value,
-        fresh_evidence_validated=(
-            observation is not None and get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
-        ),
-    )
-    capital = evaluate_capital_admission_v1(
-        claim=CapitalAdmissionClaimV1(
-            source_class=CAPITAL_SOURCE_OBSERVED_VENUE,
-            account_identity=bound_uid,
-            instrument_id=bound.venue_native_id,
-            observed_capital_raw=output.value if produced else "",
-            observed_field_name=PRODUCER_IDENTITY if produced else "",
-            evidence_class="LIVE_TYPED",
-            evidence_id=decision_epoch,
-        )
-        if produced
-        else None,
-        expected_account_identity=expected_uid,
-        expected_instrument_id=bound.venue_native_id,
-        admission_context=ADMISSION_CONTEXT_LIVE,
-    )
-    admissibility = evaluate_step_29p_capital_risk_admissibility_v1(capital=capital, claim=claim)
-    persist_classes = persist_class_fields_v1(admissibility)
-    evaluator_29p = persist_classes.get("STEP_29P_RISK_ADMISSIBLE") is True
+    get_evidence = handoff.get_evidence
+    get_status = handoff.get_status
+    lab = handoff.lab
+    lab_status = handoff.lab_status
+    adaptation = handoff.adaptation
+    eligibility = handoff.eligibility
+    observation = handoff.observation
+    raw_availeq = handoff.raw_availeq
+    p01_fact = handoff.p01_fact
+    output = handoff.output
+    produced = handoff.produced
+    claim = handoff.claim
+    capital = handoff.capital
+    admissibility = handoff.admissibility
+    evaluator_29p = handoff.evaluator_29p
+    observed_instrument_id = handoff.observed_instrument_id
+    instrument_bound = handoff.instrument_bound
+    lab_trusted = handoff.lab_trusted
+    bound_uid = handoff.bound_uid
     transport_class = str(getattr(fresh_get_transport, "transport_class", "") or "")
     venue_contact = bool(getattr(fresh_get_transport, "venue_live_contact", False))
     productive_contact = (
@@ -1057,12 +920,12 @@ def _payload_from_transport(
     auth_required: bool,
     decision_epoch: str,
 ) -> Any:
-    result = transport.get(
+    return payload_from_fresh_get_transport_v1(
+        transport,
         endpoint=endpoint,
         auth_required=auth_required,
-        pretrade_decision_id=decision_epoch,
+        decision_epoch=decision_epoch,
     )
-    return result.payload
 
 
 def _persist_terminal_v1(
