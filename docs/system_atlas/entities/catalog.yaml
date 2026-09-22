@@ -6331,6 +6331,29 @@ entities:
       wiring; WHOLE_SYSTEM_CONNECTION_COMPLETE=true with REQUIRED_CLOSURE_COUNT=0;
       FINAL_D_T remains intentionally isolated; cutover flags false; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1
+    kind: CONTRACT
+    name: PRE_EXTERNAL to external-effect boundary bounded WP v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
+    authority_sources:
+      - docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md
+    source_paths:
+      - docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md
+      - src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/__init__.py
+      - src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/constants_v1.py
+      - src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py
+      - tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py
+    evidence_sources:
+      - docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md
+      - src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py
+    notes: >-
+      Owner-GO forensic census + static proof for PRE_EXTERNAL→external-effect authorization
+      boundary after #6732; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true with
+      REQUIRED_CLOSURE_COUNT=0; no permit/POST/wire authorization; ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
     kind: CONTRACT
     name: P5.10 productive activation and binding v1

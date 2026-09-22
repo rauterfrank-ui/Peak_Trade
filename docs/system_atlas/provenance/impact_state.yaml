@@ -3,17 +3,17 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1
-modified_by: WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1
+introduced_by: PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
+modified_by: PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Whole-system connection closure bounded WP v1: forensic census constants and static
-  prove_whole_system_connection_closure_v1 for productive Decision→PRE_EXTERNAL;
-  WHOLE_SYSTEM_CONNECTION_COMPLETE=true; no cutover or FINAL_D_T formula change;
+  PRE_EXTERNAL to external-effect boundary bounded WP v1: forensic census constants and static
+  prove_pre_external_to_external_effect_boundary_v1 after whole-system Decision→PRE_EXTERNAL
+  closure; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true; no permit/STEP-29Q/POST;
   ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:whole_system_connection_closure_bounded_wp_v1
+  - CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1
 changed_relations: []
 changed_wiring: []
 changed_venue: []
