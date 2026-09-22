@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P3_DURABLE_L1_L10_STATE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core` |
+| `CONTRACT:p4_l6_explicit_d_t_proposal_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6719 P3 durable L1-L10 episode state (durable_state_v1): atomic persist/restore only; no productive binding; ATLAS_AUTHORITY=NONE.
-- introduced_by=P3_DURABLE_L1_L10_STATE_V1
-- modified_by=P3_DURABLE_L1_L10_STATE_V1
+- PR #6720 P4 L6 explicit D_t proposal charter (contract only): Atlas registration for ops.p4_l6_explicit_d_t_proposal_v1; PROPOSAL_CONTRACT_ONLY; PRODUCTIVE_BINDING_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+- introduced_by=CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
+- modified_by=CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

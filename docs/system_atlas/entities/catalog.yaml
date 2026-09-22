@@ -6067,6 +6067,41 @@ entities:
       Explicit L1-L10 naked chain; NullLine/Scope/R_t separation; replaceable L6 D_t
       passthrough only; P3 durable_state_v1 episode persist/restore (non-productive).
 
+  - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
+    kind: CONTRACT
+    name: P4 L6 explicit D_t proposal charter v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PENDING_CHANGE
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1.md
+    source_paths:
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/__init__.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/adapter_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/constants_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/models_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/reason_codes_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/validator_v1.py
+    evidence_sources:
+      - docs/ops/specs/CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1.md
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/__init__.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/adapter_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/constants_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/models_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/reason_codes_v1.py
+      - src/ops/p4_l6_explicit_d_t_proposal_v1/validator_v1.py
+      - tests/ops/test_p4_l6_explicit_d_t_proposal_v1.py
+    notes: >-
+      AUTHORITY=PROPOSAL_CONTRACT_ONLY. ExplicitDtProposalV1 validation and
+      copy-only transport to naked core MechanicalStepSpecV1.proposed_d_t only.
+      NUMERIC_FORMULA_AUTHORITY=NONE. PRODUCTIVE_BINDING_AUTHORIZED=false.
+      RUNTIME_AUTHORIZATION_EFFECT=NONE. No formula, default, calibration, or
+      productive L6 binding. Does not grant trading, execution, replay-scope,
+      or numeric producer authority. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1
