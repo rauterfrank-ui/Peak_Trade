@@ -7,7 +7,7 @@ scope: P5.2 bind contract only (no productive seam invoke; no cutover)
 # P5.2 Productive Cycle Seam Invoke and Authority Bind v1
 
 ```text
-PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=false
+PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true
 P5_AUTHORITY_CUTOVER_AUTHORIZED=false
 PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED=false
 P4_PRODUCTIVE_BINDING=false

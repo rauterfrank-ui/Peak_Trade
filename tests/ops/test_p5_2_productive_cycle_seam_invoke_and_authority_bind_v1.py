@@ -51,7 +51,7 @@ def test_guard_constants_unchanged() -> None:
     assert PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED is False
     assert P4_PRODUCTIVE_BINDING is False
     assert AUTHORITY_CUTOVER_OCCURRED is False
-    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is False
+    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
     assert FINAL_D_T_FORMULA_SELECTED is False
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
@@ -59,7 +59,12 @@ def test_guard_constants_unchanged() -> None:
     assert EXTERNAL_EFFECT_AUTHORIZED is False
 
 
-def test_productive_bind_disabled_by_default_rejects_layered_request() -> None:
+def test_productive_bind_validate_rejects_when_bind_constant_disabled(monkeypatch) -> None:
+    monkeypatch.setattr(
+        "src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.contract_v1."
+        "PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED",
+        False,
+    )
     req = ProductiveCycleAuthorityBindRequestV1(
         productive_layered_core_bind_requested=True,
         decision_authority_mode=ProductiveDecisionAuthorityModeV1.LAYERED_CORE_SEAL_DELEGATED,
@@ -260,10 +265,11 @@ def test_cz4_no_switch_seal_still_delegates() -> None:
     assert result.evidence is not None
 
 
-def test_current_productive_cycle_unchanged_no_seam_invoke() -> None:
+def test_current_productive_cycle_uses_p5_10_bind_seam_not_direct_p5_seam() -> None:
     text = _CYCLE_SOURCE.read_text(encoding="utf-8")
     assert "run_p5_layered_core_authority_seam_v1" not in text
-    assert "p5_2_productive_cycle_seam_invoke_and_authority_bind_v1" not in text
+    assert "p5_10_productive_activation_and_binding_v1" in text
+    assert "prepare_productive_layered_core_replay_bind_v1" in text
 
 
 def test_baseline_replay_without_seal_unchanged() -> None:

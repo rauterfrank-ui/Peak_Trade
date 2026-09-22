@@ -66,7 +66,7 @@ def _bind_prep(
 def test_contract_flags_and_external_closure_ids() -> None:
     assert LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1_DEFINED is True
     assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
-    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is False
+    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert ExternalEpochClosureIdV1.B2_SCOPE_EVENT_PROVENANCE.value == "b2_scope_event_provenance"
     assert (
         ExternalEpochClosureIdV1.B3_P58B_LIFECYCLE_PERSISTENCE.value
@@ -201,13 +201,16 @@ def test_activation_readiness_fail_closed_while_b2_b3_b4_open() -> None:
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B3_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B4_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.ACTIVATION_MAPPING_NOT_AUTHORIZED.value in codes
-    assert EpochOrchestrationFailureCodeV1.ACTIVATION_PRODUCTIVE_BIND_NOT_ENABLED.value in codes
+    assert (
+        EpochOrchestrationFailureCodeV1.ACTIVATION_PRODUCTIVE_BIND_NOT_ENABLED.value not in codes
+    )
 
 
-def test_productive_cycle_and_replay_sources_untouched() -> None:
+def test_productive_cycle_wires_p5_10_bind_not_p5_10a_contract() -> None:
     cycle = _CYCLE_SOURCE.read_text(encoding="utf-8")
     replay = _REPLAY_SOURCE.read_text(encoding="utf-8")
     transition = _TRANSITION_STATE_SOURCE.read_text(encoding="utf-8")
+    assert "p5_10_productive_activation_and_binding_v1" in cycle
     assert "p5_10a_layered_tick_merge_epoch_orchestration_contract_v1" not in cycle
     assert "p5_10a_layered_tick_merge_epoch_orchestration_contract_v1" not in replay
     assert "p5_10a" not in transition

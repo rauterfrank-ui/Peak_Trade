@@ -69,7 +69,7 @@ def test_closure_constants_and_guards() -> None:
     assert B4_CONTRACT_CLOSED is True
     assert MECHANICAL_PROVENANCE_AUTHORIZED is True
     assert P5_10_ACTIVATION_READINESS == "READY"
-    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is False
+    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert EXTERNAL_EFFECT_AUTHORIZED is False
     assert P59D_CZ4_MARKER == "p5_cz4_delegated_noop"
 
@@ -287,8 +287,9 @@ def test_state_switch_materialization_matches_replay_digest() -> None:
     assert state_switch_evidence_digest_parity_check_v1(switch) is True
 
 
-def test_productive_surfaces_untouched() -> None:
+def test_productive_cycle_wires_p5_10_bind_seam_only() -> None:
     cycle = _CYCLE_SOURCE.read_text(encoding="utf-8")
     replay = _REPLAY_SOURCE.read_text(encoding="utf-8")
+    assert "p5_10_productive_activation_and_binding_v1" in cycle
     assert "p5_10b_layered_epoch_remaining_authority_closure_v1" not in cycle
     assert "p5_10b_layered_epoch_remaining_authority_closure_v1" not in replay
