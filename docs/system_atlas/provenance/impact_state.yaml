@@ -3,16 +3,16 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1
-modified_by: P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1
+introduced_by: P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1
+modified_by: P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6726 P5.9D layered mechanical SideState FSM contract (no bind): Atlas
-  registration for CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1;
-  regime-bound vs mechanical validators; no productive wiring; ATLAS_AUTHORITY=NONE.
+  P5.10A layered tick-merge epoch orchestration contract (no bind): Atlas
+  registration for CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1;
+  epoch ordering + POST_CANONICAL C4 boundary; B2/B3/B4 remain external; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1
+  - CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1
 changed_relations: []
 new_relations: []
 removed_relations: []

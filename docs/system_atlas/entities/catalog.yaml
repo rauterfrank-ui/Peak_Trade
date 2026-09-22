@@ -6260,6 +6260,29 @@ entities:
       No productive wiring; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED stays false.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1
+    kind: CONTRACT
+    name: P5.10A layered tick-merge epoch orchestration contract v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1
+    authority_sources:
+      - docs/ops/specs/P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1.md
+    source_paths:
+      - docs/ops/specs/P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1.md
+      - src/ops/p5_10a_layered_tick_merge_epoch_orchestration_contract_v1/__init__.py
+      - src/ops/p5_10a_layered_tick_merge_epoch_orchestration_contract_v1/constants_v1.py
+      - src/ops/p5_10a_layered_tick_merge_epoch_orchestration_contract_v1/contract_v1.py
+      - tests/ops/test_p5_10a_layered_tick_merge_epoch_orchestration_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1.md
+      - src/ops/p5_10a_layered_tick_merge_epoch_orchestration_contract_v1/contract_v1.py
+    notes: >-
+      P5.10A layered trading epoch order, single SideState writer invariant, and
+      POST_CANONICAL C4/Entry-Exit boundary (B1 + minimal B5). B2/B3/B4 external;
+      no productive wiring; ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1
