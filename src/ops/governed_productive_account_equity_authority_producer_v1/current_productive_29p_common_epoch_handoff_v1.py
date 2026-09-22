@@ -26,11 +26,11 @@ from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
-    EXECUTION_ADMISSION_REMAINDER_CLOSED,
-    LIVE_ARMED,
-    LIVE_ENABLED,
     NUMERIC_EQUITY_TTL_SECONDS,
-    WIRE_SEND_PERMITTED,
+    current_productive_first_real_blocker_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    POST_NEXT_OWNER_GO,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
@@ -743,15 +743,7 @@ def _first_blocker_from_handoff_v1(
             "C",
         )
     if handoff.evaluator_29p is True:
-        if EXECUTION_ADMISSION_REMAINDER_CLOSED is True:
-            return "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN", "E"
-        if WIRE_SEND_PERMITTED is True:
-            return "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED", "E"
-        if LIVE_ARMED is True:
-            return "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE", "E"
-        if LIVE_ENABLED is True:
-            return "LIVE_ARMED_STANDING_GATE_REMAINS_FALSE", "E"
-        return "LIVE_ENABLED_STANDING_GATE_REMAINS_FALSE", "E"
+        return current_productive_first_real_blocker_v1(), "E"
     return "STEP_29P_RISK_ADMISSIBLE_FALSE", "C"
 
 
@@ -938,8 +930,10 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         "EXPECTED_ORIGIN_MAIN": origin_main_sha,
         "DECISION_EPOCH": decision_epoch,
         "POST_COUNT": "0",
+        "PERMIT_MINTED": FALSE_TOKEN,
         "FIRST_REAL_BLOCKER": first_blocker,
         "BLOCKER_CLASS": blocker_class,
+        "NEXT_OWNER_GO_REQUIRED": POST_NEXT_OWNER_GO if blocker_class == "E" else "",
         "P01_STATUS": p01_decision.decision_state,
         "U01_STATUS": handoff.adaptation.status,
         "FRESH_USDC_AVAILEQ_STATUS": fresh_status,
