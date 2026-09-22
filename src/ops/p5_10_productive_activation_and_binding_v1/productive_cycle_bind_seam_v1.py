@@ -222,7 +222,7 @@ def prepare_productive_layered_core_replay_bind_v1(
         store_root=store_root,
         selected=selected,
         mark_price_m_t=float(mark_price_m_t),
-        mechanical_step=mechanical_step if restore_existing else None,
+        mechanical_step=mechanical_step,
         restore_existing=restore_existing,
         initialization_observations=observations if not restore_existing else None,
     )

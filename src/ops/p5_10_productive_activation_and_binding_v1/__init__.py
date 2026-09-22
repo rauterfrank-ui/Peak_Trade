@@ -17,6 +17,11 @@ from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_se
     finalize_productive_layered_core_replay_bind_v1,
     prepare_productive_layered_core_replay_bind_v1,
 )
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
+    LAYERED_CORE_STORE_ROOT_COLOCATED_WITH_CURSOR_OWNER,
+    incoming_cursor_has_existing_scope_carrier_v1,
+    productive_layered_core_bind_cycle_kwargs_v1,
+)
 
 __all__ = [
     "B2_CONTRACT_CLOSED",
@@ -34,4 +39,7 @@ __all__ = [
     "ProductiveLayeredCoreBindCarryV1",
     "finalize_productive_layered_core_replay_bind_v1",
     "prepare_productive_layered_core_replay_bind_v1",
+    "LAYERED_CORE_STORE_ROOT_COLOCATED_WITH_CURSOR_OWNER",
+    "incoming_cursor_has_existing_scope_carrier_v1",
+    "productive_layered_core_bind_cycle_kwargs_v1",
 ]

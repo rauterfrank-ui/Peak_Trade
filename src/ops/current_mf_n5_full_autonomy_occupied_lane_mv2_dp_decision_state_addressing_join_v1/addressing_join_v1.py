@@ -109,19 +109,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.single_selected_future_policy_v1.governed_pin_v1 import lane_state_root_key
-from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.constants_v1 import (
-    PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED,
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
+    productive_layered_core_bind_cycle_kwargs_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
-
-
-def _productive_layered_core_bind_kwargs_v1(*, store_root: str) -> dict[str, object]:
-    if not PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED:
-        return {}
-    return {
-        "productive_layered_core_bind_requested": True,
-        "layered_core_store_root": Path(store_root),
-    }
 
 
 class FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError(ValueError):
@@ -446,7 +437,10 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=None,
             g17_typed_vol_producer=producers[lane_id],
-            **_productive_layered_core_bind_kwargs_v1(store_root=store_root),
+            **productive_layered_core_bind_cycle_kwargs_v1(
+                layered_core_store_root=store_root,
+                incoming_cursor=None,
+            ),
         )
         invoked[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -544,7 +538,10 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=lane_cursor,
             g17_typed_vol_producer=producers[lane_id],
-            **_productive_layered_core_bind_kwargs_v1(store_root=store_root),
+            **productive_layered_core_bind_cycle_kwargs_v1(
+                layered_core_store_root=store_root,
+                incoming_cursor=lane_cursor,
+            ),
         )
         carried[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -690,7 +687,10 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=incoming,
             g17_typed_vol_producer=producers[lane_id],
-            **_productive_layered_core_bind_kwargs_v1(store_root=store_root),
+            **productive_layered_core_bind_cycle_kwargs_v1(
+                layered_core_store_root=store_root,
+                incoming_cursor=incoming,
+            ),
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
