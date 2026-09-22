@@ -16,7 +16,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 ```
 
 Closes O-R2 **R-01** at the **contract** layer: explicit projection from layered-core
-``regime_pre`` / ``regime_post`` (seal / L10 output) onto downstream ``SideState``.
+``regime_pre`` and ``regime_post`` (seal and L10 output) onto downstream ``SideState``.
 
 Does **not** set ``REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true`` (P5.2 remains fail-closed
 for CZ-4 switch until a separate activation WP). Does **not** wire replay, cycle, or CZ-4.
@@ -35,7 +35,7 @@ for CZ-4 switch until a separate activation WP). Does **not** wire replay, cycle
   ``regime_pre != regime_post``, occupancy (`venue_flat`, ``ExistingPositionSide``),
   ``prior_side_state`` (cursor/occupancy seed — never core regime writer).
 - **Output:** projected ``SideState`` for downstream lifecycle / CZ-4 prep only.
-- **Sole trading-decision regime source:** core seal ``regime_pre`` / ``regime_post``.
+- **Sole trading-decision regime source:** core seal ``regime_pre`` and ``regime_post``.
 - **Forbidden:** SideState→regime backflow; ACTIVE from regime alone when flat;
   implicit BULL→LONG_ACTIVE / BEAR→SHORT_ACTIVE; ``transition_state`` authority in layered mode.
 
