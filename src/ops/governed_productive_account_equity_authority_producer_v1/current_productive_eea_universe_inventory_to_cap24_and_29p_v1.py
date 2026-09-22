@@ -29,7 +29,6 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1
 )
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
     AUTHORIZED_HOST,
-    SOURCE_KIND,
 )
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
     EeaPublicUniverseGetPortV1,
@@ -74,8 +73,8 @@ from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admis
     evaluate_step_29p_capital_risk_admissibility_v1,
     persist_class_fields_v1,
 )
-from src.ops.governed_futures_universe_producer_v1.producer_v1 import (
-    run_governed_futures_universe_producer_v1,
+from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
+    load_and_validate_universe_snapshot_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED,
@@ -85,6 +84,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_U01_GET_ENDPOINT,
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
+    eea_mark_price_payload_to_map_by_native_id_v1,
+    run_cap21_to_cap23_persist_productive_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     compose_current_productive_29p_common_epoch_handoff_v1,
@@ -124,9 +127,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
 from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (
     RANKING_POLICY_ID,
 )
-from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
-    run_productive_futures_ranking_producer_v1,
-)
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -142,12 +142,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 )
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     CAPABILITY_ID as CAP23_ID,
-    SELECTION_FILENAME,
-    STATE_SELECTED_ACTIVE,
-)
-from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
-from src.ops.single_selected_future_policy_v1.producer_v1 import (
-    run_single_selected_future_policy_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.binding_gate_v1 import (
     run_single_selected_future_runtime_binding_gate_v1,
@@ -169,7 +163,7 @@ PIN_OWNER_GO = (
     "FOR_29P_WITHOUT_CANARY_IMPORT_OR_RESELECTION_V1"
 )
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, PIN_OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "ee3850128e01378f4b480f4ab1b5e57dd8ee24a3"
+EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
 THIS_SLICE = "11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P"
 CONTRACT_VERSION = "v1"
 AUTHORITY_EFFECT = "NONE"
@@ -304,21 +298,6 @@ def _extract_usdc_details_availeq_v1(payload: Mapping[str, Any]) -> str:
         raise CurrentProductiveEeaUniverseTo29PError(str(exc)) from exc
 
 
-def _mark_price_by_native_id_v1(payload: Mapping[str, Any]) -> dict[str, str]:
-    out: dict[str, str] = {}
-    data = payload.get("data")
-    if not isinstance(data, list):
-        return out
-    for row in data:
-        if not isinstance(row, Mapping):
-            continue
-        inst = str(row.get("instId") or "").strip()
-        px = str(row.get("markPx") or "").strip()
-        if inst and px:
-            out[inst] = px
-    return out
-
-
 def _assert_protected_surfaces_v1() -> None:
     if CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED is not False:
         raise CurrentProductiveEeaUniverseTo29PError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
@@ -387,13 +366,6 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         else _REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / run_id
     )
     store.mkdir(parents=True, exist_ok=True)
-    state_root = store / "runtime_state"
-    uni_root = state_root / "universe"
-    rank_root = state_root / "ranking"
-    sel_root = state_root / "selection"
-    recon_root = state_root / "recon"
-    for path in (uni_root, rank_root, sel_root, recon_root):
-        path.mkdir(parents=True, exist_ok=True)
 
     if acquisition_result is None:
         try:
@@ -418,97 +390,46 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             origin_main_sha=origin_main_sha,
         )
 
-    uni = run_governed_futures_universe_producer_v1(
-        state_root=uni_root,
-        source_payload=acquisition_result.instruments_payload,
-        mark_price_payload=acquisition_result.mark_price_payload,
+    cap21_23 = run_cap21_to_cap23_persist_productive_v1(
+        acquisition=acquisition_result,
+        store=store,
         repository_sha=repo_sha,
-        producer_observed_at_unix=observed_unix,
-        source_event_time=acquisition_result.source_event_time,
-        source_kind=SOURCE_KIND,
-        session_id="current-productive-eea-universe",
+        observed_unix=observed_unix,
+        session_id_prefix="current-productive-eea",
     )
-    if uni.get("ok") is not True:
+    if cap21_23.ok is not True or cap21_23.selection is None:
         return _persist_terminal_v1(
             store=store,
             acquisition=acquisition_result,
             acquisition_status=acquisition_status,
-            first_blocker="CAP21_CURRENT_UNIVERSE_FAIL_CLOSED",
+            first_blocker=cap21_23.status,
             blocker_class="C",
             p01_status=p01_decision.decision_state,
             decision_epoch=decision_epoch,
             origin_main_sha=origin_main_sha,
-            extra={"CAP21": uni},
+            cap21_snapshot_id=cap21_23.cap21_snapshot_id,
+            cap21_event_time=cap21_23.cap21_event_time,
+            cap21_universe_size=cap21_23.cap21_universe_size,
+            cap22_ranking_id=cap21_23.cap22_ranking_id,
+            cap22_ranking_epoch=cap21_23.cap22_ranking_epoch,
         )
-    uni_snap = uni.get("snapshot") or {}
-    ranking = run_productive_futures_ranking_producer_v1(
-        state_root=rank_root,
-        universe_state_root=uni_root,
-        repository_sha=repo_sha,
-        producer_observed_at_unix=observed_unix,
-        session_id="current-productive-eea-ranking",
+    selection = cap21_23.selection
+    selected_native = cap21_23.cap23_selected_instrument_id
+    uni_root = cap21_23.universe_state_root
+    rank_root = cap21_23.ranking_state_root
+    sel_root = cap21_23.selection_state_root
+    recon_root = cap21_23.recon_state_root
+    uni_load = load_and_validate_universe_snapshot_v1(
+        uni_root,
+        expected_repository_sha=repo_sha,
+        require_manifest=True,
     )
-    if ranking.get("ok") is not True:
-        return _persist_terminal_v1(
-            store=store,
-            acquisition=acquisition_result,
-            acquisition_status=acquisition_status,
-            first_blocker="CAP22_CURRENT_RANKING_FAIL_CLOSED",
-            blocker_class="C",
-            p01_status=p01_decision.decision_state,
-            decision_epoch=decision_epoch,
-            origin_main_sha=origin_main_sha,
-            cap21_snapshot_id=str(uni_snap.get("snapshot_id") or ""),
-            cap21_event_time=str(uni_snap.get("generated_at_event_time") or ""),
-            cap21_universe_size=str(uni_snap.get("eligible_instrument_count") or ""),
-            extra={"CAP22": ranking},
-        )
-    rank_snap = ranking.get("snapshot") or {}
-    selection_run = run_single_selected_future_policy_v1(
-        state_root=sel_root,
-        ranking_state_root=rank_root,
-        repository_sha=repo_sha,
-        producer_observed_at_unix=observed_unix,
-        session_id="current-productive-eea-selection",
-        previous_selection=None,
-        load_previous_from_state=False,
-        open_position_instrument_id=None,
-        dashboard_payload=None,
-        allowlist_payload=None,
-        manual_override_payload=None,
-    )
-    selection_path = sel_root / SELECTION_FILENAME
-    selection = None
-    if selection_path.is_file():
-        selection = SingleSelectedFutureSelectionV1.from_dict(
-            json.loads(selection_path.read_text(encoding="utf-8"))
-        )
-    if (
-        selection_run.get("ok") is not True
-        or selection is None
-        or selection.state != STATE_SELECTED_ACTIVE
-        or not str(selection.venue_native_id or "").strip()
-    ):
-        return _persist_terminal_v1(
-            store=store,
-            acquisition=acquisition_result,
-            acquisition_status=acquisition_status,
-            first_blocker="CAP23_CURRENT_SELECTION_FAIL_CLOSED",
-            blocker_class="C",
-            p01_status=p01_decision.decision_state,
-            decision_epoch=decision_epoch,
-            origin_main_sha=origin_main_sha,
-            cap21_snapshot_id=str(uni_snap.get("snapshot_id") or ""),
-            cap21_event_time=str(uni_snap.get("generated_at_event_time") or ""),
-            cap21_universe_size=str(uni_snap.get("eligible_instrument_count") or ""),
-            cap22_ranking_id=str(rank_snap.get("ranking_snapshot_id") or ""),
-            cap22_ranking_epoch=str(rank_snap.get("event_time") or ""),
-            extra={"CAP23": selection_run},
-        )
-    selected_native = str(selection.venue_native_id)
-    if selected_native == CANARY_DEFAULT_INSTRUMENT_ID:
-        raise CurrentProductiveEeaUniverseTo29PError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
-    marks = _mark_price_by_native_id_v1(acquisition_result.mark_price_payload)
+    uni_snap = uni_load.snapshot.to_dict() if uni_load.snapshot is not None else {}
+    rank_snap = {
+        "ranking_snapshot_id": cap21_23.cap22_ranking_id,
+        "event_time": cap21_23.cap22_ranking_epoch,
+    }
+    marks = eea_mark_price_payload_to_map_by_native_id_v1(acquisition_result.mark_price_payload)
     observed_portfolio = PortfolioTruthSnapshotV1(
         positions=(),
         event_time_unix=observed_unix,

@@ -178,7 +178,7 @@ def _materialize_productivity_root(tmp: Path, chain: dict) -> Path:
 
 def test_standing_constants_and_spec() -> None:
     assert CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED is True
-    assert EXPECTED_ORIGIN_MAIN_SHA == "8cde3d98fc5869daf43819c262b0ef3b61247454"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
     assert THIS_SLICE.endswith("CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF")
     assert SCHEMA_CLASS == "CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1"
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False

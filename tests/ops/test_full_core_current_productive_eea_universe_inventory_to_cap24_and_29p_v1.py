@@ -237,7 +237,7 @@ def test_flags_and_authority_bounds() -> None:
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert DEFAULT_INSTRUMENT_ID == CANARY_DEFAULT_INSTRUMENT_ID
     assert OWNER_GO in ALLOWED_OWNER_GOS
-    assert EXPECTED_ORIGIN_MAIN_SHA == "ee3850128e01378f4b480f4ab1b5e57dd8ee24a3"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
 
 
 def test_acquisition_rejects_www_okx_and_non_get() -> None:

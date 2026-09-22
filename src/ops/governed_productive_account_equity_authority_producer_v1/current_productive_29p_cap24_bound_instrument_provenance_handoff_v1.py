@@ -53,7 +53,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
-EXPECTED_ORIGIN_MAIN_SHA = "8cde3d98fc5869daf43819c262b0ef3b61247454"
+EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
 THIS_SLICE = "11.2.1.EJ.FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1"
 CONTRACT_VERSION = "v1"
@@ -91,7 +91,7 @@ class CurrentProductive29PCap24BoundInstrumentProvenanceHandoffV1:
 
 
 def default_current_productive_cap24_runtime_state_root_v1() -> Path:
-    """Operator-populated CURRENT Cap-2.4 persistence root (not evidence/ops)."""
+    """CURRENT Cap-2.4 persistence root (canonical writer or authorized operator)."""
 
     return _REPO_ROOT / "runtime" / "current_productive" / "cap24_selection_state"
 
