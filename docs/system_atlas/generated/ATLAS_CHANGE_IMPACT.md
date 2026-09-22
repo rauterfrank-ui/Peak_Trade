@@ -107,8 +107,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P5.10 productive activation and binding: Atlas registration for CONTRACT:p5_10_productive_activation_and_binding_v1; productive bind seam into CURRENT cycle; PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; guards unchanged; ATLAS_AUTHORITY=NONE.
+- P5.10 productive bind wiring closure: productive_cycle_layered_core_bind_wiring_v1 (store + scope gate); governed cursor-backed callers and addressing join reuse explicit kwargs; bootstrap stays legacy until existing_scope; ATLAS_AUTHORITY=NONE.
 - introduced_by=P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
-- modified_by=P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
+- modified_by=PRODUCTIVE_LAYERED_CORE_BIND_DEFAULT_OR_STORE_WIRING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

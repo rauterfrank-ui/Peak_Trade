@@ -4,14 +4,13 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
-modified_by: P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
+modified_by: PRODUCTIVE_LAYERED_CORE_BIND_DEFAULT_OR_STORE_WIRING_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  P5.10 productive activation and binding: Atlas registration for
-  CONTRACT:p5_10_productive_activation_and_binding_v1; productive bind seam into
-  CURRENT cycle; PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; guards unchanged;
-  ATLAS_AUTHORITY=NONE.
+  P5.10 productive bind wiring closure: productive_cycle_layered_core_bind_wiring_v1
+  (store + scope gate); governed cursor-backed callers and addressing join reuse explicit
+  kwargs; bootstrap stays legacy until existing_scope; ATLAS_AUTHORITY=NONE.
 changed_entities:
   - CONTRACT:p5_10_productive_activation_and_binding_v1
   - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
@@ -41,5 +40,7 @@ review_required_items: []
 reviewed_entities:
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+  - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+  - id: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
   - id: CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1

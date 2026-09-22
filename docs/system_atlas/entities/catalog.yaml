@@ -937,8 +937,8 @@ entities:
       HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false.
       MAY_INVOKE_GOVERNED_CYCLE=false.
       RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change.
-      P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, passes
-      productive_layered_core_bind_requested and layered_core_store_root into cycle.
+      P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses
+      productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle.
       Not ranking, selection, trading-authority, runtime-activation, or
       execution authority. MAX_POSITIONS_EFFECTIVE remains 1.
       MULTI_FUTURE_RUNTIME_AUTHORIZED=false.
@@ -6322,16 +6322,20 @@ entities:
       - src/ops/p5_10_productive_activation_and_binding_v1/__init__.py
       - src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py
       - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py
+      - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_layered_core_bind_wiring_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - tests/ops/test_p5_10_productive_activation_and_binding_v1.py
+      - tests/ops/test_productive_layered_core_bind_wiring_v1.py
     evidence_sources:
       - docs/ops/specs/P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1.md
       - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py
+      - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_layered_core_bind_wiring_v1.py
     notes: >-
       Owner-GO productive bind: P5 seal, CZ-4 delegation, P5.10B POST_CANONICAL_NEXT_SIDE_STATE
-      handoff via single seam; per-cycle opt-in. PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true;
-      cutover flags false; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true;
-      EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+      handoff via single seam; explicit caller wiring (store colocated with cursor + scope carrier
+      gate). PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; cutover flags false;
+      REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true; EXTERNAL_EFFECT_AUTHORIZED=false;
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
