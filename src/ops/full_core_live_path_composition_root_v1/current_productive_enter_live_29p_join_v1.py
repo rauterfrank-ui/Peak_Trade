@@ -32,6 +32,10 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     FreshPretradeGetStatusV1,
     LiveAccountBoundStatusV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_mv2_capital_context_rebind_v1 import (
+    CurrentProductiveMv2CapitalContextRebindError,
+    build_current_productive_live_account_capital_context_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
     evaluate_step_29p_capital_risk_admissibility_v1,
 )
@@ -610,13 +614,167 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             step_29p_risk_admissible=TRUE_TOKEN,
         )
 
-    return _deny(
-        status=STATUS_FAIL,
-        blocker=REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED,
-        replay=replay,
+    try:
+        live_ctx = build_current_productive_live_account_capital_context_v1(
+            instrument_id=str(replay.evidence.instrument_id),
+            typed_account_equity=producer_equity,
+            reference_price=reference,
+            protective_stop_price=stop,
+        )
+    except CurrentProductiveMv2CapitalContextRebindError as exc:
+        blocker = str(exc) or REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=blocker,
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=(blocker,),
+        )
+
+    if not isinstance(live_ctx, CanonicalCoreRuntimeCapitalContextV0):
+        raise CurrentProductiveEnterLive29PJoinError("CAPITAL_CONTEXT_TYPE_DRIFT")
+    if live_ctx.account_equity != producer_equity:
+        raise CurrentProductiveEnterLive29PJoinError("PRODUCER_EQUITY_NOT_BOUND")
+    if live_ctx.capital_risk_mode != CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND:
+        raise CurrentProductiveEnterLive29PJoinError("LIVE_ACCOUNT_BOUND_MODE_NOT_BOUND")
+    if (
+        live_ctx.account_equity == _DEFAULT_ACCOUNT_EQUITY
+        and producer_equity != _DEFAULT_ACCOUNT_EQUITY
+    ):
+        raise CurrentProductiveEnterLive29PJoinError("OFFLINE_DEFAULT_EQUITY_LEAK")
+
+    portfolio_reservation_id = ""
+    portfolio_reservation_disposition = ""
+    sizing_decision: CapitalRiskSizingDecisionV1 | None = None
+    if portfolio_budget_owner is not None and portfolio_slot is not None:
+        assert replay is not None and replay.evidence is not None
+        sizing_input, build_errors = build_capital_risk_sizing_input_from_decision_v0(
+            decision=replay.evidence,
+            capital_context=live_ctx,
+        )
+        if sizing_input is None:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=build_errors[0] if build_errors else "SIZING_INPUT_BUILD_FAIL_CLOSED",
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=tuple(build_errors),
+            )
+        seam = admit_sized_slot_reservation_v1(
+            portfolio_budget_owner,
+            observation=observation,
+            p01=p01_fact,
+            eligibility=eligibility,
+            slot_id=portfolio_slot.slot_id,
+            decision_id=portfolio_slot.decision_id,
+            cycle_id=portfolio_slot.cycle_id,
+            instrument_id=selected_instrument,
+            account_identity=expected_uid,
+            sizing_input=sizing_input,
+            fresh_pretrade_get_status=get_status,
+            live_account_bound_status=lab_status,
+            fresh_evidence_fetched=True,
+            fresh_evidence_validated=trusted and produced,
+        )
+        portfolio_reservation_disposition = str(seam.disposition.value)
+        if seam.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY:
+            sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+                replay.evidence,
+                capital_context=live_ctx,
+            )
+            sizing_decision = sizing_binding.sizing_decision
+            if seam.reservation is not None:
+                portfolio_reservation_id = str(seam.reservation.reservation_id)
+        elif seam.disposition is ReserveDispositionV1.ADMITTED:
+            sizing_decision = seam.sizing_decision
+            if seam.reservation is not None:
+                portfolio_reservation_id = str(seam.reservation.reservation_id)
+        else:
+            blocker = (
+                seam.reason_codes[0] if seam.reason_codes else "PORTFOLIO_RESERVATION_FAIL_CLOSED"
+            )
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=blocker,
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=seam.reason_codes,
+            )
+        if sizing_decision is None:
+            return _deny(
+                status=STATUS_FAIL,
+                blocker="PORTFOLIO_SIZING_DECISION_MISSING",
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+            )
+        rebound = _rebound_replay_with_sizing_decision_v1(
+            replay,
+            sizing_decision=sizing_decision,
+            live_ctx=live_ctx,
+        )
+    else:
+        sizing_binding = bind_capital_risk_sizing_offline_replay_evidence_v0(
+            replay.evidence,
+            capital_context=live_ctx,
+        )
+        sizing_decision = sizing_binding.sizing_decision
+        if sizing_decision is None:
+            blocker = (
+                sizing_binding.evidence.reason_codes[0]
+                if sizing_binding.evidence.reason_codes
+                else REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED
+            )
+            return _deny(
+                status=STATUS_FAIL,
+                blocker=blocker,
+                replay=replay,
+                get_count=get_count,
+                producer_output_value=str(output.value),
+                producer_output_status="PRODUCED",
+                step_29p_risk_admissible=TRUE_TOKEN,
+                reasons=tuple(sizing_binding.evidence.reason_codes),
+            )
+        rebound = _rebound_replay_with_sizing_decision_v1(
+            replay,
+            sizing_decision=sizing_decision,
+            live_ctx=live_ctx,
+        )
+    sizing_outcome = ""
+    if sizing_decision is not None:
+        sizing_outcome = str(
+            getattr(
+                sizing_decision.outcome,
+                "value",
+                sizing_decision.outcome,
+            )
+        )
+    return CurrentProductiveEnterLive29PJoinResultV1(
+        decision_class=DECISION_ENTER,
+        called=True,
         get_count=get_count,
+        status=STATUS_PASS,
+        venue_plan_authorized=True,
+        first_blocker="",
         producer_output_value=str(output.value),
         producer_output_status="PRODUCED",
         step_29p_risk_admissible=TRUE_TOKEN,
-        reasons=(REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED,),
+        capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+        used_offline_default_equity=FALSE_TOKEN,
+        sizing_outcome=sizing_outcome,
+        replay=rebound,
+        portfolio_reservation_id=portfolio_reservation_id,
+        portfolio_reservation_disposition=portfolio_reservation_disposition,
+        reason_codes=(JOIN_SEAM_ID, STATUS_PASS, PRODUCER_IDENTITY),
     )
