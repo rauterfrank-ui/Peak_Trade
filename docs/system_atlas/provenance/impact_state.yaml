@@ -4,7 +4,7 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
-modified_by: P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
+modified_by: P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-

@@ -6167,6 +6167,29 @@ entities:
       I-01..I-07; CZ-4 rejects regime switch without mapping contract. Productive
       cycle does not invoke seam. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1
+    kind: CONTRACT
+    name: P5.5 O-R2 semantic authority contracts v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1
+    authority_sources:
+      - docs/ops/specs/P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1.md
+    source_paths:
+      - docs/ops/specs/P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1.md
+      - src/ops/p5_5_o_r2_semantic_authority_contracts_v1/__init__.py
+      - src/ops/p5_5_o_r2_semantic_authority_contracts_v1/constants_v1.py
+      - src/ops/p5_5_o_r2_semantic_authority_contracts_v1/contract_v1.py
+      - tests/ops/test_p5_5_o_r2_semantic_authority_contracts_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1.md
+      - src/ops/p5_5_o_r2_semantic_authority_contracts_v1/contract_v1.py
+    notes: >-
+      P5.5 O-R2 owner-selected cutover model (contracts only). Layered mode: L1-L10 sole
+      Bull/Bear decision authority; SideState subordinated projection/lifecycle/occupancy.
+      No mapping table; no cutover/bind/seam invoke. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1
