@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1` |
+| `RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PRE_EXTERNAL to external-effect boundary bounded WP v1: forensic census constants and static prove_pre_external_to_external_effect_boundary_v1 after whole-system Decision→PRE_EXTERNAL closure; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true; no permit/STEP-29Q/POST; ATLAS_AUTHORITY=NONE.
-- introduced_by=PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
-- modified_by=PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1
+- OWNER_DECISION_1=C PARALLEL_DECOUPLED_TRACKS Authority/Interface/Reconciliation contract persist for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING; no mapping mint, no sizing mint, RECONCILIATION_CONTRACT_CREATED remains false; ATLAS_AUTHORITY=NONE.
+- introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
+- modified_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
