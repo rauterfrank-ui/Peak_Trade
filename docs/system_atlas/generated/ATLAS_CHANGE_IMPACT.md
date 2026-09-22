@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,12 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_enter_live_29p_join_consumes_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR_6743 DF Cap-7.2 host-join merge-stable ladder closure to external-effect gate (offline contract/tests); side-effect-free host-join only; ATLAS_AUTHORITY=NONE.
+- PR_6744 MV2 capital context rebind for ENTER Live-29P success path from typed 29P equity (no historical fixture literals); navigation/provenance only; ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1
+- modified_by=CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

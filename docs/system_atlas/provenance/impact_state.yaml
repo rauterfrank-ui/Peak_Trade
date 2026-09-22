@@ -4,16 +4,20 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-modified_by: FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1
+modified_by: CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR_6743 DF Cap-7.2 host-join merge-stable ladder closure to external-effect
-  gate (offline contract/tests); side-effect-free host-join only;
+  PR_6744 MV2 capital context rebind for ENTER Live-29P success path from typed
+  29P equity (no historical fixture literals); navigation/provenance only;
   ATLAS_AUTHORITY=NONE.
 changed_entities:
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-changed_relations: []
+  - GATE:portfolio_capital_reservation_budget_v1
+  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+changed_relations:
+  - REL:r_enter_live_29p_join_consumes_portfolio_budget
+  - REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
 changed_wiring: []
 changed_venue: []
 changed_census: []

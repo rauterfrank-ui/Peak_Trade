@@ -949,6 +949,7 @@ entities:
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; optional portfolio_budget_owner threading unchanged; ENTER Live-29P rebind consumes same gate; MAX_POSITIONS_EFFECTIVE=1; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
     epistemic_class: CANONICAL_AUTHORITY
@@ -7934,6 +7935,7 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; MV2_CAPITAL_CONTEXT_REBIND=current_productive_mv2_capital_context_rebind_v1; ENTER_LIVE_29P_SUCCESS_PATH_REBOUND=true; TYPED_29P_EQUITY_LIMITS_NO_HISTORICAL_FIXTURE_LITERALS=true; PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED_CLOSED=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; STEP_29Q_STATUS=PLAN_ONLY; MAX_POSITIONS_EFFECTIVE=1; owner=current_productive_mv2_capital_context_rebind_v1.py|current_productive_enter_live_29p_join_v1.py.
     # FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1 PR_6743: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; DF_MERGE_STABLE_EXECUTION_IDENTITY=assert_current_productive_29p_execution_identity_v1; DATA_SAFETY_ADMISSION_SATISFIED_IN_DF=true; DD_DE_DF_SIDE_EFFECT_FREE_RUNTIME_PROOF=true; HOST_JOIN_SIDE_EFFECT_FREE=true; NEXT_REAL_BLOCKER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; owner=current_productive_cap72_host_join_to_live_execution_port_v1.py|current_productive_29p_chain_baseline_contract_v1.py.
     # CURRENT_PRODUCTIVE_DE_DD_EXECUTION_LADDER_BASELINE_AND_CONTRACT_CONSISTENCY_REPAIR_V1 PR_6742: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; MERGE_STABLE_EXECUTION_IDENTITY=assert_current_productive_29p_execution_identity_v1; DATA_SAFETY_ADMISSION_SATISFIED_IN_DD_DE=true; EXPECTED_ORIGIN_MAIN_SHA_PINS_REMOVED=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; PORT_CONSTRUCTION=false; owner=current_productive_execution_admission_remainder_v1.py|current_productive_live_execution_port_construction_v1.py|current_productive_29p_chain_baseline_contract_v1.py.
     # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; CONSUMER=compose_current_productive_29p_common_epoch_handoff_v1; INSTTYPE_BIND=Cap-2.1 instrument_type via resolve_current_productive_public_inst_type_from_cap21_universe_v1; FRESH_PRETRADE_UID_EXTRACT=str_coerce; FULL_CORE_ADMISSION_UNCHANGED=true; ACTIVATION_CHANGED=false; POST_COUNT=0; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py|src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py.
@@ -8271,6 +8273,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
@@ -8320,6 +8323,8 @@ entities:
       - issue_external_effect_permit_v1
       - try_bind_current_productive_venue_plan_v1
       - join_current_productive_enter_live_29p_before_venue_plan_v1
+      - build_current_productive_live_account_capital_context_v1
+      - resolve_productive_capital_risk_limits_from_29p_producer_v1
       - trigger_current_productive_next_c1_and_exactly_one_cycle_v1
       - _classify_occupancy_v1
       - _evaluate_c1_gate_v1
@@ -8374,6 +8379,7 @@ entities:
       - tests/ops/test_full_core_current_productive_occupancy_classify_and_c1_gate_v1.py
       - tests/ops/current_productive_c1_cycle_test_fixtures_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
+      - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
       - tests/ops/test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - tests/ops/test_full_core_current_productive_scoped_one_shot_c1_observation_source_v1.py
@@ -10781,6 +10787,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:portfolio_capital_reservation_budget_v1
+    # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; admit_sized_slot_reservation_v1 still optional via ENTER Live-29P after MV2 capital context rebind; N>1 unauthorized; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
     kind: GATE
     name: Portfolio capital reservation budget owner v1
     epistemic_class: FORENSIC_RAW
@@ -10799,6 +10806,8 @@ entities:
       - tests/ops/test_portfolio_capital_reservation_budget_contract_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
+      - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
     notes: >-
       Shared in-memory capital budget upstream of capital_risk_sizing_v1.
       Admits or denies a quantity. Does not rank, reselect, or create ENTER.

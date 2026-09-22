@@ -1700,13 +1700,17 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
       - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+      - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
     notes: >-
       ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1
-      when portfolio_budget_owner and slot context are paired. Legacy path
-      unchanged without the pair. Does not authorize external effect or N>1.
-      ATLAS_AUTHORITY=NONE.
+      when portfolio_budget_owner and slot context are paired. PR_6744
+      rebinds MV2 capital context from typed 29P equity before sizing;
+      legacy path unchanged without the pair. Does not authorize external
+      effect or N>1. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_p1_max_evidence_campaign_consumes_witness_foundation
     source: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
