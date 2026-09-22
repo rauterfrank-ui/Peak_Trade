@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P3_DURABLE_L1_L10_STATE_V1`.
 
 ## Workflow
 
@@ -41,22 +41,18 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core` |
-| `RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core` |
-| `REL:dp_naked_mechanical_core_depends_on_explicit_layered_core` |
-| `REL:dp_naked_mechanical_core_depends_on_purification_primitives` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
 | id |
 | --- |
-| `REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core` |
-| `REL:dp_naked_mechanical_core_depends_on_explicit_layered_core` |
+| _(none)_ |
 
 ## REMOVED_RELATIONS
 
@@ -96,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6718 explicit L1-L10 naked MV2+DP layered core; mechanical core delegates L8-L10; BWP evidence layer_separation_evidence_v1.json; ATLAS_AUTHORITY=NONE.
-- introduced_by=NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1
-- modified_by=NAKED_MV2_DP_EXPLICIT_LAYERED_CORE_V1
+- PR #6719 P3 durable L1-L10 episode state (durable_state_v1): atomic persist/restore only; no productive binding; ATLAS_AUTHORITY=NONE.
+- introduced_by=P3_DURABLE_L1_L10_STATE_V1
+- modified_by=P3_DURABLE_L1_L10_STATE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
