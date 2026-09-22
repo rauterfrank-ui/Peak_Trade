@@ -201,9 +201,7 @@ def test_activation_readiness_fail_closed_while_b2_b3_b4_open() -> None:
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B3_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.EXTERNAL_CLOSURE_B4_NOT_CLOSED.value in codes
     assert EpochOrchestrationFailureCodeV1.ACTIVATION_MAPPING_NOT_AUTHORIZED.value in codes
-    assert (
-        EpochOrchestrationFailureCodeV1.ACTIVATION_PRODUCTIVE_BIND_NOT_ENABLED.value not in codes
-    )
+    assert EpochOrchestrationFailureCodeV1.ACTIVATION_PRODUCTIVE_BIND_NOT_ENABLED.value not in codes
 
 
 def test_productive_cycle_wires_p5_10_bind_not_p5_10a_contract() -> None:
