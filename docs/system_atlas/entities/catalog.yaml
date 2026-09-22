@@ -10388,6 +10388,32 @@ entities:
       into CT sizing produce after BASE bind. Transport only; no sizing or
       risk-admissible mint. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1
+    kind: RUNTIME_COMPONENT
+    name: Running account equity parallel-decoupled tracks authority interface reconciliation contract v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1.py
+      - docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - tests/ops/test_full_core_running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1.py
+    source_symbols:
+      - build_running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1
+      - reject_silent_track_substitution_v1
+      - reject_authority_mint_by_reconciliation_agreement_v1
+    evidence_sources:
+      - docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
+      - tests/ops/test_full_core_running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1.py
+    notes: >-
+      OWNER_DECISION_1=C PARALLEL_DECOUPLED_TRACKS docs/contract-only Authority/Interface/
+      Reconciliation persist for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING. No Source→Semantic
+      mapping, no sizing mint, no Option-D RECONCILIATION_CONTRACT_CREATED flip, no quarantine/#6714
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1
     kind: RUNTIME_COMPONENT
     name: C08 treasury capital semantic authority closeout contract v1
