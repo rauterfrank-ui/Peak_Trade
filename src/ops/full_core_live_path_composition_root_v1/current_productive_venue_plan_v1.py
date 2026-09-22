@@ -14,6 +14,11 @@ from src.ops.full_core_live_path_composition_root_v1.composition_root_v1 import 
     compose_core_live_execution_intent_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import MODE_LIVE
+from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_td_mode_and_order_environment_authority_v1 import (
+    CurrentProductiveVenuePlanInputAuthorityError,
+    resolve_current_productive_order_environment_v1,
+    resolve_current_productive_venue_plan_td_mode_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CompositionStatusV1,
     VenuePlanCandidateV1,
@@ -36,10 +41,35 @@ def try_bind_current_productive_venue_plan_v1(
     session_id: str,
     run_id: str,
     composed_epoch: str,
-    td_mode: str = "cross",
+    execution_mode: str | None = None,
+    conflicting_execution_mode: str | None = None,
+    requested_environment: str | None = None,
+    conformance_required: bool = False,
+    observed_td_mode: str | None = None,
+    observed_mgn_mode: str | None = None,
 ) -> tuple[CompositionStatusV1, tuple[str, ...], VenuePlanCandidateV1 | None]:
+    """Bind the venue plan. td_mode and environment come only from the authority.
+
+    ``MODE_LIVE`` remains the existing composition-mode argument. It is not
+    the order-environment owner. A missing, unknown, or conflicting
+    execution mode returns no plan.
+    """
+
     if replay is None:
         return CompositionStatusV1.DENY, (CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,), None
+    try:
+        td_mode = resolve_current_productive_venue_plan_td_mode_v1(
+            conformance_required=conformance_required,
+            observed_td_mode=observed_td_mode,
+            observed_mgn_mode=observed_mgn_mode,
+        )
+        order_environment = resolve_current_productive_order_environment_v1(
+            execution_mode=execution_mode,
+            conflicting_mode=conflicting_execution_mode,
+            requested_environment=requested_environment,
+        )
+    except CurrentProductiveVenuePlanInputAuthorityError as exc:
+        return CompositionStatusV1.DENY, (exc.reason_code,), None
     status, reasons, intent = compose_core_live_execution_intent_v1(
         replay=replay,
         bound_instrument=bound_instrument,
@@ -53,4 +83,5 @@ def try_bind_current_productive_venue_plan_v1(
         session_id=session_id,
         run_id=run_id,
         td_mode=td_mode,
+        order_environment=order_environment,
     )

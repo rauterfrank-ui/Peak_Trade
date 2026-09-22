@@ -423,6 +423,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
             session_id="current-productive-dk-session",
             run_id="current-productive-dk-run",
             composed_epoch=package_started,
+            execution_mode="LIVE",
         )
         decision_provenance = ",".join(reasons) if reasons else cycle_provenance
         if status is CompositionStatusV1.PASS and plan is not None:

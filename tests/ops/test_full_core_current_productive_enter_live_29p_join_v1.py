@@ -259,6 +259,7 @@ def test_enter_fresh_valid_29p_pass_feeds_canonical_sizing_once() -> None:
         session_id="enter-live-29p-join-session",
         run_id="enter-live-29p-join-run",
         composed_epoch=EPOCH,
+        execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
     assert plan is not None

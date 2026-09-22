@@ -363,6 +363,7 @@ def _t2_from_s7(
                 session_id=str(s7_base["cycle_id_prefix"]),
                 run_id=f"{s7_base['cycle_id_prefix']}:{next(iter(composed))}",
                 composed_epoch=epoch,
+                execution_mode="LIVE",
             )
             venue_plan_pass = status is CompositionStatusV1.PASS and plan is not None
             _finalize_portfolio_reservation_after_enter_join_v1(

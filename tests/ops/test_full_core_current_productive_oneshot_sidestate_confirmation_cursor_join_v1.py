@@ -246,6 +246,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
         session_id="cursor-join-session",
         run_id="cursor-join-run",
         composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
     assert plan is not None
@@ -285,6 +286,7 @@ def test_existing_armed_replay_still_reaches_envelope_without_permit(
         session_id="armed-replay-session",
         run_id="armed-replay-run",
         composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS
     assert plan is not None

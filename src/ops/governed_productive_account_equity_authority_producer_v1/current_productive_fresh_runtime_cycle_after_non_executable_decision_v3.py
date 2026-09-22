@@ -740,6 +740,7 @@ def execute_current_productive_fresh_runtime_cycle_after_non_executable_decision
             session_id="current-productive-dq-session",
             run_id="current-productive-dq-run",
             composed_epoch=package_started,
+            execution_mode="LIVE",
         )
         decision_provenance = ",".join(reasons) if reasons else cycle_provenance
         if status is CompositionStatusV1.PASS and plan is not None:

@@ -574,7 +574,7 @@ EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY
 SLICE=CURRENT_PRODUCTIVE_VENUE_PLAN_TD_MODE_AND_ORDER_ENVIRONMENT_AUTHORITY_V1
 NOT_A_HISTORICAL_PREEXISTING_FACT=true
 EXECUTABLE_REPRESENTATION=src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py
-VENUE_PLAN_BINDING_IMPLEMENTED=false
+VENUE_PLAN_BINDING_IMPLEMENTED=true
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 ```
 
@@ -625,9 +625,16 @@ execution mode is exactly `LIVE`. The environment bounds the allowed
 execution surface and does not make a trading decision. Unknown, missing,
 or conflicting mode fails closed.
 
-Non-implications: no productive venue-plan binding, no venue POST, no
-permit mint, no POST-GO consumption, no keychain access, no network, no
-standing-pin change, no live admission, and no `LIVE_CAPABILITY_COMPLETE`.
+The CURRENT productive venue-plan binder consumes this authority.
+`td_mode` comes only from the static policy token. The order-environment
+token is the identity of the supplied current productive execution mode.
+An observation may confirm that token or fail closed. It does not replace
+the policy token. `REQUIRED_TD_MODE`, `DEFAULT_TD_MODE`, account `tdMode`,
+and position `mgnMode` are not this authority.
+
+Non-implications: no venue POST, no permit mint, no POST-GO consumption,
+no keychain access, no network, no standing-pin change, no live admission,
+and no `LIVE_CAPABILITY_COMPLETE`.
 
 ------------------------------------------------------------------------
 
