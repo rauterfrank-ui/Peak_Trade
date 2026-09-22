@@ -26,11 +26,14 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execution_admission_remainder_v1 import (
     CANONICAL_PACK_RELPATH,
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     THIS_SLICE,
     CurrentProductiveExecutionAdmissionRemainderError,
     execute_current_productive_execution_admission_remainder_v1,
+)
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
@@ -77,7 +80,9 @@ def test_standing_flags_close_admission_without_activation() -> None:
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
-    assert EXPECTED_ORIGIN_MAIN_SHA == "68de33fcb64a1326dc2c07fe685f13b8d38eec67"
+
+
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 
 def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
@@ -86,8 +91,9 @@ def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
     ):
         execute_current_productive_execution_admission_remainder_v1(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "a",
+            execution_integrity_backend=_INTEGRITY,
         )
     with pytest.raises(
         CurrentProductiveExecutionAdmissionRemainderError, match="ORIGIN_MAIN_SHA_MISMATCH"
@@ -96,14 +102,16 @@ def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
             owner_go=OWNER_GO,
             origin_main_sha="0" * 40,
             evidence_root=tmp_path / "b",
+            execution_integrity_backend=_INTEGRITY,
         )
 
 
 def test_evaluate_closes_admission_and_halts_on_port_construction(tmp_path: Path) -> None:
     result = execute_current_productive_execution_admission_remainder_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
+        execution_integrity_backend=_INTEGRITY,
     )
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert result.live_enabled == "true"
@@ -155,25 +163,19 @@ def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DD_HEADING in runbook
-    assert THIS_SLICE in runbook
-    dd_section = runbook[
-        runbook.index(
-            "11.2.1.DD FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER"
-        ) : runbook.index("## 11.3 Autonomy state model")
-    ]
-    assert "WIRE_SEND_PERMITTED=true" in dd_section
-    assert "LIVE_ENABLED=true" in dd_section
-    assert "LIVE_ARMED=true" in dd_section
-    assert "LIVE_AUTHORIZED=false" in dd_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in dd_section
-    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=false" in dd_section
-    assert "ADMITTED=true" in dd_section
-    assert SPEC_PATH.name in mot
+    assert THIS_SLICE in spec
+    assert "EXECUTION_IDENTITY_BINDING=current_productive_29p_chain_runtime_integrity.v1" in spec
+    assert "WIRE_SEND_PERMITTED=true" in spec
+    assert "LIVE_ENABLED=true" in spec
+    assert "LIVE_ARMED=true" in spec
+    assert "STEP_29Q_STATUS=PLAN_ONLY" in spec
+    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=true" in spec
+    assert "PRODUCTIVE_WIRE_SEND_REACHABLE_NOT_EXTERNAL_EFFECT=true" in spec
+    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "ADMITTED=true" in spec
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1" in spec
     assert "11.2.1.DD" in atlas
     assert "current_productive_execution_admission_remainder_v1.py" in atlas

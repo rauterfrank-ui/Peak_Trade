@@ -51,6 +51,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CapitalAdmissionStatusV1,
+    DataSafetyAdmissionStatusV1,
     DurableKillSwitchEvidenceStatusV1,
     ExecutionAdmissionInputsV1,
     FreshPretradeGetStatusV1,
@@ -77,13 +78,18 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_runtime_orchestrator_v1 import (
     persist_manifest_sha256_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
 
 OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1"
 THIS_SLICE = "11.2.1.DE.FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION"
-EXPECTED_ORIGIN_MAIN_SHA = "fec53461fe1a6c8b3000b57d8f0ce842a5bdc7ea"
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_live_execution_port_construction_v1/20260915T165500Z"
 )
@@ -263,6 +269,7 @@ def _admission_inputs_v1() -> ExecutionAdmissionInputsV1:
         capital_admission_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
         capital_authority_class=CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
         step_29p_risk_admissible=True,
+        data_safety_admission_status=DataSafetyAdmissionStatusV1.SATISFIED.value,
     )
 
 
@@ -272,11 +279,17 @@ def execute_current_productive_live_execution_port_construction_v1(
     origin_main_sha: str,
     evidence_root: Path | None = None,
     repo_root: Path | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveLiveExecutionPortConstructionResultV1:
     if owner_go != OWNER_GO:
         raise CurrentProductiveLiveExecutionPortConstructionError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveLiveExecutionPortConstructionError("ORIGIN_MAIN_SHA_MISMATCH")
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveLiveExecutionPortConstructionError(str(exc)) from exc
     _assert_standing_pins()
     root = repo_root or Path(__file__).resolve().parents[3]
     dd = _bind_current_dd_epoch(repo_root=root)
@@ -387,7 +400,9 @@ def execute_current_productive_live_execution_port_construction_v1(
     claims = {
         "THIS_SLICE": THIS_SLICE,
         "OWNER_GO": OWNER_GO,
-        "EXPECTED_ORIGIN_MAIN": origin_main_sha,
+        "EXPECTED_ORIGIN_MAIN": trusted_execution_identity,
+        "TRUSTED_EXECUTION_IDENTITY": trusted_execution_identity,
+        "EXECUTION_IDENTITY_BINDING": RUNTIME_INTEGRITY_CONTRACT_VERSION,
         "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINDER_CLOSED": TRUE_TOKEN,
         "LIVE_EXECUTION_PORT_CONSTRUCTIBLE": _token(construction.constructible is True),
         "LIVE_EXECUTION_PORT_CONSTRUCTED": TRUE_TOKEN,
@@ -399,6 +414,10 @@ def execute_current_productive_live_execution_port_construction_v1(
         "LIVE_EXECUTION_PORT_CONSTRUCTED_IS_NOT_POST": TRUE_TOKEN,
         "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT": _token(
             CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT is True
+        ),
+        "CAP_7_2_HOST_JOIN_PERFORMED_BY_THIS_SLICE": FALSE_TOKEN,
+        "CAP_7_2_HOST_JOIN_AUTHORITY_OWNER": (
+            "OWNER_GO_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1"
         ),
         "EXECUTION_ADMISSION_REMAINDER_CLOSED": TRUE_TOKEN,
         "EXECUTION_ADMISSION_TRUE_IS_NOT_AUTOMATIC_SEND": TRUE_TOKEN,
@@ -453,7 +472,7 @@ def execute_current_productive_live_execution_port_construction_v1(
         "LEARNING_UNCHANGED": TRUE_TOKEN,
         "FULL_CORE_SAFETY_ADMISSION_AUTHORITY_UNCHANGED": TRUE_TOKEN,
         "CANARY_FULL_CORE_BOUNDARY_UNCHANGED": TRUE_TOKEN,
-        "PRODUCTIVE_WIRE_SEND_REACHABLE_UNCHANGED_FALSE": TRUE_TOKEN,
+        "PRODUCTIVE_WIRE_SEND_REACHABLE_TRUE_NOT_EXTERNAL_EFFECT": TRUE_TOKEN,
         "LIVE_AUTHORIZED_UNCHANGED_FALSE": TRUE_TOKEN,
         "STEP_29Q_UNCHANGED_PLAN_ONLY": TRUE_TOKEN,
         "CAP_7_2_HOST_JOIN_UNCHANGED_FALSE": _token(
