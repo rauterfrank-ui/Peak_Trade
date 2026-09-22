@@ -6236,6 +6236,30 @@ entities:
       (INITIAL_SEED vs MECHANICAL_STEP). No CZ-4 wire; mapping authorization stays false.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1
+    kind: CONTRACT
+    name: P5.9D layered mechanical SideState FSM contract v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1
+    authority_sources:
+      - docs/ops/specs/P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1.md
+    source_paths:
+      - docs/ops/specs/P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1.md
+      - src/ops/p5_9d_layered_mechanical_sidestate_fsm_contract_v1/__init__.py
+      - src/ops/p5_9d_layered_mechanical_sidestate_fsm_contract_v1/constants_v1.py
+      - src/ops/p5_9d_layered_mechanical_sidestate_fsm_contract_v1/contract_v1.py
+      - tests/ops/test_p5_9d_layered_mechanical_sidestate_fsm_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1.md
+      - src/ops/p5_9d_layered_mechanical_sidestate_fsm_contract_v1/contract_v1.py
+    notes: >-
+      P5.9D explicit regime-bound vs mechanical SideState FSM validators (post P5.9C).
+      Allowlist/forbidden legacy rows, single-writer, scope provenance, P5.7 handoff prep.
+      No productive wiring; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED stays false.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1
