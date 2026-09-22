@@ -6283,6 +6283,30 @@ entities:
       POST_CANONICAL C4/Entry-Exit boundary (B1 + minimal B5). B2/B3/B4 external;
       no productive wiring; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:p5_10b_layered_epoch_remaining_authority_closure_v1
+    kind: CONTRACT
+    name: P5.10B layered epoch remaining authority closure v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1
+    authority_sources:
+      - docs/ops/specs/P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1.md
+    source_paths:
+      - docs/ops/specs/P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1.md
+      - src/ops/p5_10b_layered_epoch_remaining_authority_closure_v1/__init__.py
+      - src/ops/p5_10b_layered_epoch_remaining_authority_closure_v1/constants_v1.py
+      - src/ops/p5_10b_layered_epoch_remaining_authority_closure_v1/contract_v1.py
+      - src/ops/p5_8b_regime_sidestate_projection_phase_authority_v1/persistence_v1.py
+      - tests/ops/test_p5_10b_layered_epoch_remaining_authority_closure_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1.md
+      - src/ops/p5_10b_layered_epoch_remaining_authority_closure_v1/contract_v1.py
+    notes: >-
+      P5.10B closes B2 mechanical provenance, B3 P5.8B lifecycle persist/restore, and B4
+      canonical SideState handoff to StateSwitchEvidenceV1. P5_10_ACTIVATION_READINESS=READY
+      (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1

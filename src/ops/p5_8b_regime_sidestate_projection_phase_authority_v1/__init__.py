@@ -10,6 +10,14 @@ from src.ops.p5_8b_regime_sidestate_projection_phase_authority_v1.constants_v1 i
     PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED,
     REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED,
 )
+from src.ops.p5_8b_regime_sidestate_projection_phase_authority_v1.persistence_v1 import (
+    PERSISTENCE_OWNER as LIFECYCLE_PERSISTENCE_OWNER,
+    RegimeSidestateProjectionLifecyclePersistBindingV1,
+    RegimeSidestateProjectionLifecyclePersistenceError,
+    atomic_persist_regime_sidestate_projection_lifecycle_v1,
+    restore_regime_sidestate_projection_lifecycle_v1,
+    roundtrip_regime_sidestate_projection_lifecycle_v1,
+)
 from src.ops.p5_8b_regime_sidestate_projection_phase_authority_v1.contract_v1 import (
     PhaseAuthorityFailureCodeV1,
     PhaseAuthorityResolutionResultV1,
@@ -26,7 +34,13 @@ __all__ = [
     "CONTRACT_VERSION",
     "LIFECYCLE_SCHEMA_NAME",
     "LIFECYCLE_SCHEMA_VERSION",
+    "LIFECYCLE_PERSISTENCE_OWNER",
     "OWNER",
+    "RegimeSidestateProjectionLifecyclePersistBindingV1",
+    "RegimeSidestateProjectionLifecyclePersistenceError",
+    "atomic_persist_regime_sidestate_projection_lifecycle_v1",
+    "restore_regime_sidestate_projection_lifecycle_v1",
+    "roundtrip_regime_sidestate_projection_lifecycle_v1",
     "P5_AUTHORITY_CUTOVER_AUTHORIZED",
     "PHASE_AUTHORITY_CONTRACT_V1_DEFINED",
     "PHASE_AUTHORITY_VARIANT",
