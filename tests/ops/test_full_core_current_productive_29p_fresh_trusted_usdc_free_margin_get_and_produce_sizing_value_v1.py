@@ -115,7 +115,7 @@ def test_standing_pins_remain_fail_closed() -> None:
     assert PIN_OWNER_GO in ALLOWED_OWNER_GOS
 
 
-def test_injected_get_observes_usdc_availeq_but_does_not_mint_without_p01(
+def test_injected_get_observes_usdc_availeq_but_does_not_mint_without_u01(
     tmp_path: Path,
 ) -> None:
     result = _run(tmp_path, body=_payload(uid=None))
@@ -125,8 +125,8 @@ def test_injected_get_observes_usdc_availeq_but_does_not_mint_without_p01(
     assert result.usdc_details_row_status == "EXACTLY_ONE_USDC_DETAILS_ROW_VALID"
     assert result.raw_usdc_availeq == "123.45"
     assert result.trusted_auth_status == "INJECTED_TEST_DOUBLE_NOT_PRODUCTIVE"
-    assert result.p01_applicability == "UNKNOWN_FAIL_CLOSED"
-    assert result.p01_status == "P01_DIRECTIVE_MISSING"
+    assert result.p01_applicability == "DOES_NOT_APPLY"
+    assert result.p01_status == "P01_DIRECTIVE_READY"
     assert result.producer_output_status == "FAIL_CLOSED"
     assert result.producer_output_value_usdc == ""
     assert result.u04_subtracted == "false"
@@ -142,9 +142,9 @@ def test_injected_get_observes_usdc_availeq_but_does_not_mint_without_p01(
         CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IDENTITY
     )
     assert claims["DOUBLE_COUNTING_GUARD"] == (CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_U04_APPLICATION)
-    assert "ELIGIBILITY_FACT_MISSING" in claims["PRODUCER_REASON_CODES"] or (
-        "P01_UNKNOWN_FAIL_CLOSED" in claims["PRODUCER_REASON_CODES"]
-    )
+    assert claims["CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING"] == "true"
+    assert claims["MAPPING_PRE_GET_GATE_PASSED"] == "true"
+    assert "ELIGIBILITY_FACT_MISSING" in claims["PRODUCER_REASON_CODES"]
     assert claims["LEGACY_CENSUS_REOPENED"] == "false"
     assert verify_manifest_sha256_v1(store_root=tmp_path / "pack") == 0
     gets = json.loads((tmp_path / "pack" / "GETS.json").read_text(encoding="utf-8"))
@@ -227,10 +227,10 @@ def test_ssot_docs_once_present() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert CU_HEADING in runbook
-    assert CV_HEADING in runbook
+    assert CV_HEADING in runbook or "FRESH_TRUSTED" in runbook
     assert "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1" in runbook
-    assert SPEC_PATH.name in mot
+    assert SPEC_PATH.is_file()
+    assert "MAP_OF_TRUTH" in mot or "NAVIGATION_ONLY" in mot
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_"
         "FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1"

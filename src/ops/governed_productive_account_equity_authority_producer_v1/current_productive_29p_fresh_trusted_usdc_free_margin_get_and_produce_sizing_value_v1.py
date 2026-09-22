@@ -47,6 +47,12 @@ from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admis
     evaluate_step_29p_capital_risk_admissibility_v1,
     persist_class_fields_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    FullCoreK1BoundVenueAuthHandleV1,
+    bind_already_held_k1_venue_auth_session_v1,
+    build_k1_okx_venue_auth_headers_v1,
+    release_k1_venue_auth_session_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_FRESH_GET_AUTHORIZED_COUNT,
     CURRENT_PRODUCTIVE_29P_FRESH_GET_ENDPOINT,
@@ -57,6 +63,18 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IDENTITY,
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_p01_policy_v1 import (
+    POLICY_ID as P01_POLICY_ID,
+    SOURCE_CLASS as P01_POLICY_SOURCE_CLASS,
+    bind_current_productive_p01_policy_fact_v1,
+    current_productive_p01_policy_pins_v1,
+    evaluate_current_productive_p01_policy_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u01_account_mode_adapter_v1 import (
+    RAW_FIELD as U01_RAW_FIELD,
+    adapt_current_productive_u01_account_mode_v1,
+    build_current_productive_u01_eligibility_fact_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
     ELIGIBILITY_FACT_ID,
@@ -71,6 +89,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveUsdcFreeMarginObservationV1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_producer_v1 import (
+    CurrentProductiveAccountEligibilityFactV1,
     CurrentProductiveP01ReductionFactV1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_genesis_rebaseline_contract_v1 import (
@@ -82,7 +101,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.p01_governed_reduction_directive_evaluator_v1 import (
     REASON_MISSING,
-    evaluate_p01_application_predicate_v1,
+)
+from src.ops.section_11_13_5_authenticated_private_runtime_read_and_runtime_permit_issuance_v1.execute_v1 import (
+    AuthenticatedPrivateRuntimeReadError,
+    secretref_identity_without_values_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
@@ -99,7 +121,6 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_ob
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     DEFAULT_INSTRUMENT_ID,
-    REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_SECRETREF_URI,
     REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_REST_HOST,
@@ -113,17 +134,14 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 impo
 )
 
 
-def _fail_closed_credential_unavailable_v1(*_a, **_k):
-    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
-
-
 OWNER_GO = "CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1"
+BINDING_REPAIR_OWNER_GO = "OWNER_GO_CURRENT_PRODUCTIVE_29P_FRESH_GET_BINDING_REPAIR_V1"
 PIN_OWNER_GO = (
     "OWNER_GO_REQUIRED_TO_PERFORM_FRESH_TRUSTED_READ_ONLY_GET_OF_"
     "DETAILS_USDC_AVAILEQ_AND_PRODUCE_29P_SIZING_VALUE_V1"
 )
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, PIN_OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "62ac12d8167757aeaa145af03d0e972772385195"
+EXPECTED_ORIGIN_MAIN_SHA = "389cc5f91da08d30c9ae65af05b6d9f914e8ac45"
 THIS_SLICE = (
     "11.2.1.CV.FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_"
     "FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE"
@@ -376,6 +394,101 @@ def _forensic_balance_snapshot_v1(
     }
 
 
+def _require_canonical_account_equity_mapping_v1() -> None:
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        constants_v1 as mapping_pins,
+    )
+
+    if mapping_pins.CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not True:
+        raise CurrentProductive29PFreshGetError(
+            "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING_FALSE"
+        )
+
+
+def _require_p01_policy_authority_v1() -> str:
+    try:
+        pins = current_productive_p01_policy_pins_v1()
+    except ValueError as exc:
+        raise CurrentProductive29PFreshGetError(f"P01_POLICY_AUTHORITY_UNREACHABLE:{exc}") from exc
+    if pins.get("P01_POLICY_DECISION") != "DOES_NOT_APPLY":
+        raise CurrentProductive29PFreshGetError("P01_POLICY_AUTHORITY_AMBIGUOUS")
+    return str(P01_POLICY_ID)
+
+
+def _ephemeral_vault_credential_fields_v1(*, vault_file: Path) -> tuple[str, str, str]:
+    payload = json.loads(vault_file.read_text(encoding="utf-8"))
+    if not isinstance(payload, Mapping):
+        raise CurrentProductive29PFreshGetError("VAULT_NOT_OBJECT")
+    if REQUIRED_SECRETREF_URI not in payload:
+        raise CurrentProductive29PFreshGetError("SECRETREF_URI_UNBOUND")
+    raw = payload[REQUIRED_SECRETREF_URI]
+    if isinstance(raw, str):
+        material = json.loads(raw)
+    elif isinstance(raw, Mapping):
+        material = raw
+    else:
+        raise CurrentProductive29PFreshGetError("SECRETREF_MATERIAL_TYPE")
+    if not isinstance(material, Mapping):
+        raise CurrentProductive29PFreshGetError("SECRETREF_MATERIAL_NOT_OBJECT")
+    key = str(material.get("api_key") or "").strip()
+    secret = str(material.get("api_secret") or "").strip()
+    phrase = str(material.get("passphrase") or "").strip()
+    if not key or not secret or not phrase:
+        raise CurrentProductive29PFreshGetError("CREDENTIAL_FIELDS_INCOMPLETE")
+    return key, secret, phrase
+
+
+def _open_k1_signing_handle_v1(*, vault_file: Path) -> FullCoreK1BoundVenueAuthHandleV1:
+    try:
+        secretref_identity_without_values_v1(vault_file=vault_file)
+        key, secret, phrase = _ephemeral_vault_credential_fields_v1(vault_file=vault_file)
+    except AuthenticatedPrivateRuntimeReadError as exc:
+        raise CurrentProductive29PFreshGetError(str(exc)) from exc
+    except CurrentProductive29PFreshGetError:
+        raise
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        raise CurrentProductive29PFreshGetError(f"CREDENTIAL_VAULT_FAIL_CLOSED:{exc}") from exc
+    return bind_already_held_k1_venue_auth_session_v1(
+        api_key=key, api_secret=secret, passphrase=phrase
+    )
+
+
+def _auth_headers_for_get_v1(
+    *, handle: FullCoreK1BoundVenueAuthHandleV1, url: str
+) -> dict[str, str]:
+    headers = build_k1_okx_venue_auth_headers_v1(handle=handle, url=url, method="GET")
+    headers["User-Agent"] = USER_AGENT
+    return headers
+
+
+def _u01_status_from_balance_payload_v1(
+    *,
+    payload: Mapping[str, Any],
+    observation: CurrentProductiveUsdcFreeMarginObservationV1,
+) -> tuple[CurrentProductiveAccountEligibilityFactV1 | None, str]:
+    data = payload.get("data")
+    if not isinstance(data, list) or not data or not isinstance(data[0], Mapping):
+        return None, "BALANCE_ACCOUNT_ROW_MISSING"
+    row = data[0]
+    if U01_RAW_FIELD not in row:
+        return None, "ACCT_LV_ABSENT_FROM_AUTHORIZED_BALANCE_RESPONSE"
+    adaptation = adapt_current_productive_u01_account_mode_v1(row.get(U01_RAW_FIELD))
+    if adaptation.eligible != TRUE_TOKEN:
+        reason = adaptation.reason_codes[0] if adaptation.reason_codes else "U01_INELIGIBLE"
+        return None, f"U01_FAIL_CLOSED:{reason}"
+    eligibility = build_current_productive_u01_eligibility_fact_v1(
+        adaptation=adaptation,
+        bound_account_identity=observation.bound_account_identity,
+        bound_venue_identity=observation.bound_venue_identity,
+        bound_td_mode=observation.bound_td_mode,
+        decision_epoch=observation.decision_epoch,
+        provenance_digest=observation.provenance_digest,
+    )
+    if eligibility is None:
+        return None, "U01_ELIGIBILITY_FACT_NOT_MINTED"
+    return eligibility, "ELIGIBILITY_FROM_SAME_AUTHORIZED_BALANCE_RESPONSE"
+
+
 def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_v1(
     *,
     owner_go: str,
@@ -403,6 +516,8 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
     if REUSED_BINDING_REST_HOST != AUTHORIZED_HOST:
         raise CurrentProductive29PFreshGetError("HOST_MISMATCH")
     _assert_no_proxy_env_v1()
+    _require_canonical_account_equity_mapping_v1()
+    p01_directive_source = _require_p01_policy_authority_v1()
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
 
     productive = transport is None
@@ -425,7 +540,7 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
     )
     package_started = _utc_now_iso_v1()
     decision_epoch = package_started
-    handle = None
+    handle: FullCoreK1BoundVenueAuthHandleV1 | None = None
     endpoint = account_balance_query_path_v1()
     if endpoint in FORBIDDEN_ENDPOINTS or endpoint != ENDPOINT:
         raise CurrentProductive29PFreshGetError("MUTATION_ENDPOINT_FORBIDDEN")
@@ -442,20 +557,12 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
     headers: dict[str, str] = {"User-Agent": USER_AGENT}
     try:
         if productive:
-            backend = _fail_closed_credential_unavailable_v1(vault_file=Path(str(vault_file)))
-            handle = _fail_closed_credential_unavailable_v1(
-                secret_reference=REQUIRED_SECRETREF_URI,
-                vault_backend=backend,
-                credential_class=REQUIRED_CREDENTIAL_CLASS,
-            )
+            handle = _open_k1_signing_handle_v1(vault_file=Path(str(vault_file)))
         for attempt in (1, 2):
             request_time = _utc_now_iso_v1()
             headers = {"User-Agent": USER_AGENT}
             if handle is not None:
-                headers = _fail_closed_credential_unavailable_v1(
-                    handle=handle, url=url, method="GET"
-                )
-                headers["User-Agent"] = USER_AGENT
+                headers = _auth_headers_for_get_v1(handle=handle, url=url)
             elif productive:
                 raise CurrentProductive29PFreshGetError("PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE")
             try:
@@ -486,7 +593,7 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
                 break
     finally:
         if handle is not None:
-            _fail_closed_credential_unavailable_v1(handle)
+            release_k1_venue_auth_session_v1(handle)
 
     counters = _assert_get_only_client(client)
     package_finished = _utc_now_iso_v1()
@@ -585,27 +692,14 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
             forbidden_reasons.append(str(exc)[:200])
             observation = None
 
-    p01_decision = evaluate_p01_application_predicate_v1(())
     if P01_RUNTIME_INSTANCE_PRESENT is True:
         raise CurrentProductive29PFreshGetError("P01_RUNTIME_INSTANCE_MUST_REMAIN_ABSENT")
-    p01_fact = None
+    p01_decision = evaluate_current_productive_p01_policy_v1()
+    p01_fact: CurrentProductiveP01ReductionFactV1 | None = None
+    eligibility: CurrentProductiveAccountEligibilityFactV1 | None = None
+    u01_status = "NOT_OBSERVED"
     if observation is not None:
-        p01_digest = _sha256_text(
-            _canonical_json(
-                {
-                    "decision_state": p01_decision.decision_state,
-                    "reason_code": p01_decision.reason_code,
-                    "ready": p01_decision.ready,
-                    "runtime_instance_present": FALSE_TOKEN,
-                    "epoch": observation.decision_epoch,
-                }
-            )
-        )
-        p01_fact = CurrentProductiveP01ReductionFactV1(
-            fact_id=P01_FACT_ID,
-            applicability_state=p01_decision.decision_state,
-            value="",
-            settlement_currency="NONE",
+        p01_fact = bind_current_productive_p01_policy_fact_v1(
             bound_account_identity=observation.bound_account_identity,
             bound_venue_identity=observation.bound_venue_identity,
             bound_td_mode=observation.bound_td_mode,
@@ -613,13 +707,19 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
             observed_at_as_of=observation.observed_at_as_of,
             age_seconds=observation.age_seconds,
             freshness_max_age=observation.freshness_max_age,
-            provenance_digest=p01_digest,
-            source_class="GOVERNED_CONDITIONAL",
+            provenance_digest=observation.provenance_digest,
         )
+        if get_ok and isinstance(payload, dict):
+            eligibility, u01_status = _u01_status_from_balance_payload_v1(
+                payload=payload,
+                observation=observation,
+            )
+        else:
+            u01_status = "BALANCE_PAYLOAD_UNAVAILABLE_FOR_U01"
     output = produce_current_productive_29p_risk_capital_v1(
         observation=observation,
         p01=p01_fact,
-        eligibility=None,
+        eligibility=eligibility,
         eq_target=None,
         u04=None,
         restart_from_kind_set=FALSE_TOKEN,
@@ -706,6 +806,11 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
         "CURRENT_CANONICAL_AUTHORITY": "MASTER_RUNBOOK_11_2_1_CV",
         "THIS_SLICE": THIS_SLICE,
         "BOUND_ORIGIN_MAIN_SHA": origin_main_sha,
+        "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING": TRUE_TOKEN,
+        "MAPPING_PRE_GET_GATE_PASSED": TRUE_TOKEN,
+        "P01_DIRECTIVE_SOURCE": p01_directive_source,
+        "P01_POLICY_SOURCE_CLASS": P01_POLICY_SOURCE_CLASS,
+        "BINDING_REPAIR_OWNER_GO": BINDING_REPAIR_OWNER_GO,
         "FRESH_GET_EXECUTED": TRUE_TOKEN if get_ok else FALSE_TOKEN,
         "GET_ENDPOINT": ENDPOINT,
         "HTTP_STATUS": "" if http_status is None else str(http_status),
@@ -730,7 +835,7 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
         "P01_RUNTIME_INSTANCE_PRESENT": FALSE_TOKEN,
         "P01_APPLICATION": CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_P01_APPLICATION,
         "ELIGIBILITY_FACT_ID": ELIGIBILITY_FACT_ID,
-        "ELIGIBILITY_STATUS": "MISSING_NO_CURRENT_PRODUCTIVE_U01_RUNTIME_INSTANCE",
+        "ELIGIBILITY_STATUS": u01_status,
         "PRODUCER_ALGEBRA": CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_ALGEBRA,
         "PRODUCER_IDENTITY": CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IDENTITY,
         "PRODUCER_OUTPUT_VALUE_USDC": output.value,

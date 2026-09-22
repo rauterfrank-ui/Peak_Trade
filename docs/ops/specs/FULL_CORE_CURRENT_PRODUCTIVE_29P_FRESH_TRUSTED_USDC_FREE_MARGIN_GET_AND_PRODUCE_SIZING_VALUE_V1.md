@@ -4,7 +4,7 @@ status: active
 scope: Full-Core CURRENT_PRODUCTIVE 29P fresh trusted READ-ONLY USDC details.availEq GET; credential-bound account scope; producer algebra availEq minus conditional P01; U04 not subtracted again; eq remains reconciliation-target; no POST; no Live enable; producer mint fail-closed while U01 eligibility and P01 directive remain unbound
 capability: FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-15
+last_updated: 2026-09-22
 ---
 
 # Full Core Current Productive 29P Fresh Trusted USDC Free Margin GET And Produce Sizing Value V1
@@ -57,4 +57,12 @@ FIRST_DEFINITIVE_BLOCK=CURRENT_PRODUCTIVE_U01_ELIGIBILITY_MISSING_AND_P01_DIRECT
 CURRENT_LIVE_CRITICAL_BLOCKER=LIVE_ACCOUNT_BOUND_NOT_TRUSTED_FOR_29P
 NEXT_PRODUCTIVE_NODE=CURRENT_PRODUCTIVE_U01_ELIGIBILITY_AND_P01_DIRECTIVE_FOR_SIZING_MINT
 NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_TO_BIND_CURRENT_PRODUCTIVE_U01_ELIGIBILITY_AND_RESOLVE_P01_DIRECTIVE_FOR_SIZING_MINT_V1
+```
+
+Binding repair v1 (`OWNER_GO_CURRENT_PRODUCTIVE_29P_FRESH_GET_BINDING_REPAIR_V1`) on PR #6735
+branch only: `BOUND_ORIGIN_MAIN_SHA=389cc5f91da08d30c9ae65af05b6d9f914e8ac45`,
+pre-GET gate `CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true`, K1 vault credential
+reuse, governed P01 policy fact (`CURRENT_PRODUCTIVE_P01_POLICY_DOES_NOT_APPLY_V1`), U01 only
+from `acctLv` present in the same authorized balance response (no second GET). Offline
+evidence: `evidence/ops/full_core_current_productive_29p_fresh_get_binding_repair_v1/`.
 ```
