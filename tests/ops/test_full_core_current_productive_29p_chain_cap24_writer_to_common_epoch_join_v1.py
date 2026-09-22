@@ -1,4 +1,4 @@
-"""Cap-24 writer persisted baseline joins common-epoch handoff at chain slice pin."""
+"""Cap-24 writer persisted baseline joins common-epoch handoff (runtime integrity)."""
 
 from __future__ import annotations
 
@@ -7,11 +7,15 @@ from pathlib import Path
 from unittest.mock import patch
 
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
-    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     PIN_OWNER_GO,
     execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1,
+)
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
 from tests.ops.test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
     _build_fresh_chain,
@@ -23,6 +27,7 @@ from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 imp
 )
 
 LEGACY_CAP24_REPOSITORY_SHA = "e5396206530415b469fa345ec04322613c953c44"
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 
 def test_common_epoch_resolves_legacy_cap24_repository_sha(tmp_path: Path) -> None:
@@ -41,18 +46,19 @@ def test_common_epoch_resolves_legacy_cap24_repository_sha(tmp_path: Path) -> No
     ):
         result = execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
             owner_go=PIN_OWNER_GO,
-            origin_main_sha=CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+            origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             bound_instrument=None,
             fresh_get_transport=transport,
             evidence_root=tmp_path / "pack",
             cap24_productivity_root=prod,
+            execution_integrity_backend=_INTEGRITY,
         )
     assert result.bound_instrument_id == chain["instrument_id"]
     assert result.deduplicated_get_count == 7
     claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
     assert claims["CAP24_PROVENANCE_HANDOFF_STATUS"] == "ACQUIRED"
-    assert claims["EXPECTED_ORIGIN_MAIN"] == CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
+    assert claims["EXPECTED_ORIGIN_MAIN"] == TRUSTED_TEST_ORIGIN_MAIN_SHA
 
 
-def test_writer_and_common_epoch_share_chain_slice_pin() -> None:
-    assert CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA.startswith("8379a278")
+def test_writer_and_common_epoch_share_runtime_integrity_contract() -> None:
+    assert RUNTIME_INTEGRITY_CONTRACT_VERSION == "current_productive_29p_chain_runtime_integrity.v1"

@@ -22,7 +22,7 @@ no historical evidence as runtime input.
 
 ```text
 THIS_SLICE=11.2.1.EJ.FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF
-EXPECTED_ORIGIN_MAIN_SHA=8379a278517b23240ca1cdad02fe041b7d618874
+EXECUTION_IDENTITY=consumer passes repository_sha; persisted provenance via resolve_cap24_persisted_repository_sha_v1
 CHAIN_BASELINE_CONTRACT=FULL_CORE_CURRENT_PRODUCTIVE_29P_CHAIN_BASELINE_CONTRACT_V1
 DEFAULT_RUNTIME_ROOT=runtime/current_productive/cap24_selection_state
 MARK_PRICES_SIDEcar=mark_prices_by_native_id_v1.json

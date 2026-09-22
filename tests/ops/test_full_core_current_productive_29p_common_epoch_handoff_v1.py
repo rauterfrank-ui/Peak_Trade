@@ -30,12 +30,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     SEALED_LEGACY_CENSUS_REOPENED,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
-    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     ALLOWED_OWNER_GOS,
     CAP24_SUPPLY_PIN_OWNER_GO,
-    EXPECTED_ORIGIN_MAIN_SHA,
     HISTORICAL_PROVENANCE_REF_ONLY,
     MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT,
     MINIMUM_DEDUPLICATED_GET_COUNT,
@@ -58,9 +57,15 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     STATE_SELECTED_ACTIVE,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
+)
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
 )
+
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md"
@@ -213,7 +218,9 @@ def test_standing_flags_and_owner_go_tokens() -> None:
     assert OWNER_GO in ALLOWED_OWNER_GOS
     assert PIN_OWNER_GO in ALLOWED_OWNER_GOS
     assert CAP24_SUPPLY_PIN_OWNER_GO in ALLOWED_OWNER_GOS
-    assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
+    assert RUNTIME_INTEGRITY_CONTRACT_VERSION.startswith(
+        "current_productive_29p_chain_runtime_integrity"
+    )
     assert MINIMUM_DEDUPLICATED_GET_COUNT == 7
     assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 7
 
@@ -363,10 +370,11 @@ def test_get_budget_invariant_rejects_more_than_seven() -> None:
 def test_execute_offline_missing_bound_first_blocker(tmp_path: Path) -> None:
     result = execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
         bound_instrument=None,
         fresh_get_transport=_transport(),
         evidence_root=tmp_path / "pack",
+        execution_integrity_backend=_INTEGRITY,
     )
     assert result.first_real_blocker == "CURRENT_PRODUCTIVE_CAP24_BOUND_INSTRUMENT_INSTANCE_MISSING"
     assert result.deduplicated_get_count == 0
@@ -380,10 +388,11 @@ def test_execute_offline_missing_bound_first_blocker(tmp_path: Path) -> None:
 def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
     result = execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         owner_go=PIN_OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
         bound_instrument=_bound(),
         fresh_get_transport=_transport(),
         evidence_root=tmp_path / "pack",
+        execution_integrity_backend=_INTEGRITY,
     )
     assert result.deduplicated_get_count == 7
     assert result.step_29p_risk_admissible == "false"
