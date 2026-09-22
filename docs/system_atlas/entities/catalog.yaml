@@ -7934,6 +7934,7 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; CONSUMER=compose_current_productive_29p_common_epoch_handoff_v1; INSTTYPE_BIND=Cap-2.1 instrument_type via resolve_current_productive_public_inst_type_from_cap21_universe_v1; FRESH_PRETRADE_UID_EXTRACT=str_coerce; FULL_CORE_ADMISSION_UNCHANGED=true; ACTIVATION_CHANGED=false; POST_COUNT=0; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py|src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py.
     # FULL_CORE_CURRENT_PRODUCTIVE_REMAINDER_COMPLETION_V1 chain baseline PR_6740 repair: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; OWNER=current_productive_29p_chain_baseline_contract_v1; RUNTIME_INTEGRITY=current_productive_29p_chain_runtime_integrity.v1; MERGE_STABLE_TRUSTED_REF_BINDING=true; CAP24_REPO_RESOLVE=resolve_cap24_persisted_repository_sha_v1; POST_MERGE_CODE_PIN=false; TRADING_SEMANTICS_CHANGED=false.
     # 11.2.1.EK PR_6739 Cap-24 writer post-merge baseline repin V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; BASELINE_PIN_ONLY=true; STALE_PIN=87f4f2143af72b648a73c24d340574388c39aa0f; TARGET_PIN=e5396206530415b469fa345ec04322613c953c44; TRADING_SEMANTICS_CHANGED=false; SELECTION_LOGIC_CHANGED=false; VENUE_IO=0; PRODUCTIVE_PUBLISH=false; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py.
     # 11.2.1.EI PR_6736 common-epoch handoff consumer V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; RUNTIME_COMPOSITION_ONLY=true; CONSUMER=compose_current_productive_29p_common_epoch_handoff_v1; FRESH_PRETRADE_GET_SEMANTICS_UNCHANGED=true; owner=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py.
@@ -8089,7 +8090,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
+    modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -9671,13 +9672,14 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_owner_one_shot_permit_v1
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: coupling-review only; permit seam unchanged; FRESH_PRETRADE_GET_BIND_VIA_COMMON_EPOCH_ONLY; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: coupling-review only; permit seam unchanged; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     kind: GATE
     name: Full-core typed OWNER_ONE_SHOT permit seam v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
@@ -9700,6 +9702,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_fresh_pretrade_runtime_get_v1
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: extract_identity_fields uid str-coerce for LAB identity; common-epoch execute binds public instType from Cap-2.1; FULL_CORE seam semantics unchanged; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     # S2C_DATASAFETYGATE_PRODUCTIVE_ADMISSION_JOIN_V1: coupling-review only; DataSafetyGate.check is a fail-closed conjunct of evaluate_execution_admission_v1; DATASAFETYGATE_JOIN=CONJUNCT_NOT_OWNER; prior S2C_UNAUTHORIZED/join=false superseded; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     # S2B_RUNTIME_USAGE_BINDING_AT_TRANSPORT_RESULT_V1: coupling-review only; Fresh GET seam type is the bind boundary; binder owner remains composition root; DATASAFETYGATE_JOIN=false; AUTHORITY_EFFECT=RATIFIED_CONTEXT_BINDER_IMPLEMENTATION_ONLY; ATLAS_AUTHORITY=NONE.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: CONTRACT_VERSION=v1; data_safety_source_kind optional on FreshPretradeGetTransportResultV1; REAL only from FullCoreProductiveReadOnlyGetTransportV1.get with direct venue evidence; injected/failed unbound; no DataSafetyGate join; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
@@ -9708,7 +9711,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
@@ -9718,6 +9721,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/execution_admission_contract_v1.py
     source_symbols:
       - collect_fresh_pretrade_runtime_get_v1
+      - extract_identity_fields_from_payload_v1
       - join_fresh_pretrade_runtime_get_into_admission_inputs_v1
       - halt_at_live_execution_boundary_v1
       - FullCoreProductiveReadOnlyGetTransportV1
@@ -9729,9 +9733,12 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/datasafety_gate_join_into_execution_admission_v1.py
       - tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py
+      - tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py
+      - tests/ops/test_full_core_current_productive_29p_fresh_get_binding_repair_v1.py
       - tests/ops/full_core_live_path_composition_root_v1/test_s1_datasafety_source_kind_stamp_at_productive_get_transport_v1.py
       - tests/ops/full_core_live_path_composition_root_v1/test_s2c_datasafetygate_productive_admission_join_v1.py
       - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md
     notes: >-
       Joins decision-bound Fresh Pretrade GET evidence into Full-Core
       admission. Injectable GET-only port. Does not arm Live. Does not
@@ -9755,6 +9762,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:full_core_live_account_bound_v1
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: coupling-review only; LIVE_ACCOUNT_BOUND seam unchanged; common-epoch fresh GET bind is upstream of bound evaluation; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     # S1_SOURCE_KIND_STAMP_AT_PRODUCTIVE_GET_TRANSPORT: coupling-review only; LIVE_ACCOUNT_BOUND seam unchanged; AUTHORITY_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
     # 11.2.1.S did not execute LIVE_ACCOUNT_BOUND claim join into the 29P risk claim.
     kind: GATE
@@ -9762,7 +9770,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
     fail_closed: true
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
