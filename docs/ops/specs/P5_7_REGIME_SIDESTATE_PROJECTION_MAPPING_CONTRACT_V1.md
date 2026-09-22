@@ -24,6 +24,7 @@ for CZ-4 switch until a separate activation WP). Does **not** wire replay, cycle
 | Surface | Owner |
 | --- | --- |
 | Mapping + validator | `ops.p5_7_regime_sidestate_projection_mapping_contract_v1` |
+| Phase authority (INITIAL_SEED vs MECHANICAL_STEP) | `ops.p5_8b_regime_sidestate_projection_phase_authority_v1` |
 | Regime domain | `trading.master_v2.naked_mv2_dp_regime_v1.NakedRegimeV1` |
 | SideState domain | `trading.master_v2.double_play_state.SideState` |
 | Orientation rule (aligned with L9) | BULL→LONG, BEAR→SHORT scope direction |
@@ -33,7 +34,9 @@ for CZ-4 switch until a separate activation WP). Does **not** wire replay, cycle
 
 - **Inputs:** valid ``NakedRegimeV1`` pair, ``switch_condition_met`` consistent with
   ``regime_pre != regime_post``, occupancy (`venue_flat`, ``ExistingPositionSide``),
-  ``prior_side_state`` (cursor/occupancy seed — never core regime writer).
+  ``prior_side_state`` (cursor/occupancy seed — never core regime writer),
+  ``phase`` (``RegimeSideStateProjectionPhaseV1`` — from P5.8B phase authority only;
+  SideState lifecycle context, not regime writer).
 - **Output:** projected ``SideState`` for downstream lifecycle / CZ-4 prep only.
 - **Sole trading-decision regime source:** core seal ``regime_pre`` and ``regime_post``.
 - **Forbidden:** SideState→regime backflow; ACTIVE from regime alone when flat;
