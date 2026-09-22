@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- One-shot fresh-envelope join binds permit mint, durable SENT_INITIATED consume, the K1 opaque signing seam, and the existing HTTP trade-order transport. POST Owner-GO remains UNCONSUMED. No real Keychain, no venue socket, EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- NEW_OWNER_AUTHORITY navigation only. Static venue-execution policy token cross; order environment is the identity of the five canonical execution modes. Venue-plan binding is not implemented. POST Owner-GO remains UNCONSUMED. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=CURRENT_PRODUCTIVE_ONE_SHOT_FRESH_ENVELOPE_PERMIT_MINT_DURABLE_CONSUME_AND_POST_JOIN_V1
+- modified_by=CURRENT_PRODUCTIVE_VENUE_PLAN_TD_MODE_AND_ORDER_ENVIRONMENT_AUTHORITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

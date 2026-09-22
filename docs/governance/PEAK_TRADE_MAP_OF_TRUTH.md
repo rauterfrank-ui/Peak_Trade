@@ -98,6 +98,7 @@ in the Master Runbook and the named packages.
 | K1 macOS Keychain backend kind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py` |
 | Exactly-one governed cycle | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
 | `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |
+| Venue-plan tdMode and order-environment authority (navigation only) | `src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |
 | Single Selected Future binding | `src/ops/single_selected_future_runtime_binding_v1/` |
 | Elementary C1 mark direction identity | `src/trading/market_state/elementary_direction_v1.py` |

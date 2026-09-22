@@ -567,6 +567,68 @@ Permit mint, envelope-bound single-use send, and venue POST require their
 own scoped Owner-GO and CURRENT gate satisfaction. This runbook consumes
 none of those authorizations.
 
+### CURRENT Venue-Plan tdMode and Order-Environment Authority
+
+```text
+EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY
+SLICE=CURRENT_PRODUCTIVE_VENUE_PLAN_TD_MODE_AND_ORDER_ENVIRONMENT_AUTHORITY_V1
+NOT_A_HISTORICAL_PREEXISTING_FACT=true
+EXECUTABLE_REPRESENTATION=src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py
+VENUE_PLAN_BINDING_IMPLEMENTED=false
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+```
+
+This subsection records a new Owner decision. It does not claim that the
+decision already existed in prior code, helper pins, or earlier runbook
+revisions.
+
+CANONICAL_PREEXISTING_AUTHORITY that this decision does not replace:
+
+- an explicit config key needs an explicit owner; an unbound owner fails closed
+- `SHADOW`, `INTERNAL_SIMULATED_EXECUTION`, `PAPER_EXCHANGE`, `TESTNET`, and
+  `LIVE` stay distinct
+- Master V2 plus Double Play remains the sole trading-decision authority
+- `acctLv=2` / U01 remains a separate account-mode authority
+- standing live pins, Step 29Q `PLAN_ONLY`, and the unconsumed venue-POST
+  Owner-GO stay unchanged
+
+NEW_OWNER_AUTHORITY — tdMode:
+
+```text
+SOURCE_CLASS=STATIC_VENUE_EXECUTION_POLICY
+OWNER=CURRENT_PRODUCTIVE_VENUE_EXECUTION_POLICY
+TOKEN=cross
+OBSERVATION_ROLE=VALIDATION_CONFORMANCE_NOT_SOURCE_OF_TRUTH
+```
+
+Account and position observations validate conformance. They do not select
+the token. An observed `tdMode` or `mgnMode` must not silently replace the
+policy token. A mismatch, a blank observation, or a missing observation
+when conformance is required fails closed. The authoritative result is
+exactly `cross`, or a fail-closed refusal. `REQUIRED_TD_MODE` and
+`DEFAULT_TD_MODE` on existing helper paths are not retroactively this
+authority.
+
+NEW_OWNER_AUTHORITY — order environment:
+
+```text
+OWNER=CURRENT_PRODUCTIVE_EXECUTION_MODE
+VOCABULARY=SHADOW|INTERNAL_SIMULATED_EXECUTION|PAPER_EXCHANGE|TESTNET|LIVE
+TRANSFORMATION=IDENTITY
+```
+
+The venue-plan environment token is exactly the execution-mode token.
+`prod` / `demo` folding is not authority. No alias may collapse two
+vocabulary modes into one authoritative venue-plan token. The CURRENT
+productive live path receives the `LIVE` environment only when the
+execution mode is exactly `LIVE`. The environment bounds the allowed
+execution surface and does not make a trading decision. Unknown, missing,
+or conflicting mode fails closed.
+
+Non-implications: no productive venue-plan binding, no venue POST, no
+permit mint, no POST-GO consumption, no keychain access, no network, no
+standing-pin change, no live admission, and no `LIVE_CAPABILITY_COMPLETE`.
+
 ------------------------------------------------------------------------
 
 ## CURRENT Safety Invariants
