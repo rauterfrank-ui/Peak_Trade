@@ -8,8 +8,8 @@ import pytest
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
-    EXECUTION_ADMISSION_REMAINDER_CLOSED,
     PRODUCTIVE_WIRE_SEND_REACHABLE,
+    current_productive_first_real_blocker_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
     PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS,
@@ -89,7 +89,7 @@ def test_de_execution_identity_mismatch_fail_closed(tmp_path) -> None:
         )
 
 
-def test_ei_boundary_port_construction_remains_forbidden() -> None:
+def test_ei_boundary_follows_current_first_real_blocker() -> None:
     from dataclasses import replace
 
     from src.ops.governed_productive_account_equity_authority_producer_v1 import (
@@ -117,12 +117,12 @@ def test_ei_boundary_port_construction_remains_forbidden() -> None:
         produced=True,
         evaluator_29p=True,
     )
-    assert EXECUTION_ADMISSION_REMAINDER_CLOSED is True
     blocker, cls = ei_mod._first_blocker_from_handoff_v1(
         handoff=productive_handoff,
         productive_contact=True,
     )
-    assert blocker == "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
+    assert blocker == current_productive_first_real_blocker_v1()
+    assert blocker != "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
     assert cls == "E"
 
 

@@ -43,11 +43,14 @@ from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import
 )
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
-    EXECUTION_ADMISSION_REMAINDER_CLOSED,
     LIVE_ARMED,
     LIVE_ENABLED,
     NUMERIC_EQUITY_TTL_SECONDS,
     WIRE_SEND_PERMITTED,
+    current_productive_first_real_blocker_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
+    POST_NEXT_OWNER_GO,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     ADMISSION_CONTEXT_LIVE,
@@ -163,6 +166,15 @@ from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundIns
 
 def _fail_closed_credential_unavailable_v1(*_a, **_k):
     raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
+
+
+def resolve_post_29p_current_execution_blocker_v1() -> tuple[str, str, str]:
+    """After 29P is admissible, consume the composition-root first real blocker.
+
+    Names the existing envelope-bound single-use permit Owner-GO. Does not mint
+    that permit, load credentials, open a session, construct a port, or POST.
+    """
+    return current_productive_first_real_blocker_v1(), "E", POST_NEXT_OWNER_GO
 
 
 OWNER_GO = "CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_TO_FIRST_REAL_BLOCKER_V1"
@@ -675,26 +687,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         blocker_class = "C"
         next_go = "OWNER_GO_REQUIRED_FOR_PRODUCTIVE_READ_ONLY_GET_FOR_29P_V1"
     elif current_productive_29p is True:
-        if EXECUTION_ADMISSION_REMAINDER_CLOSED is True:
-            first_blocker = "LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN"
-            blocker_class = "E"
-            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_EXECUTION_PORT_NOT_AUTHORIZED_BY_THIS_SLICE"
-        elif WIRE_SEND_PERMITTED is True:
-            first_blocker = "EXECUTION_ADMISSION_REMAINS_FAIL_CLOSED"
-            blocker_class = "E"
-            next_go = "OWNER_GO_REQUIRED_FOR_ADMISSION_REMAINDER_NOT_AUTHORIZED_BY_THIS_SLICE"
-        elif LIVE_ARMED is True:
-            first_blocker = "WIRE_SEND_PERMITTED_STANDING_GATE_REMAINS_FALSE"
-            blocker_class = "E"
-            next_go = "OWNER_GO_REQUIRED_FOR_WIRE_SEND_PERMITTED_NOT_AUTHORIZED_BY_THIS_SLICE"
-        elif LIVE_ENABLED is True:
-            first_blocker = "LIVE_ARMED_STANDING_GATE_REMAINS_FALSE"
-            blocker_class = "E"
-            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_ARMED_NOT_AUTHORIZED_BY_THIS_SLICE"
-        else:
-            first_blocker = "LIVE_ENABLED_STANDING_GATE_REMAINS_FALSE"
-            blocker_class = "E"
-            next_go = "OWNER_GO_REQUIRED_FOR_LIVE_ENABLED_NOT_AUTHORIZED_BY_THIS_SLICE"
+        first_blocker, blocker_class, next_go = resolve_post_29p_current_execution_blocker_v1()
     else:
         first_blocker = "STEP_29P_RISK_ADMISSIBLE_FALSE"
         blocker_class = "C"
