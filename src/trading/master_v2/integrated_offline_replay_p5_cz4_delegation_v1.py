@@ -151,6 +151,14 @@ def try_build_p5_cz4_delegated_replay_context_v1(
         return None, validation.failure_codes
 
     assert seal is not None
+
+    from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.contract_v1 import (
+        validate_cz4_delegation_authority_bind_v1,
+    )
+
+    bind = validate_cz4_delegation_authority_bind_v1(seal=seal, side_state=inp.side_state)
+    if not bind.ok:
+        return None, bind.failure_codes
     if inp.existing_scope is None:
         return None, ("p5_delegation_requires_existing_scope_carrier",)
 
