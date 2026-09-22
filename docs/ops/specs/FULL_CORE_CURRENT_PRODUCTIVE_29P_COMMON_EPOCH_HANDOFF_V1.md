@@ -14,8 +14,11 @@ Consumes Owner-GO
 `CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_TO_FIRST_REAL_BLOCKER_V1`.
 Atlas remains `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 
-Runtime composition only. Consumes existing authorities (Cap-2.4
-`BoundInstrumentV1`, `collect_fresh_pretrade_runtime_get_v1` with
+Runtime composition only. Cap-2.4 `BoundInstrumentV1` may be supplied
+explicitly or acquired via
+`acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1`
+(see `FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1`).
+Consumes existing authorities (`collect_fresh_pretrade_runtime_get_v1` with
 `FullCoreProductiveReadOnlyGetTransportV1`, U01 adapter, USDC availEq
 observation, P01 policy, 29P producer, `evaluate_live_account_bound_v1`,
 instrument scope, STEP-29P conjunction). No new selection, ranking, or
