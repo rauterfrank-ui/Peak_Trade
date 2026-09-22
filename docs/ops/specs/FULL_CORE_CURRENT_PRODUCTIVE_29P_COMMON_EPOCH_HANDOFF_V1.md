@@ -20,7 +20,7 @@ Runtime composition only. Consumes existing authorities (Cap-2.4
 observation, P01 policy, 29P producer, `evaluate_live_account_bound_v1`,
 instrument scope, STEP-29P conjunction). No new selection, ranking, or
 risk algebra. Historical pack
-`evidence/ops/full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_v1/20260922T051458Z`
+`evidence&#47;ops&#47;full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_v1&#47;20260922T051458Z`
 is provenance reference only, not an input epoch.
 
 Offline injected transport may close wiring. Productive venue GET is not
