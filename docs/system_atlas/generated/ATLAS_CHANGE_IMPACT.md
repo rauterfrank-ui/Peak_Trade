@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1`.
 
 ## Workflow
 
@@ -40,9 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1` |
-| `CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1` |
-| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6722 P5.2 productive-cycle authority bind contract (disabled): Atlas registration for CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1; CZ-4 fail-closed on regime switch without mapping contract; PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=false; ATLAS_AUTHORITY=NONE.
-- introduced_by=P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
-- modified_by=P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
+- PR #6723 P5.5 O-R2 semantic authority contracts (no cutover): Atlas registration for CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1; layered sole L1-L10 Bull/Bear decision authority; SideState subordinated; no cutover/bind/seam invoke; ATLAS_AUTHORITY=NONE.
+- introduced_by=P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1
+- modified_by=P5_5_O_R2_SEMANTIC_AUTHORITY_CONTRACTS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
