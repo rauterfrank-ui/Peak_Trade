@@ -6121,22 +6121,51 @@ entities:
       - src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py
       - src/trading/master_v2/layered_core_authority_seal_v1.py
       - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py
       - tests/ops/test_p5_productive_layered_core_authority_seam_v1.py
       - tests/ops/test_p5_productive_cycle_cutover_guard_v1.py
+      - tests/ops/test_p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.py
       - tests/trading/master_v2/test_layered_core_authority_seal_v1.py
       - tests/trading/master_v2/test_integrated_replay_p5_cz4_delegated_seal_v1.py
     evidence_sources:
       - docs/ops/specs/P5_DECISION_AUTHORITY_CUTOVER_CONTRACT_V1.md
       - docs/ops/specs/P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md
+      - docs/ops/specs/P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1.md
       - src/trading/master_v2/layered_core_authority_seal_v1.py
       - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
       - src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py
     notes: >-
       P5.1 infrastructure only: L1-L10 authority seam, immutable seal, optional
       CZ-4 delegated integrated replay when seal valid. P5_AUTHORITY_CUTOVER_AUTHORIZED=false;
       P4_PRODUCTIVE_BINDING=false; PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED=false.
       No authority cutover, no external effects, no G-2 SideState FSM. Atlas is
       navigation only; ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1
+    kind: CONTRACT
+    name: P5.2 productive cycle seam invoke and authority bind v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
+    authority_sources:
+      - docs/ops/specs/P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1.md
+    source_paths:
+      - docs/ops/specs/P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1.md
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/__init__.py
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/constants_v1.py
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py
+      - tests/ops/test_p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1.md
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py
+    notes: >-
+      P5.2 bind prep only: fail-closed authority contracts for future productive
+      L1-L10 seam invoke. PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=false;
+      REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=false. Adjudicates POST_P5_1
+      I-01..I-07; CZ-4 rejects regime switch without mapping contract. Productive
+      cycle does not invoke seam. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
@@ -6716,11 +6745,12 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
+    modified_by: P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
       - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+      - src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py
       - src/trading/master_v2/layered_core_authority_seal_v1.py
       - src/trading/master_v2/replay_execution_safety_contract_v1.py
       - src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
