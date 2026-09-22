@@ -119,6 +119,14 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 )
 from trading.master_v2.suitability_binding_v1 import SuitabilityRegimeStatus
 
+from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
+    P5_AUTHORITY_CUTOVER_AUTHORIZED,
+    PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
+)
+
+assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
+assert PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED is False
+
 CYCLE_OWNER = (
     "trading.master_v2.integrated_offline_trading_logic_replay_v1."
     "run_integrated_offline_trading_logic_replay_v1"

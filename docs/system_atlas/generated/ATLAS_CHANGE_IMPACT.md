@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=6
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1`.
 
 ## Workflow
 
@@ -40,7 +40,12 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:p4_l6_explicit_d_t_proposal_v1` |
+| `CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `SUBSYSTEM:master_v2` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6720 P4 L6 explicit D_t proposal charter (contract only): Atlas registration for ops.p4_l6_explicit_d_t_proposal_v1; PROPOSAL_CONTRACT_ONLY; PRODUCTIVE_BINDING_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
-- introduced_by=CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
-- modified_by=CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
+- PR #6721 P5.1 layered core authority seal + CZ-4 delegated replay (infrastructure only): Atlas registration for CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1; P5_AUTHORITY_CUTOVER_AUTHORIZED=false; P4_PRODUCTIVE_BINDING=false; ATLAS_AUTHORITY=NONE.
+- introduced_by=P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
+- modified_by=P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

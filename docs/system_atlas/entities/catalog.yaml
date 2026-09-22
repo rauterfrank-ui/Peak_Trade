@@ -21,7 +21,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
-    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -269,7 +269,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
     semantic_authority: false
-    modified_by: PENDING_CHANGE
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
     source_paths:
       - src/trading/market_state/elementary_direction_v1.py
       - src/trading/market_state/__init__.py
@@ -5348,7 +5348,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
     source_paths:
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
       - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
@@ -6102,6 +6102,42 @@ entities:
       or numeric producer authority. Atlas is not runtime authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1
+    kind: CONTRACT
+    name: P5.1 layered core authority seal and CZ-4 delegated replay v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
+    authority_sources:
+      - docs/ops/specs/P5_DECISION_AUTHORITY_CUTOVER_CONTRACT_V1.md
+      - docs/ops/specs/P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md
+    source_paths:
+      - docs/ops/specs/P5_DECISION_AUTHORITY_CUTOVER_CONTRACT_V1.md
+      - docs/ops/specs/P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md
+      - src/ops/p5_productive_layered_core_authority_seam_v1/__init__.py
+      - src/ops/p5_productive_layered_core_authority_seam_v1/constants_v1.py
+      - src/ops/p5_productive_layered_core_authority_seam_v1/cursor_v2_capability_v1.py
+      - src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py
+      - src/trading/master_v2/layered_core_authority_seal_v1.py
+      - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+      - tests/ops/test_p5_productive_layered_core_authority_seam_v1.py
+      - tests/ops/test_p5_productive_cycle_cutover_guard_v1.py
+      - tests/trading/master_v2/test_layered_core_authority_seal_v1.py
+      - tests/trading/master_v2/test_integrated_replay_p5_cz4_delegated_seal_v1.py
+    evidence_sources:
+      - docs/ops/specs/P5_DECISION_AUTHORITY_CUTOVER_CONTRACT_V1.md
+      - docs/ops/specs/P5_LAYERED_CORE_AUTHORITY_SEAL_V1.md
+      - src/trading/master_v2/layered_core_authority_seal_v1.py
+      - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+      - src/ops/p5_productive_layered_core_authority_seam_v1/seam_v1.py
+    notes: >-
+      P5.1 infrastructure only: L1-L10 authority seam, immutable seal, optional
+      CZ-4 delegated integrated replay when seal valid. P5_AUTHORITY_CUTOVER_AUTHORIZED=false;
+      P4_PRODUCTIVE_BINDING=false; PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED=false.
+      No authority cutover, no external effects, no G-2 SideState FSM. Atlas is
+      navigation only; ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
     kind: RUNTIME_COMPONENT
     name: Dynamic Scope empirical calibration research harness v1
@@ -6680,10 +6716,12 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py
+      - src/trading/master_v2/layered_core_authority_seal_v1.py
       - src/trading/master_v2/replay_execution_safety_contract_v1.py
       - src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
       - src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py
@@ -7799,7 +7837,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py

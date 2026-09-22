@@ -80,6 +80,7 @@ from trading.master_v2.deterministic_scope_event_generator_v1 import (
     generate_deterministic_scope_event,
     with_computed_scope_event_digest,
 )
+from trading.master_v2.layered_core_authority_seal_v1 import LayeredCoreAuthoritySealV1
 from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
     DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_CAPABILITY_ID,
     DirectionalAssessmentConfirmationIntegrationInputV1,
@@ -348,6 +349,8 @@ class IntegratedOfflineReplayInputV1:
     # EXPLICIT_INJECTION preserves fixture DI. REGISTRY_DERIVED enforces catalog identity.
     strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
     registry_snapshot_digest: str = ""
+    # P5.1 capability: optional immutable layered-core seal for CZ-4 delegated replay.
+    layered_core_authority_seal: Optional[LayeredCoreAuthoritySealV1] = None
 
 
 @dataclass(frozen=True)
@@ -547,6 +550,7 @@ def build_integrated_offline_replay_input_v1(
         CanonicalMarketContextEligibilityV1
     ] = None,
     governed_authorized_productive_parameter_seam_record: Optional[Mapping[str, Any]] = None,
+    layered_core_authority_seal: Optional[LayeredCoreAuthoritySealV1] = None,
 ) -> IntegratedOfflineReplayInputV1:
     """Single canonical productive constructor for IntegratedOfflineReplayInputV1.
 
@@ -838,6 +842,7 @@ def build_integrated_offline_replay_input_v1(
         governed_authorized_productive_parameter_seam_record=(
             governed_authorized_productive_parameter_seam_record
         ),
+        layered_core_authority_seal=layered_core_authority_seal,
     )
 
 
@@ -1555,102 +1560,135 @@ def run_integrated_offline_trading_logic_replay_v1(
                 evidence=evidence,
             )
 
-    scope_init = initialize_canonical_scope(
-        bound_context,
-        inp.policies.scope_initialization,
-        inp.scope_prerequisites,
-        existing_scope=inp.existing_scope,
-        reinitialization_guard=inp.scope_reinitialization_guard,
+    from trading.master_v2.integrated_offline_replay_p5_cz4_delegation_v1 import (
+        try_build_p5_cz4_delegated_replay_context_v1,
     )
-    if scope_init.scope is None:
-        reasons = tuple(r.value for r in scope_init.block_reasons) or (
-            "scope_initialization_blocked",
-        )
-        decision_outcome = "observe" if any("warmup" in r for r in reasons) else "blocked"
-        evidence = _blocked_evidence(inp, fail_reasons=reasons, decision_outcome=decision_outcome)
+
+    delegated_ctx, delegation_failures = try_build_p5_cz4_delegated_replay_context_v1(inp)
+    if inp.layered_core_authority_seal is not None and delegation_failures:
+        evidence = _blocked_evidence(inp, fail_reasons=delegation_failures)
         return _annotated_replay_result(
             inp,
             replay_pass=False,
-            fail_reasons=reasons,
+            fail_reasons=delegation_failures,
             evidence=evidence,
         )
 
-    current_scope = scope_init.scope
-
-    try:
-        rules = _rules_for_cycle_v1(
-            provided=inp.dynamic_scope_rules,
-            snapshot=current_scope,
-            bound_context=bound_context,
+    if delegated_ctx is not None:
+        scope_init = delegated_ctx.scope_init
+        current_scope = delegated_ctx.current_scope
+        scope_event = delegated_ctx.scope_event
+        mapped_event = delegated_ctx.mapped_event
+        scope_chop_policy_active = delegated_ctx.scope_chop_policy_active
+        scope_event_ref = delegated_ctx.scope_event_ref
+        runtime_scope_pre = delegated_ctx.runtime_scope_pre
+        runtime_scope_before = delegated_ctx.runtime_scope_pre
+        runtime_scope_reinitialized = False
+        trailing_anchor_used = (
+            float(delegated_ctx.runtime_scope_pre.anchor_price)
+            if delegated_ctx.runtime_scope_pre.anchor_price > 0
+            else float(current_scope.trailing_anchor)
         )
-    except (CanonicalVolatilityBindingError, CanonicalVolatilityQuarantineError) as exc:
-        reasons = (f"dynamic_scope_volatility_fail_closed:{type(exc).__name__}",)
-        evidence = _blocked_evidence(inp, fail_reasons=reasons)
-        return _annotated_replay_result(
-            inp,
-            replay_pass=False,
-            fail_reasons=reasons,
-            evidence=evidence,
+    else:
+        scope_init = initialize_canonical_scope(
+            bound_context,
+            inp.policies.scope_initialization,
+            inp.scope_prerequisites,
+            existing_scope=inp.existing_scope,
+            reinitialization_guard=inp.scope_reinitialization_guard,
         )
-    runtime_envelope = _runtime_envelope_containing_scope_v1(current_scope)
-    runtime_scope_before, runtime_scope_reinitialized = _resolve_runtime_scope_state_for_cycle_v1(
-        instrument_id=inp.instrument_id,
-        current_scope=current_scope,
-        now_tick=inp.now_tick,
-        prior_state=inp.runtime_scope_state,
-        bound_instrument_id=inp.runtime_scope_bound_instrument_id,
-        explicit_reset=bool(inp.explicit_runtime_scope_reset),
-    )
-    active_for_trail = derive_active_side(inp.side_state)
-    runtime_scope_pre = update_dynamic_boundaries(
-        mark_price=float(inp.current_price),
-        side=active_for_trail,
-        st=runtime_scope_before,
-        rules=rules,
-        env=runtime_envelope,
-    )
-    trailing_anchor_used = (
-        float(runtime_scope_pre.anchor_price)
-        if runtime_scope_pre.anchor_price > 0
-        else float(current_scope.trailing_anchor)
-    )
-    # ScopeDirectionState is a SideState projection, not a composition overlay.
-    effective_scope_direction = scope_direction_from_side_state_v1(inp.side_state)
+        if scope_init.scope is None:
+            reasons = tuple(r.value for r in scope_init.block_reasons) or (
+                "scope_initialization_blocked",
+            )
+            decision_outcome = "observe" if any("warmup" in r for r in reasons) else "blocked"
+            evidence = _blocked_evidence(
+                inp, fail_reasons=reasons, decision_outcome=decision_outcome
+            )
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
 
-    scope_event_inp = ScopeEventGeneratorInputV1(
-        instrument_id=inp.instrument_id,
-        trading_epoch=inp.trading_epoch,
-        market_context_id=bound_context.context_id,
-        market_context_digest=bound_context.input_digest,
-        current_scope=current_scope,
-        current_direction_state=effective_scope_direction,
-        reference_price=float(bound_context.mark_price),
-        current_price=float(inp.current_price),
-        trailing_anchor=trailing_anchor_used,
-        up_distance=float(inp.up_distance),
-        adverse_exit_distance=float(inp.adverse_exit_distance),
-        reversal_distance=float(inp.reversal_distance),
-        confirmation_epochs=int(inp.confirmation_epochs),
-        confirmation_state=inp.scope_confirmation_state,
-        cooldown_state=inp.scope_cooldown_state,
-        cooldown_remaining_epochs=int(inp.scope_cooldown_state.remaining_epochs),
-        data_integrity_status=bound_context.data_integrity_status,
-        clock_trust_status=bound_context.clock_trust_status,
-        bar_finality_status=bound_context.bar_finality_status,
-        policy_version=inp.policies.scope_event_generator.policy_version,
-    )
-    scope_event = with_computed_scope_event_digest(
-        generate_deterministic_scope_event(scope_event_inp, inp.policies.scope_event_generator)
-    )
-    mapped_event = _canonical_scope_event_to_scope_event(
-        scope_event.event_type,
-        matched_conditions=tuple(scope_event.matched_conditions),
-    )
-    scope_chop_policy_active = bool(runtime_scope_pre.chop_latched) or (
-        mapped_event is ScopeEvent.CHOP_DETECTED
-    )
+        current_scope = scope_init.scope
 
-    scope_event_ref = _scope_event_ref_from_evidence(scope_event)
+        try:
+            rules = _rules_for_cycle_v1(
+                provided=inp.dynamic_scope_rules,
+                snapshot=current_scope,
+                bound_context=bound_context,
+            )
+        except (CanonicalVolatilityBindingError, CanonicalVolatilityQuarantineError) as exc:
+            reasons = (f"dynamic_scope_volatility_fail_closed:{type(exc).__name__}",)
+            evidence = _blocked_evidence(inp, fail_reasons=reasons)
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
+        runtime_envelope = _runtime_envelope_containing_scope_v1(current_scope)
+        runtime_scope_before, runtime_scope_reinitialized = (
+            _resolve_runtime_scope_state_for_cycle_v1(
+                instrument_id=inp.instrument_id,
+                current_scope=current_scope,
+                now_tick=inp.now_tick,
+                prior_state=inp.runtime_scope_state,
+                bound_instrument_id=inp.runtime_scope_bound_instrument_id,
+                explicit_reset=bool(inp.explicit_runtime_scope_reset),
+            )
+        )
+        active_for_trail = derive_active_side(inp.side_state)
+        runtime_scope_pre = update_dynamic_boundaries(
+            mark_price=float(inp.current_price),
+            side=active_for_trail,
+            st=runtime_scope_before,
+            rules=rules,
+            env=runtime_envelope,
+        )
+        trailing_anchor_used = (
+            float(runtime_scope_pre.anchor_price)
+            if runtime_scope_pre.anchor_price > 0
+            else float(current_scope.trailing_anchor)
+        )
+        effective_scope_direction = scope_direction_from_side_state_v1(inp.side_state)
+
+        scope_event_inp = ScopeEventGeneratorInputV1(
+            instrument_id=inp.instrument_id,
+            trading_epoch=inp.trading_epoch,
+            market_context_id=bound_context.context_id,
+            market_context_digest=bound_context.input_digest,
+            current_scope=current_scope,
+            current_direction_state=effective_scope_direction,
+            reference_price=float(bound_context.mark_price),
+            current_price=float(inp.current_price),
+            trailing_anchor=trailing_anchor_used,
+            up_distance=float(inp.up_distance),
+            adverse_exit_distance=float(inp.adverse_exit_distance),
+            reversal_distance=float(inp.reversal_distance),
+            confirmation_epochs=int(inp.confirmation_epochs),
+            confirmation_state=inp.scope_confirmation_state,
+            cooldown_state=inp.scope_cooldown_state,
+            cooldown_remaining_epochs=int(inp.scope_cooldown_state.remaining_epochs),
+            data_integrity_status=bound_context.data_integrity_status,
+            clock_trust_status=bound_context.clock_trust_status,
+            bar_finality_status=bound_context.bar_finality_status,
+            policy_version=inp.policies.scope_event_generator.policy_version,
+        )
+        scope_event = with_computed_scope_event_digest(
+            generate_deterministic_scope_event(scope_event_inp, inp.policies.scope_event_generator)
+        )
+        mapped_event = _canonical_scope_event_to_scope_event(
+            scope_event.event_type,
+            matched_conditions=tuple(scope_event.matched_conditions),
+        )
+        scope_chop_policy_active = bool(runtime_scope_pre.chop_latched) or (
+            mapped_event is ScopeEvent.CHOP_DETECTED
+        )
+
+        scope_event_ref = _scope_event_ref_from_evidence(scope_event)
     (
         prior_carrier,
         observation_acceptance_result,
@@ -1777,19 +1815,55 @@ def run_integrated_offline_trading_logic_replay_v1(
         inp.policies.composition,
     )
 
-    next_side_state, runtime_scope_after_switch, transition = transition_state(
-        side_state=inp.side_state,
-        event=mapped_event,
-        scope_state=runtime_scope_pre,
-        rules=rules,
-        envelope=runtime_envelope,
-        now_tick=inp.now_tick,
-    )
-    # EVIDENCE_ONLY capture immediately after transition_state (non-restart).
-    # Failures never alter trading outcomes.
     from trading.master_v2.regime_bull_bear_switch_evidence_readmodel_v1.capture_v1 import (
         try_capture_regime_bull_bear_switch_evidence_readmodel_v1,
     )
+
+    if delegated_ctx is not None:
+        next_side_state = delegated_ctx.next_side_state
+        runtime_scope_after = delegated_ctx.runtime_scope_after
+        transition = delegated_ctx.transition
+        state_switch = delegated_ctx.state_switch
+    else:
+        next_side_state, runtime_scope_after_switch, transition = transition_state(
+            side_state=inp.side_state,
+            event=mapped_event,
+            scope_state=runtime_scope_pre,
+            rules=rules,
+            envelope=runtime_envelope,
+            now_tick=inp.now_tick,
+        )
+        runtime_scope_after = update_dynamic_boundaries(
+            mark_price=float(inp.current_price),
+            side=derive_active_side(next_side_state),
+            st=runtime_scope_after_switch,
+            rules=rules,
+            env=runtime_envelope,
+        )
+        state_switch_id = _derive_state_switch_id(
+            inp.instrument_id, inp.trading_epoch, scope_event.scope_event_id
+        )
+        switch_digest = _compute_state_switch_digest(
+            state_switch_id=state_switch_id,
+            instrument_id=inp.instrument_id,
+            trading_epoch=inp.trading_epoch,
+            previous_side_state=inp.side_state.value,
+            next_side_state=next_side_state.value,
+            scope_event_type=scope_event.event_type.value,
+            transition_allowed=transition.allowed,
+            transition_reason_code=transition.reason_code,
+        )
+        state_switch = StateSwitchEvidenceV1(
+            state_switch_id=state_switch_id,
+            instrument_id=inp.instrument_id,
+            trading_epoch=inp.trading_epoch,
+            previous_side_state=inp.side_state.value,
+            next_side_state=next_side_state.value,
+            scope_event_type=scope_event.event_type.value,
+            transition_allowed=transition.allowed,
+            transition_reason_code=transition.reason_code,
+            semantic_digest=switch_digest,
+        )
 
     regime_bull_bear_switch_evidence_readmodel = (
         try_capture_regime_bull_bear_switch_evidence_readmodel_v1(
@@ -1797,44 +1871,12 @@ def run_integrated_offline_trading_logic_replay_v1(
             regime_status=inp.regime_status,
             previous_side_state=inp.side_state,
             next_side_state=next_side_state,
-            # ScopeEvent actually consumed by transition_state (not canonical generator enum).
             scope_event_type=mapped_event,
             transition=transition,
             instrument_id=inp.instrument_id,
             trading_epoch=inp.trading_epoch,
             evidence_path=inp.regime_bull_bear_switch_evidence_path,
         )
-    )
-    runtime_scope_after = update_dynamic_boundaries(
-        mark_price=float(inp.current_price),
-        side=derive_active_side(next_side_state),
-        st=runtime_scope_after_switch,
-        rules=rules,
-        env=runtime_envelope,
-    )
-    state_switch_id = _derive_state_switch_id(
-        inp.instrument_id, inp.trading_epoch, scope_event.scope_event_id
-    )
-    switch_digest = _compute_state_switch_digest(
-        state_switch_id=state_switch_id,
-        instrument_id=inp.instrument_id,
-        trading_epoch=inp.trading_epoch,
-        previous_side_state=inp.side_state.value,
-        next_side_state=next_side_state.value,
-        scope_event_type=scope_event.event_type.value,
-        transition_allowed=transition.allowed,
-        transition_reason_code=transition.reason_code,
-    )
-    state_switch = StateSwitchEvidenceV1(
-        state_switch_id=state_switch_id,
-        instrument_id=inp.instrument_id,
-        trading_epoch=inp.trading_epoch,
-        previous_side_state=inp.side_state.value,
-        next_side_state=next_side_state.value,
-        scope_event_type=scope_event.event_type.value,
-        transition_allowed=transition.allowed,
-        transition_reason_code=transition.reason_code,
-        semantic_digest=switch_digest,
     )
 
     scope_adverse_exit_signal = resolve_integrated_scope_adverse_exit_signal_v0(
