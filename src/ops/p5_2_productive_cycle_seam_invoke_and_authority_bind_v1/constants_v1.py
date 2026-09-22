@@ -5,8 +5,8 @@ from __future__ import annotations
 PACKAGE_MARKER = "P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1=true"
 OWNER = "ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1"
 
-# Disabled until explicit Owner-GO for productive seam invoke + cutover prep.
-PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED = False
+# Enabled by P5.10 productive activation/binding (per-cycle opt-in via bind seam).
+PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED = True
 
 # No canonical regime_post ↔ SideState mapping exists on main.
 REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED = False
@@ -29,7 +29,7 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import ( 
 assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 assert PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED is False
 assert P4_PRODUCTIVE_BINDING is False
-assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is False
+assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
 assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
 
 __all__ = [

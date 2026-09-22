@@ -54,7 +54,7 @@ _CZ4 = MechanicalScopeEventProvenanceV1.CZ4_SYNTHETIC_NOOP
 def test_guard_constants_unchanged() -> None:
     assert LAYERED_MECHANICAL_FSM_CONTRACT_V1_DEFINED is True
     assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
-    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is False
+    assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert FINAL_D_T_FORMULA_SELECTED is False
     assert EXTERNAL_EFFECT_AUTHORIZED is False
 

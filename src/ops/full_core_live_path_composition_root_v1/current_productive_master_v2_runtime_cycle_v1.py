@@ -16,6 +16,7 @@ from __future__ import annotations
 import hashlib
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
@@ -119,6 +120,10 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 )
 from trading.master_v2.suitability_binding_v1 import SuitabilityRegimeStatus
 
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_seam_v1 import (
+    finalize_productive_layered_core_replay_bind_v1,
+    prepare_productive_layered_core_replay_bind_v1,
+)
 from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
     P5_AUTHORITY_CUTOVER_AUTHORIZED,
     PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
@@ -412,6 +417,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     existing_position_side: ExistingPositionSide,
     incoming_cursor: object | None = None,
     g17_typed_vol_producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None = None,
+    productive_layered_core_bind_requested: bool = False,
+    layered_core_store_root: Path | None = None,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -520,14 +527,20 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     side_state = SideState.NEUTRAL_OBSERVE
     direction_state = EntryExitDirectionState.NEUTRAL
     position_mgmt = PositionManagementContext.FLAT
+    side_state_from_cursor_restore = restored is not None
+    side_state_from_venue_position = False
     if existing_position_side is ExistingPositionSide.LONG:
         side_state = SideState.LONG_ACTIVE
         direction_state = EntryExitDirectionState.LONG_ACTIVE
         position_mgmt = PositionManagementContext.LONG_POSITION
+        if restored is None:
+            side_state_from_venue_position = True
     elif existing_position_side is ExistingPositionSide.SHORT:
         side_state = SideState.SHORT_ACTIVE
         direction_state = EntryExitDirectionState.SHORT_ACTIVE
         position_mgmt = PositionManagementContext.SHORT_POSITION
+        if restored is None:
+            side_state_from_venue_position = True
     elif restored is not None:
         side_state = restored.side_state
         direction_state = _side_state_to_entry_exit_direction(side_state)
@@ -650,7 +663,38 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         require_productive_typed_volatility_presence_gate=True,
         explicit_runtime_scope_reset=False,
     )
-    replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    bind_input, bind_carry = prepare_productive_layered_core_replay_bind_v1(
+        productive_layered_core_bind_requested=productive_layered_core_bind_requested,
+        layered_core_store_root=layered_core_store_root,
+        bound_instrument=bound_instrument,
+        replay_input=replay_input,
+        mark_price_m_t=float(mark_px),
+        finalized_closes=closes,
+        last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
+        venue_flat=bool(venue_flat),
+        existing_position_side=existing_position_side,
+        side_state_from_cursor_restore=side_state_from_cursor_restore,
+        side_state_from_venue_position=side_state_from_venue_position,
+        existing_scope_present=existing_scope is not None,
+    )
+    if bind_carry.failure_codes:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=bind_carry.failure_codes[0],
+            provenance=",".join(bind_carry.failure_codes),
+            cursor_restore_status=restore.disposition.value,
+        )
+    replay = run_integrated_offline_trading_logic_replay_v1(bind_input)
+    replay = finalize_productive_layered_core_replay_bind_v1(
+        replay=replay,
+        carry=bind_carry,
+        layered_core_store_root=layered_core_store_root,
+        host_prior_side_state=side_state,
+        trading_epoch=int(trading_epoch),
+        instrument_id=instrument_id,
+        venue_flat=bool(venue_flat),
+        existing_position_side=existing_position_side,
+    )
     if replay.intermediate is not None:
         commit_host_confirmation_after_replay_v1(
             cap61_binding,

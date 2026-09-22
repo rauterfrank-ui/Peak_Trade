@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=14
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1`.
 
 ## Workflow
 
@@ -40,13 +40,28 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
+| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
+| `CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1` |
 | `CONTRACT:p5_10b_layered_epoch_remaining_authority_closure_v1` |
+| `CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1` |
+| `CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1` |
+| `CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1` |
+| `CONTRACT:p5_7_regime_sidestate_projection_mapping_contract_v1` |
+| `CONTRACT:p5_8b_regime_sidestate_projection_phase_authority_v1` |
+| `CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +107,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P5.10B layered epoch remaining authority closure (no bind): Atlas registration for CONTRACT:p5_10b_layered_epoch_remaining_authority_closure_v1; B2 provenance, B3 lifecycle durability owner, B4 canonical handoff; P5_10_ACTIVATION_READINESS=READY; ATLAS_AUTHORITY=NONE.
-- introduced_by=P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1
-- modified_by=P5_10B_LAYERED_EPOCH_REMAINING_AUTHORITY_CLOSURE_V1
+- P5.10 productive activation and binding: Atlas registration for CONTRACT:p5_10_productive_activation_and_binding_v1; productive bind seam into CURRENT cycle; PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; guards unchanged; ATLAS_AUTHORITY=NONE.
+- introduced_by=P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
+- modified_by=P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
