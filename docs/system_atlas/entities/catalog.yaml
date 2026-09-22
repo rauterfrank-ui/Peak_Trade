@@ -6308,6 +6308,29 @@ entities:
       canonical SideState handoff to StateSwitchEvidenceV1. P5_10_ACTIVATION_READINESS=READY
       (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
+    kind: CONTRACT
+    name: Whole-system connection closure bounded WP v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1
+    authority_sources:
+      - docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md
+    source_paths:
+      - docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md
+      - src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py
+      - src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py
+      - src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py
+      - tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py
+    evidence_sources:
+      - docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md
+      - src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py
+    notes: >-
+      Owner-GO forensic census + static proof for productive Decision→PRE_EXTERNAL after P5.10 bind
+      wiring; WHOLE_SYSTEM_CONNECTION_COMPLETE=true with REQUIRED_CLOSURE_COUNT=0;
+      FINAL_D_T remains intentionally isolated; cutover flags false; ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
     kind: CONTRACT
     name: P5.10 productive activation and binding v1
