@@ -10,7 +10,7 @@ last_updated: 2026-09-22
 # Full Core Current Productive Cap-24 Selection State Canonical Writer V1
 
 Derived spec. Non-SSOT. Closes orchestration gap
-`runtime/current_productive/cap24_selection_state` for
+`runtime&#47;current_productive&#47;cap24_selection_state` for
 `acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1`.
 
 Cap-2.1 / Cap-2.2 / Cap-2.3 remain sole selection/ranking authorities.
