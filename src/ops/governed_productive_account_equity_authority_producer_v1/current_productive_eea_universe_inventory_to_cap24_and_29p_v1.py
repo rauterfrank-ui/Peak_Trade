@@ -76,6 +76,9 @@ from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admis
 from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED,
     CURRENT_PRODUCTIVE_29P_FRESH_GET_ENDPOINT,
@@ -163,7 +166,7 @@ PIN_OWNER_GO = (
     "FOR_29P_WITHOUT_CANARY_IMPORT_OR_RESELECTION_V1"
 )
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, PIN_OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
+EXPECTED_ORIGIN_MAIN_SHA = CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 THIS_SLICE = "11.2.1.CZ.FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P"
 CONTRACT_VERSION = "v1"
 AUTHORITY_EFFECT = "NONE"

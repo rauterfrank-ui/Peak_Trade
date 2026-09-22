@@ -46,6 +46,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     ALLOWED_OWNER_GOS,
     CANONICAL_PACK_RELPATH,
@@ -237,7 +240,7 @@ def test_flags_and_authority_bounds() -> None:
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
     assert DEFAULT_INSTRUMENT_ID == CANARY_DEFAULT_INSTRUMENT_ID
     assert OWNER_GO in ALLOWED_OWNER_GOS
-    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
+    assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 
 
 def test_acquisition_rejects_www_okx_and_non_get() -> None:

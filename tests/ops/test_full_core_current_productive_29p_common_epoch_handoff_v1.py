@@ -29,6 +29,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     ALLOWED_OWNER_GOS,
     CAP24_SUPPLY_PIN_OWNER_GO,
@@ -210,7 +213,7 @@ def test_standing_flags_and_owner_go_tokens() -> None:
     assert OWNER_GO in ALLOWED_OWNER_GOS
     assert PIN_OWNER_GO in ALLOWED_OWNER_GOS
     assert CAP24_SUPPLY_PIN_OWNER_GO in ALLOWED_OWNER_GOS
-    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
+    assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
     assert MINIMUM_DEDUPLICATED_GET_COUNT == 7
     assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 7
 

@@ -26,6 +26,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveCap21ToCap23PersistenceError,
     build_cap24_mark_prices_sidecar_from_acquisition_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_selection_state_canonical_writer_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
@@ -48,7 +51,7 @@ from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BASE_SHA = "e5396206530415b469fa345ec04322613c953c44"
+BASE_SHA = CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 HISTORICAL_EEA_EVIDENCE = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1/"

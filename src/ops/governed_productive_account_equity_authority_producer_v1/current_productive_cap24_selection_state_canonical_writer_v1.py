@@ -44,6 +44,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     RUNTIME_STATE_DIRNAME,
     default_current_productive_cap24_runtime_state_root_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
     load_and_validate_ranking_snapshot_v1,
@@ -63,7 +66,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 
 OWNER_GO = "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1"
 ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
-EXPECTED_ORIGIN_MAIN_SHA = "e5396206530415b469fa345ec04322613c953c44"
+EXPECTED_ORIGIN_MAIN_SHA = CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 THIS_SLICE = "11.2.1.EK.FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1"
 CONTRACT_VERSION = "v1"

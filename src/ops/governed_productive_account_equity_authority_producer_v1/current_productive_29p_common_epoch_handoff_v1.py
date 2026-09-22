@@ -69,6 +69,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
     default_current_productive_cap24_runtime_state_root_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+    CurrentProductive29PChainBaselineError,
+    resolve_cap24_persisted_repository_sha_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     CurrentProductiveLabInstrumentScopeError,
     require_current_productive_29p_bound_instrument_v1,
@@ -128,7 +133,7 @@ ALLOWED_OWNER_GOS = frozenset(
         f"OWNER_GO_{OWNER_GO}",
     }
 )
-EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
+EXPECTED_ORIGIN_MAIN_SHA = CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 THIS_SLICE = "11.2.1.EI.FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1"
 CONTRACT_VERSION = "v1"
@@ -704,17 +709,23 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         if prod_root is not None:
             cap24_handoff_status = "ATTEMPTED"
             try:
+                cap24_repository_sha = resolve_cap24_persisted_repository_sha_v1(
+                    productivity_root=prod_root,
+                )
                 cap24_handoff = (
                     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
                         productivity_root=prod_root,
-                        repository_sha=origin_main_sha,
+                        repository_sha=cap24_repository_sha,
                         binding_epoch=decision_epoch,
                     )
                 )
                 bound_input = cap24_handoff.bound_instrument
                 cap24_handoff_status = "ACQUIRED"
                 cap24_provenance_digest = cap24_handoff.selection_integrity_digest
-            except CurrentProductive29PCap24ProvenanceHandoffError:
+            except (
+                CurrentProductive29PCap24ProvenanceHandoffError,
+                CurrentProductive29PChainBaselineError,
+            ):
                 bound_input = None
                 cap24_handoff_status = "FAIL_CLOSED"
     try:

@@ -23,6 +23,9 @@ from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
     EXPECTED_ORIGIN_MAIN_SHA,
     SCHEMA_CLASS,
@@ -178,7 +181,7 @@ def _materialize_productivity_root(tmp: Path, chain: dict) -> Path:
 
 def test_standing_constants_and_spec() -> None:
     assert CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED is True
-    assert EXPECTED_ORIGIN_MAIN_SHA == "87f4f2143af72b648a73c24d340574388c39aa0f"
+    assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
     assert THIS_SLICE.endswith("CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF")
     assert SCHEMA_CLASS == "CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1"
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False

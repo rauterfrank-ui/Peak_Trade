@@ -25,6 +25,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED,
     CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     require_current_productive_29p_bound_instrument_v1,
 )
@@ -53,7 +56,7 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
-EXPECTED_ORIGIN_MAIN_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
+EXPECTED_ORIGIN_MAIN_SHA = CURRENT_PRODUCTIVE_29P_CHAIN_SLICE_ORIGIN_MAIN_SHA
 THIS_SLICE = "11.2.1.EJ.FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF"
 SCHEMA_CLASS = "CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1"
 CONTRACT_VERSION = "v1"
