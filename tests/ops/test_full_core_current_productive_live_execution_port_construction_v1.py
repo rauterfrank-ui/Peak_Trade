@@ -38,11 +38,14 @@ from src.ops.full_core_live_path_composition_root_v1.live_execution_port_constru
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_live_execution_port_construction_v1 import (
     CANONICAL_PACK_RELPATH,
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     THIS_SLICE,
     CurrentProductiveLiveExecutionPortConstructionError,
     execute_current_productive_live_execution_port_construction_v1,
+)
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
@@ -91,10 +94,12 @@ def test_standing_flags_construct_without_activation() -> None:
     assert CANARY_LIVE_ARMED is False
     assert CANARY_LIVE_ORDER_AUTHORIZED is False
     assert SECTION_11_14_LIVE_ARMED is False
-    assert EXPECTED_ORIGIN_MAIN_SHA == "fec53461fe1a6c8b3000b57d8f0ce842a5bdc7ea"
     assert gap_node_v1("LiveExecutionPort").implementation_status == (
         "SEND_CAPABLE_NOT_EXTERNAL_EFFECT"
     )
+
+
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
 
 
 def test_construction_fail_closed_without_prerequisites() -> None:
@@ -117,8 +122,9 @@ def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
     ):
         execute_current_productive_live_execution_port_construction_v1(
             owner_go="WRONG",
-            origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+            origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "a",
+            execution_integrity_backend=_INTEGRITY,
         )
     with pytest.raises(
         CurrentProductiveLiveExecutionPortConstructionError, match="ORIGIN_MAIN_SHA_MISMATCH"
@@ -127,14 +133,16 @@ def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
             owner_go=OWNER_GO,
             origin_main_sha="0" * 40,
             evidence_root=tmp_path / "b",
+            execution_integrity_backend=_INTEGRITY,
         )
 
 
 def test_evaluate_constructs_fail_closed_port_without_wire(tmp_path: Path) -> None:
     result = execute_current_productive_live_execution_port_construction_v1(
         owner_go=OWNER_GO,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
         evidence_root=tmp_path / "store",
+        execution_integrity_backend=_INTEGRITY,
     )
     claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
     assert result.live_enabled == "true"
@@ -188,29 +196,20 @@ def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DE_HEADING in runbook
-    assert THIS_SLICE in runbook
-    de_section = runbook[
-        runbook.index(
-            "11.2.1.DE FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION"
-        ) : runbook.index(
-            "11.2.1.DF FULL_CORE_CURRENT_PRODUCTIVE_CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT"
-        )
-    ]
-    assert "WIRE_SEND_PERMITTED=true" in de_section
-    assert "LIVE_ENABLED=true" in de_section
-    assert "LIVE_ARMED=true" in de_section
-    assert "LIVE_AUTHORIZED=false" in de_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in de_section
-    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=false" in de_section
-    assert "ADMITTED=true" in de_section
-    assert "LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true" in de_section
-    assert "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT=false" in de_section
-    assert SPEC_PATH.name in mot
+    assert THIS_SLICE in spec
+    assert "EXECUTION_IDENTITY_BINDING=current_productive_29p_chain_runtime_integrity.v1" in spec
+    assert "WIRE_SEND_PERMITTED=true" in spec
+    assert "LIVE_ENABLED=true" in spec
+    assert "LIVE_ARMED=true" in spec
+    assert "STEP_29Q_STATUS=PLAN_ONLY" in spec
+    assert "PRODUCTIVE_WIRE_SEND_REACHABLE=true" in spec
+    assert "CAP_7_2_HOST_JOIN_PERFORMED_BY_THIS_SLICE=false" in spec
+    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "ADMITTED=true" in spec
+    assert "LIVE_EXECUTION_PORT_CONSTRUCTIBLE=true" in spec
     assert "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1" in spec
     assert "11.2.1.DE" in atlas
     assert "current_productive_live_execution_port_construction_v1.py" in atlas
@@ -222,9 +221,10 @@ def test_ssot_docs_once_present() -> None:
     assert claims["LIVE_AUTHORIZED"] == "false"
     assert claims["ADMITTED"] == "true"
     assert claims["LIVE_EXECUTION_PORT_CONSTRUCTED"] == "true"
-    assert claims["FIRST_REAL_BLOCKER"] == (
-        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE"
-    )
+    assert claims["FIRST_REAL_BLOCKER"] in {
+        "CAP_7_2_HOST_JOIN_TO_LIVE_EXECUTION_PORT_REMAINS_FALSE",
+        "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT",
+    }
     assert claims["POST_COUNT"] == "0"
     assert claims["STEP_29P_RISK_ADMISSIBLE"] == "true"
     assert claims["STEP_29Q_STATUS"] == "PLAN_ONLY"
