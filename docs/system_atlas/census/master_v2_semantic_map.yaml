@@ -493,6 +493,13 @@ clusters:
     name: Naked MV2+DP explicit L1-L10 layered core v1
     module_role: double_play_quarantine
     files:
+      - path: src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py
+        primary_symbols:
+          - atomic_persist_episode_v1
+          - restore_episode_from_store_v1
+        master_v2_imports:
+          - trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.orchestrator_v1
+        runtime_reachability: LIBRARY_PURE_OR_BOUND_NOT_ACTIVATED
       - path: src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py
         primary_symbols:
           - orchestrate_naked_layered_core_v1
