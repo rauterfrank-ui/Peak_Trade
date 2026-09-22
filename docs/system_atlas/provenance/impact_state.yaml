@@ -3,16 +3,22 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
-modified_by: CAPABILITY_P4_L6_EXPLICIT_D_T_PROPOSAL_V1
+introduced_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
+modified_by: P5_1_LAYERED_CORE_AUTHORITY_SEAL_AND_CZ4_DELEGATED_REPLAY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6720 P4 L6 explicit D_t proposal charter (contract only): Atlas registration
-  for ops.p4_l6_explicit_d_t_proposal_v1; PROPOSAL_CONTRACT_ONLY;
-  PRODUCTIVE_BINDING_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+  PR #6721 P5.1 layered core authority seal + CZ-4 delegated replay (infrastructure
+  only): Atlas registration for CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1;
+  P5_AUTHORITY_CUTOVER_AUTHORIZED=false; P4_PRODUCTIVE_BINDING=false;
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:p4_l6_explicit_d_t_proposal_v1
+  - CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1
+  - RUNTIME_COMPONENT:mv2_integrated_replay
+  - SUBSYSTEM:master_v2
+  - RUNTIME_COMPONENT:ddo_capture_v0
+  - RUNTIME_COMPONENT:elementary_direction_v1
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []
 new_relations: []
 removed_relations: []
@@ -22,5 +28,10 @@ affected_safety_surfaces: []
 affected_schemas: []
 review_required_items: []
 reviewed_entities:
-  - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
+  - id: CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1
+  - id: RUNTIME_COMPONENT:mv2_integrated_replay
+  - id: SUBSYSTEM:master_v2
+  - id: RUNTIME_COMPONENT:ddo_capture_v0
+  - id: RUNTIME_COMPONENT:elementary_direction_v1
+  - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 reviewed_relations: []

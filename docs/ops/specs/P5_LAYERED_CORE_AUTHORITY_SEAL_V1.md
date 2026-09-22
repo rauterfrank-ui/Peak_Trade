@@ -15,7 +15,7 @@ PRODUCTIVE_BINDING_AUTHORIZED=false
 ```
 
 Required fields: `seal_digest`, `episode_snapshot_id`, `store_manifest_digest`,
-`instrument_id`, `regime_pre/post`, `nullline_price`, `d_t`, `r_t`, `cm_t`.
+`instrument_id`, `regime_pre&#47;post`, `nullline_price`, `d_t`, `r_t`, `cm_t`.
 
 Validation is fail-closed. Tampered digests or inactive delegation flag reject
 CZ-4 delegated replay.
