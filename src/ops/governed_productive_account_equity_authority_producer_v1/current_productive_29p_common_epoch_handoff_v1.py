@@ -64,6 +64,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
+    CurrentProductive29PCap24ProvenanceHandoffError,
+    acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
+    default_current_productive_cap24_runtime_state_root_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     CurrentProductiveLabInstrumentScopeError,
     require_current_productive_29p_bound_instrument_v1,
@@ -643,6 +648,7 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
     expected_account_identity: str = REUSED_BINDING_ACCOUNT_SCOPE,
     inst_type: str = "FUTURES",
     offline_compose_only: bool = True,
+    cap24_productivity_root: Path | None = None,
 ) -> CurrentProductive29PCommonEpochHandoffExecuteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductive29PCommonEpochHandoffError("OWNER_GO_MISMATCH")
@@ -687,13 +693,37 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
 
     instrument_scope_status = "MISSING"
     bound: BoundInstrumentV1 | None = None
+    bound_input = bound_instrument
+    cap24_handoff_status = "NOT_ATTEMPTED"
+    cap24_provenance_digest = ""
+    if bound_input is None:
+        prod_root = cap24_productivity_root
+        if prod_root is None:
+            default_root = default_current_productive_cap24_runtime_state_root_v1()
+            prod_root = default_root if default_root.exists() else None
+        if prod_root is not None:
+            cap24_handoff_status = "ATTEMPTED"
+            try:
+                cap24_handoff = (
+                    acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+                        productivity_root=prod_root,
+                        repository_sha=origin_main_sha,
+                        binding_epoch=decision_epoch,
+                    )
+                )
+                bound_input = cap24_handoff.bound_instrument
+                cap24_handoff_status = "ACQUIRED"
+                cap24_provenance_digest = cap24_handoff.selection_integrity_digest
+            except CurrentProductive29PCap24ProvenanceHandoffError:
+                bound_input = None
+                cap24_handoff_status = "FAIL_CLOSED"
     try:
-        bound = require_current_productive_29p_bound_instrument_v1(bound_instrument)
+        bound = require_current_productive_29p_bound_instrument_v1(bound_input)
         instrument_scope_status = "BOUND_TO_CAP24_SINGLE_SELECTED_FUTURE"
     except Exception as exc:
         instrument_scope_status = f"FAIL_CLOSED:{type(exc).__name__}"
         first_blocker = "CURRENT_PRODUCTIVE_CAP24_BOUND_INSTRUMENT_INSTANCE_MISSING"
-        if bound_instrument is not None:
+        if bound_instrument is not None or cap24_handoff_status == "FAIL_CLOSED":
             first_blocker = "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED"
         claims = {
             "THIS_SLICE": THIS_SLICE,
@@ -710,6 +740,8 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
             "HISTORICAL_PROVENANCE_REF_ONLY": HISTORICAL_PROVENANCE_REF_ONLY,
             "VENUE_GET_PERFORMED": FALSE_TOKEN,
             "DEDUPLICATED_GET_COUNT": "0",
+            "CAP24_PROVENANCE_HANDOFF_STATUS": cap24_handoff_status,
+            "CAP24_PROVENANCE_DIGEST": cap24_provenance_digest,
         }
         _assert_no_secrets(claims)
         _persist_json(path=store / "claims.json", payload=claims)
@@ -787,6 +819,8 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         "CONFIG_GET_COUNT": str(handoff.config_get_count),
         "BALANCE_GET_COUNT": str(handoff.balance_get_count),
         "CAP24_BOUND_INSTRUMENT_ID": bound.instrument_id,
+        "CAP24_PROVENANCE_HANDOFF_STATUS": cap24_handoff_status,
+        "CAP24_PROVENANCE_DIGEST": cap24_provenance_digest,
         "LIVE_ACCOUNT_BOUND_STATUS": handoff.lab_status,
         "FRESH_PRETRADE_GET_STATUS": handoff.get_status,
     }
