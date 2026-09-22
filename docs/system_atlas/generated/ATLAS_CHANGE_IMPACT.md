@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1` |
+| `CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6726 P5.9D layered mechanical SideState FSM contract (no bind): Atlas registration for CONTRACT:p5_9d_layered_mechanical_sidestate_fsm_contract_v1; regime-bound vs mechanical validators; no productive wiring; ATLAS_AUTHORITY=NONE.
-- introduced_by=P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1
-- modified_by=P5_9D_LAYERED_MECHANICAL_SIDESTATE_FSM_CONTRACT_V1
+- P5.10A layered tick-merge epoch orchestration contract (no bind): Atlas registration for CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1; epoch ordering + POST_CANONICAL C4 boundary; B2/B3/B4 remain external; ATLAS_AUTHORITY=NONE.
+- introduced_by=P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1
+- modified_by=P5_10A_LAYERED_TICK_MERGE_EPOCH_ORCHESTRATION_CONTRACT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
