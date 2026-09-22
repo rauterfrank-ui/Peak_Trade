@@ -207,6 +207,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     CURSOR_FILENAME as EXISTING_CURSOR_FILENAME,
     CurrentProductiveSideStateConfirmationCursorV1,
 )
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
+    productive_layered_core_bind_cycle_kwargs_v1,
+)
 from src.ops.ranking_universe_to_full_core_ssf_handoff_contract_v1 import (
     FIRST_TRADING_DECISION_CONSUMER as HANDOFF_FIRST_TRADING_DECISION_CONSUMER,
 )
@@ -1151,12 +1154,11 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
     assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
     invoke_source = inspect.getsource(invoke_occupied_lane_mv2_dp_decision_state_consumer_v1)
     assert "incoming_cursor=None" in invoke_source
-    assert (
-        "store_root="
-        not in invoke_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
-            1
-        ].split(")", 1)[0]
-    )
+    invoke_cycle = invoke_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
+        1
+    ].split(")", 1)[0]
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in invoke_cycle
+    assert " store_root=" not in invoke_cycle
     assert "persist=" not in invoke_source
     assert MAY_PERSIST_CURSOR is True
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
@@ -1234,7 +1236,8 @@ def test_s5_reuses_existing_invocation_cursor_without_new_owner() -> None:
         1
     ].split(")", 1)[0]
     assert "incoming_cursor=lane_cursor" in cycle_call
-    assert "store_root=" not in cycle_call
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in cycle_call
+    assert " store_root=" not in cycle_call
     assert "persist=" not in carry_source
     assert "state_root=" not in carry_source
     assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in carry_source
@@ -1279,6 +1282,10 @@ def test_s5_n1_two_cycle_parity(tmp_path: Path) -> None:
         existing_position_side=second_kwargs["existing_position_side"],  # type: ignore[arg-type]
         incoming_cursor=outgoing,
         g17_typed_vol_producer=producers["LANE_3"],
+        **productive_layered_core_bind_cycle_kwargs_v1(
+            layered_core_store_root=pair[0].lane_state_root,
+            incoming_cursor=outgoing,
+        ),
     )
     record = second["LANE_3"]
     assert record.incoming_cursor is outgoing
@@ -1470,7 +1477,14 @@ def test_s5_missing_mismatched_and_aliased_lane_state_fail_closed(tmp_path: Path
     assert "persist=False" in CYCLE_SOURCE
 
 
-def _direct_next_cycle(bound, incoming, producer, cycle_id: str):
+def _direct_next_cycle(
+    bound,
+    incoming,
+    producer,
+    cycle_id: str,
+    *,
+    layered_core_store_root: str | None = None,
+):
     raw = _invoke_kwargs()
     raw.pop("cycle_id_prefix")
     return run_current_productive_master_v2_runtime_cycle_v1(
@@ -1478,6 +1492,10 @@ def _direct_next_cycle(bound, incoming, producer, cycle_id: str):
         cycle_id=cycle_id,
         incoming_cursor=incoming,
         g17_typed_vol_producer=producer,
+        **productive_layered_core_bind_cycle_kwargs_v1(
+            layered_core_store_root=layered_core_store_root,
+            incoming_cursor=incoming,
+        ),
         **raw,  # type: ignore[arg-type]
     )
 
@@ -1519,7 +1537,8 @@ def test_s6_reuses_existing_cursor_owner_without_new_schema() -> None:
         1
     ].split(")", 1)[0]
     assert "incoming_cursor=incoming" in restore_cycle
-    assert "store_root=" not in restore_cycle
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_cycle
+    assert " store_root=" not in restore_cycle
     assert "state_root=" not in restore_source
     assert "CurrentProductiveSideStateConfirmationCursorV1" not in JOIN_SOURCE
 
@@ -1547,6 +1566,7 @@ def test_s6_n1_persist_restart_restore_parity(tmp_path: Path) -> None:
             venue_native_id=pairs["LANE_3"][1].venue_native_id,
         ),
         "s6-memory:LANE_3",
+        layered_core_store_root=pairs["LANE_3"][0].lane_state_root,
     )
     disk = _direct_next_cycle(
         pairs["LANE_3"][1],
@@ -1556,6 +1576,7 @@ def test_s6_n1_persist_restart_restore_parity(tmp_path: Path) -> None:
             venue_native_id=pairs["LANE_3"][1].venue_native_id,
         ),
         "s6-disk:LANE_3",
+        layered_core_store_root=pairs["LANE_3"][0].lane_state_root,
     )
     assert disk.decision_outcome == direct.decision_outcome
     assert disk.cursor_restore_status == direct.cursor_restore_status == "restored"
@@ -1655,6 +1676,7 @@ def test_s6_corrupt_and_schema_follow_existing_contract(tmp_path: Path) -> None:
             venue_native_id=pairs["LANE_4"][1].venue_native_id,
         ),
         "s6-schema-direct",
+        layered_core_store_root=pairs["LANE_4"][0].lane_state_root,
     )
     assert restored["LANE_4"].cycle_result.cursor_restore_status == direct.cursor_restore_status
     assert direct.cursor_restore_status == "refused_mismatch"
@@ -1674,6 +1696,7 @@ def test_s6_corrupt_and_schema_follow_existing_contract(tmp_path: Path) -> None:
             venue_native_id=pairs["LANE_4"][1].venue_native_id,
         ),
         "s6-invalid-direct",
+        layered_core_store_root=pairs["LANE_4"][0].lane_state_root,
     )
     assert invalid["LANE_4"].cycle_result.cursor_restore_status == (
         direct_invalid.cursor_restore_status
@@ -1727,7 +1750,7 @@ def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
     persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
     assert 0 <= restore_idx < persist_idx
     assert "run_current_productive_master_v2_runtime_cycle_v1(" not in compose_source
-    assert "store_root=" not in compose_source
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" not in compose_source
     assert "persist_enabled=True" in compose_source
     assert "cap61_state_root_bound=False" in compose_source
     assert "persist_enabled=False" in restore_source
@@ -1736,7 +1759,8 @@ def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
         1
     ].split(")", 1)[0]
     assert "incoming_cursor=incoming" in restore_cycle
-    assert "store_root=" not in restore_cycle
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_cycle
+    assert " store_root=" not in restore_cycle
     assert "os.replace" not in compose_source
     assert "write_text" not in JOIN_SOURCE
     called = _called_names(JOIN_SOURCE)

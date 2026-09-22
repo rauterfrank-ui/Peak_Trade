@@ -27,6 +27,7 @@ decision writers). Per-cycle opt-in: `productive_layered_core_bind_requested` +
 | Surface | Owner |
 | --- | --- |
 | Activation + bind seam | `ops.p5_10_productive_activation_and_binding_v1` |
+| Productive caller wiring (store + scope gate) | `ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1` |
 | Bind enable constant | `ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1` |
 | Productive cycle hook | `ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1` |
 | B4 handoff | `ops.p5_10b_layered_epoch_remaining_authority_closure_v1` |
