@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR_6742 DD/DE execution ladder merge-stable baseline and contract consistency repair (offline contract/tests); no port construction; ATLAS_AUTHORITY=NONE.
+- PR_6743 DF Cap-7.2 host-join merge-stable ladder closure to external-effect gate (offline contract/tests); side-effect-free host-join only; ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=CURRENT_PRODUCTIVE_DE_DD_EXECUTION_LADDER_BASELINE_AND_CONTRACT_CONSISTENCY_REPAIR_V1
+- modified_by=FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
