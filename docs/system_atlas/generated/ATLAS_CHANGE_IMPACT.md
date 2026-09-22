@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- K1 opaque signing-handle pre-POST seam: Owner-GO-gated ephemeral macOS Keychain acquisition binds material_loaded=false K1 handle; standing REAL_KEYCHAIN_ACCESS_AUTHORIZED/IMPLEMENTED remain false; no permit/POST; ATLAS_AUTHORITY=NONE.
+- One-shot fresh-envelope join binds permit mint, durable SENT_INITIATED consume, the K1 opaque signing seam, and the existing HTTP trade-order transport. POST Owner-GO remains UNCONSUMED. No real Keychain, no venue socket, EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1
+- modified_by=CURRENT_PRODUCTIVE_ONE_SHOT_FRESH_ENVELOPE_PERMIT_MINT_DURABLE_CONSUME_AND_POST_JOIN_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
