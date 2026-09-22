@@ -1306,6 +1306,7 @@ relations:
       ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CALLS edge unchanged; common-epoch consumer uses Fresh GET transport outside this CALLS path; ATLAS_AUTHORITY=NONE.
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: CALLS
     target: GATE:full_core_fresh_pretrade_runtime_get_v1
@@ -1339,6 +1340,7 @@ relations:
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_live_account_bound_composes_fresh_get
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CONSUMES edge unchanged; instType bind is upstream in common-epoch execute; ATLAS_AUTHORITY=NONE.
     source: GATE:full_core_live_account_bound_v1
     type: CONSUMES
     target: GATE:full_core_fresh_pretrade_runtime_get_v1
@@ -1615,6 +1617,7 @@ relations:
       ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_fresh_pretrade_get_composes_permit
+    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CONSUMES edge unchanged; coupling-review only; ATLAS_AUTHORITY=NONE.
     source: GATE:full_core_fresh_pretrade_runtime_get_v1
     type: CONSUMES
     target: GATE:full_core_owner_one_shot_permit_v1

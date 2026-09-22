@@ -71,11 +71,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     current_productive_p01_policy_pins_v1,
     evaluate_current_productive_p01_policy_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u01_account_mode_adapter_v1 import (
-    RAW_FIELD as U01_RAW_FIELD,
-    adapt_current_productive_u01_account_mode_v1,
-    build_current_productive_u01_eligibility_fact_v1,
-)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
     ELIGIBILITY_FACT_ID,
     OBSERVATION_FACT_ID,
@@ -199,6 +194,7 @@ P01_FILE = "p01_resolution_v1.json"
 PRODUCER_FILE = "producer_output_v1.json"
 ADMISSIBILITY_FILE = "step_29p_admissibility_v1.json"
 SNAPSHOT_FILE = "GET_SNAPSHOT.sanitized.json"
+U01_CONFIG_EPOCH_REQUIRED_STATUS = "CONFIG_EPOCH_REQUIRED_FOR_U01"
 
 
 class CurrentProductive29PFreshGetError(RuntimeError):
@@ -461,34 +457,6 @@ def _auth_headers_for_get_v1(
     return headers
 
 
-def _u01_status_from_balance_payload_v1(
-    *,
-    payload: Mapping[str, Any],
-    observation: CurrentProductiveUsdcFreeMarginObservationV1,
-) -> tuple[CurrentProductiveAccountEligibilityFactV1 | None, str]:
-    data = payload.get("data")
-    if not isinstance(data, list) or not data or not isinstance(data[0], Mapping):
-        return None, "BALANCE_ACCOUNT_ROW_MISSING"
-    row = data[0]
-    if U01_RAW_FIELD not in row:
-        return None, "ACCT_LV_ABSENT_FROM_AUTHORIZED_BALANCE_RESPONSE"
-    adaptation = adapt_current_productive_u01_account_mode_v1(row.get(U01_RAW_FIELD))
-    if adaptation.eligible != TRUE_TOKEN:
-        reason = adaptation.reason_codes[0] if adaptation.reason_codes else "U01_INELIGIBLE"
-        return None, f"U01_FAIL_CLOSED:{reason}"
-    eligibility = build_current_productive_u01_eligibility_fact_v1(
-        adaptation=adaptation,
-        bound_account_identity=observation.bound_account_identity,
-        bound_venue_identity=observation.bound_venue_identity,
-        bound_td_mode=observation.bound_td_mode,
-        decision_epoch=observation.decision_epoch,
-        provenance_digest=observation.provenance_digest,
-    )
-    if eligibility is None:
-        return None, "U01_ELIGIBILITY_FACT_NOT_MINTED"
-    return eligibility, "ELIGIBILITY_FROM_SAME_AUTHORIZED_BALANCE_RESPONSE"
-
-
 def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_v1(
     *,
     owner_go: str,
@@ -709,13 +677,8 @@ def execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produc
             freshness_max_age=observation.freshness_max_age,
             provenance_digest=observation.provenance_digest,
         )
-        if get_ok and isinstance(payload, dict):
-            eligibility, u01_status = _u01_status_from_balance_payload_v1(
-                payload=payload,
-                observation=observation,
-            )
-        else:
-            u01_status = "BALANCE_PAYLOAD_UNAVAILABLE_FOR_U01"
+        u01_status = U01_CONFIG_EPOCH_REQUIRED_STATUS
+        forbidden_reasons.append("U01_REQUIRES_AUTHORIZED_ACCOUNT_CONFIG_COMMON_EPOCH")
     output = produce_current_productive_29p_risk_capital_v1(
         observation=observation,
         p01=p01_fact,

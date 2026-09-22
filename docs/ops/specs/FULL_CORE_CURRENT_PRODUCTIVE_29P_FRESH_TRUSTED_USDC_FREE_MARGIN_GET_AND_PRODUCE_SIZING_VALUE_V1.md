@@ -59,10 +59,8 @@ NEXT_PRODUCTIVE_NODE=CURRENT_PRODUCTIVE_U01_ELIGIBILITY_AND_P01_DIRECTIVE_FOR_SI
 NEXT_OWNER_GO_REQUIRED=OWNER_GO_REQUIRED_TO_BIND_CURRENT_PRODUCTIVE_U01_ELIGIBILITY_AND_RESOLVE_P01_DIRECTIVE_FOR_SIZING_MINT_V1
 ```
 
-Binding repair v1 (`OWNER_GO_CURRENT_PRODUCTIVE_29P_FRESH_GET_BINDING_REPAIR_V1`) on PR #6735
-branch only: `BOUND_ORIGIN_MAIN_SHA=389cc5f91da08d30c9ae65af05b6d9f914e8ac45`,
-pre-GET gate `CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true`, K1 vault credential
-reuse, governed P01 policy fact (`CURRENT_PRODUCTIVE_P01_POLICY_DOES_NOT_APPLY_V1`), U01 only
-from `acctLv` present in the same authorized balance response (no second GET). Offline
-evidence: `evidence/ops/full_core_current_productive_29p_fresh_get_binding_repair_v1/`.
+Binding repair v1 (`OWNER_GO_CURRENT_PRODUCTIVE_29P_FRESH_GET_BINDING_REPAIR_V1`): balance GET
+observes `details[ccy=USDC].availEq` only. U01 `acctLv` is **not** balance authority; CV fails
+closed with `CONFIG_EPOCH_REQUIRED_FOR_U01` until Common-Epoch `/api/v5/account/config`
+lineage is bound. Productive U01 + LAB trust: `11.2.1.EI` common-epoch handoff.
 ```

@@ -35,12 +35,14 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     ALLOWED_OWNER_GOS,
     CAP24_SUPPLY_PIN_OWNER_GO,
+    FRESH_PRETRADE_ITEMS_FILE,
     HISTORICAL_PROVENANCE_REF_ONLY,
     MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT,
     MINIMUM_DEDUPLICATED_GET_COUNT,
     OWNER_GO,
     PIN_OWNER_GO,
     CurrentProductive29PCommonEpochHandoffError,
+    build_fresh_pretrade_get_item_diagnostics_v1,
     compose_current_productive_29p_common_epoch_handoff_v1,
     enforce_deduplicated_get_budget_v1,
     execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1,
@@ -225,6 +227,62 @@ def test_standing_flags_and_owner_go_tokens() -> None:
     assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 7
 
 
+def test_futures_inst_type_empty_public_instruments_malformed() -> None:
+    transport = CountingInjectedFreshGetTransportV1(
+        payloads={
+            **_identity_payloads(instrument_id=_TEST_INST),
+            ENDPOINT_PUBLIC_INSTRUMENTS: {"code": "0", "data": []},
+        }
+    )
+    handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+        decision_epoch=_EPOCH,
+        bound_instrument=_bound(),
+        fresh_get_transport=transport,
+        inst_type="FUTURES",
+    )
+    assert handoff.get_status == FreshPretradeGetStatusV1.MALFORMED.value
+    bad = [
+        row
+        for row in build_fresh_pretrade_get_item_diagnostics_v1(
+            get_evidence=handoff.get_evidence,
+            instrument_id=_TEST_INST,
+            td_mode=_TEST_TD,
+            inst_type="FUTURES",
+        )
+        if row["STATUS"] == FreshPretradeGetStatusV1.MALFORMED.value
+    ]
+    assert {row["ITEM_ID"] for row in bad} == {"INSTRUMENT_STATE", "MAX_SIZE"}
+
+
+def test_numeric_uid_in_config_still_trusted_for_lab() -> None:
+    payloads = _identity_payloads()
+    config_row = dict(payloads[ENDPOINT_ACCOUNT_CONFIG]["data"][0])  # type: ignore[index]
+    config_row["uid"] = 856964404452495999
+    payloads[ENDPOINT_ACCOUNT_CONFIG] = {"code": "0", "data": [config_row]}
+    balance_row = dict(payloads[ENDPOINT_ACCOUNT_BALANCE]["data"][0])  # type: ignore[index]
+    balance_row["uid"] = 856964404452495999
+    payloads[ENDPOINT_ACCOUNT_BALANCE] = {"code": "0", "data": [balance_row]}
+    handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+        decision_epoch=_EPOCH,
+        bound_instrument=_bound(),
+        fresh_get_transport=CountingInjectedFreshGetTransportV1(payloads=payloads),
+        inst_type="SWAP",
+        expected_account_identity="856964404452495999",
+    )
+    assert handoff.lab_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+
+
+def test_swap_inst_type_trusted_with_valid_payloads() -> None:
+    handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+        decision_epoch=_EPOCH,
+        bound_instrument=_bound(),
+        fresh_get_transport=_transport(),
+        inst_type="SWAP",
+    )
+    assert handoff.get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+    assert handoff.lab_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
+
+
 def test_happy_path_seven_gets_same_epoch_full_chain() -> None:
     handoff, transport = _compose()
     assert transport.get_call_count == 7
@@ -392,6 +450,7 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
         bound_instrument=_bound(),
         fresh_get_transport=_transport(),
         evidence_root=tmp_path / "pack",
+        cap21_public_inst_type="SWAP",
         execution_integrity_backend=_INTEGRITY,
     )
     assert result.deduplicated_get_count == 7
@@ -401,6 +460,11 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
     )
     assert result.p01_status == "DOES_NOT_APPLY"
     assert result.u01_status == "ELIGIBLE"
+    items_path = tmp_path / "pack" / FRESH_PRETRADE_ITEMS_FILE
+    assert items_path.is_file()
+    items = json.loads(items_path.read_text(encoding="utf-8"))["items"]
+    assert len(items) == 9
+    assert all("REASON_CODES" in row for row in items)
 
 
 def test_producer_and_step29p_evaluator_invoked() -> None:

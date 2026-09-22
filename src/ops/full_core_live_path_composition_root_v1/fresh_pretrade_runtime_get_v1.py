@@ -201,6 +201,10 @@ def extract_identity_fields_from_payload_v1(
             continue
         if "uid" in row:
             uid = row.get("uid")
+            if isinstance(uid, bool):
+                malformed = True
+            elif isinstance(uid, int):
+                uid = str(uid)
             if not isinstance(uid, str) or uid == "" or uid != uid.strip():
                 malformed = True
             else:

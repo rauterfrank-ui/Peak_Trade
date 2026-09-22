@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
     CapitalAdmissionClaimV1,
@@ -45,7 +45,13 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     FullCoreFreshPretradeGetTransportV1,
     REQUIRED_GET_ITEM_SPECS,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+    build_required_get_endpoint_v1,
     collect_fresh_pretrade_runtime_get_v1,
+)
+from src.ops.governed_futures_universe_producer_v1.constants_v1 import SUPPORTED_INST_TYPES
+from src.ops.governed_futures_universe_producer_v1.models_v1 import GovernedUniverseInstrumentV1
+from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
+    load_and_validate_universe_snapshot_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
     LiveAccountBoundEvidenceV1,
@@ -66,6 +72,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
     CurrentProductive29PCap24ProvenanceHandoffError,
+    _resolve_runtime_state_root_v1,
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
     default_current_productive_cap24_runtime_state_root_v1,
 )
@@ -164,6 +171,10 @@ _PROXY_ENV_KEYS = (
     "all_proxy",
 )
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+FRESH_PRETRADE_ITEMS_FILE = "fresh_pretrade_get_items_v1.json"
+CAP21_PUBLIC_INST_TYPE_AUTHORITY = (
+    "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.instrument_type"
+)
 
 
 class CurrentProductive29PCommonEpochHandoffError(RuntimeError):
@@ -371,6 +382,107 @@ def _validate_decision_epoch_v1(decision_epoch: str) -> str:
     if epoch == "" or epoch != epoch.strip():
         raise CurrentProductive29PCommonEpochHandoffError("DECISION_EPOCH_MALFORMED")
     return epoch
+
+
+def resolve_current_productive_public_inst_type_from_cap21_universe_v1(
+    *,
+    instruments: Sequence[GovernedUniverseInstrumentV1],
+    venue_native_id: str,
+) -> str:
+    """Bind OKX public instType query from Cap-2.1 universe instrument_type (no suffix guessing)."""
+
+    native = str(venue_native_id or "").strip()
+    if not native:
+        raise CurrentProductive29PCommonEpochHandoffError("VENUE_NATIVE_ID_MISSING_FOR_INST_TYPE")
+    for row in instruments:
+        if str(row.venue_native_inst_id or "") != native:
+            continue
+        raw_type = str(row.instrument_type or "").strip().upper()
+        if raw_type not in SUPPORTED_INST_TYPES:
+            raise CurrentProductive29PCommonEpochHandoffError(
+                "INSTRUMENT_TYPE_NOT_AUTHORIZED_FOR_PUBLIC_PRETRADE"
+            )
+        return raw_type
+    raise CurrentProductive29PCommonEpochHandoffError(
+        "INSTRUMENT_TYPE_MISSING_FROM_CAP21_UNIVERSE_SNAPSHOT"
+    )
+
+
+def _cap21_universe_instruments_from_productivity_root_v1(
+    *,
+    productivity_root: Path,
+) -> tuple[GovernedUniverseInstrumentV1, ...]:
+    state_root = _resolve_runtime_state_root_v1(productivity_root=productivity_root)
+    uni_load = load_and_validate_universe_snapshot_v1(
+        state_root / "universe",
+        expected_repository_sha=None,
+        require_manifest=True,
+    )
+    if uni_load.ok is not True or uni_load.snapshot is None:
+        raise CurrentProductive29PCommonEpochHandoffError("CAP21_UNIVERSE_LOAD_FAIL_CLOSED")
+    return uni_load.snapshot.instruments
+
+
+def _resolve_public_inst_type_for_bound_instrument_v1(
+    *,
+    bound: BoundInstrumentV1,
+    productivity_root: Path | None,
+    cap21_public_inst_type: str | None,
+) -> str:
+    if cap21_public_inst_type is not None:
+        override = str(cap21_public_inst_type or "").strip().upper()
+        if override not in SUPPORTED_INST_TYPES:
+            raise CurrentProductive29PCommonEpochHandoffError(
+                "CAP21_PUBLIC_INST_TYPE_OVERRIDE_NOT_AUTHORIZED"
+            )
+        return override
+    prod_root = productivity_root
+    if prod_root is None:
+        default_root = default_current_productive_cap24_runtime_state_root_v1()
+        prod_root = default_root if default_root.exists() else None
+    if prod_root is None or not Path(prod_root).exists():
+        raise CurrentProductive29PCommonEpochHandoffError(
+            "CAP21_UNIVERSE_REQUIRED_FOR_PUBLIC_INST_TYPE_BINDING"
+        )
+    instruments = _cap21_universe_instruments_from_productivity_root_v1(
+        productivity_root=Path(prod_root)
+    )
+    return resolve_current_productive_public_inst_type_from_cap21_universe_v1(
+        instruments=instruments,
+        venue_native_id=bound.venue_native_id,
+    )
+
+
+def build_fresh_pretrade_get_item_diagnostics_v1(
+    *,
+    get_evidence: FreshPretradeRuntimeGetEvidenceV1,
+    instrument_id: str,
+    td_mode: str,
+    inst_type: str,
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for item in get_evidence.items:
+        spec = next(s for s in REQUIRED_GET_ITEM_SPECS if s.item_id == item.item_id)
+        requested = build_required_get_endpoint_v1(
+            spec,
+            instrument_id=instrument_id,
+            td_mode=td_mode,
+            limit_px="",
+            inst_type=inst_type,
+        )
+        request_binding = requested.split("?", 1)[1] if "?" in requested else ""
+        rows.append(
+            {
+                "ITEM_ID": item.item_id,
+                "ENDPOINT_PATH": item.endpoint_path,
+                "REQUEST_BINDING": request_binding,
+                "STATUS": item.evidence_status,
+                "REASON_CODES": list(item.reason_codes),
+                "GET_PERFORMED": item.get_performed,
+                "IDENTITY_FIELDS_MALFORMED": item.identity_fields_malformed,
+            }
+        )
+    return rows
 
 
 def compose_current_productive_29p_common_epoch_handoff_v1(
@@ -654,6 +766,7 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
     inst_type: str = "FUTURES",
     offline_compose_only: bool = True,
     cap24_productivity_root: Path | None = None,
+    cap21_public_inst_type: str | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductive29PCommonEpochHandoffExecuteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
@@ -789,12 +902,17 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
             manifest_verify_rc=manifest_rc,
         )
 
+    resolved_inst_type = _resolve_public_inst_type_for_bound_instrument_v1(
+        bound=bound,
+        productivity_root=cap24_productivity_root,
+        cap21_public_inst_type=cap21_public_inst_type,
+    )
     handoff = compose_current_productive_29p_common_epoch_handoff_v1(
         decision_epoch=decision_epoch,
         bound_instrument=bound,
         fresh_get_transport=fresh_get_transport,
         expected_account_identity=expected_account_identity,
-        inst_type=inst_type,
+        inst_type=resolved_inst_type,
         package_finished_iso=package_started,
         p01_decision_state=p01_decision.decision_state,
     )
@@ -841,9 +959,19 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
         "CAP24_PROVENANCE_DIGEST": cap24_provenance_digest,
         "LIVE_ACCOUNT_BOUND_STATUS": handoff.lab_status,
         "FRESH_PRETRADE_GET_STATUS": handoff.get_status,
+        "CAP21_PUBLIC_INST_TYPE": resolved_inst_type,
+        "CAP21_PUBLIC_INST_TYPE_AUTHORITY": CAP21_PUBLIC_INST_TYPE_AUTHORITY,
     }
+    item_diagnostics = build_fresh_pretrade_get_item_diagnostics_v1(
+        get_evidence=handoff.get_evidence,
+        instrument_id=bound.venue_native_id,
+        td_mode=REQUIRED_TD_MODE,
+        inst_type=resolved_inst_type,
+    )
     _assert_no_secrets(claims)
+    _assert_no_secrets({"items": item_diagnostics})
     _persist_json(path=store / "claims.json", payload=claims)
+    _persist_json(path=store / FRESH_PRETRADE_ITEMS_FILE, payload={"items": item_diagnostics})
     _persist_json(
         path=store / "SUMMARY.json",
         payload={
