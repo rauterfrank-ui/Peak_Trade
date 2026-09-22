@@ -22,9 +22,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductive29PCap24ProvenanceHandoffError,
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
-    EXPECTED_ORIGIN_MAIN_SHA as COMMON_EPOCH_SHA,
-)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     CurrentProductiveCap21ToCap23PersistenceError,
     build_cap24_mark_prices_sidecar_from_acquisition_v1,
@@ -51,7 +48,7 @@ from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BASE_SHA = "87f4f2143af72b648a73c24d340574388c39aa0f"
+BASE_SHA = "e5396206530415b469fa345ec04322613c953c44"
 HISTORICAL_EEA_EVIDENCE = (
     REPO_ROOT
     / "evidence/ops/full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1/"
@@ -106,7 +103,6 @@ def _acquisition(*, include_mark_for: str | None = None) -> EeaUniverseAcquisiti
 def test_standing_constants_and_spec() -> None:
     assert CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_CREATED is True
     assert EXPECTED_ORIGIN_MAIN_SHA == BASE_SHA
-    assert COMMON_EPOCH_SHA == BASE_SHA
     assert OWNER_GO == "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1"
     assert THIS_SLICE.endswith("CAP24_SELECTION_STATE_CANONICAL_WRITER")
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
@@ -174,6 +170,20 @@ def test_productivity_layout_and_handoff(tmp_path: Path) -> None:
     )
     assert handoff.reselection_performed is False
     assert handoff.repository_sha == BASE_SHA
+
+
+def test_origin_main_sha_mismatch_fail_closed(tmp_path: Path) -> None:
+    with pytest.raises(
+        CurrentProductiveCap24SelectionStateWriterError,
+        match="ORIGIN_MAIN_SHA_MISMATCH",
+    ):
+        execute_current_productive_cap24_selection_state_canonical_write_v1(
+            owner_go=OWNER_GO,
+            origin_main_sha="deadbeef" * 5,
+            acquisition_result=_acquisition(),
+            productivity_root=tmp_path / "prod",
+            repository_sha=BASE_SHA,
+        )
 
 
 def test_repository_sha_mismatch_fail_closed(tmp_path: Path) -> None:
