@@ -174,7 +174,7 @@ def test_p01_policy_does_not_apply_consumed_without_u01(tmp_path: Path) -> None:
     claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
     assert claims["P01_DIRECTIVE_SOURCE"] == "CURRENT_PRODUCTIVE_P01_POLICY_DOES_NOT_APPLY_V1"
     assert "ELIGIBILITY_FACT_MISSING" in claims["PRODUCER_REASON_CODES"]
-    assert claims["ELIGIBILITY_STATUS"] == "ACCT_LV_ABSENT_FROM_AUTHORIZED_BALANCE_RESPONSE"
+    assert claims["ELIGIBILITY_STATUS"] == "CONFIG_EPOCH_REQUIRED_FOR_U01"
     assert result.u04_subtracted == "false"
 
 
@@ -198,7 +198,7 @@ def test_p01_policy_authority_ambiguous_fail_closed(
     assert transport.calls == []
 
 
-def test_u01_minted_only_when_acct_lv_in_same_balance_response(tmp_path: Path) -> None:
+def test_balance_only_never_mints_u01_even_when_acct_lv_present(tmp_path: Path) -> None:
     transport = RecordingFakeCanaryTransportV1(body=_payload(acct_lv="2"))
     result = execute_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_v1(
         owner_go=OWNER_GO,
@@ -208,11 +208,9 @@ def test_u01_minted_only_when_acct_lv_in_same_balance_response(tmp_path: Path) -
         execute_get=True,
     )
     assert result.p01_applicability == "DOES_NOT_APPLY"
-    assert result.producer_output_status == "PRODUCED"
-    assert result.producer_output_value_usdc == "123.45"
-    assert result.u04_subtracted == "false"
+    assert result.producer_output_status == "FAIL_CLOSED"
     claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
-    assert claims["ELIGIBILITY_STATUS"] == "ELIGIBILITY_FROM_SAME_AUTHORIZED_BALANCE_RESPONSE"
+    assert claims["ELIGIBILITY_STATUS"] == "CONFIG_EPOCH_REQUIRED_FOR_U01"
 
 
 def test_stale_origin_main_sha_rejected(tmp_path: Path) -> None:

@@ -73,6 +73,7 @@ from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admis
     evaluate_step_29p_capital_risk_admissibility_v1,
     persist_class_fields_v1,
 )
+from src.ops.governed_futures_universe_producer_v1.models_v1 import GovernedUniverseInstrumentV1
 from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
@@ -96,6 +97,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     run_cap21_to_cap23_persist_productive_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+    resolve_current_productive_public_inst_type_from_cap21_universe_v1,
     compose_current_productive_29p_common_epoch_handoff_v1,
     extract_usdc_details_availeq_from_balance_payload_v1,
     payload_from_fresh_get_transport_v1,
@@ -541,15 +543,15 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             raise CurrentProductiveEeaUniverseTo29PError(
                 "LIVE_ACCOUNT_BOUND_REQUIRES_TRUSTED_FRESH_GET"
             )
-        inst_type = "FUTURES"
-        for row in uni_snap.get("instruments") or []:
-            if not isinstance(row, Mapping):
-                continue
-            if str(row.get("venue_native_inst_id") or "") == bound.venue_native_id:
-                raw_type = str(row.get("instrument_type") or "").strip().upper()
-                if raw_type:
-                    inst_type = raw_type
-                break
+        cap21_instruments = tuple(
+            GovernedUniverseInstrumentV1.from_dict(row)
+            for row in (uni_snap.get("instruments") or [])
+            if isinstance(row, Mapping)
+        )
+        inst_type = resolve_current_productive_public_inst_type_from_cap21_universe_v1(
+            instruments=cap21_instruments,
+            venue_native_id=bound.venue_native_id,
+        )
         package_finished = _utc_now_iso_v1()
         handoff = compose_current_productive_29p_common_epoch_handoff_v1(
             decision_epoch=decision_epoch,
