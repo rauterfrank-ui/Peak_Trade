@@ -86,7 +86,7 @@ SideState writer when layered bind mode is active (`P5.2` / `P5.9D` single-write
 
 **Legacy integrated replay** (`integrated_offline_trading_logic_replay_v1`) evaluates C4
 **before** `transition_state`. That ordering is **NAVIGATION_ONLY** for layered mode and is
-**not** layered epoch authority (`MV2_C4` chain documents legacy `Composition→State→Entry/Exit`).
+**not** layered epoch authority (`MV2_C4` chain documents legacy `Composition→State→Entry&#47;Exit`).
 
 **P5.10A layered epoch authority (this contract):** step **6** (`canonical_next_side_state`)
 precedes step **7** (C4 + Entry/Exit). Therefore:
