@@ -225,7 +225,7 @@ def test_hold_does_not_call_live_29p() -> None:
     assert enter.get_count == 1
 
 
-def test_enter_fresh_valid_29p_fail_closed_without_productive_risk_limits() -> None:
+def test_enter_fresh_valid_29p_pass_feeds_canonical_sizing_once() -> None:
     _, cycle_b, _path = _host_enter_cycle()
     replay = _enter_replay(cycle_b)
     assert replay is not None
@@ -235,19 +235,41 @@ def test_enter_fresh_valid_29p_fail_closed_without_productive_risk_limits() -> N
     assert result.decision_class == DECISION_ENTER
     assert result.called is True
     assert result.get_count == 1
-    from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
-        REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED,
-    )
-
-    assert result.status == STATUS_FAIL
-    assert result.venue_plan_authorized is False
+    assert result.status == STATUS_PASS
+    assert result.venue_plan_authorized is True
     assert result.producer_output_value == DISTINCTIVE_EQUITY
     assert result.producer_output_value != str(_DEFAULT_ACCOUNT_EQUITY)
     assert result.producer_output_status == "PRODUCED"
     assert result.step_29p_risk_admissible == "true"
+    assert result.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
     assert result.used_offline_default_equity == "false"
-    assert result.first_blocker == REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED
-    assert result.replay is replay
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_IDENTITY in result.reason_codes
+    rebound = result.replay
+    assert rebound is not None
+    assert rebound is not replay
+    assert str(rebound.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+    sizing = rebound.intermediate.capital_risk_sizing_decision
+    assert sizing is not None
+    assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
+    assert sizing.scope_capital_envelope.available_capital == Decimal(DISTINCTIVE_EQUITY)
+    assert sizing.scope_capital_envelope.available_capital != _DEFAULT_ACCOUNT_EQUITY
+    status, reasons, plan = try_bind_current_productive_venue_plan_v1(
+        replay=rebound,
+        bound_instrument=_bound(),
+        session_id="enter-live-29p-join-session",
+        run_id="enter-live-29p-join-run",
+        composed_epoch=EPOCH,
+    )
+    assert status is CompositionStatusV1.PASS, reasons
+    assert plan is not None
+    envelope = bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref="EF_ENTER_LIVE_29P_JOIN_PASS",
+        provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
+        creation_epoch=EPOCH,
+    )
+    assert envelope.envelope_id
+    assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
     _assert_post_guard(result)
 
 
