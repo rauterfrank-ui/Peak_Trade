@@ -6165,7 +6165,7 @@ entities:
     notes: >-
       P5.2 bind constant owner: PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true after
       P5.10 activation; per-cycle opt-in via p5_10 bind seam. Fail-closed authority
-      contracts for layered seal delegation. REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=false.
+      contracts for layered seal delegation. REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true.
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_5_o_r2_semantic_authority_contracts_v1
@@ -6211,8 +6211,8 @@ entities:
       - src/ops/p5_7_regime_sidestate_projection_mapping_contract_v1/contract_v1.py
     notes: >-
       P5.7 O-R2 R-01 regime_post to SideState projection contract (definition only).
-      REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED remains false; no CZ-4 or productive
-      wiring. ATLAS_AUTHORITY=NONE.
+      REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true for productive layered-bind switch;
+      mapping semantics unchanged (P5.7). ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_8b_regime_sidestate_projection_phase_authority_v1
     kind: CONTRACT
@@ -6258,7 +6258,7 @@ entities:
     notes: >-
       P5.9D explicit regime-bound vs mechanical SideState FSM validators (post P5.9C).
       Allowlist/forbidden legacy rows, single-writer, scope provenance, P5.7 handoff prep.
-      No productive wiring; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED stays false.
+      REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true; FSM validators unchanged.
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_10a_layered_tick_merge_epoch_orchestration_contract_v1
@@ -6330,7 +6330,7 @@ entities:
     notes: >-
       Owner-GO productive bind: P5 seal, CZ-4 delegation, P5.10B POST_CANONICAL_NEXT_SIDE_STATE
       handoff via single seam; per-cycle opt-in. PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true;
-      cutover flags false; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=false;
+      cutover flags false; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true;
       EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research

@@ -52,7 +52,7 @@ def test_guard_constants_unchanged() -> None:
     assert P4_PRODUCTIVE_BINDING is False
     assert AUTHORITY_CUTOVER_OCCURRED is False
     assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
-    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
     assert FINAL_D_T_FORMULA_SELECTED is False
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert MAX_POSITIONS_EFFECTIVE == 1
@@ -211,7 +211,7 @@ def test_venue_cursor_seed_classification_and_core_claim_rejection() -> None:
     )
 
 
-def test_regime_sidestate_ambiguity_rejects_cz4_without_mapping_contract() -> None:
+def test_regime_switch_cz4_delegation_bind_ok_when_mapping_authorized() -> None:
     seal = build_layered_core_authority_seal_v1(
         seal_id="switch-seal",
         instrument_id=_INSTRUMENT,
@@ -227,14 +227,10 @@ def test_regime_sidestate_ambiguity_rejects_cz4_without_mapping_contract() -> No
         mechanical_step_count=2,
     )
     bind = validate_cz4_delegation_authority_bind_v1(seal=seal, side_state=SideState.LONG_ARMED)
-    assert bind.ok is False
-    assert (
-        AuthorityBindFailureCodeV1.REGIME_SIDESTATE_MAPPING_NOT_AUTHORIZED.value
-        in bind.failure_codes
-    )
+    assert bind.ok is True
 
 
-def test_cz4_replay_fail_closed_on_regime_switch_without_mapping() -> None:
+def test_cz4_replay_delegates_on_regime_switch_when_mapping_authorized() -> None:
     seal = build_layered_core_authority_seal_v1(
         seal_id="switch-seal-replay",
         instrument_id=_INSTRUMENT,
@@ -249,12 +245,15 @@ def test_cz4_replay_fail_closed_on_regime_switch_without_mapping() -> None:
         switch_condition_met=True,
         mechanical_step_count=2,
     )
-    inp = _replay_input(existing_scope=_existing_scope(), layered_core_authority_seal=seal)
+    inp = _replay_input(
+        existing_scope=_existing_scope(),
+        layered_core_authority_seal=seal,
+        side_state=SideState.LONG_ACTIVE,
+    )
     result = run_integrated_offline_trading_logic_replay_v1(inp)
-    assert result.replay_pass is False
-    assert (
-        AuthorityBindFailureCodeV1.REGIME_SIDESTATE_MAPPING_NOT_AUTHORIZED.value
-        in result.fail_reasons
+    assert result.evidence is not None
+    assert AuthorityBindFailureCodeV1.REGIME_SIDESTATE_MAPPING_NOT_AUTHORIZED.value not in (
+        result.fail_reasons or ()
     )
 
 

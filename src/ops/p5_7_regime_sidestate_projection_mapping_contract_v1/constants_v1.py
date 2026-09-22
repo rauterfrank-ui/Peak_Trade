@@ -17,7 +17,7 @@ from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.constants_v
 )
 
 assert MAPPING_CONTRACT_V1_DEFINED is True
-assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
 assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
 assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 assert AUTHORITY_CUTOVER_OCCURRED is False

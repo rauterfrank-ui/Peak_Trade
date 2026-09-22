@@ -54,7 +54,7 @@ def _inp(**overrides: object) -> RegimeSideStateProjectionInputV1:
 def test_guard_constants_unchanged() -> None:
     assert CONTRACT_VERSION == "regime_sidestate_projection_mapping.v1"
     assert MAPPING_CONTRACT_V1_DEFINED is True
-    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+    assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
     assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
     assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
     assert AUTHORITY_CUTOVER_OCCURRED is False
@@ -211,9 +211,8 @@ def test_legacy_productive_cycle_unchanged() -> None:
     assert "run_p5_layered_core_authority_seam_v1" not in text
 
 
-def test_cz4_still_fail_closed_without_mapping_authorization_flag() -> None:
+def test_cz4_switch_delegation_allowed_when_mapping_authorized() -> None:
     from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.contract_v1 import (
-        AuthorityBindFailureCodeV1,
         validate_cz4_delegation_authority_bind_v1,
     )
     from trading.master_v2.layered_core_authority_seal_v1 import (
@@ -221,7 +220,7 @@ def test_cz4_still_fail_closed_without_mapping_authorization_flag() -> None:
     )
 
     seal = build_layered_core_authority_seal_v1(
-        seal_id="p57-still-blocked",
+        seal_id="p57-switch-authorized",
         instrument_id="ETH-PERP",
         episode_snapshot_id="a" * 64,
         store_manifest_digest="b" * 64,
@@ -235,11 +234,7 @@ def test_cz4_still_fail_closed_without_mapping_authorization_flag() -> None:
         mechanical_step_count=2,
     )
     bind = validate_cz4_delegation_authority_bind_v1(seal=seal, side_state=SideState.LONG_ACTIVE)
-    assert bind.ok is False
-    assert (
-        AuthorityBindFailureCodeV1.REGIME_SIDESTATE_MAPPING_NOT_AUTHORIZED.value
-        in bind.failure_codes
-    )
+    assert bind.ok is True
 
 
 def test_mapping_domain_matrix_no_switch_stable_armed_states() -> None:

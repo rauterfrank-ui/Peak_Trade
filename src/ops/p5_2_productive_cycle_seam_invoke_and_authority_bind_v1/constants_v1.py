@@ -8,8 +8,8 @@ OWNER = "ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1"
 # Enabled by P5.10 productive activation/binding (per-cycle opt-in via bind seam).
 PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED = True
 
-# No canonical regime_post ↔ SideState mapping exists on main.
-REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED = False
+# P5.7 mapping contract authorized for productive layered-bind switch ticks (Owner-GO slice).
+REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED = True
 
 FINAL_D_T_FORMULA_SELECTED = False
 
@@ -30,7 +30,7 @@ assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 assert PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED is False
 assert P4_PRODUCTIVE_BINDING is False
 assert PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED is True
-assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is False
+assert REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED is True
 
 __all__ = [
     "AUTHORITY_CUTOVER_OCCURRED",
