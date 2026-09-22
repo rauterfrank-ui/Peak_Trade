@@ -49,7 +49,7 @@ Exactly **one** initial SideState **orientation** seed for a flat host that is s
 ``initial_regime_orientation_seed_consumed == false`` in lifecycle state.
 
 Permitted P5.7 effect (no-switch only): ``NEUTRAL_OBSERVE`` → ``*_ARMED_NEUTRAL_START``
-for ``regime_post`` orientation — never ``LONG_ACTIVE`` / ``SHORT_ACTIVE`` from regime alone.
+for ``regime_post`` orientation — never ``LONG_ACTIVE`` &#47; ``SHORT_ACTIVE`` from regime alone.
 
 ### MECHANICAL_STEP
 
@@ -75,7 +75,7 @@ when host SideState is flat ``NEUTRAL_OBSERVE``.
 
 ## Restore / resume
 
-Lifecycle JSON must round-trip via ``lifecycle_to_dict_v1`` / ``parse_lifecycle_v1``.
+Lifecycle JSON must round-trip via ``lifecycle_to_dict_v1`` &#47; ``parse_lifecycle_v1``.
 Version or schema mismatch → fail-closed. Instrument binding mismatch → fail-closed.
 
 If ``initial_regime_orientation_seed_consumed == true`` and host presents flat
