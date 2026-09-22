@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR_6745 rebinds stale LIVE_EXECUTION_PORT_CONSTRUCTION_REMAINS_FORBIDDEN pointers in 29P handoff/EEA ladders to current_productive_first_real_blocker_v1 (envelope-bound single-use permit remainder); navigation/provenance only; ATLAS_AUTHORITY=NONE.
+- K1 opaque signing-handle pre-POST seam: Owner-GO-gated ephemeral macOS Keychain acquisition binds material_loaded=false K1 handle; standing REAL_KEYCHAIN_ACCESS_AUTHORIZED/IMPLEMENTED remain false; no permit/POST; ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=CURRENT_PRODUCTIVE_STALE_CONSTRUCTION_POINTER_REBIND_TO_ENVELOPE_BOUND_SINGLE_USE_PERMIT_BOUNDARY_PROOF_V1
+- modified_by=CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

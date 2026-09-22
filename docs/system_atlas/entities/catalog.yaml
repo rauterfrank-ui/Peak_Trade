@@ -7935,6 +7935,7 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; EPHEMERAL_OWNER_GO_GATED_OPAQUE_SIGNING_HANDLE_SEAM=true; STANDING_REAL_KEYCHAIN_ACCESS_AUTHORIZED=false; STANDING_REAL_KEYCHAIN_ACCESS_IMPLEMENTED=false; MATERIAL_LOADED=false; PERMIT_MINTED=false; ONE_SHOT_REAL_POST=false; POST_COUNT=0; EXTERNAL_EFFECT_AUTHORIZED=false; FIRST_REAL_BLOCKER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT; POST_GO_UNCONSUMED=true; MAX_POSITIONS_EFFECTIVE=1; owner=current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py|checkout_independent_credential_os_native_store_acquisition_v1.py.
     # CURRENT_PRODUCTIVE_STALE_CONSTRUCTION_POINTER_REBIND_TO_ENVELOPE_BOUND_SINGLE_USE_PERMIT_BOUNDARY_PROOF_V1 PR_6745: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; STALE_CONSTRUCTION_POINTERS_REMOVED=true; FIRST_REAL_BLOCKER_SOURCE=current_productive_first_real_blocker_v1; FIRST_REAL_BLOCKER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT; NEXT_OWNER_GO=OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1; FINAL_ORDER_ENVELOPE=PLAN_READY; STEP_29Q_STATUS=PLAN_ONLY; PERMIT_MINTED=false; CREDENTIAL_MATERIAL_LOADED=false; NETWORK_SESSION=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; MAX_POSITIONS_EFFECTIVE=1; owner=current_productive_29p_common_epoch_handoff_v1.py|current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py.
     # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; MV2_CAPITAL_CONTEXT_REBIND=current_productive_mv2_capital_context_rebind_v1; ENTER_LIVE_29P_SUCCESS_PATH_REBOUND=true; TYPED_29P_EQUITY_LIMITS_NO_HISTORICAL_FIXTURE_LITERALS=true; PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED_CLOSED=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; STEP_29Q_STATUS=PLAN_ONLY; MAX_POSITIONS_EFFECTIVE=1; owner=current_productive_mv2_capital_context_rebind_v1.py|current_productive_enter_live_29p_join_v1.py.
     # FULL_CORE_CURRENT_PRODUCTIVE_BOUNDED_ADVANCE_TO_NEXT_BLOCKER_V1 PR_6743: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; DF_MERGE_STABLE_EXECUTION_IDENTITY=assert_current_productive_29p_execution_identity_v1; DATA_SAFETY_ADMISSION_SATISFIED_IN_DF=true; DD_DE_DF_SIDE_EFFECT_FREE_RUNTIME_PROOF=true; HOST_JOIN_SIDE_EFFECT_FREE=true; NEXT_REAL_BLOCKER=OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; owner=current_productive_cap72_host_join_to_live_execution_port_v1.py|current_productive_29p_chain_baseline_contract_v1.py.
@@ -8095,7 +8096,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: CURRENT_PRODUCTIVE_DE_DD_EXECUTION_LADDER_BASELINE_AND_CONTRACT_CONSISTENCY_REPAIR_V1
+    modified_by: CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -8108,6 +8109,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_canonical_okx_post_body_serialize_v1.py
       - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py
       - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
       - src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py
       - src/ops/full_core_live_path_composition_root_v1/constants_v1.py

@@ -81,6 +81,15 @@ _EPHEMERAL_KEYCHAIN_ACCESS_CTX: ContextVar[bool] = ContextVar(
     default=False,
 )
 EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_PL_TF_002 = "PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1"
+EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_K1_OPAQUE_SIGNING_HANDLE_PRE_POST = (
+    "CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1"
+)
+ALLOWED_EPHEMERAL_KEYCHAIN_ACCESS_CONSUMERS_V1: frozenset[str] = frozenset(
+    {
+        EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_PL_TF_002,
+        EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_K1_OPAQUE_SIGNING_HANDLE_PRE_POST,
+    }
+)
 
 
 def ephemeral_keychain_access_is_active_v1() -> bool:
@@ -91,7 +100,7 @@ def ephemeral_keychain_access_is_active_v1() -> bool:
 def bounded_ephemeral_keychain_access_v1(*, consumer_id: str) -> Iterator[None]:
     """Grant Keychain lookup only inside this context. Never flips module constants."""
 
-    if str(consumer_id or "") != EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_PL_TF_002:
+    if str(consumer_id or "") not in ALLOWED_EPHEMERAL_KEYCHAIN_ACCESS_CONSUMERS_V1:
         _error("EPHEMERAL_KEYCHAIN_ACCESS_CONSUMER_FORBIDDEN")
     token: Token[bool] = _EPHEMERAL_KEYCHAIN_ACCESS_CTX.set(True)
     try:
