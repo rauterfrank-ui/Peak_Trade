@@ -5,17 +5,25 @@ Does not own instrument, side, or quantity. Does not call canary DEFAULT_*.
 
 from __future__ import annotations
 
+import re
+
 from src.governance.canonical_order_intent_v1 import IntentAction, IntentSide
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
     PATH_KIND,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_td_mode_and_order_environment_authority_v1 import (
+    ORDER_ENVIRONMENT_VOCABULARY_FROZEN,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import (
     CompositionStatusV1,
     CoreLiveExecutionIntentV1,
     VenuePlanCandidateV1,
 )
-from src.ops.okx_europe_adapter_lifecycle_contract_v0 import build_client_order_id
+from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+    CLIENT_ORDER_ID_MAX_LENGTH,
+    build_client_order_id,
+)
 from src.ops.section_11_12_8_actual_productive_testnet_campaign_run_start_v1.okx_response_mapper_v1 import (
     OkxResponseMapperError,
     build_venue_native_order_body_v1,
@@ -25,6 +33,27 @@ _ORDER_TYPE_MAP = {
     "MARKET_ONLY": "market",
     "LIMIT_ONLY": "limit",
 }
+
+
+def _identity_order_environment_clordid_v1(
+    *,
+    run_id: str,
+    intent_id: str,
+    environment: str,
+    sequence: int = 0,
+) -> str:
+    """Client order id namespace is the token itself. No prod/demo fold."""
+
+    run_short = re.sub(r"[^a-f0-9]", "", run_id.lower())[:8] or "00000000"
+    intent_short = re.sub(r"[^a-f0-9]", "", intent_id.lower())[:8] or "00000000"
+    compact = "".join(ch for ch in environment.strip() if ch.isalnum())
+    env_ns = compact[:8] or "unknown"
+    seq = format(sequence, "02x")[-2:]
+    candidate = f"ptokxe{env_ns}{run_short}{intent_short}{seq}"
+    if len(candidate) > CLIENT_ORDER_ID_MAX_LENGTH:
+        overflow = len(candidate) - CLIENT_ORDER_ID_MAX_LENGTH
+        candidate = candidate[overflow:]
+    return candidate[:CLIENT_ORDER_ID_MAX_LENGTH]
 
 
 class FullCoreVenueTranslationError(RuntimeError):
@@ -51,6 +80,7 @@ def translate_core_live_intent_to_venue_plan_v1(
     session_id: str,
     run_id: str,
     td_mode: str = "cross",
+    order_environment: str | None = None,
     injected_instrument_id: str | None = None,
     injected_side: str | None = None,
     injected_quantity: str | None = None,
@@ -77,13 +107,24 @@ def translate_core_live_intent_to_venue_plan_v1(
     order_type = _ORDER_TYPE_MAP.get(str(intent.order_type_policy), "")
     if not order_type:
         return CompositionStatusV1.DENY, ("UNSUPPORTED_ORDER_TYPE_POLICY",), None
-    clordid = build_client_order_id(
-        run_id=run_id,
-        session_id=session_id,
-        intent_id=intent.source_intent_id,
-        environment="simulation",
-        instrument_id=instrument,
-    )
+    if order_environment is None:
+        clordid = build_client_order_id(
+            run_id=run_id,
+            session_id=session_id,
+            intent_id=intent.source_intent_id,
+            environment="simulation",
+            instrument_id=instrument,
+        )
+        bound_environment = ""
+    else:
+        if order_environment not in ORDER_ENVIRONMENT_VOCABULARY_FROZEN:
+            return CompositionStatusV1.DENY, ("ORDER_ENVIRONMENT_MODE_UNKNOWN",), None
+        clordid = _identity_order_environment_clordid_v1(
+            run_id=run_id,
+            intent_id=intent.source_intent_id,
+            environment=order_environment,
+        )
+        bound_environment = order_environment
     try:
         body = build_venue_native_order_body_v1(
             client_order_id=clordid,
@@ -115,5 +156,6 @@ def translate_core_live_intent_to_venue_plan_v1(
         side_source="STEP_29Q_CANONICAL_ORDER_INTENT",
         instrument_source="CAP_2_4_BOUND_INSTRUMENT",
         path_kind=PATH_KIND,
+        environment=bound_environment,
     )
     return CompositionStatusV1.PASS, ("PASS",), plan

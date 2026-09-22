@@ -426,6 +426,7 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
             session_id="current-productive-dj-session",
             run_id="current-productive-dj-run",
             composed_epoch=package_started,
+            execution_mode="LIVE",
         )
         decision_provenance = ",".join(reasons) if reasons else "COMPOSED"
         if status is CompositionStatusV1.PASS and plan is not None:

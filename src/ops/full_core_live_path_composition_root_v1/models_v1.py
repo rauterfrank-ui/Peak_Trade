@@ -133,6 +133,7 @@ class VenuePlanCandidateV1:
     side_source: str
     instrument_source: str
     path_kind: str
+    environment: str = ""
 
 
 @dataclass(frozen=True)

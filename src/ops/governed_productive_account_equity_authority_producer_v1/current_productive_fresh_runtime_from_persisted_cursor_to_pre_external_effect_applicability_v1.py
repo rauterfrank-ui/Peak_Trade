@@ -983,6 +983,7 @@ def execute_current_productive_fresh_runtime_from_persisted_cursor_to_pre_extern
             session_id="current-productive-du-session",
             run_id="current-productive-du-run",
             composed_epoch=package_started,
+            execution_mode="LIVE",
         )
         decision_provenance = ",".join(reasons) if reasons else cycle_provenance
         if status is CompositionStatusV1.PASS and plan is not None:

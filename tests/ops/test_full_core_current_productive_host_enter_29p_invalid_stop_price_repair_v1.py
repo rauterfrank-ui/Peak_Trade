@@ -238,6 +238,7 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
         session_id="host-enter-29p-repair-session",
         run_id="host-enter-29p-repair-run",
         composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
     assert plan is not None
@@ -273,6 +274,7 @@ def test_armed_replay_still_reaches_envelope_without_permit(
         session_id="armed-replay-29p-repair-session",
         run_id="armed-replay-29p-repair-run",
         composed_epoch="2026-09-16T00:00:00Z",
+        execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
     assert plan is not None

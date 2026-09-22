@@ -2,12 +2,13 @@
 
 Executable representation of the Master Runbook subsection
 ``CURRENT Venue-Plan tdMode and Order-Environment Authority``.
-This module does not bind the productive venue-plan function.
+The CURRENT productive venue-plan binder consumes these resolvers.
+This module does not mint a permit, consume POST-GO, or admit live trading.
 
 EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY
 NOT_A_HISTORICAL_PREEXISTING_FACT=true
 RUNTIME_AUTHORIZATION_EFFECT=NONE
-VENUE_PLAN_BINDING_IMPLEMENTED=false
+VENUE_PLAN_BINDING_IMPLEMENTED=true
 
 Existing helper tdMode pins on other modules are not imported and are not
 retroactively this authority. U01 account-mode authority remains separate.
@@ -19,7 +20,7 @@ from __future__ import annotations
 EPISTEMIC_CLASS = "NEW_OWNER_AUTHORITY"
 THIS_SLICE = "CURRENT_PRODUCTIVE_VENUE_PLAN_TD_MODE_AND_ORDER_ENVIRONMENT_AUTHORITY_V1"
 NOT_A_HISTORICAL_PREEXISTING_FACT = True
-VENUE_PLAN_BINDING_IMPLEMENTED = False
+VENUE_PLAN_BINDING_IMPLEMENTED = True
 RUNTIME_AUTHORIZATION_EFFECT = "NONE"
 EXTERNAL_EFFECT_AUTHORIZED_BY_THIS_MODULE = False
 LIVE_CAPABILITY_COMPLETE_BY_THIS_MODULE = False
