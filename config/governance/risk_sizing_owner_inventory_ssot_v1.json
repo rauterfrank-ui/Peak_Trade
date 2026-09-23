@@ -45,7 +45,7 @@
     "OPERATOR_FATE_IMPLEMENTATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
     "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
-    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 2,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 4,
     "FATE_IMPLEMENTATION_EXECUTED": false
   },
   "canonical_status": {
@@ -90,7 +90,7 @@
     "runtime_rewire_performed": false,
     "fate_implementation_semantics_defined": true,
     "fate_implementation_executed": false,
-    "per_bypass_implementation_executed_count": 2,
+    "per_bypass_implementation_executed_count": 4,
     "scoped_operator_go": true,
     "contract_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
     "s1_keep_parallel_fate_implementation_v1": {
@@ -99,6 +99,14 @@
       "bypass_ids_implemented_sorted": [
         "BYPASS_CORE_POSITION_SIZER",
         "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS"
+      ]
+    },
+    "s2_governance_exclude_fate_implementation_v1": {
+      "workpackage_id": "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1",
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "bypass_ids_implemented_sorted": [
+        "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+        "BYPASS_LIVE_SHADOW_POSITION_FRACTION"
       ]
     }
   },
@@ -264,7 +272,10 @@
       "target_classification": "LEGACY_POSITION_SIZER_CALC",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE"
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE"
     },
     {
       "id": "BYPASS_CORE_POSITION_SIZER",
@@ -306,7 +317,10 @@
       "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE"
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE"
     },
     {
       "id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
@@ -583,7 +597,10 @@
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED",
         "capability_note": "Classic Backtest default uses calc_position_size/PositionSizer without CRS. Alternative size route only; does not authorize live/orders.",
-        "inventory_pin_reason": "Inventory-pinned classic-backtest CRS bypass; drift freeze only — no rewire/decommission."
+        "inventory_pin_reason": "Inventory-pinned classic-backtest CRS bypass; drift freeze only — no rewire/decommission.",
+        "fate_implementation_status": "COMPLETE",
+        "fate_implementation_executed": true,
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE"
       },
       {
         "stable_id": "BYPASS_CORE_POSITION_SIZER",
@@ -670,7 +687,10 @@
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED",
         "capability_note": "Shadow session assigns size from position_fraction without CRS. Companion testnet_profiles validates config only. Alternative size route only; does not authorize live/orders.",
-        "inventory_pin_reason": "Inventory-pinned live/shadow position_fraction CRS bypass; drift freeze only — no rewire/decommission."
+        "inventory_pin_reason": "Inventory-pinned live/shadow position_fraction CRS bypass; drift freeze only — no rewire/decommission.",
+        "fate_implementation_status": "COMPLETE",
+        "fate_implementation_executed": true,
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE"
       },
       {
         "stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
@@ -727,8 +747,8 @@
       "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
       "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED",
       "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED",
-      "risk_sizing_bypass_fate_implementation_contract_v1": "S1_KEEP_PARALLEL_TWO_OF_FIVE_IMPLEMENTED",
-      "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_PROVENANCE_PINS"
+      "risk_sizing_bypass_fate_implementation_contract_v1": "S1_AND_S2_FOUR_OF_FIVE_IMPLEMENTED",
+      "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_AND_S2_GOVERNANCE_EXCLUDE_PROVENANCE_PINS"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",

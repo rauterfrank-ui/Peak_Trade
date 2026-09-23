@@ -156,7 +156,14 @@
       "callee_symbol": "calc_position_size",
       "owner_id": "src.risk.position_sizer",
       "owner_source_path": "src/risk/position_sizer.py",
-      "reachability": "REACHABLE_PRODUCTIVE"
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "governance_exclude_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+        "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "edge_id": "EDGE_ENGINE_GET_TARGET_POSITION",
@@ -191,7 +198,15 @@
       "callee_symbol": "calc_position_size",
       "owner_id": "src.risk.position_sizer",
       "owner_source_path": "src/risk/position_sizer.py",
-      "reachability": "REACHABLE_PRODUCTIVE"
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "governance_exclude_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+        "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+        "companion_caller_shares_exclusion_provenance_class": true,
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "edge_id": "EDGE_FEEDBACK_GET_TARGET_POSITION",
@@ -251,7 +266,15 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "calc_position_size",
-      "target_classification": "LEGACY_POSITION_SIZER_CALC"
+      "target_classification": "LEGACY_POSITION_SIZER_CALC",
+      "fate_implementation_v1": {
+        "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+        "fate_implementation_status": "COMPLETE",
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "canonical_for_mv2_intent_bound_scope": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "bypass_stable_id": "BYPASS_CORE_POSITION_SIZER",
@@ -293,7 +316,16 @@
       "source_path": "src/live/shadow_session.py",
       "caller_symbol": "ShadowPaperSession.step_once",
       "target_symbol": null,
-      "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT"
+      "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT",
+      "fate_implementation_v1": {
+        "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+        "fate_implementation_status": "COMPLETE",
+        "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "canonical_for_mv2_intent_bound_scope": false,
+        "fraction_to_units_conversion_resolved": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
