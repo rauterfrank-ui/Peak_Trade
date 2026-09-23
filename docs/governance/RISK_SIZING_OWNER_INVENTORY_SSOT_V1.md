@@ -38,6 +38,8 @@ ORDERS_ENABLED=false
 RUNTIME_BRIDGE_ACTIVATED=false
 ECONOMIC_GATE_REMAINS_FAIL_CLOSED=true
 AUTHORITY_EFFECT=NONE
+FATE_VOCABULARY_SOURCE=config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json
+OPERATOR_FATE_ADJUDICATION_EXECUTED=false
 ```
 
 Current restored-baseline overlay (this inventory snapshot is preserved; it
@@ -268,5 +270,7 @@ Risk/Sizing inventory and the owner/bypass surface-contract freeze are **DONE**.
 **Related (separate, non-mutating):** [`RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md`](RISK_SIZING_CALLER_OWNER_TOPOLOGY_CONTRACT_V0.md) / [`config/governance/risk_sizing_caller_owner_topology_contract_v0.json`](../../config/governance/risk_sizing_caller_owner_topology_contract_v0.json) freezes caller→owner topology edges without assigning authority or changing sizing semantics.
 
 **Related (separate, non-mutating):** [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) / [`config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json`](../../config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json) freezes post-owner consumption&#47;overwrite classes without consolidating owners (`SEMANTICS_FREE_CONTRACT_SLICE_AVAILABLE=true`, `SEMANTICS_FREE_OWNER_CONSOLIDATION_AVAILABLE=false`).
+
+**Related (separate, non-mutating):** [`RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md`](RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md) / [`config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json`](../../config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json) freezes allowed `operator_fate_adjudication` tokens and `SCOPED_OPERATOR_GO` decision authority only; all five CURRENT bypass fates remain `UNKNOWN` (`OPERATOR_FATE_ADJUDICATION_EXECUTED=false`).
 
 Legacy Order Intent inventory / decision-owner / direct-submission surface contracts remain separate and unchanged (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).
