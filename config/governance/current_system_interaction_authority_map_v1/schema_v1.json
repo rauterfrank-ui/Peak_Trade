@@ -1,0 +1,260 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "current_system_interaction_authority_map_v1",
+  "title": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "map_id",
+    "schema_version",
+    "authority_effect",
+    "map_authority",
+    "baseline_sha",
+    "normalize_unknown_to_current",
+    "domains",
+    "edges",
+    "loops",
+    "parameter_families",
+    "open_epistemic_records"
+  ],
+  "properties": {
+    "map_id": {"const": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"},
+    "schema_version": {"const": "1"},
+    "authority_effect": {"const": "NONE"},
+    "map_authority": {"const": "NONE"},
+    "baseline_sha": {"type": "string", "minLength": 40},
+    "normalize_unknown_to_current": {"const": false},
+    "domains": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/domain"}
+    },
+    "edges": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/edge"}
+    },
+    "loops": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/loop"}
+    },
+    "parameter_families": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/parameter_family"}
+    },
+    "open_epistemic_records": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/open_record"}
+    }
+  },
+  "$defs": {
+    "epistemic_status": {
+      "enum": [
+        "PROVEN_CURRENT",
+        "PARTIAL",
+        "RESEARCH_ONLY",
+        "DORMANT",
+        "FORBIDDEN",
+        "UNKNOWN",
+        "CONFLICTING"
+      ]
+    },
+    "authority_class": {
+      "enum": [
+        "CANONICAL_AUTHORITY",
+        "NAVIGATION_INDEX",
+        "NONE",
+        "PROVEN_CURRENT",
+        "PARTIAL",
+        "RESEARCH_ONLY",
+        "DORMANT",
+        "FORBIDDEN",
+        "UNKNOWN",
+        "CONFLICTING"
+      ]
+    },
+    "semantic_class": {
+      "enum": [
+        "CURRENT_AUTHORITY",
+        "CURRENT_DYNAMIC",
+        "CANONICAL_MODEL_SEMANTIC",
+        "HISTORICAL_DEFAULT",
+        "HISTORICAL_EVIDENCE",
+        "LEGACY_TECHNICAL",
+        "RESEARCH_ONLY",
+        "UNKNOWN",
+        "CONFLICTING"
+      ]
+    },
+    "tri_state": {"enum": ["TRUE", "FALSE", "UNKNOWN"]},
+    "ref_list": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "domain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "tier",
+        "role",
+        "canonical_owner_ref",
+        "authority_class",
+        "lifecycle",
+        "status",
+        "runbook_refs",
+        "contract_refs",
+        "code_refs",
+        "evidence_refs"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "tier": {"enum": ["FIRST_CLASS", "INTERMEDIATE"]},
+        "role": {"type": "string", "minLength": 1},
+        "canonical_owner_ref": {"type": "string", "minLength": 1},
+        "authority_class": {"$ref": "#/$defs/authority_class"},
+        "lifecycle": {"type": "string", "minLength": 1},
+        "status": {"$ref": "#/$defs/epistemic_status"},
+        "runbook_refs": {"$ref": "#/$defs/ref_list"},
+        "contract_refs": {"$ref": "#/$defs/ref_list"},
+        "code_refs": {"$ref": "#/$defs/ref_list"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "from_domain",
+        "to_domain",
+        "flow_type",
+        "contract_or_payload",
+        "producer",
+        "consumer",
+        "authority_effect",
+        "decision_effect",
+        "direct_or_indirect",
+        "lifecycle",
+        "identity_binding",
+        "temporal_binding",
+        "version_binding",
+        "provenance_binding",
+        "promotion_required",
+        "fail_closed",
+        "evidence_refs"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "from_domain": {"type": "string", "minLength": 1},
+        "to_domain": {"type": "string", "minLength": 1},
+        "flow_type": {
+          "enum": [
+            "DECISION_FLOW",
+            "DATA_FLOW",
+            "AUTHORITY_FLOW",
+            "EVIDENCE_FLOW",
+            "PROMOTION_FLOW",
+            "CONSTRAINT_FLOW",
+            "PRESENTATION_FLOW",
+            "BACKFLOW"
+          ]
+        },
+        "contract_or_payload": {"type": "string", "minLength": 1},
+        "producer": {"type": "string", "minLength": 1},
+        "consumer": {"type": "string", "minLength": 1},
+        "authority_effect": {"type": "string", "minLength": 1},
+        "decision_effect": {"type": "string", "minLength": 1},
+        "direct_or_indirect": {"enum": ["DIRECT", "INDIRECT", "UNKNOWN"]},
+        "lifecycle": {"$ref": "#/$defs/epistemic_status"},
+        "identity_binding": {"type": "string", "minLength": 1},
+        "temporal_binding": {"type": "string", "minLength": 1},
+        "version_binding": {"type": "string", "minLength": 1},
+        "provenance_binding": {"type": "string", "minLength": 1},
+        "promotion_required": {"$ref": "#/$defs/tri_state"},
+        "fail_closed": {"$ref": "#/$defs/tri_state"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "loop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "members",
+        "purpose",
+        "forward_edges",
+        "return_edges",
+        "closure_status",
+        "productive_effect",
+        "authority_boundary",
+        "promotion_boundary",
+        "external_effect",
+        "evidence_refs"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "members": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "purpose": {"type": "string", "minLength": 1},
+        "forward_edges": {"type": "array", "items": {"type": "string"}},
+        "return_edges": {"type": "array", "items": {"type": "string"}},
+        "closure_status": {"$ref": "#/$defs/epistemic_status"},
+        "productive_effect": {"type": "string", "minLength": 1},
+        "authority_boundary": {"type": "string", "minLength": 1},
+        "promotion_boundary": {"type": "string", "minLength": 1},
+        "external_effect": {"type": "string", "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "parameter_family": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "family_id",
+        "semantic_class",
+        "source_ref",
+        "canonical_owner_ref",
+        "current_consumer_ref",
+        "current_decision_effect",
+        "authority_status",
+        "historical_default_status",
+        "lifecycle",
+        "optimization_surface_status",
+        "learning_evidence_status",
+        "productive_seam_status",
+        "evidence_refs",
+        "conflicts"
+      ],
+      "properties": {
+        "family_id": {"type": "string", "minLength": 1},
+        "semantic_class": {"$ref": "#/$defs/semantic_class"},
+        "source_ref": {"type": "string", "minLength": 1},
+        "canonical_owner_ref": {"type": "string", "minLength": 1},
+        "current_consumer_ref": {"type": "string", "minLength": 1},
+        "current_decision_effect": {"type": "string", "minLength": 1},
+        "authority_status": {"type": "string", "minLength": 1},
+        "historical_default_status": {"type": "string", "minLength": 1},
+        "lifecycle": {"type": "string", "minLength": 1},
+        "optimization_surface_status": {"type": "string", "minLength": 1},
+        "learning_evidence_status": {"type": "string", "minLength": 1},
+        "productive_seam_status": {"type": "string", "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"},
+        "conflicts": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "open_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "epistemic_class", "statement", "evidence_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "epistemic_class": {"enum": ["UNKNOWN", "CONFLICTING", "PARTIAL"]},
+        "statement": {"type": "string", "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    }
+  }
+}
