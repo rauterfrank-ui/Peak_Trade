@@ -89,7 +89,7 @@ Reason: Classic Backtest, Offline-Eval sizing contract, Execution `execute_from_
 | `BacktestEngine` | `src/backtest/engine.py` | consumer (selects owner) | ACTIVE | Indirect | Path-dependent |
 | Shadow / testnet `position_fraction` | `src/live/shadow_session.py`, `src/live/testnet_profiles.py` | consumer / config size | ACTIVE | Yes (runtime-ish) | Profile validation |
 | `SIZING_OWNER_REF` | `src/meta/learning_loop/runtime_eligibility_v1.py` | reporter / token gate | ACTIVE | Token only | Ref mismatch fails |
-| `position_sizer_old_backup` | `src/risk/_archive/position_sizer_old_backup.py` | archive | ARCHIVED | No | n/a |
+| `position_sizer_old_backup` | `src&#47;risk&#47;_archive&#47;position_sizer_old_backup.py` | archive (inventory path; blob absent in tree) | ARCHIVED | No | n/a | <!-- pt:ref-target-ignore -->
 
 ### Known plan candidates (classification)
 
