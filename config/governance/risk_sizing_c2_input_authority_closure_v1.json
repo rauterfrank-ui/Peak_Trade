@@ -5,7 +5,7 @@
   "schema_version": "risk_sizing_c2_input_authority_closure_schema_v1",
   "ssot_doc": "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md",
   "inventory_date": "2026-09-23",
-  "pinned_against_main_sha": "32cf49502d4163b165f31860e54910a756eff2e5",
+  "pinned_against_main_sha": "c0995309d880cea2c470a434d9a0cb0a7aaa0b38",
   "workpackage_id": "BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1",
   "semantics": "C2_COMPANION_CONVERSION_INPUT_AUTHORITY_CENSUS_AND_CLOSURE_VERDICT_ONLY_NO_RUNTIME_NO_CONVERSION_MATH",
   "decision_authority": {
@@ -126,7 +126,9 @@
         "current_dynamic_input_state": "Companion path: no bound equity input",
         "historical_technical_default_fixture": "Multiple simulation/transport candidates pinned NOT_AUTHORITY"
       },
-      "c2_authority_binding_implemented": false
+      "c2_authority_binding_implemented": false,
+      "domain_authority_resolution_ref": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+      "domain_authority_resolution_final_status": "CONFLICTING"
     },
     "REFERENCE_PRICE": {
       "domain": "REFERENCE_PRICE",
@@ -150,7 +152,9 @@
         "current_dynamic_input_state": "candle.close used as session data input; not elevated to conversion authority",
         "historical_technical_default_fixture": "Offline replay default price simulation-only"
       },
-      "c2_authority_binding_implemented": false
+      "c2_authority_binding_implemented": false,
+      "domain_authority_resolution_ref": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+      "domain_authority_resolution_final_status": "UNKNOWN"
     },
     "INSTRUMENT_QUANTITY_METADATA": {
       "domain": "INSTRUMENT_QUANTITY_METADATA",
@@ -174,7 +178,9 @@
         "current_dynamic_input_state": "No authoritative metadata handoff on Companion path",
         "historical_technical_default_fixture": "Offline/simulation instrument snapshots not elevatable"
       },
-      "c2_authority_binding_implemented": false
+      "c2_authority_binding_implemented": false,
+      "domain_authority_resolution_ref": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+      "domain_authority_resolution_final_status": "UNRESOLVED"
     }
   },
   "cross_cutting_companion_binding_gates": {
@@ -236,6 +242,7 @@
     "risk_sizing_productive_input_provenance_binding_v1": "C2_CENSUS_ALIGNS_PROVENANCE_RECORDS_UNCHANGED_MEANING",
     "risk_sizing_authority_decision_contract_freeze_v1": "INPUT_DOMAIN_SEMANTICS_UNCHANGED_OWNERS_REMAIN_UNRESOLVED",
     "risk_sizing_bypass_fate_implementation_contract_v1": "B05_FATE_CLOSEOUT_UNCHANGED_C2_INPUT_AUTHORITIES_UNRESOLVED",
-    "risk_sizing_owner_inventory_ssot_v1": "CONVERSION_NOT_READY_REASONS_UPDATED_WITH_C2_CENSUS_REF"
+    "risk_sizing_owner_inventory_ssot_v1": "CONVERSION_NOT_READY_REASONS_UPDATED_WITH_C2_CENSUS_REF",
+    "risk_sizing_c2_domain_authority_resolution_v1": "FORENSIC_DOMAIN_RESOLUTION_ALIGNS_CENSUS_VERDICTS_NO_RUNTIME"
   }
 }

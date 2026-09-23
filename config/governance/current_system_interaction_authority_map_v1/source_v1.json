@@ -1497,8 +1497,9 @@
     {
       "id": "b05_vs_singular_risk_owner",
       "epistemic_class": "CONFLICTING",
-      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). DIRECT_SUBMISSION_COUNT=4 remains distinct from CANONICAL_BYPASS_COUNT=5. Bypass operator_fate_adjudication vocabulary is frozen and per-ID fates are operator-adjudicated (inventory-only pins; RUNTIME_EFFECT=NONE; consolidation NOT_STARTED). Bypass fate implementation semantics are machine-defined; S1 KEEP_PARALLEL complete for BYPASS_CORE_POSITION_SIZER and BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS; S2 GOVERNANCE_EXCLUDE complete for BYPASS_CLASSIC_BACKTEST_DEFAULT and BYPASS_LIVE_SHADOW_POSITION_FRACTION (system-economic size evidence authority claims excluded; reachability unchanged); S3 RESEARCH_OR_OFFLINE_SCOPE complete for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT (offline_economic_evaluation scope only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; reachability unchanged). FATE_IMPLEMENTATION_EXECUTED=true globally (5/5 per-bypass S0 completion); B05_FATE_PHASE_STATUS=CLOSED. C2 (Companion conversion-input authorities): three required input families censused; C2_STATUS=UNRESOLVED; C2_INPUT_AUTHORITIES=UNRESOLVED; no PROVEN_CURRENT Companion-path bindings; CONVERSION_READY=false. Does not resolve repo-wide canonical owner or consolidation. Map AUTHORITY=NONE.",
+      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). DIRECT_SUBMISSION_COUNT=4 remains distinct from CANONICAL_BYPASS_COUNT=5. Bypass operator_fate_adjudication vocabulary is frozen and per-ID fates are operator-adjudicated (inventory-only pins; RUNTIME_EFFECT=NONE; consolidation NOT_STARTED). Bypass fate implementation semantics are machine-defined; S1 KEEP_PARALLEL complete for BYPASS_CORE_POSITION_SIZER and BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS; S2 GOVERNANCE_EXCLUDE complete for BYPASS_CLASSIC_BACKTEST_DEFAULT and BYPASS_LIVE_SHADOW_POSITION_FRACTION (system-economic size evidence authority claims excluded; reachability unchanged); S3 RESEARCH_OR_OFFLINE_SCOPE complete for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT (offline_economic_evaluation scope only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; reachability unchanged). FATE_IMPLEMENTATION_EXECUTED=true globally (5/5 per-bypass S0 completion); B05_FATE_PHASE_STATUS=CLOSED. C2 (Companion conversion-input authorities): three required input families censused (#6760); forensic domain authority resolution (BOUNDED_WP_C2_DOMAIN_AUTHORITY_RESOLUTION_V1): ACCOUNT_EQUITY CONFLICTING; REFERENCE_PRICE UNKNOWN; INSTRUMENT UNRESOLVED; zero Companion-path bindings implemented; C2_STATUS=UNRESOLVED; CONVERSION_READY=false. Does not resolve repo-wide canonical owner or consolidation. Map AUTHORITY=NONE.",
       "evidence_refs": [
+        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
         "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
@@ -1653,10 +1654,11 @@
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Account-equity mapping is marked proven while the venue number is unbound and the owner is unresolved.",
+      "statement": "Account-equity mapping is marked proven while the venue number is unbound and the owner is unresolved; C2 forensic resolution keeps ACCOUNT_EQUITY CONFLICTING on Companion path (Full-Core availEq mapping not transferable).",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
       ]
     },
     {
