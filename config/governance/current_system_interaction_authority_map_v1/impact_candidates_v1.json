@@ -1,0 +1,31 @@
+{
+  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+  "authority_effect": "NONE",
+  "exhaustive": false,
+  "selector_modes_are_map_impact_authority": false,
+  "surfaces": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/governed_futures_universe_producer_v1/",
+    "src/ops/productive_futures_ranking_producer_v1/",
+    "src/ops/single_selected_future_policy_v1/",
+    "src/ops/single_selected_future_runtime_binding_v1/",
+    "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/",
+    "src/ops/decision_config_ownership_and_consumer_closure_v1/",
+    "config/ops/canonical_decision_runtime_config_v1.toml",
+    "src/governance/capital_risk_sizing_v1.py",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "src/ops/portfolio_capital_reservation_budget_v1/",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/",
+    "src/experiments/canonical_optimization_universe_v1.py",
+    "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
+    "src/governance/optimization_proposal_governance_ingress_v1.py",
+    "src/governance/explicit_productive_authorization_v1.py",
+    "src/governance/governed_productive_configuration_v1.py",
+    "src/governance/authorized_productive_parameter_seam_v1.py",
+    "src/learning/deterministic_decision_outcome_v0/",
+    "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py",
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/"
+  ]
+}
