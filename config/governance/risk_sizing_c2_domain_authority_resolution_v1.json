@@ -303,7 +303,8 @@
     "risk_sizing_authority_decision_contract_freeze_v1": "OWNERS_REMAIN_UNRESOLVED",
     "risk_sizing_governed_producer_observation_adapter_contract_v1": "NO_PRODUCTIVE_ADAPTER_NO_AUTHORITY_BINDING",
     "risk_sizing_bypass_fate_implementation_contract_v1": "B05_FATE_CLOSEOUT_UNCHANGED",
-    "risk_sizing_c2_current_productive_input_authority_closure_v2": "PRODUCTIVE_LINEAGE_EXTENDS_V1_WITHOUT_VERDICT_UPGRADE"
+    "risk_sizing_c2_current_productive_input_authority_closure_v2": "PRODUCTIVE_LINEAGE_EXTENDS_V1_WITHOUT_VERDICT_UPGRADE",
+    "risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1": "UPSTREAM_BLOCKER_CENSUS_EXTENDS_V2"
   },
   "drift_policy": {
     "flip_conversion_ready": "FAIL",
