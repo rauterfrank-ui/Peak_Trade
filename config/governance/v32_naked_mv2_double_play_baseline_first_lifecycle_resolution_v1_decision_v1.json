@@ -1,0 +1,20 @@
+{
+  "artifact_class": "V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_LIFECYCLE_RESOLUTION_DECISION_V1",
+  "workpackage_id": "V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1",
+  "bound_origin_main_sha": "9cac7077475e23340d9ddc7ed085b6bfb46d4eb4",
+  "predecessor_closed": "OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_V1",
+  "normative_spec": "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md",
+  "owner_module": "trading.master_v2.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1",
+  "naked_baseline_owner": "trading.master_v2.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.composite_baseline_first_binding_v1",
+  "passive_evidence_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.evidence_v1",
+  "baseline_completion_semantics": "COMPOSITE_GOVERNANCE_PREDECESSOR_AND_PASSIVE_LAYER_EVIDENCE_AND_RESEARCH_COUNTERFACTUAL_BASELINE_NOT_RUNTIME_CUTOVER",
+  "new_baseline_gate_runtime_authority": false,
+  "trading_decision_authority_changed": false,
+  "optimization_baseline_mutation": false,
+  "self_learning_baseline_mutation": false,
+  "external_effect_authorized": false,
+  "p5_authority_cutover_authorized": false,
+  "expected_d24_d27_verdict": "PARTIAL_CURRENT",
+  "gap_05_status_after_wp": "PARTIAL_CURRENT",
+  "owner_decision_required_for_productive_cutover": true
+}
