@@ -11,6 +11,11 @@ INVENTORY_ONLY=true
 CONSOLIDATION_STATUS=NOT_STARTED
 RISK_SIZING_CLAIMED_CONSOLIDATED=false
 CANONICAL_RISK_SIZING_OWNER=UNRESOLVED
+SINGULAR_REPO_WIDE_OWNER_REQUIRED=false
+MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER=src.governance.capital_risk_sizing_v1
+STEP29P_ADMISSIBILITY_AUTHORITY_BOUNDARY=capital_risk_admissibility_owner_v1
+PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY=portfolio_capital_reservation_budget_v1
+CONVERSION_READY=false
 CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE=src.governance.capital_risk_sizing_v1
 PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT=5
 DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS=true
@@ -84,7 +89,7 @@ Reason: Classic Backtest, Offline-Eval sizing contract, Execution `execute_from_
 | `BacktestEngine` | `src/backtest/engine.py` | consumer (selects owner) | ACTIVE | Indirect | Path-dependent |
 | Shadow / testnet `position_fraction` | `src/live/shadow_session.py`, `src/live/testnet_profiles.py` | consumer / config size | ACTIVE | Yes (runtime-ish) | Profile validation |
 | `SIZING_OWNER_REF` | `src/meta/learning_loop/runtime_eligibility_v1.py` | reporter / token gate | ACTIVE | Token only | Ref mismatch fails |
-| `position_sizer_old_backup` | `src/risk/_archive/position_sizer_old_backup.py` | archive | ARCHIVED | No | n/a |
+| `position_sizer_old_backup` | `src&#47;risk&#47;_archive&#47;position_sizer_old_backup.py` | archive (inventory path; blob absent in tree) | ARCHIVED | No | n/a | <!-- pt:ref-target-ignore -->
 
 ### Known plan candidates (classification)
 

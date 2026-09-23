@@ -31,13 +31,36 @@
     "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_SEMANTICS": "INVENTORY_ONLY_NOT_AUTHORITY_ASSIGNMENT",
     "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_IS_NOT_AUTHORITY_ASSIGNMENT": true,
     "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_PROMOTE_REPO_WIDE_OWNER": true,
-    "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_CONSOLIDATE": true
+    "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_DOES_NOT_CONSOLIDATE": true,
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED": false,
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
+    "STEP29P_ADMISSIBILITY_AUTHORITY_BOUNDARY": "capital_risk_admissibility_owner_v1",
+    "PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY": "portfolio_capital_reservation_budget_v1",
+    "CONVERSION_READY": false
   },
   "canonical_status": {
     "repo_wide": "UNRESOLVED",
-    "reason": "Multiple productive size decision owners coexist. CRS is unique only for MV2/governance/intent-bound paths. OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT remains open and requires Operator-GO. Classic backtest, offline-eval contract, execution pipeline, and live/shadow fraction paths decide size without CRS.",
+    "singular_repo_wide_owner_required": false,
+    "reason": "Multiple productive size decision owners coexist. CRS is adjudicated quantity-algebra owner for MV2/governance/intent-bound scope only (not repo-wide). Bypass paths remain parallel/non-canonical for that scope until separate Operator-GO. OBL_B05 bypass fate and C2 input closure remain open.",
     "mv2_governance_chain_owner": "src.governance.capital_risk_sizing_v1",
-    "mv2_scope_status": "RESOLVED_TO_CRS"
+    "mv2_scope_status": "RESOLVED_TO_CRS",
+    "mv2_intent_bound_quantity_algebra_owner_adjudicated": true
+  },
+  "owner_topology_adjudication_v1": {
+    "workpackage_id": "WP_B05_OWNER_TOPOLOGY_OPERATOR_ADJUDICATION_V1",
+    "adjudicated_against_main_sha": "124fea4b35e8b9deb83815bb8e78c57476b6243a",
+    "authority_effect": "NONE",
+    "runtime_rewire_performed": false,
+    "singular_repo_wide_owner_required": false,
+    "mv2_intent_bound_quantity_algebra_owner": "src.governance.capital_risk_sizing_v1",
+    "mv2_intent_bound_quantity_algebra_owner_scope": "mv2_governance_intent_bound",
+    "step29p_admissibility_authority_boundary": "capital_risk_admissibility_owner_v1",
+    "portfolio_reservation_authority_boundary": "portfolio_capital_reservation_budget_v1",
+    "conversion_ready": false,
+    "conversion_not_ready_reasons": [
+      "account_equity reference_price instrument_metadata authority owners remain UNRESOLVED",
+      "five bypass paths remain reachable parallel non-canonical routes with operator_fate_adjudication UNKNOWN"
+    ]
   },
   "productive_decision_owners": [
     {
@@ -55,7 +78,9 @@
       "fail_closed": true,
       "authority_effect": "NONE",
       "runtime_effect": "NONE",
-      "notes": "CRS quantity chain for canonical MV2/governance paths. Declares CANONICAL_OWNER=src.governance.capital_risk_sizing_v1 for that scope; does not erase parallel classic/execution owners."
+      "notes": "CRS quantity chain for canonical MV2/governance paths. Declares CANONICAL_OWNER=src.governance.capital_risk_sizing_v1 for that scope; does not erase parallel classic/execution owners.",
+      "mv2_intent_bound_quantity_algebra_owner_adjudicated": true,
+      "repo_wide_canonical_risk_sizing_owner": "UNRESOLVED"
     },
     {
       "owner_id": "src.risk.position_sizer",
@@ -203,7 +228,10 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "calc_position_size",
-      "target_classification": "LEGACY_POSITION_SIZER_CALC"
+      "target_classification": "LEGACY_POSITION_SIZER_CALC",
+      "canonical_for_mv2_intent_bound_scope": false,
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "operator_fate_adjudication": "UNKNOWN"
     },
     {
       "id": "BYPASS_CORE_POSITION_SIZER",
@@ -212,7 +240,10 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "BasePositionSizer.get_target_position",
-      "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION"
+      "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION",
+      "canonical_for_mv2_intent_bound_scope": false,
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "operator_fate_adjudication": "UNKNOWN"
     },
     {
       "id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
@@ -221,7 +252,10 @@
       "source_path": "src/execution/pipeline.py",
       "caller_symbol": "ExecutionPipeline.execute_from_signals",
       "target_symbol": "ExecutionPipeline.execute_from_signals",
-      "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE"
+      "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE",
+      "canonical_for_mv2_intent_bound_scope": false,
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "operator_fate_adjudication": "UNKNOWN"
     },
     {
       "id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
@@ -230,7 +264,10 @@
       "source_path": "src/live/shadow_session.py",
       "caller_symbol": "ShadowPaperSession.step_once",
       "target_symbol": null,
-      "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT"
+      "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT",
+      "canonical_for_mv2_intent_bound_scope": false,
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "operator_fate_adjudication": "UNKNOWN"
     },
     {
       "id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
@@ -239,7 +276,10 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "size_offline_evaluation_entry_v1",
-      "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT"
+      "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT",
+      "canonical_for_mv2_intent_bound_scope": false,
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "operator_fate_adjudication": "UNKNOWN"
     }
   ],
   "default_conflicts": [
