@@ -9,9 +9,10 @@
   "workpackage_id": "WP_B05_BYPASS_FATE_PROVENANCE_BINDING_V1",
   "implementation_slices": {
     "S1": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
-    "S2": "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1"
+    "S2": "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1",
+    "S3": "WP_B05_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_V1"
   },
-  "implementation_slice": "S1_AND_S2",
+  "implementation_slice": "S1_AND_S2_AND_S3",
   "semantics": "BYPASS_FATE_PROVENANCE_BINDING_GOVERNANCE_ONLY_NO_RUNTIME_NO_AUTHORITY_PROMOTION",
   "implementation_authority": {
     "fate_implementation_semantics_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
@@ -29,7 +30,10 @@
     "BYPASS_PATH_COUNT": 5,
     "KEEP_PARALLEL_IMPLEMENTATION_BINDING_COUNT": 2,
     "GOVERNANCE_EXCLUDE_IMPLEMENTATION_BINDING_COUNT": 2,
-    "BYPASS_FATE_PROVENANCE_BINDING_COMPLETE_COUNT": 4,
+    "RESEARCH_OR_OFFLINE_SCOPE_IMPLEMENTATION_BINDING_COUNT": 1,
+    "BYPASS_FATE_PROVENANCE_BINDING_COMPLETE_COUNT": 5,
+    "FATE_IMPLEMENTATION_EXECUTED": true,
+    "B05_FATE_PHASE_STATUS": "CLOSED",
     "CONVERSION_READY": false,
     "C2_INPUT_AUTHORITIES": "UNRESOLVED",
     "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
@@ -52,6 +56,22 @@
       "system_economic_evidence_authoritative_size_owner_claim_permitted=false"
     ],
     "notes": "Governance pins only; runtime reachability unchanged per S0 minimum requirements."
+  },
+  "research_or_offline_scope_evidence_admissibility": {
+    "must_not_elevate_offline_or_simulation_to_productive_system_evidence_size_authority": true,
+    "offline_or_simulation_is_not_authority_preserved": true,
+    "research_or_offline_scope_only_does_not_imply_unreachable": true,
+    "bypass_stable_ids_research_or_offline_scope_only_sorted": [
+      "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+    ],
+    "host_scope_labels_sorted": [
+      "offline_economic_evaluation"
+    ],
+    "authoritative_productive_size_owner_claim_for_system_economic_evidence_fail_closed_tokens": [
+      "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+      "system_economic_evidence_authoritative_size_owner_claim_permitted=false"
+    ],
+    "notes": "Offline/research scope pins only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; runtime reachability unchanged."
   },
   "bypass_provenance_pins": {
     "BYPASS_CORE_POSITION_SIZER": {
@@ -139,6 +159,34 @@
       "companion_live_session_edge_must_not_conflate_with_bypass_completion": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
       "fraction_to_units_conversion_resolved": false,
       "live_authorized_claim_permitted": false
+    },
+    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": {
+      "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+      "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+      "research_or_offline_scope_only_affirmed": true,
+      "not_productive_system_evidence_size_authority": true,
+      "host_scope_label": "offline_economic_evaluation",
+      "offline_or_simulation_is_not_authority_preserved": true,
+      "canonical_for_mv2_intent_bound_scope": false,
+      "repo_wide_canonical_risk_sizing_owner_claim_permitted": false,
+      "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+      "reachability_pin": "REACHABLE_PRODUCTIVE",
+      "reachability_pin_unchanged_by_this_slice": true,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "topology_edge_ids": [
+        "EDGE_ENGINE_OFFLINE_EVAL_SIZING",
+        "EDGE_FEEDBACK_OFFLINE_EVAL_SIZING"
+      ],
+      "companion_caller_edge_ids_sharing_scope_only_provenance_class": [
+        "EDGE_FEEDBACK_OFFLINE_EVAL_SIZING"
+      ],
+      "owner_stable_id": "backtest.offline_evaluation_sizing_contract_v1",
+      "inventory_bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "intend_rebind_to_crs_adjudicated": false
     }
   },
   "drift_policy": {
@@ -152,9 +200,9 @@
     "efs_quarantine_meaning_change": "FAIL"
   },
   "related_but_separate_contracts": {
-    "risk_sizing_bypass_fate_implementation_contract_v1": "PER_BYPASS_COMPLETION_UPDATED_FOR_S1_AND_S2_TARGETS",
+    "risk_sizing_bypass_fate_implementation_contract_v1": "PER_BYPASS_COMPLETION_ALL_FIVE_AND_GLOBAL_CLOSEOUT",
     "risk_sizing_bypass_fate_operator_adjudication_v1": "ADJUDICATED_FATES_UNCHANGED",
-    "risk_sizing_caller_owner_topology_contract_v0": "BYPASS_INVENTORY_FATE_IMPLEMENTATION_PINS_S1_AND_S2",
+    "risk_sizing_caller_owner_topology_contract_v0": "BYPASS_INVENTORY_FATE_IMPLEMENTATION_PINS_ALL_FIVE",
     "risk_sizing_final_quantity_provenance_resolution_audit_v1": "PATH_SHADOW_COMPANION_EXCLUDE_PIN_ADDED; PATH_EXECUTE_FROM_SIGNALS_CLASSIFICATION_UNCHANGED",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "EFS_QUARANTINE_MEANING_UNCHANGED"
   }

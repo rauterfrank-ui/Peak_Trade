@@ -35,7 +35,6 @@ S1_BYPASS_IDS = (
     "BYPASS_CORE_POSITION_SIZER",
     "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
 )
-OFFLINE_BYPASS_ID = "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
 EXCLUDE_FATE = "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE"
 EXCLUDE_PROVENANCE_EFFECT = (
     "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE"
@@ -49,8 +48,7 @@ def _load(path: Path) -> dict:
 def test_s2_slice_boundaries_and_global_incomplete() -> None:
     impl = _load(IMPLEMENTATION_JSON)
     markers = impl["markers"]
-    assert markers["FATE_IMPLEMENTATION_EXECUTED"] is False
-    assert markers["PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT"] == 4
+    assert markers["PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT"] == 5
     assert markers["S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED"] is True
     assert markers["S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED"] is True
     assert markers["RUNTIME_MUTATION_EXECUTED"] is False
@@ -58,7 +56,7 @@ def test_s2_slice_boundaries_and_global_incomplete() -> None:
     s2 = impl["s2_governance_exclude_fate_implementation_v1"]
     assert s2["workpackage_id"] == "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1"
     assert s2["global_fate_implementation_executed_remains_false"] is True
-    assert s2["offline_eval_fate_implementation_status"] == "NOT_STARTED"
+    assert s2["offline_eval_fate_implementation_status"] == "COMPLETE"
     assert s2["s1_keep_parallel_implementations_unchanged"] is True
 
 
@@ -89,13 +87,6 @@ def test_s2_targets_complete_per_s0_completion_evidence() -> None:
         assert pin["system_economic_evidence_authoritative_size_owner_claim_permitted"] is False
         assert pin["reachability_pin"] == "REACHABLE_PRODUCTIVE"
         assert pin["reachability_pin_unchanged_by_this_slice"] is True
-
-
-def test_offline_eval_remains_not_started() -> None:
-    impl = _load(IMPLEMENTATION_JSON)
-    row = impl["bypass_fate_implementations"][OFFLINE_BYPASS_ID]
-    assert row["fate_implementation_status"] == "NOT_STARTED"
-    assert row["fate_implementation_executed"] is False
 
 
 def test_s1_implementations_unchanged() -> None:

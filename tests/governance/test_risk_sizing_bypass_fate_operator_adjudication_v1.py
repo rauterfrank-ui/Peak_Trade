@@ -59,7 +59,7 @@ def test_adjudication_contract_pins_and_boundaries() -> None:
     markers = payload["markers"]
     assert payload["workpackage_id"] == "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1"
     assert markers["OPERATOR_FATE_ADJUDICATION_EXECUTED"] is True
-    assert markers["FATE_IMPLEMENTATION_EXECUTED"] is False
+    assert markers["FATE_IMPLEMENTATION_EXECUTED"] is True
     assert markers["RUNTIME_REWIRE_EXECUTED"] is False
     assert markers["BYPASS_SET_CHANGED"] is False
     assert markers["BYPASS_PATH_COUNT"] == 5

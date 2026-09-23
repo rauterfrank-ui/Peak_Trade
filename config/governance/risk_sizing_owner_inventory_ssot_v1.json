@@ -45,8 +45,11 @@
     "OPERATOR_FATE_IMPLEMENTATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
     "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
-    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 4,
-    "FATE_IMPLEMENTATION_EXECUTED": false
+    "S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED": true,
+    "S3_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_EXECUTED": true,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 5,
+    "FATE_IMPLEMENTATION_EXECUTED": true,
+    "B05_FATE_PHASE_STATUS": "CLOSED"
   },
   "canonical_status": {
     "repo_wide": "UNRESOLVED",
@@ -89,8 +92,9 @@
     "authority_effect": "NONE",
     "runtime_rewire_performed": false,
     "fate_implementation_semantics_defined": true,
-    "fate_implementation_executed": false,
-    "per_bypass_implementation_executed_count": 4,
+    "fate_implementation_executed": true,
+    "per_bypass_implementation_executed_count": 5,
+    "b05_fate_phase_status": "CLOSED",
     "scoped_operator_go": true,
     "contract_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
     "s1_keep_parallel_fate_implementation_v1": {
@@ -108,6 +112,16 @@
         "BYPASS_CLASSIC_BACKTEST_DEFAULT",
         "BYPASS_LIVE_SHADOW_POSITION_FRACTION"
       ]
+    },
+    "s3_research_or_offline_scope_fate_implementation_v1": {
+      "workpackage_id": "WP_B05_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_V1",
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "bypass_ids_implemented_sorted": [
+        "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+      ]
+    },
+    "bypass_fate_implementation_closeout_v1": {
+      "workpackage_id": "BOUNDED_WP_B05_BYPASS_FATE_IMPLEMENTATION_CLOSEOUT_V1"
     }
   },
   "productive_decision_owners": [
@@ -332,7 +346,10 @@
       "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY"
+      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY"
     }
   ],
   "default_conflicts": [
@@ -450,7 +467,15 @@
         "decommission_status": "NOT_STARTED",
         "capability_note": "Own CAP/REJECT offline-eval sizing contract; wraps calc_position_size but owns contract semantics. Not capital/execution authority.",
         "inventory_pin_reason": "Inventory-pinned offline-evaluation sizing policy owner; drift freeze only.",
-        "scope_note": "Offline economic evaluation path; not promoted as repo-wide canonical owner."
+        "scope_note": "Offline economic evaluation path; not promoted as repo-wide canonical owner.",
+        "research_or_offline_scope_fate_implementation_v1": {
+          "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+          "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+          "fate_implementation_status": "COMPLETE",
+          "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+          "offline_or_simulation_is_not_authority_preserved": true,
+          "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+        }
       },
       {
         "stable_id": "src.core.position_sizing",
@@ -717,7 +742,10 @@
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED",
         "capability_note": "offline_evaluation_sizing_contract_v1 owns CAP/REJECT sizing without CRS. Alternative size route only; does not authorize live/orders.",
-        "inventory_pin_reason": "Inventory-pinned offline-eval sizing CRS bypass; drift freeze only — no rewire/decommission."
+        "inventory_pin_reason": "Inventory-pinned offline-eval sizing CRS bypass; drift freeze only — no rewire/decommission.",
+        "fate_implementation_status": "COMPLETE",
+        "fate_implementation_executed": true,
+        "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY"
       }
     ],
     "drift_policy": {
@@ -747,8 +775,8 @@
       "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
       "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED",
       "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED",
-      "risk_sizing_bypass_fate_implementation_contract_v1": "S1_AND_S2_FOUR_OF_FIVE_IMPLEMENTED",
-      "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_AND_S2_GOVERNANCE_EXCLUDE_PROVENANCE_PINS"
+      "risk_sizing_bypass_fate_implementation_contract_v1": "ALL_FIVE_IMPLEMENTED_GLOBAL_FATE_IMPLEMENTATION_EXECUTED",
+      "risk_sizing_bypass_fate_provenance_binding_v1": "ALL_FIVE_BYPASS_PROVENANCE_PINS"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",

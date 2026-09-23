@@ -206,7 +206,7 @@
   "related_but_separate_contracts": {
     "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_FATES_PINNED_BY_OPERATOR_ADJUDICATION_V1",
     "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_THIS_SLICE",
-    "risk_sizing_bypass_fate_implementation_contract_v1": "SEMANTICS_DEFINED_IMPLEMENTATION_NOT_EXECUTED",
+    "risk_sizing_bypass_fate_implementation_contract_v1": "ALL_FIVE_FATES_IMPLEMENTED_GLOBAL_EXECUTED",
     "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
     "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_UNCHANGED_C2_UNRESOLVED",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_UNCHANGED_EFS_NOT_OPERATOR_FATE",

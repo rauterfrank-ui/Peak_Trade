@@ -14,10 +14,12 @@ INVENTORY_ONLY=true
 AUTHORITY_EFFECT=NONE
 RUNTIME_EFFECT=NONE
 FATE_IMPLEMENTATION_SEMANTICS_DEFINED=true
-FATE_IMPLEMENTATION_EXECUTED=false
-PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT=4
+FATE_IMPLEMENTATION_EXECUTED=true
+PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT=5
 S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED=true
 S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED=true
+S3_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_EXECUTED=true
+B05_FATE_PHASE_STATUS=CLOSED
 RUNTIME_MUTATION_EXECUTED=false
 CONVERSION_READY=false
 C2_INPUT_AUTHORITIES=UNRESOLVED
@@ -48,9 +50,9 @@ Per-ID and per-token fields live in the JSON contract (`bypass_fate_implementati
 
 `FATE_IMPLEMENTATION_EXECUTED=true` is allowed only when **all five** per-bypass entries satisfy their completion evidence and the global conjunction in `global_completion_rule` — not in this semantics-only slice.
 
-## S1 (KEEP_PARALLEL) partial implementation
+## Implementation slices (S1–S3) and closeout
 
-Two of five bypass fates implemented under [`RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md`](RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md): `BYPASS_CORE_POSITION_SIZER`, `BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS`. Global `FATE_IMPLEMENTATION_EXECUTED` remains false.
+All five adjudicated bypass fates are implemented under [`RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md`](RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md). Global `FATE_IMPLEMENTATION_EXECUTED=true` only after `BOUNDED_WP_B05_BYPASS_FATE_IMPLEMENTATION_CLOSEOUT_V1` satisfies the S0 global completion conjunction (5/5). This does not resolve C2, conversion, repo-wide canonical owner, or consolidation.
 
 ## Explicit non-claims
 
