@@ -1,0 +1,241 @@
+{
+  "contract_name": "risk_sizing_c2_input_authority_closure_v1",
+  "contract_id": "OBL_B05_C2_INPUT_AUTHORITY_CLOSURE_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_c2_input_authority_closure_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "32cf49502d4163b165f31860e54910a756eff2e5",
+  "workpackage_id": "BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1",
+  "semantics": "C2_COMPANION_CONVERSION_INPUT_AUTHORITY_CENSUS_AND_CLOSURE_VERDICT_ONLY_NO_RUNTIME_NO_CONVERSION_MATH",
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1",
+    "scoped_operator_go_present": true
+  },
+  "markers": {
+    "RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "C2_STATUS": "UNRESOLVED",
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "C2_CLOSURE_RULE_SATISFIED": false,
+    "C2_INPUT_SET_COMPLETE_PROVEN": true,
+    "C2_REQUIRED_INPUT_COUNT": 3,
+    "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
+    "C2_DOMAINS_PARTIAL_COUNT": 0,
+    "C2_DOMAINS_UNKNOWN_COUNT": 1,
+    "C2_DOMAINS_CONFLICTING_COUNT": 1,
+    "C2_DOMAINS_UNRESOLVED_COUNT": 1,
+    "CONVERSION_READY": false,
+    "CONVERSION_READY_UNCHANGED": true,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "B05_FATE_PHASE_STATUS": "CLOSED",
+    "FATE_IMPLEMENTATION_EXECUTED": true,
+    "FATE_IMPLEMENTATION_COMPLETE_COUNT": 5,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "Q4_STATUS": "OPEN_UNADJUDICATED",
+    "NO_FRACTION_TO_UNITS_CONVERSION": true,
+    "NO_COMPANION_CALLER_REWIRE": true,
+    "NO_PRODUCTIVE_DEFAULT_ELEVATION": true
+  },
+  "c2_canonical_definition": {
+    "c2_semantic_id": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_CONVERSION_INPUT_AUTHORITIES",
+    "c2_marker_field_in_b05_contracts": "C2_INPUT_AUTHORITIES",
+    "distinct_from_runbook_confirmation_c1_c2_c3": true,
+    "distinct_from_note": "Runbook Confirmation C1/C2/C3 is durable observation state; B05 C2 is Companion conversion-input authority closure only.",
+    "primary_authority_contracts": [
+      "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
+      "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+      "config/governance/risk_sizing_governed_producer_observation_adapter_contract_v1.json"
+    ],
+    "consumer_path_ids": [
+      "PATH_SHADOW_COMPANION",
+      "PATH_LIVE_COMPANION"
+    ],
+    "conversion_binding_id": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1",
+    "handoff_consumer": {
+      "module": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipeline.signal_to_orders",
+      "quantity_semantics": "absolute_units_pass_through_without_conversion"
+    },
+    "companion_producers": [
+      {
+        "path_id": "PATH_SHADOW_COMPANION",
+        "module": "src/live/shadow_session.py",
+        "symbol": "ShadowPaperSession.step_once"
+      },
+      {
+        "path_id": "PATH_LIVE_COMPANION",
+        "module": "src/execution/live_session.py",
+        "symbol": "LiveSessionRunner.step_once"
+      }
+    ],
+    "out_of_c2_scope_consumers": [
+      {
+        "module": "src/governance/capital_risk_sizing_v1.py",
+        "symbol": "evaluate_capital_risk_sizing_v1",
+        "note": "CRS consumes equity/price/instrument for offline/MV2 math; does not own venue/account truth and is not wired into Companion Shadow/Live quantity generation per provenance binding."
+      }
+    ]
+  },
+  "c2_input_set_completeness_proof": {
+    "method": "EXHAUSTIVE_SCAN_required_for_companion_conversion_in_provenance_binding_v1",
+    "additional_inputs_searched": [
+      "companion_conversion_input_binding.ready_requires_all_of shared context fields",
+      "authority_decision_contract input_domains",
+      "governed_producer_observation_adapter input_domains"
+    ],
+    "required_for_companion_conversion_true_count": 3,
+    "required_for_companion_conversion_false_elsewhere": true,
+    "shared_context_fields_are_cross_cutting_not_separate_input_domains": true,
+    "c2_input_set_complete_proven": true
+  },
+  "c2_required_inputs_sorted": [
+    "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
+    "REFERENCE_PRICE",
+    "INSTRUMENT_QUANTITY_METADATA"
+  ],
+  "c2_input_census": {
+    "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": {
+      "domain": "ACCOUNT_EQUITY",
+      "semantic_meaning": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING on bound account/venue for Fraction→Units on Companion Shadow/Live",
+      "unit": "CAPITAL_CURRENCY_SCALAR_USD_LIKE",
+      "producer": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "owner": "UNRESOLVED",
+      "source_of_truth": "UNBOUND_ON_COMPANION_PATH",
+      "consumer": "Companion Shadow/Live → ExecutionPipeline.signal_to_orders (conversion handoff absent)",
+      "handoff": "NO_CONVERSION_HANDOFF_PRESENT",
+      "transformation": "NONE_ON_COMPANION_PATH",
+      "freshness_requirement": "FAIL_CLOSED_MISSING per provenance binding",
+      "fallback_path": "NONE_AUTHORIZED",
+      "historical_default_path": "offline_replay_default_10000; start_balance; backtest_state_file; classic_backtest_equity_loop (explicit_non_sources)",
+      "current_authority_evidence": "Runbook: CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING=true for Full-Core availEq transform while ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED; OBSERVATION_IS_NOT_AUTHORITY=true. Provenance: REQUIRED_INPUT_MISSING on Companion path.",
+      "provenance_status": "REQUIRED_INPUT_MISSING",
+      "conflicts": [
+        "Full-Core source→semantic mapping proven without authority owner closure",
+        "Companion path lacks any authoritative productive producer",
+        "Map account_equity_blocks CONFLICTING adjacent runbook pins"
+      ],
+      "status": "CONFLICTING",
+      "classification_notes": {
+        "canonical_model_rule_semantics": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING dimension declared in authority-decision freeze",
+        "current_dynamic_input_state": "Companion path: no bound equity input",
+        "historical_technical_default_fixture": "Multiple simulation/transport candidates pinned NOT_AUTHORITY"
+      },
+      "c2_authority_binding_implemented": false
+    },
+    "REFERENCE_PRICE": {
+      "domain": "REFERENCE_PRICE",
+      "semantic_meaning": "Instrument-bound reference price for Fraction→Units normalization on Companion Shadow/Live",
+      "unit": "PRICE_PER_INSTRUMENT_UNIT",
+      "producer": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "owner": "UNRESOLVED",
+      "source_of_truth": "UNBOUND_ON_COMPANION_PATH",
+      "consumer": "Companion Shadow/Live → ExecutionPipeline.signal_to_orders (conversion handoff absent)",
+      "handoff": "NO_CONVERSION_HANDOFF_PRESENT",
+      "transformation": "NONE_ON_COMPANION_PATH",
+      "freshness_requirement": "FAIL_CLOSED_MISSING",
+      "fallback_path": "NONE_AUTHORIZED",
+      "historical_default_path": "offline_replay_default_3500; candle.close observation; CMC mark label (explicit_non_sources)",
+      "current_authority_evidence": "Authority-decision: REFERENCE_PRICE_AUTHORITY_OWNER=UNRESOLVED; no productive producer on Companion path. Map open record reference_price_authority_owner UNKNOWN.",
+      "provenance_status": "REQUIRED_INPUT_MISSING",
+      "conflicts": [],
+      "status": "UNKNOWN",
+      "classification_notes": {
+        "canonical_model_rule_semantics": "REFERENCE_PRICE dimension and forbidden elevations frozen",
+        "current_dynamic_input_state": "candle.close used as session data input; not elevated to conversion authority",
+        "historical_technical_default_fixture": "Offline replay default price simulation-only"
+      },
+      "c2_authority_binding_implemented": false
+    },
+    "INSTRUMENT_QUANTITY_METADATA": {
+      "domain": "INSTRUMENT_QUANTITY_METADATA",
+      "semantic_meaning": "Complete venue-bound instrument quantity metadata before Fraction→Units normalization",
+      "unit": "LOT_SIZE_MIN_QTY_MIN_NOTIONAL_MULTIPLIER_BASE_QUOTE",
+      "producer": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
+      "owner": "UNRESOLVED",
+      "source_of_truth": "UNBOUND_ON_COMPANION_PATH",
+      "consumer": "Companion Shadow/Live → ExecutionPipeline.signal_to_orders (conversion handoff absent)",
+      "handoff": "NO_CONVERSION_HANDOFF_PRESENT",
+      "transformation": "NONE_ON_COMPANION_PATH",
+      "freshness_requirement": "FAIL_CLOSED_MISSING",
+      "fallback_path": "NONE_AUTHORIZED",
+      "historical_default_path": "offline_replay instrument defaults; venue capability snapshot; okx bounded testnet binding (explicit_non_sources)",
+      "current_authority_evidence": "Authority-decision: INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED; audit_decision_class NO_PRODUCTIVE_PRODUCER.",
+      "provenance_status": "REQUIRED_INPUT_MISSING",
+      "conflicts": [],
+      "status": "UNRESOLVED",
+      "classification_notes": {
+        "canonical_model_rule_semantics": "Required metadata field set frozen in provenance binding",
+        "current_dynamic_input_state": "No authoritative metadata handoff on Companion path",
+        "historical_technical_default_fixture": "Offline/simulation instrument snapshots not elevatable"
+      },
+      "c2_authority_binding_implemented": false
+    }
+  },
+  "cross_cutting_companion_binding_gates": {
+    "shared_account_venue_instrument_context": "UNRESOLVED",
+    "freshness_contract_status": "FAIL_CLOSED_MISSING",
+    "simulation_or_default_on_shadow_live": false,
+    "note": "Cross-cutting gates from companion_conversion_input_binding.ready_requires_all_of; not counted as separate C2 input domains."
+  },
+  "historical_default_dependencies": [
+    "OFFLINE_REPLAY_DEFAULT_ACCOUNT_EQUITY",
+    "OFFLINE_REPLAY_DEFAULT_REFERENCE_PRICE",
+    "OFFLINE_REPLAY_DEFAULT_INSTRUMENT",
+    "BACKTEST_STATE_FILE_TRANSPORT",
+    "CLASSIC_BACKTEST_EQUITY_LOOP",
+    "COMPANION_CANDLE_CLOSE_OBSERVATION",
+    "CMC_VENUE_MARK_PRICE_LABEL",
+    "LIVE_PORTFOLIO_MONITOR_FETCH_BALANCE",
+    "VENUE_CAPABILITY_SNAPSHOT_V1",
+    "OKX_BOUNDED_FUTURES_TESTNET_VENUE_BINDING"
+  ],
+  "unresolved_authorities": [
+    "ACCOUNT_EQUITY_AUTHORITY_OWNER",
+    "REFERENCE_PRICE_AUTHORITY_OWNER",
+    "INSTRUMENT_METADATA_AUTHORITY_OWNER",
+    "CANONICAL_EQUITY_OWNER",
+    "CANONICAL_PRICE_OWNER",
+    "CANONICAL_INSTRUMENT_METADATA_OWNER"
+  ],
+  "provenance_conflicts": [
+    "Full-Core availEq source→semantic mapping vs ACCOUNT_EQUITY_AUTHORITY_OWNER UNRESOLVED vs Companion REQUIRED_INPUT_MISSING"
+  ],
+  "unit_conflicts": [
+    "Companion FRACTION_DECIMAL_0_1 passed as absolute QUANTITY_BASE_UNITS without conversion (PATH_SHADOW_COMPANION/PATH_LIVE_COMPANION SEMANTIC_CONFLICT; separate from C2 authority closure)"
+  ],
+  "c2_closure_gate": {
+    "allowed_c2_status_closed_only_when_all": [
+      "c2_input_set_complete_proven == true",
+      "every c2_input_census[input_id].status == PROVEN_CURRENT",
+      "every c2_input_census[input_id].c2_authority_binding_implemented == true",
+      "companion_conversion_input_binding conversion_ready prerequisites satisfied without simulation defaults",
+      "no unresolved authority owner for any required input domain",
+      "markers.CONVERSION_READY unchanged unless separate conversion WP"
+    ],
+    "c2_closure_rule_satisfied": false,
+    "c2_status": "UNRESOLVED",
+    "c2_input_authorities": "UNRESOLVED",
+    "conversion_ready": false
+  },
+  "implemented_authority_bindings": [],
+  "drift_policy": {
+    "flip_conversion_ready": "FAIL",
+    "resolve_c2_without_closure_gate": "FAIL",
+    "b05_fate_reinterpretation": "FAIL",
+    "companion_runtime_rewire_without_go": "FAIL",
+    "elevate_historical_default_to_current_authority": "FAIL",
+    "reduce_required_input_count_without_proof": "FAIL"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_productive_input_provenance_binding_v1": "C2_CENSUS_ALIGNS_PROVENANCE_RECORDS_UNCHANGED_MEANING",
+    "risk_sizing_authority_decision_contract_freeze_v1": "INPUT_DOMAIN_SEMANTICS_UNCHANGED_OWNERS_REMAIN_UNRESOLVED",
+    "risk_sizing_bypass_fate_implementation_contract_v1": "B05_FATE_CLOSEOUT_UNCHANGED_C2_INPUT_AUTHORITIES_UNRESOLVED",
+    "risk_sizing_owner_inventory_ssot_v1": "CONVERSION_NOT_READY_REASONS_UPDATED_WITH_C2_CENSUS_REF"
+  }
+}

@@ -44,6 +44,8 @@
     "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
     "OPERATOR_FATE_IMPLEMENTATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
     "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+    "C2_INPUT_AUTHORITY_CLOSURE_CONTRACT": "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "C2_INPUT_AUTHORITY_CLOSURE_WP": "BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1",
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
     "S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED": true,
     "S3_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_EXECUTED": true,
@@ -72,6 +74,7 @@
     "conversion_ready": false,
     "conversion_not_ready_reasons": [
       "account_equity reference_price instrument_metadata authority owners remain UNRESOLVED",
+      "C2 Companion conversion-input census (BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1): three required inputs; C2_STATUS=UNRESOLVED; no PROVEN_CURRENT Companion-path authority bindings",
       "five bypass operator fates adjudicated; parallel routes remain reachable until separate Runtime-GO consolidation"
     ]
   },
