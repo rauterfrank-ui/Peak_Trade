@@ -15,7 +15,8 @@ AUTHORITY_EFFECT=NONE
 RUNTIME_EFFECT=NONE
 FATE_IMPLEMENTATION_SEMANTICS_DEFINED=true
 FATE_IMPLEMENTATION_EXECUTED=false
-PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT=0
+PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT=2
+S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED=true
 RUNTIME_MUTATION_EXECUTED=false
 CONVERSION_READY=false
 C2_INPUT_AUTHORITIES=UNRESOLVED
@@ -45,6 +46,10 @@ Per-ID and per-token fields live in the JSON contract (`bypass_fate_implementati
 ## Global completion
 
 `FATE_IMPLEMENTATION_EXECUTED=true` is allowed only when **all five** per-bypass entries satisfy their completion evidence and the global conjunction in `global_completion_rule` — not in this semantics-only slice.
+
+## S1 (KEEP_PARALLEL) partial implementation
+
+Two of five bypass fates implemented under [`RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md`](RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md): `BYPASS_CORE_POSITION_SIZER`, `BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS`. Global `FATE_IMPLEMENTATION_EXECUTED` remains false.
 
 ## Explicit non-claims
 

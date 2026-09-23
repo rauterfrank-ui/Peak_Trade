@@ -260,7 +260,14 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "BasePositionSizer.get_target_position",
-      "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION"
+      "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION",
+      "fate_implementation_v1": {
+        "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+        "fate_implementation_status": "COMPLETE",
+        "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+        "canonical_for_mv2_intent_bound_scope": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "bypass_stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
@@ -270,7 +277,14 @@
       "caller_symbol": "ExecutionPipeline.execute_from_signals",
       "target_symbol": "ExecutionPipeline.execute_from_signals",
       "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE",
-      "notes": "Self-use bypass kernel; owner currently has zero external productive callers."
+      "notes": "Self-use bypass kernel; owner currently has zero external productive callers.",
+      "fate_implementation_v1": {
+        "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+        "fate_implementation_status": "COMPLETE",
+        "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+        "canonical_for_mv2_intent_bound_scope": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "bypass_stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",

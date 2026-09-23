@@ -143,6 +143,14 @@
       "path_id": "PATH_EXECUTE_FROM_SIGNALS",
       "subcontract_id": "EFS_CAPITAL_SHARE_TO_ABSOLUTE_UNITS_CONFLICT",
       "classification": "SEMANTIC_CONFLICT",
+      "keep_parallel_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+        "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+        "fate_implementation_status": "COMPLETE",
+        "classification_unchanged": "SEMANTIC_CONFLICT",
+        "efs_foreign_status_unchanged": "DEPRECATED_QUARANTINED",
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      },
       "entrypoint": {
         "module": "src.execution.pipeline",
         "source_path": "src/execution/pipeline.py",
