@@ -2,13 +2,17 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "9cac7077475e23340d9ddc7ed085b6bfb46d4eb4",
+  "base_sha": "2dba1355c9907c57fa330aed01a4072faeaf048f",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "V32 baseline-first lifecycle resolution v1: governance-only composite binding and adjudication record; Atlas inventory update only. No structured interaction-map source or authority projection change. AUTHORITY=NONE.",
+  "reason": "V32 Concept PDF CURRENT MV2+DP alignment v1: documentation-only addendum and delta inventory; Atlas catalog update; predecessor V32 decision gap rebind. No structured interaction-map source or authority projection change. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json",
     "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
+    "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
     "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -17,15 +21,21 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
-    "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py"
+    "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+    "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py"
   ],
-  "changed_paths_sha256": "093a9f9c2071a7953a1b1646b14945b9446ceab737da57360dbb7d786fa62873",
+  "changed_paths_sha256": "1a71f5861a6fa97f4e6084d0ad1c35b515720012945f515ae715528ac188ad4c",
   "evidence_refs": [
-    "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
-    "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md"
+    "config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json",
+    "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
+    "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md"
   ],
   "covered_candidate_paths": [
+    "config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json",
     "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
+    "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
     "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -34,6 +44,7 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
-    "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py"
+    "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+    "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py"
   ]
 }

@@ -7415,6 +7415,25 @@ entities:
       Read-only Concept v3.2 §22 / D24–D27 adjudication and composite owner graph reuse.
       No runtime gate, cutover, or new trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 Concept PDF CURRENT MV2+DP alignment v1 (documentation)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1
+    source_paths:
+      - src/governance/v32_current_mv2_dp_concept_alignment_v1.py
+    evidence_sources:
+      - src/governance/v32_current_mv2_dp_concept_alignment_v1.py
+      - tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py
+      - docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md
+      - docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md
+      - config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json
+    notes: >-
+      Repo-hosted alignment addendum for external Concept v3/v3.1/v3.2 PDF; binds integrated replay SSOT
+      and owner graph from #6764. No PDF body replacement; D26/D27 remain PARTIAL. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
     kind: RUNTIME_COMPONENT
     name: Optimization proposal governance ingress v1 (M10)

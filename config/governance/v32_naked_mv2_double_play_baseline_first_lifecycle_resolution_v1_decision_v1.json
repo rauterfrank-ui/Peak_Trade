@@ -1,7 +1,7 @@
 {
   "artifact_class": "V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_LIFECYCLE_RESOLUTION_DECISION_V1",
   "workpackage_id": "V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1",
-  "bound_origin_main_sha": "9cac7077475e23340d9ddc7ed085b6bfb46d4eb4",
+  "bound_origin_main_sha": "2dba1355c9907c57fa330aed01a4072faeaf048f",
   "predecessor_closed": "OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_V1",
   "normative_spec": "docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md",
   "owner_module": "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
@@ -24,7 +24,9 @@
   "expected_d26_verdict": "PARTIAL_CURRENT",
   "expected_d27_verdict": "PARTIAL_CURRENT",
   "gap_05_status_after_wp": "PARTIAL_CURRENT",
-  "earliest_true_remaining_gap": "platform_unified_native_vs_candidate_baseline_evidence_schema_and_pdf_v32_wording_alignment",
-  "pdf_update_required": true,
+  "earliest_true_remaining_gap": "platform_unified_native_vs_candidate_baseline_evidence_schema",
+  "pdf_update_required": false,
+  "concept_alignment_workpackage_id": "V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1",
+  "concept_alignment_spec": "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
   "owner_decision_required_for_productive_cutover": false
 }

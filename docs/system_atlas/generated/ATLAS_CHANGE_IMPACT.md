@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1` |
+| `RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 baseline-first lifecycle resolution v1 catalog entry: governance-only composite binding and D24–D27 adjudication record. No runtime gate or cutover. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- V3.2 Concept PDF CURRENT MV2+DP alignment v1 catalog entry: documentation-only addendum binding integrated replay SSOT from #6764. No runtime gate or cutover. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1
+- modified_by=V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
