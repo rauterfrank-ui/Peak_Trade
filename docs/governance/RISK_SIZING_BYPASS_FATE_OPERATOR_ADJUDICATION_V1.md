@@ -5,7 +5,8 @@
 **Obligation:** `OBL_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1`  
 **Workpackage:** `WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1`  
 **Machine contract:** [`config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json`](../../config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json)  
-**Fate vocabulary (unchanged):** [`RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md`](RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md)
+**Fate vocabulary (unchanged):** [`RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md`](RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md)  
+**Fate implementation semantics:** [`RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md`](RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md)
 
 ```
 RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1=true

@@ -41,6 +41,8 @@ AUTHORITY_EFFECT=NONE
 FATE_VOCABULARY_SOURCE=config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json
 OPERATOR_FATE_ADJUDICATION_EXECUTED=true
 OPERATOR_FATE_ADJUDICATION_WP=WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1
+FATE_IMPLEMENTATION_SEMANTICS_DEFINED=true
+OPERATOR_FATE_IMPLEMENTATION_WP=WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1
 ```
 
 Current restored-baseline overlay (this inventory snapshot is preserved; it
@@ -272,6 +274,6 @@ Risk/Sizing inventory and the owner/bypass surface-contract freeze are **DONE**.
 
 **Related (separate, non-mutating):** [`RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md`](RISK_SIZING_OUTPUT_CONSUMPTION_OVERWRITE_CONTRACT_V0.md) / [`config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json`](../../config/governance/risk_sizing_output_consumption_overwrite_contract_v0.json) freezes post-owner consumption&#47;overwrite classes without consolidating owners (`SEMANTICS_FREE_CONTRACT_SLICE_AVAILABLE=true`, `SEMANTICS_FREE_OWNER_CONSOLIDATION_AVAILABLE=false`).
 
-**Related:** [`RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md`](RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md) (vocabulary + decision authority). **Adjudication:** [`RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md`](RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md) / [`config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json`](../../config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json) pins per-BYPASS fates under `SCOPED_OPERATOR_GO` (`OPERATOR_FATE_ADJUDICATION_EXECUTED=true`; no runtime rewire).
+**Related:** [`RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md`](RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md) (vocabulary + decision authority). **Adjudication:** [`RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md`](RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md) / [`config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json`](../../config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json) pins per-BYPASS fates under `SCOPED_OPERATOR_GO` (`OPERATOR_FATE_ADJUDICATION_EXECUTED=true`; no runtime rewire). **Implementation semantics:** [`RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md`](RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md) defines completion rules only (`FATE_IMPLEMENTATION_EXECUTED=false`).
 
 Legacy Order Intent inventory / decision-owner / direct-submission surface contracts remain separate and unchanged (`INVENTORY ONLY — DECOMMISSION NOT STARTED`).
