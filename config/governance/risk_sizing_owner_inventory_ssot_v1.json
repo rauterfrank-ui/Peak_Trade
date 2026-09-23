@@ -48,6 +48,8 @@
     "C2_INPUT_AUTHORITY_CLOSURE_WP": "BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1",
     "C2_DOMAIN_AUTHORITY_RESOLUTION_CONTRACT": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
     "C2_DOMAIN_AUTHORITY_RESOLUTION_WP": "BOUNDED_WP_C2_DOMAIN_AUTHORITY_RESOLUTION_V1",
+    "C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2_CONTRACT": "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+    "C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2_WP": "BOUNDED_WP_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2",
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
     "S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED": true,
     "S3_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_EXECUTED": true,
@@ -78,6 +80,7 @@
       "account_equity reference_price instrument_metadata authority owners remain UNRESOLVED",
       "C2 Companion conversion-input census (BOUNDED_WP_C2_INPUT_AUTHORITY_CLOSURE_V1): three required inputs; C2_STATUS=UNRESOLVED; no PROVEN_CURRENT Companion-path authority bindings",
       "C2 domain authority forensic resolution (BOUNDED_WP_C2_DOMAIN_AUTHORITY_RESOLUTION_V1): ACCOUNT_EQUITY CONFLICTING; REFERENCE_PRICE UNKNOWN; INSTRUMENT UNRESOLVED; zero bindings implemented",
+      "C2 current productive input authority closure v2: full productive lineage traced; C2 verdicts unchanged; C2_STATUS=UNRESOLVED",
       "five bypass operator fates adjudicated; parallel routes remain reachable until separate Runtime-GO consolidation"
     ]
   },

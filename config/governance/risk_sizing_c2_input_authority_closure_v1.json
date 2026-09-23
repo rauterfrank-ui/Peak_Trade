@@ -243,6 +243,7 @@
     "risk_sizing_authority_decision_contract_freeze_v1": "INPUT_DOMAIN_SEMANTICS_UNCHANGED_OWNERS_REMAIN_UNRESOLVED",
     "risk_sizing_bypass_fate_implementation_contract_v1": "B05_FATE_CLOSEOUT_UNCHANGED_C2_INPUT_AUTHORITIES_UNRESOLVED",
     "risk_sizing_owner_inventory_ssot_v1": "CONVERSION_NOT_READY_REASONS_UPDATED_WITH_C2_CENSUS_REF",
-    "risk_sizing_c2_domain_authority_resolution_v1": "FORENSIC_DOMAIN_RESOLUTION_ALIGNS_CENSUS_VERDICTS_NO_RUNTIME"
+    "risk_sizing_c2_domain_authority_resolution_v1": "FORENSIC_DOMAIN_RESOLUTION_ALIGNS_CENSUS_VERDICTS_NO_RUNTIME",
+    "risk_sizing_c2_current_productive_input_authority_closure_v2": "PRODUCTIVE_LINEAGE_FORENSICS_C2_VERDICTS_PRESERVED"
   }
 }

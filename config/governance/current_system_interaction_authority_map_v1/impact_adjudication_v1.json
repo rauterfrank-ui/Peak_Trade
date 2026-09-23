@@ -2,32 +2,28 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "c0995309d880cea2c470a434d9a0cb0a7aaa0b38",
+  "base_sha": "6645d6c5bddc84ec27b4f6783ae9751e17bd8e3f",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "C2 domain authority forensic resolution WP: three Companion inputs resolved to CONFLICTING/UNKNOWN/UNRESOLVED; zero bindings; C2_STATUS remains UNRESOLVED; b05_vs_singular_risk_owner and account_equity_mapping_unbound open records updated; derived views regenerated. AUTHORITY=NONE.",
+  "reason": "C2 current productive input authority closure v2: productive lineage matrices; C2 verdicts preserved from #6761; b05_vs_singular_risk_owner updated; derived authority view regenerated. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
     "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
     "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
-    "docs/governance/RISK_SIZING_C2_DOMAIN_AUTHORITY_RESOLUTION_V1.md",
+    "docs/governance/RISK_SIZING_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "tests/governance/test_risk_sizing_c2_domain_authority_resolution_v1.py",
-    "tests/governance/test_risk_sizing_c2_input_authority_closure_v1.py"
+    "tests/governance/test_risk_sizing_c2_current_productive_input_authority_closure_v2.py"
   ],
-  "changed_paths_sha256": "b752329f5b5327b0fba8b614dab7c60cecd50ebfa3289a8620691e5066462438",
+  "changed_paths_sha256": "c277cbc2e2c63e5ac8c0db15b92b9e9e29e52476c7dc43a3e5fee401563cfc8b",
   "evidence_refs": [
+    "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
     "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
     "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
-    "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "covered_candidate_paths": [
-    "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
   ]
 }
