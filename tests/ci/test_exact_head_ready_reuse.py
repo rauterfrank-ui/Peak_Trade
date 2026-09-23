@@ -460,6 +460,7 @@ def test_required_context_names_unchanged() -> None:
         "repo-truth-claims",
         "strategy-smoke",
         "tests (3.11)",
+        "map-currency-gate",
     ]
 
 
