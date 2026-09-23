@@ -28,6 +28,9 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
     P5_AUTHORITY_CUTOVER_AUTHORIZED,
     PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
 )
+from src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1 import (
+    prove_d26_platform_unified_baseline_evidence_v1,
+)
 
 SCHEMA_VERSION: Final[str] = "naked_mv2_double_play_baseline_first_lifecycle_resolution_v1"
 WORKPACKAGE_ID: Final[str] = (
@@ -87,9 +90,10 @@ INTEGRATED_REPLAY_CURRENT_ROLE: Final[str] = (
 )
 P5_ADJUDICATION_LABEL: Final[str] = "P5_CUTOVER_OBSOLETE_CURRENT_REPLAY_IS_CANONICAL"
 
-EARLIEST_TRUE_REMAINING_GAP: Final[str] = (
+EARLIEST_TRUE_REMAINING_GAP_D26: Final[str] = (
     "platform_unified_native_vs_candidate_baseline_evidence_schema"
 )
+EARLIEST_TRUE_REMAINING_GAP: Final[str] = "test_entry_gate_defined_not_lifecycle_enforced_globally"
 
 NAKED_BASELINE_OWNER: Final[str] = (
     "governance.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1"
@@ -155,6 +159,8 @@ def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Map
     pre_test = _load_json(root, PRE_TEST_DECISION_CONFIG)
     learning = _load_json(root, LEARNING_CLOSED_LOOP_DECISION_CONFIG)
     layer_evidence_present = (root / LAYER_SEPARATION_EVIDENCE_PATH).is_file()
+    d26_proven = prove_d26_platform_unified_baseline_evidence_v1(repo_root=root)
+    earliest_gap = EARLIEST_TRUE_REMAINING_GAP if d26_proven else EARLIEST_TRUE_REMAINING_GAP_D26
 
     return MappingProxyType(
         {
@@ -187,7 +193,8 @@ def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Map
             "hardening_decision_workpackage": hardening.get("workpackage_id"),
             "pre_test_decision_workpackage": pre_test.get("workpackage_id"),
             "external_effect_authorized": False,
-            "earliest_true_remaining_gap": EARLIEST_TRUE_REMAINING_GAP,
+            "d26_platform_unified_baseline_evidence_proven": d26_proven,
+            "earliest_true_remaining_gap": earliest_gap,
         }
     )
 
@@ -258,8 +265,31 @@ def adjudicate_v32_baseline_first_requirements_v1(
         d25_missing = "canonical_replay_scope_and_switch_owners_not_adjudicated"
         d25_notes = "Replay SSOT conflict prevents D25 proof."
 
-    d26_verdict = AdjudicationVerdict.PARTIAL_CURRENT
-    d26_missing = "platform_wide_native_vs_candidate_outcome_separation_not_unified"
+    d26_proven = prove_d26_platform_unified_baseline_evidence_v1(repo_root=root)
+    if d26_proven:
+        d26_verdict = AdjudicationVerdict.PROVEN_CURRENT
+        d26_missing = None
+        d26_notes = (
+            "Platform-unified native vs candidate baseline evidence schema wired with "
+            "integrated replay native producer, F1/DDO/optimization candidate classifiers, "
+            "and comparison join (read-only, non-authority)."
+        )
+        d26_wiring = (
+            "src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py",
+            "src/trading/master_v2/platform_unified_baseline_evidence_integrated_replay_adapter_v1.py",
+            "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/"
+            "baseline_evidence_classification_adapter_v1.py",
+        )
+    else:
+        d26_verdict = AdjudicationVerdict.PARTIAL_CURRENT
+        d26_missing = "platform_wide_native_vs_candidate_outcome_separation_not_unified"
+        d26_notes = (
+            "Passive layer evidence + F1 counterfactual; no unified platform baseline schema."
+        )
+        d26_wiring = (
+            LAYER_SEPARATION_EVIDENCE_PATH,
+            F1_BASELINE_CANDIDATE_OWNER,
+        )
 
     d27_verdict = AdjudicationVerdict.PARTIAL_CURRENT
     if not pre_test_ok:
@@ -327,12 +357,17 @@ def adjudicate_v32_baseline_first_requirements_v1(
             requirement_id="D26",
             verdict=d26_verdict,
             earliest_missing_edge=d26_missing,
-            authority_evidence=auth_evidence,
-            runtime_wiring_evidence=(
-                LAYER_SEPARATION_EVIDENCE_PATH,
-                F1_BASELINE_CANDIDATE_OWNER,
+            authority_evidence=auth_evidence
+            + (
+                (
+                    "config/governance/"
+                    "v32_d26_platform_unified_native_vs_candidate_baseline_evidence_closure_v1_decision_v1.json",
+                )
+                if d26_proven
+                else ()
             ),
-            notes="Passive layer evidence + F1 counterfactual; no unified platform baseline schema.",
+            runtime_wiring_evidence=d26_wiring,
+            notes=d26_notes,
         ),
         RequirementAdjudicationV1(
             requirement_id="D27",
@@ -362,7 +397,8 @@ def earliest_missing_edge_v1(
             AdjudicationVerdict.UNKNOWN,
         ):
             return item.earliest_missing_edge or item.requirement_id
-    return EARLIEST_TRUE_REMAINING_GAP
+    binding = composite_baseline_first_binding_v1()
+    return str(binding.get("earliest_true_remaining_gap") or EARLIEST_TRUE_REMAINING_GAP)
 
 
 def assert_no_new_baseline_gate_runtime_authority_v1() -> None:
@@ -388,6 +424,7 @@ __all__ = [
     "CURRENT_PRODUCTIVE_ENTRYPOINT",
     "DECISION_CONFIG",
     "EARLIEST_TRUE_REMAINING_GAP",
+    "EARLIEST_TRUE_REMAINING_GAP_D26",
     "F1_BASELINE_CANDIDATE_OWNER",
     "INTEGRATED_REPLAY_CURRENT_ROLE",
     "LAYERED_CORE_CURRENT_ROLE",

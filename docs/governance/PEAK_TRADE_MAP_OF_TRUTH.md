@@ -110,6 +110,7 @@ in the Master Runbook and the named packages.
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
 | V3.2 naked MV2 baseline-first lifecycle resolution (#6764) | `docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md` / `src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py` |
 | Concept PDF v3/v3.2 CURRENT MV2+DP alignment (navigation) | `docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md` / `docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md` |
+| D26 native vs candidate baseline evidence (navigation) | `docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md` |
 | Treasury Phase 1 offline contracts | `docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md` / `src/ops/treasury_phase_1_offline_contracts_v1/` |
 | Treasury Phase 2 read-only reconciliation | `docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md` / `src/ops/treasury_phase_2_read_only_reconciliation_v1/` |
 | Treasury Phase 3 shadow enforcement | `docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md` / `src/ops/treasury_phase_3_shadow_enforcement_v1/` |

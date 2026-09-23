@@ -1,0 +1,37 @@
+{
+  "artifact_class": "V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_DECISION_V1",
+  "workpackage_id": "V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1",
+  "bound_origin_main_sha": "8a16133d3bfacf1dad615e1b9bece598b559d48c",
+  "predecessor_workpackage_id": "V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1",
+  "predecessor_pr": 6765,
+  "normative_spec": "docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md",
+  "owner_module": "src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py",
+  "baseline_evidence_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_canonical_trading_decision_evidence_v1",
+  "candidate_evidence_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_f1_parameter_research_candidate_result_v1",
+  "comparison_join_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.derive_comparison_context_identity_v1",
+  "native_producer_adapter": "trading.master_v2.platform_unified_baseline_evidence_integrated_replay_adapter_v1.bind_integrated_replay_native_baseline_classification_v1",
+  "f1_candidate_adapter": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.baseline_evidence_classification_adapter_v1.bind_f1_parameter_research_candidate_baseline_classification_v1",
+  "d26_status": "PROVEN_CURRENT",
+  "d26_implemented": true,
+  "d27_status": "PARTIAL_CURRENT",
+  "d27_blocked_by_d26": false,
+  "d27_earliest_missing_edge": "test_entry_gate_defined_not_lifecycle_enforced_globally",
+  "d26_implementation_mode": "COMPOSE_EXISTING",
+  "reused_contracts": [
+    "canonical_trading_decision_evidence_v1",
+    "counterfactual_record_v0",
+    "canonical_optimization_experiment_evidence_v1",
+    "f1_max_age_parameter_research_execution_v1"
+  ],
+  "extended_contracts": [
+    "platform_unified_native_vs_candidate_baseline_evidence_v1"
+  ],
+  "new_contract_required": false,
+  "trading_decision_authority_changed": false,
+  "p5_authority_cutover_authorized": false,
+  "new_authority_created": false,
+  "optimization_productive_authority": "NONE",
+  "learning_productive_authority": "NONE",
+  "external_effect_authorized": false,
+  "owner_decision_required": false
+}
