@@ -5,7 +5,7 @@
   "schema_version": "risk_sizing_bypass_fate_implementation_schema_v1",
   "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md",
   "inventory_date": "2026-09-23",
-  "pinned_against_main_sha": "37405e94f2d8d738767d4aa14d421d789d2b3b8d",
+  "pinned_against_main_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
   "workpackage_id": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
   "semantics": "FATE_IMPLEMENTATION_SEMANTICS_AND_COMPLETION_RULES_ONLY_NO_PER_BYPASS_COMPLETION_NO_RUNTIME",
   "adjudication_authority": {
@@ -30,7 +30,8 @@
     "RUNTIME_EFFECT": "NONE",
     "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
     "FATE_IMPLEMENTATION_EXECUTED": false,
-    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 0,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 2,
+    "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
     "RUNTIME_MUTATION_EXECUTED": false,
     "RUNTIME_REWIRE_EXECUTED": false,
     "BYPASS_SET_CHANGED": false,
@@ -181,10 +182,12 @@
       "inventored_source_path": "src/backtest/engine.py",
       "inventored_caller_symbol": "BacktestEngine.run_realistic",
       "inventored_target_symbol": "BasePositionSizer.get_target_position",
-      "fate_implementation_status": "NOT_STARTED",
-      "fate_implementation_executed": false,
-      "completion_evidence_satisfied": false,
-      "minimum_implementation_requirements_verified": false,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "s1_implementation_slice": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
       "minimum_implementation_requirements": [
         "Apply KEEP_PARALLEL_NON_CANONICAL minimum_implementation_requirements for stable_id BYPASS_CORE_POSITION_SIZER.",
         "Open governance question on research-only forever does not block parallel non-canonical minimum implementation (does not adjudicate end-state)."
@@ -210,10 +213,12 @@
       "inventored_source_path": "src/execution/pipeline.py",
       "inventored_caller_symbol": "ExecutionPipeline.execute_from_signals",
       "inventored_target_symbol": "ExecutionPipeline.execute_from_signals",
-      "fate_implementation_status": "NOT_STARTED",
-      "fate_implementation_executed": false,
-      "completion_evidence_satisfied": false,
-      "minimum_implementation_requirements_verified": false,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "s1_implementation_slice": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
       "minimum_implementation_requirements": [
         "Apply KEEP_PARALLEL_NON_CANONICAL minimum_implementation_requirements for stable_id BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS.",
         "EFS DEPRECATED_QUARANTINED foreign status remains separate; semantic conflict in provenance audit is not operator CONFLICTING fate and does not block parallel minimum implementation."
@@ -291,6 +296,21 @@
       ]
     }
   },
+  "s1_keep_parallel_fate_implementation_v1": {
+    "workpackage_id": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
+    "implemented_against_main_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
+    "authority_effect": "NONE",
+    "runtime_mutation_executed": false,
+    "runtime_rewire_executed": false,
+    "productive_runtime_semantics_changed": false,
+    "bypass_ids_implemented_sorted": [
+      "BYPASS_CORE_POSITION_SIZER",
+      "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS"
+    ],
+    "provenance_binding_contract_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+    "global_fate_implementation_executed_remains_false": true,
+    "non_target_bypass_fates_unchanged": true
+  },
   "global_completion_rule": {
     "fate_implementation_executed_marker": {
       "allowed_true_only_when_all": [
@@ -332,7 +352,8 @@
     "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED",
     "risk_sizing_owner_inventory_ssot_v1": "INVENTORY_REACHABILITY_UNCHANGED_IMPLEMENTATION_REF_ADDED",
     "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED",
-    "risk_sizing_productive_input_provenance_binding_v1": "COMPLETE_SEPARATE_FUTURE_EXCLUDE_SCOPE_IMPLEMENTATION",
+    "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_PINS_FOR_TWO_BYPASS_IDS",
+    "risk_sizing_productive_input_provenance_binding_v1": "COMPLETE_SEPARATE_UNCHANGED_COMPANION_C2_BINDING",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_UNCHANGED"
   }
 }

@@ -43,7 +43,10 @@
     "OPERATOR_FATE_ADJUDICATION_WP": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
     "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
     "OPERATOR_FATE_IMPLEMENTATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
-    "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1"
+    "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+    "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 2,
+    "FATE_IMPLEMENTATION_EXECUTED": false
   },
   "canonical_status": {
     "repo_wide": "UNRESOLVED",
@@ -82,14 +85,22 @@
   },
   "operator_fate_implementation_v1": {
     "workpackage_id": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
-    "pinned_against_main_sha": "37405e94f2d8d738767d4aa14d421d789d2b3b8d",
+    "pinned_against_main_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
     "authority_effect": "NONE",
     "runtime_rewire_performed": false,
     "fate_implementation_semantics_defined": true,
     "fate_implementation_executed": false,
-    "per_bypass_implementation_executed_count": 0,
+    "per_bypass_implementation_executed_count": 2,
     "scoped_operator_go": true,
-    "contract_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json"
+    "contract_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
+    "s1_keep_parallel_fate_implementation_v1": {
+      "workpackage_id": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "bypass_ids_implemented_sorted": [
+        "BYPASS_CORE_POSITION_SIZER",
+        "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS"
+      ]
+    }
   },
   "productive_decision_owners": [
     {
@@ -265,7 +276,10 @@
       "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL"
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM"
     },
     {
       "id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
@@ -277,7 +291,10 @@
       "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL"
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM"
     },
     {
       "id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
@@ -593,7 +610,10 @@
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED",
         "capability_note": "BacktestEngine.core_position_sizer branch decides units without CRS. Alternative size route only; does not authorize live/orders.",
-        "inventory_pin_reason": "Inventory-pinned core_position_sizer CRS bypass; drift freeze only — no rewire/decommission."
+        "inventory_pin_reason": "Inventory-pinned core_position_sizer CRS bypass; drift freeze only — no rewire/decommission.",
+        "fate_implementation_status": "COMPLETE",
+        "fate_implementation_executed": true,
+        "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM"
       },
       {
         "stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
@@ -620,7 +640,10 @@
         "consolidation_status": "NOT_STARTED",
         "decommission_status": "NOT_STARTED",
         "capability_note": "ExecutionPipeline.execute_from_signals sizes via max_position_notional_pct without CRS. Alternative size route only; does not authorize live/orders.",
-        "inventory_pin_reason": "Inventory-pinned execute_from_signals CRS bypass; drift freeze only — no rewire/decommission."
+        "inventory_pin_reason": "Inventory-pinned execute_from_signals CRS bypass; drift freeze only — no rewire/decommission.",
+        "fate_implementation_status": "COMPLETE",
+        "fate_implementation_executed": true,
+        "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM"
       },
       {
         "stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
@@ -704,7 +727,8 @@
       "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
       "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED",
       "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED",
-      "risk_sizing_bypass_fate_implementation_contract_v1": "SEMANTICS_DEFINED_IMPLEMENTATION_NOT_EXECUTED"
+      "risk_sizing_bypass_fate_implementation_contract_v1": "S1_KEEP_PARALLEL_TWO_OF_FIVE_IMPLEMENTED",
+      "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_PROVENANCE_PINS"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",

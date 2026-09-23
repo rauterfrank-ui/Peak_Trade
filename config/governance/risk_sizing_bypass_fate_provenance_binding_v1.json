@@ -1,0 +1,102 @@
+{
+  "contract_name": "risk_sizing_bypass_fate_provenance_binding_v1",
+  "contract_id": "OBL_B05_BYPASS_FATE_PROVENANCE_BINDING_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_bypass_fate_provenance_binding_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
+  "workpackage_id": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
+  "implementation_slice": "S1",
+  "semantics": "BYPASS_FATE_PROVENANCE_BINDING_GOVERNANCE_ONLY_NO_RUNTIME_NO_AUTHORITY_PROMOTION",
+  "implementation_authority": {
+    "fate_implementation_semantics_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
+    "operator_fate_adjudication_ref": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json"
+  },
+  "markers": {
+    "RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "RUNTIME_REWIRE_EXECUTED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "BYPASS_SET_CHANGED": false,
+    "BYPASS_PATH_COUNT": 5,
+    "KEEP_PARALLEL_IMPLEMENTATION_BINDING_COUNT": 2,
+    "CONVERSION_READY": false,
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "NO_REPO_WIDE_OWNER_PROMOTION": true,
+    "NO_CRS_SCOPE_EXPANSION": true,
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false
+  },
+  "system_economic_evidence_admissibility": {
+    "must_not_promote_bypass_to_repo_wide_canonical_risk_sizing_owner": true,
+    "must_not_promote_bypass_to_mv2_intent_bound_crs_quantity_algebra_owner": true,
+    "parallel_non_canonical_does_not_imply_unreachable": true,
+    "notes": "Governance pins only; runtime reachability unchanged per S0 minimum requirements."
+  },
+  "bypass_provenance_pins": {
+    "BYPASS_CORE_POSITION_SIZER": {
+      "bypass_stable_id": "BYPASS_CORE_POSITION_SIZER",
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+      "parallel_non_canonical_affirmed": true,
+      "canonical_for_mv2_intent_bound_scope": false,
+      "repo_wide_canonical_risk_sizing_owner_claim_permitted": false,
+      "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+      "reachability_pin": "REACHABLE_PRODUCTIVE",
+      "reachability_pin_unchanged_by_this_slice": true,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "topology_edge_ids": [
+        "EDGE_ENGINE_GET_TARGET_POSITION",
+        "EDGE_FEEDBACK_GET_TARGET_POSITION"
+      ],
+      "inventory_bypass_stable_id": "BYPASS_CORE_POSITION_SIZER"
+    },
+    "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": {
+      "bypass_stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+      "parallel_non_canonical_affirmed": true,
+      "canonical_for_mv2_intent_bound_scope": false,
+      "repo_wide_canonical_risk_sizing_owner_claim_permitted": false,
+      "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+      "reachability_pin": "REACHABLE_PRODUCTIVE",
+      "reachability_pin_unchanged_by_this_slice": true,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "topology_bypass_inventory_ref": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "final_quantity_audit_path_id": "PATH_EXECUTE_FROM_SIGNALS",
+      "efs_foreign_status": "DEPRECATED_QUARANTINED",
+      "efs_foreign_status_is_not_operator_fate": true,
+      "semantic_conflict_status": "SEMANTIC_CONFLICT",
+      "semantic_conflict_reclassified_to_operator_fate_conflicting": false,
+      "semantic_conflict_resolution_deferred": true
+    }
+  },
+  "drift_policy": {
+    "bypass_id_add_or_remove": "FAIL",
+    "operator_fate_adjudication_change": "FAIL",
+    "promote_to_canonical_owner_claim": "FAIL",
+    "flip_conversion_ready": "FAIL",
+    "resolve_c2": "FAIL",
+    "claim_runtime_mutation": "FAIL",
+    "reclassify_semantic_conflict_as_fate_conflicting": "FAIL",
+    "efs_quarantine_meaning_change": "FAIL"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_bypass_fate_implementation_contract_v1": "PER_BYPASS_COMPLETION_UPDATED_FOR_S1_TARGETS_ONLY",
+    "risk_sizing_bypass_fate_operator_adjudication_v1": "ADJUDICATED_FATES_UNCHANGED",
+    "risk_sizing_caller_owner_topology_contract_v0": "BYPASS_INVENTORY_FATE_IMPLEMENTATION_PINS_ADDED",
+    "risk_sizing_final_quantity_provenance_resolution_audit_v1": "PATH_EXECUTE_FROM_SIGNALS_CLASSIFICATION_UNCHANGED",
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "EFS_QUARANTINE_MEANING_UNCHANGED"
+  }
+}
