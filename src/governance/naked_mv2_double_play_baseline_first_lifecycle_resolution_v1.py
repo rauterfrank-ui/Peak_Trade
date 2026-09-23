@@ -88,7 +88,7 @@ INTEGRATED_REPLAY_CURRENT_ROLE: Final[str] = (
 P5_ADJUDICATION_LABEL: Final[str] = "P5_CUTOVER_OBSOLETE_CURRENT_REPLAY_IS_CANONICAL"
 
 EARLIEST_TRUE_REMAINING_GAP: Final[str] = (
-    "platform_unified_native_vs_candidate_baseline_evidence_schema_and_pdf_v32_wording_alignment"
+    "platform_unified_native_vs_candidate_baseline_evidence_schema"
 )
 
 NAKED_BASELINE_OWNER: Final[str] = (

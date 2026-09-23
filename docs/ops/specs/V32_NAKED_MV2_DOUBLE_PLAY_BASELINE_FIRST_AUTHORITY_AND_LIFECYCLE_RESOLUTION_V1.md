@@ -66,7 +66,10 @@ F1 counterfactual research baseline defined, optimization productive join blocke
 | **D26** | `PARTIAL_CURRENT` | Platform-wide native vs candidate baseline evidence not unified |
 | **D27** | `PARTIAL_CURRENT` | TEST_ENTRY_GATE defined; not globally lifecycle-enforced |
 
-`earliest_true_remaining_gap` = platform unified baseline evidence schema + PDF v3.2 wording alignment (separate docs task).
+`earliest_true_remaining_gap` = platform unified baseline evidence schema (`D26`).
+
+Concept PDF v3/v3.2 wording alignment (separate docs WP, no runtime effect):
+`docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md`
 
 ## 5. Non-goals
 
@@ -74,4 +77,4 @@ F1 counterfactual research baseline defined, optimization productive join blocke
 - Layered core as parallel trading decision writer
 - GAP-01 productive Learning→Optimization wiring
 - M10 / F2 / F3 / F5 expansion
-- PDF edits in this PR
+- Closing D26/D27 via documentation alone
