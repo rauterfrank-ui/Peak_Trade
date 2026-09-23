@@ -7397,6 +7397,24 @@ entities:
       - docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md
     notes: Atlas inventory only. Not a trading authority. Default grants remain fail-closed unless an exact-file SHA-256 evidence digest over canonical unified diffs and the diff base SHA is bound. Same paths with a different diff cannot reuse a grant. Owner adjudication is necessary and not sufficient. The fifth admission class remains a closed productive mapping-contract runtime bind. The sixth admission class remains a closed generator-fallback repair. The seventh admission class remains a closed SideState ARMED identity-split repair. The eighth admission class remains a closed OD1 productive single-lane confirmation grant; it does not waive MASTER_V2_MUTATION_ALLOWED=false. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 naked MV2 baseline-first lifecycle resolution v1 (composite binding)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1
+    source_paths:
+      - src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py
+    evidence_sources:
+      - src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py
+      - tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py
+      - docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md
+      - config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json
+    notes: >-
+      Read-only Concept v3.2 §22 / D24–D27 adjudication and composite owner graph reuse.
+      No runtime gate, cutover, or new trading authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
     kind: RUNTIME_COMPONENT
     name: Optimization proposal governance ingress v1 (M10)
