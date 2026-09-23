@@ -212,14 +212,7 @@
       "notes": "position_fraction config validation; CRS bypass when used."
     }
   ],
-  "archive_historical": [
-    {
-      "module_path": "src/risk/_archive/position_sizer_old_backup.py",
-      "role": "archive/historical",
-      "status": "ARCHIVED",
-      "authoritative_size_decision": false
-    }
-  ],
+  "archive_historical": [],
   "bypass_paths": [
     {
       "id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",

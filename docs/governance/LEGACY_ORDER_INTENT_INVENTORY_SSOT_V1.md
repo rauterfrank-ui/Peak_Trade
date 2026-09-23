@@ -151,7 +151,7 @@ Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
 | `src.execution.pipeline.OrderIntent` | `src/execution/pipeline.py` | `OrderIntent` | PRODUCTIVE_LEGACY_OWNER | REACHABLE_PRODUCTIVE | false | false | false |
 | `src.execution.adapters.base_v1.OrderIntentV1` | `src/execution/adapters/base_v1.py` | `OrderIntentV1` | PRODUCTIVE_LEGACY_OWNER | REACHABLE_PRODUCTIVE | false | false | false |
 
-**Separate, already-complete contract:** `direct_submission_surface_contract_v1` (PR #5301) remains the freeze for the five direct-submission surfaces and is **not** duplicated here.
+**Separate, already-complete contract:** `direct_submission_surface_contract_v1` (PR #5301; CURRENT tree count = 4 after #6181 removed historical Kraken) remains the freeze for the four current-tree direct-submission surfaces and is **not** duplicated here.
 
 **Out of scope / next candidate:** `risk_sizing_owner_and_bypass_surface_contract_v1` (exact freeze of five Risk/Sizing decision owners and five bypass paths) is **not** part of this slice.
 

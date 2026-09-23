@@ -2,33 +2,31 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "124fea4b35e8b9deb83815bb8e78c57476b6243a",
+  "base_sha": "d647fffd7cc976d88d5d889537c4439f5077fec5",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "B05 owner-topology operator adjudication: structured map source domain status and open_epistemic record statement updated; derived views regenerated. No new authority edges or automatic closure.",
+  "reason": "B05 inventory SSOT baseline drift repair: remove obsolete archive_historical CURRENT-tree pin (owner-deleted #6580; Atlas genealogy retained); align stale risk-sizing cross-check DIRECT_SUBMISSION expectations to authoritative legacy count=4 (distinct from BYPASS_COUNT=5). Structured open-record statement updated; derived authority view regenerated. AUTHORITY=NONE; no runtime rewire; bypass fates remain UNKNOWN; C2/topology unchanged.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-    "config/governance/risk_sizing_caller_owner_topology_contract_v0.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1.md",
+    "docs/governance/LEGACY_ORDER_INTENT_INVENTORY_SSOT_V1.md",
     "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "tests/governance/test_risk_sizing_authority_decision_contract_freeze_v1.py",
+    "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
+    "tests/governance/test_risk_sizing_caller_owner_topology_contract_v0.py",
+    "tests/governance/test_risk_sizing_output_consumption_overwrite_contract_v0.py",
     "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
-    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
+    "tests/governance/test_risk_sizing_units_dimensions_contract_v0.py",
+    "tests/governance/test_risk_sizing_unresolved_final_quantity_provenance_contract_v0.py"
   ],
-  "changed_paths_sha256": "52b590f3a10a29c229e7b763ed4267414fb642a91afaeca7644637ad1f734228",
+  "changed_paths_sha256": "8851faddace3a5b98b39fac4003114cdf7a6b43fffaf63cf83ff8b893c1d8332",
   "evidence_refs": [
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "config/governance/legacy_order_intent_inventory_ssot_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "covered_candidate_paths": [
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md"
   ]
 }
