@@ -174,11 +174,11 @@
     {
       "id": "capital_risk_sizing",
       "tier": "FIRST_CLASS",
-      "role": "Risk-sizing owner string and B05 unresolved inventory are both present and not reconciled by this map.",
-      "canonical_owner_ref": "UNRESOLVED_SEE_OPEN_RECORD:b05_vs_singular_risk_owner",
-      "authority_class": "CONFLICTING",
-      "lifecycle": "OWNER_UNRESOLVED",
-      "status": "CONFLICTING",
+      "role": "MV2 intent-bound quantity algebra adjudicated to CRS; repo-wide owner UNRESOLVED; parallel bypass owners remain (see open record b05_vs_singular_risk_owner).",
+      "canonical_owner_ref": "src.governance.capital_risk_sizing_v1 (mv2_governance_intent_bound quantity algebra only)",
+      "authority_class": "PARTIAL",
+      "lifecycle": "MV2_SCOPE_ADJUDICATED_REPO_WIDE_UNRESOLVED",
+      "status": "PARTIAL",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -1497,7 +1497,7 @@
     {
       "id": "b05_vs_singular_risk_owner",
       "epistemic_class": "CONFLICTING",
-      "statement": "B05 canonical risk sizing owner is UNRESOLVED against the singular full-core string, STEP_29P, CRS module, and the five-owner inventory.",
+      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity).",
       "evidence_refs": [
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_owner_inventory_ssot_v1.json",

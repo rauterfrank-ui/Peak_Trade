@@ -7,7 +7,7 @@ AUTHORITY=NONE
 Open epistemic records are projected, not closed.
 
 - id=account_equity_blocks class=CONFLICTING statement=Adjacent account-equity blocks disagree, the owner stays UNRESOLVED, and GOVERNED_PRODUCER_CREATED is false beside an existing package.
-- id=b05_vs_singular_risk_owner class=CONFLICTING statement=B05 canonical risk sizing owner is UNRESOLVED against the singular full-core string, STEP_29P, CRS module, and the five-owner inventory.
+- id=b05_vs_singular_risk_owner class=CONFLICTING statement=Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity).
 - id=limit_names_vs_equity_collapse class=CONFLICTING statement=Limit names, the equity collapse onto four CRS limits, and offline dynamic fail-closed are three descriptions.
 - id=live_authorized_cap2_vs_full_core class=CONFLICTING statement=Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token.
 - id=m4_nongoals_vs_modules class=CONFLICTING statement=M4 non-goals disagree with later M5 through M10 modules that exist.

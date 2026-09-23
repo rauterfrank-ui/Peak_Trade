@@ -2,24 +2,33 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "99e6808ad29bf5c162f3951629e9d8935cb7b533",
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "Required-check SSOT reconcile with sanitized branch-ruleset evidence only. No structured map source, derived view, or authority projection change.",
+  "base_sha": "124fea4b35e8b9deb83815bb8e78c57476b6243a",
+  "verdict": "MAP_UPDATE_REQUIRED",
+  "reason": "B05 owner-topology operator adjudication: structured map source domain status and open_epistemic record statement updated; derived views regenerated. No new authority edges or automatic closure.",
   "changed_paths": [
-    "config/ci/required_status_checks.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
-    "tests/ci/test_exact_head_ready_reuse.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_caller_owner_topology_contract_v0.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1.md",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "tests/governance/test_risk_sizing_authority_decision_contract_freeze_v1.py",
+    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
+    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "5572f591e93e037c5ba5168070f196c75853f691a66bbe901da1aa4215627a17",
+  "changed_paths_sha256": "52b590f3a10a29c229e7b763ed4267414fb642a91afaeca7644637ad1f734228",
   "evidence_refs": [
-    "config/ci/required_status_checks.json",
-    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json"
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "covered_candidate_paths": [
-    "config/ci/required_status_checks.json",
-    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
-    "tests/ci/test_exact_head_ready_reuse.py"
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ]
 }
