@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1` |
+| `RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 Concept PDF CURRENT MV2+DP alignment v1 catalog entry: documentation-only addendum binding integrated replay SSOT from #6764. No runtime gate or cutover. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- V3.2 D26 platform-unified native vs candidate baseline evidence v1: read-only classification/composition over integrated replay and F1/DDO/optimization evidence. No trading authority or productive join. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1
+- modified_by=V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -7432,7 +7432,26 @@ entities:
       - config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json
     notes: >-
       Repo-hosted alignment addendum for external Concept v3/v3.1/v3.2 PDF; binds integrated replay SSOT
-      and owner graph from #6764. No PDF body replacement; D26/D27 remain PARTIAL. ATLAS_AUTHORITY=NONE.
+      and owner graph from #6764. No PDF body replacement; D27 remains PARTIAL. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 D26 platform-unified native vs candidate baseline evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1
+    source_paths:
+      - src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py
+    evidence_sources:
+      - src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py
+      - src/governance/integrated_replay_native_baseline_evidence_adapter_v1.py
+      - tests/governance/test_platform_unified_native_vs_candidate_baseline_evidence_v1.py
+      - docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md
+      - config/governance/v32_d26_platform_unified_native_vs_candidate_baseline_evidence_closure_v1_decision_v1.json
+    notes: >-
+      Read-only D26 classification/composition over integrated replay, F1 research, DDO counterfactual,
+      and optimization experiment evidence. No trading authority or productive join. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
     kind: RUNTIME_COMPONENT

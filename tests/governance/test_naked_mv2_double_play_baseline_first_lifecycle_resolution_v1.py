@@ -57,6 +57,7 @@ def test_decision_config_aligns_with_binding() -> None:
     assert decision["owner_decision_required_for_productive_cutover"] is False
     assert decision["expected_d24_verdict"] == "PROVEN_CURRENT"
     assert decision["expected_d25_verdict"] == "PROVEN_CURRENT"
+    assert decision["expected_d26_verdict"] == "PROVEN_CURRENT"
     assert decision["current_mv2_dp_decision_ssot"] == CURRENT_MV2_DP_DECISION_SSOT
     assert binding["current_mv2_dp_decision_ssot"] == CURRENT_MV2_DP_DECISION_SSOT
     assert binding["current_productive_entrypoint"] == CURRENT_PRODUCTIVE_ENTRYPOINT
@@ -66,16 +67,17 @@ def test_decision_config_aligns_with_binding() -> None:
     assert binding["optimization_universe_join_authorized"] is False
 
 
-def test_d24_d25_proven_d26_d27_partial() -> None:
+def test_d24_d25_d26_proven_d27_partial() -> None:
     rows = adjudicate_v32_baseline_first_requirements_v1(repo_root=REPO_ROOT)
     by_id = {r.requirement_id: r for r in rows}
     assert by_id["D24"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert by_id["D24"].earliest_missing_edge is None
     assert by_id["D25"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert by_id["D25"].earliest_missing_edge is None
-    assert by_id["D26"].verdict == AdjudicationVerdict.PARTIAL_CURRENT
+    assert by_id["D26"].verdict == AdjudicationVerdict.PROVEN_CURRENT
+    assert by_id["D26"].earliest_missing_edge is None
     assert by_id["D27"].verdict == AdjudicationVerdict.PARTIAL_CURRENT
-    assert earliest_missing_edge_v1(rows) == by_id["D26"].earliest_missing_edge
+    assert earliest_missing_edge_v1(rows) == by_id["D27"].earliest_missing_edge
 
 
 def test_earliest_gap_not_cutover_related() -> None:
@@ -83,7 +85,7 @@ def test_earliest_gap_not_cutover_related() -> None:
     edge = earliest_missing_edge_v1(rows)
     assert edge is not None
     assert "cutover" not in edge.lower()
-    assert edge == EARLIEST_TRUE_REMAINING_GAP or "platform_wide" in edge
+    assert edge == EARLIEST_TRUE_REMAINING_GAP or "lifecycle" in edge or "test_entry" in edge
 
 
 def test_replay_ssot_and_productive_entrypoint_unchanged() -> None:

@@ -112,7 +112,7 @@ D24/D25 adjudication (unchanged from #6764):
 | --- | --- |
 | D24 | `PROVEN_CURRENT` |
 | D25 | `PROVEN_CURRENT` |
-| D26 | `PARTIAL_CURRENT` |
+| D26 | `PROVEN_CURRENT` |
 | D27 | `PARTIAL_CURRENT` |
 
 ## 5. Phase C — historical fidelity
@@ -122,19 +122,18 @@ D24/D25 adjudication (unchanged from #6764):
 - v3.1-Terminologie-Ergänzungen (`GOVERNED_TRADING_STACK`, …) bleiben gültig und werden nicht rückwirkend entfernt.
 - Alignment erfolgt über **versioniertes Repo-Addendum**, nicht durch Umschreiben der PDF.
 
-## 6. Phase D — D26 boundary (explicit remaining gap)
+## 6. Phase D — D26 closure (separate bounded WP)
+
+D26 is closed in:
+`docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md`
 
 ```text
-D26_STATUS=PARTIAL_CURRENT
-D26_IMPLEMENTED=false
-EARLIEST_TRUE_REMAINING_TECHNICAL_GAP=platform_unified_native_vs_candidate_baseline_evidence_schema
+D26_STATUS=PROVEN_CURRENT
+D26_IMPLEMENTED=true
+EARLIEST_TRUE_REMAINING_TECHNICAL_GAP=test_entry_gate_defined_not_lifecycle_enforced_globally
 ```
 
-Keine neue Evidence-Schema-Authority aus dieser Dokumentation. Referenzen nur auf **bestehende** CURRENT-Strukturen:
-
-- `docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json` (passive layer trace)
-- F1 counterfactual baseline owner ref in V32 composite binding
-- `src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py` D26 adjudication notes
+This alignment WP does not implement D26; it references the D26 closure spec and updated adjudication.
 
 ## 7. Non-goals
 

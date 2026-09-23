@@ -83,7 +83,7 @@ Layered-L1–L10-Orchestrator ist Productive Decision-SSOT.
 | --- | --- | --- |
 | D24 | `PROVEN_CURRENT` | Productive path → integrated replay; optimization join blocked |
 | D25 | `PROVEN_CURRENT` | Scope/switch owners in replay SSOT |
-| D26 | `PARTIAL_CURRENT` | Platform-wide native vs candidate baseline evidence schema **not** unified — **do not close via docs** |
+| D26 | `PROVEN_CURRENT` | Closed via `V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1` (read-only composition) |
 | D27 | `PARTIAL_CURRENT` | Research-after-baseline defined; not globally lifecycle-enforced |
 | D28–D29 | Concept intent | Unchanged promotion/authority invariants; see v3.1 §21 |
 

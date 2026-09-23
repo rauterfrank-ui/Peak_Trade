@@ -18,9 +18,10 @@
   "pdf_stale_items_found": 15,
   "d24_status": "PROVEN_CURRENT",
   "d25_status": "PROVEN_CURRENT",
-  "d26_status": "PARTIAL_CURRENT",
+  "d26_status": "PROVEN_CURRENT",
   "d27_status": "PARTIAL_CURRENT",
-  "d26_implemented": false,
-  "earliest_true_remaining_technical_gap": "platform_unified_native_vs_candidate_baseline_evidence_schema",
+  "d26_implemented": true,
+  "earliest_true_remaining_technical_gap": "test_entry_gate_defined_not_lifecycle_enforced_globally",
+  "d26_closure_spec": "docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md",
   "pdf_update_required_in_predecessor_wp": false
 }
