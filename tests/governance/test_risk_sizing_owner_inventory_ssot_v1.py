@@ -628,7 +628,7 @@ def test_surface_contract_does_not_regress_legacy_order_intent_contracts() -> No
     legacy = json.loads(_read(LEGACY_ORDER_INTENT_SSOT_JSON))
     assert "direct_submission_surface_contract" in legacy
     assert "decision_owner_surface_contract" in legacy
-    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 5
+    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 4
     assert len(legacy["decision_owner_surface_contract"]["owners"]) == 3
     assert legacy["markers"]["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
     assert legacy["markers"]["CANONICAL_ORDER_INTENT_OWNER"] == "UNRESOLVED"

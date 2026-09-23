@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-09-17T22:30:03.526749+00:00",
+  "generated_at_utc": "2026-09-23T16:33:34.442004+00:00",
   "git_sha": "4c7ca76134750d8676d0754688eeb8c975d67a43",
   "tool_version": "1.0.0",
   "scan_stats": {
@@ -8,7 +8,7 @@
     "scanned_files": 2710,
     "total_references": 16658
   },
-  "missing_count": 191,
+  "missing_count": 190,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -608,12 +608,6 @@
       "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
       "line_number": 813,
       "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-      "line_number": 87,
-      "target": "src/risk/_archive/position_sizer_old_backup.py",
       "link_text": null
     },
     {

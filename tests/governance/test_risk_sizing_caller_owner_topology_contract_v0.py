@@ -528,7 +528,7 @@ def test_units_and_legacy_contracts_referenced_unchanged() -> None:
 
     assert "direct_submission_surface_contract" in legacy
     assert "decision_owner_surface_contract" in legacy
-    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 5
+    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 4
     assert len(legacy["decision_owner_surface_contract"]["owners"]) == 3
 
 

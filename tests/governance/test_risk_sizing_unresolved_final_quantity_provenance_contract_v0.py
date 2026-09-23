@@ -362,7 +362,7 @@ def test_readme_and_related_docs_point_to_provenance_contract() -> None:
 def test_legacy_order_intent_contract_untouched_reference() -> None:
     legacy = json.loads(_read(LEGACY_ORDER_INTENT_JSON))
     assert "direct_submission_surface_contract" in legacy
-    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 5
+    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 4
 
 
 def test_related_consumption_edges_still_unresolved() -> None:

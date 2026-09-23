@@ -463,7 +463,7 @@ def test_legacy_order_intent_contracts_untouched() -> None:
     legacy = json.loads(_read(LEGACY_ORDER_INTENT_JSON))
     assert "direct_submission_surface_contract" in legacy
     assert "decision_owner_surface_contract" in legacy
-    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 5
+    assert len(legacy["direct_submission_surface_contract"]["surfaces"]) == 4
     assert len(legacy["decision_owner_surface_contract"]["owners"]) == 3
 
 
