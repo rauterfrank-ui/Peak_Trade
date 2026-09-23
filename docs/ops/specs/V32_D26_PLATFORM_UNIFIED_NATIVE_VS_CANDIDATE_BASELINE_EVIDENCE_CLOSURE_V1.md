@@ -51,7 +51,7 @@ NEW_CONTRACT_REQUIRED=false
 
 Producer adapters (read-only, non-hot-path):
 
-- `platform_unified_baseline_evidence_integrated_replay_adapter_v1`
+- `integrated_replay_native_baseline_evidence_adapter_v1` (governance package)
 - `baseline_evidence_classification_adapter_v1` (F1 research execution package)
 
 ## 3. Influence classification invariants

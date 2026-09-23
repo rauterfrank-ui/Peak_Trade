@@ -53,7 +53,7 @@ NATIVE_PRODUCER_OWNER: Final[str] = (
     "run_integrated_offline_trading_logic_replay_v1"
 )
 NATIVE_EVIDENCE_ADAPTER: Final[str] = (
-    "trading.master_v2.platform_unified_baseline_evidence_integrated_replay_adapter_v1."
+    "src.governance.integrated_replay_native_baseline_evidence_adapter_v1."
     "bind_integrated_replay_native_baseline_classification_v1"
 )
 F1_CANDIDATE_ADAPTER: Final[str] = (
@@ -577,8 +577,7 @@ def prove_d26_platform_unified_baseline_evidence_v1(*, repo_root: Path | None = 
         root / DECISION_CONFIG,
         root / NORMATIVE_SPEC,
         root / "src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py",
-        root
-        / "src/trading/master_v2/platform_unified_baseline_evidence_integrated_replay_adapter_v1.py",
+        root / "src/governance/integrated_replay_native_baseline_evidence_adapter_v1.py",
         root
         / "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1"
         / "baseline_evidence_classification_adapter_v1.py",

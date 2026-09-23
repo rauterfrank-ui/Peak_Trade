@@ -37,7 +37,7 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     run_integrated_offline_trading_logic_replay_v1,
 )
-from trading.master_v2.platform_unified_baseline_evidence_integrated_replay_adapter_v1 import (
+from src.governance.integrated_replay_native_baseline_evidence_adapter_v1 import (
     bind_integrated_replay_native_baseline_classification_v1,
 )
 

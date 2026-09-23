@@ -7445,6 +7445,7 @@ entities:
       - src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py
     evidence_sources:
       - src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py
+      - src/governance/integrated_replay_native_baseline_evidence_adapter_v1.py
       - tests/governance/test_platform_unified_native_vs_candidate_baseline_evidence_v1.py
       - docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md
       - config/governance/v32_d26_platform_unified_native_vs_candidate_baseline_evidence_closure_v1_decision_v1.json

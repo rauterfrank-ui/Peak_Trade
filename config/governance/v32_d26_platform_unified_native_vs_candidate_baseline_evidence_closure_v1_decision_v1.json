@@ -9,7 +9,7 @@
   "baseline_evidence_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_canonical_trading_decision_evidence_v1",
   "candidate_evidence_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_f1_parameter_research_candidate_result_v1",
   "comparison_join_owner": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.derive_comparison_context_identity_v1",
-  "native_producer_adapter": "trading.master_v2.platform_unified_baseline_evidence_integrated_replay_adapter_v1.bind_integrated_replay_native_baseline_classification_v1",
+  "native_producer_adapter": "src.governance.integrated_replay_native_baseline_evidence_adapter_v1.bind_integrated_replay_native_baseline_classification_v1",
   "f1_candidate_adapter": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.baseline_evidence_classification_adapter_v1.bind_f1_parameter_research_candidate_baseline_classification_v1",
   "d26_status": "PROVEN_CURRENT",
   "d26_implemented": true,

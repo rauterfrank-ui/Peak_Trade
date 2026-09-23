@@ -276,7 +276,7 @@ def adjudicate_v32_baseline_first_requirements_v1(
         )
         d26_wiring = (
             "src/governance/platform_unified_native_vs_candidate_baseline_evidence_v1.py",
-            "src/trading/master_v2/platform_unified_baseline_evidence_integrated_replay_adapter_v1.py",
+            "src/governance/integrated_replay_native_baseline_evidence_adapter_v1.py",
             "src/research/canonical_volatility_numeric_max_age_parameter_research_execution_v1/"
             "baseline_evidence_classification_adapter_v1.py",
         )
