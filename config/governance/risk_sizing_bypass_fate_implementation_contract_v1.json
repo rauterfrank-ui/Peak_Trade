@@ -29,10 +29,12 @@
     "AUTHORITY_EFFECT": "NONE",
     "RUNTIME_EFFECT": "NONE",
     "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
-    "FATE_IMPLEMENTATION_EXECUTED": false,
-    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 4,
+    "FATE_IMPLEMENTATION_EXECUTED": true,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 5,
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
     "S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED": true,
+    "S3_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_EXECUTED": true,
+    "B05_FATE_PHASE_STATUS": "CLOSED",
     "RUNTIME_MUTATION_EXECUTED": false,
     "RUNTIME_REWIRE_EXECUTED": false,
     "BYPASS_SET_CHANGED": false,
@@ -275,10 +277,12 @@
       "inventored_source_path": "src/backtest/engine.py",
       "inventored_caller_symbol": "BacktestEngine.run_realistic",
       "inventored_target_symbol": "size_offline_evaluation_entry_v1",
-      "fate_implementation_status": "NOT_STARTED",
-      "fate_implementation_executed": false,
-      "completion_evidence_satisfied": false,
-      "minimum_implementation_requirements_verified": false,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+      "s3_implementation_slice": "WP_B05_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_V1",
       "minimum_implementation_requirements": [
         "Apply RESEARCH_OR_OFFLINE_SCOPE_ONLY minimum_implementation_requirements for stable_id BYPASS_OFFLINE_EVAL_SIZING_CONTRACT.",
         "Owner scope offline_economic_evaluation remains non-productive-system-evidence authority; INTEND_REBIND_TO_CRS is not adjudicated."
@@ -326,7 +330,38 @@
     "provenance_binding_contract_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
     "global_fate_implementation_executed_remains_false": true,
     "s1_keep_parallel_implementations_unchanged": true,
-    "offline_eval_fate_implementation_status": "NOT_STARTED"
+    "offline_eval_fate_implementation_status": "COMPLETE"
+  },
+  "s3_research_or_offline_scope_fate_implementation_v1": {
+    "workpackage_id": "WP_B05_RESEARCH_OR_OFFLINE_SCOPE_FATE_IMPLEMENTATION_V1",
+    "implemented_against_main_sha": "8a9d312dd2f87245a4520f382391146d117c418d",
+    "authority_effect": "NONE",
+    "runtime_mutation_executed": false,
+    "runtime_rewire_executed": false,
+    "productive_runtime_semantics_changed": false,
+    "bypass_ids_implemented_sorted": [
+      "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+    ],
+    "provenance_binding_contract_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+    "global_fate_implementation_executed_remains_false": true,
+    "s1_keep_parallel_implementations_unchanged": true,
+    "s2_governance_exclude_implementations_unchanged": true,
+    "offline_or_simulation_is_not_authority_preserved": true
+  },
+  "bypass_fate_implementation_closeout_v1": {
+    "workpackage_id": "BOUNDED_WP_B05_BYPASS_FATE_IMPLEMENTATION_CLOSEOUT_V1",
+    "closed_against_main_sha": "8a9d312dd2f87245a4520f382391146d117c418d",
+    "authority_effect": "NONE",
+    "runtime_mutation_executed": false,
+    "runtime_rewire_executed": false,
+    "productive_runtime_semantics_changed": false,
+    "global_fate_implementation_executed_set_true": true,
+    "per_bypass_fate_implementation_executed_count": 5,
+    "b05_fate_phase_status": "CLOSED",
+    "conversion_ready_unchanged": false,
+    "c2_input_authorities_unchanged": "UNRESOLVED",
+    "canonical_risk_sizing_owner_unchanged": "UNRESOLVED",
+    "consolidation_status_unchanged": "NOT_STARTED"
   },
   "global_completion_rule": {
     "fate_implementation_executed_marker": {
@@ -369,7 +404,7 @@
     "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED",
     "risk_sizing_owner_inventory_ssot_v1": "INVENTORY_REACHABILITY_UNCHANGED_IMPLEMENTATION_REF_ADDED",
     "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED",
-    "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_AND_S2_GOVERNANCE_EXCLUDE_PINS",
+    "risk_sizing_bypass_fate_provenance_binding_v1": "S1_S2_AND_S3_ALL_FIVE_BYPASS_PROVENANCE_PINS",
     "risk_sizing_productive_input_provenance_binding_v1": "COMPLETE_SEPARATE_UNCHANGED_COMPANION_C2_BINDING",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_UNCHANGED"
   }

@@ -186,7 +186,16 @@
       "callee_symbol": "size_offline_evaluation_entry_v1",
       "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
       "owner_source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
-      "reachability": "REACHABLE_PRODUCTIVE"
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "research_or_offline_scope_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+        "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+        "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+        "host_scope_label": "offline_economic_evaluation",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "offline_or_simulation_is_not_authority_preserved": true,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "edge_id": "EDGE_FEEDBACK_CALC_POSITION_SIZE",
@@ -229,7 +238,17 @@
       "callee_symbol": "size_offline_evaluation_entry_v1",
       "owner_id": "backtest.offline_evaluation_sizing_contract_v1",
       "owner_source_path": "src/backtest/offline_evaluation_sizing_contract_v1.py",
-      "reachability": "REACHABLE_PRODUCTIVE"
+      "reachability": "REACHABLE_PRODUCTIVE",
+      "research_or_offline_scope_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+        "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+        "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+        "companion_caller_shares_scope_only_provenance_class": true,
+        "host_scope_label": "offline_economic_evaluation",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "offline_or_simulation_is_not_authority_preserved": true,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     }
   ],
   "companion_edges": [
@@ -334,7 +353,17 @@
       "source_path": "src/backtest/engine.py",
       "caller_symbol": "BacktestEngine.run_realistic",
       "target_symbol": "size_offline_evaluation_entry_v1",
-      "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT"
+      "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT",
+      "fate_implementation_v1": {
+        "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+        "fate_implementation_status": "COMPLETE",
+        "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+        "host_scope_label": "offline_economic_evaluation",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "offline_or_simulation_is_not_authority_preserved": true,
+        "canonical_for_mv2_intent_bound_scope": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     }
   ],
   "pass_through_edges": [
@@ -383,7 +412,15 @@
       "owner_source_path": "src/risk/position_sizer.py",
       "caller_is_also_primary_owner": true,
       "caller_owner_id": "backtest.offline_evaluation_sizing_contract_v1",
-      "notes": "Policy owner wraps legacy calc_position_size on REJECT path; dual-owner ambiguity retained unresolved."
+      "notes": "Policy owner wraps legacy calc_position_size on REJECT path; dual-owner ambiguity retained unresolved.",
+      "research_or_offline_scope_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+        "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+        "fate_implementation_status": "COMPLETE",
+        "wrap_edge_does_not_elevate_to_productive_system_evidence_authority": true,
+        "offline_or_simulation_is_not_authority_preserved": true,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      }
     },
     {
       "edge_id": "EDGE_SWEEPS_BUILD_POSITION_SIZER",
