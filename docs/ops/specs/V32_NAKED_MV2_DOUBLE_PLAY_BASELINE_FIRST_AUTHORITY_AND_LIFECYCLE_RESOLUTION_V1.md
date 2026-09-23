@@ -15,6 +15,8 @@ WORKPACKAGE_ID=V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_
 NEW_BASELINE_GATE_RUNTIME_AUTHORITY=false
 EXTERNAL_EFFECT_AUTHORIZED=false
 TRADING_DECISION_AUTHORITY_CHANGED=false
+CURRENT_MV2_DP_DECISION_SSOT=run_integrated_offline_trading_logic_replay_v1
+P5_ADJUDICATION=P5_CUTOVER_OBSOLETE_CURRENT_REPLAY_IS_CANONICAL
 ```
 
 Machine-readable decision:
@@ -27,45 +29,49 @@ Code owner:
 
 Forensically **bind** Concept PDF v3.2 §22 baseline-first semantics to **existing** canonical
 owners. This WP does **not** introduce a new runtime baseline gate, trading authority, or
-research executor.
+research executor. It does **not** require P5 productive cutover.
 
 ## 2. Composite baseline-first owner (reuse)
 
-| Role | Canonical owner (already on main) |
+| Role | Canonical owner (CURRENT main) |
 | --- | --- |
-| Trading decision SSOT | `run_integrated_offline_trading_logic_replay_v1` (hardening decision) |
+| **Trading decision SSOT** | `run_integrated_offline_trading_logic_replay_v1` |
+| **Productive cycle host** | `run_current_productive_master_v2_runtime_cycle_v1` → replay |
 | Outward authority / mutation deny | `naked_mv2_double_play_core_authority_hardening_v1` |
-| Native L1–L10 semantics | `naked_mv2_dp_explicit_layered_core_v1` |
+| Layered L1–L10 (mechanical articulation) | `naked_mv2_dp_explicit_layered_core_v1` — **not** decision SSOT |
+| Optional P5 bind / CZ-4 delegation | Inside replay input when explicitly requested; cutover **false** |
 | Passive layer trace evidence | `layer_separation_evidence_v1.json` |
-| Optimization surface ordering | `OPTIMIZATION_SURFACE_FAMILIES_PRE_TEST_PREPARATION_V1` (`predecessor_closed=NAKED_MV2…`) |
-| Learning → Optimization join | `learning_outcome_evidence_ingest_and_state` (`optimization_universe_join_authorized=false`) |
+| Dynamic scope (productive) | `generate_deterministic_scope_event` within integrated replay |
+| Bull/Bear / SideState switch | `double_play_state.transition_state` within integrated replay |
+| Optimization surface ordering | Pre-test predecessor `NAKED_MV2_DOUBLE_PLAY_CORE_AUTHORITY_HARDENING_V1` |
+| Learning → Optimization join | `optimization_universe_join_authorized=false` |
 | F1 research counterfactual baseline | `BASELINE_CANDIDATE_ID=UNRESOLVED_MAX_AGE_NON_ENFORCING` |
-| Governed parameter return | M10 seam join + optional seam on integrated replay (non-enforcing) |
 
-**NAKED_BASELINE_OWNER** = composite binding function `composite_baseline_first_binding_v1`
-(not a new runtime decision engine).
+**NAKED_BASELINE_OWNER** = `composite_baseline_first_binding_v1` (composite index, not a runtime gate).
 
 ## 3. Baseline completion semantics
 
-`BASELINE_COMPLETION_SEMANTICS` = governance predecessor chain closed + passive layer
-separation evidence present + research counterfactual baseline defined for F1 + **no**
-P5/layered-core productive cutover (`P5_AUTHORITY_CUTOVER_AUTHORIZED=false`).
+`BASELINE_COMPLETION_SEMANTICS` = integrated replay SSOT reachable via the productive cycle
+with canonical natural inputs, governance predecessor closed, passive layer evidence present,
+F1 counterfactual research baseline defined, optimization productive join blocked.
 
-Baseline completion is **not** equivalent to parameter promotion or enforcement activation.
+**P5/layered-core productive cutover is explicitly not required** (`P5_AUTHORITY_CUTOVER_AUTHORIZED=false`).
 
-## 4. D24–D27 adjudication
+## 4. D24–D27 adjudication (CURRENT main)
 
-Use `adjudicate_v32_baseline_first_requirements_v1()` for machine-readable verdicts.
-Expected CURRENT main posture after this WP:
+| ID | Expected verdict | Notes |
+| --- | --- | --- |
+| **D24** | `PROVEN_CURRENT` | Productive path → integrated replay; no optimization join |
+| **D25** | `PROVEN_CURRENT` | Scope/switch owners in replay SSOT; cutover not required |
+| **D26** | `PARTIAL_CURRENT` | Platform-wide native vs candidate baseline evidence not unified |
+| **D27** | `PARTIAL_CURRENT` | TEST_ENTRY_GATE defined; not globally lifecycle-enforced |
 
-- **D24–D27**: `PARTIAL_CURRENT` (capability present; productive layered-core cutover and global
-  test-phase enforcement not proven).
-- **No new Baseline Gate Owner** required for authority semantics.
+`earliest_true_remaining_gap` = platform unified baseline evidence schema + PDF v3.2 wording alignment (separate docs task).
 
 ## 5. Non-goals
 
 - P5 productive cutover enablement
+- Layered core as parallel trading decision writer
 - GAP-01 productive Learning→Optimization wiring
-- M10 scope expansion, F2/F3/F5 surface changes
-- Optimization search/OOS execution
-- External effect or self-deploy
+- M10 / F2 / F3 / F5 expansion
+- PDF edits in this PR
