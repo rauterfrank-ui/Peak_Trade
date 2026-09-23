@@ -87,10 +87,10 @@ def test_all_five_bypasses_bound_to_adjudicated_fates_with_requirements() -> Non
         assert row["completion_evidence"]
         assert row["forbidden_implicit_effects"]
         assert row["evidence_provenance_effect"]
-        token = row["fate_token_implementation_semantics_ref"]
-        token_sem = payload["fate_token_implementation_semantics"][token]
-        assert row["runtime_mutation_required"] == token_sem["runtime_mutation_required"]
-        assert row["separate_runtime_go_required"] == token_sem["separate_runtime_go_required"]
+        fate_semantics_key = row["fate_token_implementation_semantics_ref"]
+        fate_sem = payload["fate_token_implementation_semantics"][fate_semantics_key]
+        assert row["runtime_mutation_required"] == fate_sem["runtime_mutation_required"]
+        assert row["separate_runtime_go_required"] == fate_sem["separate_runtime_go_required"]
 
 
 def test_fate_token_semantics_align_with_vocabulary_runtime_go_pins() -> None:
@@ -98,18 +98,18 @@ def test_fate_token_semantics_align_with_vocabulary_runtime_go_pins() -> None:
     vocabulary = _load(VOCABULARY_JSON)
     fate_sem = vocabulary["fate_token_semantics"]
     impl_sem = payload["fate_token_implementation_semantics"]
-    for token in (
+    for fate_semantics_key in (
         "KEEP_PARALLEL_NON_CANONICAL",
         "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
         "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
     ):
-        assert impl_sem[token]["runtime_mutation_required"] is False
-        vocab_go = fate_sem[token]["later_implementation_requires_separate_runtime_go"]
-        if token == "KEEP_PARALLEL_NON_CANONICAL":
-            assert impl_sem[token]["separate_runtime_go_required"] is False
+        assert impl_sem[fate_semantics_key]["runtime_mutation_required"] is False
+        vocab_go = fate_sem[fate_semantics_key]["later_implementation_requires_separate_runtime_go"]
+        if fate_semantics_key == "KEEP_PARALLEL_NON_CANONICAL":
+            assert impl_sem[fate_semantics_key]["separate_runtime_go_required"] is False
             assert vocab_go is False
         else:
-            assert impl_sem[token]["separate_runtime_go_required"] is True
+            assert impl_sem[fate_semantics_key]["separate_runtime_go_required"] is True
             assert vocab_go is True
 
 
