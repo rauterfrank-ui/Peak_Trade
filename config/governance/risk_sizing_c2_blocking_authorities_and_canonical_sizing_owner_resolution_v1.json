@@ -1,0 +1,296 @@
+{
+  "contract_name": "risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1",
+  "contract_id": "OBL_B05_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_c2_blocking_authorities_canonical_sizing_owner_resolution_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "cad991ec018d1437bcaad6e069deade6b8d1c4ec",
+  "workpackage_id": "BOUNDED_WP_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1",
+  "bound_prior_adjudication": {
+    "pr_6760": "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "pr_6761": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+    "pr_6762": "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+    "start_state_preservation_required": true
+  },
+  "semantics": "C2_UPSTREAM_BLOCKING_AUTHORITY_AND_REPO_WIDE_SIZING_OWNER_FORENSIC_ADJUDICATION_NO_RUNTIME_NO_CONVERSION_NO_OWNER_INVENTION",
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_BOUNDED_WP_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1",
+    "scoped_operator_go_present": true
+  },
+  "markers": {
+    "RISK_SIZING_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "RUNTIME_BINDINGS_ADDED": 0,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "SRC_CHANGED": false,
+    "CONVERSION_READY": false,
+    "CONVERSION_EXECUTED": false,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "Q4_STATUS": "OPEN_UNADJUDICATED",
+    "C2_STATUS": "UNRESOLVED",
+    "C2_CLOSURE_RULE_SATISFIED": false,
+    "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
+    "C2_DOMAINS_CONFLICTING_COUNT": 1,
+    "C2_DOMAINS_UNKNOWN_COUNT": 1,
+    "C2_DOMAINS_UNRESOLVED_COUNT": 1,
+    "C2_DOMAINS_PARTIAL_COUNT": 0,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "EQUITY_AUTHORITY_RESOLVED": false,
+    "REFERENCE_PRICE_AUTHORITY_RESOLVED": false,
+    "INSTRUMENT_METADATA_AUTHORITY_RESOLVED": false,
+    "SIZING_OWNER_RESOLVED": false,
+    "MAP_UPDATE_REQUIRED": true,
+    "MAP_AUTHORITY": "NONE"
+  },
+  "epistemic_legend": {
+    "1_CANONICAL_AUTHORITY": "B05 freeze, Master Runbook pins, authority_decision_contract",
+    "2_PREVIOUSLY_ADJUDICATED": "#6760-6762 contracts",
+    "3_NAVIGATION_INDEX": "Map source_v1.json",
+    "4_INTERPRETATION": "blocking_mechanism fields in this contract only",
+    "5_HYPOTHESIS": "none_claimed",
+    "6_OPEN_OR_CONFLICTING": "open_conflicts_remaining and deferred_decisions"
+  },
+  "blocker_adjudications": {
+    "A_ACCOUNT_EQUITY_AUTHORITY": {
+      "c2_input_id": "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
+      "account_equity_final_status": "CONFLICTING",
+      "equity_authority_resolved": false,
+      "canonical_b05_owner": "UNRESOLVED",
+      "epistemic_class_primary": "6_OPEN_OR_CONFLICTING",
+      "blocking_c2_mechanism": "Companion path lacks equity provenance; B05 owner chain not closed; mapping proven != authority owner closure",
+      "productive_lineage_census": {
+        "raw_source": {
+          "field": "details[ccy=USDC].availEq",
+          "transport": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+          "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+          "observation_is_not_authority": true
+        },
+        "transform": {
+          "id": "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1",
+          "module": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+          "classification": "GOVERNED_POLICY"
+        },
+        "typed_producer": {
+          "module": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+          "dimension": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+          "settlement_currency": "USDC",
+          "classification": "MODEL_SEMANTIC",
+          "producer_implementation_present": true,
+          "governed_producer_created_pin": false
+        },
+        "consumers": [
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py::bind_step_29p_typed_equity_from_risk_capital_v1",
+          "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py::evaluate_step_29p_capital_risk_admissibility_v1"
+        ],
+        "companion_absence": {
+          "paths": ["PATH_SHADOW_COMPANION", "PATH_LIVE_COMPANION"],
+          "equity_handoff": false,
+          "classification": "ABSENT_ON_COMPANION_PATH"
+        },
+        "owner_string_conflict": {
+          "epistemic_class": "6_OPEN_OR_CONFLICTING",
+          "b05_freeze": "UNRESOLVED",
+          "package_constants_owner_string": "ops.governed_productive_account_equity_authority_producer_v1",
+          "package_owner_string_is_not_b05_chain_closure": true
+        }
+      },
+      "negative_evidence": [
+        "availEq alone forbidden as 29P authority field per step_29p contract",
+        "offline replay / start_balance / portfolio monitor explicit_non_sources",
+        "GET is evidence not authority per producer module docstring"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py"
+      ],
+      "deferred_decision": "OWNER_ADJUDICATION_ACCOUNT_EQUITY_AUTHORITY_OWNER_AND_COMPANION_HANDOFF_REQUIRES_SEPARATE_GO"
+    },
+    "B_REFERENCE_PRICE_AUTHORITY": {
+      "c2_input_id": "REFERENCE_PRICE",
+      "reference_price_final_status": "UNKNOWN",
+      "reference_price_authority_resolved": false,
+      "canonical_b05_owner": "UNRESOLVED",
+      "epistemic_class_primary": "6_OPEN_OR_CONFLICTING",
+      "blocking_c2_mechanism": "Productive mark observation chain exists; no governed reference-price authority producer; price semantics must remain distinct",
+      "productive_price_census": [
+        {
+          "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+          "semantics_class": "mark_price",
+          "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+          "is_authority": false,
+          "consumer": "current_productive_master_v2_runtime_cycle_v1"
+        },
+        {
+          "identity": "src/live/shadow_session.py|src/execution/live_session.py",
+          "semantics_class": "candle_close",
+          "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+          "is_authority": false,
+          "companion_session_data_only": true
+        },
+        {
+          "identity": "src/trading/master_v2/canonical_market_context_v1.py",
+          "semantics_class": "cmc_mark_label",
+          "classification": "NAVIGATION_INDEX",
+          "is_authority": false
+        },
+        {
+          "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+          "parameter": "reference_price",
+          "classification": "MODEL_SEMANTIC",
+          "crs_consumer_offline_math_not_venue_truth": true
+        }
+      ],
+      "canonical_transform_exists": false,
+      "negative_evidence": [
+        "NO GOVERNED_PRODUCTIVE_REFERENCE_PRICE_AUTHORITY_PRODUCER on main",
+        "fill price forbidden as conversion reference in authority freeze",
+        "offline default 3500 simulation-only"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_productive_input_provenance_binding_v1.json"
+      ],
+      "deferred_decision": "OWNER_ADJUDICATION_REFERENCE_PRICE_SEMANTICS_CLASS_AND_PRODUCER_REQUIRES_SEPARATE_GO"
+    },
+    "C_INSTRUMENT_QUANTITY_METADATA_AUTHORITY": {
+      "c2_input_id": "INSTRUMENT_QUANTITY_METADATA",
+      "instrument_metadata_final_status": "UNRESOLVED",
+      "instrument_metadata_authority_resolved": false,
+      "canonical_b05_owner": "UNRESOLVED",
+      "epistemic_class_primary": "6_OPEN_OR_CONFLICTING",
+      "blocking_c2_mechanism": "Cap2.4 binds identity only; C2 metadata bundle + owner absent; CRS consumes lot_size offline inputs without owning venue truth",
+      "identity_vs_metadata_separation": {
+        "identity_authority": {
+          "cap": "Cap2.3/Cap2.4 single_selected_future",
+          "module": "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+          "type": "BoundInstrumentV1",
+          "fields": ["instrument_id", "venue_native_id", "selection_id"],
+          "reselection_forbidden": true,
+          "classification": "2_PREVIOUSLY_ADJUDICATED"
+        },
+        "quantity_metadata_surfaces_not_authority": [
+          {
+            "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+            "fields": ["lotSz", "minSz"],
+            "classification": "CURRENT_DYNAMIC_INPUT_STATE"
+          },
+          {
+            "module": "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+            "classification": "HISTORICAL_TECHNICAL_DEFAULT"
+          }
+        ],
+        "crs_required_fields_offline": {
+          "module": "src/governance/capital_risk_sizing_v1.py",
+          "fields": ["lot_size", "instrument_metadata_version"],
+          "owns_venue_account_truth": false,
+          "classification": "MODEL_SEMANTIC"
+        }
+      },
+      "negative_evidence": [
+        "BoundInstrumentV1 lacks lot/min/notional/multiplier/freshness bundle",
+        "venue_capability_snapshot and okx bounded binding not elevatable",
+        "audit_decision_class NO_PRODUCTIVE_PRODUCER in authority freeze"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json"
+      ],
+      "deferred_decision": "OWNER_ADJUDICATION_INSTRUMENT_METADATA_PRODUCER_AND_FRESHNESS_REQUIRES_SEPARATE_GO"
+    },
+    "D_CANONICAL_RISK_SIZING_OWNER": {
+      "canonical_risk_sizing_owner": "UNRESOLVED",
+      "sizing_owner_resolved": false,
+      "epistemic_class_primary": "2_PREVIOUSLY_ADJUDICATED",
+      "blocking_c2_mechanism": "C2 input owners unresolved; repo-wide singular owner not deducible from parallel productive quantity paths",
+      "productive_quantity_decision_owner_census": {
+        "repo_wide_field": "CANONICAL_RISK_SIZING_OWNER",
+        "value": "UNRESOLVED",
+        "singular_repo_wide_owner_required": false,
+        "mv2_intent_bound_quantity_algebra_owner": {
+          "module": "src.governance.capital_risk_sizing_v1",
+          "scope": "mv2_governance_intent_bound",
+          "does_not_close_repo_wide_owner": true,
+          "classification": "2_PREVIOUSLY_ADJUDICATED"
+        },
+        "step29p_admissibility_boundary": {
+          "module": "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py",
+          "is_not_crs_quantity_owner": true
+        },
+        "parallel_bypass_owners_reachable": [
+          "BYPASS_CORE_POSITION_SIZER",
+          "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+          "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+          "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+          "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+        ],
+        "b05_fate_phase_status": "CLOSED",
+        "consolidation_status": "NOT_STARTED",
+        "companion_paths": {
+          "intent": "FRACTION_DECIMAL_0_1",
+          "conversion_present": false,
+          "classification": "2_PREVIOUSLY_ADJUDICATED"
+        }
+      },
+      "composite_owner_deduction_attempt": {
+        "result": "NOT_DEDUCIBLE_FROM_EXISTING_CANONICAL_EVIDENCE",
+        "reason": "Five parallel bypass fates KEEP_PARALLEL/GOVERNANCE_EXCLUDE/RESEARCH_OR_OFFLINE_SCOPE; CRS scoped to MV2 intent-bound algebra; no adjudicated repo-wide promotion rule",
+        "classification": "4_INTERPRETATION"
+      },
+      "negative_evidence": [
+        "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT classified REQUIRES_RUNTIME_GO in bypass fate vocabulary freeze",
+        "inventory contract: DOES_NOT_PROMOTE_REPO_WIDE_OWNER",
+        "bypass implementation contract forbids promote to CANONICAL_RISK_SIZING_OWNER without separate GO"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+        "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+      ],
+      "deferred_decision": "OWNER_ADJUDICATION_REPO_WIDE_CANONICAL_RISK_SIZING_OWNER_OR_CONSOLIDATION_REQUIRES_SEPARATE_GO"
+    }
+  },
+  "c2_mechanical_reevaluation": {
+    "account_equity_final_status": "CONFLICTING",
+    "reference_price_final_status": "UNKNOWN",
+    "instrument_metadata_final_status": "UNRESOLVED",
+    "domain_proven_current_count": 0,
+    "c2_closure_rule_satisfied": false,
+    "c2_status": "UNRESOLVED",
+    "conversion_ready": false,
+    "conversion_ready_derivation": "conversion_ready requires all three input authority chains closed and companion binding; not satisfied",
+    "implemented_authority_bindings": []
+  },
+  "open_conflicts_remaining": [
+    "ACCOUNT_EQUITY: CANONICALLY_VALID mapping vs B05 UNRESOLVED vs package OWNER string vs Companion absence",
+    "REFERENCE_PRICE: mark observation vs REFERENCE_PRICE_AUTHORITY_OWNER UNRESOLVED vs candle.close not authority",
+    "INSTRUMENT: Cap24 identity vs missing governed metadata bundle",
+    "SIZING: five parallel bypass owners vs UNRESOLVED repo-wide CANONICAL_RISK_SIZING_OWNER"
+  ],
+  "deferred_decisions": [
+    "OWNER_ADJUDICATION_ACCOUNT_EQUITY_AUTHORITY_OWNER_AND_COMPANION_HANDOFF_REQUIRES_SEPARATE_GO",
+    "OWNER_ADJUDICATION_REFERENCE_PRICE_SEMANTICS_CLASS_AND_PRODUCER_REQUIRES_SEPARATE_GO",
+    "OWNER_ADJUDICATION_INSTRUMENT_METADATA_PRODUCER_AND_FRESHNESS_REQUIRES_SEPARATE_GO",
+    "OWNER_ADJUDICATION_REPO_WIDE_CANONICAL_RISK_SIZING_OWNER_OR_CONSOLIDATION_REQUIRES_SEPARATE_GO",
+    "FRACTION_TO_UNITS_CONVERSION_REQUIRES_SEPARATE_GO"
+  ],
+  "related_but_separate_contracts": {
+    "risk_sizing_c2_input_authority_closure_v1": "C2_GATE_UNCHANGED",
+    "risk_sizing_c2_domain_authority_resolution_v1": "COMPANION_FORENSICS_INPUT",
+    "risk_sizing_c2_current_productive_input_authority_closure_v2": "PRODUCTIVE_LINEAGE_INPUT",
+    "risk_sizing_authority_decision_contract_freeze_v1": "B05_OWNERS_UNRESOLVED_UNCHANGED",
+    "risk_sizing_owner_inventory_ssot_v1": "FIVE_BYPASSES_PARALLEL_UNCHANGED"
+  },
+  "drift_policy": {
+    "assign_owner_without_go": "FAIL",
+    "flip_conversion_ready_without_proof": "FAIL",
+    "elevate_observation_or_identity_to_metadata_authority": "FAIL",
+    "start_consolidation_or_q4": "FAIL"
+  }
+}

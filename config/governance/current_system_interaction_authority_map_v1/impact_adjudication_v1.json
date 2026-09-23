@@ -2,28 +2,29 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "6645d6c5bddc84ec27b4f6783ae9751e17bd8e3f",
+  "base_sha": "cad991ec018d1437bcaad6e069deade6b8d1c4ec",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "C2 current productive input authority closure v2: productive lineage matrices; C2 verdicts preserved from #6761; b05_vs_singular_risk_owner updated; derived authority view regenerated. AUTHORITY=NONE.",
+  "reason": "C2 blocking authorities + canonical sizing owner resolution v1: upstream blockers A-D adjudicated; C2 verdicts preserved; b05_vs_singular_risk_owner updated; derived views regenerated. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
     "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
     "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
     "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2.md",
+    "docs/governance/RISK_SIZING_C2_BLOCKING_AUTHORITIES_AND_CANONICAL_SIZING_OWNER_RESOLUTION_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "tests/governance/test_risk_sizing_c2_current_productive_input_authority_closure_v2.py"
+    "tests/governance/test_risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.py"
   ],
-  "changed_paths_sha256": "c277cbc2e2c63e5ac8c0db15b92b9e9e29e52476c7dc43a3e5fee401563cfc8b",
+  "changed_paths_sha256": "9ae68975e9278a42489f15ee6d5c41f43daf7451273ff300e89f2908f1fbe42a",
   "evidence_refs": [
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
     "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
-    "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "covered_candidate_paths": [
-    "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
   ]
 }
