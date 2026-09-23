@@ -2,38 +2,29 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "8a9d312dd2f87245a4520f382391146d117c418d",
+  "base_sha": "32cf49502d4163b165f31860e54910a756eff2e5",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "B05 bypass fate closeout: S3 RESEARCH_OR_OFFLINE_SCOPE for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT + global FATE_IMPLEMENTATION_EXECUTED=true (5/5); b05 open record updated; derived authority view regenerated. AUTHORITY=NONE.",
+  "reason": "C2 input authority closure census: three Companion conversion inputs; C2_STATUS=UNRESOLVED; b05_vs_singular_risk_owner open record updated; derived authority view regenerated. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
-    "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
-    "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
-    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
-    "config/governance/risk_sizing_caller_owner_topology_contract_v0.json",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md",
-    "docs/governance/RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md",
-    "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md",
+    "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
+    "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "tests/governance/test_risk_sizing_bypass_fate_implementation_closeout_v1.py",
-    "tests/governance/test_risk_sizing_bypass_fate_implementation_contract_v1.py",
-    "tests/governance/test_risk_sizing_bypass_fate_operator_adjudication_v1.py",
-    "tests/governance/test_risk_sizing_bypass_governance_exclude_fate_implementation_v1.py",
-    "tests/governance/test_risk_sizing_bypass_keep_parallel_fate_implementation_v1.py",
-    "tests/governance/test_risk_sizing_bypass_research_or_offline_scope_fate_implementation_v1.py"
+    "tests/governance/test_risk_sizing_c2_input_authority_closure_v1.py"
   ],
-  "changed_paths_sha256": "0db9ac0df82ae794d27ec75ba215fdbd7554bfc8cd911a30118072989fb07932",
+  "changed_paths_sha256": "dfc8bea3db970001b0db425e59671edca057521bca7ee6ae7c71d28a7e577dac",
   "evidence_refs": [
-    "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
-    "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
-    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "covered_candidate_paths": [
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md"
+    "docs/governance/RISK_SIZING_C2_INPUT_AUTHORITY_CLOSURE_V1.md"
   ]
 }

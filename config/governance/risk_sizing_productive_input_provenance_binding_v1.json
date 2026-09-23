@@ -103,7 +103,8 @@
     "risk_sizing_output_consumption_overwrite_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_CONSUMPTION_FROZEN_NOT_RESOLVED",
     "risk_sizing_caller_owner_topology_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_TOPOLOGY_FROZEN_NOT_RESOLVED",
     "risk_sizing_units_dimensions_contract_v0": "COMPLETE_SEPARATE_UNCHANGED_UNITS_DIMENSIONS_DECLARATION_ONLY",
-    "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES"
+    "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
+    "risk_sizing_c2_input_authority_closure_v1": "C2_COMPANION_INPUT_CENSUS_ALIGNS_UNCHANGED_PROVENANCE_MEANING"
   },
   "companion_pass_through_reality_freeze": {
     "path_ids": [
