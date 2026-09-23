@@ -1,226 +1,226 @@
 {
-    "contract_name": "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1",
-    "contract_id": "OBL_B05_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1",
-    "contract_version": "v1",
-    "schema_version": "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_schema_v1",
-    "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md",
-    "inventory_date": "2026-09-23",
-    "pinned_against_main_sha": "8e6bd8e26e88aecbf1d9ebb147f0c34716bf0a21",
-    "semantics": "FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_ONLY_NO_PER_BYPASS_FATE_ASSIGNMENT_NO_RUNTIME_REWIRE_NO_CONVERSION",
-    "prior_hard_stop": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1_HARD_STOP_FATE_VOCABULARY_ABSENT",
-    "markers": {
-        "RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1": true,
-        "INVENTORY_ONLY": true,
-        "AUTHORITY_EFFECT": "NONE",
-        "RUNTIME_EFFECT": "NONE",
-        "PER_BYPASS_FATE_ADJUDICATION_EXECUTED": false,
-        "PER_BYPASS_FATE_ASSIGNMENT_AUTHORIZED_BY_THIS_SLICE": false,
-        "UNKNOWN_FATE_COUNT": 5,
-        "BYPASS_PATH_COUNT": 5,
-        "BYPASS_SET_CHANGED": false,
-        "CONSOLIDATION_STATUS": "NOT_STARTED",
-        "CONVERSION_READY": false,
-        "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false,
-        "C2_INPUT_AUTHORITIES": "UNRESOLVED",
-        "NO_RUNTIME_REWIRE": true,
-        "NO_SIZING_MATH_CHANGE": true,
-        "NO_CRS_SCOPE_EXPANSION": true,
-        "NO_REPO_WIDE_OWNER_PROMOTION": true,
-        "NO_FOREIGN_TOKEN_NORMALIZATION": true,
-        "DEPRECATE_LEGACY_PATH_IS_NOT_OPERATOR_FATE": true,
-        "DEPRECATED_QUARANTINED_IS_NOT_OPERATOR_FATE": true,
-        "SINGULAR_REPO_WIDE_OWNER_REQUIRED": false,
-        "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
-        "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
-        "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
-        "LIVE_AUTHORIZED": false,
-        "ORDERS_ENABLED": false,
-    },
-    "decision_authority": {
-        "decision_authority_class": "SCOPED_OPERATOR_GO",
-        "decision_authority_holder": "Peak_Trade_Operator",
-        "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
-        "decision_authority_not": [
-            "src.governance.capital_risk_sizing_v1",
-            "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-            "CODE_OWNERSHIP",
-            "REACHABILITY",
-            "CHAT_MEMORY",
-            "FILENAME_OR_AGE_HEURISTIC",
-        ],
-        "authority_effect_of_this_freeze": "NONE",
-        "may_assign_per_bypass_fate_in_this_slice": false,
-        "evidence_refs": [
-            "docs/governance/drift_cleanup_plan_v1.md",
-            "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-            "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-            "docs/product/evidence/global_runbook_next_workstream_discovery_v1_20260717T025036Z/open_obligations.json",
-        ],
-        "evidence_summary": {
-            "drift_cleanup_plan_v1_section_b": "Section B structural items (including B-05 Capital/Risk/Sizing owner split) require explicit Operator-GO; no owner judgment in safe-fixes.",
-            "inventory_canonical_status_reason": "Bypass paths remain parallel/non-canonical for MV2 scope until separate Operator-GO; OBL_B05 bypass fate remains open.",
-            "obl_b05_classification": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT classified REQUIRES_RUNTIME_GO — architecture/consolidation not auto-decidable by code or map.",
-        },
-    },
-    "allowed_operator_fate_tokens_sorted": [
-        "CONFLICTING",
-        "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
-        "INTEND_REBIND_TO_CRS",
-        "KEEP_PARALLEL_NON_CANONICAL",
-        "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
-        "UNKNOWN",
+  "contract_name": "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1",
+  "contract_id": "OBL_B05_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "8e6bd8e26e88aecbf1d9ebb147f0c34716bf0a21",
+  "semantics": "FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_ONLY_NO_PER_BYPASS_FATE_ASSIGNMENT_NO_RUNTIME_REWIRE_NO_CONVERSION",
+  "prior_hard_stop": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1_HARD_STOP_FATE_VOCABULARY_ABSENT",
+  "markers": {
+    "RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "PER_BYPASS_FATE_ADJUDICATION_EXECUTED": false,
+    "PER_BYPASS_FATE_ASSIGNMENT_AUTHORIZED_BY_THIS_SLICE": false,
+    "UNKNOWN_FATE_COUNT": 5,
+    "BYPASS_PATH_COUNT": 5,
+    "BYPASS_SET_CHANGED": false,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "CONVERSION_READY": false,
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false,
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "NO_RUNTIME_REWIRE": true,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_CRS_SCOPE_EXPANSION": true,
+    "NO_REPO_WIDE_OWNER_PROMOTION": true,
+    "NO_FOREIGN_TOKEN_NORMALIZATION": true,
+    "DEPRECATE_LEGACY_PATH_IS_NOT_OPERATOR_FATE": true,
+    "DEPRECATED_QUARANTINED_IS_NOT_OPERATOR_FATE": true,
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED": false,
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false
+  },
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_holder": "Peak_Trade_Operator",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+    "decision_authority_not": [
+      "src.governance.capital_risk_sizing_v1",
+      "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+      "CODE_OWNERSHIP",
+      "REACHABILITY",
+      "CHAT_MEMORY",
+      "FILENAME_OR_AGE_HEURISTIC"
     ],
-    "foreign_tokens_explicitly_not_operator_fate": [
-        {
-            "token": "DEPRECATE_LEGACY_PATH",
-            "source": "src.governance.capital_risk_sizing_v1.export_bypass_scan_v1 LEGACY_POSITION_SIZER_CLASSIFICATION",
-            "reason": "CRS legacy PositionSizer classification only; not operator_fate_adjudication vocabulary.",
-        },
-        {
-            "token": "DEPRECATED_QUARANTINED",
-            "source": "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1 EFS_DEPRECATED_QUARANTINED_PATH",
-            "reason": "Separate EFS quarantine subcontract status; not operator_fate_adjudication vocabulary.",
-        },
+    "authority_effect_of_this_freeze": "NONE",
+    "may_assign_per_bypass_fate_in_this_slice": false,
+    "evidence_refs": [
+      "docs/governance/drift_cleanup_plan_v1.md",
+      "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+      "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+      "docs/product/evidence/global_runbook_next_workstream_discovery_v1_20260717T025036Z/open_obligations.json"
     ],
-    "fate_token_semantics": {
-        "UNKNOWN": {
-            "normative_meaning": "Insufficient, missing, or not-yet-adjudicated CURRENT evidence for a single operator fate. Default fail-closed pin for inventored bypasses until a scoped Operator-GO adjudication assigns another allowed token.",
-            "required_evidence_for_assignment": [
-                "Explicit documentation that evidence is insufficient OR adjudication WP not yet Operator-authorized."
-            ],
-            "forbidden_interpretations": [
-                "Implies runtime disable or delete.",
-                "Implies CRS is repo-wide owner.",
-                "Implies conversion ready.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Does not change canonical_for_mv2_intent_bound_scope=false pins.",
-            "later_implementation_requires_separate_runtime_go": false,
-            "later_assignment_requires_scoped_operator_go": false,
-        },
-        "CONFLICTING": {
-            "normative_meaning": "CURRENT authoritative surfaces disagree on the operative end-state for this bypass ID such that no single non-UNKNOWN fate can be assigned fail-closed.",
-            "required_evidence_for_assignment": [
-                "At least two CURRENT canonical pins/contracts with mutually incompatible operative prescriptions for the same bypass ID.",
-                "Explicit conflict statement naming both evidence refs.",
-            ],
-            "forbidden_interpretations": [
-                "Silent preference for one conflicting side.",
-                "Runtime rewire to resolve conflict without separate GO.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Does not expand or shrink MV2 CRS quantity-algebra ownership.",
-            "later_implementation_requires_separate_runtime_go": true,
-            "later_assignment_requires_scoped_operator_go": true,
-        },
-        "KEEP_PARALLEL_NON_CANONICAL": {
-            "normative_meaning": "Bypass remains a productive parallel size route; not canonical for MV2 intent-bound CRS scope; consolidation not claimed. Fate pin alone authorizes no rewire.",
-            "required_evidence_for_assignment": [
-                "CURRENT reachability REACHABLE_PRODUCTIVE (or equivalent inventored pin).",
-                "CURRENT pin that route is non-canonical for MV2 CRS scope.",
-                "Evidence that CURRENT necessary function of the route is to remain available as parallel/non-CRS size decision for its scoped host (classic/offline/execution/shadow as inventored).",
-            ],
-            "forbidden_interpretations": [
-                "Equals DEPRECATE_LEGACY_PATH.",
-                "Authorizes deletion or runtime disable.",
-                "Promotes route to repo-wide canonical owner.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Preserves parallel non-canonical relation to CRS MV2 scope.",
-            "later_implementation_requires_separate_runtime_go": false,
-            "later_assignment_requires_scoped_operator_go": true,
-        },
-        "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE": {
-            "normative_meaning": "Bypass must not be treated as size authority for system/economic evidence claims. This is a governance/evidence exclusion intent, not a runtime disable by this freeze.",
-            "required_evidence_for_assignment": [
-                "CURRENT inventored decision-effect showing the route decides size outside CRS.",
-                "CURRENT governance need that system/economic evidence must not rely on this route as authoritative size owner.",
-                "Explicit statement that runtime disable/quarantine remains a separate Runtime-GO if required.",
-            ],
-            "forbidden_interpretations": [
-                "Immediate runtime disable/delete.",
-                "Equals EFS DEPRECATED_QUARANTINED.",
-                "Equals CONVERSION_READY=true.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Does not by itself make CRS repo-wide owner; only excludes this bypass from system-evidence authority claims.",
-            "later_implementation_requires_separate_runtime_go": true,
-            "later_assignment_requires_scoped_operator_go": true,
-        },
-        "INTEND_REBIND_TO_CRS": {
-            "normative_meaning": "Operator-intended future consolidation/migration of this bypass toward CRS quantity algebra for the relevant scope. Implementation/rewire is not authorized by the fate pin alone.",
-            "required_evidence_for_assignment": [
-                "CURRENT mapping of bypass producer/caller to a CRS-consumable decision surface or explicit rebind target.",
-                "Statement that MV2 CRS scope remains as already adjudicated and is not silently expanded by this fate.",
-                "Explicit separate Runtime-GO requirement for any rewire/rebind implementation.",
-            ],
-            "forbidden_interpretations": [
-                "Rewire already executed.",
-                "CRS scope expanded repo-wide.",
-                "C2 input authorities resolved.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Migration intent toward CRS; does not change CURRENT MV2 scope adjudication.",
-            "later_implementation_requires_separate_runtime_go": true,
-            "later_assignment_requires_scoped_operator_go": true,
-        },
-        "RESEARCH_OR_OFFLINE_SCOPE_ONLY": {
-            "normative_meaning": "Bypass is scoped to research/offline/evaluation hosts only for authority claims; not a productive system-evidence size owner. Does not delete code.",
-            "required_evidence_for_assignment": [
-                "CURRENT inventored host/scope showing research or offline-evaluation role.",
-                "Evidence that productive system-evidence claims must not rest on this route.",
-                "Explicit separate Runtime-GO requirement if enforcement/quarantine wiring is later required.",
-            ],
-            "forbidden_interpretations": [
-                "Immediate deletion.",
-                "Equals KEEP_PARALLEL_NON_CANONICAL for productive system evidence.",
-                "Equals DEPRECATE_LEGACY_PATH.",
-            ],
-            "runtime_effect_of_this_freeze": "NONE",
-            "relation_to_crs_mv2_scope": "Does not alter CRS MV2 quantity-algebra ownership.",
-            "later_implementation_requires_separate_runtime_go": true,
-            "later_assignment_requires_scoped_operator_go": true,
-        },
+    "evidence_summary": {
+      "drift_cleanup_plan_v1_section_b": "Section B structural items (including B-05 Capital/Risk/Sizing owner split) require explicit Operator-GO; no owner judgment in safe-fixes.",
+      "inventory_canonical_status_reason": "Bypass paths remain parallel/non-canonical for MV2 scope until separate Operator-GO; OBL_B05 bypass fate remains open.",
+      "obl_b05_classification": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT classified REQUIRES_RUNTIME_GO — architecture/consolidation not auto-decidable by code or map."
+    }
+  },
+  "allowed_operator_fate_tokens_sorted": [
+    "CONFLICTING",
+    "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+    "INTEND_REBIND_TO_CRS",
+    "KEEP_PARALLEL_NON_CANONICAL",
+    "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+    "UNKNOWN"
+  ],
+  "foreign_tokens_explicitly_not_operator_fate": [
+    {
+      "token": "DEPRECATE_LEGACY_PATH",
+      "source": "src.governance.capital_risk_sizing_v1.export_bypass_scan_v1 LEGACY_POSITION_SIZER_CLASSIFICATION",
+      "reason": "CRS legacy PositionSizer classification only; not operator_fate_adjudication vocabulary."
     },
-    "later_per_bypass_adjudication_fail_closed_rules": {
-        "unknown_token": "FAIL",
-        "foreign_token_as_operator_fate": "FAIL",
-        "assignment_without_scoped_operator_go": "FAIL",
-        "assignment_without_required_evidence_for_token": "FAIL",
-        "assignment_that_claims_runtime_effect_in_adjudication_only_slice": "FAIL",
-        "bypass_id_add_or_remove": "FAIL",
-        "flip_conversion_ready": "FAIL",
-        "resolve_c2_input_authorities": "FAIL",
-        "promote_repo_wide_canonical_risk_sizing_owner": "FAIL",
-        "missing_or_conflicting_evidence_must_remain_unknown_or_conflicting": "FAIL_CLOSED",
+    {
+      "token": "DEPRECATED_QUARANTINED",
+      "source": "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1 EFS_DEPRECATED_QUARANTINED_PATH",
+      "reason": "Separate EFS quarantine subcontract status; not operator_fate_adjudication vocabulary."
+    }
+  ],
+  "fate_token_semantics": {
+    "UNKNOWN": {
+      "normative_meaning": "Insufficient, missing, or not-yet-adjudicated CURRENT evidence for a single operator fate. Default fail-closed pin for inventored bypasses until a scoped Operator-GO adjudication assigns another allowed token.",
+      "required_evidence_for_assignment": [
+        "Explicit documentation that evidence is insufficient OR adjudication WP not yet Operator-authorized."
+      ],
+      "forbidden_interpretations": [
+        "Implies runtime disable or delete.",
+        "Implies CRS is repo-wide owner.",
+        "Implies conversion ready."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Does not change canonical_for_mv2_intent_bound_scope=false pins.",
+      "later_implementation_requires_separate_runtime_go": false,
+      "later_assignment_requires_scoped_operator_go": false
     },
-    "current_bypass_fate_pins": {
-        "BYPASS_CLASSIC_BACKTEST_DEFAULT": "UNKNOWN",
-        "BYPASS_CORE_POSITION_SIZER": "UNKNOWN",
-        "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": "UNKNOWN",
-        "BYPASS_LIVE_SHADOW_POSITION_FRACTION": "UNKNOWN",
-        "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": "UNKNOWN",
+    "CONFLICTING": {
+      "normative_meaning": "CURRENT authoritative surfaces disagree on the operative end-state for this bypass ID such that no single non-UNKNOWN fate can be assigned fail-closed.",
+      "required_evidence_for_assignment": [
+        "At least two CURRENT canonical pins/contracts with mutually incompatible operative prescriptions for the same bypass ID.",
+        "Explicit conflict statement naming both evidence refs."
+      ],
+      "forbidden_interpretations": [
+        "Silent preference for one conflicting side.",
+        "Runtime rewire to resolve conflict without separate GO."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Does not expand or shrink MV2 CRS quantity-algebra ownership.",
+      "later_implementation_requires_separate_runtime_go": true,
+      "later_assignment_requires_scoped_operator_go": true
     },
-    "related_but_separate_contracts": {
-        "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_FATES_REMAIN_UNKNOWN",
-        "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
-        "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_UNCHANGED_C2_UNRESOLVED",
-        "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_UNCHANGED_EFS_NOT_OPERATOR_FATE",
-        "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
+    "KEEP_PARALLEL_NON_CANONICAL": {
+      "normative_meaning": "Bypass remains a productive parallel size route; not canonical for MV2 intent-bound CRS scope; consolidation not claimed. Fate pin alone authorizes no rewire.",
+      "required_evidence_for_assignment": [
+        "CURRENT reachability REACHABLE_PRODUCTIVE (or equivalent inventored pin).",
+        "CURRENT pin that route is non-canonical for MV2 CRS scope.",
+        "Evidence that CURRENT necessary function of the route is to remain available as parallel/non-CRS size decision for its scoped host (classic/offline/execution/shadow as inventored)."
+      ],
+      "forbidden_interpretations": [
+        "Equals DEPRECATE_LEGACY_PATH.",
+        "Authorizes deletion or runtime disable.",
+        "Promotes route to repo-wide canonical owner."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Preserves parallel non-canonical relation to CRS MV2 scope.",
+      "later_implementation_requires_separate_runtime_go": false,
+      "later_assignment_requires_scoped_operator_go": true
     },
-    "drift_policy": {
-        "allowed_token_addition": "FAIL",
-        "allowed_token_removal": "FAIL",
-        "allowed_token_rename": "FAIL",
-        "foreign_token_normalization": "FAIL",
-        "decision_authority_escalation": "FAIL",
-        "silent_per_bypass_fate_assignment": "FAIL",
-        "unknown_fate_count_drift_from_5_in_this_slice": "FAIL",
-        "runtime_effect_claim": "FAIL",
+    "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE": {
+      "normative_meaning": "Bypass must not be treated as size authority for system/economic evidence claims. This is a governance/evidence exclusion intent, not a runtime disable by this freeze.",
+      "required_evidence_for_assignment": [
+        "CURRENT inventored decision-effect showing the route decides size outside CRS.",
+        "CURRENT governance need that system/economic evidence must not rely on this route as authoritative size owner.",
+        "Explicit statement that runtime disable/quarantine remains a separate Runtime-GO if required."
+      ],
+      "forbidden_interpretations": [
+        "Immediate runtime disable/delete.",
+        "Equals EFS DEPRECATED_QUARANTINED.",
+        "Equals CONVERSION_READY=true."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Does not by itself make CRS repo-wide owner; only excludes this bypass from system-evidence authority claims.",
+      "later_implementation_requires_separate_runtime_go": true,
+      "later_assignment_requires_scoped_operator_go": true
     },
-    "scan_uncertainty_notes": [
-        "This freeze defines vocabulary and decision authority only; it does not adjudicate the five bypass fates.",
-        "Open inventory governance questions remain open; they motivate vocabulary distinctions but are not answered here.",
-        "CRS DEPRECATE_LEGACY_PATH and EFS DEPRECATED_QUARANTINED remain foreign classifications and must not be copied into operator_fate_adjudication.",
-    ],
+    "INTEND_REBIND_TO_CRS": {
+      "normative_meaning": "Operator-intended future consolidation/migration of this bypass toward CRS quantity algebra for the relevant scope. Implementation/rewire is not authorized by the fate pin alone.",
+      "required_evidence_for_assignment": [
+        "CURRENT mapping of bypass producer/caller to a CRS-consumable decision surface or explicit rebind target.",
+        "Statement that MV2 CRS scope remains as already adjudicated and is not silently expanded by this fate.",
+        "Explicit separate Runtime-GO requirement for any rewire/rebind implementation."
+      ],
+      "forbidden_interpretations": [
+        "Rewire already executed.",
+        "CRS scope expanded repo-wide.",
+        "C2 input authorities resolved."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Migration intent toward CRS; does not change CURRENT MV2 scope adjudication.",
+      "later_implementation_requires_separate_runtime_go": true,
+      "later_assignment_requires_scoped_operator_go": true
+    },
+    "RESEARCH_OR_OFFLINE_SCOPE_ONLY": {
+      "normative_meaning": "Bypass is scoped to research/offline/evaluation hosts only for authority claims; not a productive system-evidence size owner. Does not delete code.",
+      "required_evidence_for_assignment": [
+        "CURRENT inventored host/scope showing research or offline-evaluation role.",
+        "Evidence that productive system-evidence claims must not rest on this route.",
+        "Explicit separate Runtime-GO requirement if enforcement/quarantine wiring is later required."
+      ],
+      "forbidden_interpretations": [
+        "Immediate deletion.",
+        "Equals KEEP_PARALLEL_NON_CANONICAL for productive system evidence.",
+        "Equals DEPRECATE_LEGACY_PATH."
+      ],
+      "runtime_effect_of_this_freeze": "NONE",
+      "relation_to_crs_mv2_scope": "Does not alter CRS MV2 quantity-algebra ownership.",
+      "later_implementation_requires_separate_runtime_go": true,
+      "later_assignment_requires_scoped_operator_go": true
+    }
+  },
+  "later_per_bypass_adjudication_fail_closed_rules": {
+    "unknown_token": "FAIL",
+    "foreign_token_as_operator_fate": "FAIL",
+    "assignment_without_scoped_operator_go": "FAIL",
+    "assignment_without_required_evidence_for_token": "FAIL",
+    "assignment_that_claims_runtime_effect_in_adjudication_only_slice": "FAIL",
+    "bypass_id_add_or_remove": "FAIL",
+    "flip_conversion_ready": "FAIL",
+    "resolve_c2_input_authorities": "FAIL",
+    "promote_repo_wide_canonical_risk_sizing_owner": "FAIL",
+    "missing_or_conflicting_evidence_must_remain_unknown_or_conflicting": "FAIL_CLOSED"
+  },
+  "current_bypass_fate_pins": {
+    "BYPASS_CLASSIC_BACKTEST_DEFAULT": "UNKNOWN",
+    "BYPASS_CORE_POSITION_SIZER": "UNKNOWN",
+    "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": "UNKNOWN",
+    "BYPASS_LIVE_SHADOW_POSITION_FRACTION": "UNKNOWN",
+    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": "UNKNOWN"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_owner_inventory_ssot_v1": "COMPLETE_SEPARATE_UNCHANGED_FATES_REMAIN_UNKNOWN",
+    "risk_sizing_owner_and_bypass_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED_5_OWNERS_5_BYPASSES",
+    "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_UNCHANGED_C2_UNRESOLVED",
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_UNCHANGED_EFS_NOT_OPERATOR_FATE",
+    "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED"
+  },
+  "drift_policy": {
+    "allowed_token_addition": "FAIL",
+    "allowed_token_removal": "FAIL",
+    "allowed_token_rename": "FAIL",
+    "foreign_token_normalization": "FAIL",
+    "decision_authority_escalation": "FAIL",
+    "silent_per_bypass_fate_assignment": "FAIL",
+    "unknown_fate_count_drift_from_5_in_this_slice": "FAIL",
+    "runtime_effect_claim": "FAIL"
+  },
+  "scan_uncertainty_notes": [
+    "This freeze defines vocabulary and decision authority only; it does not adjudicate the five bypass fates.",
+    "Open inventory governance questions remain open; they motivate vocabulary distinctions but are not answered here.",
+    "CRS DEPRECATE_LEGACY_PATH and EFS DEPRECATED_QUARANTINED remain foreign classifications and must not be copied into operator_fate_adjudication."
+  ]
 }
