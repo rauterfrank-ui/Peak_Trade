@@ -1,0 +1,212 @@
+{
+  "contract_name": "risk_sizing_bypass_fate_operator_adjudication_v1",
+  "contract_id": "OBL_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_bypass_fate_operator_adjudication_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "ccb16679bcb7e0e7bf30b1f99ba3beac71c3a0f7",
+  "workpackage_id": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+  "semantics": "OPERATOR_FATE_ADJUDICATION_ONLY_NO_RUNTIME_REWIRE_NO_CONVERSION_NO_C2",
+  "fate_vocabulary_source": "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_holder": "Peak_Trade_Operator",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+    "scoped_operator_go_present": true
+  },
+  "markers": {
+    "RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "OPERATOR_FATE_ADJUDICATION_EXECUTED": true,
+    "FATE_IMPLEMENTATION_EXECUTED": false,
+    "RUNTIME_REWIRE_EXECUTED": false,
+    "BYPASS_SET_CHANGED": false,
+    "BYPASS_PATH_COUNT": 5,
+    "UNKNOWN_FATE_COUNT": 0,
+    "CONFLICTING_FATE_COUNT": 0,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "CONVERSION_READY": false,
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false,
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "NO_RUNTIME_REWIRE": true,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_CRS_SCOPE_EXPANSION": true,
+    "NO_REPO_WIDE_OWNER_PROMOTION": true,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false
+  },
+  "bypass_fate_adjudications": {
+    "BYPASS_CLASSIC_BACKTEST_DEFAULT": {
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "required_evidence_for_token": [
+        "CURRENT inventored decision-effect showing the route decides size outside CRS.",
+        "CURRENT governance need that system/economic evidence must not rely on this route as authoritative size owner.",
+        "Explicit statement that runtime disable/quarantine remains a separate Runtime-GO if required."
+      ],
+      "required_evidence_satisfied": true,
+      "evidence_record": {
+        "CANONICAL_AUTHORITY": [
+          "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json fate_token_semantics.GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+          "config/governance/risk_sizing_owner_inventory_ssot_v1.json bypass_paths[0]",
+          "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md reuse_first_consolidation_candidates"
+        ],
+        "OBSERVED_CURRENT_EVIDENCE": [
+          "Producer/caller: BacktestEngine.run_realistic -> calc_position_size (src/risk/position_sizer.py); reachability REACHABLE_PRODUCTIVE; canonical_for_mv2_intent_bound_scope=false.",
+          "Decision effect: legacy PositionSizer sizing without CRS; CRS export_bypass_scan_v1 foreign classification DEPRECATE_LEGACY_PATH (not operator fate).",
+          "reuse_first_consolidation_candidates: Gate classic BacktestEngine size behind CRS provenance for core evidence; Keep CRS as quantity owner for system-relevant MV2 evidence.",
+          "Authority contract global_non_claims: OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY does not elevate classic backtest to system-economic size authority."
+        ],
+        "ALREADY_ADJUDICATED": [
+          "MV2 intent-bound quantity algebra owner=CRS (WP_B05_OWNER_TOPOLOGY); repo-wide CANONICAL_RISK_SIZING_OWNER=UNRESOLVED."
+        ],
+        "INTERPRETATION": [
+          "Classic backtest default remains a productive parallel fill path; exclusion is governance/evidence authority only until separate Runtime-GO."
+        ],
+        "UNKNOWN_CONFLICTING": []
+      }
+    },
+    "BYPASS_CORE_POSITION_SIZER": {
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "required_evidence_for_token": [
+        "CURRENT reachability REACHABLE_PRODUCTIVE (or equivalent inventored pin).",
+        "CURRENT pin that route is non-canonical for MV2 CRS scope.",
+        "Evidence that CURRENT necessary function of the route is to remain available as parallel/non-CRS size decision for its scoped host (classic/offline/execution/shadow as inventored)."
+      ],
+      "required_evidence_satisfied": true,
+      "evidence_record": {
+        "CANONICAL_AUTHORITY": [
+          "config/governance/risk_sizing_owner_inventory_ssot_v1.json bypass_paths[1] and owner_and_bypass_surface_contract.bypasses[1]",
+          "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json fate_token_semantics.KEEP_PARALLEL_NON_CANONICAL"
+        ],
+        "OBSERVED_CURRENT_EVIDENCE": [
+          "Producer/caller: BacktestEngine.run_realistic when core_position_sizer wired -> BasePositionSizer.get_target_position (src/core/position_sizing.py).",
+          "Owner scope_note: classic_backtest_when_core_position_sizer_wired; not CRS adapter.",
+          "reachability REACHABLE_PRODUCTIVE; canonical_for_mv2_intent_bound_scope=false; capability_note: alternative size route when overlay wired.",
+          "Open governance question on research-only forever remains open; does not contradict parallel non-canonical pin for wired classic overlay."
+        ],
+        "ALREADY_ADJUDICATED": [
+          "src.core.position_sizing inventoried as independent decision owner; consolidation NOT_STARTED."
+        ],
+        "INTERPRETATION": [
+          "Fate pin does not answer open question 4 (research-only forever); it only pins parallel non-CRS classic overlay while wired."
+        ],
+        "UNKNOWN_CONFLICTING": []
+      }
+    },
+    "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": {
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "required_evidence_for_token": [
+        "CURRENT reachability REACHABLE_PRODUCTIVE (or equivalent inventored pin).",
+        "CURRENT pin that route is non-canonical for MV2 CRS scope.",
+        "Evidence that CURRENT necessary function of the route is to remain available as parallel/non-CRS size decision for its scoped host (classic/offline/execution/shadow as inventored)."
+      ],
+      "required_evidence_satisfied": true,
+      "evidence_record": {
+        "CANONICAL_AUTHORITY": [
+          "config/governance/risk_sizing_owner_inventory_ssot_v1.json bypass_paths[2]",
+          "config/governance/risk_sizing_final_quantity_provenance_resolution_audit_v1.json PATH_EXECUTE_FROM_SIGNALS",
+          "config/governance/risk_sizing_companion_intent_freeze_and_efs_quarantine_v1.json EFS quarantine (foreign DEPRECATED_QUARANTINED not operator fate)"
+        ],
+        "OBSERVED_CURRENT_EVIDENCE": [
+          "Self-use kernel ExecutionPipeline.execute_from_signals; external_productive_src_caller_count=0.",
+          "Sizing via max_position_notional_pct without CRS; scope execution_kernel_simplified.",
+          "EFS quarantine: no new productive src callers; EFS_QUARANTINE_IS_NOT_DELETION and EFS_QUARANTINE_IS_NOT_RUNTIME_SEMANTICS_CHANGE.",
+          "Necessary function: simplified execution-kernel size path remains reachable as parallel non-CRS kernel until separate Runtime-GO."
+        ],
+        "ALREADY_ADJUDICATED": [
+          "Semantic conflict documented in provenance audit; NO_UNIFIED_SEMANTICS_DECISION — does not force operator fate CONFLICTING because quarantine + inventory pins are compatible with KEEP_PARALLEL."
+        ],
+        "INTERPRETATION": [
+          "Provenance SEMANTIC_CONFLICT motivates later conversion work; fate pin does not resolve units semantics or authorize rebind."
+        ],
+        "UNKNOWN_CONFLICTING": []
+      }
+    },
+    "BYPASS_LIVE_SHADOW_POSITION_FRACTION": {
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "required_evidence_for_token": [
+        "CURRENT inventored decision-effect showing the route decides size outside CRS.",
+        "CURRENT governance need that system/economic evidence must not rely on this route as authoritative size owner.",
+        "Explicit statement that runtime disable/quarantine remains a separate Runtime-GO if required."
+      ],
+      "required_evidence_satisfied": true,
+      "evidence_record": {
+        "CANONICAL_AUTHORITY": [
+          "config/governance/risk_sizing_owner_inventory_ssot_v1.json bypass_paths[3]",
+          "config/governance/risk_sizing_units_dimensions_contract_v0.json shadow companion ambiguity notes",
+          "config/governance/risk_sizing_unresolved_final_quantity_provenance_contract_v0.json PATH shadow handoff"
+        ],
+        "OBSERVED_CURRENT_EVIDENCE": [
+          "Producer/caller: ShadowPaperSession.step_once assigns position_size from shadow_cfg.position_fraction without CRS.",
+          "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED; LIVE_AUTHORIZED=false; activates_orders=false.",
+          "Companion subcontract: FRACTION_DECIMAL_0_1 passed as absolute units to signal_to_orders — system-economic quantity authority not established.",
+          "reuse_first: Bind or hard-deauthorize execution/live simplified size paths — governance exclusion from system-evidence claims pending separate Runtime-GO."
+        ],
+        "ALREADY_ADJUDICATED": [
+          "Companion intent freeze separate from operator fate; position_fraction remains inventored bypass."
+        ],
+        "INTERPRETATION": [
+          "Paper/shadow route may remain reachable; must not anchor productive system-economic size evidence."
+        ],
+        "UNKNOWN_CONFLICTING": []
+      }
+    },
+    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": {
+      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+      "required_evidence_for_token": [
+        "CURRENT inventored host/scope showing research or offline-evaluation role.",
+        "Evidence that productive system-evidence claims must not rest on this route.",
+        "Explicit separate Runtime-GO requirement if enforcement/quarantine wiring is later required."
+      ],
+      "required_evidence_satisfied": true,
+      "evidence_record": {
+        "CANONICAL_AUTHORITY": [
+          "config/governance/risk_sizing_owner_inventory_ssot_v1.json owner scope offline_economic_evaluation",
+          "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json fate_token_semantics.RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+          "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY"
+        ],
+        "OBSERVED_CURRENT_EVIDENCE": [
+          "Producer/caller: BacktestEngine.run_realistic -> size_offline_evaluation_entry_v1 (offline_evaluation_sizing_contract_v1).",
+          "Owner decision_type offline_evaluation_sizing_policy; scope offline_economic_evaluation; wraps calc but owns CAP/REJECT contract semantics.",
+          "Open governance question on rebind vs non-canonical does not block offline-scope-only fate (rebind would be INTEND_REBIND with separate evidence)."
+        ],
+        "ALREADY_ADJUDICATED": [
+          "Offline eval owner authoritative_size_decision=true for offline contract only; not repo-wide canonical."
+        ],
+        "INTERPRETATION": [
+          "Offline economic evaluation sizing remains inventored; productive system-evidence must not treat this route as authoritative size owner."
+        ],
+        "UNKNOWN_CONFLICTING": []
+      }
+    }
+  },
+  "operator_fate_summary_sorted": {
+    "BYPASS_CLASSIC_BACKTEST_DEFAULT": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+    "BYPASS_CORE_POSITION_SIZER": "KEEP_PARALLEL_NON_CANONICAL",
+    "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": "KEEP_PARALLEL_NON_CANONICAL",
+    "BYPASS_LIVE_SHADOW_POSITION_FRACTION": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": "RESEARCH_OR_OFFLINE_SCOPE_ONLY"
+  },
+  "drift_policy": {
+    "bypass_id_add_or_remove": "FAIL",
+    "foreign_token_as_operator_fate": "FAIL",
+    "silent_fate_change_without_scoped_operator_go": "FAIL",
+    "runtime_effect_claim_in_adjudication_slice": "FAIL",
+    "flip_conversion_ready": "FAIL",
+    "resolve_c2_input_authorities": "FAIL",
+    "promote_repo_wide_canonical_risk_sizing_owner": "FAIL"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED_PER_BYPASS_FATES_UPDATED_VIA_THIS_SLICE",
+    "risk_sizing_owner_inventory_ssot_v1": "BYPASS_FATE_PINS_UPDATED_INVENTORY_ONLY",
+    "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED_CONVERSION_NOT_READY",
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_STATUS_UNCHANGED"
+  }
+}

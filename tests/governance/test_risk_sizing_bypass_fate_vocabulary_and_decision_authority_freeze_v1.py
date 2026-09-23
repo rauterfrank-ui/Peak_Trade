@@ -54,9 +54,10 @@ REQUIRED_DOC_MARKERS = (
     "INVENTORY_ONLY=true",
     "AUTHORITY_EFFECT=NONE",
     "RUNTIME_EFFECT=NONE",
-    "PER_BYPASS_FATE_ADJUDICATION_EXECUTED=false",
+    "PER_BYPASS_FATE_ADJUDICATION_EXECUTED=true",
     "PER_BYPASS_FATE_ASSIGNMENT_AUTHORIZED_BY_THIS_SLICE=false",
-    "UNKNOWN_FATE_COUNT=5",
+    "UNKNOWN_FATE_COUNT=0",
+    "OPERATOR_FATE_ADJUDICATION_WP=WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
     "BYPASS_PATH_COUNT=5",
     "BYPASS_SET_CHANGED=false",
     "CONSOLIDATION_STATUS=NOT_STARTED",
@@ -136,7 +137,7 @@ def test_contract_doc_markers_present() -> None:
     text = _read(CONTRACT_DOC)
     for marker in REQUIRED_DOC_MARKERS:
         assert marker in text, f"missing doc marker: {marker}"
-    assert "PER_BYPASS_FATE_ADJUDICATION_EXECUTED=true" not in text
+    assert "PER_BYPASS_FATE_ASSIGNMENT_AUTHORIZED_BY_THIS_SLICE=true" not in text
     assert "CONVERSION_READY=true" not in text
     assert "BYPASS_SET_CHANGED=true" not in text
     assert "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED=true" not in text
@@ -162,7 +163,7 @@ def test_unknown_remains_fail_closed_and_admissible() -> None:
     assert "UNKNOWN" in payload["allowed_operator_fate_tokens_sorted"]
     unknown = payload["fate_token_semantics"]["UNKNOWN"]
     assert unknown["runtime_effect_of_this_freeze"] == "NONE"
-    assert payload["markers"]["UNKNOWN_FATE_COUNT"] == 5
+    assert payload["markers"]["UNKNOWN_FATE_COUNT"] == 0
     assert (
         payload["later_per_bypass_adjudication_fail_closed_rules"][
             "missing_or_conflicting_evidence_must_remain_unknown_or_conflicting"
@@ -292,20 +293,20 @@ def test_decision_authority_is_scoped_operator_go() -> None:
         assert (REPO_ROOT / ref).is_file(), f"missing authority evidence: {ref}"
 
 
-def test_all_five_current_fates_remain_unknown() -> None:
+def test_all_five_current_fates_adjudicated_and_inventory_aligned() -> None:
     payload = _load_contract()
     pins = payload["current_bypass_fate_pins"]
     assert set(pins.keys()) == set(EXPECTED_BYPASS_IDS)
-    assert all(v == "UNKNOWN" for v in pins.values())
-    assert payload["markers"]["UNKNOWN_FATE_COUNT"] == 5
+    assert payload["markers"]["UNKNOWN_FATE_COUNT"] == 0
     assert payload["markers"]["BYPASS_PATH_COUNT"] == 5
     assert payload["markers"]["BYPASS_SET_CHANGED"] is False
-    assert payload["markers"]["PER_BYPASS_FATE_ADJUDICATION_EXECUTED"] is False
+    assert payload["markers"]["PER_BYPASS_FATE_ADJUDICATION_EXECUTED"] is True
+    allowed = set(payload["allowed_operator_fate_tokens_sorted"])
+    assert all(fate in allowed for fate in pins.values())
 
     inventory = _load_inventory()
     inventored = {b["id"]: b["operator_fate_adjudication"] for b in inventory["bypass_paths"]}
     assert set(inventored.keys()) == set(EXPECTED_BYPASS_IDS)
-    assert all(v == "UNKNOWN" for v in inventored.values())
     assert inventored == pins
 
 
@@ -334,7 +335,7 @@ def test_no_runtime_semantics_claimed_and_boundary_pins_hold() -> None:
     related = payload["related_but_separate_contracts"]
     assert (
         related["risk_sizing_owner_inventory_ssot_v1"]
-        == "COMPLETE_SEPARATE_UNCHANGED_FATES_REMAIN_UNKNOWN"
+        == "COMPLETE_SEPARATE_FATES_PINNED_BY_OPERATOR_ADJUDICATION_V1"
     )
     assert (
         related["risk_sizing_authority_decision_contract_freeze_v1"]
@@ -342,22 +343,24 @@ def test_no_runtime_semantics_claimed_and_boundary_pins_hold() -> None:
     )
 
 
-def test_inventory_points_at_freeze_without_fate_mutation() -> None:
+def test_inventory_points_at_freeze_and_adjudication_contract() -> None:
     inventory = _load_inventory()
     markers = inventory["markers"]
     assert markers.get("FATE_VOCABULARY_SOURCE") == (
         "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json"
     )
-    assert markers.get("OPERATOR_FATE_ADJUDICATION_EXECUTED") is False
+    assert markers.get("OPERATOR_FATE_ADJUDICATION_EXECUTED") is True
     related = inventory["risk_sizing_owner_and_bypass_surface_contract"][
         "related_but_separate_contracts"
     ]
     assert (
         related["risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1"]
-        == "COMPLETE_SEPARATE_VOCABULARY_AND_DECISION_AUTHORITY_ONLY_FATES_REMAIN_UNKNOWN"
+        == "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED"
     )
-    for bypass in inventory["bypass_paths"]:
-        assert bypass["operator_fate_adjudication"] == "UNKNOWN"
+    assert (
+        related["risk_sizing_bypass_fate_operator_adjudication_v1"]
+        == "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED"
+    )
 
 
 def test_productive_src_does_not_import_freeze_contract() -> None:

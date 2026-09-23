@@ -11,9 +11,10 @@ RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1=true
 INVENTORY_ONLY=true
 AUTHORITY_EFFECT=NONE
 RUNTIME_EFFECT=NONE
-PER_BYPASS_FATE_ADJUDICATION_EXECUTED=false
+PER_BYPASS_FATE_ADJUDICATION_EXECUTED=true
 PER_BYPASS_FATE_ASSIGNMENT_AUTHORIZED_BY_THIS_SLICE=false
-UNKNOWN_FATE_COUNT=5
+UNKNOWN_FATE_COUNT=0
+OPERATOR_FATE_ADJUDICATION_WP=WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1
 BYPASS_PATH_COUNT=5
 BYPASS_SET_CHANGED=false
 CONSOLIDATION_STATUS=NOT_STARTED
@@ -108,21 +109,9 @@ Later per-ID adjudication must FAIL if:
 
 Missing or conflicting evidence ⇒ remain `UNKNOWN` or assign `CONFLICTING` (not invent a preferred fate).
 
-## CURRENT pins (unchanged by this freeze)
+## CURRENT pins (updated by operator adjudication WP)
 
-All five inventored bypasses remain:
-
-```text
-operator_fate_adjudication=UNKNOWN
-```
-
-IDs:
-
-- `BYPASS_CLASSIC_BACKTEST_DEFAULT`
-- `BYPASS_CORE_POSITION_SIZER`
-- `BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS`
-- `BYPASS_LIVE_SHADOW_POSITION_FRACTION`
-- `BYPASS_OFFLINE_EVAL_SIZING_CONTRACT`
+Per-BYPASS fates are pinned in [`RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md`](RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md) / [`config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json`](../../config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json). The machine list `current_bypass_fate_pins` in this contract’s JSON mirrors inventory.
 
 ## Forensic basis for vocabulary distinctions (not adjudications)
 
