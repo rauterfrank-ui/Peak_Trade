@@ -23,7 +23,8 @@
         "docs-token-policy-gate",
         "repo-truth-claims",
         "strategy-smoke",
-        "tests (3.11)"
+        "tests (3.11)",
+        "map-currency-gate"
       ],
       "strict": false
     }
@@ -123,6 +124,10 @@
             },
             {
               "context": "tests (3.11)",
+              "integration_id": 15368
+            },
+            {
+              "context": "map-currency-gate",
               "integration_id": 15368
             }
           ],

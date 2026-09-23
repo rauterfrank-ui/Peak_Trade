@@ -26,6 +26,9 @@
     "src/governance/authorized_productive_parameter_seam_v1.py",
     "src/learning/deterministic_decision_outcome_v0/",
     "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py",
-    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/"
+    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/",
+    "config/ci/required_status_checks.json",
+    "tests/ci/test_exact_head_ready_reuse.py",
+    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json"
   ]
 }

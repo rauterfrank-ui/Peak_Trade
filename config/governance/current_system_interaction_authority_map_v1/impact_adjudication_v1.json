@@ -2,26 +2,24 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "dfc30e922e1929b0008161794ed1637f89b9ce4b",
-  "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Initial structured source, derived views, and independent map-currency gate for CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1. Domain unknowns stay projected.",
+  "base_sha": "99e6808ad29bf5c162f3951629e9d8935cb7b533",
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "Required-check SSOT reconcile with sanitized branch-ruleset evidence only. No structured map source, derived view, or authority projection change.",
   "changed_paths": [
-    ".github/workflows/map_currency_gate_v1.yml",
+    "config/ci/required_status_checks.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/schema_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "tests/ops/test_current_system_interaction_authority_map_v1.py"
+    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
+    "tests/ci/test_exact_head_ready_reuse.py"
   ],
-  "changed_paths_sha256": "cb3afc5587e60b2e112b6777ce4d5fbf385bc5a66b143a1650a40ddc472c7fca",
+  "changed_paths_sha256": "5572f591e93e037c5ba5168070f196c75853f691a66bbe901da1aa4215627a17",
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "config/ci/required_status_checks.json",
+    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json"
   ],
-  "covered_candidate_paths": []
+  "covered_candidate_paths": [
+    "config/ci/required_status_checks.json",
+    "docs/ops/specs/branch_ruleset_enforcement_api_evidence_after_v1.json",
+    "tests/ci/test_exact_head_ready_reuse.py"
+  ]
 }
