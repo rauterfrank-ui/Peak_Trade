@@ -1,0 +1,290 @@
+{
+  "contract_name": "risk_sizing_c2_current_productive_input_authority_closure_v2",
+  "contract_id": "OBL_B05_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2",
+  "contract_version": "v2",
+  "schema_version": "risk_sizing_c2_current_productive_input_authority_closure_schema_v2",
+  "ssot_doc": "docs/governance/RISK_SIZING_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "6645d6c5bddc84ec27b4f6783ae9751e17bd8e3f",
+  "workpackage_id": "BOUNDED_WP_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2",
+  "bound_prior_adjudication": {
+    "pr_6760": "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "pr_6761": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+    "re_adjudication_forbidden": true,
+    "note": "#6761 verdicts are input; V2 adds productive lineage matrices without upgrading C2 authority verdicts."
+  },
+  "semantics": "C2_THREE_INPUT_PRODUCTIVE_LINEAGE_FORENSICS_AND_C2_VERDICT_PRESERVATION_NO_RUNTIME_NO_CONVERSION",
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_BOUNDED_WP_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2",
+    "scoped_operator_go_present": true
+  },
+  "markers": {
+    "RISK_SIZING_C2_CURRENT_PRODUCTIVE_INPUT_AUTHORITY_CLOSURE_V2": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "SRC_CHANGED": false,
+    "C2_REQUIRED_INPUT_COUNT": 3,
+    "C2_INPUT_SET_COMPLETE_PROVEN": true,
+    "C2_STATUS": "UNRESOLVED",
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "C2_CLOSURE_RULE_SATISFIED": false,
+    "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
+    "C2_DOMAINS_PARTIAL_COUNT": 0,
+    "C2_DOMAINS_UNKNOWN_COUNT": 1,
+    "C2_DOMAINS_CONFLICTING_COUNT": 1,
+    "C2_DOMAINS_UNRESOLVED_COUNT": 1,
+    "CONVERSION_READY": false,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "B05_FATE_PHASE_STATUS": "CLOSED",
+    "FATE_IMPLEMENTATION_EXECUTED": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "Q4_STATUS": "OPEN_UNADJUDICATED",
+    "MAP_UPDATE_REQUIRED": true,
+    "MAP_AUTHORITY": "NONE"
+  },
+  "epistemic_separation": {
+    "A_CANONICAL_AUTHORITY": [
+      "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+      "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    ],
+    "B_ALREADY_ADJUDICATED": [
+      "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+      "config/governance/risk_sizing_c2_input_authority_closure_v1.json"
+    ],
+    "C_NAVIGATION_MAP": "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "D_INTERPRETATION": "productive_lineage_trace_status fields in this contract",
+    "E_HYPOTHESES": "none_claimed",
+    "F_OPEN_OR_CONFLICTING": "c2_domain_verdict and open_conflicts_remaining"
+  },
+  "c2_closure_reevaluation": {
+    "closure_gate_ref": "config/governance/risk_sizing_c2_input_authority_closure_v1.json#c2_closure_gate",
+    "c2_closure_rule_satisfied": false,
+    "c2_status": "UNRESOLVED",
+    "blocking_reasons": [
+      "not all c2_domain_verdict == PROVEN_CURRENT",
+      "c2_authority_binding_implemented false for all three",
+      "authority_decision freeze owners UNRESOLVED for all three",
+      "companion_conversion_input_binding conversion_ready false"
+    ]
+  },
+  "domain_adjudications": {
+    "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": {
+      "input_id": "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
+      "c2_domain_verdict": "CONFLICTING",
+      "c2_authority_binding_implemented": false,
+      "verdict_reason": "Full-Core source→semantic mapping and producer algebra are ratified while B05 ACCOUNT_EQUITY_AUTHORITY_OWNER remains UNRESOLVED, OBSERVATION_IS_NOT_AUTHORITY holds, package GOVERNED_PRODUCER_CREATED=false, and Companion path has no equity handoff.",
+      "productive_lineage_trace_status": "WIRED_TRACEABLE_NOT_C2_AUTHORITY",
+      "productive_lineage_matrix": {
+        "canonical_authority_owner_b05": "UNRESOLVED",
+        "canonical_dimension": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+        "producer_chain": [
+          {
+            "stage": "RAW_TRANSPORT",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+            "field": "details[ccy=USDC].availEq",
+            "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+            "is_authority": false
+          },
+          {
+            "stage": "TRANSFORM",
+            "identity": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+            "transform_id": "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1",
+            "classification": "GOVERNED_POLICY",
+            "is_authority": false
+          },
+          {
+            "stage": "TYPED_PRODUCER",
+            "identity": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+            "output_class": "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING",
+            "classification": "MODEL_SEMANTIC",
+            "producer_mint_without_b05_chain_closure": true
+          }
+        ],
+        "handoffs": [
+          {
+            "consumer": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+            "symbol": "bind_step_29p_typed_equity_from_risk_capital_v1",
+            "scope": "FULL_CORE_29P_ADMISSION"
+          },
+          {
+            "consumer": "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py",
+            "symbol": "evaluate_step_29p_capital_risk_admissibility_v1",
+            "scope": "STEP_29P_FAIL_CLOSED"
+          }
+        ],
+        "companion_c2_consumer": {
+          "path": "PATH_SHADOW_COMPANION|PATH_LIVE_COMPANION",
+          "equity_input_present": false,
+          "classification": "ABSENT_ON_COMPANION_PATH"
+        },
+        "fail_closed": [
+          "step_29p: missing typed equity → RISK_ADMISSIBLE=false",
+          "producer: CANONICALLY_VALID mapping false → fail-closed mint paths",
+          "29P spec: availEq alone forbidden as RUNNING_EQUITY authority field"
+        ]
+      },
+      "negative_evidence": [
+        "Companion shadow/live: position_fraction only; no equity fetch",
+        "CRS/offline replay defaults explicit_non_sources in provenance binding",
+        "start_balance and portfolio monitor not authority"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py",
+        "src/live/shadow_session.py"
+      ]
+    },
+    "REFERENCE_PRICE": {
+      "input_id": "REFERENCE_PRICE",
+      "c2_domain_verdict": "UNKNOWN",
+      "c2_authority_binding_implemented": false,
+      "verdict_reason": "Productive mark-price observation chain exists for Full-Core MV2 ingest but REFERENCE_PRICE_AUTHORITY_OWNER is UNRESOLVED, price semantics classes remain distinct by freeze, and Companion path has no reference-price conversion handoff.",
+      "productive_lineage_trace_status": "OBSERVATION_CHAIN_TRACEABLE_OWNER_UNRESOLVED",
+      "productive_lineage_matrix": {
+        "canonical_authority_owner_b05": "UNRESOLVED",
+        "canonical_dimension": "INSTRUMENT_VENUE_TIME_BOUND_CONVERSION_REFERENCE_PRICE",
+        "producer_chain": [
+          {
+            "stage": "RAW_TRANSPORT",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+            "field": "mark_price",
+            "price_semantics_class": "mark_price",
+            "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+            "is_authority": false
+          },
+          {
+            "stage": "MV2_CONSUMER",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+            "field": "mark_price_m_t",
+            "classification": "MODEL_SEMANTIC",
+            "is_authority": false
+          },
+          {
+            "stage": "MV2_CAPITAL_CONTEXT",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+            "parameter": "reference_price",
+            "classification": "MODEL_SEMANTIC",
+            "crs_offline_math_only_not_venue_truth": true
+          }
+        ],
+        "companion_observation_not_authority": [
+          {
+            "identity": "src/live/shadow_session.py|src/execution/live_session.py",
+            "field": "candle.close",
+            "price_semantics_class": "candle_close",
+            "classification": "CURRENT_DYNAMIC_INPUT_STATE"
+          }
+        ],
+        "companion_c2_consumer": {
+          "reference_price_input_present": false,
+          "classification": "ABSENT_ON_COMPANION_PATH"
+        },
+        "fail_closed": [
+          "authority freeze: no candle_close elevation",
+          "CMC is_authority false",
+          "offline replay default price simulation-only"
+        ]
+      },
+      "negative_evidence": [
+        "No GOVERNED_PRODUCTIVE_REFERENCE_PRICE_AUTHORITY_PRODUCER on main",
+        "Fill price forbidden as conversion reference in authority freeze"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+        "config/governance/risk_sizing_productive_input_provenance_binding_v1.json"
+      ]
+    },
+    "INSTRUMENT_QUANTITY_METADATA": {
+      "input_id": "INSTRUMENT_QUANTITY_METADATA",
+      "c2_domain_verdict": "UNRESOLVED",
+      "c2_authority_binding_implemented": false,
+      "verdict_reason": "Cap24 binds instrument identity for productive selection but does not supply the complete C2 quantity-metadata bundle under an authority owner; INSTRUMENT_METADATA_AUTHORITY_OWNER UNRESOLVED; Companion path unbound.",
+      "productive_lineage_trace_status": "IDENTITY_BOUND_METADATA_BUNDLE_UNRESOLVED",
+      "productive_lineage_matrix": {
+        "canonical_authority_owner_b05": "UNRESOLVED",
+        "canonical_dimension": "COMPLETE_INSTRUMENT_QUANTITY_CONSTRAINT_METADATA",
+        "selection_authority_note": "Cap2.3/SOLE_PRODUCTIVE_SELECTION_AUTHORITY preserved; no reselection in this WP",
+        "identity_chain": [
+          {
+            "stage": "SELECTION",
+            "identity": "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+            "output": "BoundInstrumentV1",
+            "fields_present": [
+              "instrument_id",
+              "venue_native_id",
+              "selection_id",
+              "ranking_snapshot_id",
+              "universe_snapshot_id"
+            ],
+            "c2_required_metadata_fields_absent": [
+              "lot_size_or_quantity_step",
+              "minimum_quantity",
+              "minimum_notional",
+              "contract_multiplier",
+              "freshness_or_ttl"
+            ]
+          },
+          {
+            "stage": "VENUE_ROW_OBSERVATION",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+            "fields": ["lotSz", "minSz"],
+            "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+            "authority_owner_unresolved": true,
+            "not_wired_as_c2_authority_bundle": true
+          }
+        ],
+        "companion_c2_consumer": {
+          "instrument_metadata_input_present": false,
+          "classification": "ABSENT_ON_COMPANION_PATH"
+        },
+        "fail_closed": [
+          "authority freeze: partial offline defaults forbidden",
+          "universal multiplier-one default forbidden",
+          "provenance: REQUIRED_INPUT_MISSING on Companion"
+        ]
+      },
+      "negative_evidence": [
+        "offline_replay instrument defaults simulation-only",
+        "venue_capability_snapshot not elevatable",
+        "okx bounded testnet binding not companion authority"
+      ],
+      "evidence_anchors": [
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
+      ]
+    }
+  },
+  "implemented_authority_bindings": [],
+  "open_conflicts_remaining": [
+    "ACCOUNT_EQUITY: B05 UNRESOLVED vs package OWNER string vs mapping proven vs Companion absence",
+    "REFERENCE_PRICE: productive mark observation vs REFERENCE_PRICE_AUTHORITY_OWNER UNRESOLVED",
+    "INSTRUMENT: Cap24 identity vs missing governed quantity-metadata authority bundle",
+    "CANONICAL_RISK_SIZING_OWNER UNRESOLVED (out of scope)"
+  ],
+  "historical_defaults_rejected_as_current_authority": [
+    "OFFLINE_REPLAY_DEFAULT_ACCOUNT_EQUITY",
+    "OFFLINE_REPLAY_DEFAULT_REFERENCE_PRICE",
+    "OFFLINE_REPLAY_DEFAULT_INSTRUMENT",
+    "COMPANION_CANDLE_CLOSE_AS_REFERENCE_PRICE",
+    "CMC_MARK_LABEL_AS_REFERENCE_PRICE_AUTHORITY"
+  ],
+  "related_but_separate_contracts": {
+    "risk_sizing_c2_input_authority_closure_v1": "C2_CENSUS_AND_GATE_UNCHANGED",
+    "risk_sizing_c2_domain_authority_resolution_v1": "COMPANION_FORENSICS_INPUT_NOT_REOPENED",
+    "risk_sizing_productive_input_provenance_binding_v1": "PROVENANCE_MEANING_UNCHANGED",
+    "risk_sizing_authority_decision_contract_freeze_v1": "OWNERS_UNRESOLVED_UNCHANGED"
+  },
+  "drift_policy": {
+    "upgrade_c2_verdict_without_closure_gate": "FAIL",
+    "flip_conversion_ready": "FAIL",
+    "productive_observation_to_c2_authority": "FAIL",
+    "companion_rewire_without_go": "FAIL"
+  }
+}
