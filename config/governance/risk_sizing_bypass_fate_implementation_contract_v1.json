@@ -1,0 +1,338 @@
+{
+  "contract_name": "risk_sizing_bypass_fate_implementation_contract_v1",
+  "contract_id": "OBL_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_bypass_fate_implementation_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1.md",
+  "inventory_date": "2026-09-23",
+  "pinned_against_main_sha": "37405e94f2d8d738767d4aa14d421d789d2b3b8d",
+  "workpackage_id": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+  "semantics": "FATE_IMPLEMENTATION_SEMANTICS_AND_COMPLETION_RULES_ONLY_NO_PER_BYPASS_COMPLETION_NO_RUNTIME",
+  "adjudication_authority": {
+    "contract_ref": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
+    "contract_id": "OBL_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+    "fate_vocabulary_ref": "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
+    "inventory_ref": "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "authority_scope": "ADJUDICATED_OPERATOR_FATES_ONLY_NO_NEW_FATE_ASSIGNMENT"
+  },
+  "decision_authority": {
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "decision_authority_holder": "Peak_Trade_Operator",
+    "decision_authority_gate": "EXPLICIT_SCOPED_OPERATOR_GO_FOR_WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+    "scoped_operator_go_present": true,
+    "this_slice_assigns_operator_fate": false,
+    "this_slice_executes_fate_implementation": false
+  },
+  "markers": {
+    "RISK_SIZING_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1": true,
+    "INVENTORY_ONLY": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
+    "FATE_IMPLEMENTATION_EXECUTED": false,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 0,
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "RUNTIME_REWIRE_EXECUTED": false,
+    "BYPASS_SET_CHANGED": false,
+    "BYPASS_PATH_COUNT": 5,
+    "OPERATOR_FATE_ADJUDICATION_EXECUTED": true,
+    "CONSOLIDATION_STATUS": "NOT_STARTED",
+    "CONVERSION_READY": false,
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false,
+    "C2_INPUT_AUTHORITIES": "UNRESOLVED",
+    "NO_RUNTIME_REWIRE": true,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_CRS_SCOPE_EXPANSION": true,
+    "NO_REPO_WIDE_OWNER_PROMOTION": true,
+    "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
+    "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
+    "LIVE_AUTHORIZED": false,
+    "ORDERS_ENABLED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false
+  },
+  "foreign_classifications_not_operator_fate": [
+    {
+      "token": "DEPRECATE_LEGACY_PATH",
+      "must_not_satisfy_implementation_completion": true
+    },
+    {
+      "token": "DEPRECATED_QUARANTINED",
+      "must_not_satisfy_implementation_completion": true
+    }
+  ],
+  "fate_token_implementation_semantics": {
+    "KEEP_PARALLEL_NON_CANONICAL": {
+      "implements_adjudicated_fate_only": true,
+      "minimum_implementation_requirements": [
+        "Governance/provenance surfaces pin this bypass as productive parallel non-canonical for MV2 intent-bound CRS scope without consolidation claim.",
+        "Inventory and caller-owner topology stable_ids remain the five inventored bypass IDs; reachability pins unchanged unless a separate Runtime-GO slice explicitly documents mutation.",
+        "System/economic evidence admissibility must not promote this bypass to repo-wide canonical risk/sizing owner or MV2 CRS quantity-algebra owner.",
+        "Machine tests prove adjudicated fate token and bypass stable_id binding; no operator_fate_adjudication drift vs adjudication contract."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": false,
+      "separate_runtime_go_required_for_runtime_enforcement_or_rewire": true,
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+      "forbidden_implicit_effects": [
+        "Equals DEPRECATE_LEGACY_PATH or DEPRECATED_QUARANTINED.",
+        "Runtime disable, delete, or deauthorize by minimum implementation alone.",
+        "Promote to CANONICAL_RISK_SIZING_OWNER or expand MV2 CRS scope.",
+        "CONVERSION_READY=true or C2_INPUT_AUTHORITIES resolved.",
+        "Consolidation or repo-wide owner selection."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "bypass_entry.minimum_implementation_requirements_verified=true",
+        "downstream provenance or admissibility contract pins match evidence_provenance_effect for this stable_id",
+        "adjudication.operator_fate_adjudication unchanged for this stable_id"
+      ]
+    },
+    "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE": {
+      "implements_adjudicated_fate_only": true,
+      "minimum_implementation_requirements": [
+        "Governance/provenance/evidence surfaces fail-closed: system/economic evidence must not treat this bypass as authoritative productive size owner.",
+        "Productive input provenance or successor binding records EXCLUDE (or equivalent machine pin) for this bypass stable_id without mutating the five bypass inventory count semantics.",
+        "Adjudication and inventory operator_fate_adjudication pins remain unchanged.",
+        "Machine tests prove exclusion admissibility semantics for system-economic evidence claims referencing this route."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": true,
+      "separate_runtime_go_required_for_runtime_enforcement_or_rewire": true,
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "forbidden_implicit_effects": [
+        "Immediate runtime disable, delete, or hard deauthorize from minimum implementation.",
+        "Equals EFS DEPRECATED_QUARANTINED or CRS DEPRECATE_LEGACY_PATH as operator fate completion.",
+        "CONVERSION_READY=true or C2 closure.",
+        "CRS repo-wide promotion or sizing-math change."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "bypass_entry.minimum_implementation_requirements_verified=true",
+        "provenance_or_admissibility_contract documents EXCLUDE effect for stable_id",
+        "no claim that runtime route is unreachable unless separate Runtime-GO slice with RUNTIME_MUTATION_EXECUTED=true"
+      ]
+    },
+    "RESEARCH_OR_OFFLINE_SCOPE_ONLY": {
+      "implements_adjudicated_fate_only": true,
+      "minimum_implementation_requirements": [
+        "Governance/provenance surfaces pin research/offline/evaluation scope only; productive system-evidence must not rest on this bypass as size authority.",
+        "Offline or research host scope labels remain consistent with inventory scope notes for the inventored owner/bypass.",
+        "Machine tests prove scope-only admissibility boundary vs system-economic evidence.",
+        "Adjudication operator_fate_adjudication pin unchanged."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": true,
+      "separate_runtime_go_required_for_runtime_enforcement_or_rewire": true,
+      "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+      "forbidden_implicit_effects": [
+        "Immediate code deletion or runtime disable from minimum implementation.",
+        "Equals KEEP_PARALLEL_NON_CANONICAL for productive system-evidence authority claims.",
+        "OFFLINE_OR_SIMULATION elevated to productive authority without separate Owner-GO.",
+        "CONVERSION_READY=true or C2 closure."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "bypass_entry.minimum_implementation_requirements_verified=true",
+        "provenance_or_admissibility_contract documents scope-only effect for stable_id",
+        "adjudication.operator_fate_adjudication unchanged for this stable_id"
+      ]
+    }
+  },
+  "bypass_fate_implementations": {
+    "BYPASS_CLASSIC_BACKTEST_DEFAULT": {
+      "stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "fate_token_implementation_semantics_ref": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "inventored_reachability": "REACHABLE_PRODUCTIVE",
+      "inventored_source_path": "src/backtest/engine.py",
+      "inventored_caller_symbol": "BacktestEngine.run_realistic",
+      "inventored_target_symbol": "calc_position_size",
+      "fate_implementation_status": "NOT_STARTED",
+      "fate_implementation_executed": false,
+      "completion_evidence_satisfied": false,
+      "minimum_implementation_requirements_verified": false,
+      "minimum_implementation_requirements": [
+        "Apply GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE minimum_implementation_requirements for stable_id BYPASS_CLASSIC_BACKTEST_DEFAULT (classic BacktestEngine default calc_position_size path).",
+        "Companion caller src/backtest/backtest_engine_position_feedback_adapter_v1.py step_legacy_realistic_bar_v1 must share the same exclusion provenance class when it uses calc_position_size for the same bypass kernel."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": true,
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "forbidden_implicit_effects": [
+        "Disable BacktestEngine legacy default branch without Runtime-GO.",
+        "Treat CRS DEPRECATE_LEGACY_PATH as completion of operator fate implementation."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "provenance_or_admissibility_contract EXCLUDE pin for BYPASS_CLASSIC_BACKTEST_DEFAULT",
+        "companion EDGE_FEEDBACK_CALC_POSITION_SIZE exclusion aligned"
+      ]
+    },
+    "BYPASS_CORE_POSITION_SIZER": {
+      "stable_id": "BYPASS_CORE_POSITION_SIZER",
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "fate_token_implementation_semantics_ref": "KEEP_PARALLEL_NON_CANONICAL",
+      "inventored_reachability": "REACHABLE_PRODUCTIVE",
+      "inventored_source_path": "src/backtest/engine.py",
+      "inventored_caller_symbol": "BacktestEngine.run_realistic",
+      "inventored_target_symbol": "BasePositionSizer.get_target_position",
+      "fate_implementation_status": "NOT_STARTED",
+      "fate_implementation_executed": false,
+      "completion_evidence_satisfied": false,
+      "minimum_implementation_requirements_verified": false,
+      "minimum_implementation_requirements": [
+        "Apply KEEP_PARALLEL_NON_CANONICAL minimum_implementation_requirements for stable_id BYPASS_CORE_POSITION_SIZER.",
+        "Open governance question on research-only forever does not block parallel non-canonical minimum implementation (does not adjudicate end-state)."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": false,
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+      "forbidden_implicit_effects": [
+        "Resolve open research-only-forever question as part of minimum implementation.",
+        "Rewire to CRS without INTEND_REBIND adjudication and Runtime-GO."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "parallel non-canonical provenance pin for BYPASS_CORE_POSITION_SIZER"
+      ]
+    },
+    "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS": {
+      "stable_id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL",
+      "fate_token_implementation_semantics_ref": "KEEP_PARALLEL_NON_CANONICAL",
+      "inventored_reachability": "REACHABLE_PRODUCTIVE",
+      "inventored_source_path": "src/execution/pipeline.py",
+      "inventored_caller_symbol": "ExecutionPipeline.execute_from_signals",
+      "inventored_target_symbol": "ExecutionPipeline.execute_from_signals",
+      "fate_implementation_status": "NOT_STARTED",
+      "fate_implementation_executed": false,
+      "completion_evidence_satisfied": false,
+      "minimum_implementation_requirements_verified": false,
+      "minimum_implementation_requirements": [
+        "Apply KEEP_PARALLEL_NON_CANONICAL minimum_implementation_requirements for stable_id BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS.",
+        "EFS DEPRECATED_QUARANTINED foreign status remains separate; semantic conflict in provenance audit is not operator CONFLICTING fate and does not block parallel minimum implementation."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": false,
+      "evidence_provenance_effect": "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM",
+      "forbidden_implicit_effects": [
+        "Treat DEPRECATED_QUARANTINED as operator fate implementation completion.",
+        "Resolve SEMANTIC_CONFLICT units semantics as part of bypass fate minimum without separate conversion WP."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "parallel non-canonical provenance pin for BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+        "efs_quarantine_contract meaning unchanged"
+      ]
+    },
+    "BYPASS_LIVE_SHADOW_POSITION_FRACTION": {
+      "stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "fate_token_implementation_semantics_ref": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "inventored_reachability": "REACHABLE_PRODUCTIVE",
+      "inventored_source_path": "src/live/shadow_session.py",
+      "inventored_caller_symbol": "ShadowPaperSession.step_once",
+      "inventored_target_symbol": null,
+      "fate_implementation_status": "NOT_STARTED",
+      "fate_implementation_executed": false,
+      "completion_evidence_satisfied": false,
+      "minimum_implementation_requirements_verified": false,
+      "minimum_implementation_requirements": [
+        "Apply GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE minimum_implementation_requirements for stable_id BYPASS_LIVE_SHADOW_POSITION_FRACTION.",
+        "Shadow/live naming must not imply LIVE_AUTHORIZED; exclusion from system-economic size evidence authority is governance-enforced without Fraction→Units conversion unless separate GO."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": true,
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "forbidden_implicit_effects": [
+        "Hard deauthorize shadow session without Runtime-GO.",
+        "Companion live_session position_fraction edge conflated with this bypass completion without explicit scope."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "provenance_or_admissibility_contract EXCLUDE pin for BYPASS_LIVE_SHADOW_POSITION_FRACTION"
+      ]
+    },
+    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT": {
+      "stable_id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
+      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+      "fate_token_implementation_semantics_ref": "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+      "inventored_reachability": "REACHABLE_PRODUCTIVE",
+      "inventored_source_path": "src/backtest/engine.py",
+      "inventored_caller_symbol": "BacktestEngine.run_realistic",
+      "inventored_target_symbol": "size_offline_evaluation_entry_v1",
+      "fate_implementation_status": "NOT_STARTED",
+      "fate_implementation_executed": false,
+      "completion_evidence_satisfied": false,
+      "minimum_implementation_requirements_verified": false,
+      "minimum_implementation_requirements": [
+        "Apply RESEARCH_OR_OFFLINE_SCOPE_ONLY minimum_implementation_requirements for stable_id BYPASS_OFFLINE_EVAL_SIZING_CONTRACT.",
+        "Owner scope offline_economic_evaluation remains non-productive-system-evidence authority; INTEND_REBIND_TO_CRS is not adjudicated."
+      ],
+      "runtime_mutation_required": false,
+      "separate_runtime_go_required": true,
+      "evidence_provenance_effect": "RESEARCH_OR_OFFLINE_SCOPE_ONLY_PROVENANCE_LABEL; NOT_PRODUCTIVE_SYSTEM_EVIDENCE_SIZE_AUTHORITY",
+      "forbidden_implicit_effects": [
+        "Rebind offline eval contract to CRS as part of minimum implementation.",
+        "Elevate offline evaluation sizing to productive system-evidence canonical owner."
+      ],
+      "completion_evidence": [
+        "bypass_entry.fate_implementation_executed=true",
+        "bypass_entry.completion_evidence_satisfied=true",
+        "scope-only provenance pin for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+      ]
+    }
+  },
+  "global_completion_rule": {
+    "fate_implementation_executed_marker": {
+      "allowed_true_only_when_all": [
+        "markers.PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT == markers.BYPASS_PATH_COUNT",
+        "every bypass_fate_implementations[stable_id].fate_implementation_executed == true",
+        "every bypass_fate_implementations[stable_id].completion_evidence_satisfied == true",
+        "every bypass_fate_implementations[stable_id].minimum_implementation_requirements_verified == true",
+        "operator_fate_adjudication per stable_id matches risk_sizing_bypass_fate_operator_adjudication_v1.json operator_fate_summary_sorted",
+        "markers.CONVERSION_READY remains false unless a separate authorized slice explicitly flips it with evidence",
+        "markers.C2_INPUT_AUTHORITIES remains UNRESOLVED unless separate C2 closure WP",
+        "foreign_classifications_not_operator_fate tokens are not used as completion substitutes"
+      ],
+      "this_contract_slice_may_set_true": false,
+      "derivation": "Machine-checkable conjunction; no partial global completion."
+    },
+    "per_bypass_completion_rule": {
+      "fate_implementation_executed_true_requires": [
+        "completion_evidence list for that bypass satisfied in governance/tests/evidence",
+        "fate_implementation_status == COMPLETE",
+        "operator_fate_adjudication unchanged vs adjudication contract"
+      ],
+      "this_contract_slice_may_set_per_bypass_true": false
+    }
+  },
+  "drift_policy": {
+    "bypass_id_add_or_remove": "FAIL",
+    "operator_fate_adjudication_change_without_scoped_operator_go": "FAIL",
+    "fate_implementation_executed_true_without_completion_evidence": "FAIL",
+    "global_fate_implementation_executed_true_with_partial_per_bypass": "FAIL",
+    "foreign_token_as_completion_substitute": "FAIL",
+    "flip_conversion_ready": "FAIL",
+    "resolve_c2_input_authorities": "FAIL",
+    "promote_repo_wide_canonical_risk_sizing_owner": "FAIL",
+    "claim_runtime_mutation_in_semantics_only_slice": "FAIL",
+    "semantic_conflict_reclassified_as_operator_fate_conflicting": "FAIL"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_bypass_fate_operator_adjudication_v1": "ADJUDICATED_FATES_AUTHORITY_UNCHANGED",
+    "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED",
+    "risk_sizing_owner_inventory_ssot_v1": "INVENTORY_REACHABILITY_UNCHANGED_IMPLEMENTATION_REF_ADDED",
+    "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED",
+    "risk_sizing_productive_input_provenance_binding_v1": "COMPLETE_SEPARATE_FUTURE_EXCLUDE_SCOPE_IMPLEMENTATION",
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_UNCHANGED"
+  }
+}

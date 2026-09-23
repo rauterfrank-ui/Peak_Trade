@@ -205,6 +205,7 @@
   },
   "related_but_separate_contracts": {
     "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED_PER_BYPASS_FATES_UPDATED_VIA_THIS_SLICE",
+    "risk_sizing_bypass_fate_implementation_contract_v1": "SEMANTICS_DEFINED_IMPLEMENTATION_NOT_EXECUTED",
     "risk_sizing_owner_inventory_ssot_v1": "BYPASS_FATE_PINS_UPDATED_INVENTORY_ONLY",
     "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED_CONVERSION_NOT_READY",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_STATUS_UNCHANGED"

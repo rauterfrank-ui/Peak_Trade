@@ -40,7 +40,10 @@
     "FATE_VOCABULARY_SOURCE": "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
     "OPERATOR_FATE_ADJUDICATION_EXECUTED": true,
     "OPERATOR_FATE_ADJUDICATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
-    "OPERATOR_FATE_ADJUDICATION_WP": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1"
+    "OPERATOR_FATE_ADJUDICATION_WP": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+    "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
+    "OPERATOR_FATE_IMPLEMENTATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
+    "OPERATOR_FATE_IMPLEMENTATION_WP": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1"
   },
   "canonical_status": {
     "repo_wide": "UNRESOLVED",
@@ -76,6 +79,17 @@
     "contract_ref": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
     "unknown_fate_count": 0,
     "conflicting_fate_count": 0
+  },
+  "operator_fate_implementation_v1": {
+    "workpackage_id": "WP_B05_BYPASS_FATE_IMPLEMENTATION_CONTRACT_V1",
+    "pinned_against_main_sha": "37405e94f2d8d738767d4aa14d421d789d2b3b8d",
+    "authority_effect": "NONE",
+    "runtime_rewire_performed": false,
+    "fate_implementation_semantics_defined": true,
+    "fate_implementation_executed": false,
+    "per_bypass_implementation_executed_count": 0,
+    "scoped_operator_go": true,
+    "contract_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json"
   },
   "productive_decision_owners": [
     {
@@ -689,7 +703,8 @@
       "risk_sizing_units_dimensions_contract_v0": "SEPARATE_UNITS_DIMENSIONS_DECLARATION_ONLY",
       "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
       "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED",
-      "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED"
+      "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED",
+      "risk_sizing_bypass_fate_implementation_contract_v1": "SEMANTICS_DEFINED_IMPLEMENTATION_NOT_EXECUTED"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",
