@@ -23,7 +23,7 @@ Machine-readable decision:
 `config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json`
 
 Code owner:
-`src/trading/master_v2/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py`
+`src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py`
 
 ## 1. Purpose
 

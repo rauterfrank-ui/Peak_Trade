@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from trading.master_v2.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1 import (
+from src.governance.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1 import (
     CURRENT_MV2_DP_DECISION_SSOT,
     CURRENT_PRODUCTIVE_ENTRYPOINT,
     DECISION_CONFIG,
@@ -40,7 +40,7 @@ from trading.master_v2.naked_mv2_double_play_core_authority_hardening_v1 import 
     IngressSurfaceClass,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[2]
 PRODUCTIVE_CYCLE_MODULE = (
     REPO_ROOT
     / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"

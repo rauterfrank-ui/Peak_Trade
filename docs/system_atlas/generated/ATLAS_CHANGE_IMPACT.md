@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- CURRENT productive venue-plan binder consumes the ratified static tdMode policy and the identity order-environment mapping. POST Owner-GO remains UNCONSUMED. EXTERNAL_EFFECT_COUNT=0. LIVE_CAPABILITY_COMPLETE=false. ATLAS_AUTHORITY=NONE.
+- V3.2 baseline-first lifecycle resolution v1 catalog entry: governance-only composite binding and D24–D27 adjudication record. No runtime gate or cutover. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=BIND_RATIFIED_TD_MODE_AND_ORDER_ENVIRONMENT_INTO_CURRENT_PRODUCTIVE_VENUE_PLAN_V1
+- modified_by=V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

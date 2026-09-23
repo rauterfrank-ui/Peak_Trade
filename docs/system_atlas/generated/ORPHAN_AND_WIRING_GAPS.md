@@ -161,6 +161,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:test_health_runner | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:test_health_runner | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:treasury_separation_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:treasury_separation_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:u05_p1_futures_bound_interest_accrued_usdc_scoped_get_acquisition_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:u05_p1_futures_bound_interest_accrued_usdc_scoped_get_acquisition_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dg_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dh_single_actual_read_only_funding_balance_get_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:z2dl_post_remediation_single_private_auth_get_v1 | STATUS=OPEN (not proven) |  |

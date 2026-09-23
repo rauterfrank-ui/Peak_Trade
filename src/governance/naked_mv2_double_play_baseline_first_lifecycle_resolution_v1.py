@@ -92,7 +92,7 @@ EARLIEST_TRUE_REMAINING_GAP: Final[str] = (
 )
 
 NAKED_BASELINE_OWNER: Final[str] = (
-    "trading.master_v2.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1"
+    "governance.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1"
     ".composite_baseline_first_binding_v1"
 )
 PASSIVE_EVIDENCE_OWNER: Final[str] = (
@@ -150,7 +150,7 @@ def _replay_ssot_proven_v1(*, binding: Mapping[str, Any], hardening: Mapping[str
 
 def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Mapping[str, Any]:
     """Return machine-readable composite owner graph (reuse-only, no new authority)."""
-    root = repo_root or Path(__file__).resolve().parents[3]
+    root = repo_root or Path(__file__).resolve().parents[2]
     hardening = _load_json(root, HARDENING_DECISION_CONFIG)
     pre_test = _load_json(root, PRE_TEST_DECISION_CONFIG)
     learning = _load_json(root, LEARNING_CLOSED_LOOP_DECISION_CONFIG)
@@ -196,7 +196,7 @@ def adjudicate_v32_baseline_first_requirements_v1(
     *, repo_root: Path | None = None
 ) -> tuple[RequirementAdjudicationV1, ...]:
     """Forensic adjudication for Concept v3.2 D24–D27 and §22 sequence (read-only composition)."""
-    root = repo_root or Path(__file__).resolve().parents[3]
+    root = repo_root or Path(__file__).resolve().parents[2]
     binding = composite_baseline_first_binding_v1(repo_root=root)
     hardening = _load_json(root, HARDENING_DECISION_CONFIG)
 
