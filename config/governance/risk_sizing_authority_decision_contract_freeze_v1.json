@@ -454,7 +454,7 @@
     "conversion_ready": false,
     "conversion_not_ready_reasons": [
       "C2 input authority domains remain UNRESOLVED",
-      "five inventoried productive bypass paths remain parallel and fate-not-adjudicated",
+      "five bypass operator fates adjudicated; parallel routes remain until separate Runtime-GO consolidation",
       "NO_REWIRE and NO_AUTHORITY_ASSIGNMENT remain in effect for this slice"
     ],
     "distinct_authority_boundaries": [

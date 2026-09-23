@@ -2,22 +2,27 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "8e6bd8e26e88aecbf1d9ebb147f0c34716bf0a21",
+  "base_sha": "ccb16679bcb7e0e7bf30b1f99ba3beac71c3a0f7",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "B05 bypass fate vocabulary and decision authority freeze: add canonical operator_fate_adjudication vocabulary + SCOPED_OPERATOR_GO pin; inventory pointers only; all five CURRENT bypass fates remain UNKNOWN. Open-record statement hygiene + regenerated authority view. AUTHORITY=NONE; no runtime rewire; no per-ID fate adjudication; C2/topology/conversion unchanged.",
+  "reason": "B05 bypass fate operator adjudication: per-ID operator_fate_adjudication pins in inventory/adjudication contract; vocabulary freeze current_bypass_fate_pins updated; open-record statement hygiene + regenerated derived views. AUTHORITY=NONE; no runtime rewire; C2/conversion/consolidation unchanged.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
     "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_BYPASS_FATE_OPERATOR_ADJUDICATION_V1.md",
     "docs/governance/RISK_SIZING_BYPASS_FATE_VOCABULARY_AND_DECISION_AUTHORITY_FREEZE_V1.md",
     "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "tests/governance/test_risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.py"
+    "tests/governance/test_risk_sizing_bypass_fate_operator_adjudication_v1.py",
+    "tests/governance/test_risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.py",
+    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "4186e3c9c74b054a9a4c179d6b4abd25292231afdcfbc2d43884fde64beb7af7",
+  "changed_paths_sha256": "fd0cb6c97c69a52caeec630c1ce671316cce690b7937bd685b6af2da44920c3e",
   "evidence_refs": [
-    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
+    "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
     "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],

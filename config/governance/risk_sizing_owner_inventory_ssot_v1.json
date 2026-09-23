@@ -38,12 +38,14 @@
     "PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY": "portfolio_capital_reservation_budget_v1",
     "CONVERSION_READY": false,
     "FATE_VOCABULARY_SOURCE": "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
-    "OPERATOR_FATE_ADJUDICATION_EXECUTED": false
+    "OPERATOR_FATE_ADJUDICATION_EXECUTED": true,
+    "OPERATOR_FATE_ADJUDICATION_CONTRACT": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
+    "OPERATOR_FATE_ADJUDICATION_WP": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1"
   },
   "canonical_status": {
     "repo_wide": "UNRESOLVED",
     "singular_repo_wide_owner_required": false,
-    "reason": "Multiple productive size decision owners coexist. CRS is adjudicated quantity-algebra owner for MV2/governance/intent-bound scope only (not repo-wide). Bypass paths remain parallel/non-canonical for that scope until separate Operator-GO. OBL_B05 bypass fate and C2 input closure remain open.",
+    "reason": "Multiple productive size decision owners coexist. CRS is adjudicated quantity-algebra owner for MV2/governance/intent-bound scope only (not repo-wide). Five bypass operator fates adjudicated (inventory-only pins); consolidation and C2 input closure remain open.",
     "mv2_governance_chain_owner": "src.governance.capital_risk_sizing_v1",
     "mv2_scope_status": "RESOLVED_TO_CRS",
     "mv2_intent_bound_quantity_algebra_owner_adjudicated": true
@@ -61,8 +63,19 @@
     "conversion_ready": false,
     "conversion_not_ready_reasons": [
       "account_equity reference_price instrument_metadata authority owners remain UNRESOLVED",
-      "five bypass paths remain reachable parallel non-canonical routes with operator_fate_adjudication UNKNOWN"
+      "five bypass operator fates adjudicated; parallel routes remain reachable until separate Runtime-GO consolidation"
     ]
+  },
+  "operator_fate_adjudication_v1": {
+    "workpackage_id": "WP_B05_BYPASS_FATE_OPERATOR_ADJUDICATION_V1",
+    "adjudicated_against_main_sha": "ccb16679bcb7e0e7bf30b1f99ba3beac71c3a0f7",
+    "authority_effect": "NONE",
+    "runtime_rewire_performed": false,
+    "fate_implementation_executed": false,
+    "scoped_operator_go": true,
+    "contract_ref": "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
+    "unknown_fate_count": 0,
+    "conflicting_fate_count": 0
   },
   "productive_decision_owners": [
     {
@@ -226,7 +239,7 @@
       "target_classification": "LEGACY_POSITION_SIZER_CALC",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "UNKNOWN"
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE"
     },
     {
       "id": "BYPASS_CORE_POSITION_SIZER",
@@ -238,7 +251,7 @@
       "target_classification": "CORE_POSITION_SIZER_GET_TARGET_POSITION",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "UNKNOWN"
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL"
     },
     {
       "id": "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
@@ -250,7 +263,7 @@
       "target_classification": "EXECUTION_SIMPLIFIED_NOTIONAL_PCT_SIZE",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "UNKNOWN"
+      "operator_fate_adjudication": "KEEP_PARALLEL_NON_CANONICAL"
     },
     {
       "id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
@@ -262,7 +275,7 @@
       "target_classification": "SHADOW_CFG_POSITION_FRACTION_ASSIGNMENT",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "UNKNOWN"
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE"
     },
     {
       "id": "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
@@ -274,7 +287,7 @@
       "target_classification": "OFFLINE_EVALUATION_SIZING_CONTRACT",
       "canonical_for_mv2_intent_bound_scope": false,
       "reachability": "REACHABLE_PRODUCTIVE",
-      "operator_fate_adjudication": "UNKNOWN"
+      "operator_fate_adjudication": "RESEARCH_OR_OFFLINE_SCOPE_ONLY"
     }
   ],
   "default_conflicts": [
@@ -675,7 +688,8 @@
       "legacy_order_intent_direct_submission_surface_contract_v1": "COMPLETE_SEPARATE_UNCHANGED",
       "risk_sizing_units_dimensions_contract_v0": "SEPARATE_UNITS_DIMENSIONS_DECLARATION_ONLY",
       "risk_sizing_caller_owner_topology_contract_v0": "SEPARATE_CALLER_OWNER_TOPOLOGY_FREEZE_ONLY",
-      "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_AND_DECISION_AUTHORITY_ONLY_FATES_REMAIN_UNKNOWN"
+      "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "COMPLETE_SEPARATE_VOCABULARY_UNCHANGED",
+      "risk_sizing_bypass_fate_operator_adjudication_v1": "PER_BYPASS_FATES_ASSIGNED_INVENTORY_PINS_UPDATED"
     },
     "pinned_against_main_sha": "1dd571860058ad44e0cc872ff37c43ded837b3c1",
     "scan_method": "AST_DEFINITION_RESOLUTION_NO_IMPORT",

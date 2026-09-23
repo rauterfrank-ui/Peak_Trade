@@ -50,7 +50,11 @@ def test_inventory_bypass_fates_unknown_and_crs_scope_adjudicated() -> None:
     assert set(bypass) == set(BYPASS_IDS)
     for bid in BYPASS_IDS:
         assert bypass[bid]["canonical_for_mv2_intent_bound_scope"] is False
-        assert bypass[bid]["operator_fate_adjudication"] == "UNKNOWN"
+        assert bypass[bid]["operator_fate_adjudication"] in (
+            "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+            "KEEP_PARALLEL_NON_CANONICAL",
+            "RESEARCH_OR_OFFLINE_SCOPE_ONLY",
+        )
         assert bypass[bid]["reachability"] == "REACHABLE_PRODUCTIVE"
     crs = next(o for o in data["productive_decision_owners"] if o["owner_id"] == CRS_OWNER)
     assert crs["mv2_intent_bound_quantity_algebra_owner_adjudicated"] is True
