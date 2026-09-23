@@ -251,6 +251,16 @@
       "path_id": "PATH_SHADOW_COMPANION",
       "subcontract_id": "COMPANION_FRACTION_TO_ABSOLUTE_UNITS_CONFLICT",
       "classification": "SEMANTIC_CONFLICT",
+      "governance_exclude_fate_implementation_v1": {
+        "bypass_stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+        "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+        "fate_implementation_status": "COMPLETE",
+        "classification_unchanged": "SEMANTIC_CONFLICT",
+        "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+        "companion_live_session_edge_not_conflated": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
+        "fraction_to_units_conversion_resolved": false,
+        "provenance_binding_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json"
+      },
       "entrypoint": {
         "module": "src.live.shadow_session",
         "source_path": "src/live/shadow_session.py",

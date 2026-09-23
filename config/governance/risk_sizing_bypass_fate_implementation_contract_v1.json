@@ -30,8 +30,9 @@
     "RUNTIME_EFFECT": "NONE",
     "FATE_IMPLEMENTATION_SEMANTICS_DEFINED": true,
     "FATE_IMPLEMENTATION_EXECUTED": false,
-    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 2,
+    "PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT": 4,
     "S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED": true,
+    "S2_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_EXECUTED": true,
     "RUNTIME_MUTATION_EXECUTED": false,
     "RUNTIME_REWIRE_EXECUTED": false,
     "BYPASS_SET_CHANGED": false,
@@ -152,10 +153,10 @@
       "inventored_source_path": "src/backtest/engine.py",
       "inventored_caller_symbol": "BacktestEngine.run_realistic",
       "inventored_target_symbol": "calc_position_size",
-      "fate_implementation_status": "NOT_STARTED",
-      "fate_implementation_executed": false,
-      "completion_evidence_satisfied": false,
-      "minimum_implementation_requirements_verified": false,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
       "minimum_implementation_requirements": [
         "Apply GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE minimum_implementation_requirements for stable_id BYPASS_CLASSIC_BACKTEST_DEFAULT (classic BacktestEngine default calc_position_size path).",
         "Companion caller src/backtest/backtest_engine_position_feedback_adapter_v1.py step_legacy_realistic_bar_v1 must share the same exclusion provenance class when it uses calc_position_size for the same bypass kernel."
@@ -245,10 +246,10 @@
       "inventored_source_path": "src/live/shadow_session.py",
       "inventored_caller_symbol": "ShadowPaperSession.step_once",
       "inventored_target_symbol": null,
-      "fate_implementation_status": "NOT_STARTED",
-      "fate_implementation_executed": false,
-      "completion_evidence_satisfied": false,
-      "minimum_implementation_requirements_verified": false,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
       "minimum_implementation_requirements": [
         "Apply GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE minimum_implementation_requirements for stable_id BYPASS_LIVE_SHADOW_POSITION_FRACTION.",
         "Shadow/live naming must not imply LIVE_AUTHORIZED; exclusion from system-economic size evidence authority is governance-enforced without Fraction→Units conversion unless separate GO."
@@ -311,6 +312,22 @@
     "global_fate_implementation_executed_remains_false": true,
     "non_target_bypass_fates_unchanged": true
   },
+  "s2_governance_exclude_fate_implementation_v1": {
+    "workpackage_id": "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1",
+    "implemented_against_main_sha": "a3200bcdd40e32cdb653e7492862ef72b8feb74e",
+    "authority_effect": "NONE",
+    "runtime_mutation_executed": false,
+    "runtime_rewire_executed": false,
+    "productive_runtime_semantics_changed": false,
+    "bypass_ids_implemented_sorted": [
+      "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "BYPASS_LIVE_SHADOW_POSITION_FRACTION"
+    ],
+    "provenance_binding_contract_ref": "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
+    "global_fate_implementation_executed_remains_false": true,
+    "s1_keep_parallel_implementations_unchanged": true,
+    "offline_eval_fate_implementation_status": "NOT_STARTED"
+  },
   "global_completion_rule": {
     "fate_implementation_executed_marker": {
       "allowed_true_only_when_all": [
@@ -352,7 +369,7 @@
     "risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1": "VOCABULARY_UNCHANGED",
     "risk_sizing_owner_inventory_ssot_v1": "INVENTORY_REACHABILITY_UNCHANGED_IMPLEMENTATION_REF_ADDED",
     "risk_sizing_authority_decision_contract_freeze_v1": "COMPLETE_SEPARATE_C2_UNRESOLVED",
-    "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_PINS_FOR_TWO_BYPASS_IDS",
+    "risk_sizing_bypass_fate_provenance_binding_v1": "S1_KEEP_PARALLEL_AND_S2_GOVERNANCE_EXCLUDE_PINS",
     "risk_sizing_productive_input_provenance_binding_v1": "COMPLETE_SEPARATE_UNCHANGED_COMPANION_C2_BINDING",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "COMPLETE_SEPARATE_EFS_FOREIGN_UNCHANGED"
   }

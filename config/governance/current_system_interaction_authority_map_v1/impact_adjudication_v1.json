@@ -2,9 +2,9 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
+  "base_sha": "a3200bcdd40e32cdb653e7492862ef72b8feb74e",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "S1 KEEP_PARALLEL fate implementation: provenance binding + partial per-bypass completion (2/5); global FATE_IMPLEMENTATION_EXECUTED=false; b05 open record updated; derived views regenerated. AUTHORITY=NONE.",
+  "reason": "S2 GOVERNANCE_EXCLUDE fate implementation: provenance EXCLUDE pins + partial per-bypass completion (4/5); global FATE_IMPLEMENTATION_EXECUTED=false; b05 open record updated; derived authority view regenerated. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
@@ -17,9 +17,10 @@
     "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "tests/governance/test_risk_sizing_bypass_fate_implementation_contract_v1.py",
+    "tests/governance/test_risk_sizing_bypass_governance_exclude_fate_implementation_v1.py",
     "tests/governance/test_risk_sizing_bypass_keep_parallel_fate_implementation_v1.py"
   ],
-  "changed_paths_sha256": "62653c30ba8a7dab8f777324ad5daaabc4df4074d48fb80aa55985fb540a1883",
+  "changed_paths_sha256": "5cf27d04f9ebef9e317ef5eed4cdac87328f1bf9015fe831c2ee3a245a1b1094",
   "evidence_refs": [
     "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
     "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",

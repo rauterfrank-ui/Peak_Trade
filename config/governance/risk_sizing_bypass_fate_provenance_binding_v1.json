@@ -5,9 +5,13 @@
   "schema_version": "risk_sizing_bypass_fate_provenance_binding_schema_v1",
   "ssot_doc": "docs/governance/RISK_SIZING_BYPASS_FATE_PROVENANCE_BINDING_V1.md",
   "inventory_date": "2026-09-23",
-  "pinned_against_main_sha": "03ac0bf125e012a387637d8b366fe817629e6a74",
-  "workpackage_id": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
-  "implementation_slice": "S1",
+  "pinned_against_main_sha": "a3200bcdd40e32cdb653e7492862ef72b8feb74e",
+  "workpackage_id": "WP_B05_BYPASS_FATE_PROVENANCE_BINDING_V1",
+  "implementation_slices": {
+    "S1": "WP_B05_KEEP_PARALLEL_FATE_IMPLEMENTATION_V1",
+    "S2": "WP_B05_GOVERNANCE_EXCLUDE_FATE_IMPLEMENTATION_V1"
+  },
+  "implementation_slice": "S1_AND_S2",
   "semantics": "BYPASS_FATE_PROVENANCE_BINDING_GOVERNANCE_ONLY_NO_RUNTIME_NO_AUTHORITY_PROMOTION",
   "implementation_authority": {
     "fate_implementation_semantics_ref": "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
@@ -24,6 +28,8 @@
     "BYPASS_SET_CHANGED": false,
     "BYPASS_PATH_COUNT": 5,
     "KEEP_PARALLEL_IMPLEMENTATION_BINDING_COUNT": 2,
+    "GOVERNANCE_EXCLUDE_IMPLEMENTATION_BINDING_COUNT": 2,
+    "BYPASS_FATE_PROVENANCE_BINDING_COMPLETE_COUNT": 4,
     "CONVERSION_READY": false,
     "C2_INPUT_AUTHORITIES": "UNRESOLVED",
     "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
@@ -36,6 +42,15 @@
     "must_not_promote_bypass_to_repo_wide_canonical_risk_sizing_owner": true,
     "must_not_promote_bypass_to_mv2_intent_bound_crs_quantity_algebra_owner": true,
     "parallel_non_canonical_does_not_imply_unreachable": true,
+    "governance_exclude_does_not_imply_runtime_disable": true,
+    "bypass_stable_ids_excluded_from_authoritative_system_economic_size_evidence_sorted": [
+      "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "BYPASS_LIVE_SHADOW_POSITION_FRACTION"
+    ],
+    "authoritative_productive_size_owner_claim_for_system_economic_evidence_fail_closed_tokens": [
+      "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "system_economic_evidence_authoritative_size_owner_claim_permitted=false"
+    ],
     "notes": "Governance pins only; runtime reachability unchanged per S0 minimum requirements."
   },
   "bypass_provenance_pins": {
@@ -80,6 +95,50 @@
       "semantic_conflict_status": "SEMANTIC_CONFLICT",
       "semantic_conflict_reclassified_to_operator_fate_conflicting": false,
       "semantic_conflict_resolution_deferred": true
+    },
+    "BYPASS_CLASSIC_BACKTEST_DEFAULT": {
+      "bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "governance_exclude_from_system_evidence_affirmed": true,
+      "exclude_from_authoritative_productive_size_provenance_for_system_evidence": true,
+      "canonical_for_mv2_intent_bound_scope": false,
+      "repo_wide_canonical_risk_sizing_owner_claim_permitted": false,
+      "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+      "reachability_pin": "REACHABLE_PRODUCTIVE",
+      "reachability_pin_unchanged_by_this_slice": true,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "topology_edge_ids": [
+        "EDGE_ENGINE_CALC_POSITION_SIZE",
+        "EDGE_FEEDBACK_CALC_POSITION_SIZE"
+      ],
+      "companion_caller_edge_ids_sharing_exclusion_provenance_class": [
+        "EDGE_FEEDBACK_CALC_POSITION_SIZE"
+      ],
+      "inventory_bypass_stable_id": "BYPASS_CLASSIC_BACKTEST_DEFAULT"
+    },
+    "BYPASS_LIVE_SHADOW_POSITION_FRACTION": {
+      "bypass_stable_id": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "operator_fate_adjudication": "GOVERNANCE_EXCLUDE_FROM_SYSTEM_EVIDENCE",
+      "evidence_provenance_effect": "EXCLUDE_FROM_AUTHORITATIVE_PRODUCTIVE_SIZE_PROVENANCE_FOR_SYSTEM_EVIDENCE",
+      "governance_exclude_from_system_evidence_affirmed": true,
+      "exclude_from_authoritative_productive_size_provenance_for_system_evidence": true,
+      "canonical_for_mv2_intent_bound_scope": false,
+      "repo_wide_canonical_risk_sizing_owner_claim_permitted": false,
+      "system_economic_evidence_authoritative_size_owner_claim_permitted": false,
+      "reachability_pin": "REACHABLE_PRODUCTIVE",
+      "reachability_pin_unchanged_by_this_slice": true,
+      "fate_implementation_status": "COMPLETE",
+      "fate_implementation_executed": true,
+      "completion_evidence_satisfied": true,
+      "minimum_implementation_requirements_verified": true,
+      "topology_bypass_inventory_ref": "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "companion_live_session_edge_must_not_conflate_with_bypass_completion": "COMPANION_LIVE_SESSION_POSITION_FRACTION",
+      "fraction_to_units_conversion_resolved": false,
+      "live_authorized_claim_permitted": false
     }
   },
   "drift_policy": {
@@ -93,10 +152,10 @@
     "efs_quarantine_meaning_change": "FAIL"
   },
   "related_but_separate_contracts": {
-    "risk_sizing_bypass_fate_implementation_contract_v1": "PER_BYPASS_COMPLETION_UPDATED_FOR_S1_TARGETS_ONLY",
+    "risk_sizing_bypass_fate_implementation_contract_v1": "PER_BYPASS_COMPLETION_UPDATED_FOR_S1_AND_S2_TARGETS",
     "risk_sizing_bypass_fate_operator_adjudication_v1": "ADJUDICATED_FATES_UNCHANGED",
-    "risk_sizing_caller_owner_topology_contract_v0": "BYPASS_INVENTORY_FATE_IMPLEMENTATION_PINS_ADDED",
-    "risk_sizing_final_quantity_provenance_resolution_audit_v1": "PATH_EXECUTE_FROM_SIGNALS_CLASSIFICATION_UNCHANGED",
+    "risk_sizing_caller_owner_topology_contract_v0": "BYPASS_INVENTORY_FATE_IMPLEMENTATION_PINS_S1_AND_S2",
+    "risk_sizing_final_quantity_provenance_resolution_audit_v1": "PATH_SHADOW_COMPANION_EXCLUDE_PIN_ADDED; PATH_EXECUTE_FROM_SIGNALS_CLASSIFICATION_UNCHANGED",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "EFS_QUARANTINE_MEANING_UNCHANGED"
   }
 }

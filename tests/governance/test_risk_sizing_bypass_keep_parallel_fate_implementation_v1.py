@@ -37,11 +37,7 @@ S1_BYPASS_IDS = (
     "BYPASS_CORE_POSITION_SIZER",
     "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
 )
-NON_S1_BYPASS_IDS = (
-    "BYPASS_CLASSIC_BACKTEST_DEFAULT",
-    "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
-    "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",
-)
+NON_S1_BYPASS_IDS_NOT_STARTED = ("BYPASS_OFFLINE_EVAL_SIZING_CONTRACT",)
 KEEP_PARALLEL_FATE = "KEEP_PARALLEL_NON_CANONICAL"
 PROVENANCE_EFFECT = (
     "AFFIRM_PARALLEL_NON_CANONICAL_PROVENANCE_LABEL; NO_AUTHORITATIVE_SYSTEM_EVIDENCE_OWNER_CLAIM"
@@ -56,7 +52,7 @@ def test_s1_slice_boundaries_and_global_incomplete() -> None:
     impl = _load(IMPLEMENTATION_JSON)
     markers = impl["markers"]
     assert markers["FATE_IMPLEMENTATION_EXECUTED"] is False
-    assert markers["PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT"] == 2
+    assert markers["PER_BYPASS_FATE_IMPLEMENTATION_EXECUTED_COUNT"] == 4
     assert markers["S1_KEEP_PARALLEL_FATE_IMPLEMENTATION_EXECUTED"] is True
     assert markers["RUNTIME_MUTATION_EXECUTED"] is False
     assert markers["PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED"] is False
@@ -85,9 +81,9 @@ def test_s1_targets_complete_per_s0_completion_evidence() -> None:
         assert pin["reachability_pin"] == "REACHABLE_PRODUCTIVE"
 
 
-def test_non_s1_bypasses_remain_not_started() -> None:
+def test_offline_eval_bypass_remains_not_started() -> None:
     impl = _load(IMPLEMENTATION_JSON)
-    for bid in NON_S1_BYPASS_IDS:
+    for bid in NON_S1_BYPASS_IDS_NOT_STARTED:
         row = impl["bypass_fate_implementations"][bid]
         assert row["fate_implementation_status"] == "NOT_STARTED"
         assert row["fate_implementation_executed"] is False
