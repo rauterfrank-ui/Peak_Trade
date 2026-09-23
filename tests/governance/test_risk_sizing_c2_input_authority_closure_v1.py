@@ -62,6 +62,11 @@ def test_c2_input_set_matches_provenance_binding_exhaustive() -> None:
         census = c2["c2_input_census"][iid]
         assert census["c2_authority_binding_implemented"] is False
         assert census["status"] != "PROVEN_CURRENT"
+        assert census["domain_authority_resolution_final_status"] == census["status"]
+        assert (
+            "risk_sizing_c2_domain_authority_resolution_v1.json"
+            in census["domain_authority_resolution_ref"]
+        )
 
 
 def test_c2_census_aligns_with_authority_decision_unresolved_owners() -> None:
