@@ -40,8 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1` |
 | `RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1` |
-| `RUNTIME_COMPONENT:v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 scoped Owner Productive Apply authority: dedicated apply record, ledgers, adjudicator, seam/transport guard alignment for valid scoped runtime_applied. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 scoped Owner Threshold Value authority: dedicated threshold record, ledgers, adjudicator, admission-to-gate wiring, seam numeric bypass closure. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=F1_M9_SCOPED_OWNER_PRODUCTIVE_APPLY_AUTHORITY_V1
+- modified_by=F1_M9_THRESHOLD_VALUE_AUTHORITY_AND_HOT_PATH_ADMISSION_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
