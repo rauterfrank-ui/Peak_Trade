@@ -17,6 +17,7 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_preregistrati
 from src.governance.f1_m9_prospective_candidate_selection_evidence_leakage_guard_v1 import (
     historical_evidence_cannot_select_v1,
 )
+from src.governance.f1_m9_productive_apply_execution_boundary_v1 import DECISION_CONFIG
 from src.governance.f1_m9_productive_candidate_selection_policy_v1 import (
     HISTORICAL_COUNTERFACTUAL_CAMPAIGN_ID,
     HISTORICAL_PREREGISTRATION_DIGEST,
@@ -35,9 +36,7 @@ SCHEMA_VERSION: Final[str] = "f1_m9_productive_candidate_selection_policy_closur
 WORKPACKAGE_ID: Final[str] = (
     "F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_AND_PROSPECTIVE_CAMPAIGN_V1"
 )
-EARLIEST_REMAINING_BLOCKER: Final[str] = (
-    "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_REQUIRES_OWNER_GO"
-)
+EARLIEST_REMAINING_BLOCKER: Final[str] = "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 
 
 def prove_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v1(
@@ -65,10 +64,26 @@ def prove_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v
     prereg = resolve_prospective_preregistration_v1(repo_root=root)
     if not prereg.new_prospective_campaign_preregistered:
         return False
-    if prereg.new_prospective_campaign_executed:
-        return False
-    if prereg.new_decision_making_evidence_generated:
-        return False
+    boundary_decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
+    handoff_ref = boundary_decision.get("post_real_campaign_handoff_decision")
+    handoff_complete = False
+    if isinstance(handoff_ref, str) and (root / handoff_ref).is_file():
+        handoff_complete = (
+            json.loads((root / handoff_ref).read_text(encoding="utf-8")).get(
+                "bounded_handoff_complete"
+            )
+            is True
+        )
+    if handoff_complete:
+        if not prereg.new_prospective_campaign_executed:
+            return False
+        if not prereg.new_decision_making_evidence_generated:
+            return False
+    else:
+        if prereg.new_prospective_campaign_executed:
+            return False
+        if prereg.new_decision_making_evidence_generated:
+            return False
     if not prereg.threshold_selection_authorized_within_new_campaign:
         return False
     if not prereg.historical_preregistration_unchanged:
@@ -83,10 +98,16 @@ def prove_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v
     ):
         return False
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=root)
-    if adj.resolved:
-        return False
-    if adj.candidate_id is not None:
-        return False
+    if handoff_complete:
+        if not adj.resolved:
+            return False
+        if adj.candidate_id != "CANDIDATE_600_S":
+            return False
+    else:
+        if adj.resolved:
+            return False
+        if adj.candidate_id is not None:
+            return False
     if AUTHORIZED_FOR_PRODUCTIVE_APPLY is not False:
         return False
     if int(PRODUCTIVE_NUMERIC_VALUES_SET) != 0:

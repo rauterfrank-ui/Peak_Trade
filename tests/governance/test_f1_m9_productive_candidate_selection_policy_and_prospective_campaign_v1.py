@@ -111,9 +111,11 @@ def test_new_preregistration_authorizes_selection_only_within_campaign() -> None
     assert prereg["productive_apply_authorized"] is False
     state = resolve_prospective_preregistration_v1(repo_root=REPO_ROOT)
     assert state.new_prospective_campaign_preregistered is True
-    assert state.new_prospective_campaign_executed is False
-    assert state.new_decision_making_evidence_generated is False
+    # Preregistration artifact remains immutable (no execution bit in prereg file).
     assert state.threshold_selection_authorized_within_new_campaign is True
+    # Current runtime truth comes from campaign binding + durable evidence root.
+    assert state.new_prospective_campaign_executed is True
+    assert state.new_decision_making_evidence_generated is True
 
 
 def test_pre_preregistration_evidence_cannot_decide_candidate() -> None:
@@ -177,18 +179,17 @@ def test_unique_survivor_selects_proposal_without_productive_authority() -> None
     assert selected["productive_apply"] is False
 
 
-def test_census_and_adjudication_remain_unresolved() -> None:
+def test_census_and_adjudication_after_post_real_campaign_handoff() -> None:
     census = run_f1_m9_canonical_productive_candidate_evidence_census_v1(repo_root=REPO_ROOT)
     assert census.existing_campaign_evidence_class == EVIDENCE_CLASS_COUNTERFACTUAL
     assert census.existing_campaign_can_select_productive_candidate is False
     assert census.owner_policy_required is False
     assert census.candidate_selection_rule_id == "F1_M9_ROBUST_REGION_UNIQUE_SURVIVOR_POINT_V1"
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
+    assert census.earliest_blocker == ("F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO")
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=REPO_ROOT)
-    assert adj.resolved is False
-    assert adj.candidate_id is None
-    assert adj.explicit_productive_authorization_resolved is False
-    assert adj.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
+    assert adj.resolved is True
+    assert adj.candidate_id == "CANDIDATE_600_S"
+    assert adj.explicit_productive_authorization_resolved is True
 
 
 def test_closure_and_predecessor_regressions() -> None:
@@ -196,7 +197,9 @@ def test_closure_and_predecessor_regressions() -> None:
     assert prove_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v1(
         repo_root=REPO_ROOT
     )
-    assert EARLIEST_REMAINING_BLOCKER == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+    assert EARLIEST_REMAINING_BLOCKER == (
+        "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
+    )
     assert AUTHORIZED_FOR_PRODUCTIVE_APPLY is False
     assert int(PRODUCTIVE_NUMERIC_VALUES_SET) == 0
 

@@ -1,0 +1,22 @@
+{
+  "artifact_class": "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_DECISION_V1",
+  "workpackage_id": "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1",
+  "bound_origin_main_sha": "fe64f5179e2597974c0e96bd0bc9b51642b1a038",
+  "normative_spec": "docs/ops/specs/F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_NORMATIVE_V1.md",
+  "handoff_module": "src/governance/f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1.py",
+  "durable_evidence_verification_module": "src/governance/f1_m9_prospective_real_campaign_durable_evidence_verification_v1.py",
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "runtime_authorization_id": "F1_M9_POST_6800_REAL_RUN_20260924T224821Z",
+  "selected_candidate_id": "CANDIDATE_600_S",
+  "selected_max_age_seconds": 600,
+  "evidence_bundle_digest": "b0367c0a5ee4633d4d9f4a961e32f87dccc3ecfa0e68ed73e1ab3eef0ef3bd2b",
+  "owner_apply_record_digest_bound": "c0eb6c20c535fe839646254a6bfaaddff9b28bfb16799801cbca91b87c2bade3",
+  "owner_apply_not_before_utc": "2026-09-24T22:48:25.103167Z",
+  "owner_apply_expires_at_utc": "2027-09-24T22:48:25.103167Z",
+  "bounded_handoff_complete": true,
+  "threshold_enforcement_authorized": false,
+  "trading_decision_effect_authorized": false,
+  "execution_permission_effect_authorized": false,
+  "next_true_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO",
+  "stale_tracked_state_can_override_durable_runtime_truth": false
+}

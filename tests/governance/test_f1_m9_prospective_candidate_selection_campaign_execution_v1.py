@@ -332,5 +332,7 @@ def test_downstream_invariants_and_closure() -> None:
         repo_root=REPO_ROOT
     )
     census = run_f1_m9_canonical_productive_candidate_evidence_census_v1(repo_root=REPO_ROOT)
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
-    assert EARLIEST_REMAINING_BLOCKER == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+    assert census.earliest_blocker == ("F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO")
+    assert EARLIEST_REMAINING_BLOCKER == (
+        "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
+    )

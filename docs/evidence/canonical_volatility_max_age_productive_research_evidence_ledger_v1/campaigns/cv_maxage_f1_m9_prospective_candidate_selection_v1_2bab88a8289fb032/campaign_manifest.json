@@ -1,0 +1,8 @@
+{
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "campaign_sealed": true,
+  "execution_identity": "1f078f3f548f3038ad98aeff8b3dc009ae85386dcd507fabb99ad2860d9f8781",
+  "execution_mode": "REAL_AUTHORIZED_CAMPAIGN_EXECUTION",
+  "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c",
+  "schema_version": "f1_m9_prospective_campaign_authorized_run_orchestration/v1"
+}

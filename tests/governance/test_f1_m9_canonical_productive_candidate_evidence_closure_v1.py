@@ -32,17 +32,16 @@ def test_evidence_census_chain_proven_and_fail_closed() -> None:
     assert census.optimization_ingress_snapshot_tracked is False
     assert census.new_prospective_campaign_required is True
     assert census.owner_policy_required is False
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
+    assert census.earliest_blocker == ("F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO")
     assert census.campaign_id == "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f"
 
 
-def test_adjudication_remains_unresolved() -> None:
+def test_adjudication_resolved_from_post_6800_durable_evidence() -> None:
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=REPO_ROOT)
-    assert adj.resolved is False
-    assert adj.candidate_id is None
-    assert adj.candidate_value is None
-    assert adj.explicit_productive_authorization_resolved is False
-    assert CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER in adj.reason_codes
+    assert adj.resolved is True
+    assert adj.candidate_id == "CANDIDATE_600_S"
+    assert adj.candidate_value == 600.0
+    assert adj.explicit_productive_authorization_resolved is True
 
 
 def test_preparation_closure_still_passes() -> None:

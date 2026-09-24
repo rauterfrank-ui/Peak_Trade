@@ -12,6 +12,9 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.closure_v1 import (
     prove_f1_m9_prospective_candidate_selection_campaign_execution_owner_v1,
 )
+from src.governance.f1_m9_post_real_campaign_productive_handoff_artifacts_v1 import (
+    post_real_campaign_handoff_bounded_complete_v1,
+)
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.orchestration_constants_v1 import (
     NEXT_TRUE_BLOCKER_AFTER_ORCHESTRATION,
     ORCHESTRATION_DECISION_CONFIG,
@@ -19,6 +22,11 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.
     ORCHESTRATION_OWNER_ID,
     ORCHESTRATION_WORKPACKAGE_ID,
 )
+
+POST_REAL_HANDOFF_BLOCKER: Final[str] = (
+    "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
+)
+THRESHOLD_VALUE_BLOCKER: Final[str] = "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 
 SCHEMA_VERSION: Final[str] = "f1_m9_prospective_campaign_authorized_run_orchestration_closure/v1"
 
@@ -49,14 +57,24 @@ def prove_f1_m9_prospective_campaign_authorized_run_orchestration_owner_v1(
         return False
     if decision.get("authorized_campaign_execution_terminal_path_proven") is not True:
         return False
-    if decision.get("campaign_executed") is True:
-        return False
-    if decision.get("public_market_data_external_read_occurred") is True:
-        return False
-    if decision.get("real_evidence_written") is True:
-        return False
-    if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER_AFTER_ORCHESTRATION:
-        return False
+    handoff_complete = post_real_campaign_handoff_bounded_complete_v1(repo_root=root)
+    if handoff_complete:
+        if decision.get("campaign_executed") is not True:
+            return False
+        if decision.get("real_evidence_written") is not True:
+            return False
+        next_blocker = str(decision.get("next_true_blocker") or "")
+        if next_blocker not in (POST_REAL_HANDOFF_BLOCKER, THRESHOLD_VALUE_BLOCKER):
+            return False
+    else:
+        if decision.get("campaign_executed") is True:
+            return False
+        if decision.get("public_market_data_external_read_occurred") is True:
+            return False
+        if decision.get("real_evidence_written") is True:
+            return False
+        if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER_AFTER_ORCHESTRATION:
+            return False
     return True
 
 

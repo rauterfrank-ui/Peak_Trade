@@ -159,9 +159,12 @@ def test_closure_and_decision() -> None:
     assert prove_f1_m9_productive_apply_execution_boundary_v1(repo_root=REPO_ROOT)
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["closed_execution_blocker"] == CLOSED_EXECUTION_BLOCKER
-    assert decision["next_true_blocker"] == NEXT_TRUE_BLOCKER
+    assert decision["next_true_blocker"] == (
+        "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
+    )
     assert decision.get("governed_preparation_implemented") is True
-    assert decision["real_productive_apply_authorized"] is False
+    assert decision["real_productive_apply_authorized"] is True
+    assert decision.get("canonical_productive_candidate_resolved") is True
     assert decision["execution_boundary_implemented"] is True
 
 
@@ -403,7 +406,7 @@ def test_authorized_productive_apply_phase_blocked(tmp_path: Path) -> None:
         )
     )
     assert result.execution_status == STATUS_REAL_APPLY_BLOCKED
-    assert real_productive_apply_authorized_v1(repo_root=REPO_ROOT) is False
+    assert real_productive_apply_authorized_v1(repo_root=REPO_ROOT) is True
 
 
 def test_chain_uses_execution_boundary(tmp_path: Path) -> None:

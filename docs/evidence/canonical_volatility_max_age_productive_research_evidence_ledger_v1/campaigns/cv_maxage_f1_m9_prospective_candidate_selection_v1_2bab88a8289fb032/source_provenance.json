@@ -1,0 +1,12 @@
+{
+  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
+  "credential_access": false,
+  "order_effect": false,
+  "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c",
+  "private_api_effect": false,
+  "public_md_host": "https://eea.okx.com",
+  "real_authorized_campaign_execution_path": true,
+  "real_md_supplier_id": "CANONICAL_VOLATILITY_PREREGISTERED_PUBLIC_MD_SOURCE_V1",
+  "simulated_public_md_in_hermetic": false,
+  "venue_instrument": "ETH-USD_UM_XPERP-310404"
+}

@@ -45,7 +45,17 @@ def prove_f1_m9_productive_apply_execution_boundary_v1(*, repo_root: Path | None
         return False
     if PRODUCTIVE_APPLY_OCCURRED:
         return False
-    if real_productive_apply_authorized_v1(repo_root=root):
+    decision_pre = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
+    handoff_ref = decision_pre.get("post_real_campaign_handoff_decision")
+    handoff_complete = False
+    if isinstance(handoff_ref, str) and (root / handoff_ref).is_file():
+        handoff_complete = (
+            json.loads((root / handoff_ref).read_text(encoding="utf-8")).get(
+                "bounded_handoff_complete"
+            )
+            is True
+        )
+    if real_productive_apply_authorized_v1(repo_root=root) and not handoff_complete:
         return False
     if runtime_apply_possible_v1() is not False:
         return False
@@ -56,7 +66,7 @@ def prove_f1_m9_productive_apply_execution_boundary_v1(*, repo_root: Path | None
     decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
     if decision.get("closed_execution_blocker") != CLOSED_EXECUTION_BLOCKER:
         return False
-    if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER:
+    if not handoff_complete and decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER:
         return False
     if decision.get("execution_boundary_implemented") is not True:
         return False

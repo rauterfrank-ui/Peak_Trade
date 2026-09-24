@@ -10,10 +10,21 @@ from typing import Any, Final
 from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1 import (
     SURFACE_ID as F1_M9_OPTIMIZATION_SURFACE_ID,
 )
+
+PROSPECTIVE_CAMPAIGN_ID: Final[str] = (
+    "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032"
+)
+from src.governance.f1_m9_post_real_campaign_productive_handoff_artifacts_v1 import (
+    post_real_campaign_handoff_bounded_complete_v1,
+)
 from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
     OPTIMIZATION_SURFACE_ID,
     SOURCE_CANDIDATE_PARAMETER,
     TARGET_POLICY_PARAMETER,
+)
+
+THRESHOLD_VALUE_AUTHORIZATION_BLOCKER: Final[str] = (
+    "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 )
 
 SCHEMA_VERSION: Final[str] = "f1_m9_canonical_productive_candidate_evidence_census/v1"
@@ -394,25 +405,40 @@ def run_f1_m9_canonical_productive_candidate_evidence_census_v1(
     if counterfactual_only and not scoped_selection_policy_created:
         earliest = "F1_M9_ACTIVE_CAMPAIGN_COUNTERFACTUAL_ONLY_CANNOT_SELECT_PRODUCTIVE_CANDIDATE"
     elif scoped_selection_policy_created:
-        execution_owner_ready = False
-        orchestration_owner_ready = False
-        exec_path = root / EXECUTION_OWNER_DECISION
-        if exec_path.is_file():
-            exec_decision = _load_json(exec_path)
-            execution_owner_ready = exec_decision.get("execution_owner_implemented") is True
-        orch_path = root / ORCHESTRATION_OWNER_DECISION
-        if orch_path.is_file():
-            orch_decision = _load_json(orch_path)
-            orchestration_owner_ready = (
-                orch_decision.get("orchestration_owner_status") == "PRESENT_COMPLETE"
-                and orch_decision.get("authorized_campaign_execution_terminal_path_proven") is True
-            )
-        if not execution_owner_ready:
-            earliest = CAMPAIGN_EXECUTION_BLOCKER
-        elif not orchestration_owner_ready:
-            earliest = ORCHESTRATION_OWNER_GO_BLOCKER
+        from src.governance.f1_m9_prospective_real_campaign_durable_evidence_verification_v1 import (
+            verify_f1_m9_prospective_real_campaign_durable_evidence_v1,
+        )
+
+        durable_real = verify_f1_m9_prospective_real_campaign_durable_evidence_v1(
+            repo_root=root,
+            campaign_id=PROSPECTIVE_CAMPAIGN_ID,
+        )
+        if durable_real.verified:
+            if post_real_campaign_handoff_bounded_complete_v1(repo_root=root):
+                earliest = THRESHOLD_VALUE_AUTHORIZATION_BLOCKER
+            else:
+                earliest = "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
         else:
-            earliest = CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
+            execution_owner_ready = False
+            orchestration_owner_ready = False
+            exec_path = root / EXECUTION_OWNER_DECISION
+            if exec_path.is_file():
+                exec_decision = _load_json(exec_path)
+                execution_owner_ready = exec_decision.get("execution_owner_implemented") is True
+            orch_path = root / ORCHESTRATION_OWNER_DECISION
+            if orch_path.is_file():
+                orch_decision = _load_json(orch_path)
+                orchestration_owner_ready = (
+                    orch_decision.get("orchestration_owner_status") == "PRESENT_COMPLETE"
+                    and orch_decision.get("authorized_campaign_execution_terminal_path_proven")
+                    is True
+                )
+            if not execution_owner_ready:
+                earliest = CAMPAIGN_EXECUTION_BLOCKER
+            elif not orchestration_owner_ready:
+                earliest = ORCHESTRATION_OWNER_GO_BLOCKER
+            else:
+                earliest = CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
 
     selection_rule_id = SELECTION_RULE_NONE
     if scoped_selection_policy_created:
