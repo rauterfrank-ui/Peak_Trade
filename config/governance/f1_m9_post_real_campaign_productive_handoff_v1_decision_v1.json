@@ -14,10 +14,12 @@
   "owner_apply_not_before_utc": "2026-09-24T22:48:25.103167Z",
   "owner_apply_expires_at_utc": "2027-09-24T22:48:25.103167Z",
   "bounded_handoff_complete": true,
-  "threshold_enforcement_authorized": false,
-  "trading_decision_effect_authorized": false,
+  "threshold_enforcement_authorized": true,
+  "trading_decision_effect_authorized": true,
+  "order_intent_effect_authorized": true,
   "execution_permission_effect_authorized": false,
-  "next_true_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO",
+  "threshold_closure_consumed": true,
+  "next_true_blocker": "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY",
   "successor_closure_decision": "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json",
   "stale_tracked_state_can_override_durable_runtime_truth": false
 }
