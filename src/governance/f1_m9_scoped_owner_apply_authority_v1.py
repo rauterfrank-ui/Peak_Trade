@@ -285,6 +285,34 @@ def transition_configuration_for_valid_apply_v1(
     )
 
 
+def validate_f1_m9_owner_apply_lineage_v1(
+    *,
+    record: Mapping[str, Any],
+    binding: PerIngressAuthorizationBindingV1,
+    authorization: ExplicitProductiveAuthorizationResultV1,
+    configuration: GovernedProductiveConfigurationResultV1,
+    registry_digest: str,
+) -> tuple[str, ...]:
+    """Lineage/provenance checks for Owner Apply policy edge (no mutation)."""
+    return tuple(
+        _validate_lineage_bindings_v1(
+            record=record,
+            binding=binding,
+            authorization=authorization,
+            configuration=configuration,
+            registry_digest=registry_digest,
+        )
+    )
+
+
+def validate_f1_m9_owner_apply_temporal_v1(
+    record: Mapping[str, Any],
+    now: datetime,
+) -> tuple[str, ...]:
+    """Temporal validity for Owner Apply policy edge (no mutation)."""
+    return tuple(_validate_temporal_validity_v1(record, now))
+
+
 def evaluate_f1_m9_scoped_owner_productive_apply_v1(
     request: F1M9ScopedOwnerApplyAdjudicationRequestV1,
 ) -> F1M9ScopedOwnerApplyAdjudicationResultV1:
@@ -399,4 +427,6 @@ __all__ = [
     "WORKPACKAGE_ID",
     "evaluate_f1_m9_scoped_owner_productive_apply_v1",
     "transition_configuration_for_valid_apply_v1",
+    "validate_f1_m9_owner_apply_lineage_v1",
+    "validate_f1_m9_owner_apply_temporal_v1",
 ]

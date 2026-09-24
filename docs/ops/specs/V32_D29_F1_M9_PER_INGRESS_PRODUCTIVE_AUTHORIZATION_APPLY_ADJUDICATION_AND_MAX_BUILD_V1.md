@@ -55,7 +55,7 @@ Invariants preserved:
 | PROPOSAL_REVIEW_ADMISSION | PROVEN_CURRENT |
 | EXPLICIT_PRODUCTIVE_AUTHORIZATION | PROVEN_CURRENT (Owner input required per ingress) |
 | PRODUCTIVE_CONFIGURATION_MATERIALIZATION | PROVEN_CURRENT (does not imply apply) |
-| PRODUCTIVE_APPLY | OWNER_POLICY_REQUIRED |
+| PRODUCTIVE_APPLY | POLICY_EDGE_PROVEN (execution: OWNER_MERGE_GO_REQUIRED) |
 | RUNTIME_CONSUMPTION | PROVEN_CURRENT (transport + non-enforcing consumer) |
 | EXTERNAL_EFFECT | FORBIDDEN |
 
@@ -83,11 +83,13 @@ Missing/mismatch/stale registry digest ⇒ `DENIED_FAIL_CLOSED`.
 `governed_productive_configuration_v1.runtime_apply_authority=NONE` and
 `runtime_apply_possible_v1()=false`. No dedicated productive-apply owner module on CURRENT main.
 
-## 6. Next true blocker
+## 6. Blocker succession
 
-`F1_M9_PER_INGRESS_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_APPLY_INPUT_AND_AUTHORITY_EDGE`
+Closed (successor WP):
+`V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1`
 
-Minimal Owner question: see decision JSON `minimal_next_owner_policy_question`.
+Next true blocker after policy edge:
+`F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO`
 
 ## 7. Non-goals
 

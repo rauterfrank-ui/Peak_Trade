@@ -29,6 +29,7 @@ from src.governance.v32_d29_f1_m9_per_ingress_productive_authorization_apply_adj
     AuthorityEdgeClassificationV1,
     AuthorityStageStatusV1,
     BLOCKER_EDGE,
+    CLOSED_D29_BLOCKER,
     DECISION_CONFIG,
     MINIMAL_NEXT_OWNER_POLICY_QUESTION,
     NEXT_TRUE_BLOCKER,
@@ -63,8 +64,9 @@ def test_max_build_proof_and_decision() -> None:
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["workpackage_id"] == WORKPACKAGE_ID
     assert decision["d28_status"] == "PROVEN_CURRENT"
-    assert decision["d29_status"] == "OWNER_POLICY_REQUIRED"
+    assert decision["d29_status"] == "PROVEN_CURRENT"
     assert decision["d29_closure_proven"] is True
+    assert decision["closed_d29_blocker"] == CLOSED_D29_BLOCKER
     assert decision["next_true_blocker"] == NEXT_TRUE_BLOCKER
     assert decision["blocker_edge"] == BLOCKER_EDGE
     assert decision["minimal_next_owner_policy_question"] == MINIMAL_NEXT_OWNER_POLICY_QUESTION
@@ -80,7 +82,7 @@ def test_authority_census_and_apply_boundary() -> None:
     edges = build_f1_m9_per_ingress_authority_census_v1(repo_root=REPO_ROOT)
     assert len(edges) == 9
     apply_edge = next(e for e in edges if e.edge_id == "PRODUCTIVE_APPLY_BOUNDARY")
-    assert apply_edge.classification == AuthorityEdgeClassificationV1.OWNER_POLICY
+    assert apply_edge.classification == AuthorityEdgeClassificationV1.ADJUDICATED
     forbidden = next(e for e in edges if e.edge_id == "OPTIMIZATION_DIRECT_RUNTIME_WRITE")
     assert forbidden.classification == AuthorityEdgeClassificationV1.FORBIDDEN
 
@@ -88,7 +90,7 @@ def test_authority_census_and_apply_boundary() -> None:
 def test_stage_decomposition_no_implicit_apply() -> None:
     stages = build_authority_stage_decomposition_v1(repo_root=REPO_ROOT)
     by_name = {s.stage: s for s in stages}
-    assert by_name["PRODUCTIVE_APPLY"].status == AuthorityStageStatusV1.OWNER_POLICY_REQUIRED
+    assert by_name["PRODUCTIVE_APPLY"].status == AuthorityStageStatusV1.PROVEN_CURRENT
     assert by_name["EXTERNAL_EFFECT"].status == AuthorityStageStatusV1.FORBIDDEN
     for stage in stages:
         assert stage.implies_next_stage is False

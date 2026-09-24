@@ -7538,21 +7538,47 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1
+    modified_by: V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1
     source_paths:
       - src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py
     evidence_sources:
       - src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py
       - src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_closure_v1.py
+      - src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py
+      - src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py
       - src/governance/f1_m9_per_ingress_productive_authorization_binding_v1.py
       - src/governance/f1_m9_per_ingress_authorization_chain_resolver_v1.py
       - tests/governance/test_v32_d29_f1_m9_per_ingress_productive_authorization_apply_max_build_v1.py
+      - tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py
       - docs/ops/specs/V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1.md
+      - docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md
       - config/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1_decision_v1.json
       - config/governance/v32_d29_f1_m9_per_ingress_authority_edge_registry_v1.json
+      - config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json
     notes: >-
       Forensic per-ingress authority census, typed binding, and chain resolver through runtime
-      transport; productive apply remains OWNER_POLICY boundary. ATLAS_AUTHORITY=NONE.
+      transport; explicit Owner Apply policy edge ADJUDICATED at configuration apply boundary;
+      productive apply execution still requires OWNER_MERGE_GO. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 D29 F1/M9 explicit Owner productive apply policy and authority edge v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1
+    source_paths:
+      - src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py
+    evidence_sources:
+      - src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py
+      - src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py
+      - tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py
+      - docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md
+      - config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json
+    notes: >-
+      Fail-closed explicit Owner Apply policy binding at governed configuration apply boundary;
+      PRODUCTIVE_APPLY_OCCURRED=false; runtime apply authority NONE for this slice.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1
     kind: RUNTIME_COMPONENT
@@ -7560,7 +7586,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: F1_M9_SCOPED_OWNER_PRODUCTIVE_APPLY_AUTHORITY_V1
+    modified_by: V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1
     source_paths:
       - src/governance/f1_m9_scoped_owner_apply_authority_v1.py
       - src/governance/f1_m9_scoped_owner_apply_constants_v1.py
@@ -7576,8 +7602,9 @@ entities:
       - config/governance/f1_m9_owner_apply_policy_owner_adjudication_v1_decision_v1.json
     notes: >-
       Owner-ratified F1/M9 scoped productive apply adjudicator with dedicated apply record,
-      durable apply/revocation ledgers, and runtime_applied transition; threshold/value and
-      external effect remain forbidden. ATLAS_AUTHORITY=NONE.
+      durable apply/revocation ledgers, and runtime_applied transition; shared lineage/temporal
+      validators exported for D29 explicit Owner Apply policy edge; threshold/value and external
+      effect remain forbidden. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
     kind: RUNTIME_COMPONENT
