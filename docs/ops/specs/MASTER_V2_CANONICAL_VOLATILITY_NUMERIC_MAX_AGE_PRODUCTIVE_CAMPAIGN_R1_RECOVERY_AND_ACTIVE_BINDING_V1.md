@@ -45,7 +45,7 @@ or completed.
 materialization provenance** for deterministic campaign/session identity.
 It is **not** required to equal CURRENT `HEAD` after merge.
 
-Runtime checkout gates require `HEAD == origin/main` and on-disk binding/prereg
+Runtime checkout gates require `HEAD == origin&#47;main` and on-disk binding/prereg
 content locked to the canonical builder at `binding.repository_sha`.
 Campaign authorization artifacts bind to materialization provenance, not checkout SHA.
 
