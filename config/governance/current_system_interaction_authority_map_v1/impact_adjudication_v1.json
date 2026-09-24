@@ -43,6 +43,7 @@
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/campaign_runner_v1.py",
     "tests/governance/test_d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
-    "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py"
+    "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
+    "tests/ops/test_productive_pure_stack_numeric_policy_shadow_campaign_v1.py"
   ]
 }
