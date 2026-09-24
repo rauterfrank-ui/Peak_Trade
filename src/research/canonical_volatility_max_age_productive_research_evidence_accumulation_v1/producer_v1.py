@@ -81,6 +81,8 @@ def produce_productive_research_evidence_from_cycle_v1(
     prior_source_estimate_id: Optional[str] = None,
     prior_reuse_count: int = 0,
     prior_cycle_id: Optional[str] = None,
+    research_stratification_binding_v2: Any = None,
+    research_mark_path_state_v2: Any = None,
 ) -> ProductiveResearchEvidenceRecordV1:
     """Produce one productive evidence record from a hardening/shadow cycle.
 
@@ -410,7 +412,7 @@ def produce_productive_research_evidence_from_cycle_v1(
     )
     provisional["record_digest"] = finalize_record_digest_v1(provisional)
 
-    return ProductiveResearchEvidenceRecordV1(
+    record = ProductiveResearchEvidenceRecordV1(
         evidence_schema_version=str(provisional["evidence_schema_version"]),
         evidence_record_id=str(provisional["evidence_record_id"]),
         session_id=str(provisional["session_id"]),
@@ -479,3 +481,15 @@ def produce_productive_research_evidence_from_cycle_v1(
         ),
         estimator_observation_count=int(provisional["estimator_observation_count"]),
     )
+    if research_stratification_binding_v2 is not None and research_mark_path_state_v2 is not None:
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.research_stratification_v2.evidence_enrichment_v2 import (
+            enrich_productive_record_with_stratification_v2,
+        )
+
+        return enrich_productive_record_with_stratification_v2(
+            record,
+            cycle=cycle,
+            binding=research_stratification_binding_v2,
+            mark_path_state=research_mark_path_state_v2,
+        )
+    return record

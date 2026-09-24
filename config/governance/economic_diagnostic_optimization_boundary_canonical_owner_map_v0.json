@@ -419,7 +419,11 @@
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_SESSION_PREREGISTRATION_V1.md",
         "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1.md",
-        "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.json"
+        "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.json",
+        "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/research_stratification_v2/",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_RESEARCH_STRATIFICATION_V2.md",
+        "docs/ops/F1_R1_RESEARCH_STRATIFICATION_V2_IMPLEMENTATION_PLAN_V1.md",
+        "tests/research/test_canonical_volatility_max_age_research_stratification_v2.py"
       ]
     },
     "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_SESSION_PREREGISTRATION_V1": {
