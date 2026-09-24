@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 D27 F5 shadow test-entry lifecycle enforcement v1: fail-closed admission at run_shadow_campaign_v1 (F5-FRESH matrix gate + Stage-1/calibration digests). Atlas catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- V3.2 D27 F5-SURV/F5-CAP per-token shadow test-entry lifecycle closure: fail-closed admission at run_shadow_campaign_v1 (matrix gate + Stage-1/calibration digests + per-token registry). Atlas catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1
+- modified_by=V32_D27_F5_SURV_CAP_SHADOW_ENTRY_LIFECYCLE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

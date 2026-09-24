@@ -31,9 +31,10 @@ Owner: `src/governance/d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py`
 Fail-closed **lifecycle admission** at the earliest CURRENT F5 shadow execution seam
 (`run_shadow_campaign_v1`) using **already adjudicated** entry predicates only:
 
-- Pre-test matrix `TEST_ENTRY_GATE` for **F5-FRESH**
+- Pre-test matrix `TEST_ENTRY_GATE` per subfamily (**F5-FRESH**, **F5-SURV**, **F5-CAP**)
 - Stage-1 structural manifest digest pin
 - Calibration protocol digest pin
+- Per-token calibration registry conjunction (**F5-SURV** / **F5-CAP** only)
 
 **D26 native baseline is OUT_OF_SCOPE** on this path (PR #6769).
 
@@ -42,10 +43,14 @@ Fail-closed **lifecycle admission** at the earliest CURRENT F5 shadow execution 
 | Step | Owner | Enforced |
 | --- | --- | --- |
 | Caller | CLI / Surface-B collector | indirect |
-| **Admission** | `enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1` | **yes** |
-| Shadow execution | `run_shadow_campaign_v1` | after admission only |
+| **Admission (F5-FRESH)** | `enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1` | **yes** |
+| **Admission (F5-SURV)** | `enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1` | **yes** |
+| **Admission (F5-CAP)** | `enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1` | **yes** |
+| Shadow execution | `run_shadow_campaign_v1` | after all admissions only |
 
 ## 3. Entry conjunction (authorized)
+
+**F5-FRESH**
 
 ```text
 TEST_ENTRY_GATE=F5-FRESH:SHADOW_PURE_STACK_NUMERIC_EVIDENCE_PACK_VALIDATION_V1
@@ -54,13 +59,22 @@ AND declared_calibration_protocol_digest == sha256(CALIBRATION_PROTOCOL_REL)
 AND preparation_status=TEST_READY_SHADOW_RESEARCH
 ```
 
+**F5-SURV / F5-CAP**
+
+```text
+TEST_ENTRY_GATE=<subfamily>:SHADOW_PER_TOKEN_THRESHOLD_SENSITIVITY_V1
+AND declared_stage1_manifest_digest == sha256(STAGE1_MANIFEST_REL)
+AND declared_calibration_protocol_digest == sha256(CALIBRATION_PROTOCOL_REL)
+AND preparation_status=TEST_READY_PER_TOKEN_SHADOW_CALIBRATION_ONLY
+AND canonical_f5_shadow_per_token_calibration_test_entry_v1 registry covers all Stage-2 tokens
+```
+
 Missing / invalid / mismatch / unresolved source file ⇒ **DENY** (exception before shadow work).
 
 ## 4. Non-goals
 
 - D26 native baseline on F5 shadow paths
 - Productive numeric values or OWNER_VALUE_* mutation
-- F5-SURV / F5-CAP per-token registry runtime wiring (separate surfaces)
 - Promotion / external effect / trading authority change
 
 ## 5. Verification

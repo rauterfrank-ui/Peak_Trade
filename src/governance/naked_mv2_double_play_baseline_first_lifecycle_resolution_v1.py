@@ -178,7 +178,8 @@ def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Map
     if not d26_proven:
         earliest_gap = EARLIEST_TRUE_REMAINING_GAP_D26
     elif d27_f1_f2:
-        earliest_gap = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        f5_lifecycle = prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1(repo_root=root)
+        earliest_gap = None if f5_lifecycle else EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
     else:
         earliest_gap = EARLIEST_TRUE_REMAINING_GAP
 
@@ -322,11 +323,9 @@ def adjudicate_v32_baseline_first_requirements_v1(
         d27_notes = "Research phases after baseline: governance predecessor incomplete."
     elif d27_f1_f2:
         f5_lifecycle = prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1(repo_root=root)
-        d27_missing = (
-            "f5_surv_cap_per_token_shadow_entry_not_lifecycle_enforced"
-            if f5_lifecycle
-            else EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
-        )
+        d27_missing = None if f5_lifecycle else EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        if f5_lifecycle:
+            d27_verdict = AdjudicationVerdict.PROVEN_CURRENT
         f5_adj = prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1(repo_root=root)
         f5_baseline_policy = prove_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1(
             repo_root=root
@@ -337,8 +336,9 @@ def adjudicate_v32_baseline_first_requirements_v1(
         )
         if f5_lifecycle:
             d27_notes += (
-                " F5-FRESH shadow campaign entry lifecycle-enforced at run_shadow_campaign_v1 "
-                "(Stage-1 + calibration-protocol digest conjunction; D26 out of scope)."
+                " F5-FRESH/F5-SURV/F5-CAP shadow campaign entry lifecycle-enforced at "
+                "run_shadow_campaign_v1 (matrix TEST_ENTRY_GATE + Stage-1/calibration-protocol "
+                "digest conjunction + per-token registry for SURV/CAP; D26 out of scope)."
             )
         elif f5_adj:
             d27_notes += (
@@ -503,7 +503,10 @@ def earliest_missing_edge_v1(
         ):
             return item.earliest_missing_edge or item.requirement_id
     binding = composite_baseline_first_binding_v1()
-    return str(binding.get("earliest_true_remaining_gap") or EARLIEST_TRUE_REMAINING_GAP)
+    gap = binding.get("earliest_true_remaining_gap")
+    if gap is None:
+        return None
+    return str(gap or EARLIEST_TRUE_REMAINING_GAP)
 
 
 def assert_no_new_baseline_gate_runtime_authority_v1() -> None:
