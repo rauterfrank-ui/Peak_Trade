@@ -110,6 +110,8 @@ def test_authorized_hermetic_happy_path_terminal_selection(tmp_path: Path) -> No
         _hermetic_request(tmp_path, auth)
     )
     assert result.orchestration_status == STATUS_TERMINAL_VERDICT_PASS
+    assert result.authorized_campaign_execution_terminal_path_proven is True
+    assert result.real_authorized_campaign_execution_path_proven is False
     assert result.terminal_selection is not None
     assert result.terminal_selection.get("outcome") == OUTCOME_SELECTED
     assert result.productive_apply_occurred is False

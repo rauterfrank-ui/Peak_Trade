@@ -7708,11 +7708,12 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_V1
+    modified_by: F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_V1
     source_paths:
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorized_run_orchestration_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorization_consume_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/evidence_sealing_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/execution_mode_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_closure_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_constants_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/session_work_units_v1.py
@@ -7721,8 +7722,33 @@ entities:
       - docs/ops/specs/F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_NORMATIVE_V1.md
       - config/governance/f1_m9_prospective_campaign_authorized_run_orchestration_v1_decision_v1.json
     notes: >-
-      Terminal authorized campaign lifecycle orchestrator (hermetic proof in tests); build-slice
-      default binds without REAL public-MD or repo durable writes; CAMPAIGN_EXECUTED=false.
+      Terminal authorized campaign lifecycle orchestrator with explicit BUILD_BIND_ONLY,
+      HERMETIC_TERMINAL_TEST, and REAL_AUTHORIZED_CAMPAIGN_EXECUTION modes; REAL path
+      process-gated; build-slice default binds without production REAL effects;
+      CAMPAIGN_EXECUTED=false. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_real_prospective_campaign_execution_enablement_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 REAL prospective campaign execution enablement v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_V1
+    source_paths:
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/enablement_closure_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/execution_mode_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/real_campaign_evidence_pipeline_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/real_public_md_session_adapter_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/runtime_authorization_issuance_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/work_unit_exactly_once_v1.py
+    evidence_sources:
+      - tests/governance/test_f1_m9_real_prospective_campaign_execution_enablement_v1.py
+      - docs/ops/specs/F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_NORMATIVE_V1.md
+      - config/governance/f1_m9_real_prospective_campaign_execution_enablement_v1_decision_v1.json
+      - scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py
+    notes: >-
+      Runtime authorization issuance owner and REAL-path wiring proofs (fake adapter only);
+      REAL_CAMPAIGN_EXECUTION_ENABLED_IN_PROCESS=false; no live campaign execution.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
