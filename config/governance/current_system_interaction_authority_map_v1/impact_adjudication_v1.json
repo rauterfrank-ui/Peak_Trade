@@ -21,7 +21,7 @@
     "src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py",
     "tests/governance/test_v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "PLACEHOLDER",
+  "changed_paths_sha256": "afac641fab8da6a58c04185e107e533bd3719e5eb8e968ba981c561fbeac49de",
   "evidence_refs": [
     "config/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1_decision_v1.json",
     "docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md"
