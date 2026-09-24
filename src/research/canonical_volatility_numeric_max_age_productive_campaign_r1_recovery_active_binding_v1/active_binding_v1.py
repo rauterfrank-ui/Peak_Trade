@@ -68,6 +68,9 @@ def build_active_campaign_binding_v1(
         "session_ids": [identity["session_01_id"], identity["session_02_id"]],
         "status": ACTIVE_BINDING_STATUS,
         "typed_volatility_persistence_path": identity["typed_volatility_persistence_path"],
+        "retained_estimate_lifecycle_carrier_path": identity[
+            "retained_estimate_lifecycle_carrier_path"
+        ],
     }
     provisional["artifact_digest"] = artifact_digest_v1(provisional)
     return parse_active_campaign_binding_v1(provisional)
@@ -87,6 +90,7 @@ def parse_active_campaign_binding_v1(payload: Mapping[str, Any]) -> ActiveCampai
         "preregistration_artifact_path",
         "preregistration_digest",
         "typed_volatility_persistence_path",
+        "retained_estimate_lifecycle_carrier_path",
         "early_estimate_producer_session_id",
         "late_age_observation_session_id",
         "execution_authorized",
@@ -119,6 +123,9 @@ def parse_active_campaign_binding_v1(payload: Mapping[str, Any]) -> ActiveCampai
         preregistration_artifact_path=require_str(raw, "preregistration_artifact_path"),
         preregistration_digest=require_str(raw, "preregistration_digest"),
         typed_volatility_persistence_path=require_str(raw, "typed_volatility_persistence_path"),
+        retained_estimate_lifecycle_carrier_path=require_str(
+            raw, "retained_estimate_lifecycle_carrier_path"
+        ),
         early_estimate_producer_session_id=require_str(raw, "early_estimate_producer_session_id"),
         late_age_observation_session_id=require_str(raw, "late_age_observation_session_id"),
         execution_authorized=require_bool(raw, "execution_authorized", expected=False),
@@ -166,6 +173,11 @@ def verify_active_campaign_binding_v1(
         != expected_identity["typed_volatility_persistence_path"]
     ):
         raise ProductiveCampaignR1RecoveryError("active_binding_persistence_path_mismatch")
+    if (
+        parsed.retained_estimate_lifecycle_carrier_path
+        != expected_identity["retained_estimate_lifecycle_carrier_path"]
+    ):
+        raise ProductiveCampaignR1RecoveryError("active_binding_carrier_path_mismatch")
     if expected_repository_sha is not None and parsed.repository_sha != expected_repository_sha:
         raise ProductiveCampaignR1RecoveryError("active_binding_repository_sha_mismatch")
     if CROSS_SHA_REUSE_ALLOWED or SYNTHETIC_S01_ALLOWED:

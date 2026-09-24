@@ -171,6 +171,13 @@ def run_productive_bridge_accumulation_session_v1(
     canonical_instrument_id: str = DEFAULT_PRODUCTIVE_BRIDGE_CANONICAL_INSTRUMENT_ID,
     venue_instrument_id: str = DEFAULT_PRODUCTIVE_BRIDGE_VENUE_INSTRUMENT_ID,
     typed_volatility_persistence_path: Path | None = None,
+    retained_estimate_lifecycle_carrier_path: Path | None = None,
+    retained_estimate_carrier_mode: str | None = None,
+    early_session_id: str | None = None,
+    late_session_id: str | None = None,
+    preregistration_digest: str | None = None,
+    research_age_grid_seconds: Sequence[int] | None = None,
+    minimum_distinct_observations_per_age_bucket: int | None = None,
     process_restart: bool = False,
     existing_resume_token: str | None = None,
     existing_session_mapping: Mapping[str, Any] | None = None,
@@ -258,7 +265,41 @@ def run_productive_bridge_accumulation_session_v1(
     )
     # Natural-age lifecycle host is the sole produce/reuse/recompute authority on
     # the productive research evidence path (legacy per-sample rematerialize unbound).
-    if typed_volatility_persistence_path and typed_volatility_persistence_path.exists():
+    carrier_mode = str(retained_estimate_carrier_mode or "").strip().upper() or None
+    if carrier_mode == "REQUIRE_RESTORE_S02":
+        if retained_estimate_lifecycle_carrier_path is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_lifecycle_carrier_path_required_for_s02"
+            )
+        if (
+            typed_volatility_persistence_path is None
+            or not typed_volatility_persistence_path.exists()
+        ):
+            raise ProductiveEvidenceAccumulationError(
+                "typed_volatility_persistence_required_for_s02_restore"
+            )
+        if early_session_id is None or late_session_id is None or preregistration_digest is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_carrier_binding_keys_required_for_s02"
+            )
+        bridge_state.typed_volatility_cmc_binding_host = (
+            ProductiveNaturalAgeLifecycleCmcBindingHostV1.restore_with_retained_estimate_carrier_v1(
+                persistence_path=typed_volatility_persistence_path,
+                retained_estimate_lifecycle_carrier_path=Path(
+                    retained_estimate_lifecycle_carrier_path
+                ),
+                campaign_id=campaign_id,
+                early_session_id=str(early_session_id),
+                late_session_id=str(late_session_id),
+                repository_sha=repository_sha,
+                preregistration_digest=str(preregistration_digest),
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                research_age_grid_seconds=research_age_grid_seconds,
+            )
+        )
+    elif typed_volatility_persistence_path and typed_volatility_persistence_path.exists():
         bridge_state.typed_volatility_cmc_binding_host = (
             ProductiveNaturalAgeLifecycleCmcBindingHostV1.restore_from_persistence_v1(
                 persistence_path=typed_volatility_persistence_path,
@@ -272,6 +313,29 @@ def run_productive_bridge_accumulation_session_v1(
                 venue_instrument_id=venue_instrument_id,
                 persistence_path=typed_volatility_persistence_path,
             )
+        )
+
+    if carrier_mode == "WRITE_ONCE_S01":
+        host = bridge_state.typed_volatility_cmc_binding_host
+        assert isinstance(host, ProductiveNaturalAgeLifecycleCmcBindingHostV1)
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            BOUND_RESEARCH_AGE_GRID_SECONDS,
+            MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET,
+        )
+
+        grid = (
+            tuple(int(x) for x in research_age_grid_seconds)
+            if research_age_grid_seconds is not None
+            else BOUND_RESEARCH_AGE_GRID_SECONDS
+        )
+        min_obs = (
+            int(minimum_distinct_observations_per_age_bucket)
+            if minimum_distinct_observations_per_age_bucket is not None
+            else MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET
+        )
+        host.lifecycle.enable_age_grid_coverage_tracking_v1(
+            research_age_grid_seconds=grid,
+            minimum_distinct_observations_per_age_bucket=min_obs,
         )
 
     existing_session = None
@@ -370,6 +434,62 @@ def run_productive_bridge_accumulation_session_v1(
         .get("action")
         == "APPENDED"
     )
+
+    carrier_write_status = "NOT_APPLICABLE"
+    if carrier_mode == "WRITE_ONCE_S01":
+        from research.canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.carrier_v1 import (
+            build_retained_estimate_lifecycle_carrier_payload_v1,
+            write_retained_estimate_lifecycle_carrier_once_v1,
+        )
+        from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.session_campaign_preregistration_v1 import (
+            BOUND_RESEARCH_AGE_GRID_SECONDS,
+            MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET,
+        )
+
+        if retained_estimate_lifecycle_carrier_path is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_lifecycle_carrier_path_required_for_s01_write"
+            )
+        if early_session_id is None or late_session_id is None or preregistration_digest is None:
+            raise ProductiveEvidenceAccumulationError(
+                "retained_estimate_carrier_binding_keys_required_for_s01"
+            )
+        host = bridge_state.typed_volatility_cmc_binding_host
+        assert isinstance(host, ProductiveNaturalAgeLifecycleCmcBindingHostV1)
+        state = host.lifecycle.lifecycle_state
+        if state is None or state.estimate is None:
+            carrier_write_status = "SKIPPED_NO_ESTIMATE"
+        else:
+            grid = (
+                tuple(int(x) for x in research_age_grid_seconds)
+                if research_age_grid_seconds is not None
+                else BOUND_RESEARCH_AGE_GRID_SECONDS
+            )
+            min_obs = (
+                int(minimum_distinct_observations_per_age_bucket)
+                if minimum_distinct_observations_per_age_bucket is not None
+                else MINIMUM_DISTINCT_OBSERVATIONS_PER_AGE_BUCKET
+            )
+            payload = build_retained_estimate_lifecycle_carrier_payload_v1(
+                campaign_id=campaign_id,
+                early_session_id=str(early_session_id),
+                late_session_id=str(late_session_id),
+                repository_sha=repository_sha,
+                preregistration_digest=str(preregistration_digest),
+                venue=venue,
+                canonical_instrument_id=canonical_instrument_id,
+                venue_instrument_id=venue_instrument_id,
+                lifecycle_state=state,
+                research_age_grid_seconds=grid,
+                minimum_distinct_observations_per_age_bucket=min_obs,
+                age_bucket_observation_counts=host.lifecycle.age_bucket_observation_counts,
+            )
+            write_retained_estimate_lifecycle_carrier_once_v1(
+                path=Path(retained_estimate_lifecycle_carrier_path),
+                payload=payload,
+            )
+            carrier_write_status = "WRITTEN"
+
     return {
         "binding_capability_id": PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
         "campaign_authorization_release": (
@@ -377,6 +497,7 @@ def run_productive_bridge_accumulation_session_v1(
         ),
         "campaign_id": campaign_id,
         "completion": completion,
+        "retained_estimate_carrier_write_status": carrier_write_status,
         "coverage": coverage.to_dict(),
         "cycles_executed": len(cycle_results),
         "enforcement_applied": False,

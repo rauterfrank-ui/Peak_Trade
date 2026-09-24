@@ -112,6 +112,9 @@ def build_r1_active_preregistration_payload_v1(*, repository_sha: str) -> dict[s
                     "typed_volatility_persistence_path": campaign_paths[
                         "typed_volatility_persistence_path"
                     ],
+                    "retained_estimate_lifecycle_carrier_path": campaign_paths[
+                        "retained_estimate_lifecycle_carrier_path"
+                    ],
                 },
                 no_runtime_side_effects=True,
             )
@@ -251,6 +254,10 @@ def verify_r1_active_preregistration_payload_v1(
         raise ProductiveCampaignR1RecoveryError("r1_prereg_early_session_mismatch")
     if dist.get("late_age_observation_session_id") != expected_session_ids[1]:
         raise ProductiveCampaignR1RecoveryError("r1_prereg_late_session_mismatch")
+    durable = payload.get("durable_path_plan") or {}
+    campaign_paths = durable.get("campaign_specific_paths") or {}
+    if not str(campaign_paths.get("retained_estimate_lifecycle_carrier_path") or "").strip():
+        raise ProductiveCampaignR1RecoveryError("r1_prereg_carrier_path_missing")
     return {
         "status": "PASS",
         "campaign_id": expected_campaign_id,

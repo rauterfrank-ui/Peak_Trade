@@ -247,6 +247,9 @@ def _campaign_durable_paths(*, campaign_id: str) -> dict[str, str]:
     )
     return {
         "typed_volatility_persistence_path": f"{base}/typed_volatility_persistence.jsonl",
+        "retained_estimate_lifecycle_carrier_path": (
+            f"{base}/retained_estimate_lifecycle_carrier_v1.json"
+        ),
         "campaign_manifest_path": f"{base}/campaign_manifest.json",
         "session_manifests_glob": f"{base}/sessions/session_*_manifest.json",
         "terminal_campaign_verdict_path": f"{base}/terminal_campaign_verdict.json",
@@ -468,6 +471,9 @@ def build_productive_evidence_campaign_session_preregistration_v1() -> (
                     "session_manifest_path": session_manifest,
                     "typed_volatility_persistence_path": campaign_paths[
                         "typed_volatility_persistence_path"
+                    ],
+                    "retained_estimate_lifecycle_carrier_path": campaign_paths[
+                        "retained_estimate_lifecycle_carrier_path"
                     ],
                 },
                 no_runtime_side_effects=True,

@@ -359,6 +359,17 @@ def run_preregistered_productive_session_v1(
             canonical_instrument_id=instrument_id,
             venue_instrument_id=resolved_venue_instrument_id,
             typed_volatility_persistence_path=Path(preflight.typed_volatility_persistence_path),
+            retained_estimate_lifecycle_carrier_path=Path(
+                preflight.retained_estimate_lifecycle_carrier_path
+            ),
+            retained_estimate_carrier_mode=(
+                "WRITE_ONCE_S01"
+                if preflight.session_id == preflight.session_01_id
+                else "REQUIRE_RESTORE_S02"
+            ),
+            early_session_id=preflight.session_01_id,
+            late_session_id=preflight.session_02_id,
+            preregistration_digest=preregistration_digest,
             campaign_authorization_artifact_path=Path(authorization_artifact_path),
             campaign_authorization_evidence_root=evi_root,
             require_campaign_authorization=True,
