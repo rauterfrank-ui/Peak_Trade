@@ -1,27 +1,33 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "0a5b45c607347be9183aaeae0f180161a3d762d3",
+  "base_sha": "c6778bec734c068146dfea145bf260b19ec2c3e0",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false,
-  "reason": "FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_V1 (PR #6792): evidence-only projection seam from authorized F1/F2 native execution to M5-shaped records; surface_execution_identity distinct from M4 plane_identity; no structured source_v1.json semantic change; AUTHORITY=NONE.",
+  "reason": "M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_V1: federated M5→M6 return join + M6 federated meta evidence + reuse M7 + federated M8 offline replay; surface_execution_identity join only; no M4 re-execution; no structured source_v1.json semantic change; AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/federated_surface_optimization_experiment_evidence_projection_v1_decision_v1.json",
-    "docs/ops/specs/FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_NORMATIVE_V1.md",
-    "src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
-    "tests/experiments/test_canonical_federated_surface_optimization_experiment_evidence_projection_v1.py"
+    "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json",
+    "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+    "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+    "src/experiments/canonical_federated_m5_m6_return_join_v1.py",
+    "src/experiments/canonical_meta_learning_ingest_v1.py",
+    "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+    "tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py"
   ],
-  "changed_paths_sha256": "c64269c8731f35d5063e2bf37808bf93d1c94fc13f82ee0d07356a34026fc391",
+  "changed_paths_sha256": "40d91d115a887cc18cbe1f4d46cdf15e10b6414230f399480f98e942cfdad57a",
   "evidence_refs": [
-    "docs/ops/specs/FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_NORMATIVE_V1.md",
-    "config/governance/federated_surface_optimization_experiment_evidence_projection_v1_decision_v1.json"
+    "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+    "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json"
   ],
   "covered_candidate_paths": [
-    "config/governance/federated_surface_optimization_experiment_evidence_projection_v1_decision_v1.json",
-    "docs/ops/specs/FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_NORMATIVE_V1.md",
-    "src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
-    "tests/experiments/test_canonical_federated_surface_optimization_experiment_evidence_projection_v1.py"
+    "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json",
+    "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+    "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+    "src/experiments/canonical_federated_m5_m6_return_join_v1.py",
+    "src/experiments/canonical_meta_learning_ingest_v1.py",
+    "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+    "tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py"
   ]
 }

@@ -1,0 +1,21 @@
+{
+  "artifact_class": "M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_DECISION_V1",
+  "workpackage_id": "M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_V1",
+  "bound_origin_main_sha": "c6778bec734c068146dfea145bf260b19ec2c3e0",
+  "predecessor_slice": "FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_V1",
+  "normative_spec": "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+  "federated_projection_decision_ref": "config/governance/federated_surface_optimization_experiment_evidence_projection_v1_decision_v1.json",
+  "m4_plane_re_execution_forbidden": true,
+  "join_key_field": "surface_execution_identity",
+  "join_cardinality": "ONE_TO_ONE",
+  "meta_evidence_authority": "NONE",
+  "optimization_productive_authority": "NONE",
+  "trading_authority": "NONE",
+  "selection_authority": "NONE",
+  "execution_authority": "NONE",
+  "promotion_performed": false,
+  "productive_parameter_mutation": false,
+  "external_effect_authorized": false,
+  "search_execution_authorized": false,
+  "learning_state_mutation_authorized": false
+}
