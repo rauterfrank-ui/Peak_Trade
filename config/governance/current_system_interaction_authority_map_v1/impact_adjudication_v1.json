@@ -21,21 +21,23 @@
     "tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
     "tests/governance/test_v32_d29_f1_m9_per_ingress_productive_authorization_apply_max_build_v1.py"
   ],
-  "changed_paths_sha256": "3794a2298d4fe765d38a646eaecc12be34fe4bdb5cb1bb6ac181cd6be738ec37",
+  "changed_paths_sha256": "5a3ca38991f459000eb66cd8c0fea212bf35605863de7bf9243e0a6593dba3aa",
   "evidence_refs": [
     "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
     "config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json"
   ],
   "covered_candidate_paths": [
     "config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json",
-    "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
-    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py",
-    "tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
     "config/governance/v32_d29_f1_m9_per_ingress_authority_edge_registry_v1.json",
     "config/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1_decision_v1.json",
+    "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
+    "docs/ops/specs/V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1.md",
+    "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
+    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py",
     "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py",
     "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_closure_v1.py",
-    "src/governance/f1_m9_scoped_owner_apply_authority_v1.py"
+    "tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
+    "tests/governance/test_v32_d29_f1_m9_per_ingress_productive_authorization_apply_max_build_v1.py"
   ]
 }
