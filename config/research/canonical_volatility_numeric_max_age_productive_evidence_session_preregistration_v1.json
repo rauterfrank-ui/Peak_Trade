@@ -86,6 +86,7 @@
     "campaign_specific_paths": {
       "campaign_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/campaign_manifest.json",
       "evaluability_report_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/evaluability_report.json",
+      "retained_estimate_lifecycle_carrier_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/retained_estimate_lifecycle_carrier_v1.json",
       "session_manifests_glob": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_*_manifest.json",
       "terminal_campaign_verdict_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/terminal_campaign_verdict.json",
       "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
@@ -122,7 +123,7 @@
     "STATE_SEMANTICS_CHANGED": false
   },
   "parameter_decision_authorized": false,
-  "preregistration_digest": "1cfc1698796b1b931077cd692c7b0e97bc401f626d7e7b17bba1a777b62a252f",
+  "preregistration_digest": "b5f9aae61bf095ac26afcdd8e0d7a97bf7d38b73ae54597d5c4fa9ee99ca502a",
   "productive_preregistration_digest": "777e3dd8aa3458f8687cabbadf63016ac478b5385568ee3d54d22c119880a62e",
   "public_md_plan": {
     "allowed_endpoints": [
@@ -239,6 +240,7 @@
     {
       "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
       "expected_durable_paths": {
+        "retained_estimate_lifecycle_carrier_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/retained_estimate_lifecycle_carrier_v1.json",
         "session_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_01_manifest.json",
         "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
       },
@@ -264,6 +266,7 @@
     {
       "campaign_id": "cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe",
       "expected_durable_paths": {
+        "retained_estimate_lifecycle_carrier_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/retained_estimate_lifecycle_carrier_v1.json",
         "session_manifest_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/sessions/session_02_manifest.json",
         "typed_volatility_persistence_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_4b3bdcecab2c0bfe/typed_volatility_persistence.jsonl"
       },

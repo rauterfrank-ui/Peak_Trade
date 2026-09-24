@@ -30,8 +30,8 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
     assert_late_age_session_has_s01_persistence_v1,
+    assert_late_age_session_has_s01_retained_estimate_carrier_v1,
     assert_not_additional_evidence_routing_v1,
-    assert_runtime_matches_active_binding_v1,
     resolve_active_campaign_binding_for_runtime_v1,
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.identity_v1 import (
@@ -63,6 +63,7 @@ __all__ = [
     "assert_campaign_not_tombstone_v1",
     "assert_exactly_one_active_binding_file_v1",
     "assert_late_age_session_has_s01_persistence_v1",
+    "assert_late_age_session_has_s01_retained_estimate_carrier_v1",
     "assert_not_additional_evidence_routing_v1",
     "assert_old_campaign_cannot_complete_v1",
     "assert_runtime_matches_active_binding_v1",

@@ -120,7 +120,10 @@ def assert_architecture_guards_v1(*, repo_root: Path | None = None) -> dict[str,
         / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2"
         / "hardening_cycle_bridge_v2.py"
     ).read_text(encoding="utf-8")
-    if "accumulate_productive_research_evidence_from_cycle_v1" not in bridge:
+    if (
+        "accumulate_productive_research_evidence_from_cycle_v1" not in bridge
+        and "passive_accumulate_from_bridge_cycle_v1" not in bridge
+    ):
         raise RuntimeError("BRIDGE_MUST_BIND_PRODUCTIVE_EVIDENCE_ACCUMULATION")
     if "stamp_productive_bridge_cycle_authority_v1" not in bridge:
         raise RuntimeError("BRIDGE_MUST_STAMP_PRODUCTIVE_BRIDGE_AUTHORITY")

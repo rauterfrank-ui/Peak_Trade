@@ -11,7 +11,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Sequence
 
 from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.constants_v1 import (
     AGE_FORMULA_VERSION,
@@ -233,6 +233,63 @@ class ProductiveNaturalAgeLifecycleCmcBindingHostV1:
             _restart_without_estimate=True,
             _produced_since_start_or_restore=False,
         )
+
+    @classmethod
+    def restore_with_retained_estimate_carrier_v1(
+        cls,
+        *,
+        persistence_path: Path,
+        retained_estimate_lifecycle_carrier_path: Path,
+        campaign_id: str,
+        early_session_id: str,
+        late_session_id: str,
+        repository_sha: str,
+        preregistration_digest: str,
+        venue: str,
+        canonical_instrument_id: str,
+        venue_instrument_id: str,
+        research_age_grid_seconds: Sequence[int] | None = None,
+        policy: ResearchEstimateRecomputePolicyV1 | None = None,
+    ) -> "ProductiveNaturalAgeLifecycleCmcBindingHostV1":
+        """Restore mark-history + retained lifecycle SSOT; enable LATE_AGE_HOLD."""
+        from research.canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.carrier_v1 import (
+            load_retained_estimate_lifecycle_carrier_v1,
+            verify_retained_estimate_lifecycle_carrier_binding_v1,
+        )
+
+        host = cls.restore_from_persistence_v1(
+            persistence_path=persistence_path,
+            policy=policy,
+        )
+        carrier = load_retained_estimate_lifecycle_carrier_v1(
+            path=Path(retained_estimate_lifecycle_carrier_path)
+        )
+        verify_retained_estimate_lifecycle_carrier_binding_v1(
+            carrier,
+            campaign_id=campaign_id,
+            early_session_id=early_session_id,
+            late_session_id=late_session_id,
+            repository_sha=repository_sha,
+            preregistration_digest=preregistration_digest,
+            venue=venue,
+            canonical_instrument_id=canonical_instrument_id,
+            venue_instrument_id=venue_instrument_id,
+            research_age_grid_seconds=research_age_grid_seconds,
+        )
+        host.lifecycle.restore_retained_lifecycle_state_v1(
+            carrier.lifecycle_state,
+            research_age_grid_seconds=carrier.research_age_grid_seconds,
+            minimum_distinct_observations_per_age_bucket=(
+                carrier.minimum_distinct_observations_per_age_bucket
+            ),
+            age_bucket_observation_counts=carrier.age_bucket_observation_counts,
+            enable_late_age_hold=True,
+        )
+        # Retained prior_state is present — clear restart-without-estimate so
+        # SESSION_START_FIRST_ESTIMATE cannot fire on the late-age path.
+        host._restart_without_estimate = False
+        host._produced_since_start_or_restore = True
+        return host
 
     @property
     def producer(self) -> CanonicalVolatilityTypedRuntimeProducerScaffoldV1:

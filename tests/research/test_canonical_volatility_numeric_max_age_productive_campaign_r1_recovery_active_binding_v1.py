@@ -43,6 +43,7 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
     assert_late_age_session_has_s01_persistence_v1,
+    assert_late_age_session_has_s01_retained_estimate_carrier_v1,
     assert_not_additional_evidence_routing_v1,
     assert_runtime_matches_active_binding_v1,
     resolve_active_campaign_binding_for_runtime_v1,
@@ -141,6 +142,15 @@ def test_08_missing_s01_persistence_rejects_s02(tmp_path: Path) -> None:
             repo_root=tmp_path,
             evidence_root=tmp_path,
         )
+    with pytest.raises(
+        ProductiveCampaignR1RecoveryError, match="missing_s01_retained_estimate_carrier"
+    ):
+        assert_late_age_session_has_s01_retained_estimate_carrier_v1(
+            binding,
+            session_id=binding.session_02_id,
+            repo_root=tmp_path,
+            evidence_root=tmp_path,
+        )
 
 
 def test_09_synthetic_and_cross_sha_s01_rejected() -> None:
@@ -182,6 +192,13 @@ def test_10_exactly_once_and_fresh_s01_s02_provenance_preserved() -> None:
     assert binding.early_estimate_producer_session_id == binding.session_01_id
     assert binding.late_age_observation_session_id == binding.session_02_id
     assert binding.typed_volatility_persistence_path.endswith("typed_volatility_persistence.jsonl")
+    assert binding.retained_estimate_lifecycle_carrier_path.endswith(
+        "retained_estimate_lifecycle_carrier_v1.json"
+    )
+    assert (
+        "retained_estimate_lifecycle_carrier_path"
+        in on_disk["durable_path_plan"]["campaign_specific_paths"]
+    )
 
 
 def test_11_no_additional_evidence_routing() -> None:

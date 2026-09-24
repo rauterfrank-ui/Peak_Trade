@@ -36,5 +36,8 @@ def derive_r1_campaign_identity_v1(*, repository_sha: str) -> dict[str, str]:
         "session_01_id": session_01,
         "session_02_id": session_02,
         "typed_volatility_persistence_path": str(paths["typed_volatility_persistence_path"]),
+        "retained_estimate_lifecycle_carrier_path": str(
+            paths["retained_estimate_lifecycle_carrier_path"]
+        ),
         "campaign_manifest_path": str(paths["campaign_manifest_path"]),
     }

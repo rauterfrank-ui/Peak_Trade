@@ -72,6 +72,24 @@ def assert_late_age_session_has_s01_persistence_v1(
         raise ProductiveCampaignR1RecoveryError("missing_s01_persistence_for_late_age_session")
 
 
+def assert_late_age_session_has_s01_retained_estimate_carrier_v1(
+    binding: ActiveCampaignBindingV1,
+    *,
+    session_id: str,
+    repo_root: Path,
+    evidence_root: Optional[Path] = None,
+) -> None:
+    """S02 late-age requires atomically finalized S01 retained-estimate carrier."""
+    if session_id != binding.session_02_id:
+        return
+    root = Path(evidence_root) if evidence_root is not None else Path(repo_root)
+    carrier = root / binding.retained_estimate_lifecycle_carrier_path
+    if not carrier.is_file() or carrier.stat().st_size <= 0:
+        raise ProductiveCampaignR1RecoveryError(
+            "missing_s01_retained_estimate_carrier_for_late_age_session"
+        )
+
+
 def assert_not_additional_evidence_routing_v1(*, campaign_id: str) -> None:
     if "additional_evidence" in str(campaign_id):
         raise ProductiveCampaignR1RecoveryError("additional_evidence_routing_forbidden")
@@ -95,6 +113,7 @@ def gate_status_payload_v1(
 # Re-export completion guard for tests/callers.
 __all__ = [
     "assert_late_age_session_has_s01_persistence_v1",
+    "assert_late_age_session_has_s01_retained_estimate_carrier_v1",
     "assert_not_additional_evidence_routing_v1",
     "assert_old_campaign_cannot_complete_v1",
     "assert_runtime_matches_active_binding_v1",

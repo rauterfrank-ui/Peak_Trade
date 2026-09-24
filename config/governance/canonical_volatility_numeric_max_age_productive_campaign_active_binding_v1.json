@@ -1,5 +1,5 @@
 {
-  "artifact_digest": "e29dbdc72a0f538e5b83d62a847e36a0977a33b810684c8014ec57d4058ccc2b",
+  "artifact_digest": "ef8193963b86599c83aa895777050c088f9109807807f341abd46aa189467a4e",
   "campaign_id": "cv_maxage_productive_evidence_campaign_v1_1a638769c1dcb066",
   "early_estimate_producer_session_id": "cv_maxage_productive_evidence_campaign_v1_1a638769c1dcb066_s01_c3fcb04c41ae",
   "evidence_write_authorized": false,
@@ -8,8 +8,9 @@
   "network_authorized": false,
   "owner_policy": "R1_ABANDON_OLD_CAMPAIGN_AND_START_NEW_CAMPAIGN_FROM_FRESH_S01",
   "preregistration_artifact_path": "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-  "preregistration_digest": "fc7f97aa4bf71a44493bd9fe882748f02527f82a6e872c2dff39b6d2b84b8ab6",
+  "preregistration_digest": "80573c85e2b02e8e52eedbc81177cead5d5851f66831de334232e5dd9de2536c",
   "repository_sha": "c47704d4551e15fe8f875bebc6dc7b10e2081c42",
+  "retained_estimate_lifecycle_carrier_path": "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_1a638769c1dcb066/retained_estimate_lifecycle_carrier_v1.json",
   "schema_version": "canonical_volatility_numeric_max_age_productive_campaign_active_binding/v1",
   "session_01_id": "cv_maxage_productive_evidence_campaign_v1_1a638769c1dcb066_s01_c3fcb04c41ae",
   "session_02_id": "cv_maxage_productive_evidence_campaign_v1_1a638769c1dcb066_s02_4448ab53c805",

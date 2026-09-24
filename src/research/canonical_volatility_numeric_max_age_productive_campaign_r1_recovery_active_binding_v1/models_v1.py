@@ -51,6 +51,7 @@ class ActiveCampaignBindingV1:
     preregistration_artifact_path: str
     preregistration_digest: str
     typed_volatility_persistence_path: str
+    retained_estimate_lifecycle_carrier_path: str
     early_estimate_producer_session_id: str
     late_age_observation_session_id: str
     execution_authorized: bool
@@ -71,6 +72,9 @@ class ActiveCampaignBindingV1:
             "preregistration_artifact_path": self.preregistration_artifact_path,
             "preregistration_digest": self.preregistration_digest,
             "repository_sha": self.repository_sha,
+            "retained_estimate_lifecycle_carrier_path": (
+                self.retained_estimate_lifecycle_carrier_path
+            ),
             "schema_version": self.schema_version,
             "session_01_id": self.session_01_id,
             "session_02_id": self.session_02_id,

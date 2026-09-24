@@ -8,7 +8,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 from research.canonical_volatility_numeric_max_age_natural_age_progression_and_actionable_strata_evidence_plan_v1.lifecycle_contract_v1 import (
     LifecycleOutcomeV1,
@@ -23,6 +23,12 @@ from research.canonical_volatility_numeric_max_age_natural_age_progression_and_a
     ResearchEstimateRecomputePolicyV1,
     build_natural_age_research_recompute_policy_v1,
     evaluate_recompute_decision_v1,
+)
+from research.canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.hold_v1 import (
+    assert_non_regressing_age_v1,
+    empty_age_bucket_observation_counts_v1,
+    prereg_age_grid_coverage_complete_v1,
+    record_age_bucket_observation_v1,
 )
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     ObservationTransportMetadataV1,
@@ -48,6 +54,12 @@ class NaturalAgeProgressionLifecycleHostV1:
     )
     _lifecycle: Optional[VolatilityEstimateLifecycleState] = None
     _last_observation: Optional[NaturalAgeLifecycleObservationV1] = None
+    _late_age_hold_active: bool = False
+    _research_age_grid_seconds: tuple[int, ...] = ()
+    _minimum_distinct_observations_per_age_bucket: int = 1
+    _age_bucket_observation_counts: dict[str, int] = field(default_factory=dict)
+    _last_retained_age_seconds: Optional[float] = None
+    _track_age_grid_coverage: bool = False
 
     @classmethod
     def create(
@@ -77,6 +89,135 @@ class NaturalAgeProgressionLifecycleHostV1:
     @property
     def last_observation(self) -> Optional[NaturalAgeLifecycleObservationV1]:
         return self._last_observation
+
+    @property
+    def late_age_hold_active(self) -> bool:
+        return bool(self._late_age_hold_active)
+
+    @property
+    def age_bucket_observation_counts(self) -> Mapping[str, int]:
+        return dict(self._age_bucket_observation_counts)
+
+    def enable_age_grid_coverage_tracking_v1(
+        self,
+        *,
+        research_age_grid_seconds: Sequence[int],
+        minimum_distinct_observations_per_age_bucket: int,
+        initial_counts: Mapping[str, int] | None = None,
+    ) -> None:
+        grid = tuple(int(x) for x in research_age_grid_seconds)
+        if not grid:
+            raise NaturalAgeLifecycleErrorV1("research_age_grid_empty")
+        if int(minimum_distinct_observations_per_age_bucket) < 1:
+            raise NaturalAgeLifecycleErrorV1("minimum_distinct_observations_per_age_bucket_invalid")
+        self._research_age_grid_seconds = grid
+        self._minimum_distinct_observations_per_age_bucket = int(
+            minimum_distinct_observations_per_age_bucket
+        )
+        counts = empty_age_bucket_observation_counts_v1(grid)
+        if initial_counts is not None:
+            for key, value in initial_counts.items():
+                if key in counts:
+                    counts[key] = int(value)
+        self._age_bucket_observation_counts = counts
+        self._track_age_grid_coverage = True
+
+    def restore_retained_lifecycle_state_v1(
+        self,
+        state: VolatilityEstimateLifecycleState,
+        *,
+        research_age_grid_seconds: Sequence[int],
+        minimum_distinct_observations_per_age_bucket: int,
+        age_bucket_observation_counts: Mapping[str, int] | None = None,
+        enable_late_age_hold: bool = True,
+    ) -> None:
+        """Restore retained estimate SSOT into lifecycle (no producer _last_estimate copy)."""
+        if state is None or state.estimate is None:
+            raise NaturalAgeLifecycleErrorV1("retained_lifecycle_state_required")
+        self._lifecycle = state
+        self.enable_age_grid_coverage_tracking_v1(
+            research_age_grid_seconds=research_age_grid_seconds,
+            minimum_distinct_observations_per_age_bucket=(
+                minimum_distinct_observations_per_age_bucket
+            ),
+            initial_counts=age_bucket_observation_counts,
+        )
+        self._late_age_hold_active = bool(enable_late_age_hold)
+        if self._late_age_hold_active and self._hold_exit_satisfied_v1():
+            self._late_age_hold_active = False
+
+    def _hold_exit_satisfied_v1(self) -> bool:
+        if not self._research_age_grid_seconds:
+            return False
+        return prereg_age_grid_coverage_complete_v1(
+            self._age_bucket_observation_counts,
+            grid_seconds=self._research_age_grid_seconds,
+            minimum_distinct_observations_per_age_bucket=(
+                self._minimum_distinct_observations_per_age_bucket
+            ),
+        )
+
+    def _record_coverage_and_maybe_exit_hold_v1(self, *, age_seconds: float) -> None:
+        if not self._track_age_grid_coverage:
+            return
+        if self._late_age_hold_active:
+            try:
+                assert_non_regressing_age_v1(
+                    prior_age_seconds=self._last_retained_age_seconds,
+                    current_age_seconds=float(age_seconds),
+                )
+            except Exception as exc:  # noqa: BLE001 — map carrier hold errors
+                raise NaturalAgeLifecycleErrorV1(str(exc)) from exc
+        self._last_retained_age_seconds = float(age_seconds)
+        record_age_bucket_observation_v1(
+            self._age_bucket_observation_counts,
+            age_seconds=float(age_seconds),
+            grid_seconds=self._research_age_grid_seconds,
+        )
+        if self._late_age_hold_active and self._hold_exit_satisfied_v1():
+            self._late_age_hold_active = False
+
+    def _reuse_retained_estimate_v1(
+        self,
+        *,
+        market_iso: str,
+        prior: VolatilityEstimateLifecycleState,
+    ) -> NaturalAgeLifecycleObservationV1:
+        reused_state = VolatilityEstimateLifecycleState(
+            estimate=prior.estimate,
+            produced_at_market_event_time=prior.produced_at_market_event_time,
+            last_recompute_reason=prior.last_recompute_reason,
+            reuse_count=prior.reuse_count + 1,
+            distinct_observations_since_recompute=(prior.distinct_observations_since_recompute + 1),
+            source_window_start_event_time=prior.source_window_start_event_time,
+            source_window_end_event_time=prior.source_window_end_event_time,
+            source_digest=prior.source_digest,
+        )
+        assert_lifecycle_invariants_v1(prior, reused_state, reused=True)
+        age = compute_natural_age_seconds_v1(
+            market_event_time=market_iso,
+            as_of_event_time=_iso(reused_state.as_of_event_time),
+        )
+        self._record_coverage_and_maybe_exit_hold_v1(age_seconds=age)
+        obs = NaturalAgeLifecycleObservationV1(
+            outcome=LifecycleOutcomeV1.REUSED.value,
+            market_event_time=market_iso,
+            as_of_event_time=_iso(reused_state.as_of_event_time),
+            age_seconds=age,
+            estimate_reused=True,
+            reuse_count=reused_state.reuse_count,
+            distinct_observations_since_recompute=(
+                reused_state.distinct_observations_since_recompute
+            ),
+            source_digest=reused_state.source_digest,
+            recompute_reason=RecomputeReasonV1.NOT_APPLICABLE.value,
+            age_evaluable=True,
+            not_evaluable_reason="",
+            lifecycle_state=reused_state,
+        )
+        self._lifecycle = reused_state
+        self._last_observation = obs
+        return obs
 
     def on_runtime_cycle_without_sample_v1(self) -> NaturalAgeLifecycleObservationV1:
         """Runtime/poll cycles must not advance age."""
@@ -181,6 +322,18 @@ class NaturalAgeProgressionLifecycleHostV1:
             prior_invalid=False,
         )
 
+        if self._late_age_hold_active:
+            if self._lifecycle is None:
+                raise NaturalAgeLifecycleErrorV1("fresh_produce_attempt_during_late_age_hold")
+            if reason in {
+                RecomputeReasonV1.SESSION_START_FIRST_ESTIMATE.value,
+                RecomputeReasonV1.MISSING_ESTIMATE.value,
+                RecomputeReasonV1.INVALID_PRIOR_ESTIMATE.value,
+            }:
+                raise NaturalAgeLifecycleErrorV1("fresh_produce_attempt_during_late_age_hold")
+            # Suppress elapsed / obs-floor recompute while hold is active; reuse retained SSOT.
+            return self._reuse_retained_estimate_v1(market_iso=market_iso, prior=self._lifecycle)
+
         if should_recompute or self._lifecycle is None:
             state = VolatilityEstimateLifecycleState(
                 estimate=new_estimate,
@@ -196,6 +349,7 @@ class NaturalAgeProgressionLifecycleHostV1:
                 market_event_time=market_iso,
                 as_of_event_time=_iso(state.as_of_event_time),
             )
+            self._record_coverage_and_maybe_exit_hold_v1(age_seconds=age)
             obs = NaturalAgeLifecycleObservationV1(
                 outcome=(
                     LifecycleOutcomeV1.PRODUCED.value
@@ -219,41 +373,7 @@ class NaturalAgeProgressionLifecycleHostV1:
             return obs
 
         # Explicit reuse: keep prior estimate identity / as_of immutable.
-        prior = self._lifecycle
-        reused_state = VolatilityEstimateLifecycleState(
-            estimate=prior.estimate,
-            produced_at_market_event_time=prior.produced_at_market_event_time,
-            last_recompute_reason=prior.last_recompute_reason,
-            reuse_count=prior.reuse_count + 1,
-            distinct_observations_since_recompute=prior.distinct_observations_since_recompute + 1,
-            source_window_start_event_time=prior.source_window_start_event_time,
-            source_window_end_event_time=prior.source_window_end_event_time,
-            source_digest=prior.source_digest,
-        )
-        assert_lifecycle_invariants_v1(prior, reused_state, reused=True)
-        age = compute_natural_age_seconds_v1(
-            market_event_time=market_iso,
-            as_of_event_time=_iso(reused_state.as_of_event_time),
-        )
-        obs = NaturalAgeLifecycleObservationV1(
-            outcome=LifecycleOutcomeV1.REUSED.value,
-            market_event_time=market_iso,
-            as_of_event_time=_iso(reused_state.as_of_event_time),
-            age_seconds=age,
-            estimate_reused=True,
-            reuse_count=reused_state.reuse_count,
-            distinct_observations_since_recompute=(
-                reused_state.distinct_observations_since_recompute
-            ),
-            source_digest=reused_state.source_digest,
-            recompute_reason=RecomputeReasonV1.NOT_APPLICABLE.value,
-            age_evaluable=True,
-            not_evaluable_reason="",
-            lifecycle_state=reused_state,
-        )
-        self._lifecycle = reused_state
-        self._last_observation = obs
-        return obs
+        return self._reuse_retained_estimate_v1(market_iso=market_iso, prior=self._lifecycle)
 
     def _noop_observation(
         self,

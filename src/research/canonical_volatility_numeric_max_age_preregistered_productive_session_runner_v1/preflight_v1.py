@@ -46,6 +46,7 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
     assert_late_age_session_has_s01_persistence_v1,
+    assert_late_age_session_has_s01_retained_estimate_carrier_v1,
     assert_not_additional_evidence_routing_v1,
     assert_runtime_matches_active_binding_v1,
     resolve_active_campaign_binding_for_runtime_v1,
@@ -202,6 +203,12 @@ def run_static_preflight_v1(
             repo_root=root,
             evidence_root=evi_root,
         )
+        assert_late_age_session_has_s01_retained_estimate_carrier_v1(
+            binding,
+            session_id=sid,
+            repo_root=root,
+            evidence_root=evi_root,
+        )
     except ProductiveCampaignR1RecoveryError as exc:
         raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
 
@@ -283,27 +290,39 @@ def run_static_preflight_v1(
         expected_paths = session_entry.get("expected_durable_paths") or {}
         session_manifest = str(expected_paths.get("session_manifest_path") or "")
         typed_persist = str(expected_paths.get("typed_volatility_persistence_path") or "")
-        if not session_manifest or not typed_persist:
+        retained_carrier = str(expected_paths.get("retained_estimate_lifecycle_carrier_path") or "")
+        if not session_manifest or not typed_persist or not retained_carrier:
             blockers.append("session_durable_paths_missing")
         if typed_persist and typed_persist != binding.typed_volatility_persistence_path:
             blockers.append("typed_persistence_path_mismatch")
+        if (
+            retained_carrier
+            and retained_carrier != binding.retained_estimate_lifecycle_carrier_path
+        ):
+            blockers.append("retained_estimate_carrier_path_mismatch")
+        # Prefer explicit prereg/bound path — never derive from typed persistence.
+        if not retained_carrier:
+            blockers.append("retained_estimate_carrier_path_missing")
     except PreregisteredSessionRunnerError as exc:
         blockers.append(str(exc))
         resolved_max = int(max_cycles or 0)
         session_manifest = ""
         typed_persist = ""
+        retained_carrier = ""
         preg_payload = {}
     except ProductiveCampaignR1RecoveryError as exc:
         blockers.append(f"preregistration_verify_failed:{exc}")
         resolved_max = int(max_cycles or 0)
         session_manifest = ""
         typed_persist = ""
+        retained_carrier = ""
         preg_payload = {}
     except Exception as exc:  # noqa: BLE001
         blockers.append(f"preregistration_preflight_error:{exc}")
         resolved_max = int(max_cycles or 0)
         session_manifest = ""
         typed_persist = ""
+        retained_carrier = ""
         preg_payload = {}
 
     auth_path = Path(authorization_artifact_path)
@@ -393,6 +412,9 @@ def run_static_preflight_v1(
         join_ledger_path=str(join),
         quarantine_ledger_path=str(quarantine),
         typed_volatility_persistence_path=str(evi_root / typed_persist) if typed_persist else "",
+        retained_estimate_lifecycle_carrier_path=(
+            str(evi_root / retained_carrier) if retained_carrier else ""
+        ),
         session_manifest_path=str(evi_root / session_manifest) if session_manifest else "",
         session_01_id=binding.session_01_id,
         session_02_id=binding.session_02_id,
