@@ -35,6 +35,13 @@ from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 im
     derive_meta_evidence_id_v1,
     validate_meta_learning_evidence_v1,
 )
+from src.experiments.canonical_federated_m5_m6_return_join_v1 import (
+    JOIN_STATUS_COMPLETE as FEDERATED_RETURN_JOIN_STATUS_COMPLETE,
+    SCHEMA_VERSION as FEDERATED_RETURN_JOIN_SCHEMA_VERSION,
+)
+from src.experiments.canonical_federated_surface_optimization_experiment_evidence_projection_v1 import (
+    validate_federated_projected_optimization_experiment_evidence_v1,
+)
 from src.experiments.canonical_self_learning_optimization_return_input_v1 import (
     STATUS_ACCEPTED_OFFLINE_EVIDENCE_INPUT,
     SCHEMA_VERSION as RETURN_INPUT_SCHEMA_VERSION,
@@ -266,6 +273,242 @@ def build_meta_learning_evidence_from_optimization_experiment_v1(
             "canonical_analyzer_domain": CANONICAL_ANALYZER_DOMAIN,
             "canonical_analyzer_schema_version": CANONICAL_ANALYZER_SCHEMA_VERSION,
             "canonical_analyzer_invoked": CANONICAL_ANALYZER_INVOKED,
+        },
+        "reproducibility_digest": reproducibility_digest,
+        "meta_evidence_authority": META_EVIDENCE_AUTHORITY,
+        "source_optimization_experiment_evidence_record_id": evidence.get("record_id"),
+        "source_optimization_experiment_evidence_digest": str(evidence["content_hash"]),
+        "learning_state_mutation": False,
+        "search_execution_performed": False,
+        "promotion_performed": False,
+        "external_effect_authorized": False,
+        "proposal_not_authority": True,
+    }
+    return validate_meta_learning_evidence_v1(canonical)
+
+
+@dataclass(frozen=True)
+class FederatedMetaLearningIngestRequestV1:
+    federated_return_join: Mapping[str, Any] | None
+    optimization_experiment_evidence: Mapping[str, Any] | None
+    expected_return_join_schema_version: str | None = FEDERATED_RETURN_JOIN_SCHEMA_VERSION
+    expected_optimization_evidence_schema_version: str | None = (
+        OPTIMIZATION_EXPERIMENT_EVIDENCE_SCHEMA_VERSION
+    )
+    expected_meta_evidence_schema_version: str | None = META_LEARNING_EVIDENCE_SCHEMA_VERSION
+    requested_learning_state_mutation: bool = False
+    requested_search_execution: bool = False
+    requested_promotion: bool = False
+
+
+def ingest_meta_learning_evidence_from_federated_return_join_v1(
+    request: FederatedMetaLearningIngestRequestV1,
+) -> MappingProxyType[str, Any]:
+    if request.requested_learning_state_mutation:
+        raise MetaLearningIngestError("LEARNING_STATE_MUTATION_FORBIDDEN")
+    if request.requested_search_execution:
+        raise MetaLearningIngestError("SEARCH_EXECUTION_FORBIDDEN")
+    if request.requested_promotion:
+        raise MetaLearningIngestError("PROMOTION_FORBIDDEN")
+
+    if request.expected_return_join_schema_version != FEDERATED_RETURN_JOIN_SCHEMA_VERSION:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_STALE,
+            reason="FEDERATED_RETURN_JOIN_SCHEMA_VERSION_MISMATCH",
+            meta_evidence=None,
+        )
+
+    if request.federated_return_join is None:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_ACK,
+            reason="MISSING_FEDERATED_RETURN_JOIN",
+            meta_evidence=None,
+        )
+    join = request.federated_return_join
+    if join.get("schema_version") != FEDERATED_RETURN_JOIN_SCHEMA_VERSION:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_STALE,
+            reason="FEDERATED_RETURN_JOIN_RECORD_SCHEMA_MISMATCH",
+            meta_evidence=None,
+        )
+    if join.get("status") != FEDERATED_RETURN_JOIN_STATUS_COMPLETE:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_ACK,
+            reason="FEDERATED_RETURN_JOIN_NOT_COMPLETE",
+            meta_evidence=None,
+        )
+    if join.get("plane_identity") is not None:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_AUTHORITY,
+            reason="PLANE_IDENTITY_FORBIDDEN_ON_FEDERATED_JOIN",
+            meta_evidence=None,
+        )
+
+    if request.optimization_experiment_evidence is None:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_MALFORMED,
+            reason="MISSING_OPTIMIZATION_EXPERIMENT_EVIDENCE",
+            meta_evidence=None,
+        )
+    try:
+        opt_evidence = validate_federated_projected_optimization_experiment_evidence_v1(
+            request.optimization_experiment_evidence
+        )
+    except Exception as exc:
+        _LOGGER.debug("federated optimization experiment evidence invalid: %s", exc)
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_MALFORMED,
+            reason="FEDERATED_OPTIMIZATION_EXPERIMENT_EVIDENCE_INVALID",
+            meta_evidence=None,
+        )
+
+    join_digest = join.get("optimization_experiment_evidence_digest")
+    evidence_digest = opt_evidence.get("content_hash")
+    if str(join_digest) != str(evidence_digest):
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_OUT_OF_ORDER,
+            reason="JOIN_EVIDENCE_DIGEST_MISMATCH",
+            meta_evidence=None,
+        )
+    join_surface = str(join.get("surface_execution_identity") or "")
+    evidence_surface = str(opt_evidence.get("surface_execution_identity") or "")
+    if join_surface != evidence_surface or not is_valid_sha256_hex(join_surface):
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_OUT_OF_ORDER,
+            reason="JOIN_SURFACE_EXECUTION_IDENTITY_MISMATCH",
+            meta_evidence=None,
+        )
+
+    meta_evidence = build_meta_learning_evidence_from_federated_optimization_experiment_v1(
+        opt_evidence
+    )
+    if request.expected_meta_evidence_schema_version != META_LEARNING_EVIDENCE_SCHEMA_VERSION:
+        return _ingest_result(
+            status=INGEST_STATUS_REJECTED_STALE,
+            reason="META_LEARNING_EVIDENCE_SCHEMA_VERSION_MISMATCH",
+            meta_evidence=meta_evidence,
+        )
+
+    return _ingest_result(
+        status=INGEST_STATUS_COMPLETE,
+        reason="FEDERATED_META_LEARNING_EVIDENCE_PROJECTED_ONLY",
+        meta_evidence=meta_evidence,
+    )
+
+
+def build_meta_learning_evidence_from_federated_optimization_experiment_v1(
+    optimization_experiment_evidence: Mapping[str, Any],
+) -> MappingProxyType[str, Any]:
+    evidence = validate_federated_projected_optimization_experiment_evidence_v1(
+        optimization_experiment_evidence
+    )
+    if evidence.get("plane_identity") is not None:
+        raise MetaLearningIngestError("PLANE_IDENTITY_FORBIDDEN_ON_FEDERATED_META_EVIDENCE")
+
+    slices = evidence["evidence_slices"]
+    search = slices[CLASS_SEARCH_EVIDENCE]
+    challenger = slices[CLASS_CHALLENGER_EVIDENCE]
+    oos = slices[CLASS_OOS_EVIDENCE]
+    robustness = slices[CLASS_ROBUSTNESS_EVIDENCE]
+    failure = slices[CLASS_FAILURE_EVIDENCE]
+    economic = slices[CLASS_ECONOMIC_EVIDENCE]
+    version_bindings = dict(evidence["version_bindings"])
+    provenance_m5 = evidence.get("provenance")
+    if not isinstance(provenance_m5, Mapping):
+        raise MetaLearningIngestError("FEDERATED_PROVENANCE_MISSING")
+    surface_id = str(provenance_m5.get("surface_id") or UNKNOWN_UNAVAILABLE)
+
+    experiment_id = evidence.get("candidate_experiment_id") or search.get("experiment_id")
+    source_experiment_ids: tuple[str, ...] = ()
+    if isinstance(experiment_id, str) and experiment_id.strip():
+        source_experiment_ids = (experiment_id.strip(),)
+
+    source_envelope_versions = {
+        "optimizable_envelope_schema_version": version_bindings.get(
+            "optimizable_envelope_schema_version"
+        ),
+        "optimizable_envelope_contract_version": version_bindings.get(
+            "optimizable_envelope_contract_version"
+        ),
+        "envelope_resolution_digest": evidence.get("envelope_resolution_digest"),
+        "federated_projection_schema_version": version_bindings.get(
+            "federated_projection_schema_version"
+        ),
+    }
+
+    failure_count = int(failure.get("failure_evidence_count") or 0)
+    disposition = challenger.get("overall_disposition")
+    pattern = (
+        f"FEDERATED_SURFACE_NATIVE_REF_ONLY;"
+        f"CHALLENGER_DISPOSITION={disposition};"
+        f"FAILURE_EVIDENCE_COUNT={failure_count}"
+    )
+
+    cost_slippage_failure_pattern: str | Mapping[str, Any]
+    if failure_count > 0:
+        cost_slippage_failure_pattern = {
+            "failure_records_digest": failure.get("failure_records_digest"),
+            "interpretation_authority": META_EVIDENCE_AUTHORITY,
+        }
+    else:
+        cost_slippage_failure_pattern = UNKNOWN_UNAVAILABLE
+
+    surface_execution_identity = str(evidence.get("surface_execution_identity") or "")
+
+    reproducibility_body = {
+        "source_optimization_experiment_evidence_digest": str(evidence["content_hash"]),
+        "source_experiment_ids": source_experiment_ids,
+        "surface_execution_identity": surface_execution_identity,
+        "surface_id": surface_id,
+        "search_identity": search.get("search_identity"),
+        "oos_integrity": oos.get("robustness_evidence_integrity"),
+        "robustness_integrity": robustness.get("robustness_evidence_integrity"),
+        "economic_lineage_digest": economic.get("source_learning_evidence_digest"),
+        "failure_records_digest": failure.get("failure_records_digest"),
+    }
+    reproducibility_digest = compute_content_sha256(reproducibility_body)
+
+    canonical: dict[str, Any] = {
+        "schema_version": META_LEARNING_EVIDENCE_SCHEMA_VERSION,
+        "domain": "peak_trade.learning.ddo.meta_learning_evidence.v1",
+        "universe_class": UNIVERSE_CLASS_SELF_LEARNING,
+        "evidence_class": EVIDENCE_CLASS_META_LEARNING,
+        "meta_evidence_id": derive_meta_evidence_id_v1(
+            reproducibility_digest=reproducibility_digest
+        ),
+        "source_experiment_ids": source_experiment_ids,
+        "source_envelope_versions": source_envelope_versions,
+        "observed_regime_or_context_ref": f"FEDERATED_SURFACE|surface={surface_id}",
+        "optimization_family": UNKNOWN_UNAVAILABLE,
+        "search_method": {
+            "method_token": UNKNOWN_UNAVAILABLE,
+            "advanced_search_schema_version": version_bindings.get(
+                "advanced_search_schema_version"
+            ),
+        },
+        "repeated_success_or_failure_pattern": pattern,
+        "oos_robustness_pattern": {
+            "oos_observation_kind": oos.get("observation_kind"),
+            "robustness_suite_identity": robustness.get("robustness_suite_identity"),
+            "robustness_evidence_integrity": robustness.get("robustness_evidence_integrity"),
+        },
+        "cost_slippage_failure_pattern": cost_slippage_failure_pattern,
+        "predictive_evidence_features": UNKNOWN_UNAVAILABLE,
+        "uncertainty": UNKNOWN_UNAVAILABLE,
+        "support_count": len(source_experiment_ids),
+        "provenance": {
+            "source_optimization_experiment_evidence_record_id": evidence.get("record_id"),
+            "source_surface_execution_identity": surface_execution_identity,
+            "source_plane_identity": None,
+            "return_loop_predecessor": "FEDERATED_M5_M6_RETURN_JOIN_V1",
+            "canonical_meta_learning_analyzer_ref": CANONICAL_META_LEARNING_ANALYZER_REF,
+            "canonical_meta_learning_analyzer_schema": CANONICAL_META_LEARNING_ANALYZER_SCHEMA,
+            "canonical_analyzer_authority": CANONICAL_ANALYZER_AUTHORITY,
+            "canonical_analyzer_domain": CANONICAL_ANALYZER_DOMAIN,
+            "canonical_analyzer_schema_version": CANONICAL_ANALYZER_SCHEMA_VERSION,
+            "canonical_analyzer_invoked": CANONICAL_ANALYZER_INVOKED,
+            "federated_projection": True,
+            "m4_plane_execution": False,
         },
         "reproducibility_digest": reproducibility_digest,
         "meta_evidence_authority": META_EVIDENCE_AUTHORITY,
