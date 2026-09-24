@@ -40,8 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1` |
 | `RUNTIME_COMPONENT:v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1` |
-| `RUNTIME_COMPONENT:v32_d28_d29_scoped_optimization_productive_join_policy_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- D29 F1/M9 per-ingress authorization/apply adjudication max-build: authority census, typed binding, chain resolver to runtime transport; apply boundary OWNER_POLICY. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 scoped Owner Productive Apply authority: dedicated apply record, ledgers, adjudicator, seam/transport guard alignment for valid scoped runtime_applied. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1
+- modified_by=F1_M9_SCOPED_OWNER_PRODUCTIVE_APPLY_AUTHORITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -16,6 +16,9 @@ from src.governance.authorized_productive_parameter_seam_v1 import (
     STATUS_BOUND,
     verify_seam_record_digest_v1,
 )
+from src.governance.f1_m9_scoped_owner_apply_constants_v1 import (
+    is_f1_m9_scoped_runtime_apply_authority_v1,
+)
 from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
     POLICY_CONSUMER_MODULE,
     PRODUCTIVE_TARGET_ID,
@@ -102,8 +105,12 @@ def resolve_governed_runtime_seam_for_presence_gate_v1(
         reasons.append("ENFORCEMENT_FORBIDDEN")
     if seam_record.get("external_effect_authorized") is True:
         reasons.append("EXTERNAL_EFFECT_FORBIDDEN")
-    if seam_record.get("runtime_applied") is True:
+    runtime_applied = seam_record.get("runtime_applied") is True
+    runtime_apply_authority = str(seam_record.get("runtime_apply_authority") or "")
+    if runtime_applied and not is_f1_m9_scoped_runtime_apply_authority_v1(runtime_apply_authority):
         reasons.append("RUNTIME_APPLY_CLAIM_FORBIDDEN_ON_RECORD")
+    if runtime_applied and not seam_record.get("owner_apply_authorization_record_digest"):
+        reasons.append("OWNER_APPLY_AUTHORIZATION_DIGEST_MISSING_ON_SEAM")
 
     numeric = seam_record.get("numeric_max_age_seconds")
     authorized_numeric = seam_record.get("authorized_candidate_max_age_seconds")

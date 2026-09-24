@@ -78,6 +78,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_volatility_presence_gate | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_volatility_presence_gate | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:elementary_direction_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:elementary_direction_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | STATUS=OPEN (not proven) |  |
