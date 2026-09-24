@@ -14,7 +14,6 @@ from src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface
     SURFACE_ID as F1_M9_OPTIMIZATION_SURFACE_ID,
 )
 from src.governance.f1_m9_canonical_productive_candidate_evidence_census_v1 import (
-    CAMPAIGN_EXECUTION_BLOCKER,
     OWNER_POLICY_BLOCKER,
     run_f1_m9_canonical_productive_candidate_evidence_census_v1,
 )
@@ -123,7 +122,7 @@ def adjudicate_canonical_f1_m9_productive_candidate_v1(
     if census.new_prospective_campaign_required:
         reason_codes.append("F1_M9_NEW_PROSPECTIVE_SELECTION_CAMPAIGN_REQUIRED")
     if not census.owner_policy_required:
-        reason_codes.append(CAMPAIGN_EXECUTION_BLOCKER)
+        reason_codes.append(census.earliest_blocker)
         reason_codes.append("F1_M9_NO_DECISION_MAKING_EVIDENCE_UNDER_NEW_PREREGISTRATION")
 
     earliest = census.earliest_blocker

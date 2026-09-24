@@ -8,7 +8,7 @@ from src.governance.f1_m9_canonical_productive_candidate_adjudication_v1 import 
     adjudicate_canonical_f1_m9_productive_candidate_v1,
 )
 from src.governance.f1_m9_canonical_productive_candidate_evidence_census_v1 import (
-    CAMPAIGN_EXECUTION_BLOCKER,
+    CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER,
     EVIDENCE_CLASS_COUNTERFACTUAL,
     run_f1_m9_canonical_productive_candidate_evidence_census_v1,
 )
@@ -32,7 +32,7 @@ def test_evidence_census_chain_proven_and_fail_closed() -> None:
     assert census.optimization_ingress_snapshot_tracked is False
     assert census.new_prospective_campaign_required is True
     assert census.owner_policy_required is False
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_BLOCKER
+    assert census.earliest_blocker == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
     assert census.campaign_id == "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f"
 
 
@@ -42,7 +42,7 @@ def test_adjudication_remains_unresolved() -> None:
     assert adj.candidate_id is None
     assert adj.candidate_value is None
     assert adj.explicit_productive_authorization_resolved is False
-    assert CAMPAIGN_EXECUTION_BLOCKER in adj.reason_codes
+    assert CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER in adj.reason_codes
 
 
 def test_preparation_closure_still_passes() -> None:
