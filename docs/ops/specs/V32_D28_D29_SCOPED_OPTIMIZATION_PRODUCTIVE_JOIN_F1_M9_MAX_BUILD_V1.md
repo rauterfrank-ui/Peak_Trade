@@ -40,7 +40,7 @@ First authorized pair (PROVEN_CURRENT M9→M10 lineage on baseline):
 
 | surface_id | productive_target_id |
 | --- | --- |
-| `VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1` | `peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1` |
+| `VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1` | `peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds&#47;v1` |
 
 ## 2. Global boolean adjudication
 
