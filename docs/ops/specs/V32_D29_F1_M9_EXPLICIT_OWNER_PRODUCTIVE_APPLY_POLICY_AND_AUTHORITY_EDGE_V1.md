@@ -47,12 +47,12 @@ This slice **does not** execute productive apply, flip global join, promote, or 
 
 ## 3. Owner Apply input contract
 
-Schema: `f1_m9_owner_apply_authorization_record/v1`  
+Schema: `f1_m9_owner_apply_authorization_record&#47;v1`  
 Module: `src/governance/f1_m9_owner_apply_authorization_record_v1.py`
 
 Bindings (fail-closed): `scoped_join_pair_id`, `registry_digest`, `ingress_digest`,
-`binding_digest`, `owner_authorization_record_digest`, `authorization_id/digest`,
-`configuration_id/digest`, `candidate_parameter_value_digest`, productive target contract digest,
+`binding_digest`, `owner_authorization_record_digest`, `authorization_id&#47;digest`,
+`configuration_id&#47;digest`, `candidate_parameter_value_digest`, productive target contract digest,
 `not_before` / `expires_at`, `authorizer_identity`.
 
 ## 4. Authority edge
