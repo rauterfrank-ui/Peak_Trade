@@ -60,11 +60,12 @@ Review admission ≠ productive authorization. Authorization ≠ apply. Apply �
 
 Full rows: `build_optimization_productive_join_matrix_v1()`.
 
-## 4. Next true blocker
+## 4. Next true blocker (superseded for scoped F1/M9 build by successor WP)
 
-`GLOBAL_OPTIMIZATION_UNIVERSE_JOIN_BOOLEAN_REQUIRES_SCOPED_OWNER_POLICY`
+At adjudication time: `GLOBAL_OPTIMIZATION_UNIVERSE_JOIN_BOOLEAN_REQUIRES_SCOPED_OWNER_POLICY`.
 
-Minimal owner-policy question (decision JSON field `minimal_owner_policy_question`).
+Successor scoped policy (F1/M9):
+`docs/ops/specs/V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1.md`
 
 ## 5. Non-goals
 

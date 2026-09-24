@@ -85,7 +85,7 @@ Layered-L1–L10-Orchestrator ist Productive Decision-SSOT.
 | D25 | `PROVEN_CURRENT` | Scope/switch owners in replay SSOT |
 | D26 | `PROVEN_CURRENT` | Closed via `V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1` (read-only composition) |
 | D27 | `PROVEN_CURRENT` | F1/F2 executors + F5 shadow campaign lifecycle-enforced (#6767–#6771); global closure WP composes proofs |
-| D28–D29 | `OWNER_POLICY_REQUIRED` (join adjudication WP) | Concept intent remains `NAVIGATION_ONLY`; forensic matrix: `V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1` |
+| D28–D29 | F1/M9 scoped join `PROVEN_CURRENT`; D29 promotion `OWNER_POLICY_REQUIRED` | Scoped registry SSOT: `V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1`; global boolean legacy-only |
 
 ## G. Baseline-first sequence (unchanged intent, CURRENT wiring)
 

@@ -1,0 +1,34 @@
+{
+  "schema_version": "v32_d28_d29_scoped_optimization_productive_join_registry/v1",
+  "registry_id": "V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_REGISTRY_V1",
+  "authority_effect": "SCOPED_POLICY_ONLY",
+  "global_optimization_universe_join_boolean_role": "LEGACY_COMPATIBILITY_ONLY_NOT_PRODUCTIVE_AUTHORITY",
+  "entries": [
+    {
+      "scope_pair_id": "F1-M9-VOLATILITY-MAX-AGE-SECONDS",
+      "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+      "productive_target_id": "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+      "authorization_status": "SCOPED_JOIN_AUTHORIZED",
+      "family": "F1_M9",
+      "lineage": {
+        "candidate_producer": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1",
+        "optimizable_surface_owner": "src.experiments.canonical_m9_volatility_numeric_max_age_optimizable_surface_v1",
+        "governance_ingress_owner": "src.governance.optimization_proposal_governance_ingress_v1",
+        "explicit_authorization_owner": "src.governance.explicit_productive_authorization_v1",
+        "governed_configuration_owner": "src.governance.governed_productive_configuration_v1",
+        "authorized_seam_owner": "src.governance.authorized_productive_parameter_seam_v1",
+        "runtime_seam_join_owner": "src.governance.governed_productive_runtime_parameter_seam_join_v1",
+        "productive_consumer": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1"
+      },
+      "evidence_refs": [
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+        "config/governance/m9_volatility_numeric_max_age_optimizable_surface_v1_decision_v1.json",
+        "config/governance/explicit_productive_authorization_v1_decision_v1.json",
+        "config/governance/governed_productive_runtime_parameter_seam_join_v1_decision_v1.json",
+        "tests/governance/test_governed_productive_runtime_parameter_seam_join_v1.py"
+      ],
+      "owner_policy_ref": "config/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_owner_policy_v1_decision_v1.json",
+      "registry_policy_version": "v1"
+    }
+  ]
+}

@@ -2,42 +2,46 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "10f1a289b57cdf4b55efb71c76ac04c1eafaad3f",
+  "base_sha": "9aa0d05eb1d286b6b705f27b78dd730df02d13d5",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "V32 D28/D29 optimization productive join policy adjudication: read-only join matrix + navigation overlay sync; no structured interaction-map source_v1.json change. AUTHORITY=NONE.",
+  "reason": "V32 D28/D29 scoped F1/M9 optimization productive join policy: typed registry/resolver + navigation sync; no structured interaction-map source_v1.json change. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1_decision_v1.json",
+    "config/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_owner_policy_v1_decision_v1.json",
+    "config/governance/v32_d28_d29_scoped_optimization_productive_join_registry_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
     "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
     "docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md",
-    "docs/ops/specs/V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1.md",
+    "docs/ops/specs/V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py",
-    "tests/governance/test_v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py"
+    "src/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_closure_v1.py",
+    "src/governance/v32_d28_d29_scoped_optimization_productive_join_policy_v1.py",
+    "tests/governance/test_v32_d28_d29_scoped_optimization_productive_join_f1_m9_max_build_v1.py"
   ],
-  "changed_paths_sha256": "afac641fab8da6a58c04185e107e533bd3719e5eb8e968ba981c561fbeac49de",
+  "changed_paths_sha256": "db0cb4969ffb9507dd008442ac5672ac9abf593b38901b04754ace8fa322aff4",
   "evidence_refs": [
-    "config/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1_decision_v1.json",
-    "docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md"
+    "config/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_owner_policy_v1_decision_v1.json",
+    "docs/ops/specs/V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1.md"
   ],
   "covered_candidate_paths": [
-    "config/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1_decision_v1.json",
+    "config/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_owner_policy_v1_decision_v1.json",
+    "config/governance/v32_d28_d29_scoped_optimization_productive_join_registry_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md",
     "docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md",
     "docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md",
-    "docs/ops/specs/V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1.md",
+    "docs/ops/specs/V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py",
-    "tests/governance/test_v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py"
+    "src/governance/v32_d28_d29_scoped_optimization_productive_join_f1_m9_closure_v1.py",
+    "src/governance/v32_d28_d29_scoped_optimization_productive_join_policy_v1.py",
+    "tests/governance/test_v32_d28_d29_scoped_optimization_productive_join_f1_m9_max_build_v1.py"
   ]
 }
