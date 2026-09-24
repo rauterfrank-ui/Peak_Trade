@@ -32,7 +32,7 @@ def test_evidence_census_chain_proven_and_fail_closed() -> None:
     assert census.optimization_ingress_snapshot_tracked is False
     assert census.new_prospective_campaign_required is True
     assert census.owner_policy_required is False
-    assert census.earliest_blocker == ("F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO")
+    assert census.earliest_blocker == "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY"
     assert census.campaign_id == "cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f"
 
 
