@@ -61,7 +61,7 @@ Invariants preserved:
 
 ## 3. Per-ingress Owner inputs (explicit authorization)
 
-Owner record schema: `explicit_productive_authorization_owner_input/v1` — fields enumerated in
+Owner record schema: `explicit_productive_authorization_owner_input&#47;v1` — fields enumerated in
 `OWNER_AUTHORIZATION_RECORD_FIELD_KEYS` on `explicit_productive_authorization_v1`.
 
 Admission alone never authorizes. Authorization identity is deterministic per ingress:
@@ -71,7 +71,7 @@ Expiry/revocation semantics: **OPEN** (not defined on CURRENT main).
 
 ## 4. Per-ingress binding dimensions
 
-Typed binding (`f1_m9_per_ingress_productive_authorization_binding/v1`) seals:
+Typed binding (`f1_m9_per_ingress_productive_authorization_binding&#47;v1`) seals:
 
 `scoped_join_pair_id`, `surface_id`, `productive_target_id`, `ingress_digest`, candidate/evidence
 digests, owner authorization digests, risk refs, `registry_digest`, `binding_digest`.
