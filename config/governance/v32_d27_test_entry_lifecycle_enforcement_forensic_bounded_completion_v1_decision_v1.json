@@ -1,0 +1,26 @@
+{
+  "artifact_class": "V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_DECISION_V1",
+  "workpackage_id": "V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_V1",
+  "bound_origin_main_sha": "2c7575c011e4a5c8bf5f11ce5e930a94c731d936",
+  "predecessor_workpackage_id": "V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1",
+  "predecessor_pr": 6766,
+  "normative_spec": "docs/ops/specs/V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_V1.md",
+  "owner_module": "src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py",
+  "pre_test_gate_owner": "src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1.ResearchTestEntryGateV1",
+  "d26_native_classifier": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_canonical_trading_decision_evidence_v1",
+  "d27_f1_f2_lifecycle_enforcement_implemented": true,
+  "d27_status": "PARTIAL_CURRENT",
+  "d27_scope": "TEST_READY_F1_F2_PARAMETER_INFLUENCE_ENTRY",
+  "enforced_family_gate_ids": ["F1", "F2"],
+  "enforced_executor_owners": [
+    "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.runner_v1.run_max_age_parameter_research_execution_v1",
+    "src.experiments.canonical_f2_research_backtest_cost_grid_research_execution_v1.run_f2_research_backtest_cost_grid_offline_v1"
+  ],
+  "earliest_remaining_d27_gap": "f5_shadow_test_entry_gate_not_lifecycle_enforced",
+  "implementation_mode": "COMPOSE_EXISTING",
+  "trading_decision_authority_changed": false,
+  "new_authority_created": false,
+  "optimization_promotion_authority": "NONE",
+  "external_effect_authorized": false,
+  "owner_decision_required": false
+}

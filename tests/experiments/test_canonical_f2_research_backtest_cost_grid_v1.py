@@ -43,6 +43,9 @@ from src.experiments.canonical_optimizable_envelope_v1 import (
 from src.research.linear_evidence.parameter_sensitivity_productive_contract_v0 import (
     ALLOWED_CALIBRATABLE_PARAMETERS,
 )
+from tests.governance.d27_native_baseline_fixtures_v1 import (
+    build_fixture_native_baseline_evidence_v1,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 F2_MODULE = (
@@ -89,8 +92,13 @@ def test_f1_f2_authorization_isolation() -> None:
 
 
 def test_f2_research_execution_grid_and_baseline() -> None:
-    first = run_f2_research_backtest_cost_grid_offline_v1()
-    second = run_f2_research_backtest_cost_grid_offline_v1()
+    native_baseline = build_fixture_native_baseline_evidence_v1()
+    first = run_f2_research_backtest_cost_grid_offline_v1(
+        native_baseline_evidence_v1=native_baseline,
+    )
+    second = run_f2_research_backtest_cost_grid_offline_v1(
+        native_baseline_evidence_v1=native_baseline,
+    )
     assert first["execution_digest"] == second["execution_digest"]
     assert first["combination_count"] == 9
     assert first["grid_id"] == GRID_ID

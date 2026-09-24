@@ -12,6 +12,7 @@ from src.governance.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1
     CURRENT_PRODUCTIVE_ENTRYPOINT,
     DECISION_CONFIG,
     EARLIEST_TRUE_REMAINING_GAP,
+    EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
     INTEGRATED_REPLAY_CURRENT_ROLE,
     LAYERED_CORE_CURRENT_ROLE,
     NEW_BASELINE_GATE_RUNTIME_AUTHORITY,
@@ -77,6 +78,8 @@ def test_d24_d25_d26_proven_d27_partial() -> None:
     assert by_id["D26"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert by_id["D26"].earliest_missing_edge is None
     assert by_id["D27"].verdict == AdjudicationVerdict.PARTIAL_CURRENT
+    assert by_id["D27"].earliest_missing_edge == EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+    assert by_id["REQ-BL-SEQ-03"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert earliest_missing_edge_v1(rows) == by_id["D27"].earliest_missing_edge
 
 
@@ -85,7 +88,10 @@ def test_earliest_gap_not_cutover_related() -> None:
     edge = earliest_missing_edge_v1(rows)
     assert edge is not None
     assert "cutover" not in edge.lower()
-    assert edge == EARLIEST_TRUE_REMAINING_GAP or "lifecycle" in edge or "test_entry" in edge
+    assert edge in (
+        EARLIEST_TRUE_REMAINING_GAP,
+        EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
+    ) or "lifecycle" in edge or "test_entry" in edge
 
 
 def test_replay_ssot_and_productive_entrypoint_unchanged() -> None:

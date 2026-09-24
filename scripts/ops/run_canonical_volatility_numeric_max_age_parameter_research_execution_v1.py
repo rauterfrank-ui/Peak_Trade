@@ -50,10 +50,20 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Optional explicit repository SHA binding",
     )
+    parser.add_argument(
+        "--native-baseline-admission-json",
+        type=Path,
+        required=True,
+        help="Path to D26 native baseline evidence JSON (required for D27 test-entry admission)",
+    )
     args = parser.parse_args(argv)
 
+    native_baseline = json.loads(
+        args.native_baseline_admission_json.read_text(encoding="utf-8")
+    )
     result = run_max_age_parameter_research_execution_v1(
         repo_root=args.repo_root.resolve(),
+        native_baseline_evidence_v1=native_baseline,
         ledger_path=None if args.ledger_path is None else args.ledger_path.resolve(),
         output_root=None if args.output_root is None else args.output_root.resolve(),
         repository_sha=args.repository_sha,

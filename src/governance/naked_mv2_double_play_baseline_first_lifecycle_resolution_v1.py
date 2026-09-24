@@ -28,6 +28,10 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
     P5_AUTHORITY_CUTOVER_AUTHORIZED,
     PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
 )
+from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
+    EARLIEST_GAP_AFTER_F1_F2_ENFORCED,
+    prove_d27_f1_f2_test_entry_lifecycle_enforcement_v1,
+)
 from src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1 import (
     prove_d26_platform_unified_baseline_evidence_v1,
 )
@@ -94,6 +98,7 @@ EARLIEST_TRUE_REMAINING_GAP_D26: Final[str] = (
     "platform_unified_native_vs_candidate_baseline_evidence_schema"
 )
 EARLIEST_TRUE_REMAINING_GAP: Final[str] = "test_entry_gate_defined_not_lifecycle_enforced_globally"
+EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2: Final[str] = EARLIEST_GAP_AFTER_F1_F2_ENFORCED
 
 NAKED_BASELINE_OWNER: Final[str] = (
     "governance.naked_mv2_double_play_baseline_first_lifecycle_resolution_v1"
@@ -160,7 +165,13 @@ def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Map
     learning = _load_json(root, LEARNING_CLOSED_LOOP_DECISION_CONFIG)
     layer_evidence_present = (root / LAYER_SEPARATION_EVIDENCE_PATH).is_file()
     d26_proven = prove_d26_platform_unified_baseline_evidence_v1(repo_root=root)
-    earliest_gap = EARLIEST_TRUE_REMAINING_GAP if d26_proven else EARLIEST_TRUE_REMAINING_GAP_D26
+    d27_f1_f2 = prove_d27_f1_f2_test_entry_lifecycle_enforcement_v1(repo_root=root)
+    if not d26_proven:
+        earliest_gap = EARLIEST_TRUE_REMAINING_GAP_D26
+    elif d27_f1_f2:
+        earliest_gap = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+    else:
+        earliest_gap = EARLIEST_TRUE_REMAINING_GAP
 
     return MappingProxyType(
         {
@@ -194,6 +205,7 @@ def composite_baseline_first_binding_v1(*, repo_root: Path | None = None) -> Map
             "pre_test_decision_workpackage": pre_test.get("workpackage_id"),
             "external_effect_authorized": False,
             "d26_platform_unified_baseline_evidence_proven": d26_proven,
+            "d27_f1_f2_test_entry_lifecycle_enforcement_proven": d27_f1_f2,
             "earliest_true_remaining_gap": earliest_gap,
         }
     )
@@ -291,22 +303,63 @@ def adjudicate_v32_baseline_first_requirements_v1(
             F1_BASELINE_CANDIDATE_OWNER,
         )
 
+    d27_f1_f2 = prove_d27_f1_f2_test_entry_lifecycle_enforcement_v1(repo_root=root)
     d27_verdict = AdjudicationVerdict.PARTIAL_CURRENT
+    d27_wiring = (
+        "src/experiments/canonical_optimization_surface_families_pre_test_preparation_v1.py",
+    )
     if not pre_test_ok:
         d27_missing = "pre_test_predecessor_chain_not_proven"
+        d27_notes = "Research phases after baseline: governance predecessor incomplete."
+    elif d27_f1_f2:
+        d27_missing = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        d27_notes = (
+            "F1/F2 TEST_READY executors enforce pre-test TEST_ENTRY_GATE plus D26 native "
+            "baseline admission at research entry; F5 shadow families not lifecycle-wired."
+        )
+        d27_wiring = d27_wiring + (
+            "src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py",
+            (
+                "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1."
+                "runner_v1.run_max_age_parameter_research_execution_v1"
+            ),
+            "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
+        )
     else:
         d27_missing = "test_entry_gate_defined_not_lifecycle_enforced_globally"
+        d27_notes = (
+            "Research phases after baseline: governance predecessor + F1 counterfactual only."
+        )
+
+    seq_research_verdict = AdjudicationVerdict.UNKNOWN
+    if not pre_test_ok:
+        seq_research_verdict = AdjudicationVerdict.UNKNOWN
+    elif d27_f1_f2:
+        seq_research_verdict = AdjudicationVerdict.PROVEN_CURRENT
+    else:
+        seq_research_verdict = AdjudicationVerdict.PARTIAL_CURRENT
 
     seq_research_after_baseline = RequirementAdjudicationV1(
         requirement_id="REQ-BL-SEQ-03",
-        verdict=AdjudicationVerdict.PARTIAL_CURRENT if pre_test_ok else AdjudicationVerdict.UNKNOWN,
-        earliest_missing_edge=d27_missing,
+        verdict=seq_research_verdict,
+        earliest_missing_edge=None
+        if seq_research_verdict == AdjudicationVerdict.PROVEN_CURRENT
+        else d27_missing,
         authority_evidence=auth_evidence,
         runtime_wiring_evidence=(
             "src/experiments/canonical_optimization_surface_families_pre_test_preparation_v1.py",
             F1_BASELINE_CANDIDATE_OWNER,
+        )
+        + (
+            ("src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py",)
+            if d27_f1_f2
+            else ()
         ),
-        notes="F1 counterfactual baseline id exists; global test-phase gate not runtime-enforced.",
+        notes=(
+            "F1/F2 parameter research requires D26 native baseline + matrix test-entry gate."
+            if d27_f1_f2
+            else "F1 counterfactual baseline id exists; global test-phase gate not runtime-enforced."
+        ),
     )
 
     seq_governed_return = RequirementAdjudicationV1(
@@ -373,11 +426,17 @@ def adjudicate_v32_baseline_first_requirements_v1(
             requirement_id="D27",
             verdict=d27_verdict,
             earliest_missing_edge=d27_missing,
-            authority_evidence=auth_evidence,
-            runtime_wiring_evidence=(
-                "src/experiments/canonical_optimization_surface_families_pre_test_preparation_v1.py",
+            authority_evidence=auth_evidence
+            + (
+                (
+                    "config/governance/"
+                    "v32_d27_test_entry_lifecycle_enforcement_forensic_bounded_completion_v1_decision_v1.json",
+                )
+                if d27_f1_f2
+                else ()
             ),
-            notes="Research phases after baseline: governance predecessor + F1 counterfactual only.",
+            runtime_wiring_evidence=d27_wiring,
+            notes=d27_notes,
         ),
         seq_research_after_baseline,
         seq_governed_return,
@@ -424,6 +483,7 @@ __all__ = [
     "CURRENT_PRODUCTIVE_ENTRYPOINT",
     "DECISION_CONFIG",
     "EARLIEST_TRUE_REMAINING_GAP",
+    "EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2",
     "EARLIEST_TRUE_REMAINING_GAP_D26",
     "F1_BASELINE_CANDIDATE_OWNER",
     "INTEGRATED_REPLAY_CURRENT_ROLE",

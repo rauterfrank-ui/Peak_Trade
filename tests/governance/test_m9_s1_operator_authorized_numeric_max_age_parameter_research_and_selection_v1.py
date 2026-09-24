@@ -25,6 +25,9 @@ from src.trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_
     NUMERIC_MAX_AGE_DECIDED as POLICY_DECIDED,
     resolve_canonical_volatility_max_age_policy_for_evaluation_v1,
 )
+from tests.governance.d27_native_baseline_fixtures_v1 import (
+    build_fixture_native_baseline_evidence_v1,
+)
 from tests.research.test_canonical_volatility_numeric_max_age_parameter_research_execution_v1 import (
     _fixture_records,
 )
@@ -76,11 +79,13 @@ def test_authorized_operator_research_input() -> None:
 
 def test_full_pipeline_selection_unresolved_and_lineage(tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[2]
+    native_baseline = build_fixture_native_baseline_evidence_v1()
     out = tmp_path / "m9_s1_out"
     package1 = run_m9_s1_operator_authorized_parameter_research_and_selection_v1(
         repo_root=repo_root,
         owner_authorization_input=_owner_input(),
         output_root=out,
+        native_baseline_evidence_v1=native_baseline,
         records=_fixture_records(),
         repository_sha=BASE_SHA,
         created_at_utc="2026-09-20T12:00:00Z",
@@ -89,6 +94,7 @@ def test_full_pipeline_selection_unresolved_and_lineage(tmp_path: Path) -> None:
         repo_root=repo_root,
         owner_authorization_input=_owner_input(),
         output_root=tmp_path / "m9_s1_out_replay",
+        native_baseline_evidence_v1=native_baseline,
         records=_fixture_records(),
         repository_sha=BASE_SHA,
         created_at_utc="2026-09-20T12:00:00Z",
@@ -129,6 +135,7 @@ def test_denied_pipeline_writes_failure_evidence(tmp_path: Path) -> None:
         repo_root=repo_root,
         owner_authorization_input=None,
         output_root=out,
+        native_baseline_evidence_v1=build_fixture_native_baseline_evidence_v1(),
         records=_fixture_records(),
         repository_sha=BASE_SHA,
     )
