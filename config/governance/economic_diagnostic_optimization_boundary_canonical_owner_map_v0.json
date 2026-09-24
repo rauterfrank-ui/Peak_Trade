@@ -460,6 +460,14 @@
         "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json"
       ]
     },
+    "CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_LATE_AGE_CARRIER_V1": {
+      "note": "R1 retained-estimate late-age carrier: S01 write-once durable carrier, S02 restore, LATE_AGE_HOLD and prereg age-grid coverage semantics only. No mark-history/regime/trading authority, no threshold selection, enforcement, promotion, network, or session execution.",
+      "path_prefixes": [
+        "src/research/canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1/",
+        "tests/research/test_canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.py",
+        "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_LATE_AGE_CARRIER_V1.md"
+      ]
+    },
     "MASTER_V2_CANONICAL_VOLATILITY_HOT_PATH_CONTRACT_CLOSURE_V1": {
       "note": "Closes typed volatility contract + single productive producer + Double-Play hot-path wiring; quarantines competing bridge ddof=1\u00d7sqrt(n) producer and naked float productive bindings; numeric max-age remains unresolved/disabled; no parameter selection; no Alpha/CHOP/State/Cadence redefinition; no promotion/runtime/orders.",
       "path_prefixes": [
