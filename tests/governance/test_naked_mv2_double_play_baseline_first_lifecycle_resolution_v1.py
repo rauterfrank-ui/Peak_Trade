@@ -88,10 +88,15 @@ def test_earliest_gap_not_cutover_related() -> None:
     edge = earliest_missing_edge_v1(rows)
     assert edge is not None
     assert "cutover" not in edge.lower()
-    assert edge in (
-        EARLIEST_TRUE_REMAINING_GAP,
-        EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
-    ) or "lifecycle" in edge or "test_entry" in edge
+    assert (
+        edge
+        in (
+            EARLIEST_TRUE_REMAINING_GAP,
+            EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
+        )
+        or "lifecycle" in edge
+        or "test_entry" in edge
+    )
 
 
 def test_replay_ssot_and_productive_entrypoint_unchanged() -> None:

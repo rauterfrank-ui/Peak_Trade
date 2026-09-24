@@ -60,9 +60,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     owner_input = load_committed_owner_m9_s1_research_authorization_input_v1()
-    native_baseline = json.loads(
-        args.native_baseline_admission_json.read_text(encoding="utf-8")
-    )
+    native_baseline = json.loads(args.native_baseline_admission_json.read_text(encoding="utf-8"))
     result = run_m9_s1_operator_authorized_parameter_research_and_selection_v1(
         repo_root=args.repo_root.resolve(),
         owner_authorization_input=owner_input,

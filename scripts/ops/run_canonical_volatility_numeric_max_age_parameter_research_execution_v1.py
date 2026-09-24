@@ -58,9 +58,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    native_baseline = json.loads(
-        args.native_baseline_admission_json.read_text(encoding="utf-8")
-    )
+    native_baseline = json.loads(args.native_baseline_admission_json.read_text(encoding="utf-8"))
     result = run_max_age_parameter_research_execution_v1(
         repo_root=args.repo_root.resolve(),
         native_baseline_evidence_v1=native_baseline,

@@ -7453,6 +7453,25 @@ entities:
       Read-only D26 classification/composition over integrated replay, F1 research, DDO counterfactual,
       and optimization experiment evidence. No trading authority or productive join. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d27_research_test_entry_lifecycle_enforcement_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 D27 research test-entry lifecycle enforcement v1 (F1/F2 bounded)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_V1
+    source_paths:
+      - src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py
+    evidence_sources:
+      - src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py
+      - tests/governance/test_d27_research_test_entry_lifecycle_enforcement_v1.py
+      - docs/ops/specs/V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_V1.md
+      - config/governance/v32_d27_test_entry_lifecycle_enforcement_forensic_bounded_completion_v1_decision_v1.json
+    notes: >-
+      Fail-closed compose pre-test TEST_ENTRY_GATE with D26 native baseline admission at F1/F2 research
+      executor entry. No promotion, productive apply, or new trading authority. F5 shadow gap remains.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
     kind: RUNTIME_COMPONENT
     name: Optimization proposal governance ingress v1 (M10)

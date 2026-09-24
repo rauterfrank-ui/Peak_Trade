@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,11 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:d27_research_test_entry_lifecycle_enforcement_v1` |
+| `RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1` |
+| `RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1` |
 | `RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1` |
+| `RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 D26 platform-unified native vs candidate baseline evidence v1: read-only classification/composition over integrated replay and F1/DDO/optimization evidence. No trading authority or productive join. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- V3.2 D27 test-entry lifecycle enforcement v1: bounded F1/F2 fail-closed admission composing pre-test TEST_ENTRY_GATE with D26 native baseline evidence. Atlas catalog refresh only. No trading authority or external effect. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1
+- modified_by=V32_D27_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_FORENSIC_BOUNDED_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
