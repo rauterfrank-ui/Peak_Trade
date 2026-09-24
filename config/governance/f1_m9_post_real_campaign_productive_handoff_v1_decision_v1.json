@@ -18,5 +18,6 @@
   "trading_decision_effect_authorized": false,
   "execution_permission_effect_authorized": false,
   "next_true_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO",
+  "successor_closure_decision": "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json",
   "stale_tracked_state_can_override_durable_runtime_truth": false
 }

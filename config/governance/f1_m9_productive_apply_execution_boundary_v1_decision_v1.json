@@ -23,6 +23,7 @@
   "closed_execution_blocker": "F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO",
   "next_true_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO",
   "next_true_blocker_class": "THRESHOLD_ENFORCEMENT_OWNER_GO_REQUIRED",
+  "successor_closure_decision": "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json",
   "real_productive_apply_binding_mode": "OWNER_APPLY_RECORD_DIGEST_REQUIRED",
   "authorized_owner_apply_record_digest": "c0eb6c20c535fe839646254a6bfaaddff9b28bfb16799801cbca91b87c2bade3",
   "real_productive_apply_authorized": true,
