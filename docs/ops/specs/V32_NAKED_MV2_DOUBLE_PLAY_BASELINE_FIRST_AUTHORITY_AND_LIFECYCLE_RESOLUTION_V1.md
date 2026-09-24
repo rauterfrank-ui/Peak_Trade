@@ -64,9 +64,9 @@ F1 counterfactual research baseline defined, optimization productive join blocke
 | **D24** | `PROVEN_CURRENT` | Productive path → integrated replay; no optimization join |
 | **D25** | `PROVEN_CURRENT` | Scope/switch owners in replay SSOT; cutover not required |
 | **D26** | `PROVEN_CURRENT` | Platform-unified native vs candidate baseline evidence (D26 closure WP) |
-| **D27** | `PARTIAL_CURRENT` | TEST_ENTRY_GATE defined; not globally lifecycle-enforced |
+| **D27** | `PROVEN_CURRENT` | F1/F2 + F5-FRESH/SURV/CAP test-entry lifecycle enforced at CURRENT seams |
 
-`earliest_true_remaining_gap` = D27 lifecycle-enforced test gate (`test_entry_gate_defined_not_lifecycle_enforced_globally`).
+`earliest_true_remaining_gap` = none on CURRENT main; next owner-policy blocker documented in post-D27 global closure WP (D28–D29 / optimization productive join).
 
 Concept PDF v3/v3.2 wording alignment (separate docs WP, no runtime effect):
 `docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md`

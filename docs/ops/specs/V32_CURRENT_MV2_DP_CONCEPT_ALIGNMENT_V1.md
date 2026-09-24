@@ -113,7 +113,7 @@ D24/D25 adjudication (unchanged from #6764):
 | D24 | `PROVEN_CURRENT` |
 | D25 | `PROVEN_CURRENT` |
 | D26 | `PROVEN_CURRENT` |
-| D27 | `PARTIAL_CURRENT` |
+| D27 | `PROVEN_CURRENT` |
 
 ## 5. Phase C — historical fidelity
 
@@ -130,7 +130,8 @@ D26 is closed in:
 ```text
 D26_STATUS=PROVEN_CURRENT
 D26_IMPLEMENTED=true
-EARLIEST_TRUE_REMAINING_TECHNICAL_GAP=test_entry_gate_defined_not_lifecycle_enforced_globally
+EARLIEST_TRUE_REMAINING_TECHNICAL_GAP=null
+NEXT_TRUE_BLOCKER=D28_D29_PROMOTION_AND_OPTIMIZATION_PRODUCTIVE_JOIN_REQUIRE_OWNER_POLICY
 ```
 
 This alignment WP does not implement D26; it references the D26 closure spec and updated adjudication.
