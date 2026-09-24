@@ -37,7 +37,7 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
     evaluate_failed_s01_campaign_governance_v1,
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.active_binding_v1 import (
-    load_active_campaign_binding_v1,
+    build_active_campaign_binding_v1,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -220,16 +220,29 @@ def test_forensic_global_coverage_remains_available(mixed_ledger: tuple[Path, Pa
 
 
 def test_d01_retry_and_s02_remain_forbidden() -> None:
-    binding = load_active_campaign_binding_v1(repo_root=ROOT)
+    binding = build_active_campaign_binding_v1(
+        repository_sha="2ceecc994b86eaf548ec157d73574118e4a91bab"
+    )
+    d01_campaign = "cv_maxage_productive_evidence_campaign_v1_d01e77c281c7a34d"
+    manifest_rel = (
+        "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/"
+        f"campaigns/{d01_campaign}/sessions/session_01_manifest.json"
+    )
+    evidence_root = ROOT
+    for base in [ROOT, *ROOT.parents]:
+        if (base / manifest_rel).is_file():
+            evidence_root = base
+            break
+    else:
+        pytest.skip("d01 forensic session manifest absent (local durable evidence only)")
     auth = (
-        ROOT
+        evidence_root
         / "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
-        / "campaigns/cv_maxage_productive_evidence_campaign_v1_d01e77c281c7a34d"
-        / "authorization/campaign_authorization.json"
+        / f"campaigns/{d01_campaign}/authorization/campaign_authorization.json"
     )
     gov = evaluate_failed_s01_campaign_governance_v1(
         binding=binding,
-        evidence_root=ROOT,
+        evidence_root=evidence_root,
         authorization_artifact_path=auth,
         authorization_id="cv_maxage_campaign_auth_v1_fdbc845e13f1abfc",
     )

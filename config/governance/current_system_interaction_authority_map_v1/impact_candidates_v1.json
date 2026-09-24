@@ -116,6 +116,7 @@
     "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py",
     "tests/governance/test_platform_unified_native_vs_candidate_baseline_evidence_v1.py",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/generated/",

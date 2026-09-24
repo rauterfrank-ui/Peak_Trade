@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.active_binding_v1 import (
+    build_active_campaign_binding_v1,
     load_active_campaign_binding_v1,
 )
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.failed_s01_session_recovery_governance_v1 import (
@@ -23,19 +24,41 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
 )
 
 ROOT = Path(__file__).resolve().parents[2]
+# Closed failed-S01 campaign (forensic); not the sole ACTIVE binding after rematerialization.
+D01_MATERIALIZATION_SHA = "2ceecc994b86eaf548ec157d73574118e4a91bab"
+D01_CAMPAIGN_ID = "cv_maxage_productive_evidence_campaign_v1_d01e77c281c7a34d"
+D01_S01_MANIFEST_REL = (
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/"
+    f"campaigns/{D01_CAMPAIGN_ID}/sessions/session_01_manifest.json"
+)
+
+
+def _d01_forensic_binding():
+    return build_active_campaign_binding_v1(repository_sha=D01_MATERIALIZATION_SHA)
+
+
+def _d01_forensic_evidence_root() -> Path:
+    for base in [ROOT, *ROOT.parents]:
+        if (base / D01_S01_MANIFEST_REL).is_file():
+            return base
+    pytest.skip("d01 forensic session manifest absent (local durable evidence only)")
+
+
+def _d01_forensic_auth_path(evidence_root: Path) -> Path:
+    return (
+        evidence_root
+        / "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
+        / f"campaigns/{D01_CAMPAIGN_ID}/authorization/campaign_authorization.json"
+    )
 
 
 def test_d01_failed_s01_state_detected_from_runtime_evidence() -> None:
-    binding = load_active_campaign_binding_v1(repo_root=ROOT)
-    auth = (
-        ROOT
-        / "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
-        / "campaigns/cv_maxage_productive_evidence_campaign_v1_d01e77c281c7a34d"
-        / "authorization/campaign_authorization.json"
-    )
+    binding = _d01_forensic_binding()
+    evidence_root = _d01_forensic_evidence_root()
+    auth = _d01_forensic_auth_path(evidence_root)
     gov = evaluate_failed_s01_campaign_governance_v1(
         binding=binding,
-        evidence_root=ROOT,
+        evidence_root=evidence_root,
         authorization_artifact_path=auth,
         authorization_id="cv_maxage_campaign_auth_v1_fdbc845e13f1abfc",
     )
@@ -51,16 +74,12 @@ def test_d01_failed_s01_state_detected_from_runtime_evidence() -> None:
 
 
 def test_failed_s01_blocks_s01_and_s02_preflight_gate() -> None:
-    binding = load_active_campaign_binding_v1(repo_root=ROOT)
-    auth = (
-        ROOT
-        / "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1"
-        / "campaigns/cv_maxage_productive_evidence_campaign_v1_d01e77c281c7a34d"
-        / "authorization/campaign_authorization.json"
-    )
+    binding = _d01_forensic_binding()
+    evidence_root = _d01_forensic_evidence_root()
+    auth = _d01_forensic_auth_path(evidence_root)
     gov = evaluate_failed_s01_campaign_governance_v1(
         binding=binding,
-        evidence_root=ROOT,
+        evidence_root=evidence_root,
         authorization_artifact_path=auth,
         authorization_id="cv_maxage_campaign_auth_v1_fdbc845e13f1abfc",
     )

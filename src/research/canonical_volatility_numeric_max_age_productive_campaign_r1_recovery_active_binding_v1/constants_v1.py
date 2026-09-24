@@ -70,4 +70,4 @@ SPEC_REL_PATH = (
 )
 
 # Last known materialization provenance (bootstrap/tests only). Runtime SSOT is ACTIVE binding file.
-R1_MATERIALIZED_REPOSITORY_SHA = "2ceecc994b86eaf548ec157d73574118e4a91bab"
+R1_MATERIALIZED_REPOSITORY_SHA = "bc560f1d62746f296ff3b4cbb173314b3ab72858"
