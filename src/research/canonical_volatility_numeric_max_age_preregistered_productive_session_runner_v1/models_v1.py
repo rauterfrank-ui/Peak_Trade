@@ -51,6 +51,7 @@ class PreflightResultV1:
     quarantine_ledger_path: str
     typed_volatility_persistence_path: str
     session_manifest_path: str
+    session_01_id: str
     session_02_id: str
     blockers: tuple[str, ...] = ()
 
@@ -74,6 +75,7 @@ class PreflightResultV1:
             "quarantine_ledger_path": self.quarantine_ledger_path,
             "typed_volatility_persistence_path": self.typed_volatility_persistence_path,
             "session_manifest_path": self.session_manifest_path,
+            "session_01_id": self.session_01_id,
             "session_02_id": self.session_02_id,
             "blockers": list(self.blockers),
         }

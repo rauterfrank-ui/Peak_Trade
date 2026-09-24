@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- R1 sole ACTIVE campaign binding and session preregistration rebind to current origin/main; R1_MATERIALIZED_REPOSITORY_SHA identity mirror only. No network, evidence, threshold, or trading authority. Catalog/provenance refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- R1 materialization provenance vs checkout SHA split; runtime content-lock at binding.repository_sha; HEAD==origin/main without HEAD==materialization. No network, evidence, threshold, or trading authority. Catalog/provenance refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=F1_M9_R1_CURRENT_CAMPAIGN_BINDING_REBIND_V1
+- modified_by=R1_REPOSITORY_SHA_SELF_INVALIDATION_ARCHITECTURE_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

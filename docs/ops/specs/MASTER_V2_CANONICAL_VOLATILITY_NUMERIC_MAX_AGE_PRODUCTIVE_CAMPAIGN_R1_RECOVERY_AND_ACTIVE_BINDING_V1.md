@@ -39,6 +39,16 @@ consume only that ACTIVE binding. Unknown, missing, or multiple ACTIVE
 bindings fail closed. Abandoned campaign/session IDs cannot be reactivated
 or completed.
 
+## Materialization provenance vs checkout SHA
+
+`repository_sha` in the ACTIVE binding and R1 preregistration is **immutable
+materialization provenance** for deterministic campaign/session identity.
+It is **not** required to equal CURRENT `HEAD` after merge.
+
+Runtime checkout gates require `HEAD == origin/main` and on-disk binding/prereg
+content locked to the canonical builder at `binding.repository_sha`.
+Campaign authorization artifacts bind to materialization provenance, not checkout SHA.
+
 ## Preserved semantics
 
 - S01 = fresh early estimate producer under the new campaign

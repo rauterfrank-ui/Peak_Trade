@@ -14,13 +14,8 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     build_campaign_authorization_artifact_v1,
     write_campaign_authorization_artifact_v1,
 )
-from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID_V1 as BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST_V1 as BOUND_PREREGISTRATION_DIGEST,
-    BOUND_SESSION_IDS_V1 as BOUND_SESSION_IDS,
-)
-from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
-    R1_MATERIALIZED_REPOSITORY_SHA,
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.active_binding_v1 import (
+    load_active_campaign_binding_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.ledgers_v1 import (
     load_consumption_records_v1,
@@ -59,7 +54,21 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
 )
 
 ROOT = Path(__file__).resolve().parents[2]
-REPO_SHA = R1_MATERIALIZED_REPOSITORY_SHA
+_ACTIVE_BINDING = load_active_campaign_binding_v1(repo_root=ROOT)
+MATERIALIZATION_SHA = _ACTIVE_BINDING.repository_sha
+BOUND_CAMPAIGN_ID = _ACTIVE_BINDING.campaign_id
+BOUND_PREREGISTRATION_DIGEST = _ACTIVE_BINDING.preregistration_digest
+BOUND_SESSION_IDS = _ACTIVE_BINDING.session_ids
+SESSION_01_ID = _ACTIVE_BINDING.session_01_id
+
+
+def _checkout_sha() -> str:
+    import subprocess
+
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(ROOT), text=True).strip()
+
+
+CHECKOUT_SHA = _checkout_sha()
 ISSUED = datetime.now(timezone.utc) - timedelta(minutes=5)
 S1, S2 = BOUND_SESSION_IDS
 
@@ -78,17 +87,18 @@ class FakeMono:
 
 
 def _baseline() -> GitBaselineSnapshotV1:
+    sha = _checkout_sha()
     return GitBaselineSnapshotV1(
         branch="main",
-        head_sha=REPO_SHA,
-        origin_main_sha=REPO_SHA,
+        head_sha=sha,
+        origin_main_sha=sha,
         worktree_allowed_delta_only=True,
     )
 
 
 def _write_auth(tmp_path: Path):
     artifact = build_campaign_authorization_artifact_v1(
-        repository_sha=REPO_SHA,
+        repository_sha=MATERIALIZATION_SHA,
         campaign_id=BOUND_CAMPAIGN_ID,
         session_ids=BOUND_SESSION_IDS,
         preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
@@ -253,7 +263,7 @@ def test_forty_success_then_three_429_evidence(tmp_path: Path) -> None:
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,
@@ -674,7 +684,7 @@ def test_market_data_request_occurred_on_terminal_failure(tmp_path: Path) -> Non
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,
@@ -749,7 +759,7 @@ def test_runner_records_binding_and_pacing_evidence(tmp_path: Path) -> None:
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,

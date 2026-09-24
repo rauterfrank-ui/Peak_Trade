@@ -210,9 +210,9 @@ def run_preregistered_productive_session_v1(
     if http_fetcher is None:
         raise PreregisteredSessionRunnerError("http_fetcher_required_no_silent_real_network")
 
-    if preflight.session_id not in BOUND_SESSION_IDS_V1:
+    active_session_ids = {preflight.session_01_id, preflight.session_02_id}
+    if session_id not in active_session_ids:
         raise PreregisteredSessionRunnerError("session_id_not_bound")
-    # Exact session id — never derive.
     if preflight.session_id != session_id:
         raise PreregisteredSessionRunnerError("session_id_rewritten_forbidden")
 
@@ -244,7 +244,7 @@ def run_preregistered_productive_session_v1(
             authorization_artifact_path=Path(authorization_artifact_path),
             session_id=preflight.session_id,
             evidence_root=evi_root,
-            expected_repository_sha=repository_sha,
+            expected_repository_sha=preflight.repository_sha,
             expected_campaign_id=campaign_id,
             expected_preregistration_digest=preregistration_digest,
             side_effect_probe=consume_probe,
@@ -349,7 +349,7 @@ def run_preregistered_productive_session_v1(
         accumulation_report = run_productive_bridge_accumulation_session_v1(
             session_id=preflight.session_id,
             campaign_id=campaign_id,
-            repository_sha=repository_sha,
+            repository_sha=preflight.repository_sha,
             samples=samples,
             repo_root=root,
             productive_ledger_path=Path(preflight.productive_ledger_path),
@@ -428,7 +428,7 @@ def run_preregistered_productive_session_v1(
         authorization_id=authorization_id,
         authorization_digest=authorization_digest,
         preregistration_digest=preregistration_digest,
-        repository_sha=repository_sha,
+        repository_sha=preflight.repository_sha,
         authorization_consumed=auth_consumed,
         cycles_executed=cycles_executed,
         records_appended=records_appended,

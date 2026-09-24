@@ -201,7 +201,7 @@ def test_12_architecture_guards_no_trading_authority() -> None:
     assert guards["cross_sha_reuse_allowed"] is False
     assert guards["synthetic_s01_allowed"] is False
     assert guards["additional_evidence_reclassification"] is False
-    binding = resolve_active_campaign_binding_for_runtime_v1(repo_root=ROOT, repository_sha=SHA)
+    binding = resolve_active_campaign_binding_for_runtime_v1(repo_root=ROOT)
     assert binding.execution_authorized is False
     assert binding.network_authorized is False
     assert binding.evidence_write_authorized is False
@@ -221,3 +221,16 @@ def test_13_preflight_rejects_tombstone_campaign() -> None:
             authorization_artifact_path=ROOT / "missing_auth.json",
             repository_sha=SHA,
         )
+
+
+def test_14_post_merge_checkout_sha_may_differ_from_materialization_provenance() -> None:
+    import subprocess
+
+    binding = load_active_campaign_binding_v1(repo_root=ROOT)
+    checkout_sha = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=str(ROOT), text=True
+    ).strip()
+    assert checkout_sha
+    assert checkout_sha != binding.repository_sha
+    resolved = resolve_active_campaign_binding_for_runtime_v1(repo_root=ROOT)
+    assert resolved.repository_sha == binding.repository_sha

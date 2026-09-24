@@ -1,31 +1,56 @@
 {
-  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "authority_effect": "NONE",
-  "selector_used_as_map_impact_authority": false,
-  "base_sha": "c47704d4551e15fe8f875bebc6dc7b10e2081c42",
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "F1/M9 R1 CURRENT campaign binding rebind: sole ACTIVE binding and session preregistration at c47704d; R1_MATERIALIZED mirror constant only. No structured source_v1.json change. Atlas catalog/provenance refresh only. AUTHORITY=NONE.",
+  "buckets": {
+    "CANDIDATE": [],
+    "NO_MAP_IMPACT": [],
+    "UNKNOWN": [
+      "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
+      "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+      "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+      "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
+      "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
+      "docs/system_atlas/entities/catalog.yaml",
+      "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+      "docs/system_atlas/provenance/impact_state.yaml",
+      "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/models_v1.py",
+      "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
+      "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
+      "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/compatibility_v1.py",
+      "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
+      "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/gate_v1.py",
+      "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
+      "tests/research/test_canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.py",
+      "tests/research/test_canonical_volatility_numeric_max_age_public_md_rate_limit_hardening_v1.py",
+      "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py"
+    ]
+  },
   "changed_paths": [
     "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py"
+    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/models_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/compatibility_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
+    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/gate_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.py",
+    "tests/research/test_canonical_volatility_numeric_max_age_public_md_rate_limit_hardening_v1.py",
+    "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py"
   ],
-  "changed_paths_sha256": "1bd89b9c13c849df085fce0ba8440612e2d74eb57dc679a23f0c7129bdf31799",
-  "evidence_refs": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md"
+  "changed_paths_sha256": "ca1175c11885ac0d08821af2b3cf564fd776a59e5c80210c86ae11eeb95b783d",
+  "covered_candidate_paths": [],
+  "declarations": [
+    {
+      "bucket": "NO_MAP_IMPACT",
+      "justification": "R1_REPOSITORY_SHA_SELF_INVALIDATION_ARCHITECTURE_REPAIR_V1: bounded research binding/preflight compatibility; no new authority surfaces.",
+      "paths": []
+    }
   ],
-  "covered_candidate_paths": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py"
-  ]
+  "schema_version": "current_system_interaction_authority_map_impact_adjudication_v1"
 }
