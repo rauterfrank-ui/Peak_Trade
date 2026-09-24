@@ -1,0 +1,34 @@
+{
+    "artifact_class": "PDF_V3_3_PRODUCTIVE_CONSUMER_BINDING_REGISTRY_V1",
+    "schema_version": "pdf_v3_3_productive_consumer_binding_registry_v1",
+    "workpackage_id": "META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_V1",
+    "bindings": [
+        {
+            "surface_id": "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+            "parameter_id": "numeric_max_age_seconds",
+            "source_candidate_parameter": "max_age_seconds",
+            "productive_target_id": "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+            "productive_target_version": "m9_volatility_numeric_max_age_numeric_productive_target/v1",
+            "authorized_seam_module": "src/governance/authorized_productive_parameter_seam_v1.py",
+            "authorized_seam_symbol": "bind_authorized_productive_parameter_seam_v1",
+            "current_consumer_module": "src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py",
+            "current_consumer_symbol": "evaluate_bounded_threshold_enforcement_at_mv2_consumer_v1",
+            "trading_decision_consumer_module": "trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1",
+            "trading_decision_consumer_symbol": "evaluate_double_play_runtime_typed_volatility_presence_gate_v1",
+            "lineage_proof_module": "src/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py",
+            "productive_relevance": "PRODUCTIVE_PARAMETER_SURFACE"
+        }
+    ],
+    "non_productive_surfaces": [
+        {
+            "surface_id": "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+            "productive_relevance": "RESEARCH_EVIDENCE_ONLY",
+            "consumer_binding_required": false
+        },
+        {
+            "surface_id": "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1",
+            "productive_relevance": "SHADOW_RESEARCH_ONLY",
+            "consumer_binding_required": false
+        }
+    ]
+}

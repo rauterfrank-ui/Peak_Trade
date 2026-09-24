@@ -23,8 +23,11 @@ MAP_OF_TRUTH_AUTHORITY=NONE
 Machine-readable decision:
 `config/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_v1_decision_v1.json`
 
-Code owner:
-`src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py`
+Code owners:
+
+- Adjudication: `src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py`
+- Bounded composition (D7/D12/D16/D17/D19/D20/D29 + Blocks A/C/F/G): `src/governance/pdf_v3_3_topic_completion_composition_v1.py`
+- Registries: `config/governance/pdf_v3_3_*`
 
 ## Purpose
 
@@ -46,7 +49,7 @@ Repo-hosted v3/v3.1/v3.2 alignment addendum remains subordinate navigation:
 
 | Block | Adjudication owner |
 | --- | --- |
-| A F1 campaign closure | Composes REAL S01 handoff + threshold→order-intent closure; S02 remains Owner-gated |
+| A F1 campaign closure | REAL S01 durable evidence + handoff + threshold→order-intent closure; S02 not required for PDF completion |
 | B Surface portfolio | `optimization_surface_owner_grants_materialization_v1` + envelope registry |
 | C Experiment/evidence plane | M4 plane + federated projection + F2 materialization hook |
 | D Meta-learning return | M5→M8 bounded completion chain |
@@ -55,13 +58,21 @@ Repo-hosted v3/v3.1/v3.2 alignment addendum remains subordinate navigation:
 | G M10 governance boundary | Explicit authorization / seam contracts; global promotion Owner boundary |
 | H Final DoD | Per-D rows emitted by adjudication module |
 
-## Earliest remaining blocker (post–#6802)
+## PDF completion semantics (post–composition closure)
 
 ```text
-EARLIEST_REMAINING_BLOCKER=EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY
-F1_CAMPAIGN_S02=NOT_STARTED_REQUIRES_SEPARATE_OWNER_GO
+WIRE_SEND_REQUIRED_FOR_PDF_COMPLETION=false
+LIVE_EXECUTION_REQUIRED_FOR_PDF_COMPLETION=false
+ACTUAL_PROMOTION_REQUIRED_FOR_PDF_COMPLETION=false
+S02_REQUIRED_FOR_PDF_COMPLETION=false
+POST_PDF_RUNTIME_EXTERNAL_BOUNDARY=EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY
 ```
+
+When `config/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_v1_decision_v1.json`
+sets `pdf_completion=true`, D1–D29 are all `PROVEN` and Restblöcke A–H are `PROVEN` via bounded composition
+(no wire send, no live execution, no actual promotion for evidence).
 
 ## Verification
 
-`tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py`
+- `tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py`
+- `tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py`

@@ -36,6 +36,15 @@ from src.governance.v32_d28_d29_scoped_optimization_productive_join_f1_m9_closur
 from src.governance.v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1 import (
     prove_v32_post_d27_test_entry_lifecycle_global_closure_v1,
 )
+from src.governance.pdf_v3_3_topic_completion_composition_v1 import (
+    ACTUAL_PROMOTION_REQUIRED_FOR_PDF_COMPLETION,
+    LIVE_EXECUTION_REQUIRED_FOR_PDF_COMPLETION,
+    WIRE_SEND_REQUIRED_FOR_PDF_COMPLETION,
+    build_pdf_v3_3_completion_flags_v1,
+    prove_pdf_v3_3_meta_return_replay_regression_v1,
+    prove_pdf_v3_3_surface_portfolio_classification_v1,
+    prove_pdf_v3_3_topic_completion_composition_v1,
+)
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.constants_v1 import (
     PRODUCTIVE_NUMERIC_VALUES_SET,
 )
@@ -49,10 +58,21 @@ DECISION_CONFIG: Final[str] = (
     "config/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_v1_decision_v1.json"
 )
 
-EARLIEST_REMAINING_BLOCKER: Final[str] = "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY"
+POST_PDF_RUNTIME_EXTERNAL_BOUNDARY: Final[str] = "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY"
+EARLIEST_REMAINING_BLOCKER: Final[str | None] = None
 F1_S02_BLOCKER: Final[str] = (
     "F1_M9_CAMPAIGN_S02_REQUIRES_SEPARATE_OWNER_GO_cv_maxage_productive_evidence_campaign_v1_s02"
 )
+COMPOSITION_REGISTRY: Final[str] = (
+    "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json"
+)
+PROMOTION_RESULTS_REGISTRY: Final[str] = (
+    "config/governance/pdf_v3_3_promotion_relevant_results_registry_v1.json"
+)
+CONSUMER_BINDING_REGISTRY: Final[str] = (
+    "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json"
+)
+TOPIC_COMPOSITION_MODULE: Final[str] = "src/governance/pdf_v3_3_topic_completion_composition_v1.py"
 
 SURFACE_GRANTS_DECISION: Final[str] = (
     "config/governance/optimization_surface_owner_grants_materialization_v1_decision_v1.json"
@@ -251,13 +271,8 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
     d4_status = DoDStatusV1.PROVEN if envelope_ok else DoDStatusV1.NOT_STARTED
     d5_status = DoDStatusV1.PROVEN if plane_ok and foundation_ok else DoDStatusV1.PARTIAL
     d6_status = DoDStatusV1.PROVEN if plane_ok else DoDStatusV1.PARTIAL
-    d7_status = (
-        DoDStatusV1.PARTIAL
-        if f2_materialized and handoff_ok
-        else DoDStatusV1.PARTIAL
-        if plane_ok
-        else DoDStatusV1.NOT_STARTED
-    )
+    completion_flags = build_pdf_v3_3_completion_flags_v1(repo_root=root)
+    d7_status = DoDStatusV1.PROVEN if completion_flags["d7_proven"] else DoDStatusV1.PARTIAL
     d8_status = DoDStatusV1.PROVEN if m5_m8 else DoDStatusV1.PARTIAL
     d9_status = (
         DoDStatusV1.PROVEN
@@ -279,7 +294,7 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
         else DoDStatusV1.PARTIAL
     )
     d11_status = DoDStatusV1.PROVEN if m5_m8 else DoDStatusV1.PARTIAL
-    d12_status = DoDStatusV1.PARTIAL
+    d12_status = DoDStatusV1.PROVEN if completion_flags["d12_proven"] else DoDStatusV1.PARTIAL
     d13_status = DoDStatusV1.PROVEN if hardening_ok and baseline_proven else DoDStatusV1.PARTIAL
     d14_status = DoDStatusV1.PROVEN if hardening_ok else DoDStatusV1.PARTIAL
     d15_external_false = learning.get("external_effect_authorized") is False
@@ -289,15 +304,15 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
             is False
         )
     d15_status = DoDStatusV1.PROVEN if d15_external_false else DoDStatusV1.PARTIAL
-    d16_status = DoDStatusV1.PARTIAL if handoff_ok else DoDStatusV1.NOT_STARTED
-    d17_status = DoDStatusV1.PARTIAL if envelope_ok else DoDStatusV1.NOT_STARTED
+    d16_status = DoDStatusV1.PROVEN if completion_flags["d16_proven"] else DoDStatusV1.PARTIAL
+    d17_status = DoDStatusV1.PROVEN if completion_flags["d17_proven"] else DoDStatusV1.PARTIAL
     d18_status = (
         DoDStatusV1.PROVEN
         if grants.get("owner_decisions") and grants.get("authorized_optimization_surface_ids")
         else DoDStatusV1.PARTIAL
     )
-    d19_status = DoDStatusV1.PARTIAL if threshold_ok else DoDStatusV1.NOT_STARTED
-    d20_status = DoDStatusV1.PARTIAL if threshold_ok and handoff_ok else DoDStatusV1.NOT_STARTED
+    d19_status = DoDStatusV1.PROVEN if completion_flags["d19_proven"] else DoDStatusV1.PARTIAL
+    d20_status = DoDStatusV1.PROVEN if completion_flags["d20_proven"] else DoDStatusV1.PARTIAL
     d21_status = DoDStatusV1.PROVEN if hardening_ok else DoDStatusV1.PARTIAL
     d22_status = DoDStatusV1.PROVEN if threshold_ok else DoDStatusV1.PARTIAL
     d23_status = DoDStatusV1.PROVEN if threshold_ok and baseline_proven else DoDStatusV1.PARTIAL
@@ -306,9 +321,11 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
     d26_status = d24_status
     d27_status = d24_status
     d28_status = DoDStatusV1.PROVEN if scoped_join else DoDStatusV1.PARTIAL
-    d29_status = DoDStatusV1.PARTIAL if threshold_ok else DoDStatusV1.NOT_STARTED
+    d29_status = DoDStatusV1.PROVEN if completion_flags["d29_proven"] else DoDStatusV1.PARTIAL
 
-    external_blocker = EARLIEST_REMAINING_BLOCKER
+    external_blocker = (
+        POST_PDF_RUNTIME_EXTERNAL_BOUNDARY if WIRE_SEND_REQUIRED_FOR_PDF_COMPLETION else None
+    )
 
     rows: list[DoDAdjudicationRowV1] = [
         DoDAdjudicationRowV1(
@@ -364,10 +381,10 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
         DoDAdjudicationRowV1(
             "D7",
             d7_status,
-            "F2 + F1 durable evidence",
-            "ADJUDICATED_FACT",
-            "F2 Step29M bounded OOS hook; F1 REAL campaign evidence bundle",
-            "SYSTEMWIDE_ALL_SURFACES_EVIDENCE_FAMILIES",
+            TOPIC_COMPOSITION_MODULE,
+            "CANONICAL_AUTHORITY",
+            "federated M5 evidence slices + F2 fee/slippage/sensitivity + F1 REAL campaign artifacts",
+            None if d7_status == DoDStatusV1.PROVEN else "INTEGRATED_EVIDENCE_PLANE",
         ),
         DoDAdjudicationRowV1(
             "D8",
@@ -404,10 +421,10 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
         DoDAdjudicationRowV1(
             "D12",
             d12_status,
-            "explicit_productive_authorization_v1 + governed seams",
+            TOPIC_COMPOSITION_MODULE,
             "CANONICAL_AUTHORITY",
-            "promotion boundary contracts; global M10 promotion Owner WP separate",
-            "M10_GLOBAL_PROMOTION_OWNER_BOUNDARY",
+            "optimization_proposal_governance_ingress_v1 NO_SELF_DEPLOY + promotion deny paths",
+            None if d12_status == DoDStatusV1.PROVEN else "M10_PROMOTION_BOUNDARY",
         ),
         DoDAdjudicationRowV1(
             "D13",
@@ -431,23 +448,23 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
             THRESHOLD_CLOSURE_DECISION if threshold_ok else LEARNING_CLOSED_LOOP_DECISION,
             "CANONICAL_AUTHORITY",
             "external_order_effect_authorized=false across learning/optimization/threshold closure",
-            external_blocker if d15_status == DoDStatusV1.PROVEN else None,
+            None if d15_status == DoDStatusV1.PROVEN else external_blocker,
         ),
         DoDAdjudicationRowV1(
             "D16",
             d16_status,
-            "F1 REAL campaign durable evidence",
-            "ADJUDICATED_FACT",
-            "campaign-scoped provenance; not all promotion-relevant surfaces",
-            "SYSTEMWIDE_REPRODUCIBILITY",
+            PROMOTION_RESULTS_REGISTRY,
+            "CANONICAL_AUTHORITY",
+            "finite promotion-relevant results registry + durable verify + replay_ok",
+            None if d16_status == DoDStatusV1.PROVEN else "PROMOTION_RELEVANT_RESULTS",
         ),
         DoDAdjudicationRowV1(
             "D17",
             d17_status,
-            ENVELOPE_DECISION,
+            COMPOSITION_REGISTRY,
             "CANONICAL_AUTHORITY",
-            "authorized surface registry + SURFACE_ISOLATION invariant",
-            "ALL_DEFERRED_SURFACES",
+            "authorized surface isolation namespaces + cross-surface digest separation",
+            None if d17_status == DoDStatusV1.PROVEN else "SURFACE_ISOLATION",
         ),
         DoDAdjudicationRowV1(
             "D18",
@@ -460,10 +477,10 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
         DoDAdjudicationRowV1(
             "D19",
             d19_status,
-            M10_LINEAGE_SPEC,
+            CONSUMER_BINDING_REGISTRY,
             "CANONICAL_AUTHORITY",
-            "M9 productive target consumer binding through threshold closure",
-            "ADDITIONAL_PRODUCTIVE_CONSUMERS",
+            "versioned productive consumer bindings per productive-relevant surface",
+            None if d19_status == DoDStatusV1.PROVEN else "PRODUCTIVE_CONSUMER_BINDING",
         ),
         DoDAdjudicationRowV1(
             "D20",
@@ -471,7 +488,7 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
             THRESHOLD_CLOSURE_DECISION,
             "CANONICAL_AUTHORITY",
             "handoff→seam→MV2 consumer→offline order intent (stops before wire send)",
-            external_blocker,
+            None if d20_status == DoDStatusV1.PROVEN else "PARAMETER_LINEAGE_CHAIN",
         ),
         DoDAdjudicationRowV1(
             "D21",
@@ -535,10 +552,10 @@ def adjudicate_pdf_v3_3_d1_d29_v1(
         DoDAdjudicationRowV1(
             "D29",
             d29_status,
-            THRESHOLD_CLOSURE_DECISION,
+            TOPIC_COMPOSITION_MODULE,
             "CANONICAL_AUTHORITY",
-            "post-authorized return preserves MV2+DP; promotion Owner policy separate",
-            external_blocker,
+            "post-authorized return preserves MV2+DP trading-decision authority",
+            None if d29_status == DoDStatusV1.PROVEN else "POST_RETURN_AUTHORITY",
         ),
     ]
     return tuple(rows)
@@ -548,29 +565,20 @@ def adjudicate_pdf_v3_3_rest_blocks_a_h_v1(
     *, repo_root: Path | None = None
 ) -> tuple[RestBlockAdjudicationRowV1, ...]:
     root = _repo_root(repo_root)
-    handoff_ok = post_real_campaign_handoff_bounded_complete_v1(repo_root=root)
-    threshold_ok = _threshold_closure_proven(root)
-    grants_ok = (root / SURFACE_GRANTS_DECISION).is_file()
-    plane_ok = (root / EXPERIMENT_PLANE_DECISION).is_file() and (
-        root / FEDERATED_PROJECTION_DECISION
-    ).is_file()
-    m5_m8 = _m5_m8_chain_present(root)
-    replay_ok = _files_exist(
-        root,
-        "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
-        "tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py",
-    )
-    m10_ok = (root / M10_LINEAGE_SPEC).is_file()
+    flags = build_pdf_v3_3_completion_flags_v1(repo_root=root)
+    grants_ok = prove_pdf_v3_3_surface_portfolio_classification_v1(repo_root=root)
 
-    block_a = (
-        RestBlockStatusV1.PARTIAL if handoff_ok and threshold_ok else RestBlockStatusV1.NOT_STARTED
-    )
+    def _status(proven: bool) -> RestBlockStatusV1:
+        return RestBlockStatusV1.PROVEN if proven else RestBlockStatusV1.PARTIAL
+
+    block_a = _status(bool(flags["block_a_proven"]))
     block_b = RestBlockStatusV1.PROVEN if grants_ok else RestBlockStatusV1.PARTIAL
-    block_c = RestBlockStatusV1.PARTIAL if plane_ok else RestBlockStatusV1.NOT_STARTED
-    block_d = RestBlockStatusV1.PROVEN if m5_m8 else RestBlockStatusV1.PARTIAL
-    block_e = RestBlockStatusV1.PROVEN if (m5_m8 and replay_ok) else RestBlockStatusV1.PARTIAL
-    block_f = RestBlockStatusV1.PARTIAL if threshold_ok else RestBlockStatusV1.NOT_STARTED
-    block_g = RestBlockStatusV1.PARTIAL if m10_ok else RestBlockStatusV1.NOT_STARTED
+    block_c = _status(bool(flags["block_c_proven"]))
+    meta_replay = prove_pdf_v3_3_meta_return_replay_regression_v1(repo_root=root)
+    block_d = _status(meta_replay)
+    block_e = _status(meta_replay)
+    block_f = _status(bool(flags["block_f_proven"]))
+    block_g = _status(bool(flags["block_g_proven"]))
     block_h = RestBlockStatusV1.PROVEN
 
     return (
@@ -589,8 +597,8 @@ def adjudicate_pdf_v3_3_rest_blocks_a_h_v1(
         RestBlockAdjudicationRowV1(
             "C",
             block_c,
-            "M4 plane + federated projection",
-            "ALL_AUTHORIZED_SURFACES_REPRODUCIBLE_EVIDENCE",
+            TOPIC_COMPOSITION_MODULE,
+            None if block_c == RestBlockStatusV1.PROVEN else "INTEGRATED_EVIDENCE_PLANE",
         ),
         RestBlockAdjudicationRowV1(
             "D",
@@ -607,14 +615,14 @@ def adjudicate_pdf_v3_3_rest_blocks_a_h_v1(
         RestBlockAdjudicationRowV1(
             "F",
             block_f,
-            THRESHOLD_CLOSURE_DECISION,
-            EARLIEST_REMAINING_BLOCKER,
+            TOPIC_COMPOSITION_MODULE,
+            None if block_f == RestBlockStatusV1.PROVEN else "PARAMETER_LINEAGE",
         ),
         RestBlockAdjudicationRowV1(
             "G",
             block_g,
-            M10_LINEAGE_SPEC,
-            "M10_GLOBAL_PROMOTION_OWNER_BOUNDARY",
+            TOPIC_COMPOSITION_MODULE,
+            None if block_g == RestBlockStatusV1.PROVEN else "M10_PROMOTION_BOUNDARY",
         ),
         RestBlockAdjudicationRowV1("H", block_h, WORKPACKAGE_ID, None),
     )
@@ -653,8 +661,22 @@ def build_pdf_v3_3_final_completion_summary_v1(
             "d1_d29_rows": [r.to_dict() for r in dod],
             "d1_d29_counts": dict(_count_dod(dod)),
             "rest_blocks_a_h": [b.to_dict() for b in blocks],
-            "earliest_remaining_blocker": EARLIEST_REMAINING_BLOCKER,
-            "f1_s02_blocker": F1_S02_BLOCKER,
+            "earliest_remaining_pdf_blocker": None
+            if pdf_completion
+            else "PDF_COMPLETION_INCOMPLETE",
+            "post_pdf_runtime_external_boundary": POST_PDF_RUNTIME_EXTERNAL_BOUNDARY,
+            "wire_send_required_for_pdf_completion": WIRE_SEND_REQUIRED_FOR_PDF_COMPLETION,
+            "live_execution_required_for_pdf_completion": LIVE_EXECUTION_REQUIRED_FOR_PDF_COMPLETION,
+            "actual_promotion_required_for_pdf_completion": ACTUAL_PROMOTION_REQUIRED_FOR_PDF_COMPLETION,
+            "s02_required_for_pdf_completion": False,
+            "s02_authorized": False,
+            "m10_boundary_proven": flags.get("m10_boundary_proven")
+            if (flags := build_pdf_v3_3_completion_flags_v1(repo_root=root))
+            else False,
+            "topic_composition_proven": prove_pdf_v3_3_topic_completion_composition_v1(
+                repo_root=root
+            ),
+            "f1_s02_blocker": None if pdf_completion else F1_S02_BLOCKER,
             "mv2_dp_sole_trading_decision_authority_preserved": _threshold_closure_proven(root),
             "naked_baseline_first_preserved": _baseline_d24_d27_proven(root),
             "optimization_productive_authority": "NONE",
@@ -683,10 +705,15 @@ def prove_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudica
     required = (
         root / DECISION_CONFIG,
         root / NORMATIVE_SPEC,
+        root / TOPIC_COMPOSITION_MODULE,
+        root / COMPOSITION_REGISTRY,
+        root / PROMOTION_RESULTS_REGISTRY,
+        root / CONSUMER_BINDING_REGISTRY,
         root
         / "src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
         root
         / "tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
+        root / "tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py",
         root / THRESHOLD_CLOSURE_DECISION,
     )
     if not all(p.is_file() for p in required):
@@ -694,9 +721,15 @@ def prove_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudica
     decision = _load_json(root, DECISION_CONFIG)
     if decision.get("adjudication_implemented") is not True:
         return False
-    if decision.get("pdf_completion") is not False:
+    if decision.get("pdf_completion") is not True:
         return False
-    if decision.get("earliest_remaining_blocker") != EARLIEST_REMAINING_BLOCKER:
+    if decision.get("topic_composition_proven") is not True:
+        return False
+    if decision.get("earliest_remaining_pdf_blocker") is not None:
+        return False
+    if decision.get("wire_send_required_for_pdf_completion") is not False:
+        return False
+    if not prove_pdf_v3_3_topic_completion_composition_v1(repo_root=root):
         return False
     if not _threshold_closure_proven(root):
         return False
@@ -705,12 +738,12 @@ def prove_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudica
     if not prove_v32_d28_d29_scoped_optimization_productive_join_f1_m9_max_build_v1(repo_root=root):
         return False
     summary = build_pdf_v3_3_final_completion_summary_v1(repo_root=root)
-    if summary["pdf_completion"] is not False:
+    if summary["pdf_completion"] is not True:
         return False
     counts = summary["d1_d29_counts"]
-    if int(counts.get("PROVEN", 0)) < 1:
+    if int(counts.get("PARTIAL", 0)) != 0:
         return False
-    if int(counts.get("PARTIAL", 0)) < 1:
+    if int(counts.get("PROVEN", 0)) != 29:
         return False
     if decision.get("mv2_double_play_sole_trading_decision_authority_preserved") is not True:
         return False
