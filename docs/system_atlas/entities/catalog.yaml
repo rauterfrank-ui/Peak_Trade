@@ -7777,13 +7777,13 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1
-    # S2_R1_HISTORICAL_INERTNESS_REPAIR_V1 PR_6786: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; CURRENT_CAMPAIGN_SCOPED_COVERAGE=true; CURRENT_SCOPED_INTEGRITY=true; FOREIGN_HISTORICAL_CAMPAIGN_INERT=true; TRADING_SEMANTICS_CHANGED=false; owner=ledger_campaign_scope_v1.py|coverage_v1.py|productive_bridge_runner_v1.py.
+    # F1_M9_R1_FRESH_CAMPAIGN_REMATERIALIZATION_V1 PR_6787: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; FRESH_CAMPAIGN_REBIND=true; NO_SESSION_RUN=true; TRADING_SEMANTICS_CHANGED=false.
     kind: RUNTIME_COMPONENT
     name: Productive max-age campaign R1 recovery and sole ACTIVE binding v1 (governed materialization)
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: S2_R1_HISTORICAL_INERTNESS_REPAIR_V1
+    modified_by: F1_M9_R1_FRESH_CAMPAIGN_REMATERIALIZATION_V1
     source_paths:
       - src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/
       - src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py
@@ -7822,8 +7822,12 @@ entities:
       (no retry/S02 after consumed terminal fail).
       S2_R1_HISTORICAL_INERTNESS_REPAIR_V1: campaign-scoped CURRENT coverage and
       integrity on shared productive ledgers; historical campaigns inert for CURRENT
-      metrics; FORENSIC_GLOBAL whole-ledger semantics explicit only. No trading,
-      network, evidence mutation, or authority promotion. ATLAS_AUTHORITY=NONE.
+      metrics; FORENSIC_GLOBAL whole-ledger semantics explicit only.
+      F1_M9_R1_FRESH_CAMPAIGN_REMATERIALIZATION_V1 (PR #6787): ACTIVE binding and
+      r1_active preregistration rematerialized to origin/main SHA bc560f1 (fresh campaign
+      f5e3); render-only authorization prep under new campaign path; failed d01 not ACTIVE.
+      No trading, network, session run, consumption, or authority promotion.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1
     kind: RUNTIME_COMPONENT
