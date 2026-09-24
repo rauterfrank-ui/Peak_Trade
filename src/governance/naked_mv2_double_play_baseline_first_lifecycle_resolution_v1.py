@@ -28,6 +28,9 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
     P5_AUTHORITY_CUTOVER_AUTHORIZED,
     PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
 )
+from src.governance.d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1 import (
+    prove_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1,
+)
 from src.governance.d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1 import (
     prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1,
 )
@@ -317,6 +320,9 @@ def adjudicate_v32_baseline_first_requirements_v1(
     elif d27_f1_f2:
         d27_missing = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
         f5_adj = prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1(repo_root=root)
+        f5_baseline_policy = prove_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1(
+            repo_root=root
+        )
         d27_notes = (
             "F1/F2 TEST_READY executors enforce pre-test TEST_ENTRY_GATE plus D26 native "
             "baseline admission at research entry; F5 shadow families not lifecycle-wired."
@@ -324,7 +330,12 @@ def adjudicate_v32_baseline_first_requirements_v1(
         if f5_adj:
             d27_notes += (
                 " F5-FRESH/F5-SURV/F5-CAP forensically adjudicated (read-only); "
-                "bounded wiring deferred pending owner policy on D26 shadow baseline binding."
+                "bounded lifecycle wiring still deferred."
+            )
+        if f5_baseline_policy:
+            d27_notes += (
+                " F5 shadow pack entry governed by Stage-1/calibration-protocol digest pins; "
+                "D26 native baseline schema OUT_OF_SCOPE on F5 shadow path (owner policy proven)."
             )
         d27_wiring = d27_wiring + (
             "src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py",
@@ -337,6 +348,10 @@ def adjudicate_v32_baseline_first_requirements_v1(
         if f5_adj:
             d27_wiring = d27_wiring + (
                 "src/governance/d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1.py",
+            )
+        if f5_baseline_policy:
+            d27_wiring = d27_wiring + (
+                "src/governance/d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1.py",
             )
     else:
         d27_missing = "test_entry_gate_defined_not_lifecycle_enforced_globally"
