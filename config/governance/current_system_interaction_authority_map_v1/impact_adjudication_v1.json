@@ -19,10 +19,11 @@
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_constants_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/production_real_public_md_session_adapter_v1.py",
     "src/ops/peak_trade_python_script_entry_bootstrap_v1.py",
+    "tests/governance/test_f1_m9_production_real_cli_entry_execution_smoke_v1.py",
     "tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py",
     "tests/governance/test_f1_m9_real_prospective_campaign_execution_enablement_v1.py"
   ],
-  "changed_paths_sha256": "269c58840d2497885db6c270ad2738aa3c78b91c3e8d44d7083f4eefd8abc038",
+  "changed_paths_sha256": "09c5ec46ac5ea890665486f925f91cbb8f9f24ca1acb9d274b56071a5c5498a9",
   "covered_candidate_paths": [
     "config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json",
     "docs/ops/specs/F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_NORMATIVE_V1.md",
@@ -39,6 +40,7 @@
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_constants_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/production_real_public_md_session_adapter_v1.py",
     "src/ops/peak_trade_python_script_entry_bootstrap_v1.py",
+    "tests/governance/test_f1_m9_production_real_cli_entry_execution_smoke_v1.py",
     "tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py",
     "tests/governance/test_f1_m9_real_prospective_campaign_execution_enablement_v1.py"
   ],
@@ -47,7 +49,7 @@
     "config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "F1/M9 REAL campaign activation and production wiring: process enablement, production MD adapter, CLI bootstrap; atlas views regenerated; authority_effect NONE; no campaign execution in slice.",
+  "reason": "F1/M9 REAL campaign activation, production CLI smoke gate, hermetic HTTP boundary for tests only; authority_effect NONE; no production campaign execution in slice.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

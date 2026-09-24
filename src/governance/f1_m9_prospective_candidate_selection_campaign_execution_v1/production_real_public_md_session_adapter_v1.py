@@ -2,8 +2,15 @@
 
 from __future__ import annotations
 
+import json
+import os
+import time
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping
+
+HERMETIC_PUBLIC_MD_BOUNDARY_ENV_V1: str = "F1_M9_PRODUCTION_ENTRY_HERMETIC_PUBLIC_MD_BOUNDARY_V1"
+HERMETIC_PUBLIC_MD_MARKER_ENV_V1: str = "F1_M9_PRODUCTION_ENTRY_HERMETIC_PUBLIC_MD_MARKER_PATH"
 
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
     BOUND_VENUE_INSTRUMENT_ID,
@@ -37,6 +44,39 @@ PRODUCTION_ADAPTER_CLASS_ID: str = "ProductionRealPublicMdSessionAdapterV1"
 PREREGISTERED_SESSION_IDS: frozenset[str] = frozenset({"session_01", "session_02"})
 
 
+def hermetic_allowlisted_public_md_http_fetcher_v1(
+    *,
+    marker_path: Path | None = None,
+    session_id: str = "",
+) -> HttpFetcher:
+    """Replace only the physical HTTP boundary; full supplier stack remains REAL."""
+
+    def _fetcher(url: str, method: str, headers: dict[str, str], timeout: float):
+        del url, headers, timeout
+        if method.upper() != "GET":
+            raise PreregisteredSessionRunnerError("public_md_method_forbidden")
+        if marker_path is not None:
+            marker_path.parent.mkdir(parents=True, exist_ok=True)
+            prior = marker_path.read_text(encoding="utf-8") if marker_path.is_file() else ""
+            marker_path.write_text(f"{prior}{session_id}\n", encoding="utf-8")
+        stamp = int(time.time() * 1000)
+        payload = {
+            "code": "0",
+            "data": [
+                {
+                    "instId": BOUND_VENUE_INSTRUMENT_ID,
+                    "instType": "FUTURES",
+                    "markPx": "2500.5",
+                    "ts": str(stamp),
+                }
+            ],
+        }
+        body = json.dumps(payload).encode("utf-8")
+        return 200, body, {"Content-Type": "application/json"}
+
+    return _fetcher
+
+
 @dataclass(slots=True)
 class ProductionRealPublicMdSessionAdapterV1:
     """Canonical supplier-backed adapter (not FakeRealPublicMdSessionAdapterV1)."""
@@ -59,6 +99,12 @@ class ProductionRealPublicMdSessionAdapterV1:
             raise PreregisteredSessionRunnerError("real_md_supplier_binding_mismatch")
 
         fetcher = self.http_fetcher
+        if fetcher is None and os.environ.get(HERMETIC_PUBLIC_MD_BOUNDARY_ENV_V1) == "1":
+            marker_raw = os.environ.get(HERMETIC_PUBLIC_MD_MARKER_ENV_V1, "").strip()
+            fetcher = hermetic_allowlisted_public_md_http_fetcher_v1(
+                marker_path=Path(marker_raw) if marker_raw else None,
+                session_id=session_id,
+            )
         if fetcher is None:
             from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.real_http_fetcher_v1 import (
                 make_real_eea_public_md_fetcher_v1,
@@ -142,9 +188,12 @@ def build_production_real_public_md_session_adapter_v1(
 
 
 __all__ = [
+    "HERMETIC_PUBLIC_MD_BOUNDARY_ENV_V1",
+    "HERMETIC_PUBLIC_MD_MARKER_ENV_V1",
     "PRODUCTION_ADAPTER_CLASS_ID",
     "PRODUCTION_ADAPTER_OWNER_ID",
     "PREREGISTERED_SESSION_IDS",
     "ProductionRealPublicMdSessionAdapterV1",
     "build_production_real_public_md_session_adapter_v1",
+    "hermetic_allowlisted_public_md_http_fetcher_v1",
 ]

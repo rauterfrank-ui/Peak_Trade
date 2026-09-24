@@ -22,6 +22,12 @@ Wires `build_production_real_public_md_session_adapter_v1()` and requires a fres
 
 After merge: issue new authorization → run REAL CLI → REAL public MD → terminal campaign verdict. No further code change required for that run.
 
+Optional CLI flags (production REAL run typically omits both):
+
+- `--isolated-real-campaign-root` — hermetic smoke only; production uses canonical durable root.
+- Env `F1_M9_PRODUCTION_ENTRY_HERMETIC_PUBLIC_MD_BOUNDARY_V1=1` + marker path — smoke only; production uses real HTTPS fetcher.
+
 ## Verification
 
-`tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py`
+- `tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py`
+- `tests/governance/test_f1_m9_production_real_cli_entry_execution_smoke_v1.py`

@@ -41,6 +41,7 @@ def prove_f1_m9_real_campaign_activation_and_production_wiring_v1(
         root / "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/"
         "production_real_public_md_session_adapter_v1.py",
         root / "tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py",
+        root / "tests/governance/test_f1_m9_production_real_cli_entry_execution_smoke_v1.py",
     )
     if not all(p.is_file() for p in required):
         return False

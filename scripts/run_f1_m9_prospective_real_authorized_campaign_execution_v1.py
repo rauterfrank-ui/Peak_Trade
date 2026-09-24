@@ -52,6 +52,15 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="Optional bound origin/main SHA enforced against issuance record.",
     )
+    parser.add_argument(
+        "--isolated-real-campaign-root",
+        type=Path,
+        default=None,
+        help=(
+            "Optional isolated campaign root for hermetic smoke tests only. "
+            "Omit for production REAL runs (canonical durable root)."
+        ),
+    )
     args = parser.parse_args(argv)
     payload = load_runtime_authorization_from_path_v1(args.runtime_authorization_path)
     adapter = build_production_real_public_md_session_adapter_v1()
@@ -60,6 +69,7 @@ def main(argv: list[str] | None = None) -> int:
             runtime_authorization=payload,
             repo_root=_REPO_ROOT,
             execution_mode=F1M9OrchestrationExecutionModeV1.REAL_AUTHORIZED_CAMPAIGN_EXECUTION,
+            real_campaign_root=args.isolated_real_campaign_root,
             real_public_md_adapter=adapter,
             expected_bound_origin_main_sha=args.expected_bound_origin_main_sha,
         )
