@@ -34,8 +34,8 @@ work units, capabilities, and exactly-once consumption identity.
 ## REAL entry
 
 Script: `scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py`
-(requires valid issued authorization file; process enablement flag remains false in this slice).
+(requires valid issued authorization file; process enablement completed in activation slice).
 
 ## Next blocker after closure
 
-`F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_ISSUE_FRESH_AUTHORIZATION_AND_RUN`
+`F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_V1` (successor); then fresh authorization + REAL CLI run.

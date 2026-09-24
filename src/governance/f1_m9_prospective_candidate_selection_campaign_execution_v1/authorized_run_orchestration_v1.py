@@ -777,6 +777,7 @@ def _run_real_authorized_path_v1(
     )
 
     productive_apply = bool(selection.get("productive_apply"))
+    external_read = any(int(r.public_md_fetch_count) >= 1 for r in session_results)
     return F1M9AuthorizedCampaignRunOrchestrationResultV1(
         orchestration_status=STATUS_REAL_TERMINAL_VERDICT_PASS,
         orchestration_owner_id=ORCHESTRATION_OWNER_ID,
@@ -784,8 +785,8 @@ def _run_real_authorized_path_v1(
         execution_mode=mode,
         authorized_campaign_execution_terminal_path_proven=False,
         real_authorized_campaign_execution_path_proven=True,
-        campaign_executed=False,
-        public_market_data_external_read_occurred=False,
+        campaign_executed=external_read,
+        public_market_data_external_read_occurred=external_read,
         real_evidence_written=True,
         productive_apply_occurred=productive_apply,
         terminal_selection=selection,

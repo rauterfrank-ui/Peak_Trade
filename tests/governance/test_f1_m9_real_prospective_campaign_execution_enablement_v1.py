@@ -24,7 +24,6 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.
 )
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.execution_mode_v1 import (
     F1M9OrchestrationExecutionModeV1,
-    STATUS_REAL_EXECUTION_DISABLED_IN_ENABLEMENT_SLICE,
 )
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.orchestration_constants_v1 import (
     STATUS_ALREADY_COMPLETE_REPLAY,
@@ -177,7 +176,7 @@ def test_real_mode_requires_fresh_valid_issued_authorization(tmp_path: Path) -> 
     assert any("ISSUANCE" in r for r in result.reason_codes)
 
 
-def test_real_mode_disabled_without_test_gate(tmp_path: Path) -> None:
+def test_real_mode_requires_adapter_when_not_injected(tmp_path: Path) -> None:
     auth = _issued_auth()
     result = run_f1_m9_prospective_authorized_campaign_run_orchestration_v1(
         F1M9AuthorizedCampaignRunOrchestrationRequestV1(
@@ -186,12 +185,11 @@ def test_real_mode_disabled_without_test_gate(tmp_path: Path) -> None:
             repo_root=REPO_ROOT,
             execution_mode=F1M9OrchestrationExecutionModeV1.REAL_AUTHORIZED_CAMPAIGN_EXECUTION,
             real_campaign_root=tmp_path,
-            real_public_md_adapter=FakeRealPublicMdSessionAdapterV1(),
             expected_bound_origin_main_sha=CANONICAL_BASE_SHA,
         )
     )
-    assert result.orchestration_status == STATUS_REAL_EXECUTION_DISABLED_IN_ENABLEMENT_SLICE
-    assert result.real_authorized_campaign_execution_path_proven is False
+    assert result.orchestration_status == STATUS_ORCHESTRATION_DENIED
+    assert "REAL_PUBLIC_MD_ADAPTER_REQUIRED" in result.reason_codes
 
 
 def test_real_happy_path_wiring(tmp_path: Path) -> None:

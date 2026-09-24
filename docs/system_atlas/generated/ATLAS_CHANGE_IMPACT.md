@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -42,6 +42,7 @@ Do not manually patch generated Markdown.
 | --- |
 | `RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1` |
 | `RUNTIME_COMPONENT:f1_m9_real_prospective_campaign_execution_enablement_v1` |
+| `RUNTIME_COMPONENT:f1_m9_real_campaign_activation_and_production_wiring_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 REAL prospective campaign execution enablement: issuance owner, REAL orchestration mode, supplier adapter and exactly-once wiring proven hermetically; production REAL effects gated off; CAMPAIGN_EXECUTED=false; EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 REAL campaign activation and production wiring: process REAL enablement, production public-MD adapter, CLI bootstrap; slice does not execute campaign; EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_V1
+- modified_by=F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
