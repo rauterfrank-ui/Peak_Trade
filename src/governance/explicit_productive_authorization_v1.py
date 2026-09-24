@@ -66,7 +66,7 @@ AUTHORIZED_FOR_PRODUCTIVE_APPLY: Final[bool] = False
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
-_OWNER_RECORD_KEYS: Final[tuple[str, ...]] = (
+OWNER_AUTHORIZATION_RECORD_FIELD_KEYS: Final[tuple[str, ...]] = (
     "schema_version",
     "owner_authorization_id",
     "owner_authorization_version",
@@ -90,6 +90,7 @@ _OWNER_RECORD_KEYS: Final[tuple[str, ...]] = (
     "bound_governance_risk_constraints_ref",
     "bound_ratified_threshold_capability_id",
 )
+_OWNER_RECORD_KEYS = OWNER_AUTHORIZATION_RECORD_FIELD_KEYS
 
 
 class ExplicitProductiveAuthorizationError(ValueError):

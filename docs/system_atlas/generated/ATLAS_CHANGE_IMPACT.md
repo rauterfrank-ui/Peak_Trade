@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,11 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:d27_f5_shadow_test_entry_lifecycle_enforcement_v1` |
-| `RUNTIME_COMPONENT:d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1` |
-| `RUNTIME_COMPONENT:d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1` |
-| `RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1` |
-| `RUNTIME_COMPONENT:v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1` |
+| `RUNTIME_COMPONENT:v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1` |
+| `RUNTIME_COMPONENT:v32_d28_d29_scoped_optimization_productive_join_policy_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -96,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 post-D27 global test-entry lifecycle closure adjudication: compose F1/F2 + F5 proofs, sync navigation overlays, document D28/D29 owner-policy blocker. Atlas catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- D29 F1/M9 per-ingress authorization/apply adjudication max-build: authority census, typed binding, chain resolver to runtime transport; apply boundary OWNER_POLICY. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1
+- modified_by=V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

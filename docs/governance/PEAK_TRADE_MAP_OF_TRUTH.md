@@ -116,6 +116,7 @@ in the Master Runbook and the named packages.
 | Post-D27 global test-entry lifecycle closure (navigation) | `docs/ops/specs/V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1.md` |
 | D28/D29 optimization productive join policy adjudication (navigation) | `docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md` / `src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py` |
 | D28/D29 scoped F1/M9 optimization productive join policy (navigation) | `docs/ops/specs/V32_D28_D29_SCOPED_OPTIMIZATION_PRODUCTIVE_JOIN_F1_M9_MAX_BUILD_V1.md` / `src/governance/v32_d28_d29_scoped_optimization_productive_join_policy_v1.py` |
+| D29 F1/M9 per-ingress productive authorization/apply adjudication (navigation) | `docs/ops/specs/V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1.md` / `src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py` |
 | Treasury Phase 1 offline contracts | `docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md` / `src/ops/treasury_phase_1_offline_contracts_v1/` |
 | Treasury Phase 2 read-only reconciliation | `docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md` / `src/ops/treasury_phase_2_read_only_reconciliation_v1/` |
 | Treasury Phase 3 shadow enforcement | `docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md` / `src/ops/treasury_phase_3_shadow_enforcement_v1/` |
