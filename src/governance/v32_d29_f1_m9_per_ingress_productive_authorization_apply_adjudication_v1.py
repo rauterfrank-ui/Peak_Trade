@@ -69,16 +69,23 @@ PREDECESSOR_DECISION: Final[str] = (
     "v32_d28_d29_scoped_optimization_productive_join_f1_m9_owner_policy_v1_decision_v1.json"
 )
 
-NEXT_TRUE_BLOCKER: Final[str] = (
+CLOSED_D29_BLOCKER: Final[str] = (
     "F1_M9_PER_INGRESS_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_APPLY_INPUT_AND_AUTHORITY_EDGE"
 )
+NEXT_TRUE_BLOCKER: Final[str] = "F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO"
 BLOCKER_EDGE: Final[str] = "governed_productive_configuration_v1.runtime_apply_authority"
-BLOCKER_CLASS: Final[str] = "OWNER_POLICY_REQUIRED"
+BLOCKER_CLASS: Final[str] = "OWNER_MERGE_GO_REQUIRED"
 MINIMAL_NEXT_OWNER_POLICY_QUESTION: Final[str] = (
-    "For a bound F1/M9 per-ingress authorization (scoped_join_pair_id + ingress_digest + "
-    "owner_authorization_record_digest), which explicit Owner apply input record and authority "
-    "edge (if any) may authorize runtime/productive apply without flipping global join, "
-    "automatic promotion, or PRODUCTIVE_NUMERIC_VALUES_SET>0?"
+    "May F1/M9 productive apply execution (configuration runtime_applied transition + "
+    "durable apply ledger witness) proceed under existing scoped Owner Apply records "
+    "without flipping global join, promotion, or PRODUCTIVE_NUMERIC_VALUES_SET>0?"
+)
+POLICY_EDGE_DECISION: Final[str] = (
+    "config/governance/"
+    "v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json"
+)
+POLICY_EDGE_MODULE: Final[str] = (
+    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py"
 )
 
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
@@ -305,19 +312,32 @@ def build_f1_m9_per_ingress_authority_census_v1(
         PerIngressAuthorityEdgeV1(
             edge_id="PRODUCTIVE_APPLY_BOUNDARY",
             producer_id="governed_productive_configuration_v1",
-            consumer_id="NONE (no dedicated productive_apply owner module)",
-            classification=AuthorityEdgeClassificationV1.OWNER_POLICY,
-            per_ingress_owner_inputs=("OPEN: owner apply input record not defined",),
-            authorization_identity=f"runtime_apply_authority={RUNTIME_APPLY_AUTHORITY}",
-            candidate_evidence_binding="configuration_record present; apply edge absent",
+            consumer_id=(
+                "f1_m9_scoped_owner_apply_authority_v1.evaluate_f1_m9_scoped_owner_productive_apply_v1"
+            ),
+            classification=AuthorityEdgeClassificationV1.ADJUDICATED,
+            per_ingress_owner_inputs=(
+                "f1_m9_owner_apply_authorization_record/v1 (OWNER_APPLY_RECORD_FIELD_KEYS)",
+            ),
+            authorization_identity=(
+                "policy: runtime_apply_authority=NONE; execution: F1_M9_SCOPED_OWNER_APPLY_AUTHORITY_V1"
+            ),
+            candidate_evidence_binding=(
+                "owner_apply_record bound to configuration_digest + binding_digest + auth digests"
+            ),
             target_surface_binding=PRODUCTIVE_TARGET_ID,
-            constraints_risk_binding="PRODUCTIVE_APPLY_AUTHORITY=NONE at ingress",
-            expiry_freshness_revocation="OPEN",
-            replay_idempotency="OPEN",
-            materialization_apply_owner="OWNER_POLICY_REQUIRED",
-            rollback_fail_closed="runtime_apply_possible_v1()=false",
-            external_effect_relation="FORBIDDEN until explicit apply authority",
-            evidence_refs=(CONFIG_DECISION, INGRESS_DECISION),
+            constraints_risk_binding="policy edge: evaluate_explicit_owner_productive_apply_policy_edge_v1",
+            expiry_freshness_revocation="EXPLICIT_PER_RECORD_EXPIRY (apply record)",
+            replay_idempotency="apply ledger on execution path (not policy slice)",
+            materialization_apply_owner="NONE (policy binding only in V32 slice)",
+            rollback_fail_closed="runtime_apply_possible_v1()=false until OWNER_MERGE_GO execution",
+            external_effect_relation="FORBIDDEN until separate execution authorization",
+            evidence_refs=(
+                CONFIG_DECISION,
+                POLICY_EDGE_DECISION,
+                POLICY_EDGE_MODULE,
+                "src/governance/f1_m9_owner_apply_authorization_record_v1.py",
+            ),
         ),
         PerIngressAuthorityEdgeV1(
             edge_id="OPTIMIZATION_DIRECT_RUNTIME_WRITE",
@@ -367,10 +387,10 @@ def build_authority_stage_decomposition_v1(
         ),
         AuthorityStageDecompositionV1(
             stage="PRODUCTIVE_APPLY",
-            status=AuthorityStageStatusV1.OWNER_POLICY_REQUIRED,
-            owner_module="NONE",
+            status=AuthorityStageStatusV1.PROVEN_CURRENT,
+            owner_module=POLICY_EDGE_MODULE,
             implies_next_stage=False,
-            evidence_ref=CONFIG_DECISION,
+            evidence_ref=POLICY_EDGE_DECISION,
         ),
         AuthorityStageDecompositionV1(
             stage="RUNTIME_CONSUMPTION",
@@ -406,9 +426,12 @@ def build_per_ingress_adjudication_summary_v1(
             "workpackage_id": WORKPACKAGE_ID,
             "scoped_join_pair_id": F1_M9_SCOPE_PAIR_ID,
             "d28_status": "PROVEN_CURRENT",
-            "d29_status": "OWNER_POLICY_REQUIRED",
+            "d29_status": "PROVEN_CURRENT",
+            "d29_apply_policy_edge_status": "PROVEN_CURRENT",
+            "d29_apply_execution_status": "OWNER_MERGE_GO_REQUIRED",
             "d29_closure_proven": True,
-            "d29_closure_scope": "PER_INGRESS_AUTHORIZATION_CHAIN_TO_APPLY_BOUNDARY",
+            "d29_closure_scope": "PER_INGRESS_AUTHORIZATION_CHAIN_THROUGH_APPLY_POLICY_EDGE",
+            "closed_d29_blocker": CLOSED_D29_BLOCKER,
             "productive_numeric_values_set": int(PRODUCTIVE_NUMERIC_VALUES_SET),
             "promotion_authorized": False,
             "productive_apply_authorized": AUTHORIZED_FOR_PRODUCTIVE_APPLY,
@@ -416,7 +439,8 @@ def build_per_ingress_adjudication_summary_v1(
             "per_ingress_owner_input_fields": list(OWNER_AUTHORIZATION_RECORD_FIELD_KEYS),
             "authorization_binding_dimensions": list(BINDING_DIMENSION_KEYS),
             "authorization_expiry_revocation_semantics": "OPEN",
-            "apply_owner": "OWNER_POLICY_REQUIRED",
+            "apply_owner": "F1_M9_SCOPED_OWNER_APPLY_ADJUDICATION_ONLY",
+            "apply_policy_edge_owner": POLICY_EDGE_MODULE,
             "apply_authority_source": BLOCKER_EDGE,
             "authority_edge_count": len(edges),
             "authority_edges": [e.to_dict() for e in edges],
@@ -467,7 +491,12 @@ def prove_v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_
         return False
     if int(decision.get("productive_numeric_values_set_current", -1)) != 0:
         return False
+    if decision.get("closed_d29_blocker") != CLOSED_D29_BLOCKER:
+        return False
     if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER:
+        return False
+    policy_decision = root / POLICY_EDGE_DECISION
+    if not policy_decision.is_file():
         return False
     if AUTHORIZED_FOR_PRODUCTIVE_APPLY is not False:
         return False
@@ -479,11 +508,11 @@ def prove_v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_
     if len(edges) < 9:
         return False
     apply_edge = next(e for e in edges if e.edge_id == "PRODUCTIVE_APPLY_BOUNDARY")
-    if apply_edge.classification != AuthorityEdgeClassificationV1.OWNER_POLICY:
+    if apply_edge.classification != AuthorityEdgeClassificationV1.ADJUDICATED:
         return False
     stages = build_authority_stage_decomposition_v1(repo_root=root)
     apply_stage = next(s for s in stages if s.stage == "PRODUCTIVE_APPLY")
-    if apply_stage.status != AuthorityStageStatusV1.OWNER_POLICY_REQUIRED:
+    if apply_stage.status != AuthorityStageStatusV1.PROVEN_CURRENT:
         return False
     return True
 
@@ -494,6 +523,7 @@ __all__ = [
     "AuthorityStageStatusV1",
     "BLOCKER_CLASS",
     "BLOCKER_EDGE",
+    "CLOSED_D29_BLOCKER",
     "DECISION_CONFIG",
     "EDGE_REGISTRY_CONFIG",
     "MINIMAL_NEXT_OWNER_POLICY_QUESTION",
