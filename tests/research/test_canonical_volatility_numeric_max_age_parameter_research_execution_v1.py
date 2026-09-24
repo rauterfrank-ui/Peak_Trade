@@ -34,6 +34,9 @@ from research.canonical_volatility_numeric_max_age_parameter_research_execution_
 from research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.runner_v1 import (
     run_max_age_parameter_research_execution_v1,
 )
+from tests.governance.d27_native_baseline_fixtures_v1 import (
+    build_fixture_native_baseline_evidence_v1,
+)
 from research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.serialization_v1 import (
     build_execution_id_v1,
 )
@@ -364,8 +367,10 @@ def test_14_15_16_17_18_19_20_full_runner_no_alpha_enforcement_deterministic(
 ) -> None:
     records = _fixture_records()
     out1 = tmp_path / "run1"
+    native_baseline = build_fixture_native_baseline_evidence_v1()
     result1 = run_max_age_parameter_research_execution_v1(
         repo_root=ROOT,
+        native_baseline_evidence_v1=native_baseline,
         output_root=out1,
         repository_sha="e03426f0250fbc55f95c044c6a904e059746125c",
         records=records,
@@ -390,6 +395,7 @@ def test_14_15_16_17_18_19_20_full_runner_no_alpha_enforcement_deterministic(
     out2 = tmp_path / "run2"
     result2 = run_max_age_parameter_research_execution_v1(
         repo_root=ROOT,
+        native_baseline_evidence_v1=native_baseline,
         output_root=out2,
         repository_sha="e03426f0250fbc55f95c044c6a904e059746125c",
         records=records,
@@ -494,6 +500,7 @@ def test_hypothesis_and_split_bindings_before_eval() -> None:
 def test_insufficient_productive_ledger_blocks_without_extrapolation(tmp_path: Path) -> None:
     result = run_max_age_parameter_research_execution_v1(
         repo_root=ROOT,
+        native_baseline_evidence_v1=build_fixture_native_baseline_evidence_v1(),
         ledger_path=tmp_path / "missing.jsonl",
         output_root=tmp_path / "blocked",
         repository_sha="e03426f0250fbc55f95c044c6a904e059746125c",

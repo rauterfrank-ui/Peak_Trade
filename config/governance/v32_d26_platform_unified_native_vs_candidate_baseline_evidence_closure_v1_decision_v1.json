@@ -15,7 +15,7 @@
   "d26_implemented": true,
   "d27_status": "PARTIAL_CURRENT",
   "d27_blocked_by_d26": false,
-  "d27_earliest_missing_edge": "test_entry_gate_defined_not_lifecycle_enforced_globally",
+  "d27_earliest_missing_edge": "f5_shadow_test_entry_gate_not_lifecycle_enforced",
   "d26_implementation_mode": "COMPOSE_EXISTING",
   "reused_contracts": [
     "canonical_trading_decision_evidence_v1",

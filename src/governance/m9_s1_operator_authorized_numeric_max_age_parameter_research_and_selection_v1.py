@@ -526,6 +526,7 @@ def run_m9_s1_operator_authorized_parameter_research_and_selection_v1(
     repo_root: Path,
     owner_authorization_input: OwnerM9S1ResearchAuthorizationInputV1 | None,
     output_root: Path,
+    native_baseline_evidence_v1: Mapping[str, Any],
     records: Optional[Sequence[Any]] = None,
     ledger_path: Optional[Path] = None,
     repository_sha: Optional[str] = None,
@@ -563,6 +564,7 @@ def run_m9_s1_operator_authorized_parameter_research_and_selection_v1(
 
     execution = run_max_age_parameter_research_execution_v1(
         repo_root=repo_root,
+        native_baseline_evidence_v1=native_baseline_evidence_v1,
         ledger_path=ledger_path,
         output_root=output_root / "research_execution",
         repository_sha=sha,

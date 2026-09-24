@@ -113,11 +113,24 @@ def _grid_spec() -> dict[str, Any]:
 
 def run_f2_research_backtest_cost_grid_offline_v1(
     *,
+    native_baseline_evidence_v1: Mapping[str, Any],
     strategy_id: str = "ma_crossover",
     strategy_version: str = "v1",
     data_digest: str = "f2_offline_research_fixture_digest_v1",
     instrument_id: str = "okx:linear_perpetual:ETH:USDT:USDT:perp",
 ) -> MappingProxyType[str, Any]:
+    from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
+        D27ResearchTestEntryLifecycleError,
+        enforce_d27_f2_test_entry_lifecycle_v1,
+    )
+
+    try:
+        d27_admission = enforce_d27_f2_test_entry_lifecycle_v1(
+            native_baseline_evidence=native_baseline_evidence_v1,
+        )
+    except D27ResearchTestEntryLifecycleError as exc:
+        raise ValueError(str(exc)) from exc
+
     resolution = resolve_optimizable_envelope_v1(
         OptimizableEnvelopeResolveRequestV1(surface_id=SURFACE_ID)
     )
@@ -196,6 +209,9 @@ def run_f2_research_backtest_cost_grid_offline_v1(
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         "promotion_performed": PROMOTION_PERFORMED,
         "productive_parameter_mutation": PRODUCTIVE_PARAMETER_MUTATION,
+        "d27_test_entry_lifecycle_admission": d27_admission.to_dict(),
+        "d27_baseline_reference_identity": d27_admission.baseline_reference_identity,
+        "d27_test_entry_gate": d27_admission.test_entry_gate,
     }
     body["execution_digest"] = compute_content_sha256(
         {key: value for key, value in body.items() if key != "execution_digest"}

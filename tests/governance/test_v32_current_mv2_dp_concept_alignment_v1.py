@@ -45,7 +45,7 @@ def test_alignment_consistent_with_v32_lifecycle_adjudication() -> None:
     assert binding["d26_implemented"] is True
     assert binding["d26_status"] == "PROVEN_CURRENT"
     assert binding["earliest_true_remaining_technical_gap"] == (
-        "test_entry_gate_defined_not_lifecycle_enforced_globally"
+        "f5_shadow_test_entry_gate_not_lifecycle_enforced"
     )
     assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 

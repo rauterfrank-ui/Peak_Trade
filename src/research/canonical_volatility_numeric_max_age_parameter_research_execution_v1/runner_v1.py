@@ -118,6 +118,7 @@ def resolve_repository_sha_v1(repo_root: Path, *, repository_sha: Optional[str] 
 def run_max_age_parameter_research_execution_v1(
     *,
     repo_root: Path,
+    native_baseline_evidence_v1: Mapping[str, Any],
     ledger_path: Optional[Path] = None,
     output_root: Optional[Path] = None,
     repository_sha: Optional[str] = None,
@@ -126,6 +127,17 @@ def run_max_age_parameter_research_execution_v1(
 ) -> dict[str, Any]:
     """Execute non-enforcing max-age parameter research and write evidence artifacts."""
     assert_architecture_guards_v1(repo_root=repo_root)
+    from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
+        D27ResearchTestEntryLifecycleError,
+        enforce_d27_f1_test_entry_lifecycle_v1,
+    )
+
+    try:
+        d27_admission = enforce_d27_f1_test_entry_lifecycle_v1(
+            native_baseline_evidence=native_baseline_evidence_v1,
+        )
+    except D27ResearchTestEntryLifecycleError as exc:
+        raise MaxAgeResearchExecutionError(str(exc)) from exc
     created = created_at_utc or _utc_now_iso()
     sha = resolve_repository_sha_v1(repo_root, repository_sha=repository_sha)
 
@@ -586,6 +598,9 @@ def run_max_age_parameter_research_execution_v1(
         "candidate_results": candidate_results,
         "rejection_matrix": rejection_rows,
         "conclusion": conclusion,
+        "d27_test_entry_lifecycle_admission": d27_admission.to_dict(),
+        "d27_baseline_reference_identity": d27_admission.baseline_reference_identity,
+        "d27_test_entry_gate": d27_admission.test_entry_gate,
     }
 
 
