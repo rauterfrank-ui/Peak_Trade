@@ -20,7 +20,7 @@
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "tests/governance/test_d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "pending",
+  "changed_paths_sha256": "6d7f261bc708495aaa4cd5149b05bec76d0c02201f8a225740fdfc20427fa987",
   "evidence_refs": [
     "config/governance/v32_d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_AUTHORITY_SUBFAMILY_ADJUDICATION_V1.md"
