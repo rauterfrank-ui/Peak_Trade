@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:canonical_volatility_max_age_research_stratification_v2_v1` |
+| `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
+| `RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1 R1 research stratification v2 (PR #6790): decoupled research-only mark/regime stratification on productive evidence accumulation seam; parameter authority UNSET; no bridge feature_regime, MV2/DP, ranking, selection, risk, or execution semantic change. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 governed productive apply preparation, canonical candidate/evidence census, and prospective candidate-selection policy/preregistration (PR #6796): proposal-producing research authority only; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false; no campaign execution or productive numeric mutation. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_R1_REGIME_EVIDENCE_PIPELINE_REPAIR_IMPLEMENTATION_V1
+- modified_by=F1_M9_GOVERNED_PREPARATION_AND_SELECTION_POLICY_PR_FREEZE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
