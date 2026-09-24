@@ -7633,7 +7633,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: F1_M9_GOVERNED_PREPARATION_AND_SELECTION_POLICY_PR_FREEZE_V1
+    modified_by: F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_OWNER_MAX_BUILD_V1
     source_paths:
       - src/governance/f1_m9_real_productive_apply_decision_binding_v1.py
       - src/governance/f1_m9_canonical_productive_candidate_adjudication_v1.py
@@ -7670,6 +7670,37 @@ entities:
       Governed preparation for future Real Productive Apply, read-only candidate/evidence census,
       and frozen prospective selection policy/preregistration only; no campaign execution,
       no candidate resolution, no productive apply or numeric mutation. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 prospective candidate selection campaign execution owner v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_OWNER_MAX_BUILD_V1
+    source_paths:
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/__init__.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/constants_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/closure_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/completeness_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/durable_paths_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/evidence_writer_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/exactly_once_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/execution_boundary_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/execution_census_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/real_md_supplier_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/replay_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/runtime_authorization_v1.py
+    evidence_sources:
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/execution_boundary_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/closure_v1.py
+      - tests/governance/test_f1_m9_prospective_candidate_selection_campaign_execution_v1.py
+      - docs/ops/specs/F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_NORMATIVE_V1.md
+      - config/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1_decision_v1.json
+    notes: >-
+      EXECUTION_PROOF and authorized-path readiness gates only; runtime authorization schema;
+      no terminal REAL-MD campaign orchestration; CAMPAIGN_EXECUTED=false;
+      REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
     kind: RUNTIME_COMPONENT
