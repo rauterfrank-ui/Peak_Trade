@@ -13,6 +13,9 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_v1 import (
     valid_productive_records_from_ledger_v1,
 )
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+    LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+)
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_runner_v1 import (
     _filter_records_to_integrity_scope_v1,
     assert_ledger_integrity_matrix_v1,
@@ -122,11 +125,24 @@ def _append_historical_orphan_join(join_path: Path) -> None:
     append_max_age_research_evidence_ledger_record_v1(ledger_path=join_path, record=orphan)
 
 
+def test_current_productive_integrity_requires_explicit_scope(tmp_path: Path) -> None:
+    prod, join = _seed_current_session(tmp_path)
+    with pytest.raises(
+        ProductiveEvidenceAccumulationError,
+        match="integrity_scope_required_for_current_productive",
+    ):
+        assert_ledger_integrity_matrix_v1(productive_ledger_path=prod, join_ledger_path=join)
+
+
 def test_scoped_integrity_passes_with_historical_orphan_joins(tmp_path: Path) -> None:
     prod, join = _seed_current_session(tmp_path)
     _append_historical_orphan_join(join)
     with pytest.raises(ProductiveEvidenceAccumulationError, match="extra_join_records"):
-        assert_ledger_integrity_matrix_v1(productive_ledger_path=prod, join_ledger_path=join)
+        assert_ledger_integrity_matrix_v1(
+            productive_ledger_path=prod,
+            join_ledger_path=join,
+            integrity_evaluation_semantics=LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+        )
     scoped = assert_ledger_integrity_matrix_v1(
         productive_ledger_path=prod,
         join_ledger_path=join,

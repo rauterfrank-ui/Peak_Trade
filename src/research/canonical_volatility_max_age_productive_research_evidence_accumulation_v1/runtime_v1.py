@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Optional
+from typing import Any, Mapping, Optional, Sequence
 
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
     CAPABILITY_ID,
@@ -14,6 +14,8 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH,
     EVIDENCE_WRITE_FAILURE_BEHAVIOR,
     HARD_STOP,
+    LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+    LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
     THRESHOLD_STATUS,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.coverage_v1 import (
@@ -279,11 +281,22 @@ def complete_accumulation_session_v1(
         state.session,
         session_end_event_time=session_end_event_time,
     )
-    coverage = evaluate_coverage_from_ledger_v1(
-        productive_ledger_path=state.productive_ledger_path,
-        quarantine_ledger_path=state.quarantine_ledger_path,
-        sessions=[state.session],
-    )
+    if state.campaign_id:
+        coverage = evaluate_coverage_from_ledger_v1(
+            productive_ledger_path=state.productive_ledger_path,
+            quarantine_ledger_path=state.quarantine_ledger_path,
+            sessions=[state.session],
+            coverage_scope_campaign_id=state.campaign_id,
+            coverage_scope_session_ids=(state.session.session_id,),
+            coverage_evaluation_semantics=LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+        )
+    else:
+        coverage = evaluate_coverage_from_ledger_v1(
+            productive_ledger_path=state.productive_ledger_path,
+            quarantine_ledger_path=state.quarantine_ledger_path,
+            sessions=[state.session],
+            coverage_evaluation_semantics=LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+        )
     return {
         "coverage": coverage.to_dict(),
         "session": state.session.to_dict(),
@@ -297,12 +310,18 @@ def reconstruct_coverage_from_ledgers_v1(
     productive_ledger_path: Path,
     quarantine_ledger_path: Path | None = None,
     sessions: list[ProductiveEvidenceSessionV1] | None = None,
+    coverage_scope_campaign_id: str | None = None,
+    coverage_scope_session_ids: Sequence[str] | None = None,
+    coverage_evaluation_semantics: str = LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
 ) -> dict[str, Any]:
     records = valid_productive_records_from_ledger_v1(productive_ledger_path)
     coverage = evaluate_coverage_from_ledger_v1(
         productive_ledger_path=productive_ledger_path,
         quarantine_ledger_path=quarantine_ledger_path,
         sessions=sessions or (),
+        coverage_scope_campaign_id=coverage_scope_campaign_id,
+        coverage_scope_session_ids=coverage_scope_session_ids,
+        coverage_evaluation_semantics=coverage_evaluation_semantics,
     )
     return {
         "coverage": coverage.to_dict(),

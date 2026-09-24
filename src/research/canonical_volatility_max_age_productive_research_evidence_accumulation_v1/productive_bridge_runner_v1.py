@@ -15,10 +15,16 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     DEFAULT_PRODUCTIVE_BRIDGE_CANONICAL_INSTRUMENT_ID,
     DEFAULT_PRODUCTIVE_BRIDGE_VENUE,
     DEFAULT_PRODUCTIVE_BRIDGE_VENUE_INSTRUMENT_ID,
+    LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+    LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
     MAX_PRODUCTIVE_BRIDGE_CYCLES_PER_SESSION,
     MAX_PRODUCTIVE_BRIDGE_SESSIONS_PER_RUN,
     PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,
     THRESHOLD_STATUS,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_campaign_scope_v1 import (
+    filter_productive_records_to_campaign_scope_v1,
+    validate_campaign_session_scope_bindings_v1,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.coverage_v1 import (
     evaluate_coverage_from_ledger_v1,
@@ -113,15 +119,26 @@ def _validate_integrity_scope_bindings_v1(
     campaign_id: str,
     authorized_session_ids: Sequence[str],
 ) -> tuple[str, ...]:
-    camp = str(campaign_id or "").strip()
-    if not camp:
-        raise ProductiveEvidenceAccumulationError("integrity_scope_campaign_id_required")
-    cleaned = [str(s).strip() for s in authorized_session_ids]
-    if not cleaned or any(not s for s in cleaned):
-        raise ProductiveEvidenceAccumulationError("integrity_scope_session_ids_required")
-    if len(cleaned) != len(set(cleaned)):
-        raise ProductiveEvidenceAccumulationError("integrity_scope_session_ids_not_unique")
-    return tuple(sorted(cleaned))
+    try:
+        return validate_campaign_session_scope_bindings_v1(
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        msg = str(exc)
+        if msg == "campaign_session_scope_campaign_id_required":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_campaign_id_required"
+            ) from exc
+        if msg == "campaign_session_scope_session_ids_required":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_session_ids_required"
+            ) from exc
+        if msg == "campaign_session_scope_session_ids_not_unique":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_session_ids_not_unique"
+            ) from exc
+        raise
 
 
 def _filter_records_to_integrity_scope_v1(
@@ -131,23 +148,24 @@ def _filter_records_to_integrity_scope_v1(
     campaign_id: str,
     authorized_session_ids: Sequence[str],
 ) -> tuple[list[Any], list[Any]]:
+    try:
+        scoped_productive = filter_productive_records_to_campaign_scope_v1(
+            productive,
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        if str(exc) == "campaign_session_scope_productive_campaign_mismatch":
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_productive_campaign_mismatch"
+            ) from exc
+        raise
     allowed = set(
         _validate_integrity_scope_bindings_v1(
             campaign_id=campaign_id,
             authorized_session_ids=authorized_session_ids,
         )
     )
-    scoped_productive: list[Any] = []
-    for record in productive:
-        sid = str(getattr(record, "session_id", "") or "")
-        if sid not in allowed:
-            continue
-        rec_campaign = str(getattr(record, "campaign_id", "") or "")
-        if rec_campaign != campaign_id:
-            raise ProductiveEvidenceAccumulationError(
-                "integrity_scope_productive_campaign_mismatch"
-            )
-        scoped_productive.append(record)
     scoped_joins: list[Any] = []
     for join in joins:
         sid = str(getattr(join, "session_id", "") or "")
@@ -173,7 +191,19 @@ def assert_ledger_integrity_matrix_v1(
     join_ledger_path: Path,
     integrity_scope_campaign_id: str | None = None,
     integrity_scope_session_ids: Sequence[str] | None = None,
+    integrity_evaluation_semantics: str = LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
 ) -> dict[str, Any]:
+    if integrity_evaluation_semantics not in {
+        LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+        LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+    }:
+        raise ProductiveEvidenceAccumulationError("integrity_evaluation_semantics_invalid")
+    scoped = integrity_scope_campaign_id is not None and integrity_scope_session_ids is not None
+    if (
+        integrity_evaluation_semantics == LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE
+        and not scoped
+    ):
+        raise ProductiveEvidenceAccumulationError("integrity_scope_required_for_current_productive")
     all_productive = (
         valid_productive_records_from_ledger_v1(productive_ledger_path)
         if productive_ledger_path.exists()
@@ -187,7 +217,6 @@ def assert_ledger_integrity_matrix_v1(
         if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0
         else []
     )
-    scoped = integrity_scope_campaign_id is not None and integrity_scope_session_ids is not None
     if scoped:
         productive, joins = _filter_records_to_integrity_scope_v1(
             all_productive,
@@ -529,6 +558,8 @@ def run_productive_bridge_accumulation_session_v1(
         productive_ledger_path=productive_ledger_path,
         quarantine_ledger_path=quarantine_ledger_path,
         sessions=[acc.session],
+        coverage_scope_campaign_id=campaign_id,
+        coverage_scope_session_ids=(session_id,),
     )
     join_records = (
         load_research_evidence_records_v1(join_ledger_path)
@@ -698,6 +729,8 @@ def run_productive_bridge_accumulate_v1(
     coverage = evaluate_coverage_from_ledger_v1(
         productive_ledger_path=productive_ledger_path,
         quarantine_ledger_path=quarantine_ledger_path,
+        coverage_scope_campaign_id=campaign_id,
+        coverage_scope_session_ids=scope_session_ids,
     )
     return {
         "binding_capability_id": PRODUCTIVE_BRIDGE_BINDING_CAPABILITY_ID,

@@ -877,6 +877,14 @@ def main(argv: list[str] | None = None) -> int:
             DEFAULT_QUARANTINE_LEDGER_RELATIVE_PATH,
         )
 
+        if not args.campaign_id:
+            raise SystemExit("campaign_id_required_for_coverage_only")
+        if not args.session_ids:
+            raise SystemExit("session_ids_required_for_coverage_only")
+        scope_session_ids = tuple(s.strip() for s in str(args.session_ids).split(",") if s.strip())
+        if not scope_session_ids:
+            raise SystemExit("session_ids_required_for_coverage_only")
+
         productive = args.productive_ledger_path or (
             repo_root / DEFAULT_PRODUCTIVE_LEDGER_RELATIVE_PATH
         )
@@ -886,6 +894,8 @@ def main(argv: list[str] | None = None) -> int:
         result = reconstruct_coverage_from_ledgers_v1(
             productive_ledger_path=productive,
             quarantine_ledger_path=quarantine,
+            coverage_scope_campaign_id=str(args.campaign_id),
+            coverage_scope_session_ids=scope_session_ids,
         )
         print(json.dumps(result, sort_keys=True, indent=2, default=str))
         return 0
@@ -988,9 +998,14 @@ def main(argv: list[str] | None = None) -> int:
         productive_path = state.productive_ledger_path
         quarantine_path = state.quarantine_ledger_path
 
+    from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
+        LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+    )
+
     coverage = evaluate_coverage_from_ledger_v1(
         productive_ledger_path=productive_path,
         quarantine_ledger_path=quarantine_path,
+        coverage_evaluation_semantics=LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
     )
     join_records = load_research_evidence_records_v1(join_path)
     join_coverage = coverage_summary_v1(join_records)

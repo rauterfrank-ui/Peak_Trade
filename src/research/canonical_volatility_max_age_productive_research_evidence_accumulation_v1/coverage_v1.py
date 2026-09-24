@@ -8,7 +8,16 @@ from typing import Any, Mapping, Optional, Sequence
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.constants_v1 import (
     COVERAGE_SCHEMA_VERSION,
     ENFORCEMENT_APPLIED,
+    LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+    LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
     THRESHOLD_STATUS,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_campaign_scope_v1 import (
+    filter_productive_records_to_campaign_scope_v1,
+    validate_campaign_session_scope_bindings_v1,
+)
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
+    ProductiveEvidenceAccumulationError,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.ledger_v1 import (
     RECORD_KIND_EVIDENCE,
@@ -157,13 +166,62 @@ def evaluate_coverage_readiness_v1(
     )
 
 
+def _record_in_coverage_scope_v1(
+    record: ProductiveResearchEvidenceRecordV1,
+    *,
+    allowed_session_ids: set[str],
+    campaign_id: str,
+) -> bool:
+    sid = str(record.session_id or "")
+    if sid not in allowed_session_ids:
+        return False
+    rec_campaign = str(record.campaign_id or "")
+    if rec_campaign != campaign_id:
+        raise ProductiveEvidenceAccumulationError("coverage_scope_productive_campaign_mismatch")
+    return True
+
+
 def evaluate_coverage_from_ledger_v1(
     *,
     productive_ledger_path: Path,
     quarantine_ledger_path: Path | None = None,
     sessions: Sequence[Mapping[str, Any]] | Sequence[ProductiveEvidenceSessionV1] = (),
+    coverage_scope_campaign_id: str | None = None,
+    coverage_scope_session_ids: Sequence[str] | None = None,
+    coverage_evaluation_semantics: str = LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
 ) -> CoverageReadinessReportV1:
-    valid = valid_productive_records_from_ledger_v1(productive_ledger_path)
+    if coverage_evaluation_semantics not in {
+        LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE,
+        LEDGER_EVALUATION_SEMANTICS_FORENSIC_GLOBAL,
+    }:
+        raise ProductiveEvidenceAccumulationError("coverage_evaluation_semantics_invalid")
+
+    scoped = coverage_scope_campaign_id is not None and coverage_scope_session_ids is not None
+    if (
+        coverage_evaluation_semantics == LEDGER_EVALUATION_SEMANTICS_CURRENT_PRODUCTIVE
+        and not scoped
+    ):
+        raise ProductiveEvidenceAccumulationError("coverage_scope_required_for_current_productive")
+
+    all_valid = valid_productive_records_from_ledger_v1(productive_ledger_path)
+    allowed_sessions: set[str] | None = None
+    scope_campaign: str | None = None
+    if scoped:
+        scope_campaign = str(coverage_scope_campaign_id)
+        allowed_sessions = set(
+            validate_campaign_session_scope_bindings_v1(
+                campaign_id=scope_campaign,
+                authorized_session_ids=coverage_scope_session_ids or (),
+            )
+        )
+        valid = filter_productive_records_to_campaign_scope_v1(
+            all_valid,
+            campaign_id=scope_campaign,
+            authorized_session_ids=coverage_scope_session_ids or (),
+        )
+    else:
+        valid = list(all_valid)
+
     envelopes = load_productive_evidence_ledger_v1(productive_ledger_path)
     invalid = 0
     duplicates = 0
@@ -171,6 +229,13 @@ def evaluate_coverage_from_ledger_v1(
         if env.record_kind != RECORD_KIND_EVIDENCE:
             continue
         record = productive_record_from_mapping_v1(env.productive_evidence)
+        if scoped and scope_campaign is not None and allowed_sessions is not None:
+            if not _record_in_coverage_scope_v1(
+                record,
+                allowed_session_ids=allowed_sessions,
+                campaign_id=scope_campaign,
+            ):
+                continue
         status, _ = validate_productive_evidence_record_v1(record)
         if status != ValidationStatusV1.VALID:
             invalid += 1
@@ -192,6 +257,8 @@ def evaluate_coverage_from_ledger_v1(
             typed_sessions.append(item)
         else:
             typed_sessions.append(session_from_mapping_v1(item))
+    if scoped and allowed_sessions is not None:
+        typed_sessions = [s for s in typed_sessions if s.session_id in allowed_sessions]
 
     return evaluate_coverage_readiness_v1(
         records=valid,
