@@ -7712,8 +7712,10 @@ entities:
     source_paths:
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorized_run_orchestration_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorization_consume_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/evidence_sealing_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_closure_v1.py
       - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_constants_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/session_work_units_v1.py
     evidence_sources:
       - tests/governance/test_f1_m9_prospective_campaign_authorized_run_orchestration_v1.py
       - docs/ops/specs/F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_NORMATIVE_V1.md
