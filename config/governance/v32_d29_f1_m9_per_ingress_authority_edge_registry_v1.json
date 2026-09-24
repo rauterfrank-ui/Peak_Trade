@@ -1,0 +1,44 @@
+{
+  "schema_version": "v32_d29_f1_m9_per_ingress_authority_edge_registry/v1",
+  "registry_id": "V32_D29_F1_M9_PER_INGRESS_AUTHORITY_EDGE_REGISTRY_V1",
+  "scoped_join_pair_id": "F1-M9-VOLATILITY-MAX-AGE-SECONDS",
+  "authority_effect": "ADJUDICATION_AND_BINDING_ONLY",
+  "edges": [
+    {
+      "edge_id": "CANDIDATE_TO_INGRESS",
+      "classification": "CANONICAL_AUTHORITY"
+    },
+    {
+      "edge_id": "INGRESS_TO_EXPLICIT_AUTHORIZATION",
+      "classification": "CANONICAL_AUTHORITY"
+    },
+    {
+      "edge_id": "SCOPED_JOIN_TO_PER_INGRESS_BINDING",
+      "classification": "ADJUDICATED"
+    },
+    {
+      "edge_id": "EXPLICIT_AUTH_TO_CONFIGURATION",
+      "classification": "CANONICAL_AUTHORITY"
+    },
+    {
+      "edge_id": "CONFIGURATION_TO_SEAM",
+      "classification": "CANONICAL_AUTHORITY"
+    },
+    {
+      "edge_id": "SEAM_TO_RUNTIME_TRANSPORT",
+      "classification": "ADJUDICATED"
+    },
+    {
+      "edge_id": "RUNTIME_TRANSPORT_TO_CONSUMER",
+      "classification": "ADJUDICATED"
+    },
+    {
+      "edge_id": "PRODUCTIVE_APPLY_BOUNDARY",
+      "classification": "OWNER_POLICY"
+    },
+    {
+      "edge_id": "OPTIMIZATION_DIRECT_RUNTIME_WRITE",
+      "classification": "FORBIDDEN"
+    }
+  ]
+}
