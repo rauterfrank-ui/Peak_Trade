@@ -28,6 +28,9 @@ from src.ops.p5_productive_layered_core_authority_seam_v1.constants_v1 import (
     P5_AUTHORITY_CUTOVER_AUTHORIZED,
     PRODUCTIVE_DECISION_PATH_CUTOVER_ENABLED,
 )
+from src.governance.d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1 import (
+    prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1,
+)
 from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
     EARLIEST_GAP_AFTER_F1_F2_ENFORCED,
     prove_d27_f1_f2_test_entry_lifecycle_enforcement_v1,
@@ -313,10 +316,16 @@ def adjudicate_v32_baseline_first_requirements_v1(
         d27_notes = "Research phases after baseline: governance predecessor incomplete."
     elif d27_f1_f2:
         d27_missing = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        f5_adj = prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1(repo_root=root)
         d27_notes = (
             "F1/F2 TEST_READY executors enforce pre-test TEST_ENTRY_GATE plus D26 native "
             "baseline admission at research entry; F5 shadow families not lifecycle-wired."
         )
+        if f5_adj:
+            d27_notes += (
+                " F5-FRESH/F5-SURV/F5-CAP forensically adjudicated (read-only); "
+                "bounded wiring deferred pending owner policy on D26 shadow baseline binding."
+            )
         d27_wiring = d27_wiring + (
             "src/governance/d27_research_test_entry_lifecycle_enforcement_v1.py",
             (
@@ -325,6 +334,10 @@ def adjudicate_v32_baseline_first_requirements_v1(
             ),
             "src/experiments/canonical_f2_research_backtest_cost_grid_research_execution_v1.py",
         )
+        if f5_adj:
+            d27_wiring = d27_wiring + (
+                "src/governance/d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1.py",
+            )
     else:
         d27_missing = "test_entry_gate_defined_not_lifecycle_enforced_globally"
         d27_notes = (
