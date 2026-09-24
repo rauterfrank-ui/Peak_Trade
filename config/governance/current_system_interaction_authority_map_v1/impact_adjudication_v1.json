@@ -4,9 +4,10 @@
   "selector_used_as_map_impact_authority": false,
   "base_sha": "17effb55562626344bc35f49e695740a22f04901",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "V32 D27 F5 shadow subfamily adjudication v1: read-only forensic matrix, governance module, and Atlas catalog refresh. No structured interaction-map source or authority projection change. AUTHORITY=NONE.",
+  "reason": "V32 D27 F5 shadow subfamily adjudication v1: read-only forensic matrix, governance module, candidate-catalog extension, and Atlas catalog refresh. No structured interaction-map source_v1.json change. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/v32_d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_AUTHORITY_SUBFAMILY_ADJUDICATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -19,7 +20,7 @@
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "tests/governance/test_d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "4ce93e59bb2432fe5c1f0238a68260ad0364205ce46644b7744239b745f28d20",
+  "changed_paths_sha256": "pending",
   "evidence_refs": [
     "config/governance/v32_d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_AUTHORITY_SUBFAMILY_ADJUDICATION_V1.md"
