@@ -11,6 +11,9 @@ from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Any, Final, Mapping
 
+from src.governance.f1_m9_scoped_owner_apply_constants_v1 import (
+    is_f1_m9_scoped_runtime_apply_authority_v1,
+)
 from src.governance.governed_productive_configuration_v1 import (
     DISPOSITION_CONFIGURATION_ONLY,
     STATUS_MATERIALIZED,
@@ -131,8 +134,12 @@ def bind_authorized_productive_parameter_seam_v1(
         reason_codes.append("THRESHOLD_CAPABILITY_MISMATCH")
     if record.get("enforcement_enabled") is True:
         reason_codes.append("ENFORCEMENT_FORBIDDEN")
-    if record.get("runtime_applied") is True:
+    runtime_applied = record.get("runtime_applied") is True
+    runtime_apply_authority = str(record.get("runtime_apply_authority") or "")
+    if runtime_applied and not is_f1_m9_scoped_runtime_apply_authority_v1(runtime_apply_authority):
         reason_codes.append("RUNTIME_APPLY_FORBIDDEN")
+    if runtime_applied and not record.get("owner_apply_authorization_record_digest"):
+        reason_codes.append("OWNER_APPLY_AUTHORIZATION_DIGEST_MISSING")
 
     config_numeric = record.get("numeric_max_age_seconds")
     authorized_numeric = record.get("authorized_candidate_max_age_seconds")
@@ -182,8 +189,15 @@ def bind_authorized_productive_parameter_seam_v1(
         "enforcement_enabled": False,
         "enforcement_authority": ENFORCEMENT_AUTHORITY,
         "trading_decision_authority": TRADING_DECISION_AUTHORITY,
-        "consumer_bound": True,
-        "runtime_applied": False,
+        "consumer_bound": runtime_applied,
+        "runtime_applied": runtime_applied,
+        "runtime_apply_authority": runtime_apply_authority,
+        "owner_apply_authorization_record_digest": record.get(
+            "owner_apply_authorization_record_digest"
+        ),
+        "productive_apply_authorization_digest": record.get(
+            "productive_apply_authorization_digest"
+        ),
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
     }
     seam_digest = compute_content_sha256(seam_body)

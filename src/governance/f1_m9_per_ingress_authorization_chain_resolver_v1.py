@@ -1,7 +1,8 @@
 """F1/M9 per-ingress authorization chain resolver v1 (composition through runtime transport).
 
-Resolves governance ingress → explicit authorization → configuration → seam → runtime
-transport for the presence-gate consumer. Stops before productive apply.
+Resolves governance ingress → explicit authorization → configuration → optional F1/M9
+Owner Apply → seam → runtime transport for the presence-gate consumer.
+Without a valid Owner Apply record, stops before productive apply.
 """
 
 from __future__ import annotations
@@ -23,10 +24,19 @@ from src.governance.explicit_productive_authorization_v1 import (
     STATUS_AUTHORIZED_BOUNDARY,
     evaluate_explicit_productive_authorization_v1,
 )
+from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
+    OwnerApplyAuthorizationInputV1,
+)
 from src.governance.f1_m9_per_ingress_productive_authorization_binding_v1 import (
     PerIngressAuthorizationBindingV1,
     PerIngressBindingStatusV1,
     evaluate_f1_m9_per_ingress_authorization_binding_v1,
+)
+from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyLedgerPathsV1
+from src.governance.f1_m9_scoped_owner_apply_authority_v1 import (
+    F1M9ScopedOwnerApplyAdjudicationRequestV1,
+    RUNTIME_APPLY_AUTHORITY_VALUE,
+    evaluate_f1_m9_scoped_owner_productive_apply_v1,
 )
 from src.governance.governed_productive_configuration_v1 import (
     GovernedProductiveConfigurationMaterializeRequestV1,
@@ -93,8 +103,10 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
     admission: OptimizationProposalGovernanceAdmissionResultV1,
     owner_input: OwnerExplicitProductiveAuthorizationInputV1,
     registry_digest: str,
+    owner_apply_input: OwnerApplyAuthorizationInputV1 | None = None,
+    ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None = None,
 ) -> PerIngressChainResolutionV1:
-    """Fail-closed chain through runtime transport; apply remains blocked."""
+    """Fail-closed chain through runtime transport; apply requires Owner Apply record."""
     apply_blocked = AUTHORIZED_FOR_PRODUCTIVE_APPLY is False and not runtime_apply_possible_v1()
     if not apply_blocked:
         return PerIngressChainResolutionV1(
@@ -185,8 +197,56 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
         )
 
+    configuration_for_seam = configuration
+    runtime_apply_authority = RUNTIME_APPLY_AUTHORITY
+    productive_apply_authorized = False
+
+    if owner_apply_input is not None:
+        if ledger_paths is None:
+            return PerIngressChainResolutionV1(
+                chain_status="DENIED_FAIL_CLOSED",
+                stop_stage=ChainStageV1.PRODUCTIVE_APPLY,
+                reason_codes=("APPLY_LEDGER_PATHS_REQUIRED",),
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration,
+                seam=None,
+                runtime_transport=None,
+                productive_apply_authorized=False,
+                runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            )
+        apply_result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
+            F1M9ScopedOwnerApplyAdjudicationRequestV1(
+                owner_apply_input=owner_apply_input,
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration,
+                registry_digest=registry_digest,
+                ledger_paths=ledger_paths,
+            )
+        )
+        if (
+            not apply_result.productive_apply_authorized
+            or apply_result.configuration_after_apply is None
+        ):
+            return PerIngressChainResolutionV1(
+                chain_status="DENIED_FAIL_CLOSED",
+                stop_stage=ChainStageV1.PRODUCTIVE_APPLY,
+                reason_codes=apply_result.reason_codes,
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration,
+                seam=None,
+                runtime_transport=None,
+                productive_apply_authorized=False,
+                runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            )
+        configuration_for_seam = apply_result.configuration_after_apply
+        runtime_apply_authority = apply_result.runtime_apply_authority
+        productive_apply_authorized = True
+
     seam = bind_authorized_productive_parameter_seam_v1(
-        AuthorizedProductiveParameterSeamBindRequestV1(configuration=configuration)
+        AuthorizedProductiveParameterSeamBindRequestV1(configuration=configuration_for_seam)
     )
     if seam.seam_record is None:
         return PerIngressChainResolutionV1(
@@ -217,17 +277,31 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
         )
 
+    if not productive_apply_authorized:
+        return PerIngressChainResolutionV1(
+            chain_status="RESOLVED_THROUGH_RUNTIME_TRANSPORT_APPLY_BLOCKED",
+            stop_stage=ChainStageV1.PRODUCTIVE_APPLY,
+            reason_codes=(PRODUCTIVE_APPLY_STAGE_STATUS, CHAIN_STOP_BEFORE),
+            per_ingress_binding=binding,
+            authorization=authorization,
+            configuration=configuration,
+            seam=seam,
+            runtime_transport=transport,
+            productive_apply_authorized=False,
+            runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+        )
+
     return PerIngressChainResolutionV1(
-        chain_status="RESOLVED_THROUGH_RUNTIME_TRANSPORT_APPLY_BLOCKED",
-        stop_stage=ChainStageV1.PRODUCTIVE_APPLY,
-        reason_codes=(PRODUCTIVE_APPLY_STAGE_STATUS, CHAIN_STOP_BEFORE),
+        chain_status="RESOLVED_THROUGH_RUNTIME_TRANSPORT_F1_M9_APPLY_AUTHORIZED",
+        stop_stage=ChainStageV1.RUNTIME_TRANSPORT,
+        reason_codes=("F1_M9_OWNER_APPLY_AUTHORIZED",),
         per_ingress_binding=binding,
         authorization=authorization,
-        configuration=configuration,
+        configuration=configuration_for_seam,
         seam=seam,
         runtime_transport=transport,
-        productive_apply_authorized=False,
-        runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+        productive_apply_authorized=True,
+        runtime_apply_authority=runtime_apply_authority,
     )
 
 
