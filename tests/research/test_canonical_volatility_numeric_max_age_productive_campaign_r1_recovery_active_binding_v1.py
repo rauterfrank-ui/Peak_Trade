@@ -240,18 +240,9 @@ def test_13_preflight_rejects_tombstone_campaign() -> None:
         )
 
 
-def test_14_materialization_provenance_matches_origin_main_head() -> None:
-    import subprocess
-
-    binding = load_active_campaign_binding_v1(repo_root=ROOT)
-    checkout_sha = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"], cwd=str(ROOT), text=True
-    ).strip()
-    origin_main_sha = subprocess.check_output(
-        ["git", "rev-parse", "origin/main"], cwd=str(ROOT), text=True
-    ).strip()
-    assert checkout_sha
-    assert checkout_sha == origin_main_sha
-    assert checkout_sha == binding.repository_sha
+def test_14_materialization_provenance_locked_to_r1_baseline_sha() -> None:
+    """Campaign identity SHA is immutable; feature-branch HEAD may advance past it."""
+    binding = load_active_campaign_binding_v1(repo_root=ROOT, expected_repository_sha=SHA)
+    assert binding.repository_sha == SHA
     resolved = resolve_active_campaign_binding_for_runtime_v1(repo_root=ROOT)
-    assert resolved.repository_sha == binding.repository_sha
+    assert resolved.repository_sha == SHA
