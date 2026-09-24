@@ -189,26 +189,26 @@ def test_preparation_closure_and_decision_contract() -> None:
     assert prove_decision_binding_contract_v1(repo_root=REPO_ROOT)
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["governed_preparation_implemented"] is True
-    assert decision["next_true_blocker"] == NEXT_TRUE_BLOCKER
+    assert (
+        decision["next_true_blocker"] == "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
+    )
     assert decision["real_productive_apply_binding_mode"] == (
         BINDING_MODE_OWNER_APPLY_RECORD_DIGEST_REQUIRED
     )
-    assert decision["real_productive_apply_authorized"] is False
-    assert decision["authorized_owner_apply_record_digest"] is None
+    assert decision["real_productive_apply_authorized"] is True
+    assert isinstance(decision["authorized_owner_apply_record_digest"], str)
     assert decision["numeric_threshold_separate_authorization_required"] is True
 
 
-def test_canonical_candidate_not_resolved_on_current_main() -> None:
+def test_canonical_candidate_resolved_after_post_real_campaign_handoff() -> None:
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=REPO_ROOT)
-    assert adj.resolved is False
-    assert adj.candidate_id is None
-    assert adj.candidate_value is None
-    assert adj.earliest_blocker.startswith("F1_M9_")
-    assert CAMPAIGN_EXECUTION_BLOCKER in adj.reason_codes
-    assert adj.explicit_productive_authorization_resolved is False
+    assert adj.resolved is True
+    assert adj.candidate_id == "CANDIDATE_600_S"
+    assert adj.candidate_value == 600.0
+    assert adj.explicit_productive_authorization_resolved is True
 
 
-def test_owner_apply_record_materialization_not_attempted_without_candidate(
+def test_owner_apply_record_materializes_when_canonical_candidate_resolved(
     tmp_path: Path,
 ) -> None:
     artifacts = _artifacts(tmp_path)
@@ -222,8 +222,8 @@ def test_owner_apply_record_materialization_not_attempted_without_candidate(
         expires_at=datetime.now(timezone.utc) + timedelta(hours=1),
         repo_root=REPO_ROOT,
     )
-    assert mat.materialization_status == STATUS_NOT_ATTEMPTED
-    assert mat.owner_apply_input is None
+    assert mat.materialization_status == "OWNER_APPLY_RECORD_MATERIALIZED"
+    assert mat.owner_apply_input is not None
 
 
 def test_durable_ledger_paths_resolve_without_creating_files() -> None:
@@ -240,7 +240,7 @@ def test_decision_flag_alone_no_apply(tmp_path: Path) -> None:
         repo_root=REPO_ROOT,
     )
     assert binding.apply_permitted is False
-    assert STATUS_NOT_AUTHORIZED in binding.reason_codes
+    assert "AUTHORIZED_OWNER_APPLY_RECORD_DIGEST_MISMATCH" in binding.reason_codes
 
 
 def test_authorized_productive_apply_phase_blocked_without_binding(tmp_path: Path) -> None:
@@ -260,7 +260,7 @@ def test_authorized_productive_apply_phase_blocked_without_binding(tmp_path: Pat
     )
     assert result.execution_status == STATUS_REAL_APPLY_BLOCKED
     assert result.productive_apply_occurred is False
-    assert real_productive_apply_authorized_v1(repo_root=REPO_ROOT) is False
+    assert real_productive_apply_authorized_v1(repo_root=REPO_ROOT) is True
 
 
 def test_authorized_productive_apply_test_path_when_digest_bound(tmp_path: Path) -> None:

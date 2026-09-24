@@ -66,6 +66,24 @@ def prove_f1_m9_real_productive_apply_governed_preparation_v1(
     decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
     if decision.get("governed_preparation_implemented") is not True:
         return False
+    handoff_decision_path = decision.get("post_real_campaign_handoff_decision")
+    if isinstance(handoff_decision_path, str):
+        handoff_path = root / handoff_decision_path
+        if handoff_path.is_file():
+            handoff = json.loads(handoff_path.read_text(encoding="utf-8"))
+            if handoff.get("bounded_handoff_complete") is True:
+                if decision.get("real_productive_apply_authorized") is not True:
+                    return False
+                if decision.get("canonical_productive_candidate_resolved") is not True:
+                    return False
+                adjudication = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=root)
+                if not adjudication.resolved:
+                    return False
+                try:
+                    _ = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=root)
+                except Exception:
+                    return False
+                return True
     if decision.get("real_productive_apply_authorized") is True:
         return False
     if decision.get("productive_apply_occurred") is True:

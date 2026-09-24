@@ -13,11 +13,19 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.
     NORMATIVE_SPEC,
     WORKPACKAGE_ID,
 )
+from src.governance.f1_m9_post_real_campaign_productive_handoff_artifacts_v1 import (
+    post_real_campaign_handoff_bounded_complete_v1,
+)
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.execution_boundary_v1 import (
     CAMPAIGN_EXECUTED,
     NEW_DECISION_MAKING_EVIDENCE_GENERATED,
     prove_execution_proof_v1,
 )
+
+POST_REAL_HANDOFF_BLOCKER: Final[str] = (
+    "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
+)
+THRESHOLD_VALUE_BLOCKER: Final[str] = "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 from src.governance.f1_m9_productive_candidate_selection_policy_closure_v1 import (
     prove_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v1,
 )
@@ -48,23 +56,35 @@ def prove_f1_m9_prospective_candidate_selection_campaign_execution_owner_v1(
         return False
     if not prove_execution_proof_v1(repo_root=root):
         return False
-    if CAMPAIGN_EXECUTED:
-        return False
-    if NEW_DECISION_MAKING_EVIDENCE_GENERATED:
-        return False
+    handoff_complete = post_real_campaign_handoff_bounded_complete_v1(repo_root=root)
+    decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
+    if handoff_complete:
+        if decision.get("campaign_executed") is not True:
+            return False
+        if decision.get("new_decision_making_evidence_generated") is not True:
+            return False
+    else:
+        if CAMPAIGN_EXECUTED:
+            return False
+        if NEW_DECISION_MAKING_EVIDENCE_GENERATED:
+            return False
     if AUTHORIZED_FOR_PRODUCTIVE_APPLY is not False:
         return False
     if int(PRODUCTIVE_NUMERIC_VALUES_SET) != 0:
         return False
-    decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
     if decision.get("execution_owner_implemented") is not True:
         return False
-    if decision.get("runtime_authorization_active") is True:
-        return False
-    if decision.get("campaign_executed") is True:
-        return False
-    if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER:
-        return False
+    if handoff_complete:
+        next_blocker = str(decision.get("next_true_blocker") or "")
+        if next_blocker not in (POST_REAL_HANDOFF_BLOCKER, THRESHOLD_VALUE_BLOCKER):
+            return False
+    else:
+        if decision.get("runtime_authorization_active") is True:
+            return False
+        if decision.get("campaign_executed") is True:
+            return False
+        if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER:
+            return False
     return True
 
 

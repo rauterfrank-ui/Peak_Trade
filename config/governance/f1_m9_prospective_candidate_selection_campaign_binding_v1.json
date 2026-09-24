@@ -1,10 +1,10 @@
 {
   "artifact_class": "F1_M9_PROSPECTIVE_CANDIDATE_SELECTION_CAMPAIGN_BINDING_V1",
-  "campaign_executed": false,
-  "campaign_execution_authorized": false,
+  "campaign_executed": true,
+  "campaign_execution_authorized": true,
   "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
   "campaign_preregistered": true,
-  "decision_making_evidence_generated": false,
+  "decision_making_evidence_generated": true,
   "owner_selection_policy_digest": "2bab88a8289fb0322ea2e9d1f0133d05543f9a899d2ba7602a4509c4a184d2a1",
   "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c",
   "productive_apply_authorized": false,

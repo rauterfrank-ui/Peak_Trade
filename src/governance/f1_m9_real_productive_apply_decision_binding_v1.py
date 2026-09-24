@@ -163,9 +163,12 @@ def prove_decision_binding_contract_v1(*, repo_root: Path | None = None) -> bool
         != BINDING_MODE_OWNER_APPLY_RECORD_DIGEST_REQUIRED
     ):
         return False
-    if decision.get("real_productive_apply_authorized") is True:
-        return False
     digest = decision.get("authorized_owner_apply_record_digest")
+    flag = decision.get("real_productive_apply_authorized") is True
+    if flag:
+        if not isinstance(digest, str) or not is_valid_sha256_hex(digest):
+            return False
+        return True
     if digest is not None:
         return False
     return True

@@ -17,6 +17,16 @@ from src.governance.f1_m9_canonical_productive_candidate_evidence_census_v1 impo
     OWNER_POLICY_BLOCKER,
     run_f1_m9_canonical_productive_candidate_evidence_census_v1,
 )
+from src.governance.f1_m9_post_real_campaign_productive_handoff_artifacts_v1 import (
+    load_explicit_productive_authorization_artifact_v1,
+)
+from src.governance.f1_m9_prospective_real_campaign_durable_evidence_verification_v1 import (
+    verify_f1_m9_prospective_real_campaign_durable_evidence_v1,
+)
+
+PROSPECTIVE_CAMPAIGN_ID: Final[str] = (
+    "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032"
+)
 from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
     OPTIMIZATION_SURFACE_ID,
     PRODUCTIVE_TARGET_ID,
@@ -46,6 +56,9 @@ BLOCKER_NO_GOVERNED_OPTIMIZATION_INGRESS_SNAPSHOT: Final[str] = (
 )
 BLOCKER_NO_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT: Final[str] = (
     "F1_M9_NO_TRACKED_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT"
+)
+BLOCKER_DURABLE_REAL_CAMPAIGN_EVIDENCE_NOT_VERIFIED: Final[str] = (
+    "F1_M9_DURABLE_REAL_CAMPAIGN_EVIDENCE_NOT_VERIFIED"
 )
 
 CANONICAL_EARLY_BLOCKER: Final[str] = BLOCKER_COUNTERFACTUAL_EVIDENCE_ONLY
@@ -94,6 +107,22 @@ def _load_json_mapping(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _explicit_auth_resolved(*, repo_root: Path) -> bool:
+    artifact = load_explicit_productive_authorization_artifact_v1(repo_root=repo_root)
+    if artifact is None:
+        return False
+    digest = str(artifact.get("artifact_digest") or "")
+    body = {k: v for k, v in artifact.items() if k != "artifact_digest"}
+    from src.meta.learning_loop.contract_safety_v1 import (
+        compute_content_sha256,
+        is_valid_sha256_hex,
+    )
+
+    if not is_valid_sha256_hex(digest):
+        return False
+    return compute_content_sha256(body) == digest
+
+
 def adjudicate_canonical_f1_m9_productive_candidate_v1(
     *,
     repo_root: Path | None = None,
@@ -104,8 +133,41 @@ def adjudicate_canonical_f1_m9_productive_candidate_v1(
     if surface_id != F1_M9_OPTIMIZATION_SURFACE_ID:
         raise ValueError("F1_M9_SURFACE_ID_MISMATCH")
 
+    durable = verify_f1_m9_prospective_real_campaign_durable_evidence_v1(
+        repo_root=root,
+        campaign_id=PROSPECTIVE_CAMPAIGN_ID,
+    )
+    explicit_auth = _explicit_auth_resolved(repo_root=root)
+
+    if durable.verified:
+        reason_codes: list[str] = []
+        if not explicit_auth:
+            reason_codes.append(BLOCKER_NO_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT)
+        return F1M9CanonicalProductiveCandidateAdjudicationV1(
+            resolved=True,
+            reason_codes=tuple(reason_codes),
+            earliest_blocker=(
+                BLOCKER_NO_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT if not explicit_auth else ""
+            ),
+            surface_id=surface_id,
+            parameter_id=TARGET_POLICY_PARAMETER,
+            source_candidate_parameter=SOURCE_CANDIDATE_PARAMETER,
+            productive_target_id=PRODUCTIVE_TARGET_ID,
+            candidate_id=durable.selected_candidate_id,
+            candidate_value=(
+                float(durable.selected_max_age_seconds)
+                if durable.selected_max_age_seconds is not None
+                else None
+            ),
+            evidence_id=durable.runtime_authorization_id,
+            evidence_digest=durable.evidence_bundle_digest,
+            campaign_id=durable.campaign_id,
+            explicit_productive_authorization_resolved=explicit_auth,
+        )
+
     census = run_f1_m9_canonical_productive_candidate_evidence_census_v1(repo_root=root)
-    reason_codes: list[str] = []
+    reason_codes = list(durable.reason_codes)
+    reason_codes.append(BLOCKER_DURABLE_REAL_CAMPAIGN_EVIDENCE_NOT_VERIFIED)
 
     if not census.preregistration_threshold_selection_authorized:
         reason_codes.append(BLOCKER_THRESHOLD_SELECTION_FORBIDDEN)
@@ -116,16 +178,25 @@ def adjudicate_canonical_f1_m9_productive_candidate_v1(
         reason_codes.append(BLOCKER_COUNTERFACTUAL_EVIDENCE_ONLY)
     if not census.optimization_ingress_snapshot_tracked:
         reason_codes.append(BLOCKER_NO_GOVERNED_OPTIMIZATION_INGRESS_SNAPSHOT)
-    reason_codes.append(BLOCKER_NO_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT)
+    if not explicit_auth:
+        reason_codes.append(BLOCKER_NO_EXPLICIT_PRODUCTIVE_AUTHORIZATION_ARTIFACT)
     if census.owner_policy_required:
         reason_codes.append(OWNER_POLICY_BLOCKER)
     if census.new_prospective_campaign_required:
         reason_codes.append("F1_M9_NEW_PROSPECTIVE_SELECTION_CAMPAIGN_REQUIRED")
     if not census.owner_policy_required:
-        reason_codes.append(census.earliest_blocker)
-        reason_codes.append("F1_M9_NO_DECISION_MAKING_EVIDENCE_UNDER_NEW_PREREGISTRATION")
+        reason_codes.extend(
+            (
+                census.earliest_blocker,
+                "F1_M9_NO_DECISION_MAKING_EVIDENCE_UNDER_NEW_PREREGISTRATION",
+            )
+        )
 
-    earliest = census.earliest_blocker
+    earliest = (
+        BLOCKER_DURABLE_REAL_CAMPAIGN_EVIDENCE_NOT_VERIFIED
+        if durable.reason_codes
+        else census.earliest_blocker
+    )
 
     return F1M9CanonicalProductiveCandidateAdjudicationV1(
         resolved=False,
@@ -140,11 +211,12 @@ def adjudicate_canonical_f1_m9_productive_candidate_v1(
         evidence_id=None,
         evidence_digest=None,
         campaign_id=census.campaign_id,
-        explicit_productive_authorization_resolved=False,
+        explicit_productive_authorization_resolved=explicit_auth,
     )
 
 
 __all__ = [
+    "BLOCKER_DURABLE_REAL_CAMPAIGN_EVIDENCE_NOT_VERIFIED",
     "CANONICAL_EARLY_BLOCKER",
     "F1M9CanonicalProductiveCandidateAdjudicationV1",
     "SCHEMA_VERSION",

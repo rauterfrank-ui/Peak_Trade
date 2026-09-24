@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=6
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,12 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1` |
+| `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
+| `RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1` |
+| `RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1` |
 | `RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1` |
 | `RUNTIME_COMPONENT:f1_m9_real_prospective_campaign_execution_enablement_v1` |
-| `RUNTIME_COMPONENT:f1_m9_real_campaign_activation_and_production_wiring_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 REAL campaign activation and production wiring: process REAL enablement, production public-MD adapter, CLI bootstrap; slice does not execute campaign; EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- POST-6800 bounded productive handoff: durable REAL evidence verification, canonical candidate resolution, explicit productive authorization, governed config, owner apply, and parameter-seam binding only; stops before threshold enforcement; EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_V1
+- modified_by=F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -21,9 +21,17 @@ from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.real_public_md_session_adapter_v1 import (
     resolve_canonical_real_md_supplier_runtime_binding_v1,
 )
+from src.governance.f1_m9_post_real_campaign_productive_handoff_artifacts_v1 import (
+    post_real_campaign_handoff_bounded_complete_v1,
+)
 from src.governance.f1_m9_prospective_candidate_selection_campaign_execution_v1.runtime_authorization_issuance_v1 import (
     ISSUANCE_OWNER_ID,
 )
+
+POST_REAL_HANDOFF_BLOCKER: Final[str] = (
+    "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
+)
+THRESHOLD_VALUE_BLOCKER: Final[str] = "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 
 SCHEMA_VERSION: Final[str] = "f1_m9_real_prospective_campaign_execution_enablement_closure/v1"
 
@@ -81,18 +89,39 @@ def prove_f1_m9_real_prospective_campaign_execution_enablement_v1(
         return False
     if decision.get("real_authorized_execution_separate") is not True:
         return False
-    if decision.get("campaign_executed") is True:
-        return False
-    if decision.get("public_market_data_external_read_occurred") is True:
-        return False
-    if decision.get("real_evidence_written") is True:
-        return False
-    if decision.get("runtime_authorization_issued_for_real_campaign") is True:
-        return False
-    if decision.get("runtime_authorization_consumed") is True:
-        return False
-    if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER_AFTER_ENABLEMENT:
-        return False
+    handoff_complete = post_real_campaign_handoff_bounded_complete_v1(repo_root=root)
+    orchestration = json.loads(
+        (
+            root
+            / "config/governance/f1_m9_prospective_campaign_authorized_run_orchestration_v1_decision_v1.json"
+        ).read_text(encoding="utf-8")
+    )
+    real_run_complete = orchestration.get("campaign_executed") is True
+    if handoff_complete or real_run_complete:
+        if decision.get("campaign_executed") is not True:
+            return False
+        if decision.get("real_evidence_written") is not True:
+            return False
+        if decision.get("runtime_authorization_issued_for_real_campaign") is not True:
+            return False
+        if decision.get("runtime_authorization_consumed") is not True:
+            return False
+        next_blocker = str(decision.get("next_true_blocker") or "")
+        if next_blocker not in (POST_REAL_HANDOFF_BLOCKER, THRESHOLD_VALUE_BLOCKER):
+            return False
+    else:
+        if decision.get("campaign_executed") is True:
+            return False
+        if decision.get("public_market_data_external_read_occurred") is True:
+            return False
+        if decision.get("real_evidence_written") is True:
+            return False
+        if decision.get("runtime_authorization_issued_for_real_campaign") is True:
+            return False
+        if decision.get("runtime_authorization_consumed") is True:
+            return False
+        if decision.get("next_true_blocker") != NEXT_TRUE_BLOCKER_AFTER_ENABLEMENT:
+            return False
     return True
 
 
