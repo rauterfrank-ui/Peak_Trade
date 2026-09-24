@@ -2,48 +2,43 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "base_sha": "2a7dce95a6db85287a234b4b3b561db443202d59",
+  "base_sha": "0ef17b66737cff30b21fad4854e6b5e66f93a4de",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "V32 D27 F5 shadow test-entry lifecycle enforcement v1: bounded fail-closed admission at run_shadow_campaign_v1; governance module + shadow campaign seam only. No structured interaction-map source_v1.json change. AUTHORITY=NONE.",
+  "reason": "V32 D27 F5-SURV/F5-CAP per-token shadow test-entry lifecycle closure: bounded fail-closed admission at run_shadow_campaign_v1; extends existing F5-FRESH enforcement without structured interaction-map source_v1.json change. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json",
     "config/governance/v32_d27_f5_shadow_test_entry_lifecycle_enforcement_v1_decision_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/campaign_runner_v1.py",
     "tests/governance/test_d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
     "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
-    "tests/ops/test_productive_pure_stack_numeric_policy_shadow_campaign_v1.py"
+    "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py"
   ],
-  "changed_paths_sha256": "10308761190fdf4670c1861119b611bf1e356fc647fa2e8818ad96db1f8c5135",
+  "changed_paths_sha256": "de5cd377d891fa70c3265e011690f8895d315c92286398afdf05db5b33bc029b",
   "evidence_refs": [
     "config/governance/v32_d27_f5_shadow_test_entry_lifecycle_enforcement_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md"
   ],
   "covered_candidate_paths": [
+    "config/governance/v32_current_mv2_dp_concept_alignment_v1_decision_v1.json",
     "config/governance/v32_d27_f5_shadow_test_entry_lifecycle_enforcement_v1_decision_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "config/governance/v32_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1_decision_v1.json",
     "docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
     "src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
     "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/campaign_runner_v1.py",
     "tests/governance/test_d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
     "tests/governance/test_naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py",
-    "tests/ops/test_productive_pure_stack_numeric_policy_shadow_campaign_v1.py"
+    "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py"
   ]
 }

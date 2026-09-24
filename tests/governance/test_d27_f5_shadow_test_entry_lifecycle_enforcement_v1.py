@@ -18,8 +18,11 @@ from src.governance.d27_f5_shadow_test_entry_lifecycle_enforcement_v1 import (
     DECISION_CONFIG,
     D27F5ShadowTestEntryLifecycleError,
     F5_FRESH_TEST_ENTRY_GATE,
+    F5_SURV_CAP_TEST_ENTRY_GATE,
+    enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1,
     enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1,
     enforce_d27_f5_shadow_test_entry_lifecycle_admission_v1,
+    enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1,
     prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1,
 )
 from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.campaign_runner_v1 import (
@@ -52,6 +55,10 @@ def test_decision_closure_and_regression_6768_6769() -> None:
     )
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["f5_shadow_lifecycle_enforcement_implemented"] is True
+    assert decision["f5_surv_cap_lifecycle_enforcement_implemented"] is True
+    assert set(decision["enforced_family_gate_ids"]) == {"F5-FRESH", "F5-SURV", "F5-CAP"}
+    assert decision["earliest_remaining_d27_gap"] is None
+    assert decision["d27_status"] == "PROVEN_CURRENT"
     assert decision["d26_native_baseline_required_on_f5"] is False
     assert decision["productive_numeric_values_set_current"] == 0
     assert decision["new_authority_created"] is False
@@ -143,3 +150,36 @@ def test_shadow_campaign_runner_happy_path_uses_lifecycle(tmp_path: Path) -> Non
     assert result.rejection_reasons == () or "stage1_manifest_digest_mismatch" not in (
         result.rejection_reasons
     )
+
+
+def test_f5_surv_cap_registry_conjunction_admits() -> None:
+    stage1 = sha256_file(REPO_ROOT / STAGE1_MANIFEST_REL)
+    protocol = sha256_file(REPO_ROOT / CALIBRATION_PROTOCOL_REL)
+    surv = enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1(
+        repo_root=REPO_ROOT,
+        declared_stage1_manifest_digest=stage1,
+        declared_calibration_protocol_digest=protocol,
+    )
+    cap = enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1(
+        repo_root=REPO_ROOT,
+        declared_stage1_manifest_digest=stage1,
+        declared_calibration_protocol_digest=protocol,
+    )
+    assert surv.test_entry_gate == F5_SURV_CAP_TEST_ENTRY_GATE
+    assert cap.test_entry_gate == F5_SURV_CAP_TEST_ENTRY_GATE
+    assert surv.family_gate_id == "F5-SURV"
+    assert cap.family_gate_id == "F5-CAP"
+    assert len(surv.per_token_registry_tokens) == 10
+    assert len(cap.per_token_registry_tokens) == 7
+
+
+def test_f5_surv_gate_mismatch_denied() -> None:
+    stage1 = sha256_file(REPO_ROOT / STAGE1_MANIFEST_REL)
+    protocol = sha256_file(REPO_ROOT / CALIBRATION_PROTOCOL_REL)
+    with pytest.raises(D27F5ShadowTestEntryLifecycleError, match="TEST_ENTRY_GATE_MISMATCH"):
+        enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1(
+            repo_root=REPO_ROOT,
+            declared_stage1_manifest_digest=stage1,
+            declared_calibration_protocol_digest=protocol,
+            declared_test_entry_gate="WRONG_GATE",
+        )

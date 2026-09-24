@@ -77,19 +77,18 @@ def test_d24_d25_d26_proven_d27_partial() -> None:
     assert by_id["D25"].earliest_missing_edge is None
     assert by_id["D26"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert by_id["D26"].earliest_missing_edge is None
-    assert by_id["D27"].verdict == AdjudicationVerdict.PARTIAL_CURRENT
-    assert by_id["D27"].earliest_missing_edge in (
-        EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
-        "f5_surv_cap_per_token_shadow_entry_not_lifecycle_enforced",
-    )
+    assert by_id["D27"].verdict == AdjudicationVerdict.PROVEN_CURRENT
+    assert by_id["D27"].earliest_missing_edge is None
     assert by_id["REQ-BL-SEQ-03"].verdict == AdjudicationVerdict.PROVEN_CURRENT
-    assert earliest_missing_edge_v1(rows) == by_id["D27"].earliest_missing_edge
+    assert earliest_missing_edge_v1(rows) is None
 
 
 def test_earliest_gap_not_cutover_related() -> None:
     rows = adjudicate_v32_baseline_first_requirements_v1(repo_root=REPO_ROOT)
     edge = earliest_missing_edge_v1(rows)
-    assert edge is not None
+    if edge is None:
+        assert all(r.verdict.value == "PROVEN_CURRENT" for r in rows if r.requirement_id == "D27")
+        return
     assert "cutover" not in edge.lower()
     assert (
         edge

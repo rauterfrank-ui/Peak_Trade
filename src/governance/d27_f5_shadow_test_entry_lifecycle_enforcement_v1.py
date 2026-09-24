@@ -49,7 +49,14 @@ SHADOW_CAMPAIGN_ENTRY: Final[str] = (
 )
 
 F5_FRESH_FAMILY_GATE_ID: Final[str] = "F5-FRESH"
+F5_SURV_FAMILY_GATE_ID: Final[str] = "F5-SURV"
+F5_CAP_FAMILY_GATE_ID: Final[str] = "F5-CAP"
 F5_FRESH_TEST_ENTRY_GATE: Final[str] = "SHADOW_PURE_STACK_NUMERIC_EVIDENCE_PACK_VALIDATION_V1"
+F5_SURV_CAP_TEST_ENTRY_GATE: Final[str] = "SHADOW_PER_TOKEN_THRESHOLD_SENSITIVITY_V1"
+F5_SURV_CAP_ENTRY_CONJUNCTION: Final[str] = (
+    "STAGE1_MANIFEST_DIGEST_AND_CALIBRATION_PROTOCOL_DIGEST_AND_MATRIX_TEST_ENTRY_GATE_"
+    "AND_PER_TOKEN_REGISTRY_CONJUNCTION"
+)
 
 ENFORCED_SHADOW_ENTRY_OWNERS: Final[tuple[str, ...]] = (SHADOW_CAMPAIGN_ENTRY,)
 
@@ -70,6 +77,8 @@ class D27F5ShadowTestEntryLifecycleError(ValueError):
 
 class D27F5ShadowLifecycleEnforcementScope(str, Enum):
     TEST_READY_F5_FRESH_SHADOW_CAMPAIGN = "TEST_READY_F5_FRESH_SHADOW_CAMPAIGN"
+    TEST_READY_F5_SURV_PER_TOKEN_SHADOW_CAMPAIGN = "TEST_READY_F5_SURV_PER_TOKEN_SHADOW_CAMPAIGN"
+    TEST_READY_F5_CAP_PER_TOKEN_SHADOW_CAMPAIGN = "TEST_READY_F5_CAP_PER_TOKEN_SHADOW_CAMPAIGN"
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,9 +97,10 @@ class D27F5ShadowTestEntryLifecycleAdmissionV1:
     authority_effect: str
     runtime_effect: str
     promotion_authority: str
+    per_token_registry_tokens: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        out: dict[str, Any] = {
             "admission_digest": self.admission_digest,
             "authority_effect": self.authority_effect,
             "calibration_protocol_digest": self.calibration_protocol_digest,
@@ -106,22 +116,125 @@ class D27F5ShadowTestEntryLifecycleAdmissionV1:
             "stage1_manifest_rel": self.stage1_manifest_rel,
             "test_entry_gate": self.test_entry_gate,
         }
+        if self.per_token_registry_tokens:
+            out["per_token_registry_tokens"] = list(self.per_token_registry_tokens)
+        return out
+
+
+def _family_record_v1(*, family_gate_id: str, required_preparation_status):
+    from src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1 import (
+        optimization_surface_family_records_v1,
+    )
+
+    for record in optimization_surface_family_records_v1():
+        if record.family_gate_id == family_gate_id:
+            if record.preparation_status != required_preparation_status:
+                raise D27F5ShadowTestEntryLifecycleError(
+                    f"PREPARATION_STATUS_NOT_TEST_READY:{family_gate_id}:"
+                    f"{record.preparation_status.value}"
+                )
+            return record
+    raise D27F5ShadowTestEntryLifecycleError(f"FAMILY_RECORD_MISSING:{family_gate_id}")
 
 
 def _family_record_f5_fresh_v1():
     from src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1 import (
         PreparationStatus,
-        optimization_surface_family_records_v1,
     )
 
-    for record in optimization_surface_family_records_v1():
-        if record.family_gate_id == F5_FRESH_FAMILY_GATE_ID:
-            if record.preparation_status != PreparationStatus.TEST_READY_SHADOW_RESEARCH:
-                raise D27F5ShadowTestEntryLifecycleError(
-                    f"F5_FRESH_NOT_TEST_READY:{record.preparation_status.value}"
-                )
-            return record
-    raise D27F5ShadowTestEntryLifecycleError("F5_FRESH_FAMILY_RECORD_MISSING")
+    return _family_record_v1(
+        family_gate_id=F5_FRESH_FAMILY_GATE_ID,
+        required_preparation_status=PreparationStatus.TEST_READY_SHADOW_RESEARCH,
+    )
+
+
+def _family_record_f5_surv_v1():
+    from src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1 import (
+        PreparationStatus,
+    )
+
+    return _family_record_v1(
+        family_gate_id=F5_SURV_FAMILY_GATE_ID,
+        required_preparation_status=PreparationStatus.TEST_READY_PER_TOKEN_SHADOW_CALIBRATION_ONLY,
+    )
+
+
+def _family_record_f5_cap_v1():
+    from src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1 import (
+        PreparationStatus,
+    )
+
+    return _family_record_v1(
+        family_gate_id=F5_CAP_FAMILY_GATE_ID,
+        required_preparation_status=PreparationStatus.TEST_READY_PER_TOKEN_SHADOW_CALIBRATION_ONLY,
+    )
+
+
+def _stage2_tokens_for_subfamily_v1(*, subfamily: str) -> tuple[str, ...]:
+    from src.ops.productive_pure_stack_numeric_policy_shadow_campaign_v1.constants_v1 import (
+        STAGE2_TOKENS,
+    )
+
+    if subfamily == F5_SURV_FAMILY_GATE_ID:
+        prefix = "OWNER_VALUE_SURVIVAL_LIMIT_"
+    elif subfamily == F5_CAP_FAMILY_GATE_ID:
+        prefix = "OWNER_VALUE_CAPITAL_SLOT_"
+    else:
+        raise D27F5ShadowTestEntryLifecycleError(f"PER_TOKEN_SUBFAMILY_UNSUPPORTED:{subfamily}")
+    tokens = tuple(t for t in STAGE2_TOKENS if t.startswith(prefix))
+    if not tokens:
+        raise D27F5ShadowTestEntryLifecycleError(f"PER_TOKEN_STAGE2_SET_EMPTY:{subfamily}")
+    return tokens
+
+
+def _validate_per_token_registry_conjunction_v1(
+    *,
+    subfamily: str,
+    expected_test_entry_gate: str,
+) -> tuple[str, ...]:
+    from src.experiments.canonical_f5_shadow_per_token_calibration_test_entry_v1 import (
+        shadow_per_token_calibration_entries_v1,
+    )
+
+    expected_tokens = _stage2_tokens_for_subfamily_v1(subfamily=subfamily)
+    by_token = {e.owner_value_token: e for e in shadow_per_token_calibration_entries_v1()}
+    for token in expected_tokens:
+        entry = by_token.get(token)
+        if entry is None:
+            raise D27F5ShadowTestEntryLifecycleError(f"PER_TOKEN_REGISTRY_MISSING:{token}")
+        if entry.family_subfamily != subfamily:
+            raise D27F5ShadowTestEntryLifecycleError(
+                f"PER_TOKEN_REGISTRY_SUBFAMILY_MISMATCH:{token}:{entry.family_subfamily}"
+            )
+        if entry.test_entry_gate.value != expected_test_entry_gate:
+            raise D27F5ShadowTestEntryLifecycleError(
+                f"PER_TOKEN_REGISTRY_GATE_MISMATCH:{token}:{entry.test_entry_gate.value}"
+            )
+    return expected_tokens
+
+
+def _resolve_validated_digest_pair_v1(
+    *,
+    repo_root: Path,
+    declared_stage1_manifest_digest: str,
+    declared_calibration_protocol_digest: str,
+) -> tuple[str, str]:
+    if not is_valid_sha256_hex(str(declared_stage1_manifest_digest or "")):
+        raise D27F5ShadowTestEntryLifecycleError("STAGE1_MANIFEST_DIGEST_INVALID")
+    if not is_valid_sha256_hex(str(declared_calibration_protocol_digest or "")):
+        raise D27F5ShadowTestEntryLifecycleError("CALIBRATION_PROTOCOL_DIGEST_INVALID")
+
+    stage1_actual = _resolve_digest_or_deny(
+        repo_root=repo_root, rel_path=STAGE1_MANIFEST_REL, label="STAGE1_MANIFEST"
+    )
+    protocol_actual = _resolve_digest_or_deny(
+        repo_root=repo_root, rel_path=CALIBRATION_PROTOCOL_REL, label="CALIBRATION_PROTOCOL"
+    )
+    if declared_stage1_manifest_digest != stage1_actual:
+        raise D27F5ShadowTestEntryLifecycleError("STAGE1_MANIFEST_DIGEST_MISMATCH")
+    if declared_calibration_protocol_digest != protocol_actual:
+        raise D27F5ShadowTestEntryLifecycleError("CALIBRATION_PROTOCOL_DIGEST_MISMATCH")
+    return stage1_actual, protocol_actual
 
 
 def _resolve_digest_or_deny(*, repo_root: Path, rel_path: str, label: str) -> str:
@@ -153,22 +266,11 @@ def enforce_d27_f5_shadow_test_entry_lifecycle_admission_v1(
             f"TEST_ENTRY_GATE_MISMATCH:expected={expected_gate} declared={declared_test_entry_gate}"
         )
 
-    if not is_valid_sha256_hex(str(declared_stage1_manifest_digest or "")):
-        raise D27F5ShadowTestEntryLifecycleError("STAGE1_MANIFEST_DIGEST_INVALID")
-    if not is_valid_sha256_hex(str(declared_calibration_protocol_digest or "")):
-        raise D27F5ShadowTestEntryLifecycleError("CALIBRATION_PROTOCOL_DIGEST_INVALID")
-
-    stage1_actual = _resolve_digest_or_deny(
-        repo_root=repo_root, rel_path=STAGE1_MANIFEST_REL, label="STAGE1_MANIFEST"
+    stage1_actual, protocol_actual = _resolve_validated_digest_pair_v1(
+        repo_root=repo_root,
+        declared_stage1_manifest_digest=declared_stage1_manifest_digest,
+        declared_calibration_protocol_digest=declared_calibration_protocol_digest,
     )
-    protocol_actual = _resolve_digest_or_deny(
-        repo_root=repo_root, rel_path=CALIBRATION_PROTOCOL_REL, label="CALIBRATION_PROTOCOL"
-    )
-
-    if declared_stage1_manifest_digest != stage1_actual:
-        raise D27F5ShadowTestEntryLifecycleError("STAGE1_MANIFEST_DIGEST_MISMATCH")
-    if declared_calibration_protocol_digest != protocol_actual:
-        raise D27F5ShadowTestEntryLifecycleError("CALIBRATION_PROTOCOL_DIGEST_MISMATCH")
 
     body = {
         "calibration_protocol_digest": protocol_actual,
@@ -217,6 +319,107 @@ def enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1(
     )
 
 
+def _enforce_d27_f5_surv_cap_per_token_shadow_test_entry_lifecycle_v1(
+    *,
+    family_gate_id: str,
+    family_record_loader,
+    enforcement_scope: D27F5ShadowLifecycleEnforcementScope,
+    repo_root: Path,
+    declared_test_entry_gate: str,
+    declared_stage1_manifest_digest: str,
+    declared_calibration_protocol_digest: str,
+) -> D27F5ShadowTestEntryLifecycleAdmissionV1:
+    if family_gate_id not in (F5_SURV_FAMILY_GATE_ID, F5_CAP_FAMILY_GATE_ID):
+        raise D27F5ShadowTestEntryLifecycleError(f"FAMILY_GATE_NOT_F5_SURV_CAP:{family_gate_id}")
+
+    record = family_record_loader()
+    expected_gate = record.test_entry_gate.value
+    if str(declared_test_entry_gate) != expected_gate:
+        raise D27F5ShadowTestEntryLifecycleError(
+            f"TEST_ENTRY_GATE_MISMATCH:expected={expected_gate} declared={declared_test_entry_gate}"
+        )
+
+    stage1_actual, protocol_actual = _resolve_validated_digest_pair_v1(
+        repo_root=repo_root,
+        declared_stage1_manifest_digest=declared_stage1_manifest_digest,
+        declared_calibration_protocol_digest=declared_calibration_protocol_digest,
+    )
+    per_tokens = _validate_per_token_registry_conjunction_v1(
+        subfamily=family_gate_id,
+        expected_test_entry_gate=expected_gate,
+    )
+
+    body = {
+        "calibration_protocol_digest": protocol_actual,
+        "calibration_protocol_rel": CALIBRATION_PROTOCOL_REL,
+        "d26_native_baseline_scope": D26_NATIVE_BASELINE_ON_F5,
+        "digest_domain": f"{SCHEMA_VERSION}.admission",
+        "enforcement_scope": enforcement_scope.value,
+        "entry_conjunction": F5_SURV_CAP_ENTRY_CONJUNCTION,
+        "family_gate_id": family_gate_id,
+        "per_token_registry_tokens": list(per_tokens),
+        "preparation_status": record.preparation_status.value,
+        "stage1_manifest_digest": stage1_actual,
+        "stage1_manifest_rel": STAGE1_MANIFEST_REL,
+        "test_entry_gate": expected_gate,
+    }
+    admission_digest = compute_content_sha256(body)
+
+    return D27F5ShadowTestEntryLifecycleAdmissionV1(
+        schema_version=SCHEMA_VERSION,
+        family_gate_id=family_gate_id,
+        test_entry_gate=expected_gate,
+        preparation_status=record.preparation_status.value,
+        stage1_manifest_digest=stage1_actual,
+        calibration_protocol_digest=protocol_actual,
+        stage1_manifest_rel=STAGE1_MANIFEST_REL,
+        calibration_protocol_rel=CALIBRATION_PROTOCOL_REL,
+        d26_native_baseline_scope=D26_NATIVE_BASELINE_ON_F5,
+        admission_digest=admission_digest,
+        enforcement_scope=enforcement_scope,
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+        promotion_authority=PROMOTION_AUTHORITY,
+        per_token_registry_tokens=per_tokens,
+    )
+
+
+def enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1(
+    *,
+    repo_root: Path,
+    declared_stage1_manifest_digest: str,
+    declared_calibration_protocol_digest: str,
+    declared_test_entry_gate: str = F5_SURV_CAP_TEST_ENTRY_GATE,
+) -> D27F5ShadowTestEntryLifecycleAdmissionV1:
+    return _enforce_d27_f5_surv_cap_per_token_shadow_test_entry_lifecycle_v1(
+        family_gate_id=F5_SURV_FAMILY_GATE_ID,
+        family_record_loader=_family_record_f5_surv_v1,
+        enforcement_scope=D27F5ShadowLifecycleEnforcementScope.TEST_READY_F5_SURV_PER_TOKEN_SHADOW_CAMPAIGN,
+        repo_root=repo_root,
+        declared_test_entry_gate=declared_test_entry_gate,
+        declared_stage1_manifest_digest=declared_stage1_manifest_digest,
+        declared_calibration_protocol_digest=declared_calibration_protocol_digest,
+    )
+
+
+def enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1(
+    *,
+    repo_root: Path,
+    declared_stage1_manifest_digest: str,
+    declared_calibration_protocol_digest: str,
+    declared_test_entry_gate: str = F5_SURV_CAP_TEST_ENTRY_GATE,
+) -> D27F5ShadowTestEntryLifecycleAdmissionV1:
+    return _enforce_d27_f5_surv_cap_per_token_shadow_test_entry_lifecycle_v1(
+        family_gate_id=F5_CAP_FAMILY_GATE_ID,
+        family_record_loader=_family_record_f5_cap_v1,
+        enforcement_scope=D27F5ShadowLifecycleEnforcementScope.TEST_READY_F5_CAP_PER_TOKEN_SHADOW_CAMPAIGN,
+        repo_root=repo_root,
+        declared_test_entry_gate=declared_test_entry_gate,
+        declared_stage1_manifest_digest=declared_stage1_manifest_digest,
+        declared_calibration_protocol_digest=declared_calibration_protocol_digest,
+    )
+
+
 def prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1(
     *, repo_root: Path | None = None
 ) -> bool:
@@ -240,7 +443,23 @@ def prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1(
     if int(decision.get("productive_numeric_values_set_current", -1)) != 0:
         return False
     runner_text = required[4].read_text(encoding="utf-8")
-    if "enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1" not in runner_text:
+    required_hooks = (
+        "enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1",
+        "enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1",
+        "enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1",
+    )
+    if not all(hook in runner_text for hook in required_hooks):
+        return False
+    if not decision.get("f5_surv_cap_lifecycle_enforcement_implemented"):
+        return False
+    enforced_ids = decision.get("enforced_family_gate_ids") or []
+    if set(enforced_ids) != {
+        F5_FRESH_FAMILY_GATE_ID,
+        F5_SURV_FAMILY_GATE_ID,
+        F5_CAP_FAMILY_GATE_ID,
+    }:
+        return False
+    if decision.get("earliest_remaining_d27_gap") is not None:
         return False
     if PRODUCTIVE_NUMERIC_VALUES_SET != 0:
         return False
@@ -255,9 +474,15 @@ def build_f5_shadow_lifecycle_enforcement_summary_v1() -> Mapping[str, Any]:
             "enforced_shadow_entry_owners": list(ENFORCED_SHADOW_ENTRY_OWNERS),
             "f5_fresh_test_entry_gate": F5_FRESH_TEST_ENTRY_GATE,
             "d26_native_baseline_scope": D26_NATIVE_BASELINE_ON_F5,
-            "entry_conjunction": (
+            "entry_conjunction_f5_fresh": (
                 "STAGE1_MANIFEST_DIGEST_AND_CALIBRATION_PROTOCOL_DIGEST_AND_MATRIX_TEST_ENTRY_GATE"
             ),
+            "entry_conjunction_f5_surv_cap": F5_SURV_CAP_ENTRY_CONJUNCTION,
+            "enforced_family_gate_ids": [
+                F5_FRESH_FAMILY_GATE_ID,
+                F5_SURV_FAMILY_GATE_ID,
+                F5_CAP_FAMILY_GATE_ID,
+            ],
             "productive_numeric_values_set": int(PRODUCTIVE_NUMERIC_VALUES_SET),
             "promotion_authority": PROMOTION_AUTHORITY,
             "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
@@ -276,8 +501,12 @@ __all__ = [
     "D27F5ShadowTestEntryLifecycleError",
     "ENFORCED_SHADOW_ENTRY_OWNERS",
     "EXTERNAL_EFFECT_AUTHORIZED",
+    "F5_CAP_FAMILY_GATE_ID",
     "F5_FRESH_FAMILY_GATE_ID",
     "F5_FRESH_TEST_ENTRY_GATE",
+    "F5_SURV_CAP_ENTRY_CONJUNCTION",
+    "F5_SURV_CAP_TEST_ENTRY_GATE",
+    "F5_SURV_FAMILY_GATE_ID",
     "NEW_AUTHORITY_CREATED",
     "NORMATIVE_SPEC",
     "PRE_TEST_GATE_OWNER",
@@ -288,7 +517,9 @@ __all__ = [
     "TRADING_DECISION_AUTHORITY_CHANGED",
     "WORKPACKAGE_ID",
     "build_f5_shadow_lifecycle_enforcement_summary_v1",
+    "enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1",
     "enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1",
     "enforce_d27_f5_shadow_test_entry_lifecycle_admission_v1",
+    "enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1",
     "prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1",
 ]

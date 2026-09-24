@@ -120,16 +120,28 @@ def run_shadow_campaign_v1(request: ShadowCampaignRequestV1) -> ShadowCampaignRe
     repo_root = Path(request.repo_root)
     from src.governance.d27_f5_shadow_test_entry_lifecycle_enforcement_v1 import (
         D27F5ShadowTestEntryLifecycleError,
+        enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1,
         enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1,
+        enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1,
     )
 
+    stage1_declared = request.reproducibility.stage1_manifest_digest
+    protocol_declared = request.reproducibility.calibration_protocol_digest
     try:
         d27_f5_admission = enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1(
             repo_root=repo_root,
-            declared_stage1_manifest_digest=request.reproducibility.stage1_manifest_digest,
-            declared_calibration_protocol_digest=(
-                request.reproducibility.calibration_protocol_digest
-            ),
+            declared_stage1_manifest_digest=stage1_declared,
+            declared_calibration_protocol_digest=protocol_declared,
+        )
+        enforce_d27_f5_surv_shadow_campaign_test_entry_lifecycle_v1(
+            repo_root=repo_root,
+            declared_stage1_manifest_digest=stage1_declared,
+            declared_calibration_protocol_digest=protocol_declared,
+        )
+        enforce_d27_f5_cap_shadow_campaign_test_entry_lifecycle_v1(
+            repo_root=repo_root,
+            declared_stage1_manifest_digest=stage1_declared,
+            declared_calibration_protocol_digest=protocol_declared,
         )
     except D27F5ShadowTestEntryLifecycleError as exc:
         raise ShadowCampaignEmitError(str(exc)) from exc

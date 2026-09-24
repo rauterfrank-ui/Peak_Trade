@@ -7507,8 +7507,8 @@ entities:
       - docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md
       - config/governance/v32_d27_f5_shadow_test_entry_lifecycle_enforcement_v1_decision_v1.json
     notes: >-
-      Fail-closed F5-FRESH shadow campaign admission (matrix gate + Stage-1/calibration digests).
-      D26 native baseline out of scope. ATLAS_AUTHORITY=NONE.
+      Fail-closed F5-FRESH/F5-SURV/F5-CAP shadow campaign admission (matrix gate + Stage-1/calibration
+      digests + per-token registry for SURV/CAP). D26 native baseline out of scope. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1
     kind: RUNTIME_COMPONENT

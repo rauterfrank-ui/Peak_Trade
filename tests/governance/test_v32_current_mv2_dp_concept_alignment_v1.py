@@ -44,9 +44,7 @@ def test_alignment_consistent_with_v32_lifecycle_adjudication() -> None:
     binding = concept_alignment_binding_v1(repo_root=REPO_ROOT)
     assert binding["d26_implemented"] is True
     assert binding["d26_status"] == "PROVEN_CURRENT"
-    assert binding["earliest_true_remaining_technical_gap"] == (
-        "f5_shadow_test_entry_gate_not_lifecycle_enforced"
-    )
+    assert binding["earliest_true_remaining_technical_gap"] is None
     assert P5_AUTHORITY_CUTOVER_AUTHORIZED is False
 
 
