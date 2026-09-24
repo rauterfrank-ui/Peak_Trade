@@ -24,9 +24,10 @@
   "covered_candidate_paths": [
     "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json",
     "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
-    "src/experiments/canonical_federated_m5_m6_return_join_v1.py",
     "src/experiments/canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
-    "tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py",
-    "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py"
+    "src/experiments/canonical_federated_m5_m6_return_join_v1.py",
+    "src/experiments/canonical_meta_learning_ingest_v1.py",
+    "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+    "tests/experiments/test_canonical_federated_m5_m6_return_join_v1.py"
   ]
 }
