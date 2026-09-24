@@ -72,7 +72,7 @@ F1 `BASELINE_CANDIDATE_ID` remains a **research counterfactual slot** — never 
 | ID | Status |
 | --- | --- |
 | D26 | `PROVEN_CURRENT` |
-| D27 | `PARTIAL_CURRENT` (lifecycle-enforced test gate not global) |
+| D27 | `PROVEN_CURRENT` (global closure via post-D27 composition WP; F5 enforced on shadow campaign) |
 
 `D27_BLOCKED_BY_D26=false`
 

@@ -13,9 +13,10 @@
   "f1_candidate_adapter": "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.baseline_evidence_classification_adapter_v1.bind_f1_parameter_research_candidate_baseline_classification_v1",
   "d26_status": "PROVEN_CURRENT",
   "d26_implemented": true,
-  "d27_status": "PARTIAL_CURRENT",
+  "d27_status": "PROVEN_CURRENT",
   "d27_blocked_by_d26": false,
-  "d27_earliest_missing_edge": "f5_shadow_test_entry_gate_not_lifecycle_enforced",
+  "d27_earliest_missing_edge": null,
+  "d27_global_closure_decision": "config/governance/v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1_decision_v1.json",
   "d26_implementation_mode": "COMPOSE_EXISTING",
   "reused_contracts": [
     "canonical_trading_decision_evidence_v1",

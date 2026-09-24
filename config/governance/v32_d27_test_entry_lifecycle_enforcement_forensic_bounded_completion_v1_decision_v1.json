@@ -9,14 +9,15 @@
   "pre_test_gate_owner": "src.experiments.canonical_optimization_surface_families_pre_test_preparation_v1.ResearchTestEntryGateV1",
   "d26_native_classifier": "src.governance.platform_unified_native_vs_candidate_baseline_evidence_v1.classify_canonical_trading_decision_evidence_v1",
   "d27_f1_f2_lifecycle_enforcement_implemented": true,
-  "d27_status": "PARTIAL_CURRENT",
+  "d27_status": "PROVEN_CURRENT",
   "d27_scope": "TEST_READY_F1_F2_PARAMETER_INFLUENCE_ENTRY",
   "enforced_family_gate_ids": ["F1", "F2"],
   "enforced_executor_owners": [
     "research.canonical_volatility_numeric_max_age_parameter_research_execution_v1.runner_v1.run_max_age_parameter_research_execution_v1",
     "src.experiments.canonical_f2_research_backtest_cost_grid_research_execution_v1.run_f2_research_backtest_cost_grid_offline_v1"
   ],
-  "earliest_remaining_d27_gap": "f5_shadow_test_entry_gate_not_lifecycle_enforced",
+  "earliest_remaining_d27_gap": null,
+  "global_d27_closure_decision": "config/governance/v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1_decision_v1.json",
   "implementation_mode": "COMPOSE_EXISTING",
   "trading_decision_authority_changed": false,
   "new_authority_created": false,

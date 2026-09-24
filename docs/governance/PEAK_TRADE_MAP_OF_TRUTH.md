@@ -113,6 +113,7 @@ in the Master Runbook and the named packages.
 | D26 native vs candidate baseline evidence (navigation) | `docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md` |
 | D26 × F5 shadow baseline-binding owner policy (navigation) | `docs/ops/specs/V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1.md` |
 | D27 F5 shadow test-entry lifecycle enforcement (navigation) | `docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md` |
+| Post-D27 global test-entry lifecycle closure (navigation) | `docs/ops/specs/V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1.md` |
 | Treasury Phase 1 offline contracts | `docs/ops/specs/TREASURY_PHASE_1_OFFLINE_CONTRACTS_V1.md` / `src/ops/treasury_phase_1_offline_contracts_v1/` |
 | Treasury Phase 2 read-only reconciliation | `docs/ops/specs/TREASURY_PHASE_2_READ_ONLY_RECONCILIATION_FOUNDATION_V1.md` / `src/ops/treasury_phase_2_read_only_reconciliation_v1/` |
 | Treasury Phase 3 shadow enforcement | `docs/ops/specs/TREASURY_PHASE_3_SHADOW_ENFORCEMENT_V1.md` / `src/ops/treasury_phase_3_shadow_enforcement_v1/` |
