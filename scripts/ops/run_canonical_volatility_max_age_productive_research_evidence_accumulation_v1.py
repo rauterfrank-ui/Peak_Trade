@@ -881,9 +881,7 @@ def main(argv: list[str] | None = None) -> int:
             raise SystemExit("campaign_id_required_for_coverage_only")
         if not args.session_ids:
             raise SystemExit("session_ids_required_for_coverage_only")
-        scope_session_ids = tuple(
-            s.strip() for s in str(args.session_ids).split(",") if s.strip()
-        )
+        scope_session_ids = tuple(s.strip() for s in str(args.session_ids).split(",") if s.strip())
         if not scope_session_ids:
             raise SystemExit("session_ids_required_for_coverage_only")
 

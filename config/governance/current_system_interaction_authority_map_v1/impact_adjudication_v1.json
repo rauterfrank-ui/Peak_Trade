@@ -1,34 +1,44 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "7c133eddf1be758d54d8d98cae265e4326336d82",
+  "base_sha": "af2d0c3b7d6a63a83f49dc6d410e94f24ddff9e0",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false,
-  "reason": "S1_CAP24_HISTORICAL_INERTNESS_REPAIR_V1 (PR #6785): bounded Cap-2.4 CURRENT authority/freshness gates on provenance handoff and common-epoch compose (publish manifest + valid_until; no implicit default productivity root). No CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source or derived view semantic change; map candidate catalog and Atlas catalog rebinding only. AUTHORITY=NONE.",
+  "reason": "S2_R1_HISTORICAL_INERTNESS_REPAIR_V1 (PR #6786): campaign-scoped CURRENT productive coverage and integrity on shared evidence ledgers; historical campaigns inert for CURRENT metrics; FORENSIC_GLOBAL whole-ledger semantics explicit only. No CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source semantic change; map candidate catalog and Atlas catalog rebinding only. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
-    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+    "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/constants_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/coverage_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/ledger_campaign_scope_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/runtime_v1.py",
+    "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
+    "tests/research/test_canonical_volatility_productive_ledger_coverage_scope_v1.py",
+    "tests/research/test_canonical_volatility_productive_ledger_integrity_scope_v1.py"
   ],
-  "changed_paths_sha256": "0d6ad18ba06f0e4c030e911676e480fd7e9f0961160bb00fcc0dde69db0439ab",
+  "changed_paths_sha256": "ae59a8da53649fd150f64b36d2d2b3d9a0813a9734d0a792062adc973999d19f",
   "evidence_refs": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "covered_candidate_paths": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
-    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+    "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/constants_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/coverage_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/ledger_campaign_scope_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py",
+    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/runtime_v1.py",
+    "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
+    "tests/research/test_canonical_volatility_productive_ledger_coverage_scope_v1.py",
+    "tests/research/test_canonical_volatility_productive_ledger_integrity_scope_v1.py"
   ]
 }
