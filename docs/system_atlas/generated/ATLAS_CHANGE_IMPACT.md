@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,11 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1` |
-| `RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1` |
-| `RUNTIME_COMPONENT:f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1` |
-| `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
-| `RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1` |
+| `RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1` |
+| `RUNTIME_COMPONENT:pdf_v3_3_topic_completion_composition_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -96,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6802 bounded closure: threshold enforcement at MV2 consumer, Double Play trading-decision consumption, offline canonical order intent; EXTERNAL_ORDER_EFFECT=false; wire/Live remains blocked. ATLAS_AUTHORITY=NONE.
+- #6803 PDF v3.3 topic completion: bounded composition + final adjudication (pdf_completion=true); no external wire/Live; Map-of-Truth navigation row only. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_V1
+- modified_by=META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

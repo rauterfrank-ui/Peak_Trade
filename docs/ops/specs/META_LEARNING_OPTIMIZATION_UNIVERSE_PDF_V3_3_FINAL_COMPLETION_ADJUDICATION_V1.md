@@ -27,7 +27,7 @@ Code owners:
 
 - Adjudication: `src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py`
 - Bounded composition (D7/D12/D16/D17/D19/D20/D29 + Blocks A/C/F/G): `src/governance/pdf_v3_3_topic_completion_composition_v1.py`
-- Registries: `config/governance/pdf_v3_3_*`
+- Registries: `config&#47;governance&#47;pdf_v3_3_*`
 
 ## Purpose
 
