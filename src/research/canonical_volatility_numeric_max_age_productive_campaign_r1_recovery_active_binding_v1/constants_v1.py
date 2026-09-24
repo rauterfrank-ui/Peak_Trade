@@ -70,4 +70,4 @@ SPEC_REL_PATH = (
 )
 
 # Bound at materialization of this recovery WP against expected origin/main.
-R1_MATERIALIZED_REPOSITORY_SHA = "90c1ffbcfe04482f1ed9c7ac424918dfea76e5c0"
+R1_MATERIALIZED_REPOSITORY_SHA = "c47704d4551e15fe8f875bebc6dc7b10e2081c42"
