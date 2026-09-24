@@ -7748,7 +7748,26 @@ entities:
       - scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py
     notes: >-
       Runtime authorization issuance owner and REAL-path wiring proofs (fake adapter only);
-      REAL_CAMPAIGN_EXECUTION_ENABLED_IN_PROCESS=false; no live campaign execution.
+      superseded for production entry by activation slice; ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_real_campaign_activation_and_production_wiring_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 REAL campaign activation and production wiring v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_V1
+    source_paths:
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/activation_and_production_wiring_closure_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/production_real_public_md_session_adapter_v1.py
+      - src/ops/peak_trade_python_script_entry_bootstrap_v1.py
+    evidence_sources:
+      - tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py
+      - docs/ops/specs/F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_NORMATIVE_V1.md
+      - config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json
+      - scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py
+    notes: >-
+      Process REAL activation, production public-MD adapter, CLI bootstrap; slice does not execute campaign.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
