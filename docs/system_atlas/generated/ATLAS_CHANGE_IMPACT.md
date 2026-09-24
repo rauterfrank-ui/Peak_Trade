@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,12 +40,11 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1` |
+| `RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1` |
 | `RUNTIME_COMPONENT:f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1` |
 | `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
 | `RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1` |
-| `RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1` |
-| `RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1` |
-| `RUNTIME_COMPONENT:f1_m9_real_prospective_campaign_execution_enablement_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -97,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST-6800 bounded productive handoff: durable REAL evidence verification, canonical candidate resolution, explicit productive authorization, governed config, owner apply, and parameter-seam binding only; stops before threshold enforcement; EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- #6802 bounded closure: threshold enforcement at MV2 consumer, Double Play trading-decision consumption, offline canonical order intent; EXTERNAL_ORDER_EFFECT=false; wire/Live remains blocked. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1
+- modified_by=THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -7799,7 +7799,42 @@ entities:
     notes: >-
       POST-6800 sealed REAL campaign evidence to digest-bound productive parameter seam;
       explicit productive authorization and real_productive_apply_authorized for bounded apply only;
-      THRESHOLD_ENFORCEMENT_AUTHORIZED=false; no orders or trading effects. ATLAS_AUTHORITY=NONE.
+      THRESHOLD_ENFORCEMENT_AUTHORIZED=false at handoff WP; successor closure #6802. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 bounded threshold enforcement MV2 consumer v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_V1
+    source_paths:
+      - src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py
+    evidence_sources:
+      - tests/governance/test_f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py
+      - docs/ops/specs/F1_M9_THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_NORMATIVE_V1.md
+      - config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json
+    notes: >-
+      Decision-bound max-age enforcement at authorized seam consumer; does not flip global
+      ENFORCEMENT_ENABLED. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 threshold enforcement to trading/order-intent effect closure v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_V1
+    source_paths:
+      - src/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py
+      - src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py
+    evidence_sources:
+      - tests/governance/test_f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py
+      - docs/ops/specs/F1_M9_THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_NORMATIVE_V1.md
+      - config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json
+    notes: >-
+      Composes handoff, threshold value, bounded enforcement, MV2+DP alpha, offline order intent;
+      stops before external wire/Live. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
     kind: RUNTIME_COMPONENT

@@ -185,7 +185,7 @@ def test_census_and_adjudication_after_post_real_campaign_handoff() -> None:
     assert census.existing_campaign_can_select_productive_candidate is False
     assert census.owner_policy_required is False
     assert census.candidate_selection_rule_id == "F1_M9_ROBUST_REGION_UNIQUE_SURVIVOR_POINT_V1"
-    assert census.earliest_blocker == ("F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO")
+    assert census.earliest_blocker == "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY"
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=REPO_ROOT)
     assert adj.resolved is True
     assert adj.candidate_id == "CANDIDATE_600_S"

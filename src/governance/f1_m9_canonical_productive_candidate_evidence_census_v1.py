@@ -26,6 +26,10 @@ from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 i
 THRESHOLD_VALUE_AUTHORIZATION_BLOCKER: Final[str] = (
     "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OWNER_GO"
 )
+CLOSURE_DECISION_CONFIG: Final[str] = (
+    "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json"
+)
+EXTERNAL_ORDER_EFFECT_BLOCKER: Final[str] = "EXTERNAL_ORDER_EFFECT_WIRE_SEND_LIVE_BOUNDARY"
 
 SCHEMA_VERSION: Final[str] = "f1_m9_canonical_productive_candidate_evidence_census/v1"
 WORKPACKAGE_ID: Final[str] = "F1_M9_CANONICAL_PRODUCTIVE_CANDIDATE_AND_EVIDENCE_CLOSURE_V1"
@@ -415,7 +419,22 @@ def run_f1_m9_canonical_productive_candidate_evidence_census_v1(
         )
         if durable_real.verified:
             if post_real_campaign_handoff_bounded_complete_v1(repo_root=root):
-                earliest = THRESHOLD_VALUE_AUTHORIZATION_BLOCKER
+                closure_path = root / CLOSURE_DECISION_CONFIG
+                if closure_path.is_file():
+                    closure_decision = _load_json(closure_path)
+                    if (
+                        closure_decision.get("closure_implemented") is True
+                        and closure_decision.get("threshold_value_authorization_owner_go_consumed")
+                        is True
+                    ):
+                        earliest = str(
+                            closure_decision.get("earliest_blocker_class")
+                            or EXTERNAL_ORDER_EFFECT_BLOCKER
+                        )
+                    else:
+                        earliest = THRESHOLD_VALUE_AUTHORIZATION_BLOCKER
+                else:
+                    earliest = THRESHOLD_VALUE_AUTHORIZATION_BLOCKER
             else:
                 earliest = "F1_M9_POST_REAL_CAMPAIGN_PRODUCTIVE_HANDOFF_BOUNDED_COMPLETION_V1"
         else:
