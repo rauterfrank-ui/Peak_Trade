@@ -7627,6 +7627,50 @@ entities:
       EXECUTION_PROOF only; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false;
       PRODUCTIVE_APPLY_OCCURRED=false. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 governed productive apply preparation and selection policy stack v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_GOVERNED_PREPARATION_AND_SELECTION_POLICY_PR_FREEZE_V1
+    source_paths:
+      - src/governance/f1_m9_real_productive_apply_decision_binding_v1.py
+      - src/governance/f1_m9_canonical_productive_candidate_adjudication_v1.py
+      - src/governance/f1_m9_canonical_productive_candidate_evidence_census_v1.py
+      - src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py
+      - src/governance/f1_m9_owner_apply_record_materialization_v1.py
+      - src/governance/f1_m9_real_productive_apply_preparation_closure_v1.py
+      - src/governance/f1_m9_productive_candidate_selection_policy_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_preregistration_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_evidence_leakage_guard_v1.py
+      - src/governance/f1_m9_productive_candidate_selection_policy_closure_v1.py
+    evidence_sources:
+      - src/governance/f1_m9_real_productive_apply_decision_binding_v1.py
+      - src/governance/f1_m9_canonical_productive_candidate_adjudication_v1.py
+      - src/governance/f1_m9_canonical_productive_candidate_evidence_census_v1.py
+      - src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py
+      - src/governance/f1_m9_owner_apply_record_materialization_v1.py
+      - src/governance/f1_m9_real_productive_apply_preparation_closure_v1.py
+      - src/governance/f1_m9_productive_candidate_selection_policy_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_preregistration_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_evidence_leakage_guard_v1.py
+      - src/governance/f1_m9_productive_candidate_selection_policy_closure_v1.py
+      - tests/governance/test_f1_m9_real_productive_apply_governed_preparation_v1.py
+      - tests/governance/test_f1_m9_canonical_productive_candidate_evidence_closure_v1.py
+      - tests/governance/test_f1_m9_productive_candidate_selection_policy_and_prospective_campaign_v1.py
+      - docs/ops/specs/F1_M9_REAL_PRODUCTIVE_APPLY_GOVERNED_PREPARATION_NORMATIVE_V1.md
+      - docs/ops/specs/F1_M9_CANONICAL_PRODUCTIVE_CANDIDATE_AND_EVIDENCE_CLOSURE_NORMATIVE_V1.md
+      - docs/ops/specs/F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_AND_PROSPECTIVE_CAMPAIGN_NORMATIVE_V1.md
+      - config/governance/f1_m9_productive_candidate_selection_policy_v1.json
+      - config/governance/f1_m9_productive_candidate_selection_policy_v1_decision_v1.json
+      - config/governance/f1_m9_prospective_candidate_selection_campaign_binding_v1.json
+      - config/research/f1_m9_prospective_volatility_numeric_max_age_candidate_selection_campaign_preregistration_v1.json
+    notes: >-
+      Governed preparation for future Real Productive Apply, read-only candidate/evidence census,
+      and frozen prospective selection policy/preregistration only; no campaign execution,
+      no candidate resolution, no productive apply or numeric mutation. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
     kind: RUNTIME_COMPONENT
     name: F1/M9 scoped Owner Threshold Value authority v1

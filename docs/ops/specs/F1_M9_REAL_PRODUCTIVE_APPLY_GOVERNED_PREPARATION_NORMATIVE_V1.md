@@ -57,8 +57,8 @@ authorization are fully resolved. Record materialization ≠ apply.
 
 Relative paths in decision:
 
-- `runtime/governance/f1_m9_scoped_owner_productive_apply_v1/apply_ledger.jsonl`
-- `runtime/governance/f1_m9_scoped_owner_productive_apply_v1/revocation_ledger.jsonl`
+- `runtime&#47;governance&#47;f1_m9_scoped_owner_productive_apply_v1&#47;apply_ledger.jsonl`
+- `runtime&#47;governance&#47;f1_m9_scoped_owner_productive_apply_v1&#47;revocation_ledger.jsonl`
 
 Resolver: `src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py`
 
