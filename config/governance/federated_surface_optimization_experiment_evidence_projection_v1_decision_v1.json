@@ -1,0 +1,25 @@
+{
+  "artifact_class": "FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_DECISION_V1",
+  "workpackage_id": "FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_V1",
+  "bound_origin_main_sha": "0a5b45c607347be9183aaeae0f180161a3d762d3",
+  "predecessor_adjudication": "V3_3_C_EXPERIMENT_EVIDENCE_PLANE_ARCHITECTURE_ADJUDICATION_V1",
+  "architecture_verdict": "FEDERATED_EXECUTORS_SHARED_EVIDENCE_PLANE_REQUIRED",
+  "normative_spec": "docs/ops/specs/FEDERATED_SURFACE_OPTIMIZATION_EXPERIMENT_EVIDENCE_PROJECTION_NORMATIVE_V1.md",
+  "owner_module": "src/experiments/canonical_federated_surface_optimization_experiment_evidence_projection_v1.py",
+  "authorized_projection_surface_ids": [
+    "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+    "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1"
+  ],
+  "m4_plane_re_execution_forbidden": true,
+  "plane_identity_on_federated_record_forbidden": true,
+  "research_optimization_only": true,
+  "proposal_only": true,
+  "productive_trading_effect": "NONE",
+  "optimization_productive_authority": "NONE",
+  "promotion_performed": false,
+  "productive_parameter_mutation": false,
+  "external_effect_authorized": false,
+  "trading_authority": "NONE",
+  "selection_authority": "NONE",
+  "execution_authority": "NONE"
+}
