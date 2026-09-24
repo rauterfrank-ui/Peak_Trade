@@ -40,7 +40,7 @@ adjudicate each separately. **No** F1/F2 template copying, **no** F5-FRESH ↔ F
 | NAVIGATION_INDEX_ONLY | Calibration protocol / campaign manifest (digest checks only) |
 | INTERPRETATION | Spec §2 vs §3 F5-FRESH envelope wording tension |
 | HYPOTHESIS | — (none asserted) |
-| UNKNOWN_CONFLICTING | D26 native baseline applicability to shadow evidence pack entry |
+| UNKNOWN_CONFLICTING | Superseded by `V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1` |
 
 ## 3. Path matrix (consumer → exit)
 

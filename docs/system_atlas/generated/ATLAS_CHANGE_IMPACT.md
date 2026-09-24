@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,11 +40,9 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1` |
 | `RUNTIME_COMPONENT:d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1` |
 | `RUNTIME_COMPONENT:d27_research_test_entry_lifecycle_enforcement_v1` |
-| `RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1` |
-| `RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1` |
-| `RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1` |
 | `RUNTIME_COMPONENT:v32_naked_mv2_baseline_first_lifecycle_resolution_v1` |
 
 ## CHANGED_RELATIONS
@@ -97,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- V3.2 D27 F5 shadow subfamily adjudication v1: read-only forensic matrix for F5-FRESH/F5-SURV/F5-CAP. Atlas catalog refresh only. No lifecycle wiring, trading authority, or external effect. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- V3.2 D26 × F5 shadow baseline-binding owner-policy adjudication v1: resolves digest vs D26 native scope for F5 shadow pack entry (read-only). Atlas catalog refresh only. No lifecycle wiring, trading authority, or external effect. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=V32_D27_F5_SHADOW_TEST_ENTRY_AUTHORITY_SUBFAMILY_ADJUDICATION_V1
+- modified_by=V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

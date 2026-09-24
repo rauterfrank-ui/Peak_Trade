@@ -7491,6 +7491,24 @@ entities:
       mutation. Earliest gap remains f5_shadow_test_entry_gate_not_lifecycle_enforced.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 D26 × F5 shadow baseline-binding owner-policy adjudication v1 (read-only)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1
+    source_paths:
+      - src/governance/d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1.py
+    evidence_sources:
+      - src/governance/d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1.py
+      - tests/governance/test_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1.py
+      - docs/ops/specs/V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1.md
+      - config/governance/v32_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1_decision_v1.json
+    notes: >-
+      Resolves D26 native baseline vs Stage-1/calibration-protocol digest authority for F5 shadow
+      pack entry (domain-separated; no lifecycle wiring). ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:optimization_proposal_governance_ingress_v1
     kind: RUNTIME_COMPONENT
     name: Optimization proposal governance ingress v1 (M10)
