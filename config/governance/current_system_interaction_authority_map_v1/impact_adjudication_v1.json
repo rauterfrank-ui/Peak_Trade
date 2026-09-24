@@ -1,51 +1,51 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "892bc879e49c83e7c8a9b0d1587cfb743a3a65f4",
+  "base_sha": "28e5047515811395d8c32ffdc1dc5942e1b361d0",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false,
-  "reason": "V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1: typed Owner Apply policy edge at governed configuration apply boundary for scoped F1/M9 only; fail-closed validation without configuration mutation or apply execution; D29 authority census edge PRODUCTIVE_APPLY_BOUNDARY reclassified ADJUDICATED; System Atlas catalog/generated updates are navigation-only tracking (ATLAS_AUTHORITY=NONE); no structured source_v1.json semantic change; AUTHORITY=NONE.",
+  "reason": "F1_M9_PRODUCTIVE_APPLY_EXECUTION_MAX_BUILD_V1: execution boundary orchestrates D29 Owner Apply policy edge with scoped apply adjudicator on EXECUTION_PROOF only; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false; chain resolver wired through execution boundary; D29 registry/adjudication pointers updated; System Atlas catalog/generated navigation-only (ATLAS_AUTHORITY=NONE); no structured source_v1.json semantic change; AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/f1_m9_productive_apply_execution_boundary_v1_decision_v1.json",
     "config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json",
     "config/governance/v32_d29_f1_m9_per_ingress_authority_edge_registry_v1.json",
     "config/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1_decision_v1.json",
+    "docs/ops/specs/F1_M9_PRODUCTIVE_APPLY_EXECUTION_BOUNDARY_NORMATIVE_V1.md",
     "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
-    "docs/ops/specs/V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+    "src/governance/f1_m9_per_ingress_authorization_chain_resolver_v1.py",
+    "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+    "src/governance/f1_m9_productive_apply_execution_closure_v1.py",
     "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py",
     "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py",
-    "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_closure_v1.py",
-    "tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-    "tests/governance/test_v32_d29_f1_m9_per_ingress_productive_authorization_apply_max_build_v1.py"
+    "tests/governance/test_f1_m9_productive_apply_execution_boundary_v1.py"
   ],
-  "changed_paths_sha256": "d626eba7d215ddc718069fd17558fb58b1c81ed61c60572154c8bc4dda99d0a0",
+  "changed_paths_sha256": "5b766d8cf2c9d4e65c9b6e07191d2a0a5d5ff9c629b25509ef4d8d4df9a1984b",
   "evidence_refs": [
-    "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
-    "config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json"
+    "docs/ops/specs/F1_M9_PRODUCTIVE_APPLY_EXECUTION_BOUNDARY_NORMATIVE_V1.md",
+    "config/governance/f1_m9_productive_apply_execution_boundary_v1_decision_v1.json"
   ],
   "covered_candidate_paths": [
+    "config/governance/f1_m9_productive_apply_execution_boundary_v1_decision_v1.json",
     "config/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1_decision_v1.json",
     "config/governance/v32_d29_f1_m9_per_ingress_authority_edge_registry_v1.json",
     "config/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1_decision_v1.json",
+    "docs/ops/specs/F1_M9_PRODUCTIVE_APPLY_EXECUTION_BOUNDARY_NORMATIVE_V1.md",
     "docs/ops/specs/V32_D29_F1_M9_EXPLICIT_OWNER_PRODUCTIVE_APPLY_POLICY_AND_AUTHORITY_EDGE_V1.md",
-    "docs/ops/specs/V32_D29_F1_M9_PER_INGRESS_PRODUCTIVE_AUTHORIZATION_APPLY_ADJUDICATION_AND_MAX_BUILD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+    "src/governance/f1_m9_per_ingress_authorization_chain_resolver_v1.py",
+    "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+    "src/governance/f1_m9_productive_apply_execution_closure_v1.py",
     "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-    "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_closure_v1.py",
     "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_adjudication_v1.py",
-    "src/governance/v32_d29_f1_m9_per_ingress_productive_authorization_apply_closure_v1.py",
-    "tests/governance/test_v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-    "tests/governance/test_v32_d29_f1_m9_per_ingress_productive_authorization_apply_max_build_v1.py"
+    "tests/governance/test_f1_m9_productive_apply_execution_boundary_v1.py"
   ]
 }

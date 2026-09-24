@@ -72,13 +72,13 @@ Policy evaluation owner:
 | Configuration materialization | **No** |
 | Runtime transport | **No** |
 | Policy edge bound | **No** (binding only) |
-| F1/M9 apply execution | Separate; requires `OWNER_MERGE_GO` |
+| F1/M9 apply execution | `f1_m9_productive_apply_execution_boundary_v1` (proof only until real apply GO) |
 
 ## 6. Closed / next blocker
 
 ```text
 CLOSED_D29_BLOCKER=F1_M9_PER_INGRESS_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_APPLY_INPUT_AND_AUTHORITY_EDGE
-NEXT_TRUE_BLOCKER=F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO
+NEXT_TRUE_BLOCKER=F1_M9_REAL_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_GO
 ```
 
 ## 7. Non-goals

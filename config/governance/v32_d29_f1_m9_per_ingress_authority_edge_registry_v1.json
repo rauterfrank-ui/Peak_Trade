@@ -36,7 +36,8 @@
       "edge_id": "PRODUCTIVE_APPLY_BOUNDARY",
       "classification": "ADJUDICATED",
       "policy_edge_module": "src/governance/v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1.py",
-      "apply_execution_module": "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+      "apply_execution_module": "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+      "apply_adjudicator_module": "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
       "owner_apply_record_schema": "f1_m9_owner_apply_authorization_record/v1"
     },
     {
