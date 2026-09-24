@@ -1,54 +1,22 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "c47704d4551e15fe8f875bebc6dc7b10e2081c42",
+  "base_sha": "83b86782b2b23822d48091c44d44fe4808e58bcd",
   "changed_paths": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/models_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/compatibility_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/gate_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_public_md_rate_limit_hardening_v1.py",
-    "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "79d39032faa526e03f60c27e0c17e21ff5a3a0886078c015a0ddebaa0f9bc734",
-  "covered_candidate_paths": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/models_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/compatibility_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/gate_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.py",
-    "tests/research/test_canonical_volatility_numeric_max_age_public_md_rate_limit_hardening_v1.py",
-    "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py"
-  ],
+  "changed_paths_sha256": "f8ee4f0c62cc71166f4ccdbb42860508feac047ce4c360c7fc134272012b4b5d",
+  "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/compatibility_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "R1_REPOSITORY_SHA_SELF_INVALIDATION_ARCHITECTURE_REPAIR_V1: separate materialization provenance (binding.repository_sha) from checkout HEAD; provenance lock + prereg/auth checks unchanged in authority. No source_v1.json change. Atlas refresh only. AUTHORITY=NONE.",
+  "reason": "MAP_CONTENT_RECENSUS_AND_BASELINE_REBIND_V1: rebind map baseline_sha and stale open-record statements (runbook_freshness_stamp, mv2_proof_baseline_sha) to CURRENT origin/main 83b86782b2b23822d48091c44d44fe4808e58bcd; regenerate authority view; module BASELINE_SHA provenance constant aligned. No domain/lifecycle class promotion. AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "verdict": "MAP_UPDATE_REQUIRED"
 }
