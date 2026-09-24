@@ -322,9 +322,8 @@ def test_digest_mismatch_rejected(tmp_path: Path) -> None:
         }
     )
     bad = ShadowCampaignRequestV1(**{**req.__dict__, "reproducibility": bad_repro})
-    result = run_shadow_campaign_v1(bad)
-    assert result.campaign_state is CampaignStateV1.REJECTED
-    assert "stage1_manifest_digest_mismatch" in result.rejection_reasons
+    with pytest.raises(ShadowCampaignEmitError, match="STAGE1_MANIFEST_DIGEST_MISMATCH"):
+        run_shadow_campaign_v1(bad)
 
 
 def test_incomplete_manifests_cannot_be_complete() -> None:
