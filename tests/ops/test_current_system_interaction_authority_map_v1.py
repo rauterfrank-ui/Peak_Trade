@@ -189,6 +189,53 @@ def test_stale_or_missing_evidence_ref_fails() -> None:
     assert any("missing evidence ref missing/map/evidence.py" in error for error in errors)
 
 
+def test_committed_drilldown_refs_pass_path_existence() -> None:
+    errors = MAP.validate_evidence(_doc(), REPO)
+    assert errors == []
+
+
+def test_missing_runbook_ref_fails() -> None:
+    doc = copy.deepcopy(_doc())
+    doc["domains"][0]["runbook_refs"] = ["missing/map/runbook.md"]
+    errors = MAP.validate_evidence(doc, REPO)
+    assert any("missing runbook_ref missing/map/runbook.md" in error for error in errors)
+
+
+def test_missing_contract_ref_fails() -> None:
+    doc = copy.deepcopy(_doc())
+    doc["domains"][0]["contract_refs"] = ["missing/map/contract.json"]
+    errors = MAP.validate_evidence(doc, REPO)
+    assert any("missing contract_ref missing/map/contract.json" in error for error in errors)
+
+
+def test_missing_code_ref_fails() -> None:
+    doc = copy.deepcopy(_doc())
+    doc["domains"][0]["code_refs"] = ["missing/map/code.py"]
+    errors = MAP.validate_evidence(doc, REPO)
+    assert any("missing code_ref missing/map/code.py" in error for error in errors)
+
+
+def test_parameter_family_source_ref_enforced_via_evidence_refs() -> None:
+    """source_ref is repo-local drill-down; duplicated in evidence_refs, not separately validated."""
+    doc = _doc()
+    for family in doc["parameter_families"]:
+        assert family["source_ref"] in family["evidence_refs"]
+    doc = copy.deepcopy(doc)
+    family = doc["parameter_families"][0]
+    source = family["source_ref"]
+    family["evidence_refs"] = [ref for ref in family["evidence_refs"] if ref != source]
+    assert source not in family["evidence_refs"]
+    assert family["evidence_refs"]
+    errors = MAP.validate_evidence(doc, REPO)
+    assert errors == []
+    family["evidence_refs"] = ["missing/map/parameter_family_source_ref.py"]
+    errors = MAP.validate_evidence(doc, REPO)
+    assert any(
+        "missing evidence ref missing/map/parameter_family_source_ref.py" in error
+        for error in errors
+    )
+
+
 def test_map_module_has_no_runtime_write_authority() -> None:
     assert MAP.validate_authority_none() == []
     assert MAP.AUTHORITY_EFFECT == "NONE"

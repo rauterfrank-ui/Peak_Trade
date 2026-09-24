@@ -1,29 +1,19 @@
 {
+  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "5b3aa5546598924ddedd4fa485f60a9b88544889",
+  "base_sha": "7cca089aa332cfc21b2927168b2c0f9fe7316eca",
+  "verdict": "NO_MAP_IMPACT",
+  "selector_used_as_map_impact_authority": false,
+  "reason": "WP MAP_REFERENCE_INTEGRITY_HARDENING_V1: extend map-currency validator with fail-closed path existence for domain runbook_refs/contract_refs/code_refs only; focused tests; structured source and derived views unchanged. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/ontology/discovered_terms.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "11727d124e59be69a8ee6fda51b7f127c15d0cfbbfac1c88efdd6aca3b0c6cd6",
-  "covered_candidate_paths": [],
+  "changed_paths_sha256": "88ecf07a268160d877b62e39be6368bdacf03cadb8ad6dbc9722265cf1164723",
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "WP MAP_NAV_INDEX_AND_FLOW_TYPING_V1: Map-of-Truth navigation pointer (AUTHORITY=NONE); map source Safety CONSTRAINT edges and AUTHORITY_FLOW open record; System Atlas navigation-index impact adjudication for map_of_truth (catalog/term/impact_state + ATLAS_CHANGE_IMPACT regen). AUTHORITY=NONE.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED"
+  "covered_candidate_paths": []
 }

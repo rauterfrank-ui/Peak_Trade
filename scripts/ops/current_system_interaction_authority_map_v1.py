@@ -271,19 +271,36 @@ def _evidence_errors(refs: list[str], label: str, repo_root: Path) -> list[str]:
     return errors
 
 
+def _drilldown_ref_errors(
+    refs: list[str], label: str, ref_class: str, repo_root: Path
+) -> list[str]:
+    """Path existence only for domain drill-down ref lists (no content/SHA binding)."""
+    errors: list[str] = []
+    for ref in refs:
+        if evidence_ref_status(repo_root, ref) == "MISSING":
+            errors.append(f"{label} missing {ref_class} {ref}")
+    return errors
+
+
 def validate_evidence(doc: dict, repo_root: Path) -> list[str]:
     errors: list[str] = []
     domain_ids = {item["id"] for item in doc["domains"]}
     for domain in doc["domains"]:
-        status = project_status(domain["status"])
-        if status == "PROVEN_CURRENT":
-            errors.extend(
-                _evidence_errors(domain["evidence_refs"], f"domain {domain['id']}", repo_root)
+        domain_label = f"domain {domain['id']}"
+        errors.extend(_evidence_errors(domain["evidence_refs"], domain_label, repo_root))
+        errors.extend(
+            _drilldown_ref_errors(
+                domain.get("runbook_refs", []), domain_label, "runbook_ref", repo_root
             )
-        else:
-            errors.extend(
-                _evidence_errors(domain["evidence_refs"], f"domain {domain['id']}", repo_root)
+        )
+        errors.extend(
+            _drilldown_ref_errors(
+                domain.get("contract_refs", []), domain_label, "contract_ref", repo_root
             )
+        )
+        errors.extend(
+            _drilldown_ref_errors(domain.get("code_refs", []), domain_label, "code_ref", repo_root)
+        )
     for edge in doc["edges"]:
         if edge["from_domain"] not in domain_ids or edge["to_domain"] not in domain_ids:
             errors.append(f"edge {edge['id']} dangling domain")
