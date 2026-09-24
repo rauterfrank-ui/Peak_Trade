@@ -123,7 +123,10 @@ def test_02_bijection_and_duplicate_cycle_idempotent(tmp_path: Path) -> None:
     # Duplicate market samples cannot advance coverage.
     assert after == before
     integrity = assert_ledger_integrity_matrix_v1(
-        productive_ledger_path=prod, join_ledger_path=join
+        productive_ledger_path=prod,
+        join_ledger_path=join,
+        integrity_scope_campaign_id="campaign_bind_v1",
+        integrity_scope_session_ids=("bind-s1",),
     )
     assert integrity["productive_to_join_bijection_valid"] is True
 
