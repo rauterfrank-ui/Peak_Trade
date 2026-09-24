@@ -856,6 +856,54 @@
       ]
     },
     {
+      "id": "safety_signals_into_integrated_replay",
+      "from_domain": "safety",
+      "to_domain": "mv2_double_play",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "safety_mode, safety_exit_signal, trading_gate on IntegratedOfflineReplayInputV1",
+      "producer": "current_productive_master_v2_runtime_cycle_v1",
+      "consumer": "run_integrated_offline_trading_logic_replay_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "REPLAY_SAFETY_INPUT_AND_KERNEL_BIND",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CYCLE_TO_REPLAY_INPUT",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "IntegratedOfflineReplayInputV1",
+      "provenance_binding": "HOST_EXIT_POLICY_AND_KERNEL_ADAPTER",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py"
+      ]
+    },
+    {
+      "id": "integrated_replay_safety_gate_before_intent",
+      "from_domain": "mv2_double_play",
+      "to_domain": "order_intent",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "safety_kernel hard_block skips canonical_order_intent bind; ReplayExecutionSafetyV1 at composition admission",
+      "producer": "run_integrated_offline_trading_logic_replay_v1",
+      "consumer": "canonical_order_intent_owner_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "ENTER_BLOCK_OR_POST_29Q_CONSUMPTION_GUARD",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "REPLAY_EVIDENCE_TO_INTENT_PLAN",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "ReplayExecutionSafetyV1",
+      "provenance_binding": "NOT_FILEGATE_NOT_SECOND_DECISION_OWNER",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+        "src/trading/master_v2/replay_execution_safety_contract_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py"
+      ]
+    },
+    {
       "id": "intent_to_execution",
       "from_domain": "order_intent",
       "to_domain": "execution_external_effect",
@@ -1391,6 +1439,18 @@
   ],
   "open_epistemic_records": [
     {
+      "id": "authority_flow_no_proven_current_instance",
+      "epistemic_class": "UNKNOWN",
+      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main: ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/governance/explicit_productive_authorization_v1.py",
+        "src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py",
+        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_policy_v1/constants_v1.py"
+      ]
+    },
+    {
       "id": "reselect_rerank_absence",
       "epistemic_class": "UNKNOWN",
       "statement": "Execution must not rerank or reselect. A repo-wide absence scan is not complete.",
@@ -1588,7 +1648,7 @@
     {
       "id": "safety_owner_unclosed",
       "epistemic_class": "PARTIAL",
-      "statement": "Safety boundary is visible without one closed productive owner string.",
+      "statement": "Safety boundary is visible on the productive cycle and CONSTRAINT_FLOW handoffs into integrated replay and before order-intent plan bind are mapped; a single closed productive safety owner string and full-core kill-switch owner remain unclosed (see kill_switch_full_core_safety_owner).",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- R1 materialization provenance vs checkout SHA split; runtime content-lock at binding.repository_sha; HEAD==origin/main without HEAD==materialization. No network, evidence, threshold, or trading authority. Catalog/provenance refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- WP MAP_NAV_INDEX_AND_FLOW_TYPING_V1 (PR #6780): intentional Map-of-Truth navigation-only pointer to CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source and generated views (map_authority=NONE). Atlas catalog and term evidence rebinding only; no trading, runtime, or authority promotion. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=R1_REPOSITORY_SHA_SELF_INVALIDATION_ARCHITECTURE_REPAIR_V1
+- modified_by=MAP_NAV_INDEX_AND_FLOW_TYPING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -103,17 +103,21 @@ entities:
     # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
     # navigation row for offline authority boundaries; MOT remains
     # MAP_OF_TRUTH_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+    # MAP_NAV_INDEX_AND_FLOW_TYPING_V1 (PR #6780): MOT adds navigation pointer to
+    # CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source/generated views only.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+    modified_by: MAP_NAV_INDEX_AND_FLOW_TYPING_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - config/governance/current_system_interaction_authority_map_v1/source_v1.json
+      - docs/governance/current_system_interaction_authority_map_v1/generated/
       - docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md
       - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
       - docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md

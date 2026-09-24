@@ -1,22 +1,29 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "83b86782b2b23822d48091c44d44fe4808e58bcd",
+  "base_sha": "5b3aa5546598924ddedd4fa485f60a9b88544889",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "f8ee4f0c62cc71166f4ccdbb42860508feac047ce4c360c7fc134272012b4b5d",
+  "changed_paths_sha256": "11727d124e59be69a8ee6fda51b7f127c15d0cfbbfac1c88efdd6aca3b0c6cd6",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "MAP_CONTENT_RECENSUS_AND_BASELINE_REBIND_V1: rebind map baseline_sha and stale open-record statements (runbook_freshness_stamp, mv2_proof_baseline_sha) to CURRENT origin/main 83b86782b2b23822d48091c44d44fe4808e58bcd; regenerate authority view; module BASELINE_SHA provenance constant aligned. No domain/lifecycle class promotion. AUTHORITY=NONE.",
+  "reason": "WP MAP_NAV_INDEX_AND_FLOW_TYPING_V1: Map-of-Truth navigation pointer (AUTHORITY=NONE); map source Safety CONSTRAINT edges and AUTHORITY_FLOW open record; System Atlas navigation-index impact adjudication for map_of_truth (catalog/term/impact_state + ATLAS_CHANGE_IMPACT regen). AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

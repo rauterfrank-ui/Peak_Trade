@@ -44,6 +44,7 @@ flowchart LR
   runtime_binding_cap24 --> mv2_double_play
   execution_external_effect --> presentation_dashboard
   treasury_29p --> capital_risk_sizing
+  mv2_double_play --> order_intent
   order_intent --> execution_external_effect
   mv2_double_play --> learning_ddo
   meta_learning --> optimization_universe
@@ -52,6 +53,7 @@ flowchart LR
   portfolio_reservation --> treasury_29p
   ranking_cap22 --> selection_cap23
   runtime_binding_cap24 --> mv2_double_play
+  safety --> mv2_double_play
   selection_cap23 --> runtime_binding_cap24
   capital_risk_sizing --> order_intent
   selection_cap23 --> step29m
