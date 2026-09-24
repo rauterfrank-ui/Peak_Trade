@@ -7778,13 +7778,14 @@ entities:
 
   - id: RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1
     kind: RUNTIME_COMPONENT
-    name: Productive max-age campaign R1 recovery and sole ACTIVE binding v1
+    name: Productive max-age campaign R1 recovery and sole ACTIVE binding v1 (governed materialization)
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: F1_M9_R1_RETAINED_ESTIMATE_LATE_AGE_SEMANTICS_IMPLEMENTATION_V1
+    modified_by: F1_M9_R1_BASELINE_REMATERIALIZATION_V1
     source_paths:
       - src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/
+      - src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py
       - src/research/canonical_volatility_numeric_max_age_campaign_authorization_v1/
       - src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/
       - src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py
@@ -7805,7 +7806,9 @@ entities:
       R1 recovery: abandoned incomplete campaign is tombstone-only; exactly one
       ACTIVE campaign binding; runner/preflight consume sole active identity;
       retained-estimate carrier modes wired via bridge and lifecycle binding.
-      No trading, network, or evidence-write authority. ATLAS_AUTHORITY=NONE.
+      F1_M9_R1_BASELINE_REMATERIALIZATION_V1 rebinding active prereg/binding to
+      current origin/main SHA only (no auth, no run). No trading, network, or
+      evidence-write authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1
     kind: RUNTIME_COMPONENT
