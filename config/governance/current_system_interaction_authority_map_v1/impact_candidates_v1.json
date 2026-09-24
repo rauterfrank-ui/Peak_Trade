@@ -117,6 +117,8 @@
     "tests/governance/test_v32_current_mv2_dp_concept_alignment_v1.py",
     "tests/governance/test_platform_unified_native_vs_candidate_baseline_evidence_v1.py",
     "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/",
+    "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/generated/",

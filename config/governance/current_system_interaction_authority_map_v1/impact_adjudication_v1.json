@@ -1,40 +1,32 @@
 {
+  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "bc560f1d62746f296ff3b4cbb173314b3ab72858",
+  "base_sha": "cd61d4a875c6da6b598d0b2c20f04c8b8407d6b1",
+  "verdict": "NO_MAP_IMPACT",
+  "selector_used_as_map_impact_authority": false,
+  "reason": "F1_R1_FRESH_S01_GOVERNED_DURABLE_EVIDENCE_RETENTION_V1 (PR #6788): persist verified Fresh-S01 durable campaign evidence at canonical ledger paths only; no CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source semantic change; materialization provenance bc560f1 unchanged; AUTHORITY=NONE.",
   "changed_paths": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/authorization/campaign_authorization.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
-    "tests/research/test_canonical_volatility_productive_ledger_coverage_scope_v1.py",
-    "tests/research/test_failed_s01_session_recovery_governance_v1.py"
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/authorization/consumption_ledger.jsonl",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/retained_estimate_lifecycle_carrier_v1.json",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/sessions/session_01_manifest.json",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/typed_volatility_persistence.jsonl",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_ledger.jsonl",
+    "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/research_evidence_ledger.jsonl"
   ],
-  "changed_paths_sha256": "3e007da6a540846e9598b28fde5462a984a165a828dcd0694345964aacc62adb",
-  "covered_candidate_paths": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/authorization/campaign_authorization.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/constants_v1.py",
-    "tests/research/test_canonical_volatility_productive_ledger_coverage_scope_v1.py",
-    "tests/research/test_failed_s01_session_recovery_governance_v1.py"
-  ],
+  "changed_paths_sha256": "c1bd1c5d1cef44878e5a5139ead926ec3733d012b8b99d39c15f0d8539533c4e",
   "evidence_refs": [
-    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
-    "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_r1_active_v1.json",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_EVIDENCE_CAMPAIGN_AUTHORIZATION_V1.md",
+    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PREREGISTERED_PRODUCTIVE_SESSION_RUNNER_V1.md",
+    "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json"
   ],
-  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "F1_M9_R1_FRESH_CAMPAIGN_REMATERIALIZATION_V1 (PR #6787): sole ACTIVE R1 binding and r1_active preregistration rematerialized to origin/main SHA bc560f1 (fresh campaign f5e3); render-only campaign authorization prep; map/Atlas navigation rebinding only. No CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source semantic change. AUTHORITY=NONE.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "covered_candidate_paths": [
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/authorization/consumption_ledger.jsonl",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/retained_estimate_lifecycle_carrier_v1.json",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/sessions/session_01_manifest.json",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_productive_evidence_campaign_v1_f5e3f95105cd847f/typed_volatility_persistence.jsonl",
+    "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/productive_research_evidence_ledger.jsonl",
+    "docs/evidence/canonical_volatility_numeric_max_age_research_evidence_ledger_v1/research_evidence_ledger.jsonl"
+  ]
 }

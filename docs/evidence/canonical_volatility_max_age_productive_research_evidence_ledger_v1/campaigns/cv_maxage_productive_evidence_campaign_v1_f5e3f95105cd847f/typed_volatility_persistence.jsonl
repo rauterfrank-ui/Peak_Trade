@@ -1,0 +1,2724 @@
+{
+  "acceptance_state": {
+    "bound_instrument_key": {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    "last_accepted_observation_identity": {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "mark_price": 2670.05,
+      "venue": "okx_europe",
+      "venue_event_time": 1790271980.512,
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    "last_accepted_transport": {
+      "heartbeat_sequence": null,
+      "poll_attempt": null,
+      "receive_time": 1790271978.564841,
+      "runtime_cycle_index": null,
+      "transport_latency": null,
+      "wallclock_now": null
+    },
+    "market_observation_epoch": {
+      "value": 128
+    }
+  },
+  "bar_interval_seconds": 60,
+  "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+  "capability_id": "MASTER_V2_CANONICAL_VOLATILITY_TYPED_RUNTIME_PRODUCER_SCAFFOLD_V1",
+  "history_digest": "3c9e3610c6c4c2c5e323289a2f4d9dad0781b2200b265c63a914cb5c582180b6",
+  "last_accepted_event_time": {
+    "unix_seconds": 1790271980.512
+  },
+  "owner": "trading.master_v2.canonical_volatility_runtime_mark_history_v1",
+  "records": [
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271738.1
+      },
+      "is_final": true,
+      "mark_price": 2674.04,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271738.1
+        },
+        "mark_price": 2674.04,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271736.029284,
+      "sample_digest": "18d4177e6f1c6b94228c0015702e6cb799b94c782d6a206af42a5d2a30caf15b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271740.125
+      },
+      "is_final": true,
+      "mark_price": 2673.18,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271740.125
+        },
+        "mark_price": 2673.18,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271738.055819,
+      "sample_digest": "131974dc61d0012c9ec5f8c2e9bd70fc7af57835d78d1edd44c7de33ca67953e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271742.153
+      },
+      "is_final": true,
+      "mark_price": 2673.15,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271742.153
+        },
+        "mark_price": 2673.15,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271740.082386,
+      "sample_digest": "ff33c61911a742463fc1f9d7520708f2bec80676a0911b88e14a4be52587e9e0",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271744.08
+      },
+      "is_final": true,
+      "mark_price": 2673.13,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271744.08
+        },
+        "mark_price": 2673.13,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271742.105984,
+      "sample_digest": "f8a13cab5e7412b500691ce2eae05622a2573edb86a52b0258d2c3f935e9ea3c",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271746.098
+      },
+      "is_final": true,
+      "mark_price": 2672.9,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271746.098
+        },
+        "mark_price": 2672.9,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271744.033781,
+      "sample_digest": "29f0ddd542208e8325fefd9479a8c43570257c521c99d1157d15e43a149056f7",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271748.097
+      },
+      "is_final": true,
+      "mark_price": 2672.81,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271748.097
+        },
+        "mark_price": 2672.81,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271746.053299,
+      "sample_digest": "b1a46eb56ae515a08fe26643d0008c7e0f78afcbd1346aab52250ddf2ea9757b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271750.136
+      },
+      "is_final": true,
+      "mark_price": 2672.74,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271750.136
+        },
+        "mark_price": 2672.74,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271748.054089,
+      "sample_digest": "c907a9b799cf2e7185f24c00bbdd8dfbcb58c70397cd2b7a6da64d1ed4c6ff25",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271752.18
+      },
+      "is_final": true,
+      "mark_price": 2672.7,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271752.18
+        },
+        "mark_price": 2672.7,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271750.089581,
+      "sample_digest": "b4ed378f94ef704184c5b0d77d430839b1f746b799e31d5bbb0240ddceae5bd4",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271754.193
+      },
+      "is_final": true,
+      "mark_price": 2672.79,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271754.193
+        },
+        "mark_price": 2672.79,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271752.134604,
+      "sample_digest": "3bfd1edb7e3d90c17b827d7e5103c93475ccad5835578678704c50d9c7832248",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271756.115
+      },
+      "is_final": true,
+      "mark_price": 2672.97,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271756.115
+        },
+        "mark_price": 2672.97,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271754.1463199,
+      "sample_digest": "f8477f402abf320082671d5ec0ad083c6da142d6c54ca2ec97565c3c78d15610",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271758.128
+      },
+      "is_final": true,
+      "mark_price": 2673.32,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271758.128
+        },
+        "mark_price": 2673.32,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271756.073162,
+      "sample_digest": "9ac708d0c7454ecf0ef9ea8d72db4d0232b4054747d1f2bfcce527de914e5a36",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271760.112
+      },
+      "is_final": true,
+      "mark_price": 2673.52,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271760.112
+        },
+        "mark_price": 2673.52,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271758.084357,
+      "sample_digest": "d720619d04e86522e9c99d680c7adfa5e3275e61b1c194cac41c51c1d752001a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271762.144
+      },
+      "is_final": true,
+      "mark_price": 2673.68,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271762.144
+        },
+        "mark_price": 2673.68,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271760.0669482,
+      "sample_digest": "481efaf5118a8f0591d53d5953d79dc69323d75228388281ef34131e10306171",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271764.198
+      },
+      "is_final": true,
+      "mark_price": 2673.97,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271764.198
+        },
+        "mark_price": 2673.97,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271762.10574,
+      "sample_digest": "26ce4842afc3f863a49363a9b0fe0b0b47f579ad1f2b0bd56eef90a38317f86a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271766.13
+      },
+      "is_final": true,
+      "mark_price": 2674.2,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271766.13
+        },
+        "mark_price": 2674.2,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271764.152888,
+      "sample_digest": "5ddb5baed2b23c8b993e10ccc843f84c5ed8fb49f40c08d209b0022c976e94b8",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271768.117
+      },
+      "is_final": true,
+      "mark_price": 2673.93,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271768.117
+        },
+        "mark_price": 2673.93,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271766.153435,
+      "sample_digest": "fdcaadf35fe1b45786b96d5b96c8f88ac6caf245a8e207b53d1980962a7606cc",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271770.118
+      },
+      "is_final": true,
+      "mark_price": 2673.77,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271770.118
+        },
+        "mark_price": 2673.77,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271768.069291,
+      "sample_digest": "34872e59ef95cece8fa0861aba59dd2a6815733050f1ed168c6b112cbd879a35",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271772.129
+      },
+      "is_final": true,
+      "mark_price": 2673.61,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271772.129
+        },
+        "mark_price": 2673.61,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271770.072851,
+      "sample_digest": "d689994055f351c2682c23d9827f8fd1b52489f4185912b483e09961352a3a19",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271774.204
+      },
+      "is_final": true,
+      "mark_price": 2673.16,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271774.204
+        },
+        "mark_price": 2673.16,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271772.084106,
+      "sample_digest": "ee71118e364f9577baa669e3252f7314a8a137eea0f0199cb54713513eb2fdbd",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271776.218
+      },
+      "is_final": true,
+      "mark_price": 2672.9,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271776.218
+        },
+        "mark_price": 2672.9,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271774.1644568,
+      "sample_digest": "6aca41ec297e63fd11dc61685d335573831a01ec127fe761579b79dfdfec03e4",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271778.161
+      },
+      "is_final": true,
+      "mark_price": 2672.59,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271778.161
+        },
+        "mark_price": 2672.59,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271776.172461,
+      "sample_digest": "2058038b2f3cae277224f1ab382bfeb4fcb1ad491177acfbac1359a5656a90bd",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271780.138
+      },
+      "is_final": true,
+      "mark_price": 2672.65,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271780.138
+        },
+        "mark_price": 2672.65,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271778.119637,
+      "sample_digest": "2e9db8f1566e0a3e4c151250c90be7710450116082352ca146b2ea6f6c7a657d",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271782.183
+      },
+      "is_final": true,
+      "mark_price": 2672.54,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271782.183
+        },
+        "mark_price": 2672.54,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271780.0914571,
+      "sample_digest": "d0d80c685657c90712b40e1541916b3096953f2a59a11fb8996a9fbfcff51fac",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271784.159
+      },
+      "is_final": true,
+      "mark_price": 2672.37,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271784.159
+        },
+        "mark_price": 2672.37,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271782.1347709,
+      "sample_digest": "06814349060de5e98d965a212c951e23fc187a5a6e8cda6639810973d6df4fc3",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271786.24
+      },
+      "is_final": true,
+      "mark_price": 2671.71,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271786.24
+        },
+        "mark_price": 2671.71,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271784.113984,
+      "sample_digest": "c0df41bf064f8607c9be997b259fc53e2863f39bf4b88628ef6e20c9bab7208e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271788.157
+      },
+      "is_final": true,
+      "mark_price": 2671.52,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271788.157
+        },
+        "mark_price": 2671.52,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271786.211872,
+      "sample_digest": "0ca151189f5df007b97bf2a48d849af28d1ea3ca787a6e10a2eac8ae87e95f4b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271790.168
+      },
+      "is_final": true,
+      "mark_price": 2671.39,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271790.168
+        },
+        "mark_price": 2671.39,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271788.172537,
+      "sample_digest": "cd7b9f9284dc209e10f443fd622a1497f0aee4899d72e065443e08e8c8551d37",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271792.145
+      },
+      "is_final": true,
+      "mark_price": 2671.11,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271792.145
+        },
+        "mark_price": 2671.11,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271790.124693,
+      "sample_digest": "1c78308f8d1a0900e5d659e13ed24082729aacb91c8fd75018d647aa1cc3d75e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271794.173
+      },
+      "is_final": true,
+      "mark_price": 2671.01,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271794.173
+        },
+        "mark_price": 2671.01,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271792.09878,
+      "sample_digest": "110145aa77257950a0658616d802565301f8810fa1327121fcec8007d37186df",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271796.22
+      },
+      "is_final": true,
+      "mark_price": 2670.41,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271796.22
+        },
+        "mark_price": 2670.41,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271794.126393,
+      "sample_digest": "ae5d407f0961634b1ef1d024869afe64acaac36e337cda80fb39ce1c05443fab",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271798.23
+      },
+      "is_final": true,
+      "mark_price": 2670.1,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271798.23
+        },
+        "mark_price": 2670.1,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271796.177278,
+      "sample_digest": "525fb79f2d6a10715d4b1875d3a1d83552404c7a1540fec465085953b19781cb",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271800.159
+      },
+      "is_final": true,
+      "mark_price": 2670.14,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271800.159
+        },
+        "mark_price": 2670.14,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271798.184403,
+      "sample_digest": "3be945d041ae54045e847e3cf51fc47cb84216c55edcca829099ea6ac609fdc1",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271802.173
+      },
+      "is_final": true,
+      "mark_price": 2669.66,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271802.173
+        },
+        "mark_price": 2669.66,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271800.1130931,
+      "sample_digest": "4a43dd8402936d0a69efc740efca8150a8a188cb6538d656d1a28dafa595efa4",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271804.185
+      },
+      "is_final": true,
+      "mark_price": 2669.7,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271804.185
+        },
+        "mark_price": 2669.7,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271802.125323,
+      "sample_digest": "ff40bd9a80de1c95e2c44f745f1ba5af65ceee5bbbc7b08e05af2cec6da21610",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271806.173
+      },
+      "is_final": true,
+      "mark_price": 2669.57,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271806.173
+        },
+        "mark_price": 2669.57,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271804.142164,
+      "sample_digest": "a9e2e81426e3b4cb9752a853cb820e3f5f328c1f9f812d86e2ca2fd4b00770c0",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271808.249
+      },
+      "is_final": true,
+      "mark_price": 2668.66,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271808.249
+        },
+        "mark_price": 2668.66,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271806.125323,
+      "sample_digest": "728f0454706e17cd47e42b4bb89b0f3e27fdfe28999266755d77d61d2b8def8f",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271810.298
+      },
+      "is_final": true,
+      "mark_price": 2668.39,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271810.298
+        },
+        "mark_price": 2668.39,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271808.206848,
+      "sample_digest": "812213b8a66efa92d3a16305283ced102d005b3630f0a63b7b05061e445c0411",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271812.201
+      },
+      "is_final": true,
+      "mark_price": 2667.87,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271812.201
+        },
+        "mark_price": 2667.87,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271810.2530088,
+      "sample_digest": "ac20689067ccb319ba81f643e3b7e7866256f62520c18127b6fd6d3fd2d06772",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271814.187
+      },
+      "is_final": true,
+      "mark_price": 2667.94,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271814.187
+        },
+        "mark_price": 2667.94,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271812.1560671,
+      "sample_digest": "aec609842bf69305c7f811669840839b58710d2324648bad2a13204a89c545b4",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271816.223
+      },
+      "is_final": true,
+      "mark_price": 2667.7,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271816.223
+        },
+        "mark_price": 2667.7,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271814.140477,
+      "sample_digest": "1b98b32001fcaa7d5d15f49f75ae85d0a04fad9231d9aacfca23791e1c4b772e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271818.219
+      },
+      "is_final": true,
+      "mark_price": 2667.84,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271818.219
+        },
+        "mark_price": 2667.84,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271816.1870651,
+      "sample_digest": "ab03309589e60059f5df3459032266f685d3824f0298d41ce9c4daacf8b1cd79",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271820.393
+      },
+      "is_final": true,
+      "mark_price": 2668.04,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271820.393
+        },
+        "mark_price": 2668.04,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271818.178547,
+      "sample_digest": "5c166b3d90999f00f3a1a8d70aca2232f9570b8f5b4807fc395d01dae88b4a0a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271822.206
+      },
+      "is_final": true,
+      "mark_price": 2668.36,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271822.206
+        },
+        "mark_price": 2668.36,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271820.348861,
+      "sample_digest": "8b2c4bcb33db4186a1c9995d25a7fcbe5d6e952f5239956e04a6e25c42f256fa",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271824.267
+      },
+      "is_final": true,
+      "mark_price": 2668.44,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271824.267
+        },
+        "mark_price": 2668.44,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271822.16144,
+      "sample_digest": "a87e8d801e05ce0c79e641cb12454d6154d3d462324c457ffbeb011f38759ec5",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271826.218
+      },
+      "is_final": true,
+      "mark_price": 2668.54,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271826.218
+        },
+        "mark_price": 2668.54,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271824.220926,
+      "sample_digest": "2d8d5a77db9c185ff2c6e418eaf0827c0d78af160ce4f5876a3d87468ce48110",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271828.214
+      },
+      "is_final": true,
+      "mark_price": 2668.76,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271828.214
+        },
+        "mark_price": 2668.76,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271826.172215,
+      "sample_digest": "8fdc639b330d2da1e4f61d2770db6e47c7fb86cda82955bbccdef4ce628cfef0",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271830.292
+      },
+      "is_final": true,
+      "mark_price": 2668.46,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271830.292
+        },
+        "mark_price": 2668.46,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271828.168385,
+      "sample_digest": "1447c04e964a01e95f7743d2dec742cfe45c589dce4350d05cae599f28804c89",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271832.315
+      },
+      "is_final": true,
+      "mark_price": 2668.23,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271832.315
+        },
+        "mark_price": 2668.23,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271830.25007,
+      "sample_digest": "5566625f6b838d974ee88fc5a404fe0e084b8d4a1ecc58c5e27ebb0c320c6e94",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271834.234
+      },
+      "is_final": true,
+      "mark_price": 2668.97,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271834.234
+        },
+        "mark_price": 2668.97,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271832.270507,
+      "sample_digest": "0dce9ae1f4818a636d1732daa177e758eb356184e0d5cd339ea220f1073575ab",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271836.218
+      },
+      "is_final": true,
+      "mark_price": 2668.92,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271836.218
+        },
+        "mark_price": 2668.92,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271834.187689,
+      "sample_digest": "f324e9ca89972770189034459279922106df4b2fe9c81d55267e0e7aa6f27598",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271838.26
+      },
+      "is_final": true,
+      "mark_price": 2669.06,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271838.26
+        },
+        "mark_price": 2669.06,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271836.172113,
+      "sample_digest": "b65183a402ef2f57430c82e214fb3b35c3def71fdd14e909c2c433f09741adcd",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271840.285
+      },
+      "is_final": true,
+      "mark_price": 2669.06,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271840.285
+        },
+        "mark_price": 2669.06,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271838.215144,
+      "sample_digest": "15847e48fd76fcb661a01e037eb7c727b7da540500e69e53f5cc730472cc35d6",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271842.376
+      },
+      "is_final": true,
+      "mark_price": 2668.75,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271842.376
+        },
+        "mark_price": 2668.75,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271840.238821,
+      "sample_digest": "d5f850811fd991f347f3acb74e48128b5176d33d17fa37f52bb1e8d4756c745b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271844.243
+      },
+      "is_final": true,
+      "mark_price": 2668.53,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271844.243
+        },
+        "mark_price": 2668.53,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271842.3331258,
+      "sample_digest": "1b48d2fdc42a2474300d16976c15901705e4aa17db3adc365741704f9d969fd5",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271846.238
+      },
+      "is_final": true,
+      "mark_price": 2668.47,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271846.238
+        },
+        "mark_price": 2668.47,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271844.269492,
+      "sample_digest": "43ec6eadb386944d770d0f01c426ecbfffbfbab02406f0cfb62265464010a06c",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271848.27
+      },
+      "is_final": true,
+      "mark_price": 2668.62,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271848.27
+        },
+        "mark_price": 2668.62,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271846.190339,
+      "sample_digest": "7c901890df152757a88d9ce67575f68edc711dcf5db1bdd0d190c8119cc10e9b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271850.27
+      },
+      "is_final": true,
+      "mark_price": 2668.62,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271850.27
+        },
+        "mark_price": 2668.62,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271848.22734,
+      "sample_digest": "8c66a6d5a12a16aef4778b8adc91e329219713ca32764a5583ac2bf1534ca77a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271852.311
+      },
+      "is_final": true,
+      "mark_price": 2668.93,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271852.311
+        },
+        "mark_price": 2668.93,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271850.226021,
+      "sample_digest": "849a92abf30490a44ef8c4147fe5af1983bcfab288ea7cb3404f8309b92ef0dc",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271854.341
+      },
+      "is_final": true,
+      "mark_price": 2669.35,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271854.341
+        },
+        "mark_price": 2669.35,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271852.2657971,
+      "sample_digest": "7fbbfcd10e64daca36471817c7081108cf121a7617e839059f368219903afa5a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271856.266
+      },
+      "is_final": true,
+      "mark_price": 2669.38,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271856.266
+        },
+        "mark_price": 2669.38,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271854.2969558,
+      "sample_digest": "b9cb0a4e07527dc2e45577de2997e9582c85b9eb6d23ff85ee0c96fed2639fc2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271858.338
+      },
+      "is_final": true,
+      "mark_price": 2669.45,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271858.338
+        },
+        "mark_price": 2669.45,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271856.221239,
+      "sample_digest": "72448e3905b5305fca1cef80e054a7e4103f985a6aec6af18dc413f44d61cd5a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271860.277
+      },
+      "is_final": true,
+      "mark_price": 2669.43,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271860.277
+        },
+        "mark_price": 2669.43,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271858.292772,
+      "sample_digest": "d455b92d843a7d5bd01a93fd5f4e949df7c5653cc7bd80c29f76e87c7b962259",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271862.309
+      },
+      "is_final": true,
+      "mark_price": 2669.4,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271862.309
+        },
+        "mark_price": 2669.4,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271860.230242,
+      "sample_digest": "cb36c6548263cd3d08ea8a5995fd1d892f90bf888cb5d4a91c04f3e50921401d",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271864.417
+      },
+      "is_final": true,
+      "mark_price": 2669.26,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271864.417
+        },
+        "mark_price": 2669.26,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271862.262639,
+      "sample_digest": "31224ceeb12a4765cd735ad152f93e1eea80a322674c4e68ae5fb6c1b6515e37",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271866.285
+      },
+      "is_final": true,
+      "mark_price": 2669.34,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271866.285
+        },
+        "mark_price": 2669.34,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271864.3715332,
+      "sample_digest": "45633ebe511bf726af637bcb8c72f48df8837c48676b0783e77ae15c08ac29ba",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271868.377
+      },
+      "is_final": true,
+      "mark_price": 2669.64,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271868.377
+        },
+        "mark_price": 2669.64,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271866.2950242,
+      "sample_digest": "8f1f044c6772fdbdefb2f48335fd4eb781d5a3aba3276903b7d6d020aaeaabb2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271870.317
+      },
+      "is_final": true,
+      "mark_price": 2669.67,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271870.317
+        },
+        "mark_price": 2669.67,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271868.412152,
+      "sample_digest": "c787ade3945905085e2e5ab2265dbe934a2a22522f9828b86f2102ce9d152116",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271872.296
+      },
+      "is_final": true,
+      "mark_price": 2669.8,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271872.296
+        },
+        "mark_price": 2669.8,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271870.272037,
+      "sample_digest": "f6fbd85a80f653834edce18a1fe6b5516fdebc5bfdced2400bd2eeb047977c3e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271874.33
+      },
+      "is_final": true,
+      "mark_price": 2669.9,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271874.33
+        },
+        "mark_price": 2669.9,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271872.248797,
+      "sample_digest": "fa42665f3ea5471ae5c4412ec7b61ab9daebbeb714154afe4d2492ba32d33979",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271876.405
+      },
+      "is_final": true,
+      "mark_price": 2669.92,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271876.405
+        },
+        "mark_price": 2669.92,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271874.28356,
+      "sample_digest": "d362eac109a9f945ae1151c45e24fd57a08c4ab17e21aadfc657dcbc1f0d7f2a",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271878.365
+      },
+      "is_final": true,
+      "mark_price": 2670.01,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271878.365
+        },
+        "mark_price": 2670.01,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271876.3634791,
+      "sample_digest": "0361f991042af80ec10a2c803e8b7ff04366dea10234b8387d578bc8a5eba0f2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271880.374
+      },
+      "is_final": true,
+      "mark_price": 2669.89,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271880.374
+        },
+        "mark_price": 2669.89,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271878.3695412,
+      "sample_digest": "01b58ee94784258af0d29756338a7d40e91b15832d56f1e3fae9094285235d59",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271882.325
+      },
+      "is_final": true,
+      "mark_price": 2669.54,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271882.325
+        },
+        "mark_price": 2669.54,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271880.4472451,
+      "sample_digest": "2f578a37e382eb815da2b38b3c390d96a4212736719e61cd22a41bb79bb19173",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271884.335
+      },
+      "is_final": true,
+      "mark_price": 2669.88,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271884.335
+        },
+        "mark_price": 2669.88,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271882.2801669,
+      "sample_digest": "fd8d6c14cc789513cd8e3e86651c0e083c4fe6d013fc1f89824c0a0a5a98fe34",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271886.388
+      },
+      "is_final": true,
+      "mark_price": 2669.94,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271886.388
+        },
+        "mark_price": 2669.94,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271884.288478,
+      "sample_digest": "122933324f7a7c91cf0054ba63a3713cad3f3ac07014249df52508aa87ccf6cc",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271888.429
+      },
+      "is_final": true,
+      "mark_price": 2669.85,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271888.429
+        },
+        "mark_price": 2669.85,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271886.344883,
+      "sample_digest": "153a2b3767e713d8b933635a27ec411fdd744b906e15ca657f6c179b619e179b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271890.363
+      },
+      "is_final": true,
+      "mark_price": 2669.73,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271890.363
+        },
+        "mark_price": 2669.73,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271888.382199,
+      "sample_digest": "acf8eb10f285710f387becb5f9f1d494f7c59ad525e77a0b3385657e2b286bf2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271892.446
+      },
+      "is_final": true,
+      "mark_price": 2669.85,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271892.446
+        },
+        "mark_price": 2669.85,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271890.3177888,
+      "sample_digest": "fd759fc4ae9aee878362061d699fe07f8e78c105e88a55ad3c2b11eca133c0e7",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271894.505
+      },
+      "is_final": true,
+      "mark_price": 2669.94,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271894.505
+        },
+        "mark_price": 2669.94,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271892.402514,
+      "sample_digest": "609c4ff0f8a879a25271dce14406b5faa67d33df0534053057ebc5e208fb2f7d",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271896.348
+      },
+      "is_final": true,
+      "mark_price": 2669.75,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271896.348
+        },
+        "mark_price": 2669.75,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271894.45648,
+      "sample_digest": "fbe0bed4bf49cd5295a7b87cb305fe4070ff8569cb28b0e98fb34573f0677560",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271898.442
+      },
+      "is_final": true,
+      "mark_price": 2669.45,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271898.442
+        },
+        "mark_price": 2669.45,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271896.304414,
+      "sample_digest": "b82f8c58293129fe7e31ef8592c4aa1c2ff788b38318418a3c32ed168e26b859",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271900.363
+      },
+      "is_final": true,
+      "mark_price": 2669.27,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271900.363
+        },
+        "mark_price": 2669.27,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271898.396815,
+      "sample_digest": "38d24bdfde09d78a689937264215eab16d3ce21c28b40da7cb92833050386815",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271902.428
+      },
+      "is_final": true,
+      "mark_price": 2669.32,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271902.428
+        },
+        "mark_price": 2669.32,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271900.373771,
+      "sample_digest": "88d4a51601cdb359e20856c88832bb4dc3910ab9bf308b835185ac9586e6be8b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271904.373
+      },
+      "is_final": true,
+      "mark_price": 2668.81,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271904.373
+        },
+        "mark_price": 2668.81,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271902.467979,
+      "sample_digest": "fd59e2155eb284bfaf17dec11d8e2a719e2336aef00d463a1a8e47bab5cd8f92",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271906.402
+      },
+      "is_final": true,
+      "mark_price": 2668.22,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271906.402
+        },
+        "mark_price": 2668.22,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271904.3258429,
+      "sample_digest": "63544af81d907d652feb2ab576f829578c0f3f3d57a9871ba5c32a898e5b51c0",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271908.42
+      },
+      "is_final": true,
+      "mark_price": 2667.9,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271908.42
+        },
+        "mark_price": 2667.9,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271906.355753,
+      "sample_digest": "dd80becfa49608226836aa1ff3ffbfc4ce40dafb6bff5eae40d05130207f828e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271910.436
+      },
+      "is_final": true,
+      "mark_price": 2667.76,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271910.436
+        },
+        "mark_price": 2667.76,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271908.374893,
+      "sample_digest": "5d1f7be9b7b8048f30d46d28f2020b13e01b56a6859052409660af5403bbcf92",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271912.571
+      },
+      "is_final": true,
+      "mark_price": 2667.81,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271912.571
+        },
+        "mark_price": 2667.81,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271910.39051,
+      "sample_digest": "440bf4ddb9997eeb47c4cf8d8c8f794349ba2a76b518eedbf7f6ed194d8ae6d5",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271914.389
+      },
+      "is_final": true,
+      "mark_price": 2667.85,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271914.389
+        },
+        "mark_price": 2667.85,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271912.523554,
+      "sample_digest": "8d791f54940540ce6825dfee4f397417bb4ffef1c2087e22e5d16c23f30a64d6",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271916.467
+      },
+      "is_final": true,
+      "mark_price": 2667.8,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271916.467
+        },
+        "mark_price": 2667.8,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271914.34274,
+      "sample_digest": "7ebf2cfd5bccda67f7787cbc20264412fdca749bc86306a3b555d55cdfa906e7",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271918.409
+      },
+      "is_final": true,
+      "mark_price": 2667.81,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271918.409
+        },
+        "mark_price": 2667.81,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271916.421165,
+      "sample_digest": "be5844969a1a926c72443e603307efbb3bc391358bfa5f80db65f2e48280375d",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271920.484
+      },
+      "is_final": true,
+      "mark_price": 2668.17,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271920.484
+        },
+        "mark_price": 2668.17,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271918.365372,
+      "sample_digest": "cbd00e4e1de9d15ac0bf6b42feae8b3c3ffd33c1b60fda27475ea4e42bb52ba2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271922.486
+      },
+      "is_final": true,
+      "mark_price": 2668.35,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271922.486
+        },
+        "mark_price": 2668.35,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271920.43997,
+      "sample_digest": "023e7eb47a23120f43361ff14484e4adab5454aa4c81b8e879f3575c9c14f5af",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271924.415
+      },
+      "is_final": true,
+      "mark_price": 2668.32,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271924.415
+        },
+        "mark_price": 2668.32,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271922.444612,
+      "sample_digest": "70b5a0beb7cc01a180bc32c8a8bc9f193c2f74d07bdaf106e1e8f47efd191414",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271927.505
+      },
+      "is_final": true,
+      "mark_price": 2668.1,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271927.505
+        },
+        "mark_price": 2668.1,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271924.371357,
+      "sample_digest": "1d2bbaa2f493f893848905a6914ddf38426d2f3d93f4d15aec92b128b9fa5405",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271928.417
+      },
+      "is_final": true,
+      "mark_price": 2668.11,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271928.417
+        },
+        "mark_price": 2668.11,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271927.4598331,
+      "sample_digest": "24bd405836a76f848f561184ddb171c074acb1c6f80e1d4cfd32a1e426596524",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271930.437
+      },
+      "is_final": true,
+      "mark_price": 2667.88,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271930.437
+        },
+        "mark_price": 2667.88,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271928.375631,
+      "sample_digest": "3a0cb60225337cb4d43976bfa482e934b2c334af0b53b94992757b3c654268e3",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271932.497
+      },
+      "is_final": true,
+      "mark_price": 2667.66,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271932.497
+        },
+        "mark_price": 2667.66,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271930.3970702,
+      "sample_digest": "33339d99f3a09ece6fad996bd86b49bb81e80d7509a5e99ce622fd0094fa35f2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271934.433
+      },
+      "is_final": true,
+      "mark_price": 2667.4,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271934.433
+        },
+        "mark_price": 2667.4,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271932.451763,
+      "sample_digest": "b4e79886895a0607706a8ee0f41610f1b0ac7750e3d0c536c11626b0b3fbaa80",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271936.464
+      },
+      "is_final": true,
+      "mark_price": 2667.32,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271936.464
+        },
+        "mark_price": 2667.32,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271934.4464798,
+      "sample_digest": "d721681eb32b00dac8ece1a24c45f9e27221ec24a2d1e396ce430e8eccbcc194",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271938.452
+      },
+      "is_final": true,
+      "mark_price": 2667.69,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271938.452
+        },
+        "mark_price": 2667.69,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271936.42221,
+      "sample_digest": "f243dd0b33d00ae22408c6b701d00d68d431f8dbcc3bef60dab7972e2470fa11",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271940.448
+      },
+      "is_final": true,
+      "mark_price": 2667.84,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271940.448
+        },
+        "mark_price": 2667.84,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271938.410799,
+      "sample_digest": "a6fc3c5a57fb818e5ef363ccf8d6e69334e7f61d741fc668de6589196a3e607e",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271942.512
+      },
+      "is_final": true,
+      "mark_price": 2668.12,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271942.512
+        },
+        "mark_price": 2668.12,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271940.413673,
+      "sample_digest": "12b1aa0a6301e971ceb7c2ae78fa6e6c25209cbd227331f576ec7196e2cef5d5",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271944.511
+      },
+      "is_final": true,
+      "mark_price": 2668.44,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271944.511
+        },
+        "mark_price": 2668.44,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271942.472028,
+      "sample_digest": "6dc83fffb7fc060bd669025d39c5d0f528a1eda4aebd335cd1a76c2406ce7650",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271946.46
+      },
+      "is_final": true,
+      "mark_price": 2668.42,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271946.46
+        },
+        "mark_price": 2668.42,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271944.465924,
+      "sample_digest": "e38ebe037c5f3d5ac5f982886fbf2b5b53a300ebd9e45c9fa9e7bfc0ad8b3bc7",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271948.455
+      },
+      "is_final": true,
+      "mark_price": 2668.54,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271948.455
+        },
+        "mark_price": 2668.54,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271946.4199328,
+      "sample_digest": "1aa5961953eb6857365ab4295cf5a2a7a22ea0a6b2b8a26ce08e514c54fc85aa",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271950.459
+      },
+      "is_final": true,
+      "mark_price": 2668.26,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271950.459
+        },
+        "mark_price": 2668.26,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271948.408649,
+      "sample_digest": "c2907e6c859c9448f7de30addc8a3a28d3c4a9029c06dc2fcb9c89ca45b2738b",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271952.472
+      },
+      "is_final": true,
+      "mark_price": 2668.13,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271952.472
+        },
+        "mark_price": 2668.13,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271950.4139361,
+      "sample_digest": "c68ee07659b61ececc810c996234c0ed6223b02e00015a3c35dfd409fe260a74",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271954.551
+      },
+      "is_final": true,
+      "mark_price": 2668.25,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271954.551
+        },
+        "mark_price": 2668.25,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271952.426902,
+      "sample_digest": "718a095f0e9a3679c8b8e7c0f652081bab4b6e5b937704183348ab038ca1efb2",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271956.471
+      },
+      "is_final": true,
+      "mark_price": 2669.17,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271956.471
+        },
+        "mark_price": 2669.17,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271954.505172,
+      "sample_digest": "8120965fa1dffd69c84416d4023cc660b22ed24f1b097e3c37842aaf449cd0a9",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271958.49
+      },
+      "is_final": true,
+      "mark_price": 2669.45,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271958.49
+        },
+        "mark_price": 2669.45,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271956.471225,
+      "sample_digest": "4c97d8643535114381c54296199b866e8ad059d05875facf6c2cd43657ac910f",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271960.503
+      },
+      "is_final": true,
+      "mark_price": 2669.79,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271960.503
+        },
+        "mark_price": 2669.79,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271958.444603,
+      "sample_digest": "c8c0362ae1067f68c5941a97c86bd0f467809f3fcf36f302797b6beede7b4bb5",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271962.512
+      },
+      "is_final": true,
+      "mark_price": 2669.69,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271962.512
+        },
+        "mark_price": 2669.69,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271960.4596338,
+      "sample_digest": "1c0749fb842f4a0c9a245355fd0702d999c33466fe574bf5f4b38d0497931514",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271964.522
+      },
+      "is_final": true,
+      "mark_price": 2669.31,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271964.522
+        },
+        "mark_price": 2669.31,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271962.483103,
+      "sample_digest": "42a905ac15e7d7218b42b2f925891dd35121e2677c9ea8336897c20f038f437f",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271966.583
+      },
+      "is_final": true,
+      "mark_price": 2669.47,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271966.583
+        },
+        "mark_price": 2669.47,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271964.485516,
+      "sample_digest": "676096baf3765e9266672215ad44b52939390d1ec16c65fcb37148d48f669154",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271968.5
+      },
+      "is_final": true,
+      "mark_price": 2669.38,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271968.5
+        },
+        "mark_price": 2669.38,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271966.551519,
+      "sample_digest": "11eb2e50203fa4de9797c3ab84cfb86427014af97a366e477d6af1a0d829f84f",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271970.517
+      },
+      "is_final": true,
+      "mark_price": 2669.63,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271970.517
+        },
+        "mark_price": 2669.63,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271968.54395,
+      "sample_digest": "fb1b0f19a70292de75720dd0b019471cc472eef7957d45c2df6a8174568f85d7",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271972.534
+      },
+      "is_final": true,
+      "mark_price": 2669.81,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271972.534
+        },
+        "mark_price": 2669.81,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271970.485419,
+      "sample_digest": "63b0fadf9dfb549745a1f9e06929f58b3d063db15d2e5ebb074ba51aba641bfd",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271974.52
+      },
+      "is_final": true,
+      "mark_price": 2670.06,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271974.52
+        },
+        "mark_price": 2670.06,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271972.5059001,
+      "sample_digest": "ef2eea78f54b886502980ac6f109904d9eeaf654061106140a080a2dc6524211",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271976.588
+      },
+      "is_final": true,
+      "mark_price": 2670.5,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271976.588
+        },
+        "mark_price": 2670.5,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271974.49262,
+      "sample_digest": "501d6a95a05eb90b05cba4a6a7fab8da62a04c303bf3e9c7f219bc3ed1f8dbd9",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271978.588
+      },
+      "is_final": true,
+      "mark_price": 2670.41,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271978.588
+        },
+        "mark_price": 2670.41,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271976.5613189,
+      "sample_digest": "f93c6d17741c46a77f93c3a1a420b27e4579851164b742169c30963fbbc7a9c4",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    },
+    {
+      "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+      "event_time": {
+        "unix_seconds": 1790271980.512
+      },
+      "is_final": true,
+      "mark_price": 2670.05,
+      "market_sample_identity": {
+        "canonical_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "event_time": {
+          "unix_seconds": 1790271980.512
+        },
+        "mark_price": 2670.05,
+        "venue": "okx_europe",
+        "venue_instrument_id": "ETH-USD_UM_XPERP-310404",
+        "version": "v1"
+      },
+      "receive_time": 1790271978.564841,
+      "sample_digest": "e315c501d9840ff7a23171335ea3384ff58d984b1199953b23a173b3b6293593",
+      "venue": "okx_europe",
+      "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+    }
+  ],
+  "schema_version": "canonical_volatility_runtime_mark_history/v1",
+  "venue": "okx_europe",
+  "venue_instrument_id": "ETH-USD_UM_XPERP-310404"
+}
