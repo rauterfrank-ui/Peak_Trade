@@ -44,6 +44,10 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.compatibility_v1 import (
     assert_r1_runtime_checkout_on_origin_main_v1,
 )
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.failed_s01_session_recovery_governance_v1 import (
+    assert_session_start_allowed_under_failed_s01_governance_v1,
+    evaluate_failed_s01_campaign_governance_v1,
+)
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
     assert_late_age_session_has_s01_persistence_v1,
     assert_late_age_session_has_s01_retained_estimate_carrier_v1,
@@ -179,6 +183,20 @@ def run_static_preflight_v1(
         binding = resolve_active_campaign_binding_for_runtime_v1(repo_root=root)
     except ProductiveCampaignR1RecoveryError as exc:
         raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
+
+    try:
+        failed_s01 = evaluate_failed_s01_campaign_governance_v1(
+            binding=binding,
+            evidence_root=evi_root,
+            authorization_artifact_path=Path(authorization_artifact_path),
+            authorization_id=authorization_id,
+        )
+        assert_session_start_allowed_under_failed_s01_governance_v1(
+            session_id=session_id,
+            governance=failed_s01,
+        )
+    except ProductiveCampaignR1RecoveryError as exc:
+        raise PreregisteredSessionRunnerError(f"failed_s01_governance:{exc}") from exc
 
     materialization_sha = binding.repository_sha
 

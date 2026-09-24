@@ -28,6 +28,7 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     valid_productive_records_from_ledger_v1,
 )
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
+    ProductiveBridgeSessionPartialFailureV1,
     ProductiveEvidenceAccumulationError,
     require_nonempty,
 )
@@ -107,12 +108,73 @@ def _to_market_sample_identity_v1(
     )
 
 
+def _validate_integrity_scope_bindings_v1(
+    *,
+    campaign_id: str,
+    authorized_session_ids: Sequence[str],
+) -> tuple[str, ...]:
+    camp = str(campaign_id or "").strip()
+    if not camp:
+        raise ProductiveEvidenceAccumulationError("integrity_scope_campaign_id_required")
+    cleaned = [str(s).strip() for s in authorized_session_ids]
+    if not cleaned or any(not s for s in cleaned):
+        raise ProductiveEvidenceAccumulationError("integrity_scope_session_ids_required")
+    if len(cleaned) != len(set(cleaned)):
+        raise ProductiveEvidenceAccumulationError("integrity_scope_session_ids_not_unique")
+    return tuple(sorted(cleaned))
+
+
+def _filter_records_to_integrity_scope_v1(
+    productive: Sequence[Any],
+    joins: Sequence[Any],
+    *,
+    campaign_id: str,
+    authorized_session_ids: Sequence[str],
+) -> tuple[list[Any], list[Any]]:
+    allowed = set(
+        _validate_integrity_scope_bindings_v1(
+            campaign_id=campaign_id,
+            authorized_session_ids=authorized_session_ids,
+        )
+    )
+    scoped_productive: list[Any] = []
+    for record in productive:
+        sid = str(getattr(record, "session_id", "") or "")
+        if sid not in allowed:
+            continue
+        rec_campaign = str(getattr(record, "campaign_id", "") or "")
+        if rec_campaign != campaign_id:
+            raise ProductiveEvidenceAccumulationError(
+                "integrity_scope_productive_campaign_mismatch"
+            )
+        scoped_productive.append(record)
+    scoped_joins: list[Any] = []
+    for join in joins:
+        sid = str(getattr(join, "session_id", "") or "")
+        if sid not in allowed:
+            continue
+        scoped_joins.append(join)
+    join_keys_seen: set[tuple[str, str, str]] = set()
+    for join in scoped_joins:
+        key = (
+            str(join.session_id),
+            str(join.cycle_id),
+            str(join.instrument_id),
+        )
+        if key in join_keys_seen:
+            raise ProductiveEvidenceAccumulationError("duplicate_join_records_in_scope")
+        join_keys_seen.add(key)
+    return scoped_productive, scoped_joins
+
+
 def assert_ledger_integrity_matrix_v1(
     *,
     productive_ledger_path: Path,
     join_ledger_path: Path,
+    integrity_scope_campaign_id: str | None = None,
+    integrity_scope_session_ids: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    productive = (
+    all_productive = (
         valid_productive_records_from_ledger_v1(productive_ledger_path)
         if productive_ledger_path.exists()
         else []
@@ -120,18 +182,39 @@ def assert_ledger_integrity_matrix_v1(
     if productive_ledger_path.exists():
         # Chain load validates predecessor digests fail-closed.
         _ = load_productive_evidence_ledger_v1(productive_ledger_path)
+    all_joins = (
+        load_research_evidence_records_v1(join_ledger_path)
+        if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0
+        else []
+    )
+    scoped = integrity_scope_campaign_id is not None and integrity_scope_session_ids is not None
+    if scoped:
+        productive, joins = _filter_records_to_integrity_scope_v1(
+            all_productive,
+            all_joins,
+            campaign_id=str(integrity_scope_campaign_id),
+            authorized_session_ids=integrity_scope_session_ids or (),
+        )
+    else:
+        productive = list(all_productive)
+        joins = list(all_joins)
+
     if not productive:
-        if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0:
-            raise ProductiveEvidenceAccumulationError("join_without_productive_records")
+        if not scoped:
+            if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0:
+                raise ProductiveEvidenceAccumulationError("join_without_productive_records")
+        elif joins:
+            raise ProductiveEvidenceAccumulationError("join_without_productive_records_in_scope")
         return {
+            "integrity_scope_applied": scoped,
             "join_ledger_chain_valid": True,
             "ledger_chain_valid": True,
             "missing_join_count": 0,
             "productive_to_join_bijection_valid": True,
             "productive_count": 0,
-            "join_count": 0,
+            "join_count": len(joins),
+            "join_count_total_ledger": len(all_joins),
         }
-    joins = load_research_evidence_records_v1(join_ledger_path)
     prod_keys = {(r.session_id, r.cycle_id, r.canonical_instrument_id) for r in productive}
     join_keys = {(j.session_id, j.cycle_id, j.instrument_id) for j in joins}
     missing_join = sorted(prod_keys - join_keys)
@@ -148,12 +231,14 @@ def assert_ledger_integrity_matrix_v1(
     if len(ids) != len(set(ids)):
         raise ProductiveEvidenceAccumulationError("duplicate_evidence_record_ids")
     return {
+        "integrity_scope_applied": scoped,
         "join_ledger_chain_valid": True,
         "ledger_chain_valid": True,
         "missing_join_count": 0,
         "productive_to_join_bijection_valid": True,
         "productive_count": len(productive),
         "join_count": len(joins),
+        "join_count_total_ledger": len(all_joins),
     }
 
 
@@ -412,10 +497,34 @@ def run_productive_bridge_accumulation_session_v1(
             acc,
             session_end_event_time=iso_from_unix_v1(float(samples[-1].event_time_unix_seconds)),
         )
-    integrity = assert_ledger_integrity_matrix_v1(
-        productive_ledger_path=productive_ledger_path,
-        join_ledger_path=join_ledger_path,
+    cycles_executed_count = len(cycle_results)
+    appended = sum(
+        1
+        for c in cycle_results
+        if (c.get("productive_research_evidence_accumulation") or {})
+        .get("append_result", {})
+        .get("action")
+        == "APPENDED"
     )
+    try:
+        integrity = assert_ledger_integrity_matrix_v1(
+            productive_ledger_path=productive_ledger_path,
+            join_ledger_path=join_ledger_path,
+            integrity_scope_campaign_id=campaign_id,
+            integrity_scope_session_ids=(session_id,),
+        )
+    except ProductiveEvidenceAccumulationError as exc:
+        raise ProductiveBridgeSessionPartialFailureV1(
+            str(exc),
+            cycles_executed=cycles_executed_count,
+            records_appended=appended,
+            partial_report={
+                "status": "FAIL_CLOSED_INTEGRITY",
+                "cycles_executed": cycles_executed_count,
+                "records_appended": appended,
+                "retained_estimate_carrier_write_status": "NOT_REACHED",
+            },
+        ) from exc
     coverage = evaluate_coverage_from_ledger_v1(
         productive_ledger_path=productive_ledger_path,
         quarantine_ledger_path=quarantine_ledger_path,
@@ -425,14 +534,6 @@ def run_productive_bridge_accumulation_session_v1(
         load_research_evidence_records_v1(join_ledger_path)
         if join_ledger_path.exists() and join_ledger_path.stat().st_size > 0
         else ()
-    )
-    appended = sum(
-        1
-        for c in cycle_results
-        if (c.get("productive_research_evidence_accumulation") or {})
-        .get("append_result", {})
-        .get("action")
-        == "APPENDED"
     )
 
     carrier_write_status = "NOT_APPLICABLE"
@@ -499,7 +600,7 @@ def run_productive_bridge_accumulation_session_v1(
         "completion": completion,
         "retained_estimate_carrier_write_status": carrier_write_status,
         "coverage": coverage.to_dict(),
-        "cycles_executed": len(cycle_results),
+        "cycles_executed": cycles_executed_count,
         "enforcement_applied": False,
         "integrity": integrity,
         "join_coverage": coverage_summary_v1(join_records),
@@ -580,9 +681,19 @@ def run_productive_bridge_accumulate_v1(
                 require_campaign_authorization=require_campaign_authorization,
             )
         )
+    scope_session_ids = tuple(
+        sorted(
+            {
+                require_nonempty(plan.get("session_id"), field_name="session_id")
+                for plan in session_plans
+            }
+        )
+    )
     integrity = assert_ledger_integrity_matrix_v1(
         productive_ledger_path=productive_ledger_path,
         join_ledger_path=join_ledger_path,
+        integrity_scope_campaign_id=campaign_id,
+        integrity_scope_session_ids=scope_session_ids,
     )
     coverage = evaluate_coverage_from_ledger_v1(
         productive_ledger_path=productive_ledger_path,
