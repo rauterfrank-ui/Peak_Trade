@@ -10,6 +10,7 @@ flowchart LR
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
   execution_external_effect -->|dashboard_read| presentation_dashboard
   treasury_29p -->|equity_value_unbound| capital_risk_sizing
+  mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
   order_intent -->|intent_to_execution| execution_external_effect
   mv2_double_play -->|learning_capture| learning_ddo
   meta_learning -->|meta_search_backflow| optimization_universe
@@ -18,6 +19,7 @@ flowchart LR
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
+  safety -->|safety_signals_into_integrated_replay| mv2_double_play
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
   capital_risk_sizing -->|sizing_to_intent| order_intent
   selection_cap23 -->|step29m_consumes_selection| step29m
@@ -96,6 +98,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py`
+
+## integrated_replay_safety_gate_before_intent
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=safety_kernel hard_block skips canonical_order_intent bind; ReplayExecutionSafetyV1 at composition admission
+- producer=run_integrated_offline_trading_logic_replay_v1
+- consumer=canonical_order_intent_owner_v1
+- authority_effect=NONE
+- decision_effect=ENTER_BLOCK_OR_POST_29Q_CONSUMPTION_GUARD
+- direct_or_indirect=DIRECT
+- identity_binding=REPLAY_EVIDENCE_TO_INTENT_PLAN
+- temporal_binding=UNKNOWN
+- version_binding=ReplayExecutionSafetyV1
+- provenance_binding=NOT_FILEGATE_NOT_SECOND_DECISION_OWNER
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, `src/trading/master_v2/replay_execution_safety_contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py`
 
 ## intent_to_execution
 
@@ -240,6 +260,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=UNKNOWN
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`
+
+## safety_signals_into_integrated_replay
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=safety_mode, safety_exit_signal, trading_gate on IntegratedOfflineReplayInputV1
+- producer=current_productive_master_v2_runtime_cycle_v1
+- consumer=run_integrated_offline_trading_logic_replay_v1
+- authority_effect=NONE
+- decision_effect=REPLAY_SAFETY_INPUT_AND_KERNEL_BIND
+- direct_or_indirect=DIRECT
+- identity_binding=CYCLE_TO_REPLAY_INPUT
+- temporal_binding=UNKNOWN
+- version_binding=IntegratedOfflineReplayInputV1
+- provenance_binding=HOST_EXIT_POLICY_AND_KERNEL_ADAPTER
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, `src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py`
 
 ## selection_to_binding
 

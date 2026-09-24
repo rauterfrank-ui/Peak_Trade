@@ -66,6 +66,7 @@ SEMANTIC_CLASS = {
 OPEN_CLASSES = ("UNKNOWN", "CONFLICTING", "PARTIAL")
 
 REQUIRED_UNKNOWN_IDS = (
+    "authority_flow_no_proven_current_instance",
     "reselect_rerank_absence",
     "double_play_slot_crs_handoff",
     "sealed_venue_number_29p",

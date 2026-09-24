@@ -26,8 +26,9 @@ Open epistemic records are projected, not closed.
 - id=productive_capital_context_offline_helper class=PARTIAL statement=Productive capital context uses the offline instrument helper.
 - id=ranking_activation class=PARTIAL statement=Ranking chain position exists and RUNTIME_ACTIVATION_ALLOWED is false.
 - id=replay_provenance_drop class=PARTIAL statement=Replay drops selection_id, ranking_snapshot_id, and universe_snapshot_id.
-- id=safety_owner_unclosed class=PARTIAL statement=Safety boundary is visible without one closed productive owner string.
+- id=safety_owner_unclosed class=PARTIAL statement=Safety boundary is visible on the productive cycle and CONSTRAINT_FLOW handoffs into integrated replay and before order-intent plan bind are mapped; a single closed productive safety owner string and full-core kill-switch owner remain unclosed (see kill_switch_full_core_safety_owner).
 - id=sizing_to_intent_plan_only class=PARTIAL statement=Sizing to intent remains plan-only.
+- id=authority_flow_no_proven_current_instance class=UNKNOWN statement=No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main: ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.
 - id=docs_ops_specs_map_impact class=UNKNOWN statement=Whether a change under docs/ops/specs is map impact is not adjudicated as a universal rule.
 - id=double_play_slot_crs_handoff class=UNKNOWN statement=Double-play capital slot CRS handoff is not evidenced.
 - id=kill_switch_full_core_safety_owner class=UNKNOWN statement=Kill-switch Cap 11.5 is not established as the current full-core safety owner.

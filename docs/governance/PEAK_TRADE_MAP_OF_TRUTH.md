@@ -135,6 +135,7 @@ authority and must not be read as activation or next-step instructions.
 
 | Path | Navigation note |
 | --- | --- |
+| [`config/governance/current_system_interaction_authority_map_v1/source_v1.json`](../../config/governance/current_system_interaction_authority_map_v1/source_v1.json) | **Navigation only:** structured source for CURRENT System Interaction & Authority Map (`AUTHORITY=NONE`, `map_authority=NONE`); derived read-only views under [`docs/governance/current_system_interaction_authority_map_v1/generated/`](current_system_interaction_authority_map_v1/generated/); not operational SSOT |
 | [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Historical/runtime discovery aid; reconcile against Master Runbook + CURRENT code before use |
 | [`docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md) | Short navigation contract; not a second SSOT |
 | [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../ops/registry/DOCS_TRUTH_MAP.md) | Docs drift registry; not a runbook |
@@ -150,6 +151,10 @@ authority and must not be read as activation or next-step instructions.
 
 ```text
 MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY
+CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_SOURCE=config/governance/current_system_interaction_authority_map_v1/source_v1.json
+CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_GENERATED_VIEWS=docs/governance/current_system_interaction_authority_map_v1/generated/
+CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_ROLE=NAVIGATION_ONLY
+CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_AUTHORITY=NONE
 DDO_AUTHORITY_EFFECT=NONE
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_NAV=docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY
