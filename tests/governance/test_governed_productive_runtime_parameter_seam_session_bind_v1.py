@@ -74,7 +74,7 @@ def test_valid_seam_session_bind_reaches_bridge_presence_gate(tmp_path: Path) ->
         authorized_productive_parameter_seam=transport.seam_for_consumer,
     )
     assert gate.max_age_policy_evidence is not None
-    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_UNRESOLVED
     assert gate.max_age_policy_evidence.enforcement_applied is False
     assert (
         state.governed_authorized_productive_parameter_seam_record["seam_digest"]
@@ -85,7 +85,7 @@ def test_valid_seam_session_bind_reaches_bridge_presence_gate(tmp_path: Path) ->
 def test_bridge_cycle_research_join_epistemic_lane_with_ratified_seam_telemetry(
     tmp_path: Path,
 ) -> None:
-    """Gate keeps RATIFIED telemetry; research join stays UNRESOLVED (separate lane)."""
+    """Gate stays UNRESOLVED without threshold auth; research join stays UNRESOLVED."""
     seam_record = _valid_seam_record(tmp_path)
     state = HardenedBridgeSessionStateV2()
     state.typed_volatility_persistence_path = tmp_path / "hist.json"
@@ -105,7 +105,7 @@ def test_bridge_cycle_research_join_epistemic_lane_with_ratified_seam_telemetry(
         )
     assert last is not None
     gate = last["double_play_typed_volatility_presence_gate"]
-    assert gate["max_age_policy_evidence"]["threshold_status"] == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    assert gate["max_age_policy_evidence"]["threshold_status"] == THRESHOLD_STATUS_UNRESOLVED
     join = last["canonical_volatility_max_age_research_evidence_join"]
     assert join["threshold_status"] == THRESHOLD_STATUS_UNRESOLVED
     assert join["enforcement_applied"] is False

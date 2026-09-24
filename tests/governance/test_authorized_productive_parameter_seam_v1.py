@@ -145,13 +145,12 @@ def test_invalid_seam_resolves_unresolved_policy() -> None:
     assert policy.numeric_max_age_seconds is None
 
 
-def test_valid_seam_non_enforcing_ratified_policy(tmp_path: Any) -> None:
+def test_valid_seam_without_threshold_stays_unresolved_policy(tmp_path: Any) -> None:
     _, _, _, seam = _full_chain(tmp_path)
     assert seam.seam_record is not None
     policy = resolve_age_policy_from_authorized_seam_record_v1(seam.seam_record)
-    assert policy.threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC
-    assert policy.enforcement_enabled is False
-    assert policy.numeric_max_age_seconds == seam.seam_record["numeric_max_age_seconds"]
+    assert policy.threshold_status == THRESHOLD_STATUS_UNRESOLVED
+    assert policy.numeric_max_age_seconds is None
 
 
 def test_presence_gate_without_seam_unchanged_unresolved() -> None:
@@ -167,8 +166,8 @@ def test_presence_gate_without_seam_unchanged_unresolved() -> None:
     assert gate.max_age_policy_evidence.enforcement_applied is False
 
 
-def test_presence_gate_with_seam_shows_numeric_without_enforcement(tmp_path: Any) -> None:
-    ingress, _, _, seam = _full_chain(tmp_path)
+def test_presence_gate_with_seam_without_threshold_stays_unresolved(tmp_path: Any) -> None:
+    _, _, _, seam = _full_chain(tmp_path)
     assert seam.seam_record is not None
     estimate = _valid_estimate()
     ctx = bind_typed_canonical_volatility_estimate_into_market_context_v1(
@@ -182,11 +181,8 @@ def test_presence_gate_with_seam_shows_numeric_without_enforcement(tmp_path: Any
         authorized_productive_parameter_seam=seam.seam_record,
     )
     assert gate.max_age_policy_evidence is not None
-    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_UNRESOLVED
     assert gate.max_age_policy_evidence.enforcement_applied is False
-    expected_numeric = float(ingress["parameter_config_delta"]["max_age_seconds"])
-    policy = resolve_age_policy_from_authorized_seam_record_v1(seam.seam_record)
-    assert policy.numeric_max_age_seconds == expected_numeric
 
 
 def test_tampered_configuration_digest_denied(tmp_path: Any) -> None:

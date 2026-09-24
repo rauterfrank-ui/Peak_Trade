@@ -7575,6 +7575,31 @@ entities:
       durable apply/revocation ledgers, and runtime_applied transition; threshold/value and
       external effect remain forbidden. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 scoped Owner Threshold Value authority v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_THRESHOLD_VALUE_AUTHORITY_AND_HOT_PATH_ADMISSION_CLOSURE_V1
+    source_paths:
+      - src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py
+      - src/governance/f1_m9_scoped_owner_threshold_value_constants_v1.py
+    evidence_sources:
+      - src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py
+      - src/governance/f1_m9_scoped_owner_threshold_value_constants_v1.py
+      - src/governance/f1_m9_owner_threshold_value_authorization_record_v1.py
+      - src/governance/f1_m9_threshold_value_authorization_ledger_v1.py
+      - src/governance/f1_m9_scoped_owner_threshold_value_closure_v1.py
+      - tests/governance/test_f1_m9_scoped_owner_threshold_value_authority_v1.py
+      - docs/ops/specs/F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORITY_NORMATIVE_V1.md
+      - config/governance/f1_m9_scoped_owner_threshold_value_authority_v1_decision_v1.json
+      - config/governance/f1_m9_owner_threshold_value_policy_owner_adjudication_v1_decision_v1.json
+    notes: >-
+      Owner-ratified F1/M9 scoped threshold value authorization: dedicated threshold record,
+      durable authorization/revocation ledgers, admission-to-gate closure, seam bypass removed;
+      enforcement and concrete productive seconds value remain forbidden. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:v32_d28_d29_scoped_optimization_productive_join_policy_v1
     kind: RUNTIME_COMPONENT
     name: V3.2 D28/D29 scoped optimization productive join policy v1 (F1/M9)

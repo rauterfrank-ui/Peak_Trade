@@ -41,7 +41,6 @@ from src.trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_
     THRESHOLD_STATUS_RATIFIED_NUMERIC,
     THRESHOLD_STATUS_UNRESOLVED,
     CanonicalVolatilityNumericMaxAgePolicyContractV1,
-    build_ratified_numeric_threshold_policy_contract_v1,
     build_ratified_unresolved_max_age_policy_contract_v1,
     evaluate_canonical_volatility_estimate_age_policy_v1,
 )
@@ -198,6 +197,13 @@ def bind_authorized_productive_parameter_seam_v1(
         "productive_apply_authorization_digest": record.get(
             "productive_apply_authorization_digest"
         ),
+        "threshold_value_authorization_status": record.get("threshold_value_authorization_status"),
+        "threshold_value_authorization_digest": record.get("threshold_value_authorization_digest"),
+        "threshold_numeric_max_age_seconds": record.get("threshold_numeric_max_age_seconds"),
+        "runtime_threshold_authority": record.get("runtime_threshold_authority"),
+        "scoped_owner_threshold_value_authorized": record.get(
+            "scoped_owner_threshold_value_authorized"
+        ),
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
     }
     seam_digest = compute_content_sha256(seam_body)
@@ -233,7 +239,15 @@ def verify_seam_record_digest_v1(seam_record: Mapping[str, Any]) -> bool:
 def resolve_age_policy_from_authorized_seam_record_v1(
     seam_record: Mapping[str, Any] | None,
 ) -> CanonicalVolatilityNumericMaxAgePolicyContractV1:
-    """Fail-closed: invalid/missing seam → unresolved ratified policy."""
+    """Fail-closed: seam numeric alone never ratifies; requires threshold admission path."""
+    from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 import (
+        build_policy_admission_from_authorized_seam_record_v1,
+        validate_policy_admission_request_v1,
+    )
+    from src.trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1 import (
+        resolve_canonical_volatility_max_age_policy_for_evaluation_v1,
+    )
+
     if seam_record is None:
         return build_ratified_unresolved_max_age_policy_contract_v1()
     if not verify_seam_record_digest_v1(seam_record):
@@ -246,15 +260,14 @@ def resolve_age_policy_from_authorized_seam_record_v1(
         return build_ratified_unresolved_max_age_policy_contract_v1()
     if seam_record.get("enforcement_enabled") is True:
         return build_ratified_unresolved_max_age_policy_contract_v1()
-    numeric = seam_record.get("numeric_max_age_seconds")
-    if not isinstance(numeric, (int, float)) or isinstance(numeric, bool):
+
+    admission = build_policy_admission_from_authorized_seam_record_v1(seam_record)
+    if admission is None:
         return build_ratified_unresolved_max_age_policy_contract_v1()
-    config_numeric = seam_record.get("authorized_candidate_max_age_seconds")
-    if float(numeric) != float(config_numeric):
+    admission_ok, _ = validate_policy_admission_request_v1(admission)
+    if not admission_ok:
         return build_ratified_unresolved_max_age_policy_contract_v1()
-    policy = build_ratified_numeric_threshold_policy_contract_v1(
-        numeric_max_age_seconds=float(numeric),
-    )
+    policy = resolve_canonical_volatility_max_age_policy_for_evaluation_v1(admission)
     if policy.enforcement_enabled is not False:
         return build_ratified_unresolved_max_age_policy_contract_v1()
     if policy.threshold_status != THRESHOLD_STATUS_RATIFIED_NUMERIC:
