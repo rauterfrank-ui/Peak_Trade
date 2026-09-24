@@ -56,12 +56,14 @@ F5 enforced_family_gate_ids={F5-FRESH,F5-SURV,F5-CAP}
 PRODUCTIVE_NUMERIC_VALUES_SET=0
 ```
 
-## 4. Next true blocker (explicit; not implemented here)
+## 4. Next true blocker (superseded for join detail by successor WP)
 
-`D28_D29_PROMOTION_AND_OPTIMIZATION_PRODUCTIVE_JOIN_REQUIRE_OWNER_POLICY`
+At post-D27 closure time: `D28_D29_PROMOTION_AND_OPTIMIZATION_PRODUCTIVE_JOIN_REQUIRE_OWNER_POLICY`.
 
-Evidence: `optimization_universe_join_authorized=false` in learning closed-loop decision;
-Concept v3.2 D28–D29 promotion invariants (`NAVIGATION_ONLY` without Owner-GO).
+Successor forensic adjudication (read-only):
+`docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md`
+
+Refined blocker id: `GLOBAL_OPTIMIZATION_UNIVERSE_JOIN_BOOLEAN_REQUIRES_SCOPED_OWNER_POLICY`.
 
 ## 5. Non-goals
 

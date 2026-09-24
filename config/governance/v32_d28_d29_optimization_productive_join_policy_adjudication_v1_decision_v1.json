@@ -1,0 +1,52 @@
+{
+  "artifact_class": "V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_DECISION_V1",
+  "workpackage_id": "V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_AND_MAX_PRE_BLOCKER_BUILD_V1",
+  "bound_origin_main_sha": "10f1a289b57cdf4b55efb71c76ac04c1eafaad3f",
+  "predecessor_workpackage_id": "V32_POST_D27_TEST_ENTRY_LIFECYCLE_GLOBAL_CLOSURE_ADJUDICATION_V1",
+  "predecessor_decision": "config/governance/v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1_decision_v1.json",
+  "normative_spec": "docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md",
+  "owner_module": "src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py",
+  "d28_d29_adjudication_implemented": true,
+  "d28_status": "OWNER_POLICY_REQUIRED",
+  "d29_status": "OWNER_POLICY_REQUIRED",
+  "d28_d29_concept_class": "NAVIGATION_ONLY",
+  "optimization_productive_join_status": "OWNER_POLICY_REQUIRED",
+  "optimization_universe_join_authorized_current": false,
+  "optimization_universe_join_authorized_changed": false,
+  "promotion_join_authorized_current": false,
+  "productive_optimization_join_authorized_current": false,
+  "productive_numeric_values_set_current": 0,
+  "promotion_authorized": false,
+  "productive_apply_authorized": false,
+  "self_deploy_authorized": false,
+  "global_join_boolean_too_coarse": true,
+  "join_matrix_row_count": 8,
+  "proven_current_join_row_ids": [
+    "F1-M9-M10-PARAMETER-LINEAGE",
+    "LEARNING-EVIDENCE-EXPORT-TO-OPTIMIZATION-INPUT"
+  ],
+  "authorized_but_unbuilt_join_row_ids": [],
+  "owner_policy_required_join_row_ids": [
+    "GLOBAL-OPTIMIZATION-UNIVERSE-PRODUCTIVE-JOIN"
+  ],
+  "forbidden_join_row_ids": [
+    "F2-RESEARCH-COUNTERFACTUAL",
+    "F5-FRESH-SHADOW-RESEARCH",
+    "F5-SURV-PER-TOKEN-SHADOW",
+    "F5-CAP-PER-TOKEN-SHADOW",
+    "OPTIMIZATION-DIRECT-RUNTIME-SEAM-WRITE"
+  ],
+  "next_true_blocker": "GLOBAL_OPTIMIZATION_UNIVERSE_JOIN_BOOLEAN_REQUIRES_SCOPED_OWNER_POLICY",
+  "next_true_blocker_class": "OWNER_POLICY_REQUIRED",
+  "blocker_edge": "learning_outcome_evidence_ingest_and_state_decision_v1.optimization_universe_join_authorized",
+  "minimal_owner_policy_question": "Should productive optimization join be expressed as scoped per-(surface_id, productive_target_id) owner flags (F1/M9 lineage first) instead of flipping the global learning decision field optimization_universe_join_authorized?",
+  "implementation_mode": "FORENSIC_ADJUDICATION_AND_COMPOSITION",
+  "max_build_nodes_added": 1,
+  "max_build_edges_added": 4,
+  "maximal_pre_blocker_scope_proven": true,
+  "trading_decision_authority_changed": false,
+  "risk_authority_changed": false,
+  "selection_authority_changed": false,
+  "new_authority_created": false,
+  "external_effect_authorized": false
+}

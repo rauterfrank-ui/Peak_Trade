@@ -7528,6 +7528,24 @@ entities:
       Read-only composition proving D27 global closure (F1/F2 + F5) after #6771; documents next
       owner-policy blocker D28/D29. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:v32_d28_d29_optimization_productive_join_policy_adjudication_v1
+    kind: RUNTIME_COMPONENT
+    name: V3.2 D28/D29 optimization productive join policy adjudication v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_AND_MAX_PRE_BLOCKER_BUILD_V1
+    source_paths:
+      - src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py
+    evidence_sources:
+      - src/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py
+      - tests/governance/test_v32_d28_d29_optimization_productive_join_policy_adjudication_v1.py
+      - docs/ops/specs/V32_D28_D29_OPTIMIZATION_PRODUCTIVE_JOIN_POLICY_ADJUDICATION_V1.md
+      - config/governance/v32_d28_d29_optimization_productive_join_policy_adjudication_v1_decision_v1.json
+    notes: >-
+      Forensic join matrix and owner-policy boundary for optimization→productive paths; no join
+      boolean activation. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1
     kind: RUNTIME_COMPONENT
     name: V3.2 D26 × F5 shadow baseline-binding owner-policy adjudication v1 (read-only)
