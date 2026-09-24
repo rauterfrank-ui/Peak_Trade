@@ -7,6 +7,9 @@ import os
 from pathlib import Path
 from typing import Any, Callable, Mapping, Optional
 
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
+    ProductiveBridgeSessionPartialFailureV1,
+)
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.productive_bridge_runner_v1 import (
     ProductiveBridgeMarketSampleV1,
     assert_ledger_integrity_matrix_v1,
@@ -384,6 +387,27 @@ def run_preregistered_productive_session_v1(
         terminal_state = "COMPLETED"
         terminal_verdict = "SESSION_EVIDENCE_ACCUMULATED"
         status = "PASS"
+    except ProductiveBridgeSessionPartialFailureV1 as exc:
+        blocker = str(exc)
+        accumulation_report = dict(exc.partial_report or {})
+        cycles_executed = int(exc.cycles_executed)
+        records_appended = int(exc.records_appended)
+        md_telemetry.counters.completed_accumulation_cycle_count = cycles_executed
+        md_requested = bool(
+            md_requested
+            or md_telemetry.market_data_request_occurred
+            or md_telemetry.fetch_count > 0
+        )
+        if auth_consumed:
+            terminal_state = "FAIL_CLOSED_AFTER_CONSUMPTION"
+            terminal_verdict = "FAIL_CLOSED_AFTER_AUTHORIZATION_CONSUMPTION"
+            status = "FAIL"
+            probe.record("FAIL_CLOSED_AFTER_CONSUMPTION")
+        else:
+            terminal_state = "FAIL_CLOSED_BEFORE_CONSUMPTION"
+            terminal_verdict = "FAIL_CLOSED_BEFORE_AUTHORIZATION_CONSUMPTION"
+            status = "BLOCKED"
+            probe.record("FAIL_CLOSED_BEFORE_CONSUMPTION")
     except Exception as exc:  # noqa: BLE001
         blocker = str(exc)
         md_requested = bool(
@@ -424,7 +448,10 @@ def run_preregistered_productive_session_v1(
     if prod_path.exists() or join_path.exists():
         try:
             integrity = assert_ledger_integrity_matrix_v1(
-                productive_ledger_path=prod_path, join_ledger_path=join_path
+                productive_ledger_path=prod_path,
+                join_ledger_path=join_path,
+                integrity_scope_campaign_id=campaign_id,
+                integrity_scope_session_ids=(preflight.session_id,),
             )
         except Exception as exc:  # noqa: BLE001
             integrity = {"ledger_integrity_error": str(exc)}

@@ -13,6 +13,26 @@ class ProductiveEvidenceAccumulationError(ValueError):
     """Fail-closed productive evidence accumulation error."""
 
 
+class ProductiveBridgeSessionPartialFailureV1(ProductiveEvidenceAccumulationError):
+    """Session bridge failed after durable cycle writes (e.g. scoped integrity).
+
+    Carries accounting truth for terminal evidence; does not promote partial evidence.
+    """
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        cycles_executed: int,
+        records_appended: int,
+        partial_report: Mapping[str, Any] | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.cycles_executed = int(cycles_executed)
+        self.records_appended = int(records_appended)
+        self.partial_report = dict(partial_report or {})
+
+
 class ResearchRegimeLabelV1(str, Enum):
     UP_DIRECTIONAL = "UP_DIRECTIONAL"
     DOWN_DIRECTIONAL = "DOWN_DIRECTIONAL"
