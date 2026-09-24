@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "dfc30e922e1929b0008161794ed1637f89b9ce4b",
+  "baseline_sha": "83b86782b2b23822d48091c44d44fe4808e58bcd",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1480,7 +1480,7 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "CONFLICTING",
-      "statement": "Runbook BOUND_ORIGIN_MAIN_SHA is 0ceb48d970b6d76df0aecd82eebee9570b5e453b while HEAD is dfc30e922e1929b0008161794ed1637f89b9ce4b.",
+      "statement": "Runbook BOUND_ORIGIN_MAIN_SHA is 0ceb48d970b6d76df0aecd82eebee9570b5e453b while CURRENT origin/main HEAD is 83b86782b2b23822d48091c44d44fe4808e58bcd (STALE_IF_HEAD_DIFFERS=true).",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
@@ -1579,7 +1579,7 @@
     {
       "id": "mv2_proof_baseline_sha",
       "epistemic_class": "PARTIAL",
-      "statement": "MV2 plus double-play proof package baseline SHA is older than HEAD.",
+      "statement": "MV2 plus double-play proof package pins baseline SHA 46037a171cb7c41d3e1663d92b6db80335a85260 which is neither CURRENT origin/main HEAD 83b86782b2b23822d48091c44d44fe4808e58bcd nor an ancestor of that HEAD.",
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"

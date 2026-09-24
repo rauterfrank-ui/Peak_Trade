@@ -12,7 +12,7 @@ Open epistemic records are projected, not closed.
 - id=live_authorized_cap2_vs_full_core class=CONFLICTING statement=Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token.
 - id=m4_nongoals_vs_modules class=CONFLICTING statement=M4 non-goals disagree with later M5 through M10 modules that exist.
 - id=mv2_decision_authority_map_tokens class=CONFLICTING statement=MASTER_V2_DECISION_AUTHORITY_MAP_V1 says LIVE_AUTHORIZED false and CURRENT_RUNTIME_TRUTH beside NAVIGATION_ONLY, against the full-core pin.
-- id=runbook_freshness_stamp class=CONFLICTING statement=Runbook BOUND_ORIGIN_MAIN_SHA is 0ceb48d970b6d76df0aecd82eebee9570b5e453b while HEAD is dfc30e922e1929b0008161794ed1637f89b9ce4b.
+- id=runbook_freshness_stamp class=CONFLICTING statement=Runbook BOUND_ORIGIN_MAIN_SHA is 0ceb48d970b6d76df0aecd82eebee9570b5e453b while CURRENT origin/main HEAD is 83b86782b2b23822d48091c44d44fe4808e58bcd (STALE_IF_HEAD_DIFFERS=true).
 - id=treasury_import_wording class=CONFLICTING statement=Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule.
 - id=zero_authorized_productive_targets class=CONFLICTING statement=ZERO_AUTHORIZED_PRODUCTIVE_TARGETS true conflicts with the M9 decision false while apply remains none.
 - id=account_equity_mapping_unbound class=PARTIAL statement=Account-equity mapping is marked proven while the venue number is unbound and the owner is unresolved; C2 forensic resolution keeps ACCOUNT_EQUITY CONFLICTING on Companion path (Full-Core availEq mapping not transferable).
@@ -20,7 +20,7 @@ Open epistemic records are projected, not closed.
 - id=learning_capture_hosts_and_ddo_durability class=PARTIAL statement=Learning capture host list is not closed and DDO host durability is unproven.
 - id=loops_a_and_b class=PARTIAL statement=Loop A stops before search. Loop B is evidence without a proven search-control closure.
 - id=m9_m10_enforcement class=PARTIAL statement=M9 and M10 seam exists and enforcement_enabled is false.
-- id=mv2_proof_baseline_sha class=PARTIAL statement=MV2 plus double-play proof package baseline SHA is older than HEAD.
+- id=mv2_proof_baseline_sha class=PARTIAL statement=MV2 plus double-play proof package pins baseline SHA 46037a171cb7c41d3e1663d92b6db80335a85260 which is neither CURRENT origin/main HEAD 83b86782b2b23822d48091c44d44fe4808e58bcd nor an ancestor of that HEAD.
 - id=p5_bind_without_cutover class=PARTIAL statement=P5 layered bind is enabled and authority cutover is false.
 - id=portfolio_budget class=PARTIAL statement=Portfolio authority effect is none, restart is not reconstructable, and venue fill is not integrated.
 - id=productive_capital_context_offline_helper class=PARTIAL statement=Productive capital context uses the offline instrument helper.

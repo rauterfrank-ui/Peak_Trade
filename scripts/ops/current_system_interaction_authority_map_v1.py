@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "dfc30e922e1929b0008161794ed1637f89b9ce4b"
+BASELINE_SHA = "83b86782b2b23822d48091c44d44fe4808e58bcd"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
