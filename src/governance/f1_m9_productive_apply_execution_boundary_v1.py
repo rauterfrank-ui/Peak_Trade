@@ -41,6 +41,9 @@ from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 i
     POLICY_CONSUMER_MODULE,
     PRODUCTIVE_TARGET_ID,
 )
+from src.governance.f1_m9_real_productive_apply_decision_binding_v1 import (
+    evaluate_real_productive_apply_decision_binding_v1,
+)
 from src.governance.v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1 import (
     AUTHORITY_EDGE_ID,
     ExplicitOwnerProductiveApplyPolicyEdgeRequestV1,
@@ -71,7 +74,7 @@ POLICY_EDGE_MODULE: Final[str] = (
 APPLY_ADJUDICATOR_MODULE: Final[str] = "src/governance/f1_m9_scoped_owner_apply_authority_v1.py"
 
 CLOSED_EXECUTION_BLOCKER: Final[str] = "F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO"
-NEXT_TRUE_BLOCKER: Final[str] = "F1_M9_REAL_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_GO"
+NEXT_TRUE_BLOCKER: Final[str] = "F1_M9_CANONICAL_PRODUCTIVE_CANDIDATE_AND_BOUND_REAL_APPLY_OWNER_GO"
 
 PRODUCTIVE_APPLY_OCCURRED: Final[bool] = False
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
@@ -82,6 +85,7 @@ PROMOTION_AUTHORITY_CHANGED: Final[bool] = False
 STATUS_EXECUTION_READY: Final[str] = "F1_M9_APPLY_EXECUTION_BOUNDARY_READY"
 STATUS_EXECUTION_DENIED: Final[str] = "DENIED_FAIL_CLOSED"
 STATUS_REAL_APPLY_BLOCKED: Final[str] = "REAL_PRODUCTIVE_APPLY_NOT_AUTHORIZED"
+STATUS_PRODUCTIVE_APPLY_COMPLETED: Final[str] = "F1_M9_PRODUCTIVE_APPLY_COMPLETED"
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -173,6 +177,7 @@ def build_execution_evidence_record_v1(
     configuration_digest: str | None,
     apply_ledger_entry_digest: str | None,
     consumer_module: str,
+    productive_apply_occurred: bool = False,
 ) -> Mapping[str, Any]:
     body = {
         "apply_ledger_entry_digest": apply_ledger_entry_digest,
@@ -183,7 +188,7 @@ def build_execution_evidence_record_v1(
         "execution_phase": execution_phase,
         "owner_apply_record_digest": owner_apply_record_digest,
         "policy_edge_status": policy_edge_status,
-        "productive_apply_occurred": False,
+        "productive_apply_occurred": productive_apply_occurred,
         "productive_numeric_values_set": int(PRODUCTIVE_NUMERIC_VALUES_SET),
         "schema_version": SCHEMA_VERSION,
         "workpackage_id": WORKPACKAGE_ID,
@@ -244,37 +249,41 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
     if int(PRODUCTIVE_NUMERIC_VALUES_SET) != 0:
         reason_codes.append("PRODUCTIVE_NUMERIC_VALUES_SET_MUST_REMAIN_ZERO")
 
-    if (
-        request.execution_phase is F1M9ProductiveApplyExecutionPhaseV1.AUTHORIZED_PRODUCTIVE_APPLY
-        and not real_authorized
-    ):
-        return F1M9ProductiveApplyExecutionResultV1(
-            execution_status=STATUS_REAL_APPLY_BLOCKED,
-            reason_codes=("REAL_PRODUCTIVE_APPLY_NOT_AUTHORIZED",),
-            policy_edge_status=POLICY_EDGE_STATUS_DENIED,
-            apply_status=None,
-            execution_phase=phase,
-            productive_apply_occurred=False,
-            productive_apply_authorized=False,
-            real_productive_apply_authorized=False,
-            runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
-            authority_edge_id=AUTHORITY_EDGE_ID,
-            consumer_module=POLICY_CONSUMER_MODULE,
-            configuration_after_execution=None,
-            owner_apply_authorization_record_digest=None,
-            apply_ledger_entry_digest=None,
-            execution_evidence_digest=str(
-                build_execution_evidence_record_v1(
-                    policy_edge_status=POLICY_EDGE_STATUS_DENIED,
-                    apply_status=None,
-                    execution_phase=phase,
-                    owner_apply_record_digest=None,
-                    configuration_digest=None,
-                    apply_ledger_entry_digest=None,
-                    consumer_module=POLICY_CONSUMER_MODULE,
-                )["execution_evidence_digest"]
+    if request.execution_phase is F1M9ProductiveApplyExecutionPhaseV1.AUTHORIZED_PRODUCTIVE_APPLY:
+        pre_binding = evaluate_real_productive_apply_decision_binding_v1(
+            owner_apply_authorization_record_digest=(
+                request.owner_apply_input.owner_apply_authorization_record_digest
             ),
+            repo_root=repo_root,
         )
+        if not pre_binding.apply_permitted:
+            return F1M9ProductiveApplyExecutionResultV1(
+                execution_status=STATUS_REAL_APPLY_BLOCKED,
+                reason_codes=pre_binding.reason_codes,
+                policy_edge_status=POLICY_EDGE_STATUS_DENIED,
+                apply_status=None,
+                execution_phase=phase,
+                productive_apply_occurred=False,
+                productive_apply_authorized=False,
+                real_productive_apply_authorized=pre_binding.real_productive_apply_authorized,
+                runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+                authority_edge_id=AUTHORITY_EDGE_ID,
+                consumer_module=POLICY_CONSUMER_MODULE,
+                configuration_after_execution=None,
+                owner_apply_authorization_record_digest=None,
+                apply_ledger_entry_digest=None,
+                execution_evidence_digest=str(
+                    build_execution_evidence_record_v1(
+                        policy_edge_status=POLICY_EDGE_STATUS_DENIED,
+                        apply_status=None,
+                        execution_phase=phase,
+                        owner_apply_record_digest=None,
+                        configuration_digest=None,
+                        apply_ledger_entry_digest=None,
+                        consumer_module=POLICY_CONSUMER_MODULE,
+                    )["execution_evidence_digest"]
+                ),
+            )
 
     if request.configuration.configuration_status != STATUS_MATERIALIZED:
         reason_codes.append("CONFIGURATION_NOT_MATERIALIZED")
@@ -345,28 +354,46 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
                 real_authorized=real_authorized,
             )
 
+    apply_digest = apply_result.owner_apply_authorization_record_digest
+    post_binding = evaluate_real_productive_apply_decision_binding_v1(
+        owner_apply_authorization_record_digest=apply_digest,
+        repo_root=repo_root,
+    )
     productive_occurred = (
         request.execution_phase is F1M9ProductiveApplyExecutionPhaseV1.AUTHORIZED_PRODUCTIVE_APPLY
-        and real_authorized
+        and post_binding.apply_permitted
         and apply_result.apply_status == STATUS_APPLY_AUTHORIZED
     )
-    if productive_occurred:
-        return _deny(
-            ["PRODUCTIVE_APPLY_OCCURRED_FORBIDDEN_IN_CURRENT_GO"],
-            policy_edge_status=POLICY_EDGE_STATUS_BOUND,
-            execution_phase=phase,
-            real_authorized=real_authorized,
-        )
 
     evidence = build_execution_evidence_record_v1(
         policy_edge_status=POLICY_EDGE_STATUS_BOUND,
         apply_status=apply_result.apply_status,
         execution_phase=phase,
-        owner_apply_record_digest=apply_result.owner_apply_authorization_record_digest,
+        owner_apply_record_digest=apply_digest,
         configuration_digest=config_digest or None,
         apply_ledger_entry_digest=apply_result.apply_ledger_entry_digest,
         consumer_module=POLICY_CONSUMER_MODULE,
+        productive_apply_occurred=productive_occurred,
     )
+
+    if productive_occurred:
+        return F1M9ProductiveApplyExecutionResultV1(
+            execution_status=STATUS_PRODUCTIVE_APPLY_COMPLETED,
+            reason_codes=("F1_M9_PRODUCTIVE_APPLY_COMPLETED",),
+            policy_edge_status=POLICY_EDGE_STATUS_BOUND,
+            apply_status=apply_result.apply_status,
+            execution_phase=phase,
+            productive_apply_occurred=True,
+            productive_apply_authorized=apply_result.productive_apply_authorized,
+            real_productive_apply_authorized=post_binding.real_productive_apply_authorized,
+            runtime_apply_authority=apply_result.runtime_apply_authority,
+            authority_edge_id=AUTHORITY_EDGE_ID,
+            consumer_module=POLICY_CONSUMER_MODULE,
+            configuration_after_execution=config_after,
+            owner_apply_authorization_record_digest=apply_digest,
+            apply_ledger_entry_digest=apply_result.apply_ledger_entry_digest,
+            execution_evidence_digest=str(evidence["execution_evidence_digest"]),
+        )
 
     return F1M9ProductiveApplyExecutionResultV1(
         execution_status=STATUS_EXECUTION_READY,
@@ -381,7 +408,7 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
         authority_edge_id=AUTHORITY_EDGE_ID,
         consumer_module=POLICY_CONSUMER_MODULE,
         configuration_after_execution=config_after,
-        owner_apply_authorization_record_digest=apply_result.owner_apply_authorization_record_digest,
+        owner_apply_authorization_record_digest=apply_digest,
         apply_ledger_entry_digest=apply_result.apply_ledger_entry_digest,
         execution_evidence_digest=str(evidence["execution_evidence_digest"]),
     )
@@ -405,6 +432,7 @@ __all__ = [
     "SELECTION_AUTHORITY_CHANGED",
     "STATUS_EXECUTION_DENIED",
     "STATUS_EXECUTION_READY",
+    "STATUS_PRODUCTIVE_APPLY_COMPLETED",
     "STATUS_REAL_APPLY_BLOCKED",
     "TRADING_DECISION_AUTHORITY_CHANGED",
     "WORKPACKAGE_ID",

@@ -43,13 +43,14 @@ apply adjudication on caller-provided ledger paths without `REAL_PRODUCTIVE_APPL
 | Phase | Real apply | Typical ledger |
 | --- | --- | --- |
 | `EXECUTION_PROOF` | **No** (`productive_apply_occurred=false`) | Caller ephemeral (tests) |
-| `AUTHORIZED_PRODUCTIVE_APPLY` | Blocked until Owner sets `real_productive_apply_authorized=true` in decision | Governed durable paths (future GO) |
+| `AUTHORIZED_PRODUCTIVE_APPLY` | Permitted only when decision binds `real_productive_apply_authorized=true` **and** matching `authorized_owner_apply_record_digest` | Governed durable paths (see preparation spec) |
 
 ## Closed / next blocker
 
 ```text
 CLOSED_EXECUTION_BLOCKER=F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO
-NEXT_TRUE_BLOCKER=F1_M9_REAL_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_GO
+NEXT_TRUE_BLOCKER=F1_M9_CANONICAL_PRODUCTIVE_CANDIDATE_AND_BOUND_REAL_APPLY_OWNER_GO
+PREPARATION_SPEC=docs/ops/specs/F1_M9_REAL_PRODUCTIVE_APPLY_GOVERNED_PREPARATION_NORMATIVE_V1.md
 ```
 
 ## Non-goals

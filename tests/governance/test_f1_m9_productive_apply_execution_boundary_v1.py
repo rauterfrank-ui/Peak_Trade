@@ -160,6 +160,7 @@ def test_closure_and_decision() -> None:
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["closed_execution_blocker"] == CLOSED_EXECUTION_BLOCKER
     assert decision["next_true_blocker"] == NEXT_TRUE_BLOCKER
+    assert decision.get("governed_preparation_implemented") is True
     assert decision["real_productive_apply_authorized"] is False
     assert decision["execution_boundary_implemented"] is True
 
