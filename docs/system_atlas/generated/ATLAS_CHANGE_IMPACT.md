@@ -94,7 +94,8 @@ Do not manually patch generated Markdown.
 ## Notes
 
 - F1/M9 prospective candidate-selection campaign execution owner max-build (PR #6797): EXECUTION_PROOF and authorized-path gates; runtime authorization schema; no terminal REAL-MD orchestration; CAMPAIGN_EXECUTED=false; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 authorized campaign run orchestration owner: terminal lifecycle owner `authorized_run_orchestration_v1`; hermetic terminal proof in tests; build-slice binds without REAL effects; CAMPAIGN_EXECUTED=false. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_OWNER_MAX_BUILD_V1
+- modified_by=F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -93,7 +93,7 @@ def build_runtime_authorization_template_v1(
     execution_idempotency_key: str = "",
     authorized_data_source: str = "REAL_PUBLIC_MARKET_DATA",
     authorized_public_md_venue: str = "OKX_EEA",
-    authorized_public_md_host: str = "eea.okx.com",
+    authorized_public_md_host: str = "https://eea.okx.com",
     earliest_valid_utc: str = "2099-01-01T00:00:00Z",
     expires_at_utc: str = "2099-01-01T00:01:00Z",
 ) -> dict[str, Any]:

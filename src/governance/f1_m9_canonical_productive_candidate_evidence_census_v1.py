@@ -81,8 +81,17 @@ CAMPAIGN_EXECUTION_BLOCKER: Final[str] = (
 CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER: Final[str] = (
     "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_REQUIRES_OWNER_GO"
 )
+ORCHESTRATION_OWNER_GO_BLOCKER: Final[str] = (
+    "F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_MISSING"
+)
+CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER: Final[str] = (
+    "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_V1_REQUIRES_FRESH_RUNTIME_AUTHORIZATION"
+)
 EXECUTION_OWNER_DECISION: Final[str] = (
     "config/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1_decision_v1.json"
+)
+ORCHESTRATION_OWNER_DECISION: Final[str] = (
+    "config/governance/f1_m9_prospective_campaign_authorized_run_orchestration_v1_decision_v1.json"
 )
 
 
@@ -386,15 +395,24 @@ def run_f1_m9_canonical_productive_candidate_evidence_census_v1(
         earliest = "F1_M9_ACTIVE_CAMPAIGN_COUNTERFACTUAL_ONLY_CANNOT_SELECT_PRODUCTIVE_CANDIDATE"
     elif scoped_selection_policy_created:
         execution_owner_ready = False
+        orchestration_owner_ready = False
         exec_path = root / EXECUTION_OWNER_DECISION
         if exec_path.is_file():
             exec_decision = _load_json(exec_path)
             execution_owner_ready = exec_decision.get("execution_owner_implemented") is True
-        earliest = (
-            CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
-            if execution_owner_ready
-            else CAMPAIGN_EXECUTION_BLOCKER
-        )
+        orch_path = root / ORCHESTRATION_OWNER_DECISION
+        if orch_path.is_file():
+            orch_decision = _load_json(orch_path)
+            orchestration_owner_ready = (
+                orch_decision.get("orchestration_owner_status") == "PRESENT_COMPLETE"
+                and orch_decision.get("authorized_campaign_execution_terminal_path_proven") is True
+            )
+        if not execution_owner_ready:
+            earliest = CAMPAIGN_EXECUTION_BLOCKER
+        elif not orchestration_owner_ready:
+            earliest = ORCHESTRATION_OWNER_GO_BLOCKER
+        else:
+            earliest = CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
 
     selection_rule_id = SELECTION_RULE_NONE
     if scoped_selection_policy_created:

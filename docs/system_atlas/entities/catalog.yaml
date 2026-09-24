@@ -7699,8 +7699,29 @@ entities:
       - config/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1_decision_v1.json
     notes: >-
       EXECUTION_PROOF and authorized-path readiness gates only; runtime authorization schema;
-      no terminal REAL-MD campaign orchestration; CAMPAIGN_EXECUTED=false;
-      REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. ATLAS_AUTHORITY=NONE.
+      terminal REAL-MD orchestration delegated to authorized_run_orchestration_v1;
+      CAMPAIGN_EXECUTED=false; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 prospective campaign authorized run orchestration owner v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_V1
+    source_paths:
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorized_run_orchestration_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorization_consume_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_closure_v1.py
+      - src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/orchestration_constants_v1.py
+    evidence_sources:
+      - tests/governance/test_f1_m9_prospective_campaign_authorized_run_orchestration_v1.py
+      - docs/ops/specs/F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_NORMATIVE_V1.md
+      - config/governance/f1_m9_prospective_campaign_authorized_run_orchestration_v1_decision_v1.json
+    notes: >-
+      Terminal authorized campaign lifecycle orchestrator (hermetic proof in tests); build-slice
+      default binds without REAL public-MD or repo durable writes; CAMPAIGN_EXECUTED=false.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1
     kind: RUNTIME_COMPONENT

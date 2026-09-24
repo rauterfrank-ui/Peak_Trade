@@ -30,6 +30,9 @@ Decision: `config/governance/f1_m9_prospective_candidate_selection_campaign_exec
 Runtime authorization is **separate** from frozen preregistration JSON fields
 (`campaign_execution_authorized=false` in preregistration remains unchanged).
 
+Terminal authorized-run orchestration owner (successor): `authorized_run_orchestration_v1`
+— see `docs/ops/specs/F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_NORMATIVE_V1.md`.
+
 ## Verification
 
 `tests/governance/test_f1_m9_prospective_candidate_selection_campaign_execution_v1.py`
