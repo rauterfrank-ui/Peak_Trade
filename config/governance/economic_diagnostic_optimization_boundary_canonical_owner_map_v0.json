@@ -410,6 +410,7 @@
         "tests/research/test_canonical_volatility_max_age_productive_bridge_accumulation_binding_v1.py",
         "tests/research/test_canonical_volatility_productive_bridge_partial_failure_accounting_v1.py",
         "tests/research/test_canonical_volatility_productive_ledger_integrity_scope_v1.py",
+        "tests/research/test_canonical_volatility_productive_ledger_coverage_scope_v1.py",
         "tests/research/test_canonical_volatility_numeric_max_age_productive_research_evidence_accumulation_v1.py",
         "tests/research/test_canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.py",
         "tests/research/test_canonical_volatility_numeric_max_age_campaign_authorization_v1.py",
