@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1` |
+| `RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1` |
 | `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
 
 ## CHANGED_RELATIONS
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 prospective candidate-selection campaign execution owner max-build (PR #6797): EXECUTION_PROOF and authorized-path gates; runtime authorization schema; no terminal REAL-MD orchestration; CAMPAIGN_EXECUTED=false; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 authorized campaign run orchestration owner: terminal lifecycle wired and hermetically proven in tests; build-slice default binds without REAL public-MD or repo durable writes; CAMPAIGN_EXECUTED=false; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_OWNER_MAX_BUILD_V1
+- modified_by=F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

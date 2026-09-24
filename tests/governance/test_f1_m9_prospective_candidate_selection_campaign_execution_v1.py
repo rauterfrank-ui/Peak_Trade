@@ -10,6 +10,7 @@ import pytest
 
 from src.governance.explicit_productive_authorization_v1 import AUTHORIZED_FOR_PRODUCTIVE_APPLY
 from src.governance.f1_m9_canonical_productive_candidate_evidence_census_v1 import (
+    CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER,
     CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER,
     run_f1_m9_canonical_productive_candidate_evidence_census_v1,
 )
@@ -331,5 +332,5 @@ def test_downstream_invariants_and_closure() -> None:
         repo_root=REPO_ROOT
     )
     census = run_f1_m9_canonical_productive_candidate_evidence_census_v1(repo_root=REPO_ROOT)
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+    assert census.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
     assert EARLIEST_REMAINING_BLOCKER == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER

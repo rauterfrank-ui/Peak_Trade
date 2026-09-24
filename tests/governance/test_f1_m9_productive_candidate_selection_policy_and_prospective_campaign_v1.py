@@ -13,6 +13,7 @@ from src.governance.f1_m9_canonical_productive_candidate_adjudication_v1 import 
     adjudicate_canonical_f1_m9_productive_candidate_v1,
 )
 from src.governance.f1_m9_canonical_productive_candidate_evidence_census_v1 import (
+    CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER,
     CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER,
     EVIDENCE_CLASS_COUNTERFACTUAL,
     run_f1_m9_canonical_productive_candidate_evidence_census_v1,
@@ -182,12 +183,12 @@ def test_census_and_adjudication_remain_unresolved() -> None:
     assert census.existing_campaign_can_select_productive_candidate is False
     assert census.owner_policy_required is False
     assert census.candidate_selection_rule_id == "F1_M9_ROBUST_REGION_UNIQUE_SURVIVOR_POINT_V1"
-    assert census.earliest_blocker == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+    assert census.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
     adj = adjudicate_canonical_f1_m9_productive_candidate_v1(repo_root=REPO_ROOT)
     assert adj.resolved is False
     assert adj.candidate_id is None
     assert adj.explicit_productive_authorization_resolved is False
-    assert adj.earliest_blocker == CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+    assert adj.earliest_blocker == CAMPAIGN_EXECUTION_FRESH_AUTH_BLOCKER
 
 
 def test_closure_and_predecessor_regressions() -> None:

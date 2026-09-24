@@ -15,7 +15,7 @@
   "execution_proof_pass": true,
   "historical_leakage_guard_bound": true,
   "new_decision_making_evidence_generated": false,
-  "next_true_blocker": "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_REQUIRES_OWNER_GO",
+  "next_true_blocker": "F1_M9_PROSPECTIVE_CAMPAIGN_AUTHORIZED_RUN_ORCHESTRATION_OWNER_V1",
   "normative_spec": "docs/ops/specs/F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_NORMATIVE_V1.md",
   "predecessor_workpackage_id": "F1_M9_PRODUCTIVE_CANDIDATE_SELECTION_POLICY_AND_PROSPECTIVE_CAMPAIGN_V1",
   "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c",

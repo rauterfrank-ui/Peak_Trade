@@ -82,6 +82,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_prospective_campaign_authorized_run_orchestration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1 | STATUS=OPEN (not proven) |  |
