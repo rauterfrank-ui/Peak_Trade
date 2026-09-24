@@ -7848,6 +7848,31 @@ entities:
       and prereg age-grid coverage exit only. No mark-history, regime, or trading
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:canonical_volatility_max_age_research_stratification_v2_v1
+    # F1_R1_REGIME_EVIDENCE_PIPELINE_REPAIR_IMPLEMENTATION_V1 PR_6790: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; RESEARCH_STRATIFICATION_V2=true; BRIDGE_FEATURE_REGIME_AUTHORITY=false; PARAMETER_AUTHORITY_UNSET=true; TRADING_SEMANTICS_CHANGED=false.
+    kind: RUNTIME_COMPONENT
+    name: Research stratification v2 (decoupled from bridge feature_regime)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: F1_R1_REGIME_EVIDENCE_PIPELINE_REPAIR_IMPLEMENTATION_V1
+    source_paths:
+      - src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/research_stratification_v2/
+      - src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/models_v1.py
+      - src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/producer_v1.py
+      - src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/validation_v1.py
+      - docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_RESEARCH_STRATIFICATION_V2.md
+      - docs/ops/F1_R1_RESEARCH_STRATIFICATION_V2_IMPLEMENTATION_PLAN_V1.md
+      - tests/research/test_canonical_volatility_max_age_research_stratification_v2.py
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_RESEARCH_STRATIFICATION_V2.md
+    notes: >-
+      Research-only stratification dimensions (CMC volatility + research mark path) for
+      productive evidence enrichment; decoupled from bridge feature_regime; production
+      parameter authority UNSET so campaign admission remains fail-closed. No threshold
+      ratification, enforcement, promotion, network, or session execution.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:offline_observation_proposal_contract_fences_v1
     kind: RUNTIME_COMPONENT
     name: Offline observation / proposal contract fences v1

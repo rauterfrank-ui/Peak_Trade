@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1` |
+| `RUNTIME_COMPONENT:canonical_volatility_max_age_research_stratification_v2_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6787 fresh R1 rematerialization: sole ACTIVE binding and r1_active preregistration rebound to materialization SHA bc560f1 (campaign f5e3f95105cd847f); render-only campaign authorization prep artifact; D01 forensic tests use explicit binding paths. Navigation/ catalog rebinding only; no trading, network, session execution, or authorization consumption. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1 R1 research stratification v2 (PR #6790): decoupled research-only mark/regime stratification on productive evidence accumulation seam; parameter authority UNSET; no bridge feature_regime, MV2/DP, ranking, selection, risk, or execution semantic change. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_R1_FRESH_CAMPAIGN_REMATERIALIZATION_V1
+- modified_by=F1_R1_REGIME_EVIDENCE_PIPELINE_REPAIR_IMPLEMENTATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
