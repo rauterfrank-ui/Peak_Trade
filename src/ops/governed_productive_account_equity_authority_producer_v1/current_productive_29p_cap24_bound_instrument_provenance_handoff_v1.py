@@ -25,6 +25,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED,
     CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CAP24_PUBLISH_MANIFEST_FILENAME,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     require_current_productive_29p_bound_instrument_v1,
 )
@@ -38,6 +41,9 @@ from src.ops.ranking_universe_to_full_core_ssf_handoff_contract_v1 import (
     assert_handoff_invariants_v1,
 )
 from src.ops.single_selected_future_policy_v1.constants_v1 import STATE_SELECTED_ACTIVE
+from src.ops.single_selected_future_policy_v1.models_v1 import (
+    SingleSelectedFutureSelectionV1,
+)
 from src.ops.single_selected_future_policy_v1.persistence_v1 import (
     load_and_validate_selection_v1,
 )
@@ -153,6 +159,56 @@ def _binding_epoch_unix_v1(binding_epoch: str) -> float:
         raise CurrentProductive29PCap24ProvenanceHandoffError("BINDING_EPOCH_MALFORMED") from exc
 
 
+def _load_cap24_publish_manifest_v1(*, productivity_root: Path) -> dict[str, Any]:
+    manifest_path = productivity_root / CAP24_PUBLISH_MANIFEST_FILENAME
+    if not manifest_path.is_file() or manifest_path.stat().st_size <= 0:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_REQUIRED_FOR_CURRENT_AUTHORITY"
+        )
+    try:
+        payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_MALFORMED"
+        ) from exc
+    if not isinstance(payload, dict):
+        raise CurrentProductive29PCap24ProvenanceHandoffError("CAP24_PUBLISH_MANIFEST_MALFORMED")
+    return payload
+
+
+def _assert_cap24_publish_manifest_binds_persisted_state_v1(
+    *,
+    productivity_root: Path,
+    repository_sha: str,
+    selection: SingleSelectedFutureSelectionV1,
+) -> dict[str, Any]:
+    """Positive CURRENT authority: canonical publish manifest + persisted Cap-2.3."""
+
+    manifest = _load_cap24_publish_manifest_v1(productivity_root=productivity_root)
+    manifest_sha = str(manifest.get("repository_sha") or "").strip().lower()
+    caller_sha = str(repository_sha or "").strip().lower()
+    if not manifest_sha:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_REPOSITORY_SHA_MISSING"
+        )
+    if not caller_sha or manifest_sha != caller_sha:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_REPOSITORY_SHA_MISMATCH"
+        )
+    if str(selection.repository_sha or "").strip().lower() != manifest_sha:
+        raise CurrentProductive29PCap24ProvenanceHandoffError("REPOSITORY_SHA_MISMATCH")
+    manifest_selection_id = str(manifest.get("cap23_selection_decision_id") or "").strip()
+    if not manifest_selection_id:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_SELECTION_BINDING_MISSING"
+        )
+    if manifest_selection_id != str(selection.selection_id or "").strip():
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PUBLISH_MANIFEST_SELECTION_ID_MISMATCH"
+        )
+    return manifest
+
+
 def _assert_selection_current_for_epoch_v1(
     *,
     valid_until: str,
@@ -160,7 +216,9 @@ def _assert_selection_current_for_epoch_v1(
 ) -> None:
     until = str(valid_until or "").strip()
     if not until:
-        return
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "SELECTION_VALID_UNTIL_REQUIRED_FOR_CURRENT"
+        )
     try:
         until_ts = datetime.strptime(until, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
         epoch_ts = datetime.strptime(binding_epoch, "%Y-%m-%dT%H:%M:%SZ").replace(
@@ -199,11 +257,11 @@ def acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
     if not repo_sha:
         raise CurrentProductive29PCap24ProvenanceHandoffError("REPOSITORY_SHA_MISSING")
 
-    prod_root = (
-        Path(productivity_root)
-        if productivity_root is not None
-        else default_current_productive_cap24_runtime_state_root_v1()
-    )
+    if productivity_root is None:
+        raise CurrentProductive29PCap24ProvenanceHandoffError(
+            "CAP24_PRODUCTIVITY_ROOT_EXPLICIT_REQUIRED"
+        )
+    prod_root = Path(productivity_root)
     _assert_not_historical_evidence_runtime_input_v1(prod_root)
     if not prod_root.exists():
         raise CurrentProductive29PCap24ProvenanceHandoffError("CAP24_RUNTIME_STATE_ROOT_MISSING")
@@ -237,6 +295,12 @@ def acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         raise CurrentProductive29PCap24ProvenanceHandoffError(
             "CANARY_INSTRUMENT_AUTHORITY_IMPORTED"
         )
+
+    _assert_cap24_publish_manifest_binds_persisted_state_v1(
+        productivity_root=prod_root,
+        repository_sha=repo_sha,
+        selection=selection,
+    )
 
     rank_load = load_and_validate_ranking_snapshot_v1(
         rank_root,
@@ -346,10 +410,7 @@ def resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1(
         return require_current_productive_29p_bound_instrument_v1(bound_instrument)
     root = cap24_productivity_root
     if root is None:
-        default = default_current_productive_cap24_runtime_state_root_v1()
-        if not default.exists():
-            return None
-        root = default
+        return None
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=root,
         repository_sha=repository_sha,
