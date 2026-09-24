@@ -74,7 +74,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductive29PCap24ProvenanceHandoffError,
     _resolve_runtime_state_root_v1,
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
-    default_current_productive_cap24_runtime_state_root_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
     CurrentProductive29PChainBaselineError,
@@ -437,9 +436,6 @@ def _resolve_public_inst_type_for_bound_instrument_v1(
             )
         return override
     prod_root = productivity_root
-    if prod_root is None:
-        default_root = default_current_productive_cap24_runtime_state_root_v1()
-        prod_root = default_root if default_root.exists() else None
     if prod_root is None or not Path(prod_root).exists():
         raise CurrentProductive29PCommonEpochHandoffError(
             "CAP21_UNIVERSE_REQUIRED_FOR_PUBLIC_INST_TYPE_BINDING"
@@ -814,9 +810,6 @@ def execute_current_productive_29p_common_epoch_handoff_to_first_blocker_v1(
     cap24_provenance_digest = ""
     if bound_input is None:
         prod_root = cap24_productivity_root
-        if prod_root is None:
-            default_root = default_current_productive_cap24_runtime_state_root_v1()
-            prod_root = default_root if default_root.exists() else None
         if prod_root is not None:
             cap24_handoff_status = "ATTEMPTED"
             try:

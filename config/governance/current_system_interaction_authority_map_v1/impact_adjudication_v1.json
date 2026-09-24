@@ -1,45 +1,34 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "a78b61d341c958605dc46604293484381d94d9ff",
+  "base_sha": "7c133eddf1be758d54d8d98cae265e4326336d82",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false,
-  "reason": "F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1: bounded R1 research-path repairs (scoped join/productive integrity, terminal partial-failure accounting, read-only failed-S01 governance). No CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source or derived view change; map candidate catalog and Atlas catalog rebinding only. AUTHORITY=NONE.",
+  "reason": "S1_CAP24_HISTORICAL_INERTNESS_REPAIR_V1 (PR #6785): bounded Cap-2.4 CURRENT authority/freshness gates on provenance handoff and common-epoch compose (publish manifest + valid_until; no implicit default productivity root). No CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 structured source or derived view semantic change; map candidate catalog and Atlas catalog rebinding only. AUTHORITY=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/models_v1.py",
-    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/failed_s01_session_recovery_governance_v1.py",
-    "tests/research/test_canonical_volatility_productive_bridge_partial_failure_accounting_v1.py",
-    "tests/research/test_canonical_volatility_productive_ledger_integrity_scope_v1.py",
-    "tests/research/test_failed_s01_session_recovery_governance_v1.py"
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
   ],
-  "changed_paths_sha256": "265d2ed38ab1c31a441c08de54c62ed89c214e955940d6d266b36bf261cb5d25",
+  "changed_paths_sha256": "0d6ad18ba06f0e4c030e911676e480fd7e9f0961160bb00fcc0dde69db0439ab",
   "evidence_refs": [
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_PRODUCTIVE_CAMPAIGN_R1_RECOVERY_AND_ACTIVE_BINDING_V1.md",
-    "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_MAX_AGE_PRODUCTIVE_BRIDGE_CYCLE_INPUT_AUTHORIZATION_AND_ACCUMULATION_BINDING_V1.md",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "covered_candidate_paths": [
-    "config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/models_v1.py",
-    "src/research/canonical_volatility_max_age_productive_research_evidence_accumulation_v1/productive_bridge_runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/preflight_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1/runner_v1.py",
-    "src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/failed_s01_session_recovery_governance_v1.py",
-    "tests/research/test_canonical_volatility_productive_bridge_partial_failure_accounting_v1.py",
-    "tests/research/test_canonical_volatility_productive_ledger_integrity_scope_v1.py",
-    "tests/research/test_failed_s01_session_recovery_governance_v1.py"
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
   ]
 }

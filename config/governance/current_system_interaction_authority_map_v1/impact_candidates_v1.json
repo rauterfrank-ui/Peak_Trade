@@ -143,6 +143,9 @@
     "src/research/canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1/",
     "config/research/canonical_volatility_numeric_max_age_productive_evidence_session_preregistration_v1.json",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_NUMERIC_MAX_AGE_RETAINED_ESTIMATE_LATE_AGE_CARRIER_V1.md",
-    "tests/research/test_canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.py"
+    "tests/research/test_canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
   ]
 }

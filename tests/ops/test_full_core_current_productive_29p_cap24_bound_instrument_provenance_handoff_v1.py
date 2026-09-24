@@ -23,11 +23,15 @@ from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_CAP24_PROVENANCE_HANDOFF_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_selection_state_canonical_writer_v1 import (
+    PUBLISH_MANIFEST_FILENAME,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
     SCHEMA_CLASS,
     THIS_SLICE,
     CurrentProductive29PCap24ProvenanceHandoffError,
     acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1,
+    default_current_productive_cap24_runtime_state_root_v1,
     resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
@@ -164,6 +168,23 @@ def _build_fresh_chain(tmp: Path, *, repository_sha: str = REPO_SHA) -> dict:
     }
 
 
+def _write_cap24_publish_manifest_v1(
+    prod: Path,
+    *,
+    chain: dict,
+) -> None:
+    selection: SingleSelectedFutureSelectionV1 = chain["selection"]
+    manifest = {
+        "schema_class": "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1",
+        "contract_version": "v1",
+        "repository_sha": chain["repository_sha"],
+        "decision_epoch": chain["binding_epoch"],
+        "cap23_selection_decision_id": selection.selection_id,
+        "cap23_selected_instrument_id": selection.venue_native_id,
+    }
+    (prod / PUBLISH_MANIFEST_FILENAME).write_text(json.dumps(manifest), encoding="utf-8")
+
+
 def _materialize_productivity_root(tmp: Path, chain: dict) -> Path:
     prod = tmp / "cap24_productivity"
     state = prod / "runtime_state"
@@ -176,6 +197,7 @@ def _materialize_productivity_root(tmp: Path, chain: dict) -> Path:
         shutil.copytree(chain[key], state / sub)
     marks = {str(chain["venue_native_id"]): "100.5"}
     (prod / "mark_prices_by_native_id_v1.json").write_text(json.dumps(marks), encoding="utf-8")
+    _write_cap24_publish_manifest_v1(prod, chain=chain)
     return prod
 
 
@@ -231,6 +253,7 @@ def test_mark_prices_missing_fail_closed(tmp_path: Path) -> None:
         ("recon_root", "recon"),
     ):
         shutil.copytree(chain[key], state / sub)
+    _write_cap24_publish_manifest_v1(prod, chain=chain)
     with pytest.raises(
         CurrentProductive29PCap24ProvenanceHandoffError,
         match="MARK_PRICES_PROVENANCE_MISSING",
@@ -319,6 +342,93 @@ def test_resolve_returns_none_without_root_or_bound() -> None:
     )
 
 
+def test_stale_persisted_root_without_publish_manifest_rejected(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    (prod / PUBLISH_MANIFEST_FILENAME).unlink()
+    with pytest.raises(
+        CurrentProductive29PCap24ProvenanceHandoffError,
+        match="CAP24_PUBLISH_MANIFEST_REQUIRED_FOR_CURRENT_AUTHORITY",
+    ):
+        acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+            productivity_root=prod,
+            repository_sha=REPO_SHA,
+            binding_epoch=chain["binding_epoch"],
+        )
+
+
+def test_matching_repository_sha_alone_without_manifest_insufficient(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    (prod / PUBLISH_MANIFEST_FILENAME).unlink()
+    with pytest.raises(
+        CurrentProductive29PCap24ProvenanceHandoffError,
+        match="CAP24_PUBLISH_MANIFEST_REQUIRED_FOR_CURRENT_AUTHORITY",
+    ):
+        acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+            productivity_root=prod,
+            repository_sha=chain["repository_sha"],
+            binding_epoch=chain["binding_epoch"],
+        )
+
+
+def test_missing_valid_until_fail_closed(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    sel_path = prod / "runtime_state" / "selection" / SELECTION_FILENAME
+    payload = json.loads(sel_path.read_text(encoding="utf-8"))
+    payload["valid_until"] = ""
+    sel_path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(
+        CurrentProductive29PCap24ProvenanceHandoffError,
+        match="SELECTION_VALID_UNTIL_REQUIRED_FOR_CURRENT|CORRUPT_PERSISTED_SELECTION",
+    ):
+        acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+            productivity_root=prod,
+            repository_sha=REPO_SHA,
+            binding_epoch=chain["binding_epoch"],
+        )
+
+
+def test_expired_valid_until_rejected(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    sel_path = prod / "runtime_state" / "selection" / SELECTION_FILENAME
+    payload = json.loads(sel_path.read_text(encoding="utf-8"))
+    payload["valid_until"] = "2020-01-01T00:00:00Z"
+    sel_path.write_text(json.dumps(payload), encoding="utf-8")
+    with pytest.raises(
+        CurrentProductive29PCap24ProvenanceHandoffError,
+        match="SELECTION_STALE_FOR_BINDING_EPOCH|CORRUPT_PERSISTED_SELECTION",
+    ):
+        acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+            productivity_root=prod,
+            repository_sha=REPO_SHA,
+            binding_epoch=chain["binding_epoch"],
+        )
+
+
+def test_default_root_existence_alone_does_not_confer_authority(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    _ = default_current_productive_cap24_runtime_state_root_v1()
+    assert (
+        resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1(
+            bound_instrument=None,
+            cap24_productivity_root=None,
+            repository_sha=REPO_SHA,
+            binding_epoch=chain["binding_epoch"],
+        )
+        is None
+    )
+    handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+        productivity_root=prod,
+        repository_sha=REPO_SHA,
+        binding_epoch=chain["binding_epoch"],
+    )
+    assert handoff.instrument_id == chain["instrument_id"]
+
+
 def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
     chain = _build_fresh_chain(
         tmp_path / "build",
@@ -380,13 +490,15 @@ def test_legacy_build_chain_still_binds_via_gate(tmp_path: Path) -> None:
     """Fixture parity: persisted Cap-2.1–2.3 + gate only (no policy re-run)."""
 
     chain = _build_chain(tmp_path)
+    chain["repository_sha"] = REPO_SHA
+    chain["binding_epoch"] = chain["selection"].selected_at_wall_time
     prod = _materialize_productivity_root(tmp_path, chain)
     marks = {str(chain["venue_native_id"]): "100.5"}
     selection = chain["selection"]
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=prod,
         repository_sha=REPO_SHA,
-        binding_epoch=selection.valid_until,
+        binding_epoch=selection.selected_at_wall_time,
         mark_price_by_native_id=marks,
     )
     assert handoff.bound_instrument.venue_native_id == chain["venue_native_id"]

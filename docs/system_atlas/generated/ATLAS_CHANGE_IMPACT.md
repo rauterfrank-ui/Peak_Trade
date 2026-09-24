@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1 (PR #6784): Atlas catalog rebinding for R1 recovery component source paths and repair tests only; scoped ledger integrity and failed-S01 governance are research-path contract fixes with EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- S1 Cap-24 historical inertness repair (PR #6785): catalog rebinding only for publish-manifest CURRENT authority and valid_until freshness on Cap-2.4 provenance handoff; no MV2/DP, ranking, selection algorithm, risk, or execution semantic change. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
+- modified_by=S1_CAP24_HISTORICAL_INERTNESS_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
