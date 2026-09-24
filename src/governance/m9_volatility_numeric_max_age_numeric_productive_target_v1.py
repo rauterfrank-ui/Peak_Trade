@@ -17,6 +17,7 @@ from typing import Any, Final, Mapping
 from src.governance.m9_volatility_numeric_max_age_ratified_threshold_capability_v1 import (
     CAPABILITY_ID as RATIFIED_THRESHOLD_CAPABILITY_ID,
     CAPABILITY_VERSION as RATIFIED_THRESHOLD_CAPABILITY_VERSION,
+    ThresholdValueAuthorizationStatusV1,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
 
@@ -184,6 +185,45 @@ def validate_productive_target_id_v1(productive_target_id: str) -> tuple[bool, s
     if normalized not in authorized_productive_target_ids_v1():
         return False, "PRODUCTIVE_TARGET_ID_NOT_AUTHORIZED"
     return True, "PRODUCTIVE_TARGET_ID_OK"
+
+
+def build_policy_admission_from_authorized_seam_record_v1(
+    seam_record: Mapping[str, Any] | None,
+) -> ProductiveNumericMaxAgePolicyAdmissionV1 | None:
+    """Build admission only from seam fields produced by valid F1/M9 threshold authority."""
+    if seam_record is None:
+        return None
+    if (
+        seam_record.get("threshold_value_authorization_status")
+        != ThresholdValueAuthorizationStatusV1.AUTHORIZED.value
+    ):
+        return None
+    digest = seam_record.get("threshold_value_authorization_digest")
+    if not isinstance(digest, str) or not is_valid_sha256_hex(digest):
+        return None
+    numeric = seam_record.get("threshold_numeric_max_age_seconds")
+    if numeric is None:
+        numeric = seam_record.get("numeric_max_age_seconds")
+    if not isinstance(numeric, (int, float)) or isinstance(numeric, bool):
+        return None
+    apply_digest = seam_record.get("productive_apply_authorization_digest")
+    if not isinstance(apply_digest, str) or not is_valid_sha256_hex(apply_digest):
+        return None
+    return ProductiveNumericMaxAgePolicyAdmissionV1(
+        productive_target_id=str(seam_record.get("productive_target_id") or ""),
+        productive_target_version=str(seam_record.get("productive_target_version") or ""),
+        ratified_threshold_capability_id=str(
+            seam_record.get("threshold_capability_id") or RATIFIED_THRESHOLD_CAPABILITY_ID
+        ),
+        ratified_threshold_capability_version=str(
+            seam_record.get("threshold_capability_version") or RATIFIED_THRESHOLD_CAPABILITY_VERSION
+        ),
+        threshold_value_authorization_status=ThresholdValueAuthorizationStatusV1.AUTHORIZED.value,
+        threshold_value_authorization_digest=digest,
+        threshold_numeric_max_age_seconds=float(numeric),
+        productive_apply_authorization_status=ProductiveApplyAuthorizationStatusV1.AUTHORIZED.value,
+        productive_apply_authorization_digest=apply_digest,
+    )
 
 
 def validate_policy_admission_request_v1(

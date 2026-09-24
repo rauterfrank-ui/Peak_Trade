@@ -102,7 +102,7 @@ def test_valid_seam_transport_reaches_presence_gate_consumer(tmp_path: Any) -> N
         authorized_productive_parameter_seam=transport.seam_for_consumer,
     )
     assert gate.max_age_policy_evidence is not None
-    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_RATIFIED_NUMERIC
+    assert gate.max_age_policy_evidence.threshold_status == THRESHOLD_STATUS_UNRESOLVED
     assert gate.max_age_policy_evidence.enforcement_applied is False
 
 

@@ -27,16 +27,26 @@ from src.governance.explicit_productive_authorization_v1 import (
 from src.governance.f1_m9_owner_apply_authorization_record_v1 import (
     OwnerApplyAuthorizationInputV1,
 )
+from src.governance.f1_m9_owner_threshold_value_authorization_record_v1 import (
+    OwnerThresholdValueAuthorizationInputV1,
+)
 from src.governance.f1_m9_per_ingress_productive_authorization_binding_v1 import (
     PerIngressAuthorizationBindingV1,
     PerIngressBindingStatusV1,
     evaluate_f1_m9_per_ingress_authorization_binding_v1,
 )
 from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyLedgerPathsV1
+from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
+    F1M9ThresholdValueAuthorizationLedgerPathsV1,
+)
 from src.governance.f1_m9_scoped_owner_apply_authority_v1 import (
     F1M9ScopedOwnerApplyAdjudicationRequestV1,
     RUNTIME_APPLY_AUTHORITY_VALUE,
     evaluate_f1_m9_scoped_owner_productive_apply_v1,
+)
+from src.governance.f1_m9_scoped_owner_threshold_value_authority_v1 import (
+    F1M9ScopedOwnerThresholdValueAdjudicationRequestV1,
+    evaluate_f1_m9_scoped_owner_threshold_value_authority_v1,
 )
 from src.governance.governed_productive_configuration_v1 import (
     GovernedProductiveConfigurationMaterializeRequestV1,
@@ -72,6 +82,7 @@ class ChainStageV1(str, Enum):
     AUTHORIZED_PARAMETER_SEAM = "AUTHORIZED_PARAMETER_SEAM"
     RUNTIME_TRANSPORT = "RUNTIME_TRANSPORT"
     PRODUCTIVE_APPLY = "PRODUCTIVE_APPLY"
+    THRESHOLD_VALUE_AUTHORIZATION = "THRESHOLD_VALUE_AUTHORIZATION"
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,6 +97,8 @@ class PerIngressChainResolutionV1:
     runtime_transport: GovernedRuntimeSeamTransportResultV1 | None
     productive_apply_authorized: bool
     runtime_apply_authority: str
+    threshold_value_authorized: bool
+    runtime_threshold_authority: str
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -93,7 +106,9 @@ class PerIngressChainResolutionV1:
             "productive_apply_authorized": self.productive_apply_authorized,
             "reason_codes": list(self.reason_codes),
             "runtime_apply_authority": self.runtime_apply_authority,
+            "runtime_threshold_authority": self.runtime_threshold_authority,
             "stop_stage": self.stop_stage.value,
+            "threshold_value_authorized": self.threshold_value_authorized,
         }
 
 
@@ -105,6 +120,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
     registry_digest: str,
     owner_apply_input: OwnerApplyAuthorizationInputV1 | None = None,
     ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None = None,
+    owner_threshold_input: OwnerThresholdValueAuthorizationInputV1 | None = None,
+    threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
 ) -> PerIngressChainResolutionV1:
     """Fail-closed chain through runtime transport; apply requires Owner Apply record."""
     apply_blocked = AUTHORIZED_FOR_PRODUCTIVE_APPLY is False and not runtime_apply_possible_v1()
@@ -120,6 +137,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=None,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
     binding = evaluate_f1_m9_per_ingress_authorization_binding_v1(
@@ -139,6 +158,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=None,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
     if admission.admission_status != ADMISSION_ADMITTED:
@@ -153,6 +174,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=None,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
     authorization = evaluate_explicit_productive_authorization_v1(
@@ -175,6 +198,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=None,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
     configuration = materialize_governed_productive_configuration_v1(
@@ -195,11 +220,15 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=None,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
     configuration_for_seam = configuration
     runtime_apply_authority = RUNTIME_APPLY_AUTHORITY
     productive_apply_authorized = False
+    threshold_value_authorized = False
+    runtime_threshold_authority = "NONE"
 
     if owner_apply_input is not None:
         if ledger_paths is None:
@@ -214,6 +243,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
                 runtime_transport=None,
                 productive_apply_authorized=False,
                 runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+                threshold_value_authorized=False,
+                runtime_threshold_authority="NONE",
             )
         apply_result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
             F1M9ScopedOwnerApplyAdjudicationRequestV1(
@@ -240,10 +271,76 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
                 runtime_transport=None,
                 productive_apply_authorized=False,
                 runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+                threshold_value_authorized=False,
+                runtime_threshold_authority="NONE",
             )
         configuration_for_seam = apply_result.configuration_after_apply
         runtime_apply_authority = apply_result.runtime_apply_authority
         productive_apply_authorized = True
+
+    if owner_threshold_input is not None:
+        if not productive_apply_authorized:
+            return PerIngressChainResolutionV1(
+                chain_status="DENIED_FAIL_CLOSED",
+                stop_stage=ChainStageV1.THRESHOLD_VALUE_AUTHORIZATION,
+                reason_codes=("PRODUCTIVE_APPLY_REQUIRED_BEFORE_THRESHOLD",),
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration_for_seam,
+                seam=None,
+                runtime_transport=None,
+                productive_apply_authorized=productive_apply_authorized,
+                runtime_apply_authority=runtime_apply_authority,
+                threshold_value_authorized=False,
+                runtime_threshold_authority="NONE",
+            )
+        if ledger_paths is None or threshold_ledger_paths is None:
+            return PerIngressChainResolutionV1(
+                chain_status="DENIED_FAIL_CLOSED",
+                stop_stage=ChainStageV1.THRESHOLD_VALUE_AUTHORIZATION,
+                reason_codes=("THRESHOLD_LEDGER_PATHS_REQUIRED",),
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration_for_seam,
+                seam=None,
+                runtime_transport=None,
+                productive_apply_authorized=productive_apply_authorized,
+                runtime_apply_authority=runtime_apply_authority,
+                threshold_value_authorized=False,
+                runtime_threshold_authority="NONE",
+            )
+        threshold_result = evaluate_f1_m9_scoped_owner_threshold_value_authority_v1(
+            F1M9ScopedOwnerThresholdValueAdjudicationRequestV1(
+                owner_threshold_input=owner_threshold_input,
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration_for_seam,
+                registry_digest=registry_digest,
+                apply_ledger_paths=ledger_paths,
+                threshold_ledger_paths=threshold_ledger_paths,
+            )
+        )
+        if (
+            not threshold_result.threshold_value_authorized
+            or threshold_result.configuration_after_threshold is None
+        ):
+            return PerIngressChainResolutionV1(
+                chain_status="DENIED_FAIL_CLOSED",
+                stop_stage=ChainStageV1.THRESHOLD_VALUE_AUTHORIZATION,
+                reason_codes=threshold_result.reason_codes,
+                per_ingress_binding=binding,
+                authorization=authorization,
+                configuration=configuration_for_seam,
+                seam=None,
+                runtime_transport=None,
+                productive_apply_authorized=productive_apply_authorized,
+                runtime_apply_authority=runtime_apply_authority,
+                threshold_value_authorized=False,
+                runtime_threshold_authority="NONE",
+            )
+        configuration_for_seam = threshold_result.configuration_after_threshold
+        threshold_value_authorized = True
+        runtime_threshold_authority = threshold_result.runtime_threshold_authority
 
     seam = bind_authorized_productive_parameter_seam_v1(
         AuthorizedProductiveParameterSeamBindRequestV1(configuration=configuration_for_seam)
@@ -258,8 +355,10 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             configuration=configuration,
             seam=seam,
             runtime_transport=None,
-            productive_apply_authorized=False,
-            runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            productive_apply_authorized=productive_apply_authorized,
+            runtime_apply_authority=runtime_apply_authority,
+            threshold_value_authorized=threshold_value_authorized,
+            runtime_threshold_authority=runtime_threshold_authority,
         )
 
     transport = resolve_governed_runtime_seam_for_presence_gate_v1(dict(seam.seam_record))
@@ -273,8 +372,10 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             configuration=configuration,
             seam=seam,
             runtime_transport=transport,
-            productive_apply_authorized=False,
-            runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            productive_apply_authorized=productive_apply_authorized,
+            runtime_apply_authority=runtime_apply_authority,
+            threshold_value_authorized=threshold_value_authorized,
+            runtime_threshold_authority=runtime_threshold_authority,
         )
 
     if not productive_apply_authorized:
@@ -289,12 +390,20 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
             runtime_transport=transport,
             productive_apply_authorized=False,
             runtime_apply_authority=RUNTIME_APPLY_AUTHORITY,
+            threshold_value_authorized=False,
+            runtime_threshold_authority="NONE",
         )
 
+    chain_status = "RESOLVED_THROUGH_RUNTIME_TRANSPORT_F1_M9_APPLY_AUTHORIZED"
+    reason_codes: tuple[str, ...] = ("F1_M9_OWNER_APPLY_AUTHORIZED",)
+    if threshold_value_authorized:
+        chain_status = "RESOLVED_THROUGH_RUNTIME_TRANSPORT_F1_M9_THRESHOLD_AUTHORIZED"
+        reason_codes = ("F1_M9_OWNER_THRESHOLD_VALUE_AUTHORIZED",)
+
     return PerIngressChainResolutionV1(
-        chain_status="RESOLVED_THROUGH_RUNTIME_TRANSPORT_F1_M9_APPLY_AUTHORIZED",
+        chain_status=chain_status,
         stop_stage=ChainStageV1.RUNTIME_TRANSPORT,
-        reason_codes=("F1_M9_OWNER_APPLY_AUTHORIZED",),
+        reason_codes=reason_codes,
         per_ingress_binding=binding,
         authorization=authorization,
         configuration=configuration_for_seam,
@@ -302,6 +411,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
         runtime_transport=transport,
         productive_apply_authorized=True,
         runtime_apply_authority=runtime_apply_authority,
+        threshold_value_authorized=threshold_value_authorized,
+        runtime_threshold_authority=runtime_threshold_authority,
     )
 
 

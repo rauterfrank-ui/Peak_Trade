@@ -339,12 +339,13 @@ def evaluate_f1_m9_scoped_owner_productive_apply_v1(
         owner_apply_authorization_record_digest=apply_digest,
     )
     if existing is not None:
-        if existing["configuration_digest"] != config_digest:
-            return _deny(["APPLY_LEDGER_IDEMPOTENCY_CONFIGURATION_MISMATCH"])
         applied_config = transition_configuration_for_valid_apply_v1(
             request.configuration,
             owner_apply_authorization_record_digest=apply_digest,
         )
+        applied_config_digest = str(applied_config.configuration_digest or config_digest)
+        if existing["configuration_digest"] != applied_config_digest:
+            return _deny(["APPLY_LEDGER_IDEMPOTENCY_CONFIGURATION_MISMATCH"])
         return F1M9ScopedOwnerApplyAdjudicationResultV1(
             apply_status=ProductiveApplyAdjudicationStatusV1.IDEMPOTENT_REPLAY.value,
             reason_codes=("APPLY_IDEMPOTENT_REPLAY",),
@@ -355,11 +356,17 @@ def evaluate_f1_m9_scoped_owner_productive_apply_v1(
             apply_ledger_entry_digest=str(existing.get("apply_ledger_entry_digest") or ""),
         )
 
+    applied_config = transition_configuration_for_valid_apply_v1(
+        request.configuration,
+        owner_apply_authorization_record_digest=apply_digest,
+    )
+    applied_config_digest = str(applied_config.configuration_digest or config_digest)
+
     try:
         ledger_entry = append_apply_ledger_entry_v1(
             apply_ledger_path=request.ledger_paths.apply_ledger_path,
             owner_apply_authorization_record_digest=apply_digest,
-            configuration_digest=config_digest,
+            configuration_digest=applied_config_digest,
             authorization_digest=str(record.get("authorization_digest") or ""),
             ingress_digest=str(record.get("ingress_digest") or ""),
             applied_at=format_aware_utc_datetime_v1(now),
@@ -367,10 +374,6 @@ def evaluate_f1_m9_scoped_owner_productive_apply_v1(
     except ProductiveApplyLedgerError as exc:
         return _deny([str(exc)])
 
-    applied_config = transition_configuration_for_valid_apply_v1(
-        request.configuration,
-        owner_apply_authorization_record_digest=apply_digest,
-    )
     return F1M9ScopedOwnerApplyAdjudicationResultV1(
         apply_status=STATUS_APPLY_AUTHORIZED,
         reason_codes=("F1_M9_OWNER_APPLY_OK",),
