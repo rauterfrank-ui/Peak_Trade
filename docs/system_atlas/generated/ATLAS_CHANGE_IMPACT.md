@@ -40,8 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:f1_m9_prospective_candidate_selection_campaign_execution_v1` |
 | `RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1` |
-| `RUNTIME_COMPONENT:f1_m9_productive_apply_execution_boundary_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 governed productive apply preparation, canonical candidate/evidence census, and prospective candidate-selection policy/preregistration (PR #6796): proposal-producing research authority only; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false; no campaign execution or productive numeric mutation. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- F1/M9 prospective candidate-selection campaign execution owner max-build (PR #6797): EXECUTION_PROOF and authorized-path gates; runtime authorization schema; no terminal REAL-MD orchestration; CAMPAIGN_EXECUTED=false; REAL_PRODUCTIVE_APPLY_AUTHORIZED=false. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=F1_M9_GOVERNED_PREPARATION_AND_SELECTION_POLICY_PR_FREEZE_V1
+- modified_by=F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_OWNER_MAX_BUILD_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

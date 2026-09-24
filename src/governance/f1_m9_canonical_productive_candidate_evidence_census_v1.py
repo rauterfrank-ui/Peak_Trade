@@ -78,6 +78,12 @@ PROSPECTIVE_CAMPAIGN_BINDING: Final[str] = (
 CAMPAIGN_EXECUTION_BLOCKER: Final[str] = (
     "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_REQUIRES_SEPARATE_EXECUTION_AUTHORIZATION"
 )
+CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER: Final[str] = (
+    "F1_M9_PROSPECTIVE_SELECTION_CAMPAIGN_EXECUTION_REQUIRES_OWNER_GO"
+)
+EXECUTION_OWNER_DECISION: Final[str] = (
+    "config/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1_decision_v1.json"
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -379,7 +385,16 @@ def run_f1_m9_canonical_productive_candidate_evidence_census_v1(
     if counterfactual_only and not scoped_selection_policy_created:
         earliest = "F1_M9_ACTIVE_CAMPAIGN_COUNTERFACTUAL_ONLY_CANNOT_SELECT_PRODUCTIVE_CANDIDATE"
     elif scoped_selection_policy_created:
-        earliest = CAMPAIGN_EXECUTION_BLOCKER
+        execution_owner_ready = False
+        exec_path = root / EXECUTION_OWNER_DECISION
+        if exec_path.is_file():
+            exec_decision = _load_json(exec_path)
+            execution_owner_ready = exec_decision.get("execution_owner_implemented") is True
+        earliest = (
+            CAMPAIGN_EXECUTION_OWNER_GO_BLOCKER
+            if execution_owner_ready
+            else CAMPAIGN_EXECUTION_BLOCKER
+        )
 
     selection_rule_id = SELECTION_RULE_NONE
     if scoped_selection_policy_created:
