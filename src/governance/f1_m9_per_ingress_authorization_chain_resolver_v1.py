@@ -39,11 +39,13 @@ from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyL
 from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
     F1M9ThresholdValueAuthorizationLedgerPathsV1,
 )
-from src.governance.f1_m9_scoped_owner_apply_authority_v1 import (
-    F1M9ScopedOwnerApplyAdjudicationRequestV1,
-    RUNTIME_APPLY_AUTHORITY_VALUE,
-    evaluate_f1_m9_scoped_owner_productive_apply_v1,
+from src.governance.f1_m9_productive_apply_execution_boundary_v1 import (
+    F1M9ProductiveApplyExecutionPhaseV1,
+    F1M9ProductiveApplyExecutionRequestV1,
+    STATUS_EXECUTION_READY,
+    evaluate_f1_m9_productive_apply_execution_boundary_v1,
 )
+from src.governance.f1_m9_scoped_owner_apply_constants_v1 import RUNTIME_APPLY_AUTHORITY_VALUE
 from src.governance.f1_m9_scoped_owner_threshold_value_authority_v1 import (
     F1M9ScopedOwnerThresholdValueAdjudicationRequestV1,
     evaluate_f1_m9_scoped_owner_threshold_value_authority_v1,
@@ -120,6 +122,9 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
     registry_digest: str,
     owner_apply_input: OwnerApplyAuthorizationInputV1 | None = None,
     ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None = None,
+    apply_execution_phase: F1M9ProductiveApplyExecutionPhaseV1 = (
+        F1M9ProductiveApplyExecutionPhaseV1.EXECUTION_PROOF
+    ),
     owner_threshold_input: OwnerThresholdValueAuthorizationInputV1 | None = None,
     threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
 ) -> PerIngressChainResolutionV1:
@@ -246,24 +251,26 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
                 threshold_value_authorized=False,
                 runtime_threshold_authority="NONE",
             )
-        apply_result = evaluate_f1_m9_scoped_owner_productive_apply_v1(
-            F1M9ScopedOwnerApplyAdjudicationRequestV1(
+        execution_result = evaluate_f1_m9_productive_apply_execution_boundary_v1(
+            F1M9ProductiveApplyExecutionRequestV1(
                 owner_apply_input=owner_apply_input,
                 per_ingress_binding=binding,
                 authorization=authorization,
                 configuration=configuration,
                 registry_digest=registry_digest,
                 ledger_paths=ledger_paths,
+                execution_phase=apply_execution_phase,
             )
         )
         if (
-            not apply_result.productive_apply_authorized
-            or apply_result.configuration_after_apply is None
+            execution_result.execution_status != STATUS_EXECUTION_READY
+            or not execution_result.productive_apply_authorized
+            or execution_result.configuration_after_execution is None
         ):
             return PerIngressChainResolutionV1(
                 chain_status="DENIED_FAIL_CLOSED",
                 stop_stage=ChainStageV1.PRODUCTIVE_APPLY,
-                reason_codes=apply_result.reason_codes,
+                reason_codes=execution_result.reason_codes,
                 per_ingress_binding=binding,
                 authorization=authorization,
                 configuration=configuration,
@@ -274,8 +281,8 @@ def resolve_f1_m9_per_ingress_authorization_chain_v1(
                 threshold_value_authorized=False,
                 runtime_threshold_authority="NONE",
             )
-        configuration_for_seam = apply_result.configuration_after_apply
-        runtime_apply_authority = apply_result.runtime_apply_authority
+        configuration_for_seam = execution_result.configuration_after_execution
+        runtime_apply_authority = execution_result.runtime_apply_authority
         productive_apply_authorized = True
 
     if owner_threshold_input is not None:

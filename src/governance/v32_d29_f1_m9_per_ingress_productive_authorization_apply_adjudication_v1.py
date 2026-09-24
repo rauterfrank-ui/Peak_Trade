@@ -72,9 +72,9 @@ PREDECESSOR_DECISION: Final[str] = (
 CLOSED_D29_BLOCKER: Final[str] = (
     "F1_M9_PER_INGRESS_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_APPLY_INPUT_AND_AUTHORITY_EDGE"
 )
-NEXT_TRUE_BLOCKER: Final[str] = "F1_M9_PRODUCTIVE_APPLY_EXECUTION_REQUIRES_OWNER_MERGE_GO"
+NEXT_TRUE_BLOCKER: Final[str] = "F1_M9_REAL_PRODUCTIVE_APPLY_REQUIRES_EXPLICIT_OWNER_GO"
 BLOCKER_EDGE: Final[str] = "governed_productive_configuration_v1.runtime_apply_authority"
-BLOCKER_CLASS: Final[str] = "OWNER_MERGE_GO_REQUIRED"
+BLOCKER_CLASS: Final[str] = "EXPLICIT_OWNER_GO_REQUIRED"
 MINIMAL_NEXT_OWNER_POLICY_QUESTION: Final[str] = (
     "May F1/M9 productive apply execution (configuration runtime_applied transition + "
     "durable apply ledger witness) proceed under existing scoped Owner Apply records "
@@ -313,7 +313,8 @@ def build_f1_m9_per_ingress_authority_census_v1(
             edge_id="PRODUCTIVE_APPLY_BOUNDARY",
             producer_id="governed_productive_configuration_v1",
             consumer_id=(
-                "f1_m9_scoped_owner_apply_authority_v1.evaluate_f1_m9_scoped_owner_productive_apply_v1"
+                "f1_m9_productive_apply_execution_boundary_v1."
+                "evaluate_f1_m9_productive_apply_execution_boundary_v1"
             ),
             classification=AuthorityEdgeClassificationV1.ADJUDICATED,
             per_ingress_owner_inputs=(
@@ -329,9 +330,11 @@ def build_f1_m9_per_ingress_authority_census_v1(
             constraints_risk_binding="policy edge: evaluate_explicit_owner_productive_apply_policy_edge_v1",
             expiry_freshness_revocation="EXPLICIT_PER_RECORD_EXPIRY (apply record)",
             replay_idempotency="apply ledger on execution path (not policy slice)",
-            materialization_apply_owner="NONE (policy binding only in V32 slice)",
-            rollback_fail_closed="runtime_apply_possible_v1()=false until OWNER_MERGE_GO execution",
-            external_effect_relation="FORBIDDEN until separate execution authorization",
+            materialization_apply_owner=(
+                "f1_m9_productive_apply_execution_boundary_v1 (EXECUTION_PROOF; no real apply)"
+            ),
+            rollback_fail_closed="real_productive_apply_authorized=false; productive_apply_occurred=false",
+            external_effect_relation="FORBIDDEN until REAL_PRODUCTIVE_APPLY_AUTHORIZED Owner GO",
             evidence_refs=(
                 CONFIG_DECISION,
                 POLICY_EDGE_DECISION,
@@ -428,7 +431,7 @@ def build_per_ingress_adjudication_summary_v1(
             "d28_status": "PROVEN_CURRENT",
             "d29_status": "PROVEN_CURRENT",
             "d29_apply_policy_edge_status": "PROVEN_CURRENT",
-            "d29_apply_execution_status": "OWNER_MERGE_GO_REQUIRED",
+            "d29_apply_execution_status": "EXECUTION_BOUNDARY_PROVEN_TESTABLE",
             "d29_closure_proven": True,
             "d29_closure_scope": "PER_INGRESS_AUTHORIZATION_CHAIN_THROUGH_APPLY_POLICY_EDGE",
             "closed_d29_blocker": CLOSED_D29_BLOCKER,
