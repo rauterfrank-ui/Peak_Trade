@@ -144,9 +144,21 @@ class ProductiveResearchEvidenceRecordV1:
     exit_path_preservation: bool = True
     productive_preregistration_digest: Optional[str] = None
     estimator_observation_count: Optional[int] = None
+    # Research stratification v2 (optional; absent on legacy v1 records).
+    research_stratification_version: Optional[str] = None
+    market_state_stratum_v2: Optional[str] = None
+    volatility_regime_stratum_v2: Optional[str] = None
+    stratification_key_v2: Optional[str] = None
+    stratification_ok: Optional[bool] = None
+    stratification_blockers: Optional[tuple[str, ...]] = None
+    stratification_input_provenance: Optional[Mapping[str, Any]] = None
+    stratification_parameter_digest: Optional[str] = None
+    stratification_status: Optional[str] = None
+    legacy_regime_label_v1: Optional[str] = None
+    legacy_regime_label_is_v1: Optional[bool] = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "age_formula_version": self.age_formula_version,
             "age_reference_clock": self.age_reference_clock,
             "age_seconds": self.age_seconds,
@@ -219,6 +231,27 @@ class ProductiveResearchEvidenceRecordV1:
             "volatility_unit": self.volatility_unit,
             "volatility_value": self.volatility_value,
         }
+        if self.research_stratification_version:
+            payload.update(
+                {
+                    "legacy_regime_label_is_v1": self.legacy_regime_label_is_v1,
+                    "legacy_regime_label_v1": self.legacy_regime_label_v1,
+                    "market_state_stratum_v2": self.market_state_stratum_v2,
+                    "research_stratification_version": self.research_stratification_version,
+                    "stratification_blockers": list(self.stratification_blockers or ()),
+                    "stratification_input_provenance": (
+                        None
+                        if self.stratification_input_provenance is None
+                        else dict(self.stratification_input_provenance)
+                    ),
+                    "stratification_key_v2": self.stratification_key_v2,
+                    "stratification_ok": self.stratification_ok,
+                    "stratification_parameter_digest": self.stratification_parameter_digest,
+                    "stratification_status": self.stratification_status,
+                    "volatility_regime_stratum_v2": self.volatility_regime_stratum_v2,
+                }
+            )
+        return payload
 
     def semantic_identity_v1(self) -> tuple[str, ...]:
         return (

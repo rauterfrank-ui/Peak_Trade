@@ -13,6 +13,9 @@ from research.canonical_volatility_max_age_productive_research_evidence_accumula
     KNOWN_VOLATILITY_UNITS,
     THRESHOLD_STATUS,
 )
+from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.research_stratification_v2.constants_v2 import (
+    EVIDENCE_SCHEMA_VERSION_V2,
+)
 from research.canonical_volatility_max_age_productive_research_evidence_accumulation_v1.models_v1 import (
     DuplicateStatusV1,
     ProductiveEvidenceAccumulationError,
@@ -66,7 +69,16 @@ def validate_productive_evidence_record_v1(
         schema = require_nonempty(
             payload.get("evidence_schema_version"), field_name="evidence_schema_version"
         )
-        _check(schema == EVIDENCE_SCHEMA_VERSION, "schema_version_mismatch")
+        _check(
+            schema in {EVIDENCE_SCHEMA_VERSION, EVIDENCE_SCHEMA_VERSION_V2},
+            "schema_version_mismatch",
+        )
+        if schema == EVIDENCE_SCHEMA_VERSION_V2:
+            _check(
+                bool(payload.get("research_stratification_version")),
+                "missing_stratification_version",
+            )
+            _check(bool(payload.get("stratification_status")), "missing_stratification_status")
     except ProductiveEvidenceAccumulationError:
         reasons.append("schema_version_mismatch")
 
@@ -313,6 +325,36 @@ def productive_record_from_mapping_v1(
                 if payload.get("estimator_observation_count") is not None
                 else payload.get("volatility_observation_count")
             )
+        ),
+        research_stratification_version=optional_text(
+            payload.get("research_stratification_version")
+        ),
+        market_state_stratum_v2=optional_text(payload.get("market_state_stratum_v2")),
+        volatility_regime_stratum_v2=optional_text(payload.get("volatility_regime_stratum_v2")),
+        stratification_key_v2=optional_text(payload.get("stratification_key_v2")),
+        stratification_ok=(
+            None
+            if payload.get("stratification_ok") is None
+            else bool(payload.get("stratification_ok"))
+        ),
+        stratification_blockers=tuple(
+            str(x) for x in (payload.get("stratification_blockers") or ())
+        )
+        or None,
+        stratification_input_provenance=(
+            None
+            if payload.get("stratification_input_provenance") is None
+            else dict(payload.get("stratification_input_provenance") or {})
+        ),
+        stratification_parameter_digest=optional_text(
+            payload.get("stratification_parameter_digest")
+        ),
+        stratification_status=optional_text(payload.get("stratification_status")),
+        legacy_regime_label_v1=optional_text(payload.get("legacy_regime_label_v1")),
+        legacy_regime_label_is_v1=(
+            None
+            if payload.get("legacy_regime_label_is_v1") is None
+            else bool(payload.get("legacy_regime_label_is_v1"))
         ),
     )
 
