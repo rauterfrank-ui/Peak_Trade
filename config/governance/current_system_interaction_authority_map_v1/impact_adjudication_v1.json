@@ -3,10 +3,16 @@
   "base_sha": "3d779b1461fd93187c633913a057a4dc460dd83f",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json",
     "docs/ops/specs/F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_NORMATIVE_V1.md",
     "docs/ops/specs/F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/activation_and_production_wiring_closure_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorized_run_orchestration_v1.py",
@@ -16,11 +22,17 @@
     "tests/governance/test_f1_m9_real_campaign_activation_and_production_wiring_v1.py",
     "tests/governance/test_f1_m9_real_prospective_campaign_execution_enablement_v1.py"
   ],
-  "changed_paths_sha256": "ba1463b78a3348ed8180720c7d1ade0ec2c6e35aa9bbaab0f213e5ad8f9af987",
+  "changed_paths_sha256": "269c58840d2497885db6c270ad2738aa3c78b91c3e8d44d7083f4eefd8abc038",
   "covered_candidate_paths": [
     "config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json",
     "docs/ops/specs/F1_M9_REAL_CAMPAIGN_ACTIVATION_AND_PRODUCTION_WIRING_NORMATIVE_V1.md",
+    "docs/ops/specs/F1_M9_REAL_PROSPECTIVE_CAMPAIGN_EXECUTION_ENABLEMENT_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/run_f1_m9_prospective_real_authorized_campaign_execution_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/activation_and_production_wiring_closure_v1.py",
     "src/governance/f1_m9_prospective_candidate_selection_campaign_execution_v1/authorized_run_orchestration_v1.py",
@@ -35,7 +47,7 @@
     "config/governance/f1_m9_real_campaign_activation_and_production_wiring_v1_decision_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "F1/M9 REAL campaign activation and production wiring: process enablement, production MD adapter, CLI bootstrap; authority_effect NONE; no campaign execution in slice.",
+  "reason": "F1/M9 REAL campaign activation and production wiring: process enablement, production MD adapter, CLI bootstrap; atlas views regenerated; authority_effect NONE; no campaign execution in slice.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
