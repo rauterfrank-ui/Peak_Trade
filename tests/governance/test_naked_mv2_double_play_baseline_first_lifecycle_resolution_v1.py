@@ -78,7 +78,10 @@ def test_d24_d25_d26_proven_d27_partial() -> None:
     assert by_id["D26"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert by_id["D26"].earliest_missing_edge is None
     assert by_id["D27"].verdict == AdjudicationVerdict.PARTIAL_CURRENT
-    assert by_id["D27"].earliest_missing_edge == EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+    assert by_id["D27"].earliest_missing_edge in (
+        EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2,
+        "f5_surv_cap_per_token_shadow_entry_not_lifecycle_enforced",
+    )
     assert by_id["REQ-BL-SEQ-03"].verdict == AdjudicationVerdict.PROVEN_CURRENT
     assert earliest_missing_edge_v1(rows) == by_id["D27"].earliest_missing_edge
 

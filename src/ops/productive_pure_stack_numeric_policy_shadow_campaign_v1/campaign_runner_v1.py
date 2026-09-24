@@ -118,6 +118,22 @@ def run_shadow_campaign_v1(request: ShadowCampaignRequestV1) -> ShadowCampaignRe
         raise ShadowCampaignEmitError("sole_trading_authority_mismatch")
 
     repo_root = Path(request.repo_root)
+    from src.governance.d27_f5_shadow_test_entry_lifecycle_enforcement_v1 import (
+        D27F5ShadowTestEntryLifecycleError,
+        enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1,
+    )
+
+    try:
+        d27_f5_admission = enforce_d27_f5_fresh_shadow_campaign_test_entry_lifecycle_v1(
+            repo_root=repo_root,
+            declared_stage1_manifest_digest=request.reproducibility.stage1_manifest_digest,
+            declared_calibration_protocol_digest=(
+                request.reproducibility.calibration_protocol_digest
+            ),
+        )
+    except D27F5ShadowTestEntryLifecycleError as exc:
+        raise ShadowCampaignEmitError(str(exc)) from exc
+
     output_root = Path(request.output_root)
     campaign_dir = resolve_and_validate_output_dir(
         repo_root=repo_root,
@@ -126,14 +142,9 @@ def run_shadow_campaign_v1(request: ShadowCampaignRequestV1) -> ShadowCampaignRe
     )
     assert_no_overwrite(campaign_dir, allow_overwrite=request.allow_overwrite)
 
-    stage1_digest_actual = sha256_file(repo_root / STAGE1_MANIFEST_REL)
-    protocol_digest_actual = sha256_file(repo_root / CALIBRATION_PROTOCOL_REL)
+    stage1_digest_actual = d27_f5_admission.stage1_manifest_digest
+    protocol_digest_actual = d27_f5_admission.calibration_protocol_digest
     rejection: list[str] = list(request.force_reject_reasons)
-
-    if request.reproducibility.stage1_manifest_digest != stage1_digest_actual:
-        rejection.append("stage1_manifest_digest_mismatch")
-    if request.reproducibility.calibration_protocol_digest != protocol_digest_actual:
-        rejection.append("calibration_protocol_digest_mismatch")
     if len(request.origin_main_sha) != 40:
         rejection.append("origin_main_sha_invalid")
 

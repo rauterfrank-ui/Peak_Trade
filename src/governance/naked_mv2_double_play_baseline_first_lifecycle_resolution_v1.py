@@ -34,6 +34,9 @@ from src.governance.d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication
 from src.governance.d27_f5_shadow_test_entry_authority_subfamily_adjudication_v1 import (
     prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1,
 )
+from src.governance.d27_f5_shadow_test_entry_lifecycle_enforcement_v1 import (
+    prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1,
+)
 from src.governance.d27_research_test_entry_lifecycle_enforcement_v1 import (
     EARLIEST_GAP_AFTER_F1_F2_ENFORCED,
     prove_d27_f1_f2_test_entry_lifecycle_enforcement_v1,
@@ -318,16 +321,26 @@ def adjudicate_v32_baseline_first_requirements_v1(
         d27_missing = "pre_test_predecessor_chain_not_proven"
         d27_notes = "Research phases after baseline: governance predecessor incomplete."
     elif d27_f1_f2:
-        d27_missing = EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        f5_lifecycle = prove_d27_f5_shadow_test_entry_lifecycle_enforcement_v1(repo_root=root)
+        d27_missing = (
+            "f5_surv_cap_per_token_shadow_entry_not_lifecycle_enforced"
+            if f5_lifecycle
+            else EARLIEST_TRUE_REMAINING_GAP_AFTER_F1_F2
+        )
         f5_adj = prove_d27_f5_shadow_test_entry_subfamily_adjudication_v1(repo_root=root)
         f5_baseline_policy = prove_d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1(
             repo_root=root
         )
         d27_notes = (
             "F1/F2 TEST_READY executors enforce pre-test TEST_ENTRY_GATE plus D26 native "
-            "baseline admission at research entry; F5 shadow families not lifecycle-wired."
+            "baseline admission at research entry."
         )
-        if f5_adj:
+        if f5_lifecycle:
+            d27_notes += (
+                " F5-FRESH shadow campaign entry lifecycle-enforced at run_shadow_campaign_v1 "
+                "(Stage-1 + calibration-protocol digest conjunction; D26 out of scope)."
+            )
+        elif f5_adj:
             d27_notes += (
                 " F5-FRESH/F5-SURV/F5-CAP forensically adjudicated (read-only); "
                 "bounded lifecycle wiring still deferred."
@@ -352,6 +365,11 @@ def adjudicate_v32_baseline_first_requirements_v1(
         if f5_baseline_policy:
             d27_wiring = d27_wiring + (
                 "src/governance/d26_f5_shadow_d26_baseline_binding_owner_policy_adjudication_v1.py",
+            )
+        if f5_lifecycle:
+            d27_wiring = d27_wiring + (
+                "src/governance/d27_f5_shadow_test_entry_lifecycle_enforcement_v1.py",
+                "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/campaign_runner_v1.py",
             )
     else:
         d27_missing = "test_entry_gate_defined_not_lifecycle_enforced_globally"
