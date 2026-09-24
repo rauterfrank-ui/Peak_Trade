@@ -240,14 +240,18 @@ def test_13_preflight_rejects_tombstone_campaign() -> None:
         )
 
 
-def test_14_post_merge_checkout_sha_may_differ_from_materialization_provenance() -> None:
+def test_14_materialization_provenance_matches_origin_main_head() -> None:
     import subprocess
 
     binding = load_active_campaign_binding_v1(repo_root=ROOT)
     checkout_sha = subprocess.check_output(
         ["git", "rev-parse", "HEAD"], cwd=str(ROOT), text=True
     ).strip()
+    origin_main_sha = subprocess.check_output(
+        ["git", "rev-parse", "origin/main"], cwd=str(ROOT), text=True
+    ).strip()
     assert checkout_sha
-    assert checkout_sha != binding.repository_sha
+    assert checkout_sha == origin_main_sha
+    assert checkout_sha == binding.repository_sha
     resolved = resolve_active_campaign_binding_for_runtime_v1(repo_root=ROOT)
     assert resolved.repository_sha == binding.repository_sha
