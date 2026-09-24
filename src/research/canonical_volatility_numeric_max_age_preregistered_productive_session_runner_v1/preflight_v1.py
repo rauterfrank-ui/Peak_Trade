@@ -41,6 +41,9 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
     PreflightResultV1,
     PreregisteredSessionRunnerError,
 )
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.compatibility_v1 import (
+    assert_r1_runtime_checkout_on_origin_main_v1,
+)
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.gate_v1 import (
     assert_late_age_session_has_s01_persistence_v1,
     assert_not_additional_evidence_routing_v1,
@@ -172,12 +175,11 @@ def run_static_preflight_v1(
 
     try:
         assert_not_additional_evidence_routing_v1(campaign_id=campaign_id)
-        binding = resolve_active_campaign_binding_for_runtime_v1(
-            repo_root=root,
-            repository_sha=repository_sha,
-        )
+        binding = resolve_active_campaign_binding_for_runtime_v1(repo_root=root)
     except ProductiveCampaignR1RecoveryError as exc:
         raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
+
+    materialization_sha = binding.repository_sha
 
     try:
         sid = assert_session_id_exact_v1(session_id, allowed_session_ids=binding.session_ids)
@@ -192,7 +194,7 @@ def run_static_preflight_v1(
             campaign_id=campaign_id,
             session_id=sid,
             preregistration_digest=preregistration_digest,
-            repository_sha=repository_sha,
+            repository_sha=materialization_sha,
         )
         assert_late_age_session_has_s01_persistence_v1(
             binding,
@@ -204,12 +206,20 @@ def run_static_preflight_v1(
         raise PreregisteredSessionRunnerError(f"active_binding_gate:{exc}") from exc
 
     baseline = git_baseline or capture_git_baseline_v1(repo_root=root)
+    checkout_sha = str(repository_sha or "").strip()
     if baseline.branch != expected_branch:
         blockers.append("branch_mismatch")
-    if baseline.head_sha != repository_sha:
-        blockers.append("repository_sha_mismatch")
+    if checkout_sha and baseline.head_sha != checkout_sha:
+        blockers.append("checkout_sha_not_equal_to_head")
     if baseline.head_sha != baseline.origin_main_sha:
         blockers.append("head_not_equal_origin_main")
+    try:
+        assert_r1_runtime_checkout_on_origin_main_v1(
+            checkout_sha=baseline.head_sha,
+            origin_main_sha=baseline.origin_main_sha,
+        )
+    except ProductiveCampaignR1RecoveryError as exc:
+        blockers.append(str(exc))
     if not baseline.worktree_allowed_delta_only:
         blockers.append("worktree_delta_not_allowed")
 
@@ -233,7 +243,7 @@ def run_static_preflight_v1(
         preg_payload = json.loads(preg_path.read_text(encoding="utf-8"))
         verify_r1_active_preregistration_payload_v1(
             preg_payload,
-            expected_repository_sha=repository_sha,
+            expected_repository_sha=materialization_sha,
             expected_campaign_id=binding.campaign_id,
             expected_session_ids=binding.session_ids,
         )
@@ -300,7 +310,7 @@ def run_static_preflight_v1(
     try:
         artifact = verify_campaign_authorization_artifact_v1(
             load_campaign_authorization_artifact_v1(auth_path),
-            expected_repository_sha=repository_sha,
+            expected_repository_sha=materialization_sha,
             expected_campaign_id=campaign_id,
             expected_session_ids=binding.session_ids,
             expected_preregistration_digest=preregistration_digest,
@@ -373,7 +383,7 @@ def run_static_preflight_v1(
         preregistration_digest=preregistration_digest,
         authorization_id=authorization_id,
         authorization_digest=authorization_digest,
-        repository_sha=repository_sha,
+        repository_sha=materialization_sha,
         venue=venue,
         instrument_id=instrument_id,
         market_data_scope=market_data_scope,
@@ -384,6 +394,7 @@ def run_static_preflight_v1(
         quarantine_ledger_path=str(quarantine),
         typed_volatility_persistence_path=str(evi_root / typed_persist) if typed_persist else "",
         session_manifest_path=str(evi_root / session_manifest) if session_manifest else "",
+        session_01_id=binding.session_01_id,
         session_02_id=binding.session_02_id,
         blockers=tuple(blockers),
     )

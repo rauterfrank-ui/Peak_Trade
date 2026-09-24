@@ -9,6 +9,9 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
     assert_exactly_one_active_binding_file_v1,
     load_active_campaign_binding_v1,
 )
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.compatibility_v1 import (
+    assert_r1_materialization_provenance_locked_v1,
+)
 from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.disposition_v1 import (
     assert_campaign_not_tombstone_v1,
     assert_old_campaign_cannot_complete_v1,
@@ -24,15 +27,13 @@ from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recove
 def resolve_active_campaign_binding_for_runtime_v1(
     *,
     repo_root: Path,
-    repository_sha: str,
 ) -> ActiveCampaignBindingV1:
-    """Load disposition + exactly one ACTIVE binding; reject SHA drift."""
+    """Load disposition + ACTIVE binding; lock materialization provenance (not HEAD)."""
     load_abandoned_campaign_disposition_v1(repo_root=repo_root)
     assert_exactly_one_active_binding_file_v1(repo_root=repo_root)
-    return load_active_campaign_binding_v1(
-        repo_root=repo_root,
-        expected_repository_sha=str(repository_sha).strip(),
-    )
+    binding = load_active_campaign_binding_v1(repo_root=repo_root)
+    assert_r1_materialization_provenance_locked_v1(binding, repo_root=repo_root)
+    return binding
 
 
 def assert_runtime_matches_active_binding_v1(

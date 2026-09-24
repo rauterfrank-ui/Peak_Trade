@@ -7778,7 +7778,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: M9_S1_R1_ABANDONED_CAMPAIGN_RECOVERY_ACTIVE_BINDING_V1
+    modified_by: F1_M9_R1_CURRENT_CAMPAIGN_BINDING_REBIND_V1
     source_paths:
       - src/research/canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1/
       - src/research/canonical_volatility_numeric_max_age_campaign_authorization_v1/

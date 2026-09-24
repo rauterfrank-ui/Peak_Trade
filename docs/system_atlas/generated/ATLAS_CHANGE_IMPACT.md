@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,8 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1` |
-| `RUNTIME_COMPONENT:f1_m9_scoped_owner_apply_authority_v1` |
+| `RUNTIME_COMPONENT:canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 scoped Owner Threshold Value authority: dedicated threshold record, ledgers, adjudicator, admission-to-gate wiring, seam numeric bypass closure. Catalog refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
+- R1 materialization provenance vs checkout SHA split; runtime content-lock at binding.repository_sha; HEAD==origin/main without HEAD==materialization. No network, evidence, threshold, or trading authority. Catalog/provenance refresh only. EXTERNAL_EFFECT_COUNT=0. ATLAS_AUTHORITY=NONE.
 - introduced_by=OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
-- modified_by=F1_M9_THRESHOLD_VALUE_AUTHORITY_AND_HOT_PATH_ADMISSION_CLOSURE_V1
+- modified_by=R1_REPOSITORY_SHA_SELF_INVALIDATION_ARCHITECTURE_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

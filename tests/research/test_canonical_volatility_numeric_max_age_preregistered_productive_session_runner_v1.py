@@ -17,13 +17,8 @@ from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.art
     build_campaign_authorization_artifact_v1,
     write_campaign_authorization_artifact_v1,
 )
-from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.constants_v1 import (
-    BOUND_CAMPAIGN_ID_V1 as BOUND_CAMPAIGN_ID,
-    BOUND_PREREGISTRATION_DIGEST_V1 as BOUND_PREREGISTRATION_DIGEST,
-    BOUND_SESSION_IDS_V1 as BOUND_SESSION_IDS,
-)
-from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.constants_v1 import (
-    R1_MATERIALIZED_REPOSITORY_SHA,
+from research.canonical_volatility_numeric_max_age_productive_campaign_r1_recovery_active_binding_v1.active_binding_v1 import (
+    load_active_campaign_binding_v1,
 )
 from research.canonical_volatility_numeric_max_age_campaign_authorization_v1.consume_v1 import (
     consume_campaign_authorization_session_v1,
@@ -44,8 +39,6 @@ from research.canonical_volatility_numeric_max_age_preregistered_productive_sess
     BOUND_VENUE_SCOPE,
     CLI_MODE,
     PRODUCTIVE_BRIDGE_ACCUMULATE_CLI_MODE,
-    SESSION_01_ID,
-    SESSION_02_ID,
 )
 from research.canonical_volatility_numeric_max_age_preregistered_productive_session_runner_v1.models_v1 import (
     GitBaselineSnapshotV1,
@@ -65,23 +58,37 @@ CLI = (
     ROOT
     / "scripts/ops/run_canonical_volatility_max_age_productive_research_evidence_accumulation_v1.py"
 )
-REPO_SHA = R1_MATERIALIZED_REPOSITORY_SHA
+_ACTIVE_BINDING = load_active_campaign_binding_v1(repo_root=ROOT)
+MATERIALIZATION_SHA = _ACTIVE_BINDING.repository_sha
+BOUND_CAMPAIGN_ID = _ACTIVE_BINDING.campaign_id
+BOUND_PREREGISTRATION_DIGEST = _ACTIVE_BINDING.preregistration_digest
+BOUND_SESSION_IDS = _ACTIVE_BINDING.session_ids
+SESSION_01_ID = _ACTIVE_BINDING.session_01_id
+SESSION_02_ID = _ACTIVE_BINDING.session_02_id
+
+
+def _checkout_sha() -> str:
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(ROOT), text=True).strip()
+
+
+CHECKOUT_SHA = _checkout_sha()
 ISSUED = datetime.now(timezone.utc) - timedelta(minutes=5)
 S1, S2 = BOUND_SESSION_IDS
 
 
 def _baseline() -> GitBaselineSnapshotV1:
+    sha = _checkout_sha()
     return GitBaselineSnapshotV1(
         branch="main",
-        head_sha=REPO_SHA,
-        origin_main_sha=REPO_SHA,
+        head_sha=sha,
+        origin_main_sha=sha,
         worktree_allowed_delta_only=True,
     )
 
 
 def _write_auth(tmp_path: Path, **overrides):
     kwargs = {
-        "repository_sha": REPO_SHA,
+        "repository_sha": MATERIALIZATION_SHA,
         "campaign_id": BOUND_CAMPAIGN_ID,
         "session_ids": BOUND_SESSION_IDS,
         "preregistration_digest": BOUND_PREREGISTRATION_DIGEST,
@@ -154,7 +161,7 @@ def _run_ok(tmp_path: Path, *, session_id: str = SESSION_01_ID, max_cycles: int 
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,
@@ -195,7 +202,7 @@ def test_02_no_derived_productive_n_session_id(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -223,7 +230,7 @@ def test_03_session_02_rejected_when_require_session_01(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -248,7 +255,7 @@ def test_04_unknown_session_rejected(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -265,7 +272,11 @@ def test_04_unknown_session_rejected(tmp_path: Path) -> None:
     [
         ("preregistration_digest", "0" * 64, "preregistration_digest"),
         ("authorization_digest", "0" * 64, "authorization_digest"),
-        ("repository_sha", "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef", "repository_sha"),
+        (
+            "repository_sha",
+            "deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+            "checkout_sha_not_equal_to_head",
+        ),
         ("venue", "UNDECLARED_VENUE", "venue_mismatch"),
         ("instrument_id", "BTC-USD_UM_XPERP-999", "instrument_mismatch"),
         ("market_data_scope", "WRONG_SCOPE", "market_data_scope"),
@@ -285,7 +296,7 @@ def test_05_to_11_binding_mismatches_before_consumption(
         "authorization_id": artifact.authorization_id,
         "authorization_digest": artifact.artifact_digest,
         "authorization_artifact_path": auth_path,
-        "repository_sha": REPO_SHA,
+        "repository_sha": CHECKOUT_SHA,
         "venue": BOUND_VENUE,
         "instrument_id": BOUND_INSTRUMENT_ID,
         "market_data_scope": BOUND_VENUE_SCOPE,
@@ -324,7 +335,7 @@ def test_12_revoked_authorization_rejected(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -342,7 +353,7 @@ def test_13_already_consumed_authorization_rejected(tmp_path: Path) -> None:
         authorization_artifact_path=auth_path,
         session_id=SESSION_01_ID,
         evidence_root=tmp_path,
-        expected_repository_sha=REPO_SHA,
+        expected_repository_sha=MATERIALIZATION_SHA,
         expected_campaign_id=BOUND_CAMPAIGN_ID,
         expected_preregistration_digest=BOUND_PREREGISTRATION_DIGEST,
     )
@@ -358,7 +369,7 @@ def test_13_already_consumed_authorization_rejected(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -393,7 +404,7 @@ def test_14_and_15_single_use_consumption_bound_to_session(tmp_path: Path) -> No
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -417,7 +428,7 @@ def test_16_no_mutation_before_consumption_on_preflight_only(tmp_path: Path) -> 
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,
@@ -467,7 +478,7 @@ def test_21_offline_synthetic_source_blocked(tmp_path: Path) -> None:
             authorization_id=artifact.authorization_id,
             authorization_digest=artifact.artifact_digest,
             authorization_artifact_path=auth_path,
-            repository_sha=REPO_SHA,
+            repository_sha=CHECKOUT_SHA,
             venue=BOUND_VENUE,
             instrument_id=BOUND_INSTRUMENT_ID,
             market_data_scope=BOUND_VENUE_SCOPE,
@@ -523,7 +534,7 @@ def test_24_fail_closed_terminal_after_consumption(tmp_path: Path) -> None:
         authorization_id=artifact.authorization_id,
         authorization_digest=artifact.artifact_digest,
         authorization_artifact_path=auth_path,
-        repository_sha=REPO_SHA,
+        repository_sha=CHECKOUT_SHA,
         venue=BOUND_VENUE,
         instrument_id=BOUND_INSTRUMENT_ID,
         market_data_scope=BOUND_VENUE_SCOPE,
