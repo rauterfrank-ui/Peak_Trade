@@ -100,6 +100,10 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # CURRENT_SYSTEM_MAP_FINALIZATION_V1 (PR #6818): NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # map source baseline_sha rebound; tier/subdomain/gate/treasury/survival representation;
+    # regenerated docs/governance/current_system_interaction_authority_map_v1/generated/* only;
+    # map_authority=NONE; no MOT SSOT change.
     # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
     # navigation row for offline authority boundaries; MOT remains
     # MAP_OF_TRUTH_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
@@ -121,13 +125,14 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: B05_REFERENCE_PRICE_RATIFICATION_BOUNDED_COMPLETION_V1
+    modified_by: CURRENT_SYSTEM_MAP_FINALIZATION_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
       - config/governance/current_system_interaction_authority_map_v1/source_v1.json
       - docs/governance/current_system_interaction_authority_map_v1/generated/
+      - config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json
       - docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md
       - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
       - docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md

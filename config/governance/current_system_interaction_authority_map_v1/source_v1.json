@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "9ab34786b13c26f1be5cb9b523975f265014e1cb",
+  "baseline_sha": "070f8940b1ec027f903e9f55a5718dfee8cd35ab",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -111,8 +111,8 @@
     },
     {
       "id": "dynamic_scope",
-      "tier": "FIRST_CLASS",
-      "role": "Distributed scope owners. Serialization adapter has no decision authority.",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Distributed scope owners. Serialization adapter has no decision authority.",
       "canonical_owner_ref": "ops.dynamic_scope_persistence_binding_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "RESTART_PROVEN_DISTRIBUTED",
@@ -132,8 +132,8 @@
     },
     {
       "id": "bull_bear_sidestate",
-      "tier": "FIRST_CLASS",
-      "role": "Canonical state-switch owner is trading.master_v2.double_play_state. P5 cutover is a separate intermediate.",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Canonical state-switch owner is trading.master_v2.double_play_state. P5 cutover is a separate intermediate.",
       "canonical_owner_ref": "trading.master_v2.double_play_state",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "STATE_SWITCH_OWNER",
@@ -197,22 +197,24 @@
     {
       "id": "treasury_29p",
       "tier": "FIRST_CLASS",
-      "role": "Equity producer package exists. ACCOUNT_EQUITY_AUTHORITY_OWNER remains UNRESOLVED. Adjacent runbook blocks disagree.",
-      "canonical_owner_ref": "UNRESOLVED",
-      "authority_class": "CONFLICTING",
-      "lifecycle": "OWNER_UNRESOLVED",
-      "status": "CONFLICTING",
+      "role": "REPRESENTATION=TREASURY_LIFECYCLE_SUBDOMAIN; not Full-Core B05 equity authority. Treasury Phase 1-3 + C08 semantic closeout bound per runbook; C08 cannot mint risk admissibility; Full-Core account-equity chain closed separately (#6817).",
+      "canonical_owner_ref": "TREASURY_PHASE_BINDINGS_NAVIGATION_ONLY",
+      "authority_class": "NAVIGATION_INDEX",
+      "lifecycle": "C08_SEMANTIC_CLOSEOUT_BOUND",
+      "status": "PARTIAL",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
-      "contract_refs": [],
+      "contract_refs": [
+        "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md"
+      ],
       "code_refs": [
         "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
       ],
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
+        "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md",
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json"
       ]
     },
     {
@@ -358,8 +360,8 @@
     },
     {
       "id": "governance_promotion",
-      "tier": "FIRST_CLASS",
-      "role": "Ingress, authorization, configuration, and parameter seam. Apply authority is none. Enforcement remains partial.",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=GATE; promotion/apply ingress. Authorization, configuration, and parameter seam. Apply authority is none. Enforcement remains partial.",
       "canonical_owner_ref": "optimization_proposal_governance_ingress_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "APPLY_NONE",
@@ -421,8 +423,8 @@
     },
     {
       "id": "venue_plan_td_mode",
-      "tier": "FIRST_CLASS",
-      "role": "Adjudicated venue-plan tdMode and order-environment identity. Runtime authorization effect is none.",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=GATE; venue-plan tdMode and order-environment identity. Runtime authorization effect is none.",
       "canonical_owner_ref": "current_productive_venue_plan_td_mode_and_order_environment_authority_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "RUNTIME_AUTHORIZATION_EFFECT_NONE",
@@ -521,19 +523,22 @@
     {
       "id": "survival_suitability_composition",
       "tier": "INTERMEDIATE",
-      "role": "Named on the runbook authority chain. No single current owner module is closed.",
-      "canonical_owner_ref": "UNKNOWN",
-      "authority_class": "UNKNOWN",
-      "lifecycle": "OWNER_UNKNOWN",
-      "status": "UNKNOWN",
+      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Post-confirmation survival/suitability composition binding; not a closed single-owner string.",
+      "canonical_owner_ref": "trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "BINDING_PRESENT_OWNER_UNCLOSED",
+      "status": "PARTIAL",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
       "contract_refs": [],
       "code_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+        "src/trading/master_v2/double_play_composition_matrix_v1.py"
       ],
       "evidence_refs": [
+        "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+        "src/trading/master_v2/double_play_composition_matrix_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -845,7 +850,7 @@
       "identity_binding": "CONTEXT_OBJECT",
       "temporal_binding": "UNKNOWN",
       "version_binding": "offline_replay_futures_metadata_v0",
-      "provenance_binding": "INSTRUMENT_METADATA_OWNER_UNRESOLVED",
+      "provenance_binding": "FULL_CORE_INSTRUMENT_METADATA_CHAIN_CLOSED_B05",
       "promotion_required": "UNKNOWN",
       "fail_closed": "TRUE",
       "evidence_refs": [
@@ -1764,7 +1769,7 @@
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
       ],
       "conflicts": [
-        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false; Companion handoff absent"
+        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true on Full-Core B05 path (#6817); Companion C2 handoff still absent"
       ]
     },
     {
@@ -1852,9 +1857,11 @@
     },
     {
       "id": "survival_suitability_composition_owner",
-      "epistemic_class": "UNKNOWN",
-      "statement": "No single current owner module for survival, suitability, and composition is closed.",
+      "epistemic_class": "PARTIAL",
+      "statement": "Navigation owner ref trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1; binding and DDO seam core.survival_suitability_composition present; single closed owner string not asserted. Map domain survival_suitability_composition updated.",
       "evidence_refs": [
+        "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+        "src/trading/master_v2/double_play_composition_matrix_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -1870,13 +1877,13 @@
     {
       "id": "reference_price_authority_owner",
       "epistemic_class": "PARTIAL",
-      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price (Owner-GO consumed). Full-Core enter-live-29p join binds governed MV2 mark producer before CRS capital_context; REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false; Companion conversion handoff absent; INDEX_PX is not reference-price authority.",
+      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price. B05 Full-Core authority-chain closure (#6817): REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true on enter-live-29p path; Companion conversion handoff absent; INDEX_PX is not reference-price authority.",
       "evidence_refs": [
         "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-        "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
-        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py"
+        "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
       ]
     },
     {
@@ -1911,16 +1918,18 @@
     },
     {
       "id": "docs_ops_specs_map_impact",
-      "epistemic_class": "UNKNOWN",
-      "statement": "Whether a change under docs/ops/specs is map impact is not adjudicated as a universal rule.",
+      "epistemic_class": "PARTIAL",
+      "statement": "GAP-TRUE-03 representation closed: docs/ops/specs paths are not universal map impact; diff-bound adjudication uses config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json surfaces plus MAP_UPDATE_REQUIRED when source_v1.json changes. No universal rule beyond candidate catalog + structured source. AUTHORITY=NONE.",
       "evidence_refs": [
-        "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
+        "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+        "scripts/ops/current_system_interaction_authority_map_v1.py"
       ]
     },
     {
       "id": "runbook_freshness_stamp",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Map source baseline_sha is 9ab34786b13c26f1be5cb9b523975f265014e1cb (post-#6809 map completion) while Runbook BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b on CURRENT origin/main (STALE_IF_HEAD_DIFFERS=true). Map rebind does not adjudicate runbook authority or refresh runbook stamps.",
+      "epistemic_class": "PARTIAL",
+      "statement": "Map source baseline_sha rebound to origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab (post-#6817 merge). Runbook BOUND_ORIGIN_MAIN_SHA navigation stamp may lag HEAD; map rebind does not adjudicate runbook authority or refresh runbook stamps.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
@@ -1929,19 +1938,19 @@
     {
       "id": "account_equity_blocks",
       "epistemic_class": "PARTIAL",
-      "statement": "Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratified to ops.governed_productive_account_equity_authority_producer_v1 (RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING, USDC settlement); GOVERNED_PRODUCER_CREATED=false and chain not closed; Companion C2 path still NO_CONVERSION_HANDOFF; mapping proven does not close authority. NAVIGATION_INDEX: C2 ACCOUNT_EQUITY=PARTIAL; treasury_import_wording remains separate CONFLICTING.",
+      "statement": "Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratified to ops.governed_productive_account_equity_authority_producer_v1; B05 closure (#6817): ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true on enter-live-29p path via CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING producer pin. Companion C2 path remains NO_CONVERSION_HANDOFF (C2 UNRESOLVED). Treasury subdomain represented separately (treasury_29p domain).",
       "evidence_refs": [
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
-        "docs/governance/RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py"
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
       ]
     },
     {
       "id": "b05_vs_singular_risk_owner",
       "epistemic_class": "CONFLICTING",
-      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). DIRECT_SUBMISSION_COUNT=4 remains distinct from CANONICAL_BYPASS_COUNT=5. Bypass operator_fate_adjudication vocabulary is frozen and per-ID fates are operator-adjudicated (inventory-only pins; RUNTIME_EFFECT=NONE; consolidation NOT_STARTED). Bypass fate implementation semantics are machine-defined; S1 KEEP_PARALLEL complete for BYPASS_CORE_POSITION_SIZER and BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS; S2 GOVERNANCE_EXCLUDE complete for BYPASS_CLASSIC_BACKTEST_DEFAULT and BYPASS_LIVE_SHADOW_POSITION_FRACTION (system-economic size evidence authority claims excluded; reachability unchanged); S3 RESEARCH_OR_OFFLINE_SCOPE complete for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT (offline_economic_evaluation scope only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; reachability unchanged). FATE_IMPLEMENTATION_EXECUTED=true globally (5/5 per-bypass S0 completion); B05_FATE_PHASE_STATUS=CLOSED. C2 upstream (#6760–6762 + blocking-authorities v1): equity PARTIAL (Full-Core owner ratified; Companion handoff absent), reference UNKNOWN, instrument UNRESOLVED; sizing owner UNRESOLVED; C2_STATUS=UNRESOLVED; CONVERSION_READY=false. Map AUTHORITY=NONE.",
+      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). Bypass fate phase CLOSED (5/5). Full-Core B05 authority chains CLOSED on enter-live-29p path (#6817): equity/reference/instrument metadata; does not close Companion C2 (C2_STATUS=UNRESOLVED; CONVERSION_READY=false). Map AUTHORITY=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
         "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
@@ -1969,7 +1978,7 @@
     {
       "id": "treasury_import_wording",
       "epistemic_class": "CONFLICTING",
-      "statement": "Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule. NAVIGATION_INDEX: Full-Core 29P enter join wiring vs runbook treasury blocks; adjacent equity open record account_equity_blocks is PARTIAL (Full-Core owner ratified; not treasury closure).",
+      "statement": "Treasury lifecycle subdomain (treasury_29p domain) and C08 semantic closeout are navigation-bound separately from Full-Core B05 equity chain (#6817). Full-Core enter-live join must not import Treasury for productive authority; treasury_import_wording is not a single merged rule.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
@@ -2025,7 +2034,7 @@
     {
       "id": "mv2_proof_baseline_sha",
       "epistemic_class": "PARTIAL",
-      "statement": "MV2 plus double-play proof package pins baseline SHA 46037a171cb7c41d3e1663d92b6db80335a85260 (src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py BASELINE_ORIGIN_MAIN_SHA) which is neither CURRENT origin/main HEAD 9ab34786b13c26f1be5cb9b523975f265014e1cb nor an ancestor of that HEAD. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
+      "statement": "MV2 plus double-play proof package pins historical baseline SHA in whole_system_connection_closure_bounded_wp_v1; map baseline_sha tracks origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"

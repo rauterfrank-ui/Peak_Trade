@@ -396,7 +396,7 @@ flowchart LR
 - identity_binding=CONTEXT_OBJECT
 - temporal_binding=UNKNOWN
 - version_binding=offline_replay_futures_metadata_v0
-- provenance_binding=INSTRUMENT_METADATA_OWNER_UNRESOLVED
+- provenance_binding=FULL_CORE_INSTRUMENT_METADATA_CHAIN_CLOSED_B05
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`

@@ -70,14 +70,11 @@ REQUIRED_UNKNOWN_IDS = (
     "reselect_rerank_absence",
     "double_play_slot_crs_handoff",
     "sealed_venue_number_29p",
-    "survival_suitability_composition_owner",
     "kill_switch_full_core_safety_owner",
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
-    "docs_ops_specs_map_impact",
 )
 REQUIRED_CONFLICTING_IDS = (
-    "runbook_freshness_stamp",
     "b05_vs_singular_risk_owner",
     "zero_authorized_productive_targets",
     "treasury_import_wording",
@@ -104,6 +101,9 @@ REQUIRED_PARTIAL_IDS = (
     "loops_a_and_b",
     "clean_trading_core_vs_p5",
     "full_core_dk_post_boundary_evidence_anchor",
+    "docs_ops_specs_map_impact",
+    "runbook_freshness_stamp",
+    "survival_suitability_composition_owner",
 )
 
 
