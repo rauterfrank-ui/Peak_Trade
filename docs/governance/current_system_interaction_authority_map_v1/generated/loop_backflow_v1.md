@@ -8,6 +8,7 @@ AUTHORITY=NONE
 flowchart LR
   loop_a_productive_learning["loop_a_productive_learning PARTIAL"]
   loop_b_meta["loop_b_meta PARTIAL"]
+  loop_full_autonomy_compose["loop_full_autonomy_compose PROVEN_CURRENT"]
   loop_p5["loop_p5 PARTIAL"]
 ```
 
@@ -36,6 +37,19 @@ flowchart LR
 - promotion_boundary=CANNOT_PROMOTE
 - external_effect=NONE
 - evidence=`src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+
+## loop_full_autonomy_compose
+
+- closure_status=PROVEN_CURRENT
+- members=full_autonomy_n5, selection_cap23, runtime_binding_cap24, mv2_double_play, governed_cycle
+- purpose=Compose-only N=5 orchestration over existing Cap23/Cap24/MV2/cycle owners. No trading or POST authority.
+- forward_edges=fa_compose_cap23_produce_join, fa_compose_cap24_bind_join, fa_compose_mv2_dp_handoff_join, fa_compose_governed_cycle_n1
+- return_edges=(none)
+- productive_effect=NONE
+- authority_boundary=COMPOSE_ONLY
+- promotion_boundary=NO_SELF_DEPLOY
+- external_effect=NONE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`
 
 ## loop_p5
 

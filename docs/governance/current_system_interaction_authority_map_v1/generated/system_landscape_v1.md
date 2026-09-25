@@ -15,6 +15,7 @@ flowchart LR
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
   full_autonomy_n5["full_autonomy_n5 PROVEN_CURRENT"]
+  g17_typed_vol_cmc_bind["g17_typed_vol_cmc_bind PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
   governed_cycle["governed_cycle PROVEN_CURRENT"]
   host_join_send_adapter["host_join_send_adapter PROVEN_CURRENT"]
@@ -42,16 +43,30 @@ flowchart LR
   venue_plan_td_mode["venue_plan_td_mode PROVEN_CURRENT"]
   governance_promotion --> m9_volatility_max_age
   runtime_binding_cap24 --> mv2_double_play
+  c1_confirmation --> governed_cycle
   execution_external_effect --> presentation_dashboard
   treasury_29p --> capital_risk_sizing
+  full_autonomy_n5 --> selection_cap23
+  full_autonomy_n5 --> runtime_binding_cap24
+  full_autonomy_n5 --> governed_cycle
+  full_autonomy_n5 --> mv2_double_play
+  full_autonomy_n5 --> portfolio_reservation
+  g17_typed_vol_cmc_bind --> mv2_double_play
+  governed_cycle --> mv2_double_play
+  governed_cycle --> venue_plan_td_mode
   mv2_double_play --> order_intent
   order_intent --> execution_external_effect
+  k1_credential_seam --> governed_cycle
   mv2_double_play --> learning_ddo
   meta_learning --> optimization_universe
+  mv2_double_play --> execution_external_effect
   mv2_double_play --> capital_risk_sizing
+  mv2_double_play --> execution_external_effect
   optimization_universe --> governance_promotion
   portfolio_reservation --> treasury_29p
   ranking_cap22 --> selection_cap23
+  reconciliation_runtime_binding --> runtime_binding_cap24
+  reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
   safety --> mv2_double_play
   selection_cap23 --> runtime_binding_cap24
@@ -72,6 +87,7 @@ flowchart LR
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | full_autonomy_n5 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 | `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| g17_typed_vol_cmc_bind | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md` |
 | governance_promotion | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | governed_cycle | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | governed_continuous_cycle_orchestrator_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | host_join_send_adapter | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | n1_host_join_readiness_v1 | `src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py` |

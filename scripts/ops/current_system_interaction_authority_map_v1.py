@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "83b86782b2b23822d48091c44d44fe4808e58bcd"
+BASELINE_SHA = "05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -103,6 +103,7 @@ REQUIRED_PARTIAL_IDS = (
     "account_equity_mapping_unbound",
     "loops_a_and_b",
     "clean_trading_core_vs_p5",
+    "full_core_dk_post_boundary_evidence_anchor",
 )
 
 

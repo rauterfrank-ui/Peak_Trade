@@ -12,11 +12,12 @@ Open epistemic records are projected, not closed.
 - id=live_authorized_cap2_vs_full_core class=CONFLICTING statement=Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token.
 - id=m4_nongoals_vs_modules class=CONFLICTING statement=M4 non-goals disagree with later M5 through M10 modules that exist.
 - id=mv2_decision_authority_map_tokens class=CONFLICTING statement=MASTER_V2_DECISION_AUTHORITY_MAP_V1 says LIVE_AUTHORIZED false and CURRENT_RUNTIME_TRUTH beside NAVIGATION_ONLY, against the full-core pin.
-- id=runbook_freshness_stamp class=CONFLICTING statement=Runbook BOUND_ORIGIN_MAIN_SHA is 0ceb48d970b6d76df0aecd82eebee9570b5e453b while CURRENT origin/main HEAD is 83b86782b2b23822d48091c44d44fe4808e58bcd (STALE_IF_HEAD_DIFFERS=true).
+- id=runbook_freshness_stamp class=CONFLICTING statement=Map source baseline_sha is 05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62 while Runbook BOUND_ORIGIN_MAIN_SHA may still differ (STALE_IF_HEAD_DIFFERS=true). Map rebind does not adjudicate runbook authority.
 - id=treasury_import_wording class=CONFLICTING statement=Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule.
 - id=zero_authorized_productive_targets class=CONFLICTING statement=ZERO_AUTHORIZED_PRODUCTIVE_TARGETS true conflicts with the M9 decision false while apply remains none.
 - id=account_equity_mapping_unbound class=PARTIAL statement=Account-equity mapping is marked proven while the venue number is unbound and the owner is unresolved; C2 forensic resolution keeps ACCOUNT_EQUITY CONFLICTING on Companion path (Full-Core availEq mapping not transferable).
 - id=clean_trading_core_vs_p5 class=PARTIAL statement=Clean trading core is marked closed while P5 cutover remains false.
+- id=full_core_dk_post_boundary_evidence_anchor class=PARTIAL statement=Tracked Full-Core DK post-boundary slice evidence (THIS_SLICE 11.2.1.DK) and non-executable HOLD terminals anchor NO_EXECUTABLE_DECISION semantics at POST_COUNT=0. FC_02_BLOCKER in G17 spec is navigation-only typed-vol blocker label, not map authority. Untracked worktree fc_02 reproof is out of scope for committed map anchors.
 - id=learning_capture_hosts_and_ddo_durability class=PARTIAL statement=Learning capture host list is not closed and DDO host durability is unproven.
 - id=loops_a_and_b class=PARTIAL statement=Loop A stops before search. Loop B is evidence without a proven search-control closure.
 - id=m9_m10_enforcement class=PARTIAL statement=M9 and M10 seam exists and enforcement_enabled is false.
