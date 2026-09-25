@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""
+Offline comparison promotion policy decision v1.
+
+Consumes exactly one verified comparison_promotion_policy_input_evidence_v1
+bundle, producing a manifested LEVEL_3 neutral promotion-policy decision artifact.
+
+Usage:
+    python3 scripts/run_comparison_promotion_policy_decision_v1.py \\
+        --policy-input-evidence-bundle-dir /path/to/step5_bundle \\
+        --output-dir /var/evidence/policy_decision_001
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+from src.meta.learning_loop.comparison_promotion_policy_decision_v1 import (
+    ComparisonPromotionPolicyDecisionError,
+    ComparisonPromotionPolicyDecisionInputs,
+    produce_comparison_promotion_policy_decision_v1,
+)
+
+EXIT_OK = 0
+EXIT_DECISION_ERROR = 1
+EXIT_USAGE_ERROR = 2
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Offline comparison promotion policy decision v1: "
+            "deterministically decide from verified policy input evidence "
+            "without selection, acceptance, policy execution, eligibility "
+            "recomputation, ConfigPatch mutation, or runtime authority."
+        )
+    )
+    parser.add_argument(
+        "--policy-input-evidence-bundle-dir",
+        type=Path,
+        required=True,
+        help=("Explicit path to a published comparison_promotion_policy_input_evidence_v1 bundle."),
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        required=True,
+        help="Explicit promotion policy decision output directory (must not exist).",
+    )
+    return parser.parse_args(argv)
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
+    if not args.policy_input_evidence_bundle_dir.is_dir():
+        print(
+            "[comparison_promotion_policy_decision_v1] ERROR: "
+            "policy input evidence bundle not found: "
+            f"{args.policy_input_evidence_bundle_dir}",
+            file=sys.stderr,
+        )
+        return EXIT_USAGE_ERROR
+
+    inputs = ComparisonPromotionPolicyDecisionInputs(
+        policy_input_evidence_bundle_dir=args.policy_input_evidence_bundle_dir,
+    )
+
+    try:
+        result = produce_comparison_promotion_policy_decision_v1(
+            inputs=inputs,
+            output_dir=args.output_dir,
+        )
+    except ComparisonPromotionPolicyDecisionError as exc:
+        print(
+            f"[comparison_promotion_policy_decision_v1] ERROR: {exc}",
+            file=sys.stderr,
+        )
+        return EXIT_DECISION_ERROR
+
+    print(
+        "[comparison_promotion_policy_decision_v1] OK "
+        f"comparison_definition_id={result.comparison_definition_id} "
+        f"decision_status={result.decision_status} "
+        f"decision_outcome={result.decision_outcome} "
+        f"candidate_identity_ref={result.candidate_identity_ref} "
+        f"config_patch_manifest_id={result.config_patch_manifest_id} "
+        f"artifact_id={result.artifact_id} "
+        f"output_dir={result.output_dir}"
+    )
+    return EXIT_OK
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

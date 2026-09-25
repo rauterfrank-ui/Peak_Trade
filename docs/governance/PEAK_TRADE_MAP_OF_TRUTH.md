@@ -149,6 +149,7 @@ authority and must not be read as activation or next-step instructions.
 | [`docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md`](../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md) | Navigation-only DDO durable evidence storage-owner contract; not trading authority |
 | [`docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md`](../ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md) | Navigation-only parallel-decoupled tracks Authority&#47;Interface&#47;Reconciliation contract; not sizing mint; not mapping authority |
 | [`docs/ops/specs/FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md`](../ops/specs/FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md) | Navigation-only OPTION_B producer Source→Semantic mapping ratification under parallel tracks; offline STEP-29P proof; not numeric venue bind |
+| [`docs/ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md`](../ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md) | Navigation-only mutation-critical control-state host-crash durability closure contract (non-SSOT; reuses bound WAL owner; host-crash and power-loss remain unproven; no GET; no POST) |
 
 ```text
 MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY
@@ -172,6 +173,8 @@ DDO_A1_DURABILITY_TO_ADMISSION_AND_REPLAY_BINDING_ROLE=NAVIGATION_POINTER_ONLY
 DDO_A1_CRASH_DURABILITY_PROOF_OR_EXPLICIT_NONPROVABILITY_CLOSURE_ROLE=NAVIGATION_POINTER_ONLY
 DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY
 DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_REPROOF_ROLE=NAVIGATION_POINTER_ONLY
+DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_NAV=docs/ops/specs/DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_V1.md
+DDO_A1_HOST_CRASH_DURABILITY_CLOSURE_ROLE=NAVIGATION_POINTER_ONLY
 ```
 
 ------------------------------------------------------------------------
