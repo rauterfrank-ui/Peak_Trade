@@ -29,7 +29,7 @@ def test_census_verdict_frozen() -> None:
     assert CONTINUOUS_RUN_ADJUDICATION_CLASS == "DEFINED_NOT_AUTHORIZED"
     assert len(PRE_EXTERNAL_PRODUCTIVE_ENTRY_MODULES) == 5
     assert len(INTENTIONALLY_LEGACY_PRE_EXTERNAL_CLAIM_MODULES) == 3
-    assert len(INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES) == 4
+    assert len(INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES) == 5
 
 
 def test_static_pre_external_to_external_effect_boundary_proof() -> None:

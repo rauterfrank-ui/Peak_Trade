@@ -2222,6 +2222,44 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
       ]
+    },
+    {
+      "id": "whole_core_pre_external_egress_proof_closure_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Pre-external to external-effect bounded WP: all sink markers classified; one-shot fresh-envelope POST join is INTENTIONALLY_ISOLATED_OWNER_GO only; PRE_EXTERNAL proof ok; standing POST/external effect remain false.",
+      "evidence_refs": [
+        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+        "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
+      ]
+    },
+    {
+      "id": "whole_core_fresh_trusted_q0_enter_live_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Full-Core enter-live F-02 closed: one read-only USDC availEq GET per ENTER via treasury single-source handoff; numeric Q0 bound on enter-live path; not Live POST; parallel direct GET module not active on same chain.",
+      "evidence_refs": [
+        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+        "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
+        "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
+      ]
+    },
+    {
+      "id": "whole_core_productive_q0_q1_authority_ratification_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "CURRENT Full-Core Q0 owner ops.governed_productive_account_equity_authority_producer_v1; Q1 owner src.governance.capital_risk_sizing_v1 with owner count 1; offline Q5/scoped sizing owners remain non-competing inventory scopes.",
+      "evidence_refs": [
+        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+        "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+      ]
+    },
+    {
+      "id": "whole_core_learning_q6_q8_none_ratification_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Q6/Q8 productive owners NONE; LEARNING_PRODUCTIVE_AUTHORITY=NONE; no N_BARS to promotion productive bypass proven on CURRENT surfaces.",
+      "evidence_refs": [
+        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+        "src/governance/explicit_productive_authorization_v1.py"
+      ]
     }
   ]
 }

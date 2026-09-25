@@ -568,6 +568,61 @@ EXTERNAL_EFFECT_AUTHORIZED=false
 ATLAS_AUTHORITY=NONE
 ```
 
+### Whole-Core completion egress + fresh trusted Q0/29P ratification (package v1)
+
+Owner-GO **WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1** (census-driven;
+**CONSUMED** for governance/proof closure on current `origin/main`) closes
+F-01 pre-external egress proof drift and ratifies F-02 for the **Full-Core
+enter-live Treasury single-source path** without Live POST/send activation.
+Machine contract:
+`config/governance/whole_core_completion_egress_q0_authority_v1.json`.
+Derived spec:
+`docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md`.
+
+The historical mapping block above (`NUMERIC_CURRENT_VENUE_VALUE_BOUND=false`,
+`EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=…FRESH_TRUSTED_GET`) remains a
+**consumption-time record** for the parallel-decoupled mapping Owner-GO slice.
+It is **superseded for Full-Core enter-live** by Treasury C08 (#6827) plus
+this ratification: one trusted read-only `details[ccy=USDC].availEq` GET per
+ENTER cycle, delegated through
+`execute_current_productive_treasury_single_source_capital_handoff_v1` with
+`TREASURY_AND_DIRECT_GET_PARALLEL_ACTIVE=false`.
+
+Read-only venue GET authorization **≠** order POST **≠** Live send.
+
+```text
+OWNER_GO=WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1
+OWNER_GO_STATUS=CONSUMED
+SCOPE_TRACK=FULL_CORE_ENTER_LIVE_29P_CAPITAL_PATH_ONLY
+F01_EGRESS_PROOF_CLASS=INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICE
+PRE_EXTERNAL_EXTERNAL_EFFECT_PROOF_OK=true
+UNCLASSIFIED_EXTERNAL_EFFECT_SINK_COUNT=0
+F02_PREVIOUS_DEPENDENCY=CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET
+F02_ACTUAL_GAP_CLASS=GOVERNANCE_TRUTH_REPAIR
+F02_STATUS=CLOSED_FOR_ENTER_LIVE_TREASURY_SINGLE_SOURCE_PATH
+F02_NEW_OWNER_DECISION_REQUIRED=false
+READ_ONLY=true
+FRESH_READ_ONLY_ECONOMIC_OBSERVATION_BOUND=true
+TRUSTED_SINGLE_SOURCE_GET_PER_ENTER=true
+NUMERIC_CURRENT_VENUE_VALUE_BOUND=true
+FULL_CORE_PRODUCTIVE_EQUITY_OBSERVATION_OWNER_COUNT=1
+TREASURY_AND_DIRECT_GET_PARALLEL_ACTIVE=false
+CURRENT_PRODUCTIVE_Q0_OWNER=ops.governed_productive_account_equity_authority_producer_v1
+CURRENT_PRODUCTIVE_Q1_OWNER=src.governance.capital_risk_sizing_v1
+CURRENT_PRODUCTIVE_Q1_OWNER_COUNT=1
+CURRENT_PRODUCTIVE_Q6_OWNER=NONE
+CURRENT_PRODUCTIVE_Q8_OWNER=NONE
+LEARNING_PRODUCTIVE_BYPASS_FOUND=false
+C2_STATUS=UNRESOLVED
+C2_BLOCKS_CURRENT_Q0_Q1=false
+C2_BLOCKS_TREASURY=false
+COMPANION_C2_TOUCHED=false
+NETWORK_ACCESS_AUTHORIZED=READ_ONLY_GET_ON_ENTER_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings

@@ -68,6 +68,8 @@ INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES = (
     "current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/"
+    "current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
 )
 
 CANARY_WIRE_SEND_HARNESS_PREFIX = (

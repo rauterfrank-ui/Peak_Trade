@@ -100,6 +100,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1 PR_6828
     # atlas_entity_review: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827
     # atlas_entity_review: REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
     # atlas_entity_review: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
@@ -6387,6 +6388,10 @@ entities:
       FINAL_D_T remains intentionally isolated; cutover flags false; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1
+    # PR_6828 WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # F-01 one-shot POST join classified INTENTIONALLY_ISOLATED_OWNER_GO in constants_v1;
+    # PRE_EXTERNAL proof unclassified_sink_callers=0; TRADING_SEMANTICS_CHANGED=false;
+    # EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; ACTIVATION_CHANGED=false.
     kind: CONTRACT
     name: PRE_EXTERNAL to external-effect boundary bounded WP v1
     epistemic_class: CANONICAL_AUTHORITY
@@ -8653,6 +8658,9 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6828 WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # governance ratification Q0/Q1/Q6/Q8; F-02 enter-live fresh trusted Q0 closed via Treasury C08 path;
+    # C2 UNRESOLVED unchanged; TRADING_SEMANTICS_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false.
     # PR_6827 TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # SINGLE_SOURCE=Treasury/E4/C08→B05 Q0 via current_productive_treasury_single_source_capital_handoff_v1;
     # TREASURY_AND_DIRECT_GET_PARALLEL_ACTIVE=false; FULL_CORE_PRODUCTIVE_EQUITY_OBSERVATION_OWNER_COUNT=1;

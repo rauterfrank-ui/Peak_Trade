@@ -111,6 +111,10 @@ REQUIRED_PARTIAL_IDS = (
     "repo_convergence_fgc01_docs_product_evidence_v1",
     "repo_convergence_fgc02_market_dashboard_evidence_v1",
     "treasury_full_core_c08_single_source_handoff_v1",
+    "whole_core_fresh_trusted_q0_enter_live_v1",
+    "whole_core_learning_q6_q8_none_ratification_v1",
+    "whole_core_pre_external_egress_proof_closure_v1",
+    "whole_core_productive_q0_q1_authority_ratification_v1",
 )
 
 
