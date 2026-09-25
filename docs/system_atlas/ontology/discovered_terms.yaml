@@ -47,6 +47,8 @@ terms:
     do_not_confuse_with: "Program Definition of Done; pytest"
 
   - id: TERM:map_of_truth
+    # CURRENT_SYSTEM_MAP_FINALIZATION_V1 (PR #6818): NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # interaction map generated views refresh; no TERM semantic change.
     kind: TERM
     name: Map of Truth
     exact_observed_spellings: ["Map of Truth", PEAK_TRADE_MAP_OF_TRUTH]
@@ -54,7 +56,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
+    modified_by: CURRENT_SYSTEM_MAP_FINALIZATION_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
