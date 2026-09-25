@@ -95,9 +95,7 @@ def build_current_productive_live_account_capital_context_v1(
             "INSTRUMENT_METADATA_INSTRUMENT_ID_MISMATCH"
         )
     if not str(instrument_constraints.instrument_metadata_version or "").strip():
-        raise CurrentProductiveMv2CapitalContextRebindError(
-            "INSTRUMENT_METADATA_VERSION_MISSING"
-        )
+        raise CurrentProductiveMv2CapitalContextRebindError("INSTRUMENT_METADATA_VERSION_MISSING")
     ctx = default_offline_replay_capital_context_v0(
         instrument_id=instrument_id,
         reference_price=reference_price,

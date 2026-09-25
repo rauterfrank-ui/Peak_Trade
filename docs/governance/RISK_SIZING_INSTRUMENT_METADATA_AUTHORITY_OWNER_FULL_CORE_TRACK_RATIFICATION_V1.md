@@ -4,7 +4,7 @@
 **Date:** 2026-09-25  
 **Obligation:** `OBL_B05_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1`  
 **Machine contract:** [`config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json`](../../config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json)  
-**Baseline:** `origin/main @ 643f7fb6fab3af320aa1cef33d7512e82a0505bb`
+**Baseline:** `origin&#47;main @ 643f7fb6fab3af320aa1cef33d7512e82a0505bb`
 
 ```
 RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1=true
@@ -37,7 +37,7 @@ Forensic consumer basis:
 
 1. `capital_risk_sizing_v1.InstrumentQuantityConstraintsV1` — `contract_multiplier`, `lot_size`, `minimum_quantity`, `instrument_metadata_version` (fail-closed validation).
 2. `current_productive_exact_object_flatten_plan_v1` — `lotSz`, `minSz`, `tickSz` with strict `instId` match (observation transport, not authority).
-3. `fresh_pretrade_runtime_get_v1` — `INSTRUMENT_STATE` on `GET /api/v5/public/instruments`.
+3. `fresh_pretrade_runtime_get_v1` — `INSTRUMENT_STATE` on `GET &#47;api&#47;v5&#47;public&#47;instruments`.
 4. Cap24 `BoundInstrumentV1` — identity only; metadata producer must not reselect.
 
 ## Owner decision (consumed)

@@ -54,7 +54,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: B05_REFERENCE_PRICE_RATIFICATION_BOUNDED_COMPLETION_V1
+    modified_by: B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
@@ -62,6 +62,7 @@ terms:
       - config/governance/current_system_interaction_authority_map_v1/source_v1.json
       - config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json
       - config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json
+      - config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json
 
   - id: TERM:confirm_token
     kind: TERM

@@ -110,7 +110,10 @@ def test_instrument_metadata_partial_full_core_producer_no_offline_default_autho
     )
     auth = _load(AUTHORITY_JSON)
     dom = next(d for d in auth["input_domains"] if d["domain_id"] == "INSTRUMENT_METADATA")
-    assert dom["authority_owner"] == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    assert (
+        dom["authority_owner"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     assert dom["audit_decision_class"] == "PRODUCTIVE_PRODUCER_PRESENT_CHAIN_OPEN"
 
 

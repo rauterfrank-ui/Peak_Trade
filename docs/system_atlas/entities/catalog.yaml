@@ -112,7 +112,7 @@ entities:
     # B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6811): NAVIGATION_ONLY atlas
     # review; Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratification surfaces; map
     # account_equity_blocks PARTIAL; map_authority=NONE.
-    # B05_REFERENCE_PRICE_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6812): NAVIGATION_ONLY
+    # B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6813): NAVIGATION_ONLY
     # atlas review; Full-Core B05 REFERENCE_PRICE_AUTHORITY_OWNER ratification surfaces; map
     # reference_price_authority_owner PARTIAL; map_authority=NONE.
     kind: NAVIGATION_INDEX

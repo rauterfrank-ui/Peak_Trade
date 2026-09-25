@@ -94,7 +94,10 @@ def test_c2_census_aligns_with_authority_decision_unresolved_owners() -> None:
     assert c2["c2_input_census"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]["status"] == "PARTIAL"
     assert c2["c2_input_census"]["REFERENCE_PRICE"]["status"] == "PARTIAL"
     assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["status"] == "PARTIAL"
-    assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["c2_authority_binding_implemented"] is True
+    assert (
+        c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["c2_authority_binding_implemented"]
+        is True
+    )
 
 
 def test_b05_and_inventory_c2_markers_unchanged_unresolved() -> None:

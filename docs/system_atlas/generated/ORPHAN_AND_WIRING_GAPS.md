@@ -92,6 +92,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_scoped_owner_threshold_value_authority_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:keep29_removed_ops_cli_surfaces | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1 | STATUS=OPEN (not proven) |  |

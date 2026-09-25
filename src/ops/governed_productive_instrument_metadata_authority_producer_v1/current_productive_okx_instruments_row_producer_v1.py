@@ -56,9 +56,7 @@ def _sha256_text(text: str) -> str:
 def _require_decimal(raw: Any, *, field: str) -> Decimal:
     text = str(raw or "").strip()
     if not text:
-        raise CurrentProductiveInstrumentMetadataProducerError(
-            f"{REASON_FIELD_MISSING}:{field}"
-        )
+        raise CurrentProductiveInstrumentMetadataProducerError(f"{REASON_FIELD_MISSING}:{field}")
     try:
         value = Decimal(text)
     except (InvalidOperation, ValueError) as exc:
@@ -66,9 +64,7 @@ def _require_decimal(raw: Any, *, field: str) -> Decimal:
             f"{REASON_FIELD_INVALID}:{field}"
         ) from exc
     if not value.is_finite() or value <= 0:
-        raise CurrentProductiveInstrumentMetadataProducerError(
-            f"{REASON_FIELD_INVALID}:{field}"
-        )
+        raise CurrentProductiveInstrumentMetadataProducerError(f"{REASON_FIELD_INVALID}:{field}")
     return value
 
 
@@ -93,9 +89,7 @@ def _contract_kind_from_row(row: Mapping[str, Any]) -> str:
         return "LINEAR"
     if ct_type == "inverse":
         return "INVERSE"
-    raise CurrentProductiveInstrumentMetadataProducerError(
-        f"{REASON_FIELD_INVALID}:contract_kind"
-    )
+    raise CurrentProductiveInstrumentMetadataProducerError(f"{REASON_FIELD_INVALID}:contract_kind")
 
 
 def produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(

@@ -49,7 +49,9 @@ def test_limits_from_typed_equity_not_historical_fixture_literals() -> None:
     assert limits.per_trade_risk_limit != ISOLATED_OFFLINE_REPLAY_FIXTURE_PER_TRADE_RISK_LIMIT
 
 
-def _fixture_constraints(instrument_id: str = "inst-eth-usdt-perp") -> InstrumentQuantityConstraintsV1:
+def _fixture_constraints(
+    instrument_id: str = "inst-eth-usdt-perp",
+) -> InstrumentQuantityConstraintsV1:
     return InstrumentQuantityConstraintsV1(
         instrument_id=instrument_id,
         market_type="futures",
