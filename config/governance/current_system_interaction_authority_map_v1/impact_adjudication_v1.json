@@ -23,7 +23,7 @@
     "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
     "tests/governance/test_post_6828_architecture_closure_v1.py"
   ],
-  "changed_paths_sha256": "8c3a1f2e9b4d7c6a5e0f1d2b3c4a5e6f7d8e9a0b1c2d3e4f5a6b7c8d9e0f1a2",
+  "changed_paths_sha256": "971cbac8c309d6a5afc0e5ddf927e4a4d2c2929cbe88043a02ffba1e68bd725e",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/post_6828_architecture_closure_v1.json",
