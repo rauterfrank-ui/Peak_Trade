@@ -622,11 +622,11 @@ Operator-Artefakte aus `~/Downloads` (Intake 2026-05-19) sind **nicht** Repo-Wah
 
 | Artefakt | Status | Hinweis |
 |----------|--------|---------|
-| Notion Knowledge Graph / ops registry runbook v0 | REMOVED_FROM_REPO | **HISTORICAL** — former `docs/ops/_archive/downloads_intake_*` tree removed (repo-convergence frozen-41); not restored |
+| Notion Knowledge Graph / ops registry runbook v0 | REMOVED_FROM_REPO | **HISTORICAL** — former `docs&#47;ops&#47;_archive&#47;downloads_intake_*` tree removed (repo-convergence frozen-41); not restored |
 | Autonomy roadmap (read-only, May 2026) | REMOVED_FROM_REPO | **HISTORICAL** — see [MASTER_V2_GO_LIVE_ROADMAP_V0.md](specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
 | OPS Cockpit recheck snapshots (Apr 2026) | REMOVED_FROM_REPO | **HISTORICAL** — see [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) |
 
-Former intake index under `docs/ops/_archive/` removed with frozen-41 cleanup; not restored.
+Former intake index under `docs&#47;ops&#47;_archive&#47;` removed with frozen-41 cleanup; not restored.
 
 ## Appendix H — Final Downloads cleanup (historical, non-authorizing)
 
@@ -634,7 +634,7 @@ Second-pass cleanup (2026-05-19): remaining `~/Downloads` Peak_Trade items archi
 
 | Artefakt | Status |
 |----------|--------|
-| Direction-lock briefings, other MDs, visual PDFs | REMOVED_FROM_REPO (former `docs/ops/_archive/downloads_final_cleanup_*`; frozen-41; not restored) |
+| Direction-lock briefings, other MDs, visual PDFs | REMOVED_FROM_REPO (former `docs&#47;ops&#47;_archive&#47;downloads_final_cleanup_*`; frozen-41; not restored) |
 | Anthropic Cybersecurity Skills (third-party bulk) | REMOVED_FROM_REPO — **not vendored**; external operator archive only |
 
 Operator originals: `~/Documents/Peak_Trade_external_downloads_archive_20260519T221506Z/` (outside Downloads).
