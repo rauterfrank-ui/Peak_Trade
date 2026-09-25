@@ -8590,7 +8590,6 @@
     "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
     "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
     "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
-    "tests/conftest.py",
     "tests/contracts/test_realized_volatility_rank_rotation_v0_bindings_and_eval_scope.py",
     "tests/core/test_metrics_lazy_prometheus_init_offline_import_chain_v0.py",
     "tests/core/test_wn_src_regime_tests_only_boundary_v1.py",
@@ -10378,7 +10377,7 @@
     "tests/wave5/test_new_listings_ai_bridge.py",
     "tests/wave6/test_evidence_registry_hook.py"
   ],
-  "changed_paths_sha256": "65509ed359fe2bc2c15bdce54c30e01040aa115970ee3c1f52350767758fb6a2",
+  "changed_paths_sha256": "0ffd279c6237c913f13955e43ebb7752fed794e0ea1af69a92c6fc1288a3e8b4",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
