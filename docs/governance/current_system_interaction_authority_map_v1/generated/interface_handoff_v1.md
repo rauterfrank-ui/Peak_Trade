@@ -8,16 +8,30 @@ AUTHORITY=NONE
 flowchart LR
   governance_promotion -->|authorization_to_seam| m9_volatility_max_age
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
+  c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
   execution_external_effect -->|dashboard_read| presentation_dashboard
   treasury_29p -->|equity_value_unbound| capital_risk_sizing
+  full_autonomy_n5 -->|fa_compose_cap23_produce_join| selection_cap23
+  full_autonomy_n5 -->|fa_compose_cap24_bind_join| runtime_binding_cap24
+  full_autonomy_n5 -->|fa_compose_governed_cycle_n1| governed_cycle
+  full_autonomy_n5 -->|fa_compose_mv2_dp_handoff_join| mv2_double_play
+  full_autonomy_n5 -->|fa_compose_portfolio_budget| portfolio_reservation
+  g17_typed_vol_cmc_bind -->|g17_bind_into_mv2_cycle| mv2_double_play
+  governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
+  governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
   mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
   order_intent -->|intent_to_execution| execution_external_effect
+  k1_credential_seam -->|k1_bind_governed_cycle_occupancy| governed_cycle
   mv2_double_play -->|learning_capture| learning_ddo
   meta_learning -->|meta_search_backflow| optimization_universe
+  mv2_double_play -->|mv2_executable_pre_external_terminal| execution_external_effect
   mv2_double_play -->|mv2_to_sizing| capital_risk_sizing
+  mv2_double_play -->|mv2_valid_no_trade_terminal| execution_external_effect
   optimization_universe -->|optimization_to_governance| governance_promotion
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   ranking_cap22 -->|ranking_to_selection| selection_cap23
+  reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
+  reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
   safety -->|safety_signals_into_integrated_replay| mv2_double_play
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
@@ -63,6 +77,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`
 
+## c1_injected_governed_cycle
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=map_injected_candles_payload_to_current_productive_c1_observation_v1; perform_get=false offline
+- producer=current_productive_scoped_one_shot_c1_observation_source_v1
+- consumer=run_current_productive_governed_cycle_v1
+- authority_effect=NONE
+- decision_effect=FRESH_C1_REQUIRED_FOR_CYCLE
+- direct_or_indirect=DIRECT
+- identity_binding=C1_OBSERVATION
+- temporal_binding=CURSOR_FLOOR
+- version_binding=CurrentProductiveC1ObservationV1
+- provenance_binding=NETWORK_NOT_AUTHORIZED_THIS_SLICE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`
+
 ## dashboard_read
 
 - lifecycle=PROVEN_CURRENT
@@ -98,6 +130,150 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py`
+
+## fa_compose_cap23_produce_join
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=produce_occupied_lane_cap23_n1_selections_v1; compose-only; Cap23 sole writer preserved
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=produce_occupied_lane_cap23_n1_selections_v1
+- authority_effect=NONE
+- decision_effect=COMPOSE_INVOKE_NOT_SECOND_SELECTION_AUTHORITY
+- direct_or_indirect=DIRECT
+- identity_binding=OCCUPIED_LANE_N1
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+- provenance_binding=JOIN_CAP23_SELECTION_AUTHORITY_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`, `src/ops/single_selected_future_policy_v1/constants_v1.py`
+
+## fa_compose_cap24_bind_join
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=bind_occupied_lane_cap24_n1_instruments_v1 with reconciliation_state_root and observed_portfolio
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=bind_occupied_lane_cap24_n1_instruments_v1
+- authority_effect=NONE
+- decision_effect=COMPOSE_BIND_NOT_SECOND_BINDING_AUTHORITY
+- direct_or_indirect=DIRECT
+- identity_binding=BOUND_INSTRUMENT_PER_LANE
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+- provenance_binding=JOIN_CAP24_BINDING_AUTHORITY_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py`
+
+## fa_compose_governed_cycle_n1
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; terminal PRE_EXTERNAL or HOLD_CLOSED
+- producer=compose_occupied_lane_n1_host_join_readiness_v1
+- consumer=run_current_productive_governed_cycle_v1
+- authority_effect=NONE
+- decision_effect=ORCHESTRATION_SEQUENCE_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=N1_LANE_ISOLATED_ROOTS
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+- provenance_binding=AUTONOMY_CAN_POST_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`
+
+## fa_compose_mv2_dp_handoff_join
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=compose_occupied_lane_mv2_dp_handoff_v1 admitted bound instruments
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=compose_occupied_lane_mv2_dp_handoff_v1
+- authority_effect=NONE
+- decision_effect=HANDOFF_COMPOSE_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=MV2_DP_SINGLE_DECISION_UNIVERSE
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py
+- provenance_binding=JOIN_TRADING_AUTHORITY_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py`
+
+## fa_compose_portfolio_budget
+
+- lifecycle=PARTIAL
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=PortfolioCapitalReservationBudgetOwnerV1 passed into readiness compose
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=portfolio_capital_reservation_budget_owner_v1
+- authority_effect=NONE
+- decision_effect=BUDGET_OWNER_IMPORT_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=SHARED_BUDGET_OWNER
+- temporal_binding=RESTART_NOT_RECONSTRUCTABLE
+- version_binding=src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+- provenance_binding=AUTHORITY_EFFECT_NONE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`
+
+## g17_bind_into_mv2_cycle
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=apply_current_productive_g17_typed_vol_cmc_bind_v1 on CanonicalMarketContextV1 inside MV2 cycle
+- producer=apply_current_productive_g17_typed_vol_cmc_bind_v1
+- consumer=run_current_productive_master_v2_runtime_cycle_v1
+- authority_effect=NONE
+- decision_effect=MARKET_CONTEXT_ENRICHMENT_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=TYPED_VOL_ON_CONTEXT
+- temporal_binding=UNKNOWN
+- version_binding=current_productive_g17_typed_vol_cmc_bind_v1
+- provenance_binding=NOT_SELECTION_NOT_EXECUTION
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`
+
+## governed_cycle_t2_mv2_stack
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DECISION_FLOW
+- contract_or_payload=t2_cycle_dispatch invokes N=1 productive stack including run_current_productive_master_v2_runtime_cycle_v1
+- producer=run_current_productive_governed_cycle_v1
+- consumer=run_current_productive_master_v2_runtime_cycle_v1
+- authority_effect=NONE
+- decision_effect=ORCHESTRATED_NOT_PARALLEL_DECISION_OWNER
+- direct_or_indirect=INDIRECT
+- identity_binding=BOUND_INSTRUMENT
+- temporal_binding=UNKNOWN
+- version_binding=t2_cycle_dispatch
+- provenance_binding=AUTONOMY_CAN_RESELECT_DOWNSTREAM_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`
+
+## governed_cycle_venue_plan_status
+
+- lifecycle=PARTIAL
+- flow_type=DATA_FLOW
+- contract_or_payload=venue_plan_status from t2 result rollup; CURRENT_PRODUCTIVE_VENUE_PLAN_STATUS in evidence
+- producer=run_current_productive_governed_cycle_v1
+- consumer=current_productive_venue_plan_td_mode_and_order_environment_authority_v1
+- authority_effect=NONE
+- decision_effect=STATUS_ROLLUP_NOT_POST
+- direct_or_indirect=INDIRECT
+- identity_binding=VENUE_PLAN_STATUS_STRING
+- temporal_binding=UNKNOWN
+- version_binding=CURRENT_PRODUCTIVE_VENUE_PLAN_STATUS
+- provenance_binding=RUNTIME_AUTHORIZATION_EFFECT_NONE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py`, `evidence/ops/full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1/20260916T010000Z/SUMMARY.json`
 
 ## integrated_replay_safety_gate_before_intent
 
@@ -135,6 +311,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/constants_v1.py`
 
+## k1_bind_governed_cycle_occupancy
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=bind_k1_credential_capability_for_governed_cycle_occupancy_v1; material_loaded must be false
+- producer=checkout_independent_credential_governed_cycle_occupancy_bind_v1
+- consumer=run_current_productive_governed_cycle_v1
+- authority_effect=NONE
+- decision_effect=CREDENTIAL_SEAM_NOT_TRADING_DECISION
+- direct_or_indirect=DIRECT
+- identity_binding=K1_NOT_TRADING_DECISION_OWNER
+- temporal_binding=UNKNOWN
+- version_binding=bind_k1_credential_capability_for_governed_cycle_occupancy_v1
+- provenance_binding=KEYCHAIN_UNAUTHORIZED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py`
+
 ## learning_capture
 
 - lifecycle=PARTIAL
@@ -171,6 +365,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 
+## mv2_executable_pre_external_terminal
+
+- lifecycle=PARTIAL
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle
+- producer=run_current_productive_governed_cycle_v1
+- consumer=execution_external_effect
+- authority_effect=NONE
+- decision_effect=EXECUTABLE_PRE_EXTERNAL_NOT_POST
+- direct_or_indirect=INDIRECT
+- identity_binding=EXECUTABLE_VENUE_PLAN_BOUND
+- temporal_binding=UNKNOWN
+- version_binding=DISPOSITION_PRE_EXTERNAL_EFFECT
+- provenance_binding=SEPARATE_OWNER_GO_FOR_POST
+- promotion_required=TRUE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_V1.md`
+
 ## mv2_to_sizing
 
 - lifecycle=CONFLICTING
@@ -188,6 +400,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
+
+## mv2_valid_no_trade_terminal
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure
+- producer=run_current_productive_master_v2_runtime_cycle_v1
+- consumer=execution_external_effect
+- authority_effect=NONE
+- decision_effect=VALID_NO_TRADE_TERMINAL
+- direct_or_indirect=DIRECT
+- identity_binding=NO_EXECUTABLE_DECISION
+- temporal_binding=UNKNOWN
+- version_binding=DISPOSITION_HOLD_CLOSED
+- provenance_binding=HOLD_NOT_POST_FAILURE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `evidence/ops/full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1/20260916T010000Z/SUMMARY.json`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1.md`
 
 ## optimization_to_governance
 
@@ -242,6 +472,42 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_policy_v1/constants_v1.py`
+
+## reconciliation_portfolio_truth_fa_cap24
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=PortfolioTruthSnapshotV1 observed_portfolio into FA cap24 bind context
+- producer=productive_reconciliation_runtime_binding_v1
+- consumer=bind_occupied_lane_cap24_n1_instruments_v1
+- authority_effect=NONE
+- decision_effect=OBSERVED_PORTFOLIO_CONTEXT_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=RECONCILIATION_STATE_ROOT
+- temporal_binding=UNKNOWN
+- version_binding=PortfolioTruthSnapshotV1
+- provenance_binding=NOT_CAP23_SELECTION_AUTHORITY
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py`
+
+## reconciliation_startup_before_cap24_bind
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=run_productive_reconciliation_startup_gate_v1 before alpha in binding_gate_v1
+- producer=run_productive_reconciliation_startup_gate_v1
+- consumer=run_single_selected_future_runtime_binding_gate_v1
+- authority_effect=NONE
+- decision_effect=STARTUP_GATE_NOT_SELECTION
+- direct_or_indirect=DIRECT
+- identity_binding=PORTFOLIO_TRUTH_SNAPSHOT
+- temporal_binding=SESSION_START
+- version_binding=productive_reconciliation_runtime_binding_v1
+- provenance_binding=AUTHORITY_VERSUS_CAP23_UNKNOWN
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py`
 
 ## replay_provenance_drop
 

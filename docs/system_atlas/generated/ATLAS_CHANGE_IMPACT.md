@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6808 G17 DK/MV2 typed-vol hot-path join: NAVIGATION_ONLY atlas review; wires JOIN-1 mark extract + JOIN-2 checkpoint into DK slice for FC-02 TYPED_VOLATILITY_ESTIMATE_MISSING closure; MV2/DP/selection semantics unchanged; ATLAS_AUTHORITY=NONE.
+- PR #6809 MAP_ONLY Full-Core interaction authority map completion (slices 1–3): NAVIGATION_ONLY atlas review for map_of_truth index/term; structured CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source updated; map_authority=NONE; no Master Runbook or runtime authority change. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1
+- modified_by=FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

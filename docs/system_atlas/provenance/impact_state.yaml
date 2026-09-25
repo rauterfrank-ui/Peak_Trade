@@ -4,16 +4,17 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-modified_by: G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1
+modified_by: FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6808 G17 DK/MV2 typed-vol hot-path join: NAVIGATION_ONLY atlas review;
-  wires JOIN-1 mark extract + JOIN-2 checkpoint into DK slice for FC-02
-  TYPED_VOLATILITY_ESTIMATE_MISSING closure; MV2/DP/selection semantics unchanged;
-  ATLAS_AUTHORITY=NONE.
+  PR #6809 MAP_ONLY Full-Core interaction authority map completion (slices 1–3):
+  NAVIGATION_ONLY atlas review for map_of_truth index/term; structured
+  CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source updated; map_authority=NONE;
+  no Master Runbook or runtime authority change. ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - NAVIGATION_INDEX:map_of_truth
+  - TERM:map_of_truth
 changed_relations: []
 changed_wiring: []
 changed_venue: []
