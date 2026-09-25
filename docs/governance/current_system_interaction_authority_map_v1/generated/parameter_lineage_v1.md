@@ -179,7 +179,7 @@ Historical defaults stay historical. Model semantics are not aged into history.
 - optimization_surface_status=NOT_AN_OPTIMIZATION_SURFACE
 - learning_evidence_status=NOT_LEARNING_EVIDENCE
 - productive_seam_status=CONDITIONAL_CRS_BRANCH
-- conflicts=INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false; Companion handoff absent
+- conflicts=INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true on Full-Core B05 path (#6817); Companion C2 handoff still absent
 - evidence=`src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
 
 ## typed_29p_equity_to_four_crs_limits
