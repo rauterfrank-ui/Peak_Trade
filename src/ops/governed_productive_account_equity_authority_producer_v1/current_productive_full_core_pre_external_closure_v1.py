@@ -87,7 +87,10 @@ from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundIns
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 
 OWNER_GO = "OWNER_GO_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1"
-ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}"})
+GAP_TRUE_01_OWNER_GO = (
+    "OWNER_GO_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1"
+)
+ALLOWED_OWNER_GOS = frozenset({OWNER_GO, f"OWNER_GO_{OWNER_GO}", GAP_TRUE_01_OWNER_GO})
 EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "9f2ab677cfdb3ef62d604ba62789b135bf83fe5f"
 THIS_SLICE = "11.2.1.FC.FULL_CORE_CURRENT_PRODUCTIVE_PRE_EXTERNAL_CLOSURE"
 EVIDENCE_DIRNAME = "full_core_current_productive_pre_external_closure_v1"
@@ -151,6 +154,11 @@ class CurrentProductiveFullCorePreExternalClosureResultV1:
     blockers_closed: tuple[str, ...]
     earliest_remaining_blocker: str
     manifest_verify_rc: int
+    current_productive_decision_result: str = ""
+    decision_execution_eligible: str = ""
+    envelope_readiness: str = ""
+    pre_external_effect_boundary_reached: str = ""
+    capital_context_bound: str = ""
 
 
 def _utc_now_iso_v1() -> str:
@@ -471,6 +479,13 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         terminal = str(cycle.disposition)
         post_count = int(cycle.post_count)
         permit_created = bool(cycle.permit_created)
+        decision_result = str(getattr(cycle, "decision_result", "") or "")
+        decision_eligible = str(
+            getattr(cycle, "decision_execution_eligible", FALSE_TOKEN) or FALSE_TOKEN
+        )
+        master_v2_decision = str(getattr(cycle, "master_v2_decision", "") or "")
+        envelope_created = bool(getattr(cycle, "envelope_created", False))
+        envelope_identity = str(getattr(cycle, "envelope_identity", "") or "")
 
         if post_count != 0 or permit_created:
             raise CurrentProductiveFullCorePreExternalClosureError("EXTERNAL_EFFECT_OR_POST_LEAK")
@@ -498,6 +513,26 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         else:
             wp2_status = "FAIL"
             earliest = str(cycle.first_genuine_blocker or cycle.reason_code or "FAIL_CLOSED")
+
+        envelope_readiness = (
+            TRUE_TOKEN
+            if decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and envelope_created
+            and decision_eligible.lower() == "true"
+            else FALSE_TOKEN
+        )
+        pre_external_reached = (
+            TRUE_TOKEN if terminal == DISPOSITION_PRE_EXTERNAL_EFFECT else FALSE_TOKEN
+        )
+        capital_context_bound = TRUE_TOKEN if rebind_status == "PASS" else FALSE_TOKEN
+        final_envelope_id = ""
+        final_envelope_digest = ""
+        if envelope_identity.startswith("envelope_id="):
+            parts = dict(
+                segment.split("=", 1) for segment in envelope_identity.split(";") if "=" in segment
+            )
+            final_envelope_id = str(parts.get("envelope_id", "") or "")
+            final_envelope_digest = str(parts.get("digest", "") or "")
 
         claims = {
             "OWNER_GO": owner_go,
@@ -533,6 +568,19 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             "BLOCKERS_CLOSED": blockers_closed,
             "EARLIEST_REMAINING_BLOCKER": earliest,
             "TRANSPORT_CLASS": str(getattr(transport, "transport_class", "")),
+            "CURRENT_PRODUCTIVE_DECISION_RESULT": decision_result or "NO_EXECUTABLE_DECISION",
+            "DECISION_EXECUTION_ELIGIBLE": decision_eligible,
+            "MASTER_V2_DECISION": master_v2_decision,
+            "ENVELOPE_READINESS": envelope_readiness,
+            "FINAL_ENVELOPE_CREATED": TRUE_TOKEN if envelope_created else FALSE_TOKEN,
+            "FINAL_ENVELOPE_ID": final_envelope_id,
+            "FINAL_ENVELOPE_DIGEST": final_envelope_digest,
+            "PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED": pre_external_reached,
+            "CAPITAL_CONTEXT_BOUND": capital_context_bound,
+            "VENUE_MUTATION_PERFORMED": FALSE_TOKEN,
+            "REAL_EXTERNAL_EFFECT_AUTHORIZED": FALSE_TOKEN,
+            "REAL_VENUE_POST_ALLOWED": FALSE_TOKEN,
+            "POST_ALLOWED": FALSE_TOKEN,
         }
         _assert_no_secrets(claims)
         _persist_json(path=store / "claims.json", payload=claims)
@@ -542,6 +590,14 @@ def execute_current_productive_full_core_pre_external_closure_v1(
                 "TERMINAL_DISPOSITION": terminal,
                 "POST_COUNT": str(post_count),
                 "EARLIEST_REMAINING_BLOCKER": earliest,
+                "CURRENT_PRODUCTIVE_DECISION_RESULT": decision_result or "NO_EXECUTABLE_DECISION",
+                "DECISION_EXECUTION_ELIGIBLE": decision_eligible,
+                "ENVELOPE_READINESS": envelope_readiness,
+                "PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED": pre_external_reached,
+                "CAPITAL_CONTEXT_BOUND": capital_context_bound,
+                "MV2_CAPITAL_CONTEXT_REBIND_STATUS": rebind_status,
+                "VENUE_MUTATION_PERFORMED": FALSE_TOKEN,
+                "EXTERNAL_EFFECT_OCCURRED": FALSE_TOKEN,
             },
         )
         persist_manifest_sha256_v1(store_root=store)
@@ -581,6 +637,11 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             blockers_closed=tuple(blockers_closed),
             earliest_remaining_blocker=earliest,
             manifest_verify_rc=manifest_rc,
+            current_productive_decision_result=decision_result or "NO_EXECUTABLE_DECISION",
+            decision_execution_eligible=decision_eligible,
+            envelope_readiness=envelope_readiness,
+            pre_external_effect_boundary_reached=pre_external_reached,
+            capital_context_bound=capital_context_bound,
         )
     finally:
         release_productive_credential_handle_v1(handle)
@@ -588,6 +649,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
 
 __all__ = [
     "ALLOWED_OWNER_GOS",
+    "GAP_TRUE_01_OWNER_GO",
     "EVIDENCE_DIRNAME",
     "EXPECTED_BASELINE_ORIGIN_MAIN_SHA",
     "OWNER_GO",
