@@ -1,36 +1,28 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "107d11f6431cd21f94ca3adfd4fc389c41a855b7",
+  "base_sha": "05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-    "tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "8b656db5bfdd464b79319789a5d73974f0f53df437b67fa2d07ec363e95993a2",
-  "covered_candidate_paths": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-    "tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py"
-  ],
+  "changed_paths_sha256": "d7af20d258c987b8d1ae2dccd9f4cf6e2b1ac37c62d14edcb606c417d9bd1486",
+  "covered_candidate_paths": [],
   "evidence_refs": [
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6808 G17 DK/MV2 typed-vol hot-path join: wires mark-history GET through JOIN-1/JOIN-2 into existing MV2 CMC bind; atlas NAVIGATION_ONLY review + candidate catalog coverage; Map-of-Truth unchanged; NO_MAP_IMPACT.",
+  "reason": "PR #6809 MAP_ONLY Full-Core interaction authority map completion (slices 1–3): baseline rebind, terminal outcome semantics, FA/FC seams, reconciliation edges; derived views regenerated; map_authority=NONE.",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "verdict": "MAP_UPDATE_REQUIRED"
 }

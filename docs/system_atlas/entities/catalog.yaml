@@ -105,13 +105,15 @@ entities:
     # MAP_OF_TRUTH_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
     # MAP_NAV_INDEX_AND_FLOW_TYPING_V1 (PR #6780): MOT adds navigation pointer to
     # CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source/generated views only.
+    # FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1 (PR #6809): NAVIGATION_ONLY
+    # atlas review; structured map source updated (domains/edges); no MOT SSOT change.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: MAP_NAV_INDEX_AND_FLOW_TYPING_V1
+    modified_by: FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
