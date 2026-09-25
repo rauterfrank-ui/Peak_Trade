@@ -3,10 +3,13 @@
   "authority_effect": "NONE",
   "base_sha": "643b3084b9f078b4f5a5373604e51203c116a573",
   "changed_paths": [
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/obl_b05_bollinger_entry_side_doc_alignment_then_long_decision_v1.json",
     "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
     "config/governance/technical_canonical_wiring_authorization_v1.json",
     "config/research/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/product/README.md",
     "docs/product/evidence/auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0_20260717T034827Z/MANIFEST.sha256",
     "docs/product/evidence/auth021_auth003_authority_matrix_b01_b07_closeout_sync_v0_20260717T034827Z/authority_matrix_after.json",
@@ -258,9 +261,10 @@
     "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/summary.md",
     "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/tests.log",
     "docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml",
-    "docs/system_atlas/reconciliation/inventories/tree_content_census.yaml"
+    "docs/system_atlas/reconciliation/inventories/tree_content_census.yaml",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "ebd31a38ad7fe8172dc59ceb03268c96c32519fa422edb364db3021e2b5b5cb6",
+  "changed_paths_sha256": "574dd078dbdf8f2594055c441efd6896f9a7b00cd1a100514b33b8d52570a0e1",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
