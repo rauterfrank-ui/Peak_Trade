@@ -260,11 +260,15 @@
     "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/provenance_contract.md",
     "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/summary.md",
     "docs/product/evidence/testnet_scenario_injection_fail_closed_tick_provenance_v1_20260718T170900Z/tests.log",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml",
     "docs/system_atlas/reconciliation/inventories/tree_content_census.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "574dd078dbdf8f2594055c441efd6896f9a7b00cd1a100514b33b8d52570a0e1",
+  "changed_paths_sha256": "6d25fded41c4958ee2f510e23e66ce8f452bb3e10b99fc240ce260e1a1bb1a78",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
