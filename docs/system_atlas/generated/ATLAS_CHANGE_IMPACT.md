@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6805 DK origin/main chain-integrity remediation: NAVIGATION_ONLY atlas review of full_core composition root; 29P merge-stable execution identity replaces static DK SHA pin; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
+- #6806 DK execute_network credential join bounded closure: NAVIGATION_ONLY atlas review of full_core composition root; shared EEA/CZ fail-closed credential join wiring; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=DK_ORIGIN_MAIN_CHAIN_INTEGRITY_V1
+- modified_by=DK_EXECUTE_NETWORK_CREDENTIAL_JOIN_BOUNDED_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
