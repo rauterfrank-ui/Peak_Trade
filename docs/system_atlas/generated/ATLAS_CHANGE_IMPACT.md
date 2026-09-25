@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=12
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,25 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `GATE:treasury_productive_read_only_venue_observation_v1` |
 | `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1` |
+| `RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1` |
+| `RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1` |
+| `RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1` |
+| `RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1` |
+| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_enter_live_29p_join_consumes_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +104,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Repository convergence FGC-02 AUTHORITY=NONE removal of evidence/market_dashboard_v2/ and evidence/market_dashboard_deletion/ with WebUI test ephemeral evidence decoupling; atlas corpus/census/reconciliation evaluate+adjudicate closure for RCN-000013; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; CURRENT Landscape V2 product retained. ATLAS_AUTHORITY=NONE.
+- Treasury Full-Core C08 single-source capital handoff (PR_6827): enter-live delegates one trusted GET through Treasury/E4/C08 to B05 Q0; bounded Full-Core reachability; C08 productive transport authorized; AVAILABLE_FOR_SIZING BASE bound; Q3 unchanged; map partial treasury_full_core_c08_single_source_handoff_v1; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
+- modified_by=TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

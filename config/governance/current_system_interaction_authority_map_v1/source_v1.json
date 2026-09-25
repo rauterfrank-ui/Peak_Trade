@@ -1978,7 +1978,7 @@
     {
       "id": "treasury_import_wording",
       "epistemic_class": "CONFLICTING",
-      "statement": "Treasury lifecycle subdomain (treasury_29p domain) and C08 semantic closeout are navigation-bound separately from Full-Core B05 equity chain (#6817). Full-Core enter-live join must not import Treasury for productive authority; treasury_import_wording is not a single merged rule.",
+      "statement": "Treasury treasury_29p lifecycle subdomain remains navigation-bound from B05 Q0 ownership; Full-Core enter-live uses bounded single-source C08 transport (current_productive_treasury_single_source_capital_handoff_v1) without Treasury trading/quantity/reservation authority.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
@@ -2211,6 +2211,16 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+      ]
+    },
+    {
+      "id": "treasury_full_core_c08_single_source_handoff_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Treasury Full-Core C08 single-source capital handoff: bounded READ_ONLY_OBSERVATION/RECONCILIATION/C08_TRANSPORT into B05 Q0 on enter-live; CRS Q1 unchanged; no Treasury quantity/trading/reservation authority; LIVE send unauthorized.",
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
       ]
     }
   ]

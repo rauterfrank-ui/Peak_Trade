@@ -115,8 +115,8 @@ def _assert_binding_envelope() -> None:
         raise C08ProductiveSizingSourceBindingError("DOWNSTREAM_MINT_FORBIDDEN")
     if AVAILABLE_FOR_SIZING_MINT_AUTHORIZED:
         raise C08ProductiveSizingSourceBindingError("AVAILABLE_FOR_SIZING_MINT_FORBIDDEN")
-    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS != "UNBOUND":
-        raise C08ProductiveSizingSourceBindingError("BASE_NUMERIC_VALUE_MUST_REMAIN_UNBOUND")
+    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS != "BOUND":
+        raise C08ProductiveSizingSourceBindingError("BASE_NUMERIC_VALUE_MUST_BE_BOUND")
 
 
 def _ingress_evidence_v1(

@@ -19,10 +19,6 @@ from typing import Any, Mapping, Optional
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
     CANONICAL_ADVERSE_EXIT_DISTANCE,
 )
-from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
-    CapitalAdmissionClaimV1,
-    evaluate_capital_admission_v1,
-)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     NUMERIC_EQUITY_TTL_SECONDS,
 )
@@ -36,9 +32,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_mv2_capi
     CurrentProductiveMv2CapitalContextRebindError,
     build_current_productive_live_account_capital_context_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.step_29p_capital_risk_admissibility_v1 import (
-    evaluate_step_29p_capital_risk_admissibility_v1,
-)
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_29P_FRESH_GET_ENDPOINT,
 )
@@ -46,17 +39,12 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     OBSERVATION_FACT_ID,
     OBSERVATION_SURFACE,
     PRODUCER_IDENTITY,
-    bind_step_29p_typed_equity_from_risk_capital_v1,
-    produce_current_productive_29p_risk_capital_v1,
     reject_direct_avail_eq_29p_claim_v1,
     CurrentProductiveUsdcFreeMarginObservationV1,
 )
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_p01_policy_v1 import (
-    bind_current_productive_p01_policy_fact_v1,
-)
-from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u01_account_mode_adapter_v1 import (
-    adapt_current_productive_u01_account_mode_v1,
-    build_current_productive_u01_eligibility_fact_v1,
+from src.ops.full_core_live_path_composition_root_v1.current_productive_treasury_single_source_capital_handoff_v1 import (
+    build_default_full_core_u04_p01_eligibility_host_inputs_v1,
+    execute_current_productive_treasury_single_source_capital_handoff_v1,
 )
 from src.ops.b05_full_core_governed_authority_chain_closure_v1.registry_and_witness_v1 import (
     B05FullCoreAuthorityChainClosureError,
@@ -480,81 +468,34 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             get_count=get_count,
         )
 
-    p01_digest = _sha256_text(
-        _canonical_json(
-            {
-                "policy": "DOES_NOT_APPLY",
-                "epoch": observation.decision_epoch,
-                "account": observation.bound_account_identity,
-            }
-        )
-    )
-    p01_fact = bind_current_productive_p01_policy_fact_v1(
-        bound_account_identity=observation.bound_account_identity,
-        bound_venue_identity=observation.bound_venue_identity,
-        bound_td_mode=observation.bound_td_mode,
-        decision_epoch=observation.decision_epoch,
-        observed_at_as_of=observation.observed_at_as_of,
-        age_seconds=observation.age_seconds,
-        freshness_max_age=observation.freshness_max_age,
-        provenance_digest=p01_digest,
-    )
-    adaptation = adapt_current_productive_u01_account_mode_v1(raw_acct_lv)
-    eligibility = build_current_productive_u01_eligibility_fact_v1(
-        adaptation=adaptation,
-        bound_account_identity=observation.bound_account_identity,
-        bound_venue_identity=observation.bound_venue_identity,
-        bound_td_mode=observation.bound_td_mode,
-        decision_epoch=observation.decision_epoch,
-        provenance_digest=_sha256_text(
-            _canonical_json({"acctLv": raw_acct_lv, "epoch": observation.decision_epoch})
+    handoff = execute_current_productive_treasury_single_source_capital_handoff_v1(
+        margin_observation=observation,
+        instrument_id=selected_instrument,
+        body_sha256=str(observation.provenance_digest),
+        fresh_pretrade_get_status=get_status,
+        live_account_bound_status=lab_status,
+        u04_p01_host_inputs=build_default_full_core_u04_p01_eligibility_host_inputs_v1(
+            raw_acct_lv=raw_acct_lv,
         ),
+        clear_treasury_idempotency=True,
     )
-    output = produce_current_productive_29p_risk_capital_v1(
-        observation=observation,
-        p01=p01_fact,
-        eligibility=eligibility,
-        eq_target=None,
-        u04=None,
-        restart_from_kind_set=FALSE_TOKEN,
-    )
-    produced = output.produced == TRUE_TOKEN
-    producer_reasons = tuple(str(code) for code in output.reason_codes)
-    if produced is not True:
+    output = handoff.producer_output
+    produced = output.produced == TRUE_TOKEN and handoff.fail_closed is not True
+    producer_reasons = tuple(str(code) for code in handoff.reason_codes)
+    if handoff.fail_closed is True or produced is not True:
+        fail_reasons = producer_reasons or tuple(str(code) for code in output.reason_codes)
         return _deny(
-            status=_classify_fail_status(producer_reasons, error_class=""),
-            blocker=producer_reasons[0] if producer_reasons else "LIVE_29P_PRODUCER_FAIL_CLOSED",
+            status=_classify_fail_status(fail_reasons, error_class=""),
+            blocker=fail_reasons[0]
+            if fail_reasons
+            else "TREASURY_SINGLE_SOURCE_HANDOFF_FAIL_CLOSED",
             replay=replay,
             get_count=get_count,
             producer_output_status="FAIL_CLOSED",
-            reasons=producer_reasons,
+            reasons=fail_reasons,
         )
 
-    trusted = get_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
-    claim = bind_step_29p_typed_equity_from_risk_capital_v1(
-        output=output,
-        fresh_pretrade_get_status=get_status,
-        live_account_bound_status=lab_status,
-        expected_instrument_id=selected_instrument,
-        observed_instrument_id=selected_instrument if trusted else "",
-        fresh_evidence_fetched=True,
-        fresh_evidence_validated=trusted and produced,
-    )
-    capital = evaluate_capital_admission_v1(
-        claim=CapitalAdmissionClaimV1(
-            source_class=CAPITAL_SOURCE_OBSERVED_VENUE,
-            account_identity=expected_uid,
-            instrument_id=selected_instrument,
-            observed_capital_raw=output.value,
-            observed_field_name=PRODUCER_IDENTITY,
-            evidence_class="LIVE_TYPED",
-            evidence_id=decision_epoch,
-        ),
-        expected_account_identity=expected_uid,
-        expected_instrument_id=selected_instrument,
-        admission_context=ADMISSION_CONTEXT_LIVE,
-    )
-    admissibility = evaluate_step_29p_capital_risk_admissibility_v1(capital=capital, claim=claim)
+    admissibility = handoff.step_29p_admissibility
     if admissibility.risk_admissible is not True:
         eval_reasons = tuple(str(code) for code in admissibility.reason_codes)
         return _deny(

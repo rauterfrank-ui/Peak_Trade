@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from src.ops.full_core_live_path_composition_root_v1.treasury_interference_proof_v1 import (
-    prove_treasury_interference_absent_v1,
+    prove_treasury_bounded_full_core_reachability_v1,
 )
 from src.ops.treasury_capital_admission_to_account_equity_orchestration_v1.constants_v1 import (
     NETWORK_ALLOWED as E4_NETWORK_ALLOWED,
@@ -34,9 +34,11 @@ from src.ops.treasury_productive_read_only_venue_observation_v1.errors_v1 import
 def execute_treasury_productive_reconciliation_chain_v1(
     observation: TreasuryVenueObservationV1,
 ) -> dict[str, Any]:
-    interference = prove_treasury_interference_absent_v1()
+    interference = prove_treasury_bounded_full_core_reachability_v1()
     if interference.get("ok") is not True:
-        raise TreasuryProductiveReadOnlyVenueObservationError("TREASURY_INTERFERENCE_PROOF_FAIL")
+        raise TreasuryProductiveReadOnlyVenueObservationError(
+            "TREASURY_BOUNDED_REACHABILITY_PROOF_FAIL"
+        )
 
     shadow = evaluate_treasury_shadow_read_only_enforcement_v1(
         observation=observation,
@@ -110,5 +112,7 @@ def execute_treasury_productive_reconciliation_chain_v1(
             "fail_closed": productive_host.base_numeric_binding.fail_closed,
         },
         "EARLIEST_NEW_REAL_BLOCKER": EARLIEST_NEW_REAL_BLOCKER_AFTER_WP,
-        "TREASURY_INTERFERENCE_PROOF": interference.get("TREASURY_INTERFERENCE_PROOF"),
+        "TREASURY_BOUNDED_REACHABILITY_PROOF": interference.get(
+            "TREASURY_BOUNDED_REACHABILITY_PROOF"
+        ),
     }

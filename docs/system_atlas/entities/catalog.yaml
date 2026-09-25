@@ -100,6 +100,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827
     # atlas_entity_review: REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
     # atlas_entity_review: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
     # atlas_entity_review: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
@@ -8652,6 +8653,11 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6827 TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # SINGLE_SOURCE=Treasury/E4/C08→B05 Q0 via current_productive_treasury_single_source_capital_handoff_v1;
+    # TREASURY_AND_DIRECT_GET_PARALLEL_ACTIVE=false; FULL_CORE_PRODUCTIVE_EQUITY_OBSERVATION_OWNER_COUNT=1;
+    # C08_PRODUCTIVE_BINDING_AUTHORIZED=true; AVAILABLE_FOR_SIZING_BASE=BOUND; TRADING_SEMANTICS_CHANGED=false;
+    # ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; LIVE_ENABLED=false; MAX_POSITIONS_EFFECTIVE=1.
     # B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # JOIN=witness_b05_full_core_capital_authority_bindings_v1 after live account capital context;
     # B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED; COMPANION_C2_STATUS=UNRESOLVED;
@@ -9057,6 +9063,8 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py
+      - tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
@@ -10958,7 +10966,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: WP_TREASURY_PRODUCTIVE_READ_ONLY_VENUE_OBSERVATION_V1
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     fail_closed: true
     source_paths:
       - src/ops/treasury_productive_read_only_venue_observation_v1/__init__.py
@@ -11091,13 +11099,14 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_PR_DEPOSIT_TO_AVAILABLE_FOR_SIZING_FIRST_MISSING_EDGE_V1
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     source_paths:
       - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/__init__.py
       - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/constants_v1.py
       - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/context_v1.py
       - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
       - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/errors_v1.py
+      - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/account_balance_usdc_avail_eq_adapter_v1.py
     source_symbols:
       - produce_treasury_venue_observation_via_funding_balance_get_v1
       - build_treasury_venue_observation_from_funding_balance_v1
@@ -11329,7 +11338,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_PR_C08_SEMANTIC_AUTHORITY_CLOSEOUT_V1
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1.py
     source_symbols:
@@ -11349,7 +11358,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_PR_C08_PRODUCTIVE_SIZING_SOURCE_BINDING_V1
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_models_v1.py
@@ -11391,7 +11400,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_PR_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_BINDING_V1
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py
@@ -11632,13 +11641,14 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:portfolio_capital_reservation_budget_v1
+    # TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827: Q3 unchanged; TREASURY_BINDING_N5_CONFLICT=false.
     # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; admit_sized_slot_reservation_v1 still optional via ENTER Live-29P after MV2 capital context rebind; N>1 unauthorized; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
     kind: GATE
     name: Portfolio capital reservation budget owner v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
     fail_closed: true
     source_paths:
       - src/ops/portfolio_capital_reservation_budget_v1/__init__.py
