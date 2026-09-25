@@ -104,7 +104,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Whole-Core completion package v1: pre-external egress proof closure (F-01); enter-live fresh trusted Q0/29P governance closure (F-02) via Treasury single-source handoff; Q0/Q1 and Learning Q6/Q8 ratification; map PARTIAL records whole_core_*; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
+- Whole-Core completion package v1: F-01 pre-external egress proof classifies one-shot POST join as INTENTIONALLY_ISOLATED_OWNER_GO; F-02 enter-live fresh trusted Q0 closed via Treasury C08 single-source handoff (governance truth repair); Q0/Q1 and Q6/Q8 ratification; C2 unchanged UNRESOLVED; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
 - modified_by=WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1
 

@@ -16,7 +16,7 @@
     "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py",
     "tests/ops/test_whole_core_completion_egress_q0_authority_v1.py"
   ],
-  "changed_paths_sha256": "f5c69baa9badb22b0b6b8ccb10b2367e6dcf990c96f04b374d9e06c79821a652",
+  "changed_paths_sha256": "78c3bf23bf86383bcdc33d4f884462ebb5acea42d2d52c0560f1156c389b8918",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/whole_core_completion_egress_q0_authority_v1.json",
