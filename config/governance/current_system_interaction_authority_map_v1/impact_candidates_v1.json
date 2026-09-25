@@ -232,6 +232,16 @@
         "tests/research/test_canonical_volatility_numeric_max_age_retained_estimate_late_age_carrier_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
-        "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+        "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+        "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_ADJUDICATION_V1.md",
+        "src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
+        "src/governance/pdf_v3_3_topic_completion_composition_v1.py",
+        "config/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_v1_decision_v1.json",
+        "config/governance/pdf_v3_3_f1_campaign_completion_adjudication_v1.json",
+        "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json",
+        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
+        "config/governance/pdf_v3_3_promotion_relevant_results_registry_v1.json",
+        "tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
+        "tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py"
     ]
 }

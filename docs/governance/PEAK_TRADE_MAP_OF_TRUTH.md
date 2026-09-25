@@ -110,6 +110,7 @@ in the Master Runbook and the named packages.
 | Master V2 / Double Play decision path | `trading` package / integrated offline trading-logic replay owners (see Master Runbook) |
 | V3.2 naked MV2 baseline-first lifecycle resolution (#6764) | `docs/ops/specs/V32_NAKED_MV2_DOUBLE_PLAY_BASELINE_FIRST_AUTHORITY_AND_LIFECYCLE_RESOLUTION_V1.md` / `src/governance/naked_mv2_double_play_baseline_first_lifecycle_resolution_v1.py` |
 | Concept PDF v3/v3.2 CURRENT MV2+DP alignment (navigation) | `docs/ops/specs/V32_CURRENT_MV2_DP_CONCEPT_ALIGNMENT_V1.md` / `docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_2_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md` |
+| Concept PDF v3.3 final DoD D1–D29 + Restblöcke A–H adjudication (navigation) | `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_ADJUDICATION_V1.md` / `src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py` / `src/governance/pdf_v3_3_topic_completion_composition_v1.py` |
 | D26 native vs candidate baseline evidence (navigation) | `docs/ops/specs/V32_D26_PLATFORM_UNIFIED_NATIVE_VS_CANDIDATE_BASELINE_EVIDENCE_CLOSURE_V1.md` |
 | D26 × F5 shadow baseline-binding owner policy (navigation) | `docs/ops/specs/V32_D26_F5_SHADOW_D26_BASELINE_BINDING_OWNER_POLICY_ADJUDICATION_V1.md` |
 | D27 F5 shadow test-entry lifecycle enforcement (navigation) | `docs/ops/specs/V32_D27_F5_SHADOW_TEST_ENTRY_LIFECYCLE_ENFORCEMENT_V1.md` |
