@@ -620,22 +620,22 @@ ruff format --check .
 
 Operator-Artefakte aus `~/Downloads` (Intake 2026-05-19) sind **nicht** Repo-Wahrheit. Aktive Steuerung bleibt dieses Frontdoor + [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md).
 
-| Artefakt | Ablage | Hinweis |
+| Artefakt | Status | Hinweis |
 |----------|--------|---------|
-| Notion Knowledge Graph / ops registry runbook v0 | [_archive/downloads_intake_20260519T195748Z/external/PEAK_TRADE_CURSOR_MULTI_AGENT_NOTION_KNOWLEDGE_GRAPH_RUNBOOK_V0.md](_archive/downloads_intake_20260519T195748Z/external/PEAK_TRADE_CURSOR_MULTI_AGENT_NOTION_KNOWLEDGE_GRAPH_RUNBOOK_V0.md) | **HISTORICAL** — Notion = navigation/evidence registry only; Repo + gates remain authoritative |
-| Autonomy roadmap (read-only, May 2026) | [_archive/downloads_intake_20260519T195748Z/external/Peak_Trade_Autonomy_Roadmap_20260502/](_archive/downloads_intake_20260519T195748Z/external/Peak_Trade_Autonomy_Roadmap_20260502/) | **HISTORICAL** — see [MASTER_V2_GO_LIVE_ROADMAP_V0.md](specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
-| OPS Cockpit recheck snapshots (Apr 2026) | [_archive/downloads_intake_20260519T195748Z/external/OPS Cockpit/](_archive/downloads_intake_20260519T195748Z/external/OPS%20Cockpit/) | **HISTORICAL** — see [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) |
+| Notion Knowledge Graph / ops registry runbook v0 | REMOVED_FROM_REPO | **HISTORICAL** — former `docs/ops/_archive/downloads_intake_*` tree removed (repo-convergence frozen-41); not restored |
+| Autonomy roadmap (read-only, May 2026) | REMOVED_FROM_REPO | **HISTORICAL** — see [MASTER_V2_GO_LIVE_ROADMAP_V0.md](specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
+| OPS Cockpit recheck snapshots (Apr 2026) | REMOVED_FROM_REPO | **HISTORICAL** — see [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) |
 
-Index: [_archive/downloads_intake_20260519T195748Z/README.md](_archive/downloads_intake_20260519T195748Z/README.md)
+Former intake index under `docs/ops/_archive/` removed with frozen-41 cleanup; not restored.
 
 ## Appendix H — Final Downloads cleanup (historical, non-authorizing)
 
 Second-pass cleanup (2026-05-19): remaining `~/Downloads` Peak_Trade items archived or externalized. **Not** repo truth.
 
-| Artefakt | Ablage |
+| Artefakt | Status |
 |----------|--------|
-| Direction-lock briefings, other MDs, visual PDFs | [_archive/downloads_final_cleanup_20260519T221506Z/](_archive/downloads_final_cleanup_20260519T221506Z/) |
-| Anthropic Cybersecurity Skills (third-party bulk) | [_archive/downloads_final_cleanup_20260519T221506Z/THIRD_PARTY_EXTERNAL_INPUTS_MANIFEST.md](_archive/downloads_final_cleanup_20260519T221506Z/THIRD_PARTY_EXTERNAL_INPUTS_MANIFEST.md) — **not vendored** |
+| Direction-lock briefings, other MDs, visual PDFs | REMOVED_FROM_REPO (former `docs/ops/_archive/downloads_final_cleanup_*`; frozen-41; not restored) |
+| Anthropic Cybersecurity Skills (third-party bulk) | REMOVED_FROM_REPO — **not vendored**; external operator archive only |
 
 Operator originals: `~/Documents/Peak_Trade_external_downloads_archive_20260519T221506Z/` (outside Downloads).
 

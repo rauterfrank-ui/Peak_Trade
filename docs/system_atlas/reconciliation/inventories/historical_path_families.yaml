@@ -424,18 +424,6 @@ rename_pairs:
   to: docs/webui/observability/grafana/dashboards/shadow/peaktrade-shadow-pipeline-mvs.json
   family_from: docs/webui/observability
   family_to: docs/webui/observability
-- from: BACKTICK_AUDIT.md
-  to: docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md
-  family_from: BACKTICK_AUDIT.md
-  family_to: docs/ops/_archive
-- from: DOC_MAP.md
-  to: docs/ops/_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md
-  family_from: DOC_MAP.md
-  family_to: docs/ops/_archive
-- from: FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
-  to: docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
-  family_from: FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md
-  family_to: docs/ops/_archive
 - from: docs/ops/PR_615_MERGE_LOG.md
   to: docs/ops/PR_619_MERGE_LOG.md
   family_from: docs/ops/PR_615_MERGE_LOG.md

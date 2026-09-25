@@ -1312,7 +1312,6 @@ manifest_paths:
 - docs/evidence/capability_o2_canonical_local_launcher_and_process_supervision_v1/MANIFEST.sha256
 - docs/evidence/capability_o3_secure_confirm_token_family_and_hidden_input_handoff_v1/MANIFEST.sha256
 - docs/evidence/capability_o4_canonical_public_md_and_ohlcv_transport_reconciliation_v1/MANIFEST.sha256
-- docs/evidence/capability_o5_canonical_read_model_and_market_dashboard_rebuild_v1/MANIFEST.sha256
 - docs/evidence/capability_o6_runtime_health_recovery_and_failure_injection_closure_v1/MANIFEST.sha256
 - docs/evidence/capability_o7_governed_end_to_end_runtime_and_dashboard_evidence_v1/MANIFEST.sha256
 - docs/evidence/capability_o8_canonical_runtime_operations_activation_v1/MANIFEST.sha256
@@ -1466,8 +1465,6 @@ manifest_paths:
 - docs/ops/CLI_RUN_MANIFEST_RUN_ID.md
 - docs/ops/PRODUCTIVE_PURE_STACK_NUMERIC_POLICY_CALIBRATION_CAMPAIGN_MANIFEST_V1.json
 - docs/ops/PRODUCTIVE_PURE_STACK_OWNER_VALUES_STRUCTURAL_MANIFEST_V1.json
-- docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/FINAL_DOWNLOADS_CLEANUP_MANIFEST.md
-- docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/THIRD_PARTY_EXTERNAL_INPUTS_MANIFEST.md
 - docs/ops/archives/scratch_manifest.txt
 - docs/ops/control_center/M3_IMPLEMENTATION_RUN_MANIFEST_20260109.md
 - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
