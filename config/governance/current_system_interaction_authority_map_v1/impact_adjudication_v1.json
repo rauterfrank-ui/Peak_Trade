@@ -213,12 +213,13 @@
     "forensic/post_step32_knowledge_integration_v0/manifests/source_to_finding_map.json",
     "forensic/post_step32_knowledge_integration_v0/manifests/step15_forbid_index.json",
     "forensic/post_step32_knowledge_integration_v0/manifests/worktree_file_manifest.json",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "scripts/ops/system_atlas_v1/adjudicate_pass_v1_records.py",
     "scripts/ops/system_atlas_v1/census_pass_v2_records.py",
     "scripts/ops/system_atlas_v1/evaluate_pass_v1_records.py",
     "scripts/ops/system_atlas_v1/understand_pass_v2_records.py"
   ],
-  "changed_paths_sha256": "9e992bb5e817cd140f44001e5c40d8a35b1aa3b9a59fafefb41a1af6a9c18284",
+  "changed_paths_sha256": "2d23502a02042837e7e1994049a7c35bb7d40e599432b16f7ecead2886018757",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
