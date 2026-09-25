@@ -52,6 +52,15 @@ rows:
   final_disposition: INSUFFICIENT_EVIDENCE
   lifecycle_state: OPEN
   reintegration_performed: false
+- record_id: RCN-000013
+  evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+  census_current_presence: CURRENTLY_PRESENT
+  evaluate_capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+  identity_status: CONVERGENCE_CLOSED_NOT_RETAINED
+  disposition_unchanged: false
+  final_disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  reintegration_performed: false
 - record_id: RCN-000014
   evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
   census_current_presence: CURRENTLY_ABSENT
@@ -331,4 +340,4 @@ rows:
   final_disposition: INSUFFICIENT_EVIDENCE
   lifecycle_state: OPEN
   reintegration_performed: false
-row_count: 35
+row_count: 36

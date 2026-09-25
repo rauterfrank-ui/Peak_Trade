@@ -54,9 +54,9 @@ def _payload() -> dict:
 def test_reevaluate_pass_v2_status_invariants() -> None:
     status = _status()
     assert status["census_closed"] is True
-    assert int(status["input_open_record_count"]) == 35
+    assert int(status["input_open_record_count"]) == 36
     assert int(status["new_final_disposition_count"]) == 5
-    assert int(status["remaining_insufficient_evidence_open_count"]) == 30
+    assert int(status["remaining_insufficient_evidence_open_count"]) == 31
     assert int(status["new_historically_valid_but_incompatible_count"]) == 1
     assert int(status["new_reject_for_current_system_count"]) == 4
     assert int(status["new_retain_as_is_count"]) == 0
@@ -72,8 +72,8 @@ def test_reevaluate_pass_v2_status_invariants() -> None:
     assert status["predecessor_pass_id"] == PREDECESSOR_PASS_ID
     assert status["predecessor_bound_sha"] == PREDECESSOR_BOUND_SHA
     assert int(status["total_ledger_record_count"]) == 53
-    assert int(status["total_retain_as_is_count"]) == 18
-    assert int(status["total_insufficient_evidence_count"]) == 30
+    assert int(status["total_retain_as_is_count"]) == 17
+    assert int(status["total_insufficient_evidence_count"]) == 31
     assert list(status["target_final_record_ids"]) == list(TARGET_FINAL_IDS)
     assert status["resulting_dispositions"]["RCN-000015"] == INCOMPATIBLE
     assert status["resulting_dispositions"]["RCN-000044"] == REJECT
@@ -113,8 +113,8 @@ def test_live_ledger_transition_35_to_30_open() -> None:
             rejected += 1
         else:
             raise AssertionError(f"unexpected_disposition:{rid}:{disp}")
-    assert retain == 18
-    assert insufficient == 30
+    assert retain == 17
+    assert insufficient == 31
     assert incompatible == 1
     assert rejected == 4
     assert tuple(open_ids) == REMAINING_OPEN_IDS
@@ -124,12 +124,12 @@ def test_live_ledger_transition_35_to_30_open() -> None:
 def test_v2_records_match_generated_and_refs_exist() -> None:
     generated = {row["record_id"]: row for row in reevaluate_open_records_pass_v2()}
     index = yaml.safe_load((PASS_ROOT / "index_v2.yaml").read_text(encoding="utf-8"))
-    assert int(index["row_count"]) == 35
+    assert int(index["row_count"]) == 36
     assert tuple(row["record_id"] for row in index["rows"]) == OPEN_IDS
     written = [row for row in index["rows"] if row["v2_record_written"] is True]
     unchanged = [row for row in index["rows"] if row["predecessor_unchanged"] is True]
     assert len(written) == 6
-    assert len(unchanged) == 29
+    assert len(unchanged) == 30
     assert tuple(row["record_id"] for row in written) == V2_WRITTEN_RECORD_IDS
     assert tuple(row["record_id"] for row in unchanged) == OUT_OF_SCOPE_OPEN_IDS
     for rid in V2_WRITTEN_RECORD_IDS:
@@ -242,9 +242,9 @@ def test_raw_quotes_are_not_interpretation() -> None:
 def test_schema_pins_v2_counts_and_v1_freeze() -> None:
     schema = yaml.safe_load((RECON / "schema.yaml").read_text(encoding="utf-8"))
     assert schema["reevaluate_v1_snapshots_are_frozen"] is True
-    assert int(schema["reevaluate_v2_input_open_count"]) == 35
+    assert int(schema["reevaluate_v2_input_open_count"]) == 36
     assert int(schema["reevaluate_v2_finalized_count"]) == 5
-    assert int(schema["reevaluate_v2_remaining_open_count"]) == 30
+    assert int(schema["reevaluate_v2_remaining_open_count"]) == 31
     assert schema["reevaluate_v2_rcn_000052_remains_open"] is True
     assert schema["reevaluate_v2_no_identity_merges"] is True
     assert schema["reevaluate_v2_no_runtime_mutation"] is True

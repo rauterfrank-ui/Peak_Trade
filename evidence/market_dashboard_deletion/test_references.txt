@@ -1,3 +1,0 @@
-POST_DELETION_TEST_AUDIT
-product tests test_market_dashboard_*.py excluding tombstone=0
-tombstone tests=tests/webui/test_market_dashboard_tombstone_v1.py

@@ -70,7 +70,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
+    modified_by: REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

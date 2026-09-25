@@ -23,9 +23,9 @@ census_status: CENSUS_CLOSED
 adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
 baseline_origin_main_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
 ledger_record_count: 53
-ledger_input_insufficient_evidence_count: 35
-input_open_record_count: 35
-reevaluation_attempted_record_count: 35
+ledger_input_insufficient_evidence_count: 36
+input_open_record_count: 36
+reevaluation_attempted_record_count: 36
 v2_written_record_count: 6
 target_final_record_ids:
 - RCN-000015
@@ -40,6 +40,7 @@ out_of_scope_open_record_ids:
 - RCN-000010
 - RCN-000011
 - RCN-000012
+- RCN-000013
 - RCN-000014
 - RCN-000019
 - RCN-000020
@@ -77,7 +78,7 @@ new_adapt_and_reintegrate_count: 0
 new_capability_already_covered_count: 0
 new_historically_valid_but_incompatible_count: 1
 new_reject_for_current_system_count: 4
-remaining_insufficient_evidence_open_count: 30
+remaining_insufficient_evidence_open_count: 31
 new_final_disposition_count: 5
 final_disposition_changes_performed: 5
 rcn_000052_remains_open: true
@@ -142,9 +143,9 @@ landscape_v1_ids:
 - RCN-000035
 - RCN-000047
 total_ledger_record_count: 53
-total_retain_as_is_count: 18
+total_retain_as_is_count: 17
 total_adapt_and_reintegrate_count: 0
 total_capability_already_covered_count: 0
 total_historically_valid_but_incompatible_count: 1
 total_reject_for_current_system_count: 4
-total_insufficient_evidence_count: 30
+total_insufficient_evidence_count: 31

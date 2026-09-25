@@ -59,6 +59,16 @@ rows:
   final_disposition_change_performed: false
   identity_merge_performed: false
   reintegration_performed: false
+- record_id: RCN-000013
+  census_current_presence: CURRENTLY_PRESENT
+  v2_record_written: false
+  predecessor_unchanged: true
+  disposition_burden_met: false
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  final_disposition_change_performed: false
+  identity_merge_performed: false
+  reintegration_performed: false
 - record_id: RCN-000014
   census_current_presence: CURRENTLY_ABSENT
   v2_record_written: false
@@ -369,4 +379,4 @@ rows:
   final_disposition_change_performed: false
   identity_merge_performed: false
   reintegration_performed: false
-row_count: 35
+row_count: 36

@@ -16,31 +16,34 @@ runtime_mutation_performed: false
 record_id: RCN-000013
 canonical_record_name: Market dashboard deletion evidence pack
 census_current_presence: CURRENTLY_PRESENT
-evaluate_capability_overlap: SAME_ARTIFACT_STILL_PRESENT
-disposition: RETAIN_AS_IS
-lifecycle_state: DISPOSITION_DECIDED
-identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
-positive_reason: The deletion evidence pack remains on origin/main as evidence, not runtime. Compatible forensic/evidence
-  artifact recording the product-stack deletion.
+evaluate_capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: CONVERGENCE_CLOSED_NOT_RETAINED
+positive_reason: REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1 removed evidence/market_dashboard_deletion/ and evidence/market_dashboard_v2/
+  from origin/main. CURRENT Landscape V2 GET /market consumer (RCN-000001) remains. Convergence closure is not a runtime rejection.
 alternatives_rejected:
-- 'REJECT because it documents deletion: evidence packs are not rejection of the pack itself'
-further_evidence_required: false
+- 'RETAIN_AS_IS: committed historical evidence packs are no longer tree-retained'
+- 'REJECT_FOR_CURRENT_SYSTEM: FGC-02 removed evidence only, not CURRENT product code'
+further_evidence_required: true
 reintegration_candidate: false
 claims:
 - claim_class: ADJUDICATED_CONCLUSION
-  text: Market dashboard deletion evidence pack remains on the bound current tree as the same artifact; current role is compatible.
-    SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus compatible
-    authority/safety/runtime role.
-  evidence:
-  - evidence/market_dashboard_deletion/
-  used_as_fact: true
-- claim_class: CANONICAL_CURRENT_FACT
-  text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+  text: 'Market dashboard historical evidence islands (deletion forensics + v2 chrome packs): evidence is not sufficient for
+    a stronger terminal class. INSUFFICIENT_EVIDENCE remains OPEN and is not a rejection.'
   evidence:
   - docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
+  - src/webui/market_dashboard_landscape_v2/
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Landscape V2 package remains on origin/main after FGC-02.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
   used_as_fact: true
 evidence_refs:
-- evidence/market_dashboard_deletion/
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
+- src/webui/market_dashboard_landscape_v2/
 contradictions: []
 unresolved_questions: []
 evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

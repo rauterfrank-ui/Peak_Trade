@@ -435,18 +435,27 @@ def evaluate_records() -> list[dict[str, Any]]:
             "RCN-000012",
             "src/webui/futures_read_only_market_dashboard_runtime_v0.py",
         ),
-        _present(
+        _row(
             "RCN-000013",
-            "evidence/market_dashboard_deletion/",
-            ["evidence/market_dashboard_deletion/"],
-            runtime=NOT_RUNTIME,
-            authority=NONE_AUTH,
-            safety=NOT_RUNTIME,
+            current_equivalent="",
+            current_paths=[],
+            capability_overlap=OVERLAP_NONE,
+            semantic_compatibility=COMPATIBLE,
+            authority_compatibility=NONE_AUTH,
+            safety_compatibility=NOT_RUNTIME,
+            runtime_compatibility=ABSENT_RUNTIME,
+            conflicts=[],
+            gaps=[
+                "evidence/market_dashboard_deletion/ removed by "
+                "REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1",
+                "evidence/market_dashboard_v2/ removed in the same bounded WP",
+            ],
             claims=[
                 _claim(
                     "CANONICAL_CURRENT_FACT",
-                    "Market dashboard deletion evidence pack directory still exists.",
-                    ["evidence/market_dashboard_deletion/"],
+                    "Market dashboard historical evidence islands are absent after FGC-02; "
+                    "Landscape V2 product code remains.",
+                    LANDSCAPE_V2_PATHS[:2],
                 ),
             ],
         ),

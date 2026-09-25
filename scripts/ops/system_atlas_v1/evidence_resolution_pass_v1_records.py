@@ -47,6 +47,7 @@ OPEN_IDS = (
     "RCN-000010",
     "RCN-000011",
     "RCN-000012",
+    "RCN-000013",
     "RCN-000014",
     "RCN-000015",
     "RCN-000019",
@@ -168,6 +169,7 @@ def _row(
     remaining_open_questions: list[str],
     relations_proven: list[dict[str, Any]] | None = None,
     contradictions: list[str] | None = None,
+    disposition_unchanged: bool = True,
 ) -> dict[str, Any]:
     if status not in ALLOWED_RESOLUTION_STATUSES:
         raise ValueError(f"resolution_status_unknown:{record_id}:{status}")
@@ -181,7 +183,7 @@ def _row(
         "identity_merge_performed": False,
         "reintegration_performed": False,
         "runtime_mutation_performed": False,
-        "disposition_unchanged": True,
+        "disposition_unchanged": disposition_unchanged,
         "missing_proof_question": missing_proof_question,
         "identity_gap": identity_gap,
         "function_gap": function_gap,
@@ -686,6 +688,7 @@ def evidence_resolution_records() -> list[dict[str, Any]]:
             ),
         )
     )
+    rows.append(_rcn_000013())
     rows.append(
         _archive_deleted(
             "RCN-000014",
@@ -1056,15 +1059,17 @@ def evidence_resolution_records() -> list[dict[str, Any]]:
                 "1d61ec0d/500f15e4 on 2026-07-17) then deleted with the stack in b5b81728."
             ),
             family_relations=(
-                "Different evidence event from the still-present deletion pack "
-                "evidence/market_dashboard_deletion (RCN-000013, RETAIN). POSSIBLE_SAME_AS "
+                "Different evidence event from the market dashboard deletion forensics pack "
+                "(RCN-000013; committed evidence removed by FGC-02). POSSIBLE_SAME_AS "
                 "RCN-000013 remains hypothesis: reset pack vs later deletion pack."
             ),
             unique_purpose_vs_v2_slots=(
                 "Reset pack is evidence, not a Landscape V2 slot. GET /market overlap does not apply "
                 "as identity."
             ),
-            extra_refs=["evidence/market_dashboard_deletion/deletion_manifest.txt"],
+            extra_refs=[
+                "docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml",
+            ],
             extra_questions=[
                 "What did the reset pack assert that the deletion pack (RCN-000013) did not?",
             ],
@@ -1088,12 +1093,94 @@ def evidence_resolution_records() -> list[dict[str, Any]]:
     )
     rows.append(_rcn_000052())
 
-    if len(rows) != 35:
+    if len(rows) != 36:
         raise ValueError(f"open_resolution_count_mismatch:{len(rows)}")
     ids = [r["record_id"] for r in rows]
     if tuple(ids) != OPEN_IDS:
         raise ValueError(f"open_id_order_mismatch:{ids}")
     return rows
+
+
+def _rcn_000013() -> dict[str, Any]:
+    return _row(
+        "RCN-000013",
+        status=PARTIAL,
+        disposition_unchanged=False,
+        missing_proof_question=(
+            "FGC-02 removed committed evidence/market_dashboard_deletion/ and "
+            "evidence/market_dashboard_v2/; ledger discovery remains historical census."
+        ),
+        identity_gap=_gap(
+            status="CONVERGENCE_CLOSED_NOT_RETAINED",
+            statement=(
+                "Historical deletion forensics and v2 chrome evidence packs were tree-retained "
+                "then removed by REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1. "
+                "Not a CURRENT runtime identity."
+            ),
+            used_as_fact=True,
+            source=_evaluate("RCN-000013"),
+            source_sha=EVALUATE_FROZEN_SHA,
+            evidence_type="CANONICAL_AUTHORITY",
+        ),
+        function_gap=_gap(
+            status="PROVEN_HISTORICAL_FUNCTION",
+            statement=(
+                "Evidence pack recorded PR5290 dashboard product-stack deletion scope; "
+                "v2 packs held Playwright/chrome maturity artifacts."
+            ),
+            used_as_fact=True,
+            source=_understand("RCN-000013"),
+            source_sha=UNDERSTAND_FROZEN_SHA,
+            evidence_type="HISTORICAL_INTERMEDIATE",
+        ),
+        relation_gap=_gap(
+            status="PROVEN_NOT_SAME_AS_LANDSCAPE_V2_PRODUCT",
+            statement=(
+                "Landscape V2 consumer code (RCN-000001) remains; removed paths were evidence-only."
+            ),
+            used_as_fact=True,
+            source="src/webui/market_dashboard_landscape_v2/",
+            source_sha=EVIDENCE_RESOLUTION_BOUND_SHA,
+            evidence_type="FORENSIC_RAW",
+        ),
+        successor_or_replacement_gap=_gap(
+            status="NOT_APPLICABLE",
+            statement="Committed evidence removal is not product replacement.",
+            used_as_fact=True,
+            source=_adjudicate("RCN-000013"),
+            source_sha=ADJUDICATE_FROZEN_SHA,
+            evidence_type="OPEN_OR_CONTRADICTORY",
+        ),
+        current_system_fit_gap=_gap(
+            status="ABSENT_BY_CONVERGENCE",
+            statement="No current tree path retains the historical evidence islands after FGC-02.",
+            used_as_fact=True,
+            source=_evaluate("RCN-000013"),
+            source_sha=EVALUATE_FROZEN_SHA,
+            evidence_type="CANONICAL_AUTHORITY",
+        ),
+        claims=[
+            _claim(
+                "CANONICAL_CURRENT_FACT",
+                "Landscape V2 package remains on origin/main after FGC-02.",
+                [
+                    "src/webui/market_dashboard_landscape_v2/",
+                    "src/webui/market_dashboard_landscape_shell_router_v2.py",
+                ],
+                used_as_fact=True,
+                source_sha=EVIDENCE_RESOLUTION_BOUND_SHA,
+                source_path="src/webui/market_dashboard_landscape_v2/",
+                evidence_type="FORENSIC_RAW",
+            )
+        ],
+        evidence_refs=[
+            _understand("RCN-000013"),
+            _evaluate("RCN-000013"),
+            _adjudicate("RCN-000013"),
+            "src/webui/market_dashboard_landscape_v2/",
+        ],
+        remaining_open_questions=[],
+    )
 
 
 def _rcn_000015() -> dict[str, Any]:
@@ -1718,7 +1805,7 @@ def _rcn_000049() -> dict[str, Any]:
                 "never-merged commit — that is not origin/main identity."
             ),
             used_as_fact=False,
-            source="src/docs/Peak_Trade_OVERVIEW.md",
+            source="docs/PEAK_TRADE_OVERVIEW.md",
             source_sha=EVIDENCE_RESOLUTION_BOUND_SHA,
             evidence_type="HYPOTHESIS",
         ),
@@ -1726,7 +1813,7 @@ def _rcn_000049() -> dict[str, Any]:
             status="NOT_PROVEN",
             statement="Current overview docs are not proven to be the relocated 00_overview family.",
             used_as_fact=True,
-            source="src/docs/Peak_Trade_OVERVIEW.md",
+            source="docs/PEAK_TRADE_OVERVIEW.md",
             source_sha=EVIDENCE_RESOLUTION_BOUND_SHA,
             evidence_type="FORENSIC_RAW",
         ),
@@ -1762,7 +1849,7 @@ def _rcn_000049() -> dict[str, Any]:
             _understand("RCN-000049"),
             _evaluate("RCN-000049"),
             _adjudicate("RCN-000049"),
-            "src/docs/Peak_Trade_OVERVIEW.md",
+            "docs/PEAK_TRADE_OVERVIEW.md",
             QUOTES_REL,
             COMMANDS_REL,
         ],

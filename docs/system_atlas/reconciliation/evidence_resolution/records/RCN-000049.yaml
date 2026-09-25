@@ -41,14 +41,14 @@ relation_gap:
   statement: POSSIBLE_SAME_AS src/docs (RCN-000053, RETAIN) remains hypothesis. 42c3f443d also R100-moved src/docs/Peak_Trade_WORKFLOW_NOTES.md
     into docs/00_overview/ on that never-merged commit — that is not origin/main identity.
   used_as_fact: false
-  source: src/docs/Peak_Trade_OVERVIEW.md
+  source: docs/PEAK_TRADE_OVERVIEW.md
   source_sha: f9618c73f1834b68588ceab586da4d6408962a10
   evidence_type: HYPOTHESIS
 successor_or_replacement_gap:
   status: NOT_PROVEN
   statement: Current overview docs are not proven to be the relocated 00_overview family.
   used_as_fact: true
-  source: src/docs/Peak_Trade_OVERVIEW.md
+  source: docs/PEAK_TRADE_OVERVIEW.md
   source_sha: f9618c73f1834b68588ceab586da4d6408962a10
   evidence_type: FORENSIC_RAW
 current_system_fit_gap:
@@ -79,7 +79,7 @@ evidence_refs:
 - docs/system_atlas/reconciliation/understand/records/RCN-000049.yaml
 - docs/system_atlas/reconciliation/evaluate/records/RCN-000049.yaml
 - docs/system_atlas/reconciliation/adjudicate/records/RCN-000049.yaml
-- src/docs/Peak_Trade_OVERVIEW.md
+- docs/PEAK_TRADE_OVERVIEW.md
 - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
 - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
 remaining_open_questions:

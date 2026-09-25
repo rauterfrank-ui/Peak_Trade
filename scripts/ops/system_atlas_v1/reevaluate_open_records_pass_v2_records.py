@@ -714,9 +714,9 @@ def reevaluate_open_records_pass_v2() -> list[dict[str, Any]]:
     ids = tuple(row["record_id"] for row in rows)
     if ids != V2_WRITTEN_RECORD_IDS:
         raise ValueError(f"v2_written_id_order_mismatch:{ids}")
-    if len(REMAINING_OPEN_IDS) != 30:
+    if len(REMAINING_OPEN_IDS) != 31:
         raise ValueError(f"remaining_open_count_mismatch:{len(REMAINING_OPEN_IDS)}")
-    if len(OUT_OF_SCOPE_OPEN_IDS) != 29:
+    if len(OUT_OF_SCOPE_OPEN_IDS) != 30:
         raise ValueError(f"out_of_scope_open_count_mismatch:{len(OUT_OF_SCOPE_OPEN_IDS)}")
     if len(LANDSCAPE_V1_IDS) != 15:
         raise ValueError("landscape_v1_count_mismatch")

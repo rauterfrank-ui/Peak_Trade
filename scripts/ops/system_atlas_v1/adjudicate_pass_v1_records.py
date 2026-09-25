@@ -30,7 +30,6 @@ RETAIN_IDS = (
     "RCN-000006",
     "RCN-000007",
     "RCN-000008",
-    "RCN-000013",
     "RCN-000016",
     "RCN-000017",
     "RCN-000018",
@@ -315,17 +314,6 @@ _RETAIN_META: dict[str, dict[str, Any]] = {
             "Identity fusion with RCN-000005 composition stack: different trees and authority class",
         ],
     },
-    "RCN-000013": {
-        "identity": "Market dashboard deletion evidence pack",
-        "reason": (
-            "The deletion evidence pack remains on origin/main as evidence, not runtime. "
-            "Compatible forensic/evidence artifact recording the product-stack deletion."
-        ),
-        "evidence": ["evidence/market_dashboard_deletion/"],
-        "rejected": [
-            "REJECT because it documents deletion: evidence packs are not rejection of the pack itself",
-        ],
-    },
     "RCN-000016": {
         "identity": "Kanonisches Vollautonomie-Runbook v4.4.12",
         "reason": (
@@ -470,6 +458,39 @@ def adjudicate_records() -> list[dict[str, Any]]:
             alternatives_rejected=list(meta["rejected"]),
             unresolved_questions=list(meta.get("questions") or []),
         )
+
+    by_id["RCN-000013"] = _open(
+        "RCN-000013",
+        identity=(
+            "Market dashboard historical evidence islands (deletion forensics + v2 chrome packs)"
+        ),
+        identity_status="CONVERGENCE_CLOSED_NOT_RETAINED",
+        reason=(
+            "REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1 removed "
+            "evidence/market_dashboard_deletion/ and evidence/market_dashboard_v2/ from "
+            "origin/main. CURRENT Landscape V2 GET /market consumer (RCN-000001) remains. "
+            "Convergence closure is not a runtime rejection."
+        ),
+        evidence_refs=[
+            "docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml",
+            "src/webui/market_dashboard_landscape_v2/",
+        ],
+        alternatives_rejected=[
+            "RETAIN_AS_IS: committed historical evidence packs are no longer tree-retained",
+            "REJECT_FOR_CURRENT_SYSTEM: FGC-02 removed evidence only, not CURRENT product code",
+        ],
+        extra_claims=[
+            _claim(
+                "CANONICAL_CURRENT_FACT",
+                "Landscape V2 package remains on origin/main after FGC-02.",
+                [
+                    "src/webui/market_dashboard_landscape_v2/",
+                    "src/webui/market_dashboard_landscape_shell_router_v2.py",
+                ],
+            ),
+        ],
+        unresolved_questions=[],
+    )
 
     for rid, identity in _LANDSCAPE_V1_META.items():
         by_id[rid] = _open(

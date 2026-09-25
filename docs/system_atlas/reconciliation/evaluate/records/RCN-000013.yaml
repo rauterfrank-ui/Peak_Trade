@@ -17,20 +17,22 @@ census_current_presence: CURRENTLY_PRESENT
 comparison_status: CURRENT_SYSTEM_COMPARED
 compared_against_ref: origin/main
 compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
-current_equivalent: evidence/market_dashboard_deletion/
-current_paths:
-- evidence/market_dashboard_deletion/
-capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+current_equivalent: ''
+current_paths: []
+capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
 semantic_compatibility: COMPATIBLE
 authority_compatibility: COMPATIBLE_NONE_AUTHORITY
 safety_compatibility: NOT_RUNTIME
-runtime_compatibility: NOT_RUNTIME
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
 conflicts: []
-gaps: []
+gaps:
+- evidence/market_dashboard_deletion/ removed by REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
+- evidence/market_dashboard_v2/ removed in the same bounded WP
 claims:
 - claim_class: CANONICAL_CURRENT_FACT
-  text: Market dashboard deletion evidence pack directory still exists.
+  text: Market dashboard historical evidence islands are absent after FGC-02; Landscape V2 product code remains.
   evidence:
-  - evidence/market_dashboard_deletion/
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
   used_as_fact: true
 open_questions: []

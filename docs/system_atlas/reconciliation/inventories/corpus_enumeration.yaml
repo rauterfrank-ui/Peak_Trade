@@ -976,8 +976,6 @@ current_scripts_top:
 - webui
 - workflows
 evidence_top:
-- market_dashboard_deletion
-- market_dashboard_v2
 - ops
 evidence_ops_pack_count: 99
 evidence_ops_packs:
@@ -1469,10 +1467,6 @@ manifest_paths:
 - docs/ops/control_center/M3_IMPLEMENTATION_RUN_MANIFEST_20260109.md
 - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md
 - docs/ops/templates/CANARY_LIVE_MANIFEST_TEMPLATE.md
-- evidence/market_dashboard_deletion/deletion_manifest.txt
-- evidence/market_dashboard_deletion/manifest.sha256
-- evidence/market_dashboard_deletion/manifest_file.sha256
-- evidence/market_dashboard_v2/capability7_product_maturity/evidence_manifest.sha256
 - evidence/ops/available_margin_forensic_binding_implementation_and_closure_v1/20260830T004150Z/MANIFEST.sha256
 - evidence/ops/exact_venue_metadata_get_current_sui_pretrade_max_size_v1/20260829T182239Z/MANIFEST.sha256
 - evidence/ops/instrument_state_forensic_binding_and_closure_v1/20260830T044522Z/MANIFEST.sha256

@@ -20,7 +20,13 @@ REPO = Path(__file__).resolve().parents[2]
 TEMPLATE = REPO / "templates" / "peak_trade_dashboard" / "market_landscape_v2.html"
 CSS = REPO / "static" / "css" / "market_dashboard_landscape_v2.css"
 JS = REPO / "static" / "js" / "market_dashboard_landscape_v2.js"
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "capability7_product_maturity"
+
+
+def _ephemeral_evidence_dir(tmp_path: Path) -> Path:
+    root = tmp_path / "market_dashboard_v2" / "capability7_product_maturity"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
 
 VIEWPORTS = (
     (1512, 982, "market_focus_1512x982.png"),
@@ -185,8 +191,8 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
         **context,
     )
 
-    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-    (EVIDENCE_DIR / "rendered_market.html").write_text(html, encoding="utf-8")
+    evidence_dir = _ephemeral_evidence_dir(tmp_path)
+    (evidence_dir / "rendered_market.html").write_text(html, encoding="utf-8")
 
     console_errors: list[str] = []
     page_errors: list[str] = []
@@ -342,7 +348,7 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
                 summary.focus()
                 page.keyboard.press("Shift+Tab")
                 page.keyboard.press("Tab")
-                shot_path = EVIDENCE_DIR / shot_name
+                shot_path = evidence_dir / shot_name
                 page.screenshot(path=str(shot_path), full_page=False)
 
                 keyboard_notes[shot_name] = {
@@ -361,7 +367,7 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
     assert console_errors == [], console_errors
     assert page_errors == [], page_errors
 
-    (EVIDENCE_DIR / "console.log").write_text(
+    (evidence_dir / "console.log").write_text(
         json.dumps(
             {"console_errors": console_errors, "page_errors": page_errors},
             indent=2,
@@ -369,7 +375,7 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
         + "\n",
         encoding="utf-8",
     )
-    (EVIDENCE_DIR / "keyboard_focus_review.txt").write_text(
+    (evidence_dir / "keyboard_focus_review.txt").write_text(
         json.dumps(keyboard_notes, indent=2) + "\n",
         encoding="utf-8",
     )
