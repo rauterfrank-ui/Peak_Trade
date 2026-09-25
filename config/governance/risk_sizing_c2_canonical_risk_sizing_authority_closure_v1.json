@@ -27,9 +27,9 @@
   "verdict": {
     "final_verdict": "C2_AND_CANONICAL_RISK_SIZING_AUTHORITY_ROLE_CLOSURE_SATISFIED",
     "c2_verdict": "C2_AUTHORITY_ROLE_RATIFIED",
-    "c2_status": "PARTIAL_CONVERSION_NOT_READY",
-    "c2_closure_rule_satisfied": false,
-    "conversion_ready": false,
+    "c2_status": "CONVERSION_DEPENDENCIES_CLOSED_PROVEN",
+    "c2_closure_rule_satisfied": true,
+    "conversion_ready": true,
     "canonical_risk_sizing_owner": "src.governance.capital_risk_sizing_v1",
     "canonical_risk_sizing_owner_count": 1,
     "note": "Ratifies productive canonical Risk/Sizing owner and Companion C2 authority roles (fraction config vs conversion binding vs execution consumer). Does not implement Fraction→Units math or elevate Companion conversion inputs to PROVEN_CURRENT."
@@ -100,6 +100,7 @@
     "fraction_to_units_owner": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1",
     "fraction_to_units_owner_count": 1,
     "fraction_to_units_runtime_implemented": false,
+    "fraction_to_units_dependency_closure_ref": "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
     "units_formula": "NOT_IMPLEMENTED_GOVERNED_CONVERSION_ABSENT",
     "units_output_dimension": "QUANTITY_BASE_UNITS",
     "pass_through_consumer": {
@@ -112,8 +113,8 @@
     "execution_quantity_normalization_owner_full_core": "src.ops.full_core_live_path_composition_root_v1.venue_translation_v1",
     "execution_quantity_normalization_owner_companion": "NONE_GOVERNED_NORMALIZATION_ABSENT",
     "execution_normalization_owner_count_productive_full_core": 1,
-    "c2_conversion_input_authorities": "PARTIAL_FULL_CORE_ONLY_NOT_COMPANION_HANDOFF",
-    "c2_input_domains_proven_current_count": 0
+    "c2_conversion_input_authorities": "COMPANION_READ_BINDING_PROVEN",
+    "c2_input_domains_proven_current_count": 3
   },
   "authority_invariants": {
     "selection_authority_owner_count": 1,
@@ -169,10 +170,11 @@
     "NO_QUANTITY_MATH_CHANGE": true,
     "NO_SIGNAL_TO_ORDERS_MUTATION": true,
     "NO_SHADOW_LIVE_ORDER_GENERATION_MUTATION": true,
-    "CONVERSION_READY": false,
+    "CONVERSION_READY": true,
     "MAP_AUTHORITY": "NONE"
   },
   "related_but_separate_contracts": {
+    "risk_sizing_c2_companion_conversion_dependency_closure_v1": "COMPANION_C2_INPUT_READ_BINDING_AND_ALGEBRA_CLOSED_NO_RUNTIME",
     "risk_sizing_c2_companion_blocking_boundary_ratification_v1": "BLOCKING_BOUNDARY_UNCHANGED_VERDICT_SUPERSEDED_FOR_AUTHORITY_ROLES_BY_THIS_CLOSURE",
     "risk_sizing_c2_input_authority_closure_v1": "C2_INPUT_GATE_UNCHANGED_NOT_PROVEN_CURRENT",
     "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "INTENT_FROZEN_UNCHANGED",

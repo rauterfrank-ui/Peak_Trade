@@ -693,6 +693,34 @@ MAX_POSITIONS_EFFECTIVE=1
 ATLAS_AUTHORITY=NONE
 ```
 
+### C2 Companion conversion dependency closure
+
+Owner-GO **OWNER_GO_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1** (one-shot;
+**CONSUMED**) ratifies read-only Companion C2 input bindings (Q0 equity,
+`mark_price`, instrument metadata), `COMPANION_FRACTION_TO_UNITS_CONTRACT_V1`
+algebra, and `CONVERSION_READY=true` for dependency closure only. Machine
+contracts:
+`config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json`,
+`config/governance/companion_fraction_to_units_contract_v1.json`. Binding
+module: `src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/`.
+
+No Shadow/Live runtime conversion. No `signal_to_orders` mutation. No
+external effect.
+
+```text
+OWNER_GO=OWNER_GO_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
+OWNER_GO_STATUS=CONSUMED
+CONVERSION_READY=true
+C2_STATUS=CONVERSION_DEPENDENCIES_CLOSED_PROVEN
+COMPANION_RUNTIME_CONVERSION_PRESENT=false
+C2_AUTHORITY_ADDED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+MAX_POSITIONS_EFFECTIVE=1
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings
