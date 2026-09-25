@@ -205,6 +205,8 @@
         "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
         "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
         "tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py",
+        "tests/ops/test_full_core_current_productive_execute_network_read_credential_loader_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
         "src/learning/deterministic_decision_outcome_v0/",
         "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py",
         "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/",

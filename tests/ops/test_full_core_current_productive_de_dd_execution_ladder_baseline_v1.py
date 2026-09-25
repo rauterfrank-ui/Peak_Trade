@@ -55,6 +55,7 @@ def test_de_dd_modules_on_protected_chain_surface() -> None:
         "fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py" in p
         for p in paths
     )
+    assert any("execute_network_read_credential_loader_v1.py" in p for p in paths)
 
 
 def test_de_does_not_import_cap72_host_join() -> None:

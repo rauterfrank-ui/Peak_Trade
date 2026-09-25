@@ -8573,6 +8573,10 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # FC_01_PRODUCTIVE_EXECUTE_NETWORK_READ_CREDENTIAL_LOADER_V1: NAVIGATION_ONLY;
+    # ATLAS_AUTHORITY=NONE; READ_LOADER=current_productive_execute_network_read_credential_loader_v1;
+    # CREDENTIAL_AUTHORITY=SECTION_11_13_5_SECRETREF_AND_K1_READ_SESSION; POST_COUNT=0;
+    # EXTERNAL_EFFECT_AUTHORIZED=false; TRADING_SEMANTICS_CHANGED=false.
     # PR_6806 DK_EXECUTE_NETWORK_CREDENTIAL_JOIN_BOUNDED_CLOSURE_V1: NAVIGATION_ONLY;
     # ATLAS_AUTHORITY=NONE; SHARED_JOIN=current_productive_execute_network_credential_join_v1;
     # CREDENTIAL_SEMANTICS=EEA/CZ fail-closed reuse; TRADING_SEMANTICS_CHANGED=false;
@@ -8907,6 +8911,7 @@ entities:
       - evidence/ops/full_core_current_productive_cap24_selection_state_canonical_writer_v1/20260922T080000Z/claims.json
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py
@@ -9053,6 +9058,7 @@ entities:
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py
       - tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py
+      - tests/ops/test_full_core_current_productive_execute_network_read_credential_loader_v1.py
       - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md
       - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md
       - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
