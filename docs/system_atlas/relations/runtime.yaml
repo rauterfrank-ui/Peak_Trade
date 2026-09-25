@@ -1161,6 +1161,9 @@ relations:
       ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_full_core_cycle_observes_elementary_direction
+    # PR_6804 MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # HIT=evidence_source_master_v2; OBSERVES_SEMANTICS_UNCHANGED=true; INDEX_PX_NOT_DIRECTION_INPUT=true;
+    # TRADING_SEMANTICS_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
     source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     type: OBSERVES
     target: RUNTIME_COMPONENT:elementary_direction_v1
