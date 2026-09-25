@@ -87,18 +87,19 @@ REQUIRED_DOC_MARKERS = (
     "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO=true",
     "ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
     "FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_RATIFIED=true",
-    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=false",
+    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true",
+    "B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED",
     "REFERENCE_PRICE_AUTHORITY_OWNER=ops.governed_productive_reference_price_authority_producer_v1",
     "FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED=true",
     "REFERENCE_PRICE_SEMANTICS_CLASS_RATIFIED=mark_price",
-    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false",
+    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true",
     "INSTRUMENT_METADATA_AUTHORITY_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1",
     "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED=true",
-    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false",
+    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true",
     "EXPECTED_INPUT_DOMAIN_COUNT=3",
     "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=3",
-    "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=0",
-    "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=0",
+    "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=3",
+    "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=3",
     "RUNTIME_BRIDGE_ACTIVATED=false",
     "LIVE_AUTHORIZED=false",
     "ORDERS_ENABLED=false",
@@ -134,7 +135,7 @@ REQUIRED_DOC_MARKERS = (
 )
 
 GLOBAL_NON_CLAIMS = (
-    "NO_AUTHORITY_CHAIN_CLOSED_FOR_ANY_INPUT_DOMAIN",
+    "B05_FULL_CORE_AUTHORITY_CHAINS_CLOSED_COMPANION_C2_UNRESOLVED",
     "NO_AUTHORITY_ACTIVATION",
     "NO_PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED",
     "NO_FRACTION_TO_UNITS_CONVERSION_IN_THIS_SLICE",
@@ -209,9 +210,9 @@ def test_contract_doc_markers_present() -> None:
     assert "OWNER_ACTIVATED=true" not in text
     assert "AUTHORITY_ACTIVATION_AUTHORIZED=true" not in text
     assert "PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED=true" not in text
-    assert "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true" not in text
-    assert "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true" not in text
-    assert "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true" not in text
+    assert "B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED" in text or (
+        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true" in text
+    )
 
 
 def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -> None:
@@ -243,11 +244,13 @@ def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -
     )
 
     for row in domains:
-        assert row["authority_chain_closed"] is False, row["domain_id"]
+        assert row["authority_chain_closed"] is True, row["domain_id"]
         if row["domain_id"] == "INSTRUMENT_METADATA":
             assert row["productive_producer_present"] is True
+        elif row["domain_id"] == "REFERENCE_PRICE":
+            assert row["productive_producer_present"] is True
         else:
-            assert row["productive_producer_present"] is False, row["domain_id"]
+            assert row["productive_producer_present"] is True, row["domain_id"]
         assert isinstance(row["required_provenance_fields"], list)
         assert len(row["required_provenance_fields"]) >= 3
         assert isinstance(row["required_freshness_fields"], list)
@@ -283,9 +286,9 @@ def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -
         auth["instrument_metadata_authority_owner"]
         == "ops.governed_productive_instrument_metadata_authority_producer_v1"
     )
-    assert auth["account_equity_authority_chain_closed"] is False
-    assert auth["reference_price_authority_chain_closed"] is False
-    assert auth["instrument_metadata_authority_chain_closed"] is False
+    assert auth["account_equity_authority_chain_closed"] is True
+    assert auth["reference_price_authority_chain_closed"] is True
+    assert auth["instrument_metadata_authority_chain_closed"] is True
     assert (
         markers["ACCOUNT_EQUITY_AUTHORITY_OWNER"]
         == "ops.governed_productive_account_equity_authority_producer_v1"
@@ -298,12 +301,12 @@ def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -
         markers["INSTRUMENT_METADATA_AUTHORITY_OWNER"]
         == "ops.governed_productive_instrument_metadata_authority_producer_v1"
     )
-    assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
+    assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is True
+    assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is True
+    assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is True
     assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 3
-    assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 0
-    assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 0
+    assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 3
+    assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 3
 
 
 def test_conversion_and_activation_remain_false() -> None:
@@ -494,7 +497,7 @@ def test_global_non_claims_and_drift_policy() -> None:
     assert drift["productive_semantics_change_authorized_claimed_true"] == "FAIL"
     assert drift["authority_activation_authorized_claimed_true"] == "FAIL"
     assert drift["owner_assignment_claimed"] == "FAIL"
-    assert drift["authority_chain_closed_claimed_true"] == "FAIL"
+    assert drift["authority_chain_closed_claimed_true_without_b05_closure_contract"] == "FAIL"
     assert drift["start_balance_elevated_to_running_equity"] == "FAIL"
     assert drift["fill_price_elevated_to_reference_price_authority"] == "FAIL"
     assert drift["universal_multiplier_one_default_claimed"] == "FAIL"
@@ -596,6 +599,9 @@ def test_docs_markers_match_json_markers() -> None:
         "EXCHANGE_ACCESS_REQUIRES_SEPARATE_GO",
         "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO",
         "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY",
+        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
+        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
+        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
     )
     bool_false_keys = (
         "CONVERSION_READY",
@@ -603,9 +609,6 @@ def test_docs_markers_match_json_markers() -> None:
         "AUTHORITY_ACTIVATION_AUTHORIZED",
         "OWNER_ASSIGNED",
         "OWNER_ACTIVATED",
-        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
-        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
-        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
         "LIVE_AUTHORIZED",
         "ORDERS_ENABLED",
         "RUNTIME_BRIDGE_ACTIVATED",
@@ -627,6 +630,8 @@ def test_docs_markers_match_json_markers() -> None:
     )
     reference_owner = "ops.governed_productive_reference_price_authority_producer_v1"
 
+    assert markers["B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT"] == "CLOSED"
+    assert "B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED" in text
     for key in bool_true_keys:
         assert markers[key] is True
         assert f"{key}=true" in text, key

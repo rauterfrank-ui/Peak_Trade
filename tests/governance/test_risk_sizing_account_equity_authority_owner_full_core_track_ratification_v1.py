@@ -39,8 +39,9 @@ def test_owner_go_consumed_and_single_ratified_owner() -> None:
     markers = payload["markers"]
     assert markers["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == OWNER
     assert markers["FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_RATIFIED"] is True
-    assert markers["GOVERNED_PRODUCER_CREATED"] is False
-    assert markers["PRODUCER_IMPLEMENTATION_PRESENT"] is False
+    assert markers["GOVERNED_PRODUCER_CREATED"] is True
+    assert markers["PRODUCER_IMPLEMENTATION_PRESENT"] is True
+    assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is True
     assert markers["CONVERSION_READY"] is False
     assert markers["C2_EQUITY_DOMAIN_VERDICT"] == "PARTIAL"
     assert markers["COMPANION_HANDOFF_STATUS"] == "NO_CONVERSION_HANDOFF_ON_COMPANION_PATH"

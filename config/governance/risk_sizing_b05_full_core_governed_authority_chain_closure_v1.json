@@ -1,0 +1,109 @@
+{
+  "contract_name": "risk_sizing_b05_full_core_governed_authority_chain_closure_v1",
+  "contract_id": "OBL_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_b05_full_core_governed_authority_chain_closure_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "75af58789fc2d50d074dd238ef4fe28ffa60d138",
+  "workpackage_id": "BOUNDED_WP_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1",
+  "semantics": "B05_FULL_CORE_AUTHORITY_CHAIN_CLOSURE_WITNESS_AND_GOVERNANCE_RATIFICATION_NO_COMPANION_C2_NO_FRACTION_TO_UNITS",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "scope": {
+    "scope_track": "FULL_CORE",
+    "companion_c2_out_of_scope": true,
+    "companion_c2_status_unchanged": "UNRESOLVED",
+    "conversion_ready_unchanged": false,
+    "observation_is_not_authority": true,
+    "transport_is_not_authority": true,
+    "authority_activation_authorized": false,
+    "runtime_authorization_effect": "NONE"
+  },
+  "markers": {
+    "RISK_SIZING_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1": true,
+    "B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT": "CLOSED",
+    "AUTHORITY_BINDING_IMPLEMENTED": true,
+    "AUTHORITY_BINDING_SCOPE": "FULL_CORE_ENTER_LIVE_29P_CAPITAL_PATH_ONLY",
+    "ACCOUNT_EQUITY_GOVERNED_PRODUCER_CREATED": true,
+    "ACCOUNT_EQUITY_AUTHORITY_BINDING_IMPLEMENTED": true,
+    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED": true,
+    "REFERENCE_PRICE_GOVERNED_PRODUCER_CREATED": true,
+    "REFERENCE_PRICE_AUTHORITY_BINDING_IMPLEMENTED": true,
+    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED": true,
+    "INSTRUMENT_METADATA_GOVERNED_PRODUCER_CREATED": true,
+    "INSTRUMENT_METADATA_AUTHORITY_BINDING_IMPLEMENTED": true,
+    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED": true,
+    "EXPECTED_B05_FULL_CORE_AUTHORITY_CHAIN_CLOSED_COUNT": 3,
+    "COMPANION_C2_TOUCHED": false,
+    "FRACTION_TO_UNITS_TOUCHED": false,
+    "GAP_TRUE_03_TOUCHED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "TRADING_CORE_CHANGED": false,
+    "SRC_CHANGED": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE"
+  },
+  "domain_closures": {
+    "ACCOUNT_EQUITY": {
+      "canonical_owner": "ops.governed_productive_account_equity_authority_producer_v1",
+      "governed_producer_created": true,
+      "governed_producer_evidence": "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_CREATED=true; produce_current_productive_29p_risk_capital_v1",
+      "authority_binding_implemented": true,
+      "authority_chain_closed": true,
+      "transformation_id": "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1",
+      "typed_binding": "bind_step_29p_typed_equity_from_risk_capital_v1",
+      "authorized_consumer": "build_current_productive_live_account_capital_context_v1",
+      "binding_seam": "current_productive_enter_live_29p_join_v1"
+    },
+    "REFERENCE_PRICE": {
+      "canonical_owner": "ops.governed_productive_reference_price_authority_producer_v1",
+      "governed_producer_created": true,
+      "governed_producer_evidence": "produce_current_productive_reference_price_from_mv2_mark_v1; GOVERNED_PRODUCER_CREATED=true in reference price constants",
+      "authority_binding_implemented": true,
+      "authority_chain_closed": true,
+      "price_semantics_class": "mark_price",
+      "authorized_consumer": "build_current_productive_live_account_capital_context_v1",
+      "binding_seam": "current_productive_enter_live_29p_join_v1"
+    },
+    "INSTRUMENT_METADATA": {
+      "canonical_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "governed_producer_created": true,
+      "governed_producer_evidence": "produce_current_productive_instrument_quantity_constraints_from_okx_row_v1",
+      "authority_binding_implemented": true,
+      "authority_chain_closed": true,
+      "authorized_consumer": "build_current_productive_live_account_capital_context_v1",
+      "binding_seam": "current_productive_enter_live_29p_join_v1"
+    }
+  },
+  "runtime_witness": {
+    "module": "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+    "symbol": "witness_b05_full_core_capital_authority_bindings_v1",
+    "seam_id": "B05_FULL_CORE_ENTER_LIVE_29P_CAPITAL_AUTHORITY_BINDING_V1",
+    "wired_at": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+  },
+  "binding_surfaces_updated": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_governed_producer_observation_adapter_contract_v1.json",
+    "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+    "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+    "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
+  ],
+  "explicit_non_claims": [
+    "NO_COMPANION_C2_CLOSURE",
+    "NO_CONVERSION_READY",
+    "NO_FRACTION_TO_UNITS",
+    "NO_OBSERVATION_IS_AUTHORITY",
+    "NO_LIVE_OR_POST_AUTHORIZATION",
+    "NO_CANONICAL_RISK_SIZING_OWNER_REPO_WIDE"
+  ],
+  "drift_policy": {
+    "companion_c2_status_changed_from_unresolved": "FAIL",
+    "conversion_ready_claimed_true": "FAIL",
+    "observation_claimed_authority": "FAIL",
+    "authority_chain_closed_without_witness_module": "FAIL"
+  }
+}
