@@ -23,6 +23,7 @@
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/__init__.py",
     "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/constants_v1.py",
     "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/conversion_algebra_v1.py",
@@ -34,7 +35,7 @@
     "tests/governance/test_risk_sizing_productive_input_provenance_binding_v1.py",
     "tests/ops/test_companion_shadow_live_fraction_to_units_input_binding_v1.py"
   ],
-  "changed_paths_sha256": "583e7cc969d3644cda54bb2f02eec396355f69b6b5ef3b1c78ff58cde08583d6",
+  "changed_paths_sha256": "65126720ad06975d49e47e3ee014b11248b4f0e0ff739b1a1231cfea7b761e90",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
