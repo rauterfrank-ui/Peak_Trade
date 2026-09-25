@@ -28,15 +28,19 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
+    ENDPOINT_MARKET_INDEX_TICKERS,
     ENDPOINT_MARKET_TICKER,
     ENDPOINT_PUBLIC_FUNDING_RATE,
     ENDPOINT_PUBLIC_OPEN_INTEREST,
     extract_finalized_candle_closes_v1,
     extract_funding_rate_v1,
+    extract_index_px_from_index_tickers_payload_v1,
     extract_mark_and_index_from_payload_v1,
     extract_open_interest_v1,
     extract_position_truth_v1,
     extract_ticker_fields_v1,
+    resolve_index_px_primary_secondary_tertiary_v1,
+    resolve_index_ticker_inst_id_v1,
     run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
@@ -103,7 +107,7 @@ THIS_SLICE = (
     "11.2.1.DK.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_"
     "BOUND_SINGLE_USE_POST_BOUNDARY"
 )
-EXPECTED_ORIGIN_MAIN_SHA = "be9d79e95725e92e96dfdc84bf4afd3886185f24"
+EXPECTED_ORIGIN_MAIN_SHA = "94319bcb744b75a63b30fbd64a5162bf66e398f2"
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_fresh_runtime_cycle_to_exact_"
     "envelope_bound_single_use_post_boundary_v1/20260915T204500Z"
@@ -342,7 +346,30 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
             bid, ask, volume, index_from_ticker = extract_ticker_fields_v1(
                 ticker_payload, native_id=native_id
             )
-            index_px = index_from_mark if index_from_mark is not None else index_from_ticker
+            index_px = resolve_index_px_primary_secondary_tertiary_v1(
+                index_from_mark=index_from_mark,
+                index_from_ticker=index_from_ticker,
+                index_from_index_tickers=None,
+            )
+            if index_px is None and not market_blocker:
+                index_inst = resolve_index_ticker_inst_id_v1(native_id)
+                index_payload, index_ticker_err = _transport_payload(
+                    fresh_get_transport,
+                    path=ENDPOINT_MARKET_INDEX_TICKERS,
+                    query={"instId": index_inst},
+                    auth_required=False,
+                    native_id=native_id,
+                )
+                market_payloads["index_tickers_error"] = index_ticker_err
+                market_payloads["index_tickers_inst_id"] = index_inst
+                index_from_index_tickers = extract_index_px_from_index_tickers_payload_v1(
+                    index_payload, wanted=index_inst
+                )
+                index_px = resolve_index_px_primary_secondary_tertiary_v1(
+                    index_from_mark=index_from_mark,
+                    index_from_ticker=index_from_ticker,
+                    index_from_index_tickers=index_from_index_tickers,
+                )
             oi = extract_open_interest_v1(oi_payload, native_id=native_id)
             funding = extract_funding_rate_v1(funding_payload, native_id=native_id)
             closes, last_ts = extract_finalized_candle_closes_v1(candles_payload)

@@ -19,10 +19,12 @@ fresh EEA public universe acquisition. It does not reuse the expired DJ
 pack, even when the Native-ID may match. It acquires only the minimum
 fresh READ-ONLY GET evidence required after Cap-24 binding and runs one
 current Master-V2 cycle through
-`run_integrated_offline_trading_logic_replay_v1`. It does not fabricate
-ENTER, direction, quantity, eligibility, or CMC fields. HOLD / NO_ACTION
-/ DENY / NO_EXECUTABLE_DECISION is a valid truthful stop with
-`POST_COUNT=0`. STEP-29Q remains `PLAN_ONLY`.
+`run_integrated_offline_trading_logic_replay_v1`. INDEX_PX precedence on
+this path is mark.idxPx → ticker.idxPx → `/api/v5/market/index-tickers`
+idxPx (sibling-equivalent tertiary join; no markPx substitution). It does
+not fabricate ENTER, direction, quantity, eligibility, or CMC fields.
+HOLD / NO_ACTION / DENY / NO_EXECUTABLE_DECISION is a valid truthful stop
+with `POST_COUNT=0`. STEP-29Q remains `PLAN_ONLY`.
 
 The exact-envelope-bound single-use permit/send seam remains implemented and
 fail-closed. This Owner-GO is not the later actual-POST Owner-GO. Standing

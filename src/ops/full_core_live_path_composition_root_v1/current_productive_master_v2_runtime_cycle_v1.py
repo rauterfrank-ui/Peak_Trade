@@ -139,6 +139,7 @@ CYCLE_OWNER = (
 IMPL_DIGEST = hashlib.sha256(b"full-core-current-productive-master-v2-runtime-cycle-v1").hexdigest()
 ENDPOINT_MARKET_TICKER = "/api/v5/market/ticker"
 ENDPOINT_MARKET_CANDLES = "/api/v5/market/candles"
+ENDPOINT_MARKET_INDEX_TICKERS = "/api/v5/market/index-tickers"
 ENDPOINT_PUBLIC_OPEN_INTEREST = "/api/v5/public/open-interest"
 ENDPOINT_PUBLIC_FUNDING_RATE = "/api/v5/public/funding-rate"
 
@@ -226,6 +227,53 @@ def extract_ticker_fields_v1(
         index = _finite_positive(row.get("idxPx"))
         return bid, ask, volume, index
     return None, None, None, None
+
+
+def resolve_index_ticker_inst_id_v1(native_id: str) -> str:
+    """Map SWAP venue-native id to index-tickers instId.
+
+    Reuses the identical CURRENT sibling-orchestrator rule
+    (``native_id`` ending in ``-SWAP`` → strip suffix). Proven equivalent
+    across six CURRENT productive runtime modules; matches OKX ``uly`` /
+    ``instFamily`` for linear USDT perps (e.g. ``0G-USDT-SWAP`` → ``0G-USDT``).
+    """
+
+    text = str(native_id or "").strip()
+    if text.endswith("-SWAP"):
+        return text[: -len("-SWAP")]
+    return text
+
+
+def extract_index_px_from_index_tickers_payload_v1(payload: Any, *, wanted: str) -> float | None:
+    """Extract finite-positive ``idxPx`` from ``/api/v5/market/index-tickers``.
+
+    Sibling-equivalent fail-closed extract: row ``instId`` must be empty or
+    equal ``wanted``; nonfinite / nonpositive values are rejected. Does not
+    read ``markPx`` or synthesize an index from other fields.
+    """
+
+    target = str(wanted or "").strip()
+    for row in _okx_data_rows(payload):
+        inst = str(row.get("instId") or "").strip()
+        if inst not in {"", target}:
+            continue
+        return _finite_positive(row.get("idxPx"))
+    return None
+
+
+def resolve_index_px_primary_secondary_tertiary_v1(
+    *,
+    index_from_mark: float | None,
+    index_from_ticker: float | None,
+    index_from_index_tickers: float | None,
+) -> float | None:
+    """Precedence: mark.idxPx → ticker.idxPx → index-tickers.idxPx."""
+
+    if index_from_mark is not None:
+        return index_from_mark
+    if index_from_ticker is not None:
+        return index_from_ticker
+    return index_from_index_tickers
 
 
 def extract_open_interest_v1(payload: Any, *, native_id: str) -> float | None:
