@@ -13,24 +13,43 @@ evaluate_performed: true
 reintegration_performed: false
 record_id: RCN-000026
 canonical_record_name: NestedStructuralChild forensic structure type
-census_current_presence: CURRENTLY_PRESENT
+census_current_presence: CURRENTLY_ABSENT
 comparison_status: CURRENT_SYSTEM_COMPARED
 compared_against_ref: origin/main
 compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
-current_equivalent: forensic/post_step32_knowledge_integration_v0/
-current_paths:
-- forensic/post_step32_knowledge_integration_v0/
-capability_overlap: SAME_ARTIFACT_STILL_PRESENT
-semantic_compatibility: COMPATIBLE
-authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+current_equivalent: ''
+current_paths: []
+capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
 safety_compatibility: NOT_RUNTIME
-runtime_compatibility: NOT_RUNTIME
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
 conflicts: []
-gaps: []
+gaps:
+- historical archive path forensic/post_step32_knowledge_integration_v0/ is absent
+  on origin/main@0e6cbb860f71
+- archive presence is not obsolete; current absence is not rejection
+- Repository convergence removed AUTHORITY=NONE forensic/post_step32 tree; NestedStructuralChild
+  label remains in historical_terminology.yaml only.
 claims:
 - claim_class: CANONICAL_CURRENT_FACT
-  text: post_step32 knowledge integration forensic tree still exists.
+  text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain
+    forensic/post_step32_knowledge_integration_v0/.
   evidence:
-  - forensic/post_step32_knowledge_integration_v0/
+  - docs/system_atlas/reconciliation/understand/records/RCN-000026.yaml
+  - docs/system_atlas/reconciliation/ledger.yaml
   used_as_fact: true
-open_questions: []
+- claim_class: CANONICAL_CURRENT_FACT
+  text: No current equivalent path was proven for this archive artifact on the bound
+    SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: NestedStructuralChild remains documented as a forensic structure type in historical_terminology.yaml
+    (not SSOT_CHILD).
+  evidence:
+  - docs/system_atlas/census/historical_terminology.yaml
+  used_as_fact: true
+open_questions:
+- Is there a proven current replacement, or only a later namesake?

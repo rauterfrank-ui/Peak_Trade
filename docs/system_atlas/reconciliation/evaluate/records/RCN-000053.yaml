@@ -13,27 +13,36 @@ evaluate_performed: true
 reintegration_performed: false
 record_id: RCN-000053
 canonical_record_name: src/docs misplaced documentation tree
-census_current_presence: CURRENTLY_PRESENT
+census_current_presence: CURRENTLY_ABSENT
 comparison_status: CURRENT_SYSTEM_COMPARED
 compared_against_ref: origin/main
 compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
-current_equivalent: src/docs
-current_paths:
-- src/docs
-- src/docs/Peak_Trade_OVERVIEW.md
-capability_overlap: SAME_ARTIFACT_STILL_PRESENT
-semantic_compatibility: COMPATIBLE
-authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+current_equivalent: ''
+current_paths: []
+capability_overlap: NO_CURRENT_EQUIVALENT_PROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
 safety_compatibility: NOT_RUNTIME
-runtime_compatibility: NOT_RUNTIME
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
 conflicts: []
 gaps:
-- path remains under src/; this is comparison of presence, not a move/disposition decision
+- historical archive path src/docs is absent on origin/main@0e6cbb860f71
+- archive presence is not obsolete; current absence is not rejection
+- Repository convergence frozen-469 outer shell removed src/docs; misplaced documentation
+  tree absent on current main.
 claims:
 - claim_class: CANONICAL_CURRENT_FACT
-  text: src/docs documentation tree still exists on the bound SHA.
+  text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain
+    src/docs.
   evidence:
-  - src/docs/Peak_Trade_OVERVIEW.md
-  - src/docs/CONTRIBUTING.md
+  - docs/system_atlas/reconciliation/understand/records/RCN-000053.yaml
+  - docs/system_atlas/reconciliation/ledger.yaml
   used_as_fact: true
-open_questions: []
+- claim_class: CANONICAL_CURRENT_FACT
+  text: No current equivalent path was proven for this archive artifact on the bound
+    SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+open_questions:
+- Is there a proven current replacement, or only a later namesake?

@@ -691,18 +691,19 @@ def evaluate_records() -> list[dict[str, Any]]:
                 ),
             ],
         ),
-        _present(
+        _archive_absent(
             "RCN-000026",
             "forensic/post_step32_knowledge_integration_v0/",
-            ["forensic/post_step32_knowledge_integration_v0/"],
-            runtime=NOT_RUNTIME,
-            authority=NONE_AUTH,
-            safety=NOT_RUNTIME,
-            claims=[
+            extra_gaps=[
+                "Repository convergence removed AUTHORITY=NONE forensic/post_step32 tree; "
+                "NestedStructuralChild label remains in historical_terminology.yaml only.",
+            ],
+            extra_claims=[
                 _claim(
-                    "CANONICAL_CURRENT_FACT",
-                    "post_step32 knowledge integration forensic tree still exists.",
-                    ["forensic/post_step32_knowledge_integration_v0/"],
+                    "FORENSIC_RAW_FACT",
+                    "NestedStructuralChild remains documented as a forensic structure type in "
+                    "historical_terminology.yaml (not SSOT_CHILD).",
+                    ["docs/system_atlas/census/historical_terminology.yaml"],
                 ),
             ],
         ),
@@ -1115,22 +1116,12 @@ def evaluate_records() -> list[dict[str, Any]]:
                 "Was the family restored after the census SHA, or was census presence bound against a different tree?"
             ],
         ),
-        _present(
+        _archive_absent(
             "RCN-000053",
             "src/docs",
-            ["src/docs", "src/docs/Peak_Trade_OVERVIEW.md"],
-            runtime=NOT_RUNTIME,
-            authority=NONE_AUTH,
-            safety=NOT_RUNTIME,
-            claims=[
-                _claim(
-                    "CANONICAL_CURRENT_FACT",
-                    "src/docs documentation tree still exists on the bound SHA.",
-                    ["src/docs/Peak_Trade_OVERVIEW.md", "src/docs/CONTRIBUTING.md"],
-                ),
-            ],
-            gaps=[
-                "path remains under src/; this is comparison of presence, not a move/disposition decision"
+            extra_gaps=[
+                "Repository convergence frozen-469 outer shell removed src/docs; "
+                "misplaced documentation tree absent on current main.",
             ],
         ),
     ]
