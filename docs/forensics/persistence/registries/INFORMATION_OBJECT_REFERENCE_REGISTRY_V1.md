@@ -138,7 +138,7 @@ large files are locator+hash only.
 | A-FSS-ALIGN | SS-05 | [`../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md`](../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md) | CONTRACT |
 | A-FSS-DER | SS-06 | `forensics&#47;derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_*` (git reports) | RAW_OUTPUT |
 | A-FSS-BLOBS | SS-09 | P5 `derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1&#47;blobs&#47;` | RAW_OUTPUT |
-| A-TR-R3 | SS-13 | [`../../../../forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl`](../../../../forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl) | HISTORICAL_STATE |
+| A-TR-R3 | SS-13 | `90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl` (`forensic&#47;p6_proven_relevant_jsonl_identity_copies_v1&#47;` removed frozen-203) | HISTORICAL_STATE |
 | A-P2 | SS-10 | unresolved empty path; see A-PER-DISC | SOURCE_BINDING |
 | A-CAP21-SPEC | SS-01 adjacent ops spec | [`docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md`](../../../ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md) | CANONICAL_SPEC |
 

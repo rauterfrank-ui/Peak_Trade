@@ -5,7 +5,13 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/forensics/persistence/registries/FEDERATED_SOURCE_SURFACE_REGISTRY_V1.md",
+    "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/reconciliation/evaluate/records/RCN-000026.yaml",
     "docs/system_atlas/reconciliation/evaluate/records/RCN-000053.yaml",
     "docs/system_atlas/reconciliation/inventories/corpus_enumeration.yaml",
@@ -219,7 +225,7 @@
     "scripts/ops/system_atlas_v1/evaluate_pass_v1_records.py",
     "scripts/ops/system_atlas_v1/understand_pass_v2_records.py"
   ],
-  "changed_paths_sha256": "2d23502a02042837e7e1994049a7c35bb7d40e599432b16f7ecead2886018757",
+  "changed_paths_sha256": "a0f580c80dc8c319f4d3e2fc5eaa470ecf1145e13cac8318a4d18d7f6ed84ab4",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -230,5 +236,5 @@
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion; diff-bound map currency + NAVIGATION_ONLY atlas evaluate stale-coupling decoupling (RCN-000026 post_step32 tree, RCN-000053 src/docs from prior cut); AUTHORITY_EFFECT=NONE."
+  "reason": "Frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion; diff-bound map currency + NAVIGATION_ONLY atlas review (map_of_truth entities) and docs registry stale-link decoupling; AUTHORITY_EFFECT=NONE."
 }
