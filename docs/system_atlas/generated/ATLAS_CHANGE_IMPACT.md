@@ -104,8 +104,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Treasury Full-Core C08 single-source capital handoff (PR_6827): enter-live delegates one trusted GET through Treasury/E4/C08 to B05 Q0; bounded Full-Core reachability; C08 productive transport authorized; AVAILABLE_FOR_SIZING BASE bound; Q3 unchanged; map partial treasury_full_core_c08_single_source_handoff_v1; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
+- Whole-Core completion package v1: pre-external egress proof closure (F-01); enter-live fresh trusted Q0/29P governance closure (F-02) via Treasury single-source handoff; Q0/Q1 and Learning Q6/Q8 ratification; map PARTIAL records whole_core_*; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1
+- modified_by=WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
