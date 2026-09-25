@@ -119,6 +119,7 @@ REQUIRED_PARTIAL_IDS = (
     "post_6828_portfolio_treasury_equity_boundary_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
+    "c2_companion_conversion_dependency_closure_v1",
 )
 
 

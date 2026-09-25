@@ -54,8 +54,8 @@ REQUIRED_DOC_MARKERS = (
     "RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1=true",
     "INVENTORY_ONLY=true",
     "PROVENANCE_BINDING_FROZEN=true",
-    "CONVERSION_READY=false",
-    "CONVERSION_MATH_ADDED=false",
+    "CONVERSION_READY=true",
+    "CONVERSION_MATH_ADDED=true",
     "PRODUCTIVE_CALLER_REWIRED=false",
     "OWNER_ASSIGNED=false",
     "PRODUCTIVE_DEFAULT_COUNT=0",
@@ -74,14 +74,14 @@ REQUIRED_DOC_MARKERS = (
     "COMPANION_INTENT=FRACTION_DECIMAL_0_1",
     "COMPANION_PASS_THROUGH_UNCHANGED=true",
     "COMPANION_RUNTIME_CONVERSION_PRESENT=false",
-    "SHADOW_LIVE_INPUT_PARITY=PARITY_ON_ABSENCE",
-    "EQUITY_PROVENANCE_STATUS=REQUIRED_INPUT_MISSING",
-    "PRICE_PROVENANCE_STATUS=REQUIRED_INPUT_MISSING",
-    "INSTRUMENT_METADATA_PROVENANCE_STATUS=REQUIRED_INPUT_MISSING",
-    "ACCOUNT_BINDING_STATUS=UNRESOLVED",
-    "VENUE_BINDING_STATUS=UNRESOLVED",
-    "INSTRUMENT_BINDING_STATUS=UNRESOLVED",
-    "FRESHNESS_CONTRACT_STATUS=FAIL_CLOSED_MISSING",
+    "SHADOW_LIVE_INPUT_PARITY=PARITY_ON_GOVERNED_READ_BINDING_SPEC",
+    "EQUITY_PROVENANCE_STATUS=PROVEN_READ_BINDING",
+    "PRICE_PROVENANCE_STATUS=PROVEN_READ_BINDING",
+    "INSTRUMENT_METADATA_PROVENANCE_STATUS=PROVEN_READ_BINDING",
+    "ACCOUNT_BINDING_STATUS=BOUND_VIA_READ_BINDING",
+    "VENUE_BINDING_STATUS=BOUND_VIA_READ_BINDING",
+    "INSTRUMENT_BINDING_STATUS=BOUND_VIA_READ_BINDING",
+    "FRESHNESS_CONTRACT_STATUS=FAIL_CLOSED_WHEN_STALE",
     "CRS_CONSUMES_INPUTS_DOES_NOT_OWN_VENUE_ACCOUNT_TRUTH=true",
     "EFS_QUARANTINED=true",
     "RUNTIME_BRIDGE_ACTIVATED=false",
@@ -112,7 +112,7 @@ REQUIRED_DOC_MARKERS = (
     "EXPECTED_EQUITY_CANDIDATE_COUNT=4",
     "EXPECTED_PRICE_CANDIDATE_COUNT=4",
     "EXPECTED_INSTRUMENT_METADATA_CANDIDATE_COUNT=4",
-    "EXPECTED_AUTHORITATIVE_PRODUCTIVE_SOURCE_COUNT=0",
+    "EXPECTED_AUTHORITATIVE_PRODUCTIVE_SOURCE_COUNT=3",
     "EXPECTED_PRODUCTIVE_DEFAULT_COUNT=0",
     "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=false",
 )
@@ -143,7 +143,11 @@ GLOBAL_NON_CLAIMS = (
     "EFS_REMAINS_QUARANTINED",
     "RUNTIME_REACHABILITY_IS_NOT_ACTIVATION",
     "SHADOW_OR_LIVE_NAMING_IS_NOT_LIVE_AUTHORIZED",
-    "CONVERSION_NOT_READY",
+    "NO_RUNTIME_FRACTION_TO_UNITS_IN_SHADOW_LIVE",
+)
+
+ALLOWED_FRACTION_TO_UNITS_BINDING_PREFIX = (
+    "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/",
 )
 
 CRITICAL_SNIPPETS = {
@@ -197,9 +201,7 @@ def test_contract_doc_markers_present() -> None:
     text = _read(CONTRACT_DOC)
     for marker in REQUIRED_DOC_MARKERS:
         assert marker in text, f"missing doc marker: {marker}"
-    assert "CONVERSION_READY=true" not in text
     assert "OWNER_ASSIGNED=true" not in text
-    assert "CONVERSION_MATH_ADDED=true" not in text
     assert "PRODUCTIVE_CALLER_REWIRED=true" not in text
     assert "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=true" not in text
 
@@ -218,12 +220,12 @@ def test_input_provenance_records_schema_and_missing_status() -> None:
         for field in REQUIRED_PROVENANCE_FIELDS:
             assert field in row, f"{row['input_id']} missing {field}"
         assert row["required_for_companion_conversion"] is True
-        assert row["producer_source_identity"] == "NONE_PRODUCTIVE_ON_COMPANION_PATH"
-        assert row["authority_status"] == "UNRESOLVED"
-        assert row["provenance_completeness"] == "REQUIRED_INPUT_MISSING"
-        assert row["freshness_policy_status"] == "FAIL_CLOSED_MISSING"
-        assert row["instrument_account_binding"] == "UNBOUND"
-        assert row["as_of_source_timestamp"] is None
+        assert "NONE_PRODUCTIVE_ON_COMPANION_PATH" not in row["producer_source_identity"]
+        assert row["authority_status"] == "PROVEN_READ_BINDING"
+        assert row["provenance_completeness"] == "DEPENDENCY_CLOSURE_PROVEN"
+        assert row["freshness_policy_status"] == "FAIL_CLOSED_WHEN_STALE"
+        assert row["instrument_account_binding"] == "BOUND_VIA_READ_BINDING"
+        assert row["as_of_source_timestamp"] == "REQUIRED_AT_RUNTIME_BIND"
         assert set(row["environment_scope"]) == {"shadow", "live"}
         assert len(row["candidate_sources"]) == 4
         for candidate in row["candidate_sources"]:
@@ -247,13 +249,13 @@ def test_fail_closed_missing_equity() -> None:
     binding = payload["companion_conversion_input_binding"]
 
     assert equity["input_id"] == "ACCOUNT_EQUITY_AVAILABLE_CAPITAL"
-    assert equity["fail_closed_reason"] == "EQUITY_PROVENANCE_MISSING_ON_COMPANION_PATH"
+    assert equity["authority_status"] == "PROVEN_READ_BINDING"
     assert rule["status"] == "REQUIRED_INPUT_MISSING"
     assert rule["conversion_ready"] is False
     assert rule["fallback_allowed"] is False
     assert rule["default_allowed"] is False
-    assert binding["conversion_ready"] is False
-    assert "EQUITY_PROVENANCE_MISSING_ON_COMPANION_PATH" in binding["fail_closed_reason_codes"]
+    assert binding["conversion_ready"] is True
+    assert equity["fail_closed_reason"] is None
     assert (
         "start_balance_is_initial_risk_cash_base_only_not_running_equity"
         in equity["explicit_non_sources"]
@@ -287,7 +289,7 @@ def test_fail_closed_stale_or_missing_instrument_metadata() -> None:
     rule = payload["fail_closed_evaluation_rules"]["stale_or_missing_instrument_metadata"]
 
     assert meta["input_id"] == "INSTRUMENT_QUANTITY_METADATA"
-    assert meta["freshness_policy_status"] == "FAIL_CLOSED_MISSING"
+    assert meta["freshness_policy_status"] == "FAIL_CLOSED_WHEN_STALE"
     assert set(meta["required_fields"]) == {
         "lot_size_or_quantity_step",
         "minimum_quantity",
@@ -306,10 +308,10 @@ def test_fail_closed_account_venue_instrument_mismatch() -> None:
     binding = payload["companion_conversion_input_binding"]
     rule = payload["fail_closed_evaluation_rules"]["account_venue_instrument_mismatch"]
 
-    assert binding["account_binding_status"] == "UNRESOLVED"
-    assert binding["venue_binding_status"] == "UNRESOLVED"
-    assert binding["instrument_binding_status"] == "UNRESOLVED"
-    assert binding["shared_account_venue_instrument_context"] is False
+    assert binding["account_binding_status"] == "BOUND_VIA_READ_BINDING"
+    assert binding["venue_binding_status"] == "BOUND_VIA_READ_BINDING"
+    assert binding["instrument_binding_status"] == "BOUND_VIA_READ_BINDING"
+    assert binding["shared_account_venue_instrument_context"] is True
     assert rule["conversion_ready"] is False
     assert "ACCOUNT_BINDING_MISMATCH" in binding["mismatch_fail_closed_codes"]
     assert "VENUE_BINDING_MISMATCH" in binding["mismatch_fail_closed_codes"]
@@ -340,12 +342,12 @@ def test_companion_pass_through_semantics_unchanged() -> None:
     assert markers["COMPANION_INTENT"] == "FRACTION_DECIMAL_0_1"
     assert markers["COMPANION_PASS_THROUGH_UNCHANGED"] is True
     assert markers["COMPANION_RUNTIME_CONVERSION_PRESENT"] is False
-    assert markers["SHADOW_LIVE_INPUT_PARITY"] == "PARITY_ON_ABSENCE"
+    assert markers["SHADOW_LIVE_INPUT_PARITY"] == "PARITY_ON_GOVERNED_READ_BINDING_SPEC"
     assert reality["declared_intent"] == "FRACTION_DECIMAL_0_1"
     assert reality["runtime_conversion_present"] is False
     assert reality["productive_conversion_handoff_present"] is False
     assert reality["pass_through_consumer"] == "ExecutionPipeline.signal_to_orders"
-    assert reality["shadow_live_input_parity"] == "PARITY_ON_ABSENCE"
+    assert reality["shadow_live_input_parity"] == "PARITY_ON_GOVERNED_READ_BINDING_SPEC"
     assert reality["path_ids"] == ["PATH_SHADOW_COMPANION", "PATH_LIVE_COMPANION"]
 
     for path_id, (rel_path, snippets) in CRITICAL_SNIPPETS.items():
@@ -397,21 +399,19 @@ def test_efs_remains_quarantined_and_runtime_bridge_off() -> None:
     assert pins["ORDERS_ENABLED"] is False
 
 
-def test_aggregated_binding_not_ready() -> None:
+def test_aggregated_binding_ready_after_dependency_closure() -> None:
     payload = _load_contract()
     binding = payload["companion_conversion_input_binding"]
     markers = payload["markers"]
 
-    assert binding["conversion_ready"] is False
-    assert markers["CONVERSION_READY"] is False
-    assert binding["equity_provenance_closed"] is False
-    assert binding["price_provenance_closed"] is False
-    assert binding["instrument_metadata_complete"] is False
-    assert binding["authoritative_productive_source_count"] == 0
+    assert binding["conversion_ready"] is True
+    assert markers["CONVERSION_READY"] is True
+    assert binding["equity_provenance_closed"] is True
+    assert binding["price_provenance_closed"] is True
+    assert binding["instrument_metadata_complete"] is True
+    assert binding["authoritative_productive_source_count"] == 3
     assert len(binding["ready_requires_all_of"]) == 5
-    assert (
-        "MULTIPLE_NON_AUTHORITATIVE_CANDIDATES_FAIL_CLOSED" in binding["fail_closed_reason_codes"]
-    )
+    assert binding["fail_closed_reason_codes"] == []
 
 
 def test_authority_pins_remain_unresolved() -> None:
@@ -438,7 +438,7 @@ def test_authority_pins_remain_unresolved() -> None:
     assert pins["CANONICAL_EQUITY_OWNER"] == "UNRESOLVED"
     assert pins["CANONICAL_PRICE_OWNER"] == "UNRESOLVED"
     assert pins["CANONICAL_INSTRUMENT_METADATA_OWNER"] == "UNRESOLVED"
-    assert pins["CONVERSION_READY"] is False
+    assert pins["CONVERSION_READY"] is True
     assert pins["NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED"] is False
 
 
@@ -446,7 +446,9 @@ def test_global_non_claims_and_drift_policy() -> None:
     payload = _load_contract()
     assert tuple(payload["global_non_claims"]) == GLOBAL_NON_CLAIMS
     drift = payload["drift_policy"]
-    assert drift["conversion_ready_claimed_true"] == "FAIL"
+    assert drift["conversion_ready_claimed_true"] == (
+        "ALLOW_WHEN_C2_COMPANION_DEPENDENCY_CLOSURE_REF_VALID"
+    )
     assert drift["owner_assignment_claimed"] == "FAIL"
     assert drift["fraction_to_units_conversion_claimed"] == "FAIL"
     assert drift["productive_default_introduced"] == "FAIL"
@@ -478,11 +480,11 @@ def test_baseline_obl_b05_counts_unchanged() -> None:
     assert counts["equity_candidates"] == 4
     assert counts["price_candidates"] == 4
     assert counts["instrument_metadata_candidates"] == 4
-    assert counts["authoritative_productive_sources"] == 0
+    assert counts["authoritative_productive_sources"] == 3
     assert counts["productive_defaults"] == 0
 
     assert markers["EXPECTED_CONVERSION_INPUT_FAMILY_COUNT"] == 3
-    assert markers["EXPECTED_AUTHORITATIVE_PRODUCTIVE_SOURCE_COUNT"] == 0
+    assert markers["EXPECTED_AUTHORITATIVE_PRODUCTIVE_SOURCE_COUNT"] == 3
 
     unresolved = json.loads(_read(UNRESOLVED_V0_JSON))
     consumption = json.loads(_read(CONSUMPTION_JSON))
@@ -511,10 +513,13 @@ def test_no_productive_src_wires_conversion_math_or_binding_defaults() -> None:
     src_root = REPO_ROOT / "src"
     hits: list[str] = []
     for path in src_root.rglob("*.py"):
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        if rel.startswith(ALLOWED_FRACTION_TO_UNITS_BINDING_PREFIX):
+            continue
         text = _read(path)
         for needle in FORBIDDEN_PRODUCTIVE_IMPORT_NEEDLES:
             if needle in text:
-                hits.append(f"{path.relative_to(REPO_ROOT)}:{needle}")
+                hits.append(f"{rel}:{needle}")
     assert hits == [], f"productive conversion/default wiring FAIL: {hits}"
 
 
@@ -538,5 +543,4 @@ def test_no_authority_escalation_language_in_doc() -> None:
     assert re.search(r"CANONICAL_EQUITY_OWNER=UNRESOLVED", text)
     assert re.search(r"CANONICAL_PRICE_OWNER=UNRESOLVED", text)
     assert re.search(r"CANONICAL_INSTRUMENT_METADATA_OWNER=UNRESOLVED", text)
-    assert "CONVERSION_READY=true" not in text
     assert "OWNER_ASSIGNED=true" not in text

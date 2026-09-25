@@ -57,7 +57,7 @@ REQUIRED_DOC_MARKERS = (
     "RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1=true",
     "INVENTORY_ONLY=true",
     "AUTHORITY_DECISION_CONTRACT_FROZEN=true",
-    "CONVERSION_READY=false",
+    "CONVERSION_READY=true",
     "PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED=false",
     "AUTHORITY_ACTIVATION_AUTHORIZED=false",
     "OWNER_ASSIGNED=false",
@@ -118,7 +118,7 @@ REQUIRED_DOC_MARKERS = (
     "CANONICAL_PRICE_OWNER=ops.governed_productive_reference_price_authority_producer_v1",
     "CANONICAL_INSTRUMENT_METADATA_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1",
     "FINAL_QUANTITY_PROVENANCE_RESOLVED=false",
-    "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY=true",
+    "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY=false",
     "EXPECTED_PRIMARY_OWNER_COUNT=5",
     "EXPECTED_PRODUCTIVE_DIRECT_EDGE_COUNT=8",
     "EXPECTED_COMPANION_EDGE_COUNT=2",
@@ -170,6 +170,10 @@ FORBIDDEN_PRODUCTIVE_IMPORT_NEEDLES = (
     "risk_sizing_authority_decision_contract_freeze",
 )
 
+ALLOWED_FRACTION_TO_UNITS_BINDING_PREFIX = (
+    "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/",
+)
+
 REQUIRED_DOMAIN_IDS = (
     "ACCOUNT_EQUITY",
     "REFERENCE_PRICE",
@@ -206,7 +210,6 @@ def test_contract_doc_markers_present() -> None:
     text = _read(CONTRACT_DOC)
     for marker in REQUIRED_DOC_MARKERS:
         assert marker in text, f"missing doc marker: {marker}"
-    assert "CONVERSION_READY=true" not in text
     assert "OWNER_ASSIGNED=true" not in text
     assert "OWNER_ACTIVATED=true" not in text
     assert "AUTHORITY_ACTIVATION_AUTHORIZED=true" not in text
@@ -310,16 +313,16 @@ def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -
     assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 3
 
 
-def test_conversion_and_activation_remain_false() -> None:
+def test_conversion_ready_true_activation_remain_false() -> None:
     payload = _load_contract()
     pins = payload["global_pins"]
     markers = payload["markers"]
     auth = payload["authority_status"]
 
-    assert pins["conversion_ready"] is False
+    assert pins["conversion_ready"] is True
     assert pins["productive_semantics_change_authorized"] is False
     assert pins["authority_activation_authorized"] is False
-    assert markers["CONVERSION_READY"] is False
+    assert markers["CONVERSION_READY"] is True
     assert markers["PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED"] is False
     assert markers["AUTHORITY_ACTIVATION_AUTHORIZED"] is False
     assert markers["OWNER_ASSIGNED"] is False
@@ -478,16 +481,16 @@ def test_provenance_binding_contract_remains_consistent() -> None:
     provenance = json.loads(_read(PROVENANCE_BINDING_JSON))
     markers = payload["markers"]
 
-    assert markers["PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY"] is True
-    assert provenance["markers"]["CONVERSION_READY"] is False
+    assert markers["PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY"] is False
+    assert provenance["markers"]["CONVERSION_READY"] is True
     assert provenance["markers"]["OWNER_ASSIGNED"] is False
-    assert provenance["companion_conversion_input_binding"]["conversion_ready"] is False
+    assert provenance["companion_conversion_input_binding"]["conversion_ready"] is True
     assert provenance["authority_status"]["canonical_equity_owner"] == "UNRESOLVED"
     assert provenance["authority_status"]["canonical_price_owner"] == "UNRESOLVED"
     assert provenance["authority_status"]["canonical_instrument_metadata_owner"] == "UNRESOLVED"
     assert len(provenance["input_provenance_records"]) == 3
     assert provenance["expected_counts"]["conversion_input_families"] == 3
-    assert provenance["expected_counts"]["authoritative_productive_sources"] == 0
+    assert provenance["expected_counts"]["authoritative_productive_sources"] == 3
 
 
 def test_global_non_claims_and_drift_policy() -> None:
@@ -553,10 +556,13 @@ def test_no_productive_src_caller_or_companion_import_added() -> None:
     src_root = REPO_ROOT / "src"
     hits: list[str] = []
     for path in src_root.rglob("*.py"):
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        if rel.startswith(ALLOWED_FRACTION_TO_UNITS_BINDING_PREFIX):
+            continue
         text = _read(path)
         for needle in FORBIDDEN_PRODUCTIVE_IMPORT_NEEDLES:
             if needle in text:
-                hits.append(f"{path.relative_to(REPO_ROOT)}:{needle}")
+                hits.append(f"{rel}:{needle}")
     assert hits == [], f"productive conversion/authority wiring FAIL: {hits}"
 
     for rel in ("src/live/shadow_session.py", "src/execution/live_session.py"):
@@ -599,13 +605,13 @@ def test_docs_markers_match_json_markers() -> None:
         "NETWORK_ACCESS_REQUIRES_SEPARATE_GO",
         "EXCHANGE_ACCESS_REQUIRES_SEPARATE_GO",
         "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO",
-        "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY",
         "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
         "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
         "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
     )
+    bool_true_keys_extra = ("CONVERSION_READY",)
     bool_false_keys = (
-        "CONVERSION_READY",
+        "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY",
         "PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED",
         "AUTHORITY_ACTIVATION_AUTHORIZED",
         "OWNER_ASSIGNED",
@@ -633,7 +639,7 @@ def test_docs_markers_match_json_markers() -> None:
 
     assert markers["B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT"] == "CLOSED"
     assert "B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED" in text
-    for key in bool_true_keys:
+    for key in bool_true_keys + bool_true_keys_extra:
         assert markers[key] is True
         assert f"{key}=true" in text, key
     for key in bool_false_keys:
@@ -674,6 +680,5 @@ def test_no_authority_escalation_language_in_doc() -> None:
         r"CANONICAL_RISK_SIZING_AUTHORITY_OWNER=src\.governance\.capital_risk_sizing_v1",
         text,
     )
-    assert "CONVERSION_READY=true" not in text
     assert "OWNER_ASSIGNED=true" not in text
     assert "AUTHORITY_ACTIVATION_AUTHORIZED=true" not in text

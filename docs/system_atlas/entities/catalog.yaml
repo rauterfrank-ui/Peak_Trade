@@ -69,6 +69,7 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831
     # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
     # BOUND_ORIGIN_MAIN_SHA rebound to origin/main 0ceb48d; CURRENT section
     # registers Learning/DDO, STEP29M, Optimization Universe boundaries only.
@@ -78,7 +79,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1
+    modified_by: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -100,6 +101,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831
     # atlas_entity_review: C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1 PR_6830
     # atlas_entity_review: POST_6828_ARCHITECTURE_CLOSURE_V1 PR_6829
     # atlas_entity_review: WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1 PR_6828
@@ -150,7 +152,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
+    modified_by: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
@@ -8660,6 +8662,38 @@ entities:
       runtime witness for Full-Core B05 chain closure. Companion C2 remains
       UNRESOLVED; does not confer conversion readiness. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:companion_shadow_live_fraction_to_units_input_binding_v1
+    # C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # CONVERSION_READY=true; read-only binding/algebra/witness; RAW_FRACTION_PASSED_AS_QUANTITY unchanged;
+    # TRADING_SEMANTICS_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0;
+    # owner=src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py.
+    kind: RUNTIME_COMPONENT
+    name: Companion Shadow/Live fraction→units input binding (read-only)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    semantic_authority: false
+    modified_by: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
+    source_paths:
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/__init__.py
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/constants_v1.py
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/conversion_algebra_v1.py
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/read_binding_v1.py
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py
+      - config/governance/companion_fraction_to_units_contract_v1.json
+      - config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json
+      - config/governance/risk_sizing_productive_input_provenance_binding_v1.json
+      - docs/governance/COMPANION_FRACTION_TO_UNITS_CONTRACT_V1.md
+      - docs/governance/RISK_SIZING_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1.md
+      - docs/governance/RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1.md
+      - tests/ops/test_companion_shadow_live_fraction_to_units_input_binding_v1.py
+      - tests/governance/test_risk_sizing_c2_companion_conversion_dependency_closure_v1.py
+      - tests/governance/test_risk_sizing_productive_input_provenance_binding_v1.py
+    notes: >-
+      Read-only governance binding for Companion C2 conversion inputs and LINEAR
+      algebra; does not wire Shadow/Live sessions. Atlas is not trading authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # PR_6828 WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;

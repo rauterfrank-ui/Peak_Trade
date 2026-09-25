@@ -297,6 +297,16 @@
         "tests/governance/test_post_6828_architecture_closure_v1.py",
         "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
         "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
-        "tests/governance/test_risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.py"
+        "tests/governance/test_risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.py",
+        "config/governance/companion_fraction_to_units_contract_v1.json",
+        "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
+        "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
+        "docs/governance/COMPANION_FRACTION_TO_UNITS_CONTRACT_V1.md",
+        "docs/governance/RISK_SIZING_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1.md",
+        "docs/governance/RISK_SIZING_PRODUCTIVE_INPUT_PROVENANCE_BINDING_V1.md",
+        "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/",
+        "tests/ops/test_companion_shadow_live_fraction_to_units_input_binding_v1.py",
+        "tests/governance/test_risk_sizing_c2_companion_conversion_dependency_closure_v1.py",
+        "tests/governance/test_risk_sizing_productive_input_provenance_binding_v1.py"
     ]
 }

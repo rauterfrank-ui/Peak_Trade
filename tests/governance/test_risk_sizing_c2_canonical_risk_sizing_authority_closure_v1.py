@@ -60,7 +60,7 @@ def test_closure_contract_ratifies_canonical_owner_and_c2_roles() -> None:
     assert verdict["canonical_risk_sizing_owner"] == "src.governance.capital_risk_sizing_v1"
     assert verdict["canonical_risk_sizing_owner_count"] == 1
     assert verdict["c2_verdict"] == "C2_AUTHORITY_ROLE_RATIFIED"
-    assert verdict["conversion_ready"] is False
+    assert verdict["conversion_ready"] is True
     inv = payload["authority_invariants"]
     assert inv["canonical_risk_sizing_owner_count"] == 1
     assert inv["duplicate_risk_sizing_authority_count"] == 0
@@ -75,6 +75,7 @@ def test_closure_contract_ratifies_canonical_owner_and_c2_roles() -> None:
         c2["fraction_to_units_owner"] == "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1"
     )
     assert c2["fraction_to_units_runtime_implemented"] is False
+    assert c2["c2_input_domains_proven_current_count"] == 3
 
 
 def test_closure_aligns_with_q1_whole_core_and_inventory() -> None:
