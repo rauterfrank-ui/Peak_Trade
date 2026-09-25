@@ -109,13 +109,16 @@ entities:
     # atlas review; structured map source updated (domains/edges); no MOT SSOT change.
     # POST_6809_CURRENT_SYSTEM_AUTHORITY_CLOSURE_V1 (PR #6810): NAVIGATION_ONLY
     # atlas review; open-record censuses/conflict navigation in map source; map_authority=NONE.
+    # B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6811): NAVIGATION_ONLY atlas
+    # review; Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratification surfaces; map
+    # account_equity_blocks PARTIAL; map_authority=NONE.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: POST_6809_CURRENT_SYSTEM_AUTHORITY_CLOSURE_V1
+    modified_by: B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
@@ -11117,9 +11120,10 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: OWNER_GO_FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1
+    modified_by: B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1.py
+      - config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json
       - docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md

@@ -4,7 +4,7 @@
 **Date:** 2026-09-25  
 **Obligation:** `OBL_B05_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1`  
 **Machine contract:** [`config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json`](../../config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json)  
-**Baseline:** `origin/main @ acb6e340a0ecafcba2bc9fee579e17732dd61277`
+**Baseline:** `origin&#47;main @ acb6e340a0ecafcba2bc9fee579e17732dd61277`
 
 ```
 RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1=true
