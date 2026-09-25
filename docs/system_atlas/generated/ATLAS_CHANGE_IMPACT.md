@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- FC-01 productive execute_network READ credential loader: binds §11.13.5 SecretRef vault + K1 READ session into #6806 join; NAVIGATION_ONLY; trading/activation semantics unchanged; ATLAS_AUTHORITY=NONE.
+- PR #6808 G17 DK/MV2 typed-vol hot-path join: NAVIGATION_ONLY atlas review; wires JOIN-1 mark extract + JOIN-2 checkpoint into DK slice for FC-02 TYPED_VOLATILITY_ESTIMATE_MISSING closure; MV2/DP/selection semantics unchanged; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=FC_01_EXECUTE_NETWORK_READ_CREDENTIAL_LOADER_V1
+- modified_by=G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

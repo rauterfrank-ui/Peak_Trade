@@ -30,6 +30,9 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     WIRE_SEND_PERMITTED,
     current_productive_first_real_blocker_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CYCLE_OWNER,
     ENDPOINT_MARKET_CANDLES,
@@ -39,6 +42,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     ENDPOINT_PUBLIC_OPEN_INTEREST,
     extract_finalized_candle_closes_v1,
     resolve_index_ticker_inst_id_v1,
+)
+from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
+    TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
@@ -97,6 +103,9 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
     _envelope,
     _handle,
 )
+from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
+    _mark_row,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPEC_PATH = (
@@ -130,6 +139,11 @@ def _finalized_candles(count: int = 8) -> list[list[str]]:
     return rows
 
 
+def _mark_history_payload(*, instrument_id: str = _EXPECTED_SELECTED) -> dict[str, object]:
+    rows = list(reversed([_mark_row(i) for i in range(61)]))
+    return {"code": "0", "data": rows}
+
+
 def _market_payloads(*, instrument_id: str = _EXPECTED_SELECTED) -> dict[str, object]:
     return {
         ENDPOINT_MARKET_TICKER: {
@@ -153,6 +167,7 @@ def _market_payloads(*, instrument_id: str = _EXPECTED_SELECTED) -> dict[str, ob
             "code": "0",
             "data": [{"instId": instrument_id, "fundingRate": "0.0001"}],
         },
+        ENDPOINT_HISTORY_MARK_PRICE_CANDLES: _mark_history_payload(instrument_id=instrument_id),
     }
 
 
@@ -314,6 +329,10 @@ def test_injected_path_runs_cycle_without_fabricating_enter(tmp_path: Path) -> N
     assert claims["FRESH_PRE_SUBMIT_EVIDENCE"] == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
     assert claims["PROTECTED_SURFACES_CHANGED"] == "false"
     assert result.first_real_blocker != CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT
+    cycle_payload = json.loads(
+        (Path(result.store_root) / "master_v2_runtime_cycle_v1.json").read_text(encoding="utf-8")
+    )
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle_payload.get("FAIL_REASONS", [])
     assert verify_manifest_sha256_v1(store_root=Path(result.store_root)) == 0
 
 
@@ -335,6 +354,20 @@ def test_foreign_open_position_denies_without_second_instrument_cycle(tmp_path: 
     assert result.permit_created == "false"
     assert result.post_count == "0"
     assert result.envelope_readiness == "false"
+
+
+def test_missing_mark_history_blocks_typed_vol_hot_path(tmp_path: Path) -> None:
+    payloads = dict(_identity_payloads())
+    payloads.update(_market_payloads())
+    del payloads[ENDPOINT_HISTORY_MARK_PRICE_CANDLES]
+    result = _run(
+        tmp_path,
+        fresh_get_transport=InjectedPayloadsFreshGetTransportV1(payloads=payloads),
+    )
+    assert "G17_TYPED_VOL_HOT_PATH_FAIL_CLOSED" in result.first_real_blocker or (
+        "MASTER_V2_REQUIRED_GET_INCOMPLETE" in result.first_real_blocker
+    )
+    assert result.post_count == "0"
 
 
 def test_missing_market_get_is_truthful_incomplete(tmp_path: Path) -> None:
