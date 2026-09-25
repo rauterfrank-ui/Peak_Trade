@@ -26,6 +26,13 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
     EeaPublicUniverseGetPortV1,
     EeaUniverseAcquisitionError,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+    prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+    mark_history_get_query_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_INDEX_TICKERS,
@@ -311,7 +318,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
             if pos_status == "FOREIGN_OPEN_POSITION_MAX_POSITIONS_1":
                 market_blocker = pos_status
             ticker_payload = candles_payload = oi_payload = funding_payload = None
-            ticker_err = candles_err = oi_err = funding_err = ""
+            mark_history_payload = None
+            ticker_err = candles_err = oi_err = funding_err = mark_history_err = ""
             if not market_blocker:
                 try:
                     ticker_payload, ticker_err = _transport_payload(
@@ -342,6 +350,13 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                         auth_required=False,
                         native_id=native_id,
                     )
+                    mark_history_payload, mark_history_err = _transport_payload(
+                        fresh_get_transport,
+                        path=ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+                        query=mark_history_get_query_v1(venue_native_id=native_id),
+                        auth_required=False,
+                        native_id=native_id,
+                    )
                 except (
                     TypeError,
                     RuntimeError,
@@ -358,6 +373,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 "candles_error": candles_err,
                 "oi_error": oi_err,
                 "funding_error": funding_err,
+                "mark_history_error": mark_history_err,
             }
             mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
                 acquisition_result.mark_price_payload, native_id=native_id
@@ -407,11 +423,29 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 missing.append("FUNDING_RATE")
             if not closes or last_ts is None:
                 missing.append("FINALIZED_CANDLES")
-            if ticker_err or candles_err or oi_err or funding_err:
+            if ticker_err or candles_err or oi_err or funding_err or mark_history_err:
                 missing.append("MARKET_GET_ERROR")
+            g17_producer = None
+            if not missing and not market_blocker:
+                g17_join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                    evidence_store_root=store,
+                    bound_instrument=bound,
+                    mark_candles_payload=mark_history_payload,
+                    receive_or_capture_timestamp=str(int(observed_unix * 1000)),
+                )
+                market_payloads["g17_checkpoint_disposition"] = g17_join.checkpoint_disposition
+                market_payloads["g17_estimate_present"] = str(g17_join.estimate_present).lower()
+                if g17_join.fail_closed:
+                    market_blocker = "G17_TYPED_VOL_HOT_PATH_FAIL_CLOSED:" + (
+                        g17_join.reason_code or "UNKNOWN"
+                    )
+                elif not g17_join.estimate_present:
+                    market_blocker = "G17_TYPED_VOL_ESTIMATE_ABSENT"
+                else:
+                    g17_producer = g17_join.producer
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
-            elif not market_blocker:
+            elif not market_blocker and g17_producer is not None:
                 try:
                     cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
                         bound_instrument=bound,
@@ -428,6 +462,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                         last_finalized_event_ts_unix=float(last_ts),
                         venue_flat=venue_flat,
                         existing_position_side=existing_side,
+                        g17_typed_vol_producer=g17_producer,
                     )
                 except (TypeError, RuntimeError, ValueError) as exc:
                     market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
