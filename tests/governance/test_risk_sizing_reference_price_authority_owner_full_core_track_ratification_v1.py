@@ -43,7 +43,7 @@ def test_owner_go_consumed_and_mark_price_semantics() -> None:
     assert markers["REFERENCE_PRICE_AUTHORITY_OWNER"] == OWNER
     assert markers["FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED"] is True
     assert markers["PRICE_SEMANTICS_CLASS_RATIFIED"] == "mark_price"
-    assert markers["GOVERNED_PRODUCER_CREATED"] is False
+    assert markers["GOVERNED_PRODUCER_CREATED"] is True
     assert markers["INDEX_PX_NOT_REFERENCE_PRICE_AUTHORITY"] is True
     assert markers["CONVERSION_READY"] is False
     assert markers["C2_REFERENCE_PRICE_DOMAIN_VERDICT"] == "PARTIAL"

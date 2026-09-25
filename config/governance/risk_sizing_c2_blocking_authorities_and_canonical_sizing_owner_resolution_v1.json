@@ -157,7 +157,7 @@
           "crs_consumer_offline_math_not_venue_truth": true
         }
       ],
-      "canonical_transform_exists": false,
+      "canonical_transform_exists": true,
       "negative_evidence": [
         "NO GOVERNED_PRODUCTIVE_REFERENCE_PRICE_AUTHORITY_PRODUCER on main",
         "fill price forbidden as conversion reference in authority freeze",

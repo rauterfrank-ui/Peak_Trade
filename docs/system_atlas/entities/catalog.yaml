@@ -11154,6 +11154,7 @@ entities:
     source_paths:
       - src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py
       - src/ops/governed_productive_reference_price_authority_producer_v1/__init__.py
+      - src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py
       - config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json
       - docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
@@ -11165,9 +11166,10 @@ entities:
       - docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md
       - config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json
       - tests/governance/test_risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.py
+      - tests/ops/test_governed_productive_reference_price_authority_producer_v1.py
     notes: >-
       B05 Full-Core REFERENCE_PRICE authority owner ratification (mark_price semantics):
-      static owner slot and contract constants only; CRS bind remains in enter-live join;
+      governed MV2 mark producer + enter-live-29p CRS handoff; REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false;
       no conversion-ready flip; ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
