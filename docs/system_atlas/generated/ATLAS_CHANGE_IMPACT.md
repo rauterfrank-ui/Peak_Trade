@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,14 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1` |
-| `RUNTIME_COMPONENT:pdf_v3_3_topic_completion_composition_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6803 PDF v3.3 topic completion: bounded composition + final adjudication (pdf_completion=true); no external wire/Live; Map-of-Truth navigation row only. ATLAS_AUTHORITY=NONE.
+- #6804 MV2 tertiary INDEX_PX active join (mark.idxPx→ticker.idxPx→index-tickers): NAVIGATION_ONLY atlas review of full_core composition root, elementary_direction, p5_10 bind contract, and OBSERVES relation; no new Atlas relation; trading/activation semantics unchanged; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=META_LEARNING_OPTIMIZATION_UNIVERSE_PDF_V3_3_FINAL_COMPLETION_V1
+- modified_by=MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

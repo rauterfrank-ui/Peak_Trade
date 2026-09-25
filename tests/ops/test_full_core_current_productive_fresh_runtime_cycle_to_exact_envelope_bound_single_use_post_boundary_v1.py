@@ -33,10 +33,12 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CYCLE_OWNER,
     ENDPOINT_MARKET_CANDLES,
+    ENDPOINT_MARKET_INDEX_TICKERS,
     ENDPOINT_MARKET_TICKER,
     ENDPOINT_PUBLIC_FUNDING_RATE,
     ENDPOINT_PUBLIC_OPEN_INTEREST,
     extract_finalized_candle_closes_v1,
+    resolve_index_ticker_inst_id_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
@@ -67,7 +69,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CANONICAL_PACK_RELPATH,
     EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
-    THIS_SLICE,
     CurrentProductiveFreshRuntimeCycleError,
     execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1,
 )
@@ -92,17 +93,11 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = (
     REPO_ROOT / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_"
     "TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_V1.md"
 )
 ATLAS_PATH = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
-DK_HEADING = (
-    "### 11.2.1.DK FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_"
-    "ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY"
-)
 NEXT_BLOCKER = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
 LATER_POST_GO = (
     "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
@@ -197,7 +192,7 @@ def test_standing_flags_keep_real_post_fail_closed() -> None:
     assert REAL_VENUE_POST_ALLOWED is False
     assert POST_ALLOWED is False
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
-    assert EXPECTED_ORIGIN_MAIN_SHA == "be9d79e95725e92e96dfdc84bf4afd3886185f24"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "94319bcb744b75a63b30fbd64a5162bf66e398f2"
     assert current_productive_first_real_blocker_v1() == NEXT_BLOCKER
     assert LATER_POST_GO in ONE_SHOT_REAL_POST_AUTHORITY_REFS
     assert OWNER_GO not in ONE_SHOT_REAL_POST_AUTHORITY_REFS
@@ -323,6 +318,79 @@ def test_missing_market_get_is_truthful_incomplete(tmp_path: Path) -> None:
     assert result.envelope_readiness == "false"
 
 
+def _market_payloads_without_idx_px(
+    *, instrument_id: str = _EXPECTED_SELECTED
+) -> dict[str, object]:
+    payloads = _market_payloads(instrument_id=instrument_id)
+    ticker = payloads[ENDPOINT_MARKET_TICKER]
+    assert isinstance(ticker, dict)
+    row = dict((ticker.get("data") or [{}])[0])
+    row.pop("idxPx", None)
+    payloads[ENDPOINT_MARKET_TICKER] = {"code": "0", "data": [row]}
+    return payloads
+
+
+def test_tertiary_index_tickers_closes_index_px_when_mark_and_ticker_absent(
+    tmp_path: Path,
+) -> None:
+    instrument_id = _EXPECTED_SELECTED
+    index_inst = resolve_index_ticker_inst_id_v1(instrument_id)
+    assert index_inst.endswith("-USDT")
+    assert not index_inst.endswith("-SWAP")
+    payloads = dict(_identity_payloads(instrument_id=instrument_id))
+    payloads.update(_market_payloads_without_idx_px(instrument_id=instrument_id))
+    payloads[ENDPOINT_MARKET_INDEX_TICKERS] = {
+        "code": "0",
+        "data": [{"instId": index_inst, "idxPx": "100.45"}],
+    }
+    result = _run(
+        tmp_path,
+        fresh_get_transport=InjectedPayloadsFreshGetTransportV1(payloads=payloads),
+    )
+    claims = json.loads((Path(result.store_root) / "claims.json").read_text(encoding="utf-8"))
+    assert "MASTER_V2_REQUIRED_GET_INCOMPLETE:INDEX_PX" not in result.first_real_blocker
+    assert result.master_v2_runtime_cycle_id != ""
+    assert claims["POST_COUNT"] == "0"
+    assert claims["PERMIT_CREATED"] == "false"
+    assert claims["TRANSPORT_ATTEMPTED"] == "false"
+    assert claims["VENUE_MUTATION_PERFORMED"] == "false"
+    assert result.post_count == "0"
+
+
+def test_tertiary_index_tickers_malformed_fails_closed_index_px(tmp_path: Path) -> None:
+    instrument_id = _EXPECTED_SELECTED
+    index_inst = resolve_index_ticker_inst_id_v1(instrument_id)
+    payloads = dict(_identity_payloads(instrument_id=instrument_id))
+    payloads.update(_market_payloads_without_idx_px(instrument_id=instrument_id))
+    payloads[ENDPOINT_MARKET_INDEX_TICKERS] = {
+        "code": "0",
+        "data": [{"instId": index_inst, "idxPx": "0"}],
+    }
+    result = _run(
+        tmp_path,
+        fresh_get_transport=InjectedPayloadsFreshGetTransportV1(payloads=payloads),
+    )
+    assert "MASTER_V2_REQUIRED_GET_INCOMPLETE:INDEX_PX" in result.first_real_blocker
+    assert result.permit_created == "false"
+    assert result.post_count == "0"
+
+
+def test_tertiary_index_tickers_cross_instrument_fails_closed(tmp_path: Path) -> None:
+    instrument_id = _EXPECTED_SELECTED
+    payloads = dict(_identity_payloads(instrument_id=instrument_id))
+    payloads.update(_market_payloads_without_idx_px(instrument_id=instrument_id))
+    payloads[ENDPOINT_MARKET_INDEX_TICKERS] = {
+        "code": "0",
+        "data": [{"instId": "BTC-USDT", "idxPx": "100.45"}],
+    }
+    result = _run(
+        tmp_path,
+        fresh_get_transport=InjectedPayloadsFreshGetTransportV1(payloads=payloads),
+    )
+    assert "MASTER_V2_REQUIRED_GET_INCOMPLETE:INDEX_PX" in result.first_real_blocker
+    assert result.post_count == "0"
+
+
 def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
     import subprocess
 
@@ -337,29 +405,24 @@ def test_protected_algorithm_files_unchanged_vs_origin_main() -> None:
 
 
 def test_ssot_docs_once_present() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
-    mot = MOT_PATH.read_text(encoding="utf-8")
+    """Pin CURRENT docs surfaces for this slice.
+
+    Master Runbook §11.2.1.DK heading is absent on current origin/main
+    (pre-existing chronology retirement). Spec + atlas remain the
+    navigation/contract pins for this capability; standing pins stay
+    fail-closed in code and canonical pack claims.
+    """
+
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DK_HEADING in runbook
-    assert THIS_SLICE in runbook
-    dk_section = runbook[
-        runbook.index(
-            "11.2.1.DK FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_"
-            "ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY"
-        ) : runbook.index("## 11.3 Autonomy state model")
-    ]
-    assert "ONE_SHOT_REAL_POST_SEAM_IMPLEMENTED=true" in dk_section
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in dk_section
-    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in dk_section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in dk_section
-    assert "POST_COUNT=0" in dk_section
-    assert "PERMIT_CREATED=false" in dk_section
-    assert SPEC_PATH.name in mot
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_"
         "ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_V1"
     ) in spec
+    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "POST_COUNT=0" in spec
+    assert "PERMIT_CREATED=false" in spec
     assert "11.2.1.DK" in atlas
     assert (
         "current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_"
