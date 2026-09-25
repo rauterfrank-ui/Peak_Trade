@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "4a04f94f18ec2b2f6dc72cc38b40aef313b3998d",
+  "base_sha": "f8d6aa38dceef0403b68c5ce85a82c598ceef7dc",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -8,27 +8,29 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-    "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py"
+    "tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py"
   ],
-  "changed_paths_sha256": "0d1b16ef0f4f66457c5b439936323a7bfc5a7946f78819d5a550fc9e16905e82",
+  "changed_paths_sha256": "7fd89105bec74bc5036f1fc46ef650b1f842cd65c39530d8b393f20a6688d26d",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-    "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py"
+    "tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py"
   ],
   "evidence_refs": [
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6805 DK origin/main chain-integrity remediation: 29P execution-identity guard replaces stale static DK SHA pin; atlas NAVIGATION_ONLY review + candidate catalog coverage; Map-of-Truth unchanged; NO_MAP_IMPACT.",
+  "reason": "PR #6806 DK execute_network credential join bounded closure: shared EEA/CZ fail-closed join wiring; atlas NAVIGATION_ONLY review + candidate catalog coverage; Map-of-Truth unchanged; NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

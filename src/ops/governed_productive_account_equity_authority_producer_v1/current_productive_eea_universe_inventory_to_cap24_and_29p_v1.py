@@ -95,6 +95,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
+    productive_fail_closed_credential_unavailable_v1 as _fail_closed_credential_unavailable_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     eea_mark_price_payload_to_map_by_native_id_v1,
     run_cap21_to_cap23_persist_productive_v1,
@@ -162,10 +165,6 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     SELECTION_AUTHORITY_OWNER,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
-
-
-def _fail_closed_credential_unavailable_v1(*_a, **_k):
-    raise RuntimeError("CREDENTIAL_HANDLE_FAIL_CLOSED")
 
 
 def resolve_post_29p_current_execution_blocker_v1() -> tuple[str, str, str]:

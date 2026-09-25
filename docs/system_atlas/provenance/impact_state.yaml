@@ -4,13 +4,13 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-modified_by: DK_ORIGIN_MAIN_CHAIN_INTEGRITY_V1
+modified_by: DK_EXECUTE_NETWORK_CREDENTIAL_JOIN_BOUNDED_CLOSURE_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  #6805 DK origin/main chain-integrity remediation: NAVIGATION_ONLY atlas review of
-  full_core composition root; 29P merge-stable execution identity replaces static DK
-  SHA pin; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
+  #6806 DK execute_network credential join bounded closure: NAVIGATION_ONLY atlas
+  review of full_core composition root; shared EEA/CZ fail-closed credential join
+  wiring; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
 changed_entities:
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []

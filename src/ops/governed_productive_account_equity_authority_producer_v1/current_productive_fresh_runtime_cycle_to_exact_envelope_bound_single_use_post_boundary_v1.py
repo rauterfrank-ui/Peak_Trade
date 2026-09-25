@@ -86,6 +86,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     assert_current_productive_29p_execution_identity_v1,
     assert_current_productive_29p_repository_sha_for_execution_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
+    CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS,
+    bind_productive_read_only_get_transport_for_execute_network_v1,
+    release_productive_credential_handle_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
     CurrentProductiveFreshCap23Cap24ReadinessError,
     _assert_no_secrets,
@@ -251,22 +256,18 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
     positions_payload: Any = None
     handle = None
     if bound is not None:
-        if execute_network is True and fresh_get_transport is None:
-            resolved_vault = (
-                Path(str(vault_file))
-                if vault_file is not None and str(vault_file).strip()
-                else _fail_closed_credential_unavailable_v1(repo_root=root)
+        joined_transport, credential_join_status, handle = (
+            bind_productive_read_only_get_transport_for_execute_network_v1(
+                execute_network=execute_network,
+                fresh_get_transport=fresh_get_transport,
+                vault_file=vault_file,
+                repo_root=root,
             )
-            try:
-                backend = _fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
-                handle = _fail_closed_credential_unavailable_v1(
-                    secret_reference=REQUIRED_SECRETREF_URI,
-                    vault_backend=backend,
-                    credential_class=REQUIRED_CREDENTIAL_CLASS,
-                )
-                fresh_get_transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle)
-            except RuntimeError:
-                get_status = "CREDENTIAL_HANDLE_FAIL_CLOSED"
+        )
+        if credential_join_status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS:
+            get_status = credential_join_status
+        elif joined_transport is not None:
+            fresh_get_transport = joined_transport
         if fresh_get_transport is not None:
             try:
                 evidence = collect_fresh_pretrade_runtime_get_v1(
@@ -435,8 +436,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                         market_blocker = cycle_result.input_blocker
                     market_payloads["finalized_close_count"] = str(len(closes))
                     market_payloads["mark_px_observed"] = str(mark_px)
-    if handle is not None:
-        handle = None
+    release_productive_credential_handle_v1(handle)
+    handle = None
 
     cycle_replay = None
     cycle_id = ""
