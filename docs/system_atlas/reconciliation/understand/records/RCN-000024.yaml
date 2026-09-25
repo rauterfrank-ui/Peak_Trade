@@ -1,0 +1,67 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000024
+canonical_record_name: Supervised graphical market landscape presentation
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Contract tests proving supervised graphical Market Landscape presentation-only v1: existing JSON routes
+  stay semantically compatible; GET /landscape returns text/html; static CSS/JS HTTP 200; no direct_browser_okx path in JS.'
+historical_problem_statement: Prove Landscape presentation-only HTTP/static contracts without changing route semantics.
+historical_inputs:
+- create_o2_dashboard_http_app_v1; durable read model fixture
+historical_outputs:
+- pytest assertions over /health /market /landscape /ohlcv
+historical_dependencies:
+- RCN-000001 templates/JS and dashboard HTTP host
+historical_dependents: []
+historical_paths:
+- tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+historical_commits:
+- 4a758bf4b9f2a3805380bb4b8cde816153073d14
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - Landscape naming
+  epistemic_status: HYPOTHESIS
+- relation_type: TESTS
+  target_id: RCN-000001
+  unresolved_target: ''
+  evidence:
+  - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- POSSIBLE_SAME_AS RCN-000001 is test-to-package, not identity fusion.
+evidence_refs:
+- tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Module docstring lists GET /landscape HTML, static CSS/JS 200, no direct_browser_okx path in JS.
+  evidence:
+  - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Test file references static/js/market_dashboard_landscape_v2.js and templates/peak_trade_dashboard/market_landscape_v2.html.
+  evidence:
+  - tests/ops/test_supervised_graphical_market_landscape_presentation_only_v1.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

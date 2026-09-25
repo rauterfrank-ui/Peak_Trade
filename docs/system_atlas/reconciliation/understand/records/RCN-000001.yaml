@@ -1,0 +1,107 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000001
+canonical_record_name: Market Dashboard Landscape V2 package
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: Read-only Market Dashboard Landscape V2 projection contracts, page aggregate/presenter, and GET /market
+  shell. Consumer foundation only; no runtime activation, orders, or domain recomputation.
+historical_problem_statement: Provide a single Landscape market workspace as a strictly read-only consumer of already-produced
+  Peak_Trade snapshots.
+historical_inputs:
+- Durable presentation projections / injected snapshots for bound slots
+- okx_selected_instrument_ohlcv_readmodel.v1 for OHLCV poll
+- Workflow Dashboard archive root for fail-closed producer binding
+historical_outputs:
+- GET /market HTML via present_market_landscape_v2
+- GET /api/market/landscape/ohlcv JSON poll payload
+- Availability-tagged projection snapshots (never silent defaults)
+historical_dependencies:
+- RCN-000002 documents this package
+- producer binding lives in market_dashboard_landscape_producer_binding_v2
+historical_dependents:
+- RCN-000024 contract tests
+- browser GET /market
+historical_paths:
+- src/webui/market_dashboard_landscape_v2/
+- src/webui/market_dashboard_landscape_shell_router_v2.py
+- src/webui/market_dashboard_landscape_producer_binding_v2.py
+- static/js/market_dashboard_landscape_v2.js
+- templates/peak_trade_dashboard/market_landscape_v2.html
+historical_commits:
+- 82f71bbef835e6a63453190b5eb1e3d4c2ef1884
+- 2ae6db83c45ecec9d18c2d989925103ba37fbc2d
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000002
+  unresolved_target: ''
+  evidence:
+  - shared Landscape V2 naming on 2026-07-23 commits
+  epistemic_status: HYPOTHESIS
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - later current landscape package vs deleted product_surface_v1
+  epistemic_status: HYPOTHESIS
+open_questions:
+- Is Landscape V2 a later generation of product_surface_v1, or a distinct package that reused dashboard naming?
+evidence_refs:
+- src/webui/market_dashboard_landscape_v2/__init__.py
+- src/webui/market_dashboard_landscape_v2/contracts.py
+- src/webui/market_dashboard_landscape_shell_router_v2.py
+- src/webui/market_dashboard_landscape_producer_binding_v2.py
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+- templates/peak_trade_dashboard/market_landscape_v2.html
+- static/js/market_dashboard_landscape_v2.js
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Package docstring states read-only projection contracts + page shell; no runtime activation, orders, or domain recomputation.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/__init__.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'contracts.py: consumer snapshots only; do not recompute decision, risk, sizing, scope, or Double Play authority.'
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/contracts.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Shell router: GET /market read-only SSR; no POST/PUT/PATCH/DELETE; no execution/order/runtime-activation imports.'
+  evidence:
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Producer binding lives outside the package so the package stays free of trading/webui producer imports.
+  evidence:
+  - src/webui/market_dashboard_landscape_producer_binding_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Owner registry maps projection slots to existing canonical producer modules; consumer boundary only.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: Identity versus deleted product_surface_v1 (RCN-000009) remains unproven; POSSIBLE_SAME_AS stays hypothesis.
+  evidence:
+  - docs/system_atlas/reconciliation/relations.yaml
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+- master_v2_double_play
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

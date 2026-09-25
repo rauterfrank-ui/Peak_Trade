@@ -1,0 +1,136 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000029
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Is this artifact the same identity as Landscape V2, a proven replacement/successor, or a distinct
+  co-deleted v1 stack member whose unique purpose is or is not covered by a current Landscape V2 slot?
+identity_gap:
+  status: PROVEN_DISTINCT_FROM_LANDSCAPE_V2
+  statement: src/webui/market_ranking_funnel_readmodel_v0 is a distinct historical path/package. Co-deletion with other v1
+    dashboard files and later Landscape V2 naming do not prove SAME_AS RCN-000001. Similar name/path/GET /market is not identity.
+  used_as_fact: true
+  source: b5b8172806eae55d8639f964fcb2ad036337a0f3
+  source_sha: b5b8172806eae55d8639f964fcb2ad036337a0f3
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Ranking funnel readmodel/runtime v0 for futures universe/ranking.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000029.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: PROVEN_FAMILY_RELATION_NOT_IDENTITY
+  statement: IMPORTED_BY product_surface_v1 source_loader (RCN-000009). Named as CANONICAL_RANKING_FUNNEL_OWNER by market_surface.py
+    (RCN-000023). Co-deleted in b5b81728. Landscape V2 universe_ranking slot uses universe_selection_readmodel.v1 — namesake
+    ranking is not identity.
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/landscape_v1_import_edges.txt
+  source_sha: 987e020378d1767fbd6fb1f0914d475f9a485f51
+  evidence_type: FORENSIC_RAW
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Landscape V2 is a later consumer added after an explicit no-rebuild deletion. Later existence is not succession.
+    Shared GET /market is not replacement. universe_ranking slot owner is workflow_dashboard_readmodel_v1.universe_selection_contract_v1,
+    not market_ranking_funnel_runtime_v0.
+  used_as_fact: true
+  source: src/webui/market_dashboard_landscape_v2/owner_registry.py
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Current fit / unique uncovered value versus Landscape V2 slots remains unproven. This pass does not assign RETAIN,
+    ADAPT, COVERED, INCOMPATIBLE, or REJECT.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: Commit b5b81728 deleted the Market-Dashboard product stack on 2026-07-17 and stated kein Rebuild autorisiert oder
+    begonnen; /market* absent (HTTP 404).
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  - docs/system_atlas/reconciliation/understand/records/RCN-000029.yaml
+  used_as_fact: true
+  source_sha: b5b8172806eae55d8639f964fcb2ad036337a0f3
+  source_path: commit b5b81728 message
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Landscape V2 projection contracts were first added on 2026-07-23 by 82f71bbe (#5499), six calendar days after the
+    v1 stack deletion. Later existence is not succession.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+  source_sha: 82f71bbef835e6a63453190b5eb1e3d4c2ef1884
+  source_path: commit 82f71bbe
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Landscape V2 owner_registry slots are market_instrument, universe_ranking, dynamic_scope, regime_bull_bear_switch,
+    canonical_decision, double_play, risk_sizing_capital, safety_authority, execution_reconciliation, economic_summary, autonomy_stage,
+    diagnostics_summary, source_health. The registry does not declare itself as product_surface_v1, readmodels_v1, depth/tape/ohlcv/eligibility/paper-run
+    packages.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  source_path: src/webui/market_dashboard_landscape_v2/owner_registry.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Historical artifact src/webui/market_ranking_funnel_readmodel_v0 is absent on census SHA 1b52df25b99a36b99eed91943c2a203ce84f1cad
+    and on origin/main f9618c73f1834b68588ceab586da4d6408962a10 (path count 0).
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  used_as_fact: true
+  source_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  source_path: docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  evidence_type: FORENSIC_RAW
+- claim_class: HYPOTHESIS
+  text: GET /market consumer overlap with Landscape V2 may later support a coverage argument; it is not identity and not proven
+    replacement of this artifact's unique purpose.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+  used_as_fact: false
+  source_path: src/webui/market_dashboard_landscape_v2/owner_registry.py
+  evidence_type: HYPOTHESIS
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000029.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000029.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000029.yaml
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/landscape_v1_import_edges.txt
+remaining_open_questions:
+- Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
+- Unique current value of the deleted artifact versus Landscape V2 remains unproven.
+relations_proven:
+- relation_type: IMPORTED_BY
+  target_id: RCN-000009
+  epistemic_status: FORENSIC_RAW_FACT
+  used_as_fact: true
+  source: 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_dashboard_product_surface_v1/source_loader.py
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

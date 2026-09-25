@@ -1,0 +1,60 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+kind: FORENSIC_RAW_QUOTES
+interpretation_forbidden_in_this_file: true
+items:
+- id: Q-PR6166-OWNER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+  quote: 'Owner decision (A+1): Cap 2.3 remains exclusive selection authority. BTC remains excluded from the productive Master
+    V2 / Double Play path.'
+- id: Q-PR6166-ADDONLY
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/pr_6166_body.txt
+  quote: '#6165 was isolated add-only (10 files), not runtime-consumed, and created no Cap-2.x / host importers.'
+- id: Q-SELECTOR-NOREWRITE
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/selector_add_revert.txt
+  quote: This package is a new Owner policy surface. It does not rewrite Cap 2.1 GFU
+- id: Q-ENGINE-PLACEHOLDER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3=# Engine placeholder
+- id: Q-RESULTS-PLACEHOLDER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: blob:cd074be6849834125b0ad5e6e331dc7f2109a1d7=# Results placeholder
+- id: Q-STATS-PLACEHOLDER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: blob:7dd32407016f955f2ab4707ae122323a091dab4a=# Stats placeholder
+- id: Q-SIZER-PLACEHOLDER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: blob:439a60c8176d2990ea8e199443283f2b3e0f9a33=# Position sizer placeholder
+- id: Q-MA-PLACEHOLDER
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: blob:83bb67757202b250a8273faac1b1e3dd794f8493=# MA Strategy placeholder
+- id: Q-README-SAME-BLOB
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  quote: SAME_BLOB_AS archive/noch_einordnen/README.md == archive/PeakTradeRepo/README.md == 8914c7c59c19601053b0965f3a4787abfe68e637
+- id: Q-C052-HUB-COUNT
+  source: docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+  quote: CENSUS_HUB_FILE_COUNT=11
+- id: Q-CAP23-AUTHORITY
+  source: src/ops/single_selected_future_policy_v1/constants_v1.py
+  quote: SELECTION_AUTHORITY_ADDED = True
+- id: Q-GET-OBSERVABILITY
+  source: src/webui/app.py
+  quote: '@app.get("/observability", response_class=HTMLResponse)'

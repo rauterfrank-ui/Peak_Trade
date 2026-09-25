@@ -1,0 +1,345 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+rows:
+- record_id: RCN-000001
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - master_v2_double_play
+- record_id: RCN-000002
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000003
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - governance_gates
+- record_id: RCN-000004
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+- record_id: RCN-000005
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+- record_id: RCN-000006
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+- record_id: RCN-000007
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+  - archives_legacy
+- record_id: RCN-000008
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+  - archives_legacy
+- record_id: RCN-000009
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000010
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000011
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000012
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000013
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000014
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000015
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+  - governance_gates
+- record_id: RCN-000016
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - governance_gates
+- record_id: RCN-000017
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archives_legacy
+- record_id: RCN-000018
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archives_legacy
+- record_id: RCN-000019
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - risk_execution
+- record_id: RCN-000020
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000021
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - master_v2_double_play
+- record_id: RCN-000022
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - master_v2_double_play
+  - archives_legacy
+- record_id: RCN-000023
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000024
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000025
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - governance_gates
+- record_id: RCN-000026
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archives_legacy
+- record_id: RCN-000027
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - data_market
+- record_id: RCN-000028
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - data_market
+- record_id: RCN-000029
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000030
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+  - data_market
+- record_id: RCN-000031
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000032
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000033
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000034
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000035
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - governance_gates
+  - landscape_dashboard
+- record_id: RCN-000036
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000037
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000038
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000039
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000040
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000041
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000042
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000043
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - risk_execution
+  - master_v2_double_play
+- record_id: RCN-000044
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000045
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+  - risk_execution
+- record_id: RCN-000046
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000047
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - landscape_dashboard
+- record_id: RCN-000048
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - governance_gates
+- record_id: RCN-000049
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archives_legacy
+- record_id: RCN-000050
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - risk_execution
+- record_id: RCN-000051
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archive_peaktraderepo
+- record_id: RCN-000052
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - observability_infra
+- record_id: RCN-000053
+  understand_status: PURPOSE_UNDERSTOOD
+  purpose_understood: true
+  evidence_exhausted: true
+  clusters:
+  - archives_legacy
+row_count: 53

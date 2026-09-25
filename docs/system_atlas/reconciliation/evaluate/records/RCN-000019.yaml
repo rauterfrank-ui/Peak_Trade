@@ -1,0 +1,55 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000019
+canonical_record_name: risk_layer historical top-level modules
+census_current_presence: CURRENTLY_PARTIAL
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: src/risk_layer/kill_switch/
+current_paths:
+- src/risk_layer/kill_switch/
+- src/risk_layer/kill_switch/core.py
+- src/risk_layer/risk_gate.py
+- src/risk_layer/alerting/
+- src/risk_layer/var_backtest/
+capability_overlap: SAME_PATH_FAMILY_PARTIAL
+semantic_compatibility: PARTIAL
+authority_compatibility: PARTIAL
+safety_compatibility: PARTIAL
+runtime_compatibility: PARTIAL
+conflicts: []
+gaps:
+- historical top-level src/risk_layer/kill_switch.py is absent
+- historical liquidity_gate.py, metrics.py, micro_metrics.py, stress_gate.py, var_gate.py are absent
+- current package uses kill_switch/ package plus risk_gate.py; identity of each missing module is unproven
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: src/risk_layer/kill_switch/ package exists with KillSwitch public API.
+  evidence:
+  - src/risk_layer/kill_switch/__init__.py
+  - src/risk_layer/kill_switch/core.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Landscape V2 safety_authority slot names src.risk_layer.kill_switch as owner.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: src/risk_layer/liquidity_gate.py is absent on the bound SHA.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000019.yaml
+  used_as_fact: true
+open_questions:
+- Are LiquidityGate/StressGate/VaRGate purposes covered by current risk_gate.py or elsewhere?

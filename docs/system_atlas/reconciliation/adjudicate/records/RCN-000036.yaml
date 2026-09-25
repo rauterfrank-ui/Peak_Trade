@@ -1,0 +1,45 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000036
+canonical_record_name: archive/full_files_stand_02.12.2025 export tree
+census_current_presence: CURRENTLY_ABSENT
+evaluate_capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: IDENTITY_UNPROVEN
+positive_reason: The dated export is absent. Current src/backtest/engine.py and src/strategies/ma_crossover.py exist but are
+  not proven to be the 02.12.2025 export blobs.
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED by current backtest/ma_crossover: blob identity unproven'
+- 'REJECT because archived: absence is not rejection'
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'archive/full_files_stand_02.12.2025 export tree: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+    remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000036.yaml
+  - src/backtest/engine.py
+  - src/strategies/ma_crossover.py
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000036.yaml
+- src/backtest/engine.py
+- src/strategies/ma_crossover.py
+contradictions: []
+unresolved_questions: []
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

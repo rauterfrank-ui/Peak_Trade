@@ -1,0 +1,38 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000006
+canonical_record_name: ops.double_play specialists scaffold
+census_current_presence: CURRENTLY_PRESENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: src/ops/double_play/
+current_paths:
+- src/ops/double_play/__init__.py
+- src/ops/double_play/specialists.py
+capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+semantic_compatibility: COMPATIBLE
+authority_compatibility: COMPATIBLE
+safety_compatibility: COMPATIBLE
+runtime_compatibility: COMPATIBLE
+conflicts: []
+gaps: []
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: ops.double_play scaffold still exists as a projection/diagnostic consumer path.
+  evidence:
+  - src/ops/double_play/__init__.py
+  - src/ops/double_play/specialists.py
+  used_as_fact: true
+open_questions: []

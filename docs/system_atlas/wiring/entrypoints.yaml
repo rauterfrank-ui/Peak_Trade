@@ -1,0 +1,88 @@
+# ATLAS_AUTHORITY=NONE
+entrypoints:
+  - id: EP:gfu_producer
+    name: Governed Futures Universe producer
+    path: scripts/ops/run_governed_futures_universe_producer_v1.py
+    entrypoint_class: PRODUCTIVE_OFFLINE_PRODUCER
+    epistemic_status: FORENSIC_RAW
+    network_io: Discovery is offline/injected payload in GFU producer itself; public MD client is a separate adapter
+    evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    steps:
+      - caller: SCRIPT:run_gfu_producer
+        callee: CAPABILITY:cap_2_1_gfu
+        gate: GATE:btc_exclusion
+        failure_mode: fail-closed eligibility reject
+      - caller: CAPABILITY:cap_2_1_gfu
+        callee: RUNTIME_COMPONENT:gfu_eligibility
+        gate: INVARIANT:missing_metadata_never_defaulted
+        failure_mode: MISSING_QUOTE_CURRENCY / exclusion codes
+    missing_wiring: []
+  - id: EP:cap23_policy
+    name: Single selected future policy
+    path: scripts/ops/run_single_selected_future_policy_v1.py
+    entrypoint_class: PRODUCTIVE_OFFLINE_PRODUCER
+    epistemic_status: FORENSIC_RAW
+    network_io: none_in_policy_producer
+    evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    steps:
+      - caller: SCRIPT:run_cap23_policy
+        callee: CAPABILITY:cap_2_3_single_selected_future
+        gate: OWNER_DECISION:cap23_exclusive_selection
+        failure_mode: fail-closed no selection
+    missing_wiring: []
+  - id: EP:flatten_execute
+    name: Flatten execute authority
+    path: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    entrypoint_class: GATED_MUTATION_PATH
+    epistemic_status: FORENSIC_RAW
+    network_io: may_exist_downstream_NOT_activated
+    evidence: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    steps:
+      - caller: GATE:flatten_execute_authority
+        callee: CAPABILITY:cap_11_13_5_live_canary
+        gate: GATE:live_authorized_false
+        failure_mode: deny
+    missing_wiring:
+      - OBSERVER:post_action_canary
+  - id: EP:full_core_live_path_offline
+    name: Offline Core-to-Live composition path
+    path: src/ops/full_core_live_path_composition_root_v1/path_v1.py
+    entrypoint_class: GATED_OFFLINE_COMPOSITION_PATH
+    epistemic_status: FORENSIC_RAW
+    network_io: none_hard_stop_before_wire
+    evidence: src/ops/full_core_live_path_composition_root_v1/path_v1.py
+    steps:
+      - caller: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+        callee: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+        gate: GATE:full_core_live_path_standing_live_gates_v1
+        failure_mode: HARD_STOP_BEFORE_WIRE
+    missing_wiring: []
+    notes: >-
+      Offline library entry for run_full_core_live_path_offline_v1.
+      Not a productive runner. Not LiveExecutionPort. Not canary POST.
+      11.2.1.Q joins STEP-29P risk claim at halt without constructing a port.
+      11.2.1.R does not bind typed equity and does not join LIVE_ACCOUNT_BOUND
+      into the 29P claim.       11.2.1.S likewise does not bind typed equity and
+      does not join LIVE_ACCOUNT_BOUND into the 29P claim.       11.2.1.T
+      ratifies P01/U01-U09 policy semantics only and still does not bind
+      typed equity. 11.2.1.U ratifies future architecture classes only and still
+      does not bind typed equity. 11.2.1.V assigns the empty governed owner slot
+      and still does not bind typed equity. 11.2.1.W adds the typed sample
+      schema only and still does not bind typed equity. Still no LiveExecutionPort construction.
+      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  - id: EP:landscape_dashboard_persistent_local_host_v1
+    name: Landscape Dashboard V2 persistent loopback host
+    path: scripts/webui/landscape_dashboard_persistent_local_host.sh
+    entrypoint_class: OPERATOR_LOCAL_LOOPBACK_SERVICE
+    epistemic_status: FORENSIC_RAW
+    network_io: loopback_http_only_127_0_0_1_8765
+    evidence: docs/webui/LANDSCAPE_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md
+    steps:
+      - caller: OPERATOR
+        callee: RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1
+        gate: GATE:localhost_only
+        failure_mode: refuse non-loopback bind
+    missing_wiring: []
+    notes: >-
+      LaunchAgent KeepAlive; canonical bookmark /market on 8765. Not coupled to
+      Full-Core or OKX for HTTP availability. ATLAS_AUTHORITY=NONE.

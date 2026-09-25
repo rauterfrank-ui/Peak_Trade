@@ -1,0 +1,47 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: b6bcdfbd62205d3be9ca30105735132ac9e7aaec
+atlas_authority: NONE
+reconciliation_authority: NONE
+pass_id: WORKING_NODE_FINAL_DISPOSITION_PASS_V1
+owner_go: PEAK_TRADE_RECONSOLIDATION_CANONICAL_FINAL_DISPOSITION_PERSISTENCE_V1
+identity_universe: RELATIONAL_WORKING_NODE_NOT_RCN_CENSUS
+identity_fusion_forbidden: true
+rcn_census_reopened: false
+rcn_ledger_mutated: false
+reintegration_performed: false
+runtime_mutation_performed: false
+implementation_authorized: false
+integrate_or_disposition_execution_authorized: false
+working_node_id: WN-LIVE-GATES
+adjudication_index: A19
+canonical_record_name: WN-LIVE-GATES
+temporal_class: CURRENT
+primary_paths:
+- src/live/live_gates.py
+current_presence: CURRENTLY_PRESENT
+proposed_disposition_owner_label: ADAPT
+final_disposition_owner_label: ADAPT
+proposed_disposition: ADAPT_AND_REINTEGRATE
+final_disposition: ADAPT_AND_REINTEGRATE
+proposal_accepted: true
+lifecycle_state: DISPOSITION_DECIDED
+identity_fusion_performed: false
+safety_critical: true
+final_reason: preserve eligibility predicates; eligibility is not a permit
+positive_reason: preserve eligibility predicates; eligibility is not a permit
+preserve_capability: strategy eligibility predicates as non-authorizing checks
+do_not_restore_or_preserve: portfolio/multi-position eligibility; ops.double_play as compute owner; eligibility-as-execution-permit
+target_current_architectural_home: live/safety or ops.gates as predicate consumers of MV2/DP packets
+adaptation_boundary: eligibility != permit; single-future only
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: WN-LIVE-GATES owner-final disposition is ADAPT_AND_REINTEGRATE (ADAPT). Classification finality is not implementation,
+    deletion, restoration, or runtime authorization.
+  evidence:
+  - src/live/live_gates.py
+  - docs/system_atlas/reconciliation/working_nodes/pass_v1_status.yaml
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  used_as_fact: true

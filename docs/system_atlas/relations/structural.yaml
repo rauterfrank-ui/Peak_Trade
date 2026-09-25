@@ -1,0 +1,1587 @@
+# ATLAS_AUTHORITY=NONE
+relations:
+  - id: REL:s_system_contains_master_v2
+    source: SYSTEM:peak_trade
+    type: CONTAINS
+    target: SUBSYSTEM:master_v2
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_master_v2_has_dp
+    source: SUBSYSTEM:master_v2
+    type: HAS_FUNCTIONAL_CORE
+    target: FUNCTIONAL_CORE:double_play
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md
+    notes: >
+      Exact tokens HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE / inner core were not found
+      on origin/main. Proven: Master V2 and Double Play are Modul-Owner of one
+      Trading Core (SEPARATE_*_ALLOWED=false). Atlas kind FUNCTIONAL_CORE is a
+      census label, not a Master Runbook token.
+
+  - id: REL:s_runbook_supersedes_vollautonomie
+    source: RUNBOOK:canonical_master_runbook
+    type: SUPERSEDES
+    target: RUNBOOK:vollautonomie_v4_4_12
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_map_navigates_runbook
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNBOOK:canonical_master_runbook
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+
+  - id: REL:s_system_has_cap21
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: REL:s_system_has_cap22
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_2_ranking
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+
+  - id: REL:s_system_has_economic_md_input
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_economic_md_input
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
+    evidence_sources:
+      - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
+    notes: >
+      Authorization of the Economic-MD-Input capability.
+      ECONOMIC_MD_PRODUCER_IMPLEMENTED=true.
+      ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false.
+      Not a current ranking runtime join.
+
+  - id: REL:s_cap22_governed_by_economic_md_dual_input
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_economic_md_dual_input_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/cap22_economic_md_dual_input_contract_v1.py
+    notes: >
+      Future dual-input architecture governs Cap 2.2 economic ranking.
+      Current productive ranking remains Cap-2.1-only. Not a runtime
+      CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_economic_md_governed_by_dual_input
+    source: CAPABILITY:cap_economic_md_input
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_economic_md_dual_input_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/cap22_economic_md_dual_input_contract_v1.py
+    notes: >
+      Implemented not wired. No trading or execution authority.
+
+  - id: REL:s_map_navigates_cap22_economic_md_dual_input
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_economic_md_dual_input_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_economic_md_input_producer
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CAPABILITY:cap_economic_md_input
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority. Implemented not wired.
+
+  - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/cap22_offline_policy_candidates_and_evidence_contract_v1.py
+    notes: >
+      Offline challenger set and evidence contract govern future Cap 2.2
+      economic ranking comparison. No productive authority. Not a runtime
+      CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_governed_by_offline_mvr_spread_comparison_keys
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_OFFLINE_MVR_SPREAD_DEFINITION_ZERO_HANDLING_AND_CHALLENGER_ORDER_V1.md
+    evidence_sources:
+      - src/ops/cap22_offline_mvr_spread_challenger_order_contract_v1.py
+    notes: >
+      Offline MVR spread formula and comparison keys govern future Cap 2.2
+      economic ranking comparison. No productive authority. Not a runtime
+      CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_governed_by_offline_mvr_threshold_set_and_evidence_harness
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_OFFLINE_MVR_THRESHOLD_SET_AND_EVIDENCE_HARNESS_V1.md
+    evidence_sources:
+      - src/ops/cap22_offline_mvr_threshold_set_and_evidence_harness_contract_v1.py
+    notes: >
+      Injected Policy-B threshold set and offline MVR evidence harness
+      govern future Cap 2.2 economic ranking comparison. No productive
+      authority. Not a runtime CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_governed_by_historical_evidence_time_semantics
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_historical_evidence_time_semantics_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_HISTORICAL_EVIDENCE_TIME_SEMANTICS_V1.md
+    evidence_sources:
+      - src/ops/cap22_historical_evidence_time_semantics_contract_v1.py
+    notes: >
+      Offline historical evidence time semantics govern later Cap 2.2
+      PIT/walk-forward evidence. No productive authority. Not a runtime
+      CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_governed_by_append_only_15m_pit_persistence
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:cap22_append_only_15m_pit_persistence_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
+    evidence_sources:
+      - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
+    notes: >
+      Append-only 15m PIT persistence and collection contracts govern later
+      Cap 2.2 prospective collection. KEEP29 removed the former
+      src/ops/cap22_append_only_15m_pit_persistence_v1 implementation
+      package; this relation remains spec-governed only. No productive
+      authority. Not a runtime CONSUMES edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_cap22_offline_policy_candidates_and_evidence
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_cap22_offline_mvr_spread_comparison_keys
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_cap22_offline_mvr_threshold_set_and_evidence_harness
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_cap22_historical_evidence_time_semantics
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_historical_evidence_time_semantics_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_cap22_append_only_15m_pit_persistence
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:cap22_append_only_15m_pit_persistence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_mf_membership_context
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_selection_context_boundary_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_mf_selector_anti_churn
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_selector_consumption_and_anti_churn_ownership_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_mf_selection_anti_churn_semantics
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_mf_ranking_universe_single_egress
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_ranking_universe_and_single_egress_boundary_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_mf_canonical_single_egress_handoff
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_canonical_single_egress_authority_handoff_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_map_navigates_ranking_universe_to_full_core_ssf_handoff
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_cap23_optionally_uses_current_mf_member_pinned_cap23_n1_adapter
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: OPTIONALLY_USES
+    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_MEMBER_TO_PINNED_CAP23_N1_ADAPTER_CONTRACT_V1.md
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+    notes: >
+      Optional same-universe pin. Not a second selection authority.
+      Not an MF productive join. CROSS_UNIVERSE_* remain false.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_current_mf_n5_lane_topology_optionally_uses_pinned_cap23_adapter
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: OPTIONALLY_USES
+    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >
+      Occupied lanes may consume the existing same-universe pin factory.
+      Topology is not selection authority and does not write Cap23.
+      CROSS_UNIVERSE_* remain false. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_current_mf_n5_lane_topology_depends_on_mf_membership_semantics
+    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    type: DEPENDS_ON
+    target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_ISOLATED_LANE_INSTANCE_TOPOLOGY_CONTRACT_V1.md
+      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+    notes: >
+      Consumes governed membership identity only. Does not own POLICY_A
+      admission, removal, or challenger eligibility. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_durable_lane_assignment_persistence_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_DURABLE_LANE_ASSIGNMENT_PERSISTENCE_CONTRACT_V1.md
+      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+    notes: >
+      Custody of already-produced IsolatedLaneTopologyV1 only.
+      Persistence is not a second lane-mapping owner.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_recovered_topology_consumer_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RECOVERED_TOPOLOGY_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+    notes: >
+      Consumer sequences recover then apply on the existing mapping owner.
+      Consumer is not a second lane-mapping owner.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_recovered_topology_consumer_depends_on_durable_lane_assignment
+    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RECOVERED_TOPOLOGY_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+    notes: >
+      Consumer reuses custody recover/persist APIs. Does not acquire or
+      release the writer lock. Persistence remains custody-only.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_occupied_lane_pin_consumer_depends_on_recovered_topology_consumer
+    source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_OCCUPIED_LANE_PIN_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+    notes: >
+      Pin consumer sequences consume_recovered_isolated_lane_topology_v1.
+      It is not a second recovered-topology consumer owner.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_occupied_lane_pin_consumer_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_OCCUPIED_LANE_PIN_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+    notes: >
+      Pin consumer calls existing build_occupied_lane_pins_v1. Mapping
+      owner remains ops.current_mf_n5_isolated_lane_instance_topology_v1.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_occupied_lane_pin_consumer
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+    notes: >
+      Produce join sequences consume_occupied_lane_pins_v1. It is not a
+      second pin-consumer owner. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_ranking_domain_occupied_lane_cap23_produce_join_depends_on_cap23
+    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_RANKING_DOMAIN_OCCUPIED_LANE_CAP23_N1_PRODUCE_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+    notes: >
+      Produce join invokes existing Cap23 N=1 produce/persist per occupied
+      lane. Cap23 remains sole selection writer. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap23_produce_join
+    source: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+    notes: >
+      Bind join consumes the already-produced #6597 SSF map. It must not
+      reinvoke Cap23. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_boundary_occupied_lane_cap24_bind_join_depends_on_cap24
+    source: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_BOUNDARY_OCCUPIED_LANE_CAP24_N1_BIND_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1/bind_join_v1.py
+    notes: >
+      Bind join invokes existing Cap24 N=1 gate per occupied lane. Cap24
+      remains VALIDATE_AND_BIND_EXISTING_SELECTED_IDENTITY. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_cap24_bind_join
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_boundary_occupied_lane_cap24_n1_bind_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/ingest_join_v1.py
+    notes: >
+      S2 admit consumes the already-produced #6598 BoundInstrumentV1 map.
+      It must not reinvoke Cap24. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_full_autonomy_occupied_lane_bound_ingest_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_BOUND_INGEST_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1/ingest_join_v1.py
+    notes: >
+      Slot identity remains existing lane_id plus lane_state_root_for. S2
+      iterates LANE_IDS only. No second lane identity. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_fa_bound_ingest
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py
+    notes: >
+      S2 compose consumes the already-admitted #6600 BoundInstrumentV1 map.
+      It must not reinvoke ingest Cap23/Cap24. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_mv2_dp_handoff_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_HANDOFF_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1/handoff_join_v1.py
+    notes: >
+      S2 compose reuses existing lane_id, IsolatedLaneSlotV1, and
+      lane_state_root_for. No second lane identity. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
+    notes: >
+      S6 persist and restore still consume the already-composed #6602 pair map
+      via the S3 seam and must not reinvoke compose or Cap23/Cap24. The cursor
+      file stays owned by the existing cursor module. Atlas is not runtime
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
+    notes: >
+      S6 writes and reloads the existing cursor file under
+      IsolatedLaneSlotV1.lane_state_root. That root stays external addressing
+      and is not passed into the cycle. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+    notes: >
+      This consumer consumes S8 bind_occupied_lane_governed_cycle_store_roots_v1
+      and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the
+      producer. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
+      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+      - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
+    notes: >
+      Optional portfolio_budget_owner threads slot_id, decision_id, and
+      cycle_id into ENTER Live-29P join and commits or releases reservations
+      at PRE_EXTERNAL boundary. PR_6744 MV2 capital context rebind is
+      navigation-only lineage; orchestration only. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_occupied_lane_n1_host_join_readiness_depends_on_n1_consumer
+    source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_N1_HOST_JOIN_READINESS_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py
+    notes: >
+      This readiness adapter consumes invoke_occupied_lane_governed_cycle_n1_consumer_v1
+      and addresses host-join path params without invoking
+      ensure_host_activation_binding_v1 or flipping HOST_JOIN.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_runtime_n5_completion_depends_on_n1_host_join_readiness
+    source: CONTRACT:current_mf_n5_full_autonomy_runtime_n5_completion_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_RUNTIME_N5_COMPLETION_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/constants_v1.py
+      - src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py
+    notes: >
+      This completion adapter consumes compose_occupied_lane_n1_host_join_readiness_v1
+      and invokes ensure_host_activation_binding_v1 without joining the
+      Cap 7.2 live execution port or minting permits.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_staged_control_plane_depends_on_productive_orchestrator
+    source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+    notes: >
+      Staged control plane invokes run_productive_full_autonomy_n5_runtime_orchestrator_v1
+      only after explicit admission. Does not replace MV2+DP decision owners.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_staged_control_plane_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/control_plane_v1.py
+    notes: >
+      Shared portfolio budget owner threads through admitted orchestrator invocations.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+    notes: >
+      Productive FA orchestrator invokes compose_occupied_lane_n1_host_join_readiness_v1
+      for sequential PRE_EXTERNAL rollup. No host join invoke. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: GATE:portfolio_capital_reservation_budget_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+    notes: >
+      Shared PortfolioCapitalReservationBudgetOwnerV1 threads through readiness
+      governed cycles. Single budget owner; no per-lane capital pools.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff
+    source: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    type: DEPENDS_ON
+    target: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+    notes: >
+      Compose-only handoff pair map before governed cycles. MV2+DP remain
+      decision owners. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap24_governed_by_ranking_universe_to_full_core_ssf_handoff
+    source: CAPABILITY:cap_2_4_runtime_binding
+    type: GOVERNED_BY
+    target: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py
+    notes: >
+      The handoff contract classifies Cap 2.4 as SHARED_BOUNDARY_SEAM
+      validate-and-bind of the already-selected identity. No rerank, no
+      reselect, no second selection authority. Not a runtime CONSUMES
+      edge. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_mf_authoritative_next_active_set
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:mf_authoritative_next_active_set_ownership_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. Atlas is not
+      runtime authority.
+
+  - id: REL:s_system_has_cap23
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:s_system_has_cap24
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap11
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_1_1_reconciliation
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap31
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_3_1_futures_accounting
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_system_has_cap41
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_4_1_pre_activation_closure
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_system_has_cap72
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_7_2_stateful_no_order
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_system_has_cap11135
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap_11_13_5_live_canary
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_cap23_depends_cap22
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_2_ranking
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+
+  - id: REL:s_cap22_depends_cap21
+    source: CAPABILITY:cap_2_2_ranking
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_1_gfu
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+
+  - id: REL:s_cap24_depends_cap23
+    source: CAPABILITY:cap_2_4_runtime_binding
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+
+  - id: REL:s_cap72_depends_cap24
+    source: CAPABILITY:cap_7_2_stateful_no_order
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+
+  - id: REL:s_cap31_depends_cap24
+    source: CAPABILITY:cap_3_1_futures_accounting
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_3_1_PRODUCTIVE_FUTURES_ACCOUNTING_RUNTIME_BINDING_V1.md
+
+  - id: REL:s_cap41_depends_cap24
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap41_depends_cap11
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_1_1_reconciliation
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap41_depends_cap31
+    source: CAPABILITY:cap_4_1_pre_activation_closure
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_3_1_futures_accounting
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_4_1_SINGLE_FUTURE_CANONICAL_RUNTIME_PRE_ACTIVATION_CLOSURE_V1.md
+
+  - id: REL:s_cap21_governed_by_btc
+    source: CAPABILITY:cap_2_1_gfu
+    type: GOVERNED_BY
+    target: GATE:btc_exclusion
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: REL:s_cap21_governed_by_never_default
+    source: CAPABILITY:cap_2_1_gfu
+    type: GOVERNED_BY
+    target: INVARIANT:missing_metadata_never_defaulted
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    notes: Implementation contradiction recorded separately.
+
+  - id: REL:s_universe_uses_gfu_schema
+    source: UNIVERSE:governed_futures_universe
+    type: USES_SCHEMA
+    target: SCHEMA:gfu_snapshot_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/constants_v1.py
+
+  - id: REL:s_schema_gfu_defines_contract
+    source: SCHEMA:gfu_snapshot_v1
+    type: DEFINES_SHAPE_OF
+    target: DATA_CONTRACT:governed_universe_instrument_v1
+    epistemic_status: INTERPRETATION
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/models_v1.py
+    notes: Snapshot schema_version and instrument dataclass are related, not equated.
+
+  - id: REL:s_selection_uses_schema
+    source: SELECTOR:single_selected_future_policy
+    type: USES_SCHEMA
+    target: SCHEMA:single_selected_future_selection_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+
+  - id: REL:s_binder_uses_schema
+    source: BINDER:bound_instrument_v1
+    type: USES_SCHEMA
+    target: SCHEMA:runtime_binding_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
+
+  - id: REL:s_schema_binding_defines_dto
+    source: SCHEMA:bound_instrument_dataclass_v1
+    type: DEFINES_SHAPE_OF
+    target: DATA_CONTRACT:bound_instrument_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+
+  - id: REL:s_runbook_has_program_dod
+    source: RUNBOOK:canonical_master_runbook
+    type: HAS_DOD
+    target: DOD:program_final
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+
+  - id: REL:s_runbook_has_closure_std
+    source: RUNBOOK:canonical_master_runbook
+    type: HAS_DOD
+    target: DOD:capability_closure_standard
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    notes: Closure standard is related-not-same as named DoD.
+
+  - id: REL:s_va_has_dod_tl
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_trading_logic
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_va_has_dod_econ
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_economic_validity
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_va_has_dod_safety
+    source: RUNBOOK:vollautonomie_v4_4_12
+    type: HAS_DOD
+    target: DOD:vollautonomie_safety_runtime
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md
+
+  - id: REL:s_cap21_tested_by
+    source: CAPABILITY:cap_2_1_gfu
+    type: TESTED_BY
+    target: TEST:gfu_producer
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+
+  - id: REL:s_cap23_governed_by_owner
+    source: CAPABILITY:cap_2_3_single_selected_future
+    type: GOVERNED_BY
+    target: OWNER_DECISION:cap23_exclusive_selection
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: REL:s_venue_okx_contains_eea
+    source: VENUE:okx
+    type: CONTAINS
+    target: VENUE:okx_eea
+    epistemic_status: FORENSIC_RAW
+    modified_by: PENDING_CHANGE
+    evidence_sources:
+      - config/config.toml
+    notes: Structural containment unchanged. Current docs no longer present Kraken as an operative venue.
+
+  - id: REL:s_forensic_reference_of_corpus
+    source: FORENSIC_REFERENCE:information_corpus_persistence_base
+    type: REFERENCE_OF
+    target: SYSTEM:peak_trade
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/forensics/persistence/PEAK_TRADE_INFORMATION_CORPUS_PERSISTENCE_BASE.md
+
+  - id: REL:s_mv2_contains_mv2_package_init
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_package_init
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_core_wiring
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_core_wiring
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_entry_exit_policy
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_entry_exit_policy
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_volatility_presence_gate
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_volatility_presence_gate
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_dashboard_display
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_dashboard_display
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_sole_authority_quarantine
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_naked_mv2_double_play_core_authority_hardening
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_naked_mv2_double_play_core_authority_hardening
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_naked_mv2_dp_single_boundary_purification
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_naked_mv2_dp_mechanical_core
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:dp_naked_mechanical_core_depends_on_purification_primitives
+    source: RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_single_boundary_purification
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/naked_mv2_dp_mechanical_core_v1.py
+
+  - id: REL:s_mv2_contains_dp_naked_mv2_dp_explicit_layered_core
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:dp_naked_mechanical_core_depends_on_explicit_layered_core
+    source: RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_explicit_layered_core
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/naked_mv2_dp_mechanical_core_v1.py
+
+  - id: REL:s_mv2_contains_dp_dynamic_scope_empirical_calibration_research
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:dp_dynamic_scope_empirical_calibration_depends_on_mechanical_core
+    source: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:dp_naked_mv2_dp_mechanical_core
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/dynamic_scope_empirical_calibration_research_v1.py
+
+  - id: REL:s_mv2_contains_dp_dynamic_scope_governed_real_market_evidence
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_dynamic_scope_governed_real_market_evidence
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:dp_dynamic_scope_governed_real_market_evidence_depends_on_empirical_calibration
+    source: RUNTIME_COMPONENT:dp_dynamic_scope_governed_real_market_evidence
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/master_v2/dynamic_scope_governed_real_market_evidence_v1.py
+
+  - id: REL:s_mv2_contains_dp_evaluate_authority_boundary
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_evaluate_authority_boundary
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_offline_scenario_replay
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_offline_scenario_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_post_confirmation_ssc
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_decision_packet
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_decision_packet
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_volatility
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_volatility
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_market_context
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_market_context
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_scope
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_scope
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_canonical_trading_decision_evidence
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_directional_assessment
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_directional_assessment
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_capital_risk_sizing
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_capital_risk_sizing
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_surface_p
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_surface_p
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_runtime_bridge
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_runtime_bridge
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_scope_events
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_scope_events
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_regime_bull_bear_readmodel
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_regime_bull_bear_readmodel
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_local_evaluator
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_local_evaluator
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_input_happy_path
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_input_happy_path
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_integrated_replay
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_integrated_replay
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_parity_gap_assessment
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_parity_gap_assessment
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_strategy_identity
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_strategy_identity
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_arithmetic_decimal
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_arithmetic_decimal
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_pr4985_materiality_classifier
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_pr4985_materiality_classifier
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_scenario_matrix
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_scenario_matrix
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_mv2_offline_boundary_adapters
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_composition
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_composition
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_survival
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_survival
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_suitability
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_suitability
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_state
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_state
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_futures_input
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_futures_input
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_mv2_contains_dp_capital_slot
+    source: SUBSYSTEM:master_v2
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_capital_slot
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+
+  - id: REL:s_dp_contains_dp_composition
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_composition
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_survival
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_survival
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_suitability
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_suitability
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_state
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_state
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_futures_input
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_futures_input
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_capital_slot
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_capital_slot
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_dp_contains_dp_core_wiring
+    source: FUNCTIONAL_CORE:double_play
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:dp_core_wiring
+    epistemic_status: ADJUDICATED
+    evidence_sources:
+      - src/trading/master_v2/double_play_composition.py
+      - docs/system_atlas/census/master_v2_semantic_map.yaml
+    notes: Same Trading Core membership. HAS_FUNCTIONAL_CORE remains ADJUDICATED census label.
+
+  - id: REL:s_ddo_phase_contains_capture
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_capture_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Package containment. Observation adapter only. AUTHORITY_OWNER=NONE.
+      Not a second trading core. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_input_evidence
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+    notes: >-
+      Package containment of Double-Play producer-input evidence capture.
+      Observation only. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_current_decision_learning_binding
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_learning_binding_v1.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+    notes: >-
+      Package containment of normative current decision learning bundle join.
+      Observation only. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_current_decision_consumer
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py
+      - docs/ops/specs/LEARNING_CURRENT_DECISION_CONTRACT_REALIGNMENT_V1.md
+    notes: >-
+      Package containment of downstream consumer helpers for current decision
+      bundle join. Observation only. Atlas is not trading authority.
+
+  - id: REL:s_ddo_current_decision_consumer_depends_on_binding
+    source: RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/current_decision_consumer_v1.py
+    notes: >-
+      Offline consumer helpers delegate bundle join to
+      resolve_current_double_play_decision_bundle_v1. Not runtime authority.
+
+  - id: REL:s_ddo_phase_contains_ledger
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_ledger_v0
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+    notes: Package containment of the append-only offline ledger. Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_experiment_identity_binding
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_experiment_identity_binding
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+    notes: Package containment of the existing-owner identity ref adapter. Atlas is not trading authority.
+
+  - id: REL:s_ddo_experiment_identity_reference_of_canonical_owner
+    source: RUNTIME_COMPONENT:ddo_experiment_identity_binding
+    type: REFERENCE_OF
+    target: EXPERIMENT:canonical_experiment_identity_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/experiment_identity_binding_v0.py
+      - src/experiments/canonical_experiment_identity_v1.py
+      - src/learning/deterministic_decision_outcome_v0/authority_v0.py
+    notes: >-
+      Ontology has no BINDS_TO_EXISTING_OWNER type. REFERENCE_OF records that
+      DDO references already-serialized Canonical Experiment Identity v1
+      records and does not mint a competing identity. Not Cap-2.4 BINDS.
+      Atlas is not trading authority.
+
+  - id: REL:s_ddo_phase_contains_validation_producer_bindings
+    source: PHASE:ddo_offline_foundation
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:ddo_validation_producer_bindings
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/learning/deterministic_decision_outcome_v0/validation_producer_bindings_v0.py
+      - src/learning/deterministic_decision_outcome_v0/validation_pack_engine_v0.py
+      - src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py
+    notes: >-
+      Package containment of the existing-owner artifact ingest and pack
+      aggregation surface. DDO does not execute owner engines. Atlas is not
+      trading authority.
+
+  - id: REL:s_forensic_has_nested_child
+    source: FORENSIC_REFERENCE:information_corpus_persistence_base
+    type: HAS_CHILD
+    target: CHILD:nested_structural_child
+    epistemic_status: HISTORICAL
+    evidence_sources:
+      - forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+    notes: Not SSOT_CHILD.
+
+  - id: REL:s_system_contains_full_core_live_path_composition_root
+    source: SYSTEM:peak_trade
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+      - docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md
+    notes: >-
+      Package containment of the offline Core-to-Live composition root.
+      Containment is not Live authorization. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_t016_learning_blueprint_provenance
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:t016_learning_blueprint_family_absorption_and_provenance_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/PEAK_TRADE_T016_LEARNING_BLUEPRINT_FAMILY_ABSORPTION_AND_PROVENANCE_V1.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. The T016
+      provenance index is AUTHORITY=NONE and not SSOT. Atlas is not
+      runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_elementary_direction_primitive
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: CONTRACT:elementary_direction_primitive_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+    notes: >
+      Navigation only. Map of Truth defines no semantics. The elementary
+      direction primitive is AUTHORITY_EFFECT=NONE and not a trading-decision
+      owner. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_elementary_direction_implements_primitive_contract
+    source: RUNTIME_COMPONENT:elementary_direction_v1
+    type: IMPLEMENTS
+    target: CONTRACT:elementary_direction_primitive_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/trading/market_state/elementary_direction_v1.py
+      - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
+    notes: >
+      Topology only. Implementation is not activation and is not Double Play
+      consumption. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.

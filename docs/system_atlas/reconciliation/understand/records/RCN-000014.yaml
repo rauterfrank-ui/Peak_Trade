@@ -1,0 +1,97 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000014
+canonical_record_name: archive/PeakTradeRepo nested historical tree
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: Nested archive/PeakTradeRepo tree (16 files) bound at tree_sha 8da09657…. README describes a Peak_Trade
+  backtest/strategy stack; recovered nested .py files in that same tree are one-line placeholders.
+historical_problem_statement: Preserve a nested historical Peak_Trade snapshot inside archive/.
+historical_inputs: []
+historical_outputs:
+- 16 archived files including README, docs, placeholder src modules, tests
+historical_dependencies: []
+historical_dependents:
+- RCN-000044
+- RCN-000045
+- RCN-000046 nested path records
+historical_paths:
+- archive/PeakTradeRepo
+historical_commits:
+- cf2253aa60ffdbfd77356e33e611cd85ea53b849
+- 75722feea8c342c56ef93f796983467f33f98f25
+historical_blobs:
+- 19aaa49470aa766a9f813b672278fe2bcbdac3e3
+- 439a60c8176d2990ea8e199443283f2b3e0f9a33
+- 83bb67757202b250a8273faac1b1e3dd794f8493
+relations:
+- relation_type: ARCHIVES
+  target_id: RCN-000044
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: ARCHIVES
+  target_id: RCN-000045
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
+- relation_type: ARCHIVES
+  target_id: RCN-000046
+  unresolved_target: ''
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- Whether a fuller PeakTradeRepo snapshot existed before these placeholder blobs is not reconstructed.
+evidence_refs:
+- docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+- 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/README.md
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'inner_archive_peaktraderepo.yaml: file_count=16 including src/backtest/engine.py, src/risk/position_sizer.py, src/strategies/ma_crossover.py.'
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob README: Gesamtübersicht; Option A rewrites ma_crossover to state signals 0/1.'
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/README.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Parent blob src/backtest/engine.py is '# Engine placeholder'.
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/backtest/engine.py
+  - blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3
+  used_as_fact: true
+- claim_class: CONTRADICTION
+  text: PeakTradeRepo README describes a rewritten ma_crossover with state signals, while the nested ma_crossover.py blob
+    in the same tree is a one-line placeholder.
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/README.md
+  - 75722feea8c342c56ef93f796983467f33f98f25^:archive/PeakTradeRepo/src/strategies/ma_crossover.py
+  used_as_fact: false
+- claim_class: HISTORICAL_FACT
+  text: 'Removed from tracked tree by docs: governance/audit runbooks + remove obsolete archive/ (#573).'
+  evidence:
+  - 75722feea8c342c56ef93f796983467f33f98f25
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archive_peaktraderepo
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

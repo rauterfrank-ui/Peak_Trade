@@ -1,0 +1,25 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+kind: FORENSIC_RAW_QUOTES
+interpretation_forbidden_in_this_file: true
+items:
+- record_id: RCN-000001
+  source: src/webui/market_dashboard_landscape_v2/owner_registry.py
+  quote: This package is a consumer boundary only — it does not own trading truth.
+- record_id: RCN-000019
+  source: src/risk_layer/kill_switch/__init__.py
+  quote: from src.risk_layer.kill_switch import KillSwitch
+- record_id: RCN-000052
+  source: docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  quote: read-only / display-only

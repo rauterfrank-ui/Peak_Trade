@@ -1,0 +1,120 @@
+# ATLAS_AUTHORITY=NONE
+closures:
+  - id: CLOSURE:productive_universe
+    title: PRODUCTIVE_UNIVERSE
+    inspect:
+      - CAPABILITY:cap_2_1_gfu
+      - UNIVERSE:governed_futures_universe
+      - INVARIANT:missing_metadata_never_defaulted
+      - GATE:btc_exclusion
+      - SCHEMA:gfu_snapshot_v1
+    upstream:
+      - ADAPTER:okx_public_md_client
+      - VENUE:okx_eea
+    downstream:
+      - CAPABILITY:cap_2_2_ranking
+    evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+    open: GFU membership of SUI XPERP / quoteCcy empty; spec vs _extract_base_quote contradiction
+    modified_by: PENDING_CHANGE
+    notes: Closure membership unchanged. Current-doc Kraken residual decommission does not alter productive-universe topology. Atlas is not trading authority.
+
+  - id: CLOSURE:productive_selection
+    title: PRODUCTIVE_SELECTION
+    inspect:
+      - CAPABILITY:cap_2_3_single_selected_future
+      - SELECTOR:single_selected_future_policy
+      - OWNER_DECISION:cap23_exclusive_selection
+      - SCHEMA:single_selected_future_selection_v1
+      - CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+    upstream:
+      - CAPABILITY:cap_2_2_ranking
+      - SELECTOR:productive_futures_ranking
+    downstream:
+      - CAPABILITY:cap_2_4_runtime_binding
+    evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    notes: >-
+      Optional same-universe Cap23 pin is inspect-only in this closure.
+      No cross-universe ranking merge. ATLAS_AUTHORITY=NONE.
+
+  - id: CLOSURE:native_instrument_binding
+    title: NATIVE_INSTRUMENT_BINDING
+    inspect:
+      - CAPABILITY:cap_2_4_runtime_binding
+      - BINDER:bound_instrument_v1
+      - DATA_CONTRACT:bound_instrument_v1
+      - SCHEMA:runtime_binding_v1
+    upstream:
+      - CAPABILITY:cap_2_3_single_selected_future
+    downstream:
+      - HOST:cap72_stateful_host
+    evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    notes: >-
+      Cap23 governed pin does not mutate Cap 2.4. Binding still consumes the
+      Cap 2.3 selection DTO. Same-universe pin is not a Cap24 rewrite.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: CLOSURE:canary
+    title: CANARY
+    inspect:
+      - CAPABILITY:cap_11_13_5_live_canary
+      - GATE:live_authorized_false
+    upstream:
+      - GATE:flatten_execute_authority
+    downstream:
+      - OBSERVER:post_action_canary
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    open: Authoring-bound; NOT EXECUTED; NOT PROVEN
+
+  - id: CLOSURE:flatten
+    title: FLATTEN
+    inspect:
+      - GATE:flatten_execute_authority
+      - CAPABILITY:cap_11_13_5_live_canary
+    upstream: []
+    downstream:
+      - OBSERVER:post_action_canary
+    evidence: src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+    open: Post-action evaluator not wired
+
+  - id: CLOSURE:position_observation
+    title: POSITION_OBSERVATION
+    inspect:
+      - AUTH_PRIMITIVE:okx_hmac_sign
+      - VENUE_ENDPOINT:okx_account_positions
+    upstream:
+      - AUTH_PRIMITIVE:okx_hmac_sign
+    downstream: []
+    evidence: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+
+  - id: CLOSURE:order_submit
+    title: ORDER_SUBMIT
+    inspect:
+      - AUTH_PRIMITIVE:okx_hmac_sign
+      - VENUE_ENDPOINT:okx_trade_order
+      - GATE:live_authorized_false
+    upstream:
+      - AUTH_PRIMITIVE:okx_hmac_sign
+    downstream: []
+    evidence: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+    open: Presence of client != LIVE/TESTNET authorization
+
+  - id: CLOSURE:post_action_success
+    title: POST_ACTION_SUCCESS
+    inspect:
+      - OBSERVER:post_action_canary
+      - GATE:flatten_execute_authority
+    upstream: []
+    downstream: []
+    evidence: docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+    open: POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE
+
+  - id: CLOSURE:live_readiness
+    title: LIVE_READINESS
+    inspect:
+      - GATE:live_authorized_false
+      - DOD:program_final
+      - RUNBOOK:canonical_master_runbook
+    upstream: []
+    downstream: []
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    open: FULLY_AUTONOMOUS_LIVE_TRADING_READY historically false; standing LIVE_AUTHORIZED=false

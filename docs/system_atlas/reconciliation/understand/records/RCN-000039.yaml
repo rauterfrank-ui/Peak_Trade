@@ -1,0 +1,57 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000039
+canonical_record_name: src/infra/health historical package
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'src/infra/health: central health-check package with HealthChecker/HealthStatus ampel (GREEN/YELLOW/RED)
+  and checks for backtest, exchange, live, portfolio, risk. CLI: python -m src.infra.health.health_checker.'
+historical_problem_statement: Provide a central module health-check / status ampel.
+historical_inputs:
+- Per-module BaseHealthCheck implementations
+historical_outputs:
+- HealthCheckResult / HealthStatus
+historical_dependencies: []
+historical_dependents:
+- CLI health_checker
+historical_paths:
+- src/infra/health
+historical_commits:
+- 781713e9b2304733c399979273c588fec8cc7eab
+historical_blobs: []
+relations: []
+open_questions:
+- Deleted vs never merged to later origin/main is a presence fact, not disposition.
+evidence_refs:
+- 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/__init__.py
+- 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/health_checker.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: '__init__.py: Zentrale Health-Check-Komponenten; Ampel GREEN/YELLOW/RED.'
+  evidence:
+  - 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/__init__.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'health_checker.py: CLI python -m src.infra.health.health_checker; imports Backtest/Exchange/Live/Portfolio/Risk health
+    checks.'
+  evidence:
+  - 781713e9b2304733c399979273c588fec8cc7eab:src/infra/health/health_checker.py
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- observability_infra
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

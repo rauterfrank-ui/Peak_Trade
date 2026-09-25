@@ -1,0 +1,102 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000046
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: true
+disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+disposition: REJECT_FOR_CURRENT_SYSTEM
+lifecycle_state: DISPOSITION_DECIDED
+final_disposition_change_performed: true
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: false
+positive_reason: Nested PeakTradeRepo MA strategy blob is the one-line placeholder '# MA Strategy placeholder' (83bb6775).
+  Export MA c89dad61 and current src/strategies/ma_crossover.py 82e99483 are blob-distinct. README-versus-placeholder contradiction
+  in the PeakTradeRepo tree is preserved and is not resolved by substituting README narrative for blob content.
+contradiction_id: ''
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/strategies/ma_crossover.py
+historical_function: Nested archive MA strategy snapshot whose recovered blob is a placeholder.
+historical_relations: Inner component of RCN-000014; not fused. Distinct from export/current MA.
+current_system_analogues: Later src/strategies/ma_crossover.py is a distinct blob; not SAME_AS.
+identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_EXPORT_AND_CURRENT
+successor_status: NOT_PROVEN
+replacement_status: NOT_PROVEN
+current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+contradictions:
+- PeakTradeRepo README describes MA strategy capability while nested blob is '# MA Strategy placeholder'. Contradiction is
+  preserved; README is not substituted for blob content.
+unresolved_gaps:
+- README-versus-placeholder contradiction remains documented and is not normalized.
+evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from nested placeholder blob content. Export/current MA blobs
+  are distinct. README contradiction is preserved.
+alternatives_rejected:
+- 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+- 'CAPABILITY_ALREADY_COVERED: later MA module is not proven SAME_AS'
+- 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented MA strategy that conflicts with
+  current invariants'
+- 'REJECT because deleted: deletion is not a positive rejection reason'
+- 'Using PeakTradeRepo README as this record''s implemented purpose: forbidden; blob content is authoritative'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Nested MA strategy is a placeholder and is rejected for the current system.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - src/strategies/ma_crossover.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: blob:83bb67757202b250a8273faac1b1e3dd794f8493 = '# MA Strategy placeholder'. Distinct from export c89dad61caad99c51bd2e219d66af5956ecf28a9
+    and current 82e994839b55c7a48258d9864834c96c73781dfd.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - src/strategies/ma_crossover.py
+  used_as_fact: true
+- claim_class: CONTRADICTION
+  text: PeakTradeRepo README capability narrative versus nested MA placeholder blob is preserved and not used as fact for
+    identity.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000046.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/strategies/ma_crossover.py
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true

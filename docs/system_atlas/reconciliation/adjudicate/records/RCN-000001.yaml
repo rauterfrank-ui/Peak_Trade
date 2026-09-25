@@ -1,0 +1,56 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000001
+canonical_record_name: Market Dashboard Landscape V2 package
+census_current_presence: CURRENTLY_PRESENT
+evaluate_capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+disposition: RETAIN_AS_IS
+lifecycle_state: DISPOSITION_DECIDED
+identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+positive_reason: The same Landscape V2 consumer package remains on origin/main. UNDERSTAND binds a read-only GET /market shell
+  with DASHBOARD_AUTHORITY_EFFECT=NONE. Current owner registry still maps projection slots without owning trading truth. Compatible
+  present artifact; reintegration is not required because it is already current.
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED: this record IS the current consumer, not a duplicate to drop'
+- 'ADAPT_AND_REINTEGRATE: no proven embedding incompatibility for unchanged retain'
+- 'INSUFFICIENT_EVIDENCE: purpose, path, and current role are evidence-bound'
+further_evidence_required: false
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Market Dashboard Landscape V2 package remains on the bound current tree as the same artifact; current role is compatible.
+    SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus compatible
+    authority/safety/runtime role.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  - docs/system_atlas/reconciliation/understand/records/RCN-000001.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+  used_as_fact: true
+evidence_refs:
+- src/webui/market_dashboard_landscape_v2/
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+- docs/system_atlas/reconciliation/understand/records/RCN-000001.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000001.yaml
+contradictions: []
+unresolved_questions:
+- Identity versus deleted product_surface_v1 remains unproven and is out of this retain scope.
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

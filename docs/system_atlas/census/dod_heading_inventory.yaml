@@ -1,0 +1,25 @@
+# ATLAS_AUTHORITY=NONE
+schema_version: system_atlas.v1
+origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
+navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
+domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+domain_census_payloads_fresh_exhaustive_recensus: false
+docs_files_with_definition_of_done_heading: 66
+classification_rule: Not every heading is a FORMAL_DOD. Most PHASE_*/WP*/session docs are GENERIC_CHECKLIST or RUNBOOK_COMPLETION_CRITERIA.
+formal_dods_in_ontology:
+  - DOD:program_final
+  - DOD:capability_closure_standard
+  - DOD:vollautonomie_trading_logic
+  - DOD:vollautonomie_economic_validity
+  - DOD:vollautonomie_safety_runtime
+  - DOD:pr_queue_per_pr
+  - DOD:cybersecurity_runbook
+  - DOD:roadmap_phase_generic
+candidate_classes:
+  FORMAL_DOD: Program §21 and named Vollautonomie §§37–39
+  DOD_EQUIVALENT_IF_PROVEN: Mandatory Capability Closure Standard §11
+  GENERIC_CHECKLIST: PHASE_*/WP*/session/taskboard headings
+  RUNBOOK_COMPLETION_CRITERIA: derived ops runbooks
+  TEST_ACCEPTANCE_ONLY: pytest acceptance is not DoD
+  OPEN: leftover unclassified
+exhaustive_per_heading_criteria_copied: false

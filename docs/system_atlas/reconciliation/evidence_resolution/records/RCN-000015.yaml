@@ -1,0 +1,142 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000015
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: 'Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later/earlier
+  owner? Why was #6165 reverted?'
+identity_gap:
+  status: PROVEN_DISTINCT_FROM_CAP_2_3
+  statement: Capability IDs differ (MASTER_V2_MINIMAL_SELECTOR_V1 vs CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1). The
+    selector package itself states it does not rewrite Cap 2.3 stickiness/ranking selection. Cap 2.3 was added 2026-08-02
+    (#5642 / ecb44849) before the selector add 2026-08-30 (#6165).
+  used_as_fact: true
+  source: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  source_sha: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Census → structural eligibility → exactly-one-or-none → durable artifact. eligible_count==0 or >1 → NO_SELECTION;
+    ranking is not a selection authority; no fallback/cadence/hot-path rescan. Ranking is ignored (ranking_input_ignored=True).
+  used_as_fact: true
+  source: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/selection_v1.py
+  source_sha: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  evidence_type: FORENSIC_RAW
+relation_gap:
+  status: PROVEN_EXPLICIT_NON_REWRITE_OF_CAP_2_3
+  statement: 'Selector constants_v1.py: This package is a new Owner policy surface. It does not rewrite Cap 2.1 GFU eligibility,
+    Cap 2.2 ranking authority, Cap 2.3 stickiness/ranking selection, or Cap 2.4 ranking-gated binding. CAP22_SELECTION_AUTHORITY=False.
+    Cap 2.3 SELECTION_AUTHORITY_ADDED=True and uses ranking hysteresis/min holding.'
+  used_as_fact: true
+  source: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee:src/ops/master_v2_minimal_selector_v1/constants_v1.py
+  source_sha: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  evidence_type: FORENSIC_RAW
+successor_or_replacement_gap:
+  status: REFUTED_AS_SUCCESSOR_OF_SELECTOR
+  statement: 'Cap 2.3 cannot be a successor of the selector: it predates the selector by 28 days. The selector explicitly
+    claims not to rewrite Cap 2.3. Revert #6166 is not a replacement proof and not a disposition.'
+  used_as_fact: true
+  source: ecb4484936b6079f90bde252abef77ff129aea8f
+  source_sha: ecb4484936b6079f90bde252abef77ff129aea8f
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Whether the selector's fail-closed-unless-exactly-one policy has unique current value versus Cap 2.3 ranking
+    selection remains a later EVALUATE/ADJUDICATE question. No disposition in this pass.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Selector constants: ''This package is a new Owner policy surface. It does not rewrite Cap 2.1 GFU eligibility, Cap
+    2.2 ranking authority, Cap 2.3 stickiness/ranking selection, or Cap 2.4 ranking-gated binding.'''
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  source_path: src/ops/master_v2_minimal_selector_v1/constants_v1.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Selector selection_v1.py: eligible_count == 0 → NO_SELECTION; == 1 → SELECT; > 1 → NO_SELECTION. No ranking, score,
+    sort-to-select, fallback, cadence, or hot-path rescan.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+  source_path: src/ops/master_v2_minimal_selector_v1/selection_v1.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Cap 2.3 added ecb44849 2026-08-02 feat(ops): Single Selected Future Policy (Capability 2.3) (#5642). Selector added
+    75eee7bd 2026-08-30 (#6165) and reverted afbae518 2026-08-30 (#6166).'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+  source_sha: ecb4484936b6079f90bde252abef77ff129aea8f
+  source_path: src/ops/single_selected_future_policy_v1/constants_v1.py
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Revert #6166 body is only: This reverts commit 75eee7bdc501ab4b0ec93812675cd074acb9e2ee. No additional causal statement
+    is in that commit message.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+  source_path: commit afbae518
+  evidence_type: FORENSIC_RAW
+- claim_class: CANONICAL_CURRENT_FACT
+  text: 'Cap 2.3 constants: SELECTION_AUTHORITY_ADDED=True; provenance includes Cap 2.2 Top-20 ranking + hysteresis/min holding.
+    That is current-system fact, not identity with RCN-000015.'
+  evidence:
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  - src/ops/single_selected_future_policy_v1/selection_v1.py
+  used_as_fact: true
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  source_path: src/ops/single_selected_future_policy_v1/constants_v1.py
+  evidence_type: CANONICAL_AUTHORITY
+- claim_class: OPEN_QUESTION
+  text: 'Semantic cause of revert #6166 beyond the revert pointer is not stated in the commit body. Cause remains unproven.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: false
+  source_sha: afbae518b67eb1b789c835e219db37f5b15f308b
+  evidence_type: OPEN_OR_CONTRADICTORY
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000015.yaml
+- src/ops/single_selected_future_policy_v1/constants_v1.py
+- src/ops/single_selected_future_policy_v1/selection_v1.py
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- 'Why was #6165 reverted, beyond the revert pointer in #6166?'
+- Unique current value of fail-closed-unless-exactly-one versus Cap 2.3 ranking selection remains unproven.
+relations_proven:
+- relation_type: REFERENCES
+  unresolved_target: CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+  epistemic_status: FORENSIC_RAW_FACT
+  used_as_fact: true
+  note: Selector constants explicitly refuse to rewrite Cap 2.3. Not SAME_AS.
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

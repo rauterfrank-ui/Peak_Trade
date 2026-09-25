@@ -1,0 +1,118 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+clusters_are_not_identity_groups: true
+clusters:
+- cluster_id: landscape_dashboard
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Market dashboard / Landscape-named historical records. Not one identity. Includes Runbooks Landscape index
+    because of the shared token only.
+  record_ids:
+  - RCN-000001
+  - RCN-000002
+  - RCN-000003
+  - RCN-000009
+  - RCN-000010
+  - RCN-000011
+  - RCN-000012
+  - RCN-000013
+  - RCN-000021
+  - RCN-000023
+  - RCN-000024
+  - RCN-000027
+  - RCN-000028
+  - RCN-000029
+  - RCN-000030
+  - RCN-000031
+  - RCN-000032
+  - RCN-000033
+  - RCN-000034
+  - RCN-000047
+- cluster_id: master_v2_double_play
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Master V2 / Double Play packages, ops scaffold, forensic indexes, selector, JSON route.
+  record_ids:
+  - RCN-000004
+  - RCN-000005
+  - RCN-000006
+  - RCN-000007
+  - RCN-000008
+  - RCN-000015
+  - RCN-000021
+  - RCN-000022
+- cluster_id: governance_gates
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Runbook indexes, superseded Vollautonomie runbook, selector policy.
+  record_ids:
+  - RCN-000003
+  - RCN-000015
+  - RCN-000016
+  - RCN-000025
+  - RCN-000035
+  - RCN-000048
+- cluster_id: data_market
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Historical market depth/tape/OHLCV dashboard readmodels.
+  record_ids:
+  - RCN-000027
+  - RCN-000028
+  - RCN-000030
+- cluster_id: archives_legacy
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Forensic reference tree, corpus persistence base, src/docs.
+  record_ids:
+  - RCN-000007
+  - RCN-000008
+  - RCN-000017
+  - RCN-000022
+  - RCN-000053
+  - RCN-000018
+  - RCN-000026
+  - RCN-000049
+- cluster_id: risk_execution
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Historical risk-layer gates, zero-order observer, nested sizer placeholder, STEP29M research strategies.
+  record_ids:
+  - RCN-000019
+  - RCN-000043
+  - RCN-000045
+  - RCN-000050
+- cluster_id: archive_peaktraderepo
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Nested PeakTradeRepo, 02.12.2025 export, legacy_docs/scripts, noch_einordnen. Not one snapshot.
+  record_ids:
+  - RCN-000014
+  - RCN-000036
+  - RCN-000037
+  - RCN-000038
+  - RCN-000044
+  - RCN-000045
+  - RCN-000046
+  - RCN-000051
+- cluster_id: observability_infra
+  cluster_kind: NAVIGATION_ONLY
+  identity_group: false
+  description: Grafana obs docs, WebUI observability hub docs, infra health/backup/monitoring/resilience.
+  record_ids:
+  - RCN-000020
+  - RCN-000039
+  - RCN-000040
+  - RCN-000041
+  - RCN-000042
+  - RCN-000052

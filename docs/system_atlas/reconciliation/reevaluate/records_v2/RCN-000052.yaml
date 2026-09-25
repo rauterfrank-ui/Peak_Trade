@@ -1,0 +1,133 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000052
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: false
+disposition_candidate: INSUFFICIENT_EVIDENCE
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+final_disposition_change_performed: false
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: true
+positive_reason: Contradiction C052-1 remains unresolved. FIND bound CURRENTLY_ABSENT to a D/R-deleted 31-file family while
+  11 hub files existed at census SHA and exist now. GET /observability is currently wired. Record identity is mixed and not
+  split. Presence rewrite and RETAIN_AS_IS are forbidden while the contradiction is not adjudicated. SAME_AS RCN-000020 is
+  forbidden.
+contradiction_id: C052-1
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+- docs/webui/observability/OBSERVABILITY_HUB_V0.md
+- src/webui/app.py
+- docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+- scripts/ops/system_atlas_v1/census_pass_v2_records.py
+historical_function: Observability Hub v0 read-only HTML plus Paper/Shadow contracts; census also bound a 31-file deleted
+  family under the same prefix.
+historical_relations: Census CURRENTLY_ABSENT vs 11 hub files present at census SHA and origin/main. POSSIBLE_SAME_AS Grafana
+  RCN-000020 remains hypothesis. No SAME_AS. No split.
+current_system_analogues: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on origin/main. GET /observability is wired
+  in src/webui/app.py.
+identity_status: CENSUS_TREE_CONTRADICTION_MIXED_IDENTITY_NOT_SPLIT
+successor_status: NOT_APPLICABLE
+replacement_status: NOT_PROVEN
+current_value_status: UNPROVEN_WHILE_PRESENCE_CONTRADICTED
+current_compatibility_status: CONTRADICTION_BLOCKS_PRESENCE_NORMALIZATION
+contradictions:
+- 'C052-1: FIND band CURRENTLY_ABSENT to a D/R-deleted 31-file family while git ls-tree census SHA 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  and origin/main 7426af2daa4019e7986584a4c53d40b5e182673d both contain 11 docs/webui/observability hub files. SCOPE_RECONSTRUCTED_NOT_NORMALIZED.
+  C052_CONTRADICTION_RESOLVED=false.'
+unresolved_gaps:
+- Why did FIND_COMPLETELY bind current_presence=CURRENTLY_ABSENT for a path present on the census SHA?
+- 31-file D/R family versus 11 remaining hub files is mixed identity and is not split.
+- POSSIBLE_SAME_AS Grafana docs/observability RCN-000020 remains hypothesis.
+evaluation_result: 'Fail-closed: C052-1 is preserved and not semantically resolved. RETAIN_AS_IS from tree presence would
+  silently overwrite CURRENTLY_ABSENT. Presence rewrite is forbidden. No split. No SAME_AS with RCN-000020. INSUFFICIENT_EVIDENCE
+  remains OPEN.'
+alternatives_rejected:
+- 'RETAIN_AS_IS: would normalize census CURRENTLY_ABSENT into a currently retained identity'
+- 'CAPABILITY_ALREADY_COVERED: present hub docs are not proven identical to the census-deleted 31-file family'
+- 'ADAPT_AND_REINTEGRATE: contradiction blocks treating the census identity as an adaptation candidate'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: tree presence is not incompatibility'
+- 'REJECT_FOR_CURRENT_SYSTEM: census said deleted is not a positive reject reason'
+- 'Rewriting discovery.current_presence: forbidden; census field is historical discovery fact'
+- 'Split into hub-present versus deleted-family records: not authorized'
+- 'SAME_AS RCN-000020: forbidden; POSSIBLE_SAME_AS remains hypothesis'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'docs/webui/observability: C052-1 unresolved; stronger class burden unmet. INSUFFICIENT_EVIDENCE remains OPEN.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  - src/webui/app.py
+  - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+- claim_class: CONTRADICTION
+  text: 'C052-1: Ledger discovery.current_presence is CURRENTLY_ABSENT while census SHA and current origin/main both contain
+    11 hub files. Census field is not rewritten. SCOPE_RECONSTRUCTED_NOT_NORMALIZED.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  - src/webui/app.py
+  - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: false
+- claim_class: CANONICAL_CURRENT_FACT
+  text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on origin/main@7426af2daa4019e7986584a4c53d40b5e182673d. GET
+    /observability is wired.
+  evidence:
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  - src/webui/app.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: inventories/historical_path_families.yaml counts deleted_docs_families docs/webui/observability as 31 (git log --diff-filter=D/R).
+    FIND v2 hardcoded CURRENTLY_ABSENT and '31 files in census'.
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  - scripts/ops/system_atlas_v1/census_pass_v2_records.py
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000052.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/rcn_000052_presence_scope.txt
+- docs/webui/observability/OBSERVABILITY_HUB_V0.md
+- src/webui/app.py
+- docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+- scripts/ops/system_atlas_v1/census_pass_v2_records.py
+- docs/system_atlas/reconciliation/ledger.yaml
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true

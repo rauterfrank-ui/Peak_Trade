@@ -1,0 +1,25 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+kind: FORENSIC_RAW_QUOTES
+interpretation_forbidden_in_this_file: true
+items:
+- id: Q-LSC-INIT
+  path: src/webui/market_dashboard_landscape_v2/__init__.py
+  quote: Market Dashboard Landscape V2 — read-only projection contracts + page shell. No runtime activation, orders, or domain
+    recomputation.
+- id: Q-LSC-RB
+  path: docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md
+  quote: 'Ziel: Neuer Market-Workspace als strikt read-only Consumer des Peak_Trade-Systems'
+- id: Q-DEL
+  path: git:b5b8172806eae55d8639f964fcb2ad036337a0f3
+  quote: 'delete(webui): remove market dashboard product stack'

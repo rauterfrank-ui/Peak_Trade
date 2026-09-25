@@ -1,0 +1,143 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+kind: CANDIDATE_NOT_LEDGER_BOUND
+counted_as_ledger_records: false
+candidate_class_adjudication_only: true
+not_component_disposition: true
+note: Pass v3 re-evaluated the seven unbound candidates against unique-blob evidence. Classification here is census-level
+  candidate-class adjudication, not disposition of a historical component. Existing ledger records were not removed.
+candidates:
+- id: CAND:functional_core_literal
+  observed_names:
+  - FUNCTIONAL_CORE
+  - Functional Core
+  discovery_source: SURF:git_history_all_reachable
+  why_not_ledger_bound: Pickaxe and blob scan locate the literal only in Atlas ontology/census/reconciliation surfaces (ENTITY_KINDS
+    enum, entity_kinds.yaml, generated Atlas markdown). That is an ontology token, not a runtime or vanished architecture
+    component. Absence-as-component remains false; presence-as-ontology-label is not a component either.
+  evidence:
+  - blob:58065f399942ae95933d33b9f87591e6e7fde549
+  - origin/main:scripts/ops/system_atlas_v1/constants_v1.py
+  - origin/main:docs/system_atlas/ontology/entity_kinds.yaml
+  - docs/system_atlas/reconciliation/inventories/historical_terminology_census_v3.yaml
+  blob_sha: 58065f399942ae95933d33b9f87591e6e7fde549
+  historical_paths:
+  - scripts/ops/system_atlas_v1/constants_v1.py
+  current_presence: CURRENTLY_PRESENT
+- id: CAND:ssot_child_literal
+  observed_names:
+  - SSOT_CHILD
+  - SSOT child
+  discovery_source: SURF:git_history_all_reachable
+  why_not_ledger_bound: Literal exists as Atlas ENTITY_KINDS / discovered_terms ontology label. Pickaxe does not show a pre-Atlas
+    runtime component named SSOT_CHILD. NestedStructuralChild remains a separate ledger record (RCN-000026).
+  evidence:
+  - origin/main:scripts/ops/system_atlas_v1/constants_v1.py
+  - origin/main:docs/system_atlas/ontology/entity_kinds.yaml
+  - origin/main:docs/system_atlas/census/historical_terminology.yaml
+  - docs/system_atlas/reconciliation/inventories/historical_terminology_census_v3.yaml
+  blob_sha: 58065f399942ae95933d33b9f87591e6e7fde549
+  historical_paths:
+  - scripts/ops/system_atlas_v1/constants_v1.py
+  current_presence: CURRENTLY_PRESENT
+  possible_same_as_open:
+  - RCN-000026
+- id: CAND:risk_hotfix_smoke_test
+  observed_names:
+  - hotfix_smoke_test
+  historical_paths:
+  - src/risk/hotfix_smoke_test.py
+  discovery_source: SURF:git_history_all_reachable
+  why_not_ledger_bound: Single helper/test file. Unique blob 2e8ed942523cfb6c026694ee326f6d460ff0df12 (470 bytes) is absent
+    from origin/main. Filename/test-helper token is not a named architecture component.
+  evidence:
+  - blob:2e8ed942523cfb6c026694ee326f6d460ff0df12
+  - src/risk/hotfix_smoke_test.py
+  - docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  blob_sha: 2e8ed942523cfb6c026694ee326f6d460ff0df12
+  current_presence: CURRENTLY_ABSENT
+- id: CAND:position_sizer_old_backup
+  observed_names:
+  - position_sizer_old_backup
+  historical_paths:
+  - src/risk/position_sizer_old_backup.py
+  - src/risk/_archive/position_sizer_old_backup.py
+  discovery_source: SURF:git_history_origin_main
+  why_not_ledger_bound: Backup filename, not a named architecture component. origin/main git name-status records R100 from
+    src/risk/position_sizer_old_backup.py to src/risk/_archive/position_sizer_old_backup.py in commit fc782e5c762e056711ca1b29aacba558d854bd4c.
+    R100 is git-rename-detection indication plus currently present archived file; it is not identity with RCN-000045. Archived
+    blob 9a854113d6a230f83fc2c063169761df9d3dc6e0 (4157 bytes) != PeakTradeRepo nested sizer blob 439a60c8176d2990ea8e199443283f2b3e0f9a33
+    (29 bytes). SAME_BLOB_AS not asserted.
+  evidence:
+  - blob:9a854113d6a230f83fc2c063169761df9d3dc6e0
+  - blob:858a402d8fe45fcef7a51d6bd33fa5c879c712aa
+  - blob:5f15cbd5d080f141ba413cd91c7a2fb95d9544f1
+  - commit:fc782e5c762e056711ca1b29aacba558d854bd4c
+  - git name-status R100 origin/main
+  blob_sha: 9a854113d6a230f83fc2c063169761df9d3dc6e0
+  git_rename_detection:
+    status: R100
+    commit_sha: fc782e5c762e056711ca1b29aacba558d854bd4c
+    from: src/risk/position_sizer_old_backup.py
+    to: src/risk/_archive/position_sizer_old_backup.py
+    epistemic_status: FORENSIC_RAW_FACT
+    not_identity_merge: true
+    indication_class: GIT_RENAME_DETECTION_INDICATION
+  current_presence: CURRENTLY_PRESENT
+  possible_same_as_open:
+  - RCN-000045
+- id: CAND:local_branch_tip_inventory_is_not_a_component
+  observed_names:
+  - local refs/heads
+  discovery_source: SURF:local_branches
+  why_not_ledger_bound: Ref/tree inventory is coverage, not a component. Pass v3 scanned unique historical blob contents of
+    the bound search universe. That closes git-history content coverage; it does not create a ledger record named after the
+    inventory.
+  evidence:
+  - docs/system_atlas/reconciliation/inventories/git_universe_v3.yaml
+  - docs/system_atlas/reconciliation/inventories/blob_scope_v3.yaml
+  - docs/system_atlas/reconciliation/inventories/pass_v3_summary.yaml
+  current_presence: CURRENT_IDENTITY_UNRESOLVED
+- id: CAND:src_risk_ci_gate_test
+  observed_names:
+  - ci_gate_test
+  historical_paths:
+  - src/risk/ci_gate_test.py
+  discovery_source: SURF:git_history_all_reachable
+  why_not_ledger_bound: Single helper/test file. Unique blob a5083848c1058f1a3a248a419f20e967a2fd8043 (393 bytes) is absent
+    from origin/main. Not a named architecture component.
+  evidence:
+  - blob:a5083848c1058f1a3a248a419f20e967a2fd8043
+  - src/risk/ci_gate_test.py
+  blob_sha: a5083848c1058f1a3a248a419f20e967a2fd8043
+  current_presence: CURRENTLY_ABSENT
+- id: CAND:src_docs_workflow_notes
+  observed_names:
+  - Peak_Trade_WORKFLOW_NOTES.md
+  historical_paths:
+  - src/docs/Peak_Trade_WORKFLOW_NOTES.md
+  - docs/00_overview/Peak_Trade_WORKFLOW_NOTES.md
+  - docs/WORKFLOW_NOTES.md
+  discovery_source: SURF:git_history_all_reachable
+  why_not_ledger_bound: Single documentation file. Git name-status lists moves from src/docs/Peak_Trade_WORKFLOW_NOTES.md
+    to docs/WORKFLOW_NOTES.md and to docs/00_overview/Peak_Trade_WORKFLOW_NOTES.md. Git rename detection is an indication,
+    not identity. File is not a runtime component. Remaining src/docs tree is ledger-bound separately as RCN-000053 without
+    absorbing this filename.
+  evidence:
+  - blob:70af85b1966c7dca8e1efb60ef40a85168f1ff42
+  - docs/system_atlas/reconciliation/inventories/historical_path_families.yaml
+  - RCN-000053
+  blob_sha: 70af85b1966c7dca8e1efb60ef40a85168f1ff42
+  current_presence: CURRENTLY_ABSENT
+  possible_same_as_open:
+  - RCN-000053
+  - RCN-000049

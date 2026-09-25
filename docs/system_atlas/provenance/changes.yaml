@@ -1,0 +1,68 @@
+# ATLAS_AUTHORITY=NONE
+changes:
+  - id: CHANGE:master_runbook_supersedes_vollautonomie
+    from: RUNBOOK:vollautonomie_v4_4_12
+    to: RUNBOOK:canonical_master_runbook
+    type: SUPERSEDES
+    epistemic_status: CANONICAL_AUTHORITY
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  - id: CHANGE:signed_rest_after_july17_audit
+    from: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    to: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+    type: SUPERSESSION
+    epistemic_status: ADJUDICATED
+    evidence: C-OKX-AUDIT-SIGNED-REST-001
+  - id: CHANGE:historical_okx_removals
+    from: OPEN
+    to: OPEN
+    type: REMOVAL_SEARCH
+    epistemic_status: OPEN
+    evidence: docs/system_atlas/census/census_meta.yaml
+  - id: CHANGE:pr6181_non_okx_runtime_removed
+    from: CURRENT_NONCANONICAL
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: ADJUDICATED
+    evidence: src/exchange/operative_venue_boundary_v1.py
+    notes: Current-tree non-OKX runtime adapters/clients removed. Sole operative venue remains OKX EEA. Historical names are not restated as current components. Atlas is not trading authority.
+  - id: CHANGE:atlas_hist_selector_revert_sha_corrected
+    from: HIST:selector_policy_reverted
+    to: HIST:selector_policy_reverted
+    type: CORRECTION
+    epistemic_status: FORENSIC_RAW
+    evidence: git log afbae518b67eb1b789c835e219db37f5b15f308b
+    notes: >-
+      Corrected HIST:selector_policy_reverted from WP-FA-07 SHA 615de3b3 to
+      git-proven revert #6166 SHA afbae518b. WP-FA-07 retained separately as
+      HIST:wp_fa_07 / #6209. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6210_navigation_rebind
+    from: 615de3b307132b73a60df33fd3bedfac811c8cce
+    to: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind after #6210. Domain census payloads were not
+      freshly exhaustively rerun. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6215_navigation_rebind
+    from: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    to: 14e8a58f32dcb6b521be6b2559b388bf27360194
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind of CURRENT_REPO_SHA after WP-FS-B1 git merge
+      #6215. HISTORICAL_EVIDENCE_SHA / domain census payloads remain
+      615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not
+      freshly exhaustively rerun. Does not define WP-FA-08. Atlas is not
+      trading authority.
+  - id: CHANGE:execution_simple_removed_post_census_decouple
+    from: src/execution_simple
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: FORENSIC_RAW
+    evidence: src/risk_layer/order_input.py
+    notes: >-
+      Parallel execution_simple package removed after risk_layer decoupled to
+      src/risk_layer/order_input.py. Legacy runtime entrypoint guard identifiers
+      retained. Atlas is not trading authority.

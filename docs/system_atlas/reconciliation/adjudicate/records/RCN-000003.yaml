@@ -1,0 +1,48 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000003
+canonical_record_name: Runbooks Landscape 2026-ready index
+census_current_presence: CURRENTLY_PRESENT
+evaluate_capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+disposition: RETAIN_AS_IS
+lifecycle_state: DISPOSITION_DECIDED
+identity_status: CURRENT_IDENTITY_PROVEN_SAME_PATH
+positive_reason: The same runbook catalog remains on origin/main. UNDERSTAND binds Landscape here as a catalog name, not Market
+  Dashboard Landscape V2. Compatible navigation document.
+alternatives_rejected:
+- 'Identity fusion with Market Landscape V2: UNDERSTAND already separates the names'
+further_evidence_required: false
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Runbooks Landscape 2026-ready index remains on the bound current tree as the same artifact; current role is compatible.
+    SAME_ARTIFACT_STILL_PRESENT is comparison, not automatic retain; retain is based on proven same-path presence plus compatible
+    authority/safety/runtime role.
+  evidence:
+  - docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+  - docs/system_atlas/reconciliation/understand/records/RCN-000003.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Evaluate overlap for this record is SAME_ARTIFACT_STILL_PRESENT.
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000003.yaml
+  used_as_fact: true
+evidence_refs:
+- docs/runbooks/RUNBOOKS_LANDSCAPE_2026_READY.md
+- docs/system_atlas/reconciliation/understand/records/RCN-000003.yaml
+contradictions: []
+unresolved_questions: []
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

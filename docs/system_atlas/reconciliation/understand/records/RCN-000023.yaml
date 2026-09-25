@@ -1,0 +1,69 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000023
+canonical_record_name: webui market_surface.py v0
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+historical_purpose: 'Read-only Market Surface module: GET /market bound to PR-D product surface (build_market_dashboard_product_template_context_v1
+  → presenter → market_dashboard_product_v1.html). Legacy producers remain unreachable from the routed GET /market handler.'
+historical_problem_statement: Own the GET /market route for the v1 product surface.
+historical_inputs:
+- PR-D product template context builder
+historical_outputs:
+- GET /market HTML; GET /api/market/ohlcv JSON (legacy kraken/dummy)
+historical_dependencies:
+- RCN-000009 product surface
+historical_dependents:
+- Historical browser /market
+historical_paths:
+- src/webui/market_surface.py
+historical_commits:
+- b5b8172806eae55d8639f964fcb2ad036337a0f3
+- 987e020378d1767fbd6fb1f0914d475f9a485f51
+historical_blobs: []
+relations:
+- relation_type: POSSIBLE_SAME_AS
+  target_id: RCN-000012
+  unresolved_target: ''
+  evidence:
+  - early dashboard surface hypothesis
+  epistemic_status: HYPOTHESIS
+- relation_type: CALLS
+  target_id: RCN-000009
+  unresolved_target: ''
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+  epistemic_status: FORENSIC_RAW_FACT
+open_questions:
+- POSSIBLE_SAME_AS RCN-000012 remains hypothesis.
+evidence_refs:
+- 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob: Read-only Market Surface — PR-D product surface on GET /market.'
+  evidence:
+  - 987e020378d1767fbd6fb1f0914d475f9a485f51:src/webui/market_surface.py
+  used_as_fact: true
+- claim_class: HISTORICAL_FACT
+  text: Deleted by b5b81728.
+  evidence:
+  - b5b8172806eae55d8639f964fcb2ad036337a0f3
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- landscape_dashboard
+identity_merge_performed: false
+disposition_decided: false
+evidence_exhausted: true
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

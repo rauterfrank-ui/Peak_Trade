@@ -1,0 +1,83 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000019
+canonical_record_name: risk_layer historical top-level modules
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Historical top-level src/risk_layer modules: KillSwitch (emergency sticky block on daily loss/drawdown/volatility),
+  LiquidityGate (pre-trade microstructure OK/WARN/BLOCK), StressGate (scenario shocks), VaRGate (portfolio VaR vs thresholds),
+  plus RiskMetrics and MicrostructureMetrics extractors. Gate outputs are OK/WARN/BLOCK statuses, not order submission.'
+historical_problem_statement: Provide operational risk-gate evaluation interfaces for trading decisions.
+historical_inputs:
+- PeakConfig; RiskMetrics; MicrostructureMetrics; portfolio positions/returns
+historical_outputs:
+- KillSwitchStatus; LiquiditySeverity; Stress/VaR gate status dataclasses
+historical_dependencies:
+- src.core.peak_config; src.risk.portfolio_var (VaRGate docstring)
+historical_dependents:
+- Historical RiskGate orchestration (named in VaRGate docstring)
+historical_paths:
+- src/risk_layer/kill_switch.py
+- src/risk_layer/liquidity_gate.py
+- src/risk_layer/metrics.py
+- src/risk_layer/micro_metrics.py
+- src/risk_layer/stress_gate.py
+- src/risk_layer/var_gate.py
+historical_commits:
+- f834429531cef0a6e9897c30fc792620d4f8dffa
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7
+historical_blobs: []
+relations: []
+open_questions:
+- Rename/move of top-level modules into src/risk_layer/kill_switch/ is unproven identity.
+evidence_refs:
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/kill_switch.py
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/liquidity_gate.py
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/var_gate.py
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/stress_gate.py
+- 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/metrics.py
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob kill_switch.py: Emergency safety stop; sticky until reset.'
+  evidence:
+  - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/kill_switch.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob liquidity_gate.py: Pre-Trade Microstructure Guards; safe defaults missing metrics → OK.'
+  evidence:
+  - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/liquidity_gate.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob var_gate.py: VaR evaluation gate; integrates src/risk/portfolio_var.py; gate interface for RiskGate orchestration.'
+  evidence:
+  - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/var_gate.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'Parent blob stress_gate.py: Scenario-based stress testing gate.'
+  evidence:
+  - 6e1ce02727f1719f8a9a5d1f001bb3e0c59411c7:src/risk_layer/stress_gate.py
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: Identity between deleted top-level kill_switch.py and any later src/risk_layer/kill_switch package is unproven (not
+    fused).
+  evidence:
+  - f834429531cef0a6e9897c30fc792620d4f8dffa
+  used_as_fact: false
+epistemic_class: HISTORICAL_FACT
+clusters:
+- risk_execution
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

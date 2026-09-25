@@ -1,0 +1,53 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000052
+canonical_record_name: docs/webui/observability deleted family
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: docs/webui/observability/OBSERVABILITY_HUB_V0.md
+current_paths:
+- docs/webui/observability/OBSERVABILITY_HUB_V0.md
+- docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md
+- docs/webui/observability/PROMETHEUS_LOCAL_SCRAPE.yml
+capability_overlap: CENSUS_ABSENT_BUT_CURRENT_TREE_PRESENT
+semantic_compatibility: COMPATIBLE
+authority_compatibility: COMPATIBLE_NONE_AUTHORITY
+safety_compatibility: COMPATIBLE
+runtime_compatibility: NOT_RUNTIME
+conflicts:
+- census current_presence=CURRENTLY_ABSENT but origin/main@0e6cbb86 contains docs/webui/observability/
+gaps:
+- census presence is a historical discovery snapshot and is not rewritten here
+- runtime GET /observability wiring is not proven by docs presence alone
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: docs/webui/observability/OBSERVABILITY_HUB_V0.md exists on the bound SHA.
+  evidence:
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: true
+- claim_class: CONTRADICTION
+  text: Ledger discovery.current_presence is CURRENTLY_ABSENT while the bound current tree contains the family.
+  evidence:
+  - docs/system_atlas/reconciliation/ledger.yaml
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: false
+- claim_class: FORENSIC_RAW_FACT
+  text: Hub document states read-only / display-only GET /observability with no orders or activation.
+  evidence:
+  - docs/webui/observability/OBSERVABILITY_HUB_V0.md
+  used_as_fact: true
+open_questions:
+- Was the family restored after the census SHA, or was census presence bound against a different tree?

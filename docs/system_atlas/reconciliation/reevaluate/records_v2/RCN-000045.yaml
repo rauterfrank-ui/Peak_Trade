@@ -1,0 +1,94 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000045
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: true
+disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+disposition: REJECT_FOR_CURRENT_SYSTEM
+lifecycle_state: DISPOSITION_DECIDED
+final_disposition_change_performed: true
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: false
+positive_reason: Nested PeakTradeRepo position_sizer blob is the one-line placeholder '# Position sizer placeholder' (439a60c8).
+  Backup 9a854113, current src/risk/position_sizer.py c3325deb, and export position_sizing 04046eb6 are blob-distinct. CAND:position_sizer_old_backup
+  is related, not SAME_AS. No identity merge. Placeholder is not a current-system capability to adopt.
+contradiction_id: ''
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/risk/position_sizer.py
+- docs/system_atlas/reconciliation/discovery_candidates.yaml
+historical_function: Nested archive position_sizer snapshot whose recovered blob is a placeholder.
+historical_relations: Inner component of RCN-000014; not fused. Distinct from backup/current/export sizers.
+current_system_analogues: Later src/risk/position_sizer.py is a distinct blob; CAND:position_sizer_old_backup is not SAME_AS.
+identity_status: PLACEHOLDER_BLOB_DISTINCT_FROM_BACKUP_EXPORT_AND_CURRENT
+successor_status: NOT_PROVEN
+replacement_status: NOT_PROVEN
+current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+current_compatibility_status: REJECT_PLACEHOLDER_NOT_ADOPTABLE
+contradictions: []
+unresolved_gaps:
+- CAND:position_sizer_old_backup remains a candidate, not a ledger identity merge.
+evaluation_result: Burden for REJECT_FOR_CURRENT_SYSTEM is met from nested placeholder blob content. Backup/current/export
+  are blob-distinct. Identity merge is forbidden and was not performed.
+alternatives_rejected:
+- 'RETAIN_AS_IS: CURRENTLY_ABSENT; placeholder is not retained'
+- 'CAPABILITY_ALREADY_COVERED: later sizer modules are not proven SAME_AS'
+- 'ADAPT_AND_REINTEGRATE: placeholder has no independent current value to adapt'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: placeholder is not a historically valid implemented sizer that conflicts with current
+  invariants'
+- 'REJECT because deleted: deletion is not a positive rejection reason'
+- 'SAME_AS CAND:position_sizer_old_backup or current sizer: blob-distinct; merge forbidden'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: Nested position_sizer is a placeholder and is rejected for the current system.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - src/risk/position_sizer.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: blob:439a60c8176d2990ea8e199443283f2b3e0f9a33 = '# Position sizer placeholder'. Distinct from backup 9a854113d6a230f83fc2c063169761df9d3dc6e0,
+    export 04046eb61f426683a2b070ef7e2dd2b27fd1023f, current c3325deb59eb15a92767b9ca1c7eaa745efc4544.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - docs/system_atlas/reconciliation/discovery_candidates.yaml
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000045.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- src/risk/position_sizer.py
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true

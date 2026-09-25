@@ -1,0 +1,14 @@
+COMMAND=git show --no-patch --format='%H%n%ad%n%s%n%b' b5b8172806eae55d8639f964fcb2ad036337a0f3
+EPISTEMIC_CLASS=FORENSIC_RAW
+
+b5b8172806eae55d8639f964fcb2ad036337a0f3
+2026-07-17 14:12:40 +0200
+delete(webui): remove market dashboard product stack
+Market-Dashboard-Produktstack vollständig gelöscht.
+
+- `/market*` absent (HTTP 404); keine Redirects, Placeholder oder Reset-Shell
+- Trading-Core und Canonical Producer unverändert
+- Double-Play-Display-JSON (`/api/master-v2/double-play/dashboard-display.json`) erhalten
+- forensische Evidence reproduzierbar (`evidence/market_dashboard_deletion/`)
+- kein Rebuild autorisiert oder begonnen
+- LIVE_AUTHORIZED=false; ORDERS=false

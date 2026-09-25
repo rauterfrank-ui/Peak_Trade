@@ -1,0 +1,56 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+atlas_authority: NONE
+reconciliation_authority: NONE
+understand_pass_id: UNDERSTAND_PASS_V2
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: false
+evaluate_performed: false
+record_id: RCN-000026
+canonical_record_name: NestedStructuralChild forensic structure type
+understand_status: PURPOSE_UNDERSTOOD
+purpose_understood: true
+evidence_exhausted: true
+historical_purpose: 'Forensic lossless structure type NestedStructuralChild: 153 of the P19-493 KR-8/KR-9 independent-byte
+  records in post_step32 adjudicated findings. Explicitly not SSOT_CHILD. Structure type / catalog class, not a trading component.'
+historical_problem_statement: Keep NestedStructuralChild distinct from SSOT_CHILD and carrier index.
+historical_inputs:
+- PRODUCT_A / TARGET forensic collection
+historical_outputs:
+- Adjudicated finding F_P19_493 count split 153 NestedStructuralChild + 340 MarkedVerbatimRegion
+historical_dependencies: []
+historical_dependents:
+- Forensic reconstruction method
+historical_paths:
+- forensic/post_step32_knowledge_integration_v0/
+historical_commits:
+- b81d5181c04c2a3dc156d089fc8790ed4419782b
+historical_blobs: []
+relations: []
+open_questions: []
+evidence_refs:
+- forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+- docs/system_atlas/census/historical_terminology.yaml
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: '05_adjudicated_findings.md F_P19_493: 153 NestedStructuralChild + 340 MarkedVerbatimRegion; must not be fused with
+    broader PARENT_SPAN 4105.'
+  evidence:
+  - forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: 'historical_terminology.yaml: NestedStructuralChild = Forensic lossless structure type; not SSOT_CHILD; FORENSIC_REFERENCE_ONLY.'
+  evidence:
+  - docs/system_atlas/census/historical_terminology.yaml
+  used_as_fact: true
+epistemic_class: HISTORICAL_FACT
+clusters:
+- archives_legacy
+identity_merge_performed: false
+disposition_decided: false
+archive_status_is_not_obsolete: true
+historical_revert_is_not_disposition: true

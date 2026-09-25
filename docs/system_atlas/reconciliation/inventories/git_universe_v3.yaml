@@ -1,0 +1,77 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+git_is_shallow: false
+git_is_partial_clone: false
+universes:
+  A_origin_main:
+    root_refs:
+    - origin/main
+    rev_list_command: git rev-list origin/main
+    reachable_commit_count: 6328
+    unique_commit_sha_count: 6328
+    root_commits:
+    - 78979ed413aae9bee0dee4b9c5451a308f30a114
+  B_bound_search_universe:
+    root_ref_prefixes:
+    - refs/heads
+    - refs/remotes/origin
+    - refs/tags
+    rev_list_command: git rev-list --branches --tags --remotes=origin
+    reachable_commit_count: 7248
+    unique_commit_sha_count: 7248
+    root_commits:
+    - 78979ed413aae9bee0dee4b9c5451a308f30a114
+    note: Explicitly NOT git rev-list --all. Extra local refs are out of this universe.
+overlap_commit_count: 6328
+non_origin_main_reachable_commit_count: 920
+extra_local_refs_not_in_bound_universe:
+- refs/review/pr-5765-head
+- refs/review/pr-5765-owner-review
+- refs/review/pr-5766-owner-review
+- refs/review/pr5614
+- refs/stash
+- refs/tmp/pr-5911-check
+- refs/tmp/pr-5911-mergecheck
+- refs/tmp/pr5233head
+- refs/tmp/pr5235-head
+- refs/tmp/pr5236
+- refs/tmp/pr5401-head
+- refs/tmp/pr5405head
+- refs/tmp/pr5548-corr-review
+- refs/tmp/pr5548-forensic-review
+- refs/tmp/pr5548-post
+- refs/tmp/pr5719
+- refs/tmp/pr5816
+- refs/tmp/pr5833
+- refs/tmp/pr5901-review
+- refs/tmp/pr5968-review
+- refs/tmp/pr6057
+- refs/tmpreview/pr5729
+extra_local_ref_count: 22
+commits_only_on_extra_local_refs_count: 13
+commits_only_on_extra_local_refs:
+- 01ad5d9a4b0be1494e0ccb2c3b73233a8f6d720e
+- 1c29594f3dc6c03aedc27d183fa673437853e40e
+- 358757aac50559efe9d4550fa62dfa1bfaa7cecd
+- 8c74eff88b8ebda47750abb10b39d66516bdf2e2
+- ade781b8f109d64720c0d3e6913ede35863c4d58
+- ba209ab38cec0f1f2bf8cd796aac1b656f36b682
+- c071bbea472d73c1cf65bd4fd5e7a975028e87fa
+- d37574fa94a9814daddf73f53641b45b838d2d9a
+- db8f020e814ebcff6eed39365440e61fc4568de7
+- e33b801c178fbb0bc7e08edf0955372ef3e894b9
+- e64b3a4604780778ab41ee2ed82c71bbd538ed06
+- e95ae98b725ba4e75cff55cd2372dcdc2a9cadc1
+- ff4569b62eb9b4192c893e3d218665ab7910469f
+all_refs_commit_count_for_contrast_only: 7261
+object_enumeration_method: git rev-list --objects then git cat-file --batch-check type=blob; dedup exact blob SHA
+census_timestamp_role: NAVIGATION_NOT_AUTHORITY

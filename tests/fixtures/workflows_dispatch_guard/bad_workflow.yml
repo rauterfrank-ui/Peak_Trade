@@ -1,0 +1,16 @@
+name: Bad Dispatch Example
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Mode"
+        required: true
+        default: "dry-run"
+
+jobs:
+  example:
+    if: ${{ inputs.mode == 'dry-run' }} # WRONG: inputs.<x> is workflow_call context, not workflow_dispatch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo
+        run: echo "missing=${{ github.event.inputs.missing_key }}"

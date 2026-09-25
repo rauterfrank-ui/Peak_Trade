@@ -1,0 +1,95 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+input_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+record_id: RCN-000015
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: false
+disposition_candidate: INSUFFICIENT_EVIDENCE
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+final_disposition_change_performed: false
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: true
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+- src/ops/single_selected_future_policy_v1/constants_v1.py
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+historical_function: Census → structural eligibility → exactly-one-or-none; ranking is not selection authority; fail-closed
+  if eligible_count != 1.
+historical_relations: 'Selector constants explicitly do not rewrite Cap 2.3. Cap 2.3 (ecb44849 2026-08-02) predates selector
+  #6165/#6166 (2026-08-30). Succession selector→Cap 2.3 is refuted.'
+current_system_analogues: 'Cap 2.3 single_selected_future_policy_v1 is current selection owner: ranking, hysteresis, min holding,
+  SELECTION_AUTHORITY_ADDED=true.'
+identity_status: PROVEN_DISTINCT_FROM_CAP_2_3
+successor_status: REFUTED_AS_SUCCESSOR_OF_SELECTOR
+replacement_status: NOT_PROVEN
+current_value_status: UNPROVEN
+current_compatibility_status: 'UNPROVEN: hypothetical wiring as a second selection authority is not a proven current invariant
+  violation of the dormant historical package'
+contradictions: []
+unresolved_gaps:
+- 'Why was #6165 reverted, beyond the revert pointer in #6166?'
+- Unique current value of fail-closed-unless-exactly-one versus Cap 2.3 ranking selection remains unproven.
+evaluation_result: INPUT_PASS proved the selector is a distinct Owner policy that does not rewrite Cap 2.3 and cannot be Cap
+  2.3's successor (Cap 2.3 predates it). Different selection semantics are not functional coverage. Revert is not REJECT.
+  Unique current value is unproven, so ADAPT burden is unmet. Hypothetical co-authority conflict is not a proven INCOMPATIBLE
+  invariant. INSUFFICIENT_EVIDENCE remains OPEN.
+alternatives_rejected:
+- 'RETAIN_AS_IS: selector path CURRENTLY_ABSENT after revert'
+- 'CAPABILITY_ALREADY_COVERED: Cap 2.3 ranking/hysteresis selection does not provenly fulfill fail-closed-unless-exactly-one;
+  later code is not coverage'
+- 'ADAPT_AND_REINTEGRATE: independent current value versus Cap 2.3 is unproven; this label would not authorize implementation'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: no proven current invariant that the dormant package itself violates; hypothetical
+  wiring conflict is not used'
+- 'REJECT_FOR_CURRENT_SYSTEM: revert #6166 is not a positive rejection reason'
+- 'Declaring SAME_AS / successor of single_selected_future_policy_v1: refuted, not a merge'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'Master V2 minimal selector: stronger terminal class burden is not met after INPUT_PASS. INSUFFICIENT_EVIDENCE remains
+    OPEN.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Selector does not rewrite Cap 2.3; Cap 2.3 predates the selector; succession is refuted.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Cap 2.3 remains current SINGLE_SELECTED_FUTURE selection owner with ranking provenance.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/constants_v1.py
+  used_as_fact: true
+- claim_class: OPEN_QUESTION
+  text: 'Semantic cause of revert #6166 beyond the revert pointer remains unproven.'
+  evidence:
+  - docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/pass_v1_status.yaml
+- src/ops/single_selected_future_policy_v1/constants_v1.py
+- src/ops/single_selected_future_policy_v1/selection_v1.py
+input_pass_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2

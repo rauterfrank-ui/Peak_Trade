@@ -1,0 +1,84 @@
+# ATLAS_AUTHORITY=NONE
+# Observed Family/Child usages. Not a unified ontology.
+schema_version: system_atlas.v1
+unified_family_ontology: false
+c_family_polyvalent_001_resolved: false
+usages:
+  - id: FAMILY_USAGE:projection_octet
+    exact_token: family_id
+    meaning: Dashboard projection-octet grouping (8 ids)
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: docs/ops/market_dashboard/market_dashboard_projection_octet_materialization_path_discovery_v1/FAMILY_MATRIX.json
+  - id: FAMILY_USAGE:okx_instfamily
+    exact_token: instFamily
+    meaning: OKX venue instrument family field
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  - id: FAMILY_USAGE:confirm_token
+    exact_token: FAMILY_PSO_GOVERNED_PUBLIC_MD_V1
+    meaning: O3 confirm-token family matrix (also FAMILY_RESEARCH_S03_V1, FAMILY_TESTNET_HARNESS_V1, FAMILY_LIVE_ARMED_V1, FAMILY_LEGACY_LITERAL_V1)
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: src/ops/secure_confirm_token_family_and_hidden_input_handoff_v1/constants_v1.py
+  - id: FAMILY_USAGE:gate_f1_f6
+    exact_token: Gate-Familien
+    meaning: Historical forensic Getrennte Gate-Familien F1–F6 (nicht vermischen)
+    current_or_historical: HISTORICAL
+    collides_with_other_family_usage: true
+    status: HISTORICAL
+    evidence: forensic/evidence/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.md
+  - id: FAMILY_USAGE:no_family_ontology
+    exact_token: NO_FAMILY_ONTOLOGY
+    meaning: 5-family projection completeness blocker only
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: docs/forensics/persistence/inventories/P6_Z2CL_RUNTIME_UNIVERSE_RECONSTITUTION_OBSERVATION_V1.json
+  - id: FAMILY_USAGE:family_scoped_suitability
+    exact_token: FAMILY_SCOPED_STRATEGY_AGREEMENT_INTO_EXISTING_SUITABILITY_V1
+    meaning: Suitability agreement binding label, not dashboard family_id
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: docs/governance/Peak_Trade_Canonical_Chain_Wiring_Repair_Master_Runbook_v2.2.md
+  - id: FAMILY_USAGE:strategy_signal_family
+    exact_token: SIGNAL_FAMILY_V1
+    meaning: Research/strategy signal family string, not Families ontology
+    current_or_historical: CURRENT
+    collides_with_other_family_usage: true
+    status: FORENSIC_RAW
+    evidence: src/research/volatility_term_structure_reversion_v1_strategy_v1.py
+child_usages:
+  - id: CHILD_USAGE:historical_child_ledger
+    exact_token: SRC-*
+    parent: FORENSIC_REFERENCE:historical_child_ledger
+    child: TERM:historical_child_ledger
+    relation_semantics: forensic source-region indexing
+    current_or_historical: HISTORICAL
+    equated_with_ssot_child: false
+    status: FORENSIC_RAW
+    evidence: forensics/historical_reference/sha256-a5a468f761e24e17fc0402dbf056df7d45090b3c58f0e9a2ad469569e908e212/conservation/HISTORICAL_CHILD_LEDGER.yaml
+  - id: CHILD_USAGE:nested_structural_child
+    exact_token: NestedStructuralChild
+    parent: PhysicalAppendUnit (forensic information model)
+    child: CHILD:nested_structural_child
+    relation_semantics: lossless working-runbook structural child
+    current_or_historical: HISTORICAL
+    equated_with_ssot_child: false
+    status: HISTORICAL
+    evidence: forensic/lossless_working_runbook_structure_identity_method_v1/build_lossless_structure.py
+  - id: CHILD_USAGE:falls_parent_child
+    exact_token: Falls-Parent/Child
+    parent: OPEN (forensic coupling groups)
+    child: TERM:falls_parent_child
+    relation_semantics: forensic Falls-structure coupling; not counted twice as coupling groups
+    current_or_historical: HISTORICAL
+    equated_with_ssot_child: false
+    status: HISTORICAL
+    evidence: docs/forensics/preservation/PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md
+ssot_child_literal_found: false

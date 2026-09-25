@@ -1,0 +1,17 @@
+EPISTEMIC_CLASS=FORENSIC_RAW
+blob:19aaa49470aa766a9f813b672278fe2bcbdac3e3=# Engine placeholder
+blob:cd074be6849834125b0ad5e6e331dc7f2109a1d7=# Results placeholder
+blob:7dd32407016f955f2ab4707ae122323a091dab4a=# Stats placeholder
+blob:439a60c8176d2990ea8e199443283f2b3e0f9a33=# Position sizer placeholder
+blob:83bb67757202b250a8273faac1b1e3dd794f8493=# MA Strategy placeholder
+blob:8914c7c59c19601053b0965f3a4787abfe68e637 first line=# Peak_Trade System – Gesamtübersicht & Implementationsdokumentation
+blob:0d9869d743175c85f3e0286fc45b3b17f9d3d695=BacktestEngine: Generische Engine für Position-basierte Backtests.
+blob:04046eb61f426683a2b070ef7e2dd2b27fd1023f=Position-Sizing-Module: Konvertieren Exposure in konkrete Stückzahlen.
+blob:c89dad61caad99c51bd2e219d66af5956ecf28a9=MA-Crossover-Strategie: Long bei Fast > Slow, Short bei Fast < Slow.
+blob:9a854113d6a230f83fc2c063169761df9d3dc6e0=Peak_Trade Position Sizer
+blob:a7a54e35bbd81d2ed21ce14a7abbaebcf76de889=src/backtest/engine.py@7426af2daa4019e7986584a4c53d40b5e182673d
+blob:c3325deb59eb15a92767b9ca1c7eaa745efc4544=src/risk/position_sizer.py@7426af2daa4019e7986584a4c53d40b5e182673d
+blob:82e994839b55c7a48258d9864834c96c73781dfd=src/strategies/ma_crossover.py@7426af2daa4019e7986584a4c53d40b5e182673d
+SAME_BLOB_AS archive/noch_einordnen/README.md == archive/PeakTradeRepo/README.md == 8914c7c59c19601053b0965f3a4787abfe68e637
+NOCH_TREE=
+archive/noch_einordnen/README.md

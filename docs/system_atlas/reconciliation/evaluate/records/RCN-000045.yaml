@@ -1,0 +1,50 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000045
+canonical_record_name: PeakTradeRepo nested position_sizer
+census_current_presence: CURRENTLY_ABSENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: ''
+current_paths:
+- src/risk/position_sizer.py
+capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+semantic_compatibility: UNPROVEN
+authority_compatibility: UNPROVEN
+safety_compatibility: NOT_RUNTIME
+runtime_compatibility: ABSENT_FROM_CURRENT_RUNTIME
+conflicts: []
+gaps:
+- historical archive path archive/PeakTradeRepo/src/risk/position_sizer.py is absent on origin/main@0e6cbb860f71
+- archive presence is not obsolete; current absence is not rejection
+- current src/risk/position_sizer.py exists; recovered archive blob was a placeholder
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Bound current tree 0e6cbb860f716d527873d97556d0968df4a197bf does not contain archive/PeakTradeRepo/src/risk/position_sizer.py.
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000045.yaml
+  - docs/system_atlas/reconciliation/ledger.yaml
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Named current paths exist; they are not proven to be the historical archive artifact.
+  evidence: &id001
+  - src/risk/position_sizer.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Current modules with similar names may be later implementations; identity remains unproven.
+  evidence: *id001
+  used_as_fact: false
+open_questions:
+- Is there a proven current replacement, or only a later namesake?

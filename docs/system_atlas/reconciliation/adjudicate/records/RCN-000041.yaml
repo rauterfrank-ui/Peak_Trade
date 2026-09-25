@@ -1,0 +1,42 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000041
+canonical_record_name: src/infra/monitoring historical package
+census_current_presence: CURRENTLY_ABSENT
+evaluate_capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: IDENTITY_UNPROVEN
+positive_reason: src/infra/monitoring is absent. src/risk_layer/alerting/ exists; identity with infra.monitoring is unproven.
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED by risk_layer.alerting: identity unproven'
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'src/infra/monitoring historical package: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+    remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000041.yaml
+  - src/risk_layer/alerting/__init__.py
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000041.yaml
+- src/risk_layer/alerting/__init__.py
+contradictions: []
+unresolved_questions:
+- Is risk_layer.alerting a successor of src/infra/monitoring, or a distinct later package?
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

@@ -1,0 +1,59 @@
+# ATLAS_AUTHORITY=NONE
+shapes:
+  - id: OKX_RESPONSE_SHAPE:public_get_code_data
+    kind: OKX_RESPONSE_SHAPE
+    name: OKX public GET envelope code/data/msg
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/okx_public_market_data_client_v1.py
+    notes: Typical OKX REST envelope. Field-level completeness OPEN.
+  - id: OKX_RESPONSE_SHAPE:instruments_row
+    kind: OKX_RESPONSE_SHAPE
+    name: instruments row including instId, uly, quoteCcy, instFamily, instType, ruleType
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+      - docs/forensics/persistence/inventories/P6_LIVE_GFU_NETWORK_GET_ONLY_CENSUS_AND_GAP_ADJUDICATION_OBSERVATION_V1.json
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_instruments_input_v1.json
+    notes: Inspected GFU fixture row keys include baseCcy, ctType, ctVal, ctValCcy, expTime, instId, instType, lotSz, minSz, quoteCcy, settleCcy, state, tickSz, uly.
+  - id: OKX_RESPONSE_SHAPE:mark_price_row
+    kind: OKX_RESPONSE_SHAPE
+    name: mark-price row instId/markPx (optional ts)
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/evidence/capability_2_1_governed_futures_universe_producer_v1/fixtures/okx_eea_mark_price_input_v1.json
+      - tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/mark_price_valid.json
+      - docs/evidence/capability_5_2_single_future_canonical_runtime_public_md_no_order_shadow_evidence_v1/productive_public_md_shadow/gate_evidence/public_md_capture_v1.json
+    notes: Live public-MD capture rows also include instType on SWAP mark-price.
+  - id: OKX_RESPONSE_SHAPE:candles_array
+    kind: OKX_RESPONSE_SHAPE
+    name: OKX candles data as list of lists
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/candle_raw_http_response.json
+    notes: Inspected first row length 9; index 0 timestamp-like string. Column semantics OPEN beyond timestamp.
+  - id: OKX_RESPONSE_SHAPE:mark_price_candles_array
+    kind: OKX_RESPONSE_SHAPE
+    name: OKX mark-price candles data as list of lists
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/artifacts/productive_pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m_raw_bytes_and_exclusive_tip_proof_v1/mark_raw_http_response.json
+    notes: Inspected first row length 6. Endpoint binding OPEN (structural resemblance only).
+  - id: OKX_RESPONSE_SHAPE:ticker_row
+    kind: OKX_RESPONSE_SHAPE
+    name: ticker row askPx/bidPx/instId/last
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - tests/fixtures/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/ticker_no_markpx.json

@@ -1,0 +1,93 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 7426af2daa4019e7986584a4c53d40b5e182673d
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V2
+input_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+predecessor_bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+reevaluate_v1_snapshot_frozen: true
+record_id: RCN-000051
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: true
+disposition_candidate: REJECT_FOR_CURRENT_SYSTEM
+disposition: REJECT_FOR_CURRENT_SYSTEM
+lifecycle_state: DISPOSITION_DECIDED
+final_disposition_change_performed: true
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: false
+positive_reason: Last attested archive/noch_einordnen tree contains only README.md whose blob 8914c7c5 is SAME_BLOB_AS archive/PeakTradeRepo/README.md
+  at cf2253aa60ffdbfd77356e33e611cd85ea53b849. Queued duplicate document; not an independent current capability. Folder identity
+  merge with RCN-000014 is not performed. CAPABILITY_ALREADY_COVERED is rejected because RCN-000014 is itself OPEN/ABSENT,
+  not a current covering capability.
+contradiction_id: ''
+current_evidence_set:
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+historical_function: Queued archive/noch_einordnen folder whose last attested content is one README.
+historical_relations: README blob 8914c7c59c19601053b0965f3a4787abfe68e637 is SAME_BLOB_AS PeakTradeRepo README. POSSIBLE_SAME_AS
+  RCN-000014 remains hypothesis for folder identity; SAME_AS / folder merge not performed.
+current_system_analogues: No independent current capability. Duplicate queued document only.
+identity_status: QUEUED_DUPLICATE_README_NOT_FOLDER_MERGE
+successor_status: NOT_APPLICABLE
+replacement_status: NOT_PROVEN
+current_value_status: NO_INDEPENDENT_CURRENT_CAPABILITY
+current_compatibility_status: REJECT_QUEUED_DUPLICATE_DOCUMENT
+contradictions: []
+unresolved_gaps:
+- Folder identity versus RCN-000014 remains unmerged by design.
+evaluation_result: 'Burden for REJECT_FOR_CURRENT_SYSTEM is met: last attested content is a queued duplicate README (SAME_BLOB_AS
+  PeakTradeRepo README), not a standalone capability. Identity merge is not performed.'
+alternatives_rejected:
+- 'RETAIN_AS_IS: CURRENTLY_ABSENT; queued duplicate is not retained'
+- 'CAPABILITY_ALREADY_COVERED: RCN-000014 is OPEN/ABSENT and is not a current covering capability'
+- 'ADAPT_AND_REINTEGRATE: duplicate README has no independent current value to adapt'
+- 'HISTORICALLY_VALID_BUT_INCOMPATIBLE: queued duplicate document is not a historically distinct capability that conflicts
+  with current invariants'
+- 'Folder identity merge into RCN-000014: forbidden; SAME_BLOB_AS of README is not SAME_AS of records'
+- 'SAME_AS RCN-000014: not proven; merge not performed'
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: archive/noch_einordnen is a queued duplicate README and is rejected for the current system. Folder identity is not
+    merged.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  - docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: blob:8914c7c59c19601053b0965f3a4787abfe68e637 is the PeakTradeRepo README blob and the only path under 24001182de0209dabac4d6296bc7738eec442107^:archive/noch_einordnen.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/evidence_resolution/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/reevaluate/records/RCN-000051.yaml
+- docs/system_atlas/reconciliation/reevaluate/pass_v1_status.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/reevaluate_v2/commands/placeholder_blobs.txt
+- docs/system_atlas/reconciliation/inventories/inner_archive_peaktraderepo.yaml
+previous_adjudication:
+  pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+  bound_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  disposition: INSUFFICIENT_EVIDENCE
+  lifecycle_state: OPEN
+  adjudicate_pass_id_frozen: INTEGRATE_OR_DISPOSITION_PASS_V1
+  adjudicate_bound_sha_frozen: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+v1_snapshot_frozen: true

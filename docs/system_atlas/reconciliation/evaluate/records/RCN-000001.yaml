@@ -1,0 +1,48 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+atlas_authority: NONE
+reconciliation_authority: NONE
+evaluate_pass_id: EVALUATE_INDIVIDUALLY_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+current_system_compared: true
+evaluate_performed: true
+reintegration_performed: false
+record_id: RCN-000001
+canonical_record_name: Market Dashboard Landscape V2 package
+census_current_presence: CURRENTLY_PRESENT
+comparison_status: CURRENT_SYSTEM_COMPARED
+compared_against_ref: origin/main
+compared_against_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+current_equivalent: src/webui/market_dashboard_landscape_v2/
+current_paths:
+- src/webui/market_dashboard_landscape_v2/
+- src/webui/market_dashboard_landscape_shell_router_v2.py
+- src/webui/market_dashboard_landscape_producer_binding_v2.py
+- src/webui/market_dashboard_landscape_v2/owner_registry.py
+- templates/peak_trade_dashboard/market_landscape_v2.html
+capability_overlap: SAME_ARTIFACT_STILL_PRESENT
+semantic_compatibility: COMPATIBLE
+authority_compatibility: COMPATIBLE
+safety_compatibility: COMPATIBLE
+runtime_compatibility: COMPATIBLE
+conflicts: []
+gaps: []
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Landscape V2 package still exists on the bound origin/main SHA as a read-only consumer.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
+  - src/webui/market_dashboard_landscape_producer_binding_v2.py
+  used_as_fact: true
+- claim_class: FORENSIC_RAW_FACT
+  text: Owner registry remains consumer-boundary mapping; AUTHORITY_EFFECT=NONE in slot notes.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/owner_registry.py
+  used_as_fact: true
+open_questions:
+- Identity versus deleted product_surface_v1 remains unproven and is not decided here.

@@ -1,0 +1,98 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+evidence_resolution_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: false
+final_disposition_change_performed: false
+adjudication_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+understand_snapshot_frozen: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+record_id: RCN-000040
+evidence_resolution_status: EVIDENCE_GAP_PARTIALLY_RESOLVED
+identity_merge_performed: false
+disposition_unchanged: true
+missing_proof_question: Does a later backup/recovery owner exist under another path as the same identity?
+identity_gap:
+  status: PROVEN_HISTORICAL_EXISTENCE_ON_NON_MAIN_COMMIT
+  statement: src/infra/backup exists at 12188014cb93a78555bbdf5cbaaf60906f6755a5. git merge-base --is-ancestor 12188014cb93a78555bbdf5cbaaf60906f6755a5
+    origin/main is false. Historical existence is proven off origin/main; it is not a current origin/main identity.
+  used_as_fact: true
+  source: 12188014cb93a78555bbdf5cbaaf60906f6755a5
+  source_sha: 12188014cb93a78555bbdf5cbaaf60906f6755a5
+  evidence_type: FORENSIC_RAW
+function_gap:
+  status: PROVEN_HISTORICAL_FUNCTION
+  statement: Historical backup package introduced with resilience/monitoring (12188014).
+  used_as_fact: true
+  source: docs/system_atlas/reconciliation/understand/records/RCN-000040.yaml
+  source_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478
+  evidence_type: HISTORICAL_INTERMEDIATE
+relation_gap:
+  status: UNPROVEN_VERSUS_CURRENT_NAMESAKE
+  statement: No src/infra/backup on origin/main. Later disaster-recovery docs/scripts are not proven SAME_AS this package.
+  used_as_fact: false
+  source: ABSENT:no_src_infra_backup_on_origin_main
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: HYPOTHESIS
+successor_or_replacement_gap:
+  status: NOT_PROVEN
+  statement: Current namesake ABSENT:no_src_infra_backup_on_origin_main is not proven SAME_AS / RENAMED_TO / REPLACED_BY src/infra/backup.
+    Similar theme is not replacement. Never-merged-to-main is not rejection.
+  used_as_fact: true
+  source: ABSENT:no_src_infra_backup_on_origin_main
+  source_sha: f9618c73f1834b68588ceab586da4d6408962a10
+  evidence_type: FORENSIC_RAW
+current_system_fit_gap:
+  status: UNPROVEN
+  statement: Current unique value versus the namesake remains unproven. No disposition.
+  used_as_fact: false
+  source: docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+  source_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+  evidence_type: OPEN_OR_CONTRADICTORY
+claims:
+- claim_class: FORENSIC_RAW_FACT
+  text: src/infra/backup is absent on origin/main@f9618c73f1834b68588ceab586da4d6408962a10 and census SHA 1b52df25b99a36b99eed91943c2a203ce84f1cad
+    (path count 0).
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+  used_as_fact: true
+  source_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+  source_path: src/infra/backup
+  evidence_type: FORENSIC_RAW
+- claim_class: FORENSIC_RAW_FACT
+  text: Commit 12188014cb93a78555bbdf5cbaaf60906f6755a5 is not an ancestor of origin/main@f9618c73f1834b68588ceab586da4d6408962a10.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: true
+  source_sha: 12188014cb93a78555bbdf5cbaaf60906f6755a5
+  source_path: src/infra/backup
+  evidence_type: FORENSIC_RAW
+- claim_class: HYPOTHESIS
+  text: ABSENT:no_src_infra_backup_on_origin_main may overlap thematically with src/infra/backup; identity is unproven.
+  evidence:
+  - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+  used_as_fact: false
+  source_path: ABSENT:no_src_infra_backup_on_origin_main
+  evidence_type: HYPOTHESIS
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000040.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
+- docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
+remaining_open_questions:
+- Relation to disaster-recovery docs/scripts is unproven identity.
+relations_proven: []
+contradictions: []
+census_bound_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+adjudicate_frozen_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+evaluate_frozen_sha: 0e6cbb860f716d527873d97556d0968df4a197bf
+understand_frozen_sha: a70bed0dc1586bedb58642fe7f6c6fef760b2478

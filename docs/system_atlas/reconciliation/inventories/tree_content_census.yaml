@@ -1,0 +1,1416 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V2
+dedup_rule: exact_git_object_or_tree_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+method: git diff-tree -r --diff-filter=A vs origin/main tree; exact tree SHA dedup
+unique_trees_walked: 714
+trees_with_relevant_adds_vs_origin_main: 193
+unique_added_relevant_path_count: 970
+added_path_family_count: 347
+added_src_path_count: 77
+added_path_families:
+  docs/product/evidence: 445
+  evidence/market_dashboard_reset/pr_a: 44
+  docs/webui/observability: 30
+  archive/full_files_stand_02.12.2025/peak_trade_export: 19
+  templates/peak_trade_dashboard/partials: 17
+  src/webui/market_visual_operator_surface_v1: 10
+  docs/ops/evidence: 9
+  src/infra/health: 9
+  docs/ops/runbooks: 8
+  src/ops/master_v2_minimal_selector_v1: 8
+  archive/PeakTradeRepo/src: 6
+  src/infra/resilience: 5
+  archive/PeakTradeRepo/docs: 4
+  docs/product/matrices: 4
+  docs/system_atlas/reconciliation: 4
+  src/infra/backup: 4
+  src/infra/monitoring: 4
+  docs/webui/fixtures: 3
+  src/webui/market_tape_readmodel_v0: 3
+  src/webui/market_depth_readmodel_v0: 2
+  src/webui/market_futures_ohlcv_readmodel_v0: 2
+  src/webui/market_ranking_funnel_readmodel_v0: 2
+  tests/fixtures/market_depth_readmodel_v0: 2
+  tests/fixtures/market_ranking_funnel_readmodel_v0: 2
+  tests/fixtures/market_tape_readmodel_v0: 2
+  archive/PeakTradeRepo/.gitignore: 1
+  archive/PeakTradeRepo/CONTRIBUTING.md: 1
+  archive/PeakTradeRepo/README.md: 1
+  archive/PeakTradeRepo/pyproject.toml: 1
+  archive/PeakTradeRepo/scripts: 1
+  archive/PeakTradeRepo/tests: 1
+  archive/README.md: 1
+  archive/full_files_stand_02.12.2025/INSTALLATION.txt: 1
+  archive/legacy_docs/README.before_phase58.md: 1
+  archive/legacy_scripts/run_regime_experiments.sh: 1
+  config/ops/pre_economic_zero_order_wallclock_arming_lease_template_v1.json: 1
+  config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1.json: 1
+  config/research/step29m_bollinger_bands_v2_research_scope_v0.json: 1
+  config/research/step29m_momentum_1h_v2_research_scope_v0.json: 1
+  config/research/step29m_trend_following_v2_research_scope_v0.json: 1
+  docs/00_overview/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md: 1
+  docs/00_overview/PEAK_TRADE_OVERVIEW.md: 1
+  docs/00_overview/PEAK_TRADE_STATUS_OVERVIEW.md: 1
+  docs/00_overview/Peak_Trade_Roadmap.md: 1
+  docs/00_overview/Peak_Trade_Status_2025-12-31.md: 1
+  docs/00_overview/Peak_Trade_WORKFLOW_NOTES.md: 1
+  docs/10_architecture/ARCHITECTURE.md: 1
+  docs/10_architecture/ARCHITECTURE_OVERVIEW.md: 1
+  docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md: 1
+  docs/20_phases/PHASE_16A_EXECUTION_PIPELINE_V2.md: 1
+  docs/20_phases/PHASE_18_STRATEGY_RESEARCH_PLAYGROUND.md: 1
+  docs/20_phases/PHASE_19_REGIME_ANALYSIS_IMPLEMENTATION.md: 1
+  docs/20_phases/PHASE_23_LIVE_TESTNET_BLUEPRINT.md: 1
+  docs/20_phases/PHASE_24_SHADOW_EXECUTION.md: 1
+  docs/20_phases/PHASE_24_SHADOW_EXECUTION_IMPLEMENTATION.md: 1
+  docs/20_phases/PHASE_25_GOVERNANCE_SAFETY_IMPLEMENTATION.md: 1
+  docs/20_phases/PHASE_29_EXPERIMENT_LAYER_AND_PARAMETER_SWEEPS.md: 1
+  docs/20_phases/PHASE_30_REPORTING_AND_VISUALIZATION.md: 1
+  docs/20_phases/PHASE_31_SHADOW_PAPER_FLOW.md: 1
+  docs/20_phases/PHASE_32_SHADOW_PAPER_LOGGING_AND_REPORTING.md: 1
+  docs/20_phases/PHASE_33_LIVE_MONITORING_AND_CLI_DASHBOARDS.md: 1
+  docs/20_phases/PHASE_34_ALERTS_AND_WEB_UI.md: 1
+  docs/20_phases/PHASE_35_TESTNET_EXCHANGE_INTEGRATION.md: 1
+  docs/20_phases/PHASE_36_TEST_SUITE_AND_CONFIG_HYGIENE.md: 1
+  docs/20_phases/PHASE_37_TESTNET_ORCHESTRATION_AND_LIMITS.md: 1
+  docs/20_phases/PHASE_38_EXCHANGE_V0_TESTNET.md: 1
+  docs/20_phases/PHASE_40_STRATEGY_LIBRARY_OVERVIEW.md: 1
+  docs/20_phases/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md: 1
+  docs/20_phases/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md: 1
+  docs/20_phases/PHASE_42_TOPN_PROMOTION.md: 1
+  docs/20_phases/PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md: 1
+  docs/20_phases/PHASE_44_WALKFORWARD_TESTING.md: 1
+  docs/20_phases/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md: 1
+  docs/20_phases/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md: 1
+  docs/20_phases/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md: 1
+  docs/20_phases/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md: 1
+  docs/20_phases/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md: 1
+  docs/20_phases/PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md: 1
+  docs/20_phases/PHASE_51_LIVE_OPS_CLI.md: 1
+  docs/20_phases/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md: 1
+  docs/20_phases/PHASE_72_LIVE_OPERATOR_CONSOLE.md: 1
+  docs/20_phases/PHASE_73_LIVE_DRY_RUN_DRILLS.md: 1
+  docs/20_phases/PHASE_74_LIVE_AUDIT_EXPORT.md: 1
+  docs/20_phases/PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md: 1
+  docs/20_phases/PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md: 1
+  docs/20_phases/PHASE_75_STRATEGY_LIBRARY_V1_1.md: 1
+  docs/20_phases/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md: 1
+  docs/20_phases/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md: 1
+  docs/20_phases/PHASE_77_CI_STRATEGY_SMOKE_TESTS.md: 1
+  docs/20_phases/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md: 1
+  docs/20_phases/PHASE_78_REAL_MARKET_STRATEGY_SMOKES.md: 1
+  docs/20_phases/PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md: 1
+  docs/20_phases/PHASE_79_REAL_MARKET_DATA_QC.md: 1
+  docs/20_phases/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md: 1
+  docs/20_phases/PHASE_80_TIERED_PORTFOLIO_PRESETS.md: 1
+  docs/20_phases/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md: 1
+  docs/20_phases/PHASE_81_LIVE_SESSION_REGISTRY.md: 1
+  docs/20_phases/PHASE_82_LIVE_TRACK_DASHBOARD.md: 1
+  docs/20_phases/PHASE_82_RESEARCH_QA_AND_SCENARIOS.md: 1
+  docs/20_phases/PHASE_83_LIVE_GATING_AND_RISK_POLICIES.md: 1
+  docs/20_phases/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md: 1
+  docs/20_phases/PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md: 1
+  docs/20_phases/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md: 1
+  docs/20_phases/PHASE_84_OPERATOR_DASHBOARD.md: 1
+  docs/20_phases/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md: 1
+  docs/20_phases/PHASE_85_LIVE_BETA_DRILL.md: 1
+  docs/20_phases/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md: 1
+  docs/20_phases/PHASE_86_RESEARCH_V1_FREEZE.md: 1
+  docs/20_phases/PHASE_REGIME_AWARE_PORTFOLIOS.md: 1
+  docs/20_phases/PHASE_REGIME_AWARE_REPORTING.md: 1
+  docs/20_phases/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md: 1
+  docs/20_phases/PHASE_STABILIZATION_TEST_FIXES_IMPLEMENTATION.md: 1
+  docs/20_phases/PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md: 1
+  docs/30_runbooks/LIVE_DEPLOYMENT_PLAYBOOK.md: 1
+  docs/30_runbooks/LIVE_OPERATIONAL_RUNBOOKS.md: 1
+  docs/30_runbooks/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md: 1
+  docs/30_runbooks/RUNBOOKS_AND_INCIDENT_HANDLING.md: 1
+  docs/30_runbooks/STRATEGY_RESEARCH_PLAYBOOK.md: 1
+  docs/40_reference/AUTOMATION_SETUP_REPORT.md: 1
+  docs/40_reference/PSYCHOLOGY_HEATMAP_README.md: 1
+  docs/40_reference/PSYCHOLOGY_HEURISTICS_IMPLEMENTATION.md: 1
+  docs/40_reference/PSYCHOLOGY_HEURISTICS_README.md: 1
+  docs/40_reference/README_REGISTRY.md: 1
+  docs/99_archive/PEAK_TRADE_OVERVIEW_PHASES_1_17.md: 1
+  docs/99_archive/PEAK_TRADE_OVERVIEW_PHASES_1_40.md: 1
+  docs/CHANGELOG_LEARNING_PROMOTION_LOOP.md: 1
+  docs/README_REGISTRY.md: 1
+  docs/STRATEGY_VNEXT_CONSOLIDATED.md: 1
+  docs/audits/REPO_AUDIT_2025-12-16_20-03-36.md: 1
+  docs/governance/ai_autonomy: 1
+  docs/observability/LOGGING_FIELDS.md: 1
+  docs/observability/OBS_STACK_RUNBOOK.md: 1
+  docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md: 1
+  docs/observability/STATUS_GRAFANA_PROMETHEUS_AKTUELL.md: 1
+  docs/ops/AUTOMATION_SETUP_REPORT.md: 1
+  docs/ops/CYCLES_3_5_COMPLETION_REPORT.md: 1
+  docs/ops/HOUSEKEEPING_AUDIT_COMPLETION_REPORT.md: 1
+  docs/ops/PR_480_MERGE_LOG.md: 1
+  docs/ops/PR_92_MERGE_LOG.md: 1
+  docs/ops/PSYCHOLOGY_HEATMAP_README.md: 1
+  docs/ops/PSYCHOLOGY_HEURISTICS_IMPLEMENTATION.md: 1
+  docs/ops/PSYCHOLOGY_HEURISTICS_README.md: 1
+  docs/ops/REPO_HOUSEKEEPING_AND_AUDIT.md: 1
+  docs/ops/pr_bodies: 1
+  docs/ops/specs: 1
+  docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md: 1
+  docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md: 1
+  docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md: 1
+  docs/product/RUNBOOK_PATCH_RECOMMENDATIONS.md: 1
+  docs/product/VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md: 1
+  docs/reports/PeakTrade_enhanced.pdf: 1
+  docs/reports/REPORTING_QUICKSTART.md: 1
+  docs/reports/dashboard.html: 1
+  docs/reports/peak_trade_documentation.html: 1
+  docs/reports/peak_trade_documentation.pdf: 1
+  docs/resilience/BACKUP_RECOVERY.md: 1
+  docs/resilience/CIRCUIT_BREAKER.md: 1
+  docs/resilience/HEALTH_CHECKS.md: 1
+  docs/resilience/IMPLEMENTATION_SUMMARY.md: 1
+  docs/resilience/INTEGRATION_EXAMPLES.md: 1
+  docs/resilience/MONITORING.md: 1
+  docs/roadmaps/MIGRATION_NOTES.md: 1
+  docs/roadmaps/REBOOT_PLAN.md: 1
+  docs/roadmaps/REBOOT_ROADMAP_V2.md: 1
+  docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md: 1
+  docs/webui/DASHBOARD_API_CONTRACT_v0.md: 1
+  docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md: 1
+  docs/webui/DASHBOARD_DATA_CONTRACT_v0.md: 1
+  docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md: 1
+  docs/webui/DASHBOARD_OVERVIEW.md: 1
+  docs/webui/DASHBOARD_V0_OVERVIEW.md: 1
+  docs/webui/EXECUTION_WATCH_DASHBOARD.md: 1
+  docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md: 1
+  docs/webui/MARKET_SURFACE_V0.md: 1
+  docs/webui/market_visual_operator_surface_v1.local.example.env: 1
+  scripts/add_issues_to_project.sh: 1
+  scripts/automation/repo_audit.sh: 1
+  scripts/automation/repo_housekeeping_scan.sh: 1
+  scripts/check_claude_code_ready.sh: 1
+  scripts/claude_code_auth_reset.sh: 1
+  scripts/cleanup_repo.sh: 1
+  scripts/demo_resilience_integration.py: 1
+  scripts/finalize_workflow_docs_pr.sh: 1
+  scripts/git_push_and_pr.sh: 1
+  scripts/install_desktop_shortcuts.sh: 1
+  scripts/obs/_grafana_api_json.sh: 1
+  scripts/obs/build_operator_unified_dashboard.py: 1
+  scripts/obs/grafana_dashpack_datasource_fix_v1.py: 1
+  scripts/obs/grafana_dashpack_datasource_verify_v1.sh: 1
+  scripts/obs/grafana_dashpack_ds_var_canonicalize.py: 1
+  scripts/obs/grafana_dashpack_ds_var_lint.py: 1
+  scripts/obs/grafana_dashpack_local_verify_v2.sh: 1
+  scripts/obs/grafana_dashpack_stack_fingerprint_patch.py: 1
+  scripts/obs/grafana_local_down.sh: 1
+  scripts/obs/grafana_local_up.sh: 1
+  scripts/obs/grafana_local_verify.sh: 1
+  scripts/obs/grafana_provisioning_lint.py: 1
+  scripts/obs/grafana_verify_v2.sh: 1
+  scripts/obs/shadow_mvs_local_down.sh: 1
+  scripts/obs/shadow_mvs_local_up.sh: 1
+  scripts/obs/shadow_mvs_local_verify.sh: 1
+  scripts/obs/shadow_mvs_up.sh: 1
+  scripts/observability/generate_wp1c_evidence.py: 1
+  scripts/ops/materialize_market_dashboard_visual_operator_offline_bundles_v1.py: 1
+  scripts/ops/run_master_v2_minimal_selector_v1.py: 1
+  scripts/ops/run_pre_economic_zero_order_wallclock_arming_v1.py: 1
+  scripts/ops/start_market_dashboard_visual_operator_readonly_v1.sh: 1
+  scripts/post_merge_workflow.sh: 1
+  scripts/post_merge_workflow_pr203.sh: 1
+  scripts/pr_audit_scan.sh: 1
+  scripts/quick_pr_merge.sh: 1
+  scripts/render_last_report.sh: 1
+  scripts/run_audit.sh: 1
+  scripts/run_phase3_robustness.sh: 1
+  scripts/run_regime_btcusdt_experiments.sh: 1
+  scripts/run_smoke_tests.sh: 1
+  scripts/slice_from_backup.sh: 1
+  scripts/test_knowledge_api_smoke.sh: 1
+  scripts/update_pr_final_report_post_merge.sh: 1
+  scripts/validate_git_state.sh: 1
+  scripts/webui/market_dashboard_chrome_playwright_harness_v1.py: 1
+  scripts/webui/market_dashboard_landmark_discovery_capture_v1.py: 1
+  scripts/webui/market_dashboard_phase1a_composition_capture_v1.py: 1
+  src/docs/Peak_Trade_WORKFLOW_NOTES.md: 1
+  src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py: 1
+  src/ops/pre_economic_zero_order_economic_evidence_v1.py: 1
+  src/ops/pre_economic_zero_order_wallclock_arming_v1.py: 1
+  src/ops/section_11_13_5_live_canary_minimum_exposure_v1: 1
+  src/research/step29m_candidate_specific_research_scope_implementation_v0.py: 1
+  src/risk/ci_gate_test.py: 1
+  src/risk/position_sizer_old_backup.py: 1
+  src/risk_layer/kill_switch: 1
+  src/risk_layer/kill_switch.py: 1
+  src/risk_layer/liquidity_gate.py: 1
+  src/risk_layer/metrics.py: 1
+  src/risk_layer/micro_metrics.py: 1
+  src/risk_layer/stress_gate.py: 1
+  src/risk_layer/var_gate.py: 1
+  src/strategies/step29m_bollinger_bands_v2.py: 1
+  src/strategies/step29m_momentum_1h_v2.py: 1
+  src/strategies/step29m_trend_following_v2.py: 1
+  src/webui/futures_read_only_market_dashboard_runtime_v0.py: 1
+  src/webui/market_active_paper_run_runtime_v0.py: 1
+  src/webui/market_dashboard_current_state_runtime_v0.py: 1
+  src/webui/market_dashboard_current_state_snapshot_v0.py: 1
+  src/webui/market_depth_api_v0.py: 1
+  src/webui/market_depth_runtime_v0.py: 1
+  src/webui/market_futures_ohlcv_runtime_v0.py: 1
+  src/webui/market_instrument_eligibility_v0.py: 1
+  src/webui/market_ranking_funnel_runtime_v0.py: 1
+  src/webui/market_surface.py: 1
+  templates/peak_trade_dashboard/double_play_market_dashboard_v0.html: 1
+  templates/peak_trade_dashboard/futures_read_only_market_dashboard_v0.html: 1
+  templates/peak_trade_dashboard/market_v0.html: 1
+  tests/core/test_tracking.py: 1
+  tests/core/test_tracking_noop.py: 1
+  tests/data/test_lake_client.py: 1
+  tests/fixtures/futures_read_only_market_dashboard_v0: 1
+  tests/fixtures/market_futures_ohlcv_readmodel_v0: 1
+  tests/infra/__init__.py: 1
+  tests/infra/backup: 1
+  tests/infra/health: 1
+  tests/infra/resilience: 1
+  tests/meta/conftest.py: 1
+  tests/obs/test_ai_live_drilldown_v1.py: 1
+  tests/obs/test_ai_live_ops_pack_v1.py: 1
+  tests/obs/test_ai_live_ux_v2_contract.py: 1
+  tests/obs/test_grafana_dashpack_datasource_fix_v1.py: 1
+  tests/obs/test_grafana_dashpack_integrity_v1.py: 1
+  tests/obs/test_grafana_operator_dashpacks_v1.py: 1
+  tests/obs/test_grafana_operator_navigation_v5.py: 1
+  tests/obs/test_grafana_operator_summary_v2.py: 1
+  tests/obs/test_grafana_provisioning_sanity.py: 1
+  tests/ops/pe38_coherent_fixture_patch_v0.py: 1
+  tests/ops/test_futures_read_only_market_dashboard_contract_static_v0.py: 1
+  tests/ops/test_market_dashboard_readonly_run_projection_spec_v0.py: 1
+  tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py: 1
+  tests/ops/test_market_surface_ranking_funnel_producer_charter_v0.py: 1
+  tests/ops/test_master_v2_minimal_selector_v1.py: 1
+  tests/ops/test_merge_logs_validation.py: 1
+  tests/ops/test_pre_economic_zero_order_wallclock_arming_v1.py: 1
+  tests/ops/test_reconciliation_census_pass_v1.py: 1
+  tests/ops/test_section_11_13_5_z2co_flatten_action_eligibility_contract_v1.py: 1
+  tests/ops/test_section_11_13_5_z2co_persist_v1.py: 1
+  tests/research/test_step29m_candidate_specific_research_scope_implementation_v0.py: 1
+  tests/risk_layer/test_kill_switch.py: 1
+  tests/risk_layer/test_liquidity_gate.py: 1
+  tests/risk_layer/test_metrics.py: 1
+  tests/risk_layer/test_micro_metrics.py: 1
+  tests/risk_layer/test_stress_gate.py: 1
+  tests/risk_layer/test_var_gate.py: 1
+  tests/scripts/test_materialize_market_dashboard_visual_operator_offline_bundles_v1.py: 1
+  tests/test_market_surface_api.py: 1
+  tests/webui/test_double_play_market_dashboard_v0.py: 1
+  tests/webui/test_futures_read_only_market_dashboard_runtime_v0.py: 1
+  tests/webui/test_futures_read_only_market_dashboard_v0.py: 1
+  tests/webui/test_market_active_paper_run_runtime_v0.py: 1
+  tests/webui/test_market_architecture_reset_shell_pr_a_v1.py: 1
+  tests/webui/test_market_canonical_short_url_title_real_values_ui_v1.py: 1
+  tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py: 1
+  tests/webui/test_market_dashboard_composition_first_refactor_v1.py: 1
+  tests/webui/test_market_dashboard_composition_rebaseline_next_slice_evidence_v1.py: 1
+  tests/webui/test_market_dashboard_current_state_sync_v0.py: 1
+  tests/webui/test_market_dashboard_decision_surface_hierarchy_v1.py: 1
+  tests/webui/test_market_dashboard_decision_surface_vertical_compression_v1.py: 1
+  tests/webui/test_market_dashboard_double_play_safety_matrix_v1.py: 1
+  tests/webui/test_market_dashboard_engineering_drawer_deemphasis_v1.py: 1
+  tests/webui/test_market_dashboard_landmark_vertical_rhythm_v1.py: 1
+  tests/webui/test_market_dashboard_matrix_url_state_v1.py: 1
+  tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py: 1
+  tests/webui/test_market_dashboard_observability_surface_hierarchy_v1.py: 1
+  tests/webui/test_market_dashboard_operator_ohlcv_binding_v1.py: 1
+  tests/webui/test_market_dashboard_phase1a_composition_foundation_v1.py: 1
+  tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py: 1
+  tests/webui/test_market_dashboard_phase_1b_design_system_assets_v1.py: 1
+  tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py: 1
+  tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py: 1
+  tests/webui/test_market_dashboard_primary_page_share_dominance_v1.py: 1
+  tests/webui/test_market_dashboard_product_recovery_v1.py: 1
+  tests/webui/test_market_dashboard_readonly_structure_contract_v0.py: 1
+  tests/webui/test_market_dashboard_reductive_composition_v1.py: 1
+  tests/webui/test_market_dashboard_responsive_polish_v1.py: 1
+  tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py: 1
+  tests/webui/test_market_dashboard_topn_navigation_visual_density_v1.py: 1
+  tests/webui/test_market_dashboard_visual_foundation_rework_v1.py: 1
+  tests/webui/test_market_dashboard_visual_system_transparency_v1.py: 1
+  tests/webui/test_market_depth_api_v0.py: 1
+  tests/webui/test_market_depth_chart_ssr_v0.py: 1
+  tests/webui/test_market_depth_readmodel_v0.py: 1
+  tests/webui/test_market_depth_runtime_v0.py: 1
+  tests/webui/test_market_futures_first_root_cause_eradication_v1.py: 1
+  tests/webui/test_market_futures_ohlcv_readmodel_v0.py: 1
+  tests/webui/test_market_futures_ohlcv_runtime_v0.py: 1
+  tests/webui/test_market_futures_only_canonical_completion_v1.py: 1
+  tests/webui/test_market_futures_universe_visual_matrix_v1.py: 1
+  tests/webui/test_market_governed_top20_f5_default_wiring_v1.py: 1
+  tests/webui/test_market_instrument_eligibility_v0.py: 1
+  tests/webui/test_market_ranking_funnel_readmodel_v0.py: 1
+  tests/webui/test_market_ranking_funnel_runtime_v0.py: 1
+  tests/webui/test_market_registry_projection_overlay_v0.py: 1
+  tests/webui/test_market_single_page_consolidation_runtime_v1.py: 1
+  tests/webui/test_market_single_page_consolidation_structure_contract_v1.py: 1
+  tests/webui/test_market_single_page_unified_consolidation_ui_v1.py: 1
+  tests/webui/test_market_tape_readmodel_v0.py: 1
+  tests/webui/test_market_tape_ssr_v0.py: 1
+  tests/webui/test_market_terminal_layout_v1.py: 1
+  tests/webui/test_market_visual_operator_surface_v1.py: 1
+added_src_paths:
+- src/docs/Peak_Trade_WORKFLOW_NOTES.md
+- src/infra/backup/__init__.py
+- src/infra/backup/__main__.py
+- src/infra/backup/backup_manager.py
+- src/infra/backup/recovery.py
+- src/infra/health/__init__.py
+- src/infra/health/checks/__init__.py
+- src/infra/health/checks/backtest_check.py
+- src/infra/health/checks/base_check.py
+- src/infra/health/checks/exchange_check.py
+- src/infra/health/checks/live_check.py
+- src/infra/health/checks/portfolio_check.py
+- src/infra/health/checks/risk_check.py
+- src/infra/health/health_checker.py
+- src/infra/monitoring/__init__.py
+- src/infra/monitoring/alerts.py
+- src/infra/monitoring/logger.py
+- src/infra/monitoring/metrics.py
+- src/infra/resilience/__init__.py
+- src/infra/resilience/circuit_breaker.py
+- src/infra/resilience/fallback.py
+- src/infra/resilience/rate_limiter.py
+- src/infra/resilience/retry.py
+- src/ops/master_v2_minimal_selector_v1/__init__.py
+- src/ops/master_v2_minimal_selector_v1/constants_v1.py
+- src/ops/master_v2_minimal_selector_v1/models_v1.py
+- src/ops/master_v2_minimal_selector_v1/persistence_v1.py
+- src/ops/master_v2_minimal_selector_v1/reason_codes_v1.py
+- src/ops/master_v2_minimal_selector_v1/runtime_binding_adapter_v1.py
+- src/ops/master_v2_minimal_selector_v1/selection_v1.py
+- src/ops/master_v2_minimal_selector_v1/structural_eligibility_v1.py
+- src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+- src/ops/pre_economic_zero_order_economic_evidence_v1.py
+- src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+- src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_action_eligibility_v1.py
+- src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+- src/risk/ci_gate_test.py
+- src/risk/position_sizer_old_backup.py
+- src/risk_layer/kill_switch.py
+- src/risk_layer/kill_switch/adapter.py
+- src/risk_layer/liquidity_gate.py
+- src/risk_layer/metrics.py
+- src/risk_layer/micro_metrics.py
+- src/risk_layer/stress_gate.py
+- src/risk_layer/var_gate.py
+- src/strategies/step29m_bollinger_bands_v2.py
+- src/strategies/step29m_momentum_1h_v2.py
+- src/strategies/step29m_trend_following_v2.py
+- src/webui/futures_read_only_market_dashboard_runtime_v0.py
+- src/webui/market_active_paper_run_runtime_v0.py
+- src/webui/market_dashboard_current_state_runtime_v0.py
+- src/webui/market_dashboard_current_state_snapshot_v0.py
+- src/webui/market_depth_api_v0.py
+- src/webui/market_depth_readmodel_v0/__init__.py
+- src/webui/market_depth_readmodel_v0/builder.py
+- src/webui/market_depth_runtime_v0.py
+- src/webui/market_futures_ohlcv_readmodel_v0/__init__.py
+- src/webui/market_futures_ohlcv_readmodel_v0/builder.py
+- src/webui/market_futures_ohlcv_runtime_v0.py
+- src/webui/market_instrument_eligibility_v0.py
+- src/webui/market_ranking_funnel_readmodel_v0/__init__.py
+- src/webui/market_ranking_funnel_readmodel_v0/builder.py
+- src/webui/market_ranking_funnel_runtime_v0.py
+- src/webui/market_surface.py
+- src/webui/market_tape_readmodel_v0/__init__.py
+- src/webui/market_tape_readmodel_v0/builder.py
+- src/webui/market_tape_readmodel_v0/gate.py
+- src/webui/market_visual_operator_surface_v1/__init__.py
+- src/webui/market_visual_operator_surface_v1/ai_linear_diagnostics_display_v1.py
+- src/webui/market_visual_operator_surface_v1/chart_display_v1.py
+- src/webui/market_visual_operator_surface_v1/contracts.py
+- src/webui/market_visual_operator_surface_v1/decision_funnel_display_v1.py
+- src/webui/market_visual_operator_surface_v1/economic_observability_display_v1.py
+- src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py
+- src/webui/market_visual_operator_surface_v1/operator_header_display_v1.py
+- src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py
+- src/webui/market_visual_operator_surface_v1/runtime_v1.py
+added_relevant_paths:
+- archive/PeakTradeRepo/.gitignore
+- archive/PeakTradeRepo/CONTRIBUTING.md
+- archive/PeakTradeRepo/README.md
+- archive/PeakTradeRepo/docs/Documentation.md
+- archive/PeakTradeRepo/docs/PeakTrade_enhanced.pdf
+- archive/PeakTradeRepo/docs/architecture_diagram.png
+- archive/PeakTradeRepo/docs/dashboard.html
+- archive/PeakTradeRepo/pyproject.toml
+- archive/PeakTradeRepo/scripts/run_backtest.sh
+- archive/PeakTradeRepo/src/backtest/engine.py
+- archive/PeakTradeRepo/src/backtest/results.py
+- archive/PeakTradeRepo/src/backtest/stats.py
+- archive/PeakTradeRepo/src/risk/position_sizer.py
+- archive/PeakTradeRepo/src/strategies/__init__.py
+- archive/PeakTradeRepo/src/strategies/ma_crossover.py
+- archive/PeakTradeRepo/tests/test_basic.py
+- archive/README.md
+- archive/full_files_stand_02.12.2025/INSTALLATION.txt
+- archive/full_files_stand_02.12.2025/peak_trade_export/README.md
+- archive/full_files_stand_02.12.2025/peak_trade_export/demo_basic.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/demo_risk.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/requirements.txt
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/__init__.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/engine.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/backtest/results.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/portfolio/__init__.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/portfolio/manager.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/risk/__init__.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/risk/base.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/risk/guards.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/risk/position_sizing.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/__init__.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/base.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/bollinger_band.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/ma_crossover.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/registry.py
+- archive/full_files_stand_02.12.2025/peak_trade_export/src/strategies/rsi_reversion.py
+- archive/legacy_docs/README.before_phase58.md
+- archive/legacy_scripts/run_regime_experiments.sh
+- config/ops/pre_economic_zero_order_wallclock_arming_lease_template_v1.json
+- config/research/canonical_volatility_numeric_max_age_additional_evidence_session_preregistration_v1.json
+- config/research/step29m_bollinger_bands_v2_research_scope_v0.json
+- config/research/step29m_momentum_1h_v2_research_scope_v0.json
+- config/research/step29m_trend_following_v2_research_scope_v0.json
+- docs/00_overview/PEAK_TRADE_COMPLETE_OVERVIEW_2025-12-07.md
+- docs/00_overview/PEAK_TRADE_OVERVIEW.md
+- docs/00_overview/PEAK_TRADE_STATUS_OVERVIEW.md
+- docs/00_overview/Peak_Trade_Roadmap.md
+- docs/00_overview/Peak_Trade_Status_2025-12-31.md
+- docs/00_overview/Peak_Trade_WORKFLOW_NOTES.md
+- docs/10_architecture/ARCHITECTURE.md
+- docs/10_architecture/ARCHITECTURE_OVERVIEW.md
+- docs/20_phases/PHASE_16A_EXECUTION_PIPELINE.md
+- docs/20_phases/PHASE_16A_EXECUTION_PIPELINE_V2.md
+- docs/20_phases/PHASE_18_STRATEGY_RESEARCH_PLAYGROUND.md
+- docs/20_phases/PHASE_19_REGIME_ANALYSIS_IMPLEMENTATION.md
+- docs/20_phases/PHASE_23_LIVE_TESTNET_BLUEPRINT.md
+- docs/20_phases/PHASE_24_SHADOW_EXECUTION.md
+- docs/20_phases/PHASE_24_SHADOW_EXECUTION_IMPLEMENTATION.md
+- docs/20_phases/PHASE_25_GOVERNANCE_SAFETY_IMPLEMENTATION.md
+- docs/20_phases/PHASE_29_EXPERIMENT_LAYER_AND_PARAMETER_SWEEPS.md
+- docs/20_phases/PHASE_30_REPORTING_AND_VISUALIZATION.md
+- docs/20_phases/PHASE_31_SHADOW_PAPER_FLOW.md
+- docs/20_phases/PHASE_32_SHADOW_PAPER_LOGGING_AND_REPORTING.md
+- docs/20_phases/PHASE_33_LIVE_MONITORING_AND_CLI_DASHBOARDS.md
+- docs/20_phases/PHASE_34_ALERTS_AND_WEB_UI.md
+- docs/20_phases/PHASE_35_TESTNET_EXCHANGE_INTEGRATION.md
+- docs/20_phases/PHASE_36_TEST_SUITE_AND_CONFIG_HYGIENE.md
+- docs/20_phases/PHASE_37_TESTNET_ORCHESTRATION_AND_LIMITS.md
+- docs/20_phases/PHASE_38_EXCHANGE_V0_TESTNET.md
+- docs/20_phases/PHASE_40_STRATEGY_LIBRARY_OVERVIEW.md
+- docs/20_phases/PHASE_41B_STRATEGY_ROBUSTNESS_AND_TIERING.md
+- docs/20_phases/PHASE_41_STRATEGY_SWEEPS_AND_RESEARCH_PLAYGROUND.md
+- docs/20_phases/PHASE_42_TOPN_PROMOTION.md
+- docs/20_phases/PHASE_43_VISUALIZATION_AND_SWEEP_DASHBOARDS.md
+- docs/20_phases/PHASE_44_WALKFORWARD_TESTING.md
+- docs/20_phases/PHASE_45_MONTE_CARLO_ROBUSTNESS_AND_STRESS_TESTS.md
+- docs/20_phases/PHASE_46_STRESS_TESTS_AND_CRASH_SCENARIOS.md
+- docs/20_phases/PHASE_47_PORTFOLIO_ROBUSTNESS_AND_STRESS_TESTING.md
+- docs/20_phases/PHASE_48_LIVE_PORTFOLIO_MONITORING_AND_RISK_BRIDGE.md
+- docs/20_phases/PHASE_49_LIVE_ALERTS_AND_NOTIFICATIONS.md
+- docs/20_phases/PHASE_50_LIVE_ALERT_WEBHOOKS_AND_SLACK.md
+- docs/20_phases/PHASE_51_LIVE_OPS_CLI.md
+- docs/20_phases/PHASE_71_LIVE_EXECUTION_DESIGN_AND_GATING.md
+- docs/20_phases/PHASE_72_LIVE_OPERATOR_CONSOLE.md
+- docs/20_phases/PHASE_73_LIVE_DRY_RUN_DRILLS.md
+- docs/20_phases/PHASE_74_LIVE_AUDIT_EXPORT.md
+- docs/20_phases/PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md
+- docs/20_phases/PHASE_75_R_AND_D_WAVE_V2_EXPERIMENTS.md
+- docs/20_phases/PHASE_75_STRATEGY_LIBRARY_V1_1.md
+- docs/20_phases/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md
+- docs/20_phases/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md
+- docs/20_phases/PHASE_77_CI_STRATEGY_SMOKE_TESTS.md
+- docs/20_phases/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md
+- docs/20_phases/PHASE_78_REAL_MARKET_STRATEGY_SMOKES.md
+- docs/20_phases/PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md
+- docs/20_phases/PHASE_79_REAL_MARKET_DATA_QC.md
+- docs/20_phases/PHASE_80_STRATEGY_TO_EXECUTION_BRIDGE.md
+- docs/20_phases/PHASE_80_TIERED_PORTFOLIO_PRESETS.md
+- docs/20_phases/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md
+- docs/20_phases/PHASE_81_LIVE_SESSION_REGISTRY.md
+- docs/20_phases/PHASE_82_LIVE_TRACK_DASHBOARD.md
+- docs/20_phases/PHASE_82_RESEARCH_QA_AND_SCENARIOS.md
+- docs/20_phases/PHASE_83_LIVE_GATING_AND_RISK_POLICIES.md
+- docs/20_phases/PHASE_83_LIVE_TRACK_OPERATOR_WORKFLOW.md
+- docs/20_phases/PHASE_84_INCIDENT_RUNBOOK_INTEGRATION_V1.md
+- docs/20_phases/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md
+- docs/20_phases/PHASE_84_OPERATOR_DASHBOARD.md
+- docs/20_phases/PHASE_85_ALERT_ESCALATION_AND_ON_CALL_V1.md
+- docs/20_phases/PHASE_85_LIVE_BETA_DRILL.md
+- docs/20_phases/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md
+- docs/20_phases/PHASE_86_RESEARCH_V1_FREEZE.md
+- docs/20_phases/PHASE_REGIME_AWARE_PORTFOLIOS.md
+- docs/20_phases/PHASE_REGIME_AWARE_REPORTING.md
+- docs/20_phases/PHASE_REGIME_AWARE_SWEEPS_AND_PRESETS.md
+- docs/20_phases/PHASE_STABILIZATION_TEST_FIXES_IMPLEMENTATION.md
+- docs/20_phases/PHASE_STRATEGY_EXPANSION_BREAKOUT_VOL_REGIME.md
+- docs/30_runbooks/LIVE_DEPLOYMENT_PLAYBOOK.md
+- docs/30_runbooks/LIVE_OPERATIONAL_RUNBOOKS.md
+- docs/30_runbooks/PLAYBOOK_RESEARCH_TO_LIVE_PORTFOLIOS.md
+- docs/30_runbooks/RUNBOOKS_AND_INCIDENT_HANDLING.md
+- docs/30_runbooks/STRATEGY_RESEARCH_PLAYBOOK.md
+- docs/40_reference/AUTOMATION_SETUP_REPORT.md
+- docs/40_reference/PSYCHOLOGY_HEATMAP_README.md
+- docs/40_reference/PSYCHOLOGY_HEURISTICS_IMPLEMENTATION.md
+- docs/40_reference/PSYCHOLOGY_HEURISTICS_README.md
+- docs/40_reference/README_REGISTRY.md
+- docs/99_archive/PEAK_TRADE_OVERVIEW_PHASES_1_17.md
+- docs/99_archive/PEAK_TRADE_OVERVIEW_PHASES_1_40.md
+- docs/CHANGELOG_LEARNING_PROMOTION_LOOP.md
+- docs/README_REGISTRY.md
+- docs/STRATEGY_VNEXT_CONSOLIDATED.md
+- docs/audits/REPO_AUDIT_2025-12-16_20-03-36.md
+- docs/governance/ai_autonomy/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md
+- docs/observability/LOGGING_FIELDS.md
+- docs/observability/OBS_STACK_RUNBOOK.md
+- docs/observability/Peak_Trade_Observability_Runbook_Grafana_Dashboard_Setup.md
+- docs/observability/STATUS_GRAFANA_PROMETHEUS_AKTUELL.md
+- docs/ops/AUTOMATION_SETUP_REPORT.md
+- docs/ops/CYCLES_3_5_COMPLETION_REPORT.md
+- docs/ops/HOUSEKEEPING_AUDIT_COMPLETION_REPORT.md
+- docs/ops/PR_480_MERGE_LOG.md
+- docs/ops/PR_92_MERGE_LOG.md
+- docs/ops/PSYCHOLOGY_HEATMAP_README.md
+- docs/ops/PSYCHOLOGY_HEURISTICS_IMPLEMENTATION.md
+- docs/ops/PSYCHOLOGY_HEURISTICS_README.md
+- docs/ops/REPO_HOUSEKEEPING_AND_AUDIT.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_2_PASS_20260121T173145Z.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_2_PASS_TEMPLATE.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_20260121T181751Z.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_3_PASS_TEMPLATE.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_4_PASS_20260121T192405Z.md
+- docs/ops/evidence/EV_EXECUTION_WATCH_DASHBOARD_V0_4_PASS_TEMPLATE.md
+- docs/ops/evidence/EV_SHADOW_MVS_DASHBOARD_PASS_20260118T044318Z.md
+- docs/ops/evidence/assets/EV_SHADOW_MVS_DASHBOARD_PASS_20260118T044318Z/prom_api_snapshot.txt
+- docs/ops/evidence/assets/EV_SHADOW_MVS_DASHBOARD_PASS_20260118T044318Z/verify_snapshot.txt
+- docs/ops/pr_bodies/MERGE_BOTH_PRS_CHEATSHEET.md
+- docs/ops/runbooks/OPERATOR_CHECKLIST_OBSERVABILITY_GRAFANA_SHADOW_TO_LIVE.md
+- docs/ops/runbooks/PRE_ECONOMIC_ZERO_ORDER_WALLCLOCK_EXECUTION_ARMING_V1.md
+- docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md
+- docs/ops/runbooks/RUNBOOK_DASHBOARD_WATCH_ONLY_V01B.md
+- docs/ops/runbooks/RUNBOOK_EXECUTION_WATCH_DASHBOARD.md
+- docs/ops/runbooks/RUNBOOK_GRAFANA_DASHBOARD_DATASOURCE_FIX_LOCAL.md
+- docs/ops/runbooks/RUNBOOK_MODE_B_METRICSD_DASHBOARD_METRICS.md
+- docs/ops/runbooks/RUNBOOK_OPERATOR_DASHBOARD_WATCH_ONLY_START_TO_FINISH.md
+- docs/ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md
+- docs/product/Peak_Trade_Market_Dashboard_Architecture_Reset_and_Rebuild_Master_Runbook_v1.0.md
+- docs/product/Peak_Trade_Runbook_v1.3_Composition_Landmark_Master_Runbook.md
+- docs/product/Peak_Trade_Visual_Operator_Dashboard_Product_Runbook_v1.3.md
+- docs/product/RUNBOOK_PATCH_RECOMMENDATIONS.md
+- docs/product/VISUAL_OPERATOR_DASHBOARD_IMPLEMENTATION_PLAN_V1.md
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/MANIFEST.sha256
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/README.md
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/browser_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/composition_geometry.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/before/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/browser_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/composition_geometry.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/composition_review.md
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/geometry_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/hierarchy_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/landmark_order_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/overflow_report.json
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_decision_surface_hierarchy_v1_20260717T013644Z/test_report.txt
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/MANIFEST.sha256
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/README.md
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/browser_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/engineering_drawer_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/engineering_drawer_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/engineering_drawer_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/before_after_review.md
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/browser_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/composition_plan.md
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/deemphasis_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/gates_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/hierarchy_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/landmark_order_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/overflow_report.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/engineering_drawer_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/engineering_drawer_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/engineering_drawer_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_engineering_drawer_deemphasis_v1_20260717T021409Z/test_report.txt
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/MANIFEST.sha256
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/README.md
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/browser_report.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/composition_metrics.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/gap_ranking.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/landmark_geometry.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/next_slice_authorization.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/rebaseline_report.json
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_landmark_post_rhythm_rebaseline_v1_20260717T012920Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/MANIFEST.sha256
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/README.md
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/browser_report.json
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/composition_geometry.json
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/before_after_comparison.md
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/browser_report.json
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/composition_audit.md
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/composition_geometry.json
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/landmark_order.json
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_landmark_vertical_rhythm_v1_20260717T011316Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/MANIFEST.sha256
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/README.md
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/browser_report.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/before_after_review.md
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/browser_report.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/composition_plan.md
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/hierarchy_report.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/landmark_order_report.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/overflow_report.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_observability_surface_hierarchy_v1_20260717T015943Z/test_report.txt
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/MANIFEST.sha256
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/README.md
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/browser_report.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/composition_review.md
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/gap_ranking.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/hierarchy_report.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/landmark_geometry.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/next_slice_authorization.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/overflow_report.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/rhythm_report.json
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_post_hierarchy_rebaseline_v1_20260717T015247Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/MANIFEST.sha256
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/README.md
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/browser_report.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/composition_geometry.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/landmark_order.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/after/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/browser_report.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/composition_geometry.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/landmark_order.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/before_after_comparison.md
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/browser_report.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/composition_diff.md
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/composition_geometry.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/composition_plan.md
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/console_and_network_report.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/landmark_order.json
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_primary_page_share_dominance_v1_20260717T004501Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/MANIFEST.sha256
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/README.md
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/browser_report.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/composition_findings.md
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/composition_geometry.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/console_and_network_report.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/landmark_order.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/next_slice_plan.md
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/repository_snapshot.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/runbook_snapshot_drift_report.json
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_rebaseline_next_slice_v1_20260717T001413Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/MANIFEST.sha256
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/README.md
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/browser_report.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/composition_audit.md
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/composition_geometry.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/console_and_network_report.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/landmark_order.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/next_composition_slices.md
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/repository_snapshot.json
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/composition_rebaseline_post_decision_compression_v1_20260717T004021Z/ssot_consumer_audit.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/MANIFEST.sha256
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/README.md
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/browser_report.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/composition_audit.md
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/composition_geometry.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/console_and_network_report.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/gap_analysis.md
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/landmark_order.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/next_composition_slices.md
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/repository_snapshot.json
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/composition_rebaseline_post_primary_dominance_v1_20260717T010616Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/MANIFEST.sha256
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/README.md
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/browser_report.json
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/composition_geometry.json
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/console_and_network_report.json
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/landmark_order.json
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/full_page_1280x800.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/full_page_1440x900.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/full_page_1728x1117.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/viewport_1280x800.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/viewport_1440x900.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/screenshots/viewport_1728x1117.png
+- docs/product/evidence/decision_surface_vertical_compression_v1_20260717T003002Z/ssot_consumer_audit.json
+- docs/product/evidence/phase_1a_20260716T180101Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/phase_1a_20260716T180101Z/MANIFEST.sha256
+- docs/product/evidence/phase_1a_20260716T180101Z/geometry/phase_1a_bounding_boxes_1440x900.json
+- docs/product/evidence/phase_1a_20260716T180101Z/geometry/phase_1a_dom_geometry_v1.json
+- docs/product/evidence/phase_1a_20260716T180101Z/screenshots/phase_1a_1280x800.png
+- docs/product/evidence/phase_1a_20260716T180101Z/screenshots/phase_1a_1440x900_full.png
+- docs/product/evidence/phase_1a_20260716T180101Z/screenshots/phase_1a_1440x900_header_hero_chart.png
+- docs/product/evidence/phase_1a_20260716T180101Z/screenshots/phase_1a_1728x1000.png
+- docs/product/evidence/phase_1a_20260716T180101Z/screenshots/phase_1a_governance_collapsed.png
+- docs/product/evidence/phase_1b_20260716T181219Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/phase_1b_20260716T181219Z/MANIFEST.sha256
+- docs/product/evidence/phase_1b_20260716T181219Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/phase_1b_20260716T181219Z/browser/browser_test_log.json
+- docs/product/evidence/phase_1b_20260716T181219Z/browser/chrome_dump_dom_1440x900.html
+- docs/product/evidence/phase_1b_20260716T181219Z/browser/console_log.json
+- docs/product/evidence/phase_1b_20260716T181219Z/browser/market_render_path.html
+- docs/product/evidence/phase_1b_20260716T181219Z/browser/market_render_path_governance_expanded.html
+- docs/product/evidence/phase_1b_20260716T181219Z/geometry/phase_1b_bounding_boxes_1440x900.json
+- docs/product/evidence/phase_1b_20260716T181219Z/geometry/phase_1b_dom_geometry_v1.json
+- docs/product/evidence/phase_1b_20260716T181219Z/geometry/phase_1b_overflow_viewports.json
+- docs/product/evidence/phase_1b_20260716T181219Z/network/browser_network_log_1440x900.json
+- docs/product/evidence/phase_1b_20260716T181219Z/proofs/asset_inventory.json
+- docs/product/evidence/phase_1b_20260716T181219Z/proofs/cdn_removal_proof.json
+- docs/product/evidence/phase_1b_20260716T181219Z/proofs/token_ownership_report.json
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_1280x800_full.png
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_1440x900_full.png
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_1440x900_header_hero_chart.png
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_1728x1117_full.png
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_governance_collapsed.png
+- docs/product/evidence/phase_1b_20260716T181219Z/screenshots/phase_1b_governance_expanded.png
+- docs/product/evidence/phase_1b_20260716T181219Z/test_output/focused_tests.txt
+- docs/product/evidence/phase_1b_20260716T181219Z/test_output/timing_proof_pytest.txt
+- docs/product/evidence/phase_2_20260716T184639Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/phase_2_20260716T184639Z/MANIFEST.sha256
+- docs/product/evidence/phase_2_20260716T184639Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/phase_2_20260716T184639Z/PHASE2_CLOSEOUT.md
+- docs/product/evidence/phase_2_20260716T184639Z/browser/browser_evidence_report.json
+- docs/product/evidence/phase_2_20260716T184639Z/browser/console_log.json
+- docs/product/evidence/phase_2_20260716T184639Z/browser/harness_stderr.txt
+- docs/product/evidence/phase_2_20260716T184639Z/browser/harness_stdout.json
+- docs/product/evidence/phase_2_20260716T184639Z/browser/screenshot_index.md
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/DESIGN_REVIEW_PACKAGE.md
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/after_phase_2_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/before_phase_1a_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/design_review_gate.md
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/01_header_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/02_hero_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/03_hero_chart_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/04_above_fold_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/05_full_desktop_1440x900.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/06_narrow_1280x800.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/07_wide_1728x1117.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/gate_chrome/design_gate_browser_report.json
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/narrow_desktop.png
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/phase3_execution_plan.md
+- docs/product/evidence/phase_2_20260716T184639Z/design_review/wide_desktop.png
+- docs/product/evidence/phase_2_20260716T184639Z/geometry/phase_2_bounding_boxes_1440x900.json
+- docs/product/evidence/phase_2_20260716T184639Z/network/browser_network_summary.json
+- docs/product/evidence/phase_2_20260716T184639Z/proofs/screenshot_index.md
+- docs/product/evidence/phase_2_20260716T184639Z/proofs/source_provenance_v1.json
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1280x800_narrow.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1440x900_above_fold.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1440x900_full.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1440x900_header_overview_chart.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_1728x1117_wide.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_critical_system_state.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_decision_narrative.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_fresh_state.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_governance_collapsed.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_selected_instrument_hero.png
+- docs/product/evidence/phase_2_20260716T184639Z/screenshots/phase_2_stale_or_missing_state.png
+- docs/product/evidence/phase_2_20260716T184639Z/test_output/focused_tests.txt
+- docs/product/evidence/phase_3_20260716T191523Z/MANIFEST.sha256
+- docs/product/evidence/phase_3_20260716T191523Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/phase_3_20260716T191523Z/browser/browser_evidence_report.json
+- docs/product/evidence/phase_3_20260716T191523Z/browser/console_log.json
+- docs/product/evidence/phase_3_20260716T191523Z/browser/harness_stderr.txt
+- docs/product/evidence/phase_3_20260716T191523Z/browser/harness_stdout.json
+- docs/product/evidence/phase_3_20260716T191523Z/browser/screenshot_index.md
+- docs/product/evidence/phase_3_20260716T191523Z/browser_verification_report.md
+- docs/product/evidence/phase_3_20260716T191523Z/chart_contract_report.md
+- docs/product/evidence/phase_3_20260716T191523Z/focused_test_report.md
+- docs/product/evidence/phase_3_20260716T191523Z/geometry/phase_3_bounding_boxes_1440x900.json
+- docs/product/evidence/phase_3_20260716T191523Z/implementation_manifest.json
+- docs/product/evidence/phase_3_20260716T191523Z/network/browser_network_summary.json
+- docs/product/evidence/phase_3_20260716T191523Z/phase3_execution_report.md
+- docs/product/evidence/phase_3_20260716T191523Z/proofs/html_contract_snapshot.json
+- docs/product/evidence/phase_3_20260716T191523Z/screenshot_manifest.json
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/above_fold_with_chart.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_default_1440x900.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_full_desktop.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_missing_or_incomplete_state.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_narrow_desktop.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_selected_instrument.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_stale_state.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_tooltip_or_equivalent_detail_state.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_wide_1728x1117.png
+- docs/product/evidence/phase_3_20260716T191523Z/screenshots/chart_with_volume.png
+- docs/product/evidence/phase_3_20260716T191523Z/source_provenance_report.md
+- docs/product/evidence/phase_3_20260716T191523Z/test_output/focused_tests.txt
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/MANIFEST.sha256
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/browser/html_contract.json
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/browser/operator_chrome_report.json
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/implementation_manifest.json
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/phase3_operator_binding_repair_report.md
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/screenshots/operator_1440x900_overview_candles.png
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/screenshots/operator_chart_closeup_candles_volume.png
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/screenshots/operator_chart_meta_row.png
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/screenshots/operator_full_page.png
+- docs/product/evidence/phase_3_operator_binding_repair_20260716T193000Z/test_output/focused_tests.txt
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/MANIFEST.sha256
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/browser_evidence_report.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1024x768_full.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1024x768_viewport.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1280x800_full.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1280x800_viewport.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1440x900_full.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1440x900_viewport.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1728x1117_full.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/browser/screenshots/phase_minus_1_1728x1117_viewport.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/dashboard_component_inventory.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/dashboard_phase_binding_matrix.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/dashboard_requirement_traceability_matrix.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/dashboard_ssot_consumer_audit.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/data_owner_inventory.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/full_page_composition_baseline.md
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/geometry/ux_geometry_baseline.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/browser/browser_evidence_report.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_1280x800_narrow.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_1440x900_above_fold.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_1440x900_full.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_1440x900_header_hero_chart.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_1728x1117_wide.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_critical_system_state.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_decision_narrative.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_primary_chart.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_selected_instrument_hero.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/foundation_stale_or_missing_state.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/harness_crosscheck/screenshots/phase_2_1440x900_above_fold.png
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/implementation_discovery_report.md
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/landmark_owner_binding_matrix.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/layout_defect_inventory.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/network/browser_network_summary.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/pr5250_supersession_assessment.md
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/recommended_runbook_patch_list.md
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/source_binding_matrix.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/test_output/docs_reference_targets.txt
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/test_output/docs_token_policy.txt
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/test_output/harness_stdout.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/ux_geometry_baseline.json
+- docs/product/evidence/phase_minus_1_rebaseline_v1_20260716T210645Z/visual_gap_assessment.md
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/MANIFEST.sha256
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/01_full_viewport_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/02_above_fold_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/02_hero_chart_region_1440.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/03_hero_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/04_chart_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/browser/browser_evidence_report.json
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_1280x800_narrow.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_1440x900_above_fold.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_1440x900_full.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_1440x900_header_hero_chart.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_1728x1117_wide.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_critical_system_state.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_decision_narrative.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_primary_chart.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_selected_instrument_hero.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/foundation_stale_or_missing_state.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser/screenshots/phase_2_1440x900_above_fold.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/after/browser_harness_stdout.json
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/01_full_viewport_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/02_above_fold_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/02_hero_chart_region_1440.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/03_hero_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/04_chart_1440x900.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/browser/browser_evidence_report.json
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_1280x800_narrow.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_1440x900_above_fold.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_1440x900_full.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_1440x900_header_hero_chart.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_1728x1117_wide.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_critical_system_state.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_decision_narrative.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_primary_chart.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_selected_instrument_hero.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/foundation_stale_or_missing_state.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/before/browser/screenshots/phase_2_1440x900_above_fold.png
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/selector_result.txt
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/test_output/docs_reference_targets.txt
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/test_output/docs_token_policy.txt
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/test_output/focused_tests.txt
+- docs/product/evidence/visual_composition_first_refactor_v1_20260716T221000Z/test_output/pr_bounded_full.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/IMPLEMENTATION_MANIFEST.md
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/MANIFEST.sha256
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/MANIFEST_VERIFY.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/browser/browser_evidence_report.json
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/browser/harness_stderr.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/browser/harness_stdout.json
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/browser/uvicorn_stderr.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/browser/uvicorn_stdout.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_1280x800_narrow.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_1440x900_above_fold.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_1440x900_full.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_1440x900_header_hero_chart.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_1728x1117_wide.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_critical_system_state.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_decision_narrative.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_primary_chart.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_selected_instrument_hero.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/foundation_stale_or_missing_state.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/screenshots/phase_2_1440x900_above_fold.png
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/test_output/focused_tests.txt
+- docs/product/evidence/visual_foundation_rework_v1_20260716T214800Z/test_output/pre_pr_gate_batch.txt
+- docs/product/matrices/dashboard_defect_closure_matrix_phase_1a.json
+- docs/product/matrices/dashboard_defect_closure_matrix_phase_1b.json
+- docs/product/matrices/dashboard_phase_binding_matrix.json
+- docs/product/matrices/dashboard_requirement_traceability_matrix.json
+- docs/reports/PeakTrade_enhanced.pdf
+- docs/reports/REPORTING_QUICKSTART.md
+- docs/reports/dashboard.html
+- docs/reports/peak_trade_documentation.html
+- docs/reports/peak_trade_documentation.pdf
+- docs/resilience/BACKUP_RECOVERY.md
+- docs/resilience/CIRCUIT_BREAKER.md
+- docs/resilience/HEALTH_CHECKS.md
+- docs/resilience/IMPLEMENTATION_SUMMARY.md
+- docs/resilience/INTEGRATION_EXAMPLES.md
+- docs/resilience/MONITORING.md
+- docs/roadmaps/MIGRATION_NOTES.md
+- docs/roadmaps/REBOOT_PLAN.md
+- docs/roadmaps/REBOOT_ROADMAP_V2.md
+- docs/runbooks/RUNBOOK_D3_WATCH_ONLY_WEB_API_GRAFANA.md
+- docs/system_atlas/reconciliation/coverage.yaml
+- docs/system_atlas/reconciliation/discovery_candidates.yaml
+- docs/system_atlas/reconciliation/relations.yaml
+- docs/system_atlas/reconciliation/search_surfaces.yaml
+- docs/webui/DASHBOARD_API_CONTRACT_v0.md
+- docs/webui/DASHBOARD_DATA_CONTRACT_OBS_v1.md
+- docs/webui/DASHBOARD_DATA_CONTRACT_v0.md
+- docs/webui/DASHBOARD_GOVERNANCE_NO_LIVE.md
+- docs/webui/DASHBOARD_OVERVIEW.md
+- docs/webui/DASHBOARD_V0_OVERVIEW.md
+- docs/webui/EXECUTION_WATCH_DASHBOARD.md
+- docs/webui/GRAFANA_DASHBOARD_SPEC_PEAK_TRADE_OBS_v1.md
+- docs/webui/MARKET_SURFACE_V0.md
+- docs/webui/fixtures/grafana/equity.json
+- docs/webui/fixtures/grafana/runs.json
+- docs/webui/fixtures/grafana/trades.json
+- docs/webui/market_visual_operator_surface_v1.local.example.env
+- docs/webui/observability/DASHBOARD_WORKFLOW.md
+- docs/webui/observability/DOCKER_COMPOSE_GRAFANA_ONLY.yml
+- docs/webui/observability/DOCKER_COMPOSE_PROMETHEUS_LOCAL.yml
+- docs/webui/observability/DOCKER_COMPOSE_PROM_GRAFANA.yml
+- docs/webui/observability/GRAFANA_DASHBOARD_PEAK_TRADE_WATCH_ONLY.json
+- docs/webui/observability/PROMETHEUS_SCRAPE_EXAMPLE.yml
+- docs/webui/observability/README.md
+- docs/webui/observability/RUNBOOK_Grafana_Dashboard_Setup.md
+- docs/webui/observability/RUNBOOK_Peak_Trade_Grafana_Shadow_to_Live_Cursor_Multi_Agent.md
+- docs/webui/observability/SHADOW_MVS_CONTRACT.md
+- docs/webui/observability/SHADOW_MVS_FAILURE_MAP_PHASE_F.md
+- docs/webui/observability/grafana/dashboards/compare/peaktrade-main-vs-shadow-overview.json
+- docs/webui/observability/grafana/dashboards/compare/peaktrade-metrics-drift.json
+- docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-details.json
+- docs/webui/observability/grafana/dashboards/execution/peaktrade-execution-watch-overview.json
+- docs/webui/observability/grafana/dashboards/http/peaktrade-labeled-local.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-contract-details.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-home.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-summary.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-operator-unified.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-overview.json
+- docs/webui/observability/grafana/dashboards/overview/peaktrade-system-health.json
+- docs/webui/observability/grafana/dashboards/shadow/peaktrade-shadow-pipeline-mvs.json
+- docs/webui/observability/grafana/provisioning/dashboards/dashboards.yaml
+- docs/webui/observability/grafana/provisioning/datasources/legacy_disabled/datasources.prometheus-local.yaml
+- docs/webui/observability/grafana/provisioning/datasources/legacy_disabled/datasources.prometheus-main.yaml
+- docs/webui/observability/grafana/provisioning/datasources/legacy_disabled/datasources.prometheus-shadow.yaml
+- docs/webui/observability/grafana/provisioning/datasources/legacy_disabled/datasources.yaml
+- docs/webui/observability/grafana/provisioning/datasources/multi_prom.yml
+- docs/webui/observability/prometheus/rules/ai_live_alerts_v1.yml
+- evidence/market_dashboard_reset/pr_a/active_processes.txt
+- evidence/market_dashboard_reset/pr_a/baseline/browser_console.txt
+- evidence/market_dashboard_reset/pr_a/baseline/chrome_1512x982.png
+- evidence/market_dashboard_reset/pr_a/baseline/chrome_1920x1080.png
+- evidence/market_dashboard_reset/pr_a/baseline/context_keys.json
+- evidence/market_dashboard_reset/pr_a/baseline/file_inventory.txt
+- evidence/market_dashboard_reset/pr_a/baseline/git_state.txt
+- evidence/market_dashboard_reset/pr_a/baseline/import_inventory.txt
+- evidence/market_dashboard_reset/pr_a/baseline/manifest.sha256
+- evidence/market_dashboard_reset/pr_a/baseline/market_page.html
+- evidence/market_dashboard_reset/pr_a/baseline/route_headers.txt
+- evidence/market_dashboard_reset/pr_a/baseline/route_inventory.txt
+- evidence/market_dashboard_reset/pr_a/baseline/route_status.txt
+- evidence/market_dashboard_reset/pr_a/baseline/template_inventory.txt
+- evidence/market_dashboard_reset/pr_a/baseline/test_results.txt
+- evidence/market_dashboard_reset/pr_a/context_owner_inventory.tsv
+- evidence/market_dashboard_reset/pr_a/delete_or_quarantine_allowlist.txt
+- evidence/market_dashboard_reset/pr_a/dependency_inventory.tsv
+- evidence/market_dashboard_reset/pr_a/file_inventory.tsv
+- evidence/market_dashboard_reset/pr_a/final/assertions.txt
+- evidence/market_dashboard_reset/pr_a/final/browser_console.txt
+- evidence/market_dashboard_reset/pr_a/final/manifest.sha256
+- evidence/market_dashboard_reset/pr_a/final/reset_shell.html
+- evidence/market_dashboard_reset/pr_a/final/reset_shell_1512x982.png
+- evidence/market_dashboard_reset/pr_a/final/reset_shell_1920x1080.png
+- evidence/market_dashboard_reset/pr_a/final/route_status.txt
+- evidence/market_dashboard_reset/pr_a/final_diff_manifest.txt
+- evidence/market_dashboard_reset/pr_a/forbidden_scope_list.txt
+- evidence/market_dashboard_reset/pr_a/git_state.txt
+- evidence/market_dashboard_reset/pr_a/pre_pr_validation.txt
+- evidence/market_dashboard_reset/pr_a/preserve_list.txt
+- evidence/market_dashboard_reset/pr_a/recovery/branch_reconstruction.txt
+- evidence/market_dashboard_reset/pr_a/recovery/post_reset_status.txt
+- evidence/market_dashboard_reset/pr_a/recovery/pre_reset_status.txt
+- evidence/market_dashboard_reset/pr_a/recovery/quarantine_manifest.sha256
+- evidence/market_dashboard_reset/pr_a/recovery/quarantine_path.txt
+- evidence/market_dashboard_reset/pr_a/route_inventory.tsv
+- evidence/market_dashboard_reset/pr_a/ruff_check.txt
+- evidence/market_dashboard_reset/pr_a/ruff_format.txt
+- evidence/market_dashboard_reset/pr_a/selector_result.txt
+- evidence/market_dashboard_reset/pr_a/template_inventory.tsv
+- evidence/market_dashboard_reset/pr_a/validation_commands.txt
+- evidence/market_dashboard_reset/pr_a/validation_focused.txt
+- evidence/market_dashboard_reset/pr_a/validation_narrow.txt
+- scripts/add_issues_to_project.sh
+- scripts/automation/repo_audit.sh
+- scripts/automation/repo_housekeeping_scan.sh
+- scripts/check_claude_code_ready.sh
+- scripts/claude_code_auth_reset.sh
+- scripts/cleanup_repo.sh
+- scripts/demo_resilience_integration.py
+- scripts/finalize_workflow_docs_pr.sh
+- scripts/git_push_and_pr.sh
+- scripts/install_desktop_shortcuts.sh
+- scripts/obs/_grafana_api_json.sh
+- scripts/obs/build_operator_unified_dashboard.py
+- scripts/obs/grafana_dashpack_datasource_fix_v1.py
+- scripts/obs/grafana_dashpack_datasource_verify_v1.sh
+- scripts/obs/grafana_dashpack_ds_var_canonicalize.py
+- scripts/obs/grafana_dashpack_ds_var_lint.py
+- scripts/obs/grafana_dashpack_local_verify_v2.sh
+- scripts/obs/grafana_dashpack_stack_fingerprint_patch.py
+- scripts/obs/grafana_local_down.sh
+- scripts/obs/grafana_local_up.sh
+- scripts/obs/grafana_local_verify.sh
+- scripts/obs/grafana_provisioning_lint.py
+- scripts/obs/grafana_verify_v2.sh
+- scripts/obs/shadow_mvs_local_down.sh
+- scripts/obs/shadow_mvs_local_up.sh
+- scripts/obs/shadow_mvs_local_verify.sh
+- scripts/obs/shadow_mvs_up.sh
+- scripts/observability/generate_wp1c_evidence.py
+- scripts/ops/materialize_market_dashboard_visual_operator_offline_bundles_v1.py
+- scripts/ops/run_master_v2_minimal_selector_v1.py
+- scripts/ops/run_pre_economic_zero_order_wallclock_arming_v1.py
+- scripts/ops/start_market_dashboard_visual_operator_readonly_v1.sh
+- scripts/post_merge_workflow.sh
+- scripts/post_merge_workflow_pr203.sh
+- scripts/pr_audit_scan.sh
+- scripts/quick_pr_merge.sh
+- scripts/render_last_report.sh
+- scripts/run_audit.sh
+- scripts/run_phase3_robustness.sh
+- scripts/run_regime_btcusdt_experiments.sh
+- scripts/run_smoke_tests.sh
+- scripts/slice_from_backup.sh
+- scripts/test_knowledge_api_smoke.sh
+- scripts/update_pr_final_report_post_merge.sh
+- scripts/validate_git_state.sh
+- scripts/webui/market_dashboard_chrome_playwright_harness_v1.py
+- scripts/webui/market_dashboard_landmark_discovery_capture_v1.py
+- scripts/webui/market_dashboard_phase1a_composition_capture_v1.py
+- src/docs/Peak_Trade_WORKFLOW_NOTES.md
+- src/infra/backup/__init__.py
+- src/infra/backup/__main__.py
+- src/infra/backup/backup_manager.py
+- src/infra/backup/recovery.py
+- src/infra/health/__init__.py
+- src/infra/health/checks/__init__.py
+- src/infra/health/checks/backtest_check.py
+- src/infra/health/checks/base_check.py
+- src/infra/health/checks/exchange_check.py
+- src/infra/health/checks/live_check.py
+- src/infra/health/checks/portfolio_check.py
+- src/infra/health/checks/risk_check.py
+- src/infra/health/health_checker.py
+- src/infra/monitoring/__init__.py
+- src/infra/monitoring/alerts.py
+- src/infra/monitoring/logger.py
+- src/infra/monitoring/metrics.py
+- src/infra/resilience/__init__.py
+- src/infra/resilience/circuit_breaker.py
+- src/infra/resilience/fallback.py
+- src/infra/resilience/rate_limiter.py
+- src/infra/resilience/retry.py
+- src/ops/master_v2_minimal_selector_v1/__init__.py
+- src/ops/master_v2_minimal_selector_v1/constants_v1.py
+- src/ops/master_v2_minimal_selector_v1/models_v1.py
+- src/ops/master_v2_minimal_selector_v1/persistence_v1.py
+- src/ops/master_v2_minimal_selector_v1/reason_codes_v1.py
+- src/ops/master_v2_minimal_selector_v1/runtime_binding_adapter_v1.py
+- src/ops/master_v2_minimal_selector_v1/selection_v1.py
+- src/ops/master_v2_minimal_selector_v1/structural_eligibility_v1.py
+- src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
+- src/ops/pre_economic_zero_order_economic_evidence_v1.py
+- src/ops/pre_economic_zero_order_wallclock_arming_v1.py
+- src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_action_eligibility_v1.py
+- src/research/step29m_candidate_specific_research_scope_implementation_v0.py
+- src/risk/ci_gate_test.py
+- src/risk/position_sizer_old_backup.py
+- src/risk_layer/kill_switch.py
+- src/risk_layer/kill_switch/adapter.py
+- src/risk_layer/liquidity_gate.py
+- src/risk_layer/metrics.py
+- src/risk_layer/micro_metrics.py
+- src/risk_layer/stress_gate.py
+- src/risk_layer/var_gate.py
+- src/strategies/step29m_bollinger_bands_v2.py
+- src/strategies/step29m_momentum_1h_v2.py
+- src/strategies/step29m_trend_following_v2.py
+- src/webui/futures_read_only_market_dashboard_runtime_v0.py
+- src/webui/market_active_paper_run_runtime_v0.py
+- src/webui/market_dashboard_current_state_runtime_v0.py
+- src/webui/market_dashboard_current_state_snapshot_v0.py
+- src/webui/market_depth_api_v0.py
+- src/webui/market_depth_readmodel_v0/__init__.py
+- src/webui/market_depth_readmodel_v0/builder.py
+- src/webui/market_depth_runtime_v0.py
+- src/webui/market_futures_ohlcv_readmodel_v0/__init__.py
+- src/webui/market_futures_ohlcv_readmodel_v0/builder.py
+- src/webui/market_futures_ohlcv_runtime_v0.py
+- src/webui/market_instrument_eligibility_v0.py
+- src/webui/market_ranking_funnel_readmodel_v0/__init__.py
+- src/webui/market_ranking_funnel_readmodel_v0/builder.py
+- src/webui/market_ranking_funnel_runtime_v0.py
+- src/webui/market_surface.py
+- src/webui/market_tape_readmodel_v0/__init__.py
+- src/webui/market_tape_readmodel_v0/builder.py
+- src/webui/market_tape_readmodel_v0/gate.py
+- src/webui/market_visual_operator_surface_v1/__init__.py
+- src/webui/market_visual_operator_surface_v1/ai_linear_diagnostics_display_v1.py
+- src/webui/market_visual_operator_surface_v1/chart_display_v1.py
+- src/webui/market_visual_operator_surface_v1/contracts.py
+- src/webui/market_visual_operator_surface_v1/decision_funnel_display_v1.py
+- src/webui/market_visual_operator_surface_v1/economic_observability_display_v1.py
+- src/webui/market_visual_operator_surface_v1/local_offline_binding_v1.py
+- src/webui/market_visual_operator_surface_v1/operator_header_display_v1.py
+- src/webui/market_visual_operator_surface_v1/operator_overview_display_v1.py
+- src/webui/market_visual_operator_surface_v1/runtime_v1.py
+- templates/peak_trade_dashboard/double_play_market_dashboard_v0.html
+- templates/peak_trade_dashboard/futures_read_only_market_dashboard_v0.html
+- templates/peak_trade_dashboard/market_v0.html
+- templates/peak_trade_dashboard/partials/double_play_market_compact_v1.html
+- templates/peak_trade_dashboard/partials/double_play_market_panel_v0.html
+- templates/peak_trade_dashboard/partials/futures_market_compact_v1.html
+- templates/peak_trade_dashboard/partials/futures_read_only_market_panel_v0.html
+- templates/peak_trade_dashboard/partials/market_ai_linear_diagnostics_visual_v1.html
+- templates/peak_trade_dashboard/partials/market_current_state_compact_v1.html
+- templates/peak_trade_dashboard/partials/market_decision_funnel_visual_v1.html
+- templates/peak_trade_dashboard/partials/market_diagnostics_drawer_v1.html
+- templates/peak_trade_dashboard/partials/market_economic_observability_visual_v1.html
+- templates/peak_trade_dashboard/partials/market_governed_top20_primary_v1.html
+- templates/peak_trade_dashboard/partials/market_legacy_operator_panels_v0.html
+- templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html
+- templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html
+- templates/peak_trade_dashboard/partials/market_safety_compact_v1.html
+- templates/peak_trade_dashboard/partials/market_v0_legacy_composition_not_routed_v1.html
+- templates/peak_trade_dashboard/partials/market_visual_operator_header_v1.html
+- templates/peak_trade_dashboard/partials/market_watchlist_compact_v1.html
+- tests/core/test_tracking.py
+- tests/core/test_tracking_noop.py
+- tests/data/test_lake_client.py
+- tests/fixtures/futures_read_only_market_dashboard_v0/complete_minimal/dashboard.json
+- tests/fixtures/market_depth_readmodel_v0/complete_minimal/depth.json
+- tests/fixtures/market_depth_readmodel_v0/malformed_levels/depth.json
+- tests/fixtures/market_futures_ohlcv_readmodel_v0/complete_minimal/futures_ohlcv.json
+- tests/fixtures/market_ranking_funnel_readmodel_v0/complete_minimal/ranking_funnel.json
+- tests/fixtures/market_ranking_funnel_readmodel_v0/top50_minimal/ranking_funnel.json
+- tests/fixtures/market_tape_readmodel_v0/complete_minimal/tape.json
+- tests/fixtures/market_tape_readmodel_v0/malformed_trades/tape.json
+- tests/infra/__init__.py
+- tests/infra/backup/test_backup_manager.py
+- tests/infra/health/test_health_checker.py
+- tests/infra/resilience/test_circuit_breaker.py
+- tests/meta/conftest.py
+- tests/obs/test_ai_live_drilldown_v1.py
+- tests/obs/test_ai_live_ops_pack_v1.py
+- tests/obs/test_ai_live_ux_v2_contract.py
+- tests/obs/test_grafana_dashpack_datasource_fix_v1.py
+- tests/obs/test_grafana_dashpack_integrity_v1.py
+- tests/obs/test_grafana_operator_dashpacks_v1.py
+- tests/obs/test_grafana_operator_navigation_v5.py
+- tests/obs/test_grafana_operator_summary_v2.py
+- tests/obs/test_grafana_provisioning_sanity.py
+- tests/ops/pe38_coherent_fixture_patch_v0.py
+- tests/ops/test_futures_read_only_market_dashboard_contract_static_v0.py
+- tests/ops/test_market_dashboard_readonly_run_projection_spec_v0.py
+- tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py
+- tests/ops/test_market_surface_ranking_funnel_producer_charter_v0.py
+- tests/ops/test_master_v2_minimal_selector_v1.py
+- tests/ops/test_merge_logs_validation.py
+- tests/ops/test_pre_economic_zero_order_wallclock_arming_v1.py
+- tests/ops/test_reconciliation_census_pass_v1.py
+- tests/ops/test_section_11_13_5_z2co_flatten_action_eligibility_contract_v1.py
+- tests/ops/test_section_11_13_5_z2co_persist_v1.py
+- tests/research/test_step29m_candidate_specific_research_scope_implementation_v0.py
+- tests/risk_layer/test_kill_switch.py
+- tests/risk_layer/test_liquidity_gate.py
+- tests/risk_layer/test_metrics.py
+- tests/risk_layer/test_micro_metrics.py
+- tests/risk_layer/test_stress_gate.py
+- tests/risk_layer/test_var_gate.py
+- tests/scripts/test_materialize_market_dashboard_visual_operator_offline_bundles_v1.py
+- tests/test_market_surface_api.py
+- tests/webui/test_double_play_market_dashboard_v0.py
+- tests/webui/test_futures_read_only_market_dashboard_runtime_v0.py
+- tests/webui/test_futures_read_only_market_dashboard_v0.py
+- tests/webui/test_market_active_paper_run_runtime_v0.py
+- tests/webui/test_market_architecture_reset_shell_pr_a_v1.py
+- tests/webui/test_market_canonical_short_url_title_real_values_ui_v1.py
+- tests/webui/test_market_dashboard_browser_policy_chrome_primary_v1.py
+- tests/webui/test_market_dashboard_composition_first_refactor_v1.py
+- tests/webui/test_market_dashboard_composition_rebaseline_next_slice_evidence_v1.py
+- tests/webui/test_market_dashboard_current_state_sync_v0.py
+- tests/webui/test_market_dashboard_decision_surface_hierarchy_v1.py
+- tests/webui/test_market_dashboard_decision_surface_vertical_compression_v1.py
+- tests/webui/test_market_dashboard_double_play_safety_matrix_v1.py
+- tests/webui/test_market_dashboard_engineering_drawer_deemphasis_v1.py
+- tests/webui/test_market_dashboard_landmark_vertical_rhythm_v1.py
+- tests/webui/test_market_dashboard_matrix_url_state_v1.py
+- tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py
+- tests/webui/test_market_dashboard_observability_surface_hierarchy_v1.py
+- tests/webui/test_market_dashboard_operator_ohlcv_binding_v1.py
+- tests/webui/test_market_dashboard_phase1a_composition_foundation_v1.py
+- tests/webui/test_market_dashboard_phase_1a_layout_header_v1.py
+- tests/webui/test_market_dashboard_phase_1b_design_system_assets_v1.py
+- tests/webui/test_market_dashboard_phase_2_operator_overview_v1.py
+- tests/webui/test_market_dashboard_phase_3_chart_polish_v1.py
+- tests/webui/test_market_dashboard_primary_page_share_dominance_v1.py
+- tests/webui/test_market_dashboard_product_recovery_v1.py
+- tests/webui/test_market_dashboard_readonly_structure_contract_v0.py
+- tests/webui/test_market_dashboard_reductive_composition_v1.py
+- tests/webui/test_market_dashboard_responsive_polish_v1.py
+- tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py
+- tests/webui/test_market_dashboard_topn_navigation_visual_density_v1.py
+- tests/webui/test_market_dashboard_visual_foundation_rework_v1.py
+- tests/webui/test_market_dashboard_visual_system_transparency_v1.py
+- tests/webui/test_market_depth_api_v0.py
+- tests/webui/test_market_depth_chart_ssr_v0.py
+- tests/webui/test_market_depth_readmodel_v0.py
+- tests/webui/test_market_depth_runtime_v0.py
+- tests/webui/test_market_futures_first_root_cause_eradication_v1.py
+- tests/webui/test_market_futures_ohlcv_readmodel_v0.py
+- tests/webui/test_market_futures_ohlcv_runtime_v0.py
+- tests/webui/test_market_futures_only_canonical_completion_v1.py
+- tests/webui/test_market_futures_universe_visual_matrix_v1.py
+- tests/webui/test_market_governed_top20_f5_default_wiring_v1.py
+- tests/webui/test_market_instrument_eligibility_v0.py
+- tests/webui/test_market_ranking_funnel_readmodel_v0.py
+- tests/webui/test_market_ranking_funnel_runtime_v0.py
+- tests/webui/test_market_registry_projection_overlay_v0.py
+- tests/webui/test_market_single_page_consolidation_runtime_v1.py
+- tests/webui/test_market_single_page_consolidation_structure_contract_v1.py
+- tests/webui/test_market_single_page_unified_consolidation_ui_v1.py
+- tests/webui/test_market_tape_readmodel_v0.py
+- tests/webui/test_market_tape_ssr_v0.py
+- tests/webui/test_market_terminal_layout_v1.py
+- tests/webui/test_market_visual_operator_surface_v1.py
+exhaustion_proven_for_tip_tree_relevant_delta: true
+remaining_gap: Tip-tree delta is not blob-level history of non-tip commits.

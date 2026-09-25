@@ -1,0 +1,34 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V2
+dedup_rule: exact_git_object_or_tree_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+bound_commit: cf2253aa60ffdbfd77356e33e611cd85ea53b849
+tree_path: archive/PeakTradeRepo
+tree_sha: 8da09657cea6c241bd35dc975f6338a4cd6d0a69
+file_count: 16
+files:
+- .gitignore
+- CONTRIBUTING.md
+- README.md
+- docs/Documentation.md
+- docs/PeakTrade_enhanced.pdf
+- docs/architecture_diagram.png
+- docs/dashboard.html
+- pyproject.toml
+- scripts/run_backtest.sh
+- src/backtest/engine.py
+- src/backtest/results.py
+- src/backtest/stats.py
+- src/risk/position_sizer.py
+- src/strategies/__init__.py
+- src/strategies/ma_crossover.py
+- tests/test_basic.py
+exhaustion_proven_for_inner_archive_file_inventory: true
+remaining_gap: File inventory is complete; inner file contents were not semantically understood.

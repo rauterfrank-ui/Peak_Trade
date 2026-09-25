@@ -1,0 +1,49 @@
+# ATLAS_AUTHORITY=NONE
+schema_version: system_atlas.v1
+note: Post-unshallow reassessment. No wording-conflict normalization.
+items:
+  - id: C-OKX-QUOTE-ULY-001
+    new_evidence_found: true
+    status_changed: false
+    current_adjudication: Cap 2.1 original commit already used uly for BASE only; no historical quote-from-uly parser. GFU instruments fixture contains quoteCcy and uly on the same row; still no quote-from-uly owner.
+    remains_open_because: Owner policy on uly-derived quote vs never-defaulted still OPEN; GFU membership of SUI XPERP unproven
+  - id: C-DP-ORDER-001
+    new_evidence_found: true
+    status_changed: false
+    current_adjudication: Git shows ops.double_play specialists 2026-02-20 before Master V2 2026-04-23; Vollautonomie vs Runbook order still CONTRADICTED
+    remains_open_because: Historical vs current order must not be normalized
+  - id: C-FAMILY-POLYVALENT-001
+    new_evidence_found: false
+    status_changed: false
+    current_adjudication: Distinct usages enumerated. Gate-Familien first git hit is forensic preservation 2026-08-23
+    remains_open_because: Meanings remain incompatible by evidence
+  - id: C-MMR-POLYVALENT-001
+    new_evidence_found: true
+    status_changed: false
+    current_adjudication: Full origin/main history still has no architectural Master-V2 MMR kind
+    remains_open_because: Absence is not a second definition
+  - id: C-OKX-AUDIT-SIGNED-REST-001
+    new_evidence_found: true
+    status_changed: false
+    current_adjudication: Audit git-introduced 2026-07-17 (#5298); HMAC signer 2026-08-08 (#5830)
+    remains_open_because: Historical audit document remains in tree
+  - id: C-VERSION-V2.2-V2.3-001
+    new_evidence_found: false
+    status_changed: false
+    current_adjudication: Display token mismatch preserved
+    remains_open_because: Owner/display-token reconciliation not performed
+  - id: C-CYBER-GATE-PASS-VS-MANIFEST-001
+    new_evidence_found: false
+    status_changed: false
+    current_adjudication: Header PASS vs ratification JSON NOT_PASSED
+    remains_open_because: Which surface is current for gate status is unproven
+  - id: C-CAP23-VS-CANARY-INSTRUMENT-001
+    new_evidence_found: false
+    status_changed: false
+    current_adjudication: Parallel instrument authorities; no Cap 2.3 import on canary
+    remains_open_because: Wiring Cap23 into canary would be a separate owner-authorized change
+  - id: C-FUNCTIONAL-CORE-TOKEN-001
+    new_evidence_found: true
+    status_changed: false
+    current_adjudication: origin/main full-history pickaxe for HAS_FUNCTIONAL_CORE and FUNCTIONAL_CORE is empty
+    remains_open_because: Exact token still absent from canonical text

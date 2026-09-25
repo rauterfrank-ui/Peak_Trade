@@ -1,0 +1,12 @@
+# ATLAS_AUTHORITY=NONE
+classes:
+  - CANONICAL_AUTHORITY
+  - FORENSIC_RAW
+  - ADJUDICATED
+  - HISTORICAL
+  - NAVIGATION_ONLY
+  - INTERPRETATION
+  - HYPOTHESIS
+  - OPEN
+  - CONTRADICTED
+rule: Exactly one primary epistemic_class per record. OPEN if unproven. CONTRADICTED preserves both sides.

@@ -1,0 +1,59 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: 64aa353073ae7971a966e2f7a1e2a8d3e3c9e6d2
+atlas_authority: NONE
+reconciliation_authority: NONE
+adjudicate_pass_id: INTEGRATE_OR_DISPOSITION_PASS_V1
+identity_fusion_forbidden: true
+disposition_performed: true
+current_system_compared: true
+evaluate_performed: true
+adjudication_attempted: true
+reintegration_performed: false
+runtime_mutation_performed: false
+record_id: RCN-000015
+canonical_record_name: Master V2 minimal selector policy v1
+census_current_presence: CURRENTLY_ABSENT
+evaluate_capability_overlap: CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+identity_status: IDENTITY_UNPROVEN_VERSUS_CAP_2_3
+positive_reason: 'The historical selector path is absent after revert of #6165 via #6166. Historical revert is not disposition.
+  Cap 2.3 single_selected_future_policy_v1 is a later exactly-one selection candidate. EVALUATE class CURRENT_FUNCTION_CANDIDATE_UNPROVEN
+  does not prove successor, replacement, or identity. Semantic relationship remains open.'
+alternatives_rejected:
+- 'CAPABILITY_ALREADY_COVERED by Cap 2.3: replacement/identity not proven'
+- 'REJECT because reverted: revert is not a positive rejection reason'
+- 'ADAPT_AND_REINTEGRATE: unique uncovered selector semantics versus Cap 2.3 are unproven'
+- 'Declaring SAME_AS / successor of single_selected_future_policy_v1: forbidden without proof'
+further_evidence_required: true
+reintegration_candidate: false
+claims:
+- claim_class: ADJUDICATED_CONCLUSION
+  text: 'Master V2 minimal selector policy v1: evidence is not sufficient for a stronger terminal class. INSUFFICIENT_EVIDENCE
+    remains OPEN and is not a rejection.'
+  evidence:
+  - docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+  - docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  used_as_fact: true
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Cap 2.3 policy encodes SINGLE_SELECTED_FUTURE; that is current-system fact, not identity with RCN-000015.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  used_as_fact: true
+- claim_class: HYPOTHESIS
+  text: Cap 2.3 may serve a similar exactly-one purpose; successor relation is not proven.
+  evidence:
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  used_as_fact: false
+evidence_refs:
+- docs/system_atlas/reconciliation/understand/records/RCN-000015.yaml
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000015.yaml
+- src/ops/single_selected_future_policy_v1/policy_v1.py
+contradictions: []
+unresolved_questions:
+- Is single_selected_future_policy_v1 a successor of master_v2_minimal_selector_v1, or a distinct later owner?
+evaluate_compared_sha: 0e6cbb860f716d527873d97556d0968df4a197bf

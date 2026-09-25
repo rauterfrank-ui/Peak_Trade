@@ -1,0 +1,58 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+atlas_authority: NONE
+reconciliation_authority: NONE
+census_pass_id: FIND_COMPLETELY_PASS_V3
+dedup_rule: exact_git_blob_sha_only
+identity_fusion_forbidden: true
+disposition_performed: false
+bound_against_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+expected_origin_main_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+expected_branch: feat/reconsolidation-census-v1
+expected_local_head_sha: ff02a54a546d4ee0a1532306ed921ac71c42f823
+observed_origin_main_sha: 1b52df25b99a36b99eed91943c2a203ce84f1cad
+observed_branch: feat/reconsolidation-census-v1
+observed_local_head_sha: ff02a54a546d4ee0a1532306ed921ac71c42f823
+git_is_shallow: false
+git_is_partial_clone: false
+working_tree_dirty: true
+dirty_porcelain:
+- ' M docs/system_atlas/reconciliation/schema.yaml'
+- ' M scripts/ops/system_atlas_v1/reconciliation_v1.py'
+- ?? scripts/ops/system_atlas_v1/census_blob_v3.py
+extra_local_ref_count: 22
+extra_local_refs:
+- refs/review/pr-5765-head
+- refs/review/pr-5765-owner-review
+- refs/review/pr-5766-owner-review
+- refs/review/pr5614
+- refs/stash
+- refs/tmp/pr-5911-check
+- refs/tmp/pr-5911-mergecheck
+- refs/tmp/pr5233head
+- refs/tmp/pr5235-head
+- refs/tmp/pr5236
+- refs/tmp/pr5401-head
+- refs/tmp/pr5405head
+- refs/tmp/pr5548-corr-review
+- refs/tmp/pr5548-forensic-review
+- refs/tmp/pr5548-post
+- refs/tmp/pr5719
+- refs/tmp/pr5816
+- refs/tmp/pr5833
+- refs/tmp/pr5901-review
+- refs/tmp/pr5968-review
+- refs/tmp/pr6057
+- refs/tmpreview/pr5729
+baseline_timestamp_utc: '2026-08-31T11:10:25Z'
+census_timestamp_role: NAVIGATION_NOT_AUTHORITY
+origin_main_sha_match: true
+branch_match: true
+local_head_match: true
+not_shallow: true
+not_partial_clone: true
+baseline_match: true
+dirty_note: Pre-run working tree may include this pass's enumerator files. Dirty is recorded, not auto-cleaned. Unexplained
+  SHA/branch/shallow drift is fail-closed.

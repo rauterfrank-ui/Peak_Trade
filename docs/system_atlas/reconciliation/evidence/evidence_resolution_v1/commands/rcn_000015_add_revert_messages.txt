@@ -1,0 +1,17 @@
+COMMAND=git show --no-patch 75eee7bdc501ab4b0ec93812675cd074acb9e2ee afbae518b67eb1b789c835e219db37f5b15f308b
+EPISTEMIC_CLASS=FORENSIC_RAW
+
+===== ADD =====
+75eee7bdc501ab4b0ec93812675cd074acb9e2ee
+2026-08-30 14:31:38 +0200
+feat(ops): add Master V2 minimal selector policy V1 (#6165)
+Owner-adjudicated exactly-one PERP_SWAP selector on the OKX EEA census.
+Ranking is ignored as selection authority; no asset exclusion, cadence, or fallback.
+
+OWNER_MERGE_GO=6165
+
+===== REVERT =====
+afbae518b67eb1b789c835e219db37f5b15f308b
+2026-08-30 16:25:04 +0200
+Revert "feat(ops): add Master V2 minimal selector policy V1 (#6165)" (#6166)
+This reverts commit 75eee7bdc501ab4b0ec93812675cd074acb9e2ee.
