@@ -323,6 +323,7 @@ def _t2_from_s7(
                 **s7_base,
                 "finalized_closes": closes,
                 "last_finalized_event_ts_unix": event_ts,
+                "observed_unix": event_ts + 1.0,
             },
         )
         if len(composed) != 1:
@@ -357,6 +358,22 @@ def _t2_from_s7(
             getattr(getattr(replay, "evidence", None), "decision_outcome", "") or ""
         )
         if decision_class == DECISION_ENTER:
+            if str(live_29p.status or "") != STATUS_PASS:
+                result = SimpleNamespace(
+                    runtime_cycle_count="1",
+                    decision_result="OBSERVE_HOLD",
+                    decision_execution_eligible=_FALSE,
+                    master_v2_decision=master_decision or "enter",
+                    venue_plan_status="DENY",
+                    final_envelope_id="",
+                    final_envelope_digest="",
+                    permit_created=_FALSE,
+                    post_count="0",
+                    first_real_blocker=str(live_29p.first_blocker or "LIVE_29P_NOT_PASS"),
+                    s7_invocation=invocation,
+                )
+                _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
+                return result
             status, _reasons, plan = try_bind_current_productive_venue_plan_v1(
                 replay=live_29p.replay,
                 bound_instrument=bound,

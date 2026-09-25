@@ -114,9 +114,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_occupanc
     PREVIOUS_C1_VENUE_EVENT_TIME,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
-from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
-    _candles,
-)
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     ObservationTransportMetadataV1,
 )
@@ -214,7 +211,7 @@ def _pair(
 
 def _memory_g17_producer(*, instrument_id: str, venue_native_id: str) -> object:
     venue = "OKX"
-    t0 = 1_700_000_000.0
+    t0 = float(PREVIOUS_C1_VENUE_EVENT_TIME) - 60.0 * 60.0
     producer = CanonicalVolatilityTypedRuntimeProducerScaffoldV1.create(
         venue=venue,
         canonical_instrument_id=instrument_id,
@@ -248,12 +245,24 @@ def _lane_g17(
     }
 
 
+def _mv2_aligned_candles(*, last_ts_ms: int, mark_px: float) -> dict[str, object]:
+    """C1 payload whose closes match S7 mark_px (T2 extracts closes from observation)."""
+    rows: list[list[str]] = []
+    px = f"{float(mark_px):.4f}"
+    for index in range(8):
+        ts = str(last_ts_ms - (7 - index) * 60_000)
+        rows.append([ts, px, px, px, px, "10", "100", "USDT", "1"])
+    return {"code": "0", "data": rows}
+
+
 def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str, object]:
+    mark_px = 100.0
+    event_ts = float(last_ts)
     return {
         "origin_main_sha": ORIGIN_SHA,
         "cycle_id_prefix": cycle_id_prefix,
-        "observed_unix": 1_700_000_000.0,
-        "mark_px": 100.0,
+        "observed_unix": float(PREVIOUS_C1_VENUE_EVENT_TIME) + 1.0,
+        "mark_px": mark_px,
         "index_px": 100.0,
         "bid_px": 99.5,
         "ask_px": 100.5,
@@ -261,10 +270,13 @@ def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str,
         "open_interest": 20.0,
         "funding_rate": 0.0001,
         "finalized_closes": (98.0, 99.0, 100.0),
-        "last_finalized_event_ts_unix": 1_699_999_940.0,
+        "last_finalized_event_ts_unix": float(PREVIOUS_C1_VENUE_EVENT_TIME),
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
-        "candles_payload": _candles(last_ts_ms=int(last_ts * 1000)),
+        "candles_payload": _mv2_aligned_candles(
+            last_ts_ms=int(last_ts * 1000),
+            mark_px=mark_px,
+        ),
     }
 
 

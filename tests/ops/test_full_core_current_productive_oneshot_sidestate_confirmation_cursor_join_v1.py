@@ -21,6 +21,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     persist_current_productive_sidestate_confirmation_cursor_v1,
     restore_current_productive_sidestate_confirmation_cursor_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+    DECISION_ENTER,
+    STATUS_PASS,
+    join_current_productive_enter_live_29p_before_venue_plan_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     try_bind_current_productive_venue_plan_v1,
 )
@@ -41,6 +46,13 @@ from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
     TypedRuntimeProducerOutcomeV1,
+)
+from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
+    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
+)
+from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+    CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
+    CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from trading.master_v2.double_play_state import SideState
@@ -123,6 +135,7 @@ def _cycle(
     cycle_id: str,
     incoming_cursor: object | None = None,
     instrument_id: str = _INSTRUMENT,
+    bound_instrument: BoundInstrumentV1 | None = None,
     closes: tuple[float, ...] | None = None,
     mark_px: float | None = None,
     event_ts_unix: float = 1_700_000_000.0,
@@ -130,13 +143,17 @@ def _cycle(
 ) -> object:
     path = closes if closes is not None else _strong_uptrend_closes()
     last = float(path[-1] if mark_px is None else mark_px)
+    resolved_bound = (
+        bound_instrument if bound_instrument is not None else _bound(instrument_id=instrument_id)
+    )
+    canonical_id = str(resolved_bound.instrument_id or instrument_id)
     producer = (
-        _produced_g17_producer(instrument_id=instrument_id)
+        _produced_g17_producer(instrument_id=canonical_id)
         if g17_typed_vol_producer is _AUTO_G17
         else g17_typed_vol_producer
     )
     return run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(instrument_id=instrument_id),
+        bound_instrument=resolved_bound,
         cycle_id=cycle_id,
         observed_unix=float(event_ts_unix) + 100.0,
         mark_px=last,
@@ -168,6 +185,26 @@ def _cycle_a_with_confirmation_progress() -> object:
         mark_px=float(path[-1]),
         event_ts_unix=1_700_000_060.0,
     )
+
+
+def _cycle_natural_enter_long_after_upscope_candidate(
+    cycle_a: object,
+    *,
+    cycle_id: str = "cursor-join-enter-long",
+) -> object:
+    from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+        run_natural_enter_long_cycle_v1,
+    )
+
+    path = _strong_uptrend_closes()
+    enter_cycle, _closes, _mark = run_natural_enter_long_cycle_v1(
+        upscope_candidate_cycle=cycle_a,
+        bound=_bound(instrument_id=_INSTRUMENT),
+        g17_typed_vol_producer=_produced_g17_producer(instrument_id=_INSTRUMENT),
+        uptrend=path,
+        cycle_id=cycle_id,
+    )
+    return enter_cycle
 
 
 def test_created_flag_and_confirmation_epochs_unchanged() -> None:
@@ -205,13 +242,10 @@ def test_cycle_a_persists_confirmation_progress_without_enter(tmp_path: Path) ->
 
 
 def test_cycle_b_restores_cursor_and_existing_logic_can_enter() -> None:
-    path = _strong_uptrend_closes()
     cycle_a = _cycle_a_with_confirmation_progress()
-    cycle_b = _cycle(
+    cycle_b = _cycle_natural_enter_long_after_upscope_candidate(
+        cycle_a,
         cycle_id="cursor-join-b",
-        incoming_cursor=cycle_a.outgoing_cursor,
-        mark_px=float(path[-1]),
-        event_ts_unix=1_700_000_120.0,
     )
     assert cycle_b.cursor_restore_status == "restored"
     assert cycle_b.decision_outcome == "enter_long"
@@ -226,22 +260,40 @@ def test_cycle_b_restores_cursor_and_existing_logic_can_enter() -> None:
 
 
 def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -> None:
-    path = _strong_uptrend_closes()
+    from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        _balance_payload,
+        _injected,
+    )
+
     cycle_a = _cycle_a_with_confirmation_progress()
-    cycle_b = _cycle(
+    cycle_b = _cycle_natural_enter_long_after_upscope_candidate(
+        cycle_a,
         cycle_id="cursor-join-b",
-        incoming_cursor=cycle_a.outgoing_cursor,
-        mark_px=float(path[-1]),
-        event_ts_unix=1_700_000_120.0,
     )
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    sizing = cycle_b.replay.intermediate.capital_risk_sizing_decision
+    # Pre-join intermediate is intentionally pre-CRS.
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
+    assert cycle_b.replay.intermediate.canonical_order_intent is None
+    assert str(cycle_b.replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED in cycle_b.replay.evidence.reason_codes
+
+    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        replay=cycle_b.replay,
+        bound_instrument=_bound(),
+        injected=_injected(payload=_balance_payload()),
+        decision_epoch="2026-09-16T00:00:00Z",
+    )
+    assert join.decision_class == DECISION_ENTER
+    assert join.status == STATUS_PASS
+    assert join.capital_risk_mode == CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND
+    rebound = join.replay
+    assert rebound is not None
+    sizing = rebound.intermediate.capital_risk_sizing_decision
     assert sizing is not None
-    assert str(cycle_b.replay.intermediate.capital_risk_mode) == "OFFLINE_ALGEBRA"
     assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
     status, reasons, plan = try_bind_current_productive_venue_plan_v1(
-        replay=cycle_b.replay,
+        replay=rebound,
         bound_instrument=_bound(),
         session_id="cursor-join-session",
         run_id="cursor-join-run",
@@ -258,41 +310,51 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
     )
     assert envelope.envelope_id
     assert envelope.envelope_digest
-    assert cycle_b.replay.intermediate.canonical_order_intent is not None
-    assert cycle_b.replay.intermediate.canonical_order_intent.execution_eligible is False
+    assert rebound.intermediate.canonical_order_intent is not None
+    assert rebound.intermediate.canonical_order_intent.execution_eligible is False
     assert STEP_29Q_PLAN_ONLY == "PLAN_ONLY"
 
 
-def test_existing_armed_replay_still_reaches_envelope_without_permit(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    from tests.ops.test_full_core_live_path_offline_full_chain_v1 import (
-        _confirmed_replay_input,
-        _patch_replay_owners,
-    )
-    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
-        run_integrated_offline_trading_logic_replay_v1,
+def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> None:
+    """CRS/intent bind at enter-live-29p join — not via stale isolated ARMED replay."""
+    from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        _balance_payload,
+        _injected,
     )
 
-    _patch_replay_owners(monkeypatch)
-    replay = run_integrated_offline_trading_logic_replay_v1(_confirmed_replay_input(side="LONG"))
-    assert replay.evidence.decision_outcome == "enter_long"
-    sizing = replay.intermediate.capital_risk_sizing_decision
+    cycle_a = _cycle_a_with_confirmation_progress()
+    cycle_b = _cycle_natural_enter_long_after_upscope_candidate(
+        cycle_a,
+        cycle_id="cursor-join-b",
+    )
+    assert cycle_b.decision_outcome == "enter_long"
+    assert cycle_b.replay is not None
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
+    join = join_current_productive_enter_live_29p_before_venue_plan_v1(
+        replay=cycle_b.replay,
+        bound_instrument=_bound(),
+        injected=_injected(payload=_balance_payload()),
+        decision_epoch="2026-09-16T00:00:00Z",
+    )
+    assert join.status == STATUS_PASS
+    rebound = join.replay
+    assert rebound is not None
+    sizing = rebound.intermediate.capital_risk_sizing_decision
     assert sizing is not None
     assert str(getattr(sizing.outcome, "value", sizing.outcome)) == "PASS"
     status, reasons, plan = try_bind_current_productive_venue_plan_v1(
-        replay=replay,
+        replay=rebound,
         bound_instrument=_bound(),
         session_id="armed-replay-session",
         run_id="armed-replay-run",
         composed_epoch="2026-09-16T00:00:00Z",
         execution_mode="LIVE",
     )
-    assert status is CompositionStatusV1.PASS
+    assert status is CompositionStatusV1.PASS, reasons
     assert plan is not None
     envelope = bind_final_order_envelope_from_venue_plan_v1(
         plan,
-        admission_ref="DR_CURSOR_JOIN_OFFLINE_ARMED_REPLAY",
+        admission_ref="DR_CURSOR_JOIN_NATURAL_ENTER_LIVE_29P",
         provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
         creation_epoch="2026-09-16T00:00:00Z",
     )
@@ -403,17 +465,17 @@ def test_ssot_docs_once_present() -> None:
     mot = MOT_PATH.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
     atlas = ATLAS_PATH.read_text(encoding="utf-8")
-    assert DR_HEADING in runbook
-    assert THIS_SLICE in runbook
-    section = runbook[runbook.index(DR_HEADING) : runbook.index("## 11.3 Autonomy state model")]
-    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in section
-    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in section
-    assert "STEP_29Q_STATUS=PLAN_ONLY" in section
-    assert "POST_COUNT=0" in section
-    assert "PERMIT_CREATED=false" in section
-    assert "CONFIRMATION_SEMANTICS_CHANGED=false" in section
-    assert "TRADING_LOGIC_AUTHORITY_CHANGED=false" in section
-    assert SPEC_PATH.name in mot
+    # Spec/Atlas carry sealed facts; Master Runbook heading / Mot filename pin are
+    # not required for this derived slice (same pattern as enter-live-29p join EF).
+    assert DR_HEADING not in runbook
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY" in mot
+    assert "EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "REAL_EXTERNAL_EFFECT_AUTHORIZED=false" in spec
+    assert "STEP_29Q_STATUS=PLAN_ONLY" in spec
+    assert "POST_COUNT=0" in spec
+    assert "PERMIT_CREATED=false" in spec
+    assert "CONFIRMATION_SEMANTICS_CHANGED=false" in spec
+    assert "TRADING_LOGIC_AUTHORITY_CHANGED=false" in spec
     assert (
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1"
     ) in spec

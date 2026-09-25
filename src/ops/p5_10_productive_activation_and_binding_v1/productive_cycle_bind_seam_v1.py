@@ -60,6 +60,9 @@ from src.ops.p5_8b_regime_sidestate_projection_phase_authority_v1.persistence_v1
     atomic_persist_regime_sidestate_projection_lifecycle_v1,
     restore_regime_sidestate_projection_lifecycle_v1,
 )
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
+    incoming_cursor_has_existing_scope_carrier_v1,
+)
 from src.ops.p5_productive_layered_core_authority_seam_v1.seam_v1 import (
     run_p5_layered_core_authority_seam_v1,
 )
@@ -377,9 +380,73 @@ def finalize_productive_layered_core_replay_bind_v1(
     return replace(replay, intermediate=patched_intermediate)
 
 
+def ensure_productive_layered_core_episode_store_v1(
+    *,
+    store_root: Path,
+    bound_instrument: BoundInstrumentV1,
+    mark_price_m_t: float,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+    outgoing_cursor: object | None,
+) -> Tuple[str, ...]:
+    """Bootstrap colocated P5 episode snapshot when scope exists in cursor but store is absent.
+
+    First productive sidestate cycles may run without layered bind (no incoming scope carrier).
+    Once outgoing cursor carries ``existing_scope``, later cycles require a restorable episode
+    under the same store root as the sidestate confirmation cursor owner.
+    """
+    if not PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED:
+        return ()
+    if not incoming_cursor_has_existing_scope_carrier_v1(outgoing_cursor):
+        return ()
+    instrument_id = str(bound_instrument.instrument_id or "").strip()
+    if not instrument_id:
+        return ("layered_core_bootstrap_instrument_missing",)
+    root = Path(store_root)
+    try:
+        restore_episode_from_store_v1(root, expected_instrument_id=instrument_id)
+        return ()
+    except NakedLayeredCoreDurableStateError:
+        pass
+
+    venue_native_id = str(bound_instrument.venue_native_id or "").strip() or instrument_id
+    instrument_key = InstrumentObservationKeyV1(
+        venue=DEFAULT_VENUE,
+        canonical_instrument_id=instrument_id,
+        venue_instrument_id=venue_native_id,
+    )
+    selected = SelectedFutureInputV1(
+        instrument_id=instrument_id,
+        instrument_key=instrument_key,
+    )
+    observations = _observation_candidates_from_closes_v1(
+        instrument_key=instrument_key,
+        closes=finalized_closes,
+        event_ts_unix=float(last_finalized_event_ts_unix),
+    )
+    if len(observations) < 2:
+        return ("layered_core_bootstrap_observations_insufficient",)
+
+    result = run_p5_layered_core_authority_seam_v1(
+        store_root=root,
+        selected=selected,
+        mark_price_m_t=float(mark_price_m_t),
+        mechanical_step=MechanicalStepSpecV1(
+            mark_price_m_t=float(mark_price_m_t),
+            proposed_d_t=float(CANONICAL_UP_DISTANCE),
+        ),
+        restore_existing=False,
+        initialization_observations=observations,
+    )
+    if not result.ok:
+        return tuple(result.failure_codes or ("layered_core_bootstrap_seam_failed",))
+    return ()
+
+
 __all__ = [
     "ProductiveLayeredCoreBindCarryV1",
     "ProductiveLayeredCoreBindSeamError",
+    "ensure_productive_layered_core_episode_store_v1",
     "finalize_productive_layered_core_replay_bind_v1",
     "prepare_productive_layered_core_replay_bind_v1",
 ]
