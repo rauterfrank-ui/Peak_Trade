@@ -1,0 +1,181 @@
+# ============================================================================
+# Peak_Trade .gitignore
+# ============================================================================
+# KRITISCH: API-Keys, Secrets, und sensible Daten NIEMALS committen!
+# ============================================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+ENV/
+
+# Linting / Type-Checking Caches
+.mypy_cache/
+.ruff_cache/
+.tox/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Data & Results (NIEMALS ins Repo!)
+# Nur Root-Level data/ ignorieren, nicht src/data/ (Code-Module)
+/data/
+/results/
+*.csv
+*.parquet
+*.h5
+*.db
+
+# Generated artifacts (local-only)
+/reports/
+/docs/_generated/
+
+# Secrets (KRITISCH!)
+.env
+secrets.toml
+*.key
+*.pem
+*_secret*
+!docs/ops/CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md
+!tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py
+*_key*
+!src/ops/k1_productive_macos_keychain_provisioning_authority_v1/**
+!tests/ops/test_k1_productive_macos_keychain_provisioning_authority_v1.py
+!docs/ops/specs/K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1.md
+
+# Logs
+*.log
+# Tracked Chrome evidence console captures (exact-head manifest contract).
+!evidence/**/console.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+# Ephemeral harness/archive output written by local pytest (never commit)
+tests/.pytest_archive_roots/
+
+# Backups
+*.bak
+*.backup
+*~
+test_runs/
+
+# Local AI / test artefacts
+.claude/
+# Playwright MCP local output (Cursor @playwright/mcp default outputDir)
+.playwright-mcp/
+test_results/
+
+# Live runs & sessions (generierte Session-Daten)
+live_runs/
+
+# Temporary test artifacts (Policy Critic cycles, etc.)
+tmp/
+reports/
+docker/.env
+
+# local artifacts
+.venv*/
+.venv-*/
+mlruns/
+*.old
+
+# backup files
+*.old.*
+
+# --- Stage 1 monitoring artifacts ---
+reports/obs/stage1/*_snapshot.md
+reports/obs/stage1/*trend*.md
+logs/obs/
+logs/launchd/
+venv_pip_check/
+.venv/
+
+# Guard: prevent accidental session reports in repo root
+/*_REPORT.md
+/*_SUMMARY.md
+/PR_X*_*.md
+/STRATEGY_LAYER_VNEXT_*_REPORT.md
+.logs/
+.run/
+.tmp/
+.tmp_*/
+.artifacts/
+
+# Local-only ops scratch (do not commit)
+.ops_local/
+!.ops_local/README.md
+PHASE8E_8F_PR_DESCRIPTION.md
+PHASE8E_8F_PR_GITHUB.md
+.tmp_backtest_artifacts/
+out/
+!out/ops/index_post_merge_closeouts.jsonl
+
+# research artifacts (new listings crawler)
+out/research/new_listings/
+
+# Local-only max-age parameter research execution evidence (execution_id-bound)
+docs/evidence/canonical_volatility_numeric_max_age_parameter_research_execution_v1/
+
+# local scratch (never commit)
+docs/_scratch/
+
+# Regenerable retained forensic transformation dataset blobs
+# (checksummed in transformation_manifest.json; not Git-LFS)
+/forensics/derived/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1/blobs/
+
+# Local Prometheus configs + TSDB (never commit)
+.local/prometheus/data/
+
+# Local verify artifacts (do not commit)
+docs/ops/evidence/assets/EV_GRAFANA_VERIFY_V2_*/
+
+# ops run logs
+reports/ops/*.txt
+
+# local scratch (quarantined untracked)
+.scratch/
+
+# Docs token policy gate (local report artifact)
+docs-token-policy-report.json
+
+# Bounded pilot local secret source (LOCAL_BOUNDED_SECRET_ENV_FILE_CONTRACT)
+.bounded_pilot.env
+.bounded_launch.env
+!scripts/ops/run_bounded_pilot_with_local_secrets.py
+!docs/ops/evidence/LOCAL_BOUNDED_SECRET_LAUNCHER_*.md
+!docs/ops/evidence/LOCAL_SECRET_LAUNCHER_*.md
+!docs/ops/specs/LOCAL_BOUNDED_SECRET_*.md
+!docs/ops/runbooks/LOCAL_BOUNDED_SECRET_*.md
+!tests/ops/test_run_bounded_pilot_with_local_secrets.py
+!docs/ops/reviews/post_local_secret_launcher_run_handoff/
+!docs/ops/reviews/post_local_secret_launcher_run_handoff/*
+
+# Ephemeral local Pre-PR validation artifact (must not be tracked)
+.cursor/PRE_PR_VALIDATION_RESULT.env
+
+# Longer chronological PIT acquisition archives (must stay outside git;
+# belt-and-suspenders if someone mistakenly stages under the repo)
+/datasets/
+/longer_chronological_pit/
+**/longer_chronological_pit/chrono_3y_v1/raw/
+**/longer_chronological_pit/chrono_3y_v1/normalized/
+**/longer_chronological_pit/chrono_3y_v1/quarantine/

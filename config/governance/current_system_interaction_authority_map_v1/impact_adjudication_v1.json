@@ -5,7 +5,6 @@
   "changed_paths": [
     ".cursorignore",
     ".editorconfig",
-    ".gitignore",
     ".nvmrc",
     ".ops_local/README.md",
     "artifacts/.keep",
@@ -26,6 +25,7 @@
     "docs/execution/EXECUTIONPIPELINE_CONTRACT_BETA.md",
     "docs/forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
     "docs/ops/ai/WORKBOOK_EXCHANGE_EXECUTION_A2Z_V1.md",
     "docs/ops/ai/WORKBOOK_EXECUTION_NETWORKED_ONRAMP_A2Z_V1.md",
     "docs/ops/ai/WORKBOOK_EXECUTION_WIRING_A2Z_V1.md",
@@ -303,6 +303,7 @@
     "tests/data/shadow/test_tick_normalizer_list_trade.py",
     "tests/experiments/test_topn_promotion_learnable_context.py",
     "tests/golden/replay_pack_sha256sums_v1.txt",
+    "tests/governance/test_no_secret_prints.py",
     "tests/levelup/test_v0_check_evidence_readiness_cli.py",
     "tests/live/test_live_web_api_v0.py",
     "tests/live/test_prometheus_metrics_endpoint.py",
@@ -482,7 +483,7 @@
     "tests/wave5/test_new_listings_ai_bridge.py",
     "tests/wave6/test_evidence_registry_hook.py"
   ],
-  "changed_paths_sha256": "6b80ea3678485296ab077c3b9410506e151af9c841089c5b2455bbe9d3924320",
+  "changed_paths_sha256": "690e1e352b23152aeb609ba61ec161b6a359931dbd9f68142957a30a816c3742",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -493,5 +494,5 @@
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Frozen-469 STATIC_REMOVAL_PROVEN outer-shell deletion; diff-bound map currency + NAVIGATION_ONLY atlas review for map_of_truth; AUTHORITY_EFFECT=NONE."
+  "reason": "Frozen-469 STATIC_REMOVAL_PROVEN outer-shell deletion; diff-bound map currency + NAVIGATION_ONLY atlas review for map_of_truth; AUTHORITY_EFFECT=NONE. Failure-driven repair: retain CURRENT .gitignore; docs-debt baseline rebaseline after cut; lint format fix."
 }
