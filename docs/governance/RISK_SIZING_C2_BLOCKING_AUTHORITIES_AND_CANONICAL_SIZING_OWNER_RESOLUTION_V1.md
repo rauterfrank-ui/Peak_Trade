@@ -23,7 +23,7 @@ MAP_AUTHORITY=NONE
 
 | Blocker | C2 input verdict | Authority resolved |
 |---------|------------------|-------------------|
-| A Account equity | CONFLICTING | false |
+| A Account equity | PARTIAL (Full-Core owner ratified) | true (Full-Core track only) |
 | B Reference price | UNKNOWN | false |
 | C Instrument quantity metadata | UNRESOLVED | false |
 | D Canonical sizing owner | UNRESOLVED (repo-wide) | false |

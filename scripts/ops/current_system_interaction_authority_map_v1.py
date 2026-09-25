@@ -79,7 +79,6 @@ REQUIRED_UNKNOWN_IDS = (
 )
 REQUIRED_CONFLICTING_IDS = (
     "runbook_freshness_stamp",
-    "account_equity_blocks",
     "b05_vs_singular_risk_owner",
     "zero_authorized_productive_targets",
     "treasury_import_wording",
@@ -100,6 +99,7 @@ REQUIRED_PARTIAL_IDS = (
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
+    "account_equity_blocks",
     "account_equity_mapping_unbound",
     "loops_a_and_b",
     "clean_trading_core_vs_p5",

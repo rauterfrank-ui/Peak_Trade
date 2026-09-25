@@ -59,20 +59,25 @@ def test_domain_final_statuses_match_c2_census_and_no_proven_current() -> None:
     for iid in EXPECTED_INPUT_IDS:
         domain = res["domain_resolutions"][iid]
         census = c2["c2_input_census"][iid]
-        assert domain["initial_status"] == census["status"]
         assert domain["final_status"] == census["status"]
+        if iid == "ACCOUNT_EQUITY_AVAILABLE_CAPITAL":
+            assert domain["initial_status"] == "CONFLICTING"
+            assert domain["final_status"] == "PARTIAL"
+        else:
+            assert domain["initial_status"] == census["status"]
         assert domain["final_status"] != "PROVEN_CURRENT"
         assert domain["c2_authority_binding_implemented"] is False
 
 
-def test_account_equity_conflict_documented_and_companion_unbound() -> None:
+def test_account_equity_partial_owner_ratified_companion_unbound() -> None:
     res = _load(RESOLUTION_JSON)
     eq = res["domain_resolutions"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]
-    assert eq["final_status"] == "CONFLICTING"
-    assert eq["owner"] == "UNRESOLVED"
+    assert eq["final_status"] == "PARTIAL"
+    assert eq["owner"] == "ops.governed_productive_account_equity_authority_producer_v1"
+    assert eq["owner_scope"] == "FULL_CORE_TRACK_ONLY"
     assert eq["handoff"] == "NO_CONVERSION_HANDOFF_ON_COMPANION_PATH"
     assert eq["provenance_status_companion"] == "REQUIRED_INPUT_MISSING"
-    assert len(eq["conflicts_remaining"]) >= 3
+    assert len(eq["conflicts_remaining"]) >= 2
     assert eq["full_core_parallel_source"]["observation_is_not_authority"] is True
     shadow = REPO_ROOT / "src/live/shadow_session.py"
     assert "position_fraction" in shadow.read_text(encoding="utf-8")

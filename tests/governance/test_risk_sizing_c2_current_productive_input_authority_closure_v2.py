@@ -33,7 +33,7 @@ EXPECTED = (
     "INSTRUMENT_QUANTITY_METADATA",
 )
 EXPECTED_VERDICTS = {
-    "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": "CONFLICTING",
+    "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": "PARTIAL",
     "REFERENCE_PRICE": "UNKNOWN",
     "INSTRUMENT_QUANTITY_METADATA": "UNRESOLVED",
 }
@@ -84,7 +84,7 @@ def test_productive_lineage_anchors_exist() -> None:
 def test_account_equity_productive_chain_without_companion_binding() -> None:
     v2 = _load(V2_JSON)
     eq = v2["domain_adjudications"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]
-    assert eq["c2_domain_verdict"] == "CONFLICTING"
+    assert eq["c2_domain_verdict"] == "PARTIAL"
     companion = eq["productive_lineage_matrix"]["companion_c2_consumer"]
     assert companion["equity_input_present"] is False
 

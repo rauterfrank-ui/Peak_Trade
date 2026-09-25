@@ -1,0 +1,73 @@
+{
+  "contract_name": "risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1",
+  "contract_id": "OBL_B05_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_account_equity_authority_owner_full_core_track_ratification_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "acb6e340a0ecafcba2bc9fee579e17732dd61277",
+  "workpackage_id": "BOUNDED_WP_B05_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1",
+  "semantics": "OWNER_GO_RATIFICATION_ONLY_FULL_CORE_TRACK_NO_COMPANION_HANDOFF_NO_PRODUCER_IMPLEMENTATION_CLAIM_NO_REFERENCE_OR_INSTRUMENT_OR_REPO_WIDE_SIZING",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_RATIFY_B05_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "supersedes_b05_pin_for_scope_only": true
+  },
+  "ratification": {
+    "account_equity_authority_owner": "ops.governed_productive_account_equity_authority_producer_v1",
+    "scope_track": "FULL_CORE",
+    "dimension_id": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
+    "unit_class": "CAPITAL_CURRENCY_SCALAR_USDC_SETTLEMENT",
+    "prior_b05_pin_superseded": "UNRESOLVED"
+  },
+  "markers": {
+    "RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "SRC_CHANGED": false,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "ACCOUNT_EQUITY_AUTHORITY_OWNER": "ops.governed_productive_account_equity_authority_producer_v1",
+    "FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_RATIFIED": true,
+    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED": false,
+    "GOVERNED_PRODUCER_CREATED": false,
+    "PRODUCER_IMPLEMENTATION_PRESENT": false,
+    "OBSERVATION_IS_NOT_AUTHORITY": true,
+    "MAPPING_IS_NOT_OWNER_CLOSURE": true,
+    "RATIFICATION_IS_NOT_IMPLEMENTATION": true,
+    "COMPANION_EQUITY_HANDOFF_AUTHORIZED": false,
+    "COMPANION_HANDOFF_STATUS": "NO_CONVERSION_HANDOFF_ON_COMPANION_PATH",
+    "C2_COMPANION_EQUITY_PROVENANCE": "REQUIRED_INPUT_MISSING",
+    "C2_EQUITY_GATE_FULL_CORE_OWNER": "RATIFIED",
+    "C2_EQUITY_GATE_COMPANION": "UNRESOLVED",
+    "C2_EQUITY_DOMAIN_VERDICT": "PARTIAL",
+    "EQUITY_AUTHORITY_RESOLVED_FULL_CORE_TRACK": true,
+    "CONVERSION_READY": false,
+    "CONVERSION_READY_UNCHANGED_REASON": "reference_price and instrument_metadata unresolved; companion C2 inputs not PROVEN_CURRENT; authority chains not closed"
+  },
+  "explicit_non_claims": [
+    "NO_COMPANION_EQUITY_HANDOFF",
+    "NO_FRACTION_TO_UNITS",
+    "NO_REFERENCE_PRICE_OWNER_ASSIGNMENT",
+    "NO_INSTRUMENT_METADATA_OWNER_ASSIGNMENT",
+    "NO_CANONICAL_RISK_SIZING_OWNER_REPO_WIDE",
+    "NO_BYPASS_CONSOLIDATION",
+    "NO_LIVE_OR_EXTERNAL_EFFECT_RELAXATION"
+  ],
+  "binding_surfaces_updated": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+    "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
+    "config/governance/risk_sizing_governed_producer_observation_adapter_contract_v1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+  ],
+  "evidence_anchors": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py",
+    "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
+  ]
+}

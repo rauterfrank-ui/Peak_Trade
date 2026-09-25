@@ -46,7 +46,8 @@ def test_resolution_markers_and_no_runtime_bindings() -> None:
     assert m["RUNTIME_MUTATION_EXECUTED"] is False
     assert m["CONVERSION_EXECUTED"] is False
     assert m["CONVERSION_READY"] is False
-    assert m["EQUITY_AUTHORITY_RESOLVED"] is False
+    assert m["EQUITY_AUTHORITY_RESOLVED"] is True
+    assert m["EQUITY_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
     assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED"] is False
     assert m["INSTRUMENT_METADATA_AUTHORITY_RESOLVED"] is False
     assert m["SIZING_OWNER_RESOLVED"] is False
@@ -58,28 +59,35 @@ def test_c2_verdicts_preserve_6761_6762_start_state() -> None:
     res = _load(RES_JSON)
     v2 = _load(V2_JSON)
     reeval = res["c2_mechanical_reevaluation"]
-    assert reeval["account_equity_final_status"] == "CONFLICTING"
+    assert reeval["account_equity_final_status"] == "PARTIAL"
     assert reeval["reference_price_final_status"] == "UNKNOWN"
     assert reeval["instrument_metadata_final_status"] == "UNRESOLVED"
     assert reeval["domain_proven_current_count"] == 0
     assert reeval["c2_status"] == "UNRESOLVED"
     assert reeval["c2_closure_rule_satisfied"] is False
     for iid, verdict in (
-        ("ACCOUNT_EQUITY_AVAILABLE_CAPITAL", "CONFLICTING"),
+        ("ACCOUNT_EQUITY_AVAILABLE_CAPITAL", "PARTIAL"),
         ("REFERENCE_PRICE", "UNKNOWN"),
         ("INSTRUMENT_QUANTITY_METADATA", "UNRESOLVED"),
     ):
         assert v2["domain_adjudications"][iid]["c2_domain_verdict"] == verdict
 
 
-def test_blocker_a_equity_conflict_and_companion_absence() -> None:
+def test_blocker_a_equity_partial_owner_ratified_companion_absence() -> None:
     res = _load(RES_JSON)
     a = res["blocker_adjudications"]["A_ACCOUNT_EQUITY_AUTHORITY"]
-    assert a["account_equity_final_status"] == "CONFLICTING"
-    assert a["equity_authority_resolved"] is False
+    assert a["account_equity_final_status"] == "PARTIAL"
+    assert a["equity_authority_resolved"] is True
+    assert a["equity_authority_resolved_scope"] == "FULL_CORE_TRACK_ONLY"
+    assert (
+        a["canonical_b05_owner"] == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert a["productive_lineage_census"]["companion_absence"]["equity_handoff"] is False
     auth = _load(AUTH_JSON)
-    assert auth["authority_status"]["account_equity_authority_owner"] == "UNRESOLVED"
+    assert (
+        auth["authority_status"]["account_equity_authority_owner"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
 
 
 def test_blocker_b_reference_unknown_no_canonical_transform() -> None:

@@ -33,9 +33,9 @@ Required input set is proven **complete at three families** via `required_for_co
 
 ## Closure verdict
 
-`C2_STATUS=CLOSED` is **not** satisfied on CURRENT evidence: no required Companion-path input is `PROVEN_CURRENT`; authority owners remain `UNRESOLVED`; `CONVERSION_READY=false` unchanged.
+`C2_STATUS=CLOSED` is **not** satisfied on CURRENT evidence: no required Companion-path input is `PROVEN_CURRENT`; reference and instrument owners remain `UNRESOLVED`; equity census is `PARTIAL` (Full-Core B05 owner ratified; Companion path not closed); `CONVERSION_READY=false` unchanged.
 
-Full-Core account-equity source→semantic mapping pins (Runbook) do **not** close Companion C2 while `ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED` and Companion provenance remains `REQUIRED_INPUT_MISSING`.
+Full-Core account-equity source→semantic mapping and Full-Core B05 owner ratification do **not** close Companion C2 while Companion provenance remains `REQUIRED_INPUT_MISSING` and conversion handoff is absent.
 
 ## Explicit non-claims
 
