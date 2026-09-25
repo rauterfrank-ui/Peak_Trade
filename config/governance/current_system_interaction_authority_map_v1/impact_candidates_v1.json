@@ -294,6 +294,9 @@
         "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
         "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
         "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
-        "tests/governance/test_post_6828_architecture_closure_v1.py"
+        "tests/governance/test_post_6828_architecture_closure_v1.py",
+        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+        "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+        "tests/governance/test_risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.py"
     ]
 }

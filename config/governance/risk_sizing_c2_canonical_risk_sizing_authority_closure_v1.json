@@ -1,0 +1,181 @@
+{
+  "contract_name": "risk_sizing_c2_canonical_risk_sizing_authority_closure_v1",
+  "contract_id": "OBL_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_c2_canonical_risk_sizing_authority_closure_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "3c07f57c54d9e1b590a2c44cc91f1aac37ab7b23",
+  "workpackage_id": "C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "bound_prior_adjudication": {
+    "post_6828_c2_blocking_boundary": "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
+    "whole_core_q0_q1": "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+    "portfolio_treasury_boundary": "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
+    "b05_full_core_chain": "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+    "companion_intent_freeze": "config/governance/risk_sizing_companion_intent_freeze_and_efs_quarantine_v1.json",
+    "owner_inventory": "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+  },
+  "semantics": "AUTHORITY_ROLE_RATIFICATION_AND_REPO_WIDE_CANONICAL_SIZING_OWNER_NO_RUNTIME_MATH_NO_CONVERSION_NO_ACTIVATION",
+  "authority_closure_case": "CASE_B_MECHANICAL_CONTRACT_GAP",
+  "owner_decision_required": false,
+  "implementation_required": true,
+  "verdict": {
+    "final_verdict": "C2_AND_CANONICAL_RISK_SIZING_AUTHORITY_ROLE_CLOSURE_SATISFIED",
+    "c2_verdict": "C2_AUTHORITY_ROLE_RATIFIED",
+    "c2_status": "PARTIAL_CONVERSION_NOT_READY",
+    "c2_closure_rule_satisfied": false,
+    "conversion_ready": false,
+    "canonical_risk_sizing_owner": "src.governance.capital_risk_sizing_v1",
+    "canonical_risk_sizing_owner_count": 1,
+    "note": "Ratifies productive canonical Risk/Sizing owner and Companion C2 authority roles (fraction config vs conversion binding vs execution consumer). Does not implement Fraction→Units math or elevate Companion conversion inputs to PROVEN_CURRENT."
+  },
+  "canonical_risk_sizing": {
+    "owner": "src.governance.capital_risk_sizing_v1",
+    "module_path": "src/governance/capital_risk_sizing_v1.py",
+    "primary_symbols": [
+      "evaluate_capital_risk_sizing_v1",
+      "evaluate_quantity_chain_v1"
+    ],
+    "scope": "productive_authoritative_full_core_mv2_governance_intent_bound",
+    "q1_alias": true,
+    "authority_class": "RISK_SIZING",
+    "does_not_own_trading_decision": true,
+    "does_not_own_selection": true,
+    "does_not_own_account_equity": true,
+    "does_not_own_portfolio_budget": true,
+    "step29p_admissibility_boundary": "capital_risk_admissibility_owner_v1",
+    "step29p_is_not_quantity_owner": true,
+    "parallel_non_canonical_inventory_owners_fate_closed": [
+      "BYPASS_CLASSIC_BACKTEST_DEFAULT",
+      "BYPASS_CORE_POSITION_SIZER",
+      "BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS",
+      "BYPASS_LIVE_SHADOW_POSITION_FRACTION",
+      "BYPASS_OFFLINE_EVAL_SIZING_CONTRACT"
+    ],
+    "duplicate_risk_sizing_authority_count": 0,
+    "duplicate_competing_canonical_owner_count": 0
+  },
+  "companion_c2": {
+    "c2_runtime_class": "COMPANION_SHADOW_LIVE_SUPPORT_PATH",
+    "c2_current_companion_reachable": true,
+    "c2_current_full_core_reachable": false,
+    "c2_current_productive_order_path": "COMPANION_ONLY_NOT_ENTER_LIVE_29P",
+    "c2_current_external_effect_reachable": false,
+    "c2_blocks_current_n1_core": false,
+    "c2_blocks_pre_external": false,
+    "c2_blocks_external_effect": false,
+    "fraction_origin": {
+      "path_ids": [
+        "PATH_SHADOW_COMPANION",
+        "PATH_LIVE_COMPANION"
+      ],
+      "producers": [
+        {
+          "module": "src/live/shadow_session.py",
+          "symbol": "ShadowPaperSession.step_once",
+          "field": "shadow_cfg.position_fraction"
+        },
+        {
+          "module": "src/execution/live_session.py",
+          "symbol": "LiveSessionRunner.step_once",
+          "field": "LiveSessionConfig.position_fraction"
+        }
+      ],
+      "semantics": "FRACTION_DECIMAL_0_1",
+      "mutators": [
+        "CLI/config/profile assignment only"
+      ],
+      "is_risk_sizing_decision": false,
+      "uses_q1_output": false,
+      "uses_equity": false,
+      "uses_price_for_conversion": false,
+      "uses_portfolio_reservation": false
+    },
+    "fraction_authority_owner": "COMPANION_SESSION_POSITION_FRACTION_CONFIG_SURFACE_V1",
+    "fraction_to_units_owner": "COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1",
+    "fraction_to_units_owner_count": 1,
+    "fraction_to_units_runtime_implemented": false,
+    "units_formula": "NOT_IMPLEMENTED_GOVERNED_CONVERSION_ABSENT",
+    "units_output_dimension": "QUANTITY_BASE_UNITS",
+    "pass_through_consumer": {
+      "module": "src/execution/pipeline.py",
+      "symbol": "ExecutionPipeline.signal_to_orders",
+      "documented_input_dimension": "QUANTITY_BASE_UNITS",
+      "observed_pass_through_without_conversion": true,
+      "authority_added_by_consumer": false
+    },
+    "execution_quantity_normalization_owner_full_core": "src.ops.full_core_live_path_composition_root_v1.venue_translation_v1",
+    "execution_quantity_normalization_owner_companion": "NONE_GOVERNED_NORMALIZATION_ABSENT",
+    "execution_normalization_owner_count_productive_full_core": 1,
+    "c2_conversion_input_authorities": "PARTIAL_FULL_CORE_ONLY_NOT_COMPANION_HANDOFF",
+    "c2_input_domains_proven_current_count": 0
+  },
+  "authority_invariants": {
+    "selection_authority_owner_count": 1,
+    "trading_decision_authority_owner_count": 1,
+    "account_equity_authority_owner_count": 1,
+    "canonical_risk_sizing_owner_count": 1,
+    "portfolio_budget_owner_count": 1,
+    "fraction_to_units_owner_count": 1,
+    "execution_normalization_owner_count_full_core": 1,
+    "duplicate_risk_sizing_authority_count": 0,
+    "duplicate_capital_authority_count": 0,
+    "duplicate_trading_authority_count": 0,
+    "execution_risk_authority_leak_count": 0,
+    "companion_full_core_authority_conflict_count": 0
+  },
+  "cross_authority_relations": {
+    "mv2_dp": "SOLE_TRADING_DECISION; CRS consumes decision evidence; C2 does not decide direction",
+    "q0": "ops.governed_productive_account_equity_authority_producer_v1; CRS consumes typed equity on Full-Core; Companion C2 does not source equity",
+    "q1": "src.governance.capital_risk_sizing_v1; sole productive Full-Core quantity algebra owner",
+    "portfolio_reservation": "portfolio_capital_reservation_budget_owner_v1; budget/concurrency only; cannot bypass Q0/Q1",
+    "treasury": "execute_current_productive_treasury_single_source_capital_handoff_v1; observation handoff to Q0 only",
+    "execution": "no trading decision; signal_to_orders is plan consumer on Companion; venue_translation_v1 normalizes Full-Core venue plan quantities"
+  },
+  "risk_sizing_census_summary": {
+    "risk_sizing_candidate_count": 12,
+    "current_productive_risk_sizing_canonical_path_count": 1,
+    "inventory_productive_decision_owner_count": 5,
+    "census_ref": "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "non_current_or_non_competing_classes": [
+      "LEGACY/NON_CURRENT classic backtest defaults (fate GOVERNANCE_EXCLUDE or KEEP_PARALLEL)",
+      "LIMIT/VETO surfaces (RiskLimits, BaseRiskManager)",
+      "TRANSPORT_ONLY companion fraction config",
+      "EXECUTION_NORMALIZATION Full-Core venue_translation_v1 only"
+    ]
+  },
+  "safety_pins": {
+    "live_enabled": true,
+    "live_armed": true,
+    "wire_send_permitted": true,
+    "post_allowed": false,
+    "external_effect_authorized": false,
+    "multi_future_runtime_authorized": false,
+    "max_positions_effective": 1
+  },
+  "markers": {
+    "RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "NO_SIZING_MATH_CHANGE": true,
+    "NO_FRACTION_TO_UNITS_CONVERSION": true,
+    "NO_QUANTITY_MATH_CHANGE": true,
+    "NO_SIGNAL_TO_ORDERS_MUTATION": true,
+    "NO_SHADOW_LIVE_ORDER_GENERATION_MUTATION": true,
+    "CONVERSION_READY": false,
+    "MAP_AUTHORITY": "NONE"
+  },
+  "related_but_separate_contracts": {
+    "risk_sizing_c2_companion_blocking_boundary_ratification_v1": "BLOCKING_BOUNDARY_UNCHANGED_VERDICT_SUPERSEDED_FOR_AUTHORITY_ROLES_BY_THIS_CLOSURE",
+    "risk_sizing_c2_input_authority_closure_v1": "C2_INPUT_GATE_UNCHANGED_NOT_PROVEN_CURRENT",
+    "risk_sizing_companion_intent_freeze_and_efs_quarantine_v1": "INTENT_FROZEN_UNCHANGED",
+    "risk_sizing_authority_decision_contract_freeze_v1": "AMENDED_CANONICAL_RISK_SIZING_OWNER_RATIFIED_VIA_AMENDMENT_V3"
+  }
+}

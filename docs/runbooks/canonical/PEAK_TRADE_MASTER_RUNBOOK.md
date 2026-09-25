@@ -659,6 +659,40 @@ MAX_POSITIONS_EFFECTIVE=1
 ATLAS_AUTHORITY=NONE
 ```
 
+### C2 + Canonical Risk Sizing authority closure
+
+Owner-GO **OWNER_GO_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1** (one-shot;
+**CONSUMED**) ratifies repo-wide canonical Risk/Sizing owner and Companion C2
+authority roles (fraction config vs conversion binding vs execution consumer).
+Machine contract:
+`config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json`.
+Derived spec:
+`docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md`.
+
+No Fraction→Units implementation. No Companion conversion-input PROVEN_CURRENT
+promotion. No activation or external effect.
+
+```text
+OWNER_GO=OWNER_GO_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1
+OWNER_GO_STATUS=CONSUMED
+CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1
+CANONICAL_RISK_SIZING_OWNER_COUNT=1
+Q1_OWNER=src.governance.capital_risk_sizing_v1
+C2_VERDICT=C2_AUTHORITY_ROLE_RATIFIED
+C2_STATUS=PARTIAL_CONVERSION_NOT_READY
+C2_FRACTION_AUTHORITY_OWNER=COMPANION_SESSION_POSITION_FRACTION_CONFIG_SURFACE_V1
+C2_FRACTION_TO_UNITS_OWNER=COMPANION_SHADOW_LIVE_FRACTION_TO_UNITS_INPUT_BINDING_V1
+CONVERSION_READY=false
+DUPLICATE_RISK_SIZING_AUTHORITY_COUNT=0
+C2_BLOCKS_CURRENT_Q0_Q1=false
+C2_BLOCKS_TREASURY=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+MAX_POSITIONS_EFFECTIVE=1
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings

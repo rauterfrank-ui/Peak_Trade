@@ -138,13 +138,13 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "INVENTORY_ONLY=true",
     "CONSOLIDATION_STATUS=NOT_STARTED",
     "RISK_SIZING_CLAIMED_CONSOLIDATED=false",
-    "CANONICAL_RISK_SIZING_OWNER=UNRESOLVED",
-    "SINGULAR_REPO_WIDE_OWNER_REQUIRED=false",
+    "CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1",
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED=true",
     f"MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER={EXPECTED_MV2_OWNER}",
     "CONVERSION_READY=false",
     f"CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE={EXPECTED_MV2_OWNER}",
     f"PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT={EXPECTED_PRODUCTIVE_OWNER_COUNT}",
-    "DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS=true",
+    "DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS=false",
     f"BYPASS_PATH_COUNT={EXPECTED_BYPASS_PATH_COUNT}",
     "RISK_LIMIT_AND_SIZING_SEPARATION=PARTIAL",
     "RISK_SIZING_OWNER_AND_BYPASS_SURFACE_CONTRACT_V1=true",
@@ -290,10 +290,10 @@ def test_ssot_json_parseable_and_pins_inventory_not_consolidation() -> None:
     assert markers["INVENTORY_ONLY"] is True
     assert markers["CONSOLIDATION_STATUS"] == "NOT_STARTED"
     assert markers["RISK_SIZING_CLAIMED_CONSOLIDATED"] is False
-    assert markers["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
+    assert markers["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
     assert markers["CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE"] == EXPECTED_MV2_OWNER
     assert markers["PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT"] == EXPECTED_PRODUCTIVE_OWNER_COUNT
-    assert markers["DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS"] is True
+    assert markers["DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS"] is False
     assert markers["BYPASS_PATH_COUNT"] == EXPECTED_BYPASS_PATH_COUNT
     assert markers["RISK_LIMIT_AND_SIZING_SEPARATION"] == "PARTIAL"
     assert markers["RUNTIME_BRIDGE_ACTIVATED"] is False
@@ -301,7 +301,7 @@ def test_ssot_json_parseable_and_pins_inventory_not_consolidation() -> None:
     assert markers["LIVE_AUTHORIZED"] is False
     assert markers["ORDERS_ENABLED"] is False
     assert markers["ECONOMIC_GATE_REMAINS_FAIL_CLOSED"] is True
-    assert payload["canonical_status"]["repo_wide"] == "UNRESOLVED"
+    assert payload["canonical_status"]["repo_wide"] == "RESOLVED_SCOPED"
     assert payload["next_plan_item"] == "P2_LEGACY_ORDER_INTENT_DECOMMISSION_REQUIRES_OPERATOR_GO"
     assert payload["promotion_owner_status"] == "DONE"
 
@@ -351,7 +351,7 @@ def test_crs_and_adapter_owner_strings_align_without_claiming_repo_wide_canonica
     assert bypass["LEGACY_POSITION_SIZER_CLASSIFICATION"] == "DEPRECATE_LEGACY_PATH"
     assert CANONICAL_CAPITAL_RISK_SIZING_OWNER == EXPECTED_MV2_OWNER
     payload = _load_ssot()
-    assert payload["markers"]["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
+    assert payload["markers"]["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
     assert payload["canonical_status"]["mv2_governance_chain_owner"] == EXPECTED_MV2_OWNER
 
 
@@ -469,13 +469,14 @@ def test_owner_and_bypass_surface_contract_semantics_and_count() -> None:
         "authority_escalation": "FAIL",
     }
     assert contract["global_authority_pins"] == {
-        "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+        "CANONICAL_RISK_SIZING_OWNER": EXPECTED_MV2_OWNER,
+        "CANONICAL_RISK_SIZING_OWNER_SCOPE": "productive_authoritative_full_core_mv2_governance_intent_bound",
         "CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE": EXPECTED_MV2_OWNER,
         "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
         "CONSOLIDATION_STATUS": "NOT_STARTED",
         "DECOMMISSION_STATUS": "NOT_STARTED",
     }
-    assert markers["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
+    assert markers["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
     assert markers["CONSOLIDATION_STATUS"] == "NOT_STARTED"
 
 
@@ -733,7 +734,7 @@ def test_owner_and_bypass_drift_guards_on_mutated_payload() -> None:
         assert owner["capital_authority"] is not True
 
     # global authority owner must remain unresolved (no silent resolution)
-    assert payload["markers"]["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
-    assert contract["global_authority_pins"]["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
+    assert payload["markers"]["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
+    assert contract["global_authority_pins"]["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
     assert contract["global_authority_pins"]["CANONICAL_EXECUTION_AUTHORITY_OWNER"] == "UNRESOLVED"
-    assert payload["canonical_status"]["repo_wide"] == "UNRESOLVED"
+    assert payload["canonical_status"]["repo_wide"] == "RESOLVED_SCOPED"

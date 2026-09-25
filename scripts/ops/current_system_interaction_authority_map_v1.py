@@ -75,7 +75,6 @@ REQUIRED_UNKNOWN_IDS = (
     "test_or_script_only_diff_authority_edge",
 )
 REQUIRED_CONFLICTING_IDS = (
-    "b05_vs_singular_risk_owner",
     "zero_authorized_productive_targets",
     "treasury_import_wording",
     "live_authorized_cap2_vs_full_core",
@@ -118,6 +117,8 @@ REQUIRED_PARTIAL_IDS = (
     "post_6828_universe_ranking_selection_binding_domain_v1",
     "post_6828_c2_companion_blocking_boundary_v1",
     "post_6828_portfolio_treasury_equity_boundary_v1",
+    "b05_vs_singular_risk_owner",
+    "c2_canonical_risk_sizing_authority_closure_v1",
 )
 
 

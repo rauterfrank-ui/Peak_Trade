@@ -227,7 +227,7 @@ def test_historical_sizer_inventory_labels_are_rejected_as_current_owner_graph()
     topology = TOPOLOGY_DOC.read_text(encoding="utf-8")
     json_text = INVENTORY_JSON.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    assert "CANONICAL_RISK_SIZING_OWNER=UNRESOLVED" in inventory
+    assert "CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1" in inventory
     assert "CANONICAL_RISK_SIZING_OWNER=UNRESOLVED" in topology
     assert '"reachability": "REACHABLE_PRODUCTIVE"' in json_text
     assert "src.risk.position_sizer" in json_text
