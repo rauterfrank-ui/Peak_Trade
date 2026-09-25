@@ -54,7 +54,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1
+    modified_by: POST_6809_CURRENT_SYSTEM_AUTHORITY_CLOSURE_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

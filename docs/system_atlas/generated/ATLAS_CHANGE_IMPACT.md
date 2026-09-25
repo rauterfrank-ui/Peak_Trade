@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6809 MAP_ONLY Full-Core interaction authority map completion (slices 1–3): NAVIGATION_ONLY atlas review for map_of_truth index/term; structured CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source updated; map_authority=NONE; no Master Runbook or runtime authority change. ATLAS_AUTHORITY=NONE.
+- PR #6810 POST-6809 CURRENT system authority closure to next real blocker: NAVIGATION_ONLY atlas review for map_of_truth index/term; open-record censuses and C2 conflict navigation in CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source; map_authority=NONE; no Master Runbook or runtime authority change. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=FULL_CORE_INTERACTION_AUTHORITY_MAP_COMPLETION_V1
+- modified_by=POST_6809_CURRENT_SYSTEM_AUTHORITY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

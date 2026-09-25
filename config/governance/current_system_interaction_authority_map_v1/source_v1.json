@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62",
+  "baseline_sha": "9ab34786b13c26f1be5cb9b523975f265014e1cb",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1815,7 +1815,7 @@
     {
       "id": "authority_flow_no_proven_current_instance",
       "epistemic_class": "UNKNOWN",
-      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main: ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
+      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main @ 9ab34786b13c26f1be5cb9b523975f265014e1cb: ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
       "evidence_refs": [
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
         "src/governance/explicit_productive_authorization_v1.py",
@@ -1870,19 +1870,23 @@
     {
       "id": "reference_price_authority_owner",
       "epistemic_class": "UNKNOWN",
-      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER remains UNRESOLVED on the B05 pin.",
+      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER remains UNRESOLVED on the B05 pin. NAVIGATION_INDEX: C2 blocking-authorities resolution keeps REFERENCE_PRICE open; Full-Core enter join consumes reference inputs but does not adjudicate owner (see b05_vs_singular_risk_owner).",
       "evidence_refs": [
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
       ]
     },
     {
       "id": "optimization_surface_consumer_list",
-      "epistemic_class": "UNKNOWN",
-      "statement": "The full consumer list of optimization surface outputs beyond the M9 age-policy consumer is not closed.",
+      "epistemic_class": "PARTIAL",
+      "statement": "NAVIGATION_INDEX census closed on origin/main @ 9ab34786 (static import/reference scan; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization — all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
       "evidence_refs": [
         "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
-        "src/experiments/canonical_optimization_universe_v1.py"
+        "src/experiments/canonical_optimization_universe_v1.py",
+        "src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py",
+        "src/governance/optimization_proposal_governance_ingress_v1.py",
+        "src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py"
       ]
     },
     {
@@ -1914,17 +1918,20 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "CONFLICTING",
-      "statement": "Map source baseline_sha is 05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62 while Runbook BOUND_ORIGIN_MAIN_SHA may still differ (STALE_IF_HEAD_DIFFERS=true). Map rebind does not adjudicate runbook authority.",
+      "statement": "Map source baseline_sha is 9ab34786b13c26f1be5cb9b523975f265014e1cb (post-#6809 map completion) while Runbook BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b on CURRENT origin/main (STALE_IF_HEAD_DIFFERS=true). Map rebind does not adjudicate runbook authority or refresh runbook stamps.",
       "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ]
     },
     {
       "id": "account_equity_blocks",
       "epistemic_class": "CONFLICTING",
-      "statement": "Adjacent account-equity blocks disagree, the owner stays UNRESOLVED, and GOVERNED_PRODUCER_CREATED is false beside an existing package.",
+      "statement": "Adjacent account-equity blocks disagree, the owner stays UNRESOLVED, and GOVERNED_PRODUCER_CREATED is false beside an existing package. NAVIGATION_INDEX: C2 domain resolution ACCOUNT_EQUITY=CONFLICTING; 29P/Treasury wording conflict see treasury_import_wording and account_equity_mapping_unbound; no Owner adjudication in map.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+        "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
         "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
       ]
     },
@@ -1959,19 +1966,21 @@
     {
       "id": "treasury_import_wording",
       "epistemic_class": "CONFLICTING",
-      "statement": "Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule.",
+      "statement": "Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule. NAVIGATION_INDEX: Full-Core 29P enter join wiring vs runbook treasury blocks; ties to ACCOUNT_EQUITY CONFLICTING (account_equity_blocks).",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
       ]
     },
     {
       "id": "live_authorized_cap2_vs_full_core",
       "epistemic_class": "CONFLICTING",
-      "statement": "Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token.",
+      "statement": "Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token. NAVIGATION_INDEX: compare src/ops/governed_futures_universe_producer_v1/constants_v1.py vs src/ops/full_core_live_path_composition_root_v1/constants_v1.py; related spec drift mv2_decision_authority_map_tokens. Map does not merge LIVE semantics.",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "src/ops/governed_futures_universe_producer_v1/constants_v1.py"
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
       ]
     },
     {
@@ -2013,7 +2022,7 @@
     {
       "id": "mv2_proof_baseline_sha",
       "epistemic_class": "PARTIAL",
-      "statement": "MV2 plus double-play proof package pins baseline SHA 46037a171cb7c41d3e1663d92b6db80335a85260 which is neither CURRENT origin/main HEAD 83b86782b2b23822d48091c44d44fe4808e58bcd nor an ancestor of that HEAD.",
+      "statement": "MV2 plus double-play proof package pins baseline SHA 46037a171cb7c41d3e1663d92b6db80335a85260 (src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py BASELINE_ORIGIN_MAIN_SHA) which is neither CURRENT origin/main HEAD 9ab34786b13c26f1be5cb9b523975f265014e1cb nor an ancestor of that HEAD. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
@@ -2063,10 +2072,12 @@
     {
       "id": "learning_capture_hosts_and_ddo_durability",
       "epistemic_class": "PARTIAL",
-      "statement": "Learning capture host list is not closed and DDO host durability is unproven.",
+      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 9ab34786 (src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1 (orchestrator decision_economics_cycle_bridge_v1). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
       "evidence_refs": [
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "tests/learning/test_ddo_a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py"
       ]
     },
     {

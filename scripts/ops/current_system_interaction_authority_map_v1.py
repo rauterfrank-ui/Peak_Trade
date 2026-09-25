@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62"
+BASELINE_SHA = "9ab34786b13c26f1be5cb9b523975f265014e1cb"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -73,7 +73,6 @@ REQUIRED_UNKNOWN_IDS = (
     "survival_suitability_composition_owner",
     "kill_switch_full_core_safety_owner",
     "reference_price_authority_owner",
-    "optimization_surface_consumer_list",
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
     "docs_ops_specs_map_impact",
@@ -98,6 +97,7 @@ REQUIRED_PARTIAL_IDS = (
     "replay_provenance_drop",
     "sizing_to_intent_plan_only",
     "learning_capture_hosts_and_ddo_durability",
+    "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
     "account_equity_mapping_unbound",
