@@ -8593,6 +8593,12 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6816 GAP-TRUE-01 EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1: NAVIGATION_ONLY;
+    # ATLAS_AUTHORITY=NONE; GAP_TRUE_01_VERDICT=CLOSED transport-bound; EXECUTABLE_VENUE_PLAN_BOUND;
+    # ENVELOPE_READINESS=true; PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED=true; PRODUCTIVE_REAL_GET_PROVEN=false;
+    # TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false;
+    # POST_COUNT=0; PERMIT_CREATED=false; owner=current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py|
+    # current_productive_full_core_pre_external_closure_v1.py|current_productive_enter_live_29p_join_v1.py.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # WP1_REAL_GET + WP2_DETERMINISTIC_PRE_EXTERNAL + bilateral natural ENTER fixtures;
     # HOST/ONESHOT CRS bind-point aligned to enter-live-29p join (no second CRS owner);
@@ -8929,7 +8935,13 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py
       - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1.md
+      - evidence/ops/full_core_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1/20260925T063140Z/gap_true_01_verdict.json
+      - evidence/ops/full_core_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1/20260925T063140Z/SUMMARY.json
+      - scripts/ops/run_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py
+      - tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py
       - evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/claims.json
       - evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/SUMMARY.json
       - tests/ops/test_full_core_current_productive_pre_external_closure_v1.py
