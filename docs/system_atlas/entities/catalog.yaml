@@ -8573,6 +8573,13 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6808 G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # FC_02_BLOCKER=TYPED_VOLATILITY_ESTIMATE_MISSING; HOT_PATH=history-mark-price-candles GET
+    # → JOIN-1 extract → JOIN-2 checkpoint → g17_typed_vol_producer → existing MV2 CMC bind;
+    # NO_NEW_VOLATILITY_FORMULA=true; MV2_DP_SEMANTICS_UNCHANGED=true; SELECTION_UNCHANGED=true;
+    # TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false;
+    # POST_COUNT=0; owner=current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py|
+    # current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py.
     # FC_01_PRODUCTIVE_EXECUTE_NETWORK_READ_CREDENTIAL_LOADER_V1: NAVIGATION_ONLY;
     # ATLAS_AUTHORITY=NONE; READ_LOADER=current_productive_execute_network_read_credential_loader_v1;
     # CREDENTIAL_AUTHORITY=SECTION_11_13_5_SECRETREF_AND_K1_READ_SESSION; POST_COUNT=0;
@@ -8756,7 +8763,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: S1_CAP24_HISTORICAL_INERTNESS_REPAIR_V1
+    modified_by: G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1
     source_paths:
       - src/ops/full_core_live_path_composition_root_v1/__init__.py
       - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -8934,6 +8941,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
@@ -9055,6 +9063,7 @@ entities:
       - tests/ops/test_current_productive_g17_pt1m_mark_sample_adapter_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py
+      - tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py
       - tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py
