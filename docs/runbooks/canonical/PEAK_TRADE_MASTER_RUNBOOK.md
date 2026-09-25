@@ -501,6 +501,41 @@ EXTERNAL_EFFECT_AUTHORIZED=false
 ATLAS_AUTHORITY=NONE
 ```
 
+### B05 Full-Core instrument metadata authority owner ratification
+
+Owner-GO
+`OWNER_GO_RATIFY_B05_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_V1`
+(one-shot; **CONSUMED**) ratifies B05 `INSTRUMENT_METADATA_AUTHORITY_OWNER` for the
+Full-Core track only with explicit
+`quantity_unit_semantics_class=CONTRACTS_SZ_LOT_STEP`. Machine contract:
+`config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json`.
+Derived spec:
+`docs/governance/RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md`.
+
+Full-Core enter-live-29p join binds governed OKX instruments-row producer output
+into CRS `InstrumentQuantityConstraintsV1` (no offline default instrument on
+`LIVE_ACCOUNT_BOUND`). No Companion handoff. Cap24 selection unchanged.
+
+```text
+OWNER_GO=OWNER_GO_RATIFY_B05_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_V1
+OWNER_GO_STATUS=CONSUMED
+SCOPE_TRACK=FULL_CORE
+DIMENSION_ID=COMPLETE_INSTRUMENT_QUANTITY_CONSTRAINT_METADATA
+QUANTITY_UNIT_SEMANTICS_CLASS_RATIFIED=CONTRACTS_SZ_LOT_STEP
+INSTRUMENT_METADATA_AUTHORITY_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1
+FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED=true
+INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false
+GOVERNED_PRODUCER_CREATED=true
+PRODUCER_IMPLEMENTATION_PRESENT=true
+OBSERVATION_IS_NOT_AUTHORITY=true
+COMPANION_INSTRUMENT_METADATA_HANDOFF_AUTHORIZED=false
+C2_INSTRUMENT_METADATA_DOMAIN_VERDICT=PARTIAL
+CONVERSION_READY=false
+NETWORK_ACCESS_PERFORMED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings

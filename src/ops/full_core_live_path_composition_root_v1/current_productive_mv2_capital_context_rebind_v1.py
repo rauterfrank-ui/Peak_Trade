@@ -21,11 +21,11 @@ from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge
 from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
     REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED,
 )
+from src.governance.capital_risk_sizing_v1 import InstrumentQuantityConstraintsV1
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST,
     default_offline_replay_capital_context_v0,
-    default_offline_replay_instrument_v0,
 )
 
 REBIND_SEAM_ID = "CURRENT_PRODUCTIVE_MV2_CAPITAL_CONTEXT_REBIND_SEAM_V1"
@@ -76,6 +76,7 @@ def build_current_productive_live_account_capital_context_v1(
     typed_account_equity: Decimal,
     reference_price: Decimal,
     protective_stop_price: Decimal | None,
+    instrument_constraints: InstrumentQuantityConstraintsV1,
 ) -> CanonicalCoreRuntimeCapitalContextV0:
     """Construct LIVE_ACCOUNT_BOUND capital_context for authoritative sizing."""
     limits = resolve_productive_capital_risk_limits_from_29p_producer_v1(
@@ -89,6 +90,12 @@ def build_current_productive_live_account_capital_context_v1(
         raise CurrentProductiveMv2CapitalContextRebindError(
             "PROTECTIVE_STOP_DERIVATION_FAIL_CLOSED"
         )
+    if instrument_constraints.instrument_id != instrument_id:
+        raise CurrentProductiveMv2CapitalContextRebindError(
+            "INSTRUMENT_METADATA_INSTRUMENT_ID_MISMATCH"
+        )
+    if not str(instrument_constraints.instrument_metadata_version or "").strip():
+        raise CurrentProductiveMv2CapitalContextRebindError("INSTRUMENT_METADATA_VERSION_MISSING")
     ctx = default_offline_replay_capital_context_v0(
         instrument_id=instrument_id,
         reference_price=reference_price,
@@ -98,7 +105,7 @@ def build_current_productive_live_account_capital_context_v1(
         per_trade_risk_limit=limits.per_trade_risk_limit,
         total_capital_limit=limits.total_capital_limit,
         daily_loss_remaining_budget=limits.daily_loss_remaining_budget,
-        instrument=default_offline_replay_instrument_v0(instrument_id),
+        instrument=instrument_constraints,
         config_digest=_productive_config_digest_v1(lineage_ref=limits.lineage_ref),
         capital_risk_mode=CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     )

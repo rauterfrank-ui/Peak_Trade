@@ -26,10 +26,10 @@
     "C2_INPUT_SET_COMPLETE_PROVEN": true,
     "C2_REQUIRED_INPUT_COUNT": 3,
     "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
-    "C2_DOMAINS_PARTIAL_COUNT": 2,
+    "C2_DOMAINS_PARTIAL_COUNT": 3,
     "C2_DOMAINS_UNKNOWN_COUNT": 0,
     "C2_DOMAINS_CONFLICTING_COUNT": 0,
-    "C2_DOMAINS_UNRESOLVED_COUNT": 1,
+    "C2_DOMAINS_UNRESOLVED_COUNT": 0,
     "CONVERSION_READY": false,
     "CONVERSION_READY_UNCHANGED": true,
     "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
@@ -164,7 +164,7 @@
       "semantic_meaning": "Complete venue-bound instrument quantity metadata before Fraction→Units normalization",
       "unit": "LOT_SIZE_MIN_QTY_MIN_NOTIONAL_MULTIPLIER_BASE_QUOTE",
       "producer": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
-      "owner": "UNRESOLVED",
+      "owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
       "source_of_truth": "UNBOUND_ON_COMPANION_PATH",
       "consumer": "Companion Shadow/Live → ExecutionPipeline.signal_to_orders (conversion handoff absent)",
       "handoff": "NO_CONVERSION_HANDOFF_PRESENT",
@@ -172,18 +172,18 @@
       "freshness_requirement": "FAIL_CLOSED_MISSING",
       "fallback_path": "NONE_AUTHORIZED",
       "historical_default_path": "offline_replay instrument defaults; venue capability snapshot; okx bounded testnet binding (explicit_non_sources)",
-      "current_authority_evidence": "Authority-decision: INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED; audit_decision_class NO_PRODUCTIVE_PRODUCER.",
-      "provenance_status": "REQUIRED_INPUT_MISSING",
+      "current_authority_evidence": "Full-Core owner ratified; governed producer bound on enter-live-29p join; chain not closed.",
+      "provenance_status": "FULL_CORE_PARTIAL_COMPANION_MISSING",
       "conflicts": [],
-      "status": "UNRESOLVED",
+      "status": "PARTIAL",
       "classification_notes": {
         "canonical_model_rule_semantics": "Required metadata field set frozen in provenance binding",
         "current_dynamic_input_state": "No authoritative metadata handoff on Companion path",
         "historical_technical_default_fixture": "Offline/simulation instrument snapshots not elevatable"
       },
-      "c2_authority_binding_implemented": false,
+      "c2_authority_binding_implemented": true,
       "domain_authority_resolution_ref": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-      "domain_authority_resolution_final_status": "UNRESOLVED"
+      "domain_authority_resolution_final_status": "PARTIAL"
     }
   },
   "cross_cutting_companion_binding_gates": {
@@ -206,9 +206,7 @@
   ],
   "unresolved_authorities": [
     "REFERENCE_PRICE_AUTHORITY_OWNER",
-    "INSTRUMENT_METADATA_AUTHORITY_OWNER",
-    "CANONICAL_PRICE_OWNER",
-    "CANONICAL_INSTRUMENT_METADATA_OWNER"
+    "CANONICAL_PRICE_OWNER"
   ],
   "provenance_conflicts": [
     "Companion REQUIRED_INPUT_MISSING for ACCOUNT_EQUITY while Full-Core owner ratified"
@@ -230,7 +228,15 @@
     "c2_input_authorities": "UNRESOLVED",
     "conversion_ready": false
   },
-  "implemented_authority_bindings": [],
+  "implemented_authority_bindings": [
+    {
+      "input_id": "INSTRUMENT_QUANTITY_METADATA",
+      "scope": "FULL_CORE_TRACK_ONLY",
+      "owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "binding_module": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "ratification_ref": "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
+    }
+  ],
   "drift_policy": {
     "flip_conversion_ready": "FAIL",
     "resolve_c2_without_closure_gate": "FAIL",

@@ -42,7 +42,7 @@ Do not manually patch generated Markdown.
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
 | `TERM:map_of_truth` |
-| `RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1` |
+| `RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6812 B05 Full-Core REFERENCE_PRICE_AUTHORITY_OWNER ratification (scoped OWNER_GO): NAVIGATION_ONLY atlas review for map_of_truth and governed-productive reference-price authority producer navigation; map open-record PARTIAL rebind; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- PR #6813 B05 Full-Core INSTRUMENT_QUANTITY_METADATA authority owner ratification (scoped OWNER_GO): NAVIGATION_ONLY atlas review; governed-productive instrument metadata producer + enter-live handoff navigation; map open-record PARTIAL rebind; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=B05_REFERENCE_PRICE_RATIFICATION_BOUNDED_COMPLETION_V1
+- modified_by=B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -170,16 +170,16 @@ Historical defaults stay historical. Model semantics are not aged into history.
 
 - semantic_class=UNKNOWN
 - source_ref=src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py
-- canonical_owner_ref=UNRESOLVED
+- canonical_owner_ref=ops.governed_productive_instrument_metadata_authority_producer_v1
 - current_consumer_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
-- current_decision_effect=Literals are attached to the productive capital context. Quantity effect is unknown.
-- authority_status=UNRESOLVED
+- current_decision_effect=LIVE_ACCOUNT_BOUND path requires governed instruments-row producer; offline literals remain non-CURRENT on productive enter-live join.
+- authority_status=PARTIAL
 - historical_default_status=NOT_CURRENT_AUTHORITY
 - lifecycle=WIRING_PRESENT_EFFECT_UNKNOWN
 - optimization_surface_status=NOT_AN_OPTIMIZATION_SURFACE
 - learning_evidence_status=NOT_LEARNING_EVIDENCE
 - productive_seam_status=CONDITIONAL_CRS_BRANCH
-- conflicts=INSTRUMENT_METADATA_AUTHORITY_OWNER unresolved
+- conflicts=INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false; Companion handoff absent
 - evidence=`src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
 
 ## typed_29p_equity_to_four_crs_limits

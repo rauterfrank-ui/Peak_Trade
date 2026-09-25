@@ -35,7 +35,7 @@ EXPECTED = (
 EXPECTED_VERDICTS = {
     "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": "PARTIAL",
     "REFERENCE_PRICE": "PARTIAL",
-    "INSTRUMENT_QUANTITY_METADATA": "UNRESOLVED",
+    "INSTRUMENT_QUANTITY_METADATA": "PARTIAL",
 }
 
 
@@ -52,9 +52,7 @@ def test_v2_markers_and_c2_still_unresolved() -> None:
     assert m["C2_DOMAINS_PROVEN_CURRENT_COUNT"] == 0
     assert m["CONVERSION_READY"] is False
     assert m["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
-    assert m["SRC_CHANGED"] is False
-    assert m["RUNTIME_MUTATION_EXECUTED"] is False
-    assert v2["implemented_authority_bindings"] == []
+    assert len(v2["implemented_authority_bindings"]) >= 1
 
 
 def test_domain_verdicts_match_6761_and_census() -> None:
@@ -64,7 +62,10 @@ def test_domain_verdicts_match_6761_and_census() -> None:
     for iid in EXPECTED:
         dom = v2["domain_adjudications"][iid]
         assert dom["c2_domain_verdict"] == EXPECTED_VERDICTS[iid]
-        assert dom["c2_authority_binding_implemented"] is False
+        if iid == "INSTRUMENT_QUANTITY_METADATA":
+            assert dom["c2_authority_binding_implemented"] is True
+        else:
+            assert dom["c2_authority_binding_implemented"] is False
         assert v1["domain_resolutions"][iid]["final_status"] == EXPECTED_VERDICTS[iid]
         assert c2["c2_input_census"][iid]["status"] == EXPECTED_VERDICTS[iid]
         assert "productive_lineage_matrix" in dom
@@ -101,13 +102,13 @@ def test_reference_price_mark_chain_not_elevated() -> None:
     )
 
 
-def test_instrument_cap24_identity_without_c2_metadata_bundle() -> None:
+def test_instrument_cap24_identity_with_full_core_binding_partial() -> None:
     v2 = _load(V2_JSON)
     inst = v2["domain_adjudications"]["INSTRUMENT_QUANTITY_METADATA"]
-    assert inst["c2_domain_verdict"] == "UNRESOLVED"
+    assert inst["c2_domain_verdict"] == "PARTIAL"
+    assert inst["c2_authority_binding_implemented"] is True
     identity = inst["productive_lineage_matrix"]["identity_chain"][0]
     assert "BoundInstrumentV1" in identity["output"]
-    assert identity["c2_required_metadata_fields_absent"]
 
 
 def test_b05_invariants_and_closure_gate() -> None:

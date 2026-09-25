@@ -112,7 +112,7 @@ entities:
     # B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6811): NAVIGATION_ONLY atlas
     # review; Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratification surfaces; map
     # account_equity_blocks PARTIAL; map_authority=NONE.
-    # B05_REFERENCE_PRICE_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6812): NAVIGATION_ONLY
+    # B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6813): NAVIGATION_ONLY
     # atlas review; Full-Core B05 REFERENCE_PRICE_AUTHORITY_OWNER ratification surfaces; map
     # reference_price_authority_owner PARTIAL; map_authority=NONE.
     kind: NAVIGATION_INDEX
@@ -11169,6 +11169,33 @@ entities:
       B05 Full-Core REFERENCE_PRICE authority owner ratification (mark_price semantics):
       static owner slot and contract constants only; CRS bind remains in enter-live join;
       no conversion-ready flip; ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed productive instrument metadata authority producer v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
+    source_paths:
+      - src/ops/governed_productive_instrument_metadata_authority_producer_v1/__init__.py
+      - src/ops/governed_productive_instrument_metadata_authority_producer_v1/constants_v1.py
+      - src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py
+      - config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json
+      - docs/governance/RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+    source_symbols:
+      - INSTRUMENT_METADATA_AUTHORITY_OWNER
+      - QUANTITY_UNIT_SEMANTICS_CLASS_RATIFIED
+    evidence_sources:
+      - docs/governance/RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md
+      - config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json
+      - tests/governance/test_risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.py
+      - tests/ops/test_governed_productive_instrument_metadata_authority_producer_v1.py
+    notes: >-
+      B05 Full-Core INSTRUMENT_QUANTITY_METADATA authority owner ratification
+      (CONTRACTS_SZ_LOT_STEP): OKX instruments-row producer + enter-live CRS rebind;
+      no Companion handoff; ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1
     kind: RUNTIME_COMPONENT

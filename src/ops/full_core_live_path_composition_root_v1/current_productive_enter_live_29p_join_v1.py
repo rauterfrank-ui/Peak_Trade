@@ -58,6 +58,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     adapt_current_productive_u01_account_mode_v1,
     build_current_productive_u01_eligibility_fact_v1,
 )
+from src.ops.governed_productive_instrument_metadata_authority_producer_v1.current_productive_okx_instruments_row_producer_v1 import (
+    produce_current_productive_instrument_quantity_constraints_from_okx_row_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
     AVAILABLE_MARGIN_ENDPOINT_PATH,
     AVAILABLE_MARGIN_OUTPUT_DOMAIN,
@@ -164,6 +167,7 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     raw_acct_lv: str = ""
     expected_account_identity: str = REUSED_BINDING_ACCOUNT_SCOPE
     fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
+    instruments_payload: Mapping[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -614,12 +618,51 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             step_29p_risk_admissible=TRUE_TOKEN,
         )
 
+    instruments_payload = injected.instruments_payload if injected is not None else None
+    if instruments_payload is None:
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="INSTRUMENT_METADATA_OBSERVATION_MISSING",
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=("INSTRUMENT_METADATA_OBSERVATION_MISSING",),
+        )
+    venue_native_id = str(
+        bound_instrument.venue_native_id or bound_instrument.instrument_id or selected_instrument
+    ).strip()
+    metadata_output = produce_current_productive_instrument_quantity_constraints_from_okx_row_v1(
+        venue_native_id=venue_native_id,
+        instruments_payload=instruments_payload,
+        observed_at_as_of=observed_at,
+        bound_instrument_id=str(replay.evidence.instrument_id),
+    )
+    if metadata_output.produced is not True or metadata_output.constraints is None:
+        meta_blocker = (
+            metadata_output.reason_codes[0]
+            if metadata_output.reason_codes
+            else "INSTRUMENT_METADATA_PRODUCER_FAIL_CLOSED"
+        )
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=meta_blocker,
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=tuple(str(code) for code in metadata_output.reason_codes),
+        )
+
     try:
         live_ctx = build_current_productive_live_account_capital_context_v1(
             instrument_id=str(replay.evidence.instrument_id),
             typed_account_equity=producer_equity,
             reference_price=reference,
             protective_stop_price=stop,
+            instrument_constraints=metadata_output.constraints,
         )
     except CurrentProductiveMv2CapitalContextRebindError as exc:
         blocker = str(exc) or REASON_PRODUCTIVE_CAPITAL_RISK_LIMITS_UNRESOLVED
