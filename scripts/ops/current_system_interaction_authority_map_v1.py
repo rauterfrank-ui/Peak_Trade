@@ -108,6 +108,7 @@ REQUIRED_PARTIAL_IDS = (
     "repo_convergence_forensic_203_outer_shell_v1",
     "repo_convergence_market_dashboard_historical_chrome_233_outer_shell_v1",
     "repo_convergence_docs_archive_o5_41_outer_shell_v1",
+    "repo_convergence_fgc01_docs_product_evidence_v1",
 )
 
 

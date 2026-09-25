@@ -2192,6 +2192,16 @@
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md"
       ]
+    },
+    {
+      "id": "repo_convergence_fgc01_docs_product_evidence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Repository convergence FGC-01: AUTHORITY=NONE removal of docs/product/evidence historical island with diff-bound atlas corpus/census decoupling and governance inventory pointer neutralization; does not alter CURRENT authority edges, owners, or trading semantics.",
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "scripts/ops/fast_reference_replay_v1.py",
+        "docs/product/README.md"
+      ]
     }
   ]
 }

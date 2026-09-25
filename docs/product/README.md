@@ -19,7 +19,7 @@ Previous product surface / legacy `market_surface` is historical evidence only
 component; not a current tombstone or negative non-regression contract). See
 [`docs/webui/MARKET_DASHBOARD_REMOVED.md`](../webui/MARKET_DASHBOARD_REMOVED.md).
 
-Historical in-repo product evidence packs under `docs/product/evidence/` were
+Historical in-repo product evidence packs under `docs&#47;product&#47;evidence&#47;` were
 removed in FGC-01 (repo-convergence fine-grain closure); they are not restored
 here. Current product navigation remains the Landscape V2 runbooks linked above.
 
