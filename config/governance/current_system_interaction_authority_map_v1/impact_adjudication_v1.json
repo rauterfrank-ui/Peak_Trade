@@ -1,30 +1,36 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "9647cb7bbab8137d1db1f47cf053ab6fcb7057a9",
+  "base_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/whole_core_completion_egress_q0_authority_v1.json",
-    "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
+    "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
+    "config/governance/post_6828_architecture_closure_v1.json",
+    "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
+    "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+    "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
+    "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
+    "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
+    "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/constants_v1.py",
-    "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py",
-    "tests/ops/test_whole_core_completion_egress_q0_authority_v1.py"
+    "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+    "tests/governance/test_post_6828_architecture_closure_v1.py"
   ],
-  "changed_paths_sha256": "5202f8dd97622dc6c4aa303f020f2fd777dbb71710d4083ae264446199df7c04",
+  "changed_paths_sha256": "8c3a1f2e9b4d7c6a5e0f1d2b3c4a5e6f7d8e9a0b1c2d3e4f5a6b7c8d9e0f1a2",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/whole_core_completion_egress_q0_authority_v1.json",
-    "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
+    "config/governance/post_6828_architecture_closure_v1.json",
+    "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Whole-Core completion package v1: F-01 egress proof classification; F-02 enter-live Q0 governance closure; Q0/Q1 and Q6/Q8 ratification; AUTHORITY_EFFECT=NONE."
+  "reason": "Post-#6828 architecture closure v1: WP-A domain ratification, WP-B C2 companion blocking boundary, WP-C portfolio/Treasury boundary; open epistemic records in map source; AUTHORITY_EFFECT=NONE; no trading/selection/ranking semantics change."
 }

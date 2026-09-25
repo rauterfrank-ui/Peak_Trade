@@ -2260,6 +2260,36 @@
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "src/governance/explicit_productive_authorization_v1.py"
       ]
+    },
+    {
+      "id": "post_6828_universe_ranking_selection_binding_domain_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1–2.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
+      "evidence_refs": [
+        "config/governance/post_6828_architecture_closure_v1.json",
+        "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+        "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md"
+      ]
+    },
+    {
+      "id": "post_6828_c2_companion_blocking_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; canonical C2 owner remains UNRESOLVED; no companion conversion or sizing owner resolution.",
+      "evidence_refs": [
+        "config/governance/post_6828_architecture_closure_v1.json",
+        "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
+        "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md"
+      ]
+    },
+    {
+      "id": "post_6828_portfolio_treasury_equity_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6828 WP-C: portfolio reservation vs Treasury Q0 observation boundary ratified; Treasury single-source Q0 unchanged; CANONICAL_RESTART_RECONSTRUCTABLE=false classified N5_ACTIVATION_REQUIREMENT; no N5 activation.",
+      "evidence_refs": [
+        "config/governance/post_6828_architecture_closure_v1.json",
+        "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
+        "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md"
+      ]
     }
   ]
 }

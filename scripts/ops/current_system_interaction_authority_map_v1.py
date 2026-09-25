@@ -115,6 +115,9 @@ REQUIRED_PARTIAL_IDS = (
     "whole_core_learning_q6_q8_none_ratification_v1",
     "whole_core_pre_external_egress_proof_closure_v1",
     "whole_core_productive_q0_q1_authority_ratification_v1",
+    "post_6828_universe_ranking_selection_binding_domain_v1",
+    "post_6828_c2_companion_blocking_boundary_v1",
+    "post_6828_portfolio_treasury_equity_boundary_v1",
 )
 
 

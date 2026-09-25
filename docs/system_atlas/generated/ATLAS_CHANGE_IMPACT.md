@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,10 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1` |
+| `CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1` |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Whole-Core completion package v1: F-01 pre-external egress proof classifies one-shot POST join as INTENTIONALLY_ISOLATED_OWNER_GO; F-02 enter-live fresh trusted Q0 closed via Treasury C08 single-source handoff (governance truth repair); Q0/Q1 and Q6/Q8 ratification; C2 unchanged UNRESOLVED; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
+- Post-#6828 architecture closure v1 (Case 1 governance): WP-A universe/ranking/selection/binding domain ratification; WP-B C2 companion blocking boundary (owner UNRESOLVED); WP-C portfolio vs Treasury equity boundary (N5_ACTIVATION_REQUIREMENT for durable restart); handoff contract domain descriptor only; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1
+- modified_by=POST_6828_ARCHITECTURE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
