@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-23T16:33:34.442004+00:00",
-  "git_sha": "4c7ca76134750d8676d0754688eeb8c975d67a43",
+  "generated_at_utc": "2026-09-25T17:47:49.802264+00:00",
+  "git_sha": "39cccc09db7abe1c5a616083855688991ee88edd",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 3208,
-    "ignored_files": 498,
-    "scanned_files": 2710,
-    "total_references": 16658
+    "total_markdown_files": 3242,
+    "ignored_files": 458,
+    "scanned_files": 2784,
+    "total_references": 15652
   },
-  "missing_count": 190,
+  "missing_count": 225,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -32,12 +32,6 @@
       "source_file": "docs/KNOWLEDGE_BASE_INDEX.md",
       "line_number": 150,
       "target": "../tests/test_kraken_cache_loader.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/LIVE_OPERATIONAL_RUNBOOKS.md",
-      "line_number": 28,
-      "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
       "link_text": null
     },
     {
@@ -110,6 +104,18 @@
       "source_file": "docs/TECH_DEBT_BACKLOG.md",
       "line_number": 142,
       "target": "scripts/demo_complete_pipeline.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/WORKFLOW_FRONTDOOR.md",
+      "line_number": 79,
+      "target": "./ops/release/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/WORKFLOW_FRONTDOOR.md",
+      "line_number": 79,
+      "target": "./ops/release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
       "link_text": null
     },
     {
@@ -551,6 +557,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
+      "line_number": 136,
+      "target": "../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
       "line_number": 35,
       "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
@@ -611,6 +623,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/BOUNDED_ACCEPTANCE_INDEX.md",
+      "line_number": 24,
+      "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
       "line_number": 3497,
       "target": "src/ops/p67/shadow_session_scheduler_v1.py",
@@ -659,6 +677,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/FINAL_DOWNLOADS_CLEANUP_MANIFEST.md",
+      "line_number": 23,
+      "target": "docs/ops/concepts/WORKFLOW_OFFICER_V0_PLAN.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/historical_other_md/Peak_Trade_Workflow_Officer_Concept.md",
       "line_number": 96,
       "target": "src/ops/p39/registry_cli_v1.py",
@@ -683,9 +707,45 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/drills/PHASE_B_RESEARCH_CLI_EVIDENCE_CHAIN.md",
+      "line_number": 26,
+      "target": "docs/ops/tasks/TASK_B1_research_cli_evidence_chain.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/evidence/CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md",
       "line_number": 15,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_RELEASE_OPERATOR_VERIFY_GO_NO_GO_RUBRIC_MAIN_2026_04_24.md",
+      "line_number": 18,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_RELEASE_OPERATOR_VERIFY_GO_NO_GO_RUBRIC_MAIN_2026_04_24.md",
+      "line_number": 70,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_RELEASE_OPERATOR_VERIFY_GO_NO_GO_RUBRIC_MAIN_2026_04_24_POST_2905.md",
+      "line_number": 18,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_RELEASE_OPERATOR_VERIFY_GO_NO_GO_RUBRIC_MAIN_2026_04_24_POST_2905.md",
+      "line_number": 89,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_RELEASE_OPERATOR_VERIFY_GO_NO_GO_RUBRIC_MAIN_2026_04_24_POST_2905.md",
+      "line_number": 102,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
       "link_text": null
     },
     {
@@ -716,6 +776,12 @@
       "source_file": "docs/ops/evidence/NEXT_ACTUAL_EXCHANGE_SUBMIT_TRIAL_CLOSEOUT.md",
       "line_number": 40,
       "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/PR835_MERGED_20260120T021229Z.md",
+      "line_number": 10,
+      "target": "docs/ops/runbooks/finish_c/README.md",
       "link_text": null
     },
     {
@@ -773,9 +839,45 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/reviews/bounded_acceptance_delivery_packet/DELIVERY_PACKET.md",
+      "line_number": 55,
+      "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_delivery_packet/DELIVERY_PACKET.md",
+      "line_number": 57,
+      "target": "docs/ops/templates/REJECTED_ORDER_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_delivery_packet/DELIVERY_PACKET.md",
+      "line_number": 59,
+      "target": "docs/ops/templates/ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/reviews/bounded_acceptance_final_handover_note/FINAL_HANDOVER_NOTE.md",
       "line_number": 46,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_index_page/INDEX.md",
+      "line_number": 28,
+      "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_index_page/INDEX.md",
+      "line_number": 30,
+      "target": "docs/ops/templates/REJECTED_ORDER_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_index_page/INDEX.md",
+      "line_number": 32,
+      "target": "docs/ops/templates/ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt",
       "link_text": null
     },
     {
@@ -791,6 +893,24 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/reviews/bounded_acceptance_review_packet/REVIEW_PACKET.md",
+      "line_number": 56,
+      "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_review_packet/REVIEW_PACKET.md",
+      "line_number": 58,
+      "target": "docs/ops/templates/REJECTED_ORDER_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/reviews/bounded_acceptance_review_packet/REVIEW_PACKET.md",
+      "line_number": 60,
+      "target": "docs/ops/templates/ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/reviews/bounded_pilot_third_trial_evidence_closeout_review/closeout_draft.md",
       "line_number": 30,
       "target": "src/exchange/kraken_live.py",
@@ -800,6 +920,90 @@
       "source_file": "docs/ops/reviews/bounded_pilot_third_trial_evidence_closeout_review/evidence_inventory.md",
       "line_number": 49,
       "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
+      "line_number": 13,
+      "target": "../release/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
+      "line_number": 348,
+      "target": "../release/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
+      "line_number": 421,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
+      "line_number": 486,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/FINISH_PLAN.md",
+      "line_number": 385,
+      "target": "../release/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/FINISH_PLAN.md",
+      "line_number": 385,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/FINISH_PLAN.md",
+      "line_number": 386,
+      "target": "../release/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/FINISH_PLAN.md",
+      "line_number": 386,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/roadmap/FINISH_PLAN.md",
+      "line_number": 387,
+      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/BOUNDED_ACCEPTANCE_OPERATOR_CHEAT_SHEET.md",
+      "line_number": 38,
+      "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_BIS_FINISH_2026.md",
+      "line_number": 823,
+      "target": "../archives/repo_root_docs/KILL_SWITCH_SUMMARY.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md",
+      "line_number": 4,
+      "target": "../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md",
+      "line_number": 28,
+      "target": "../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md",
+      "line_number": 24,
+      "target": "../spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md",
       "link_text": null
     },
     {
@@ -896,6 +1100,12 @@
       "source_file": "docs/project_docs/CHANGELOG.md",
       "line_number": 115,
       "target": "src/data/kraken.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CONFIG_IMPORT_GUIDE.md",
+      "line_number": 106,
+      "target": "../ops/spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md",
       "link_text": null
     },
     {

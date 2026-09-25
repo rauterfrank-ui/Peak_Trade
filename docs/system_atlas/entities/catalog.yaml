@@ -119,13 +119,16 @@ entities:
     # B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1 (PR #6813): NAVIGATION_ONLY
     # atlas review; Full-Core B05 REFERENCE_PRICE_AUTHORITY_OWNER ratification surfaces; map
     # reference_price_authority_owner PARTIAL; map_authority=NONE.
+    # REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1: NAVIGATION_ONLY atlas review; frozen-469
+    # STATIC_REMOVAL_PROVEN non-current outer-shell deletion; map currency MAP_UPDATE_REQUIRED
+    # records repo_convergence_frozen_469_outer_shell_v1; map_authority=NONE; no MOT SSOT change.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: CURRENT_SYSTEM_MAP_FINALIZATION_V1
+    modified_by: REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

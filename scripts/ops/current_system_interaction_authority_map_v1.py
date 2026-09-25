@@ -104,6 +104,7 @@ REQUIRED_PARTIAL_IDS = (
     "docs_ops_specs_map_impact",
     "runbook_freshness_stamp",
     "survival_suitability_composition_owner",
+    "repo_convergence_frozen_469_outer_shell_v1",
 )
 
 

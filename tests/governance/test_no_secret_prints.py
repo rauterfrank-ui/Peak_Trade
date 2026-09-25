@@ -3,12 +3,13 @@ Governance: no secret-printing or debug-tracing patterns in src/scripts/workflow
 
 Allow explicit exceptions via inline marker: # SECRET_PRINT_ALLOWED: <reason>
 """
+
 import re
 from pathlib import Path
 
 ALLOW_PREFIXES = (
     "out/ops/",
-    "scripts/ops/",   # setup/diag scripts may reference token env for documentation
+    "scripts/ops/",  # setup/diag scripts may reference token env for documentation
     "scripts/utils/",
 )
 
@@ -60,6 +61,4 @@ def test_no_secret_printing_or_debug_tracing():
             if pat.search(txt):
                 hits.append(f"{f.as_posix()}: pattern={pat.pattern}")
                 break
-    assert not hits, (
-        "Potential secret-print/debug-trace detected:\n" + "\n".join(hits)
-    )
+    assert not hits, "Potential secret-print/debug-trace detected:\n" + "\n".join(hits)
