@@ -62,7 +62,7 @@ def test_domain_verdicts_match_6761_and_census() -> None:
     for iid in EXPECTED:
         dom = v2["domain_adjudications"][iid]
         assert dom["c2_domain_verdict"] == EXPECTED_VERDICTS[iid]
-        if iid == "INSTRUMENT_QUANTITY_METADATA":
+        if iid in ("INSTRUMENT_QUANTITY_METADATA", "REFERENCE_PRICE"):
             assert dom["c2_authority_binding_implemented"] is True
         else:
             assert dom["c2_authority_binding_implemented"] is False

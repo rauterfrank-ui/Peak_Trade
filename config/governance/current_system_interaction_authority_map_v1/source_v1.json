@@ -1870,12 +1870,13 @@
     {
       "id": "reference_price_authority_owner",
       "epistemic_class": "PARTIAL",
-      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price (Owner-GO consumed). Companion conversion handoff absent; GOVERNED_PRODUCER_CREATED=false; INDEX_PX is not reference-price authority.",
+      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price (Owner-GO consumed). Full-Core enter-live-29p join binds governed MV2 mark producer before CRS capital_context; REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false; Companion conversion handoff absent; INDEX_PX is not reference-price authority.",
       "evidence_refs": [
         "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-        "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py"
+        "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py"
       ]
     },
     {

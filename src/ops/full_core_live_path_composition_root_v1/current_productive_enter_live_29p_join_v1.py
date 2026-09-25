@@ -61,6 +61,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_instrument_metadata_authority_producer_v1.current_productive_okx_instruments_row_producer_v1 import (
     produce_current_productive_instrument_quantity_constraints_from_okx_row_v1,
 )
+from src.ops.governed_productive_reference_price_authority_producer_v1.current_productive_mv2_mark_reference_price_producer_v1 import (
+    produce_current_productive_reference_price_from_mv2_mark_v1,
+)
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
     AVAILABLE_MARGIN_ENDPOINT_PATH,
     AVAILABLE_MARGIN_OUTPUT_DOMAIN,
@@ -601,7 +604,28 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         pass
 
     mark = replay.intermediate.market_context.mark_price
-    reference = Decimal(str(mark))
+    price_output = produce_current_productive_reference_price_from_mv2_mark_v1(
+        mark_price=mark,
+        instrument_id=str(replay.evidence.instrument_id),
+        observed_at_as_of=observed_at,
+    )
+    if price_output.produced is not True or price_output.reference_price is None:
+        price_blocker = (
+            price_output.reason_codes[0]
+            if price_output.reason_codes
+            else "REFERENCE_PRICE_PRODUCER_FAIL_CLOSED"
+        )
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=price_blocker,
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=tuple(str(code) for code in price_output.reason_codes),
+        )
+    reference = price_output.reference_price
     stop = derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=str(replay.evidence.selected_side),
         reference_price=reference,

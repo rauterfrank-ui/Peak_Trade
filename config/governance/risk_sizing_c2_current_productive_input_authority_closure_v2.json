@@ -143,9 +143,9 @@
     "REFERENCE_PRICE": {
       "input_id": "REFERENCE_PRICE",
       "c2_domain_verdict": "PARTIAL",
-      "c2_authority_binding_implemented": false,
-      "verdict_reason": "Full-Core REFERENCE_PRICE_AUTHORITY_OWNER ratified to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price; OBSERVATION_IS_NOT_AUTHORITY holds; GOVERNED_PRODUCER_CREATED=false; Companion path has no reference-price handoff; C2 companion-scoped input remains PARTIAL.",
-      "productive_lineage_trace_status": "WIRED_TRACEABLE_FULL_CORE_OWNER_RATIFIED_NOT_C2_COMPANION_CLOSURE",
+      "c2_authority_binding_implemented": true,
+      "verdict_reason": "Full-Core owner ratified; governed MV2 mark reference-price producer bound at enter-live-29p join; Companion path unbound; authority chain not closed.",
+      "productive_lineage_trace_status": "FULL_CORE_BINDING_PARTIAL",
       "productive_lineage_matrix": {
         "canonical_authority_owner_b05": "ops.governed_productive_reference_price_authority_producer_v1",
         "canonical_authority_owner_b05_scope": "FULL_CORE_TRACK_ONLY",
@@ -166,6 +166,18 @@
             "field": "mark_price_m_t",
             "classification": "MODEL_SEMANTIC",
             "is_authority": false
+          },
+          {
+            "stage": "GOVERNED_PRODUCER",
+            "identity": "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+            "classification": "GOVERNED_PRODUCTIVE_REFERENCE_PRICE_AUTHORITY_PRODUCER",
+            "is_authority": false,
+            "observation_is_not_authority": true
+          },
+          {
+            "stage": "ENTER_JOIN_HANDOFF",
+            "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+            "classification": "FULL_CORE_HANDOFF"
           },
           {
             "stage": "MV2_CAPITAL_CONTEXT",
@@ -194,7 +206,7 @@
         ]
       },
       "negative_evidence": [
-        "No GOVERNED_PRODUCTIVE_REFERENCE_PRICE_AUTHORITY_PRODUCER on main",
+        "Companion shadow/live: candle.close only; no governed reference handoff",
         "Fill price forbidden as conversion reference in authority freeze"
       ],
       "evidence_anchors": [
@@ -268,6 +280,12 @@
     }
   },
   "implemented_authority_bindings": [
+    {
+      "input_id": "REFERENCE_PRICE",
+      "scope": "FULL_CORE_TRACK_ONLY",
+      "owner": "ops.governed_productive_reference_price_authority_producer_v1",
+      "ratification_ref": "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json"
+    },
     {
       "input_id": "INSTRUMENT_QUANTITY_METADATA",
       "scope": "FULL_CORE_TRACK_ONLY",
