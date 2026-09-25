@@ -162,7 +162,7 @@ def test_standing_binding_constants_and_runbook() -> None:
     assert C08_CURRENT_BINDING == "BOUND"
     assert C08_PRODUCTIVE_BINDING_IMPLEMENTED is True
     assert C08_INPUT_CLASS.endswith("RECONCILED_BASE_CANDIDATE_EVIDENCE")
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "UNBOUND"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "BOUND"
     assert "C08_PRODUCTIVE_BINDING_IMPLEMENTED=true" in runbook
     assert (
         EARLIEST_NEW_REAL_BLOCKER_AFTER_WP
@@ -206,7 +206,7 @@ def test_reconciled_stable_base_candidate_without_sizing_increase() -> None:
     )
     c08 = result.c08_sizing_source_binding
     assert c08.base_candidate_created is True
-    assert c08.base_value_status == "UNBOUND"
+    assert c08.base_value_status == "BOUND"
     assert c08.risk_admissible is False
     assert c08.sizing_increase is False
     assert c08.treasury_risk_admissible_mint is False

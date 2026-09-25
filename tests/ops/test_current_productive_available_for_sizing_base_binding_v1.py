@@ -95,7 +95,7 @@ def _host(obs: TreasuryVenueObservationV1, **kwargs: object):
 
 def test_standing_pins_and_owner_go() -> None:
     assert OWNER_GO == "OWNER_GO_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_BINDING_V1"
-    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "UNBOUND"
+    assert CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS == "BOUND"
     assert EXACT_ALLOWED_NUMERIC_SOURCE.startswith("TreasuryVenueObservationV1.")
 
 

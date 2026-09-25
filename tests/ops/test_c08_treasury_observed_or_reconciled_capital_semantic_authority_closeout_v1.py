@@ -74,8 +74,8 @@ def test_closeout_contract_and_runbook_tokens() -> None:
         )
     )
     assert contract.c08_semantic_closeout == "CLOSED"
-    assert contract.c08_productive_binding_authorized is False
-    assert contract.c08_productive_binding_implemented is False
+    assert contract.c08_productive_binding_authorized is True
+    assert contract.c08_productive_binding_implemented is True
     assert contract.c08_semantic_authority_closeout_contract_authority_effect == "NONE"
     assert AUTHORITY_EFFECT == "NONE"
     assert C08_SEMANTIC_CLOSEOUT == "CLOSED"
@@ -97,10 +97,10 @@ def test_closeout_contract_and_runbook_tokens() -> None:
     assert "C08_RECONCILED_CAPITAL_ALLOWED_AS_SIZING_SOURCE=false" in runbook
     spec = SPEC.read_text(encoding="utf-8")
     assert "C08_SEMANTIC_CLOSEOUT=CLOSED" in spec
-    assert C08_CURRENT_BINDING == "UNBOUND"
-    assert C08_PRODUCTIVE_BINDING_AUTHORIZED is False
-    assert C08_PRODUCTIVE_BINDING_IMPLEMENTED is False
-    assert NEXT_PRODUCTIVE_BLOCKER.endswith("PRODUCTIVE_SIZING_SOURCE_NOT_BOUND")
+    assert C08_CURRENT_BINDING == "BOUND"
+    assert C08_PRODUCTIVE_BINDING_AUTHORIZED is True
+    assert C08_PRODUCTIVE_BINDING_IMPLEMENTED is True
+    assert "TRUSTED_29P" in NEXT_PRODUCTIVE_BLOCKER or "SIZING_SOURCE" in NEXT_PRODUCTIVE_BLOCKER
 
 
 def test_authority_owners_unchanged() -> None:

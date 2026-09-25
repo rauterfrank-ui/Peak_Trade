@@ -107,9 +107,9 @@ def _assert_binding_envelope() -> None:
         raise CurrentProductiveAvailableForSizingBaseBindingError("BASE_BINDING_NOT_AUTHORIZED")
     if RISK_ADMISSIBLE_MINT_AUTHORIZED or AVAILABLE_FOR_SIZING_MINT_AUTHORIZED:
         raise CurrentProductiveAvailableForSizingBaseBindingError("DOWNSTREAM_MINT_FORBIDDEN")
-    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS != "UNBOUND":
+    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_STATUS != "BOUND":
         raise CurrentProductiveAvailableForSizingBaseBindingError(
-            "STANDING_BASE_SLOT_MUST_REMAIN_UNBOUND_AT_MODULE_LEVEL"
+            "STANDING_BASE_SLOT_MUST_BE_BOUND_AT_MODULE_LEVEL"
         )
 
 
