@@ -100,6 +100,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
     # atlas_entity_review: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
     # atlas_entity_review: REPO_CONVERGENCE_MARKET_DASHBOARD_HISTORICAL_CHROME_233_OUTER_SHELL_V1
     # atlas_entity_review: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
@@ -132,13 +133,16 @@ entities:
     # map_authority=NONE; no MOT SSOT change.
     # REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1: NAVIGATION_ONLY atlas review;
     # frozen-41 docs/ops/_archive + capability_o5 evidence pack deletion; map_authority=NONE.
+    # REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1: NAVIGATION_ONLY atlas review;
+    # FGC-01 docs/product/evidence historical island removal; atlas corpus/census decoupling;
+    # map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no MOT SSOT change.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
+    modified_by: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

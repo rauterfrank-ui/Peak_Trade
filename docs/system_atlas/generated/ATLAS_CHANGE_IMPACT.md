@@ -14,7 +14,7 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
+ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Repository convergence frozen-41 AUTHORITY=NONE docs/ops/_archive and capability_o5 docs/evidence pack deletion: NAVIGATION_ONLY atlas review for map_of_truth; atlas inventory stale-coupling decoupling; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- Repository convergence FGC-01 AUTHORITY=NONE docs/product/evidence historical island removal: NAVIGATION_ONLY atlas review for map_of_truth; atlas corpus/census inventory decoupling; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
+- modified_by=REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
