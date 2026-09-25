@@ -11,10 +11,9 @@
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
     "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
-    "tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py",
     "tests/ops/test_full_core_current_productive_execute_network_read_credential_loader_v1.py"
   ],
-  "changed_paths_sha256": "700297bf47705228220b342ea33322926185d44fde5fd9aa54ce324e15d66caf",
+  "changed_paths_sha256": "df0cf034cba580856ca1f8563ad844b46f952a84148f88fb6075f309df1d1505",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -23,7 +22,6 @@
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
     "tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py",
-    "tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py",
     "tests/ops/test_full_core_current_productive_execute_network_read_credential_loader_v1.py"
   ],
   "evidence_refs": [

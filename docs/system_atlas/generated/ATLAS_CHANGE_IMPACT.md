@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- FC-01 productive execute_network READ credential loader: binds §11.13.5 SecretRef vault + K1 READ session into #6806 join slot; NAVIGATION_ONLY; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- FC-01 productive execute_network READ credential loader: binds §11.13.5 SecretRef vault + K1 READ session into #6806 join; NAVIGATION_ONLY; trading/activation semantics unchanged; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
 - modified_by=FC_01_EXECUTE_NETWORK_READ_CREDENTIAL_LOADER_V1
 
