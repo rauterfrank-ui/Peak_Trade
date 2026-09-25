@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=NONE_WITH_PROOF
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -42,7 +42,9 @@ Do not manually patch generated Markdown.
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
 | `TERM:map_of_truth` |
-| `RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1` |
+| `RUNBOOK:professional_trading_dashboard_v1` |
+| `RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1` |
+| `RUNTIME_COMPONENT:landscape_v2_current_completion_census_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Repository convergence frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion: NAVIGATION_ONLY atlas review for map_of_truth navigation index; reconciliation stale-coupling decoupling (RCN-000026/RCN-000053); map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- Repository convergence frozen-233 AUTHORITY=NONE market-dashboard historical chrome evidence outer-shell deletion: NAVIGATION_ONLY atlas review for map_of_truth and Landscape runbook-adjacent entities; corpus/census stale-coupling decoupling; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
+- modified_by=REPO_CONVERGENCE_MARKET_DASHBOARD_HISTORICAL_CHROME_233_OUTER_SHELL_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

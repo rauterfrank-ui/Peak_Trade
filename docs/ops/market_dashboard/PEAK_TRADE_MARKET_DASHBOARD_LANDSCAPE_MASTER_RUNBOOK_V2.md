@@ -188,8 +188,8 @@ MERGE_COMMIT_SHA=6f38df4d833945197e8f472c09f402ee767c85ad
 IMPLEMENTATION_HEAD_SHA=7576f2e1158a9365f2a664a5071cfa7dfda35434
 EVIDENCE_BUNDLE_HEAD_SHA=c9d3b3839363cd90c8c6b674739baff0ea7cbf85
 FINAL_SEAL_TIP_SHA=91b4a79cc1ab2d8c017ccee4567b6e7c9bd48ec1
-VALID_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
-INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
+VALID_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
+INVALID_HISTORICAL_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
 EVIDENCE_THREE_STAGE_IDENTITY_VALID=true
 SELF_REFERENTIAL_SEAL_REQUIRED=false
@@ -1222,7 +1222,7 @@ OPERATOR_PRODUCT_GATE=false
 
 - `tests/webui/test_market_landscape_dashboard_v2_accessibility_baseline_v0.py`
 - Existing shell-route + architecture-guard suites remain green.
-- Evidence pack: `evidence/market_dashboard_v2/phase5/task7_accessibility/`
+- Historical phase5 task7 accessibility evidence pack removed (repo-convergence frozen-233); not restored.
 
 **Unresolved / still open for Phase 5 (pre-TASK_8 closeout note superseded below)**
 
@@ -1270,7 +1270,7 @@ STALE_PID_ONLY_BLOCKER=true
 - Relevant shell / architecture / accessibility / chrome-evidence / contracts
   suites green (67 passed). Historical note only: a then-current removal-guard
   suite was included in that count; it is not a current tombstone contract.
-- Evidence pack: `evidence/market_dashboard_v2/phase5/task8_performance/`
+- Historical phase5 task8 performance evidence pack removed (repo-convergence frozen-233); not restored.
 
 **Unresolved / still open for Phase 5**
 
@@ -1920,11 +1920,11 @@ BTC_EXCLUDED=true
 SPOT_EXCLUDED=true
 CANONICAL_OHLCV_BOUND=true
 CONTINUOUS_OHLCV_REFRESH=true
-VALID_INTRABAR_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T214037Z
-INVALID_HISTORICAL_EVIDENCE_PATH=evidence/market_dashboard_v2/intrabar_capability/2026-07-25T211859Z
+VALID_INTRABAR_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
+INVALID_HISTORICAL_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
 CAPABILITY_7_EVIDENCE_PATH=evidence/market_dashboard_v2/capability7_product_maturity/
-REGIME_BINDING_EVIDENCE_PATH=evidence/market_dashboard_v2/regime_bull_bear_switch_binding/
+REGIME_BINDING_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 
 CANONICAL_ROUTE=GET_/market
 CANONICAL_TEMPLATE=templates/peak_trade_dashboard/market_landscape_v2.html
