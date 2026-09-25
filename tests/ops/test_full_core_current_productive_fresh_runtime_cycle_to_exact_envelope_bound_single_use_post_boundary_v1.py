@@ -65,12 +65,18 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1 import (
     CANONICAL_PACK_RELPATH,
-    EXPECTED_ORIGIN_MAIN_SHA,
     OWNER_GO,
     CurrentProductiveFreshRuntimeCycleError,
     execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1,
+)
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+    TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
@@ -102,6 +108,8 @@ NEXT_BLOCKER = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUN
 LATER_POST_GO = (
     "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
 )
+_INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
+
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
@@ -158,13 +166,14 @@ def _fresh_get_transport(*, include_market: bool = True):
 def _run(tmp_path: Path, **overrides):
     payload = {
         "owner_go": OWNER_GO,
-        "origin_main_sha": EXPECTED_ORIGIN_MAIN_SHA,
+        "origin_main_sha": TRUSTED_TEST_ORIGIN_MAIN_SHA,
         "evidence_root": tmp_path / "store",
         "acquisition_transport": _eligible_transport(),
         "fresh_get_transport": _fresh_get_transport(),
         "execute_network": False,
         "producer_observed_at_unix": 1_700_000_100.0,
         "replay": None,
+        "execution_integrity_backend": _INTEGRITY,
     }
     payload.update(overrides)
     return execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(**payload)
@@ -192,7 +201,7 @@ def test_standing_flags_keep_real_post_fail_closed() -> None:
     assert REAL_VENUE_POST_ALLOWED is False
     assert POST_ALLOWED is False
     assert int(MAX_POSITIONS_EFFECTIVE) == 1
-    assert EXPECTED_ORIGIN_MAIN_SHA == "94319bcb744b75a63b30fbd64a5162bf66e398f2"
+    assert RUNTIME_INTEGRITY_CONTRACT_VERSION == "current_productive_29p_chain_runtime_integrity.v1"
     assert current_productive_first_real_blocker_v1() == NEXT_BLOCKER
     assert LATER_POST_GO in ONE_SHOT_REAL_POST_AUTHORITY_REFS
     assert OWNER_GO not in ONE_SHOT_REAL_POST_AUTHORITY_REFS
@@ -245,6 +254,27 @@ def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
         match="ORIGIN_MAIN_SHA_MISMATCH",
     ):
         _run(tmp_path / "b", origin_main_sha="0" * 40)
+
+
+def test_dk_protected_chain_surface_drift_fail_closed(tmp_path: Path) -> None:
+    drift_backend = MockCurrentProductive29PIntegrityBackendV1(drift="diff")
+    with pytest.raises(
+        CurrentProductiveFreshRuntimeCycleError,
+        match="PROTECTED_CHAIN_SURFACE_DRIFT",
+    ):
+        _run(tmp_path, execution_integrity_backend=drift_backend)
+
+
+def test_dk_head_not_at_origin_main_fail_closed(tmp_path: Path) -> None:
+    backend = MockCurrentProductive29PIntegrityBackendV1(
+        origin_main=TRUSTED_TEST_ORIGIN_MAIN_SHA,
+        head="b" * 40,
+    )
+    with pytest.raises(
+        CurrentProductiveFreshRuntimeCycleError,
+        match="HEAD_NOT_AT_ORIGIN_MAIN",
+    ):
+        _run(tmp_path, execution_integrity_backend=backend)
 
 
 def test_finalized_candles_keep_observed_order() -> None:

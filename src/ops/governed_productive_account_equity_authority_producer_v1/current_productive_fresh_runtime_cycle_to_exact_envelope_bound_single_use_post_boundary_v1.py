@@ -79,6 +79,13 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    RUNTIME_INTEGRITY_CONTRACT_VERSION,
+    CurrentProductive29PChainBaselineError,
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_execution_identity_v1,
+    assert_current_productive_29p_repository_sha_for_execution_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
     CurrentProductiveFreshCap23Cap24ReadinessError,
     _assert_no_secrets,
@@ -107,7 +114,6 @@ THIS_SLICE = (
     "11.2.1.DK.FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_"
     "BOUND_SINGLE_USE_POST_BOUNDARY"
 )
-EXPECTED_ORIGIN_MAIN_SHA = "94319bcb744b75a63b30fbd64a5162bf66e398f2"
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_fresh_runtime_cycle_to_exact_"
     "envelope_bound_single_use_post_boundary_v1/20260915T204500Z"
@@ -190,16 +196,28 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
     execute_network: bool = False,
     repository_sha: str | None = None,
     producer_observed_at_unix: float | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveFreshRuntimeCycleResultV1:
     if owner_go != OWNER_GO:
         raise CurrentProductiveFreshRuntimeCycleError("OWNER_GO_MISMATCH")
-    if origin_main_sha != EXPECTED_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveFreshRuntimeCycleError("ORIGIN_MAIN_SHA_MISMATCH")
+    try:
+        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=origin_main_sha,
+            integrity_backend=execution_integrity_backend,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveFreshRuntimeCycleError(str(exc)) from exc
     if execute_network is not True and acquisition_result is None and acquisition_transport is None:
         raise CurrentProductiveFreshRuntimeCycleError("EXECUTE_NETWORK_OR_INJECTED_INPUT_REQUIRED")
     _assert_dk_pins()
     del replay
-    repo_sha = str(repository_sha or origin_main_sha)
+    try:
+        repo_sha = assert_current_productive_29p_repository_sha_for_execution_v1(
+            repository_sha=str(repository_sha or trusted_execution_identity),
+            trusted_execution_identity=trusted_execution_identity,
+        )
+    except CurrentProductive29PChainBaselineError as exc:
+        raise CurrentProductiveFreshRuntimeCycleError(str(exc)) from exc
     observed_unix = (
         float(producer_observed_at_unix) if producer_observed_at_unix is not None else time()
     )
@@ -532,6 +550,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
         "THIS_SLICE": THIS_SLICE,
         "OWNER_GO": OWNER_GO,
         "EXPECTED_ORIGIN_MAIN": origin_main_sha,
+        "TRUSTED_EXECUTION_IDENTITY": trusted_execution_identity,
+        "RUNTIME_INTEGRITY_CONTRACT_VERSION": RUNTIME_INTEGRITY_CONTRACT_VERSION,
         "RESELECTION_AUTHORIZED_BY_THIS_GO": TRUE_TOKEN,
         "RESELECTION_PERFORMED": _token(bound is not None),
         "CANARY_INSTRUMENT_AUTHORITY_IMPORTED": FALSE_TOKEN,
