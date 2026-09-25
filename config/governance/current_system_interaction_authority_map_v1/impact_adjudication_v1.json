@@ -9,6 +9,7 @@
     "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
@@ -16,7 +17,7 @@
     "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py",
     "tests/ops/test_whole_core_completion_egress_q0_authority_v1.py"
   ],
-  "changed_paths_sha256": "78c3bf23bf86383bcdc33d4f884462ebb5acea42d2d52c0560f1156c389b8918",
+  "changed_paths_sha256": "5202f8dd97622dc6c4aa303f020f2fd777dbb71710d4083ae264446199df7c04",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/whole_core_completion_egress_q0_authority_v1.json",
