@@ -63,6 +63,9 @@ def test_domain_final_statuses_match_c2_census_and_no_proven_current() -> None:
         if iid == "ACCOUNT_EQUITY_AVAILABLE_CAPITAL":
             assert domain["initial_status"] == "CONFLICTING"
             assert domain["final_status"] == "PARTIAL"
+        elif iid == "REFERENCE_PRICE":
+            assert domain["initial_status"] == "UNKNOWN"
+            assert domain["final_status"] == "PARTIAL"
         else:
             assert domain["initial_status"] == census["status"]
         assert domain["final_status"] != "PROVEN_CURRENT"
@@ -83,11 +86,12 @@ def test_account_equity_partial_owner_ratified_companion_unbound() -> None:
     assert "position_fraction" in shadow.read_text(encoding="utf-8")
 
 
-def test_reference_price_unknown_no_candle_close_authority() -> None:
+def test_reference_price_partial_mark_price_no_candle_close_authority() -> None:
     res = _load(RESOLUTION_JSON)
     price = res["domain_resolutions"]["REFERENCE_PRICE"]
-    assert price["final_status"] == "UNKNOWN"
-    assert price["owner"] == "UNRESOLVED"
+    assert price["final_status"] == "PARTIAL"
+    assert price["price_semantics_class_ratified"] == "mark_price"
+    assert price["owner"] == "ops.governed_productive_reference_price_authority_producer_v1"
     prov = _load(PROVENANCE_JSON)
     rec = next(r for r in prov["input_provenance_records"] if r["input_id"] == "REFERENCE_PRICE")
     assert "candle_close" in " ".join(rec["explicit_non_sources"]).lower()

@@ -26,8 +26,8 @@
     "C2_INPUT_SET_COMPLETE_PROVEN": true,
     "C2_REQUIRED_INPUT_COUNT": 3,
     "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
-    "C2_DOMAINS_PARTIAL_COUNT": 1,
-    "C2_DOMAINS_UNKNOWN_COUNT": 1,
+    "C2_DOMAINS_PARTIAL_COUNT": 2,
+    "C2_DOMAINS_UNKNOWN_COUNT": 0,
     "C2_DOMAINS_CONFLICTING_COUNT": 0,
     "C2_DOMAINS_UNRESOLVED_COUNT": 1,
     "CONVERSION_READY": false,
@@ -136,7 +136,9 @@
       "semantic_meaning": "Instrument-bound reference price for Fraction→Units normalization on Companion Shadow/Live",
       "unit": "PRICE_PER_INSTRUMENT_UNIT",
       "producer": "NONE_PRODUCTIVE_ON_COMPANION_PATH",
-      "owner": "UNRESOLVED",
+      "owner": "ops.governed_productive_reference_price_authority_producer_v1",
+      "owner_scope": "FULL_CORE_TRACK_ONLY",
+      "price_semantics_class_ratified": "mark_price",
       "source_of_truth": "UNBOUND_ON_COMPANION_PATH",
       "consumer": "Companion Shadow/Live → ExecutionPipeline.signal_to_orders (conversion handoff absent)",
       "handoff": "NO_CONVERSION_HANDOFF_PRESENT",
@@ -144,10 +146,10 @@
       "freshness_requirement": "FAIL_CLOSED_MISSING",
       "fallback_path": "NONE_AUTHORIZED",
       "historical_default_path": "offline_replay_default_3500; candle.close observation; CMC mark label (explicit_non_sources)",
-      "current_authority_evidence": "Authority-decision: REFERENCE_PRICE_AUTHORITY_OWNER=UNRESOLVED; no productive producer on Companion path. Map open record reference_price_authority_owner UNKNOWN.",
+      "current_authority_evidence": "OWNER_GO_RATIFY_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_V1: REFERENCE_PRICE_AUTHORITY_OWNER=ops.governed_productive_reference_price_authority_producer_v1; price_semantics_class=mark_price; OBSERVATION_IS_NOT_AUTHORITY=true; Companion provenance REQUIRED_INPUT_MISSING unchanged.",
       "provenance_status": "REQUIRED_INPUT_MISSING",
       "conflicts": [],
-      "status": "UNKNOWN",
+      "status": "PARTIAL",
       "classification_notes": {
         "canonical_model_rule_semantics": "REFERENCE_PRICE dimension and forbidden elevations frozen",
         "current_dynamic_input_state": "candle.close used as session data input; not elevated to conversion authority",
@@ -155,7 +157,7 @@
       },
       "c2_authority_binding_implemented": false,
       "domain_authority_resolution_ref": "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-      "domain_authority_resolution_final_status": "UNKNOWN"
+      "domain_authority_resolution_final_status": "PARTIAL"
     },
     "INSTRUMENT_QUANTITY_METADATA": {
       "domain": "INSTRUMENT_QUANTITY_METADATA",

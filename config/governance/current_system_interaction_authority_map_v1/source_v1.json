@@ -1869,12 +1869,13 @@
     },
     {
       "id": "reference_price_authority_owner",
-      "epistemic_class": "UNKNOWN",
-      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER remains UNRESOLVED on the B05 pin. NAVIGATION_INDEX: C2 blocking-authorities resolution keeps REFERENCE_PRICE open; Full-Core enter join consumes reference inputs but does not adjudicate owner (see b05_vs_singular_risk_owner).",
+      "epistemic_class": "PARTIAL",
+      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price (Owner-GO consumed). Companion conversion handoff absent; GOVERNED_PRODUCER_CREATED=false; INDEX_PX is not reference-price authority.",
       "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+        "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py"
       ]
     },
     {

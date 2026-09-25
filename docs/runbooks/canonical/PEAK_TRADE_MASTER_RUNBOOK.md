@@ -466,6 +466,41 @@ EXTERNAL_EFFECT_AUTHORIZED=false
 ATLAS_AUTHORITY=NONE
 ```
 
+### B05 Full-Core reference price authority owner ratification
+
+Owner-GO
+`OWNER_GO_RATIFY_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_V1`
+(one-shot; **CONSUMED**) ratifies B05 `REFERENCE_PRICE_AUTHORITY_OWNER` for the
+Full-Core track only with explicit `price_semantics_class=mark_price`. Machine
+contract:
+`config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json`.
+Derived spec:
+`docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md`.
+
+No Companion handoff. No producer implementation claim. No INDEX_PX elevation.
+No network GET/POST.
+
+```text
+OWNER_GO=OWNER_GO_RATIFY_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_V1
+OWNER_GO_STATUS=CONSUMED
+SCOPE_TRACK=FULL_CORE
+DIMENSION_ID=INSTRUMENT_VENUE_TIME_BOUND_CONVERSION_REFERENCE_PRICE
+PRICE_SEMANTICS_CLASS_RATIFIED=mark_price
+REFERENCE_PRICE_AUTHORITY_OWNER=ops.governed_productive_reference_price_authority_producer_v1
+FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED=true
+REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false
+GOVERNED_PRODUCER_CREATED=false
+PRODUCER_IMPLEMENTATION_PRESENT=false
+OBSERVATION_IS_NOT_AUTHORITY=true
+INDEX_PX_NOT_REFERENCE_PRICE_AUTHORITY=true
+COMPANION_REFERENCE_PRICE_HANDOFF_AUTHORIZED=false
+C2_REFERENCE_PRICE_DOMAIN_VERDICT=PARTIAL
+CONVERSION_READY=false
+NETWORK_ACCESS_PERFORMED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings

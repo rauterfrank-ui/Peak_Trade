@@ -28,7 +28,7 @@ Repo-wide **CURRENT productive** lineage forensics for the three C2 input famili
 | Domain | Verdict |
 |--------|---------|
 | ACCOUNT_EQUITY_AVAILABLE_CAPITAL | CONFLICTING |
-| REFERENCE_PRICE | UNKNOWN |
+| REFERENCE_PRICE | PARTIAL |
 | INSTRUMENT_QUANTITY_METADATA | UNRESOLVED |
 
 Zero domains `PROVEN_CURRENT`; `C2_STATUS=UNRESOLVED`.

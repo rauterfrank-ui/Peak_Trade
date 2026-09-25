@@ -33,8 +33,8 @@
     "C2_INPUT_AUTHORITIES": "UNRESOLVED",
     "C2_CLOSURE_RULE_SATISFIED": false,
     "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
-    "C2_DOMAINS_PARTIAL_COUNT": 0,
-    "C2_DOMAINS_UNKNOWN_COUNT": 1,
+    "C2_DOMAINS_PARTIAL_COUNT": 2,
+    "C2_DOMAINS_UNKNOWN_COUNT": 0,
     "C2_DOMAINS_CONFLICTING_COUNT": 1,
     "C2_DOMAINS_UNRESOLVED_COUNT": 1,
     "CONVERSION_READY": false,
@@ -67,7 +67,7 @@
     "blocking_reasons": [
       "not all c2_domain_verdict == PROVEN_CURRENT",
       "c2_authority_binding_implemented false for all three",
-      "Full-Core equity owner ratified; reference/instrument UNRESOLVED; Companion C2 not closed",
+      "Full-Core equity and reference-price owners ratified; instrument UNRESOLVED; Companion C2 not closed",
       "companion_conversion_input_binding conversion_ready false"
     ]
   },
@@ -142,12 +142,14 @@
     },
     "REFERENCE_PRICE": {
       "input_id": "REFERENCE_PRICE",
-      "c2_domain_verdict": "UNKNOWN",
+      "c2_domain_verdict": "PARTIAL",
       "c2_authority_binding_implemented": false,
-      "verdict_reason": "Productive mark-price observation chain exists for Full-Core MV2 ingest but REFERENCE_PRICE_AUTHORITY_OWNER is UNRESOLVED, price semantics classes remain distinct by freeze, and Companion path has no reference-price conversion handoff.",
-      "productive_lineage_trace_status": "OBSERVATION_CHAIN_TRACEABLE_OWNER_UNRESOLVED",
+      "verdict_reason": "Full-Core REFERENCE_PRICE_AUTHORITY_OWNER ratified to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price; OBSERVATION_IS_NOT_AUTHORITY holds; GOVERNED_PRODUCER_CREATED=false; Companion path has no reference-price handoff; C2 companion-scoped input remains PARTIAL.",
+      "productive_lineage_trace_status": "WIRED_TRACEABLE_FULL_CORE_OWNER_RATIFIED_NOT_C2_COMPANION_CLOSURE",
       "productive_lineage_matrix": {
-        "canonical_authority_owner_b05": "UNRESOLVED",
+        "canonical_authority_owner_b05": "ops.governed_productive_reference_price_authority_producer_v1",
+        "canonical_authority_owner_b05_scope": "FULL_CORE_TRACK_ONLY",
+        "price_semantics_class_ratified": "mark_price",
         "canonical_dimension": "INSTRUMENT_VENUE_TIME_BOUND_CONVERSION_REFERENCE_PRICE",
         "producer_chain": [
           {
@@ -265,7 +267,7 @@
   "implemented_authority_bindings": [],
   "open_conflicts_remaining": [
     "ACCOUNT_EQUITY: Full-Core owner ratified; GOVERNED_PRODUCER_CREATED=false; Companion handoff absent",
-    "REFERENCE_PRICE: productive mark observation vs REFERENCE_PRICE_AUTHORITY_OWNER UNRESOLVED",
+    "REFERENCE_PRICE: Full-Core owner ratified mark_price; GOVERNED_PRODUCER_CREATED=false; Companion handoff absent",
     "INSTRUMENT: Cap24 identity vs missing governed quantity-metadata authority bundle",
     "CANONICAL_RISK_SIZING_OWNER UNRESOLVED (out of scope)"
   ],

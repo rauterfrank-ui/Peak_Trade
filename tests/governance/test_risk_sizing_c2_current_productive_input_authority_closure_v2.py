@@ -34,7 +34,7 @@ EXPECTED = (
 )
 EXPECTED_VERDICTS = {
     "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": "PARTIAL",
-    "REFERENCE_PRICE": "UNKNOWN",
+    "REFERENCE_PRICE": "PARTIAL",
     "INSTRUMENT_QUANTITY_METADATA": "UNRESOLVED",
 }
 
@@ -92,7 +92,7 @@ def test_account_equity_productive_chain_without_companion_binding() -> None:
 def test_reference_price_mark_chain_not_elevated() -> None:
     v2 = _load(V2_JSON)
     price = v2["domain_adjudications"]["REFERENCE_PRICE"]
-    assert price["c2_domain_verdict"] == "UNKNOWN"
+    assert price["c2_domain_verdict"] == "PARTIAL"
     chain = price["productive_lineage_matrix"]["producer_chain"]
     assert any("mark_price" in str(step) for step in chain)
     assert (
