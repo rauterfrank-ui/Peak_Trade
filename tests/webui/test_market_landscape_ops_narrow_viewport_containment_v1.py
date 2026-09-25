@@ -17,7 +17,13 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[2]
 CSS = REPO / "static" / "css" / "market_dashboard_landscape_v2.css"
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "ops_narrow_viewport_containment_v1"
+
+
+def _ephemeral_evidence_dir(tmp_path: Path) -> Path:
+    root = tmp_path / "market_dashboard_v2" / "ops_narrow_viewport_containment_v1"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
 
 VIEWPORTS = (
     (1200, 807, "ops_containment_1200x807.png"),
@@ -191,8 +197,8 @@ def test_real_chrome_ops_narrow_viewport_containment(tmp_path: Path) -> None:
     from playwright.sync_api import sync_playwright
 
     html = _render_landscape_html()
-    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-    (EVIDENCE_DIR / "rendered_market.html").write_text(html, encoding="utf-8")
+    evidence_dir = _ephemeral_evidence_dir(tmp_path)
+    (evidence_dir / "rendered_market.html").write_text(html, encoding="utf-8")
 
     console_errors: list[str] = []
     page_errors: list[str] = []
@@ -269,7 +275,7 @@ def test_real_chrome_ops_narrow_viewport_containment(tmp_path: Path) -> None:
                 assert metrics["chart_meta_ellipsis"]["textOverflow"] == "ellipsis"
                 assert metrics["chart_meta_ellipsis"]["whiteSpace"] == "nowrap"
 
-                shot_path = EVIDENCE_DIR / shot_name
+                shot_path = evidence_dir / shot_name
                 page.screenshot(path=str(shot_path), full_page=True)
                 metrics_by_shot[shot_name] = {
                     "viewport": [width, height],
@@ -289,7 +295,7 @@ def test_real_chrome_ops_narrow_viewport_containment(tmp_path: Path) -> None:
     assert console_errors == [], console_errors
     assert page_errors == [], page_errors
 
-    (EVIDENCE_DIR / "containment_metrics.json").write_text(
+    (evidence_dir / "containment_metrics.json").write_text(
         json.dumps(
             {
                 "capability_id": (

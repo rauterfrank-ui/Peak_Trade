@@ -179,7 +179,6 @@ okx_named_files:
   - docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md
   - docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md
   - docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md
-  - evidence/market_dashboard_v2/capability7_product_maturity/okx_baseline_note.txt
   - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/DESTINATION_RATIONALE.txt
   - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/EVIDENCE_MANIFEST_SHA256.txt
   - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/README.md

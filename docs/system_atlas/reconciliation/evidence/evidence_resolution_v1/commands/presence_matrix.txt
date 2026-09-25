@@ -8,8 +8,8 @@ RCN-000009   CURRENTLY_ABSENT              0        0 src/webui/market_dashboard
 RCN-000010   CURRENTLY_ABSENT              0        0 src/webui/market_dashboard_readmodels_v1
 RCN-000011   CURRENTLY_ABSENT              0        0 src/webui/market_visual_operator_surface_v1
 RCN-000012   CURRENTLY_ABSENT              0        0 src/webui/futures_read_only_market_dashboard_runtime_v0.py
+RCN-000013   CURRENTLY_PRESENT            38       38 evidence/market_dashboard_deletion/
 RCN-000014   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo
-RCN-000015   CURRENTLY_ABSENT              0        0 src/ops/master_v2_minimal_selector_v1
 RCN-000019   CURRENTLY_PARTIAL             0        0 src/risk_layer/kill_switch.py
 RCN-000020   CURRENTLY_ABSENT              0        0 docs/observability/LOGGING_FIELDS.md
 RCN-000023   CURRENTLY_ABSENT              0        0 src/webui/market_surface.py
@@ -30,12 +30,8 @@ RCN-000040   CURRENTLY_ABSENT              0        0 src/infra/backup
 RCN-000041   CURRENTLY_ABSENT              0        0 src/infra/monitoring
 RCN-000042   CURRENTLY_ABSENT              0        0 src/infra/resilience
 RCN-000043   CURRENTLY_ABSENT              0        0 src/ops/pre_economic_zero_order_decision_cycle_observer_v1.py
-RCN-000044   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/backtest/engine.py
-RCN-000045   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/risk/position_sizer.py
-RCN-000046   CURRENTLY_ABSENT              0        0 archive/PeakTradeRepo/src/strategies/ma_crossover.py
 RCN-000047   CURRENTLY_ABSENT              0        0 evidence/market_dashboard_reset/pr_a
 RCN-000048   CURRENTLY_ABSENT              0        0 docs/20_phases
 RCN-000049   CURRENTLY_ABSENT              0        0 docs/00_overview
 RCN-000050   CURRENTLY_ABSENT              0        0 src/strategies/step29m_bollinger_bands_v2.py
-RCN-000051   CURRENTLY_ABSENT              0        0 archive/noch_einordnen/README.md
 RCN-000052   CURRENTLY_ABSENT             11       11 docs/webui/observability

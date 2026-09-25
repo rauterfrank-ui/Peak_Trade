@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,7 +41,6 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `TERM:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Repository convergence FGC-01 AUTHORITY=NONE docs/product/evidence historical island removal: NAVIGATION_ONLY atlas review for map_of_truth; atlas corpus/census inventory decoupling; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- Repository convergence FGC-02 AUTHORITY=NONE removal of evidence/market_dashboard_v2/ and evidence/market_dashboard_deletion/ with WebUI test ephemeral evidence decoupling; atlas corpus/census/reconciliation evaluate+adjudicate closure for RCN-000013; map currency MAP_UPDATE_REQUIRED; map_authority=NONE; CURRENT Landscape V2 product retained. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
+- modified_by=REPO_CONVERGENCE_FGC02_MARKET_DASHBOARD_EVIDENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

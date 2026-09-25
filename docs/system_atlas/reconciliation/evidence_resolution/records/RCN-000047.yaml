@@ -39,8 +39,8 @@ function_gap:
   evidence_type: HISTORICAL_INTERMEDIATE
 relation_gap:
   status: PROVEN_FAMILY_RELATION_NOT_IDENTITY
-  statement: 'Different evidence event from the still-present deletion pack evidence/market_dashboard_deletion (RCN-000013,
-    RETAIN). POSSIBLE_SAME_AS RCN-000013 remains hypothesis: reset pack vs later deletion pack.'
+  statement: 'Different evidence event from the market dashboard deletion forensics pack (RCN-000013; committed evidence removed
+    by FGC-02). POSSIBLE_SAME_AS RCN-000013 remains hypothesis: reset pack vs later deletion pack.'
   used_as_fact: true
   source: docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/landscape_v1_import_edges.txt
   source_sha: 987e020378d1767fbd6fb1f0914d475f9a485f51
@@ -120,7 +120,7 @@ evidence_refs:
 - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/raw_quotes.yaml
 - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/presence_matrix.txt
 - docs/system_atlas/reconciliation/evidence/evidence_resolution_v1/commands/landscape_v1_import_edges.txt
-- evidence/market_dashboard_deletion/deletion_manifest.txt
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
 remaining_open_questions:
 - Does a current Landscape V2 slot cover this historical purpose, or only share GET /market?
 - Unique current value of the deleted artifact versus Landscape V2 remains unproven.

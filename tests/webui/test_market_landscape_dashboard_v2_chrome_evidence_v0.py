@@ -26,7 +26,13 @@ from src.webui.market_dashboard_landscape_v2 import (
 )
 
 REPO = Path(__file__).resolve().parents[2]
-EVIDENCE_DIR = REPO / "evidence" / "market_dashboard_v2" / "capability7_product_maturity"
+
+
+def _ephemeral_evidence_dir(tmp_path: Path) -> Path:
+    root = tmp_path / "market_dashboard_v2" / "capability7_product_maturity"
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
 
 VIEWPORTS = (
     (1512, 982, "market_1512x982.png"),
@@ -268,6 +274,7 @@ def _run_chrome_against_html(
     html: str,
     shot_prefix: str,
     expect_safety_available: bool,
+    evidence_dir: Path,
 ) -> dict[str, object]:
     console_errors: list[str] = []
     page_errors: list[str] = []
@@ -427,7 +434,7 @@ def _run_chrome_against_html(
                 assert "Recover Kill" not in body_text
 
                 # Closed-state screenshot (drawer remains closed after Escape assertion).
-                shot_path = EVIDENCE_DIR / f"{shot_prefix}{shot_name}"
+                shot_path = evidence_dir / f"{shot_prefix}{shot_name}"
                 page.screenshot(path=str(shot_path), full_page=False)
 
                 # Open-state screenshot with visible per-slot engineering diagnostics.
@@ -437,7 +444,7 @@ def _run_chrome_against_html(
                 open_shot_name = (
                     f"{shot_prefix}{shot_name.replace('market_', 'market_drawer_open_', 1)}"
                 )
-                open_path = EVIDENCE_DIR / open_shot_name
+                open_path = evidence_dir / open_shot_name
                 page.locator(
                     '[data-mdl-engineering-slot="canonical_decision"]'
                 ).scroll_into_view_if_needed()
@@ -478,16 +485,17 @@ def _run_chrome_against_html(
 
 def test_real_chrome_landscape_shell_viewports(tmp_path: Path) -> None:
     html = _collect_asgi_html()
-    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-    rendered = EVIDENCE_DIR / "rendered_market.html"
+    evidence_dir = _ephemeral_evidence_dir(tmp_path)
+    rendered = evidence_dir / "rendered_market.html"
     rendered.write_text(html, encoding="utf-8")
 
     out = _run_chrome_against_html(
         html=html,
         shot_prefix="",
         expect_safety_available=False,
+        evidence_dir=evidence_dir,
     )
-    (EVIDENCE_DIR / "console.log").write_text(
+    (evidence_dir / "console.log").write_text(
         json.dumps(
             {
                 "console_errors": out["console_errors"],
@@ -509,15 +517,16 @@ def test_real_chrome_injected_safety_viewports(tmp_path: Path) -> None:
     assert "KILLED" in html
     assert "veto=True" in html
     assert 'data-availability="AVAILABLE"' in html
-    EVIDENCE_DIR.mkdir(parents=True, exist_ok=True)
-    (EVIDENCE_DIR / "rendered_market_injected_safety.html").write_text(html, encoding="utf-8")
+    evidence_dir = _ephemeral_evidence_dir(tmp_path)
+    (evidence_dir / "rendered_market_injected_safety.html").write_text(html, encoding="utf-8")
 
     out = _run_chrome_against_html(
         html=html,
         shot_prefix="injected_",
         expect_safety_available=True,
+        evidence_dir=evidence_dir,
     )
-    (EVIDENCE_DIR / "console_injected.log").write_text(
+    (evidence_dir / "console_injected.log").write_text(
         json.dumps(
             {
                 "console_errors": out["console_errors"],

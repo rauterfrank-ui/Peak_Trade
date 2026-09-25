@@ -1,0 +1,52 @@
+# ATLAS_AUTHORITY=NONE
+# RECONCILIATION_AUTHORITY=NONE
+schema_version: peak_trade.reconciliation_governance.v1
+bound_against_ref: origin/main
+bound_against_sha: f9618c73f1834b68588ceab586da4d6408962a10
+atlas_authority: NONE
+reconciliation_authority: NONE
+reevaluate_pass_id: REEVALUATE_OPEN_RECORDS_PASS_V1
+input_pass_id: OPEN_EVIDENCE_RESOLUTION_PASS_V1
+identity_fusion_forbidden: true
+reintegration_performed: false
+runtime_mutation_performed: false
+identity_merges_performed: 0
+understand_snapshot_frozen: true
+evaluate_snapshot_frozen: true
+adjudication_snapshot_frozen: true
+evidence_resolution_snapshot_frozen: true
+record_id: RCN-000013
+reevaluation_attempted: true
+adjudication_attempted: true
+disposition_burden_met: false
+disposition_candidate: INSUFFICIENT_EVIDENCE
+disposition: INSUFFICIENT_EVIDENCE
+lifecycle_state: OPEN
+final_disposition_change_performed: false
+identity_merge_performed: false
+reintegration_candidate: false
+further_evidence_required: true
+current_evidence_set:
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
+- docs/system_atlas/reconciliation/adjudicate/records/RCN-000013.yaml
+historical_function: Evidence pack for PR5290 dashboard deletion forensics and v2 chrome maturity artifacts.
+historical_relations: Distinct from Landscape V2 product consumer (RCN-000001); evidence-only paths removed by FGC-02.
+current_system_analogues: Landscape V2 package remains; committed evidence islands absent after convergence.
+identity_status: CONVERGENCE_CLOSED_NOT_RETAINED
+successor_status: NOT_APPLICABLE
+replacement_status: NOT_PROVEN
+current_value_status: ABSENT_BY_CONVERGENCE
+current_compatibility_status: COMPATIBLE_NONE_AUTHORITY
+contradictions: []
+unresolved_gaps:
+- Historical discovery census still references removed evidence paths; ledger discovery is intentionally historical.
+evaluation_result: 'Market dashboard historical evidence islands: FGC-02 removed committed packs; INSUFFICIENT_EVIDENCE remains OPEN and is not rejection.'
+claims:
+- claim_class: CANONICAL_CURRENT_FACT
+  text: Landscape V2 package remains on origin/main after FGC-02.
+  evidence:
+  - src/webui/market_dashboard_landscape_v2/
+  used_as_fact: true
+evidence_refs:
+- docs/system_atlas/reconciliation/evaluate/records/RCN-000013.yaml
+- src/webui/market_dashboard_landscape_v2/

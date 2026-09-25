@@ -329,7 +329,7 @@ def persist_evidence_resolution_pass_v1(*, repo_root: Path) -> dict[str, int]:
     ledger = yaml.safe_load(ledger_path.read_text(encoding="utf-8"))
     ledger_records = list(ledger.get("records") or [])
     generated = {row["record_id"]: row for row in evidence_resolution_records()}
-    if len(generated) != 35:
+    if len(generated) != 36:
         raise ValueError(f"resolution_record_count_mismatch:{len(generated)}")
 
     status_counts = {RESOLVED: 0, PARTIAL: 0, UNRESOLVED: 0, CONTRADICTION: 0}
@@ -400,7 +400,7 @@ def persist_evidence_resolution_pass_v1(*, repo_root: Path) -> dict[str, int]:
             }
         )
 
-    if attempted != 35:
+    if attempted != 36:
         raise ValueError(f"attempted_count_mismatch:{attempted}")
 
     ledger["evidence_resolution_pass_id"] = EVIDENCE_RESOLUTION_PASS_ID

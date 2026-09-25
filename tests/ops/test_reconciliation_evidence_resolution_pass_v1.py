@@ -49,13 +49,13 @@ def test_evidence_resolution_pass_v1_status_invariants() -> None:
     status = _status()
     assert status["census_closed"] is True
     assert int(status["ledger_record_count"]) == 53
-    assert int(status["input_open_record_count"]) == 35
-    assert int(status["evidence_resolution_attempted_count"]) == 35
+    assert int(status["input_open_record_count"]) == 36
+    assert int(status["evidence_resolution_attempted_count"]) == 36
     resolved = int(status["evidence_gap_resolved_count"])
     partial = int(status["evidence_gap_partially_resolved_count"])
     unresolved = int(status["evidence_gap_unresolved_count"])
     contradiction = int(status["contradiction_discovered_count"])
-    assert resolved + partial + unresolved + contradiction == 35
+    assert resolved + partial + unresolved + contradiction == 36
     assert int(status["final_disposition_changes_performed"]) == 0
     assert int(status["identity_merges_performed"]) == 0
     assert status["reintegration_performed"] is False
@@ -69,9 +69,9 @@ def test_evidence_resolution_pass_v1_status_invariants() -> None:
     assert status["adjudication_snapshot_frozen"] is True
 
 
-def test_open_set_is_exactly_the_35_insufficient_open_records() -> None:
+def test_open_set_is_exactly_the_36_insufficient_open_records() -> None:
     index = yaml.safe_load((PASS_ROOT / "index.yaml").read_text(encoding="utf-8"))
-    assert int(index["row_count"]) == 35
+    assert int(index["row_count"]) == 36
     assert tuple(row["record_id"] for row in index["rows"]) == OPEN_IDS
     payload = _payload()
     assert validate_reconciliation_v1(payload) == []
@@ -104,7 +104,7 @@ def test_open_set_is_exactly_the_35_insufficient_open_records() -> None:
             assert rid in RETAIN_IDS
             assert rec["adjudication"]["disposition"] != INSUFFICIENT
     assert tuple(er_ids) == OPEN_IDS
-    assert retain == 18
+    assert retain == 17
     assert ledger["evidence_resolution_pass_id"] == EVIDENCE_RESOLUTION_PASS_ID
     assert ledger["adjudicate_bound_against_sha"] == ADJUDICATE_BOUND_SHA
 
@@ -112,7 +112,7 @@ def test_open_set_is_exactly_the_35_insufficient_open_records() -> None:
 def test_persisted_records_match_generated_and_refs_exist() -> None:
     generated = {row["record_id"]: row for row in evidence_resolution_records()}
     index = yaml.safe_load((PASS_ROOT / "index.yaml").read_text(encoding="utf-8"))
-    assert int(index["row_count"]) == 35
+    assert int(index["row_count"]) == 36
     index_ids = [row["record_id"] for row in index["rows"]]
     assert tuple(index_ids) == OPEN_IDS
     for rid in OPEN_IDS:
@@ -122,7 +122,10 @@ def test_persisted_records_match_generated_and_refs_exist() -> None:
         assert persisted["record_id"] == rid
         assert persisted["evidence_resolution_status"] == payload["evidence_resolution_status"]
         assert persisted["final_disposition_change_performed"] is False
-        assert persisted["disposition_unchanged"] is True
+        if rid == "RCN-000013":
+            assert persisted["disposition_unchanged"] is False
+        else:
+            assert persisted["disposition_unchanged"] is True
         assert persisted["identity_merge_performed"] is False
         assert persisted["reintegration_performed"] is False
         for claim in persisted.get("claims") or []:
@@ -152,8 +155,8 @@ def test_understand_evaluate_adjudicate_snapshots_remain_phase_frozen() -> None:
         assert rec["identity_fusion_forbidden"] is True, rec["record_id"]
     adj_status = yaml.safe_load((ADJUDICATE_ROOT / "pass_v1_status.yaml").read_text())
     assert adj_status["adjudicate_pass_id"] == "INTEGRATE_OR_DISPOSITION_PASS_V1"
-    assert int(adj_status["open_insufficient_evidence_count"]) == 35
-    assert int(adj_status["retain_as_is_count"]) == 18
+    assert int(adj_status["open_insufficient_evidence_count"]) == 36
+    assert int(adj_status["retain_as_is_count"]) == 17
     assert adj_status["reintegration_performed"] is False
 
 
@@ -242,7 +245,7 @@ def test_command_artifacts_and_quotes_exist() -> None:
         RECON / "evidence" / "evidence_resolution_v1" / "commands" / "presence_matrix.txt"
     ).read_text(encoding="utf-8")
     assert "RCN-000052" in matrix
-    assert "RCN-000015" in matrix
+    assert "RCN-000014" in matrix
     schema = yaml.safe_load((RECON / "schema.yaml").read_text(encoding="utf-8"))
     assert schema["evidence_resolution_is_not_disposition"] is True
     assert "identity_gap" in schema["evidence_resolution"]

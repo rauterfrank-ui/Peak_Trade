@@ -360,22 +360,6 @@ rename_pairs:
   to: docs/ops/specs/MASTER_V2_C1_DISTINCT_MARKET_OBSERVATION_ACCEPTOR_V1.md
   family_from: docs/ops/specs
   family_to: docs/ops/specs
-- from: evidence/market_dashboard_reset/pr_e/docs_reference_targets.txt
-  to: evidence/market_dashboard_deletion/docs_reference_targets.txt
-  family_from: evidence/market_dashboard_reset/pr_e
-  family_to: evidence/market_dashboard_deletion/docs_reference_targets.txt
-- from: evidence/market_dashboard_reset/pr_c/docs_token_policy.txt
-  to: evidence/market_dashboard_deletion/docs_token_policy.txt
-  family_from: evidence/market_dashboard_reset/pr_c
-  family_to: evidence/market_dashboard_deletion/docs_token_policy.txt
-- from: evidence/market_dashboard_reset/pr_a/ruff_check.txt
-  to: evidence/market_dashboard_deletion/ruff_check.txt
-  family_from: evidence/market_dashboard_reset/pr_a
-  family_to: evidence/market_dashboard_deletion/ruff_check.txt
-- from: evidence/market_dashboard_reset/pr_d/test_results.txt
-  to: evidence/market_dashboard_deletion/timing_proof.txt
-  family_from: evidence/market_dashboard_reset/pr_d
-  family_to: evidence/market_dashboard_deletion/timing_proof.txt
 - from: tests/ops/test_runbook_step29p_progress_registry_start_contract_v0.py
   to: tests/ops/test_runbook_step29p_progress_registry_closeout_contract_v0.py
   family_from: tests/ops/test_runbook_step29p_progress_registry_start_contract_v0.py

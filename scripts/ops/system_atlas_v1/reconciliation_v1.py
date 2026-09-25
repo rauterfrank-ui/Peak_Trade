@@ -788,11 +788,11 @@ def _validate_reevaluate_pass_v2_tree(
         raise ReconciliationValidationError("REEVALUATE_V2_STATUS_INPUT_PASS")
     if str(status.get("bound_against_sha") or "") != REEVALUATE_V2_BOUND_SHA:
         raise ReconciliationValidationError("REEVALUATE_V2_STATUS_BOUND_SHA")
-    if int(status.get("input_open_record_count", -1)) != 35:
+    if int(status.get("input_open_record_count", -1)) != 36:
         raise ReconciliationValidationError("REEVALUATE_V2_INPUT_OPEN_COUNT")
     if int(status.get("new_final_disposition_count", -1)) != 5:
         raise ReconciliationValidationError("REEVALUATE_V2_FINALIZED_COUNT")
-    if int(status.get("remaining_insufficient_evidence_open_count", -1)) != 30:
+    if int(status.get("remaining_insufficient_evidence_open_count", -1)) != 31:
         raise ReconciliationValidationError("REEVALUATE_V2_REMAINING_OPEN_COUNT")
     if int(status.get("identity_merges_performed", -1)) != 0:
         raise ReconciliationValidationError("REEVALUATE_V2_IDENTITY_MERGES")
@@ -866,7 +866,7 @@ def _validate_reevaluate_pass_v2_tree(
                 raise ReconciliationValidationError(f"REEVALUATE_V2_IDENTITY_FUSION:{rid}:{rtype}")
     if len(ids) != 53 or len(set(ids)) != 53:
         raise ReconciliationValidationError("REEVALUATE_V2_RECORD_ID_COUNT")
-    if retain != 18 or incompatible != 1 or rejected != 4 or insufficient != 30:
+    if retain != 17 or incompatible != 1 or rejected != 4 or insufficient != 31:
         raise ReconciliationValidationError(
             f"REEVALUATE_V2_COUNT_MISMATCH:{retain}:{incompatible}:{rejected}:{insufficient}"
         )

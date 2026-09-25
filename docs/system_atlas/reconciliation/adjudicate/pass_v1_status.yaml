@@ -20,19 +20,19 @@ ledger_record_count: 53
 current_system_compared_record_count: 53
 adjudication_attempted_record_count: 53
 adjudicated_record_count: 53
-disposition_decided_record_count: 18
-open_insufficient_evidence_count: 35
-retain_as_is_count: 18
+disposition_decided_record_count: 17
+open_insufficient_evidence_count: 36
+retain_as_is_count: 17
 adapt_and_reintegrate_count: 0
 capability_already_covered_count: 0
 historically_valid_but_incompatible_count: 0
 reject_for_current_system_count: 0
-insufficient_evidence_count: 35
+insufficient_evidence_count: 36
 identity_merges_performed: 0
 no_reintegration_performed: true
 no_identity_fusion_performed: true
 no_runtime_mutation_performed: true
 disposition_counts:
-  RETAIN_AS_IS: 18
-  INSUFFICIENT_EVIDENCE: 35
+  RETAIN_AS_IS: 17
+  INSUFFICIENT_EVIDENCE: 36
 adjudicate_phase_status: ADJUDICATION_ATTEMPTED

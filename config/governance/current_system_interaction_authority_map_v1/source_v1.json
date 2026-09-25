@@ -2202,6 +2202,16 @@
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/product/README.md"
       ]
+    },
+    {
+      "id": "repo_convergence_fgc02_market_dashboard_evidence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Repository convergence FGC-02: AUTHORITY=NONE removal of evidence/market_dashboard_v2/ and evidence/market_dashboard_deletion/ with WebUI ephemeral evidence decoupling and atlas RCN-000013 closure; CURRENT Market Landscape V2 product/runtime retained; no trading semantics change.",
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "scripts/ops/fast_reference_replay_v1.py",
+        "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
+      ]
     }
   ]
 }

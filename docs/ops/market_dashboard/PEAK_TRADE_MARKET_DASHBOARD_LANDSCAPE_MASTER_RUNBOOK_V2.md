@@ -1308,7 +1308,7 @@ CAPABILITY=MARKET_DASHBOARD_PRODUCT_MATURITY_AND_CHROME_EVIDENCE_V1
 **Tests / evidence**
 
 - Shell-route density guard + existing Landscape owner suites.
-- Evidence pack: `evidence/market_dashboard_v2/capability7_product_maturity/`
+- Chrome/accessibility evidence: ephemeral pytest output (no committed `evidence/market_dashboard_v2/` tree)
 
 ---
 
@@ -1567,7 +1567,7 @@ Optional:
 Evidence:
 
 ```text
-evidence/market_dashboard_v2/<phase>/<pr>/
+<ephemeral pytest tmp_path>/market_dashboard_v2/<phase>/
   git_state.txt
   source_owner_matrix.tsv
   route_test.txt
@@ -1923,7 +1923,7 @@ CONTINUOUS_OHLCV_REFRESH=true
 VALID_INTRABAR_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 INVALID_HISTORICAL_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 EVIDENCE_MANIFEST_SHA256=1cd1dfff96306087e19d5ca5a235664ddcfbef53b3e8740b4d301f0c5cffe085
-CAPABILITY_7_EVIDENCE_PATH=evidence/market_dashboard_v2/capability7_product_maturity/
+CAPABILITY_7_EVIDENCE_PATH=EPHEMERAL_PYTEST_TMP_PATH/market_dashboard_v2/capability7_product_maturity/
 REGIME_BINDING_EVIDENCE_PATH=REMOVED_FROZEN_233_HISTORICAL_CHROME_OUTER_SHELL_NOT_RESTORED
 
 CANONICAL_ROUTE=GET_/market
