@@ -10,7 +10,7 @@ docs_token: DOCS_TOKEN_OPS_SUITE_OPERATOR_STATE_REVIEW
 
 Sections 1–2 describe **`guard_state` as fully hardcoded** and **`operator_state` inputs as placeholders** — that matched **main@52a549f1** (baseline in §Baseline). **Current** `build_ops_cockpit_payload` in `src&#47;webui&#47;ops_cockpit.py` derives `enabled`, `armed`, `dry_run`, and `confirm_token_required` from `EnvironmentConfig` when `config&#47;config.toml` loads successfully, and sets `kill_switch_active` from `data&#47;kill_switch&#47;state.json`. This document remains useful as **archival gap analysis**, not as a description of present code.
 
-For **operator interpretation** and Phase E traceability, use [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md), [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md), and [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md). **No new implementation project** is implied by this supersession note.
+For **operator interpretation** and Phase E traceability, use [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md), [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md), and `RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`. **No new implementation project** is implied by this supersession note.
 
 ## Scope
 This document is a **read-only review** of `operator_state` in the Ops Cockpit. No code changes, no mutations. It identifies gaps and recommends real-signal mapping options for future implementation.

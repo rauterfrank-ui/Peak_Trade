@@ -20,7 +20,7 @@ Implementiert **Phase 16A (Simplified Execution Pipeline for Learning)** und **P
   - SimulatedBrokerAdapter (slippage + fees)
   - ExecutionPipeline orchestrator
   - TOML-based Builder
-- `scripts/run_execution_simple_dry_run.py` - Interactive Demo
+- - Interactive Demo
 - `tests/execution_simple/` - 16 Tests (100% pass)
 
 **Features:**

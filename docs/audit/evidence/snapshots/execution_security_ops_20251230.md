@@ -76,7 +76,7 @@ docker/.env
 - No actual secret values found
 - Examples:
   - `src/exchange/ccxt_client.py` - loads API key from env
-  - `src/data/kraken_live.py` - API key parameter
+ - - API key parameter
   - `src/knowledge/api_manager.py` - API key management
 
 **Status:** ✅ No hardcoded secrets, only references to where keys should be loaded from

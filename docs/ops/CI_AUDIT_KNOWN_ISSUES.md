@@ -3494,8 +3494,8 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 |---------|-------|
 | Scheduler Boundary Hard-Block SSOT — §7 residual + §7b opt-in | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
 | Shared scheduler start guard (read-only reference) | `scripts/ops/scheduler_start_boundary_guard_v0.py` |
-| P67 library scheduler (reference only) | `src/ops/p67/shadow_session_scheduler_v1.py` |
-| P72 pack pass-through (reference only) | `src/ops/p72/run_shadowloop_pack_v1.py` |
+| P67 library scheduler (reference only) | |
+| P72 pack pass-through (reference only) | |
 | P67/P72 library opt-in contract tests (reuse) | `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | Closed #4177 launcher hard-block crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Scheduler Boundary Hard Block — `SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true` |
 | CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |

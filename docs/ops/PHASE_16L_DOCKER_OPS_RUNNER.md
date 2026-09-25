@@ -22,7 +22,7 @@ Für CI/CD, Reproducibility und Isolation benötigt: Docker-Runner mit sauberem 
 
 ### 1. Report Path Utilities
 
-**New Module:** `src/utils/report_paths.py`
+**New Module:**
 
 **Functions:**
 - `get_repo_root()` - Finds repo root via pyproject.toml/uv.lock/.git

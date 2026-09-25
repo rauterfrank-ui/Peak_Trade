@@ -31,9 +31,9 @@ Dieses Runbook beschreibt, wie du **Peak_Trade Futures (CME NQ/MNQ)** als **sepa
   - ``tests&#47;data&#47;continuous&#47;test_continuous_contract.py``
   - ``tests&#47;markets&#47;cme&#47;test_contract_specs.py``
 - Doku/Runbook:
-  - ``docs&#47;markets&#47;cme&#47;NQ_MNQ_SPEC.md``
-  - ``docs&#47;markets&#47;cme&#47;ROLL_POLICY.md``
-  - ``docs&#47;ops&#47;runbooks&#47;RUNBOOK_FUTURES_CME_NQ_MNQ_ENABLEMENT_FINISH.md``
+ - ``
+ - ``
+ - ``
   - Überblick: ``docs&#47;markets&#47;UEBERBLICK_FUTURES_NASDAQ100_IMPLEMENTIERT.md`` <!-- pt:ref-target-ignore -->
 
 ### 1.2 Offene Punkte (laut Runbook)

@@ -32,14 +32,14 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Surface | Owner / Path |
 |---|---|
-| Strategy owner | `src/strategies/armstrong/armstrong_cycle_strategy.py` (unchanged) |
-| Cycle model owner | `src/strategies/armstrong/cycle_model.py` (unchanged) |
+| Strategy owner | (unchanged) |
+| Cycle model owner | (unchanged) |
 | External parameter schema + warmup | `src/backtest/strategy_signal_binding_v1.py` |
-| STEP29M admissibility contract | `src/backtest/step29m_armstrong_cycle_v1_economic_evaluation_admissibility_contract_v1.py` |
-| Ops evaluation config | `config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json` |
-| Material-difference contract | `config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json` |
-| Versioned research binding | `config/research/armstrong_cycle_v1_versioned_research_binding_v0.json` |
-| Scope ratification config | `config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| STEP29M admissibility contract | |
+| Ops evaluation config | |
+| Material-difference contract | |
+| Versioned research binding | |
+| Scope ratification config | |
 
 ## C. Ratified Parameter Binding
 
@@ -107,7 +107,7 @@ export GO_TOKEN="<ALLOWED_CONFIRM_GO_TOKEN>"
   scripts/ops/invoke_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py
 ```
 
-The adapter resolves `${REPO}&#47;.venv&#47;bin&#47;python`, fail-closes when the interpreter or `GO_TOKEN` is missing, and forwards `--confirm-go-token "$GO_TOKEN"` exactly once to `scripts&#47;ops&#47;run_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py`.
+The adapter resolves `${REPO}&#47;.venv&#47;bin&#47;python`, fail-closes when the interpreter or `GO_TOKEN` is missing, and forwards `--confirm-go-token "$GO_TOKEN"` exactly once to .
 
 ## H. Next Step
 

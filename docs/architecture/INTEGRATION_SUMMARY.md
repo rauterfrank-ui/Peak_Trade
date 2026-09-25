@@ -86,7 +86,7 @@
    - **Erforderlich:** `model_id` Logging, SoD Check Integration
    - **Phase:** Phase 2 (SoD Framework)
 
-2. **Market Sentinel** (`src/market_sentinel/v0_daily_outlook.py`) → L2 (Market Outlook)
+2. **Market Sentinel** () → L2 (Market Outlook)
    - **Erforderlich:** Capability Scope Enforcement, Multi-Model Support (Proposer + Critic)
    - **Phase:** Phase 3 (L2 Pilot)
 

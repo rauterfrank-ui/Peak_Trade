@@ -8,11 +8,11 @@ Date: 2026-03-14
 
 ## Why Policy Critic Triggered
 - execution endpoint touch in critical path
-- new file: `src/exchange/kraken_live.py`
+- new file:
 - matched order pattern: `def place_order(...)`
 
 ## Scope Reviewed
-- `src/exchange/kraken_live.py`
+-
 - `src/exchange/__init__.py`
 - `config/config.toml`
 - `src/exchange/base.py`

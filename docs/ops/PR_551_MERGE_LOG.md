@@ -28,7 +28,7 @@ PR #551 wurde per Auto-Merge (Squash) in `main` integriert und stellt **grüne C
 
 ### Armstrong (Research-only)
 
-- Entfernte redundanten/duplizierten Dictionary-Key `cycle_phase` im Cycle-Model (`src/strategies/armstrong/cycle_model.py`)
+- Entfernte redundanten/duplizierten Dictionary-Key `cycle_phase` im Cycle-Model ()
 - Test-Fix: nutze **`cycle_position` (numerisch)** statt `cycle_phase` (String) in Assertions, um Typ-Inkonsistenzen zu vermeiden
 - Normalisierung des Research-Markers auf **`RESEARCH-ONLY`** (statt `R&D-ONLY`)
 - Repr-Marker aktualisiert in `armstrong_cycle_strategy.py`

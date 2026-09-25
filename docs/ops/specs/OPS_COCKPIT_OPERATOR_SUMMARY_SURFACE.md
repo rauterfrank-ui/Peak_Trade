@@ -13,7 +13,7 @@
 
 ## Phase E — Operator interpretation (governance, read-only)
 
-This surface maps payload keys and HTML blocks for **visibility** only. **Phase E** closure is documented in [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) (traceability to this file, the payload contract, and tests).
+This surface maps payload keys and HTML blocks for **visibility** only. **Phase E** closure is documented in `RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md` (traceability to this file, the payload contract, and tests).
 
 **Separation operators should use:**
 
@@ -177,7 +177,7 @@ MASTER_V2_LOGIC_CHANGED=false
 - [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) — canonical top-level payload key contract for `build_ops_cockpit_payload` (read-model; not UI layout).
 - [`OPS_SUITE_DASHBOARD_VNEXT_SPEC.md`](OPS_SUITE_DASHBOARD_VNEXT_SPEC.md) — operator-facing target spec.
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan; RV6 Policy/Governance and Phase 4 Workflow Officer observation surfaces shipped read-only (HTML bundle).
-- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — Phase E governance review; interpretation vs authority; canonical anchors.
+- `RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md` — Phase E governance review; interpretation vs authority; canonical anchors.
 - [`RUNBOOK_PR_CI_VERIFICATION.md`](../runbooks/RUNBOOK_PR_CI_VERIFICATION.md) — PR/CI events and verification (truth-first).
 
 ## Code references

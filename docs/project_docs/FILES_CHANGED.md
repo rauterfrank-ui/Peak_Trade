@@ -8,11 +8,11 @@
 - ✅ `src&#47;risk&#47;position_sizer_old_backup.py` - Backup der alten Version <!-- pt:ref-target-ignore -->
 
 ### Data-Layer
-- ✅ `src/data/kraken_pipeline.py` - Vollständige Kraken-Pipeline
+- ✅ - Vollständige Kraken-Pipeline
 
 ### Demo-Scripts
-- ✅ `scripts/demo_complete_pipeline.py` - Vollständiges Demo aller Features
-- ✅ `scripts/demo_kraken_simple.py` - Kraken-Pipeline Demo
+- ✅ - Vollständiges Demo aller Features
+- ✅ - Kraken-Pipeline Demo
 
 ### Dokumentation
 - ✅ `docs/NEW_FEATURES.md` - Detaillierte Feature-Dokumentation
@@ -31,7 +31,7 @@
 ## Unverändert (bestehende Integration)
 
 - ✅ `src/core/config.py` - Config-System (bereits vorhanden)
-- ✅ `src/data/kraken.py` - Kraken-Client (bereits vorhanden)
+- ✅ - Kraken-Client (bereits vorhanden)
 - ✅ `src/data/normalizer.py` - Data Normalizer (bereits vorhanden)
 - ✅ `src/data/cache.py` - Parquet Cache (bereits vorhanden)
 - ✅ `src/backtest/engine.py` - Backtest Engine (bereits vorhanden)

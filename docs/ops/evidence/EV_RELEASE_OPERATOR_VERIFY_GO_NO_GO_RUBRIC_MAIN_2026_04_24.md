@@ -15,7 +15,7 @@ This evidence note records a **NO-LIVE** operator-readiness snapshot for the cur
 
 Canonical rubric:
 
-- [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
+- RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md
 
 Finish-plan reference:
 
@@ -67,7 +67,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs
 bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 ```
 
-Optional (only if you need parity with [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) §4.4):
+Optional (only if you need parity with RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md §4.4):
 
 ```bash
 python3 scripts/ops/ensure_truth_branch_protection.py --check

@@ -1140,7 +1140,7 @@ proof.
 | This file; parent boundary; ownership; ranking-universe/egress; Master Runbook §4.5–§4.5.4 | `CURRENT_AUTHORITY` | Docs-contract persistence; not membership-artifact persistence |
 | Map of Truth MF rows | `NAVIGATION_ONLY` | Navigation; no semantics; not an artifact |
 | Atlas catalog / relations / generated graph | `NAVIGATION_ONLY` | `ATLAS_AUTHORITY=NONE`; not an artifact |
-| `docs&#47;forensics&#47;persistence&#47;inventories&#47;P6_5189_HISTORICAL_SOURCE_SET_UNIVERSE_AND_POSITIVE_MEMBERSHIP_LEDGER_AND_THREE_HASH_NON_INFERENCE_OBSERVATION_V1.json` | `FORENSIC_RAW_EVIDENCE` / `HISTORICAL_ONLY` | Historical source-set universe membership ledger; name collision; `AUTHORITY=NONE`; not this class |
+| | `FORENSIC_RAW_EVIDENCE` / `HISTORICAL_ONLY` | Historical source-set universe membership ledger; name collision; `AUTHORITY=NONE`; not this class |
 | Cap-2.2 `productive_futures_ranking_snapshot_v1.json` evidence | `OUT_OF_DOMAIN` | Upstream ranking provenance; not this artifact |
 | Cap-2.3 `single_selected_future_selection_v1.json` / selection evidence | `OUT_OF_DOMAIN` | SSF selection; not imported as MF membership |
 | `src&#47;ops&#47;canonical_r6_s3_multi_future_runtime_architecture_v1&#47;active_set_v1.py` | `OUT_OF_DOMAIN` | R6 S3 Phase-8 architecture; excluded by parent boundary |

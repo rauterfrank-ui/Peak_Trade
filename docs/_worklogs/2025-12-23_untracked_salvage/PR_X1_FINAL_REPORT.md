@@ -26,7 +26,7 @@
 3. ✅ `tests&#47;core&#47;test_tracking_noop.py` (53 lines)
    - Additional NoopTracker safety tests
 
-4. ✅ `docs&#47;STRATEGY_VNEXT_CONSOLIDATED.md` (674 lines)
+4. ✅ (674 lines)
    - Complete vNext guide (PR X1, X2, X3)
    - Tracking section with config examples
    - Safe-by-default principles

@@ -621,15 +621,8 @@ entities:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
     source_paths:
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/__init__.py
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/anchor_v1.py
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/archive_v1.py
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/constants_v1.py
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/contract_v1.py
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/reason_codes_v1.py
     evidence_sources:
       - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
-      - src/ops/cap22_append_only_15m_pit_persistence_v1/contract_v1.py
     notes: >-
       WP1 append-only 15m PIT persistence and collection contracts. Cadence
       PT1M_15_MINUTE_ANCHORS_V1. Cap-2.1 and Economic-MD at-T seams. Exact T
@@ -7261,9 +7254,6 @@ entities:
     temporal_class: HISTORICAL_ONLY
     modified_by: PENDING_CHANGE
     source_paths:
-      - src/exchange/kraken_live.py
-      - src/exchange/kraken_testnet.py
-      - src/ops/kraken_futures_demo_credential_presence_contract_v0.py
     evidence_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     notes: >-
@@ -7324,7 +7314,6 @@ entities:
       - src/ops/order_capability_private_endpoint_boundary_contract_v1.py
       - src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py
       - src/ops/order_capability_side_price_qty_rules_contract_v1.py
-      - src/ops/p85/run_live_data_ingest_readiness_v1.py
       - src/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/constants_v1.py
       - src/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/constants_v1.py
       - src/ops/section_11_13_2_live_private_read_only_v1/constants_v1.py
@@ -7342,33 +7331,6 @@ entities:
     current_status: REMOVED
     modified_by: PENDING_CHANGE
     source_paths:
-      - src/ops/p39/__init__.py
-      - src/ops/p39/registry_cli_v1.py
-      - src/ops/p40/__init__.py
-      - src/ops/p40/backtest_runner_cli_v1.py
-      - src/ops/p41/.gitkeep
-      - src/ops/p42/.gitkeep
-      - src/ops/p50/__init__.py
-      - src/ops/p50/ai_model_policy_cli_v1.py
-      - src/ops/p51/__init__.py
-      - src/ops/p51/ai_model_cards_validate_v1.py
-      - src/ops/p55/__init__.py
-      - src/ops/p55/switch_layer_e2e_runner_v1.py
-      - src/ops/p77/__init__.py
-      - src/ops/p77/online_readiness_daemon_core_v1.py
-      - src/ops/p78/__init__.py
-      - src/ops/p78/online_readiness_supervisor_plan_v1.py
-      - src/ops/p79/__init__.py
-      - src/ops/p79/supervisor_health_plan_v1.py
-      - src/ops/p85/__init__.py
-      - src/ops/p86/__init__.py
-      - src/ops/p86/run_online_readiness_plus_ingest_gate_v1.py
-      - src/ops/p91/__init__.py
-      - src/ops/p91/shadow_soak_audit_v1.py
-      - src/ops/p98/__init__.py
-      - src/ops/p98/ops_loop_orchestrator_v1.py
-      - src/ops/p99/__init__.py
-      - src/ops/p99/ops_loop_cli_v1.py
     evidence_sources:
       - docs/ops/specs/CAP22_APPEND_ONLY_15M_PIT_PERSISTENCE_AND_COLLECTION_CONTRACTS_V1.md
     notes: >-
@@ -7385,39 +7347,6 @@ entities:
     current_status: REMOVED
     modified_by: PENDING_CHANGE
     source_paths:
-      - src/ops/p53/__init__.py
-      - src/ops/p53/switch_layer_evidence_v1.py
-      - src/ops/p57/__init__.py
-      - src/ops/p57/switch_layer_paper_shadow_v1.py
-      - src/ops/p58/__init__.py
-      - src/ops/p58/switch_layer_online_readiness_v1.py
-      - src/ops/p61/__init__.py
-      - src/ops/p61/online_readiness_contract_v1.py
-      - src/ops/p61/run_online_readiness_v1.py
-      - src/ops/p62/__init__.py
-      - src/ops/p62/run_online_readiness_shadow_session_v1.py
-      - src/ops/p63/__init__.py
-      - src/ops/p63/run_online_readiness_shadow_runner_v1.py
-      - src/ops/p64/__init__.py
-      - src/ops/p64/run_online_readiness_runner_v1.py
-      - src/ops/p65/__init__.py
-      - src/ops/p65/run_online_readiness_loop_runner_v1.py
-      - src/ops/p66/__init__.py
-      - src/ops/p66/run_online_readiness_operator_entrypoint_v1.py
-      - src/ops/p67/__init__.py
-      - src/ops/p67/recorded_price_series_v0.py
-      - src/ops/p67/shadow_session_scheduler_cli_v1.py
-      - src/ops/p67/shadow_session_scheduler_v1.py
-      - src/ops/p71/__init__.py
-      - src/ops/p71/online_readiness_health_gate_v1.py
-      - src/ops/p72/__init__.py
-      - src/ops/p72/run_shadowloop_pack_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/__init__.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/constants_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/execute_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_claims_v1.py
-      - src/ops/section_11_13_5_z2dh_single_actual_read_only_funding_balance_get_v1/persist_v1.py
-      - src/risk/_archive/position_sizer_old_backup.py
     evidence_sources:
       - docs/ops/PEAK_TRADE_REUSE_CANDIDATES.md
     notes: >-
@@ -11611,7 +11540,6 @@ entities:
     current_canonical: false
     current_status: REMOVED
     source_paths:
-      - src/strategies/armstrong/armstrong_cycle_strategy.py
     evidence_sources:
       - docs/strategies/el_karoui/EL_KAROUI_VOL_STATUS_V1.md
     notes: >-
@@ -11627,7 +11555,6 @@ entities:
     current_canonical: false
     current_status: REMOVED
     source_paths:
-      - src/experiments/armstrong_elkaroui_combi_experiment.py
     evidence_sources:
       - docs/ops/specs/I82_EMITTER_CUTOVER_PREPARATION_INVENTORY_V1.json
     notes: >-

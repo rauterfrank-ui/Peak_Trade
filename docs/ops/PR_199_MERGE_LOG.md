@@ -32,7 +32,7 @@ Phase 16L introduces **Docker-based reproducible execution** for Stage1 Monitori
 - `scripts/obs/run_stage1_trends_docker.sh` – Docker wrapper for trend reports
 
 **Report Path Utilities:**
-- `src/utils/report_paths.py` – Robust path resolution (ENV + CLI override)
+- – Robust path resolution (ENV + CLI override)
   - Priority: CLI flag > ENV var > default
   - Cross-platform (Linux/macOS)
   - Safe defaults with validation
@@ -70,14 +70,14 @@ Phase 16L introduces **Docker-based reproducible execution** for Stage1 Monitori
 - Base: `python:3.11-slim`
 - Package Manager: `uv` (fast, reliable)
 - Dependencies: Frozen via `uv.lock`
-- Volume Mount: `.&#47;reports` mapped to `&#47;workspace&#47;reports`
+- Volume Mount: mapped to `&#47;workspace&#47;reports`
 
 ### Report Path Resolution
 
 **Priority (highest to lowest):**
 1. `--reports-root <PATH>` CLI flag
 2. `PEAK_REPORTS_DIR` environment variable
-3. Default: `.&#47;reports`
+3. Default:
 
 **Examples:**
 ```bash
@@ -270,7 +270,7 @@ Phase 16L is **intentionally scoped** to Stage1 Monitoring only.
 - `docs/ops/README.md` – Updated ops index
 
 **Technical Modules:**
-- `src/utils/report_paths.py` – Report path resolution utilities
+- – Report path resolution utilities
 - `docker/obs/Dockerfile` – Docker build specification
 - `docker/obs/entrypoint.sh` – Container entrypoint logic
 

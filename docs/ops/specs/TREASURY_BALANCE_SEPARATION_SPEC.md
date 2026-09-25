@@ -27,7 +27,7 @@ This document defines the separation between trading balance and treasury balanc
 
 ## Relationship to Operations Separation
 - `src&#47;ops&#47;treasury_separation_gate.py` blocks withdraw, deposit_address, internal_transfer in bot mode
-- `config&#47;security&#47;keys.toml` defines bot vs treasury roles
+- defines bot vs treasury roles
 - This spec adds the **balance** rule: even if both balances were queryable, execution must use trading balance only
 
 ## Failure Mode
@@ -39,7 +39,7 @@ This document defines the separation between trading balance and treasury balanc
 - No treasury balance is displayed or used in execution path
 
 ## Related Documents
-- `docs&#47;ops&#47;runbooks&#47;treasury_separation.md` — Operations separation (bot vs treasury key)
+- — Operations separation (bot vs treasury key)
 - `docs&#47;ops&#47;specs&#47;RECONCILIATION_FLOW_SPEC.md` — Balances/Treasury: must not be conflated
 - `docs&#47;ops&#47;specs&#47;PILOT_EXECUTION_EDGE_CASE_MATRIX.md` — Treasury/trading separation unclear → Critical
 

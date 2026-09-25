@@ -64,7 +64,7 @@ assert acceptable_exit
 
 ### Created (5 files - Documentation)
 
-3. `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
+3. (~600 lines)
 4. `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
 5. `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md` (~400 lines)
 6. `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
@@ -236,7 +236,7 @@ python3 -m pytest tests/governance/test_strategy_switch_sanity_check.py -v
 
 ## Documentation
 
-- **Runbook**: `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
+- **Runbook**:
 - **Operator Guide**: `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md`
 - **Merge Log**: `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md`
 - **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`

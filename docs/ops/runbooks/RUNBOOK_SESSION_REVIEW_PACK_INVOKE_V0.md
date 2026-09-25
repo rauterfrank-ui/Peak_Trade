@@ -60,7 +60,7 @@ bash scripts/ops/verify_docs_reference_targets.sh
 ## 7. Related References
 
 - [Session Review Pack V0 contract](../specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)
-- [Open-first triage checklist](../specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md)
+- Open-first triage checklist
 - [Dashboard, cockpit, observer surface inventory](../specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md)
 - [Evidence packet and index navigation map](../specs/MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md)
 - [KB / registry / evidence taxonomy](../specs/MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md)

@@ -11,9 +11,9 @@ last_updated: 2026-04-27
 
 The following documents provide the current non-authorizing operator navigation path for Go-Live planning:
 
-- [Master V2 Go-Live Roadmap V0](./MASTER_V2_GO_LIVE_ROADMAP_V0.md)
-- [Master V2 First Live Execution Sequence V0](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md)
-- [Runbook: Master V2 First Live Pilot Sequence V0](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md)
+- Master V2 Go-Live Roadmap V0
+- Master V2 First Live Execution Sequence V0
+- Runbook: Master V2 First Live Pilot Sequence V0
 - [Master V2 Go-Live Blocker Register V0](./MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md)
 
 This subsection is navigation-only and **non-authorizing**. It is **not** **live** **authorization**. It does not authorize bounded-pilot entry, closeout approval, gate passage, strategy readiness, autonomy readiness, or external signoff.
@@ -46,16 +46,16 @@ It is a **navigation** **aid** **only**. It **does** **not** **modify** **runtim
 
 | **Order** | **Open** **this** **file** | **Use** **when** | **Then** **open** | **Not** **used** **for** |
 | ---: | --- | --- | --- | --- |
-| 1 | [`MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md`](./MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md) | **You** **need** **the** **first** **decision** **path**. | **The** **matching** **route** **below**. | **Not** **approval**. |
+| 1 | `MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md` | **You** **need** **the** **first** **decision** **path**. | **The** **matching** **route** **below**. | **Not** **approval**. |
 | 2 | [`MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md`](./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md) | **You** **need** **evidence**/**readiness**/**verdict**/**handoff** **order**. | **Evidence** **or** **readiness** **packet** **surfaces**. | **Not** **external** **authority** **completion**. |
 | 3 | [`MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md`](./MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md) | **You** **need** **the** **broader** **visual**/**learning**/**evidence** **reading** **chain**. | **The** **referenced** **family** **doc**. | **Not** **runtime** **source** **of** **truth**. |
 | 4 | [`MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md`](./MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md) | **You** **need** **observer**/**dashboard**/**report** **surface** **context**. | **Session** **Review** **Pack** **or** **report** **surfaces**. | **Not** **dashboard**/**cockpit** **authority**. |
-| 5 | [`MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`](./MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md) | **You** **need** **registry**/**evidence**/**provenance** **navigation**. | **Evidence** **Index** **or** **provenance** **surfaces**. | **Not** **signoff** **complete**. |
+| 5 | `MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md` | **You** **need** **registry**/**evidence**/**provenance** **navigation**. | **Evidence** **Index** **or** **provenance** **surfaces**. | **Not** **signoff** **complete**. |
 | 6 | [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) | **You** **need** **post**-**hoc** **Session** **Review** **Pack** **shape**. | **Invoke** **runbook** **or** **precedence** **spec**. | **Not** **live** **authorization**. |
 | 7 | [`RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md`](../runbooks/RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md) | **You** **need** **the** **read**-**only** **Session** **Review** **Pack** **command**. | **Report** **output** **or** **SRP** **tests**. | **Not** **approval**. |
-| 8 | [`MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) | **You** **need** **future** **evidence**/**provenance** **binding** **precedence**. | **Synthetic** **precedence** **tests** **if** **reviewing** **behavior**. | **Not** **binding** **as** **authority** **by** **this** **index** **alone**. |
+| 8 | `MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md` | **You** **need** **future** **evidence**/**provenance** **binding** **precedence**. | **Synthetic** **precedence** **tests** **if** **reviewing** **behavior**. | **Not** **binding** **as** **authority** **by** **this** **index** **alone**. |
 | 9 | [`MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md`](./MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md) | **You** **need** **CI**/**required**-**checks**/**safety**-**gate** **navigation**. | **CI** **tests** **or** **workflow** **files**. | **Not** **trading** **authority**. |
-| 10 | [`MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`](./MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md) | **You** **need** **backtest**/**statistical** **validation** **surfaces**. | **Backtest** **characterization** **tests**. | **Not** **strategy** **readiness**. |
+| 10 | `MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md` | **You** **need** **backtest**/**statistical** **validation** **surfaces**. | **Backtest** **characterization** **tests**. | **Not** **strategy** **readiness**. |
 | 11 | [`MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md`](./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md) | **You** **need** **Paper**/**Testnet** **readiness** **review** **surfaces**. | **Paper**/**Testnet** **characterization** **tests**. | **Not** **live** **readiness**. |
 | 12 | [`MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md`](./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md) | **You** **need** **learning**-**loop**/**review**-**feedback** **pathing**. | **Registry**/**evidence** **or** **strategy** **surfaces**. | **Not** **current** **autonomous** **execution**. |
 | 13 | [`MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md`](./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md) | **You** **need** **strategy** **family**/**status**-**lane** **surfaces**. | **Visual** **architecture** **reference**. | **Not** **strategy** **approval**. |
@@ -67,12 +67,12 @@ It is a **navigation** **aid** **only**. It **does** **not** **modify** **runtim
 
 | **Question** | **Open** **first** | **Then** **open** |
 | --- | --- | --- |
-| "What do I read first?" | [`MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md`](./MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md) | **This** **flat** **path** **index**. |
+| "What do I read first?" | `MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md` | **This** **flat** **path** **index**. |
 | "What is the handoff or verdict order?" | [`MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md`](./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md) | **Evidence** **packet**/**index** **navigation**. |
-| "Where is evidence or registry context?" | [`MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`](./MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md) | **Evidence**/**registry** **taxonomy**. |
+| "Where is evidence or registry context?" | `MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md` | **Evidence**/**registry** **taxonomy**. |
 | "How do I review a session?" | [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) | [`RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md`](../runbooks/RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md). |
 | "Which CI or gate surface matters?" | [`MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md`](./MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md) | **CI** **characterization** **tests**. |
-| "Which backtest/validation surface matters?" | [`MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`](./MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md) | **Backtest** **characterization** **tests**. |
+| "Which backtest/validation surface matters?" | `MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md` | **Backtest** **characterization** **tests**. |
 | "Which Paper/Testnet surface matters?" | [`MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md`](./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md) | **Paper**/**Testnet** **characterization** **tests**. |
 | "Where does strategy/readiness fit?" | [`MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md`](./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md) | **Visual** **architecture** **reference**. |
 | "Where does AI fit?" | [`MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md`](./MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md) | **Visual** **architecture** **reference**. |
@@ -82,10 +82,10 @@ It is a **navigation** **aid** **only**. It **does** **not** **modify** **runtim
 
 **Use** **(in** **order** **for** **that** **question**)**:**
 
-1. [`MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`](./MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md)
+1. `MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`
 2. [`MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md`](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md)
 3. [`MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md`](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md)
-4. [`MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md`](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md)
+4. `MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md`
 
 **This** **route** **supports** **audit** **and** **review**. It **does** **not** **complete** **signoff** **or** **grant** **trading** **permission**.
 
@@ -95,7 +95,7 @@ It is a **navigation** **aid** **only**. It **does** **not** **modify** **runtim
 
 1. [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)
 2. [`RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md`](../runbooks/RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md)
-3. [`MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md)
+3. `MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md`
 
 **Current** v0 **posture** **remains** **read**-**only** **and** **non**-**authorizing** **where** **documented** **in** **those** **sources**. **It** **does** **not** **bind** **real** **session** **data** **as** **the** **sole** **effect** **of** **this** **index**.
 
@@ -112,7 +112,7 @@ It is a **navigation** **aid** **only**. It **does** **not** **modify** **runtim
 
 **Use:**
 
-1. [`MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`](./MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md)
+1. `MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`
 2. `tests&#47;ops&#47;test_backtest_robustness_validation_surface_inventory_v0.py`
 
 **Backtest** and **robustness** **surfaces** are **evidence**, **review**, and **learning** **inputs**. **They** are **not** **strategy** **readiness** **by** **themselves**.

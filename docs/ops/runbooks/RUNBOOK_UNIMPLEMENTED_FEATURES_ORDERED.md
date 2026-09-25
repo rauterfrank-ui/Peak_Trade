@@ -21,7 +21,7 @@
 
 | # | Thema | Tag | Hinweis / Ort |
 |---|--------|-----|----------------|
-| A1 | Zentrale Config-Modulstruktur | DONE | `src/core/config.py` (Facade + `__all__`); Import-Leitfaden [CONFIG_IMPORT_GUIDE.md](../../project_docs/CONFIG_IMPORT_GUIDE.md); Hotspots [A1_CONFIG_MODULE_INVENTORY_2026-03-29.md](../spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md) |
+| A1 | Zentrale Config-Modulstruktur | DONE | `src/core/config.py` (Facade + `__all__`); Import-Leitfaden [CONFIG_IMPORT_GUIDE.md](../../project_docs/CONFIG_IMPORT_GUIDE.md); Hotspots A1_CONFIG_MODULE_INVENTORY_2026-03-29.md |
 | A2 | R&D-Strategien in Live-Kontext konfigurierbar machen | DONE | `config_validation.py` — Soft-Check prod + `allow_rd_strategy_in_prod` / `rd_strategy_allowlist` |
 | A3 | Legacy-Momentum-Aufräumen | DONE | `src/strategies/momentum.py` — modulare `generate_signals`/`add_momentum_indicators` delegieren an `MomentumStrategy`; gemeinsame Logik in `compute_momentum_series` (keine doppelte Signal-Pipeline mehr) |
 
@@ -71,7 +71,7 @@
 | E1 | Meta-Labeling (ML) vollständig | DONE | `src/research/ml/meta/meta_labeling.py` — `MetaModelSpec`, `apply_meta_model` (trainiert / in-Features-Training), `compute_meta_labels`, `compute_bet_size`, Modell-Fabrik (RandomForest, optional XGBoost); Tests `tests/test_meta_labeling.py` |
 | E2 | Triple-Barrier-Labeling | DONE | `src/research/ml/labeling/triple_barrier.py` — `compute_triple_barrier_labels`, `get_vertical_barrier`, `get_horizontal_barriers`, `apply_pnl_stop_loss` (Platzhalter); Tests `tests/test_triple_barrier.py` |
 | E3 | Bouchaud / Gatheral Vol-Regime (Research 0/1 OHLCV-Proxys) | DONE | `bouchaud_microstructure_strategy.py`, `vol_regime_overlay_strategy.py` — `generate_signals` deterministisch 0/1; Tests u. a. `tests/test_bouchaud_gatheral_cont_strategies.py`, `tests/test_r_and_d_strategy_gating.py` |
-| E4 | Armstrong ECM-Cycle echte Signale | DONE | `src/strategies/armstrong/armstrong_cycle_strategy.py` — `generate_signals` pro Bar: `ArmstrongCycleModel` (`phase_for_date` → `get_position_for_phase`); `is_research_stub=False`; Tests u. a. `tests/strategies/armstrong/`, `tests/test_research_strategies.py` (Armstrong) |
+| E4 | Armstrong ECM-Cycle echte Signale | DONE | — `generate_signals` pro Bar: `ArmstrongCycleModel` (`phase_for_date` → `get_position_for_phase`); `is_research_stub=False`; Tests u. a. `tests/strategies/armstrong/`, `tests/test_research_strategies.py` (Armstrong) |
 | E5 | Ehlers DSP-Filter / Cycle | DONE | `src/strategies/ehlers/ehlers_cycle_filter_strategy.py` — Minimal-Slice: Ehlers **Super-Smoother** auf `close`, 0/1 wenn `close > smooth`; Fallback Flat bei `len < lookback`; `is_research_stub=False` in Metadaten; Tests u. a. `tests/test_ehlers_lopez_strategies.py`, `tests/test_r_and_d_strategy_gating.py` (Hilbert/Bandpass weiter optional) |
 | E6 | López de Prado Meta-Labeling-Pipeline | DONE | `src/strategies/lopez_de_prado/meta_labeling_strategy.py` — delegiert Triple-Barrier an `src/research/ml/labeling/triple_barrier.py` und Meta-Modell-Anwendung an `src/research/ml/meta/meta_labeling.py`; `generate_signals` bleibt in diesem Slice bewusst flat |
 | E7 | El Karoui Vol-Regime-Signale | DONE | `src/strategies/el_karoui/el_karoui_vol_model_strategy.py` — `generate_signals` aus `ElKarouiVolModel.regime_series` → `regime_position_map` (0/1); `is_research_stub=False`; Tests u. a. `tests/strategies/el_karoui/`, `tests/test_research_strategies.py` (El-Karoui) |
@@ -171,7 +171,7 @@ Stufe-J operator navigation: for the current CLI-facing quick references coverin
 
 - [Finish Plan](../roadmap/FINISH_PLAN.md) — DoD & PR-Slices (PR 6–8 u. a. **landed**).  
 - [Current focus](../roadmap/CURRENT_FOCUS.md) — menschlicher „wo stehen wir“.  
-- [Chat-led open features (Triage-Prozess)](./RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — **wie** ihr Sessions führt (nicht nur diese Liste).  
+- Chat-led open features (Triage-Prozess) — **wie** ihr Sessions führt (nicht nur diese Liste).
 - [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) — Navigation.
 
 ---

@@ -11,7 +11,7 @@ last_updated: 2026-06-15
 
 This document defines a non-authorizing blocker register for Master V2 Go-Live preparation.
 
-It converts the [Master V2 Go-Live Roadmap V0](./MASTER_V2_GO_LIVE_ROADMAP_V0.md), [Master V2 First Live Execution Sequence V0](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md), and [First Live Pilot Sequence Runbook V0](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) into a triage surface.
+It converts the Master V2 Go-Live Roadmap V0, Master V2 First Live Execution Sequence V0, and First Live Pilot Sequence Runbook V0 into a triage surface.
 
 This register does not mark Peak_Trade as ready for live trading. It does not authorize live execution, bounded-pilot entry, closeout, strategy readiness, autonomy readiness, external authority, or gate passage.
 
@@ -44,9 +44,9 @@ Non-goals:
 
 Roadmap and sequence:
 
-- [Go-Live Roadmap](./MASTER_V2_GO_LIVE_ROADMAP_V0.md)
-- [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md)
-- [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md)
+- Go-Live Roadmap
+- First Live Execution Sequence
+- First Live Pilot Sequence Runbook
 
 Readiness, gates, and authority:
 
@@ -59,7 +59,7 @@ Readiness, gates, and authority:
 Session review and bounded pilot:
 
 - [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)
-- [Source-Bound SRP Report Implementation Plan](./MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_REPORT_IMPLEMENTATION_PLAN_V0.md)
+- Source-Bound SRP Report Implementation Plan
 - [Bounded Pilot Live Entry Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md)
 
 Relevant focused tests:
@@ -138,7 +138,7 @@ For those snapshots:
 - They are **navigation/triage provenance**, not authorization, not a gate pass, not live readiness, and not external signoff.
 - A `primary_source` of **`latest_bounded_pilot_registry`** (or newest open row) **does not** satisfy **explicit** `session_id` selection for binding Source-bound SRP, signoff, or promotion; the operator/session owner must still **explicitly** choose and record `session_id` for binding flows.
 
-Operator sequence posture for explicit selection: [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md), Step 3.
+Operator sequence posture for explicit selection: First Live Execution Sequence, Step 3.
 
 ### 6.2 GLB-010 / GLB-011 — Capital, scope, and pure-model non-confusion (clarification)
 
@@ -168,7 +168,7 @@ Until that confirmation exists, **BLOCKED** remains.
 **Canonical read-order (existing surfaces; no new surface):**
 
 - [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — Safety and Kill-Switch veto layering versus other authorities
-- [Futures Risk Safety KillSwitch Contract v0](./FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md) — RiskGate / SafetyGuard / KillSwitch / LiveRiskLimits **boundary** semantics (docs-only)
+- Futures Risk Safety KillSwitch Contract v0 — RiskGate / SafetyGuard / KillSwitch / LiveRiskLimits **boundary** semantics (docs-only)
 - [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) — operational reference
 
 ### 6.4 GLB-012 / GLB-013 — Execution, live gates, and dry-run vs. repo artifacts (clarification)
@@ -185,7 +185,7 @@ Until that confirmation exists, **BLOCKED** remains.
 
 **Canonical read-order (existing surfaces; no new surface):**
 
-- [First Live Execution Sequence](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md) — preflight and sequencing posture (non-authorizing)
+- First Live Execution Sequence — preflight and sequencing posture (non-authorizing)
 - [First Live Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md)
 - [Pilot Go/No-Go operational slice](./PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
 - [Bounded real-money pilot entry boundary note](./BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md)
@@ -267,7 +267,7 @@ A **reproducible preflight packet** for review is defined by [Paper/Shadow 24/7 
 
 **GLB-017** (*Incident/abort route unclear*) remains **BLOCKED** until **operator / incident owner** confirms that the **canonical incident/abort route** is **understood and reachable** for the **chosen pilot or bounded scope** — **not** inferred from repo docs alone, partial triage output, or static tests without an operator narrative.
 
-For **bounded pilot** incident, abort, emergency, KillSwitch, or not-safely-continuable conditions, the **canonical incident/abort route legibility owner** is [Bounded Pilot Incident / §5 Abort Triage Compass v0](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) §12 (GLB-017 boundary). Org-wide **KillSwitch** posture uses [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md). Entry-contract **§5 abort criteria** anchor: [Bounded Real-Money Pilot Entry Contract](./BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md). Pilot-sequence **STOP/Abort** checklist: [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §11.
+For **bounded pilot** incident, abort, emergency, KillSwitch, or not-safely-continuable conditions, the **canonical incident/abort route legibility owner** is [Bounded Pilot Incident / §5 Abort Triage Compass v0](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) §12 (GLB-017 boundary). Org-wide **KillSwitch** posture uses [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md). Entry-contract **§5 abort criteria** anchor: [Bounded Real-Money Pilot Entry Contract](./BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md). Pilot-sequence **STOP/Abort** checklist: First Live Pilot Sequence Runbook §11.
 
 - **Default safe posture:** ambiguity, unknown abort path, or unresolved exposure/reconciliation posture → **`NO_TRADE` / safe stop** (fail-closed); **no** automatic trading resume or incident auto-resolution.
 - **Trigger classes (non-exhaustive):** KillSwitch active; policy/governance blocked; stale or inconsistent state; exposure or cap surprise; reconciliation or session-end mismatch; transfer ambiguity; telemetry/dependency degraded; operator cannot determine bounded posture; any Entry-contract §5 abort condition; scheduler/adapter/process state not safely continuable for the declared scope.
@@ -281,14 +281,14 @@ For **bounded pilot** incident, abort, emergency, KillSwitch, or not-safely-cont
 
 - [Bounded Pilot Incident / §5 Abort Triage Compass v0](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) — §12 GLB-017 Incident/Abort Route static boundary
 - [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) — org KillSwitch operational reference
-- [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) — §11 STOP / Abort posture
+- First Live Pilot Sequence Runbook — §11 STOP / Abort posture
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
 ### 6.5.5 GLB-018 — Closeout Path Legibility (clarification)
 
 **GLB-018** (*Closeout path missing*) remains **OPEN** until operator presents a **reviewable closeout path** with **durable, manifest-verified evidence** and a **safe end state** for the scoped run — **not** inferred from partial artifacts, `/tmp`-only roots, unverified manifests, or static docs/tests alone.
 
-The **canonical closeout-path legibility owner** for durable primary evidence and material closeout completeness is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1, §2b.1, and §2b.3 (GLB-018 boundary). Post-pilot **closeout checklist** orientation: [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §10.
+The **canonical closeout-path legibility owner** for durable primary evidence and material closeout completeness is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1, §2b.1, and §2b.3 (GLB-018 boundary). Post-pilot **closeout checklist** orientation: First Live Pilot Sequence Runbook §10.
 
 **Mandatory closeout path components (legibility SSOT; operative execution remains operator-scoped):**
 
@@ -308,7 +308,7 @@ The **canonical closeout-path legibility owner** for durable primary evidence an
 **Canonical read-order (existing surfaces; no new surface):**
 
 - [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.3 GLB-018 Closeout Path static boundary
-- [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) — §10 Closeout / Post-Pilot checklist
+- First Live Pilot Sequence Runbook — §10 Closeout / Post-Pilot checklist
 - [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 durable primary evidence (crosslink only; criteria blocks remain authoritative per §6.5.1)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
@@ -388,7 +388,7 @@ The **canonical promotion static-boundary owner** is [Promotion State Machine](.
 
 **GLB-003** (*Evidence package incomplete or untraceable*) remains **OPEN** until operator/evidence owner presents a **reviewable evidence package** with **evidence list, provenance, and replayability route** — **not** inferred from partial artifacts, summary lines, `/tmp`-only roots, unverified manifests, copied or manually repaired files, or static docs/tests alone.
 
-The **canonical evidence-package provenance legibility owner** is [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) (mapping and audit readability) together with [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 (durable primary evidence, manifest, and retention hard gate). Evidence navigation (non-truth): [Evidence Packet and Index Navigation Map v0](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md).
+The **canonical evidence-package provenance legibility owner** is Provenance Replayability v1 (mapping and audit readability) together with [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 (durable primary evidence, manifest, and retention hard gate). Evidence navigation (non-truth): [Evidence Packet and Index Navigation Map v0](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md).
 
 **Mandatory provenance and integrity fields (legibility SSOT; operative collection remains operator-scoped):**
 
@@ -403,7 +403,7 @@ The **canonical evidence-package provenance legibility owner** is [Provenance Re
 9. **Correlation / run / session binding** — `session_id`, run id, bundle id, archive root, or equivalent where applicable.
 10. **Integrity data** — `MANIFEST.sha256` with **MANIFEST_VERIFY_RC=0**; checksums for referenced artifacts; unmodified referenced artifacts.
 11. **Durable retention** — primary evidence **outside `/tmp`** in a durable archive root; later re-findable and verifiable.
-12. **Replayability route** — documented reconstruction or replay path per [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md); mapping **≠** replay guarantee.
+12. **Replayability route** — documented reconstruction or replay path per Provenance Replayability v1; mapping **≠** replay guarantee.
 
 - **Incomplete provenance, missing integrity data, or `/tmp`-only evidence** → **fail-closed** / **untrusted or incomplete** — **not** review-complete; **missing evidence is not treated as passed**.
 - **Copied, manually edited, unbound, or unverifiable evidence** → **not** canonical primary evidence.
@@ -414,7 +414,7 @@ The **canonical evidence-package provenance legibility owner** is [Provenance Re
 
 **Canonical read-order (existing surfaces; no new surface):**
 
-- [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) — provenance / replayability mapping (non-authorizing)
+- Provenance Replayability v1 — provenance / replayability mapping (non-authorizing)
 - [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2a.1 durable primary evidence hard gate
 - [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 criteria blocks (crosslink only; criteria blocks remain authoritative per §6.5.1)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
@@ -423,7 +423,7 @@ The **canonical evidence-package provenance legibility owner** is [Provenance Re
 
 **GLB-004** (*Registry/session records ambiguous*) remains **OPEN** until operator presents **explicit selected session** or **documented deferral** — **not** inferred from newest open row, latest registry entry, navigation `session_focus`, implicit auto-selection, or static docs/tests alone.
 
-The **canonical registry/session-record legibility owner** for explicit session binding versus navigation-only provenance is register **§6.1 GLB-006** (binding session selection scope) together with [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) (source-class precedence; registry is discovery, not approval). Registry taxonomy crosslink: [KB Registry Evidence Taxonomy v0](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md).
+The **canonical registry/session-record legibility owner** for explicit session binding versus navigation-only provenance is register **§6.1 GLB-006** (binding session selection scope) together with Session Review Pack Evidence / Provenance Precedence v0 (source-class precedence; registry is discovery, not approval). Registry taxonomy crosslink: [KB Registry Evidence Taxonomy v0](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md).
 
 **Mandatory session / registry legibility (legibility SSOT; operative selection remains operator-scoped):**
 
@@ -441,7 +441,7 @@ The **canonical registry/session-record legibility owner** for explicit session 
 **Canonical read-order (existing surfaces; no new surface):**
 
 - Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
-- [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — registry and source-class precedence
+- Session Review Pack Evidence / Provenance Precedence v0 — registry and source-class precedence
 - [KB Registry Evidence Taxonomy v0](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md) — discovery crosslink only
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
@@ -449,7 +449,7 @@ The **canonical registry/session-record legibility owner** for explicit session 
 
 **GLB-007** (*Missing event pointer hidden or repaired*) remains **OPEN** until operator/evidence owner preserves **missing/present state** for event pointers in review — **not** inferred from back-filled summaries, repaired artifacts, positive machine lines without pointer completeness, or static docs/tests alone.
 
-The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.4 (GLB-019 event-stream boundary; pointer completeness posture) together with [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) (missing-source handling: explicit missing → `needs_review`; no silent back-fill). Event review shape (non-binding): [Session Review Pack Contract v0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md).
+The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.4 (GLB-019 event-stream boundary; pointer completeness posture) together with Session Review Pack Evidence / Provenance Precedence v0 (missing-source handling: explicit missing → `needs_review`; no silent back-fill). Event review shape (non-binding): [Session Review Pack Contract v0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md).
 
 **Mandatory event-pointer posture (legibility SSOT; operative emission remains operator-scoped):**
 
@@ -467,7 +467,7 @@ The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7
 **Canonical read-order (existing surfaces; no new surface):**
 
 - [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.4 GLB-019 event-stream static boundary (pointer completeness crosslink)
-- [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — missing-source handling
+- Session Review Pack Evidence / Provenance Precedence v0 — missing-source handling
 - Register §6.5.6 — GLB-019 event-stream legibility (reuse; no duplication)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
@@ -475,7 +475,7 @@ The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7
 
 **GLB-005** (*Static SRP V0 confused with source-bound review*) remains **OPEN** until operator/reviewer acknowledges **SRP contract boundaries** — **not** inferred from static SRP V0 output alone, navigation snapshots, summary lines, positive machine lines, or static docs/tests without distinguishing static template review from source-bound binding.
 
-The **canonical static-SRP owner** is [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) (`report_live_sessions.session_review_pack_v0` — template-like, **non-binding**). The **canonical source-bound SRP planning owner** is [SRP Real-Binding Accepted Decision V0](./MASTER_V2_SESSION_REVIEW_PACK_REAL_BINDING_ACCEPTED_DECISION_V0.md) and [Source-Bound Mode Implementation Brief V0](./MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_MODE_IMPLEMENTATION_BRIEF_V0.md) (`report_live_sessions.session_review_pack_source_bound_v0` — distinct future mode). Source-class precedence and missing-source handling: [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md). Explicit binding session selection scope: register **§6.1 GLB-006** (reuse; no duplication).
+The **canonical static-SRP owner** is [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) (`report_live_sessions.session_review_pack_v0` — template-like, **non-binding**). The **canonical source-bound SRP planning owner** is SRP Real-Binding Accepted Decision V0 and Source-Bound Mode Implementation Brief V0 (`report_live_sessions.session_review_pack_source_bound_v0` — distinct future mode). Source-class precedence and missing-source handling: Session Review Pack Evidence / Provenance Precedence V0. Explicit binding session selection scope: register **§6.1 GLB-006** (reuse; no duplication).
 
 **SRP modes and mandatory source-binding legibility (legibility SSOT; operative binding remains operator-scoped):**
 
@@ -501,9 +501,9 @@ The **canonical static-SRP owner** is [Session Review Pack Contract V0](./MASTER
 **Canonical read-order (existing surfaces; no new surface):**
 
 - [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) — static SRP V0 boundary
-- [SRP Real-Binding Accepted Decision V0](./MASTER_V2_SESSION_REVIEW_PACK_REAL_BINDING_ACCEPTED_DECISION_V0.md) — B1/B2 accepted posture
-- [Source-Bound Mode Implementation Brief V0](./MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_MODE_IMPLEMENTATION_BRIEF_V0.md) — future source-bound contract shape
-- [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — source-class precedence and missing-source handling
+- SRP Real-Binding Accepted Decision V0 — B1/B2 accepted posture
+- Source-Bound Mode Implementation Brief V0 — future source-bound contract shape
+- Session Review Pack Evidence / Provenance Precedence V0 — source-class precedence and missing-source handling
 - Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_session_review_pack_source_bound_cli_shape_v0.py`
 
@@ -536,8 +536,8 @@ Register **§6.1 GLB-006** remains the scope SSOT for binding versus navigation-
 **Canonical read-order (existing surfaces; no new surface):**
 
 - Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
-- [First Live Execution Sequence V0](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md) — Step 3 explicit session selection posture
-- [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — registry is discovery, not approval
+- First Live Execution Sequence V0 — Step 3 explicit session selection posture
+- Session Review Pack Evidence / Provenance Precedence V0 — registry is discovery, not approval
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0

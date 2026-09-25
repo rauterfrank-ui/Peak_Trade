@@ -865,9 +865,9 @@ Acceptance of a Futures scope command contract is **preparation only** and remai
 Canonical Futures planning surfaces (read alongside this contract; **not** approval sources):
 
 - [Futures Trading Readiness Runbook v0](futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md)
-- [Futures Capability Spec v0](../specs/FUTURES_CAPABILITY_SPEC_V0.md)
-- [Futures Candidate Evidence Package Contract v0](../specs/FUTURES_CANDIDATE_EVIDENCE_PACKAGE_CONTRACT_V0.md)
-- [Master V2 Futures Class A Capability Contract v0](../specs/MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md)
+- Futures Capability Spec v0
+- Futures Candidate Evidence Package Contract v0
+- Master V2 Futures Class A Capability Contract v0
 
 ## 3b. Shadow 24/7 Futures executable command template boundary
 
@@ -1037,9 +1037,9 @@ Field names and enums may be refined in a later contract version; v0 only fixes 
 
 - [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — normative lane IDs, authority levels, forbidden cross-lane promotions (non-authorizing index; §2a/§2b retention remain here).
 - [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md) — scheduler boundary and dry-run-only diagnostics.
-- Shadow session runbook: [runbook_shadow_session.md](../p6/runbook_shadow_session.md) (single-run, no daemon).
-- Paper trading runbook: [runbook_paper_trading.md](../p7/runbook_paper_trading.md).
-- Futures planning (non-authorizing pointers): [Futures Trading Readiness Runbook v0](futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md), [Futures Capability Spec v0](../specs/FUTURES_CAPABILITY_SPEC_V0.md), [Futures Candidate Evidence Package Contract v0](../specs/FUTURES_CANDIDATE_EVIDENCE_PACKAGE_CONTRACT_V0.md), [Master V2 Futures Class A Capability Contract v0](../specs/MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md).
+- Shadow session runbook: runbook_shadow_session.md (single-run, no daemon).
+- Paper trading runbook: runbook_paper_trading.md.
+- Futures planning (non-authorizing pointers): [Futures Trading Readiness Runbook v0](futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md), Futures Capability Spec v0, Futures Candidate Evidence Package Contract v0, Master V2 Futures Class A Capability Contract v0.
 
 ## Paper/Shadow 24/7 Preflight Metadata v0
 

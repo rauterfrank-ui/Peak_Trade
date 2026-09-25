@@ -17,7 +17,7 @@
 
 #### 1. Data Pipeline
 - `src/data/` - Market data ingestion and validation
-- `src/data/kraken_live.py` - Live exchange data source
+- - Live exchange data source
 - Exchange adapters in `src/exchange/`
 
 #### 2. Strategy & Signal Generation
@@ -154,7 +154,7 @@ Report Generation (src/reporting/)
 3. **LiveRiskLimits** (`src/live/risk_limits.py`) - Pre-trade checks
 4. **ExecutionGate** (`src/risk_layer/kill_switch/execution_gate.py`) - Order gate
 5. **ShadowPaperSession** (`src/live/shadow_session.py`) - Live orchestration
-6. **Exchange Integration** (`src/exchange/`, `src/data/kraken_live.py`) - Market data & orders
+6. **Exchange Integration** (`src/exchange/`, ) - Market data & orders
 
 ### P1 Components (Important for safe operation)
 1. **ExecutionPipeline** (`src/execution/pipeline.py`) - Signal → Order pipeline

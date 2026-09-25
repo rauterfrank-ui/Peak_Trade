@@ -98,7 +98,7 @@ After the run completes, verify:
 - next-step recommendation
 
 ## Accepted-and-Filled Evidence
-- `docs&#47;ops&#47;evidence&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_20260318_CLOSEOUT.md`
+-
 - `docs&#47;ops&#47;evidence&#47;LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md`
 - `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
 
@@ -123,7 +123,7 @@ Use this canonical example when:
 
 - `docs&#47;ops&#47;specs&#47;ACCEPTANCE_EVIDENCE_STANDARD.md`
 - `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md` (canonical accepted-and-filled example)
-- `docs&#47;ops&#47;runbooks&#47;NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md`
+-
 - `docs&#47;ops&#47;runbooks&#47;LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md`
 - `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
-- `docs&#47;ops&#47;specs&#47;FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md`
+-

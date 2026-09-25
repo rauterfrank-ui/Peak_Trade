@@ -70,7 +70,7 @@ Internal review deck
 - canonical runbook:
   `docs/ops/runbooks/ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 - local launcher:
-  `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+
 
 ---
 

@@ -152,7 +152,7 @@ For `portfolio_recipes.strategies` presets, `scripts&#47;run_portfolio_robustnes
 The manifest uses a `[strategy_returns]` table that maps each strategy key from the preset to one explicit run directory.
 Each mapped run directory is expected to follow the existing experiment-run equity convention consumed by the equity loader.
 Use this path when you want explicit, deterministic returns loading without `--use-dummy-data`.
-See `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md` for the contract and non-goals.
+See for the contract and non-goals.
 
 ```toml
 [strategy_returns]

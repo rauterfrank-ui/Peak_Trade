@@ -13,7 +13,7 @@
 - 6 Dateien hinzugefügt (+1279 Zeilen), alle CI Gates grün (23/23), docs-only Scope
 
 ## Warum
-- **Recurring False Positives:** `docs-reference-targets-gate` schlägt fehl bei illustrativen (nicht-existierenden) Pfaden in Docs (z.B. ``scripts&#47;example.py`` in Tutorials)
+- **Recurring False Positives:** `docs-reference-targets-gate` schlägt fehl bei illustrativen (nicht-existierenden) Pfaden in Docs (z.B. `` in Tutorials)
 - **Inkonsistente Mitigation:** Keine standardisierte Policy für illustrative vs. reale Pfade → Entwickler mussten ad-hoc entscheiden
 - **Fehlende Operator-Guidance:** Kein Runbook für Triage, keine Allowlist-Verwaltung, keine Troubleshooting-Workflows
 - **Policy Enforcement Gap:** PR #690 und #691 etablierten `&#47;` encoding manuell, aber kein automatisierter Gate

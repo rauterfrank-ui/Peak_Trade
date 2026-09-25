@@ -71,7 +71,7 @@ Die **AI Autonomy Layer Map v1** definiert 7 Layer (L0-L6) mit klarer Modellzuwe
 
 | Komponente | Pfad | Status | Mapping zu Layer Map |
 |---|---|---|---|
-| Market Sentinel (Daily Outlook) | `src/market_sentinel/v0_daily_outlook.py` | ✅ Vorhanden | 🟡 Teilweise L2, aber **nicht Layer-aware** |
+| Market Sentinel (Daily Outlook) | | ✅ Vorhanden | 🟡 Teilweise L2, aber **nicht Layer-aware** |
 | Knowledge API Manager | `src/knowledge/api_manager.py` | ✅ Vorhanden | 🟡 Kann für L1 DeepResearch genutzt werden |
 | InfoStream (Intel Evaluation) | `src/meta/infostream/evaluator.py` | ✅ Vorhanden | 🟡 Relevant für L2/L3 Context |
 
@@ -147,7 +147,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 
 ### 2.4 Model API Wrappers (o3-deep-research, DeepSeek-R1)
 
-**Gap:** Derzeit nur OpenAI-Integration vorhanden (`src/market_sentinel/v0_daily_outlook.py`).
+**Gap:** Derzeit nur OpenAI-Integration vorhanden ().
 
 **Fehlend:**
 - `o3-deep-research` API Wrapper
@@ -209,12 +209,12 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 **Ziel:** L2 Market Outlook als erster Layer mit Layer-Map Compliance.
 
 **Tasks:**
-1. Erweitere `src/market_sentinel/v0_daily_outlook.py` um Capability Scope Enforcement
+1. Erweitere um Capability Scope Enforcement
 2. Integriere `ProposerCriticRunner` (GPT-5.2 pro als Proposer, DeepSeek-R1 als Critic)
 3. Generiere Evidence Packs mit `layer_id=L2`, `model_id`, `capability_scope_id`
 
 **Deliverables:**
-- Updated `src/market_sentinel/v0_daily_outlook.py`
+- Updated
 - Erstes Evidence Pack: "L2 Pilot Evidence Pack" (Phase 3+)
 
 **Tests:**
@@ -353,7 +353,7 @@ forbidden = ["Order senden", "Risk Limits ändern", "Secrets anfassen"]
 - LLM Policy Critic Charter: `docs/governance/LLM_POLICY_CRITIC_CHARTER.md`
 - GoNoGo Overview: `docs/governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md`
 - Execution Orchestrator: `src/execution/orchestrator.py`
-- Market Sentinel: `src/market_sentinel/v0_daily_outlook.py`
+- Market Sentinel:
 
 ---
 

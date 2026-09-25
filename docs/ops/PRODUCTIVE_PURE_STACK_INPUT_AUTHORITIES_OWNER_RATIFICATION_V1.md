@@ -106,8 +106,8 @@ INV_NO_ACCOUNT_EQUITY_REMAP_TO_SLOT_EQUITY=true
 | Typed CMC volatility | `CanonicalMarketContextV1.canonical_volatility_estimate` | **Not** an alias for `FuturesVolatilityProfile.realized_volatility` |
 | Transition passthrough | `transition_state` inside sole trading authority | Already authorized under OPTION_A |
 | Fail-closed host builders | `src&#47;ops&#47;productive_pure_stack_display_decision_host_binding_v1&#47;` | Remain fail-closed until authorities + Owner Values land |
-| Instrument metadata vocabulary | `docs&#47;ops&#47;specs&#47;FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md` | Field vocabulary for currencies / settlement |
-| Market-data provenance vocabulary | `docs&#47;ops&#47;specs&#47;FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md` | Freshness / provenance vocabulary |
+| Instrument metadata vocabulary | | Field vocabulary for currencies / settlement |
+| Market-data provenance vocabulary | | Freshness / provenance vocabulary |
 | Futures Input contracts | Futures Input Read Model + Producer Contract v0 | Non-authorizing schema/process boundary |
 | Survival contract | Arithmetic Sequence Survival Contract v0 | Vocabulary; numeric gates explicitly out of that doc |
 | Suitability contract | Strategy Suitability Projection Contract v0 | Vocabulary; names/registry non-authority |
@@ -568,7 +568,7 @@ ARCHIVE_MUTATION=UNAUTHORIZED
 - `docs&#47;ops&#47;specs&#47;MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md`
 - `docs&#47;ops&#47;specs&#47;MASTER_V2_DOUBLE_PLAY_STRATEGY_SUITABILITY_PROJECTION_CONTRACT_V0.md`
 - `docs&#47;ops&#47;specs&#47;MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md`
-- `docs&#47;ops&#47;specs&#47;FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md`
-- `docs&#47;ops&#47;specs&#47;FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md`
+-
+-
 - `docs&#47;ops&#47;specs&#47;MASTER_V2_CANONICAL_VOLATILITY_ESTIMATE_TYPED_CONSUMPTION_CONTRACT_V1.md`
 - `docs&#47;runbooks&#47;canonical&#47;PEAK_TRADE_MASTER_RUNBOOK.md`

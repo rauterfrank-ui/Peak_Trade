@@ -18,7 +18,7 @@
 
 ## 2. Architektur-Vision vs. Implementierung (trading_bot_notes / Feature-Engine)
 
-Laut ``src&#47;docs&#47;trading_bot_notes.md`` ist die Zielarchitektur:
+Laut `` ist die Zielarchitektur:
 
 ```text
 Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Layer → Broker/Exchange
@@ -167,8 +167,8 @@ Kanonische Docs-Klassifikation für genannte R&amp;D-Strategien. **Nicht** Live-
 - ``docs&#47;PEAK_TRADE_V1_RELEASE_NOTES.md`` – Kern-Features v1.0  
 - ``docs&#47;PEAK_TRADE_V1_KNOWN_LIMITATIONS.md`` – bewusst nicht implementiert  
 - [`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) – current closure sequence (not a Live unlock)
-- Historical install/roadmap snapshot: [`docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`](../ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)  
-- ``src&#47;docs&#47;trading_bot_notes.md`` – Architektur & Feature-Engine-Vision  
+- Historical install/roadmap snapshot:
+- `` – Architektur & Feature-Engine-Vision
 - ``docs&#47;Peak_Trade_Research_Strategy_TODO_2025-12-07.md`` – Research-TODO  
 - ``docs&#47;TECH_DEBT_BACKLOG.md`` – Tech-Debt  
 - ``docs&#47;ops&#47;UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md`` – Stubs/Optional

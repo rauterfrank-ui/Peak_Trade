@@ -62,17 +62,17 @@ Der **Autonomous AI-Driven Workflow** ist ein intelligentes System, das automati
 
 ### Module
 
-1. **Workflow Engine** (`src&#47;autonomous&#47;workflow_engine.py`)
+1. **Workflow Engine** ()
    - Koordiniert Workflow-Ausführung
    - Verwaltet Workflow-Status
    - Integriert mit bestehenden Scripts
 
-2. **Decision Engine** (`src&#47;autonomous&#47;decision_engine.py`)
+2. **Decision Engine** ()
    - Trifft intelligente Entscheidungen
    - Bewertet Kriterien und Metriken
    - Berechnet Confidence-Scores
 
-3. **Monitors** (`src&#47;autonomous&#47;monitors.py`)
+3. **Monitors** ()
    - `MarketMonitor`: Marktbedingungen
    - `SignalMonitor`: Signalqualität
    - `PerformanceMonitor`: Portfolio-Performance

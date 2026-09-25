@@ -23,7 +23,7 @@ R&D-Strategie-Welle v2 baut auf den implementierten R&D-Modulen aus Welle v1 auf
 
 ### 2.1 Martin Armstrong – Zyklen & Timing
 
-**Modul:** `src/strategies/armstrong/armstrong_cycle_strategy.py`
+**Modul:**
 
 **Forschungsfokus:**
 - Economic Confidence Model (ECM) – 8.6-Jahre-Zyklus (π × 1000 Tage)

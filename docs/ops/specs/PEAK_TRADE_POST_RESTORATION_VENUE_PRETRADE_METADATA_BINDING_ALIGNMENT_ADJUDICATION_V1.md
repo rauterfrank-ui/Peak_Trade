@@ -243,7 +243,7 @@ question.
 | Z2R public instruments GET pack | HISTORICAL_EVIDENCE | BTC instruments GET | HISTORICAL | OKX_EEA | BTC-USD_UM_XPERP-310404 | FUTURES xperp | ctMult | immutable evidence | FALSE_BTC |
 | `FUTURES_INSTRUMENT_METADATA_CONTRACT_V0` | DOCS_ONLY_GENERIC_FLOOR | required-field list including min_qty lot_size | GENERIC | unspecified | unspecified | futures/perps | none | docs | FALSE_NOT_OKX_EEA_SUI_MAX_SIZE |
 | Cap 2.1 / 5.1 / 5.2 instrument fixtures | FIXTURE | synthetic minSz/lotSz/tickSz | HISTORICAL_FIXTURE | mixed | ETH/SOL/ADA not SUI-310404 | linear | universe/runtime fixtures | fixture | FALSE |
-| Kraken `src&#47;exchange&#47;kraken_live.py` | LEGACY_HOST | none for OKX size fields | CURRENT_CODE | KRAKEN | n/a | n/a | pipeline live admission | mutable code not changed here | FALSE |
+| Kraken | LEGACY_HOST | none for OKX size fields | CURRENT_CODE | KRAKEN | n/a | n/a | pipeline live admission | mutable code not changed here | FALSE |
 | exposure `max_notional` | INTERNAL_POLICY | min-executable notional clone | CURRENT | OKX canary | current instrument | LIMIT qty=minSz | order_plan | mutable code not changed here | FALSE_NOT_VENUE_MAX_SIZE |
 | `FUTURES_INSTRUMENT_METADATA` snapshot fixture | FIXTURE | dashboard producer packet | FIXTURE | unspecified | unspecified | futures | dashboard tests | fixture | FALSE |
 

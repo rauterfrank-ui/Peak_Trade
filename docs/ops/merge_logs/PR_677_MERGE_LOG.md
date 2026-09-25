@@ -94,15 +94,15 @@ assert acceptable_exit
 ### Documentation (8 Files Created)
 
 **Operator Documentation (in `docs&#47;ops&#47;`)**:
-1. [Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) (~600 lines)
+1. Runbook (~600 lines)
 2. [Operator Guide](../STRATEGY_SWITCH_SANITY_CHECK.md) (~500 lines)
 3. [Merge Log](PR_677_MERGE_LOG.md) (this file, ~400 lines)
 
 **Project Root Documentation**:
-4. [Evidence Pack](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) (~600 lines)
-5. [Patch Docs](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md) (~300 lines)
-6. [Operator Summary (DE)](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md) (~200 lines)
-7. [PR Body](../../../PHASE6_PR_BODY.md) (~350 lines)
+4. Evidence Pack (~600 lines)
+5. Patch Docs (~300 lines)
+6. Operator Summary (DE) (~200 lines)
+7. PR Body (~350 lines)
 8. Evidence Index Entry (merged via [PR #678](https://github.com/rauterfrank-ui/Peak_Trade/pull/678))
 
 ---
@@ -343,11 +343,11 @@ git push
 - **Related pattern**: Strategy-Coverage (existing, 100% pattern-parity)
 
 ### Documentation
-- **Runbook**: [RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)
+- **Runbook**: RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md
 - **Operator Guide**: [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md)
-- **Evidence Pack**: [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md)
-- **Patch Docs**: [PHASE6_PATCH_DOCTOR_TEST_FIX.md](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md)
-- **Operator Summary (DE)**: [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
+- **Evidence Pack**: PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md
+- **Patch Docs**: PHASE6_PATCH_DOCTOR_TEST_FIX.md
+- **Operator Summary (DE)**: PHASE6_OPERATOR_ZUSAMMENFASSUNG.md
 
 ### Code
 - **Core Logic**: `src&#47;governance&#47;strategy_switch_sanity_check.py`
@@ -380,7 +380,7 @@ This merge log follows the **Peak_Trade Docs Link Stability Contract** to ensure
 
 ### Principle 1: Main-Resident Links ✅
 - Use **repo-relative markdown links** `[text](repo-path)` for files on `main`
-- Example: `[Runbook](..&#47;runbooks&#47;RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)`
+- Example: `Runbook`
 - Rationale: Enables docs reference targets validation, offline reading, IDE navigation
 
 ### Principle 2: Cross-Branch/PR References 🔗

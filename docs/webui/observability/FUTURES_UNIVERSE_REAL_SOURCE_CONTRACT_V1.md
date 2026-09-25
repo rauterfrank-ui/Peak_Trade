@@ -48,8 +48,8 @@ MANIFEST_VERIFY_RC=0
 
 | Layer | Canonical reuse |
 |-------|-----------------|
-| Field semantics (F1) | [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](../../ops/specs/FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) |
-| Provenance (F2) | [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](../../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) |
+| Field semantics (F1) | FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md |
+| Provenance (F2) | FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md |
 | Producer packet | `src/trading/master_v2/double_play_futures_input_producer.py` — `FuturesProducerPacket` |
 | Producer contract | [MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md](../../ops/specs/MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_PRODUCER_CONTRACT_V0.md) |
 | Persistence readmodel | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) — `universe_selection_readmodel.v1` |

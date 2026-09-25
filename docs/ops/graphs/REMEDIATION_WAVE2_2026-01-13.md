@@ -149,7 +149,7 @@ See Phase 4E Closeout Guide (historical, file archived) for details.
    - Various `docs&#47;` and `src&#47;` references
 
 3. **docs/*.md files** (~90 escaped paths total)
-   - `..&#47;config.toml`, `..&#47;src&#47;*.py`, etc.
+ - , `..&#47;src&#47;*.py`, etc.
 
 **Fix Action:** Apply Pattern 1 or Pattern 2 depending on context.
 

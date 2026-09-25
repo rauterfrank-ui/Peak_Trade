@@ -42,7 +42,7 @@ Minimal. Documentation-only formatting changes; improves gate stability without 
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/448  
 **Merged:** 2025-12-30 (merged into comprehensive branch, then via PR #447 to main)  
 **Merge Commit:** via PR #447 (3be604b)  
-**Branch:** `docs&#47;docs-reference-targets-gate-cleanup` → deleted  
+**Branch:** → deleted
 **Change Type:** Docs-only (HTML entity escaping)
 
 ### Detailed Summary
@@ -54,20 +54,20 @@ Escapes path separators in documentation references that are informational/illus
 After Phase 1 (script path fixes) and Phase 2 (deprecated notices), the docs-reference-targets-gate still reported 12 false positives:
 
 **Category A: Source Code References (2 occurrences)**
-- `src&#47;utils&#47;logger.py` — Explanatory mention (file doesn't exist)
-- `src&#47;config&#47;registry.py` — Explanatory mention (file doesn't exist)
+- — Explanatory mention (file doesn't exist)
+- — Explanatory mention (file doesn't exist)
 
 **Category B: Branch Names (13 occurrences)**  
-- `docs&#47;ops-pr203-merge-log` — Git branch name in workflow docs
-- `docs&#47;ops-pr999-merge-log` — Example branch name
-- `docs&#47;pr-62-finalization` — Historical branch name
-- `docs&#47;ops-workflow-scripts-docs` — Historical branch name
-- `docs&#47;ops-readme-dedupe-pr61-63` — Historical branch name
+- — Git branch name in workflow docs
+- — Example branch name
+- — Historical branch name
+- — Historical branch name
+- — Historical branch name
 
 **Category C: Non-Existent Doc Examples (5 occurrences)**
-- `docs&#47;ops&#47;PR_203_MERGE_LOG.md` — Hypothetical template reference
+- — Hypothetical template reference
 - `docs&#47;ops&#47;PR_999_MERGE_LOG.md` — Example file name
-- `..&#47;..&#47;docs&#47;stability&#47;P1_EVIDENCE_CHAIN.md` — Outdated relative path
+- — Outdated relative path
 
 These are all **valid documentation content**, not broken links. They should not be validated as filesystem paths.
 

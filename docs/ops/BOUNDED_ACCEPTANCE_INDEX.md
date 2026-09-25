@@ -21,7 +21,7 @@ Single index page for the bounded / acceptance documentation chain. Use this as 
 
 | Category | Document |
 |----------|----------|
-| **Templates** | `docs&#47;ops&#47;templates&#47;ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md`, `REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`, `ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt` |
+| **Templates** | , `REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`, `ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt` |
 | **Launcher** | [LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md](runbooks/LOCAL_BOUNDED_SECRET_LAUNCHER_RUNBOOK.md) |
 | **Entry Contract** | [BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md](specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) |
 | **Preflight** | [NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md](runbooks/NEXT_BOUNDED_TRIAL_PREFLIGHT_CHECKLIST.md) |

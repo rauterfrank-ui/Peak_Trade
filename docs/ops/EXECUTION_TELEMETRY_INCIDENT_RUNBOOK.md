@@ -591,9 +591,9 @@ Use one conservative operator-summary interpretation path across telemetry and c
 
 ## Related Operator-Facing Docs
 - ops cockpit truth-first:
-  `docs&#47;ops&#47;runbooks&#47;webui_ops_cockpit_v2_9_truth_first.md`
+
 - earlier ops cockpit truth-first:
-  `docs&#47;ops&#47;runbooks&#47;webui_ops_cockpit_v2_4_truth_first.md`
+
 
 ## Consistency Notes
 - operator summary wording should not overclaim certainty beyond evidence

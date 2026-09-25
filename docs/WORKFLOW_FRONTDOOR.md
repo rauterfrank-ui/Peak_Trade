@@ -66,17 +66,17 @@
 - [README Schnelleinstieg](../README.md)
 - [Getting Started](./GETTING_STARTED.md)
 - [Python Runtime Contract](./runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md)
-- Historical 2026-01-12 install/roadmap snapshot (not current authority): [archive original](./ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+- Historical 2026-01-12 install/roadmap snapshot (not current authority): archive original
 
 ---
 
 ## 🗺️ Related Documentation
 
 ### Operations & Runbooks
-- **Chat-led open features / gap discovery:** [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](./ops/runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) — backlog triage (NO-LIVE; assistant-led sessions, not shell-command lists)
-- **Chat continuity bootstrap (new ChatGPT/Cursor session):** [PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md](./ops/runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md) — copy-paste session bootstrap, including Bounded-Pilot / First-Live navigation context; **navigation-only** (no live authorization, gate bypass, or runtime, trading, evidence, approval, or live-entry semantics change).
+- **Chat-led open features / gap discovery:** RUNBOOK_CHAT_LED_OPEN_FEATURES.md — backlog triage (NO-LIVE; assistant-led sessions, not shell-command lists)
+- **Chat continuity bootstrap (new ChatGPT/Cursor session):** PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md — copy-paste session bootstrap, including Bounded-Pilot / First-Live navigation context; **navigation-only** (no live authorization, gate bypass, or runtime, trading, evidence, approval, or live-entry semantics change).
 - **Unimplemented features (ordered backlog):** [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) — deep-scan snapshot + logical staging (NO-LIVE)
-- **Release checklist / Go–No-Go (Finish Plan [PR 8](./ops/roadmap/FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only), docs-only, NO unlocks):** [Release docs (index)](./ops/release/README.md) · [Checklist & rubric](./ops/release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
+- **Release checklist / Go–No-Go (Finish Plan [PR 8](./ops/roadmap/FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only), docs-only, NO unlocks):** Release docs (index) · Checklist & rubric
 - **Observability / status reports (Finish Plan [PR 7](./ops/roadmap/FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs), snapshot-only, NO unlocks):** [Live Status Reports](./LIVE_STATUS_REPORTS.md) (Daily/Weekly) · [`generate_live_status_report.py`](../scripts/generate_live_status_report.py) (CLI) · [`prj_status_report.py`](../scripts/ci/prj_status_report.py) (CI PR-J artifacts)
 - **Live-Ops runbook pack (Finish Plan [PR 6](./ops/roadmap/FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only), docs-only, NO unlocks):** [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) (Start/Stop, Standard- & Incident-Katalog) · [Incident Simulation & Drills](./INCIDENT_SIMULATION_AND_DRILLS.md) (kontrollierte Übungen) · [Safety Policy Testnet & Live](./SAFETY_POLICY_TESTNET_AND_LIVE.md) (Anforderungen vor Testnet/Live)
 - [Live Operational Runbooks](./LIVE_OPERATIONAL_RUNBOOKS.md) – 12+ runbooks for live operations and incident handling
@@ -84,11 +84,11 @@
 - [Ops README](./ops/README.md) – Complete ops tools and documentation index
 - [Master V2 First Live Enablement Readiness Ladder (canonical)](./ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) – Bindende kanonische Steuerdatei fuer den aktuellen Clarification-Workstream
 - [Tech-Debt Top-3 ROI bis Finish Runbook](./ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) – 3 kleine PRs (C/B/E) bis Finish, Cursor Multi-Agent, NO-LIVE
-- [RUNBOOK_BRANCH_CLEANUP_RECOVERY.md](./ops/runbooks/RUNBOOK_BRANCH_CLEANUP_RECOVERY.md) – Branch cleanup recovery (tags + bundles)
+- RUNBOOK_BRANCH_CLEANUP_RECOVERY.md – Branch cleanup recovery (tags + bundles)
 - [Execution Watch Dashboard v0.2 Runbook](./ops/runbooks/RUNBOOK_EXECUTION_WATCH_DEMO_STACK.md) – Start/verify the read-only execution watch dashboard
 - [Phase 7 Finish/Closeout Runbook](./ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) – Workflow docs closeout + repo hygiene inventory (snapshot-based)
 - [Finish Plan (MVP→v1.0)](./ops/roadmap/FINISH_PLAN.md)
-- [Finish Runbook A (MVP)](./ops/runbooks/RUNBOOK_FINISH_A_MVP.md) – Backtest → Artifacts → Report → Watch‑Only Dashboard (snapshot-only, NO‑LIVE)
+- Finish Runbook A (MVP) – Backtest → Artifacts → Report → Watch‑Only Dashboard (snapshot-only, NO‑LIVE)
 - [Finish C Master Runbook](./ops/runbooks/finish_c/RUNBOOK_FINISH_C_MASTER.md) – Finish C (docs gates maintenance + evidence workflow)
 
 ### Control Center
@@ -107,7 +107,7 @@
 - [Evidence Schema](./ops/EVIDENCE_SCHEMA.md) – Evidence artifact schema and validation rules
 
 ### Archives & Cleanup
-- [Repo Cleanup Inventory (Snapshots)](./ops/_archive/repo_cleanup/2026-01-12/README.md) – Snapshot-based repo hygiene inventory (no actions without approval)
+- Repo Cleanup Inventory (Snapshots) – Snapshot-based repo hygiene inventory (no actions without approval)
 
 ### Governance & Safety
 - **NO-LIVE default posture** (research/backtest/paper/shadow; no live orders by default): [Governance and Safety Overview](./GOVERNANCE_AND_SAFETY_OVERVIEW.md) · [Finish Plan — Stop Rules](./ops/roadmap/FINISH_PLAN.md#stop-rules-non-negotiable)

@@ -168,8 +168,8 @@
 - `docs&#47;mindmap&#47;INFOSTREAM_LEARNING_LOG.md`
 - `docs&#47;mindmap&#47;README_MINDMAP.md`
 - `docs&#47;mindmap&#47;template&#47;IDEA_TEMPLATE.md`
-- `docs&#47;observability&#47;LOGGING_FIELDS.md`
-- `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md`
+-
+-
 - `docs&#47;phase83_alert_history_dashboard.md`
 - `docs&#47;position_sizing&#47;OVERLAY_PIPELINE.md`
 - `docs&#47;position_sizing&#47;VOL_REGIME_OVERLAY_SIZER.md`
@@ -239,7 +239,7 @@
 - `docs&#47;stability&#47;STABILITY_STACK_COMPLETED.md`
 - `docs&#47;stability&#47;WAVE_C_PLAN.md`
 - `docs&#47;strategies&#47;R_AND_D_STRATEGIES.md`
-- `docs&#47;strategy_profiles&#47;ARMSTRONG_CYCLE_PROFILE_v1.md`
+-
 - `docs&#47;strategy_profiles&#47;EHLERS_CYCLE_FILTER_PROFILE_v1.md`
 - `docs&#47;strategy_profiles&#47;EL_KAROUI_VOL_MODEL_PROFILE_v1.md`
 - `docs&#47;strategy_profiles&#47;META_LABELING_PROFILE_v1.md`

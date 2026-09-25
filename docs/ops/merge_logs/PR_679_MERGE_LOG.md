@@ -68,7 +68,7 @@ Post-merge cleanup for Phase 6 Strategy-Switch Sanity Check: Convert backtick fi
 
 ---
 
-#### 2. `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (+15 lines)
+#### 2. (+15 lines)
 **Changes**:
 - Converted 5 backtick filename references → markdown links
 - Added **Documentation Link Stability** reference section
@@ -76,9 +76,9 @@ Post-merge cleanup for Phase 6 Strategy-Switch Sanity Check: Convert backtick fi
 
 **Links Added**:
 - [STRATEGY_SWITCH_SANITY_CHECK.md](../STRATEGY_SWITCH_SANITY_CHECK.md)
-- [PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md)
-- [PHASE6_PATCH_DOCTOR_TEST_FIX.md](../../../PHASE6_PATCH_DOCTOR_TEST_FIX.md)
-- [PHASE6_OPERATOR_ZUSAMMENFASSUNG.md](../../../PHASE6_OPERATOR_ZUSAMMENFASSUNG.md)
+- PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md
+- PHASE6_PATCH_DOCTOR_TEST_FIX.md
+- PHASE6_OPERATOR_ZUSAMMENFASSUNG.md
 - [PR_677_MERGE_LOG.md](../merge_logs/PR_677_MERGE_LOG.md)
 
 ---
@@ -194,9 +194,9 @@ git push
 
 **Phase 6 Strategy-Switch Sanity Check Documentation**:
 1. [PR #677 Merge Log](PR_677_MERGE_LOG.md) — Now with markdown links + Link Stability Contract
-2. [Phase 6 Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) — Now with stable cross-references
+2. Phase 6 Runbook — Now with stable cross-references
 3. [Operator Guide](../STRATEGY_SWITCH_SANITY_CHECK.md) — Unchanged (already had good links)
-4. [Evidence Pack](../../../PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md) — Root-level documentation
+4. Evidence Pack — Root-level documentation
 
 ---
 
@@ -247,7 +247,7 @@ See [Runbook](../runbooks/RUNBOOK_PHASE6_...md) for details.
 
 ### Documentation
 - [PR #677 Merge Log](PR_677_MERGE_LOG.md) (updated with links + contract)
-- [Phase 6 Runbook](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md) (updated with links)
+- Phase 6 Runbook (updated with links)
 - [Link Stability Contract](PR_677_MERGE_LOG.md#link-stability-contract) (4 principles)
 
 ---

@@ -1182,7 +1182,7 @@ MANIFEST_VERIFY_REQUIRED=true
 - `evidence_transport=s3_export_after_finalize` is permitted **only after** `finalize_primary_evidence_root()` / `verify_manifest_sha256()` returns success on the durable root (`MANIFEST.sha256` RC=0).
 - S3/Object Storage is **transport/archive**, not active staging sync, not a second evidence standard, and not closeout acceptance by itself.
 - Consumer-side download + manifest verify is required before treating remote copies as primary evidence ([PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) patterns may be **extended** to `MANIFEST.sha256`; do not replace with a parallel manifest scheme).
-- [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) remains **planning-only / candidate-to-extend** for export prefixes; bounded run finalized evidence uses `run_id`-scoped keys under a `finalized_evidence&#47;` prefix (proposal only in v0).
+- PHASE_T_DATA_NODE_EXPORT_CHANNEL.md remains **planning-only / candidate-to-extend** for export prefixes; bounded run finalized evidence uses `run_id`-scoped keys under a `finalized_evidence&#47;` prefix (proposal only in v0).
 
 ### Notion — projection/index only
 
@@ -1792,7 +1792,7 @@ S3_DOWNLOAD_AUTHORITY=false
 - Registry v1 metadata: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — §6a `evidence_transport`, `manifest_verified`, `evidence_status`
 - Local-only dry preflight CLI: §6a.3.1 — [preflight_s3_finalized_evidence_export_v0.py](../../../scripts/ops/preflight_s3_finalized_evidence_export_v0.py) (operator-invoked; no upload/download/network)
 - Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
-- Extend-only planning surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) — may be extended; **do not** replace `MANIFEST.sha256` with `SHA256SUMS.stable.txt` as competing truth (§6b)
+- Extend-only planning surfaces: PHASE_T_DATA_NODE_EXPORT_CHANNEL.md, [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) — may be extended; **do not** replace `MANIFEST.sha256` with `SHA256SUMS.stable.txt` as competing truth (§6b)
 
 #### `evidence_transport` states (Registry v1 §6a field)
 
@@ -1900,7 +1900,7 @@ STAGE3_RUNNER_START_CHARTER_PERMITTED=false
 - Finalize + manifest verify: [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) — `finalize_primary_evidence_root()`, `verify_manifest_sha256()`, `MANIFEST.sha256`
 - Registry v1 metadata: [build_generic_evidence_run_registry_v1.py](../../../scripts/ops/build_generic_evidence_run_registry_v1.py) — §6a fields; constants `S3_FINALIZED_EVIDENCE_EXPORT_IMPLEMENTATION_PREFLIGHT_V0`
 - Projection consumer fixtures: [projection_consumer_v0.py](../../../tests/fixtures/ops/generic_evidence_run_registry_v1/projection_consumer_v0.py) — `S3_RELEVANT_PROJECTION_FIELDS`
-- Extend-only Phase surfaces: [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md), [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)
+- Extend-only Phase surfaces: PHASE_T_DATA_NODE_EXPORT_CHANNEL.md, [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)
 
 #### Implemented local-only dry preflight CLI (non-authorizing)
 
@@ -1944,7 +1944,7 @@ Phase T/W runbooks predate bounded primary-evidence `MANIFEST.sha256` closeout. 
 
 | Legacy Phase surface | v0 reconciliation rule |
 |---|---|
-| [PHASE_T_DATA_NODE_EXPORT_CHANNEL.md](../runbooks/PHASE_T_DATA_NODE_EXPORT_CHANNEL.md) `manifest.json` + `SHA256SUMS.stable.txt` | **Extend-only.** Future Phase T export packs for bounded runs must treat `MANIFEST.sha256` from `primary_evidence_retention_v0` as **canonical**. Legacy filenames may appear only as **non-authoritative compatibility artifacts** that point back to `MANIFEST.sha256`. |
+| PHASE_T_DATA_NODE_EXPORT_CHANNEL.md `manifest.json` + `SHA256SUMS.stable.txt` | **Extend-only.** Future Phase T export packs for bounded runs must treat `MANIFEST.sha256` from `primary_evidence_retention_v0` as **canonical**. Legacy filenames may appear only as **non-authoritative compatibility artifacts** that point back to `MANIFEST.sha256`. |
 | [PHASE_W_EXPORT_PACK_GH_CONSUMER.md](../runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md) `sha256sum -c SHA256SUMS.stable.txt` | **Extend-only.** Future Phase W consumers for bounded finalized evidence must verify against **`MANIFEST.sha256`** (RC=0). `SHA256SUMS.stable.txt` must **not** become competing truth or closeout authority. |
 
 ```
@@ -2085,7 +2085,7 @@ SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
 Normative state (post scheduler boundary hard-block #3584/#3585; library opt-in):
 
 - `scripts/run_scheduler.py` non-dry-run entry is **hard-blocked** via shared `scripts/ops/scheduler_start_boundary_guard_v0.py` (`assert_scheduler_start_authorized()`).
-- `src/ops/p67/shadow_session_scheduler_cli_v1.py` `main()` is **hard-blocked** by the same shared guard before `run_shadow_session_scheduler_v1()`.
+- `main()` is **hard-blocked** by the same shared guard before `run_shadow_session_scheduler_v1()`.
 - Direct library calls to `run_shadow_session_scheduler_v1()` (unit tests, P72 pack) **bypass** the CLI guard by default — residual risk; see [SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md](SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md) §7–§7b.
 - Opt-in `scheduler_boundary_enforce=True` on `P67RunContextV1` / `P72PackContextV1` invokes the same shared guard at library entry; default off preserves unit tests and legacy library callers.
 
@@ -2154,7 +2154,7 @@ Normative state (post P79 archive manifest gate #3592):
 - Runtime tick/pidfile/P76 mode (including tick `manifest.json` one-of check) remains unchanged when `ARCHIVE_ROOT` is unset.
 - P79 success is **non-authorizing**; does not clear HOLD, preflight BLOCKED, or Live/Testnet/broker/exchange gates.
 
-Detail owner: [online_readiness_supervisor_health_gate_runbook_v1.md](../ai/online_readiness_supervisor_health_gate_runbook_v1.md).
+Detail owner: online_readiness_supervisor_health_gate_runbook_v1.md.
 
 ## 7e. P101 post-stop primary evidence operator hints (non-executing)
 

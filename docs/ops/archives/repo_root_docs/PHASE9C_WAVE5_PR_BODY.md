@@ -42,17 +42,17 @@ Wave 5 implements cluster-based remediation for remaining low-frequency broken t
 - `docs&#47;Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md` (1 target)
 - `docs&#47;PORTFOLIO_RECIPES_AND_PRESETS.md` (2 targets)
 - `docs&#47;project_docs&#47;CLAUDE_NOTES.md` (1 target)
-- `docs&#47;runbooks&#47;R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md` (2 targets)
+- (2 targets)
 - `docs&#47;SWEEPS_MARKET_SCANS.md` (1 target)
 
 **Fix:** Escape slashes + add "(illustrative)" marker
 
 **Examples:**
-- `src&#47;strategies&#47;my_new_strategy.py` (illustrative)
-- `src&#47;data&#47;my_exchange.py` (illustrative)
-- `config&#47;portfolios`
-- `config&#47;custom_recipes.toml` (illustrative)
-- `scripts&#47;my_smoke_test.py` (illustrative)
+- (illustrative)
+- (illustrative)
+-
+- (illustrative)
+- (illustrative)
 
 #### Cluster 2: Historical Branch References (8 targets)
 
@@ -65,10 +65,10 @@ Wave 5 implements cluster-based remediation for remaining low-frequency broken t
 **Fix:** Escape slashes + add "(historical)" marker
 
 **Examples:**
-- `docs&#47;pr-76-merge-log` (historical stub)
-- `docs&#47;ops&#47;pr-93-merge-log` (historical stub)
-- `docs&#47;ops-pr-85-merge-log` (historical stub)
-- `docs&#47;pr-74-delivery-note` (historical branch)
+- (historical stub)
+- (historical stub)
+- (historical stub)
+- (historical branch)
 
 ### Total Escapes
 

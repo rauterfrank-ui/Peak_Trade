@@ -41,9 +41,9 @@ Use:
 - full runbook:
   `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 - verify checklist:
-  `docs&#47;ops&#47;runbooks&#47;BOUNDED_ACCEPTANCE_OPERATOR_VERIFY_CHECKLIST.md`
+
 - launcher:
-  `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+
 
 ## Current Interpretation
 Bounded / acceptance is:
@@ -63,7 +63,7 @@ Preferred next block:
 - slides source:
   `docs&#47;ops&#47;slides&#47;BOUNDED_ACCEPTANCE_SLIDES_V2.md`
 - export runbook:
-  `docs&#47;ops&#47;runbooks&#47;BOUNDED_ACCEPTANCE_EXPORT_RUNBOOK.md`
+
 
 ## Bottom Line
 Future-you should not need to reconstruct this wave. The bounded / acceptance chain now has a stable re-entry point, decision summary, delivery packet, and presentation layer.

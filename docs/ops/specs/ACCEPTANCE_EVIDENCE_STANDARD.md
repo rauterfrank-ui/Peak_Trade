@@ -78,10 +78,10 @@ Minimum required:
 
 ## Canonical Current Examples
 Rejected-order evidence:
-- `docs&#47;ops&#47;evidence&#47;TYPE_A_BOUNDED_TRIAL_20260318_REJECTED_ORDER_EVIDENCE_CLOSEOUT.md`
+-
 
 Accepted-and-filled evidence:
-- `docs&#47;ops&#47;evidence&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_20260318_CLOSEOUT.md`
+-
 - `docs&#47;ops&#47;evidence&#47;LOCAL_SECRET_LAUNCHER_BOUNDED_RUN_20260319_CLOSEOUT.md`
 - `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
 

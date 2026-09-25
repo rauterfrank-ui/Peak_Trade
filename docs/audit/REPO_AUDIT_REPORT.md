@@ -139,8 +139,8 @@ Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (le
 ### 5.2 Minimale __init__.py (≤2 Zeilen, potenziell Orphan)
 
 - `src&#47;research&#47;new_listings&#47;collectors&#47;__init__.py` (0 Zeilen)
-- `src&#47;ingress&#47;cli&#47;__init__.py` (0 Zeilen)
-- `src&#47;observability&#47;nowcast&#47;__init__.py` (0 Zeilen) – **wird importiert** (decision_context_v1)
+- (0 Zeilen)
+- (0 Zeilen) – **wird importiert** (decision_context_v1)
 - Viele `src&#47;research&#47;pXX&#47;`, `src&#47;aiops&#47;pXX&#47;`, `src&#47;ops&#47;pXX&#47;` mit 1-Zeiler
 
 ### 5.3 Explizit als Orphan behandelte Module (tests/orphans)
@@ -155,8 +155,8 @@ Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (le
 
 ### 5.4 src/peak_trade/
 
-- `src&#47;peak_trade&#47;__init__.py`: „namespace for CLI entry points“ (1 Zeile)
-- `src&#47;peak_trade&#47;governance&#47;__init__.py`: „Governance CLI and validators“ (1 Zeile)
+- : „namespace for CLI entry points“ (1 Zeile)
+- : „Governance CLI and validators“ (1 Zeile)
 - Keine `console_scripts` in pyproject.toml → Nutzung über `python -m src.research.new_listings` etc.
 
 ### 5.5 src/markets/

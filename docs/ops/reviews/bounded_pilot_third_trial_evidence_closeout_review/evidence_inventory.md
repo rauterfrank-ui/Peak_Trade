@@ -46,7 +46,7 @@
 2. `scripts&#47;run_execution_session.py --mode bounded_pilot --strategy ma_crossover --steps 1`
 3. `src&#47;execution&#47;live_session.py`
 4. `src&#47;execution&#47;pipeline.py`
-5. `src&#47;exchange&#47;kraken_live.py`
+5.
 
 ## 5. Änderungen seit Trial 2
 

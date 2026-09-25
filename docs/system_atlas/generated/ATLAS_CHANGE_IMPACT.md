@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- C2 Companion conversion dependency closure v1 (governance + read-only binding): authoritative producer bindings and LINEAR fraction→units algebra ratified; CONVERSION_READY=true; no Shadow/Live runtime conversion wiring; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
+- Final repository convergence cut v1: FINAL_STATIC_REMOVAL_PROVEN 5592-path outside deletion; mechanical stale doc-reference cleanup; catalog source_path decoupling for removed modules; AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
+- modified_by=FINAL_REPOSITORY_CONVERGENCE_CUT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

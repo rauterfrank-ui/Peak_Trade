@@ -9,7 +9,7 @@ Default re-entry point for future bounded / acceptance work.
 - quick operator path:
   `docs&#47;ops&#47;runbooks&#47;BOUNDED_ACCEPTANCE_OPERATOR_CHEAT_SHEET.md`
 - compact decision state:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_go_no_go_snapshot&#47;GO_NO_GO_SNAPSHOT.md`
+
 - full navigation hub:
   `docs&#47;ops&#47;reviews&#47;bounded_acceptance_index_page&#47;INDEX.md`
 
@@ -27,9 +27,9 @@ Default re-entry point for future bounded / acceptance work.
 
 ## If You Need Governance / Ops Framing
 - governance / ops interpretation:
-  `docs&#47;ops&#47;reviews&#47;governance_ops_interpretation_of_canonical_acceptance_path&#47;REVIEW.md`
+
 - readiness matrix:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_operational_readiness_matrix&#47;REVIEW.md`
+
 
 ## Bottom Line
 Bounded / acceptance is documented, standardized, operator-ready, and governance-bounded.

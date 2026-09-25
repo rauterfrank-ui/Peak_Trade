@@ -74,7 +74,7 @@ If there is **any** doubt whether trading is allowed, apply [Entry Contract §5]
 **Return toward normal (non-authorizing)**
 
 - **No** “next session OK” or “closeout resolved for governance” from this runbook alone after **`partial`** / **`ambiguous`**. **Only** governance or explicit org disposition **outside** this repo can authorize continuation.
-- If **`reconciled_explainable`**, **next session** or **candidate** steps follow [Bounded real-money pilot candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) and [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures **outside** this document; posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map).
+- If **`reconciled_explainable`**, **next session** or **candidate** steps follow [Bounded real-money pilot candidate flow](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md) and [Live entry](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) only per **your** authorized procedures **outside** this document; posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and Failure taxonomy §6.
 
 ## E. Evidence and pointers (L5 discipline)
 
@@ -110,4 +110,4 @@ Escalate when **any** holds:
 - [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md)
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 
-**Design context (non-authorizing):** [Reconciliation flow spec](../specs/RECONCILIATION_FLOW_SPEC.md); [Pilot execution edge case matrix](../specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md); [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md) §4 / §6.
+**Design context (non-authorizing):** [Reconciliation flow spec](../specs/RECONCILIATION_FLOW_SPEC.md); [Pilot execution edge case matrix](../specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md); Failure taxonomy §4 / §6.

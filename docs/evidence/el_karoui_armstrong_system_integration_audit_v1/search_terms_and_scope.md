@@ -27,4 +27,4 @@ Name hits alone were not accepted. Each hit was classified via context (source c
 ## Hit volume (approx.)
 - Files mentioning El Karoui variants: ~156
 - Files mentioning Armstrong/ECM/3141: ~201
-- Productive owners concentrated under `src&#47;strategies&#47;{el_karoui,armstrong}&#47;`, `src/strategies/ecm.py`, `src/experiments/armstrong_elkaroui_combi_experiment.py`
+- Productive owners concentrated under `src&#47;strategies&#47;{el_karoui,armstrong}&#47;`, `src/strategies/ecm.py`,

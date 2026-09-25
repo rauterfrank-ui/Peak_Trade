@@ -13,4 +13,4 @@
 ## Confirmed NOT false positives
 - `src&#47;strategies&#47;el_karoui&#47;**` — intentional Nicole-El-Karoui-inspired naming (math is pragmatic, not BSDE)
 - `src&#47;strategies&#47;armstrong&#47;**` and `src/strategies/ecm.py` — intentional Martin Armstrong / ECM (8.6y / 3141d)
-- `src/experiments/armstrong_elkaroui_combi_experiment.py` — intentional joint R&D experiment
+- — intentional joint R&D experiment

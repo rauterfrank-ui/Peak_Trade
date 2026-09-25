@@ -22,7 +22,7 @@ Die **Test Health Automation v1** erweitert die bestehende v0-Implementierung um
 |------------|------|--------------|
 | Config | `config/test_health_profiles.toml` | Erweitert um `[strategy_coverage]` und `[switch_sanity]` |
 | Runner | `src/ops/test_health_runner.py` | v1-Datenmodelle und Funktionen |
-| Slack | `src/notifications/slack.py` | `send_test_health_slack_notification_v1()` |
+| Slack | | `send_test_health_slack_notification_v1()` |
 | CLI | `scripts/run_test_health_profile.py` | Neue Flags: `--no-strategy-coverage`, `--no-switch-sanity`, `--no-slack` |
 | Tests | `tests/ops/test_test_health_v1.py` | Vollständige Test-Suite für v1 |
 

@@ -306,4 +306,4 @@ Future tests should prove:
 - [Futures Risk Safety KillSwitch Contract v0](FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0.md)
 - [Futures Read-only Market Dashboard Contract v0](FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md)
 - [Session env_name and exchange surfaces non-authority v0](SESSION_ENV_NAME_AND_EXCHANGE_SURFACES_NON_AUTHORITY_V0.md)
-- [Futures Trading Readiness Runbook v0](../runbooks/futures/FUTURES_TRADING_READINESS_RUNBOOK_V0.md)
+- Futures Trading Readiness Runbook v0

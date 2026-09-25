@@ -71,7 +71,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 - [ ] Echten Daten-Adapter in `live_ops.py` integrieren
   - Fundstelle: `scripts&#47;live_ops.py` (Zeile 189) (illustrative)
   - Kontext: Aktuell Dummy-Implementation, später mit echtem Daten-Adapter (Kraken API etc.) ersetzen
-  - Vorschlag: Integration mit bestehender Kraken-Integration in `src&#47;data&#47;kraken.py`
+ - Vorschlag: Integration mit bestehender Kraken-Integration in
 
 - [ ] Echten Daten-Adapter in `preview_live_orders.py` integrieren
   - Fundstelle: `scripts&#47;preview_live_orders.py` (Zeile 157) (illustrative)
@@ -81,12 +81,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 - [ ] Echte Kraken-Daten in `run_portfolio_backtest.py` verwenden
   - Fundstelle: `scripts&#47;run_portfolio_backtest.py` (Zeile 119) (illustrative)
   - Kontext: Aktuell Dummy-Daten, später mit echten Kraken-Daten ersetzen
-  - Vorschlag: Integration mit `src&#47;data&#47;kraken.py`
+ - Vorschlag: Integration mit
 
 - [ ] Echten Exchange-Client in `preview_live_portfolio.py` integrieren
   - Fundstelle: `scripts&#47;preview_live_portfolio.py` (Zeile 96) (illustrative)
   - Kontext: Später echten Exchange-Client integrieren (z.B. Kraken)
-  - Vorschlag: Integration mit `src&#47;exchange&#47;kraken_testnet.py` oder `src&#47;exchange&#47;ccxt_client.py`
+ - Vorschlag: Integration mit oder `src&#47;exchange&#47;ccxt_client.py`
 
 - [x] Timeframe aus Daten ableiten in `run_shadow_execution.py`
   - Fundstelle: `scripts&#47;run_shadow_execution.py` (Zeile 502) (illustrative)
@@ -139,7 +139,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: Registry-Logging für automatisches Tracking via `log_backtest_result` (fail-closed `load_strategy`, kanonische Registry-Hints)
 
 - [x] Legacy Demo-/Research-Scripts: direkte `generate_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
-  - Fundstellen: `scripts/run_simple_backtest.py`, `scripts/demo_portfolio_backtest.py`, `scripts/demo_backtest_with_risk.py`, `scripts/demo_complete_pipeline.py`, `scripts/run_momentum_realistic.py`
+ - Fundstellen: `scripts/run_simple_backtest.py`, `scripts/demo_portfolio_backtest.py`, , , `scripts/run_momentum_realistic.py`
   - Kontext: Fünf Scripts umgingen `load_strategy()` mit direktem Modul-Import (`ma_crossover`, `momentum`); kanonische Keys `ma_crossover`, `momentum_1h`
   - Status: closed (PR feat/legacy-demo-scripts-load-strategy-migration-v1; offline Tests `tests/scripts/test_legacy_demo_scripts_load_strategy_v1.py`)
 

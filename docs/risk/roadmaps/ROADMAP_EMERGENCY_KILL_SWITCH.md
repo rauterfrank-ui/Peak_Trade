@@ -590,12 +590,12 @@ class TestCheckAndBlock:
 
 | Datei | Beschreibung |
 |-------|--------------|
-| `src/risk_layer/kill_switch/triggers/__init__.py` | Trigger Module |
-| `src/risk_layer/kill_switch/triggers/base.py` | Abstract Base Trigger |
-| `src/risk_layer/kill_switch/triggers/threshold.py` | Threshold-basierte Trigger |
-| `src/risk_layer/kill_switch/triggers/manual.py` | Manuelle Trigger |
-| `src/risk_layer/kill_switch/triggers/watchdog.py` | System Watchdog |
-| `src/risk_layer/kill_switch/triggers/external.py` | Externe Trigger (Exchange, Network) |
+| | Trigger Module |
+| | Abstract Base Trigger |
+| | Threshold-basierte Trigger |
+| | Manuelle Trigger |
+| | System Watchdog |
+| | Externe Trigger (Exchange, Network) |
 | `tests/risk_layer/kill_switch/test_triggers.py` | Trigger Tests |
 
 ### 2.3 Threshold-Trigger Konfiguration

@@ -37,7 +37,7 @@ Verified path for this trial:
 3. `src&#47;execution&#47;live_session.py`
 4. `src&#47;execution&#47;pipeline.py`
 5. `src&#47;live&#47;safety.py`
-6. `src&#47;exchange&#47;kraken_live.py`
+6.
 7. exchange authentication / submit attempt
 
 ## 4. Evidence Position
@@ -81,7 +81,7 @@ The remaining issue evidenced by this run is operator-side credential validity:
 ## 8. Related References
 
 - `docs&#47;ops&#47;evidence&#47;SECOND_ACTUAL_ORDER_PLACEMENT_TRIAL_CLOSEOUT.md`
-- `docs&#47;ops&#47;specs&#47;FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md`
+-
 - `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
 
 ## 9. Conclusion

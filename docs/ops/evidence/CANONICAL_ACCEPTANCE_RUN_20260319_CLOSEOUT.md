@@ -12,7 +12,7 @@ Canonical runbook:
 - `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 
 Launcher path used:
-- `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+-
 
 ## Run Identity
 - `session_id`: `session_20260319_154236_bounded_pilot_cb1e82`

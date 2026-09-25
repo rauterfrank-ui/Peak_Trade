@@ -68,7 +68,7 @@ Health / Drift view (Section 7):
 
 ### 2.2 P85 — Live Data Ingest Readiness
 
-**Data source:** `src&#47;ops&#47;p85&#47;run_live_data_ingest_readiness_v1.py`
+**Data source:**
 
 - Runs connectivity check (Kraken Time API)
 - Writes `OUT_DIR&#47;P85_RESULT.json` with `connectivity.ok`, `overall_ok`
@@ -83,7 +83,7 @@ Health / Drift view (Section 7):
 
 ### 2.3 Kraken Cache — Market Data Quality
 
-**Data source:** `src&#47;data&#47;kraken_cache_loader.py` — `check_data_health_only()`
+**Data source:** — `check_data_health_only()`
 
 - Reads local Parquet cache (no network)
 - Returns `KrakenDataHealth` with status: ok, missing_file, too_few_bars, empty, invalid_format, other

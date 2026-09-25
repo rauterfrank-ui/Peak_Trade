@@ -113,6 +113,6 @@ CYBERSECURITY_RUNTIME_AUTHORIZATION_EFFECT=NONE
 - Implementation plan:
   `docs&#47;ops&#47;PRODUCTIVE_PURE_STACK_STAGE2_SHADOW_CAMPAIGN_INPUT_AUTHORITY_IMPLEMENTATION_PLAN_V1.md`
 - Notion mirror sync (consumer only):
-  `docs&#47;ops&#47;PRODUCTIVE_PURE_STACK_STAGE2_NOTION_MIRROR_SYNC_V1.md`
+
 - Surface-B package:
   `src&#47;ops&#47;productive_pure_stack_stage2_shadow_campaign_input_authority_v1&#47;`

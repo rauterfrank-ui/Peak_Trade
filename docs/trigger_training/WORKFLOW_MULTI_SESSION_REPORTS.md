@@ -20,7 +20,7 @@ Das Multi-Session-Report-System ermöglicht es, Trigger-Training-Daten über meh
 
 ## Komponenten
 
-### 1. Session Store (`src/trigger_training/session_store.py`)
+### 1. Session Store ()
 
 Persistentes Speichern und Laden von Trigger-Training-Sessions.
 
@@ -33,7 +33,7 @@ Persistentes Speichern und Laden von Trigger-Training-Sessions.
 - JSON-Lines (`.jsonl`) – eine Session pro Zeile
 - Standard-Pfad: `live_runs&#47;trigger_training_sessions.jsonl`
 
-### 2. Meta Report Generator (`src/trigger_training/operator_meta_report.py`)
+### 2. Meta Report Generator ()
 
 Generiert HTML-Report aus mehreren Sessions.
 

@@ -820,7 +820,7 @@ Establish sustainable operations: weekly health discipline, continuous improveme
 ### Governance
 - **Go&#47;No-Go Overview:** [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](..&#47;..&#47;governance&#47;AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
 - **Bounded-Live Config:** [config&#47;bounded_live.toml](..&#47;..&#47;..&#47;config&#47;bounded_live.toml)
-- **Kill-Switch Requirements:** [KILL_SWITCH_SUMMARY.txt](..&#47;archives&#47;repo_root_docs&#47;KILL_SWITCH_SUMMARY.txt)
+- **Kill-Switch Requirements:** KILL_SWITCH_SUMMARY.txt
 
 ### CI & Operations
 - **CI Policy Enforcement:** [CI_POLICY_ENFORCEMENT.md](..&#47;..&#47;ci&#47;CI_POLICY_ENFORCEMENT.md)

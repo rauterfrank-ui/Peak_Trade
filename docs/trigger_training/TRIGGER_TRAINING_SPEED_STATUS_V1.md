@@ -64,7 +64,7 @@ Diese Integration erweitert das bestehende Offline Trigger Training System um **
 
 ## 📁 Neue Module
 
-### 1. `src/trigger_training/reaction_stats.py`
+### 1.
 
 **Zweck:** Berechnung und Analyse von Trigger-Reaktionszeiten
 
@@ -514,7 +514,7 @@ open reports/offline_paper_trade/DRILL_SPEED_TEST_20251210/trigger_training_repo
 - **Trigger Training README:** `docs/trigger_training/README.md`
 - **Offline Drill Runbook:** `docs/runbooks/OFFLINE_TRIGGER_TRAINING_DRILL_V1.md`
 - **Psychology Heatmap:** `docs/psychology_heatmap_integration.md`
-- **Armstrong El-Karoui Playbook:** `docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`
+- **Armstrong El-Karoui Playbook:**
 
 ---
 

@@ -17,19 +17,19 @@ Single entrypoint for the bounded / acceptance documentation chain.
 
 ## Operational Interpretation
 - governance / ops interpretation:
-  `docs&#47;ops&#47;reviews&#47;governance_ops_interpretation_of_canonical_acceptance_path&#47;REVIEW.md`
+
 - operational readiness matrix:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_operational_readiness_matrix&#47;REVIEW.md`
+
 - go / no-go snapshot:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_go_no_go_snapshot&#47;GO_NO_GO_SNAPSHOT.md`
+
 
 ## Templates
 - accepted-and-filled closeout template:
-  `docs&#47;ops&#47;templates&#47;ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md`
+
 - rejected-order closeout template:
-  `docs&#47;ops&#47;templates&#47;REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`
+
 - acceptance evidence handoff template:
-  `docs&#47;ops&#47;templates&#47;ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt`
+
 
 ## Launcher / Secret Path
 - local bounded secret launcher runbook:

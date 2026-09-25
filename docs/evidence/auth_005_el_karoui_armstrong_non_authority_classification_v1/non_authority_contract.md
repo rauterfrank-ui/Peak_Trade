@@ -13,7 +13,7 @@
 - PRIMARY_ROLE=CYCLE_INFORMATION
 - AUTHORITY=NON_AUTHORITY
 - CANONICAL_BOUND=false · LIVE_READY=false · EXECUTION_ELIGIBLE=false
-- Owner file: `src/strategies/armstrong/armstrong_cycle_strategy.py`
+- Owner file:
 - Owner symbol: `ArmstrongCycleStrategy`
 
 ## COMBINED_EXPERIMENT
@@ -22,7 +22,7 @@
 - CANONICAL_BOUND=false · LIVE_READY=false · EXECUTION_ELIGIBLE=false
 - MAY_PRODUCE_RESEARCH_METRICS=true
 - MAY_NOT_PRODUCE_CANONICAL_TRADE_INTENT=true
-- Owner file: `src/experiments/armstrong_elkaroui_combi_experiment.py`
+- Owner file:
 - Owner symbol: `run_armstrong_elkaroui_combi_experiment`
 
 ## Contract tests

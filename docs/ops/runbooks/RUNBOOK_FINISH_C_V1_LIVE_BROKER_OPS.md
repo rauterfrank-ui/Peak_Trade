@@ -29,7 +29,7 @@ Operational runbook for Finish-C v1 live broker operations (future work; NO-LIVE
 - execution pipeline MVP:
   `docs&#47;execution&#47;phase16&#47;PHASE16A_EXECUTION_PIPELINE_MVP.md`
 - testnet launch:
-  `docs&#47;ops&#47;runbooks&#47;testnet_launch.md`
+
 
 ## Operator Expectation
 Operators should treat this runbook as boundary guidance, not as blanket permission for live execution.

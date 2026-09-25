@@ -29,7 +29,7 @@ Bounded / acceptance is now documented, evidence-backed, operator-standardized, 
 - canonical runbook:
   `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 - local launcher:
-  `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+
 
 ## Canonical Evidence Path
 - evidence standard:

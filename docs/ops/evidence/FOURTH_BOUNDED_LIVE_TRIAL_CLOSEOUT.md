@@ -28,7 +28,7 @@ Verified path for the fourth trial:
 2. `scripts&#47;run_execution_session.py --mode bounded_pilot --strategy ma_crossover --steps 1`
 3. `src&#47;execution&#47;live_session.py`
 4. `src&#47;execution&#47;pipeline.py`
-5. `src&#47;exchange&#47;kraken_live.py`
+5.
 
 ## 3. Evidence Position
 
@@ -65,7 +65,7 @@ This trial does **not** prove:
 ## 7. Related References
 
 - `docs&#47;ops&#47;evidence&#47;THIRD_BOUNDED_LIVE_TRIAL_CLOSEOUT.md`
-- `docs&#47;ops&#47;specs&#47;FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md`
+-
 - `docs&#47;ops&#47;specs&#47;BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`
 - PR #1826 (feat/bounded-pilot-enable-session-scoped-execution-events)
 - PR #1829 (run_health_checks unification Option A)

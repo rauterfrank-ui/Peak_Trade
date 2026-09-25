@@ -72,7 +72,7 @@ print(config.risk.max_daily_loss)  # 0.03
 ### 3. ✅ Kraken Data Pipeline (legacy / guarded infrastructure)
 
 **Neu implementierte Dateien:**
-- `src/data/kraken_pipeline.py` - Vollständige Pipeline-Integration
+- - Vollständige Pipeline-Integration
 
 **Features:**
 - ✅ Nahtlose Integration mit Data-Layer (Normalizer + Cache)
@@ -104,7 +104,7 @@ df_4h = pipeline.fetch_and_resample("BTC/USD", "1h", "4h", limit=1000)
 ## Demo-Scripts
 
 ### 1. Vollständiges Demo
-**Datei:** `scripts/demo_complete_pipeline.py`
+**Datei:**
 
 Zeigt alle Features in einem kompletten Workflow:
 ```bash
@@ -119,7 +119,7 @@ python3 scripts/demo_complete_pipeline.py
 - Demo 5: Vollständiger Backtest
 
 ### 2. Kraken-Pipeline Demo
-**Datei:** `scripts/demo_kraken_simple.py`
+**Datei:**
 
 Fokussiert auf Daten-Beschaffung:
 ```bash
@@ -273,7 +273,7 @@ df = fetch_kraken_data("BTC/USD", "1h", limit=720)
 **Code-Referenz:**
 - `src/risk/position_sizer.py` - Position Sizing Implementation
 - `src/risk/limits.py` - Risk Limits Implementation
-- `src/data/kraken_pipeline.py` - Kraken Pipeline Implementation
+- - Kraken Pipeline Implementation
 
 ---
 

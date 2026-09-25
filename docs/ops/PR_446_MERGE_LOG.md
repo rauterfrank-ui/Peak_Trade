@@ -8,8 +8,8 @@ The docs-reference-targets gate requires documentation references to point to re
 
 ## Changes
 - Updated documentation references for moved scripts (examples):
-  - `scripts&#47;validate_git_state.sh` → `scripts/ci/validate_git_state.sh`
-  - `scripts&#47;post_merge_workflow_pr203.sh` → `scripts/workflows/post_merge_workflow_pr203.sh`
+ - → `scripts/ci/validate_git_state.sh`
+ - → `scripts/workflows/post_merge_workflow_pr203.sh`
   - Additional workflow/util/automation scripts updated to their current locations (mechanical path replacements).
 - Normalized directory references where documentation intent is "package/directory":
   - Added trailing slash for directory references (e.g., `src/data/safety/` and related `src&#47;data&#47;*` directories where applicable).
@@ -40,40 +40,40 @@ Minimal. Documentation-only, mechanical replacements, no code-path impact.
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/446  
 **Merged:** 2025-12-30 (included in stacked PR #447)  
 **Merge Commit:** via PR #447 (3be604b)  
-**Branch:** `docs&#47;fix-moved-script-paths-phase1` → deleted  
+**Branch:** → deleted
 **Change Type:** Docs-only (mechanical path updates)
 
 ### Motivation
 
 The docs-reference-targets-gate was reporting 30+ missing targets, primarily due to:
 1. Scripts moved to subdirectories but doc references not updated
-2. Stale references to `src&#47;data&#47;safety` without trailing slashes
-3. Changed workflow file names (`.github&#47;workflows&#47;test.yml` → `ci.yml`)
+2. Stale references to without trailing slashes
+3. Changed workflow file names ( → `ci.yml`)
 
 These broken references created noise in CI and made it difficult to identify genuine documentation issues.
 
 ### Script Path Updates (50+ occurrences in 18 files)
 
 **CI Scripts:**
-- `scripts&#47;validate_git_state.sh` → `scripts/ci/validate_git_state.sh`
+- → `scripts/ci/validate_git_state.sh`
 
 **Workflow Scripts:**
-- `scripts&#47;post_merge_workflow_pr203.sh` → `scripts/workflows/post_merge_workflow_pr203.sh`
-- `scripts&#47;quick_pr_merge.sh` → `scripts/workflows/quick_pr_merge.sh`
-- `scripts&#47;post_merge_workflow.sh` → `scripts/workflows/post_merge_workflow.sh`
-- `scripts&#47;finalize_workflow_docs_pr.sh` → `scripts/workflows/finalize_workflow_docs_pr.sh`
+- → `scripts/workflows/post_merge_workflow_pr203.sh`
+- → `scripts/workflows/quick_pr_merge.sh`
+- → `scripts/workflows/post_merge_workflow.sh`
+- → `scripts/workflows/finalize_workflow_docs_pr.sh`
 
 **Utility Scripts:**
-- `scripts&#47;render_last_report.sh` → `scripts/utils/render_last_report.sh`
+- → `scripts/utils/render_last_report.sh`
 
 **Automation Scripts:**
-- `scripts&#47;update_pr_final_report_post_merge.sh` → `scripts/automation/update_pr_final_report_post_merge.sh`
+- → `scripts/automation/update_pr_final_report_post_merge.sh`
 
 **Workflow Files:**
-- `.github&#47;workflows&#47;test.yml` → `.github/workflows/ci.yml`
+- → `.github/workflows/ci.yml`
 
 **Package References:**
-- `src&#47;data&#47;safety` → `src/data/safety/` (directory references with trailing slash)
+- → `src/data/safety/` (directory references with trailing slash)
 
 ### Files Changed
 

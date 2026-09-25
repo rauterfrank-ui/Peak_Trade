@@ -72,7 +72,7 @@ If there is **any** doubt whether trading is allowed, apply [Entry Contract §5]
 
 ## E. Evidence and pointers (L4 discipline)
 
-Retain **review-oriented** material **outside** git per [L4 session-flow evidence pointer contract](../specs/MASTER_V2_BOUNDED_PILOT_L4_SESSION_FLOW_EVIDENCE_POINTER_CONTRACT_V0.md): **metadata and opaque handles only** — no full cockpit dumps, secrets, or payloads in the repository.
+Retain **review-oriented** material **outside** git per L4 session-flow evidence pointer contract: **metadata and opaque handles only** — no full cockpit dumps, secrets, or payloads in the repository.
 
 **Minimum narrative to record externally (conceptual)**
 
@@ -95,4 +95,4 @@ State **session id** (if any), **UTC window**, and whether posture is **known**,
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 - [Restart mid-session](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md); [Session end mismatch](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md); [Transfer ambiguity](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md); [Reconciliation mismatch](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md)
 
-**Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md).
+**Design context (non-authorizing):** Failure taxonomy; [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md).

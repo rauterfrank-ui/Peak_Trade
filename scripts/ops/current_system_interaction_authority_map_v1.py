@@ -109,6 +109,7 @@ REQUIRED_PARTIAL_IDS = (
     "repo_convergence_docs_archive_o5_41_outer_shell_v1",
     "repo_convergence_fgc01_docs_product_evidence_v1",
     "repo_convergence_fgc02_market_dashboard_evidence_v1",
+    "repo_convergence_final_static_removal_5592_v1",
     "treasury_full_core_c08_single_source_handoff_v1",
     "whole_core_fresh_trusted_q0_enter_live_v1",
     "whole_core_learning_q6_q8_none_ratification_v1",

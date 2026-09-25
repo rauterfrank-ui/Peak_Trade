@@ -219,9 +219,9 @@ Diese Datenströme laufen **nicht** über einen eigenen CI-Workflow, sondern üb
 
 | Datenstrom | Quelle / Eingang | Ausgang / Persistenz | Wo definiert / genutzt |
 |------------|------------------|----------------------|-------------------------|
-| **Kraken Data Pipeline** | Kraken API (OHLCV) | Normalizer → ParquetCache → `data&#47;cache` | `src/data/kraken_pipeline.py`, `src/data/cache.py`, `config.toml` (data.base_path) |
+| **Kraken Data Pipeline** | Kraken API (OHLCV) | Normalizer → ParquetCache → `data&#47;cache` | , `src/data/cache.py`, `config.toml` (data.base_path) |
 | **Knowledge Vector/TimeSeries** | RAG, Embeddings | Chroma/Pinecone/Qdrant: `data&#47;chroma_db`, `data&#47;timeseries` (Parquet/InfluxDB) | `config.toml` (knowledge.vector_db, knowledge.timeseries_db) |
-| **Trigger Training** | Drill-Sessions, Events | `live_runs&#47;trigger_training_sessions.jsonl`, `reports&#47;trigger_training&#47;meta&#47;` (Operator Meta Report HTML) | `src/trigger_training/session_store.py`, `operator_meta_report.py`, `scripts&#47;generate_operator_meta_report*.py`; Offline-Suite nutzt Drills |
+| **Trigger Training** | Drill-Sessions, Events | `live_runs&#47;trigger_training_sessions.jsonl`, `reports&#47;trigger_training&#47;meta&#47;` (Operator Meta Report HTML) | , `operator_meta_report.py`, `scripts&#47;generate_operator_meta_report*.py`; Offline-Suite nutzt Drills |
 | **Live Audit Export** | Live-Session-Daten | Snapshot-Reports (Script) | `scripts/export_live_audit_snapshot.py` |
 | **Alert Pipeline** | Alerts, Escalation | Slack/Email; `data&#47;telemetry&#47;alerts&#47;alerts_history.jsonl`, `logs&#47;telemetry_alerts.jsonl` | `src/live/alert_pipeline.py`, `config/telemetry_alerting.toml` |
 | **Execution Events (Beta)** | Orchestrator, Stages | `execution_events.jsonl` (INTENT, RISK_REJECT, ORDER, FILL, …), Ledger | `src/execution/orchestrator.py`; Replay/Compare nutzt `logs&#47;execution&#47;execution_events.jsonl` |

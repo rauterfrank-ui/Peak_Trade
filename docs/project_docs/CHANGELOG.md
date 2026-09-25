@@ -72,15 +72,15 @@
 
 **Data-Layer**
 
-- `src/data/kraken_pipeline.py`
+-
   Vollständige Kraken-Datenpipeline (End-to-End-Flow von Raw-Daten bis normalisierten OHLCV-Serien).
 
 **Demo-Scripts**
 
-- `scripts/demo_complete_pipeline.py`
+-
   Demo-Skript für die komplette Pipeline (Data + Risk + Backtest).
 
-- `scripts/demo_kraken_simple.py`
+-
   Vereinfachte Demo der Kraken-Pipeline.
 
 **Dokumentation**
@@ -112,7 +112,7 @@
 ### Unverändert (aber Teil der bestehenden Integration)
 
 - `src/core/config.py` – zentrales Config-System (bereits in Produktion).
-- `src/data/kraken.py` – Kraken-Client.
+- – Kraken-Client.
 - `src/data/normalizer.py` – Data Normalizer.
 - `src/data/cache.py` – Parquet Cache.
 - `src/backtest/engine.py` – Backtest Engine.

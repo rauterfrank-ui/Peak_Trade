@@ -156,7 +156,7 @@ State **UTC window**, **step** that failed, and whether cockpit posture is **kno
 - [Go/No-Go checklist](../specs/PILOT_GO_NO_GO_CHECKLIST.md); [Go/No-Go operational slice](../specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md)
 - [Live pilot execution plan](live_pilot_execution_plan.md)
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
-- **Design context (non-authorizing):** [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md); [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Readiness ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+- **Design context (non-authorizing):** Failure taxonomy; [Decision authority map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Readiness ladder](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
 
 **Explicit non-goals (unchanged in intent)**
 

@@ -30,12 +30,12 @@ Wave 4 continues systematic docs graph remediation using cluster-based approach 
 3. `docs&#47;TECH_DEBT_BACKLOG.md` (7 script-refs + 4 src-refs)
 4. `docs&#47;infostream&#47;README.md` (1 script-ref)
 5. `docs&#47;learning_promotion&#47;BOUNDED_AUTO_SAFETY_PLAYBOOK.md` (1 script-ref + 1 code block)
-6. `docs&#47;observability&#47;OBS_STACK_RUNBOOK.md` (1 script-ref + 2 src-refs)
-7. `docs&#47;ops&#47;PR_199_MERGE_LOG.md` (4 targets: leading `.&#47;` paths + `.&#47;reports`)
+6. (1 script-ref + 2 src-refs)
+7. `docs&#47;ops&#47;PR_199_MERGE_LOG.md` (4 targets: leading `.&#47;` paths + )
 8. `docs&#47;runbooks&#47;EXECUTION_PIPELINE_GOVERNANCE_RISK_RUNBOOK_V1.md` (1 script-ref + 1 code block)
 
 **5 Artifacts Created:**
-9. `docs&#47;ops&#47;graphs&#47;REMEDIATION_WAVE4_2026-01-14.md` (264 lines, remediation report)
+9. (264 lines, remediation report)
 10. `docs&#47;ops&#47;graphs&#47;docs_graph_snapshot_wave4_before.txt` (89 lines, 87 targets)
 11. `docs&#47;ops&#47;graphs&#47;docs_graph_snapshot_wave4_after.txt` (67 lines, 65 targets)
 12. `PHASE9C_WAVE4_CHANGED_FILES.txt` (8 lines)
@@ -133,7 +133,7 @@ gh pr merge 714 --squash --auto --delete-branch
 ```
 
 **Result:**
-- Branch: `docs&#47;phase9c-broken-targets-wave4` → deleted
+- Branch: → deleted
 - Merge Strategy: Squash (4 commits → 1 squash commit)
 - Merge Commit: `0162ce46f9a696804cfd21ff1ab5b11645d3e7b0`
 
@@ -147,7 +147,7 @@ git log -2 --oneline  # ✅ Verified
 ## References
 - **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/714
 - **Merge Commit:** https://github.com/rauterfrank-ui/Peak_Trade/commit/0162ce46f9a696804cfd21ff1ab5b11645d3e7b0
-- **Remediation Report:** `docs&#47;ops&#47;graphs&#47;REMEDIATION_WAVE4_2026-01-14.md`
+- **Remediation Report:**
 - **CI-Parity Guide:** `docs&#47;ops&#47;PRE_PR_FULL_SCAN_CI_PARITY.md`
 - **Runbook:** Phase 9C &#47; Wave 4 (Docs Graph Remediation)
 - **Related:** PR #712 (Wave 3), PR #713 (Wave 3 Merge Log)

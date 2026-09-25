@@ -26,9 +26,9 @@ Das Trigger-Training-System ermöglicht es Operatoren, ihre Reaktionsfähigkeit 
 
 | Modul | Pfad | Beschreibung |
 |-------|------|--------------|
-| **Hooks** | `src/trigger_training/hooks.py` | Event-Extraktion aus DataFrames |
-| **Operator Meta Report** | `src/trigger_training/operator_meta_report.py` | HTML-Report-Generierung |
-| **Session Store** | `src/trigger_training/session_store.py` | Persistentes Speichern/Laden |
+| **Hooks** | | Event-Extraktion aus DataFrames |
+| **Operator Meta Report** | | HTML-Report-Generierung |
+| **Session Store** | | Persistentes Speichern/Laden |
 
 ### Scripts
 

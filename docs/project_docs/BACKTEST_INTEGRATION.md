@@ -226,7 +226,7 @@ self.equity_curve.append(current_equity)
 
 ## Demo-Script
 
-**Datei:** `scripts/demo_backtest_with_risk.py`
+**Datei:**
 
 **Ausführen:**
 ```bash
@@ -492,4 +492,4 @@ Die BacktestEngine ist jetzt vollständig mit dem Risk-Layer integriert:
 **Dateien:**
 - `src/backtest/engine.py` - Vollständig neu
 - `src/risk/__init__.py` - Exports erweitert
-- `scripts/demo_backtest_with_risk.py` - NEU
+- - NEU

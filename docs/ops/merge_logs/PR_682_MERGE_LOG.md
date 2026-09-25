@@ -115,7 +115,7 @@ git revert 77d8965fd66b9a5d2ae6b4faf8ed4652a5657229
 ### Documentation Artifacts
 - **Merge Logs**: [docs/ops/merge_logs/](.)
 - **Evidence Index**: [docs/ops/EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md)
-- **Phase 6 Runbook**: [docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md)
+- **Phase 6 Runbook**:
 
 ---
 

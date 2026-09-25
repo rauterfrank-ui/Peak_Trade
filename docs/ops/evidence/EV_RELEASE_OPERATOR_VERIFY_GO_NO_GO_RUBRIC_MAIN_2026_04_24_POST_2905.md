@@ -15,7 +15,7 @@ This evidence note records a **NO-LIVE** operator-readiness snapshot for the cur
 
 Canonical rubric:
 
-- [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
+- RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md
 
 Finish-plan reference:
 
@@ -86,7 +86,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs
 bash scripts/ops/pt_docs_gates_snapshot.sh --changed
 ```
 
-Optional (only if you need parity with [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) §4.4):
+Optional (only if you need parity with RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md §4.4):
 
 ```bash
 python3 scripts/ops/ensure_truth_branch_protection.py --check
@@ -99,7 +99,7 @@ python3 scripts/ops/ensure_truth_branch_protection.py --check
 | Docs token policy | PASS | `uv run python scripts/ops/validate_docs_token_policy.py --tracked-docs` — all tracked `docs&#47;**&#47;*.md` scanned. |
 | Reference targets | PASS | `bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs` — all references resolve. |
 | Docs gates snapshot | PASS (full tracked scope) | `uv run python scripts/ops/validate_docs_token_policy.py` + `verify_docs_reference_targets` as above; for PR, run `pt_docs_gates_snapshot.sh --changed` against the PR base. |
-| Truth branch protection (optional) | Not run | `python3 scripts/ops/ensure_truth_branch_protection.py --check` — optional per [RELEASE_CHECKLIST…](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) §4.4. |
+| Truth branch protection (optional) | Not run | `python3 scripts/ops/ensure_truth_branch_protection.py --check` — optional per RELEASE_CHECKLIST… §4.4. |
 
 **No** value in the table (once filled) constitutes a live, broker, or testnet **Go**.
 

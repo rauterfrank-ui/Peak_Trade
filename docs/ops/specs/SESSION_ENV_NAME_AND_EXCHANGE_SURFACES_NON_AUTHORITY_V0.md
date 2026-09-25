@@ -55,7 +55,7 @@ The inspected path showed:
 - Pipeline selection is governed by `mode`, not by `env_name`.
 - In the inspected `testnet` mode path, `LiveSessionRunner._build_pipeline` builds Shadow-pipeline semantics.
 - No proven Kraken Futures exchange adapter or call path was identified.
-- `src/exchange/kraken_testnet.py` is a spot REST style Kraken testnet or validation surface against `api.kraken.com`; it should not be represented as a Kraken Futures derivatives adapter without a separate governed proof.
+- is a spot REST style Kraken testnet or validation surface against `api.kraken.com`; it should not be represented as a Kraken Futures derivatives adapter without a separate governed proof.
 
 ## Non-authority rules
 

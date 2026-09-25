@@ -44,7 +44,7 @@ shasum -a 256 -c "${PIN}.sha256"
 | Pack | Path |
 |------|------|
 | P105 Execution A2Z | `out&#47;ops&#47;P105_EXECUTION_A2Z_DONE_*.txt` |
-| P119 Execution Wiring Plan | `docs&#47;analysis&#47;p119&#47;README.md` |
+| P119 Execution Wiring Plan | |
 | P121 Execution Wiring Proof | `out&#47;ops&#47;P121_EXECUTION_WIRING_PROOF_DONE_*.txt` |
 
 ## Troubleshooting
@@ -59,6 +59,6 @@ shasum -a 256 -c "${PIN}.sha256"
 
 ## Related docs
 
-- P105: `docs&#47;analysis&#47;p105&#47;README.md` — Exchange/Execution research
-- P119: `docs&#47;analysis&#47;p119&#47;README.md` — Execution wiring plan
-- P121: `docs&#47;analysis&#47;p121&#47;README.md` — Execution wiring proof v1
+- P105: — Exchange/Execution research
+- P119: — Execution wiring plan
+- P121: — Execution wiring proof v1

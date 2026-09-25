@@ -53,7 +53,7 @@ timeframes = ["1h"]
 
 ### 1. Kraken-Cache-Loader mit Data-QC
 
-**Modul:** `src/data/kraken_cache_loader.py`
+**Modul:**
 
 ```python
 from src.data.kraken_cache_loader import (
@@ -270,7 +270,7 @@ python3 -m pytest tests/test_strategy*.py -v
 | Datei | Beschreibung |
 |-------|--------------|
 | `config/config.toml` | `[real_market_smokes]` Block hinzugefügt |
-| `src/data/kraken_cache_loader.py` | **NEU** - Loader mit Data-QC |
+| | **NEU** - Loader mit Data-QC |
 | `src/data/__init__.py` | Exports erweitert |
 | `src/strategies/diagnostics.py` | `data_health`, `data_notes` Felder |
 | `scripts/strategy_smoke_check.py` | `--check-data-only`, `--min-bars` Flags |

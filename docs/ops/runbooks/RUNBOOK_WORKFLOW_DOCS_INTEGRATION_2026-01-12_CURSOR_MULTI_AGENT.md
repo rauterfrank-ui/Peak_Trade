@@ -279,9 +279,9 @@ git commit -m "chore: Archive workflow docs integration temp artifacts"
 ### New Files Created
 1. ✅ `docs&#47;WORKFLOW_FRONTDOOR.md` (172 lines, navigation hub)
 2. ✅ `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md` (this file)
-3. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;DOC_MAP.md` (archived after integration)
-4. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;BACKTICK_AUDIT.md` (archived after integration)
-5. 📦 `docs&#47;ops&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md` (archived after integration)
+3. 📦 (archived after integration)
+4. 📦 (archived after integration)
+5. 📦 (archived after integration)
 
 ### Files Modified
 1. ✅ `docs&#47;ops&#47;README.md` (+15 lines: Workflow Documentation section)

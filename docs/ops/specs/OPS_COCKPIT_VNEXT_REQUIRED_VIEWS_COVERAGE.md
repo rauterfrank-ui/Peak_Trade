@@ -8,7 +8,7 @@
 
 ## Non-Goals
 
-- **Not** broker, exchange, or reconciliation truth — same semantics as [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) and [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md).  
+- **Not** broker, exchange, or reconciliation truth — same semantics as [`OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md`](OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md) and `RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`.
 - **Not** a substitute for [`OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md`](OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) (detailed row-level mapping).  
 - **Not** coverage of **R&amp;D Dashboard** (Phase 76) or non-Cockpit UIs.  
 - **Not** a substitute for [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) — the Cockpit is **read-only and non-authorizing**; Master V2 and Double Play **semantics and authority** remain outside the cockpit (contract §2–3, §8 wording surfaced in the HTML preamble as of PR **#2914**).
@@ -56,5 +56,5 @@ These surfaces are **in the Ops Cockpit read model** and **documented** here for
 
 - [`OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md`](OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md) — Master V2 &#47; Double Play non-authority; preamble **§8** and UI alignment (**#2913** / **#2914**).  
 - [`RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md`](../runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md) — phased plan and Ist-Stand.  
-- [`RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md`](../runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md) — interpretation vs authority.  
+- `RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md` — interpretation vs authority.
 - [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../registry/DOCS_TRUTH_MAP.md) — docs drift registry.

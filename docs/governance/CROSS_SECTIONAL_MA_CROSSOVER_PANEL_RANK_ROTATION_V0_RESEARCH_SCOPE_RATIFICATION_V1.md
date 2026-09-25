@@ -44,4 +44,4 @@ SCHEDULER_RUNTIME_ALLOWED: false
 |---|---|
 | Scope ratification | `config&#47;research&#47;cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1.json` |
 | Implementation owner | `src&#47;research&#47;cross_sectional_ma_crossover_panel_rank_rotation_v0_research_scope_ratification_v1.py` |
-| Research doc | `docs&#47;research&#47;CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION.md` |
+| Research doc | |

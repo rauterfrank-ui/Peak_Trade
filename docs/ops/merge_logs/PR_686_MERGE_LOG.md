@@ -32,10 +32,10 @@ Make the comprehensive installation/roadmap snapshot (2026-01-12) discoverable a
   - Links to quickstart and snapshot
 
 **Archive (Original Preserved 1:1)**:
-- **NEW**: `docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md` (1160 lines)
+- **NEW**: (1160 lines)
   - Exact 1:1 copy of original installation/roadmap document
   - No modifications (KEEP EVERYTHING)
-- **NEW**: `docs/ops/_archive/installation_roadmap/2026-01-12/README.md` (28 lines)
+- **NEW**: (28 lines)
   - Archive metadata and navigation
   - Cross-references to entry points and navigation docs
 
@@ -46,11 +46,11 @@ Make the comprehensive installation/roadmap snapshot (2026-01-12) discoverable a
 - **NEW**: `docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md` (471 lines)
   - Compatibility target for historical references
   - Links to current navigation and archive context
-- **NEW**: `docs/ops/_archive/repo_cleanup/2026-01-12/README.md` (13 lines)
+- **NEW**: (13 lines)
   - Compatibility target for repo cleanup references
-- **NEW**: `docs/ops/_archive/repo_cleanup/2026-01-12/REPO_CLEANUP_SNAPSHOT_2026-01-12_173947.md` (405 lines)
+- **NEW**: (405 lines)
   - Historical snapshot (discovered during archive creation)
-- **NEW**: `docs/ops/_archive/repo_cleanup/2026-01-12/REPO_CLEANUP_SNAPSHOT_latest.md` (symlink)
+- **NEW**: (symlink)
   - Symlink to latest snapshot
 
 ### Branch
@@ -145,11 +145,11 @@ git reset --hard ed2640ba  # (parent commit)
 - **Runbook Overview**: [docs/ops/RUNBOOK_INDEX.md](../RUNBOOK_INDEX.md) (current; historical 2026-01-12 overview superseded)
 
 **Archive (Original Preserved)**:
-- **Archive Index**: [docs/ops/_archive/installation_roadmap/2026-01-12/README.md](../_archive/installation_roadmap/2026-01-12/README.md)
-- **Original Document**: [docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+- **Archive Index**:
+- **Original Document**:
 
 **Compatibility Targets**:
-- **Root Stub**: superseded; historical snapshot [archive original](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+- **Root Stub**: superseded; historical snapshot archive original
 - **Runbook Stub**: [docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md](../runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md)
 
 ### How to Validate Links Locally
@@ -166,7 +166,7 @@ git reset --hard ed2640ba  # (parent commit)
 2. Navigate to "Installation & Setup (2026-ready)" section
 3. Choose:
    - Quick start: [docs/INSTALLATION_QUICKSTART.md](../../INSTALLATION_QUICKSTART.md)
-   - Full snapshot: [archive original](../_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md)
+ - Full snapshot: archive original
 
 ## References
 ### PR & Commit

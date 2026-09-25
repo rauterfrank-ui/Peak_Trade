@@ -107,7 +107,7 @@ If there is **any** doubt whether trading is allowed, apply [Entry Contract §5]
 
 - **No** “resume trading” from this runbook alone after **`partial`** / **`ambiguous`**. **Only** governance or explicit org disposition **outside** this repo can authorize continuation.
 - **May treat as stabilized for *this incident slice* only** when **all** hold: broker-trusted exposure is **within** envelope **or** **fully explained** and **accepted** under **external** governance (record via **L5** pointers); **no** remaining Entry Contract §5 blockers you are aware of; operator of record can **state** **final classification** and **posture** without contradiction across cockpit, broker, and registry snapshots used.
-- If **`reconciled_explainable`**, posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and [Failure taxonomy §6](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#6-ambiguity-confusion-and-interpretation-risk-map); this runbook does not grant go-ahead.
+- If **`reconciled_explainable`**, posture still follows [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria) and Failure taxonomy §6; this runbook does not grant go-ahead.
 - **Do not continue** when you would need to **assume** away ambiguity, or when read-only JSON or gate-index snippets **look green** but **contradict** broker-trusted exposure — visibility is **not** authorization ([Decision authority map §4 / §7](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Gate index G8](../specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) is **not** a substitute for exposure truth).
 
 ## E. Evidence and pointers (L5 discipline)
@@ -158,4 +158,4 @@ Escalate when **any** holds:
 - [Abort triage compass](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md)
 - [Kill Switch runbook](../../risk/KILL_SWITCH_RUNBOOK.md)
 
-**Design context (non-authorizing):** [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria); [L5 incident / safe-stop evidence pointers](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md); [Failure taxonomy](../specs/MASTER_V2_FAILURE_TAXONOMY_SAFE_FALLBACKS_V1.md#4-failure-taxonomy-table).
+**Design context (non-authorizing):** [Entry Contract §5](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md#5-abort--rollback--no_trade-criteria); [L5 incident / safe-stop evidence pointers](../specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md); Failure taxonomy.

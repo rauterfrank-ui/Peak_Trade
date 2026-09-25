@@ -103,4 +103,4 @@ Hinweis: `list_strategies` in `config_simple` erwartet ein **Config-Dict**; die 
 ## 5. Verwandte Artefakte
 
 - Facade: `src/core/config.py` (`__all__`, Re-exports)
-- Spike-Notiz (Hotspot-Inventar): [A1_CONFIG_MODULE_INVENTORY_2026-03-29.md](../ops/spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md)
+- Spike-Notiz (Hotspot-Inventar): A1_CONFIG_MODULE_INVENTORY_2026-03-29.md

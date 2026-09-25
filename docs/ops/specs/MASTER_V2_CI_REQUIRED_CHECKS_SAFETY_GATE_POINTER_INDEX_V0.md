@@ -82,7 +82,7 @@ bash scripts/ops/verify_docs_reference_targets.sh --docs-root docs
 
 ## 8. Master V2 / Double Play / Live Safety Relevance
 
-- **No** CI surface in this table **replaces** Master V2 / Double Play **trading** **logic**, **Risk** / **KillSwitch**, **Execution** / **Live** **Gates**, or **dashboard** / **cockpit** **authority** **contracts** — see [`MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md`](./MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md) for **positioning** (non-substitutive), [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) for **read-only** **session** **review** **packs**, and [`MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md`](./MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md) for **triage** **first**.
+- **No** CI surface in this table **replaces** Master V2 / Double Play **trading** **logic**, **Risk** / **KillSwitch**, **Execution** / **Live** **Gates**, or **dashboard** / **cockpit** **authority** **contracts** — see [`MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md`](./MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md) for **positioning** (non-substitutive), [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) for **read-only** **session** **review** **packs**, and `MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md` for **triage** **first**.
 
 ## 9. Drift and Naming Notes
 

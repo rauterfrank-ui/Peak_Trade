@@ -17,7 +17,7 @@
 | `src/reporting/offline_paper_trade_report.py` | HTML-Report für Offline-Paper-Trade-Sessions (Performance/Execution) |
 | `src/reporting/trigger_training_report.py` | HTML-Report für Trigger-Training (Psychologie/Reaktion) |
 | `src/reporting/offline_paper_trade_integration.py` | Zentraler Entry-Point für kombinierte Reports |
-| `src/trigger_training/hooks.py` | Automatische Event-Generierung aus DataFrames |
+| | Automatische Event-Generierung aus DataFrames |
 
 ### Reports Output
 
@@ -250,7 +250,7 @@ prices_df = pd.DataFrame({
 
 ### 3.4 Trigger-Training-Hooks
 
-#### Modul: `src/trigger_training/hooks.py`
+#### Modul:
 
 **Zweck**: Automatische Event-Generierung aus DataFrames (`signals_df`, `actions_df`, `prices_df`).
 

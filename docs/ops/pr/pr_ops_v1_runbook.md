@@ -108,5 +108,5 @@ If you generated these from scaffolds, prefer switching to:
 
 ## See Also
 
-- [P43 — CI Ops Scaffold Extend](../../analysis/p43/README.md)
+- P43 — CI Ops Scaffold Extend
 - [p41 Kickoff Scaffold](../../../scripts/ops/p41_kickoff_scaffold_v1.sh)

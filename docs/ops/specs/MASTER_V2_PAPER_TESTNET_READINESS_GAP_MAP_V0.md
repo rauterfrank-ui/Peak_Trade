@@ -70,7 +70,7 @@ This **inventory** is **conservative**. A **listed** **surface** is **review**-*
 
 | Surface | Path | Type | Observes / supports | Consumer | Not used for |
 | --- | --- | --- | --- | --- | --- |
-| **Operator** **triage** **checklist** | [`MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md`](./MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md) | **Triage** **spec** | **Open**-**first** **review** **path**. | **operator** / **reviewer** | **Not** **approval**. |
+| **Operator** **triage** **checklist** | `MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md` | **Triage** **spec** | **Open**-**first** **review** **path**. | **operator** / **reviewer** | **Not** **approval**. |
 | **Operator** **handoff** **surface** **map** | [`MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md`](./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md) | **Handoff** **map** | **Evidence**/**readiness**/**verdict**/**handoff** **order**. | **operator** / **reviewer** | **Not** **external** **authority** **completion**. |
 | **Observer** **surface** **inventory** | [`MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md`](./MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md) | **Observer** **inventory** | **Dashboard**/**cockpit**/**report** **observer** **surfaces**. | **operator** / **reviewer** | **Not** **order** **authority**. |
 | **CI** **safety** **gate** **pointer** **index** | [`MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md`](./MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md) | **CI** **pointer** **spec** | **CI**, **docs**, **policy**, and **required**-**check** **gate** **surfaces**. | **developer** / **reviewer** | **Not** **live** **authority** **or** **trading** **permission**. |
@@ -98,11 +98,11 @@ This **inventory** is **conservative**. A **listed** **surface** is **review**-*
 
 **Related** **anchors:**
 
-- [`MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`](./MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md)
+- `MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md`
 - [`MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md)
-- [`MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md`](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md)
+- `MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md`
 - [`RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md`](../runbooks/RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md)
-- [`MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`](./MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md)
+- `MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md`
 
 **Paper**/**Testnet** **runs** **can** **eventually** **produce** **evidence**, **provenance**, **review**-**pack**, or **artifact** **references** **in** **separate** **governed** **slices**. This **map** **does** **not** **bind** **those** **sources** and **does** **not** **read** **historical** **paper**/**test** **artifacts**.
 
@@ -164,9 +164,9 @@ This **inventory** is **conservative**. A **listed** **surface** is **review**-*
 
 The **following** are **existing**, **canonical** **operator** **runbooks** **elsewhere** **in** **the** **repo**. **Links** **here** **are** **for** **discoverability** **only**; **they** **do** **not** **duplicate** **runbook** **content**, **do** **not** **approve** **Paper**, **daemon**, **scheduler**, **runtime**, **Testnet**, **or** **Live** **starts**, **and** **do** **not** **imply** **live** **authorization** **or** **gate** **passage**. **Master** **V2** / **Double** **Play** **semantics**, **Risk**, **KillSwitch**, **and** **Live** **Gates** **remain** **governed** **outside** **this** **map**; **this** **file** **stays** **docs**-**only** **and** **non**-**authorizing**.
 
-- [`TESTNET_CHECKER_PREREQUISITES_V0.md`](../runbooks/TESTNET_CHECKER_PREREQUISITES_V0.md) — read-only Testnet prerequisite keys for the checker script (non-authorizing).
-- [`DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md`](../runbooks/DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — planning gate for a possible future daemon-attended paper observation before Testnet review (no start commands in-file).
-- [`DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md`](../runbooks/DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md) — companion operator scope / preflight worksheet (decisions only; gate runbook wins on conflicts).
+- `TESTNET_CHECKER_PREREQUISITES_V0.md` — read-only Testnet prerequisite keys for the checker script (non-authorizing).
+- `DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md` — planning gate for a possible future daemon-attended paper observation before Testnet review (no start commands in-file).
+- `DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md` — companion operator scope / preflight worksheet (decisions only; gate runbook wins on conflicts).
 
 ## 14. Validation Notes
 

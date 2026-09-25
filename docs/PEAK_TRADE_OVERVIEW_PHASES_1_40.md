@@ -180,7 +180,7 @@ Die Phasen 38–40 sind **konkret als nächste Live-/Testnet-Schritte definiert*
   Erste Exchange-Integration im Testnet-Modus mit Kraken.
 
 * **Kernelemente:**
-  * `src/exchange/kraken_testnet.py` – `KrakenTestnetClient`, HMAC-Signierung, `validate_only=true`
+ * – `KrakenTestnetClient`, HMAC-Signierung, `validate_only=true`
   * `src/orders/testnet_executor.py` – `TestnetExchangeOrderExecutor`
   * `scripts/run_testnet_session.py`
 
@@ -234,7 +234,7 @@ Eine erste, streng begrenzte **Exchange-Anbindung im Testnet-Modus**, die den be
 
 **Mögliche Artefakte:**
 * `src/exchange/base.py` – `ExchangeClient`-Interface
-* `src/exchange/kraken_testnet.py` – Erweiterung zum vollwertigen Client
+* – Erweiterung zum vollwertigen Client
 * `src&#47;orders&#47;exchange.py` – `ExchangeOrderExecutor`
 * Config: `[exchange.kraken_testnet]` erweitert
 * CLI: `scripts&#47;testnet_ping_exchange.py`, `scripts&#47;testnet_place_smoke_order.py` (illustrative) <!-- pt:ref-target-ignore -->

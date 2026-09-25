@@ -147,7 +147,7 @@
 #### Data & Exchange
 - [Data Contracts](../tests/test_data_contracts.py)
 - [Exchange Integration](DEV_GUIDE_ADD_EXCHANGE.md)
-- [Kraken Cache Loader](../tests/test_kraken_cache_loader.py)
+- Kraken Cache Loader
 
 ---
 

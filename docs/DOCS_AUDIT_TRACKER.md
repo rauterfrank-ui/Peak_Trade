@@ -22,7 +22,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 <!-- phase53 manifest loader tracker note -->
 > Update: a manifest-backed strategies-mode returns-loader path is now available via `scripts&#47;run_portfolio_robustness.py --strategy-returns-manifest`.
 > Test-/Contract-Stand: Manifest-Loader-Negative-Pfade PR #2602 (`tests&#47;test_strategy_returns_manifest_loader.py`); Runner-Integration data-backed Manifest PR #2604; Pflicht „`--use-dummy-data` oder `--strategy-returns-manifest`“ PR #2605 (`tests&#47;test_research_cli_portfolio_presets.py`). Verbleibend sind ggf. kleinere Doku-/Ergonomie-Punkte—nicht die frühere Lücke „fehlende Loader-/Runner-Tests“.
-> Contract: `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md`.
+> Contract: .
 
 - **Implementiert**:
   - `src/experiments/portfolio_recipes.py` (Loader + Validierung, inkl. `strategies` (Phase 53))
@@ -179,7 +179,7 @@ Alle Markdown-Dateien unter `docs/` werden **nach und nach** analysiert und mit 
 - **Implementiert in**: `scripts/run_portfolio_robustness.py`
 - **Verhalten**:
   - Wenn ein Preset `strategies = [...]` definiert, wird das Portfolio aus diesen Komponenten gebaut (ohne Sweep/Top‑N).
-  - Für diesen Modus muss **`--use-dummy-data`** oder **`--strategy-returns-manifest`** gesetzt sein (offline-fähig bzw. data-backed über Manifest; Contract: `docs&#47;adr&#47;ADR_0002_Phase53_Data_Backed_Returns_Loader_Strategies_Mode.md`). Die frühere Formulierung „data-backed Returns-Loader noch offen“ ist **überholt** (Manifest-Loader + Tests: PR #2602/#2604/#2605).
+ - Für diesen Modus muss **`--use-dummy-data`** oder **`--strategy-returns-manifest`** gesetzt sein (offline-fähig bzw. data-backed über Manifest; Contract: ). Die frühere Formulierung „data-backed Returns-Loader noch offen“ ist **überholt** (Manifest-Loader + Tests: PR #2602/#2604/#2605).
 - **Tests**:
   - `tests/test_research_cli_portfolio_presets.py` (u.a. Runner-Manifest-Pfad, Pflicht Dummy-vs.-Manifest in `run_from_args` — PR #2604/#2605; strategies-mode ohne `load_top_n_configs_for_sweep`)
   - `tests/test_strategy_returns_manifest_loader.py` (Negative-Pfade Manifest-Loader — PR #2602)

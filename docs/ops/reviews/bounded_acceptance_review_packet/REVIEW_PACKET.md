@@ -43,9 +43,9 @@ Compact review packet for bounded / acceptance status, evidence position, operat
 - full runbook:
   `docs&#47;ops&#47;runbooks&#47;ACCEPTANCE_ORIENTED_BOUNDED_RUN_OPERATOR_RUNBOOK.md`
 - verify checklist:
-  `docs&#47;ops&#47;runbooks&#47;BOUNDED_ACCEPTANCE_OPERATOR_VERIFY_CHECKLIST.md`
+
 - local launcher:
-  `scripts&#47;ops&#47;run_bounded_pilot_with_local_secrets.py`
+
 
 ## Canonical Evidence References
 - standard:
@@ -53,19 +53,19 @@ Compact review packet for bounded / acceptance status, evidence position, operat
 - canonical accepted-and-filled example:
   `docs&#47;ops&#47;evidence&#47;CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md`
 - accepted-and-filled template:
-  `docs&#47;ops&#47;templates&#47;ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md`
+
 - rejected-order template:
-  `docs&#47;ops&#47;templates&#47;REJECTED_ORDER_CLOSEOUT_TEMPLATE.md`
+
 - handoff template:
-  `docs&#47;ops&#47;templates&#47;ACCEPTANCE_EVIDENCE_HANDOFF_TEMPLATE.txt`
+
 
 ## Governance / Ops Framing
 - interpretation:
-  `docs&#47;ops&#47;reviews&#47;governance_ops_interpretation_of_canonical_acceptance_path&#47;REVIEW.md`
+
 - readiness matrix:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_operational_readiness_matrix&#47;REVIEW.md`
+
 - go/no-go snapshot:
-  `docs&#47;ops&#47;reviews&#47;bounded_acceptance_go_no_go_snapshot&#47;GO_NO_GO_SNAPSHOT.md`
+
 
 ## Bottom Line
 Bounded / acceptance is now:

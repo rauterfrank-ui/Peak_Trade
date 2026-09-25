@@ -9,7 +9,7 @@
 
 ## Launcher Path
 Validated launcher:
-- `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+-
 
 Validated local env source:
 - `.bounded_pilot.env`

@@ -672,7 +672,7 @@ Complete examples are available in `examples/resilience/`:
 
 ### Circuit Breaker Examples
 - `01_circuit_breaker_basics.py` - Basic usage, states, monitoring
-- See [examples/resilience/README.md](../examples/resilience/README.md)
+- See examples/resilience/README.md
 
 ### Combined Patterns
 - `06_combining_patterns.py` - Circuit breaker + retry together

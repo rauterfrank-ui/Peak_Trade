@@ -2308,6 +2308,16 @@
         "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
         "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md"
       ]
+    },
+    {
+      "id": "repo_convergence_final_static_removal_5592_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Repository convergence: FINAL_STATIC_REMOVAL_PROVEN 5592-path proven-outside deletion plus mechanical stale-reference cleanup and Atlas catalog decoupling only (AUTHORITY=NONE). Does not alter CURRENT authority edges, owners, trading semantics, or C2 conversion runtime wiring.",
+      "evidence_refs": [
+        "evidence/ops/final_repository_residual_census_and_frozen_outside_cut_probe_v1/20260925T214500Z/FINAL_STATIC_REMOVAL_PROVEN_SET_V1.json",
+        "evidence/ops/final_repository_residual_census_and_frozen_outside_cut_probe_v1/20260925T214500Z/FROZEN_OUTSIDE_SET_V1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
     }
   ]
 }

@@ -64,32 +64,32 @@ Missing targets: 58
 **Pattern:** Dev guide examples, config files, scripts that are meant as templates/examples, not real repo targets.
 
 **Examples:**
-- `src&#47;strategies&#47;my_new_strategy.py`
-- `src&#47;data&#47;my_exchange.py`
-- `config&#47;portfolios`
-- `config&#47;portfolios&#47;auto_portfolio_3comp_20250104_120000.toml`
-- `scripts&#47;my_smoke_test.py`
-- `scripts&#47;check_db_connection.sh`
-- `scripts&#47;view_top_candidates.py`
-- `config&#47;custom_recipes.toml`
-- `config&#47;risk_conservative.toml`
-- `config&#47;strategies&#47;armstrong_cycle_default.toml`
-- `config&#47;sweeps&#47;ma_crossover.json`
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
+-
 
 **Fix Strategy:** Escape slashes in inline-code tokens (`/` → `&#47;`), add "(illustrative)" marker.
 
 #### Cluster 2: Historical Branch References (~8 targets)
-**Pattern:** Old PR branch names referenced in merge logs (e.g., `docs&#47;pr-76-merge-log`).
+**Pattern:** Old PR branch names referenced in merge logs (e.g., ).
 
 **Examples:**
-- `docs&#47;pr-76-merge-log`
-- `docs&#47;ops&#47;pr-93-merge-log`
-- `docs&#47;ops-pr-85-merge-log`
-- `docs&#47;merge-log-pr-350-docs-reference-targets-golden-corpus`
-- `docs&#47;frontdoor-roadmap-runner`
-- `docs&#47;pr-74-delivery-note`
-- `docs&#47;pr-76-merge-log-index`
-- `docs&#47;ops-pr217-merge-log`
+-
+-
+-
+-
+-
+-
+-
+-
 
 **Fix Strategy:** Escape slashes + add "(historical)" or "(historical branch)" marker.
 
@@ -101,44 +101,44 @@ Missing targets: 58
 
 #### File 1: `docs&#47;DEV_GUIDE_ADD_STRATEGY.md`
 **Targets fixed:** 1
-- `src&#47;strategies&#47;my_new_strategy.py` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 
 #### File 2: `docs&#47;DEV_GUIDE_ADD_EXCHANGE.md`
 **Targets fixed:** 1
-- `src&#47;data&#47;my_exchange.py` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 
 #### File 3: `docs&#47;AUTO_PORTFOLIOS.md`
 **Targets fixed:** 2
-- `config&#47;portfolios` → escaped (in table)
-- `config&#47;portfolios&#47;auto_portfolio_3comp_20250104_120000.toml` → escaped + "(illustrative)"
+- → escaped (in table)
+- → escaped + "(illustrative)"
 
 #### File 4: `docs&#47;ops&#47;TEST_HEALTH_AUTOMATION_V0.md`
 **Targets fixed:** 3
-- `scripts&#47;my_smoke_test.py` → escaped + "(illustrative)"
-- `scripts&#47;check_db_connection.sh` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 - `tests&#47;my_module` → escaped (bonus)
 
 #### File 5: `docs&#47;Peak_Trade_Research_Strategy_Roadmap_2025-12-07.md`
 **Targets fixed:** 1
-- `scripts&#47;view_top_candidates.py` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 
 #### File 6: `docs&#47;PORTFOLIO_RECIPES_AND_PRESETS.md`
 **Targets fixed:** 2
-- `config&#47;custom_recipes.toml` (2 occurrences) → escaped + "(illustrative)"
+- (2 occurrences) → escaped + "(illustrative)"
 
 #### File 7: `docs&#47;project_docs&#47;CLAUDE_NOTES.md`
 **Targets fixed:** 1
-- `config&#47;risk_conservative.toml` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 - `archive&#47;full_files_stand_02.12.2025` → escaped (bonus)
 
-#### File 8: `docs&#47;runbooks&#47;R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`
+#### File 8:
 **Targets fixed:** 2
-- `config&#47;strategies&#47;armstrong_cycle_default.toml` (2 occurrences) → escaped + "(illustrative)"
+- (2 occurrences) → escaped + "(illustrative)"
 - `config&#47;strategies&#47;` → escaped (bonus)
 
 #### File 9: `docs&#47;SWEEPS_MARKET_SCANS.md`
 **Targets fixed:** 1
-- `config&#47;sweeps&#47;ma_crossover.json` → escaped + "(illustrative)"
+- → escaped + "(illustrative)"
 
 **Total Cluster 1:** 11 primary targets + 3 bonus escapes = **14 inline-code escapes**
 
@@ -148,24 +148,24 @@ Missing targets: 58
 
 #### File 1: `docs&#47;ops&#47;PR_593_MERGE_LOG.md`
 **Targets fixed:** 5
-- `docs&#47;pr-76-merge-log` → escaped + "(historical stub)"
-- `docs&#47;ops&#47;pr-93-merge-log` → escaped + "(historical stub)"
-- `docs&#47;ops-pr-85-merge-log` → escaped + "(historical stub)"
-- `docs&#47;merge-log-pr-350-docs-reference-targets-golden-corpus` → escaped + "(historical stub)"
-- `docs&#47;frontdoor-roadmap-runner` → escaped + "(historical stub)"
+- → escaped + "(historical stub)"
+- → escaped + "(historical stub)"
+- → escaped + "(historical stub)"
+- → escaped + "(historical stub)"
+- → escaped + "(historical stub)"
 - `scripts&#47;ops&#47;wave3_restore_batch.sh` → escaped (bonus)
 
 #### File 2: `docs&#47;ops&#47;PR_76_MERGE_LOG.md`
 **Targets fixed:** 1
-- `docs&#47;pr-74-delivery-note` → escaped + "(historical branch)"
+- → escaped + "(historical branch)"
 
 #### File 3: `docs&#47;ops&#47;PR_78_MERGE_LOG.md`
 **Targets fixed:** 1
-- `docs&#47;pr-76-merge-log-index` → escaped + "(historical branch)"
+- → escaped + "(historical branch)"
 
 #### File 4: `docs&#47;ops&#47;PR_218_MERGE_LOG.md`
 **Targets fixed:** 1
-- `docs&#47;ops-pr217-merge-log` → escaped + "(historical, deleted)"
+- → escaped + "(historical, deleted)"
 
 **Total Cluster 2:** 8 primary targets + 1 bonus escape = **9 inline-code escapes**
 
@@ -241,9 +241,9 @@ bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh
 - ✅ Semantic markers added for clarity ("illustrative", "historical")
 
 ### Escapes Summary by Category
-1. **Illustrative scripts:** `scripts&#47;my_smoke_test.py`, etc. (6 targets)
-2. **Illustrative configs:** `config&#47;portfolios`, `config&#47;custom_recipes.toml`, etc. (5 targets)
-3. **Historical branches:** `docs&#47;pr-76-merge-log`, etc. (8 targets)
+1. **Illustrative scripts:** , etc. (6 targets)
+2. **Illustrative configs:** , , etc. (5 targets)
+3. **Historical branches:** , etc. (8 targets)
 
 ---
 
@@ -276,7 +276,7 @@ bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh
 10. `docs&#47;ops&#47;PR_78_MERGE_LOG.md`
 11. `docs&#47;ops&#47;TEST_HEALTH_AUTOMATION_V0.md`
 12. `docs&#47;project_docs&#47;CLAUDE_NOTES.md`
-13. `docs&#47;runbooks&#47;R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md`
+13.
 
 ### Artifacts (3 files)
 14. `docs&#47;ops&#47;graphs&#47;docs_graph_snapshot_wave5_before.txt` (116 lines, 58 targets)
@@ -290,28 +290,28 @@ bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh
 ### Categories of Remaining Broken Targets
 
 #### 1. Drifted/Missing Files (~10 targets)
-- `docs&#47;Peak_Trade_Data_Layer_Doku.md` (file missing or renamed)
-- `docs&#47;Peak_Trade_Registry_Engine_Overview.md`
-- `docs&#47;PEAK_TRADE_STATUS_OVERVERVIEW.md` (typo!)
-- `docs&#47;EXCHANGE_MY_EXCHANGE.md` (illustrative, should be escaped)
-- `docs&#47;live_status_notes.md`
-- `docs&#47;core-architecture-docs`
-- `docs&#47;ops&#47;TEMPLATE_MERGE_LOG.md`
-- `docs&#47;ops&#47;REQUIRED_CHECKS_DRIFT_GUARD.md`
+- (file missing or renamed)
+-
+- (typo!)
+- (illustrative, should be escaped)
+-
+-
+-
+-
 - etc.
 
 #### 2. Relative Path Issues (~8 targets)
-- `..&#47;POSITION_SIZING.md`
-- `..&#47;RISK_MANAGEMENT.md`
-- `..&#47;CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md`
-- `..&#47;COMPONENT_VAR_ROADMAP_PATCHED.md`
-- `..&#47;..&#47;RISK_LAYER_V1_PRODUCTION_READY_REPORT.md`
+-
+-
+-
+-
+-
 - etc.
 
 #### 3. Ellipsis/Special Cases (~4 targets)
-- `docs&#47;ai&#47;…`
-- `docs&#47;…`
-- Line number refs: `src&#47;backtest&#47;engine.py:424-440`, etc.
+-
+-
+- Line number refs: , etc.
 
 #### 4. Other Illustrative Paths (~17 targets)
 - `src&#47;*` paths (execution, data, webui, etc.)

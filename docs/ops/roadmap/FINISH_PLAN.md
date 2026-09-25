@@ -43,7 +43,7 @@ last_updated: 2026-04-05
 ### Definition
 **MVP = Offline Research & Backtest Pipeline ist reproduzierbar und auditierbar** (keine Execution, keine Broker-Integration notwendig).
 
-**Companion Runbook:** [RUNBOOK_FINISH_A_MVP.md](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Backtest → Artifacts → Report → Watch‑Only Dashboard, snapshot-only, NO‑LIVE)
+**Companion Runbook:** RUNBOOK_FINISH_A_MVP.md (Backtest → Artifacts → Report → Watch‑Only Dashboard, snapshot-only, NO‑LIVE)
 
 ### DoD Checklist (MVP)
 
@@ -53,21 +53,21 @@ last_updated: 2026-04-05
 - [x] **Docs Gates** lokal reproduzierbar (Snapshot helper PASS). **Nachweis:** [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md), [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md); Snapshot: `bash scripts/ops/pt_docs_gates_snapshot.sh --changed` (siehe [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)).
 
 #### Data / Inputs
-- [x] **Deterministische Datenquelle** für Backtests definiert (lokal, offline; keine “magischen” externen Dependencies). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Phase A1 — Golden‑Snapshot/Fixtures; expliziter CSV‑Input via `--data-file` im [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)), [Stop Rules](#stop-rules-non-negotiable) (Snapshot-only, Evidence-first).
-- [x] **Config/Defaults** dokumentiert (welche Parameter minimal erforderlich sind). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Phase A1 — `RunManifest`, `config_hash`, Schema‑Validierung), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only).
+- [x] **Deterministische Datenquelle** für Backtests definiert (lokal, offline; keine “magischen” externen Dependencies). **Nachweis:** Finish Runbook A (MVP) (Phase A1 — Golden‑Snapshot/Fixtures; expliziter CSV‑Input via `--data-file` im [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only)), [Stop Rules](#stop-rules-non-negotiable) (Snapshot-only, Evidence-first).
+- [x] **Config/Defaults** dokumentiert (welche Parameter minimal erforderlich sind). **Nachweis:** Finish Runbook A (MVP) (Phase A1 — `RunManifest`, `config_hash`, Schema‑Validierung), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only).
 
 #### Backtest / Research
-- [x] **Einzel-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat (Stats/Report/Artefakt). **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Artifacts Contract v1, Phase A1/A2).
-- [x] **Portfolio-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat. **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Artifacts Contract v1 — Portfolio‑Outputs).
-- [x] **Keine Side-Effects** außerhalb des Repos (keine Writes nach `~`, keine Secrets). **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (globale Stop Rules), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md).
+- [x] **Einzel-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat (Stats/Report/Artefakt). **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), Finish Runbook A (MVP) (Artifacts Contract v1, Phase A1/A2).
+- [x] **Portfolio-Backtest** läuft durch (Exit-Code 0) und erzeugt ein Resultat. **Nachweis:** [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), Finish Runbook A (MVP) (Artifacts Contract v1 — Portfolio‑Outputs).
+- [x] **Keine Side-Effects** außerhalb des Repos (keine Writes nach `~`, keine Secrets). **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), Finish Runbook A (MVP) (globale Stop Rules), [Governance & Safety Overview](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md).
 
 #### Reporting / Artifacts
-- [x] **Outputs sind auffindbar** (ein klarer Output-Ordner oder Console Summary). **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) (Run‑Folder/Exporter in [Phase A1](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a1--artifacts-contract-v1-architect--implementer--test_engineer); [Artifacts Contract v1](../runbooks/RUNBOOK_FINISH_A_MVP.md#artifacts-contract-v1) + [Phase A2](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a2--minimal-report-docs_scribe--implementer)), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first: Artefaktpfade).
-- [x] **Konventionen dokumentiert**: “Wo liegen Reports? Welche Namensschemata?” **Nachweis:** [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md#artifacts-contract-v1) (`equity.csv`, Trades‑Export, `stats.json`, `metrics.json`, optional `report&#47;backtest.html`; Portfolio `reports&#47;*_portfolio_stats.json`; Phase A2: `report.html`).
+- [x] **Outputs sind auffindbar** (ein klarer Output-Ordner oder Console Summary). **Nachweis:** Finish Runbook A (MVP) (Run‑Folder/Exporter in Phase A1; Artifacts Contract v1 + Phase A2), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first: Artefaktpfade).
+- [x] **Konventionen dokumentiert**: “Wo liegen Reports? Welche Namensschemata?” **Nachweis:** Finish Runbook A (MVP) (`equity.csv`, Trades‑Export, `stats.json`, `metrics.json`, optional `report&#47;backtest.html`; Portfolio `reports&#47;*_portfolio_stats.json`; Phase A2: `report.html`).
 
 #### QA / CI Readiness
 - [x] **Targeted Tests** definiert und lokal ausführbar (mindestens 1 “smoke” + 1 “behavior” Test). **Nachweis:** [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (u. a. **Fast‑Lane** — Stability‑Smoke auf mehreren Modulen inkl. [`tests/test_data_contracts.py`](../../../tests/test_data_contracts.py); **tests** — Matrix-Jobs `tests (3.9)` … `tests (3.11)` mit vollständiger Suite laut Workflow; **strategy-smoke** — siehe [`tests/test_strategy_smoke_cli.py`](../../../tests/test_strategy_smoke_cli.py)), [Operator Quickstart (MVP)](#operator-quickstart-mvp--local-verify-snapshot-only) (`python3 -m pytest -q`).
-- [x] **Operator Evidence Block** ist copy-paste-ready (siehe unten). **Nachweis:** [Operator Evidence Block (MVP)](#operator-evidence-block-mvp), [Finish Runbook A (MVP)](../runbooks/RUNBOOK_FINISH_A_MVP.md) ([Phase A5 — Evidence Pack](../runbooks/RUNBOOK_FINISH_A_MVP.md#phase-a5--evidence-pack--pr-merge-hygiene-evidence_scribe--ci_guardian)), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first).
+- [x] **Operator Evidence Block** ist copy-paste-ready (siehe unten). **Nachweis:** [Operator Evidence Block (MVP)](#operator-evidence-block-mvp), Finish Runbook A (MVP) (Phase A5 — Evidence Pack), [Stop Rules](#stop-rules-non-negotiable) (Evidence-first).
 
 ### Operator Quickstart (MVP) — Local Verify (Snapshot-only)
 
@@ -118,24 +118,24 @@ Risk: LOW
 ### NEXT_PHASE (ExecutionPipeline) — Slice 2: Ledger/Accounting + Deterministic PnL
 - **Ziel**: Fill/Fee Events → Double‑Entry Journal + Balances → deterministische Positionen (WAC) + realized/unrealized PnL + Equity (snapshot/export).
 - **Determinismus**: keine Floats, explizite Quantisierung, stabile Sortierung/JSON‑Exports, `ts_utc` ignorieren (Input-only).
-- **Runbook**: [RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md)
+- **Runbook**: RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md
 
 ### DoD Checklist (Beta)
 
 #### ExecutionPipeline (paper/sim, deterministisch)
-- [x] **Pipeline Contract** dokumentiert: Inputs → Events → Orders → Fills → Ledger. **Nachweis:** [RUNBOOK Execution Slice 2 — Ledger / Deterministic PnL](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Purpose, Preconditions, Implementation — u. a. [`execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py)), [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only).
-- [x] **Idempotenz**: Re-run mit gleichem Seed/Input erzeugt gleiche Ledger-Resultate (oder dokumentierte deterministische Abweichungen). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Determinism Contract, Replays / stabile Exports), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
-- [x] **Reject/Fail-safe**: Rejects erzeugen **keine** falschen Ledger-Einträge. **Nachweis:** [`tests/execution/test_wp0d_reject_produces_no_ledger_entry.py`](../../../tests/execution/test_wp0d_reject_produces_no_ledger_entry.py), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Scope / Accounting Invariants).
+- [x] **Pipeline Contract** dokumentiert: Inputs → Events → Orders → Fills → Ledger. **Nachweis:** RUNBOOK Execution Slice 2 — Ledger / Deterministic PnL (Purpose, Preconditions, Implementation — u. a. [`execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py)), [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only).
+- [x] **Idempotenz**: Re-run mit gleichem Seed/Input erzeugt gleiche Ledger-Resultate (oder dokumentierte deterministische Abweichungen). **Nachweis:** RUNBOOK Execution Slice 2 (Determinism Contract, Replays / stabile Exports), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Reject/Fail-safe**: Rejects erzeugen **keine** falschen Ledger-Einträge. **Nachweis:** [`tests/execution/test_wp0d_reject_produces_no_ledger_entry.py`](../../../tests/execution/test_wp0d_reject_produces_no_ledger_entry.py), RUNBOOK Execution Slice 2 (Scope / Accounting Invariants).
 - [x] **Paper Broker** Tests vorhanden und grün. **Nachweis:** [`tests/execution/test_paper_broker.py`](../../../tests/execution/test_paper_broker.py), [`.github/workflows/ci.yml`](../../../.github/workflows/ci.yml) (Suite inkl. `tests/execution` bei Code-Änderungen).
 
 #### Ledger (Konsistenz & Reconciliation)
-- [x] **Event→Ledger Mapping** getestet (Fill → Trade/Position Update). **Nachweis:** [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`src/execution/ledger/execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Implementation).
-- [x] **Trend/Seed Ledger** kann aus Seed reproduziert werden (Replay-Fähigkeit). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Replays, Determinism Contract), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
-- [x] **Reconciliation Rules** dokumentiert (z.B. “what is source of truth?”). **Nachweis:** [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Accounting Invariants, Scope Lock — Double‑Entry / Cash / PnL‑Semantik als Buchhaltungs‑SoT), [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py).
+- [x] **Event→Ledger Mapping** getestet (Fill → Trade/Position Update). **Nachweis:** [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`src/execution/ledger/execution_to_ledger.py`](../../../src/execution/ledger/execution_to_ledger.py), RUNBOOK Execution Slice 2 (Implementation).
+- [x] **Trend/Seed Ledger** kann aus Seed reproduziert werden (Replay-Fähigkeit). **Nachweis:** RUNBOOK Execution Slice 2 (Replays, Determinism Contract), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Reconciliation Rules** dokumentiert (z.B. “what is source of truth?”). **Nachweis:** RUNBOOK Execution Slice 2 (Accounting Invariants, Scope Lock — Double‑Entry / Cash / PnL‑Semantik als Buchhaltungs‑SoT), [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py).
 
 #### QA / Evidence
-- [x] **Targeted Unit Tests** existieren (Slice‑2 Ledger‑Verify: Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract; siehe Quickstart und `RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md`). **Nachweis:** [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only), [RUNBOOK Execution Slice 2 — Verify Commands](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md#verify-commands-snapshot-only), [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
-- [x] **Operator Verify** ist snapshot-only und ohne live side-effects. **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), [RUNBOOK Execution Slice 2](../runbooks/RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md) (Scope — NO‑LIVE; Verify Commands — Snapshot-only), [Operator Evidence Block (Beta)](#operator-evidence-block-beta).
+- [x] **Targeted Unit Tests** existieren (Slice‑2 Ledger‑Verify: Double‑Entry, PnL Golden, Slice1→Ledger Integration, Determinism Contract; siehe Quickstart und `RUNBOOK_EXECUTION_SLICE2_LEDGER_PNL.md`). **Nachweis:** [Operator Quickstart (Beta)](#operator-quickstart-beta--local-verify-snapshot-only), RUNBOOK Execution Slice 2 — Verify Commands, [`tests/execution/test_ledger_double_entry.py`](../../../tests/execution/test_ledger_double_entry.py), [`tests/execution/test_ledger_pnl_golden.py`](../../../tests/execution/test_ledger_pnl_golden.py), [`tests/execution/test_execution_slice1_to_ledger_integration.py`](../../../tests/execution/test_execution_slice1_to_ledger_integration.py), [`tests/execution/test_execution_determinism_contract.py`](../../../tests/execution/test_execution_determinism_contract.py).
+- [x] **Operator Verify** ist snapshot-only und ohne live side-effects. **Nachweis:** [Stop Rules](#stop-rules-non-negotiable), RUNBOOK Execution Slice 2 (Scope — NO‑LIVE; Verify Commands — Snapshot-only), [Operator Evidence Block (Beta)](#operator-evidence-block-beta).
 
 ### Operator Quickstart (Beta) — Local Verify (Snapshot-only)
 
@@ -382,9 +382,9 @@ Risk: HIGH (broker/live-ops domain; execution-adjacent)
 
 ### PR 8 — Release checklist + “Go/No-Go” rubric (docs-only)
 - **Scope**: Ein kanonischer **Release-/Go–No-Go**-Anker für Kandidaten: Rubric + Evidence-Vorlage + kurzer **Operator-Verify**-Pfad — ausgerichtet auf **Finish Level C**, ohne Produkt- oder Live-Freigabe durch bloßes Lesen der Seiten (**NO‑LIVE**-kompatibel).
-- **Files (docs)**: [Release docs index](../release/README.md) · [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md); Querverweise von [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) (bereits gesetzt).
-- **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs index](../release/README.md) · [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md)
-- **Operator verify (canonical):** [RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md §4](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md#4-operator-verify-finish-plan-pr-8) — Docs-Gates + Rubric §2 + Evidence §3
+- **Files (docs)**: Release docs index · Release checklist & Go/No-Go rubric; Querverweise von [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) (bereits gesetzt).
+- **Navigation (landed in this slice):** [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · Release docs index · Release checklist & Go/No-Go rubric
+- **Operator verify (canonical):** RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md §4 — Docs-Gates + Rubric §2 + Evidence §3
 - **Tests/Gates**: docs gates snapshot (`bash scripts/ops/pt_docs_gates_snapshot.sh --changed` o. ä.)
 - **Operator verify**:
   - Rubric und Evidence für jeden Release-Kandidaten bereithalten; keine Live-Schritte ohne separates Governance-Gate außerhalb dieses Dokuments

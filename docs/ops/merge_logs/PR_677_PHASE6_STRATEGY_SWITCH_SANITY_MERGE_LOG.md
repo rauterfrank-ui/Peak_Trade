@@ -93,7 +93,7 @@ assert acceptable_exit
 
 ### Documentation (8 Files Created)
 
-3. `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md` (~600 lines)
+3. (~600 lines)
 4. `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md` (~500 lines)
 5. `docs/ops/merge_logs/PR_677_PHASE6_STRATEGY_SWITCH_SANITY_MERGE_LOG.md` (this file)
 6. `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md` (~600 lines)
@@ -340,7 +340,7 @@ git push
 - **Related pattern**: Strategy-Coverage (existing, 100% pattern-parity)
 
 ### Documentation
-- **Runbook**: `docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md`
+- **Runbook**:
 - **Operator Guide**: `docs/ops/STRATEGY_SWITCH_SANITY_CHECK.md`
 - **Evidence Pack**: `PHASE6_STRATEGY_SWITCH_SANITY_EVIDENCE.md`
 - **Patch Docs**: `PHASE6_PATCH_DOCTOR_TEST_FIX.md`

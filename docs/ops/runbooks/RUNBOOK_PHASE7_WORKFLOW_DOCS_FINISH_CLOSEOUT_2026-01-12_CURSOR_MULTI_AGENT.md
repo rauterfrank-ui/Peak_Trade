@@ -34,7 +34,7 @@
 ## 🎯 Deliverables
 
 ### D1: Snapshot Archive Index (NEW)
-**File:** [docs/ops/_archive/repo_cleanup/2026-01-12/README.md](../_archive/repo_cleanup/2026-01-12/README.md)
+**File:**
 
 **Content:**
 - Purpose: Snapshot-only repo cleanup inventory
@@ -170,7 +170,7 @@
 
 ### Phase 7 (This Session) – Finish/Closeout + Repo Hygiene Inventory
 **Changes:**
-- NEW: docs/ops/_archive/repo_cleanup/2026-01-12/README.md (D1)
+- NEW: (D1)
 - NEW: docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md (D2)
 - MOD: WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md (D4.1: new section)
 - MOD: docs/WORKFLOW_FRONTDOOR.md (D4.2: new links)
@@ -226,7 +226,7 @@
 ### Post-Change State
 
 **New Files:**
-1. docs/ops/_archive/repo_cleanup/2026-01-12/README.md (~250 lines)
+1. (~250 lines)
 2. docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md (~600 lines, this file)
 
 **Modified Files:**
@@ -389,7 +389,7 @@ git commit -m "docs: Finalize snapshot link in repo cleanup inventory"
 ## 🔄 Diff-Übersicht
 
 ### Neue Dateien (2)
-1. **docs/ops/_archive/repo_cleanup/2026-01-12/README.md**
+1. ****
    - Zweck: Snapshot-only repo cleanup inventory
    - Umfang: ~250 Zeilen
    - Hauptänderungen: Safety protocol, branch classifications, operator next steps
@@ -445,7 +445,7 @@ git commit -m "docs: Finalize snapshot link in repo cleanup inventory"
 ## 📚 References
 
 ### Deliverables (This Session)
-- [D1: Snapshot Archive README](../_archive/repo_cleanup/2026-01-12/README.md)
+- D1: Snapshot Archive README
 - [D2: Phase 7 Runbook](./RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md) (this file)
 - [D4.1: WORKFLOW_RUNBOOK_OVERVIEW](../RUNBOOK_INDEX.md) (updated)
 - [D4.2: WORKFLOW_FRONTDOOR](../../WORKFLOW_FRONTDOOR.md) (updated)

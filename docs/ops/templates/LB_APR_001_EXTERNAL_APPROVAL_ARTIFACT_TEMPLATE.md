@@ -89,7 +89,7 @@ Bis dahin gilt:
 - [`docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`](../../GOVERNANCE_AND_SAFETY_OVERVIEW.md)
 - [`docs&#47;ops&#47;evidence&#47;README.md`](../evidence/README.md)
 - [`docs&#47;ops&#47;templates&#47;LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE.md) (dieses Template)
-- [`docs&#47;ops&#47;templates&#47;LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md`](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md)
+- [](LB_APR_001_EXTERNAL_APPROVAL_ARTIFACT_TEMPLATE_COMPACT.md)
 - Optionale Audit-Referenz: `<z. B. out&#47;ops&#47;live_readiness_audit&#47;...&#47;summary.md>`
 
 ---

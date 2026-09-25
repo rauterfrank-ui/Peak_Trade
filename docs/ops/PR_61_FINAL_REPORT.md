@@ -33,8 +33,8 @@
 - `src/data/safety/__init__.py`
 - `src/data/safety/data_safety_gate.py`
 - `src/execution/pipeline.py`
-- `src/strategies/armstrong/armstrong_cycle_strategy.py`
-- `src/strategies/armstrong/cycle_model.py`
+-
+-
 - `src/strategies/el_karoui/el_karoui_vol_model_strategy.py`
 - `src/strategies/el_karoui/vol_model.py`
 - `tests/data/__init__.py`

@@ -44,7 +44,7 @@ Das Dokument richtet sich an:
 **Demos**
 
 - `scripts/demo_risk_limits.py` – Demonstration und Validierung der Risiko-Limits.
-- `scripts/demo_complete_pipeline.py` – End-to-End Demo (Data + Risk + Backtest/Execution).
+- – End-to-End Demo (Data + Risk + Backtest/Execution).
 
 **Tests**
 
@@ -70,7 +70,7 @@ Das Risk Management folgt diesen Kernprinzipien:
    - Parameter: in `config/config.toml` (`[risk]` und ggf. Subsektionen)
 
 5. **Testbarkeit & Transparenz**
-   - Demos (`scripts/demo_risk_limits.py`, `scripts/demo_complete_pipeline.py`) zeigen das Verhalten.
+ - Demos (`scripts/demo_risk_limits.py`, ) zeigen das Verhalten.
    - Tests (`tests&#47;test_risk.py`) sichern grundlegende Invarianten ab.
 
 ---

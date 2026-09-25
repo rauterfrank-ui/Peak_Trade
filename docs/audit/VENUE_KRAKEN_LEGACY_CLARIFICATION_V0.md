@@ -33,5 +33,5 @@ Do **not** treat any of the following as current canonical venue SSOT:
 - `CURRENT_TARGET_VENUE`
 - `CURRENT_CANONICAL_VENUE_SSOT`
 - stale project-docs Kraken pipeline summaries
-- legacy demo scripts (`scripts/demo_kraken_simple.py`, registry backtest helpers)
+- legacy demo scripts (, registry backtest helpers)
 - dormant Kraken config profile blocks

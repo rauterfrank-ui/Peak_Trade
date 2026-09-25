@@ -23,5 +23,5 @@ python scripts/research_cli.py --run-id my_run_001 report --sweep-name rsi_rever
 
 ## Task
 
-- **B1:** Task-Spec `docs/ops/tasks/TASK_B1_research_cli_evidence_chain.md`
+- **B1:** Task-Spec
 - Implementation: evidence pack skeleton + research_cli integration on branch `feat/research-cli-evidence-chain`.

@@ -51,7 +51,7 @@ max_total_exposure = 0.75
 ### 3. ✅ Kraken Data Pipeline (legacy / guarded infrastructure)
 
 **Implementiert:**
-- ✅ `src/data/kraken_pipeline.py` - Vollständige Pipeline-Integration
+- ✅ - Vollständige Pipeline-Integration
 
 **Public API:**
 ```python
@@ -184,12 +184,12 @@ Alle Komponenten erfolgreich getestet:
 - `src/risk/position_sizer.py` (erweitert)
 
 **Data-Layer:**
-- `src/data/kraken_pipeline.py`
+-
 
 **Demo-Scripts:**
-- `scripts/demo_complete_pipeline.py`
+-
 - `scripts/demo_risk_limits.py`
-- `scripts/demo_kraken_simple.py`
+-
 
 **Dokumentation:**
 - `docs/NEW_FEATURES.md`
@@ -372,14 +372,14 @@ export PEAK_TRADE_CONFIG=/path/to/config.toml
 - `NEXT_STEPS.md` - Weiterentwicklung
 
 **Demos:**
-- `scripts/demo_complete_pipeline.py`
+-
 - `scripts/demo_risk_limits.py`
-- `scripts/demo_kraken_simple.py`
+-
 
 **Code-Referenz:**
 - `src/risk/position_sizer.py`
 - `src/risk/limits.py`
-- `src/data/kraken_pipeline.py`
+-
 
 ---
 

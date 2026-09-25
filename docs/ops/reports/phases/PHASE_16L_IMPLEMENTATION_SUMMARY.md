@@ -23,7 +23,7 @@ Phase 16L wurde erfolgreich implementiert: Stage1 Monitoring (Daily Snapshot + W
 
 ### Neu erstellt (9 Dateien)
 
-1. **`src/utils/report_paths.py`** (71 Zeilen)
+1. **** (71 Zeilen)
    - Robuste Pfadauflösung für Reports
    - Funktionen: `get_repo_root()`, `get_reports_root()`, `ensure_dir()`
    - Respektiert ENV `PEAK_REPORTS_DIR`
@@ -260,7 +260,7 @@ PEAK_REPORTS_DIR=/tmp/custom_reports python3 -c "from src.utils.report_paths imp
    ```
 
 3. **Code Review:**
-   - Prüfe `src/utils/report_paths.py` Logik
+ - Prüfe Logik
    - Prüfe Dockerfile security (Python 3.11-slim, keine secrets)
    - Prüfe entrypoint.sh shell safety
 
@@ -287,7 +287,7 @@ PEAK_REPORTS_DIR=/tmp/custom_reports python3 -c "from src.utils.report_paths imp
 - `docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md` – Vollständige Implementierung
 
 **Code:**
-- `src/utils/report_paths.py` – Inline docstrings
+- – Inline docstrings
 - `docker/obs/entrypoint.sh` – `--help` command
 
 **Tests:**

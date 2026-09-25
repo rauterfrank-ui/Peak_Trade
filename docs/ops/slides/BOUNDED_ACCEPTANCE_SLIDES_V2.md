@@ -83,7 +83,7 @@ Governed bounded capability, not blanket live authorization
 5. operator verify checklist
 
 **Canonical launcher**
-- `scripts/ops/run_bounded_pilot_with_local_secrets.py`
+-
 
 ## 7. Canonical Evidence Path
 

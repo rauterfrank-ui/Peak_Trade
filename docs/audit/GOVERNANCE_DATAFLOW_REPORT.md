@@ -16,8 +16,8 @@
 
 | Phase | Input | Transformation | Storage/Artifacts | Policy/Risk Gate | Output | Evidence |
 |-------|-------|----------------|-------------------|------------------|--------|----------|
-| **Kraken OHLCV** | Kraken API | Normalizer | ParquetCache → `data&#47;cache` | — | Parquet | `src&#47;data&#47;kraken_pipeline.py`, `src&#47;data&#47;cache.py` |
-| **Ingress A2→A5** | Events JSONL (NormalizedEvent) | `build_feature_view_from_jsonl` → FeatureView → EvidenceCapsule | `out&#47;ops&#47;views&#47;<run_id>.feature_view.json`, `out&#47;ops&#47;capsules&#47;<run_id>.capsule.json` | Pointer-only (kein payload/raw) | FeatureView + Capsule | `src&#47;ingress&#47;orchestrator&#47;ingress_orchestrator.py`, `docs&#47;runbooks&#47;appendix&#47;A_ingress_end_to_end.md` |
+| **Kraken OHLCV** | Kraken API | Normalizer | ParquetCache → `data&#47;cache` | — | Parquet | , `src&#47;data&#47;cache.py` |
+| **Ingress A2→A5** | Events JSONL (NormalizedEvent) | `build_feature_view_from_jsonl` → FeatureView → EvidenceCapsule | `out&#47;ops&#47;views&#47;<run_id>.feature_view.json`, `out&#47;ops&#47;capsules&#47;<run_id>.capsule.json` | Pointer-only (kein payload/raw) | FeatureView + Capsule | `src&#47;ingress&#47;orchestrator&#47;ingress_orchestrator.py`, |
 | **Knowledge** | RAG, Embeddings | Vector/TimeSeries | Chroma/Qdrant, Parquet/InfluxDB | `KNOWLEDGE_READONLY`, `KNOWLEDGE_WEB_WRITE_ENABLED` | `config.toml` (knowledge.*) | — |
 
 ---
@@ -169,7 +169,7 @@
 
 | Ort | Datei | Befund |
 |-----|-------|--------|
-| **Policy v0/v1** | `src&#47;observability&#47;policy&#47;policy_v0.py`, `policy_v1.py` | Default `NO_TRADE` bei fehlenden Inputs |
+| **Policy v0/v1** | , `policy_v1.py` | Default `NO_TRADE` bei fehlenden Inputs |
 | **Pipeline** | `src&#47;execution&#47;pipeline.py` | „Phase Policy v0: safety-first NO_TRADE default“ |
 | **Incident/Pilot Snapshots** | `scripts&#47;ops&#47;build_incident_snapshot.sh`, `build_pilot_ready_snapshot.sh` | `"policy_note": "NO_TRADE default preserved"` |
 | **deny-by-default** | `src&#47;ai_orchestration&#47;switch_layer_routing_v1.py` | `reason: str = "deny_by_default"` |

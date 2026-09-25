@@ -41,7 +41,7 @@
   - **Raw target:** `.github&#47;workflows&#47;docs_reference_targets_trend.yml`
 
 - **Source:** `PHASE8_DOCS_INTEGRITY_HARDENING_IMPLEMENTATION_SUMMARY.md`
-  - **Raw target:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PHASE8_DOCS_INTEGRITY_HARDENING_2026-01-12_CURSOR_MULTI_AGENT.md`
+ - **Raw target:**
 
 - **Source:** `PHASE8_DOCS_INTEGRITY_HARDENING_IMPLEMENTATION_SUMMARY.md`
   - **Raw target:** `scripts&#47;ops&#47;check_markdown_links.py`
@@ -56,7 +56,7 @@
   - **Raw target:** `src&#47;risk_layer&#47;var_backtest&#47;duration_diagnostics.py`
 
 - **Source:** `WORKFLOW_RUNBOOK_OVERVIEW_2026-01-12.md`
-  - **Raw target:** `docs&#47;ops&#47;_archive&#47;repo_cleanup&#47;2026-01-12&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;AUTONOMOUS_AI_WORKFLOW.md`
   - **Raw target:** `RESEARCH_PIPELINE.md`
@@ -65,22 +65,22 @@
   - **Raw target:** `SCHEDULER.md`
 
 - **Source:** `docs&#47;BACKTEST_ENGINE.md`
-  - **Raw target:** `..&#47;config.toml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;BACKTEST_ENGINE.md`
-  - **Raw target:** `..&#47;src&#47;core&#47;position_sizing.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;BACKTEST_ENGINE.md`
-  - **Raw target:** `..&#47;tests&#47;test_vol_regime_overlay_sizer.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;DEEP_RESEARCH_BACKOFFICE_OVERVIEW.md`
   - **Raw target:** `deep_research&#47;DEEP_RESEARCH_BACKOFFICE_DOKUMENT_v1.pdf`
 
 - **Source:** `docs&#47;DEMO_SCRIPT_DASHBOARD_V11.md`
-  - **Raw target:** `..&#47;src&#47;webui&#47;app.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;DEMO_SCRIPT_DASHBOARD_V11.md`
-  - **Raw target:** `..&#47;src&#47;webui&#47;live_track.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;DOCUMENTATION_UPDATE_SUMMARY.md`
   - **Raw target:** `docs&#47;BACKTEST_ENGINE.md`
@@ -98,43 +98,43 @@
   - **Raw target:** `docs&#47;STRATEGY_DEV_GUIDE.md`
 
 - **Source:** `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`
-  - **Raw target:** `..&#47;scripts&#47;generate_live_status_report.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`
-  - **Raw target:** `..&#47;src&#47;governance&#47;policy_critic&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;GOVERNANCE_AND_SAFETY_OVERVIEW.md`
-  - **Raw target:** `..&#47;src&#47;governance&#47;policy_critic&#47;auto_apply_gate.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;GO_NO_GO_2026_LIVE_ALERTS_CLUSTER_82_85.md`
-  - **Raw target:** `..&#47;src&#47;governance&#47;go_no_go.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;ADR_0001_Peak_Tool_Stack.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;ADR_0001_Peak_Tool_Stack.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;Makefile`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;src&#47;core&#47;performance.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;src&#47;core&#47;position_sizing.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;tests&#47;test_data_contracts.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;KNOWLEDGE_BASE_INDEX.md`
-  - **Raw target:** `..&#47;tests&#47;test_kraken_cache_loader.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;LEARNING_PROMOTION_LOOP_INDEX.md`
-  - **Raw target:** `..&#47;config&#47;promotion_loop_config.toml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;LIVE_TESTNET_TRACK_STATUS.md`
-  - **Raw target:** `..&#47;scripts&#47;generate_live_status_report.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;PEAK_TRADE_OVERVIEW.md`
   - **Raw target:** `RESEARCH_PIPELINE_V2.md`
@@ -146,13 +146,13 @@
   - **Raw target:** `RISK_MANAGEMENT_V1.md`
 
 - **Source:** `docs&#47;PERFORMANCE_NOTES.md`
-  - **Raw target:** `..&#47;scripts&#47;profile_research_and_portfolio.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;PHASE_42_TOPN_PROMOTION.md`
   - **Raw target:** `PHASE_43_SWEEP_VISUALIZATION.md`
 
 - **Source:** `docs&#47;PROMOTION_LOOP_SAFETY_FEATURES.md`
-  - **Raw target:** `..&#47;CYCLES_6_10_LAB_FAST_FORWARD_REPORT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;README.md`
   - **Raw target:** `architecture&#47;`
@@ -164,19 +164,19 @@
   - **Raw target:** `risk&#47;`
 
 - **Source:** `docs&#47;REGISTRY_BACKTEST_CLI.md`
-  - **Raw target:** `..&#47;RISK_MANAGEMENT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;RESILIENCE.md`
-  - **Raw target:** `..&#47;examples&#47;resilience&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;SMOKE_TESTS.md`
-  - **Raw target:** `.&#47;TESTING.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;STRATEGY_DEV_GUIDE.md`
-  - **Raw target:** `..&#47;src&#47;core&#47;position_sizing.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;WORKFLOW_FRONTDOOR.md`
-  - **Raw target:** `.&#47;ops&#47;_archive&#47;repo_cleanup&#47;2026-01-12&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ai&#47;AI_WORKFLOW_GUIDE.md`
   - **Raw target:** `KNOWLEDGE_BASE_INDEX.md`
@@ -194,10 +194,10 @@
   - **Raw target:** `findings&#47;`
 
 - **Source:** `docs&#47;execution&#47;EXECUTION_SIMPLE_V1.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;execution&#47;pipeline.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;execution&#47;EXECUTION_TELEMETRY_LIVE_TRACK_V1.md`
-  - **Raw target:** `..&#47;PHASE_82_LIVE_TRACK_PANEL.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;execution&#47;EXECUTION_TELEMETRY_LIVE_TRACK_V1.md`
   - **Raw target:** `EXECUTION_PIPELINE_PHASE_16A_V2.md`
@@ -212,13 +212,13 @@
   - **Raw target:** `.&#47;phase4&#47;`
 
 - **Source:** `docs&#47;ops&#47;AUDIT_DEPENDENCY_REMEDIATION_2026-01-07.md`
-  - **Raw target:** `..&#47;..&#47;.github&#47;workflows&#47;audit.yml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;AUDIT_DEPENDENCY_REMEDIATION_2026-01-07.md`
-  - **Raw target:** `..&#47;..&#47;Makefile`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;AUDIT_DEPENDENCY_REMEDIATION_2026-01-07.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;run_audit.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;DOCS_REFERENCE_TARGETS_GATE_STYLE_GUIDE.md`
   - **Raw target:** `docs\&#47;execution\&#47;WP0A_COMPLETION_REPORT.md`
@@ -242,22 +242,22 @@
   - **Raw target:** `..&`
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;config&#47;bounded_live.toml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;check_required_ci_contexts_present.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;collect_docs_reference_targets_fullscan.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;pt_docs_pr.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;EVIDENCE_INDEX.md`
   - **Raw target:** `templates&#47;phase5_no_live&#47;`
@@ -269,25 +269,25 @@
   - **Raw target:** `..&`
 
 - **Source:** `docs&#47;ops&#47;OPS_DOCTOR_README.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;KNOWLEDGE_SMOKE_README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;PR_261_MERGE_LOG.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;stash_triage.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;PR_261_MERGE_LOG.md`
-  - **Raw target:** `..&#47;..&#47;tests&#47;ops&#47;test_stash_triage_script.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;README.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;stash_triage.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;README.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;wave_restore_status.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;README.md`
-  - **Raw target:** `..&#47;..&#47;templates&#47;ops&#47;merge_log_template.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;README.md`
-  - **Raw target:** `..&#47;..&#47;tests&#47;ops&#47;test_stash_triage_script.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;README.md`
   - **Raw target:** `ops_doctor_example_output.txt`
@@ -296,10 +296,10 @@
   - **Raw target:** `workflows&#47;`
 
 - **Source:** `docs&#47;ops&#47;WAVE2_RESTORE_CLOSEOUT_20260106_214505Z.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;wave_restore_status.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;WAVE3_README.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;wave3_restore_batch.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;WAVE3_README.md`
   - **Raw target:** `.&#47;runbooks&#47;`
@@ -326,28 +326,28 @@
   - **Raw target:** `DRILL_RUN_20260110_0800_frank_D02.md`
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-BOUNDED-LIVE-V2.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;config&#47;bounded_live.toml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-CI-MATRIX-CONTRACT.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;.github&#47;workflows&#47;ci.yml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-CI-MATRIX-CONTRACT.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;check_required_ci_contexts_present.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-DOCS-REF-GATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;.github&#47;workflows&#47;docs_reference_targets_gate.yml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-DOCS-REF-GATE.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;verify_docs_reference_targets.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;evidence&#47;EV-20260107-DOCS-REF-GATE.md`
-  - **Raw target:** `..&#47;DOCS_REFERENCE_TARGETS_BASELINE.json`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;graphs&#47;TRIAGE_2026-01-13.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_snapshot.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;graphs&#47;TRIAGE_2026-01-13.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_triage.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;merge_logs&#47;PR_677_MERGE_LOG.md`
   - **Raw target:** `path`
@@ -374,10 +374,10 @@
   - **Raw target:** `.`
 
 - **Source:** `docs&#47;ops&#47;merge_logs&#47;PR_686_MERGE_LOG.md`
-  - **Raw target:** `..&#47;_archive&#47;installation_roadmap&#47;2026-01-12&#47;INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;merge_logs&#47;PR_686_MERGE_LOG.md`
-  - **Raw target:** `..&#47;_archive&#47;installation_roadmap&#47;2026-01-12&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;reports&#47;2026-01-11_PHASE4E_POST_MERGE_AUDIT.md`
   - **Raw target:** `PHASE4E_CLOSEOUT_OPERATOR_GUIDE.md`
@@ -395,73 +395,73 @@
   - **Raw target:** `docs&#47;ops&#47;PR_656_MERGE_LOG.md`
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_snapshot.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;docs_graph_triage.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md`
-  - **Raw target:** `..&#47;..&#47;..&#47;scripts&#47;ops&#47;pt_docs_graph_triage.sh`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md`
   - **Raw target:** `path.md`
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;repo_cleanup&#47;2026-01-12&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;repo_cleanup&#47;2026-01-12&#47;README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md`
   - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;`
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;BACKTICK_AUDIT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;BACKTICK_AUDIT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;BACKTICK_AUDIT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;DOC_MAP.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;DOC_MAP.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;DOC_MAP.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;runbooks&#47;RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md`
-  - **Raw target:** `..&#47;_archive&#47;workflow_docs_integration&#47;2026-01-12&#47;FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;ops&#47;workflows&#47;WORKFLOW_NOTES_FRONTDOOR.md`
-  - **Raw target:** `..&#47;DOCS_REFERENCE_TARGETS_IGNORE.txt`
+ - **Raw target:**
 
 - **Source:** `docs&#47;position_sizing&#47;VOL_REGIME_OVERLAY_SIZER.md`
-  - **Raw target:** `..&#47;POSITION_SIZING.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;reporting&#47;EVIDENCE_CHAIN_INTEGRATION.md`
-  - **Raw target:** `..&#47;..&#47;templates&#47;quarto&#47;backtest_report.qmd`
+ - **Raw target:**
 
 - **Source:** `docs&#47;reporting&#47;EVIDENCE_CHAIN_INTEGRATION.md`
-  - **Raw target:** `..&#47;..&#47;tests&#47;test_evidence_chain.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;reporting&#47;REPORTING_QUICKSTART.md`
-  - **Raw target:** `..&#47;..&#47;templates&#47;quarto&#47;backtest_report.qmd`
+ - **Raw target:**
 
 - **Source:** `docs&#47;reporting&#47;REPORTING_QUICKSTART.md`
-  - **Raw target:** `..&#47;..&#47;tests&#47;test_evidence_chain.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;risk&#47;COMPONENT_VAR_PHASE2A_REPORTING.md`
-  - **Raw target:** `..&#47;COMPONENT_VAR_ROADMAP_PATCHED.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;risk&#47;README.md`
   - **Raw target:** `AGENT_C_PHASE2_VALIDATION_REPORT.md`
@@ -503,7 +503,7 @@
   - **Raw target:** `VAR_CALCULATION.md`
 
 - **Source:** `docs&#47;risk&#47;STRESS_GATE_RUNBOOK.md`
-  - **Raw target:** `..&#47;..&#47;RISK_LAYER_V1_PRODUCTION_READY_REPORT.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;risk&#47;VAR_BACKTEST_SUITE_GUIDE.md`
   - **Raw target:** `INTEGRATION_GUIDE.md`
@@ -518,46 +518,46 @@
   - **Raw target:** `path`
 
 - **Source:** `docs&#47;runbooks&#47;KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md`
-  - **Raw target:** `..&#47;..&#47;scripts&#47;ops&#47;KNOWLEDGE_SMOKE_README.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;runbooks&#47;KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md`
-  - **Raw target:** `..&#47;KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;runbooks&#47;KNOWLEDGE_PRODUCTION_DEPLOYMENT_DRILL.md`
-  - **Raw target:** `..&#47;KNOWLEDGE_API_SMOKE_TESTS.md`
+ - **Raw target:**
 
 - **Source:** `docs&#47;runbooks&#47;LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`
-  - **Raw target:** `..&#47;..&#47;config&#47;config.toml`
+ - **Raw target:**
 
 - **Source:** `docs&#47;runbooks&#47;LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;live&#47;alert_pipeline.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;runbooks&#47;LIVE_ALERT_PIPELINE_SLACK_EMAIL_RUNBOOK_V1.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;live&#47;risk_limits.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;stability&#47;SMOKE_TESTS_GUIDE.md`
-  - **Raw target:** `..&#47;..&#47;pytest.ini`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;live&#47;status_providers.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;webui&#47;health_endpoint.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
-  - **Raw target:** `..&#47;..&#47;src&#47;webui&#47;services&#47;live_panel_data.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md`
-  - **Raw target:** `..&#47;..&#47;tests&#47;test_live_status_snapshot_panels.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_STATUS_PANELS.md`
-  - **Raw target:** `..&#47;src&#47;live&#47;status_providers.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_STATUS_PANELS.md`
-  - **Raw target:** `..&#47;src&#47;reporting&#47;live_status_snapshot_builder.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_STATUS_PANELS.md`
-  - **Raw target:** `..&#47;src&#47;webui&#47;services&#47;live_panel_data.py`
+ - **Raw target:**
 
 - **Source:** `docs&#47;webui&#47;LIVE_STATUS_PANELS.md`
-  - **Raw target:** `..&#47;tests&#47;test_live_status_snapshot_panels.py`
+ - **Raw target:**

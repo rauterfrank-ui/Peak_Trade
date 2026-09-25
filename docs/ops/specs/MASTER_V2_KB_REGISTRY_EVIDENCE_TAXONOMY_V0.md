@@ -51,11 +51,11 @@ The taxonomy supports visual planning and future safe slice decisions. It does n
 | Learning Loop | Iteration from hypothesis through tests, evidence, registry or Knowledge Base, and refinement. | Visual refs, specs, `src/research/`, reports | research, review, future automation | Learning is not live order authority. |
 | Read Model | Read-only projection of state or evidence (often docs or report JSON). | Specs, operator reports, read-model docs under `docs/ops/specs/` | operator, CI, review | Read-only, not execution authority. |
 | Report Surface | Human or machine-readable summary or snapshot. | `scripts/ops/`, `src/reporting/`, `docs/ops/merge_logs/` (where used) | operators, dashboards, reviewers | A report is not a gate pass. |
-| Handoff Packet | Contract-shaped package for another process or authority holder. | [MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md) and related | external or operator process | **Handoff is not, by itself, signoff** by an external body. |
+| Handoff Packet | Contract-shaped package for another process or authority holder. | MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md and related | external or operator process | **Handoff is not, by itself, signoff** by an external body. |
 | Operator Review Surface | Runbooks, checklists, dashboards, and reports meant for people. | `docs/ops/runbooks/`, WebUI, JSON routes per contracts | operator | Review does not auto-authorize orders. |
 | External Authority Surface | Artifacts and procedures that **support** external decision-making, not a substitute for it. | first-live signoff family under `docs/ops/specs/` | process outside the repo as defined by operators | The repo does **not** **complete** external authority by documentation alone. |
 | Runtime Artifact | Emitted output from runs, probes, or sessions. | `out&#47;ops&#47;` convention (if used on disk), session logs, JSONL, manifests in procedures | audit, reports, diagnostics | Existence is not retroactive **approval** of a trade or mode. |
-| Audit Trail | Traceable chain of steps, inputs, and artifacts. | [MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md), logs, registries | review, incident follow-up | Traceability is not permission. |
+| Audit Trail | Traceable chain of steps, inputs, and artifacts. | MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md, logs, registries | review, incident follow-up | Traceability is not permission. |
 
 ## 4. Knowledge Base Concept
 
@@ -92,11 +92,11 @@ A registry entry means **this was recorded or pointed to**; it does **not** mean
 
 Evidence surfaces include document contracts, generated payloads, test outputs, run outputs, and linked artifacts for review. Illustrative first-live and signoff-family anchors include:
 
-- [MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md)
-- [MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md)
-- [MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md)
-- [MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md)
-- [MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md)
+- MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md
+- MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md
+- MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md
+- MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md
+- MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md
 - [../EVIDENCE_INDEX.md](../EVIDENCE_INDEX.md) and [../EVIDENCE_SCHEMA.md](../EVIDENCE_SCHEMA.md)
 
 **Evidence** can support readiness review, failure analysis, reproducibility, and external or operator decision **processes**. **Evidence** must not be read as: **signoff** complete, **live-ready** as a product claim from this file, **autonomous-ready**, blanket **approval**, a claim that a **gate passed** out of band, or execution **authority** for the trading stack.
@@ -124,7 +124,7 @@ hypothesis
 
 - **Report surfaces** aggregate metrics, hashes, decisions, or snapshots for humans or machines. They remain **non-authorizing** unless a **separate** operational process and code path state otherwise; this document does not state that.
 - **Read models** in `docs/ops/specs/` describe **what may be read** in navigation; see also [../../architecture/](../../architecture/) where cross-linked.
-- **Handoff packets** are shaped for the next review step. They are **structural** and **evidence-bearing**, not a substitute for external authority where that process applies. Compare [MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md). **A packet is not, by itself, that external signoff.**
+- **Handoff packets** are shaped for the next review step. They are **structural** and **evidence-bearing**, not a substitute for external authority where that process applies. Compare MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md. **A packet is not, by itself, that external signoff.**
 
 ## 9. Relation to Strategy Surface Map
 

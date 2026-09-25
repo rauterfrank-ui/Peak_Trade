@@ -1,7 +1,7 @@
 # PR #447 — Deprecate historical `inspect_offline_feed` references (Phase 2)
 
 ## Summary
-Docs-only hardening for historical references to `scripts&#47;inspect_offline_feed.py` by adding explicit DEPRECATED notices while preserving historical context.
+Docs-only hardening for historical references to by adding explicit DEPRECATED notices while preserving historical context.
 
 ## Why
 The referenced script was removed from the repository. Historical "FINAL_REPORT" documents still referenced it, which could mislead operators and also interact poorly with strict docs target validation.
@@ -36,18 +36,18 @@ Minimal. Documentation-only; no operational behavior changes.
 **PR:** https://github.com/rauterfrank-ui/Peak_Trade/pull/447  
 **Merged:** 2025-12-30T23:07:36Z  
 **Merge Commit:** `3be604b`  
-**Branch:** `docs&#47;fix-moved-script-paths-comprehensive` → deleted  
+**Branch:** → deleted
 **Change Type:** Docs-only (deprecation notices + de-pathification)
 
 ### Detailed Summary
 
-Adds explicit deprecation notices to historical references of the removed `scripts&#47;inspect_offline_feed.py` script and de-pathifies them to prevent the docs-reference-targets-gate from treating them as filesystem paths requiring validation.
+Adds explicit deprecation notices to historical references of the removed script and de-pathifies them to prevent the docs-reference-targets-gate from treating them as filesystem paths requiring validation.
 
 **Note:** This PR incorporated all changes from Phase 1 (PR #446) and Phase 3 (PR #448) through stacked merging, bringing the complete three-phase docs cleanup into main.
 
 ### Motivation Details
 
-The script `scripts&#47;inspect_offline_feed.py` was removed from the repository, but historical PR reports (PR #59, #70, #74) still referenced it. Without deprecation notices:
+The script was removed from the repository, but historical PR reports (PR #59, #70, #74) still referenced it. Without deprecation notices:
 - Operators might attempt to use non-existent commands
 - The docs-reference-targets-gate treated these as broken filesystem references
 - Historical context was unclear
@@ -70,15 +70,15 @@ Added consistent deprecation markers to all references:
 ### De-pathification via HTML Entity Escaping
 
 All references were HTML-escaped to prevent gate false positives:
-- `scripts&#47;inspect_offline_feed.py` → `scripts&#47;inspect_offline_feed.py` (de-pathified)
+- → (de-pathified)
 
 This preserves readability in rendered markdown while preventing the docs-reference-targets-gate from parsing them as filesystem paths.
 
 ### Additional De-pathified Targets
 
 During comprehensive merge, also de-pathified:
-- `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` → `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
-- `docs&#47;pr-73-final-report` → `docs&#47;pr-73-final-report` (branch name)
+- → (removed)
+- → (branch name)
 
 ### Files Changed
 

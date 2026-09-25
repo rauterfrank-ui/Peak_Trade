@@ -114,7 +114,7 @@ bars -> bind_bar_for_mv2_wiring_v1 -> CanonicalMarketContextV1
 Authorized binding: `config&#47;research&#47;bollinger_bands_v2_full_canonical_system_economic_binding_v1.json`.  
 Primary reconciled SSOT after OBL_B05 side-carrier evidence:
 
-`docs&#47;product&#47;evidence&#47;obl_b05_bollinger_long_semantic_decision_v1_20260717T231700Z&#47;baseline_summary.json`
+
 
 | Scope | Bars | ENTRY (+1) | EXIT (-1) | NONE&#47;neutral (0) | ENTRY outcomes | Dominant first failed stage | Trades |
 |---|---:|---:|---:|---:|---:|---|---:|

@@ -78,7 +78,7 @@ Canonical venue clarification: [VENUE_KRAKEN_LEGACY_CLARIFICATION_V0.md](../../a
 | Governed snapshot template (U2c) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
 | Market-data / U5c boundary | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) |
 | Readmodel persistence | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) |
-| Field semantics (F1) | [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](../../ops/specs/FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) |
+| Field semantics (F1) | FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md |
 | U2b loader validation | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
 | OKX lifecycle field semantics (research, non-authorizing) | `src/research/okx_production_instrument_lifecycle_source_v1.py` |

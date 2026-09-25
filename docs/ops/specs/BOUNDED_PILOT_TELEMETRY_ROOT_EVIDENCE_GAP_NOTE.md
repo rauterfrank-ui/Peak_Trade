@@ -53,7 +53,7 @@ Ops Cockpit `evidence_state` derives `audit_trail` and `telemetry_evidence` from
 - Source: `docs&#47;ops&#47;reviews&#47;telemetry_root_evidence_gap_review&#47;`
 - Rebaseline: `docs&#47;ops&#47;reviews&#47;bounded_pilot_evidence_state_rebaseline_review&#47;` (post PR #1829)
 - Companion to: `OPS_SUITE_EVIDENCE_STATE_REAL_SIGNAL_REVIEW`
-- Companion to: `docs&#47;ops&#47;runbooks&#47;execution_events_wiring.md`
+- Companion to:
 
 ## 7. Non-Goals
 

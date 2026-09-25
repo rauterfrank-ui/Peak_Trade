@@ -61,8 +61,8 @@ They are considered meaningful only insofar as the bounded-pilot execution path 
 Primary sources for the current position:
 
 - `docs&#47;ops&#47;reviews&#47;remaining_post_trial_caps_enforcement_gap_review&#47;`
-- `docs&#47;ops&#47;evidence&#47;FIRST_BOUNDED_LIVE_TRIAL_CLOSEOUT.md`
-- `docs&#47;ops&#47;specs&#47;FIRST_BOUNDED_LIVE_ORDER_CONTRACT.md`
+-
+-
 - `src&#47;webui&#47;ops_cockpit.py`
 - `src&#47;execution&#47;pipeline.py`
 - `src&#47;execution&#47;live_session.py`

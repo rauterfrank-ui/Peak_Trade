@@ -74,7 +74,7 @@ SCHEDULER_EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 Shared guard module: `scripts/ops/scheduler_start_boundary_guard_v0.py` exposes `assert_scheduler_start_authorized()`.
 
 - `scripts/run_scheduler.py` — non-dry-run entry via `main()` calls this guard before `run_scheduler_loop`.
-- `src/ops/p67/shadow_session_scheduler_cli_v1.py` — `main()` calls the same shared guard before `run_shadow_session_scheduler_v1()`. P67 has no `--dry-run`; guard applies on every CLI start.
+- — `main()` calls the same shared guard before `run_shadow_session_scheduler_v1()`. P67 has no `--dry-run`; guard applies on every CLI start.
 
 ## 7. Residual surface (library bypass)
 

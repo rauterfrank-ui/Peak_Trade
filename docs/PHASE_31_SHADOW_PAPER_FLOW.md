@@ -53,7 +53,7 @@ Phase 31 implementiert einen **kontinuierlichen Shadow-/Paper-Trading-Loop** mit
 
 | Komponente | Datei | Beschreibung |
 |------------|-------|--------------|
-| `KrakenLiveCandleSource` | `src/data/kraken_live.py` | Pollt OHLC-Daten von Kraken Public API |
+| `KrakenLiveCandleSource` | | Pollt OHLC-Daten von Kraken Public API |
 | `ShadowPaperSession` | `src/live/shadow_session.py` | Orchestriert den Trading-Loop |
 | `ExecutionPipeline` | `src/execution/pipeline.py` | Transformiert Signale zu Orders |
 | `ShadowOrderExecutor` | `src/orders/shadow.py` | Simuliert Order-Ausführung |

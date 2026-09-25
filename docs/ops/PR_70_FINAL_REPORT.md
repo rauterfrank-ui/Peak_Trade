@@ -12,13 +12,13 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Scope
 
-- `scripts&#47;inspect_offline_feed.py`
+-
   - nutzt `DataUsageContextKind.RESEARCH`
   - SafetyGate blockiert synthetic data für `LIVE_TRADE`
   - kein Netzwerk / keine Exchange-APIs
   - keine Imports von Live-Trading-Modulen
 
-> **⚠️ DEPRECATED:** `scripts&#47;inspect_offline_feed.py` was removed from the repository. This reference is historical and should not be used for current workflows.
+> **⚠️ DEPRECATED:** was removed from the repository. This reference is historical and should not be used for current workflows.
 
 - Web Dashboard: `/offline-feed`
   - read-only Monitoring
@@ -27,7 +27,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - UI klar gelabelt: **"OFFLINE ONLY"**
   - Auto-Refresh
 
-- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
+- Runbook: (removed)
   - explizite OFFLINE ONLY Safety Notes
   - keine Anweisungen für Live-Usage
   - Betonung synthetische Daten-Trennung
@@ -103,8 +103,8 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Files / Artifacts
 
-- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
-- CLI: `scripts&#47;inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
+- Runbook: (removed)
+- CLI: **(⚠️ DEPRECATED: script removed)**
 - Dashboard: `/offline-feed` Route (Web)
 - Tests: `tests&#47;test_inspect_offline_feed.py`
 

@@ -1,8 +1,0 @@
-{
-  "authorization_digest": "405f50940be1e7eb7a05f7f5f100ec16565eb7ffd73c5228db6c10ab4b802f7b",
-  "authorization_id": "F1_M9_POST_6800_REAL_RUN_20260924T224821Z",
-  "campaign_id": "cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032",
-  "execution_identity": "1f078f3f548f3038ad98aeff8b3dc009ae85386dcd507fabb99ad2860d9f8781",
-  "issuance_owner_id": "f1_m9_prospective_campaign_runtime_authorization_issuance_v1",
-  "preregistration_digest": "44971151bc41b124bfa3642d38cba0bc43919160fec2e2d74df4f9e135101b0c"
-}

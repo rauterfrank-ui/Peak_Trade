@@ -64,9 +64,9 @@ The pack is a review surface. It does not authorize action.
 | `session_id` | Identifier for the reviewed session or run. | `out&#47;ops&#47;` convention or report output. | Optional until implemented. | Not proof of validity. |
 | `run_timestamp` | Time associated with the reviewed run. | report or artifact metadata. | Optional until implemented. | Not approval. |
 | `mode_or_environment` | Paper, shadow, testnet, bounded pilot, or other mode context where available. | report output or config context. | Optional until implemented. | Not live authorization. |
-| `provenance_reference` | Link or pointer to replayability or provenance context. | [`MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md`](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) | Recommended. | Not permission to execute. |
+| `provenance_reference` | Link or pointer to replayability or provenance context. | `MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md` | Recommended. | Not permission to execute. |
 | `evidence_references` | Evidence links or index references. | [`MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md`](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md) | Recommended. | Not signoff completion. |
-| `readiness_summary_reference` | Pointer to readiness summary or verdict surface. | [`MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md`](./MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md) | Optional until implemented. | Not gate passage. |
+| `readiness_summary_reference` | Pointer to readiness summary or verdict surface. | `MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md` | Optional until implemented. | Not gate passage. |
 | `handoff_reference` | Pointer to handoff packet or operator handoff surface. | [`MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md`](./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md) | Recommended. | Not external authority completion. |
 | `registry_reference` | Registry or index reference where applicable. | [`MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md`](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md) | Optional until implemented. | Not approval. |
 | `operator_notes` | Human review notes or follow-up observations. | operator review process. | Optional. | Not runtime state. |
@@ -81,18 +81,18 @@ The pack is a review surface. It does not authorize action.
 
 | Existing surface | Anchor | Used by Session Review Pack for | Not used for |
 | --- | --- | --- | --- |
-| Operator triage checklist | [`MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md`](./MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md) | Opening the correct first reference during review. | Approval or live decision. |
+| Operator triage checklist | `MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md` | Opening the correct first reference during review. | Approval or live decision. |
 | Operator handoff map | [`MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md`](./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md) | Understanding handoff and verdict order. | External authority completion. |
 | Observer surface inventory | [`MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md`](./MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md) | Locating dashboard/cockpit/report observer surfaces. | Order authority. |
 | Evidence packet/index navigation | [`MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md`](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md) | Relating evidence index, packet, readiness, handoff, and provenance. | Signoff completion. |
 | KB / Registry / Evidence taxonomy | [`MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md`](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md) | Vocabulary for review, learning, registry, and evidence surfaces. | Implementation or approval. |
 | Learning Loop path map | [`MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md`](./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md) | Connecting review results to lessons and future refinement. | Current autonomous execution. |
-| Provenance / replayability | [`MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md`](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) | Traceability and replay context. | Permission to execute. |
+| Provenance / replayability | `MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md` | Traceability and replay context. | Permission to execute. |
 | System dataflow and AI-layer overview | [`MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md`](./MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md) | Understanding system-wide flow and AI boundaries. | AI trade authority. |
-| Evidence Index contract | [`MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md`](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md) | Evidence reference navigation. | Signoff completion. |
-| Evidence requirement contract | [`MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md`](./MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md) | Required evidence posture. | Proof of fulfillment by itself. |
-| Readiness verdict packet contract | [`MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md`](./MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md) | Readiness-review structure. | Live authorization. |
-| Handoff packet contract | [`MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md`](./MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md) | Downstream review input. | External authority completion. |
+| Evidence Index contract | `MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_EVIDENCE_INDEX_CONTRACT_V1.md` | Evidence reference navigation. | Signoff completion. |
+| Evidence requirement contract | `MASTER_V2_FIRST_LIVE_PRE_LIVE_EVIDENCE_REQUIREMENT_CONTRACT_V1.md` | Required evidence posture. | Proof of fulfillment by itself. |
+| Readiness verdict packet contract | `MASTER_V2_FIRST_LIVE_PRE_LIVE_READINESS_VERDICT_PACKET_CONTRACT_V1.md` | Readiness-review structure. | Live authorization. |
+| Handoff packet contract | `MASTER_V2_FIRST_LIVE_PRE_LIVE_SIGNOFF_HANDOFF_PACKET_CONTRACT_V1.md` | Downstream review input. | External authority completion. |
 | Current reporting surface | `scripts/report_live_sessions.py` | Future read-only pack source candidate. | Runtime mutation or approval. |
 
 ## 6. Operator Review Checklist

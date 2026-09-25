@@ -8,7 +8,7 @@ docs_token: "DOCS_TOKEN_MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTR
 
 # Master V2 Double Play Arithmetic Sequence Survival Contract v0
 
-**Research note (historical, non-authorizing):** Downloads intake 2026-05-19 indexed `peak_trade_futures_sequence_arithmetic_research_summary.md` under [`../_archive/downloads_intake_20260519T195748Z/README.md`](../_archive/downloads_intake_20260519T195748Z/README.md); this contract remains canonical.
+**Research note (historical, non-authorizing):** Downloads intake 2026-05-19 indexed `peak_trade_futures_sequence_arithmetic_research_summary.md` under ; this contract remains canonical.
 
 ## 1. Purpose
 

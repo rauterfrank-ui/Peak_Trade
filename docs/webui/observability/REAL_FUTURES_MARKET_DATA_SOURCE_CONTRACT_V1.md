@@ -63,8 +63,8 @@ MANIFEST_VERIFY_RC=0
 | Universe metadata charter (U4b) | [FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md](FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md) |
 | Governed snapshot template (U2c) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
 | Readmodel persistence | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) |
-| Provenance (F2) | [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](../../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) |
-| Instrument metadata (F1) | [FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md](../../ops/specs/FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md) |
+| Provenance (F2) | FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md |
+| Instrument metadata (F1) | FUTURES_INSTRUMENT_METADATA_CONTRACT_V0.md |
 | Public REST capture pattern (spot reference) | removed (not a current operative capture surface) |
 | Futures testnet endpoint inventory (offline) | `src/ops/bounded_futures_testnet_adapter_contract_v0.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |

@@ -5,7 +5,7 @@
 - **PR**: https://github.com/rauterfrank-ui/Peak_Trade/pull/74
 - **Title**: docs(ops): add PR #73 final report
 - **State**: MERGED
-- **Branch**: `docs&#47;pr-73-final-report` → `main`
+- **Branch**: → `main`
 - **Merged At**: 2025-12-16T03:51:00Z
 - **Merge Commit**: `7c03bb510185d0ed8ab241f4cc0e9b73ff06b28b`
 
@@ -14,13 +14,13 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Scope
 
-- `scripts&#47;inspect_offline_feed.py`
+-
   - nutzt `DataUsageContextKind.RESEARCH`
   - SafetyGate blockiert synthetic data für `LIVE_TRADE`
   - kein Netzwerk / keine Exchange-APIs
   - keine Imports von Live-Trading-Modulen
 
-> **⚠️ DEPRECATED:** `scripts&#47;inspect_offline_feed.py` was removed from the repository. This reference is historical and should not be used for current workflows.
+> **⚠️ DEPRECATED:** was removed from the repository. This reference is historical and should not be used for current workflows.
 
 - Web Dashboard: `/offline-feed`
   - read-only Monitoring
@@ -29,7 +29,7 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
   - UI klar gelabelt: **"OFFLINE ONLY"**
   - Auto-Refresh
 
-- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
+- Runbook: (removed)
   - explizite OFFLINE ONLY Safety Notes
   - keine Anweisungen für Live-Usage
   - Betonung synthetische Daten-Trennung
@@ -101,8 +101,8 @@ Keine Live-Execution-Pfade geändert. Nur Observability/Docs/CLI/Dashboard.
 
 ## Files / Artifacts
 
-- Runbook: `docs&#47;ops&#47;OFFLINE_REALTIME_FEED_RUNBOOK.md` (removed)
-- CLI: `scripts&#47;inspect_offline_feed.py` **(⚠️ DEPRECATED: script removed)**
+- Runbook: (removed)
+- CLI: **(⚠️ DEPRECATED: script removed)**
 - Dashboard: `/offline-feed` Route (Web)
 - Tests: `tests&#47;test_inspect_offline_feed.py`
 

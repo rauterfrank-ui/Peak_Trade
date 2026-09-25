@@ -57,10 +57,10 @@ scripts/ops/verify_from_registry.sh docs/ops/registry/LATEST_PHASE_M_SMOKE.point
 | `online_readiness_shadow_runner_runbook_v1.md` | P63 | Shadow Runner (P61 + P62 kombiniert) | ✅ Implementiert | `src.ops.p63.run_online_readiness_shadow_runner_v1` |
 | `online_readiness_supervisor_service_runbook_v1.md` | P82&#47;P84 | Supervisor Service (launchd&#47;systemd) | ✅ Implementiert | `scripts&#47;ops&#47;online_readiness_supervisor_v1.sh`, `docs&#47;ops&#47;services&#47;` |
 | `online_readiness_supervisor_health_gate_runbook_v1.md` | P79 | Supervisor Health Gate (ticks, pidfile, P76 artifacts) | ✅ Implementiert | `scripts&#47;ops&#47;p79_supervisor_health_gate_v1.sh` |
-| `online_readiness_health_gate_runbook_v1.md` | P71 | Health Gate (P71) | ✅ Implementiert | `scripts&#47;ops&#47;p71_health_gate_v1.sh`, `src.ops.p71` |
+| `online_readiness_health_gate_runbook_v1.md` | P71 | Health Gate (P71) | ✅ Implementiert | , `src.ops.p71` |
 | `online_readiness_go_no_go_runbook_v1.md` | P76 | Go&#47;No-Go (READY&#47;NOT_READY, exit codes) | ✅ Implementiert | `scripts&#47;ops&#47;online_readiness_go_no_go_v1.sh` |
 | `shadow_loop_runbook_v1.md` | P62–P67 | Shadow Loop (Scheduler) | ✅ Implementiert | `src.ops.p67.shadow_session_scheduler_cli_v1` |
-| `shadowloop_pack_runbook_v1.md` | P72 | Shadow Loop Pack (P71 + P68) | ✅ Implementiert | `scripts&#47;ops&#47;p72_shadowloop_pack_v1.sh`, `src.ops.p72` |
+| `shadowloop_pack_runbook_v1.md` | P72 | Shadow Loop Pack (P71 + P68) | ✅ Implementiert | , `src.ops.p72` |
 | `switch_layer_paper_shadow_runbook_v1.md` | P57 | Switch-Layer Paper&#47;Shadow | ✅ Implementiert | `src.ops.p57.switch_layer_paper_shadow_v1` |
 | `live_data_ingest_readiness_runbook_v1.md` | P85 | Live Data Ingest Readiness | ✅ Implementiert | `scripts&#47;ops&#47;p85_live_data_ingest_readiness_v1.sh`, `src.ops.p85` |
 | `ai_model_enablement_runbook_v1.md` | P50 | AI Model Enablement (enable&#47;arm&#47;token) | ✅ Implementiert | `src.ops.p50.ai_model_policy_cli_v1` |
