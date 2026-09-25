@@ -1,20 +1,13 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "05d2a85e2afe9edd9d113cdfde7808c6f2ef3d62",
+  "base_sha": "9ab34786b13c26f1be5cb9b523975f265014e1cb",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/ontology/discovered_terms.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "d7af20d258c987b8d1ae2dccd9f4cf6e2b1ac37c62d14edcb606c417d9bd1486",
+  "changed_paths_sha256": "f8ee4f0c62cc71166f4ccdbb42860508feac047ce4c360c7fc134272012b4b5d",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
@@ -22,7 +15,7 @@
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6809 MAP_ONLY Full-Core interaction authority map completion (slices 1–3): baseline rebind, terminal outcome semantics, FA/FC seams, reconciliation edges; derived views regenerated; map_authority=NONE.",
+  "reason": "POST_6809 CURRENT system authority closure to next real blocker (OWNER_GO): rebind map baseline to 9ab34786; close NAVIGATION_INDEX censuses for optimization_surface_consumer_list and learning_capture_hosts; refresh stale SHA/open-record navigation for authority conflicts; derived authority_view regenerated; map_authority=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
