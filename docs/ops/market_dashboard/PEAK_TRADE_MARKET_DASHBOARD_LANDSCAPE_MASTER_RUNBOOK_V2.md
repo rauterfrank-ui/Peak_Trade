@@ -1308,7 +1308,7 @@ CAPABILITY=MARKET_DASHBOARD_PRODUCT_MATURITY_AND_CHROME_EVIDENCE_V1
 **Tests / evidence**
 
 - Shell-route density guard + existing Landscape owner suites.
-- Chrome/accessibility evidence: ephemeral pytest output (no committed `evidence/market_dashboard_v2/` tree)
+- Chrome/accessibility evidence: ephemeral pytest output (no committed `evidence&#47;market_dashboard_v2&#47;` tree)
 
 ---
 
