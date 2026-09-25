@@ -285,6 +285,15 @@
         "tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
         "tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py",
         "scripts/ops/fast_reference_replay_v1.py",
-        "tests/ops/test_fast_reference_replay_v1.py"
+        "tests/ops/test_fast_reference_replay_v1.py",
+        "config/governance/post_6828_architecture_closure_v1.json",
+        "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+        "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
+        "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
+        "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
+        "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
+        "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
+        "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
+        "tests/governance/test_post_6828_architecture_closure_v1.py"
     ]
 }

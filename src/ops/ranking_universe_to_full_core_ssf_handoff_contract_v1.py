@@ -56,9 +56,61 @@ REPLAY_DROPPED_PROVENANCE_FIELDS = frozenset(
     {"selection_id", "ranking_snapshot_id", "universe_snapshot_id"}
 )
 
+DOMAIN_ID = "UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN"
+DOMAIN_RATIFICATION_CONTRACT = (
+    "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json"
+)
+DOMAIN_SCOPE = "CURRENT_PRODUCTIVE_SINGLE_FUTURE_PRE_MV2"
+FIRST_BOUNDARY = "EEA_UNIVERSE_ACQUISITION_INGRESS"
+LAST_AUTHORITY_BOUNDARY = LAST_RANKING_UNIVERSE_AUTHORITY
+SHARED_BOUNDARY = "CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1"
+SELECTION_AUTHORITY_OWNER = LAST_RANKING_UNIVERSE_AUTHORITY
+TRADING_DECISION_AUTHORITY_OWNER = (
+    "trading.master_v2.integrated_offline_trading_logic_replay_v1."
+    "run_integrated_offline_trading_logic_replay_v1"
+)
+RESELECTION_ALLOWED = False
+EXECUTION_RERANK_ALLOWED = False
+REMOVAL_AUTHORIZED = False
+
 
 class RankingUniverseToFullCoreSsfHandoffError(ValueError):
     """Fail-closed handoff invariant violation."""
+
+
+@dataclass(frozen=True)
+class UniverseRankingSelectionBindingDomainRatificationV1:
+    """Ratified domain boundary markers; governance-only, not a runtime owner."""
+
+    domain_id: str
+    domain_scope: str
+    first_boundary: str
+    last_authority_boundary: str
+    shared_boundary: str
+    selection_authority_owner: str
+    trading_decision_authority_owner: str
+    first_trading_decision_consumer: str
+    reselection_allowed: bool
+    execution_rerank_allowed: bool
+    removal_authorized: bool
+    ownership_closed_for_productive_scope: bool
+
+
+def domain_ratification_descriptor_v1() -> UniverseRankingSelectionBindingDomainRatificationV1:
+    return UniverseRankingSelectionBindingDomainRatificationV1(
+        domain_id=DOMAIN_ID,
+        domain_scope=DOMAIN_SCOPE,
+        first_boundary=FIRST_BOUNDARY,
+        last_authority_boundary=LAST_AUTHORITY_BOUNDARY,
+        shared_boundary=SHARED_BOUNDARY,
+        selection_authority_owner=SELECTION_AUTHORITY_OWNER,
+        trading_decision_authority_owner=TRADING_DECISION_AUTHORITY_OWNER,
+        first_trading_decision_consumer=FIRST_TRADING_DECISION_CONSUMER,
+        reselection_allowed=RESELECTION_ALLOWED,
+        execution_rerank_allowed=EXECUTION_RERANK_ALLOWED,
+        removal_authorized=REMOVAL_AUTHORIZED,
+        ownership_closed_for_productive_scope=True,
+    )
 
 
 @dataclass(frozen=True)

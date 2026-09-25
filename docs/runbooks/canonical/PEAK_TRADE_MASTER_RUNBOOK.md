@@ -623,6 +623,42 @@ POST_ALLOWED=false
 ATLAS_AUTHORITY=NONE
 ```
 
+### Post-#6828 architecture closure (domain + C2 boundary + portfolio/Treasury)
+
+Owner-GO **OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1** (one-shot; **CONSUMED**)
+ratifies the Universe/Ranking/Selection/Binding domain, mechanical Companion C2
+blocking boundaries vs Full-Core, and Portfolio reservation ↔ Treasury/Q0/Q1
+authority separation. Machine contract:
+`config/governance/post_6828_architecture_closure_v1.json`.
+Derived spec: `docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md`.
+
+No ranking/selection policy change. No MV2/DP logic change. No Companion
+conversion. No N5/Multi-Future activation.
+
+```text
+OWNER_GO=OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1
+OWNER_GO_STATUS=CONSUMED
+ARCHITECTURE_CLOSURE_PROVEN=true
+DOMAIN_ID=UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN
+DOMAIN_SCOPE=CURRENT_PRODUCTIVE_SINGLE_FUTURE_PRE_MV2
+SELECTION_AUTHORITY_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+SHARED_BOUNDARY=CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1
+FIRST_TRADING_DECISION_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
+C2_VERDICT=C2_AUTHORITY_RATIFICATION_REQUIRED
+C2_STATUS=UNRESOLVED
+C2_BLOCKS_CURRENT_Q0_Q1=false
+C2_BLOCKS_TREASURY=false
+PORTFOLIO_BUDGET_OWNER=portfolio_capital_reservation_budget_owner_v1
+CAPITAL_AUTHORITY_OWNER_COUNT=1
+CANONICAL_RESTART_RECONSTRUCTABLE=false
+RESTART_CLASSIFICATION=N5_ACTIVATION_REQUIREMENT
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+MAX_POSITIONS_EFFECTIVE=1
+ATLAS_AUTHORITY=NONE
+```
+
 ------------------------------------------------------------------------
 
 ## CURRENT Treasury Phase Bindings
