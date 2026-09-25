@@ -5,6 +5,7 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/LINEAGE.json",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/MANIFEST.sha256",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/SUMMARY.json",
@@ -24,9 +25,10 @@
     "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
     "tests/ops/test_p5_10_productive_activation_and_binding_v1.py"
   ],
-  "changed_paths_sha256": "1019b474b28637d62b7d4d4cb11daa096d7813478dd6926ca2d8a1e246a3f0c1",
+  "changed_paths_sha256": "62fa7dd4c1f26e3b1cd0cb498fdd77917fe9ad5e24c4fc6685edda3055f1dee7",
   "covered_candidate_paths": [
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/LINEAGE.json",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/MANIFEST.sha256",
     "evidence/ops/full_core_current_productive_pre_external_closure_v1/20260925T052919Z/SUMMARY.json",
@@ -53,7 +55,7 @@
     "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Full-Core pre-external aggregate closure: WP-1/WP-2 orchestration + bilateral natural ENTER fixtures + host/oneshot CRS bind-point test alignment to existing enter-live-29p join; no Master Runbook/System Atlas trading-authority rewrite; structured map source unchanged; AUTHORITY_EFFECT=NONE.",
+  "reason": "Full-Core pre-external aggregate closure: WP-1/WP-2 orchestration + bilateral natural ENTER fixtures + host/oneshot CRS bind-point test alignment to existing enter-live-29p join; System Atlas catalog navigation bind for new handoff/closure modules and entity review comments (ATLAS_AUTHORITY=NONE); structured map source unchanged; AUTHORITY_EFFECT=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
