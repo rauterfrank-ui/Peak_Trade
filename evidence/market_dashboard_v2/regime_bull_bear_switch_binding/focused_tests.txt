@@ -1,3 +1,0 @@
-125 passed: producer_binding + architecture_guards + contracts + shell_route
-Additional nodes: regime_bbs exact/stale/schema/invalid/contradiction/missing/project
-Chrome evidence: CHROME_OK console_errors=[]

@@ -1,2 +1,0 @@
-GET /market -> 200
-selected=ETH-USDT-SWAP

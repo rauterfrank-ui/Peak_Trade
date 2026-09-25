@@ -4,19 +4,23 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-modified_by: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
+modified_by: REPO_CONVERGENCE_MARKET_DASHBOARD_HISTORICAL_CHROME_233_OUTER_SHELL_V1
 superseded_by: null
 last_recorded_impact: NONE_WITH_PROOF
 note: >-
-  Repository convergence frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion:
-  NAVIGATION_ONLY atlas review for map_of_truth navigation index; reconciliation
-  stale-coupling decoupling (RCN-000026/RCN-000053); map currency MAP_UPDATE_REQUIRED;
-  map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+  Repository convergence frozen-233 AUTHORITY=NONE market-dashboard historical chrome
+  evidence outer-shell deletion: NAVIGATION_ONLY atlas review for map_of_truth and
+  Landscape runbook-adjacent entities; corpus/census stale-coupling decoupling;
+  map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation.
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
   - NAVIGATION_INDEX:map_of_truth
   - TERM:map_of_truth
-  - RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
+  - RUNBOOK:professional_trading_dashboard_v1
+  - RUNTIME_COMPONENT:landscape_current_documentation_reconciliation_v1
+  - RUNTIME_COMPONENT:landscape_v2_current_completion_census_v1
 changed_relations: []
 changed_wiring: []
 changed_venue: []
-changed_census: []
+changed_census:
+  - docs/system_atlas/census/okx_current_tree.yaml

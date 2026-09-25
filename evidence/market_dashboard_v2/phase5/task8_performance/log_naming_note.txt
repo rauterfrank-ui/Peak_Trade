@@ -1,1 +1,0 @@
-NOTE=*.log gitignored; tracked mirrors are console.txt and page_errors.txt with identical content.

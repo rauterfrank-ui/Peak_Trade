@@ -1,3 +1,0 @@
-NO_HORIZONTAL_OVERFLOW_1512x982=true
-NO_HORIZONTAL_OVERFLOW_1920x1080=true
-PROOF=chrome_test_documentElement_scrollWidth_vs_clientWidth
