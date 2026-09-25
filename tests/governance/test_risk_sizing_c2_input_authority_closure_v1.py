@@ -47,7 +47,7 @@ def test_c2_closure_verdict_unresolved_and_gate_not_satisfied() -> None:
     assert markers["FATE_IMPLEMENTATION_COMPLETE_COUNT"] == 5
     gate = c2["c2_closure_gate"]
     assert gate["c2_closure_rule_satisfied"] is False
-    assert c2["implemented_authority_bindings"] == []
+    assert len(c2["implemented_authority_bindings"]) >= 1
 
 
 def test_c2_input_set_matches_provenance_binding_exhaustive() -> None:
@@ -60,7 +60,10 @@ def test_c2_input_set_matches_provenance_binding_exhaustive() -> None:
     assert c2["c2_required_inputs_sorted"] == list(EXPECTED_INPUT_IDS)
     for iid in EXPECTED_INPUT_IDS:
         census = c2["c2_input_census"][iid]
-        assert census["c2_authority_binding_implemented"] is False
+        if iid == "INSTRUMENT_QUANTITY_METADATA":
+            assert census["c2_authority_binding_implemented"] is True
+        else:
+            assert census["c2_authority_binding_implemented"] is False
         assert census["status"] != "PROVEN_CURRENT"
         assert census["domain_authority_resolution_final_status"] == census["status"]
         assert (
@@ -81,13 +84,17 @@ def test_c2_census_aligns_with_authority_decision_unresolved_owners() -> None:
         status["reference_price_authority_owner"]
         == "ops.governed_productive_reference_price_authority_producer_v1"
     )
-    assert status["instrument_metadata_authority_owner"] == "UNRESOLVED"
+    assert (
+        status["instrument_metadata_authority_owner"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     assert status["account_equity_authority_chain_closed"] is False
     assert status["reference_price_authority_chain_closed"] is False
     assert status["instrument_metadata_authority_chain_closed"] is False
     assert c2["c2_input_census"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]["status"] == "PARTIAL"
     assert c2["c2_input_census"]["REFERENCE_PRICE"]["status"] == "PARTIAL"
-    assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["status"] == "UNRESOLVED"
+    assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["status"] == "PARTIAL"
+    assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["c2_authority_binding_implemented"] is True
 
 
 def test_b05_and_inventory_c2_markers_unchanged_unresolved() -> None:

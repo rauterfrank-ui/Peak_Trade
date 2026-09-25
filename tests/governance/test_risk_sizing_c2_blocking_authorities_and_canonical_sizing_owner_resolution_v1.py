@@ -50,7 +50,8 @@ def test_resolution_markers_and_no_runtime_bindings() -> None:
     assert m["EQUITY_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
     assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED"] is True
     assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
-    assert m["INSTRUMENT_METADATA_AUTHORITY_RESOLVED"] is False
+    assert m["INSTRUMENT_METADATA_AUTHORITY_RESOLVED"] is True
+    assert m["INSTRUMENT_METADATA_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
     assert m["SIZING_OWNER_RESOLVED"] is False
     assert m["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
     assert res["c2_mechanical_reevaluation"]["implemented_authority_bindings"] == []
@@ -62,14 +63,14 @@ def test_c2_verdicts_preserve_6761_6762_start_state() -> None:
     reeval = res["c2_mechanical_reevaluation"]
     assert reeval["account_equity_final_status"] == "PARTIAL"
     assert reeval["reference_price_final_status"] == "PARTIAL"
-    assert reeval["instrument_metadata_final_status"] == "UNRESOLVED"
+    assert reeval["instrument_metadata_final_status"] == "PARTIAL"
     assert reeval["domain_proven_current_count"] == 0
     assert reeval["c2_status"] == "UNRESOLVED"
     assert reeval["c2_closure_rule_satisfied"] is False
     for iid, verdict in (
         ("ACCOUNT_EQUITY_AVAILABLE_CAPITAL", "PARTIAL"),
         ("REFERENCE_PRICE", "PARTIAL"),
-        ("INSTRUMENT_QUANTITY_METADATA", "UNRESOLVED"),
+        ("INSTRUMENT_QUANTITY_METADATA", "PARTIAL"),
     ):
         assert v2["domain_adjudications"][iid]["c2_domain_verdict"] == verdict
 
@@ -102,7 +103,8 @@ def test_blocker_b_reference_unknown_no_canonical_transform() -> None:
 def test_blocker_c_identity_separate_from_metadata() -> None:
     res = _load(RES_JSON)
     c = res["blocker_adjudications"]["C_INSTRUMENT_QUANTITY_METADATA_AUTHORITY"]
-    assert c["instrument_metadata_final_status"] == "UNRESOLVED"
+    assert c["instrument_metadata_final_status"] == "PARTIAL"
+    assert c["instrument_metadata_authority_resolved"] is True
     sep = c["identity_vs_metadata_separation"]
     assert "BoundInstrumentV1" in sep["identity_authority"]["type"]
     assert sep["identity_authority"]["reselection_forbidden"] is True
@@ -126,7 +128,7 @@ def test_blocker_d_sizing_owner_unresolved_parallel_bypasses() -> None:
 
 def test_deferred_decisions_present() -> None:
     res = _load(RES_JSON)
-    assert len(res["deferred_decisions"]) >= 3
+    assert len(res["deferred_decisions"]) >= 2
     assert any("CONVERSION" in x for x in res["deferred_decisions"])
 
 

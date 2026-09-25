@@ -120,13 +120,14 @@ REQUIRED_DOC_MARKERS = (
     "FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED=true",
     "REFERENCE_PRICE_SEMANTICS_CLASS_RATIFIED=mark_price",
     "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false",
-    "INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED",
+    "INSTRUMENT_METADATA_AUTHORITY_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1",
+    "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED=true",
     "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false",
     "EXPECTED_INPUT_DOMAIN_COUNT=3",
     "EXPECTED_ADAPTER_LAYER_COUNT=5",
     "EXPECTED_ALLOWED_ADAPTER_ROLE_COUNT=3",
     "EXPECTED_FORBIDDEN_ADAPTER_ROLE_COUNT=2",
-    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=2",
+    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=3",
     "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=0",
     "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=0",
     "RUNTIME_BRIDGE_ACTIVATED=false",
@@ -139,7 +140,7 @@ REQUIRED_DOC_MARKERS = (
     "CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED",
     "CANONICAL_EQUITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
     "CANONICAL_PRICE_OWNER=ops.governed_productive_reference_price_authority_producer_v1",
-    "CANONICAL_INSTRUMENT_METADATA_OWNER=UNRESOLVED",
+    "CANONICAL_INSTRUMENT_METADATA_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1",
     "FINAL_QUANTITY_PROVENANCE_RESOLVED=false",
     "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY=true",
     "AUTHORITY_DECISION_CONTRACT_REMAINS_FROZEN=true",
@@ -166,7 +167,6 @@ GLOBAL_NON_CLAIMS = (
     "NO_COMPANION_REACHABLE",
     "NO_CONVERSION_CONSUMER_BOUND",
     "NO_REFERENCE_PRICE_AUTHORITY_OWNER_ASSIGNED",
-    "NO_INSTRUMENT_METADATA_AUTHORITY_OWNER_ASSIGNED",
     "NO_AUTHORITY_CHAIN_CLOSED_FOR_ANY_INPUT_DOMAIN",
     "NO_AUTHORITY_ACTIVATION",
     "NO_PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED",
@@ -377,11 +377,14 @@ def test_equity_and_reference_price_owners_ratified_instrument_unresolved_chains
         markers["REFERENCE_PRICE_AUTHORITY_OWNER"]
         == "ops.governed_productive_reference_price_authority_producer_v1"
     )
-    assert markers["INSTRUMENT_METADATA_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert (
+        markers["INSTRUMENT_METADATA_AUTHORITY_OWNER"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
     assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
     assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 2
+    assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 3
     assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 0
     assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 0
     assert markers["OWNER_ASSIGNED"] is False
@@ -396,7 +399,10 @@ def test_equity_and_reference_price_owners_ratified_instrument_unresolved_chains
         status["reference_price_authority_owner"]
         == "ops.governed_productive_reference_price_authority_producer_v1"
     )
-    assert status["instrument_metadata_authority_owner"] == "UNRESOLVED"
+    assert (
+        status["instrument_metadata_authority_owner"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     assert status["account_equity_authority_chain_closed"] is False
     assert status["reference_price_authority_chain_closed"] is False
     assert status["instrument_metadata_authority_chain_closed"] is False
@@ -574,7 +580,10 @@ def test_consistency_with_provenance_binding_and_authority_decision() -> None:
         authority["markers"]["REFERENCE_PRICE_AUTHORITY_OWNER"]
         == "ops.governed_productive_reference_price_authority_producer_v1"
     )
-    assert authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert (
+        authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_OWNER"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     assert authority["markers"]["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
     assert authority["markers"]["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
     assert authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
@@ -719,7 +728,9 @@ def test_docs_markers_match_json_markers() -> None:
         "RUNTIME_BRIDGE_ACTIVATED",
         "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED",
     )
-    unresolved_keys = (
+    unresolved_keys: tuple[str, ...] = ()
+    instrument_owner = "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    ratified_instrument_metadata_keys = (
         "INSTRUMENT_METADATA_AUTHORITY_OWNER",
         "CANONICAL_INSTRUMENT_METADATA_OWNER",
     )
@@ -753,6 +764,9 @@ def test_docs_markers_match_json_markers() -> None:
     for key in ratified_reference_price_keys:
         assert markers[key] == reference_owner, key
         assert f"{key}={reference_owner}" in text, key
+    for key in ratified_instrument_metadata_keys:
+        assert markers[key] == instrument_owner, key
+        assert f"{key}={instrument_owner}" in text, key
     for key in fail_closed_keys:
         assert markers[key] == "FAIL_CLOSED"
         assert f"{key}=FAIL_CLOSED" in text, key
@@ -772,7 +786,10 @@ def test_no_authority_escalation_language_in_doc() -> None:
         r"REFERENCE_PRICE_AUTHORITY_OWNER=ops\.governed_productive_reference_price_authority_producer_v1",
         text,
     )
-    assert re.search(r"INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED", text)
+    assert re.search(
+        r"INSTRUMENT_METADATA_AUTHORITY_OWNER=ops\.governed_productive_instrument_metadata_authority_producer_v1",
+        text,
+    )
     assert re.search(r"CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED", text)
     assert re.search(r"CANONICAL_RISK_SIZING_AUTHORITY_OWNER=UNRESOLVED", text)
     assert "CONVERSION_READY=true" not in text

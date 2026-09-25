@@ -32,10 +32,10 @@
     "C2_INPUT_AUTHORITIES": "UNRESOLVED",
     "C2_CLOSURE_RULE_SATISFIED": false,
     "C2_DOMAINS_PROVEN_CURRENT_COUNT": 0,
-    "C2_DOMAINS_PARTIAL_COUNT": 2,
+    "C2_DOMAINS_PARTIAL_COUNT": 3,
     "C2_DOMAINS_UNKNOWN_COUNT": 0,
     "C2_DOMAINS_CONFLICTING_COUNT": 0,
-    "C2_DOMAINS_UNRESOLVED_COUNT": 1,
+    "C2_DOMAINS_UNRESOLVED_COUNT": 0,
     "CONVERSION_READY": false,
     "CONVERSION_READY_UNCHANGED": true,
     "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
@@ -50,7 +50,10 @@
     "SRC_CHANGED": false
   },
   "c2_consumer_scope": {
-    "path_ids": ["PATH_SHADOW_COMPANION", "PATH_LIVE_COMPANION"],
+    "path_ids": [
+      "PATH_SHADOW_COMPANION",
+      "PATH_LIVE_COMPANION"
+    ],
     "handoff_consumer": {
       "module": "src/execution/pipeline.py",
       "symbol": "ExecutionPipeline.signal_to_orders"
@@ -206,12 +209,13 @@
     },
     "INSTRUMENT_QUANTITY_METADATA": {
       "input_id": "INSTRUMENT_QUANTITY_METADATA",
-      "initial_status": "UNRESOLVED",
-      "final_status": "UNRESOLVED",
-      "c2_authority_binding_implemented": false,
+      "initial_status": "PARTIAL",
+      "final_status": "PARTIAL",
+      "c2_authority_binding_implemented": true,
       "semantic_meaning": "Complete venue-bound instrument quantity metadata before Fraction→Units normalization",
       "unit": "LOT_SIZE_MIN_QTY_MIN_NOTIONAL_MULTIPLIER_BASE_QUOTE",
-      "owner": "UNRESOLVED",
+      "owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "authority_owner_scope": "FULL_CORE_TRACK_ONLY",
       "source": "UNBOUND_ON_COMPANION_PATH",
       "c2_required_field_set": [
         "lot_size_or_quantity_step",
@@ -224,7 +228,10 @@
       "productive_observation_surfaces_not_elevated": [
         {
           "identity": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
-          "fields": ["lotSz", "minSz"],
+          "fields": [
+            "lotSz",
+            "minSz"
+          ],
           "scope": "FULL_CORE_FLATTEN_PLAN_VENUE_ROW",
           "authority_status": "NOT_AUTHORITY",
           "instrument_binding": "CAP24_BOUND_INSTRUMENT_CONTEXT_NOT_COMPANION_HANDOFF"
@@ -259,7 +266,10 @@
           "detail": "quantity pass-through; no instrument metadata consumption for conversion"
         }
       ],
-      "provenance_status_companion": "REQUIRED_INPUT_MISSING"
+      "provenance_status_companion": "REQUIRED_INPUT_MISSING",
+      "authority_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "authority_owner_scope": "FULL_CORE_TRACK_ONLY",
+      "detail": "Full-Core governed producer + enter-live handoff; companion absent; chain open"
     }
   },
   "historical_defaults_rejected_as_authority": [

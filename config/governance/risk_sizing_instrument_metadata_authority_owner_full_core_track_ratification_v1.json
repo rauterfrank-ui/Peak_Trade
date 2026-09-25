@@ -1,0 +1,137 @@
+{
+  "contract_name": "risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1",
+  "contract_id": "OBL_B05_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "643f7fb6fab3af320aa1cef33d7512e82a0505bb",
+  "workpackage_id": "BOUNDED_WP_C2_INSTRUMENT_QUANTITY_METADATA_AUTHORITY_BOUNDED_CLOSURE_TO_NEXT_REAL_BLOCKER_V1",
+  "semantics": "OWNER_GO_RATIFICATION_PLUS_FULL_CORE_PRODUCER_AND_CRS_REBIND_NO_COMPANION_HANDOFF_NO_SELECTION_CHANGE",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_RATIFY_B05_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "supersedes_b05_pin_for_scope_only": true
+  },
+  "semantic_adjudication": {
+    "required_function_c2": "Complete venue-bound instrument quantity constraint metadata for Fraction→Units (Companion future) and CRS lot/multiplier/notional math (Full-Core)",
+    "required_function_full_core_proven": "InstrumentQuantityConstraintsV1 on LIVE_ACCOUNT_BOUND capital_context for enter-live-29p CRS sizing",
+    "quantity_unit_semantics_class_ratified": "CONTRACTS_SZ_LOT_STEP",
+    "semantics_deduction_basis": [
+      "CURRENT_CODE_FACT: capital_risk_sizing_v1 requires contract_multiplier lot_size minimum_quantity instrument_metadata_version",
+      "CURRENT_CODE_FACT: flatten plan consumes lotSz minSz tickSz with instId match (observation not authority)",
+      "CURRENT_CODE_FACT: fresh_pretrade_runtime_get_v1 INSTRUMENT_STATE uses GET /api/v5/public/instruments",
+      "ALREADY_ADJUDICATED: authority freeze forbids offline default_offline_replay_instrument_v0 elevation on productive CURRENT path",
+      "CURRENT_CODE_FACT: Cap24 BoundInstrumentV1 supplies identity only; metadata producer must not reselect"
+    ],
+    "required_metadata_fields_proven": [
+      "instrument_id",
+      "venue_native_id_binding",
+      "contract_multiplier_ctVal",
+      "lot_size_lotSz",
+      "minimum_quantity_minSz",
+      "tick_size_tickSz",
+      "contract_kind_linear_inverse",
+      "market_type_futures",
+      "instrument_metadata_version_digest",
+      "observed_at_as_of"
+    ],
+    "forbidden_elevations_remain": [
+      "default_offline_replay_instrument_v0_on_live_account_bound",
+      "universal_multiplier_one_default",
+      "partial_offline_config_snapshot",
+      "venue_capability_snapshot_non_authorizing",
+      "cap24_identity_as_quantity_metadata_substitute"
+    ]
+  },
+  "ratification": {
+    "instrument_metadata_authority_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+    "scope_track": "FULL_CORE",
+    "dimension_id": "COMPLETE_INSTRUMENT_QUANTITY_CONSTRAINT_METADATA",
+    "unit_class": "INSTRUMENT_CONSTRAINT_BUNDLE",
+    "venue_binding": "OKX_EEA",
+    "prior_b05_pin_superseded": "UNRESOLVED"
+  },
+  "productive_lineage_full_core": {
+    "identity_selection": {
+      "module": "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+      "output": "BoundInstrumentV1",
+      "classification": "2_PREVIOUSLY_ADJUDICATED",
+      "reselection_forbidden": true
+    },
+    "observation_transport": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+      "endpoint": "/api/v5/public/instruments",
+      "get_item": "INSTRUMENT_STATE",
+      "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+      "is_authority": false
+    },
+    "governed_producer": {
+      "module": "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+      "classification": "GOVERNED_PRODUCTIVE_INSTRUMENT_METADATA_AUTHORITY_PRODUCER"
+    },
+    "crs_consumer_bind": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+      "symbol": "build_current_productive_live_account_capital_context_v1",
+      "instrument_source": "instrument_constraints from governed producer",
+      "classification": "MODEL_SEMANTIC_CONSUMER_NOT_OWNER"
+    },
+    "enter_join_handoff": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "classification": "FULL_CORE_HANDOFF"
+    }
+  },
+  "markers": {
+    "RISK_SIZING_INSTRUMENT_METADATA_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "SRC_CHANGED": true,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": true,
+    "INSTRUMENT_METADATA_AUTHORITY_OWNER": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+    "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED": true,
+    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED": false,
+    "QUANTITY_UNIT_SEMANTICS_CLASS_RATIFIED": "CONTRACTS_SZ_LOT_STEP",
+    "GOVERNED_PRODUCER_CREATED": true,
+    "PRODUCER_IMPLEMENTATION_PRESENT": true,
+    "OBSERVATION_IS_NOT_AUTHORITY": true,
+    "MAPPING_IS_NOT_OWNER_CLOSURE": true,
+    "RATIFICATION_IS_NOT_CHAIN_CLOSURE": true,
+    "COMPANION_INSTRUMENT_METADATA_HANDOFF_AUTHORIZED": false,
+    "COMPANION_HANDOFF_STATUS": "NO_CONVERSION_HANDOFF_ON_COMPANION_PATH",
+    "C2_COMPANION_INSTRUMENT_METADATA_PROVENANCE": "REQUIRED_INPUT_MISSING",
+    "C2_INSTRUMENT_METADATA_GATE_FULL_CORE_OWNER": "RATIFIED",
+    "C2_INSTRUMENT_METADATA_GATE_COMPANION": "UNRESOLVED",
+    "C2_INSTRUMENT_METADATA_DOMAIN_VERDICT": "PARTIAL",
+    "INSTRUMENT_METADATA_AUTHORITY_RESOLVED_FULL_CORE_TRACK": true,
+    "CONVERSION_READY": false,
+    "CONVERSION_READY_UNCHANGED_REASON": "companion C2 inputs not PROVEN_CURRENT; authority chains not closed; equity/reference companion handoff absent; CANONICAL_RISK_SIZING_OWNER unresolved"
+  },
+  "explicit_non_claims": [
+    "NO_COMPANION_INSTRUMENT_METADATA_HANDOFF",
+    "NO_FRACTION_TO_UNITS",
+    "NO_CANONICAL_RISK_SIZING_OWNER_REPO_WIDE",
+    "NO_BYPASS_CONSOLIDATION",
+    "NO_LIVE_OR_EXTERNAL_EFFECT_RELAXATION",
+    "NO_CAP24_SELECTION_CHANGE",
+    "NO_MV2_TRADING_DECISION_SEMANTICS_CHANGE"
+  ],
+  "binding_surfaces_updated": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+    "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
+    "config/governance/risk_sizing_governed_producer_observation_adapter_contract_v1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+  ],
+  "evidence_anchors": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "src/ops/governed_productive_instrument_metadata_authority_producer_v1/constants_v1.py",
+    "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "src/governance/capital_risk_sizing_v1.py"
+  ]
+}

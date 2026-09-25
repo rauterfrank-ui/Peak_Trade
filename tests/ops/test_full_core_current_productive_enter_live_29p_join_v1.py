@@ -91,6 +91,24 @@ EPOCH = "2026-09-17T06:50:00Z"
 DISTINCTIVE_EQUITY = "777.77"
 
 
+def _instruments_payload(*, inst_id: str = "inst-eth-usdt-perp") -> dict[str, object]:
+    return {
+        "code": "0",
+        "data": [
+            {
+                "instId": inst_id,
+                "instType": "SWAP",
+                "state": "live",
+                "ctVal": "0.01",
+                "ctValCcy": "ETH",
+                "lotSz": "1",
+                "minSz": "1",
+                "tickSz": "0.01",
+            }
+        ],
+    }
+
+
 def _balance_payload(*, avail_eq: str = DISTINCTIVE_EQUITY) -> dict[str, object]:
     return {
         "code": "0",
@@ -120,6 +138,7 @@ def _balance_payload(*, avail_eq: str = DISTINCTIVE_EQUITY) -> dict[str, object]
 def _injected(
     *,
     payload: dict[str, object] | None = None,
+    instruments_payload: dict[str, object] | None = None,
     get_performed: bool = True,
     http_status: int = 200,
     error_class: str = "",
@@ -140,6 +159,9 @@ def _injected(
         raw_acct_lv=raw_acct_lv,
         expected_account_identity=REUSED_BINDING_ACCOUNT_SCOPE,
         fresh_pretrade_get_status=get_status,
+        instruments_payload=instruments_payload
+        if instruments_payload is not None
+        else _instruments_payload(),
     )
 
 

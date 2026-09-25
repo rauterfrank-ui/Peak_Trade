@@ -69,7 +69,10 @@ def test_domain_final_statuses_match_c2_census_and_no_proven_current() -> None:
         else:
             assert domain["initial_status"] == census["status"]
         assert domain["final_status"] != "PROVEN_CURRENT"
-        assert domain["c2_authority_binding_implemented"] is False
+        if iid == "INSTRUMENT_QUANTITY_METADATA":
+            assert domain["c2_authority_binding_implemented"] is True
+        else:
+            assert domain["c2_authority_binding_implemented"] is False
 
 
 def test_account_equity_partial_owner_ratified_companion_unbound() -> None:
@@ -97,15 +100,18 @@ def test_reference_price_partial_mark_price_no_candle_close_authority() -> None:
     assert "candle_close" in " ".join(rec["explicit_non_sources"]).lower()
 
 
-def test_instrument_metadata_unresolved_no_offline_default_authority() -> None:
+def test_instrument_metadata_partial_full_core_producer_no_offline_default_authority() -> None:
     res = _load(RESOLUTION_JSON)
     inst = res["domain_resolutions"]["INSTRUMENT_QUANTITY_METADATA"]
-    assert inst["final_status"] == "UNRESOLVED"
-    assert inst["owner"] == "UNRESOLVED"
+    assert inst["final_status"] == "PARTIAL"
+    assert (
+        inst["authority_owner"]
+        == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    )
     auth = _load(AUTHORITY_JSON)
     dom = next(d for d in auth["input_domains"] if d["domain_id"] == "INSTRUMENT_METADATA")
-    assert dom["authority_owner"] == "UNRESOLVED"
-    assert dom["audit_decision_class"] == "NO_PRODUCTIVE_PRODUCER"
+    assert dom["authority_owner"] == "ops.governed_productive_instrument_metadata_authority_producer_v1"
+    assert dom["audit_decision_class"] == "PRODUCTIVE_PRODUCER_PRESENT_CHAIN_OPEN"
 
 
 def test_c2_closure_reevaluation_gate_not_satisfied() -> None:

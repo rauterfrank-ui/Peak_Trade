@@ -55,10 +55,10 @@
     "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED": false,
     "REFERENCE_PRICE_AUTHORITY_OWNER": "ops.governed_productive_reference_price_authority_producer_v1",
     "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED": false,
-    "INSTRUMENT_METADATA_AUTHORITY_OWNER": "UNRESOLVED",
+    "INSTRUMENT_METADATA_AUTHORITY_OWNER": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED": false,
     "EXPECTED_INPUT_DOMAIN_COUNT": 3,
-    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT": 2,
+    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT": 3,
     "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT": 0,
     "EXPECTED_PRODUCTIVE_PRODUCER_COUNT": 0,
     "RUNTIME_BRIDGE_ACTIVATED": false,
@@ -74,7 +74,7 @@
     "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
     "CANONICAL_EQUITY_OWNER": "ops.governed_productive_account_equity_authority_producer_v1",
     "CANONICAL_PRICE_OWNER": "ops.governed_productive_reference_price_authority_producer_v1",
-    "CANONICAL_INSTRUMENT_METADATA_OWNER": "UNRESOLVED",
+    "CANONICAL_INSTRUMENT_METADATA_OWNER": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "SINGULAR_REPO_WIDE_OWNER_REQUIRED": false,
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
@@ -96,7 +96,9 @@
     "EXPECTED_FINAL_QUANTITY_PROVENANCE_UNRESOLVED_PATH_COUNT": 3,
     "EXPECTED_SEMANTIC_CONFLICT_PATH_COUNT": 3,
     "EXPECTED_CONVERSION_INPUT_FAMILY_COUNT": 3,
-    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false
+    "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED": false,
+    "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED": true,
+    "QUANTITY_UNIT_SEMANTICS_CLASS_RATIFIED": "CONTRACTS_SZ_LOT_STEP"
   },
   "global_pins": {
     "contract_version": "v1",
@@ -105,7 +107,7 @@
     "authority_activation_authorized": false,
     "account_equity_authority_owner": "ops.governed_productive_account_equity_authority_producer_v1",
     "reference_price_authority_owner": "ops.governed_productive_reference_price_authority_producer_v1",
-    "instrument_metadata_authority_owner": "UNRESOLVED",
+    "instrument_metadata_authority_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "observation_is_not_authority": true,
     "transport_is_not_authority": true,
     "offline_or_simulation_is_not_authority": true,
@@ -140,7 +142,8 @@
     "risk_sizing_c2_input_authority_closure_v1": "C2_CENSUS_EQUITY_PARTIAL_FULL_CORE_OWNER_RATIFIED",
     "risk_sizing_c2_domain_authority_resolution_v1": "FORENSIC_RESOLUTION_EQUITY_FULL_CORE_OWNER_RATIFIED_COMPANION_UNBOUND",
     "risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1": "OWNER_GO_CONSUMED_FULL_CORE_TRACK_ONLY",
-    "risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1": "OWNER_GO_CONSUMED_FULL_CORE_TRACK_MARK_PRICE_ONLY"
+    "risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1": "OWNER_GO_CONSUMED_FULL_CORE_TRACK_MARK_PRICE_ONLY",
+    "risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1": "OWNER_GO_CONSUMED_FULL_CORE_TRACK_QUANTITY_METADATA_PRODUCER_HANDOFF"
   },
   "input_domains": [
     {
@@ -283,9 +286,9 @@
     {
       "domain_id": "INSTRUMENT_METADATA",
       "semantic_name": "instrument_quantity_metadata",
-      "authority_owner": "UNRESOLVED",
+      "authority_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
       "authority_chain_closed": false,
-      "productive_producer_present": false,
+      "productive_producer_present": true,
       "allowed_fachliche_dimension": {
         "dimension_id": "COMPLETE_INSTRUMENT_QUANTITY_CONSTRAINT_METADATA",
         "unit_class": "INSTRUMENT_CONSTRAINT_BUNDLE",
@@ -354,13 +357,14 @@
         "multiplier_one_must_not_act_as_universal_silent_default",
         "no_productive_producer_present_on_companion_path"
       ],
-      "audit_decision_class": "NO_PRODUCTIVE_PRODUCER"
+      "audit_decision_class": "PRODUCTIVE_PRODUCER_PRESENT_CHAIN_OPEN",
+      "authority_owner_scope": "FULL_CORE_TRACK_ONLY"
     }
   ],
   "authority_status": {
     "account_equity_authority_owner": "ops.governed_productive_account_equity_authority_producer_v1",
     "reference_price_authority_owner": "ops.governed_productive_reference_price_authority_producer_v1",
-    "instrument_metadata_authority_owner": "UNRESOLVED",
+    "instrument_metadata_authority_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "account_equity_authority_chain_closed": false,
     "reference_price_authority_chain_closed": false,
     "instrument_metadata_authority_chain_closed": false,
@@ -369,7 +373,7 @@
     "canonical_risk_sizing_owner": "UNRESOLVED",
     "canonical_equity_owner": "ops.governed_productive_account_equity_authority_producer_v1",
     "canonical_price_owner": "UNRESOLVED",
-    "canonical_instrument_metadata_owner": "UNRESOLVED",
+    "canonical_instrument_metadata_owner": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "owner_assigned": false,
     "owner_activated": false,
     "authority_activation_authorized": false,
@@ -421,7 +425,6 @@
     "conversion_input_families": 3
   },
   "global_non_claims": [
-    "NO_INSTRUMENT_METADATA_AUTHORITY_OWNER_ASSIGNED",
     "NO_AUTHORITY_CHAIN_CLOSED_FOR_ANY_INPUT_DOMAIN",
     "NO_AUTHORITY_ACTIVATION",
     "NO_PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED",
@@ -513,5 +516,7 @@
     "Prior provenance-binding contract remains CONVERSION_READY=false and unchanged in meaning.",
     "Baseline OBL_B05 freeze counts remain unchanged.",
     "Any Shadow/Live binding, network/exchange access, or Fraction→Units math requires a separate Operator-GO."
-  ]
+  ],
+  "semantics_amendment_v3": "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER ratified to ops.governed_productive_instrument_metadata_authority_producer_v1 with quantity unit CONTRACTS_SZ_LOT_STEP via config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json; NO_COMPANION_BINDING unchanged",
+  "full_core_instrument_metadata_owner_ratification_ref": "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
 }
