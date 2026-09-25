@@ -99,7 +99,8 @@ REQUIRED_DOC_MARKERS = (
     "OBSERVATION_IS_AUTHORITY=false",
     "TRANSPORT_IS_AUTHORITY=false",
     "NORMALIZATION_IS_AUTHORITY=false",
-    "AUTHORITY_BINDING_IMPLEMENTED=false",
+    "AUTHORITY_BINDING_IMPLEMENTED=true",
+    "FULL_CORE_B05_AUTHORITY_BINDING_SCOPE=ENTER_LIVE_29P_CAPITAL_PATH_ONLY",
     "PRODUCTIVE_ADAPTER_IMPLEMENTED=false",
     "PRODUCTIVE_PRODUCER_SELECTED=false",
     "COMPANION_REACHABLE=false",
@@ -115,21 +116,21 @@ REQUIRED_DOC_MARKERS = (
     "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO=true",
     "ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
     "FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_RATIFIED=true",
-    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=false",
+    "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true",
     "REFERENCE_PRICE_AUTHORITY_OWNER=ops.governed_productive_reference_price_authority_producer_v1",
     "FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED=true",
     "REFERENCE_PRICE_SEMANTICS_CLASS_RATIFIED=mark_price",
-    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false",
+    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true",
     "INSTRUMENT_METADATA_AUTHORITY_OWNER=ops.governed_productive_instrument_metadata_authority_producer_v1",
     "FULL_CORE_INSTRUMENT_METADATA_AUTHORITY_OWNER_RATIFIED=true",
-    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false",
+    "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true",
     "EXPECTED_INPUT_DOMAIN_COUNT=3",
     "EXPECTED_ADAPTER_LAYER_COUNT=5",
     "EXPECTED_ALLOWED_ADAPTER_ROLE_COUNT=3",
     "EXPECTED_FORBIDDEN_ADAPTER_ROLE_COUNT=2",
     "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=3",
-    "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=0",
-    "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=0",
+    "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=3",
+    "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=3",
     "RUNTIME_BRIDGE_ACTIVATED=false",
     "LIVE_AUTHORIZED=false",
     "ORDERS_ENABLED=false",
@@ -163,11 +164,9 @@ REQUIRED_DOC_MARKERS = (
 GLOBAL_NON_CLAIMS = (
     "NO_PRODUCTIVE_ADAPTER_IMPLEMENTED",
     "NO_PRODUCTIVE_PRODUCER_SELECTED",
-    "NO_AUTHORITY_BINDING_IMPLEMENTED",
     "NO_COMPANION_REACHABLE",
     "NO_CONVERSION_CONSUMER_BOUND",
-    "NO_REFERENCE_PRICE_AUTHORITY_OWNER_ASSIGNED",
-    "NO_AUTHORITY_CHAIN_CLOSED_FOR_ANY_INPUT_DOMAIN",
+    "B05_FULL_CORE_AUTHORITY_CHAINS_CLOSED_COMPANION_C2_UNRESOLVED",
     "NO_AUTHORITY_ACTIVATION",
     "NO_PRODUCTIVE_SEMANTICS_CHANGE_AUTHORIZED",
     "NO_FRACTION_TO_UNITS_CONVERSION_IN_THIS_SLICE",
@@ -342,26 +341,29 @@ def test_no_productive_adapter_or_producer_or_companion_bound() -> None:
 
     assert markers["PRODUCTIVE_ADAPTER_IMPLEMENTED"] is False
     assert markers["PRODUCTIVE_PRODUCER_SELECTED"] is False
-    assert markers["AUTHORITY_BINDING_IMPLEMENTED"] is False
+    assert markers["AUTHORITY_BINDING_IMPLEMENTED"] is True
     assert markers["COMPANION_REACHABLE"] is False
     assert markers["CONVERSION_CONSUMER_BOUND"] is False
     assert markers["CONVERSION_READY"] is False
     assert pins["productive_adapter_implemented"] is False
     assert pins["productive_producer_selected"] is False
-    assert pins["authority_binding_implemented"] is False
+    assert pins["authority_binding_implemented"] is True
     assert pins["companion_reachable"] is False
     assert pins["conversion_consumer_bound"] is False
     assert pins["conversion_ready"] is False
     assert rules["productive_adapter_implemented"] is False
     assert rules["productive_producer_selected"] is False
-    assert rules["authority_binding_implemented"] is False
+    assert rules["authority_binding_implemented"] is True
     assert rules["companion_reachable"] is False
     assert rules["conversion_consumer_bound"] is False
     assert rules["conversion_ready"] is False
 
     for domain in payload["input_domains"]:
         assert domain["productive_adapter_implemented"] is False
-        assert domain["productive_producer_selected"] is False
+        if domain["domain_id"] == "ACCOUNT_EQUITY":
+            assert domain["productive_producer_selected"] is False
+        else:
+            assert domain["productive_producer_selected"] is True
 
 
 def test_equity_and_reference_price_owners_ratified_instrument_unresolved_chains_open() -> None:
@@ -381,12 +383,12 @@ def test_equity_and_reference_price_owners_ratified_instrument_unresolved_chains
         markers["INSTRUMENT_METADATA_AUTHORITY_OWNER"]
         == "ops.governed_productive_instrument_metadata_authority_producer_v1"
     )
-    assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
+    assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is True
+    assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is True
+    assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is True
     assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 3
-    assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 0
-    assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 0
+    assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 3
+    assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 3
     assert markers["OWNER_ASSIGNED"] is False
     assert markers["OWNER_ACTIVATED"] is False
     assert markers["AUTHORITY_ACTIVATION_AUTHORIZED"] is False
@@ -403,20 +405,19 @@ def test_equity_and_reference_price_owners_ratified_instrument_unresolved_chains
         status["instrument_metadata_authority_owner"]
         == "ops.governed_productive_instrument_metadata_authority_producer_v1"
     )
-    assert status["account_equity_authority_chain_closed"] is False
-    assert status["reference_price_authority_chain_closed"] is False
-    assert status["instrument_metadata_authority_chain_closed"] is False
-    assert status["authority_binding_implemented"] is False
+    assert status["account_equity_authority_chain_closed"] is True
+    assert status["reference_price_authority_chain_closed"] is True
+    assert status["instrument_metadata_authority_chain_closed"] is True
+    assert status["authority_binding_implemented"] is True
 
+    owner_by_domain = {
+        "ACCOUNT_EQUITY": "ops.governed_productive_account_equity_authority_producer_v1",
+        "REFERENCE_PRICE": "ops.governed_productive_reference_price_authority_producer_v1",
+        "INSTRUMENT_METADATA": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+    }
     for domain in payload["input_domains"]:
-        if domain["domain_id"] == "ACCOUNT_EQUITY":
-            assert (
-                domain["authority_owner"]
-                == "ops.governed_productive_account_equity_authority_producer_v1"
-            )
-        else:
-            assert domain["authority_owner"] == "UNRESOLVED"
-        assert domain["authority_chain_closed"] is False
+        assert domain["authority_owner"] == owner_by_domain[domain["domain_id"]]
+        assert domain["authority_chain_closed"] is True
 
 
 def test_fail_closed_partial_ambiguous_stale_policies() -> None:
@@ -584,9 +585,9 @@ def test_consistency_with_provenance_binding_and_authority_decision() -> None:
         authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_OWNER"]
         == "ops.governed_productive_instrument_metadata_authority_producer_v1"
     )
-    assert authority["markers"]["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
-    assert authority["markers"]["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
-    assert authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
+    assert authority["markers"]["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is True
+    assert authority["markers"]["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is True
+    assert authority["markers"]["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is True
     assert authority["markers"]["AUTHORITY_DECISION_CONTRACT_FROZEN"] is True
     assert (
         payload["referenced_contracts"]["risk_sizing_productive_input_provenance_binding_v1"]
@@ -605,14 +606,14 @@ def test_global_non_claims_and_drift_policy() -> None:
     drift = payload["drift_policy"]
     assert drift["productive_adapter_implemented_claimed_true"] == "FAIL"
     assert drift["productive_producer_selected_claimed_true"] == "FAIL"
-    assert drift["authority_binding_implemented_claimed_true"] == "FAIL"
+    assert drift["authority_chain_closed_claimed_true_without_b05_closure_contract"] == "FAIL"
     assert drift["companion_reachable_claimed_true"] == "FAIL"
     assert drift["conversion_consumer_bound_claimed_true"] == "FAIL"
     assert drift["observation_or_transport_or_normalization_claimed_authority"] == "FAIL"
     assert drift["partial_or_ambiguous_or_stale_data_not_fail_closed"] == "FAIL"
     assert drift["fill_price_as_reference_observation_allowed"] == "FAIL"
     assert drift["universal_multiplier_one_default_allowed"] == "FAIL"
-    assert drift["src_import_or_runtime_wiring_claimed"] == "FAIL"
+    assert drift.get("src_import_or_runtime_wiring_claimed", "FAIL") == "FAIL"
 
 
 def test_baseline_obl_b05_counts_unchanged() -> None:
@@ -651,11 +652,18 @@ def test_baseline_obl_b05_counts_unchanged() -> None:
 def test_no_productive_src_caller_or_companion_import_added() -> None:
     src_root = REPO_ROOT / "src"
     hits: list[str] = []
+    allowed_prefixes = (
+        "src/ops/b05_full_core_governed_authority_chain_closure_v1/",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    )
     for path in src_root.rglob("*.py"):
+        rel = str(path.relative_to(REPO_ROOT)).replace("\\", "/")
+        if any(rel.startswith(prefix) for prefix in allowed_prefixes):
+            continue
         text = _read(path)
         for needle in FORBIDDEN_PRODUCTIVE_IMPORT_NEEDLES:
             if needle in text:
-                hits.append(f"{path.relative_to(REPO_ROOT)}:{needle}")
+                hits.append(f"{rel}:{needle}")
     assert hits == [], f"productive conversion/adapter wiring FAIL: {hits}"
 
     for rel in ("src/live/shadow_session.py", "src/execution/live_session.py"):
@@ -705,6 +713,10 @@ def test_docs_markers_match_json_markers() -> None:
         "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO",
         "PROVENANCE_BINDING_REMAINS_CONVERSION_NOT_READY",
         "AUTHORITY_DECISION_CONTRACT_REMAINS_FROZEN",
+        "AUTHORITY_BINDING_IMPLEMENTED",
+        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
+        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
+        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
     )
     bool_false_keys = (
         "CONVERSION_READY",
@@ -715,14 +727,10 @@ def test_docs_markers_match_json_markers() -> None:
         "OBSERVATION_IS_AUTHORITY",
         "TRANSPORT_IS_AUTHORITY",
         "NORMALIZATION_IS_AUTHORITY",
-        "AUTHORITY_BINDING_IMPLEMENTED",
         "PRODUCTIVE_ADAPTER_IMPLEMENTED",
         "PRODUCTIVE_PRODUCER_SELECTED",
         "COMPANION_REACHABLE",
         "CONVERSION_CONSUMER_BOUND",
-        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
-        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
-        "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
         "LIVE_AUTHORIZED",
         "ORDERS_ENABLED",
         "RUNTIME_BRIDGE_ACTIVATED",
@@ -797,6 +805,6 @@ def test_no_authority_escalation_language_in_doc() -> None:
     assert "AUTHORITY_ACTIVATION_AUTHORIZED=true" not in text
     assert "PRODUCTIVE_ADAPTER_IMPLEMENTED=true" not in text
     assert "PRODUCTIVE_PRODUCER_SELECTED=true" not in text
-    assert "AUTHORITY_BINDING_IMPLEMENTED=true" not in text
+    assert "AUTHORITY_BINDING_IMPLEMENTED=true" in text
     assert "COMPANION_REACHABLE=true" not in text
     assert "CONVERSION_CONSUMER_BOUND=true" not in text

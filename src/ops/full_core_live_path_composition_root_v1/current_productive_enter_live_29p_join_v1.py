@@ -58,6 +58,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     adapt_current_productive_u01_account_mode_v1,
     build_current_productive_u01_eligibility_fact_v1,
 )
+from src.ops.b05_full_core_governed_authority_chain_closure_v1.registry_and_witness_v1 import (
+    B05FullCoreAuthorityChainClosureError,
+    OWNER_GO as B05_FULL_CORE_AUTHORITY_CHAIN_OWNER_GO,
+    witness_b05_full_core_capital_authority_bindings_v1,
+)
 from src.ops.governed_productive_instrument_metadata_authority_producer_v1.current_productive_okx_instruments_row_producer_v1 import (
     produce_current_productive_instrument_quantity_constraints_from_okx_row_v1,
 )
@@ -712,6 +717,29 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
         and producer_equity != _DEFAULT_ACCOUNT_EQUITY
     ):
         raise CurrentProductiveEnterLive29PJoinError("OFFLINE_DEFAULT_EQUITY_LEAK")
+
+    try:
+        witness_b05_full_core_capital_authority_bindings_v1(
+            owner_go=B05_FULL_CORE_AUTHORITY_CHAIN_OWNER_GO,
+            equity_output=output,
+            price_output=price_output,
+            metadata_output=metadata_output,
+            live_ctx=live_ctx,
+            typed_account_equity=producer_equity,
+            reference_price=reference,
+        )
+    except B05FullCoreAuthorityChainClosureError as exc:
+        blocker = str(exc) or "B05_AUTHORITY_CHAIN_WITNESS_FAIL_CLOSED"
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=blocker,
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=(blocker,),
+        )
 
     portfolio_reservation_id = ""
     portfolio_reservation_disposition = ""

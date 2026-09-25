@@ -8592,7 +8592,42 @@ entities:
       #6665 consumer binding; P1-scoped liability ratification without global
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1
+    # B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED; ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true;
+    # REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true; INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true;
+    # GAP_TRUE_02_VERDICT=PARTIAL; COMPANION_C2_STATUS=UNRESOLVED; CONVERSION_READY=false;
+    # COMPANION_C2_TOUCHED=false; FRACTION_TO_UNITS_TOUCHED=false; AUTHORITY_BINDING_IMPLEMENTED=true;
+    # OBSERVATION_IS_NOT_AUTHORITY=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false;
+    # EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0; VENUE_MUTATION_COUNT=0;
+    # owner=src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py|
+    # src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py.
+    kind: RUNTIME_COMPONENT
+    name: B05 Full-Core governed authority chain closure
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    semantic_authority: false
+    modified_by: B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1
+    source_paths:
+      - src/ops/b05_full_core_governed_authority_chain_closure_v1/__init__.py
+      - src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py
+      - config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json
+      - docs/governance/RISK_SIZING_B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1.md
+      - tests/ops/test_b05_full_core_governed_authority_chain_closure_v1.py
+      - tests/governance/test_risk_sizing_b05_full_core_governed_authority_chain_closure_v1.py
+    notes: >-
+      Fail-closed registry import, domain closure pins, and capital-authority
+      runtime witness for Full-Core B05 chain closure. Companion C2 remains
+      UNRESOLVED; does not confer conversion readiness. Atlas is not trading
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # B05_FULL_CORE_GOVERNED_AUTHORITY_CHAIN_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # JOIN=witness_b05_full_core_capital_authority_bindings_v1 after live account capital context;
+    # B05_FULL_CORE_AUTHORITY_CHAIN_VERDICT=CLOSED; COMPANION_C2_STATUS=UNRESOLVED;
+    # CONVERSION_READY=false; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0;
+    # owner=current_productive_enter_live_29p_join_v1.py|b05_full_core_governed_authority_chain_closure_v1.
     # PR_6816 GAP-TRUE-01 EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1: NAVIGATION_ONLY;
     # ATLAS_AUTHORITY=NONE; GAP_TRUE_01_VERDICT=CLOSED transport-bound; EXECUTABLE_VENUE_PLAN_BOUND;
     # ENVELOPE_READINESS=true; PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED=true; PRODUCTIVE_REAL_GET_PROVEN=false;
