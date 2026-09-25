@@ -73,13 +73,16 @@ def test_c2_census_aligns_with_authority_decision_unresolved_owners() -> None:
     c2 = _load(C2_JSON)
     auth = _load(AUTHORITY_JSON)
     status = auth["authority_status"]
-    assert status["account_equity_authority_owner"] == "UNRESOLVED"
+    assert (
+        status["account_equity_authority_owner"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert status["reference_price_authority_owner"] == "UNRESOLVED"
     assert status["instrument_metadata_authority_owner"] == "UNRESOLVED"
     assert status["account_equity_authority_chain_closed"] is False
     assert status["reference_price_authority_chain_closed"] is False
     assert status["instrument_metadata_authority_chain_closed"] is False
-    assert c2["c2_input_census"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]["status"] == "CONFLICTING"
+    assert c2["c2_input_census"]["ACCOUNT_EQUITY_AVAILABLE_CAPITAL"]["status"] == "PARTIAL"
     assert c2["c2_input_census"]["REFERENCE_PRICE"]["status"] == "UNKNOWN"
     assert c2["c2_input_census"]["INSTRUMENT_QUANTITY_METADATA"]["status"] == "UNRESOLVED"
 

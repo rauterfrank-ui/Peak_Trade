@@ -67,19 +67,20 @@
     "blocking_reasons": [
       "not all c2_domain_verdict == PROVEN_CURRENT",
       "c2_authority_binding_implemented false for all three",
-      "authority_decision freeze owners UNRESOLVED for all three",
+      "Full-Core equity owner ratified; reference/instrument UNRESOLVED; Companion C2 not closed",
       "companion_conversion_input_binding conversion_ready false"
     ]
   },
   "domain_adjudications": {
     "ACCOUNT_EQUITY_AVAILABLE_CAPITAL": {
       "input_id": "ACCOUNT_EQUITY_AVAILABLE_CAPITAL",
-      "c2_domain_verdict": "CONFLICTING",
+      "c2_domain_verdict": "PARTIAL",
       "c2_authority_binding_implemented": false,
-      "verdict_reason": "Full-Core source→semantic mapping and producer algebra are ratified while B05 ACCOUNT_EQUITY_AUTHORITY_OWNER remains UNRESOLVED, OBSERVATION_IS_NOT_AUTHORITY holds, package GOVERNED_PRODUCER_CREATED=false, and Companion path has no equity handoff.",
-      "productive_lineage_trace_status": "WIRED_TRACEABLE_NOT_C2_AUTHORITY",
+      "verdict_reason": "Full-Core ACCOUNT_EQUITY_AUTHORITY_OWNER ratified to ops.governed_productive_account_equity_authority_producer_v1; OBSERVATION_IS_NOT_AUTHORITY holds; GOVERNED_PRODUCER_CREATED=false; Companion path has no equity handoff; C2 companion-scoped input remains PARTIAL.",
+      "productive_lineage_trace_status": "WIRED_TRACEABLE_FULL_CORE_OWNER_RATIFIED_NOT_C2_COMPANION_CLOSURE",
       "productive_lineage_matrix": {
-        "canonical_authority_owner_b05": "UNRESOLVED",
+        "canonical_authority_owner_b05": "ops.governed_productive_account_equity_authority_producer_v1",
+        "canonical_authority_owner_b05_scope": "FULL_CORE_TRACK_ONLY",
         "canonical_dimension": "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING",
         "producer_chain": [
           {
@@ -263,7 +264,7 @@
   },
   "implemented_authority_bindings": [],
   "open_conflicts_remaining": [
-    "ACCOUNT_EQUITY: B05 UNRESOLVED vs package OWNER string vs mapping proven vs Companion absence",
+    "ACCOUNT_EQUITY: Full-Core owner ratified; GOVERNED_PRODUCER_CREATED=false; Companion handoff absent",
     "REFERENCE_PRICE: productive mark observation vs REFERENCE_PRICE_AUTHORITY_OWNER UNRESOLVED",
     "INSTRUMENT: Cap24 identity vs missing governed quantity-metadata authority bundle",
     "CANONICAL_RISK_SIZING_OWNER UNRESOLVED (out of scope)"
@@ -279,7 +280,7 @@
     "risk_sizing_c2_input_authority_closure_v1": "C2_CENSUS_AND_GATE_UNCHANGED",
     "risk_sizing_c2_domain_authority_resolution_v1": "COMPANION_FORENSICS_INPUT_NOT_REOPENED",
     "risk_sizing_productive_input_provenance_binding_v1": "PROVENANCE_MEANING_UNCHANGED",
-    "risk_sizing_authority_decision_contract_freeze_v1": "OWNERS_UNRESOLVED_UNCHANGED",
+    "risk_sizing_authority_decision_contract_freeze_v1": "FULL_CORE_EQUITY_OWNER_RATIFIED_REFERENCE_INSTRUMENT_UNRESOLVED",
     "risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1": "UPSTREAM_BLOCKER_ADJUDICATION_C2_VERDICTS_PRESERVED"
   },
   "drift_policy": {

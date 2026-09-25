@@ -62,7 +62,7 @@ REQUIRED_DOC_MARKERS = (
     "AUTHORITY_ACTIVATION_AUTHORIZED=false",
     "OWNER_ASSIGNED=false",
     "OWNER_ACTIVATED=false",
-    "NO_AUTHORITY_ASSIGNMENT=true",
+    "NO_AUTHORITY_ASSIGNMENT=false",
     "NO_OWNER_ACTIVATION=true",
     "NO_FRACTION_TO_UNITS_CONVERSION=true",
     "NO_QUANTITY_MATH_CHANGE=true",
@@ -85,14 +85,15 @@ REQUIRED_DOC_MARKERS = (
     "NETWORK_ACCESS_REQUIRES_SEPARATE_GO=true",
     "EXCHANGE_ACCESS_REQUIRES_SEPARATE_GO=true",
     "FRACTION_TO_UNITS_REQUIRES_SEPARATE_GO=true",
-    "ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED",
+    "ACCOUNT_EQUITY_AUTHORITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
+    "FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_RATIFIED=true",
     "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=false",
     "REFERENCE_PRICE_AUTHORITY_OWNER=UNRESOLVED",
     "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false",
     "INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED",
     "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=false",
     "EXPECTED_INPUT_DOMAIN_COUNT=3",
-    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=0",
+    "EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT=1",
     "EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT=0",
     "EXPECTED_PRODUCTIVE_PRODUCER_COUNT=0",
     "RUNTIME_BRIDGE_ACTIVATED=false",
@@ -108,7 +109,7 @@ REQUIRED_DOC_MARKERS = (
     "PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY=portfolio_capital_reservation_budget_v1",
     "CANONICAL_RISK_SIZING_AUTHORITY_OWNER=UNRESOLVED",
     "CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED",
-    "CANONICAL_EQUITY_OWNER=UNRESOLVED",
+    "CANONICAL_EQUITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
     "CANONICAL_PRICE_OWNER=UNRESOLVED",
     "CANONICAL_INSTRUMENT_METADATA_OWNER=UNRESOLVED",
     "FINAL_QUANTITY_PROVENANCE_RESOLVED=false",
@@ -130,7 +131,6 @@ REQUIRED_DOC_MARKERS = (
 )
 
 GLOBAL_NON_CLAIMS = (
-    "NO_ACCOUNT_EQUITY_AUTHORITY_OWNER_ASSIGNED",
     "NO_REFERENCE_PRICE_AUTHORITY_OWNER_ASSIGNED",
     "NO_INSTRUMENT_METADATA_AUTHORITY_OWNER_ASSIGNED",
     "NO_AUTHORITY_CHAIN_CLOSED_FOR_ANY_INPUT_DOMAIN",
@@ -213,7 +213,7 @@ def test_contract_doc_markers_present() -> None:
     assert "INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true" not in text
 
 
-def test_exactly_three_input_domains_and_owners_unresolved() -> None:
+def test_exactly_three_input_domains_equity_owner_ratified_others_unresolved() -> None:
     payload = _load_contract()
     domains = payload["input_domains"]
     pins = payload["global_pins"]
@@ -227,8 +227,15 @@ def test_exactly_three_input_domains_and_owners_unresolved() -> None:
     assert payload["contract_version"] == "v1"
     assert pins["contract_version"] == "v1"
 
+    owner_by_domain = {row["domain_id"]: row["authority_owner"] for row in domains}
+    assert (
+        owner_by_domain["ACCOUNT_EQUITY"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
+    assert owner_by_domain["REFERENCE_PRICE"] == "UNRESOLVED"
+    assert owner_by_domain["INSTRUMENT_METADATA"] == "UNRESOLVED"
+
     for row in domains:
-        assert row["authority_owner"] == "UNRESOLVED", row["domain_id"]
         assert row["authority_chain_closed"] is False, row["domain_id"]
         assert row["productive_producer_present"] is False, row["domain_id"]
         assert isinstance(row["required_provenance_fields"], list)
@@ -242,22 +249,31 @@ def test_exactly_three_input_domains_and_owners_unresolved() -> None:
         assert "TRANSPORT_ONLY_NO_OWNER" in row["forbidden_source_classes"]
         assert "OFFLINE_OR_SIMULATION_ONLY" in row["forbidden_source_classes"]
 
-    assert pins["account_equity_authority_owner"] == "UNRESOLVED"
+    assert (
+        pins["account_equity_authority_owner"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert pins["reference_price_authority_owner"] == "UNRESOLVED"
     assert pins["instrument_metadata_authority_owner"] == "UNRESOLVED"
-    assert auth["account_equity_authority_owner"] == "UNRESOLVED"
+    assert (
+        auth["account_equity_authority_owner"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert auth["reference_price_authority_owner"] == "UNRESOLVED"
     assert auth["instrument_metadata_authority_owner"] == "UNRESOLVED"
     assert auth["account_equity_authority_chain_closed"] is False
     assert auth["reference_price_authority_chain_closed"] is False
     assert auth["instrument_metadata_authority_chain_closed"] is False
-    assert markers["ACCOUNT_EQUITY_AUTHORITY_OWNER"] == "UNRESOLVED"
+    assert (
+        markers["ACCOUNT_EQUITY_AUTHORITY_OWNER"]
+        == "ops.governed_productive_account_equity_authority_producer_v1"
+    )
     assert markers["REFERENCE_PRICE_AUTHORITY_OWNER"] == "UNRESOLVED"
     assert markers["INSTRUMENT_METADATA_AUTHORITY_OWNER"] == "UNRESOLVED"
     assert markers["ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED"] is False
     assert markers["REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED"] is False
     assert markers["INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED"] is False
-    assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 0
+    assert markers["EXPECTED_AUTHORITY_OWNER_ASSIGNED_COUNT"] == 1
     assert markers["EXPECTED_AUTHORITY_CHAIN_CLOSED_COUNT"] == 0
     assert markers["EXPECTED_PRODUCTIVE_PRODUCER_COUNT"] == 0
 
@@ -568,12 +584,14 @@ def test_docs_markers_match_json_markers() -> None:
         "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED",
     )
     unresolved_keys = (
-        "ACCOUNT_EQUITY_AUTHORITY_OWNER",
         "REFERENCE_PRICE_AUTHORITY_OWNER",
         "INSTRUMENT_METADATA_AUTHORITY_OWNER",
-        "CANONICAL_EQUITY_OWNER",
         "CANONICAL_PRICE_OWNER",
         "CANONICAL_INSTRUMENT_METADATA_OWNER",
+    )
+    ratified_equity_keys = (
+        "ACCOUNT_EQUITY_AUTHORITY_OWNER",
+        "CANONICAL_EQUITY_OWNER",
     )
 
     for key in bool_true_keys:
@@ -585,13 +603,19 @@ def test_docs_markers_match_json_markers() -> None:
     for key in unresolved_keys:
         assert markers[key] == "UNRESOLVED"
         assert f"{key}=UNRESOLVED" in text, key
+    for key in ratified_equity_keys:
+        assert markers[key] == "ops.governed_productive_account_equity_authority_producer_v1", key
+        assert f"{key}=ops.governed_productive_account_equity_authority_producer_v1" in text, key
     assert markers["EXPECTED_INPUT_DOMAIN_COUNT"] == 3
     assert "EXPECTED_INPUT_DOMAIN_COUNT=3" in text
 
 
 def test_no_authority_escalation_language_in_doc() -> None:
     text = _read(CONTRACT_DOC)
-    assert re.search(r"ACCOUNT_EQUITY_AUTHORITY_OWNER=UNRESOLVED", text)
+    assert re.search(
+        r"ACCOUNT_EQUITY_AUTHORITY_OWNER=ops\.governed_productive_account_equity_authority_producer_v1",
+        text,
+    )
     assert re.search(r"REFERENCE_PRICE_AUTHORITY_OWNER=UNRESOLVED", text)
     assert re.search(r"INSTRUMENT_METADATA_AUTHORITY_OWNER=UNRESOLVED", text)
     assert re.search(r"CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED", text)

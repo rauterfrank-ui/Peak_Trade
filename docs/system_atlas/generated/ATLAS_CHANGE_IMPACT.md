@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -42,6 +42,7 @@ Do not manually patch generated Markdown.
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
 | `TERM:map_of_truth` |
+| `RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6810 POST-6809 CURRENT system authority closure to next real blocker: NAVIGATION_ONLY atlas review for map_of_truth index/term; open-record censuses and C2 conflict navigation in CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1 source; map_authority=NONE; no Master Runbook or runtime authority change. ATLAS_AUTHORITY=NONE.
+- PR #6811 B05 Full-Core ACCOUNT_EQUITY_AUTHORITY_OWNER ratification (scoped OWNER_GO): NAVIGATION_ONLY atlas review for map_of_truth and running-account-equity parallel-decoupled-tracks reconciliation contract navigation; map open-record PARTIAL rebind; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=POST_6809_CURRENT_SYSTEM_AUTHORITY_CLOSURE_V1
+- modified_by=B05_EQUITY_RATIFICATION_BOUNDED_COMPLETION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

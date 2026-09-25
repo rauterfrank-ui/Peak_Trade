@@ -1926,19 +1926,20 @@
     },
     {
       "id": "account_equity_blocks",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Adjacent account-equity blocks disagree, the owner stays UNRESOLVED, and GOVERNED_PRODUCER_CREATED is false beside an existing package. NAVIGATION_INDEX: C2 domain resolution ACCOUNT_EQUITY=CONFLICTING; 29P/Treasury wording conflict see treasury_import_wording and account_equity_mapping_unbound; no Owner adjudication in map.",
+      "epistemic_class": "PARTIAL",
+      "statement": "Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratified to ops.governed_productive_account_equity_authority_producer_v1 (RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING, USDC settlement); GOVERNED_PRODUCER_CREATED=false and chain not closed; Companion C2 path still NO_CONVERSION_HANDOFF; mapping proven does not close authority. NAVIGATION_INDEX: C2 ACCOUNT_EQUITY=PARTIAL; treasury_import_wording remains separate CONFLICTING.",
       "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "docs/governance/RISK_SIZING_ACCOUNT_EQUITY_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-        "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py"
       ]
     },
     {
       "id": "b05_vs_singular_risk_owner",
       "epistemic_class": "CONFLICTING",
-      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). DIRECT_SUBMISSION_COUNT=4 remains distinct from CANONICAL_BYPASS_COUNT=5. Bypass operator_fate_adjudication vocabulary is frozen and per-ID fates are operator-adjudicated (inventory-only pins; RUNTIME_EFFECT=NONE; consolidation NOT_STARTED). Bypass fate implementation semantics are machine-defined; S1 KEEP_PARALLEL complete for BYPASS_CORE_POSITION_SIZER and BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS; S2 GOVERNANCE_EXCLUDE complete for BYPASS_CLASSIC_BACKTEST_DEFAULT and BYPASS_LIVE_SHADOW_POSITION_FRACTION (system-economic size evidence authority claims excluded; reachability unchanged); S3 RESEARCH_OR_OFFLINE_SCOPE complete for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT (offline_economic_evaluation scope only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; reachability unchanged). FATE_IMPLEMENTATION_EXECUTED=true globally (5/5 per-bypass S0 completion); B05_FATE_PHASE_STATUS=CLOSED. C2 upstream blockers (#6760–6762 + blocking-authorities resolution v1): equity CONFLICTING, reference UNKNOWN, instrument UNRESOLVED; sizing owner UNRESOLVED; zero bindings; C2_STATUS=UNRESOLVED; CONVERSION_READY=false. Map AUTHORITY=NONE.",
+      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). DIRECT_SUBMISSION_COUNT=4 remains distinct from CANONICAL_BYPASS_COUNT=5. Bypass operator_fate_adjudication vocabulary is frozen and per-ID fates are operator-adjudicated (inventory-only pins; RUNTIME_EFFECT=NONE; consolidation NOT_STARTED). Bypass fate implementation semantics are machine-defined; S1 KEEP_PARALLEL complete for BYPASS_CORE_POSITION_SIZER and BYPASS_EXECUTION_EXECUTE_FROM_SIGNALS; S2 GOVERNANCE_EXCLUDE complete for BYPASS_CLASSIC_BACKTEST_DEFAULT and BYPASS_LIVE_SHADOW_POSITION_FRACTION (system-economic size evidence authority claims excluded; reachability unchanged); S3 RESEARCH_OR_OFFLINE_SCOPE complete for BYPASS_OFFLINE_EVAL_SIZING_CONTRACT (offline_economic_evaluation scope only; OFFLINE_OR_SIMULATION_IS_NOT_AUTHORITY preserved; reachability unchanged). FATE_IMPLEMENTATION_EXECUTED=true globally (5/5 per-bypass S0 completion); B05_FATE_PHASE_STATUS=CLOSED. C2 upstream (#6760–6762 + blocking-authorities v1): equity PARTIAL (Full-Core owner ratified; Companion handoff absent), reference UNKNOWN, instrument UNRESOLVED; sizing owner UNRESOLVED; C2_STATUS=UNRESOLVED; CONVERSION_READY=false. Map AUTHORITY=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
         "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
@@ -1966,7 +1967,7 @@
     {
       "id": "treasury_import_wording",
       "epistemic_class": "CONFLICTING",
-      "statement": "Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule. NAVIGATION_INDEX: Full-Core 29P enter join wiring vs runbook treasury blocks; ties to ACCOUNT_EQUITY CONFLICTING (account_equity_blocks).",
+      "statement": "Runbook treasury-import wording, the decrease join, and C08 are not adjudicated into one rule. NAVIGATION_INDEX: Full-Core 29P enter join wiring vs runbook treasury blocks; adjacent equity open record account_equity_blocks is PARTIAL (Full-Core owner ratified; not treasury closure).",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
@@ -2101,9 +2102,10 @@
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Account-equity mapping is marked proven while the venue number is unbound and the owner is unresolved; C2 forensic resolution keeps ACCOUNT_EQUITY CONFLICTING on Companion path (Full-Core availEq mapping not transferable).",
+      "statement": "Account-equity source mapping is proven on Full-Core while numeric CURRENT venue bind and governed producer implementation remain absent; B05 Full-Core owner ratified separately from mapping; Companion C2 remains unbound (Full-Core mapping not transferable).",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
       ]
