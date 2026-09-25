@@ -11178,6 +11178,7 @@ entities:
     current_status: CURRENT_NONCANONICAL
     modified_by: B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
     source_paths:
+      - src/ops/governed_productive_instrument_metadata_authority_producer_v1/__init__.py
       - src/ops/governed_productive_instrument_metadata_authority_producer_v1/constants_v1.py
       - src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py
       - config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json
