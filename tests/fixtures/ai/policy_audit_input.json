@@ -1,5 +1,0 @@
-{
-  "enabled": ["gpt-5.2-pro", "o3"],
-  "blocked": ["demo-disabled-model"],
-  "mode": "paper_only"
-}

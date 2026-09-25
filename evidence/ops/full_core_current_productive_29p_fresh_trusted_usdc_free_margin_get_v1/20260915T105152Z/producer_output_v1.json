@@ -1,1 +1,0 @@
-{"algebra_id":"DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01_USDC_V1","double_counting_guard":"DO_NOT_SUBTRACT_ALREADY_NETTED_IN_VENUE_FREE_MARGIN","input_set_digest":"","p01_applied":"false","produced":"false","producer_identity":"CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1","reason_codes":["ELIGIBILITY_FACT_MISSING"],"u04_applied":"false","value":""}

@@ -1,1 +1,0 @@
-# paper trading sim tests

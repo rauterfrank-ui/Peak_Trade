@@ -1,7 +1,0 @@
-{
-  "name": "p6_shadow_min",
-  "universe": ["BTC/USDT"],
-  "timeframe": "1h",
-  "mode": "dry",
-  "notes": "minimal deterministic shadow spec fixture for PR2"
-}

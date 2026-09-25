@@ -1,5 +1,0 @@
-{
-  "registry_name": "local_test_registry",
-  "models": ["gpt-5.2-pro", "o3"],
-  "default_model": "gpt-5.2-pro"
-}

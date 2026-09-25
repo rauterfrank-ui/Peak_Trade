@@ -1,8 +1,0 @@
-# Staging Binding v0 (paper lane)
-
-RUN_ID=__RUN_ID__
-DURABLE_OUTROOT=__OUTROOT__
-STAGING_ROOT=__PAPER_STAGING__
-LANE=paper
-EMPTY_LAYOUT_ONLY=true
-RUNTIME_STARTED=false

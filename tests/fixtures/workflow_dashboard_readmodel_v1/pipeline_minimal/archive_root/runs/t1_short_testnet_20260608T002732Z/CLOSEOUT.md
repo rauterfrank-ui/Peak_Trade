@@ -1,3 +1,0 @@
-# Closeout
-
-**Verdict:** PASS

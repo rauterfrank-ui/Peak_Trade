@@ -1,2 +1,0 @@
-| Observation | Value |
-| stale | no |
