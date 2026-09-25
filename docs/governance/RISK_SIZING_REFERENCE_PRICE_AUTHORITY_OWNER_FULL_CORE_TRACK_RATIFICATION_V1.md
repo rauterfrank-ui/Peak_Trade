@@ -4,7 +4,7 @@
 **Date:** 2026-09-25  
 **Obligation:** `OBL_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1`  
 **Machine contract:** [`config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json`](../../config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json)  
-**Baseline:** `origin/main @ 0650146df80cab0108d32ff8dd72a2d6ca042874`
+**Baseline:** `origin&#47;main @ 0650146df80cab0108d32ff8dd72a2d6ca042874`
 
 ```
 RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1=true

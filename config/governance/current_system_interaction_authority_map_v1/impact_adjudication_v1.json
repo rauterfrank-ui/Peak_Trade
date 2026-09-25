@@ -17,6 +17,14 @@
     "docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/ops/governed_productive_reference_price_authority_producer_v1/__init__.py",
     "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
     "tests/governance/test_risk_sizing_authority_decision_contract_freeze_v1.py",
@@ -27,7 +35,7 @@
     "tests/governance/test_risk_sizing_governed_producer_observation_adapter_contract_v1.py",
     "tests/governance/test_risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.py"
   ],
-  "changed_paths_sha256": "2e7462173cf1440b661f401f3a3fbcdf76a98ff56bb224bb6cbea7ae44a06ba0",
+  "changed_paths_sha256": "71f29f77bdc67f1d9bc2e8ea8e18baf15beec3de95ab82cee7bf36c397ae5df2",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
@@ -42,7 +50,7 @@
     "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "OWNER_GO Full-Core REFERENCE_PRICE authority owner ratification (mark_price semantics): B05/C2/map rebind; authority_view regenerated; AUTHORITY=NONE; no runtime semantics change.",
+  "reason": "OWNER_GO Full-Core REFERENCE_PRICE authority owner ratification (mark_price semantics): B05/C2/map rebind; authority_view regenerated; map currency + atlas NAVIGATION_ONLY review; AUTHORITY=NONE; no runtime semantics change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
