@@ -109,6 +109,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     run_current_productive_master_v2_runtime_cycle_v1,
 )
 from src.ops.single_selected_future_policy_v1.governed_pin_v1 import lane_state_root_key
+from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_seam_v1 import (
+    ensure_productive_layered_core_episode_store_v1,
+)
 from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
     productive_layered_core_bind_cycle_kwargs_v1,
 )
@@ -746,6 +749,26 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
     )
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    for lane_id in LANE_IDS:
+        record = restored.get(lane_id)
+        seam_item = bound_seam.get(lane_id)
+        if record is None or seam_item is None:
+            continue
+        bound, store_root, _cursor_address = seam_item
+        bootstrap_failures = ensure_productive_layered_core_episode_store_v1(
+            store_root=Path(store_root),
+            bound_instrument=bound,
+            mark_price_m_t=float(mark_px),
+            finalized_closes=finalized_closes,
+            last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
+            outgoing_cursor=record.cycle_result.outgoing_cursor,
+        )
+        if bootstrap_failures:
+            _fail(
+                FAILURE_MISMATCHED_LANE_STATE,
+                f"{lane_id}:{','.join(bootstrap_failures)}",
+            )
     persist_occupied_lane_mv2_dp_decision_state_cursor_v1(composed_pairs, restored)
     composed: dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1] = {}
     for lane_id in LANE_IDS:

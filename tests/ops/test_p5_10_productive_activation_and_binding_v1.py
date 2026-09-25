@@ -185,3 +185,47 @@ def test_legacy_cycle_without_bind_request_unchanged() -> None:
 def test_n1_and_external_effect_unchanged() -> None:
     assert MAX_POSITIONS_EFFECTIVE == 1
     assert EXTERNAL_EFFECT_AUTHORIZED is False
+
+
+def test_s7_compose_bootstraps_layered_store_before_c1_extract_second_cycle(
+    tmp_path: Path,
+) -> None:
+    """Regression: scope-bearing cursor without episode snapshot broke T2 after #6764 C1 extract."""
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
+        compose_occupied_lane_mv2_dp_durable_cycle_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        extract_finalized_candle_closes_v1,
+    )
+    from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
+        SNAPSHOT_FILENAME,
+    )
+
+    from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+        _lane_g17,
+        _market_kwargs,
+        _pair,
+        _s7_kwargs,
+    )
+
+    pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    root = Path(pairs["LANE_1"][0].lane_state_root)
+    mk = _market_kwargs(cycle_id_prefix="p510-bootstrap")
+    mk["g17_typed_vol_producers"] = _lane_g17(pairs)
+    s7 = _s7_kwargs(mk)
+    first = compose_occupied_lane_mv2_dp_durable_cycle_v1(pairs, **s7)
+    assert first["LANE_1"].cycle_result.outgoing_cursor is not None
+    assert (root / SNAPSHOT_FILENAME).is_file()
+
+    extracted, last_ts = extract_finalized_candle_closes_v1(mk["candles_payload"])
+    assert extracted
+    assert last_ts is not None
+    lane_s7 = dict(s7)
+    lane_s7["cycle_id_prefix"] = "p510-bootstrap:2"
+    lane_s7["g17_typed_vol_producers"] = {"LANE_1": _lane_g17(pairs)["LANE_1"]}
+    lane_s7["finalized_closes"] = extracted
+    lane_s7["last_finalized_event_ts_unix"] = float(last_ts)
+    lane_s7["observed_unix"] = float(last_ts) + 1.0
+    second = compose_occupied_lane_mv2_dp_durable_cycle_v1(pairs, **lane_s7)
+    assert second["LANE_1"].cycle_result.outgoing_cursor is not None
+    assert not second["LANE_1"].cycle_result.fail_reasons
