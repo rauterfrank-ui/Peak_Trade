@@ -1,0 +1,120 @@
+{
+  "contract_name": "risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1",
+  "contract_id": "OBL_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1",
+  "contract_version": "v1",
+  "schema_version": "risk_sizing_reference_price_authority_owner_full_core_track_ratification_schema_v1",
+  "ssot_doc": "docs/governance/RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1.md",
+  "inventory_date": "2026-09-25",
+  "pinned_against_main_sha": "0650146df80cab0108d32ff8dd72a2d6ca042874",
+  "workpackage_id": "BOUNDED_WP_C2_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1",
+  "semantics": "OWNER_GO_RATIFICATION_ONLY_FULL_CORE_TRACK_MARK_PRICE_SEMANTICS_NO_COMPANION_HANDOFF_NO_PRODUCER_IMPLEMENTATION_CLAIM_NO_INSTRUMENT_OR_REPO_WIDE_SIZING",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_RATIFY_B05_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO",
+    "supersedes_b05_pin_for_scope_only": true
+  },
+  "semantic_adjudication": {
+    "required_function_c2": "Instrument-bound conversion reference price for Fraction→Units normalization (Companion) and CRS notional/stop-distance math (Full-Core subordinate consumer)",
+    "required_function_full_core_proven": "CRS capital_context.reference_price for live-account-bound sizing rebind",
+    "price_semantics_class_ratified": "mark_price",
+    "semantics_deduction_basis": [
+      "CURRENT_CODE_FACT: current_productive_enter_live_29p_join_v1 binds reference_price exclusively from replay.intermediate.market_context.mark_price",
+      "ALREADY_ADJUDICATED: authority freeze forbids candle_close/fill/CMC elevation and mark/index synonymization",
+      "CURRENT_CODE_FACT: MV2 INDEX_PX join is separate from CRS reference_price; test_current_productive_mv2_index_px_primary_secondary_tertiary forbids mark→INDEX_PX substitution",
+      "INTERPRETATION: index_price is not deducible as conversion reference without changing Full-Core CRS wiring"
+    ],
+    "forbidden_elevations_remain": [
+      "candle_close",
+      "ticker_last_as_implicit_mark",
+      "index_price_as_conversion_reference_without_owner_go",
+      "fill_or_execution_price",
+      "offline_replay_default_reference_price"
+    ]
+  },
+  "ratification": {
+    "reference_price_authority_owner": "ops.governed_productive_reference_price_authority_producer_v1",
+    "scope_track": "FULL_CORE",
+    "dimension_id": "INSTRUMENT_VENUE_TIME_BOUND_CONVERSION_REFERENCE_PRICE",
+    "unit_class": "PRICE_QUOTE_PER_INSTRUMENT_UNIT",
+    "price_semantics_class": "mark_price",
+    "prior_b05_pin_superseded": "UNRESOLVED"
+  },
+  "productive_lineage_full_core": {
+    "observation_transport": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+      "field": "mark_px",
+      "classification": "CURRENT_DYNAMIC_INPUT_STATE",
+      "is_authority": false
+    },
+    "mv2_market_context": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+      "field": "mark_price",
+      "classification": "MODEL_SEMANTIC",
+      "is_authority": false
+    },
+    "crs_consumer_bind": {
+      "module": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "symbol": "build_current_productive_live_account_capital_context_v1",
+      "reference_price_source": "market_context.mark_price",
+      "classification": "MODEL_SEMANTIC_CONSUMER_NOT_OWNER"
+    },
+    "authority_owner_slot": {
+      "module": "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
+      "classification": "EMPTY_GOVERNED_AUTHORITY_OWNER_SLOT"
+    }
+  },
+  "markers": {
+    "RISK_SIZING_REFERENCE_PRICE_AUTHORITY_OWNER_FULL_CORE_TRACK_RATIFICATION_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "RUNTIME_MUTATION_EXECUTED": false,
+    "SRC_CHANGED": true,
+    "PRODUCTIVE_RUNTIME_SEMANTICS_CHANGED": false,
+    "REFERENCE_PRICE_AUTHORITY_OWNER": "ops.governed_productive_reference_price_authority_producer_v1",
+    "FULL_CORE_REFERENCE_PRICE_AUTHORITY_OWNER_RATIFIED": true,
+    "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED": false,
+    "PRICE_SEMANTICS_CLASS_RATIFIED": "mark_price",
+    "GOVERNED_PRODUCER_CREATED": false,
+    "PRODUCER_IMPLEMENTATION_PRESENT": false,
+    "OBSERVATION_IS_NOT_AUTHORITY": true,
+    "MAPPING_IS_NOT_OWNER_CLOSURE": true,
+    "RATIFICATION_IS_NOT_IMPLEMENTATION": true,
+    "COMPANION_REFERENCE_PRICE_HANDOFF_AUTHORIZED": false,
+    "COMPANION_HANDOFF_STATUS": "NO_CONVERSION_HANDOFF_ON_COMPANION_PATH",
+    "C2_COMPANION_REFERENCE_PRICE_PROVENANCE": "REQUIRED_INPUT_MISSING",
+    "C2_REFERENCE_PRICE_GATE_FULL_CORE_OWNER": "RATIFIED",
+    "C2_REFERENCE_PRICE_GATE_COMPANION": "UNRESOLVED",
+    "C2_REFERENCE_PRICE_DOMAIN_VERDICT": "PARTIAL",
+    "REFERENCE_PRICE_AUTHORITY_RESOLVED_FULL_CORE_TRACK": true,
+    "INDEX_PX_NOT_REFERENCE_PRICE_AUTHORITY": true,
+    "CONVERSION_READY": false,
+    "CONVERSION_READY_UNCHANGED_REASON": "instrument_metadata unresolved; companion C2 inputs not PROVEN_CURRENT; authority chains not closed; equity companion handoff absent"
+  },
+  "explicit_non_claims": [
+    "NO_COMPANION_REFERENCE_PRICE_HANDOFF",
+    "NO_FRACTION_TO_UNITS",
+    "NO_INSTRUMENT_METADATA_OWNER_ASSIGNMENT",
+    "NO_CANONICAL_RISK_SIZING_OWNER_REPO_WIDE",
+    "NO_BYPASS_CONSOLIDATION",
+    "NO_LIVE_OR_EXTERNAL_EFFECT_RELAXATION",
+    "NO_INDEX_PX_AS_REFERENCE_PRICE_AUTHORITY",
+    "NO_MV2_TRADING_DECISION_SEMANTICS_CHANGE"
+  ],
+  "binding_surfaces_updated": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+    "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
+    "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
+    "config/governance/risk_sizing_governed_producer_observation_adapter_contract_v1.json",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+  ],
+  "evidence_anchors": [
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "tests/ops/test_current_productive_mv2_index_px_primary_secondary_tertiary_v1.py"
+  ]
+}

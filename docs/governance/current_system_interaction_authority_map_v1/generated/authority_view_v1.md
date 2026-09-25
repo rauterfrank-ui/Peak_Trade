@@ -27,6 +27,7 @@ Open epistemic records are projected, not closed.
 - id=portfolio_budget class=PARTIAL statement=Portfolio authority effect is none, restart is not reconstructable, and venue fill is not integrated.
 - id=productive_capital_context_offline_helper class=PARTIAL statement=Productive capital context uses the offline instrument helper.
 - id=ranking_activation class=PARTIAL statement=Ranking chain position exists and RUNTIME_ACTIVATION_ALLOWED is false.
+- id=reference_price_authority_owner class=PARTIAL statement=REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price (Owner-GO consumed). Companion conversion handoff absent; GOVERNED_PRODUCER_CREATED=false; INDEX_PX is not reference-price authority.
 - id=replay_provenance_drop class=PARTIAL statement=Replay drops selection_id, ranking_snapshot_id, and universe_snapshot_id.
 - id=safety_owner_unclosed class=PARTIAL statement=Safety boundary is visible on the productive cycle and CONSTRAINT_FLOW handoffs into integrated replay and before order-intent plan bind are mapped; a single closed productive safety owner string and full-core kill-switch owner remain unclosed (see kill_switch_full_core_safety_owner).
 - id=sizing_to_intent_plan_only class=PARTIAL statement=Sizing to intent remains plan-only.
@@ -35,7 +36,6 @@ Open epistemic records are projected, not closed.
 - id=double_play_slot_crs_handoff class=UNKNOWN statement=Double-play capital slot CRS handoff is not evidenced.
 - id=kill_switch_full_core_safety_owner class=UNKNOWN statement=Kill-switch Cap 11.5 is not established as the current full-core safety owner.
 - id=offline_instrument_literal_quantity_effect class=UNKNOWN statement=Quantity effect of offline instrument literals on the current productive run is unknown.
-- id=reference_price_authority_owner class=UNKNOWN statement=REFERENCE_PRICE_AUTHORITY_OWNER remains UNRESOLVED on the B05 pin. NAVIGATION_INDEX: C2 blocking-authorities resolution keeps REFERENCE_PRICE open; Full-Core enter join consumes reference inputs but does not adjudicate owner (see b05_vs_singular_risk_owner).
 - id=reselect_rerank_absence class=UNKNOWN statement=Execution must not rerank or reselect. A repo-wide absence scan is not complete.
 - id=sealed_venue_number_29p class=UNKNOWN statement=No sealed current venue number for 29P sizing is bound on origin/main.
 - id=survival_suitability_composition_owner class=UNKNOWN statement=No single current owner module for survival, suitability, and composition is closed.

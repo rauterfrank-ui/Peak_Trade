@@ -48,7 +48,8 @@ def test_resolution_markers_and_no_runtime_bindings() -> None:
     assert m["CONVERSION_READY"] is False
     assert m["EQUITY_AUTHORITY_RESOLVED"] is True
     assert m["EQUITY_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
-    assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED"] is False
+    assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED"] is True
+    assert m["REFERENCE_PRICE_AUTHORITY_RESOLVED_SCOPE"] == "FULL_CORE_TRACK_ONLY"
     assert m["INSTRUMENT_METADATA_AUTHORITY_RESOLVED"] is False
     assert m["SIZING_OWNER_RESOLVED"] is False
     assert m["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
@@ -60,14 +61,14 @@ def test_c2_verdicts_preserve_6761_6762_start_state() -> None:
     v2 = _load(V2_JSON)
     reeval = res["c2_mechanical_reevaluation"]
     assert reeval["account_equity_final_status"] == "PARTIAL"
-    assert reeval["reference_price_final_status"] == "UNKNOWN"
+    assert reeval["reference_price_final_status"] == "PARTIAL"
     assert reeval["instrument_metadata_final_status"] == "UNRESOLVED"
     assert reeval["domain_proven_current_count"] == 0
     assert reeval["c2_status"] == "UNRESOLVED"
     assert reeval["c2_closure_rule_satisfied"] is False
     for iid, verdict in (
         ("ACCOUNT_EQUITY_AVAILABLE_CAPITAL", "PARTIAL"),
-        ("REFERENCE_PRICE", "UNKNOWN"),
+        ("REFERENCE_PRICE", "PARTIAL"),
         ("INSTRUMENT_QUANTITY_METADATA", "UNRESOLVED"),
     ):
         assert v2["domain_adjudications"][iid]["c2_domain_verdict"] == verdict
@@ -93,7 +94,8 @@ def test_blocker_a_equity_partial_owner_ratified_companion_absence() -> None:
 def test_blocker_b_reference_unknown_no_canonical_transform() -> None:
     res = _load(RES_JSON)
     b = res["blocker_adjudications"]["B_REFERENCE_PRICE_AUTHORITY"]
-    assert b["reference_price_final_status"] == "UNKNOWN"
+    assert b["reference_price_final_status"] == "PARTIAL"
+    assert b["price_semantics_class_ratified"] == "mark_price"
     assert b["canonical_transform_exists"] is False
 
 
@@ -124,7 +126,7 @@ def test_blocker_d_sizing_owner_unresolved_parallel_bypasses() -> None:
 
 def test_deferred_decisions_present() -> None:
     res = _load(RES_JSON)
-    assert len(res["deferred_decisions"]) >= 4
+    assert len(res["deferred_decisions"]) >= 3
     assert any("CONVERSION" in x for x in res["deferred_decisions"])
 
 
