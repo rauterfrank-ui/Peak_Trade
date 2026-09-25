@@ -52,9 +52,11 @@ from tests.governance.test_historically_attested_current_system_semantic_restora
 from tests.governance.test_technical_canonical_wiring_authorization_bound_to_boundary_guard_v1 import (
     AUTHORIZED_TECHNICAL_WIRING_FIXTURE,
 )
+from tests.governance.decommission_authorization_v1_grant_fixture import (
+    inactive_decommission_grant_copy,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-AUTH_PATH = REPO_ROOT / "config/governance/semantics_neutral_decommission_authorization_v1.json"
 
 PROTECTED_PROMOTION_PATH = "src/governance/promotion_loop/safety.py"
 PROTECTED_PROMOTION_TEST_PATH = "tests/governance/promotion_loop/test_safety_manifest_era_v1.py"
@@ -83,9 +85,7 @@ REPLAY_TOUCHES = (
 
 
 def _load_auth() -> dict:
-    payload = json.loads(AUTH_PATH.read_text(encoding="utf-8"))
-    assert isinstance(payload, dict)
-    return payload
+    return inactive_decommission_grant_copy()
 
 
 TEST_DIFF_BASE_SHA = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -144,8 +144,8 @@ def _report(
 
 class TestDecommissionAdmissionClassContractV1:
     def test_committed_artifact_is_valid_digest_bound_grant(self) -> None:
-        auth = load_decommission_authorization(REPO_ROOT)
-        assert auth is not None
+        assert load_decommission_authorization(REPO_ROOT) is None
+        auth = inactive_decommission_grant_copy()
         valid, reasons = validate_decommission_authorization(auth, repo_root=REPO_ROOT)
         assert valid is True
         assert reasons == (REASON_DECOMMISSION_AUTH_VALID,)
@@ -175,9 +175,9 @@ class TestDecommissionAdmissionClassContractV1:
 
     def test_bound_from_boundary_contract(self) -> None:
         contract = load_contract(REPO_ROOT)
-        assert (
-            contract["semantics_neutral_decommission_authorization"]
-            == "config/governance/semantics_neutral_decommission_authorization_v1.json"
+        assert "semantics_neutral_decommission_authorization" not in contract
+        assert contract["bulk_proven_repository_decommission_authorization"] == (
+            "config/governance/bulk_proven_repository_decommission_authorization_v1.json"
         )
         assert contract["immutable_flags"]["MASTER_V2_MUTATION_ALLOWED"] is False
 

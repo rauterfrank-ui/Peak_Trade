@@ -2038,7 +2038,7 @@
     "docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md",
     "config/governance/technical_canonical_wiring_authorization_v1.json",
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
-    "config/governance/semantics_neutral_decommission_authorization_v1.json",
+    "config/governance/bulk_proven_repository_decommission_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json",
     "config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json",
@@ -2060,9 +2060,14 @@
   "semantics_neutral_decommission_authorization": {
     "authorized_scope_class": "SEMANTICS_NEUTRAL_DECOMMISSION_ONLY",
     "mutation_purpose_class": "SEMANTICS_NEUTRAL_DECOMMISSION",
-    "contract_path": "config/governance/semantics_neutral_decommission_authorization_v1.json",
+    "contract_path": "src/governance/semantics_neutral_decommission_authorization_v1.py",
     "grant_active": false,
-    "note": "Exact-file evidence-digest-bound obsolete-reference cleanup. Active grants require authorized_evidence_digest over canonical unified diffs and the diff base SHA. Same paths with a different diff cannot reuse a grant. Not a trading authority. Not a PR or branch exception. Does not waive MASTER_V2_MUTATION_ALLOWED=false."
+    "note": "Exact-file admission machinery; no persisted repository grant JSON. Bulk proven repository decommission covers FINAL_REPOSITORY_CONVERGENCE_CUT_V1. Active exact-file grants remain evidence-digest-bound when explicitly materialized."
+  },
+  "bulk_proven_repository_decommission_authorization": {
+    "authorized_scope_class": "BULK_PROVEN_REPOSITORY_DECOMMISSION_V1",
+    "contract_path": "config/governance/bulk_proven_repository_decommission_authorization_v1.json",
+    "note": "Digest-bound proven removal set at bound base SHA for repository convergence cut."
   },
   "explicit_owner_adjudicated_nonproductive_contract_change_authorization": {
     "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_NONPRODUCTIVE_CONTRACT_CHANGE",

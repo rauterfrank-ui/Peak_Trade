@@ -22,6 +22,9 @@ from src.governance.economic_diagnostic_optimization_boundary_v0 import (
     load_decommission_authorization,
     load_owner_map,
 )
+from tests.governance.decommission_authorization_v1_grant_fixture import (
+    inactive_decommission_grant_copy,
+)
 from src.governance.semantics_neutral_decommission_authorization_v1 import (
     DECOMMISSION_AUTH_VERSION,
     DECOMMISSION_MUTATION_PURPOSE,
@@ -621,7 +624,7 @@ def _active_decommission_grant(
     *,
     surface_classes: list[str] | None = None,
 ) -> dict:
-    auth = copy.deepcopy(load_decommission_authorization(REPO_ROOT))
+    auth = inactive_decommission_grant_copy()
     assert isinstance(auth, dict)
     auth["grant_active"] = True
     auth["allowed_paths"] = list(allowed_paths)

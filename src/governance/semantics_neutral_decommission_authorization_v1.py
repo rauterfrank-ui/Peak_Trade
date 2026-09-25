@@ -670,6 +670,17 @@ def evaluate_decommission_authorization(
 ) -> DecommissionAuthorizationDecision:
     """Apply decommission admission to forbidden and unclassified boundary paths."""
     evidence_root = evidence_repo_root or repo_root
+    if auth is None:
+        return DecommissionAuthorizationDecision(
+            applied=False,
+            valid=True,
+            version=None,
+            reason_codes=(),
+            authorized_paths=(),
+            unauthorized_forbidden_paths=(),
+            grant_active=False,
+            mutation_purpose_class=None,
+        )
     valid, validation_reasons = validate_decommission_authorization(auth, repo_root=repo_root)
     purpose = None if auth is None else str(auth.get("mutation_purpose_class") or "") or None
     grant_active = bool(auth and auth.get("grant_active") is True)

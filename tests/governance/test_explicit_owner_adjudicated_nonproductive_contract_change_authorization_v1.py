@@ -42,6 +42,9 @@ from src.governance.explicit_owner_adjudicated_nonproductive_contract_change_aut
     REASON_OWNER_ADJUDICATION_SEMANTIC_CHANGE,
     compute_owner_adjudication_evidence_digest,
 )
+from tests.governance.decommission_authorization_v1_grant_fixture import (
+    inactive_decommission_grant_copy,
+)
 from src.governance.semantics_neutral_decommission_authorization_v1 import (
     DECOMMISSION_AUTH_VERSION,
     DECOMMISSION_MUTATION_PURPOSE,
@@ -608,8 +611,8 @@ class TestExistingAuthorizationSemanticsUnchangedWithOwnerClassV1:
         assert REASON_OWNER_ADJUDICATION_AUTHORIZED not in report.reason_codes
 
     def test_decommission_semantics_unchanged(self) -> None:
-        auth = load_decommission_authorization(REPO_ROOT)
-        assert auth is not None
+        assert load_decommission_authorization(REPO_ROOT) is None
+        auth = inactive_decommission_grant_copy()
         valid, reasons = validate_decommission_authorization(auth, repo_root=REPO_ROOT)
         assert valid is True
         assert auth["authorized_scope_class"] == DECOMMISSION_SCOPE_CLASS

@@ -35,13 +35,13 @@ It is distinct from:
 
 Those classes remain unchanged. This class is not overloaded onto them.
 
-Committed machine state:
+Admission machinery (no persisted repository grant JSON by default):
 
-[`config/governance/semantics_neutral_decommission_authorization_v1.json`](../../../config/governance/semantics_neutral_decommission_authorization_v1.json)
+[`src/governance/semantics_neutral_decommission_authorization_v1.py`](../../../src/governance/semantics_neutral_decommission_authorization_v1.py)
 
-Default grant is inactive (`grant_active=false`, empty `allowed_paths`).
-The class exists so a later decommission PR can activate exact-file scope
-without inventing a bypass.
+Bulk proven repository convergence uses
+[`config/governance/bulk_proven_repository_decommission_authorization_v1.json`](../../../config/governance/bulk_proven_repository_decommission_authorization_v1.json).
+Exact-file grants remain evidence-digest-bound when explicitly materialized for a slice.
 
 ## 2) Intended use
 

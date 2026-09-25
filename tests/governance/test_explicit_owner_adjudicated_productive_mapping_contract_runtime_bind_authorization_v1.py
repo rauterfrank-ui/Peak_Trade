@@ -45,6 +45,9 @@ from src.governance.explicit_owner_adjudicated_productive_mapping_contract_runti
     REASON_MAPPING_BIND_UNKNOWN_FIELD,
     compute_mapping_bind_evidence_digest,
 )
+from tests.governance.decommission_authorization_v1_grant_fixture import (
+    inactive_decommission_grant_copy,
+)
 from src.governance.semantics_neutral_decommission_authorization_v1 import (
     DECOMMISSION_AUTH_VERSION,
     DECOMMISSION_MUTATION_PURPOSE,
@@ -577,9 +580,9 @@ class TestExistingAuthorizationSemanticsUnchangedWithMappingBindClassV1:
         assert REASON_MAPPING_BIND_AUTHORIZED not in report.reason_codes
 
     def test_decommission_and_owner_classes_remain_valid(self) -> None:
-        decommission = load_decommission_authorization(REPO_ROOT)
+        assert load_decommission_authorization(REPO_ROOT) is None
+        decommission = inactive_decommission_grant_copy()
         owner = load_owner_adjudication_authorization(REPO_ROOT)
-        assert decommission is not None
         assert owner is not None
         decommission_valid, _ = validate_decommission_authorization(
             decommission, repo_root=REPO_ROOT

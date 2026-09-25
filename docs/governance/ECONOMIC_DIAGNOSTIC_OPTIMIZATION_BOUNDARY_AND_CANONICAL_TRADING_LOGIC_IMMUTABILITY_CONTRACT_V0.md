@@ -17,8 +17,10 @@ AUTHORITY_EFFECT=NONE
 **Owner-Map:** [`config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json`](../../config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json)
 **Technical Wiring Authorization:** [`config/governance/technical_canonical_wiring_authorization_v1.json`](../../config/governance/technical_canonical_wiring_authorization_v1.json)
 **Restoration Admission Authorization:** [`config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json`](../../config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json)
-**Semantics-Neutral Decommission Authorization:** [`config/governance/semantics_neutral_decommission_authorization_v1.json`](../../config/governance/semantics_neutral_decommission_authorization_v1.json)
+**Semantics-Neutral Decommission machinery:** [`src/governance/semantics_neutral_decommission_authorization_v1.py`](../../src/governance/semantics_neutral_decommission_authorization_v1.py)
+**Bulk proven repository decommission:** [`config/governance/bulk_proven_repository_decommission_authorization_v1.json`](../../config/governance/bulk_proven_repository_decommission_authorization_v1.json)
 **Decommission class attestation:** [`docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md`](../ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md)
+**Bulk decommission grant spec:** [`docs/ops/specs/BULK_PROVEN_REPOSITORY_DECOMMISSION_GRANT_V1.md`](../ops/specs/BULK_PROVEN_REPOSITORY_DECOMMISSION_GRANT_V1.md)
 **Restoration class attestation:** [`docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md`](../ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md)
 **Guard:** [`src/governance/economic_diagnostic_optimization_boundary_v0.py`](../../src/governance/economic_diagnostic_optimization_boundary_v0.py)
 
@@ -240,11 +242,13 @@ Joint validation (Token allein reicht nicht):
 Incomplete evidence is `SEMANTICS_NEUTRAL_DECOMMISSION_EVIDENCE_INSUFFICIENT` (BLOCK).
 Malformed contracts are `SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_INVALID` (BLOCK).
 
-Owner: [`config/governance/semantics_neutral_decommission_authorization_v1.json`](../../config/governance/semantics_neutral_decommission_authorization_v1.json)
+Machinery owner: [`src/governance/semantics_neutral_decommission_authorization_v1.py`](../../src/governance/semantics_neutral_decommission_authorization_v1.py)
+
+Bulk convergence owner: [`config/governance/bulk_proven_repository_decommission_authorization_v1.json`](../../config/governance/bulk_proven_repository_decommission_authorization_v1.json)
 
 Attestation: [`docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md`](../ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md)
 
-Default grant is inactive. This class does not create trading, selection, risk,
+No persisted exact-file grant JSON in repository by default. This class does not create trading, selection, risk,
 execution, or venue authority.
 
 ## 5.4 Explicit Owner-Adjudicated Nonproductive Contract Change (v1)

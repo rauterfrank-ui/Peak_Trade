@@ -100,6 +100,18 @@ from .explicit_owner_adjudicated_sidestate_armed_identity_split_authorization_v1
     evaluate_armed_identity_split_authorization,
     validate_armed_identity_split_authorization,
 )
+from .bound_stale_reference_cleanup_v1 import (
+    REASON_STALE_REFERENCE_CLEANUP_AUTHORIZED,
+    BoundStaleReferenceCleanupDecision,
+    evaluate_bound_stale_reference_cleanup,
+)
+from .bulk_proven_repository_decommission_authorization_v1 import (
+    DEFAULT_BULK_AUTH_PATH,
+    REASON_BULK_AUTHORIZED,
+    BulkProvenRepositoryDecommissionDecision,
+    evaluate_bulk_proven_repository_decommission_authorization,
+    validate_bulk_proven_repository_decommission_authorization,
+)
 from .semantics_neutral_decommission_authorization_v1 import (
     DEFAULT_DECOMMISSION_AUTH_PATH,
     REASON_DECOMMISSION_AUTHORIZED,
@@ -308,6 +320,9 @@ class BoundaryReport:
     od1_single_lane_confirmation_authorization_applied: bool = False
     od1_single_lane_confirmation_authorization_version: str | None = None
     od1_single_lane_confirmation_mutation_purpose_class: str | None = None
+    bulk_proven_repository_decommission_authorization_applied: bool = False
+    bulk_proven_repository_decommission_authorization_version: str | None = None
+    bound_stale_reference_cleanup_applied: bool = False
     decommission_admission_count: int = 0
     owner_adjudicated_nonproductive_change_count: int = 0
     unclassified_touch_count: int = 0
@@ -415,6 +430,13 @@ class BoundaryReport:
             "new_od1_single_lane_confirmation_authorization_applied": (
                 self.od1_single_lane_confirmation_authorization_applied
             ),
+            "bulk_proven_repository_decommission_authorization_applied": (
+                self.bulk_proven_repository_decommission_authorization_applied
+            ),
+            "bulk_proven_repository_decommission_authorization_version": (
+                self.bulk_proven_repository_decommission_authorization_version
+            ),
+            "bound_stale_reference_cleanup_applied": self.bound_stale_reference_cleanup_applied,
             "decommission_admission_count": self.decommission_admission_count,
             "owner_adjudicated_nonproductive_change_count": (
                 self.owner_adjudicated_nonproductive_change_count
@@ -528,6 +550,37 @@ def load_decommission_authorization(
 ) -> dict[str, Any] | None:
     root = repo_root or repo_root_from_module()
     path = authorization_path or resolve_decommission_authorization_path(contract, root)
+    if not path.is_file():
+        return None
+    return load_json(path)
+
+
+def resolve_bulk_proven_repository_decommission_authorization_path(
+    contract: Mapping[str, Any] | None = None,
+    repo_root: Path | None = None,
+) -> Path:
+    root = repo_root or repo_root_from_module()
+    relative = DEFAULT_BULK_AUTH_PATH
+    if contract is not None:
+        relative = str(
+            contract.get(
+                "bulk_proven_repository_decommission_authorization",
+                relative,
+            )
+        )
+    return root / relative
+
+
+def load_bulk_proven_repository_decommission_authorization(
+    repo_root: Path | None = None,
+    *,
+    contract: Mapping[str, Any] | None = None,
+    authorization_path: Path | None = None,
+) -> dict[str, Any] | None:
+    root = repo_root or repo_root_from_module()
+    path = authorization_path or resolve_bulk_proven_repository_decommission_authorization_path(
+        contract, root
+    )
     if not path.is_file():
         return None
     return load_json(path)
@@ -1257,6 +1310,11 @@ def build_boundary_report(
             authorization_path=decommission_authorization_path,
         )
 
+    bulk_decommission_payload = load_bulk_proven_repository_decommission_authorization(
+        root,
+        contract=contract,
+    )
+
     owner_adjudication_payload: Mapping[str, Any] | None
     if skip_owner_adjudication_authorization:
         owner_adjudication_payload = None
@@ -1662,6 +1720,26 @@ def build_boundary_report(
                 path for path in remaining_unclassified if path not in owner_admitted
             ]
 
+    bulk_decommission_decision = evaluate_bulk_proven_repository_decommission_authorization(
+        normalized_files,
+        auth=bulk_decommission_payload,
+        repo_root=root,
+        file_diffs=file_diffs,
+        diff_base_sha=diff_base_sha,
+    )
+    stale_reference_cleanup_decision = evaluate_bound_stale_reference_cleanup(
+        [match.matched_path for match in blocking_forbidden],
+        file_diffs=file_diffs,
+        repo_root=root,
+        proven_removal_paths=bulk_decommission_decision.authorized_removal_paths,
+        bulk_decommission_applied=bulk_decommission_decision.applied,
+    )
+    if stale_reference_cleanup_decision.applied:
+        stale_authorized = frozenset(stale_reference_cleanup_decision.authorized_forbidden_paths)
+        blocking_forbidden = [
+            match for match in blocking_forbidden if match.matched_path not in stale_authorized
+        ]
+
     unclassified = remaining_unclassified
 
     if (
@@ -1707,12 +1785,33 @@ def build_boundary_report(
     generator_fallback_applied = generator_fallback_decision.applied
     armed_identity_split_applied = armed_identity_split_decision.applied
     od1_single_lane_confirmation_applied = od1_single_lane_confirmation_decision.applied
+    bulk_decommission_applied = bulk_decommission_decision.applied
+    stale_reference_cleanup_applied = stale_reference_cleanup_decision.applied
 
     if all_governance_self and normalized_files:
         reason_codes.append(REASON_GOVERNANCE_SELF)
         economic_or_diagnostic_only = False
     elif not normalized_files:
         reason_codes.append(REASON_NO_BOUNDARY_GOVERNED_CHANGES)
+        economic_or_diagnostic_only = False
+    elif (
+        bulk_decommission_decision.base_sha_bound
+        and bulk_decommission_decision.convergence_cut_diff
+        and bulk_decommission_decision.grant_active
+        and not bulk_decommission_decision.applied
+    ):
+        reason_codes.extend(
+            code for code in bulk_decommission_decision.reason_codes if code not in reason_codes
+        )
+        fail_closed = True
+        admissible = False
+        economic_or_diagnostic_only = False
+    elif bulk_decommission_applied and not blocking_forbidden:
+        reason_codes.append(REASON_BULK_AUTHORIZED)
+        if stale_reference_cleanup_applied:
+            reason_codes.append(REASON_STALE_REFERENCE_CLEANUP_AUTHORIZED)
+        if allowed_hits:
+            reason_codes.append(REASON_ALLOWED_ONLY)
         economic_or_diagnostic_only = False
     elif blocking_forbidden:
         if forbidden_matches and not auth_decision.valid:
@@ -2002,6 +2101,11 @@ def build_boundary_report(
             if od1_single_lane_confirmation_applied
             else None
         ),
+        bulk_proven_repository_decommission_authorization_applied=bulk_decommission_applied,
+        bulk_proven_repository_decommission_authorization_version=(
+            bulk_decommission_decision.version if bulk_decommission_applied else None
+        ),
+        bound_stale_reference_cleanup_applied=stale_reference_cleanup_applied,
         decommission_admission_count=decommission_admission_count,
         owner_adjudicated_nonproductive_change_count=(owner_adjudicated_nonproductive_change_count),
         unclassified_touch_count=len(unclassified),
@@ -2028,6 +2132,8 @@ def forbidden_surface_changed_count(report: BoundaryReport) -> int:
         report.technical_wiring_authorization_applied
         or report.restoration_authorization_applied
         or report.semantics_neutral_decommission_authorization_applied
+        or report.bulk_proven_repository_decommission_authorization_applied
+        or report.bound_stale_reference_cleanup_applied
         or report.owner_adjudicated_nonproductive_contract_change_authorization_applied
         or report.productive_mapping_contract_runtime_bind_authorization_applied
         or report.scope_direction_generator_fallback_authorization_applied

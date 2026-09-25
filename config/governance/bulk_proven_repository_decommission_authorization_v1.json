@@ -1,0 +1,41 @@
+{
+  "TOKEN_ALONE_IS_INSUFFICIENT": true,
+  "authority_effect": "NONE",
+  "authorization_token": "BULK_PROVEN_REPOSITORY_DECOMMISSION_AUTHORIZATION_V1",
+  "authorized_removal_evidence_path": "evidence/ops/final_repository_residual_census_and_frozen_outside_cut_probe_v1/20260925T214500Z/FINAL_STATIC_REMOVAL_PROVEN_SET_V1.json",
+  "authorized_removal_path_count": 5592,
+  "authorized_removal_set_sha256": "8e4f18f2cabcbd2479133dd895d761346729d754e22ef9bebe65bd92f069865e",
+  "authorized_scope_class": "BULK_PROVEN_REPOSITORY_DECOMMISSION_ONLY",
+  "bound_base_sha": "9911495cb95776be55d32f2628cbd1c8dd702b59",
+  "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
+  "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
+  "branch_protection_bypass": false,
+  "branch_specific_exception": false,
+  "canonical_governance_owner": "docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md",
+  "class_attestation": "docs/ops/specs/BULK_PROVEN_REPOSITORY_DECOMMISSION_GRANT_V1.md",
+  "contract_version": "bulk_proven_repository_decommission_authorization_v1",
+  "forbidden_effects": {
+    "AUTHORITY_EFFECT": "NONE",
+    "CREDENTIAL_EFFECT": "NONE",
+    "ORDER_EFFECT": "NONE",
+    "RUNTIME_EFFECT": "NONE",
+    "SCHEDULER_EFFECT": "NONE"
+  },
+  "grant_active": true,
+  "grant_kind": "BULK_PROVEN_REPOSITORY_DECOMMISSION_V1",
+  "mutation_purpose_class": "BULK_PROVEN_REPOSITORY_DECOMMISSION",
+  "notes": [
+    "Owner-explicit bulk bind for FINAL_REPOSITORY_CONVERGENCE_CUT_V1 only.",
+    "Authorizes exactly the FINAL_STATIC_REMOVAL_PROVEN_SET_V1 evidence paths at bound_base_sha.",
+    "Does not authorize modifications, runtime/trading semantics, or additions.",
+    "Does not alter semantics_neutral_decommission_authorization_v1 exact-file grants.",
+    "Does not waive MASTER_V2_MUTATION_ALLOWED=false."
+  ],
+  "operation_id": "FINAL_REPOSITORY_CONVERGENCE_CUT_V1",
+  "parallel_ssot_created": false,
+  "pr_specific_exception": false,
+  "required_check_waiver": false,
+  "runtime_activation": false,
+  "runtime_effect": "NONE",
+  "scope_id": "BULK_PROVEN_REPOSITORY_DECOMMISSION_AUTHORIZATION_V1"
+}

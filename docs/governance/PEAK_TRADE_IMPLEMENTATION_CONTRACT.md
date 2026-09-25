@@ -323,7 +323,8 @@ config/governance/economic_diagnostic_optimization_boundary_v0.json
 config/governance/economic_diagnostic_optimization_boundary_canonical_owner_map_v0.json
 config/governance/technical_canonical_wiring_authorization_v1.json
 config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json
-config/governance/semantics_neutral_decommission_authorization_v1.json
+config/governance/bulk_proven_repository_decommission_authorization_v1.json
+src/governance/semantics_neutral_decommission_authorization_v1.py
 config/governance/explicit_owner_adjudicated_nonproductive_contract_change_authorization_v1.json
 config/governance/explicit_owner_adjudicated_productive_mapping_contract_runtime_bind_authorization_v1.json
 config/governance/explicit_owner_adjudicated_scope_direction_generator_fallback_authorization_v1.json
@@ -382,7 +383,8 @@ BLANKET_ALLOWLIST=false
 MASTER_V2_MUTATION_ALLOWED=false
 ```
 
-Owner: `config/governance/semantics_neutral_decommission_authorization_v1.json`.
+Machinery owner: `src/governance/semantics_neutral_decommission_authorization_v1.py`.
+Bulk convergence owner: `config/governance/bulk_proven_repository_decommission_authorization_v1.json`.
 Attestation: `docs/ops/specs/SEMANTICS_NEUTRAL_DECOMMISSION_AUTHORIZATION_V1.md`.
 
 Eng begrenzte Explicit-Owner-Adjudicated Nonproductive-Contract-Change-Authorization
