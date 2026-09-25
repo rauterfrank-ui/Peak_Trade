@@ -1,27 +1,24 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "070f8940b1ec027f903e9f55a5718dfee8cd35ab",
+  "base_sha": "0ee21504c25ed66e4ef3d949c80a73f0c7abab1d",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/ontology/discovered_terms.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "tests/ops/test_current_system_map_finalization_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "scripts/ops/fast_reference_replay_v1.py",
+    "tests/ops/test_fast_reference_replay_v1.py"
   ],
-  "changed_paths_sha256": "f5627d9e0784c71f4fab0287fa9926baf86a8f3f7010ae2afd078a1e7c335e57",
-  "covered_candidate_paths": [],
+  "changed_paths_sha256": "bb03bfcb9c686addbf69aacb73d2d485032d2dd35f942e1115b77b81ea614ccf",
+  "covered_candidate_paths": [
+    "scripts/ops/fast_reference_replay_v1.py",
+    "tests/ops/test_fast_reference_replay_v1.py"
+  ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "tests/ops/test_current_system_map_finalization_v1.py"
+    "scripts/ops/fast_reference_replay_v1.py",
+    "tests/ops/test_fast_reference_replay_v1.py",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "CURRENT system map finalization: baseline_sha rebound; tier representation (17 FIRST_CLASS); subdomain/gate/treasury/survival epistemic updates; regenerated views; AUTHORITY=NONE.",
+  "reason": "FAST_REFERENCE_REPLAY_V1: thin bounded aggregator around existing pt/ops validators; AUTHORITY_EFFECT=NONE; no structured source or authority-map semantic change.",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED"
+  "verdict": "NO_MAP_IMPACT"
 }

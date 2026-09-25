@@ -283,6 +283,8 @@
         "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
         "config/governance/pdf_v3_3_promotion_relevant_results_registry_v1.json",
         "tests/governance/test_meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py",
-        "tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py"
+        "tests/governance/test_pdf_v3_3_topic_completion_composition_v1.py",
+        "scripts/ops/fast_reference_replay_v1.py",
+        "tests/ops/test_fast_reference_replay_v1.py"
     ]
 }
