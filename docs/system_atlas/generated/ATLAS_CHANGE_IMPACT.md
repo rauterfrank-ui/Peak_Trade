@@ -14,7 +14,7 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=UPDATED
+ATLAS_IMPACT=NONE_WITH_PROOF
 ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6813 B05 Full-Core INSTRUMENT_QUANTITY_METADATA authority owner ratification (scoped OWNER_GO): NAVIGATION_ONLY atlas review; governed-productive instrument metadata producer + enter-live handoff navigation; map open-record PARTIAL rebind; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- Repository convergence frozen-469 outer-shell deletion (STATIC_REMOVAL_PROVEN): NAVIGATION_ONLY atlas review for map_of_truth navigation index; non-current shell removal only; FAST_REFERENCE_REPLAY 12 PASS and bounded MV2/DP 34 PASS on candidate tree; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=B05_INSTRUMENT_METADATA_RATIFICATION_BOUNDED_COMPLETION_V1
+- modified_by=REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
