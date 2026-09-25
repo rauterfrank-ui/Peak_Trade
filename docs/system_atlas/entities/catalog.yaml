@@ -8593,6 +8593,12 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6816 GAP-TRUE-01 EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1: NAVIGATION_ONLY;
+    # ATLAS_AUTHORITY=NONE; GAP_TRUE_01_VERDICT=CLOSED transport-bound; EXECUTABLE_VENUE_PLAN_BOUND;
+    # ENVELOPE_READINESS=true; PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED=true; PRODUCTIVE_REAL_GET_PROVEN=false;
+    # TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false;
+    # POST_COUNT=0; PERMIT_CREATED=false; owner=current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py|
+    # current_productive_full_core_pre_external_closure_v1.py|current_productive_enter_live_29p_join_v1.py.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # WP1_REAL_GET + WP2_DETERMINISTIC_PRE_EXTERNAL + bilateral natural ENTER fixtures;
     # HOST/ONESHOT CRS bind-point aligned to enter-live-29p join (no second CRS owner);
