@@ -1,0 +1,42 @@
+{
+  "contract_name": "post_6828_architecture_closure_v1",
+  "contract_id": "POST_6828_ARCHITECTURE_CLOSURE_V1",
+  "contract_version": "v1",
+  "schema_version": "post_6828_architecture_closure_schema_v1",
+  "ssot_doc": "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
+  "inventory_date": "2026-09-25",
+  "known_proven_baseline_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
+  "workpackage_id": "POST_6828_ARCHITECTURE_CLOSURE_V1",
+  "decision_authority": {
+    "owner_go": "OWNER_GO_POST_6828_ARCHITECTURE_CLOSURE_V1",
+    "owner_go_status": "CONSUMED",
+    "decision_authority_class": "SCOPED_OPERATOR_GO"
+  },
+  "included_work_packages": [
+    "WP-A_UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN",
+    "WP-B_C2_COMPANION_BLOCKING_BOUNDARY",
+    "WP-C_PORTFOLIO_TREASURY_BOUNDARY"
+  ],
+  "child_contracts": [
+    "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+    "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
+    "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json"
+  ],
+  "invariants_preserved": {
+    "ranking_selection_invariants": true,
+    "mv2_dp_sole_trading_decision": true,
+    "treasury_single_source_q0": true,
+    "execution_core_completion": true,
+    "external_effect_fail_closed": true
+  },
+  "markers": {
+    "POST_6828_ARCHITECTURE_CLOSURE_V1": true,
+    "AUTHORITY_EFFECT": "NONE",
+    "RUNTIME_AUTHORIZATION_EFFECT": "NONE",
+    "ARCHITECTURE_CLOSURE_PROVEN": true,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "POST_ALLOWED": false,
+    "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
+    "MAX_POSITIONS_EFFECTIVE": 1
+  }
+}

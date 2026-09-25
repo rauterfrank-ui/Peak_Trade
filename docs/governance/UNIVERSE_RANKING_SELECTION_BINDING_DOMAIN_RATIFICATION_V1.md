@@ -1,0 +1,24 @@
+# Universe ranking selection binding domain ratification v1
+
+See umbrella: `POST_6828_ARCHITECTURE_CLOSURE_V1.md`.
+
+Machine contract: `config/governance/universe_ranking_selection_binding_domain_ratification_v1.json`
+
+Typed anchor: `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py` (`DOMAIN_ID`, `domain_ratification_descriptor_v1`).
+
+```text
+DOMAIN_ID=UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN
+DOMAIN_SCOPE=CURRENT_PRODUCTIVE_SINGLE_FUTURE_PRE_MV2
+FIRST_BOUNDARY=EEA_UNIVERSE_ACQUISITION_INGRESS
+LAST_AUTHORITY_BOUNDARY=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+SHARED_BOUNDARY=CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1
+FIRST_TRADING_DECISION_CONSUMER=run_current_productive_master_v2_runtime_cycle_v1
+SELECTION_AUTHORITY_OWNER=CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1
+TRADING_DECISION_AUTHORITY_OWNER=run_integrated_offline_trading_logic_replay_v1
+RESELECTION_ALLOWED=false
+EXECUTION_RERANK_ALLOWED=false
+REMOVAL_AUTHORIZED=false
+OWNERSHIP_CLOSED_FOR_PRODUCTIVE_SCOPE=true
+```
+
+Cap-2.4 is a **shared boundary seam**, not a Full-Core package member (`CAP24_IS_FULL_CORE_PACKAGE_MEMBER=false`).
