@@ -56,12 +56,12 @@
       "docs/governance/drift_cleanup_plan_v1.md",
       "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
       "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-      "docs/product/evidence/global_runbook_next_workstream_discovery_v1_20260717T025036Z/open_obligations.json"
+      "REMOVED_FGC01_HISTORICAL_PRODUCT_EVIDENCE_ARCHIVE"
     ],
     "evidence_summary": {
       "drift_cleanup_plan_v1_section_b": "Section B structural items (including B-05 Capital/Risk/Sizing owner split) require explicit Operator-GO; no owner judgment in safe-fixes.",
       "inventory_canonical_status_reason": "Bypass paths remain parallel/non-canonical for MV2 scope until separate Operator-GO; OBL_B05 bypass fate remains open.",
-      "obl_b05_classification": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT classified REQUIRES_RUNTIME_GO — architecture/consolidation not auto-decidable by code or map."
+      "obl_b05_classification": "OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT classified REQUIRES_RUNTIME_GO \u2014 architecture/consolidation not auto-decidable by code or map."
     }
   },
   "allowed_operator_fate_tokens_sorted": [

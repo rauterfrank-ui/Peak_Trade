@@ -13,7 +13,7 @@
   "evaluation_instrument_id": "okx:linear_perpetual:1INCH:USDT:USDT:perp",
   "go_token": "GO_MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1",
   "governance_ref": "docs/governance/MV2_ZERO_TRADE_PER_BAR_DECISION_OUTCOME_DIAGNOSTIC_V1.md",
-  "in_repo_evidence_pointer": "docs/product/evidence/mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1_20260717T201114Z",
+  "in_repo_evidence_pointer": "REMOVED_FGC01_HISTORICAL_PRODUCT_EVIDENCE_ARCHIVE",
   "offline_only": true,
   "owner": "research.mv2_zero_trade_per_bar_decision_outcome_diagnostic_v1",
   "panel_entry_bar_count": 185,
