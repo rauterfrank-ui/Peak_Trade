@@ -1,36 +1,37 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "7cb1c5c57bfc486449cf4da361cb621a809e6075",
+  "base_sha": "3c07f57c54d9e1b590a2c44cc91f1aac37ab7b23",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
-    "config/governance/post_6828_architecture_closure_v1.json",
-    "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
-    "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
-    "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md",
-    "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
-    "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md",
-    "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md",
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_AUTHORITY_DECISION_CONTRACT_FREEZE_V1.md",
+    "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
-    "tests/governance/test_post_6828_architecture_closure_v1.py"
+    "tests/governance/test_risk_sizing_authority_decision_contract_freeze_v1.py",
+    "tests/governance/test_risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.py",
+    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
+    "tests/ops/test_peak_trade_post_restoration_remaining_p0_quarantine_v1.py"
   ],
-  "changed_paths_sha256": "971cbac8c309d6a5afc0e5ddf927e4a4d2c2929cbe88043a02ffba1e68bd725e",
+  "changed_paths_sha256": "c537d946289c9aaedc08bf74fc0a148aae612b854bbf4880d10cab1d95afd2f8",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/post_6828_architecture_closure_v1.json",
-    "docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+    "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Post-#6828 architecture closure v1: WP-A domain ratification, WP-B C2 companion blocking boundary, WP-C portfolio/Treasury boundary; open epistemic records in map source; AUTHORITY_EFFECT=NONE; no trading/selection/ranking semantics change."
+  "reason": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure v1: ratify CRS/Q1 canonical owner and Companion C2 authority roles; map epistemic records; Atlas review for PR #6830; AUTHORITY_EFFECT=NONE."
 }

@@ -105,13 +105,14 @@ REQUIRED_DOC_MARKERS = (
     "ORDERS_ENABLED=false",
     "AUTHORITY_EFFECT=NONE",
     "RUNTIME_EFFECT=NONE",
-    "CANONICAL_RISK_SIZING_OWNER=UNRESOLVED",
-    "SINGULAR_REPO_WIDE_OWNER_REQUIRED=false",
+    "CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1",
+    "CANONICAL_RISK_SIZING_OWNER_COUNT=1",
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED=true",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER=src.governance.capital_risk_sizing_v1",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE=mv2_governance_intent_bound",
     "STEP29P_ADMISSIBILITY_AUTHORITY_BOUNDARY=capital_risk_admissibility_owner_v1",
     "PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY=portfolio_capital_reservation_budget_v1",
-    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER=UNRESOLVED",
+    "CANONICAL_RISK_SIZING_AUTHORITY_OWNER=src.governance.capital_risk_sizing_v1",
     "CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED",
     "CANONICAL_EQUITY_OWNER=ops.governed_productive_account_equity_authority_producer_v1",
     "CANONICAL_PRICE_OWNER=ops.governed_productive_reference_price_authority_producer_v1",
@@ -669,7 +670,10 @@ def test_no_authority_escalation_language_in_doc() -> None:
         text,
     )
     assert re.search(r"CANONICAL_EXECUTION_AUTHORITY_OWNER=UNRESOLVED", text)
-    assert re.search(r"CANONICAL_RISK_SIZING_AUTHORITY_OWNER=UNRESOLVED", text)
+    assert re.search(
+        r"CANONICAL_RISK_SIZING_AUTHORITY_OWNER=src\.governance\.capital_risk_sizing_v1",
+        text,
+    )
     assert "CONVERSION_READY=true" not in text
     assert "OWNER_ASSIGNED=true" not in text
     assert "AUTHORITY_ACTIVATION_AUTHORIZED=true" not in text

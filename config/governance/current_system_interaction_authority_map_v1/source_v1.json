@@ -174,7 +174,7 @@
     {
       "id": "capital_risk_sizing",
       "tier": "FIRST_CLASS",
-      "role": "MV2 intent-bound quantity algebra adjudicated to CRS; repo-wide owner UNRESOLVED; parallel bypass owners remain (see open record b05_vs_singular_risk_owner).",
+      "role": "MV2 intent-bound quantity algebra adjudicated to CRS; CANONICAL_RISK_SIZING_OWNER ratified (see open records b05_vs_singular_risk_owner, c2_canonical_risk_sizing_authority_closure_v1); parallel bypass inventory fate-adjudicated non-competing.",
       "canonical_owner_ref": "src.governance.capital_risk_sizing_v1 (mv2_governance_intent_bound quantity algebra only)",
       "authority_class": "PARTIAL",
       "lifecycle": "MV2_SCOPE_ADJUDICATED_REPO_WIDE_UNRESOLVED",
@@ -1949,20 +1949,14 @@
     },
     {
       "id": "b05_vs_singular_risk_owner",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Repo-wide CANONICAL_RISK_SIZING_OWNER remains UNRESOLVED while five parallel productive bypass owners stay reachable; MV2 intent-bound quantity algebra is governance-adjudicated to CRS and STEP-29P admissibility remains a distinct boundary (not CRS quantity). Bypass fate phase CLOSED (5/5). Full-Core B05 authority chains CLOSED on enter-live-29p path (#6817): equity/reference/instrument metadata; does not close Companion C2 (C2_STATUS=UNRESOLVED; CONVERSION_READY=false). Map AUTHORITY=NONE.",
+      "epistemic_class": "PARTIAL",
+      "statement": "CANONICAL_RISK_SIZING_OWNER ratified to src.governance.capital_risk_sizing_v1 (count 1) for productive Full-Core MV2 intent-bound scope; five parallel inventory bypass surfaces remain fate-adjudicated non-competing (DUPLICATE_RISK_SIZING_AUTHORITY_COUNT=0). STEP-29P admissibility remains distinct from CRS quantity. Companion C2 authority roles ratified; CONVERSION_READY=false. Map AUTHORITY=NONE.",
       "evidence_refs": [
-        "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
-        "config/governance/risk_sizing_c2_current_productive_input_authority_closure_v2.json",
-        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-        "config/governance/risk_sizing_c2_input_authority_closure_v1.json",
+        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-        "config/governance/risk_sizing_bypass_fate_operator_adjudication_v1.json",
-        "config/governance/risk_sizing_bypass_fate_implementation_contract_v1.json",
-        "config/governance/risk_sizing_bypass_fate_provenance_binding_v1.json",
-        "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
-        "config/governance/risk_sizing_productive_input_provenance_binding_v1.json",
+        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
+        "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
         "src/governance/capital_risk_sizing_v1.py"
       ]
     },
@@ -2274,11 +2268,22 @@
     {
       "id": "post_6828_c2_companion_blocking_boundary_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; canonical C2 owner remains UNRESOLVED; no companion conversion or sizing owner resolution.",
+      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1 (C2_AUTHORITY_ROLE_RATIFIED; CONVERSION_READY=false).",
       "evidence_refs": [
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
-        "docs/governance/RISK_SIZING_C2_COMPANION_BLOCKING_BOUNDARY_RATIFICATION_V1.md"
+        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+        "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md"
+      ]
+    },
+    {
+      "id": "c2_canonical_risk_sizing_authority_closure_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; no Fraction→Units implementation; AUTHORITY_EFFECT=NONE.",
+      "evidence_refs": [
+        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+        "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
     {

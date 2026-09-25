@@ -100,6 +100,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1 PR_6830
     # atlas_entity_review: POST_6828_ARCHITECTURE_CLOSURE_V1 PR_6829
     # atlas_entity_review: WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1 PR_6828
     # atlas_entity_review: TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827
