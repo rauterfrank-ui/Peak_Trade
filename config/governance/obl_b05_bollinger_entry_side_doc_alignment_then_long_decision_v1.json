@@ -128,14 +128,14 @@
     {
       "layer": "HISTORICAL_EVIDENCE",
       "path": "docs/product/evidence/obl_b05_bollinger_long_semantic_decision_v1_20260717T231700Z/",
-      "statement": "Frozen quantitative baseline; not rewritten",
-      "status": "PRESERVED_NOT_REINTERPRETED"
+      "statement": "Historical in-repo product evidence archive removed in FGC-01; frozen SSOT decision fields remain authoritative.",
+      "status": "ARCHIVE_REMOVED_FGC01"
     },
     {
       "layer": "HISTORICAL_EVIDENCE",
       "path": "docs/product/evidence/obl_b05_entry_exit_producer_side_authority_decision_v1_20260717T220147Z/",
-      "statement": "Frozen BLOCKED_AMBIGUITY audit package",
-      "status": "PRESERVED_NOT_REINTERPRETED"
+      "statement": "Historical in-repo product evidence archive removed in FGC-01; frozen SSOT decision fields remain authoritative.",
+      "status": "ARCHIVE_REMOVED_FGC01"
     },
     {
       "layer": "GENERAL_DEV_GUIDE",

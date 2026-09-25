@@ -47,6 +47,7 @@ terms:
     do_not_confuse_with: "Program Definition of Done; pytest"
 
   - id: TERM:map_of_truth
+    # atlas_term_review: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
     # atlas_term_review: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
     # atlas_term_review: REPO_CONVERGENCE_MARKET_DASHBOARD_HISTORICAL_CHROME_233_OUTER_SHELL_V1
     # atlas_term_review: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
@@ -60,6 +61,8 @@ terms:
     # review; frozen-233 historical chrome evidence deletion; map_authority=NONE; no TERM change.
     # REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1: NAVIGATION_ONLY review; frozen-41
     # docs archive + O5 evidence deletion; map_authority=NONE; no TERM change.
+    # REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1: NAVIGATION_ONLY review; FGC-01
+    # docs/product/evidence historical island removal; map_authority=NONE; no TERM change.
     kind: TERM
     name: Map of Truth
     exact_observed_spellings: ["Map of Truth", PEAK_TRADE_MAP_OF_TRUTH]
@@ -67,7 +70,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
+    modified_by: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
