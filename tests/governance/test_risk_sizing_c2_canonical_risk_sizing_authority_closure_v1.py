@@ -38,9 +38,13 @@ CLOSURE_JSON = (
     / "governance"
     / "risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json"
 )
-FREEZE_JSON = REPO_ROOT / "config" / "governance" / "risk_sizing_authority_decision_contract_freeze_v1.json"
+FREEZE_JSON = (
+    REPO_ROOT / "config" / "governance" / "risk_sizing_authority_decision_contract_freeze_v1.json"
+)
 INVENTORY_JSON = REPO_ROOT / "config" / "governance" / "risk_sizing_owner_inventory_ssot_v1.json"
-WHOLE_CORE_JSON = REPO_ROOT / "config" / "governance" / "whole_core_completion_egress_q0_authority_v1.json"
+WHOLE_CORE_JSON = (
+    REPO_ROOT / "config" / "governance" / "whole_core_completion_egress_q0_authority_v1.json"
+)
 
 
 def _load(path: Path) -> dict:
