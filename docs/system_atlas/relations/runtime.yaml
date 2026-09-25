@@ -1703,6 +1703,8 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py
+      - tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
       - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
       - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py

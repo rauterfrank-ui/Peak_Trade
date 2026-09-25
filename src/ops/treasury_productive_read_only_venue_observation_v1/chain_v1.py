@@ -36,7 +36,9 @@ def execute_treasury_productive_reconciliation_chain_v1(
 ) -> dict[str, Any]:
     interference = prove_treasury_bounded_full_core_reachability_v1()
     if interference.get("ok") is not True:
-        raise TreasuryProductiveReadOnlyVenueObservationError("TREASURY_BOUNDED_REACHABILITY_PROOF_FAIL")
+        raise TreasuryProductiveReadOnlyVenueObservationError(
+            "TREASURY_BOUNDED_REACHABILITY_PROOF_FAIL"
+        )
 
     shadow = evaluate_treasury_shadow_read_only_enforcement_v1(
         observation=observation,

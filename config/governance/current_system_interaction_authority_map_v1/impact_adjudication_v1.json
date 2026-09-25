@@ -6,6 +6,11 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/RUNTIME_GRAPH.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/runtime.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
@@ -21,7 +26,7 @@
     "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
     "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
   ],
-  "changed_paths_sha256": "2440eae768b081860808cc41cce3c6215e41796cfebd5a89f205ed87a1990681",
+  "changed_paths_sha256": "b019aa14f51915f1b9737d8bca3309aaa8a798b8144024fe611387605b139edd",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
