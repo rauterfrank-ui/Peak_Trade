@@ -100,6 +100,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
     # CURRENT_SYSTEM_MAP_FINALIZATION_V1 (PR #6818): NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # map source baseline_sha rebound; tier/subdomain/gate/treasury/survival representation;
     # regenerated docs/governance/current_system_interaction_authority_map_v1/generated/* only;
@@ -122,13 +123,15 @@ entities:
     # REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1: NAVIGATION_ONLY atlas review; frozen-469
     # STATIC_REMOVAL_PROVEN non-current outer-shell deletion; map currency MAP_UPDATE_REQUIRED
     # records repo_convergence_frozen_469_outer_shell_v1; map_authority=NONE; no MOT SSOT change.
+    # REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1: NAVIGATION_ONLY atlas review; frozen-203
+    # AUTHORITY=NONE forensic/ deletion; reconciliation evaluate stale-coupling only; map_authority=NONE.
     kind: NAVIGATION_INDEX
     name: Map of Truth
     epistemic_class: NAVIGATION_ONLY
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1
+    modified_by: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

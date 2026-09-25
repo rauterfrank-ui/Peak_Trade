@@ -413,10 +413,11 @@ _RETAIN_META: dict[str, dict[str, Any]] = {
     "RCN-000026": {
         "identity": "NestedStructuralChild forensic structure type",
         "reason": (
-            "The post_step32 forensic collection remains present with ARTIFACT_AUTHORITY=NONE. "
+            "post_step32 AUTHORITY=NONE forensic tree removed from repository; "
+            "NestedStructuralChild label remains in historical_terminology.yaml only. "
             "Compatible forensic type catalog, not SSOT_CHILD."
         ),
-        "evidence": ["forensic/post_step32_knowledge_integration_v0/"],
+        "evidence": ["docs/system_atlas/census/historical_terminology.yaml"],
         "rejected": ["Moving NestedStructuralChild into carrier index: finding text forbids that"],
     },
     "RCN-000053": {

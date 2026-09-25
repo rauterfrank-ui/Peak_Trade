@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Repository convergence frozen-469 outer-shell deletion (STATIC_REMOVAL_PROVEN): NAVIGATION_ONLY atlas review for map_of_truth navigation index; non-current shell removal only; FAST_REFERENCE_REPLAY 12 PASS and bounded MV2/DP 34 PASS on candidate tree; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
+- Repository convergence frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion: NAVIGATION_ONLY atlas review for map_of_truth navigation index; reconciliation stale-coupling decoupling (RCN-000026/RCN-000053); map currency MAP_UPDATE_REQUIRED; map_authority=NONE; no runtime authority activation. ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1
+- modified_by=REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

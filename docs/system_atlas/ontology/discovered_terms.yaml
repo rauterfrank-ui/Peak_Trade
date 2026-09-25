@@ -47,10 +47,13 @@ terms:
     do_not_confuse_with: "Program Definition of Done; pytest"
 
   - id: TERM:map_of_truth
+    # atlas_term_review: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
     # CURRENT_SYSTEM_MAP_FINALIZATION_V1 (PR #6818): NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # interaction map generated views refresh; no TERM semantic change.
     # REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1: NAVIGATION_ONLY review; frozen-469
     # non-current shell deletion; map_authority=NONE; no TERM semantic change.
+    # REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1: NAVIGATION_ONLY review; frozen-203
+    # forensic/ deletion; map_authority=NONE; no TERM semantic change.
     kind: TERM
     name: Map of Truth
     exact_observed_spellings: ["Map of Truth", PEAK_TRADE_MAP_OF_TRUTH]
@@ -58,7 +61,7 @@ terms:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: REPO_CONVERGENCE_FROZEN_469_OUTER_SHELL_V1
+    modified_by: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
     definition: Navigation/path resolution only. Not semantic SSOT.
     definition_source: docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:

@@ -105,6 +105,7 @@ REQUIRED_PARTIAL_IDS = (
     "runbook_freshness_stamp",
     "survival_suitability_composition_owner",
     "repo_convergence_frozen_469_outer_shell_v1",
+    "repo_convergence_forensic_203_outer_shell_v1",
 )
 
 

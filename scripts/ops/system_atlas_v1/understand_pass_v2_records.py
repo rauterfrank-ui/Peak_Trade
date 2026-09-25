@@ -344,14 +344,14 @@ def remaining_records() -> list[dict[str, Any]]:
             invariants=["not SSOT_CHILD (historical_terminology.yaml)"],
             claims=[
                 _raw(
-                    "05_adjudicated_findings.md F_P19_493: 153 NestedStructuralChild + 340 "
-                    "MarkedVerbatimRegion; must not be fused with broader PARENT_SPAN 4105.",
-                    "forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
-                ),
-                _raw(
                     "historical_terminology.yaml: NestedStructuralChild = Forensic lossless "
                     "structure type; not SSOT_CHILD; FORENSIC_REFERENCE_ONLY.",
                     "docs/system_atlas/census/historical_terminology.yaml",
+                ),
+                _raw(
+                    "post_step32 AUTHORITY=NONE forensic tree removed by repository convergence; "
+                    "153/340 split counts remain historical ledger context only.",
+                    "docs/system_atlas/reconciliation/understand/records/RCN-000026.yaml",
                 ),
             ],
             open_questions=[],
@@ -359,8 +359,8 @@ def remaining_records() -> list[dict[str, Any]]:
             historical_blobs=[],
             historical_commits=["b81d5181c04c2a3dc156d089fc8790ed4419782b"],
             evidence_refs=[
-                "forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
                 "docs/system_atlas/census/historical_terminology.yaml",
+                "docs/system_atlas/reconciliation/understand/records/RCN-000026.yaml",
             ],
             clusters=["archives_legacy"],
         ),

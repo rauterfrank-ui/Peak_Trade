@@ -133,12 +133,12 @@ large files are locator+hash only.
 | A-EXT-T4 | SS-09 | P5 `derived&#47;PEAK_TRADE_TEMPORARY_FORENSIC_WORKING_RUNBOOK.t4-unprojected-relation-loss-register-v1.jsonl` SHA256 `872e1e22fc3e46d8eb3b2975183ca6ce20d1c31fae9992ffd7b863b30db39113` | GAP/RESIDUAL |
 | A-EXT-SWR-PRES | SS-08 | locator `/Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade&#47;forensics&#47;PEAK_TRADE_SW_R_002_FORENSIC_DECISION_SURFACE_PRESERVATION.md` SHA256 `f26f6ec751b35fe95da1414fd2e7ed78ad419efd707d540210e899e6dfe39b3f` | EVIDENCE |
 | A-FSS-NOTE | SS-05 | [`../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md`](../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_ADJUDICATION_CONTRACT_V1.md) | CONTRACT |
-| A-FSS-IMPL | SS-05 | [`../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md`](../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md) | CONTRACT |
+| A-FSS-IMPL | SS-05 | FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION (removed frozen-469 outer shell; not restored) | CONTRACT |
 | A-FSS-DISP | SS-05 | [`../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md`](../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_DISPOSITION_LAYER_V1.md) | CONTRACT |
 | A-FSS-ALIGN | SS-05 | [`../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md`](../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_BINDING_CANDIDATE_ALIGNMENT_INDEX_V1.md) | CONTRACT |
 | A-FSS-DER | SS-06 | `forensics&#47;derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_*` (git reports) | RAW_OUTPUT |
 | A-FSS-BLOBS | SS-09 | P5 `derived&#47;FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMATION_V1&#47;blobs&#47;` | RAW_OUTPUT |
-| A-TR-R3 | SS-13 | [`../../../../forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl`](../../../../forensic/p6_proven_relevant_jsonl_identity_copies_v1/evidence/raw_verbatim_identity_copies_authority_none/transcripts/90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl) | HISTORICAL_STATE |
+| A-TR-R3 | SS-13 | `90a346c4-5419-436a-9d7f-e2a893c4aad5.jsonl` (`forensic&#47;p6_proven_relevant_jsonl_identity_copies_v1&#47;` removed frozen-203) | HISTORICAL_STATE |
 | A-P2 | SS-10 | unresolved empty path; see A-PER-DISC | SOURCE_BINDING |
 | A-CAP21-SPEC | SS-01 adjacent ops spec | [`docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md`](../../../ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md) | CANONICAL_SPEC |
 

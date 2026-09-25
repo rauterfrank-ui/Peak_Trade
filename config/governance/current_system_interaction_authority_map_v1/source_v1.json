@@ -2160,6 +2160,17 @@
         "tests/trading/master_v2/test_naked_mv2_double_play_core_authority_hardening_v1.py",
         "tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py"
       ]
+    },
+    {
+      "id": "repo_convergence_forensic_203_outer_shell_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Repository convergence WP: frozen-203 AUTHORITY=NONE forensic/ outer-shell deletion is non-map-authority physical cleanup only (AUTHORITY=NONE). Diff-bound MAP_UPDATE_REQUIRED records atlas stale-coupling decoupling for RCN-000026/RCN-000053; it does not alter CURRENT authority edges, owners, or trading semantics.",
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "scripts/ops/fast_reference_replay_v1.py",
+        "tests/ops/test_reconciliation_evaluate_pass_v1.py",
+        "tests/ops/test_system_atlas_v1.py"
+      ]
     }
   ]
 }

@@ -130,19 +130,19 @@ def pass_v2_records() -> list[dict[str, Any]]:
             name="NestedStructuralChild forensic structure type",
             historical_names=["NestedStructuralChild"],
             aliases=[],
-            presence="CURRENTLY_PRESENT",
+            presence="CURRENTLY_ABSENT",
             discovered_from=["SURF:forensic_corpus", "SURF:atlas_index"],
             evidence=[
-                "forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md",
                 "docs/system_atlas/census/historical_terminology.yaml",
+                "docs/system_atlas/reconciliation/understand/records/RCN-000026.yaml",
             ],
-            paths=["forensic/post_step32_knowledge_integration_v0/"],
+            paths=["docs/system_atlas/census/historical_terminology.yaml"],
             claims=[
                 {
                     "claim_class": "FORENSIC_RAW_FACT",
-                    "text": "Literal NestedStructuralChild exists in committed forensic extracts.",
+                    "text": "NestedStructuralChild is catalogued in historical_terminology.yaml; committed post_step32 extracts removed.",
                     "evidence": [
-                        "forensic/post_step32_knowledge_integration_v0/05_adjudicated_findings.md"
+                        "docs/system_atlas/census/historical_terminology.yaml",
                     ],
                 },
                 {
