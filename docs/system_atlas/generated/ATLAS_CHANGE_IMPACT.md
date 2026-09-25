@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:companion_shadow_live_fraction_to_units_input_binding_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- C2 + canonical Risk/Sizing authority closure v1 (governance only): ratify src.governance.capital_risk_sizing_v1 as CANONICAL_RISK_SIZING_OWNER (count 1); Companion C2 authority roles ratified; CONVERSION_READY=false; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
+- C2 Companion conversion dependency closure v1 (governance + read-only binding): authoritative producer bindings and LINEAR fraction→units algebra ratified; CONVERSION_READY=true; no Shadow/Live runtime conversion wiring; TRADING_SEMANTICS_CHANGED=false; LIVE_ENABLED=false; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1
+- modified_by=C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
