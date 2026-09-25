@@ -1332,8 +1332,7 @@ named_hits:
 - commit_sha: ed2640ba6f408f0fddd58c2ace2ba2f8dd847e4c
   subject: 'docs(ops): Archive workflow docs integration temp artifacts (#685)'
   has_body: true
-  observed_paths:
-  - docs/ops/_archive/workflow_docs_integration/2026-01-12/
+  observed_paths: []
   observed_labels: []
   epistemic_status: FORENSIC_RAW_FACT
   not_proof_of_component_existence: true
