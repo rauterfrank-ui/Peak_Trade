@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6806 DK execute_network credential join bounded closure: NAVIGATION_ONLY atlas review of full_core composition root; shared EEA/CZ fail-closed credential join wiring; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
+- FC-01 productive execute_network READ credential loader: binds §11.13.5 SecretRef vault + K1 READ session into #6806 join slot; NAVIGATION_ONLY; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=DK_EXECUTE_NETWORK_CREDENTIAL_JOIN_BOUNDED_CLOSURE_V1
+- modified_by=FC_01_EXECUTE_NETWORK_READ_CREDENTIAL_LOADER_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

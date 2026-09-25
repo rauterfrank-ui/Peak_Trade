@@ -45,6 +45,8 @@ PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS: tuple[str, ...] = (
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_execute_network_credential_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
+    "current_productive_execute_network_read_credential_loader_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_29p_common_epoch_handoff_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",

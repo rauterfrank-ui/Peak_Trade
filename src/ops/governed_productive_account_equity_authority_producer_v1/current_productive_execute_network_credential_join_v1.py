@@ -1,8 +1,7 @@
 """CURRENT productive execute_network read-only credential join (EEA/CZ authority).
 
 Single fail-closed credential slot for productive FullCoreProductiveReadOnlyGetTransportV1
-construction. Does not load plaintext secrets in the default stub; runtime may bind the
-loader via productive credential path wiring.
+construction. Default loader binds §11.13.5 SecretRef vault + K1 READ session (#FC-01).
 
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
@@ -12,8 +11,14 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    FullCoreFreshPretradeGetTransportV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_read_credential_loader_v1 import (
+    productive_execute_network_read_credential_loader_v1,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     REQUIRED_CREDENTIAL_CLASS,
@@ -24,8 +29,8 @@ CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS = "CREDENTIAL_HANDLE_FAIL_CLOSED"
 
 
 def productive_fail_closed_credential_unavailable_v1(*_a: Any, **_k: Any) -> Any:
-    """Productive credential loader slot; fail-closed unless runtime-bound."""
-    raise RuntimeError(CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS)
+    """Productive credential loader slot; fail-closed unless vault + SecretRef bind succeeds."""
+    return productive_execute_network_read_credential_loader_v1(*_a, **_k)
 
 
 def bind_productive_read_only_get_transport_for_execute_network_v1(
@@ -65,7 +70,7 @@ def bind_productive_read_only_get_transport_for_execute_network_v1(
 
 def release_productive_credential_handle_v1(handle: Any) -> None:
     if handle is not None:
-        productive_fail_closed_credential_unavailable_v1(handle)
+        productive_fail_closed_credential_unavailable_v1(handle=handle)
 
 
 __all__ = [
