@@ -56,6 +56,8 @@ PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS: tuple[str, ...] = (
     "current_productive_live_execution_port_construction_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_cap72_host_join_to_live_execution_port_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/"
+    "current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
 )
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]

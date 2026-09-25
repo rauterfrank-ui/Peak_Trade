@@ -8573,6 +8573,11 @@ entities:
       kind-set uplift. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6805 DK_ORIGIN_MAIN_CHAIN_INTEGRITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # CHAIN_INTEGRITY=29P_execution_identity_v1 replaces static DK ORIGIN_MAIN_SHA pin;
+    # INDEX_PX_JOIN_SEMANTICS_UNCHANGED=true; MV2_DP_SEMANTICS_UNCHANGED=true;
+    # TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false;
+    # POST_COUNT=0; owner=current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py|current_productive_29p_chain_baseline_contract_v1.py.
     # PR_6804 MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # WIRING=mark.idxPx→ticker.idxPx→/api/v5/market/index-tickers (strip -SWAP); NO_MARKPX_SUBSTITUTION=true;
     # NO_RESELECTION=true; NO_POST=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false;

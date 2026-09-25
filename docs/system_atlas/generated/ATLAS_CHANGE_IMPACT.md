@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,14 +41,12 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:elementary_direction_v1` |
-| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -94,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6804 MV2 tertiary INDEX_PX active join (mark.idxPx→ticker.idxPx→index-tickers): NAVIGATION_ONLY atlas review of full_core composition root, elementary_direction, p5_10 bind contract, and OBSERVES relation; no new Atlas relation; trading/activation semantics unchanged; ATLAS_AUTHORITY=NONE.
+- #6805 DK origin/main chain-integrity remediation: NAVIGATION_ONLY atlas review of full_core composition root; 29P merge-stable execution identity replaces static DK SHA pin; INDEX_PX/MV2/trading semantics unchanged; ATLAS_AUTHORITY=NONE.
 - introduced_by=F1_M9_R1_S01_FAILURE_RECOVERY_REPAIR_V1
-- modified_by=MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1
+- modified_by=DK_ORIGIN_MAIN_CHAIN_INTEGRITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -51,6 +51,10 @@ def test_de_dd_modules_on_protected_chain_surface() -> None:
     assert any("execution_admission_remainder_v1.py" in p for p in paths)
     assert any("live_execution_port_construction_v1.py" in p for p in paths)
     assert any("cap72_host_join_to_live_execution_port_v1.py" in p for p in paths)
+    assert any(
+        "fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py" in p
+        for p in paths
+    )
 
 
 def test_de_does_not_import_cap72_host_join() -> None:
