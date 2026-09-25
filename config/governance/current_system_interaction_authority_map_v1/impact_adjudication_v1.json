@@ -5,17 +5,22 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "f8ee4f0c62cc71166f4ccdbb42860508feac047ce4c360c7fc134272012b4b5d",
+  "changed_paths_sha256": "bf32e09028b88a93c2dce21d9d71c044860cd0052dc0944310bca20310ce42b4",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "POST_6809 CURRENT system authority closure to next real blocker (OWNER_GO): rebind map baseline to 9ab34786; close NAVIGATION_INDEX censuses for optimization_surface_consumer_list and learning_capture_hosts; refresh stale SHA/open-record navigation for authority conflicts; derived authority_view regenerated; map_authority=NONE.",
+  "reason": "POST_6809 CURRENT system authority closure (PR #6810): map baseline rebind, open-record censuses/conflict navigation, NAVIGATION_ONLY System Atlas review for map_of_truth; derived authority_view + ATLAS_CHANGE_IMPACT regenerated; map_authority=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
