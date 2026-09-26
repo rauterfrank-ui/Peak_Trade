@@ -1,0 +1,38 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_V1",
+  "authorized_baseline_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_9_mi_to_optimization_m4_integration_status": "PROVEN_COMPLETE",
+  "d02_edge_id": "d02_mi_to_optimization",
+  "authority_invariants": {
+    "forecast_is_not_decision": true,
+    "confidence_is_not_authority": true,
+    "learning_is_not_promotion": true,
+    "optimization_is_not_promotion": true,
+    "no_automatic_promotion": true,
+    "no_self_deploy": true,
+    "productive_ddo_reducer_unchanged": true,
+    "mv2_dp_unchanged": true,
+    "cap_2_3_unchanged": true,
+    "n_bars_normative_semantics_unchanged": true,
+    "no_promotion_authority_created": true,
+    "no_external_effect_path": true,
+    "risk_sizing_not_optimizable": true,
+    "d02_mi_to_optimization_status": "IMPLEMENTED"
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+    "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+    "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
+    "tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+    "tests/governance/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
+    "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 10 — MI-crossing multi-cycle offline replay and bounded automated offline research loop (d02_multi_cycle_replay_m8; separate Owner authorization)",
+  "next_implementation_boundary": "Phase 10 multi-cycle replay / automated loop only; d02_loop_b durable MI store completion remains independent"
+}

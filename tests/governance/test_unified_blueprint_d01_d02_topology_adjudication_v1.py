@@ -44,10 +44,11 @@ def test_mi_to_learning_marked_implemented_with_phase_8_proof() -> None:
     assert mi_edge["missing_dependency"] is None
 
 
-def test_phase_9_is_next_unproven_dependency_in_summary() -> None:
+def test_phase_10_is_next_unproven_dependency_in_summary() -> None:
     summary = build_adjudication_summary_v1(repo_root=REPO_ROOT)
     assert "d02_mi_to_learning" in summary["PROVEN_COMPLETE_EDGES"]
-    assert "Phase 9" in str(summary["first_unproven_dependency_after_closure"])
+    assert "d02_mi_to_optimization" in summary["PROVEN_COMPLETE_EDGES"]
+    assert "Phase 10" in str(summary["first_unproven_dependency_after_closure"])
 
 
 def test_mi_to_learning_implemented_requires_phase_8_evidence_refs() -> None:
@@ -74,12 +75,12 @@ def test_mi_to_learning_implemented_requires_phase_8_evidence_refs() -> None:
     assert errors == [] or any("Phase 8" in e for e in errors)
 
 
-def test_mi_to_optimization_intake_not_m4_execution() -> None:
+def test_mi_to_optimization_m4_implemented_after_phase_9() -> None:
     doc = _doc()
     edges = {e["edge_id"]: e for e in doc["d02_inter_loop_edges"]}
     mi_opt = edges["d02_mi_to_optimization"]
-    assert mi_opt["implementation_status"] == "PARTIAL"
-    assert "M4" in str(mi_opt.get("missing_dependency") or "")
+    assert mi_opt["implementation_status"] == "IMPLEMENTED"
+    assert mi_opt.get("missing_dependency") is None
 
 
 @pytest.mark.parametrize(
@@ -91,6 +92,7 @@ def test_mi_to_optimization_intake_not_m4_execution() -> None:
         ("d02_meta_to_optimization", "IMPLEMENTED"),
         ("d02_failure_memory", "IMPLEMENTED"),
         ("d02_mi_to_learning", "IMPLEMENTED"),
+        ("d02_mi_to_optimization", "IMPLEMENTED"),
     ],
 )
 def test_proven_edges_classified(edge_id: str, expected_status: str) -> None:

@@ -55,6 +55,14 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.supp
     SUPPORT_INSUFFICIENT_EVIDENCE,
     SUPPORT_SUFFICIENT_EVIDENCE,
 )
+from src.experiments.canonical_optimization_universe_experiment_plane_v1 import (
+    OptimizationUniverseExperimentPlaneRequestV1,
+)
+from src.experiments.canonical_optimization_universe_mi_enriched_m4_intake_v1 import (
+    MiEnrichedM4ClosureRequestV1,
+    MiEnrichedM4IntakeRequestV1,
+    run_mi_enriched_m4_optimization_closure_v1,
+)
 
 ORCHESTRATOR_ID: Final[str] = (
     "peak_trade.learning.market_intelligence_forecast_calibration_offline_orchestrator_v1"
@@ -85,6 +93,8 @@ class OfflineOrchestratorInputV1:
     drift_assessments: Sequence[Mapping[str, Any]] | None = None
     failure_memory_store_root: Any | None = None
     failure_memory_request: CanonicalFailureMemoryRecordRequestV1 | None = None
+    m4_experiment_plane_request: OptimizationUniverseExperimentPlaneRequestV1 | None = None
+    run_mi_enriched_m4_closure: bool = False
 
 
 def run_market_intelligence_offline_orchestrator_cycle_v1(
@@ -191,6 +201,28 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
             request=request.failure_memory_request,
         )
 
+    mi_enriched_m4_closure = None
+    if (
+        request.run_mi_enriched_m4_closure
+        and request.m4_experiment_plane_request is not None
+        and legacy_learning is not None
+        and projections
+    ):
+        mi_enriched_m4_closure = dict(
+            run_mi_enriched_m4_optimization_closure_v1(
+                MiEnrichedM4ClosureRequestV1(
+                    intake_request=MiEnrichedM4IntakeRequestV1(
+                        market_intelligence_research_evidence=projections[0],
+                        plane_request=request.m4_experiment_plane_request,
+                        legacy_learning_evidence=legacy_learning,
+                        mi_learning_evidence_export=(
+                            mi_learning_exports[0] if mi_learning_exports else None
+                        ),
+                    )
+                )
+            )
+        )
+
     return {
         "schema_name": ORCHESTRATOR_SCHEMA,
         "domain": STACK_DOMAIN,
@@ -199,6 +231,7 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
         "calibrations": calibrations,
         "research_projections": projections,
         "optimization_research_input_acks": optimization_acks,
+        "mi_enriched_m4_closure": mi_enriched_m4_closure,
         "decision_attribution_query": dict(attribution),
         "legacy_learning_evidence": legacy_learning,
         "mi_learning_evidence_exports": mi_learning_exports,

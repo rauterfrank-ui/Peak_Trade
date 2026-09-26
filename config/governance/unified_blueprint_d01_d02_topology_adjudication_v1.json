@@ -1,7 +1,7 @@
 {
   "artifact_class": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
   "workpackage_id": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
-  "authorized_baseline_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+  "authorized_baseline_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
   "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md",
   "adjudication_module": "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
   "blueprint_authority": "NONE",
@@ -204,19 +204,22 @@
     {
       "edge_id": "d02_mi_to_optimization",
       "loop": "MI -> Optimization",
-      "producer": "project_market_intelligence_research_evidence_v1",
-      "consumer": "validate_market_intelligence_optimization_research_input_v1",
-      "payload_evidence_class": "MARKET_INTELLIGENCE_OPTIMIZATION_RESEARCH_INPUT_V1 (ACK only)",
-      "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
-      "authority_classification": "OFFLINE_RESEARCH_INPUT_ONLY; not M4 plane execution",
-      "implementation_status": "PARTIAL",
-      "persistence_semantics": "Orchestrator cycle ack list; no experiment plane bind",
-      "replay_semantics": "Offline orchestrator test only",
+      "producer": "project_market_intelligence_research_evidence_v1 + mi_enriched_m4_intake_v1",
+      "consumer": "run_mi_enriched_optimization_universe_experiment_plane_v1",
+      "payload_evidence_class": "MARKET_INTELLIGENCE_OPTIMIZATION_RESEARCH_INPUT_V1 + CANONICAL_M4_PLANE + OPTIMIZATION_EXPERIMENT_EVIDENCE",
+      "owner": "src.experiments.canonical_optimization_universe_mi_enriched_m4_intake_v1",
+      "authority_classification": "OFFLINE_RESEARCH_INPUT_ONLY; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Orchestrator optional mi_enriched_m4_closure; plane/evidence digests; no productive apply",
+      "replay_semantics": "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
       "evidence_refs": [
-        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
-        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+        "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+        "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+        "tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+        "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
+        "tests/governance/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py"
       ],
-      "missing_dependency": "M4 experiment/search consumption of MI-enriched research input (Phase 9)"
+      "missing_dependency": null
     },
     {
       "edge_id": "d02_optimization_to_meta_learning",
@@ -301,6 +304,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 9 — M4 experiment/search consumption of MI-enriched optimization research input (d02_mi_to_optimization beyond offline ACK)",
-  "next_implementation_boundary": "Phase 9 MI→Optimization M4 binding only; Phase 10 and MI-crossing multi-cycle replay require separate authorization"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 10 — MI-crossing multi-cycle offline replay and bounded automated offline research loop (d02_multi_cycle_replay_m8; separate Owner authorization)",
+  "next_implementation_boundary": "Phase 10 multi-cycle replay / automated loop only; d02_loop_b durable MI store completion remains independent"
 }

@@ -137,6 +137,13 @@ def build_optimization_experiment_evidence_from_plane_v1(
     if not isinstance(robustness_digest, Mapping):
         raise CanonicalOptimizationExperimentEvidenceError("ROBUSTNESS_EVIDENCE_DIGEST_MISSING")
 
+    mi_lineage = chain.get("mi_lineage_refs")
+    mi_lineage_digest = None
+    if isinstance(mi_lineage, Mapping):
+        digest_candidate = mi_lineage.get("lineage_digest")
+        if is_valid_sha256_hex(str(digest_candidate or "")):
+            mi_lineage_digest = str(digest_candidate)
+
     evidence_slices = {
         CLASS_SEARCH_EVIDENCE: {
             "search_identity": search_identity,
@@ -164,6 +171,7 @@ def build_optimization_experiment_evidence_from_plane_v1(
             "evidence_kind": "OPAQUE_LINEAGE_REF_ONLY",
             "source_learning_evidence_digest": str(learning_evidence_digest),
             "numeric_calibration_authority": "NONE",
+            "mi_enriched_lineage_digest": mi_lineage_digest,
         },
         CLASS_FAILURE_EVIDENCE: {
             "failure_evidence_count": int(chain.get("failure_evidence_count") or 0),
@@ -201,6 +209,8 @@ def build_optimization_experiment_evidence_from_plane_v1(
         "evidence_slices": evidence_slices,
         "version_bindings": version_bindings,
     }
+    if mi_lineage_digest is not None:
+        reproducibility_body["mi_enriched_lineage_digest"] = mi_lineage_digest
     reproducibility_digest = compute_content_sha256(reproducibility_body)
     record_id = derive_optimization_experiment_evidence_id_v1(plane_identity=plane_identity)
 
@@ -224,6 +234,14 @@ def build_optimization_experiment_evidence_from_plane_v1(
             "plane_result_digest": plane_result.get("result_digest"),
             "offline_context_digest": offline_context.get("context_digest"),
             "decision_config_ref": plane_result.get("decision_config"),
+            "mi_enriched_m4_intake_digest": (
+                dict(chain.get("mi_enriched_m4_intake") or {}).get("intake_digest")
+                if isinstance(chain.get("mi_enriched_m4_intake"), Mapping)
+                else None
+            ),
+            "mi_lineage_refs": (
+                _json_safe(dict(mi_lineage)) if isinstance(mi_lineage, Mapping) else None
+            ),
         },
         "reproducibility_digest": reproducibility_digest,
         "optimization_productive_authority": OPTIMIZATION_PRODUCTIVE_AUTHORITY,
