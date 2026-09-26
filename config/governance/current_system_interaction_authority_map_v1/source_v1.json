@@ -146,6 +146,28 @@
       ]
     },
     {
+      "id": "cap22_robustness_and_stress_b10",
+      "tier": "INTERMEDIATE",
+      "role": "B10 deterministic robustness/stress proof for the current ratified Peak_Trade economic ranking. Reuses B05 feature production and B06 ranking runtime; evaluates walk-forward, sensitivity, missing/invalid/outlier, determinism, and single-feature dominance. Authority effect is NONE: no ranking policy change, no selection, no binding, no live, no execution, and no productive optimization authority.",
+      "canonical_owner_ref": "ops.peak_trade_robustness_and_stress_v1",
+      "authority_class": "NONE",
+      "lifecycle": "ROBUSTNESS_PROOF_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/peak_trade_robustness_and_stress_v1/constants_v1.py",
+        "src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py"
+      ],
+      "evidence_refs": [
+        "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+        "tests/ops/test_peak_trade_robustness_and_stress_v1.py",
+        "src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py"
+      ]
+    },
+    {
       "id": "runtime_binding_cap24",
       "tier": "FIRST_CLASS",
       "role": "Validate-and-bind consumer of the existing Cap 2.3 selected identity and provenance witness. Not a ranking, reranking, or second selection writer.",

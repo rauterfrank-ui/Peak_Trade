@@ -10,6 +10,7 @@ flowchart LR
   bull_bear_sidestate["bull_bear_sidestate PROVEN_CURRENT"]
   c1_confirmation["c1_confirmation PROVEN_CURRENT"]
   cap22_research_backtest_live_parity_b09["cap22_research_backtest_live_parity_b09 PROVEN_CURRENT"]
+  cap22_robustness_and_stress_b10["cap22_robustness_and_stress_b10 PROVEN_CURRENT"]
   capital_risk_sizing["capital_risk_sizing PARTIAL"]
   double_play_capital_slot["double_play_capital_slot UNKNOWN"]
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
@@ -88,6 +89,7 @@ flowchart LR
 | bull_bear_sidestate | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | trading.master_v2.double_play_state | `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py`, `src/trading/master_v2/double_play_state.py` |
 | c1_confirmation | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.stateful_confirmation_and_c1_productive_binding_v1 | `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | cap22_research_backtest_live_parity_b09 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_research_backtest_live_parity_v1 | `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`, `src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py` |
+| cap22_robustness_and_stress_b10 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_robustness_and_stress_v1 | `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `tests/ops/test_peak_trade_robustness_and_stress_v1.py`, `src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py` |
 | capital_risk_sizing | FIRST_CLASS | PARTIAL | PARTIAL | src.governance.capital_risk_sizing_v1 (mv2_governance_intent_bound quantity algebra only) | `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`, `config/governance/risk_sizing_owner_inventory_ssot_v1.json`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `src/governance/capital_risk_sizing_v1.py` |
 | double_play_capital_slot | INTERMEDIATE | UNKNOWN | UNKNOWN | NONE | `src/trading/master_v2/double_play_capital_slot.py` |
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
