@@ -1587,21 +1587,37 @@ entities:
       Cap 2.4.
 
   - id: CAPABILITY:cap_2_3_single_selected_future
+    # B08_REVIEWED_CURRENT_PATH: Cap22 rank consumption; no rescore/rerank; sole selection owner preserved.
     kind: CAPABILITY
     name: Single Selected Future Policy
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    source_paths:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+      - src/ops/single_selected_future_policy_v1/producer_v1.py
+      - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+      - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
+      - src/ops/single_selected_future_policy_v1/__init__.py
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
     evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
       - src/ops/single_selected_future_policy_v1/producer_v1.py
       - src/ops/single_selected_future_policy_v1/selection_v1.py
       - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
       - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
       - src/ops/single_selected_future_policy_v1/__init__.py
     notes: >-
+      B08 records that Cap 2.3 consumes Cap 2.2 ranking order/provenance and
+      preserves sole productive selection ownership without rescoring,
+      reranking, second ranking semantics, or downstream authority transfer.
       Optional same-universe governed pin constrains candidate proposal only.
       Unpinned Cap 2.3 remains the global first-eligible path. Pin does not
       merge, borrow, or fall back across ranking universes. Atlas is not
@@ -1650,14 +1666,21 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    source_paths:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
     notes: >-
       Standing producer-spec role remains RUNTIME_BINDING_CONSUMER.
       CURRENT architectural classification SHARED_BOUNDARY_SEAM is
       persisted by CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1.
+      B08 preserves Cap 2.4 as binding boundary over the Cap 2.3-selected
+      identity; no ranking, reranking, reselection, or authority migration.
       Cap 2.4 is not a Full-Core package member. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
@@ -1766,20 +1789,30 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-    modified_by: PENDING_CHANGE
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     source_paths:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
       - src/ops/single_selected_future_policy_v1/producer_v1.py
       - src/ops/single_selected_future_policy_v1/selection_v1.py
       - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
       - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
       - src/ops/single_selected_future_policy_v1/__init__.py
     evidence_sources:
+      - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
       - src/ops/single_selected_future_policy_v1/producer_v1.py
       - src/ops/single_selected_future_policy_v1/selection_v1.py
       - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
       - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
       - src/ops/single_selected_future_policy_v1/__init__.py
     notes: >-
+      B08 proves this selector consumes the upstream Cap 2.2 ranked order and
+      applies anti-churn/selection as an overlay only; it does not compute
+      economic scores, reorder by independent attractiveness semantics, use
+      profile-only fields for selection, or fall back to venue-native ranking.
       Optional same-universe pin replaces only _pick_top_eligible proposal.
       Existing hysteresis, min-holding, REPLACEMENT_PENDING, EXIT_ONLY, and
       open-position policy remain. CROSS_UNIVERSE_* remain false.
@@ -1791,8 +1824,16 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-    evidence_sources:
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    source_paths:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    evidence_sources:
+      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: >-
+      B08 binds the Cap 2.3 selected identity and ranking/selection provenance
+      through BoundInstrumentV1. Binding is not ranking or selection authority.
 
   - id: HOST:cap72_stateful_host
     kind: HOST
@@ -1990,8 +2031,15 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     unit: identity
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    source_paths:
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: >-
+      B08 extends the identity/provenance witness carried downstream from
+      Cap 2.3 selection to Cap 2.4 binding. It does not grant downstream
+      ranking, selection, or reinterpretation authority.
 
   - id: DATA_CONTRACT:governed_universe_instrument_v1
     kind: DATA_CONTRACT
@@ -5922,7 +5970,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
@@ -5937,6 +5985,7 @@ entities:
       - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/host_binding_v1.py
       - src/ops/dynamic_scope_persistence_binding_v1/models_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/full_economic_reconstruction_verifier_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
@@ -5949,6 +5998,7 @@ entities:
       - src/ops/exit_policy_producer_binding_v1/authority_matrix_v1.py
       - src/ops/exit_policy_producer_binding_v1/parity_v1.py
       - src/ops/exit_policy_producer_binding_v1/producers_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/full_economic_reconstruction_verifier_v1.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Establishes DdoCaptureBindingV0 session context via
@@ -5982,7 +6032,9 @@ entities:
       fail-closed and is not activation. Atlas is not trading
       authority. AUTHORITY_OWNER=NONE.
       PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false.
-      PR 6634 adds non-authorizing learning outcome ingest and opaque
+      B08 verifier coverage observes Cap 2.3 selected identity/provenance at
+      the current productive handoff without creating rank, selection, binding,
+      execution, or live authority. PR 6634 adds non-authorizing learning outcome ingest and opaque
       next_cycle_economic_score_label feedback into horizon input only.
       LEARNING_PRODUCTIVE_AUTHORITY=NONE. EXTERNAL_EFFECT_AUTHORIZED=false.
 

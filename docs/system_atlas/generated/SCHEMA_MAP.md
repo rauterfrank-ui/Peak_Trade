@@ -43,5 +43,5 @@ Drill-down census: `docs/system_atlas/census/schema_like_src.yaml`, `docs/system
 | SCHEMA:pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout | productive_pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout/v1 | json_schema | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | ['docs/ops/schemas/productive_pure_stack_stage2_surface_b_regime_coverage_and_da |
 | SCHEMA:ranking_snapshot_v1 | productive_futures_ranking_snapshot.v1 | evidence_snapshot_serialization | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | ['src/ops/productive_futures_ranking_producer_v1/constants_v1.py', 'src/ops/prod |
 | SCHEMA:runtime_binding_v1 | single_selected_future_runtime_binding.v1 | runtime_binding_serialization | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | ['src/ops/single_selected_future_runtime_binding_v1/constants_v1.py', 'src/ops/s |
-| SCHEMA:single_selected_future_selection_v1 | single_selected_future_selection.v1 | selection_snapshot_serialization | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | ['src/ops/single_selected_future_policy_v1/constants_v1.py'] |
+| SCHEMA:single_selected_future_selection_v1 | single_selected_future_selection.v1 | selection_snapshot_serialization | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | ['src/ops/single_selected_future_policy_v1/constants_v1.py', 'src/ops/single_sel |
 

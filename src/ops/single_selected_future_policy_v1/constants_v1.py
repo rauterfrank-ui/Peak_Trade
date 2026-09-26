@@ -14,8 +14,9 @@ SELECTION_POLICY_ID = "single_selected_future_policy_v1"
 SELECTION_POLICY_VERSION = "v1"
 SELECTION_POLICY_PROVENANCE = (
     "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1 Top-20 candidate context "
-    "+ CAPABILITY_2_3 owner requirements (deterministic single selection, hysteresis, "
-    "min holding, open-position replacement pending, restart recovery, fail-closed). "
+    "+ CAPABILITY_2_3 owner requirements (consume validated upstream rank order without "
+    "rescore/rerank, deterministic single selection, hysteresis, min holding, "
+    "open-position replacement pending, restart recovery, fail-closed). "
     "No dashboard/allowlist authority. No alpha/execution/runtime activation."
 )
 

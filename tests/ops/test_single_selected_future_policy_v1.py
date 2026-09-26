@@ -41,6 +41,7 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (
 from src.ops.single_selected_future_policy_v1.models_v1 import (
     SingleSelectedFutureSelectionV1,
     compute_config_digest_v1,
+    compute_upstream_rank_order_witness_v1,
 )
 from src.ops.single_selected_future_policy_v1.persistence_v1 import (
     SelectionPersistenceError,
@@ -66,6 +67,13 @@ from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
 )
 from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
     synthesize_ready_feature_production_snapshot_v1,
+)
+from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (
+    RANKING_POLICY_ID,
+    RANKING_POLICY_VERSION,
+)
+from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
+    ProductiveFuturesRankingSnapshotV1,
 )
 
 
@@ -141,6 +149,30 @@ def _ranking(rows: list[dict], marks: list[str] | None = None, **kwargs) -> dict
     ).snapshot.to_dict()
 
 
+def _with_authoritative_rank_order(
+    ranking: dict,
+    ordered_native_ids: list[str],
+    *,
+    score_by_native_id: dict[str, float] | None = None,
+) -> dict:
+    by_native = {row["venue_native_id"]: dict(row) for row in ranking["ranked_candidates"]}
+    ranked = []
+    for idx, native_id in enumerate(ordered_native_ids, start=1):
+        row = by_native[native_id]
+        row["rank"] = idx
+        if score_by_native_id and native_id in score_by_native_id:
+            row["total_score"] = score_by_native_id[native_id]
+        ranked.append(row)
+    payload = dict(ranking)
+    payload["ranked_candidates"] = ranked
+    payload["eligible_candidate_count"] = len(ranked)
+    payload["candidate_count_total"] = len(ranked)
+    payload["excluded_candidate_count"] = 0
+    payload["excluded_candidates"] = []
+    payload["integrity_digest"] = ""
+    return ProductiveFuturesRankingSnapshotV1.from_dict(payload).with_integrity_digest().to_dict()
+
+
 def test_constants_and_authority_bounds() -> None:
     assert CAPABILITY_ID == "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
     assert PACKAGE_MARKER == "SINGLE_SELECTED_FUTURE_POLICY_V1=true"
@@ -190,6 +222,87 @@ def test_deterministic_selection_exactly_one() -> None:
     assert a.selection.venue_native_id == b.selection.venue_native_id
     # Lexicographic among equal structural scores: ADA < ETH < SOL
     assert a.selection.venue_native_id == "ADA-USDT-SWAP"
+
+
+def test_b08_consumes_cap22_rank_without_rescore_or_rerank() -> None:
+    ranking = _ranking(
+        [
+            _perp("ADA-USDT-SWAP", base="ADA", ct_val_ccy="ADA"),
+            _perp("SOL-USDT-SWAP", base="SOL", ct_val_ccy="SOL"),
+        ]
+    )
+    upstream = _with_authoritative_rank_order(
+        ranking,
+        ["SOL-USDT-SWAP", "ADA-USDT-SWAP"],
+        score_by_native_id={"SOL-USDT-SWAP": 0.01, "ADA-USDT-SWAP": 999.0},
+    )
+
+    result = produce_single_selected_future_v1(
+        ranking_snapshot=upstream,
+        repository_sha=REPO_SHA,
+        producer_observed_at_unix=OBSERVED_UNIX,
+        instrument_status_by_id={
+            "ADA-USDT-SWAP": {
+                "profile_only_liquidity_label": "best",
+                "profile_only_score": 999999,
+            }
+        },
+    )
+
+    assert result.ok is True
+    assert result.selection.venue_native_id == "SOL-USDT-SWAP"
+    assert result.selection.selected_rank == 1
+    assert result.selection.ranking_policy_id == RANKING_POLICY_ID
+    assert result.selection.ranking_policy_version == RANKING_POLICY_VERSION
+    assert result.selection.ranking_config_digest == upstream["config_digest"]
+    assert result.selection.upstream_rank_order_witness == compute_upstream_rank_order_witness_v1(
+        upstream["ranked_candidates"]
+    )
+    assert result.selection.authority["CAP22_RANK_CONSUMED_BY_CAP23"] is True
+    assert result.selection.authority["CAP23_RESCORE_COUNT"] == 0
+    assert result.selection.authority["CAP23_RERANK_COUNT"] == 0
+    assert result.selection.authority["PROFILE_ONLY_SELECTION_EFFECT"] is False
+
+
+def test_b08_malformed_upstream_rank_order_fails_closed() -> None:
+    ranking = _ranking(
+        [
+            _perp("ADA-USDT-SWAP", base="ADA", ct_val_ccy="ADA"),
+            _perp("SOL-USDT-SWAP", base="SOL", ct_val_ccy="SOL"),
+        ]
+    )
+    payload = _with_authoritative_rank_order(ranking, ["SOL-USDT-SWAP", "ADA-USDT-SWAP"])
+    payload["ranked_candidates"][0]["rank"] = 2
+    payload["ranked_candidates"][1]["rank"] = 1
+    payload["integrity_digest"] = ""
+    malformed = ProductiveFuturesRankingSnapshotV1.from_dict(payload).with_integrity_digest()
+
+    result = produce_single_selected_future_v1(
+        ranking_snapshot=malformed.to_dict(),
+        repository_sha=REPO_SHA,
+        producer_observed_at_unix=OBSERVED_UNIX,
+    )
+
+    assert result.ok is False
+    assert result.selection.state == STATE_NO_SELECTION
+    assert SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value in result.failure_codes
+
+
+def test_b08_missing_upstream_ranking_policy_provenance_fails_closed() -> None:
+    ranking = _ranking([_perp("ETH-USDT-SWAP")])
+    ranking["ranking_policy_id"] = ""
+    ranking["integrity_digest"] = ""
+    malformed = ProductiveFuturesRankingSnapshotV1.from_dict(ranking).with_integrity_digest()
+
+    result = produce_single_selected_future_v1(
+        ranking_snapshot=malformed.to_dict(),
+        repository_sha=REPO_SHA,
+        producer_observed_at_unix=OBSERVED_UNIX,
+    )
+
+    assert result.ok is False
+    assert result.selection.state == STATE_NO_SELECTION
+    assert SelectionFailureCodeV1.RANKING_SCHEMA_MISMATCH.value in result.failure_codes
 
 
 def test_deterministic_tie() -> None:
@@ -432,6 +545,10 @@ def test_hysteresis_prevents_churn() -> None:
     )
     assert held.selection.venue_native_id == "ETH-USDT-SWAP"
     assert SelectionFailureCodeV1.HYSTERESIS_BLOCKS_CHURN.value in held.selection.reason_codes
+    assert held.selection.authority["ANTI_CHURN_AUTHORITY_CLASS"] == (
+        "SELECTION_OVERLAY_ON_UPSTREAM_RANK"
+    )
+    assert held.selection.authority["CAP23_RERANK_COUNT"] == 0
 
 
 def test_open_position_during_refresh_and_replacement_pending() -> None:

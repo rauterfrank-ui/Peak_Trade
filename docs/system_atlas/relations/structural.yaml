@@ -1024,6 +1024,7 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
 
   - id: REL:s_binder_uses_schema
     source: BINDER:bound_instrument_v1
@@ -1040,6 +1041,10 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: >-
+      B08 BoundInstrumentV1 carries Cap 2.3 selected identity plus ranking
+      order/provenance witnesses into binding. It does not confer downstream
+      selection or ranking authority.
 
   - id: REL:s_runbook_has_program_dod
     source: RUNBOOK:canonical_master_runbook

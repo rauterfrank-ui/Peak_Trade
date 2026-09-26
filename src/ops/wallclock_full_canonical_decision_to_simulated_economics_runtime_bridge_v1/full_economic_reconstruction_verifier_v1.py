@@ -44,6 +44,9 @@ class FullEconomicReconstructionResultV1:
 
 
 REQUIRED_CALL_GRAPH: tuple[str, ...] = (
+    "repository_config_integrity_check",
+    "no_order_mode_validation",
+    "activation_state_validation",
     "persisted_single_selected_future",
     "selection_integrity_freshness_validation",
     "ranking_snapshot_reference_validation",
@@ -52,6 +55,9 @@ REQUIRED_CALL_GRAPH: tuple[str, ...] = (
     "single_selected_future_runtime_binding",
     "productive_reconciliation_startup_gate",
     "canonical_decision_runtime_config_bind",
+    "stateful_decision_runtime",
+    "canonical_intent",
+    "simulated_execution_port",
     "okx_public_market_data",
     "distinct_market_observation_acceptor",
     "observation_acceptance_result",

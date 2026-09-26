@@ -55,8 +55,15 @@ schemas:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/constants_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
+    notes: >-
+      B08 records required upstream ranking order/provenance witnesses on the
+      Cap 2.3 selection snapshot. The schema remains a selection snapshot
+      contract and does not become ranking authority.
 
   - id: SCHEMA:runtime_binding_v1
     kind: SCHEMA
@@ -75,10 +82,14 @@ schemas:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/constants_v1.py
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
-    notes: BoundInstrumentV1 is a dataclass DATA_CONTRACT; this SCHEMA_VERSION is the serialization contract. Not equated.
+    notes: >-
+      BoundInstrumentV1 is a dataclass DATA_CONTRACT; this SCHEMA_VERSION is
+      the serialization contract. Not equated. B08 carries the Cap 2.3 selected
+      identity/provenance into binding without downstream reselection.
 
   - id: SCHEMA:ranking_snapshot_v1
     kind: SCHEMA
@@ -106,12 +117,14 @@ schemas:
     name: BoundInstrumentV1 dataclass shape
     schema_kind: python_dataclass_implicit_schema
     source: src/ops/single_selected_future_runtime_binding_v1/models_v1.py
-    definition: Frozen dataclass fields instrument_id, venue_native_id, ranking_snapshot_id, ranking_integrity_digest, universe_snapshot_id, selection_id, selection_integrity_digest, selection_state, selected_future_count, max_positions_effective
+    definition: Frozen dataclass fields instrument_id, venue_native_id, ranking_snapshot_id, ranking_policy_version, ranking_integrity_digest, ranking_order_witness_digest, universe_snapshot_id, selection_id, selection_integrity_digest, selection_state, selected_future_count, max_positions_effective
     fields:
       - instrument_id
       - venue_native_id
       - ranking_snapshot_id
+      - ranking_policy_version
       - ranking_integrity_digest
+      - ranking_order_witness_digest
       - universe_snapshot_id
       - selection_id
       - selection_integrity_digest
@@ -123,9 +136,14 @@ schemas:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
-    notes: Implicit schema enforced by dataclass + to_dict. Distinct from SCHEMA:runtime_binding_v1 version string.
+    notes: >-
+      Implicit schema enforced by dataclass + to_dict. Distinct from
+      SCHEMA:runtime_binding_v1 version string. B08 fields witness the upstream
+      Cap 2.2 order/provenance consumed by Cap 2.3; they do not authorize
+      Cap 2.4 reranking or reselection.
 
   - id: SCHEMA:forensic_document_class
     kind: SCHEMA

@@ -253,7 +253,8 @@ def test_constants_and_authority() -> None:
     assert ORDERS_AUTHORIZED is False
     assert SELECTION_AUTHORITY_OWNER == "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
     assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
-    assert CALL_GRAPH_V1[0] == "persisted_single_selected_future"
+    assert CALL_GRAPH_V1[0] == "repository_config_integrity_check"
+    assert "persisted_single_selected_future" in CALL_GRAPH_V1
     assert "productive_reconciliation_startup_gate" in CALL_GRAPH_V1
     assert CALL_GRAPH_BEFORE[0] == "productive_reconciliation_startup_gate"
 
@@ -277,6 +278,13 @@ def test_exact_native_instrument_binding(tmp_path: Path) -> None:
     assert gate.bound.instrument_id == chain["instrument_id"]
     assert gate.bound.venue_native_id == chain["venue_native_id"]
     assert gate.bound.venue_native_id == "ADA-USDT-SWAP"
+    assert gate.bound.selection_id == chain["selection"].selection_id
+    assert gate.bound.ranking_policy_id == chain["selection"].ranking_policy_id
+    assert gate.bound.ranking_policy_version == chain["selection"].ranking_policy_version
+    assert gate.bound.upstream_rank_order_witness == chain["selection"].upstream_rank_order_witness
+    assert gate.evidence.authority["SELECTION_AUTHORITY_OWNER"] == (
+        "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1"
+    )
 
 
 def test_exactly_one_selected_future_consumed(tmp_path: Path) -> None:

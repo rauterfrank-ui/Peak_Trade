@@ -12,6 +12,10 @@ from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
 from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
     ProductiveFuturesRankingSnapshotV1,
 )
+from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (
+    RANKING_POLICY_ID as CAP22_RANKING_POLICY_ID,
+    RANKING_POLICY_VERSION as CAP22_RANKING_POLICY_VERSION,
+)
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     ALPHA_ALLOWED_DEFAULT,
     CALL_GRAPH,
@@ -46,6 +50,7 @@ from src.ops.single_selected_future_policy_v1.models_v1 import (
     compute_config_digest_v1,
     compute_selection_id_v1,
     compute_selection_input_digest_v1,
+    compute_upstream_rank_order_witness_v1,
 )
 from src.ops.single_selected_future_policy_v1.policy_v1 import (
     candidate_exclusion_codes_v1,
@@ -106,6 +111,10 @@ def _failure_selection(
     ranking_snapshot_id: str = "",
     ranking_integrity_digest: str = "",
     ranking_event_time: str = "",
+    ranking_policy_id: str = "",
+    ranking_policy_version: str = "",
+    ranking_config_digest: str = "",
+    upstream_rank_order_witness: str = "",
     selection_input_digest: str = "",
     previous: SingleSelectedFutureSelectionV1 | None = None,
     state: str = STATE_NO_SELECTION,
@@ -130,6 +139,10 @@ def _failure_selection(
         ranking_snapshot_id=ranking_snapshot_id,
         ranking_integrity_digest=ranking_integrity_digest,
         ranking_event_time=ranking_event_time or event_time,
+        ranking_policy_id=ranking_policy_id,
+        ranking_policy_version=ranking_policy_version,
+        ranking_config_digest=ranking_config_digest,
+        upstream_rank_order_witness=upstream_rank_order_witness,
         selected_at_event_time=event_time or wall_rfc,
         selected_at_wall_time=wall_rfc,
         valid_from=event_time or wall_rfc,
@@ -180,6 +193,12 @@ def _validate_ranking_dict_v1(
         failures.append(SelectionFailureCodeV1.RANKING_CAPABILITY_MISMATCH.value)
     if snap.producer_version != RANKING_PRODUCER_VERSION:
         failures.append(SelectionFailureCodeV1.RANKING_SCHEMA_MISMATCH.value)
+    if snap.ranking_policy_id != CAP22_RANKING_POLICY_ID:
+        failures.append(SelectionFailureCodeV1.RANKING_SCHEMA_MISMATCH.value)
+    if snap.ranking_policy_version != CAP22_RANKING_POLICY_VERSION:
+        failures.append(SelectionFailureCodeV1.RANKING_SCHEMA_MISMATCH.value)
+    if not snap.config_digest:
+        failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value)
     if not snap.ranking_snapshot_id:
         failures.append(SelectionFailureCodeV1.MISSING_RANKING_SNAPSHOT_ID.value)
     recomputed = snap.compute_integrity_digest()
@@ -202,6 +221,12 @@ def _validate_ranking_dict_v1(
     if snap.selection_authority_created:
         # Cap 2.2 must not claim selection authority.
         failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value)
+    ranks = [int(row.rank) for row in snap.ranked_candidates]
+    if ranks and ranks != list(range(1, len(ranks) + 1)):
+        failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value)
+    for row in snap.ranked_candidates:
+        if not row.canonical_instrument_id or not row.venue_native_id:
+            failures.append(SelectionFailureCodeV1.RANKING_SNAPSHOT_INVALID.value)
 
     return snap, tuple(sorted(set(failures)))
 
@@ -216,16 +241,9 @@ def _pick_top_eligible(
     Optional[Mapping[str, Any]], tuple[str, ...], list[tuple[Mapping[str, Any], tuple[str, ...]]]
 ]:
     evaluated: list[tuple[Mapping[str, Any], tuple[str, ...]]] = []
-    # Deterministic: rank asc, then venue_native_id, then canonical_instrument_id.
-    ordered = sorted(
-        ranked,
-        key=lambda c: (
-            int(c.get("rank") or 10**9),
-            str(c.get("venue_native_id") or ""),
-            str(c.get("canonical_instrument_id") or ""),
-        ),
-    )
-    for cand in ordered:
+    # B08: consume the already-validated Cap 2.2 order. Do not sort by score,
+    # attractiveness, native venue id, or any second ranking policy here.
+    for cand in ranked:
         cid = str(cand.get("canonical_instrument_id") or "")
         native = str(cand.get("venue_native_id") or "")
         status = None
@@ -240,7 +258,7 @@ def _pick_top_eligible(
         evaluated.append((cand, codes))
         if is_selection_eligible_v1(codes):
             return cand, (), evaluated
-    if not ordered:
+    if not ranked:
         return None, (SelectionFailureCodeV1.NO_CANDIDATES.value,), evaluated
     # Aggregate top exclusion reasons for evidence.
     top_codes = (
@@ -421,6 +439,24 @@ def produce_single_selected_future_v1(
                 ranking_event_time=(
                     ranking.event_time if ranking is not None else previous.ranking_event_time
                 ),
+                ranking_policy_id=(
+                    ranking.ranking_policy_id if ranking is not None else previous.ranking_policy_id
+                ),
+                ranking_policy_version=(
+                    ranking.ranking_policy_version
+                    if ranking is not None
+                    else previous.ranking_policy_version
+                ),
+                ranking_config_digest=(
+                    ranking.config_digest if ranking is not None else previous.ranking_config_digest
+                ),
+                upstream_rank_order_witness=(
+                    compute_upstream_rank_order_witness_v1(
+                        [c.to_dict() for c in ranking.ranked_candidates]
+                    )
+                    if ranking is not None
+                    else previous.upstream_rank_order_witness
+                ),
                 selected_at_event_time=previous.selected_at_event_time,
                 selected_at_wall_time=wall_rfc,
                 valid_from=previous.valid_from,
@@ -469,15 +505,30 @@ def produce_single_selected_future_v1(
             ranking_snapshot_id=ranking.ranking_snapshot_id if ranking is not None else "",
             ranking_integrity_digest=ranking.integrity_digest if ranking is not None else "",
             ranking_event_time=ranking.event_time if ranking is not None else "",
+            ranking_policy_id=ranking.ranking_policy_id if ranking is not None else "",
+            ranking_policy_version=ranking.ranking_policy_version if ranking is not None else "",
+            ranking_config_digest=ranking.config_digest if ranking is not None else "",
+            upstream_rank_order_witness=(
+                compute_upstream_rank_order_witness_v1(
+                    [c.to_dict() for c in ranking.ranked_candidates]
+                )
+                if ranking is not None
+                else ""
+            ),
             previous=previous,
         )
         return SelectionProduceResultV1(sel, False, True, sel.failure_codes, True)
 
     ranked = [c.to_dict() for c in ranking.ranked_candidates]
+    upstream_rank_order_witness = compute_upstream_rank_order_witness_v1(ranked)
     input_digest = compute_selection_input_digest_v1(
         ranking_snapshot_id=ranking.ranking_snapshot_id,
         ranking_integrity_digest=ranking.integrity_digest,
         ranking_event_time=ranking.event_time,
+        ranking_policy_id=ranking.ranking_policy_id,
+        ranking_policy_version=ranking.ranking_policy_version,
+        ranking_config_digest=ranking.config_digest,
+        upstream_rank_order_witness=upstream_rank_order_witness,
         config_digest=config_digest,
         open_position_instrument_id=open_position_instrument_id or "",
         instrument_status_overlay=dict(instrument_status_by_id or {}),
@@ -539,6 +590,10 @@ def produce_single_selected_future_v1(
                 ranking_snapshot_id=ranking.ranking_snapshot_id,
                 ranking_integrity_digest=ranking.integrity_digest,
                 ranking_event_time=ranking.event_time,
+                ranking_policy_id=ranking.ranking_policy_id,
+                ranking_policy_version=ranking.ranking_policy_version,
+                ranking_config_digest=ranking.config_digest,
+                upstream_rank_order_witness=upstream_rank_order_witness,
                 selected_at_event_time=previous.selected_at_event_time,
                 selected_at_wall_time=wall_rfc,
                 valid_from=previous.valid_from,
@@ -584,6 +639,10 @@ def produce_single_selected_future_v1(
             ranking_snapshot_id=ranking.ranking_snapshot_id,
             ranking_integrity_digest=ranking.integrity_digest,
             ranking_event_time=ranking.event_time,
+            ranking_policy_id=ranking.ranking_policy_id,
+            ranking_policy_version=ranking.ranking_policy_version,
+            ranking_config_digest=ranking.config_digest,
+            upstream_rank_order_witness=upstream_rank_order_witness,
             selection_input_digest=input_digest,
             previous=previous,
         )
@@ -788,6 +847,10 @@ def produce_single_selected_future_v1(
         ranking_snapshot_id=ranking.ranking_snapshot_id,
         ranking_integrity_digest=ranking.integrity_digest,
         ranking_event_time=ranking.event_time,
+        ranking_policy_id=ranking.ranking_policy_id,
+        ranking_policy_version=ranking.ranking_policy_version,
+        ranking_config_digest=ranking.config_digest,
+        upstream_rank_order_witness=upstream_rank_order_witness,
         selected_at_event_time=selected_at_event,
         selected_at_wall_time=wall_rfc,
         valid_from=valid_from,

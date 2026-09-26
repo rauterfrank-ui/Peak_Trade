@@ -86,6 +86,10 @@ class SingleSelectedFutureSelectionV1:
     authority: Mapping[str, Any] = field(default_factory=dict)
     call_graph: tuple[str, ...] = ()
     failure_codes: tuple[str, ...] = ()
+    ranking_policy_id: str = ""
+    ranking_policy_version: str = ""
+    ranking_config_digest: str = ""
+    upstream_rank_order_witness: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -98,6 +102,10 @@ class SingleSelectedFutureSelectionV1:
             "ranking_snapshot_id": self.ranking_snapshot_id,
             "ranking_integrity_digest": self.ranking_integrity_digest,
             "ranking_event_time": self.ranking_event_time,
+            "ranking_policy_id": self.ranking_policy_id,
+            "ranking_policy_version": self.ranking_policy_version,
+            "ranking_config_digest": self.ranking_config_digest,
+            "upstream_rank_order_witness": self.upstream_rank_order_witness,
             "selected_at_event_time": self.selected_at_event_time,
             "selected_at_wall_time": self.selected_at_wall_time,
             "valid_from": self.valid_from,
@@ -155,6 +163,10 @@ class SingleSelectedFutureSelectionV1:
             ranking_snapshot_id=self.ranking_snapshot_id,
             ranking_integrity_digest=self.ranking_integrity_digest,
             ranking_event_time=self.ranking_event_time,
+            ranking_policy_id=self.ranking_policy_id,
+            ranking_policy_version=self.ranking_policy_version,
+            ranking_config_digest=self.ranking_config_digest,
+            upstream_rank_order_witness=self.upstream_rank_order_witness,
             selected_at_event_time=self.selected_at_event_time,
             selected_at_wall_time=self.selected_at_wall_time,
             valid_from=self.valid_from,
@@ -202,6 +214,10 @@ class SingleSelectedFutureSelectionV1:
             ranking_snapshot_id=str(payload.get("ranking_snapshot_id") or ""),
             ranking_integrity_digest=str(payload.get("ranking_integrity_digest") or ""),
             ranking_event_time=str(payload.get("ranking_event_time") or ""),
+            ranking_policy_id=str(payload.get("ranking_policy_id") or ""),
+            ranking_policy_version=str(payload.get("ranking_policy_version") or ""),
+            ranking_config_digest=str(payload.get("ranking_config_digest") or ""),
+            upstream_rank_order_witness=str(payload.get("upstream_rank_order_witness") or ""),
             selected_at_event_time=str(payload.get("selected_at_event_time") or ""),
             selected_at_wall_time=str(payload.get("selected_at_wall_time") or ""),
             valid_from=str(payload.get("valid_from") or ""),
@@ -262,6 +278,18 @@ def authority_block() -> dict[str, Any]:
         "SELECTION_AUTHORITY_OWNER_SINGLE": True,
         "AUTHORITY_OWNER": CAPABILITY_ID,
         "OWNER": OWNER,
+        "B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1": True,
+        "CAP22_RANK_CONSUMED_BY_CAP23": True,
+        "CAP23_RESCORE_COUNT": 0,
+        "CAP23_RERANK_COUNT": 0,
+        "CAP23_RANKING_AUTHORITY_ADDED": False,
+        "CAP23_UPSTREAM_ORDER_CONSUMPTION": "VALIDATED_PRODUCTIVE_CAP22_ORDER_ONLY",
+        "ANTI_CHURN_AUTHORITY_CLASS": "SELECTION_OVERLAY_ON_UPSTREAM_RANK",
+        "CAP24_HANDOFF_IS_SELECTED_IDENTITY_ONLY": True,
+        "PROFILE_ONLY_SELECTION_EFFECT": False,
+        "DOWNSTREAM_RESELECTION_EFFECT": False,
+        "CROSS_UNIVERSE_AUTHORITY": "NONE",
+        "LIVE_EXTERNAL_EFFECT_AUTHORIZED": False,
         "DASHBOARD_AUTHORITY": False,
         "DASHBOARD_ROLE": "READ_ONLY_CONSUMER",
         "SELECTION_AUTHORITY_ADDED": True,
@@ -353,6 +381,10 @@ def compute_selection_input_digest_v1(
     ranking_snapshot_id: str,
     ranking_integrity_digest: str,
     ranking_event_time: str,
+    ranking_policy_id: str,
+    ranking_policy_version: str,
+    ranking_config_digest: str,
+    upstream_rank_order_witness: str,
     config_digest: str,
     open_position_instrument_id: str,
     instrument_status_overlay: Mapping[str, Any] | None,
@@ -361,8 +393,28 @@ def compute_selection_input_digest_v1(
         "ranking_snapshot_id": ranking_snapshot_id,
         "ranking_integrity_digest": ranking_integrity_digest,
         "ranking_event_time": ranking_event_time,
+        "ranking_policy_id": ranking_policy_id,
+        "ranking_policy_version": ranking_policy_version,
+        "ranking_config_digest": ranking_config_digest,
+        "upstream_rank_order_witness": upstream_rank_order_witness,
         "config_digest": config_digest,
         "open_position_instrument_id": open_position_instrument_id or "",
         "instrument_status_overlay": dict(instrument_status_overlay or {}),
     }
+    return sha256_hex(canonical_json_dumps(payload))
+
+
+def compute_upstream_rank_order_witness_v1(
+    ranked_candidates: Sequence[Mapping[str, Any]],
+) -> str:
+    """Witness the exact Cap 2.2 ordered candidate identity consumed by Cap 2.3."""
+    payload = [
+        {
+            "rank": int(row.get("rank") or 0),
+            "canonical_instrument_id": str(row.get("canonical_instrument_id") or ""),
+            "venue_native_id": str(row.get("venue_native_id") or ""),
+            "total_score": float(row.get("total_score") or 0.0),
+        }
+        for row in ranked_candidates
+    ]
     return sha256_hex(canonical_json_dumps(payload))
