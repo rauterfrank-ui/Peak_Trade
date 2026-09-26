@@ -1520,6 +1520,31 @@
       ]
     },
     {
+      "id": "mi_offline_typed_export_to_learning_path",
+      "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "to_domain": "learning_ddo",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only",
+      "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "consumer": "learning_ddo",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_TYPED_EVIDENCE_EXPORT_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "FORECAST_EVIDENCE_ID_SURVIVES_JOIN_AND_EXPORT",
+      "temporal_binding": "NO_LOOKAHEAD_TEMPORAL_INTEGRITY_DIGEST",
+      "version_binding": "UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1",
+      "provenance_binding": "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json",
+        "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py"
+      ]
+    },
+    {
       "id": "mi_offline_to_optimization_research_input",
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
@@ -2314,9 +2339,10 @@
         "learning_ddo",
         "optimization_universe"
       ],
-      "purpose": "Offline MI forecast/calibration compose and research intake. MI→Learning typed export NOT_IMPLEMENTED (Phase 8).",
+      "purpose": "Offline MI forecast/calibration compose, typed MI→Learning export (Phase 8 IMPLEMENTED), and optimization research intake ACK (M4 execution Phase 9).",
       "forward_edges": [
         "mi_offline_compose_ddo_n_bars_outcome",
+        "mi_offline_typed_export_to_learning_path",
         "mi_offline_to_optimization_research_input"
       ],
       "return_edges": [],
@@ -2946,7 +2972,7 @@
     {
       "id": "unified_blueprint_d02_inter_loop_matrix",
       "epistemic_class": "PARTIAL",
-      "statement": "Unified Blueprint Phase 5 D02 closed as CURRENT adjudication only (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). NOT_IMPLEMENTED: d02_mi_to_learning (Phase 8 typed export). PARTIAL: d02_mi_to_optimization (offline intake ACK, not M4 execution); d02_multi_cycle_replay_m8 (no MI-crossing replay). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory.",
+      "statement": "Unified Blueprint D02 CURRENT adjudication (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). IMPLEMENTED: d02_mi_to_learning (Phase 8 typed export; UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1). PARTIAL: d02_mi_to_optimization (offline intake ACK, not M4 execution); d02_multi_cycle_replay_m8 (no MI-crossing replay); d02_loop_b_market_intelligence_offline (durable MI evidence store still partial). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory.",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",

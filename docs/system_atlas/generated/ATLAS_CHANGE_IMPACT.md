@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1`.
 
 ## Workflow
 
@@ -41,6 +41,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1` |
+| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
 | `NAVIGATION_INDEX:map_of_truth` |
 
 ## CHANGED_RELATIONS
@@ -48,6 +50,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `REL:s_map_navigates_unified_blueprint_d01_d02_topology_adjudication_v1` |
+| `REL:s_map_navigates_unified_blueprint_phase_8_mi_to_learning_integration_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Unified Blueprint Phase 4 D01 and Phase 5 D02 CURRENT-bound topology adjudication. Refreshes interaction map navigation census to origin/main @ 32171b35; adds D02 inter-loop matrix with NOT_IMPLEMENTED MI→Learning (Phase 8). AUTHORITY=NONE.
-- introduced_by=UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1
-- modified_by=UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1
+- Unified Blueprint Phase 8 closes d02_mi_to_learning typed MI→Learning export path; updates D02 adjudication and interaction map edge mi_offline_typed_export_to_learning_path. AUTHORITY=NONE.
+- introduced_by=UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
+- modified_by=UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

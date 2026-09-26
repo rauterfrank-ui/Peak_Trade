@@ -39,6 +39,12 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_o
     MarketIntelligenceOptimizationResearchInputRequestV1,
     validate_market_intelligence_optimization_research_input_v1,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_learning_export_v1 import (
+    export_mi_learning_evidence_onto_learning_path_v1,
+)
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_to_learning_evidence_bridge_v1 import (
+    compose_mi_to_learning_evidence_v1,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_research_evidence_v1 import (
     project_market_intelligence_research_evidence_v1,
 )
@@ -99,6 +105,7 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
     forecasts: list[dict[str, Any]] = []
     calibrations: list[dict[str, Any]] = []
     projections: list[dict[str, Any]] = []
+    mi_learning_exports: list[dict[str, Any]] = []
 
     for scenario in request.scenarios:
         forecast = mint_forecast_evidence_v1(
@@ -141,6 +148,23 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
         forecasts.append(dict(forecast))
         calibrations.append(dict(calib))
         projections.append(dict(projection))
+        mi_learning = compose_mi_to_learning_evidence_v1(
+            forecast_evidence=forecast,
+            evaluation_observation=obs,
+            realized_direction=scenario.realized_direction,
+            legacy_learning_evidence_ref=(
+                str(legacy_learning["record_id"]) if legacy_learning is not None else None
+            ),
+            provenance={"orchestrator_id": ORCHESTRATOR_ID},
+        )
+        mi_learning_exports.append(
+            dict(
+                export_mi_learning_evidence_onto_learning_path_v1(
+                    mi_learning,
+                    legacy_learning_evidence=legacy_learning,
+                )
+            )
+        )
 
     optimization_acks = [
         dict(
@@ -177,6 +201,7 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
         "optimization_research_input_acks": optimization_acks,
         "decision_attribution_query": dict(attribution),
         "legacy_learning_evidence": legacy_learning,
+        "mi_learning_evidence_exports": mi_learning_exports,
         "failure_memory_replay": failure_memory_trace,
         "runtime_reachability": False,
         "external_effect_authorized": False,

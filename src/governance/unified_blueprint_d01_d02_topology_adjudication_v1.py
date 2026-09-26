@@ -18,6 +18,9 @@ NORMATIVE_SPEC: Final[str] = (
 ADJUDICATION_CONFIG: Final[str] = (
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json"
 )
+PHASE_8_INTEGRATION_CONFIG: Final[str] = (
+    "config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json"
+)
 MAP_SOURCE: Final[str] = (
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
 )
@@ -149,8 +152,26 @@ def validate_d02_edges(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
 
     by_id = {str(e["edge_id"]): e for e in edges if isinstance(e, dict) and e.get("edge_id")}
     mi_learning = by_id.get("d02_mi_to_learning")
-    if mi_learning and mi_learning.get("implementation_status") != "NOT_IMPLEMENTED":
-        errors.append("d02_mi_to_learning must remain NOT_IMPLEMENTED until Phase 8")
+    if mi_learning:
+        mi_status = str(mi_learning.get("implementation_status") or "")
+        phase8_path = repo_root / PHASE_8_INTEGRATION_CONFIG
+        if mi_status == "IMPLEMENTED":
+            if not phase8_path.is_file():
+                errors.append("d02_mi_to_learning IMPLEMENTED but Phase 8 config missing")
+            else:
+                from src.governance.unified_blueprint_phase_8_mi_to_learning_integration_v1 import (
+                    prove_unified_blueprint_phase_8_mi_to_learning_integration_v1,
+                )
+
+                if not prove_unified_blueprint_phase_8_mi_to_learning_integration_v1(
+                    repo_root=repo_root
+                ):
+                    errors.append("d02_mi_to_learning IMPLEMENTED but Phase 8 proof failed")
+        elif mi_status == "NOT_IMPLEMENTED":
+            if not mi_learning.get("missing_dependency"):
+                errors.append("d02_mi_to_learning NOT_IMPLEMENTED must document missing_dependency")
+        elif mi_status not in IMPLEMENTATION_STATUSES:
+            errors.append(f"d02_mi_to_learning bad status: {mi_status}")
     mi_opt = by_id.get("d02_mi_to_optimization")
     if mi_opt and mi_opt.get("implementation_status") == "IMPLEMENTED":
         errors.append("d02_mi_to_optimization cannot be IMPLEMENTED (intake ACK only)")
