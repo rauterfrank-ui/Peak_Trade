@@ -1,20 +1,18 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
-modified_by: UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
+introduced_by: UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
+modified_by: UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Phase 25 DP Attribution (attribution_evidence_v1); MARKET_CONTEXT + MV2/DP
-  decision refs + REALIZED_BEHAVIOR PIT join; reuses Phase 14 compose;
-  AUTHORITY=NONE; no trading gate.
+  Phase 26 final closed-cycle DoD adjudication matrix; reproves Loops A/B/C,
+  meta routing, incremental research, DP attribution; AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:unified_blueprint_phase_25_dp_attribution_v1
-  - RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1
+  - RUNTIME_COMPONENT:unified_blueprint_phase_26_final_closed_cycle_dod_v1
 changed_relations:
-  - REL:s_map_navigates_unified_blueprint_phase_25_dp_attribution_v1
-  - REL:s_phase_25_contains_dp_attribution_evidence_v1
+  - REL:s_map_navigates_unified_blueprint_phase_26_final_closed_cycle_dod_v1
+  - REL:s_phase_26_references_phase_25_closure_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

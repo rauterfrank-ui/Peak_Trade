@@ -1246,6 +1246,11 @@ POST, or substitute trading decisions.
   compose; AUTHORITY=NONE; no trading gate):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py`
+- Unified Blueprint Phase 26 Final Closed-Cycle DoD (Loops A/B/C + meta routing +
+  incremental research + DP attribution adjudication matrix; AUTHORITY=NONE;
+  final adjudication only):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md`
+  / `src/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

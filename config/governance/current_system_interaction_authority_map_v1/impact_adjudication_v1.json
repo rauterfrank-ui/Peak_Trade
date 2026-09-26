@@ -1,14 +1,15 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "90183c9be6f1d8fa70e9cb59f900c1a6c85195ee",
+  "base_sha": "6d44e30de03277c01a43f0e6feb90f4a84ef6c5a",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
+    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_matrix_v1.json",
+    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -19,19 +20,17 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_25_dp_attribution_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
-    "tests/governance/test_unified_blueprint_phase_25_dp_attribution_v1.py",
-    "tests/learning/test_phase_25_dp_attribution_evidence_v1.py"
+    "src/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.py",
+    "tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py"
   ],
-  "changed_paths_sha256": "52e5e8c44ce6dcf16db83400cc05b714873db4fe3a984fad5bbf322cb991c0b8",
+  "changed_paths_sha256": "74cb09a70aa7776d33290e174ce1910ce8566978c649477f8bb88d738d7a9bd5",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
-    "tests/governance/test_unified_blueprint_phase_25_dp_attribution_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
+    "tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 25 DP Attribution (attribution_evidence_v1); MARKET_CONTEXT + MV2/DP decision refs + REALIZED_BEHAVIOR PIT join; map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE; no trading gate."
+  "reason": "Phase 26 final closed-cycle DoD adjudication matrix; reproves Loops A/B/C and Phase 16-25; map source, atlas catalog/relations, derived views updated; AUTHORITY=NONE."
 }

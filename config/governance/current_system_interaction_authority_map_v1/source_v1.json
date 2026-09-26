@@ -2792,8 +2792,11 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 25 DP Attribution (attribution_evidence_v1: MARKET_CONTEXT(t)+existing MV2/Double-Play decision refs+REALIZED_BEHAVIOR(t+N); reuses Phase 14 compose; AUTHORITY=NONE; no trading gate). Phase 24 Loop C PROVEN. Phase 23 Meta dual routing PROVEN. Post–Phase 15 DoD PROVEN_COMPLETE (13/13). Governed runtime apply beyond M10 remains separate Owner decision.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 26 Final Closed-Cycle DoD (Loops A/B/C + meta routing + incremental research + DP attribution adjudication matrix; reproves Phase 16–25; AUTHORITY=NONE). Phase 25 DP Attribution PROVEN. Phase 24 Loop C PROVEN. Governed runtime apply beyond M10 remains separate Owner decision.",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
+        "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_matrix_v1.json",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md",
         "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md",
         "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",
