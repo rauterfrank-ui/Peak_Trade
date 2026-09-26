@@ -185,19 +185,21 @@
     {
       "edge_id": "d02_mi_to_learning",
       "loop": "MI -> Learning",
-      "producer": "CalibrationEvidence / MI research projection",
-      "consumer": "learning_evidence_export_v1 / learning_state ingest",
-      "payload_evidence_class": "Typed MI calibration in learning export path",
-      "owner": "UNASSIGNED_PHASE_8",
+      "producer": "mi_to_learning_evidence_bridge_v1 + mi_learning_evidence_learning_export_v1",
+      "consumer": "learning_evidence_export_v1 path / explicit MI typed consumer route",
+      "payload_evidence_class": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE + learning export path bundle",
+      "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
       "authority_classification": "LEARNING_IS_NOT_PROMOTION; productive DDO seam unchanged",
-      "implementation_status": "NOT_IMPLEMENTED",
-      "persistence_semantics": "Only legacy_learning_evidence_ref on MI projection; DDO reducers unchanged",
-      "replay_semantics": "NONE",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "MiLearningEvidenceStoreV1 append-only; DDO reducers unchanged",
+      "replay_semantics": "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
       "evidence_refs": [
-        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
-        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py"
+        "config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json",
+        "tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py"
       ],
-      "missing_dependency": "Unified Blueprint Phase 8 typed export/ingest of forecast/outcome/calibration into learning evidence path"
+      "missing_dependency": null
     },
     {
       "edge_id": "d02_mi_to_optimization",
@@ -299,6 +301,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 8 — typed MI forecast/outcome/calibration export into existing learning_evidence_export_v1 path without productive DDO reducer mutation",
-  "next_implementation_boundary": "Phase 8 Learning integration only; Phase 9+ forbidden in same slice without separate authorization"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 9 — M4 experiment/search consumption of MI-enriched optimization research input (d02_mi_to_optimization beyond offline ACK)",
+  "next_implementation_boundary": "Phase 9 MI→Optimization M4 binding only; Phase 10 and MI-crossing multi-cycle replay require separate authorization"
 }

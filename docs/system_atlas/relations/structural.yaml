@@ -2099,6 +2099,19 @@ relations:
       Navigation only. D01/D02 topology census and inter-loop adjudication;
       AUTHORITY=NONE; not SSOT. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_8_mi_to_learning_integration_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json
+    notes: >
+      Navigation only. Phase 8 MI→Learning typed export closure; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_t016_learning_blueprint_provenance
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

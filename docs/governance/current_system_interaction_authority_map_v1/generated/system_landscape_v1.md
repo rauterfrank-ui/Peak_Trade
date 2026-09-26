@@ -75,6 +75,7 @@ flowchart LR
   meta_learning --> optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 --> learning_ddo
   market_intelligence_forecast_calibration_offline_stack_d03 --> optimization_universe
+  market_intelligence_forecast_calibration_offline_stack_d03 --> learning_ddo
   mv2_double_play --> execution_external_effect
   mv2_double_play --> capital_risk_sizing
   mv2_double_play --> execution_external_effect

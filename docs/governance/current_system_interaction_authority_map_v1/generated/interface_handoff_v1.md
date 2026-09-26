@@ -30,6 +30,7 @@ flowchart LR
   meta_learning -->|meta_search_backflow| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_compose_ddo_n_bars_outcome| learning_ddo
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_optimization_research_input| optimization_universe
+  market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_typed_export_to_learning_path| learning_ddo
   mv2_double_play -->|mv2_executable_pre_external_terminal| execution_external_effect
   mv2_double_play -->|mv2_to_sizing| capital_risk_sizing
   mv2_double_play -->|mv2_valid_no_trade_terminal| execution_external_effect
@@ -494,6 +495,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py`
+
+## mi_offline_typed_export_to_learning_path
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only
+- producer=market_intelligence_forecast_calibration_offline_stack_d03
+- consumer=learning_ddo
+- authority_effect=NONE
+- decision_effect=OFFLINE_TYPED_EVIDENCE_EXPORT_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=FORECAST_EVIDENCE_ID_SURVIVES_JOIN_AND_EXPORT
+- temporal_binding=NO_LOOKAHEAD_TEMPORAL_INTEGRITY_DIGEST
+- version_binding=UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
+- provenance_binding=tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json`, `tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py`
 
 ## mv2_executable_pre_external_terminal
 

@@ -43,8 +43,8 @@ flowchart LR
 
 - closure_status=PARTIAL
 - members=market_intelligence_forecast_calibration_offline_stack_d03, learning_ddo, optimization_universe
-- purpose=Offline MI forecast/calibration compose and research intake. MI→Learning typed export NOT_IMPLEMENTED (Phase 8).
-- forward_edges=mi_offline_compose_ddo_n_bars_outcome, mi_offline_to_optimization_research_input
+- purpose=Offline MI forecast/calibration compose, typed MI→Learning export (Phase 8 IMPLEMENTED), and optimization research intake ACK (M4 execution Phase 9).
+- forward_edges=mi_offline_compose_ddo_n_bars_outcome, mi_offline_typed_export_to_learning_path, mi_offline_to_optimization_research_input
 - return_edges=(none)
 - productive_effect=NONE
 - authority_boundary=FORECAST_IS_NOT_DECISION

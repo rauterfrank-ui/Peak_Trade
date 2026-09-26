@@ -630,8 +630,13 @@ entities:
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_learning_export_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_store_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/probabilistic_forecast_payload_v1.py
       - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/support_disposition_v1.py
@@ -8417,8 +8422,26 @@ entities:
       - config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json
     notes: >-
       CURRENT-bound Unified Blueprint Phase 4 D01 census and Phase 5 D02 inter-loop
-      edge adjudication; AUTHORITY=NONE; documents NOT_IMPLEMENTED MI→Learning (Phase 8).
+      edge adjudication; AUTHORITY=NONE; d02_mi_to_learning IMPLEMENTED via Phase 8.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 8 MI to Learning integration v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py
+      - tests/learning/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json
+    notes: >-
+      Closes d02_mi_to_learning typed MI forecast/outcome/calibration export onto learning
+      evidence path; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1
     kind: RUNTIME_COMPONENT

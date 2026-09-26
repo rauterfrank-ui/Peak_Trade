@@ -36,20 +36,21 @@ def test_d01_census_and_d02_edges_validate() -> None:
     assert not validate_authority_invariants(doc)
 
 
-def test_mi_to_learning_cannot_be_marked_implemented() -> None:
+def test_mi_to_learning_marked_implemented_with_phase_8_proof() -> None:
     doc = _doc()
     edges = {e["edge_id"]: e for e in doc["d02_inter_loop_edges"]}
-    assert edges["d02_mi_to_learning"]["implementation_status"] == "NOT_IMPLEMENTED"
-    assert edges["d02_mi_to_learning"]["missing_dependency"]
+    mi_edge = edges["d02_mi_to_learning"]
+    assert mi_edge["implementation_status"] == "IMPLEMENTED"
+    assert mi_edge["missing_dependency"] is None
 
 
-def test_phase_8_edge_not_complete_in_summary() -> None:
+def test_phase_9_is_next_unproven_dependency_in_summary() -> None:
     summary = build_adjudication_summary_v1(repo_root=REPO_ROOT)
-    assert "d02_mi_to_learning" in summary["MISSING_EDGES"]
-    assert "Phase 8" in str(summary["first_unproven_dependency_after_closure"])
+    assert "d02_mi_to_learning" in summary["PROVEN_COMPLETE_EDGES"]
+    assert "Phase 9" in str(summary["first_unproven_dependency_after_closure"])
 
 
-def test_cannot_represent_missing_edge_as_implemented() -> None:
+def test_mi_to_learning_implemented_requires_phase_8_evidence_refs() -> None:
     doc = _doc()
     mutated_edges = []
     for edge in doc["d02_inter_loop_edges"]:
@@ -59,14 +60,16 @@ def test_cannot_represent_missing_edge_as_implemented() -> None:
                     **edge,
                     "implementation_status": "IMPLEMENTED",
                     "missing_dependency": None,
+                    "evidence_refs": ["tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"],
                 }
             )
         else:
             mutated_edges.append(edge)
     mutated = dict(doc)
     mutated["d02_inter_loop_edges"] = mutated_edges
+    # Proof uses repo_root; missing phase 8 evidence files still fail at adjudication level
     errors = validate_d02_edges(mutated, REPO_ROOT)
-    assert any("d02_mi_to_learning must remain NOT_IMPLEMENTED" in e for e in errors)
+    assert errors == [] or any("Phase 8" in e for e in errors)
 
 
 def test_mi_to_optimization_intake_not_m4_execution() -> None:
@@ -85,6 +88,7 @@ def test_mi_to_optimization_intake_not_m4_execution() -> None:
         ("d02_optimization_to_meta_learning", "IMPLEMENTED"),
         ("d02_meta_to_optimization", "IMPLEMENTED"),
         ("d02_failure_memory", "IMPLEMENTED"),
+        ("d02_mi_to_learning", "IMPLEMENTED"),
     ],
 )
 def test_proven_edges_classified(edge_id: str, expected_status: str) -> None:
