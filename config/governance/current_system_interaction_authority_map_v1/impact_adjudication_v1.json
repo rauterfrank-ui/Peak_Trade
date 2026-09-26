@@ -9,11 +9,15 @@
     "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
     "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
     "src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_closure_v1.py",
@@ -23,12 +27,14 @@
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
     "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
   ],
-  "changed_paths_sha256": "pending_pre_push",
+  "changed_paths_sha256": "08e46967957c770958c4e6ab5983ea9e8b5bdd680cadc1005c49e4aee7fe7f1e",
   "covered_candidate_paths": [
     "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
     "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
     "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
   ],
@@ -38,7 +44,7 @@
     "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "F1/M9 productive runtime threshold consumer wiring Owner GO; 600s seam → gate → bounded enforcement on current bridge/replay path; authority=NONE.",
+  "reason": "F1/M9 productive runtime threshold consumer wiring Owner GO; 600s seam → gate → bounded enforcement; Atlas catalog + impact_state updated; authority=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

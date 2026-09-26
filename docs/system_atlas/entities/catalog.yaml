@@ -6268,7 +6268,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
@@ -6289,6 +6289,7 @@ entities:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
     evidence_sources:
       - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
+      - src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py
       - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
@@ -7655,7 +7656,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: P5_2_PRODUCTIVE_CYCLE_SEAM_INVOKE_AND_AUTHORITY_BIND_V1
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
     module_role: offline_replay
     source_paths:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
@@ -7668,10 +7669,11 @@ entities:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
     evidence_sources:
       - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+      - src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py
       - src/trading/master_v2/replay_execution_safety_contract_v1.py
       - docs/system_atlas/census/master_v2_semantic_map.yaml
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml.
-      Typed ReplayExecutionSafetyV1 is mapper-facing Safety view, not FILEGATE
+      F1/M9 threshold consumer wiring when Owner decision authorizes. Typed ReplayExecutionSafetyV1 is mapper-facing Safety view, not FILEGATE
       and not a second compute owner. Post-29Q KS projection is
       POST_29Q_CONSUMPTION_GUARD (consumption HOLD/DENY of an already produced
       ENTER plan); it does not rewrite decision_outcome and does not grant
@@ -8496,16 +8498,55 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_V1
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
     source_paths:
       - src/governance/f1_m9_bounded_threshold_enforcement_mv2_consumer_v1.py
     evidence_sources:
       - tests/governance/test_f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1.py
+      - tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py
       - docs/ops/specs/F1_M9_THRESHOLD_ENFORCEMENT_TO_TRADING_ORDER_EFFECT_CLOSURE_NORMATIVE_V1.md
       - config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json
     notes: >-
-      Decision-bound max-age enforcement at authorized seam consumer; does not flip global
-      ENFORCEMENT_ENABLED. ATLAS_AUTHORITY=NONE.
+      Decision-bound max-age enforcement at authorized seam consumer; wired on productive
+      runtime path via f1_m9_productive_runtime_threshold_consumer_wiring_v1; does not flip
+      global ENFORCEMENT_ENABLED. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1
+    kind: RUNTIME_COMPONENT
+    name: F1/M9 productive runtime threshold consumer wiring v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
+    source_paths:
+      - src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py
+      - src/governance/governed_productive_runtime_parameter_seam_join_v1.py
+    evidence_sources:
+      - src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_closure_v1.py
+      - tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py
+      - docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json
+    notes: >-
+      Composes seam transport, presence gate, and bounded MV2 enforcement for 600s ratified
+      F1/M9 threshold on hardening v2 bridge and integrated offline replay; no Productive
+      Activation. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed F1/M9 productive runtime threshold consumer wiring continuation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
+    source_paths:
+      - src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py
+    evidence_sources:
+      - src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_closure_v1.py
+      - tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py
+      - config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json
+    notes: >-
+      Owner GO continuation; reuses apply-start bound seam; STOP before Productive Activation.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1
     kind: RUNTIME_COMPONENT
@@ -8853,7 +8894,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1
+    modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
     source_paths:
       - src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py
       - src/governance/f1_m9_productive_runtime_apply_start_owner_binding_v1.py
