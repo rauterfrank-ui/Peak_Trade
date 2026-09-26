@@ -6675,6 +6675,24 @@ entities:
       P1 contract-only A/B/L6 typed evidence schemas; O-002 RATIFIED;
       no A/B runtime; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1
+    kind: RUNTIME_COMPONENT
+    name: Master V2 Double Play evidence input plane P2 Component A adjudicator v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1
+    source_paths:
+      - src/governance/master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1/
+    evidence_sources:
+      - tests/governance/test_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.py
+      - docs/ops/specs/EVIDENCE_INPUT_PLANE_P2_EVIDENCE_ADJUDICATOR_RUNTIME_V1.md
+      - docs/evidence/master_v2_double_play_evidence_input_plane_p2/p2_proof_bundle_v1.json
+      - config/governance/master_v2_double_play_evidence_input_plane_p2_owner_decision_v1.json
+    notes: >-
+      P2 bounded Component A evidence adjudicator runtime; P1 envelope output only;
+      A_RUNTIME_REACHABLE=false; no Component B; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
     kind: CONTRACT
     name: P4 L6 explicit D_t proposal charter v1

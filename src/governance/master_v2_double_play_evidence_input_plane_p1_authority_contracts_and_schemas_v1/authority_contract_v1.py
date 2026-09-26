@@ -51,6 +51,9 @@ _RUNTIME_AB_MODULE_MARKERS: tuple[str, ...] = (
 _P1_CONTRACT_PACKAGE_MARKER = (
     "master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1"
 )
+_P2_BOUNDED_A_RUNTIME_PACKAGE_MARKER = (
+    "master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1"
+)
 
 
 def _fail(*codes: str) -> ContractValidationResultV1:
@@ -140,6 +143,8 @@ def scan_runtime_ab_implementation_v1(
     for py in src.rglob("*.py"):
         rel = py.relative_to(root).as_posix()
         if _P1_CONTRACT_PACKAGE_MARKER in rel:
+            continue
+        if _P2_BOUNDED_A_RUNTIME_PACKAGE_MARKER in rel:
             continue
         if "p0_evidence_seam_census" in py.name:
             continue

@@ -1,0 +1,31 @@
+{
+  "baseline_sha": "ae9da6bcb96ae2332e3399585a8eb6337f315a8a",
+  "component_a_runtime_authority_contract_ok": true,
+  "failure_codes": [],
+  "non_interference_hits": [],
+  "non_interference_ok": true,
+  "owner_decision_config_ok": true,
+  "proof_obligations": {
+    "first_admit_ok": true,
+    "p1_component_a_contract_still_ok": true,
+    "p1_runtime_scan_excludes_bounded_p2": true,
+    "proof_10_no_dp_state_mutation": true,
+    "proof_11_no_cap_23_24_change": true,
+    "proof_12_no_crs_change": true,
+    "proof_13_no_order_permit_post": true,
+    "proof_14_no_direct_external_intelligence_dp_path": true,
+    "proof_15_dp_unchanged_without_binding": true,
+    "proof_1_unregistered_producer_reject": true,
+    "proof_2_malformed_reject": true,
+    "proof_3_instrument_mismatch_reject": true,
+    "proof_4_epoch_mismatch_reject": true,
+    "proof_5_stale_reject": true,
+    "proof_6_conflict_typed": true,
+    "proof_7_deterministic_digest": true,
+    "proof_8_duplicate_delivery_no_divergence": true,
+    "proof_9_no_trading_decision_emitted": true
+  },
+  "schema_version": "master_v2_double_play_evidence_input_plane_p2_proof/v1",
+  "verdict": "PROVEN_COMPLETE",
+  "workpackage_id": "P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1"
+}
