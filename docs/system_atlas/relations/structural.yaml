@@ -2364,6 +2364,31 @@ relations:
       Phase 23 typed Meta dual routing on Optimization/Meta seam; AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_24_representation_feedback_loop_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json
+    notes: >
+      Navigation only. Phase 24 Loop C representation feedback; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_phase_24_contains_loop_c_orchestrator_v1
+    source: RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py
+      - tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py
+    notes: >
+      Loop C orchestrator downstream of Phase 23 routing boundary; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

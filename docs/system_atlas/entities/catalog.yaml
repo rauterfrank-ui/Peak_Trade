@@ -8803,6 +8803,64 @@ entities:
     notes: >-
       Bounded LEARNING_REPRESENTATION research input only; no state mutation. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 24 representation feedback loop v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_24_representation_feedback_loop_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json
+    notes: >-
+      Phase 24 Loop C closure; bounded plan/eval/next evidence; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: Phase 24 representation feedback loop evidence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py
+    evidence_sources:
+      - tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py
+    notes: >-
+      Loop C orchestrator; deterministic replay; no productive mutation. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:learning_representation_research_adaptation_plan_v1
+    kind: RUNTIME_COMPONENT
+    name: Learning representation research adaptation plan v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+    source_paths:
+      - src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py
+    evidence_sources:
+      - tests/experiments/test_canonical_learning_representation_research_adaptation_plan_v1.py
+    notes: >-
+      Plan-only seam; plan separate from productive apply. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:learning_representation_offline_evaluation_v1
+    kind: RUNTIME_COMPONENT
+    name: Learning representation offline evaluation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+    source_paths:
+      - src/experiments/canonical_learning_representation_offline_evaluation_v1.py
+    evidence_sources:
+      - tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py
+    notes: >-
+      Offline bounded evaluation; typed rejection evidence. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

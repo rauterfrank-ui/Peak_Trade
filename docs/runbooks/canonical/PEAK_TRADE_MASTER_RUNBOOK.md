@@ -1236,6 +1236,11 @@ POST, or substitute trading decisions.
   AUTHORITY=NONE):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md`
   / `src/experiments/canonical_meta_evidence_dual_router_v1.py`
+- Unified Blueprint Phase 24 Loop C representation feedback (LEARNING_REPRESENTATION
+  → bounded research plan → offline evaluation → typed next Learning evidence;
+  AUTHORITY=NONE; LOOP_C_PROVEN bounded evidence cycle only):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY
