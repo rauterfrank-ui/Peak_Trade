@@ -971,6 +971,30 @@
       ]
     },
     {
+      "id": "governed_runtime_apply_materialization",
+      "tier": "INTERMEDIATE",
+      "role": "Governed runtime apply materialization ingress/admission/operation from P4 L6 SEAM_BOUND; typed materialization record only; RUNTIME_APPLY_STARTED=false.",
+      "canonical_owner_ref": "governed_runtime_apply_materialization_v1",
+      "authority_class": "NONE",
+      "lifecycle": "SEAM_SCOPED_MATERIALIZATION_RECORD",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_runtime_apply_materialization_v1.py",
+        "src/governance/governed_runtime_apply_materialization_record_v1.py"
+      ],
+      "evidence_refs": [
+        "src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_runtime_apply_materialization_v1.py"
+      ]
+    },
+    {
       "id": "survival_suitability_composition",
       "tier": "INTERMEDIATE",
       "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Post-confirmation survival/suitability composition binding; not a closed single-owner string.",
@@ -2336,6 +2360,30 @@
       "evidence_refs": [
         "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
         "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_p4_l6_seam_to_runtime_apply_materialization",
+      "from_domain": "p4_l6_productive_seam",
+      "to_domain": "governed_runtime_apply_materialization",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "evaluate_runtime_apply_materialization_v1",
+      "producer": "run_real_runtime_p4_l6_to_runtime_apply_materialization_continuation_v1",
+      "consumer": "evaluate_runtime_apply_materialization_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "SEAM_SCOPED_RUNTIME_APPLY_MATERIALIZATION_RECORD_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "P4_L6_SEAM_AND_P3_BINDING_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1",
+      "provenance_binding": "CONFIGURATION_MATERIALIZED=true; CONFIGURATION_APPLIED=false; RUNTIME_APPLY_STARTED=false; PRODUCTIVE_ACTIVATION_AUTHORIZED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
+        "src/governance/governed_runtime_apply_materialization_v1.py",
+        "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py"
       ]
     },
     {
@@ -3800,6 +3848,17 @@
         "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_p4_l6_seam_to_runtime_apply_materialization_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real runtime P4 L6 SEAM_BOUND continues through governed runtime apply materialization ingress/admission to typed materialization record with fail-closed lineage; CONFIGURATION_MATERIALIZED != CONFIGURATION_APPLIED; SEAM_BOUND_IMPLIES_PRODUCTIVE_ACTIVATION=false; RUNTIME_APPLY_STARTED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_runtime_apply_materialization_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py"
       ]
     }
   ]

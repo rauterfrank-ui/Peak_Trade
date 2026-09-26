@@ -47,5 +47,7 @@ separately Owner-authorized.
 
 ## Next boundary
 
-Runtime apply, productive activation, and external effects remain blocked without
+Governed runtime apply materialization from P4 L6 `SEAM_BOUND` is implemented in
+`GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1`.
+Productive activation, Component B activation, and external effects remain blocked without
 independent Owner authorization.

@@ -121,6 +121,8 @@ class RealP3P4ProductiveSeamContinuationResultV1:
     component_a_adjudication_digest: str | None
     p3_binding_disposition: str | None
     p4_seam_disposition: str | None
+    p3_binding_result_digest: str | None = None
+    p4_seam_result_digest: str | None = None
     lineage_chain: tuple[str, ...] = field(default_factory=tuple)
     real_upstream_source_used: bool = False
     ddo_fixture_state_used: bool = False
@@ -347,6 +349,8 @@ def run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1(
             component_a_adjudication_digest=adj_digest or None,
             p3_binding_disposition=binding.disposition,
             p4_seam_disposition=seam.disposition,
+            p3_binding_result_digest=binding.binding_result_digest or None,
+            p4_seam_result_digest=seam.seam_result_digest or None,
             lineage_chain=extended,
             real_upstream_source_used=True,
             ddo_fixture_state_used=False,
@@ -365,6 +369,8 @@ def run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1(
         component_a_adjudication_digest=adj_digest or None,
         p3_binding_disposition=binding.disposition,
         p4_seam_disposition=seam.disposition,
+        p3_binding_result_digest=binding.binding_result_digest or None,
+        p4_seam_result_digest=seam.seam_result_digest or None,
         lineage_chain=extended,
         real_upstream_source_used=True,
         ddo_fixture_state_used=False,

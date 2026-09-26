@@ -8770,6 +8770,31 @@ entities:
       Real Component A ADMIT → P3 binder → P4 L6 seam (prior ADMIT); no runtime apply;
       EVIDENCE_ADMIT_IMPLIES_PRODUCTIVE_ACTIVATION=false. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed P4 L6 seam to runtime apply materialization real continuation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1
+    source_paths:
+      - src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py
+      - src/governance/governed_runtime_apply_materialization_v1.py
+      - src/governance/governed_runtime_apply_materialization_record_v1.py
+    evidence_sources:
+      - src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py
+      - src/governance/governed_runtime_apply_materialization_v1.py
+      - src/governance/governed_runtime_apply_materialization_record_v1.py
+      - src/governance/governed_runtime_apply_materialization_closure_v1.py
+      - tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_runtime_apply_materialization_v1.py
+      - docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1_decision_v1.json
+      - config/governance/governed_runtime_apply_materialization_wp_v1_owner_decision_v1.json
+    notes: >-
+      Real P4 L6 SEAM_BOUND → runtime apply materialization record (seam-scoped); no productive
+      apply, Component B, or external effect. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
     kind: RUNTIME_COMPONENT
     name: Governed productive configuration apply authority v1

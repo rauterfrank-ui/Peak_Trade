@@ -2311,6 +2311,29 @@ relations:
     notes: >
       Navigation only. Real P3/P4 L6 seam; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_p4_l6_seam_to_runtime_apply_materialization_real_continuation_v1
+    source: RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py
+    notes: >
+      Real P4 L6 SEAM_BOUND → runtime apply materialization record. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_governed_p4_l6_runtime_apply_materialization_continuation_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1_decision_v1.json
+    notes: >
+      Navigation only. Runtime apply materialization from P4 L6 seam; AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

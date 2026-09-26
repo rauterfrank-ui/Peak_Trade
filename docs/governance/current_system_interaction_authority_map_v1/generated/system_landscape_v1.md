@@ -25,6 +25,7 @@ flowchart LR
   g2_runtime_primary_offline_projection["g2_runtime_primary_offline_projection PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
   governed_cycle["governed_cycle PROVEN_CURRENT"]
+  governed_runtime_apply_materialization["governed_runtime_apply_materialization PARTIAL"]
   host_join_send_adapter["host_join_send_adapter PROVEN_CURRENT"]
   intent_compatibility_firewall["intent_compatibility_firewall UNKNOWN"]
   k1_credential_seam["k1_credential_seam PROVEN_CURRENT"]
@@ -110,6 +111,7 @@ flowchart LR
   optimization_universe --> meta_learning
   meta_learning --> optimization_universe
   p3_input_creator_binder --> p4_l6_productive_seam
+  p4_l6_productive_seam --> governed_runtime_apply_materialization
   meta_learning --> p5_layered_core
   optimization_universe --> p5_layered_core
   reconciliation_runtime_binding --> runtime_binding_cap24
@@ -151,6 +153,7 @@ flowchart LR
 | g2_runtime_primary_offline_projection | INTERMEDIATE | PROVEN_CURRENT | NONE | governed_runtime_primary_to_offline_observation_projection_v1 | `docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`, `tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json`, `config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json` |
 | governance_promotion | INTERMEDIATE | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/governed_productive_configuration_apply_authority_v1.py`, `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | governed_cycle | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | governed_continuous_cycle_orchestrator_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| governed_runtime_apply_materialization | INTERMEDIATE | PARTIAL | NONE | governed_runtime_apply_materialization_v1 | `src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_runtime_apply_materialization_v1.py` |
 | host_join_send_adapter | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | n1_host_join_readiness_v1 | `src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py` |
 | intent_compatibility_firewall | INTERMEDIATE | UNKNOWN | UNKNOWN | UNKNOWN | `src/governance/intent_compatibility_firewall_v1.py` |
 | k1_credential_seam | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | K1_NOT_TRADING_DECISION_OWNER | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |

@@ -60,6 +60,7 @@ flowchart LR
   optimization_universe -->|real_runtime_m4_m8_to_meta_learning_ingest| meta_learning
   meta_learning -->|real_runtime_meta_learning_to_optimization_feedback| optimization_universe
   p3_input_creator_binder -->|real_runtime_p3_binder_to_p4_l6_productive_seam| p4_l6_productive_seam
+  p4_l6_productive_seam -->|real_runtime_p4_l6_seam_to_runtime_apply_materialization| governed_runtime_apply_materialization
   meta_learning -->|real_runtime_p5_meta_learning_routed_to_adjudicator_a| p5_layered_core
   optimization_universe -->|real_runtime_p5_optimization_envelope_to_adjudicator_a| p5_layered_core
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
@@ -1051,6 +1052,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py`, `tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`
+
+## real_runtime_p4_l6_seam_to_runtime_apply_materialization
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=evaluate_runtime_apply_materialization_v1
+- producer=run_real_runtime_p4_l6_to_runtime_apply_materialization_continuation_v1
+- consumer=evaluate_runtime_apply_materialization_v1
+- authority_effect=NONE
+- decision_effect=SEAM_SCOPED_RUNTIME_APPLY_MATERIALIZATION_RECORD_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=P4_L6_SEAM_AND_P3_BINDING_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
+- provenance_binding=CONFIGURATION_MATERIALIZED=true; CONFIGURATION_APPLIED=false; RUNTIME_APPLY_STARTED=false; PRODUCTIVE_ACTIVATION_AUTHORIZED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`, `src/governance/governed_runtime_apply_materialization_v1.py`, `tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`
 
 ## real_runtime_p5_meta_learning_routed_to_adjudicator_a
 
