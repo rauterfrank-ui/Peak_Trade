@@ -7,6 +7,7 @@ AUTHORITY=NONE
 ```mermaid
 flowchart LR
   governance_promotion -->|authorization_to_seam| m9_volatility_max_age
+  cap22_research_backtest_live_parity_b09 -->|b09_parity_proof_preserves_selection_authority| selection_cap23
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
   c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
   execution_external_effect -->|dashboard_read| presentation_dashboard
@@ -30,6 +31,7 @@ flowchart LR
   optimization_universe -->|optimization_to_governance| governance_promotion
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
+  ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
@@ -60,6 +62,24 @@ flowchart LR
 - promotion_required=TRUE
 - fail_closed=TRUE
 - evidence=`src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json`
+
+## b09_parity_proof_preserves_selection_authority
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=CAP23_RESCORE_COUNT=0; CAP23_RERANK_COUNT=0; CAP23_SOLE_SELECTION_OWNER=true
+- producer=cap22_research_backtest_live_parity_b09
+- consumer=selection_cap23
+- authority_effect=NONE
+- decision_effect=ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=CAP23_SELECTED_IDENTITY_REMAINS_DOWNSTREAM_RESULT
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1
+- provenance_binding=B09_EVIDENCE_SUMMARY_AND_TEST_PROOF
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`
 
 ## binding_to_mv2
 
@@ -474,6 +494,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/future_profile_snapshot_v1/producer_v1.py`, `tests/ops/test_future_profile_snapshot_v1.py`
+
+## ranking_economics_to_b09_parity_proof
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=B05 feature snapshot + B06 economic ranking witness reused for parity proof
+- producer=ranking_cap22
+- consumer=cap22_research_backtest_live_parity_b09
+- authority_effect=NONE
+- decision_effect=PARITY_PROOF_ONLY_NO_RANKING_DECISION
+- direct_or_indirect=DIRECT
+- identity_binding=B05_PRODUCTION_DIGEST_AND_B06_RANK_WITNESS
+- temporal_binding=TRAILING_61_FINALIZED_PT1M_MARK_WINDOW_NO_LOOKAHEAD
+- version_binding=B03_B04_B05_B06_POLICY_AND_CONFIG_IDENTITY
+- provenance_binding=PARITY_PROOF_INTEGRITY_DIGEST
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`
 
 ## ranking_to_selection
 
