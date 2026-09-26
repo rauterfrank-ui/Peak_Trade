@@ -291,9 +291,7 @@ def run_g2_bounded_end_to_end_with_projection_v1(
         ),
         "evidence_adjudicator_a_real_ingress_status": (
             EVIDENCE_ADJUDICATOR_A_REAL_INGRESS_STATUS
-            if prove_real_p5_adjudicator_a_continuation_v1(
-                projection_request=projection_request
-            )
+            if prove_real_p5_adjudicator_a_continuation_v1(projection_request=projection_request)
             else "NOT_PROVEN"
         ),
         "g2_end_to_end_status": G2_END_TO_END_STATUS
