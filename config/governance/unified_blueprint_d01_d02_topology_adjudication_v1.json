@@ -38,13 +38,15 @@
       },
       {
         "domain_id": "optimization_universe",
-        "role": "Optimization Universe registry, experiment plane, research-only productive authority NONE",
+        "role": "Optimization Universe registry and experiment plane; research-only; prior map CONFLICTING adjudicated documentary (M4-era non-goals vs Phase 9–13 integration); productive/promotion authority NONE",
         "owner": "src.experiments.canonical_optimization_universe_v1",
         "authority_class": "NONE",
-        "map_status": "CONFLICTING",
+        "map_status": "RESEARCH_ONLY",
         "evidence_refs": [
           "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md",
           "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+          "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+          "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
           "src/experiments/canonical_optimization_universe_v1.py",
           "tests/experiments/test_canonical_optimization_universe_v1.py"
         ]
@@ -77,7 +79,7 @@
         "role": "Public Data Plane canonical facts/history (WP-A)",
         "owner": "ops.peak_trade_public_market_data_runtime_v1",
         "authority_class": "NONE",
-        "map_status": "PARTIAL",
+        "map_status": "PROVEN_CURRENT",
         "evidence_refs": [
           "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md",
           "tests/ops/test_peak_trade_public_market_data_runtime_v1.py"
@@ -88,7 +90,7 @@
         "role": "Private State Plane observation/reconciliation (WP-B)",
         "owner": "ops.okx_eea_private_account_state_runtime_v1",
         "authority_class": "NONE",
-        "map_status": "PARTIAL",
+        "map_status": "PROVEN_CURRENT",
         "evidence_refs": [
           "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md",
           "tests/ops/test_okx_eea_private_account_state_runtime_v1.py"
@@ -99,10 +101,12 @@
         "role": "Runtime convergence / consumer closure onto WP-A/WP-B (WP-C)",
         "owner": "ops.market_data_private_state_runtime_convergence_v1",
         "authority_class": "NONE",
-        "map_status": "PARTIAL",
+        "map_status": "PROVEN_CURRENT",
         "evidence_refs": [
           "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md",
-          "tests/ops/test_market_data_private_state_runtime_convergence_v1.py"
+          "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+          "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
+          "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py"
         ]
       },
       {
@@ -310,6 +314,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 12 Productive Lineage Closure (Owner-authorized; see unified_blueprint_phase_12_productive_lineage_closure_v1.json when PROVEN_COMPLETE)",
-  "next_implementation_boundary": "Phase 12 productive lineage then Phase 13/M10; neither implied by D01/D02 topology alone"
+  "first_unproven_dependency_after_closure": "Governed runtime apply/materialization beyond M10 authorized promotion record (separate Owner decision; see unified_blueprint_post_phase_15_dod_remediation_v1.json runtime_apply_out_of_scope)",
+  "next_implementation_boundary": "Runtime apply authority owner and apply-record semantics only under explicit Owner GO; M11 optional automation remains outside default completion"
 }

@@ -1,14 +1,14 @@
 {
   "artifact_class": "UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_V1",
   "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_V1",
-  "authorized_baseline_sha": "0d1ca4dd35cad92fbbe07da544e6bc6b0985b254",
+  "authorized_baseline_sha": "11e0601b1b6f8124701247ae9bb98c195dd5646c",
   "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md",
   "adjudication_module": "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
   "final_dod_matrix_config": "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
   "blueprint_authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "phase_15_final_dod_adjudication_status": "PROVEN_COMPLETE",
-  "unified_blueprint_dod_verdict": "PARTIAL",
+  "unified_blueprint_dod_verdict": "PROVEN_COMPLETE",
   "m11_outside_default_completion": true,
   "global_negative_authority_invariants": {
     "blueprint_authority": "NONE",
@@ -36,8 +36,12 @@
     "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
     "tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py",
     "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
-    "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json"
+    "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
+    "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
+    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
   ],
-  "first_unproven_dependency_after_closure": "Full DATA_SUBSTRATE canonicalization (WP-A/B/C PARTIAL per D01 census; optimization_universe CONFLICTING) and governed runtime-apply seam beyond M10 authorized promotion record (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false by design). M11 optional promotion automation remains outside default completion.",
-  "next_implementation_boundary": "No automatic remediation; any closure of PARTIAL families requires separate Owner GO and must not invent authority."
+  "first_unproven_dependency_after_closure": "Governed runtime apply/materialization seam beyond M10 authorized promotion record (separate Owner decision; AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false by design). M11 optional promotion automation remains outside default completion.",
+  "next_implementation_boundary": "Runtime apply authority owner and apply-record semantics only under explicit Owner GO; no implicit apply from promotion authorization"
 }

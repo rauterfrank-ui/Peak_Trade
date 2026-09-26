@@ -51,7 +51,7 @@ def test_no_partial_d02_edges_remain_after_loop_b_closure() -> None:
     assert "d02_multi_cycle_replay_m8" in summary["PROVEN_COMPLETE_EDGES"]
     assert "d02_loop_b_market_intelligence_offline" in summary["PROVEN_COMPLETE_EDGES"]
     assert summary["PARTIAL_EDGES"] == []
-    assert "separate Owner authorization" in str(summary["first_unproven_dependency_after_closure"])
+    assert "separate Owner decision" in str(summary["first_unproven_dependency_after_closure"])
 
 
 def test_loop_b_implemented_after_durable_store() -> None:

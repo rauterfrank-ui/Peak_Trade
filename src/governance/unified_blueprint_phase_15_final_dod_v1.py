@@ -54,6 +54,12 @@ from src.governance.unified_blueprint_phase_8_mi_to_learning_integration_v1 impo
 from src.governance.unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 import (
     prove_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1,
 )
+from src.governance.unified_blueprint_post_phase_15_dod_remediation_v1 import (
+    prove_data_substrate_bounded_closure_v1,
+    prove_failure_memory_bounded_closure_v1,
+    prove_parameter_lineage_bounded_closure_v1,
+    prove_unified_blueprint_post_phase_15_dod_remediation_v1,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.constants_v1 import (
     FORECAST_IS_NOT_DECISION,
 )
@@ -310,22 +316,24 @@ def _prove_family_dynamic_hooks(repo_root: Path, matrix: Mapping[str, Any]) -> l
         if not prove_unified_blueprint_phase_13_m10_promotion_boundary_v1(repo_root=repo_root):
             errors.append("EXTERNAL_EFFECT phase_13 proof failed")
 
-    if fam["DATA_SUBSTRATE"]["classification"] == "PARTIAL":
-        d01 = _load_json(
-            repo_root, "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json"
-        )
-        census = d01.get("d01_topology_census") or {}
-        domains = census.get("census_domains") or []
-        if not domains:
-            errors.append("DATA_SUBSTRATE d01 census empty")
+    if fam["DATA_SUBSTRATE"]["classification"] == "PROVEN":
+        if not prove_data_substrate_bounded_closure_v1(repo_root=repo_root):
+            errors.append("DATA_SUBSTRATE bounded closure proof failed")
+        if not prove_unified_blueprint_d01_d02_topology_adjudication_v1(repo_root=repo_root):
+            errors.append("DATA_SUBSTRATE d01_d02 reproof failed")
 
-    if fam["PARAMETER_LINEAGE"]["classification"] == "PARTIAL":
+    if fam["PARAMETER_LINEAGE"]["classification"] == "PROVEN":
         if AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY is not False:
             errors.append("PARAMETER_LINEAGE runtime_apply must remain false")
+        if not prove_parameter_lineage_bounded_closure_v1(repo_root=repo_root):
+            errors.append("PARAMETER_LINEAGE bounded closure proof failed")
 
-    if fam["FAILURE_MEMORY"]["classification"] == "PARTIAL":
-        if not (repo_root / "src/experiments/canonical_failure_memory_v1.py").is_file():
-            errors.append("FAILURE_MEMORY canonical module missing")
+    if fam["FAILURE_MEMORY"]["classification"] == "PROVEN":
+        if not prove_failure_memory_bounded_closure_v1(repo_root=repo_root):
+            errors.append("FAILURE_MEMORY bounded closure proof failed")
+
+    if not prove_unified_blueprint_post_phase_15_dod_remediation_v1(repo_root=repo_root):
+        errors.append("post_phase_15_dod_remediation proof failed")
 
     return errors
 

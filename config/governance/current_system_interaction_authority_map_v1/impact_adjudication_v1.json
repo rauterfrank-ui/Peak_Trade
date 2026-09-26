@@ -1,14 +1,17 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "0d1ca4dd35cad92fbbe07da544e6bc6b0985b254",
+  "base_sha": "11e0601b1b6f8124701247ae9bb98c195dd5646c",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
     "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
     "config/governance/unified_blueprint_phase_15_final_dod_v1.json",
+    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
@@ -16,17 +19,19 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/relations/structural.yaml",
     "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
-    "tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py"
+    "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
+    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
+    "tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py",
+    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
   ],
-  "changed_paths_sha256": "9fa045d15356448db10ac1d4613affa13d7f8e8599c0f0c7c573dfb7f2660c3e",
+  "changed_paths_sha256": "dae8d8022ef67a52743d5bbe55d173b697eda1b8cec5bcd1b2d7b9e6555017e4",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_15_final_dod_v1.json",
-    "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
-    "tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
+    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint Phase 15 final DoD adjudication matrix and navigation updates; AUTHORITY=NONE; aggregate UNIFIED_BLUEPRINT_DOD=PARTIAL."
+  "reason": "Post-Phase 15 bounded DoD remediation; WP-A/B/C and substrate census updates; optimization_universe CONFLICTING to RESEARCH_ONLY adjudication; AUTHORITY=NONE."
 }

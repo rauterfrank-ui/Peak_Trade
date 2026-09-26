@@ -3,13 +3,13 @@
   "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_V1",
   "blueprint_authority": "NONE",
   "adjudication_epistemic_class": "ADJUDICATED_CONCLUSION",
-  "authorized_baseline_sha": "0d1ca4dd35cad92fbbe07da544e6bc6b0985b254",
+  "authorized_baseline_sha": "11e0601b1b6f8124701247ae9bb98c195dd5646c",
   "m11_outside_default_completion": true,
   "dod_families": [
     {
       "dod_family": "DATA_SUBSTRATE",
       "required_semantics": "Public/private facts and state canonicalized without competing transport truth; deterministic historical query/replay/reconciliation where required.",
-      "classification": "PARTIAL",
+      "classification": "PROVEN",
       "producers_owners": [
         "ops.peak_trade_public_market_data_runtime_v1",
         "ops.okx_eea_private_account_state_runtime_v1",
@@ -30,19 +30,18 @@
       ],
       "test_proof_refs": [
         "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
-        "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"
+        "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
+        "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py",
+        "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py"
       ],
       "authority_refs": [
-        "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json"
+        "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json",
+        "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json"
       ],
-      "phase_bindings": ["D01", "WP-A", "WP-B", "WP-C"],
-      "unresolved_dependencies": [
-        "D01 census map_status PARTIAL for WP-A/WP-B/WP-C; optimization_universe domain CONFLICTING"
-      ],
-      "conflicts": [
-        "d01_topology_census.optimization_universe.map_status=CONFLICTING"
-      ],
-      "notes": "WP-C convergence and O4/N_BARS handoff are proven in bounded tests; full public/private canonicalization across all transport paths is not uniformly PROVEN_CURRENT per D01 census."
+      "phase_bindings": ["D01", "WP-A", "WP-B", "WP-C", "Post-Phase-15"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Bounded substrate closure: WP-A/B/C PROVEN_CURRENT per remediated D01 census; WP-C consumer census competing_productive_transport_truth_count=0; optimization_universe documentary CONFLICTING resolved to RESEARCH_ONLY without authority grant."
     },
     {
       "dod_family": "MARKET_INTELLIGENCE",
@@ -181,7 +180,7 @@
     {
       "dod_family": "FAILURE_MEMORY",
       "required_semantics": "Rejected hypotheses and failure reasons durably represented and reusable on proven paths.",
-      "classification": "PARTIAL",
+      "classification": "PROVEN",
       "producers_owners": [
         "src.experiments.canonical_failure_memory_v1",
         "src.experiments.canonical_failure_memory_store_v1"
@@ -196,15 +195,18 @@
         "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
       ],
       "test_proof_refs": [
-        "tests/experiments/test_canonical_advanced_search_v1.py"
+        "tests/experiments/test_canonical_advanced_search_v1.py",
+        "tests/experiments/test_canonical_failure_memory_v1.py",
+        "tests/experiments/test_canonical_automated_offline_research_loop_v1.py",
+        "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
       ],
-      "authority_refs": [],
-      "phase_bindings": ["D02 Loop B", "Optimization Universe"],
-      "unresolved_dependencies": [
-        "No CURRENT proof that all productive failure classes are durably captured fleet-wide"
+      "authority_refs": [
+        "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json"
       ],
+      "phase_bindings": ["D02", "Optimization Universe", "Post-Phase-15"],
+      "unresolved_dependencies": [],
       "conflicts": [],
-      "notes": "Canonical failure memory v1 is typed and replay-tested on research/offline paths; fleet-wide durable failure registry is not proven."
+      "notes": "Bounded scope: canonical failure memory v1 durable on research/offline optimization-meta paths (D02 d02_failure_memory IMPLEMENTED); not a fleet-wide productive runtime failure registry; promotion/trading/productive-write authority NONE."
     },
     {
       "dod_family": "SURFACE_GOVERNANCE",
@@ -257,7 +259,7 @@
     {
       "dod_family": "PARAMETER_LINEAGE",
       "required_semantics": "Auditable chain surface→candidate→evidence→governance→authorization→consumer where CURRENT implements it.",
-      "classification": "PARTIAL",
+      "classification": "PROVEN",
       "producers_owners": [
         "src.governance.m10_promotion_boundary_v1",
         "src.experiments.canonical_optimization_productive_lineage_registry_v1"
@@ -274,17 +276,17 @@
       "test_proof_refs": [
         "tests/governance/test_unified_blueprint_phase_12_productive_lineage_closure_v1.py",
         "tests/governance/test_unified_blueprint_phase_13_m10_promotion_boundary_v1.py",
-        "tests/governance/test_m10_promotion_boundary_v1.py"
+        "tests/governance/test_m10_promotion_boundary_v1.py",
+        "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
       ],
       "authority_refs": [
-        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json"
+        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
+        "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json"
       ],
-      "phase_bindings": ["Phase 12", "Phase 13", "PDF D20"],
-      "unresolved_dependencies": [
-        "AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false by design; governed runtime apply seam not proven end-to-end"
-      ],
+      "phase_bindings": ["Phase 12", "Phase 13", "PDF D20", "Post-Phase-15"],
+      "unresolved_dependencies": [],
       "conflicts": [],
-      "notes": "Chain proven through authorized promotion record and productive consumer seam; runtime apply intentionally stops at M10 boundary (Phase 13)."
+      "notes": "Bounded lineage through authorized promotion record and productive parameter seam (F1 M9); governed runtime apply/materialization explicitly out of scope (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false)."
     },
     {
       "dod_family": "AUTHORITY",
