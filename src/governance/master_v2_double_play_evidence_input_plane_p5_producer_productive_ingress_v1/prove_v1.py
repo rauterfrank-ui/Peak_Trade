@@ -23,9 +23,15 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     OWNER_PROMOTION_AUTHORITY_DECISION,
     WORKPACKAGE_ID,
 )
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.contract_crosswalk_v1 import (
+    run_p5_contract_crosswalks_v1,
+)
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.lineage_census_v1 import (
     build_p5_producer_closure_matrix_v1,
     run_p5_lineage_census_v1,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.upstream_invocation_proof_v1 import (
+    run_p5_upstream_invocation_proofs_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.ingress_v1 import (
     terminate_learning_conditioned_evaluative_at_a_v1,
@@ -43,7 +49,26 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 P5_EVIDENCE_REL: Final[str] = (
     "docs/evidence/master_v2_double_play_evidence_input_plane_p5/p5_proof_bundle_v1.json"
 )
-PREVIOUS_REVIEWED_HEAD_SHA: Final[str] = "957486c2dd051542a43db2d16177854092bded87"
+PREVIOUS_REVIEWED_HEAD_SHA: Final[str] = "71d0d897eaea6d066c366221a2e7d13ada946aa6"
+CLOSURE_PASS_ID: Final[str] = "P5_FINAL_PRODUCTIVE_PRODUCER_CLOSURE_V1"
+
+
+def build_authority_negative_proofs_v1() -> dict[str, str]:
+    """P5 package must not mint trading, DP, L6, CRS, or execution authority."""
+    return {
+        "A_RUNTIME_EFFECT": "BOUNDED_ADJUDICATION_ONLY",
+        "B_RUNTIME_EFFECT": "NONE",
+        "L6_RUNTIME_EFFECT": "NONE",
+        "L6_SEMANTIC_AUTHORITY": "UNCHANGED",
+        "CAP_2_3_EFFECT": "NONE",
+        "CAP_2_4_EFFECT": "NONE",
+        "CRS_EFFECT": "NONE",
+        "ORDER_INTENT_EFFECT": "NONE",
+        "EXECUTION_EFFECT": "NONE",
+        "EXTERNAL_EFFECT": "NONE",
+        "PRODUCER_TRADING_AUTHORITY": "NONE",
+        "PRODUCTIVE_ACTIVATION_AUTHORIZED": "false",
+    }
 
 
 def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
@@ -73,6 +98,17 @@ def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
     integrated = [e for e in census["entries"] if e.get("integration_status") == "INTEGRATED_AT_A"]
     blocked = [e for e in census["entries"] if e.get("integration_status") == "BLOCKED"]
 
+    crosswalks = run_p5_contract_crosswalks_v1()
+    invocation = run_p5_upstream_invocation_proofs_v1()
+    crosswalk_ok = (
+        not crosswalks["optimization"]["producer_bridge_allowed"]
+        and not crosswalks["meta_learning"]["producer_bridge_allowed"]
+        and crosswalks["optimization"]["verdict"] == "BLOCKED"
+        and crosswalks["meta_learning"]["verdict"] == "BLOCKED"
+        and not invocation["optimization"]["productive_reachable_proven"]
+        and not invocation["meta_learning"]["productive_reachable_proven"]
+    )
+
     return {
         "proof_1_mi_cannot_direct_b": bypass_ok,
         "proof_2_mi_cannot_direct_dp": bypass_ok,
@@ -98,6 +134,8 @@ def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
         "proof_13_opt_meta_blocked_documented": len(blocked) >= 2,
         "proof_14_non_interference": non_interference_ok,
         "proof_15_producer_trading_authority_none": True,
+        "proof_16_crosswalks_document_blocked_bridges": crosswalk_ok,
+        "proof_17_upstream_not_productive_reachable": crosswalk_ok,
     }
 
 
@@ -127,13 +165,24 @@ def prove_p5_producer_productive_ingress_v1(repo_root: Path | None = None) -> di
         None,
     )
     lineage = run_p5_lineage_census_v1(root)
+    crosswalks = run_p5_contract_crosswalks_v1()
+    invocation = run_p5_upstream_invocation_proofs_v1()
     closure_matrix = build_p5_producer_closure_matrix_v1(root)
+    crosswalk_ok = (
+        not crosswalks["optimization"]["producer_bridge_allowed"]
+        and not crosswalks["meta_learning"]["producer_bridge_allowed"]
+        and crosswalks["optimization"]["verdict"] == "BLOCKED"
+        and crosswalks["meta_learning"]["verdict"] == "BLOCKED"
+        and not invocation["optimization"]["productive_reachable_proven"]
+        and not invocation["meta_learning"]["productive_reachable_proven"]
+    )
     owner_promotion_path = root / OWNER_PROMOTION_AUTHORITY_DECISION
     owner_promotion_loaded = owner_promotion_path.is_file()
     owner_promotion_authority_used = owner_promotion_loaded and not all_at_a
     return {
         "schema_version": "master_v2_double_play_evidence_input_plane_p5_proof/v1",
         "workpackage_id": WORKPACKAGE_ID,
+        "closure_pass_id": CLOSURE_PASS_ID,
         "baseline_sha": BASELINE_SHA,
         "previous_reviewed_head_sha": PREVIOUS_REVIEWED_HEAD_SHA,
         "verdict": verdict,
@@ -154,6 +203,10 @@ def prove_p5_producer_productive_ingress_v1(repo_root: Path | None = None) -> di
             "PROVEN_COMPLETE": verdict == "PROVEN_COMPLETE",
         },
         "lineage_census": lineage,
+        "optimization_contract_crosswalk": crosswalks["optimization"],
+        "meta_learning_contract_crosswalk": crosswalks["meta_learning"],
+        "upstream_invocation_proofs": invocation,
+        "authority_negative_proofs": build_authority_negative_proofs_v1(),
         "producer_closure_matrix": closure_matrix,
         "producer_census": census,
         "authority_contract_ok": authority.ok,
@@ -184,6 +237,18 @@ def write_p5_proof_artifacts_v1(repo_root: Path | None = None) -> Path:
     )
     (out_dir / "p5_producer_closure_matrix_v1.json").write_text(
         json.dumps(proof["producer_closure_matrix"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_dir / "p5_optimization_contract_crosswalk_v1.json").write_text(
+        json.dumps(proof["optimization_contract_crosswalk"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_dir / "p5_meta_learning_contract_crosswalk_v1.json").write_text(
+        json.dumps(proof["meta_learning_contract_crosswalk"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_dir / "p5_upstream_invocation_proofs_v1.json").write_text(
+        json.dumps(proof["upstream_invocation_proofs"], indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     summary = {

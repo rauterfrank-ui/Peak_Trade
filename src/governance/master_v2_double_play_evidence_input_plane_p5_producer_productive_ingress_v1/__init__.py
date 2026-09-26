@@ -28,6 +28,11 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     ProducerEvidenceTerminationContextV1,
     ProducerIngressTerminationResultV1,
 )
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.contract_crosswalk_v1 import (
+    run_meta_learning_contract_crosswalk_v1,
+    run_optimization_contract_crosswalk_v1,
+    run_p5_contract_crosswalks_v1,
+)
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.lineage_census_v1 import (
     build_p5_producer_closure_matrix_v1,
     run_meta_learning_lineage_census_v1,
@@ -38,8 +43,12 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     run_p5_producer_census_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.prove_v1 import (
+    build_authority_negative_proofs_v1,
     prove_p5_producer_productive_ingress_v1,
     write_p5_proof_artifacts_v1,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.upstream_invocation_proof_v1 import (
+    run_p5_upstream_invocation_proofs_v1,
 )
 
 __all__ = [
@@ -52,8 +61,13 @@ __all__ = [
     "ProducerEvidenceTerminationContextV1",
     "ProducerIngressTerminationResultV1",
     "WORKPACKAGE_ID",
+    "build_authority_negative_proofs_v1",
     "build_p5_producer_closure_matrix_v1",
     "prove_p5_producer_productive_ingress_v1",
+    "run_meta_learning_contract_crosswalk_v1",
+    "run_optimization_contract_crosswalk_v1",
+    "run_p5_contract_crosswalks_v1",
+    "run_p5_upstream_invocation_proofs_v1",
     "run_meta_learning_lineage_census_v1",
     "run_optimization_lineage_census_v1",
     "run_p5_lineage_census_v1",

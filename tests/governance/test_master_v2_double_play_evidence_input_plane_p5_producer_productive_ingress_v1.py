@@ -15,11 +15,15 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     DIRECT_PRODUCER_TO_DP_BYPASS,
     IMPLEMENTS_P5_PRODUCER_PRODUCTIVE_INGRESS,
     PRODUCER_TRADING_AUTHORITY,
+    build_authority_negative_proofs_v1,
     build_p5_producer_closure_matrix_v1,
     prove_p5_producer_productive_ingress_v1,
+    run_meta_learning_contract_crosswalk_v1,
     run_meta_learning_lineage_census_v1,
+    run_optimization_contract_crosswalk_v1,
     run_optimization_lineage_census_v1,
     run_p5_producer_census_v1,
+    run_p5_upstream_invocation_proofs_v1,
     scan_producer_class_bypass_v1,
     terminate_learning_conditioned_evaluative_at_a_v1,
     terminate_market_intelligence_market_context_at_a_v1,
@@ -178,6 +182,33 @@ def test_closure_matrix_mi_learning_terminate_at_a() -> None:
     assert matrix["meta_learning"]["TERMINATES_AT_A"] is False
 
 
+def test_optimization_contract_crosswalk_blocks_producer_bridge() -> None:
+    crosswalk = run_optimization_contract_crosswalk_v1()
+    assert crosswalk["producer_bridge_allowed"] is False
+    assert crosswalk["first_blocking_field"] == "target_schema_validator"
+    assert crosswalk["verdict"] == "BLOCKED"
+
+
+def test_meta_learning_contract_crosswalk_blocks_without_fabrication() -> None:
+    crosswalk = run_meta_learning_contract_crosswalk_v1()
+    assert crosswalk["producer_bridge_allowed"] is False
+    assert crosswalk["meta_evidence_v1_equated_to_target"] is False
+    assert crosswalk["first_blocking_field"] == "evidence_kind"
+
+
+def test_upstream_invocation_not_productive_reachable() -> None:
+    proofs = run_p5_upstream_invocation_proofs_v1()
+    assert proofs["optimization"]["productive_reachable_proven"] is False
+    assert proofs["meta_learning"]["productive_reachable_proven"] is False
+
+
+def test_authority_negative_proofs_none() -> None:
+    neg = build_authority_negative_proofs_v1()
+    assert neg["PRODUCER_TRADING_AUTHORITY"] == "NONE"
+    assert neg["EXECUTION_EFFECT"] == "NONE"
+    assert neg["PRODUCTIVE_ACTIVATION_AUTHORIZED"] == "false"
+
+
 def test_census_and_proof_bundle() -> None:
     census = run_p5_producer_census_v1(REPO_ROOT)
     assert len(census["entries"]) == 4
@@ -186,3 +217,7 @@ def test_census_and_proof_bundle() -> None:
     proof = prove_p5_producer_productive_ingress_v1(REPO_ROOT)
     assert proof["verdict"] in {"BOUNDED_COMPLETE_BLOCKED", "PROVEN_COMPLETE", "FAIL_CLOSED"}
     assert proof["proof_obligations"]["proof_12_mi_and_learning_integrated"] is True
+    assert proof["proof_obligations"]["proof_16_crosswalks_document_blocked_bridges"] is True
+    assert proof["verdict"] == "BOUNDED_COMPLETE_BLOCKED"
+    assert (out / "p5_optimization_contract_crosswalk_v1.json").is_file()
+    assert (out / "p5_meta_learning_contract_crosswalk_v1.json").is_file()

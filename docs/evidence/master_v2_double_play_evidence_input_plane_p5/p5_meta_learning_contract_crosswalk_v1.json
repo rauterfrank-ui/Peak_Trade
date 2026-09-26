@@ -1,0 +1,129 @@
+{
+  "candidate_source_artifacts": [
+    "meta_evidence_v1",
+    "meta_learning_evidence_v1"
+  ],
+  "earliest_blocker": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+  "fields": [
+    {
+      "classification": "CONFLICTING",
+      "lossiness": "TOTAL",
+      "reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": "schema_version",
+      "target_field": "evidence_kind",
+      "transformation": null
+    },
+    {
+      "classification": "CONFLICTING",
+      "lossiness": "TOTAL",
+      "reason": "meta_evidence_v1 is RESEARCH_ONLY; productive promotion requires separate binding boundary.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": "permitted_use_classification",
+      "target_field": "permitted_use",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "meta_evidence_v1 carries no instrument_id.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": null,
+      "target_field": "instrument.instrument_id",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "observed_regime_or_context_ref is opaque regime ref, not InstrumentBindingV1.",
+      "source_artifact": "meta_learning_evidence_v1",
+      "source_authority": "META_LEARNING_RESEARCH",
+      "source_field": "observed_regime_or_context_ref",
+      "target_field": "instrument.instrument_id",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "No market_observation_epoch in meta_evidence_v1 or nested meta_learning_evidence_v1.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": null,
+      "target_field": "market_observation_epoch",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "No authoritative produced_at/observed_at; wall-clock fill forbidden.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": null,
+      "target_field": "observed_at_unix",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "No freshness basis in research routing envelope.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": null,
+      "target_field": "freshness_horizon_seconds",
+      "transformation": null
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Digest present on meta_evidence_v1 but identity fields still block promotion.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": "content_digest",
+      "target_field": "source_evidence_digest",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "LOW",
+      "reason": "Record id exists; does not satisfy instrument/epoch requirements for A intake.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "RESEARCH_ONLY_ROUTING",
+      "source_field": "meta_evidence_record_id",
+      "target_field": "envelope_id",
+      "transformation": "copy_string"
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "P2 registry producer id is not emitted by research meta_evidence builder.",
+      "source_artifact": "meta_evidence_v1",
+      "source_authority": "P2_REGISTRY_ONLY",
+      "source_field": null,
+      "target_field": "producer_id",
+      "transformation": null
+    },
+    {
+      "classification": "MISSING",
+      "lossiness": "TOTAL",
+      "reason": "No CURRENT governed binding context pairs completed meta_evidence_v1 with InstrumentBindingV1 and market_observation_epoch without fabrication.",
+      "source_artifact": "authoritative_binding_context",
+      "source_authority": "NONE_ON_CURRENT_MAIN",
+      "source_field": null,
+      "target_field": "binding_context.instrument_epoch",
+      "transformation": null
+    }
+  ],
+  "first_blocking_classification": "CONFLICTING",
+  "first_blocking_field": "evidence_kind",
+  "first_blocking_reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+  "mandatory_field_count": 11,
+  "meta_evidence_v1_equated_to_target": false,
+  "producer_bridge_allowed": false,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+  "target_contract": "EvidenceIntakeRecordV1 + explicit promotion/binding boundary",
+  "target_evidence_kind": "meta_learning_routed_evidence_v1",
+  "verdict": "BLOCKED"
+}

@@ -22,6 +22,14 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     OPTIMIZATION_PRODUCER_ID,
     WORKPACKAGE_ID,
 )
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.contract_crosswalk_v1 import (
+    run_meta_learning_contract_crosswalk_v1,
+    run_optimization_contract_crosswalk_v1,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.upstream_invocation_proof_v1 import (
+    run_meta_learning_upstream_invocation_proof_v1,
+    run_optimization_upstream_invocation_proof_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.meta_evidence_v1 import (
     PERMITTED_USE_RESEARCH_ONLY,
     SCHEMA_VERSION as META_EVIDENCE_SCHEMA,
@@ -36,6 +44,8 @@ P2_META_KIND: Final[str] = "meta_learning_routed_evidence_v1"
 
 def run_optimization_lineage_census_v1(repo_root: Path | None = None) -> dict[str, Any]:
     _ = repo_root or Path(__file__).resolve().parents[3]
+    crosswalk = run_optimization_contract_crosswalk_v1()
+    invocation = run_optimization_upstream_invocation_proof_v1()
     return {
         "p2_registered_evidence_kind": P2_OPT_KIND,
         "p2_registered_producer_id": OPTIMIZATION_PRODUCER_ID,
@@ -67,9 +77,13 @@ def run_optimization_lineage_census_v1(repo_root: Path | None = None) -> dict[st
             "canonical_optimizable_envelope_v1 and canonical_optimization_experiment_evidence_v1 "
             "are distinct governed contracts; mapping either to P2 kind would invent semantics."
         ),
+        "contract_crosswalk": crosswalk,
+        "upstream_invocation_proof": invocation,
         "productive_lineage_proven": False,
-        "promotion_to_a_mechanically_allowed": False,
+        "promotion_to_a_mechanically_allowed": crosswalk["producer_bridge_allowed"],
         "earliest_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+        "first_unprovable_field": crosswalk.get("first_blocking_field"),
+        "first_unprovable_reason": crosswalk.get("first_blocking_reason"),
         "downstream_consumers": [
             "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
             "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
@@ -80,6 +94,8 @@ def run_optimization_lineage_census_v1(repo_root: Path | None = None) -> dict[st
 
 def run_meta_learning_lineage_census_v1(repo_root: Path | None = None) -> dict[str, Any]:
     _ = repo_root or Path(__file__).resolve().parents[3]
+    crosswalk = run_meta_learning_contract_crosswalk_v1()
+    invocation = run_meta_learning_upstream_invocation_proof_v1()
     return {
         "p2_registered_evidence_kind": P2_META_KIND,
         "p2_registered_producer_id": META_LEARNING_PRODUCER_ID,
@@ -119,9 +135,13 @@ def run_meta_learning_lineage_census_v1(repo_root: Path | None = None) -> dict[s
             "meta_learning_evidence_v1 carries observed_regime_or_context_ref only; "
             "no InstrumentBindingV1 / market_observation_epoch without external fabrication."
         ),
+        "contract_crosswalk": crosswalk,
+        "upstream_invocation_proof": invocation,
         "productive_lineage_proven": False,
-        "promotion_to_a_mechanically_allowed": False,
+        "promotion_to_a_mechanically_allowed": crosswalk["producer_bridge_allowed"],
         "earliest_blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+        "first_unprovable_field": crosswalk.get("first_blocking_field"),
+        "first_unprovable_reason": crosswalk.get("first_blocking_reason"),
         "authority_markers": {
             "optimization_direct_productive_write": OPTIMIZATION_DIRECT_PRODUCTIVE_WRITE,
             "no_automatic_promotion": NO_AUTOMATIC_PROMOTION,

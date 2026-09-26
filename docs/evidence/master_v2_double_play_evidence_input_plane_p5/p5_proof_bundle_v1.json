@@ -1,6 +1,21 @@
 {
   "authority_contract_ok": true,
+  "authority_negative_proofs": {
+    "A_RUNTIME_EFFECT": "BOUNDED_ADJUDICATION_ONLY",
+    "B_RUNTIME_EFFECT": "NONE",
+    "CAP_2_3_EFFECT": "NONE",
+    "CAP_2_4_EFFECT": "NONE",
+    "CRS_EFFECT": "NONE",
+    "EXECUTION_EFFECT": "NONE",
+    "EXTERNAL_EFFECT": "NONE",
+    "L6_RUNTIME_EFFECT": "NONE",
+    "L6_SEMANTIC_AUTHORITY": "UNCHANGED",
+    "ORDER_INTENT_EFFECT": "NONE",
+    "PRODUCER_TRADING_AUTHORITY": "NONE",
+    "PRODUCTIVE_ACTIVATION_AUTHORIZED": "false"
+  },
   "baseline_sha": "ae63905816c2d4033c0674587b87bbf823477e19",
+  "closure_pass_id": "P5_FINAL_PRODUCTIVE_PRODUCER_CLOSURE_V1",
   "earliest_genuine_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
   "failure_codes": [],
   "lineage_census": {
@@ -11,6 +26,135 @@
       },
       "classification": "C",
       "classification_label": "CURRENT_RESEARCH_ONLY_RUNTIME_NOT_PRODUCTIVE_LINEAGE",
+      "contract_crosswalk": {
+        "candidate_source_artifacts": [
+          "meta_evidence_v1",
+          "meta_learning_evidence_v1"
+        ],
+        "earliest_blocker": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+        "fields": [
+          {
+            "classification": "CONFLICTING",
+            "lossiness": "TOTAL",
+            "reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": "schema_version",
+            "target_field": "evidence_kind",
+            "transformation": null
+          },
+          {
+            "classification": "CONFLICTING",
+            "lossiness": "TOTAL",
+            "reason": "meta_evidence_v1 is RESEARCH_ONLY; productive promotion requires separate binding boundary.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": "permitted_use_classification",
+            "target_field": "permitted_use",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "meta_evidence_v1 carries no instrument_id.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": null,
+            "target_field": "instrument.instrument_id",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "observed_regime_or_context_ref is opaque regime ref, not InstrumentBindingV1.",
+            "source_artifact": "meta_learning_evidence_v1",
+            "source_authority": "META_LEARNING_RESEARCH",
+            "source_field": "observed_regime_or_context_ref",
+            "target_field": "instrument.instrument_id",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No market_observation_epoch in meta_evidence_v1 or nested meta_learning_evidence_v1.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": null,
+            "target_field": "market_observation_epoch",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No authoritative produced_at/observed_at; wall-clock fill forbidden.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": null,
+            "target_field": "observed_at_unix",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No freshness basis in research routing envelope.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": null,
+            "target_field": "freshness_horizon_seconds",
+            "transformation": null
+          },
+          {
+            "classification": "EXACT_SOURCE",
+            "lossiness": "NONE",
+            "reason": "Digest present on meta_evidence_v1 but identity fields still block promotion.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": "content_digest",
+            "target_field": "source_evidence_digest",
+            "transformation": "identity"
+          },
+          {
+            "classification": "MECHANICAL_TRANSFORM",
+            "lossiness": "LOW",
+            "reason": "Record id exists; does not satisfy instrument/epoch requirements for A intake.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "RESEARCH_ONLY_ROUTING",
+            "source_field": "meta_evidence_record_id",
+            "target_field": "envelope_id",
+            "transformation": "copy_string"
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "P2 registry producer id is not emitted by research meta_evidence builder.",
+            "source_artifact": "meta_evidence_v1",
+            "source_authority": "P2_REGISTRY_ONLY",
+            "source_field": null,
+            "target_field": "producer_id",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No CURRENT governed binding context pairs completed meta_evidence_v1 with InstrumentBindingV1 and market_observation_epoch without fabrication.",
+            "source_artifact": "authoritative_binding_context",
+            "source_authority": "NONE_ON_CURRENT_MAIN",
+            "source_field": null,
+            "target_field": "binding_context.instrument_epoch",
+            "transformation": null
+          }
+        ],
+        "first_blocking_classification": "CONFLICTING",
+        "first_blocking_field": "evidence_kind",
+        "first_blocking_reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+        "mandatory_field_count": 11,
+        "meta_evidence_v1_equated_to_target": false,
+        "producer_bridge_allowed": false,
+        "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+        "target_contract": "EvidenceIntakeRecordV1 + explicit promotion/binding boundary",
+        "target_evidence_kind": "meta_learning_routed_evidence_v1",
+        "verdict": "BLOCKED"
+      },
       "current_meta_learning_runtime_surfaces": [
         {
           "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
@@ -38,6 +182,8 @@
         "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py"
       ],
       "earliest_blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+      "first_unprovable_field": "evidence_kind",
+      "first_unprovable_reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
       "instrument_epoch_in_artifact": false,
       "instrument_epoch_notes": "meta_learning_evidence_v1 carries observed_regime_or_context_ref only; no InstrumentBindingV1 / market_observation_epoch without external fabrication.",
       "meta_evidence_v1_vs_p2_kind_relation": {
@@ -47,11 +193,184 @@
       "p2_registered_evidence_kind": "meta_learning_routed_evidence_v1",
       "p2_registered_producer_id": "meta_learning.routed_evidence.producer",
       "productive_lineage_proven": false,
-      "promotion_to_a_mechanically_allowed": false
+      "promotion_to_a_mechanically_allowed": false,
+      "upstream_invocation_proof": {
+        "productive_reachable_proven": false,
+        "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+        "surfaces": [
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "build_meta_evidence_v1",
+            "module": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+            "notes": "RESEARCH_ONLY routing envelope; permitted_use_classification=RESEARCH_ONLY.",
+            "output_schema": "meta_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          },
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "classify_and_build_meta_evidence_v1",
+            "module": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+            "notes": "Dual-router research consumer path; no productive promotion.",
+            "output_schema": "meta_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          },
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "meta_learning_evidence_v1 ingest",
+            "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
+            "notes": "Nested input to meta_evidence_v1; still research lineage.",
+            "output_schema": "meta_learning_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          }
+        ],
+        "target_p2_kind": "meta_learning_routed_evidence_v1",
+        "verdict": "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY"
+      }
     },
     "optimization": {
       "classification": "D",
       "classification_label": "NO_CURRENT_PRODUCER_FOR_P2_REGISTERED_KIND",
+      "contract_crosswalk": {
+        "candidate_source_artifacts": [
+          "canonical_optimization_experiment_evidence_v1",
+          "canonical_optimizable_envelope_v1"
+        ],
+        "earliest_blocker": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+        "fields": [
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "NONE",
+            "source_field": null,
+            "target_field": "target_schema_validator",
+            "transformation": null
+          },
+          {
+            "classification": "CONFLICTING",
+            "lossiness": "TOTAL",
+            "reason": "Source schema canonical_optimization_experiment_evidence_v1 is OPTIMIZATION_EXPERIMENT evidence, not optimization_envelope_evidence_v1.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": "schema_version",
+            "target_field": "evidence_kind",
+            "transformation": null
+          },
+          {
+            "classification": "CONFLICTING",
+            "lossiness": "TOTAL",
+            "reason": "Source schema canonical_optimizable_envelope_v1 is optimizable-surface envelope metadata, not optimization_envelope_evidence_v1.",
+            "source_artifact": "canonical_optimizable_envelope_v1",
+            "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+            "source_field": "schema_version",
+            "target_field": "evidence_kind",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "canonical_optimization_experiment_evidence_v1 has no InstrumentBindingV1 fields.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": null,
+            "target_field": "instrument.instrument_id",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "surface_id is optimization-surface identity, not trading instrument_id.",
+            "source_artifact": "canonical_optimizable_envelope_v1",
+            "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+            "source_field": "surface_id",
+            "target_field": "instrument.instrument_id",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "Experiment evidence carries plane_identity only; no market_observation_epoch.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": null,
+            "target_field": "market_observation_epoch",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "No authoritative observation timestamp on experiment evidence (wall-clock forbidden).",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": null,
+            "target_field": "observed_at_unix",
+            "transformation": null
+          },
+          {
+            "classification": "MECHANICAL_TRANSFORM",
+            "lossiness": "NONE",
+            "reason": "Digest exists but remaining intake fields block bridge.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": "reproducibility_digest",
+            "target_field": "source_evidence_digest",
+            "transformation": "copy_sha256_hex"
+          },
+          {
+            "classification": "SEMANTIC_TRANSFORM_REQUIRED",
+            "lossiness": "HIGH",
+            "reason": "evidence_slices encode M4 search/challenger/OOS research classes; not a governed optimization_envelope_evidence_v1 payload.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+            "source_field": "evidence_slices",
+            "target_field": "typed_payload_semantics",
+            "transformation": null
+          },
+          {
+            "classification": "SEMANTIC_TRANSFORM_REQUIRED",
+            "lossiness": "HIGH",
+            "reason": "Optimizable envelope policy domain \u2260 P2 optimization envelope evidence semantics.",
+            "source_artifact": "canonical_optimizable_envelope_v1",
+            "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+            "source_field": "allowed_value_or_policy_domain",
+            "target_field": "typed_payload_semantics",
+            "transformation": null
+          },
+          {
+            "classification": "MISSING",
+            "lossiness": "TOTAL",
+            "reason": "Registry declares producer; no CURRENT module emits productive optimization envelope evidence.",
+            "source_artifact": "canonical_optimization_experiment_evidence_v1",
+            "source_authority": "P2_REGISTRY_ONLY",
+            "source_field": null,
+            "target_field": "producer_id",
+            "transformation": null
+          }
+        ],
+        "first_blocking_classification": "MISSING",
+        "first_blocking_field": "target_schema_validator",
+        "first_blocking_reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+        "mandatory_field_count": 11,
+        "owner_schema_equivalence_declared": false,
+        "producer_bridge_allowed": false,
+        "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+        "target_contract": "EvidenceIntakeRecordV1 + CanonicalMasterV2EvidenceEnvelopeV1 (P1/P2 A intake)",
+        "target_evidence_kind": "optimization_envelope_evidence_v1",
+        "verdict": "BLOCKED"
+      },
       "current_optimization_runtime_surfaces": [
         {
           "module": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
@@ -78,18 +397,334 @@
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py"
       ],
       "earliest_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+      "first_unprovable_field": "target_schema_validator",
+      "first_unprovable_reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
       "p2_registered_evidence_kind": "optimization_envelope_evidence_v1",
       "p2_registered_producer_id": "optimization.envelope_evidence.producer",
       "productive_lineage_proven": false,
       "promotion_to_a_mechanically_allowed": false,
       "schema_equivalence_notes": "No repository module validates or emits schema optimization_envelope_evidence_v1. canonical_optimizable_envelope_v1 and canonical_optimization_experiment_evidence_v1 are distinct governed contracts; mapping either to P2 kind would invent semantics.",
-      "schema_equivalence_to_p2_kind": "NOT_PROVEN"
+      "schema_equivalence_to_p2_kind": "NOT_PROVEN",
+      "upstream_invocation_proof": {
+        "productive_reachable_proven": false,
+        "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+        "surfaces": [
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "build_optimization_experiment_evidence_from_plane_v1",
+            "module": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+            "notes": "Invoked from offline experiment plane / phase-22 research stacks only.",
+            "output_schema": "canonical_optimization_experiment_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          },
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "build_optimization_experiment_evidence_from_plane_v1",
+            "module": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+            "notes": "MI offline research evidence path; not productive runtime.",
+            "output_schema": "canonical_optimization_experiment_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          },
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": true,
+            "OUTPUT_ARTIFACT_PROVEN": true,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "build_optimization_experiment_evidence_from_plane_v1",
+            "module": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+            "notes": "Deterministic offline replay; not productive producer.",
+            "output_schema": "canonical_optimization_experiment_evidence_v1",
+            "reachability_class": "RESEARCH_RUNNABLE"
+          },
+          {
+            "CURRENT": true,
+            "IMPLEMENTED": true,
+            "INVOCATION_PATH_PROVEN": false,
+            "OUTPUT_ARTIFACT_PROVEN": false,
+            "PRODUCTIVE_REACHABLE": false,
+            "builder": "N/A",
+            "module": "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
+            "notes": "Registry entry is not evidence emission.",
+            "output_schema": "optimization_envelope_evidence_v1",
+            "reachability_class": "REGISTRY_DECLARATION_ONLY"
+          }
+        ],
+        "target_p2_kind": "optimization_envelope_evidence_v1",
+        "verdict": "BLOCKED_NO_PRODUCTIVE_EMITTER"
+      }
     },
     "schema_version": "master_v2_double_play_evidence_input_plane_p5_lineage_census/v1",
     "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
   },
   "meta_learning_blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+  "meta_learning_contract_crosswalk": {
+    "candidate_source_artifacts": [
+      "meta_evidence_v1",
+      "meta_learning_evidence_v1"
+    ],
+    "earliest_blocker": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+    "fields": [
+      {
+        "classification": "CONFLICTING",
+        "lossiness": "TOTAL",
+        "reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": "schema_version",
+        "target_field": "evidence_kind",
+        "transformation": null
+      },
+      {
+        "classification": "CONFLICTING",
+        "lossiness": "TOTAL",
+        "reason": "meta_evidence_v1 is RESEARCH_ONLY; productive promotion requires separate binding boundary.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": "permitted_use_classification",
+        "target_field": "permitted_use",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "meta_evidence_v1 carries no instrument_id.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": null,
+        "target_field": "instrument.instrument_id",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "observed_regime_or_context_ref is opaque regime ref, not InstrumentBindingV1.",
+        "source_artifact": "meta_learning_evidence_v1",
+        "source_authority": "META_LEARNING_RESEARCH",
+        "source_field": "observed_regime_or_context_ref",
+        "target_field": "instrument.instrument_id",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No market_observation_epoch in meta_evidence_v1 or nested meta_learning_evidence_v1.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": null,
+        "target_field": "market_observation_epoch",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No authoritative produced_at/observed_at; wall-clock fill forbidden.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": null,
+        "target_field": "observed_at_unix",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No freshness basis in research routing envelope.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": null,
+        "target_field": "freshness_horizon_seconds",
+        "transformation": null
+      },
+      {
+        "classification": "EXACT_SOURCE",
+        "lossiness": "NONE",
+        "reason": "Digest present on meta_evidence_v1 but identity fields still block promotion.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": "content_digest",
+        "target_field": "source_evidence_digest",
+        "transformation": "identity"
+      },
+      {
+        "classification": "MECHANICAL_TRANSFORM",
+        "lossiness": "LOW",
+        "reason": "Record id exists; does not satisfy instrument/epoch requirements for A intake.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "RESEARCH_ONLY_ROUTING",
+        "source_field": "meta_evidence_record_id",
+        "target_field": "envelope_id",
+        "transformation": "copy_string"
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "P2 registry producer id is not emitted by research meta_evidence builder.",
+        "source_artifact": "meta_evidence_v1",
+        "source_authority": "P2_REGISTRY_ONLY",
+        "source_field": null,
+        "target_field": "producer_id",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No CURRENT governed binding context pairs completed meta_evidence_v1 with InstrumentBindingV1 and market_observation_epoch without fabrication.",
+        "source_artifact": "authoritative_binding_context",
+        "source_authority": "NONE_ON_CURRENT_MAIN",
+        "source_field": null,
+        "target_field": "binding_context.instrument_epoch",
+        "transformation": null
+      }
+    ],
+    "first_blocking_classification": "CONFLICTING",
+    "first_blocking_field": "evidence_kind",
+    "first_blocking_reason": "Source meta_evidence_v1 \u2260 target meta_learning_routed_evidence_v1; schemas are not equated.",
+    "mandatory_field_count": 11,
+    "meta_evidence_v1_equated_to_target": false,
+    "producer_bridge_allowed": false,
+    "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+    "target_contract": "EvidenceIntakeRecordV1 + explicit promotion/binding boundary",
+    "target_evidence_kind": "meta_learning_routed_evidence_v1",
+    "verdict": "BLOCKED"
+  },
   "optimization_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+  "optimization_contract_crosswalk": {
+    "candidate_source_artifacts": [
+      "canonical_optimization_experiment_evidence_v1",
+      "canonical_optimizable_envelope_v1"
+    ],
+    "earliest_blocker": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+    "fields": [
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "NONE",
+        "source_field": null,
+        "target_field": "target_schema_validator",
+        "transformation": null
+      },
+      {
+        "classification": "CONFLICTING",
+        "lossiness": "TOTAL",
+        "reason": "Source schema canonical_optimization_experiment_evidence_v1 is OPTIMIZATION_EXPERIMENT evidence, not optimization_envelope_evidence_v1.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": "schema_version",
+        "target_field": "evidence_kind",
+        "transformation": null
+      },
+      {
+        "classification": "CONFLICTING",
+        "lossiness": "TOTAL",
+        "reason": "Source schema canonical_optimizable_envelope_v1 is optimizable-surface envelope metadata, not optimization_envelope_evidence_v1.",
+        "source_artifact": "canonical_optimizable_envelope_v1",
+        "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+        "source_field": "schema_version",
+        "target_field": "evidence_kind",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "canonical_optimization_experiment_evidence_v1 has no InstrumentBindingV1 fields.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": null,
+        "target_field": "instrument.instrument_id",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "surface_id is optimization-surface identity, not trading instrument_id.",
+        "source_artifact": "canonical_optimizable_envelope_v1",
+        "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+        "source_field": "surface_id",
+        "target_field": "instrument.instrument_id",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "Experiment evidence carries plane_identity only; no market_observation_epoch.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": null,
+        "target_field": "market_observation_epoch",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "No authoritative observation timestamp on experiment evidence (wall-clock forbidden).",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": null,
+        "target_field": "observed_at_unix",
+        "transformation": null
+      },
+      {
+        "classification": "MECHANICAL_TRANSFORM",
+        "lossiness": "NONE",
+        "reason": "Digest exists but remaining intake fields block bridge.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": "reproducibility_digest",
+        "target_field": "source_evidence_digest",
+        "transformation": "copy_sha256_hex"
+      },
+      {
+        "classification": "SEMANTIC_TRANSFORM_REQUIRED",
+        "lossiness": "HIGH",
+        "reason": "evidence_slices encode M4 search/challenger/OOS research classes; not a governed optimization_envelope_evidence_v1 payload.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
+        "source_field": "evidence_slices",
+        "target_field": "typed_payload_semantics",
+        "transformation": null
+      },
+      {
+        "classification": "SEMANTIC_TRANSFORM_REQUIRED",
+        "lossiness": "HIGH",
+        "reason": "Optimizable envelope policy domain \u2260 P2 optimization envelope evidence semantics.",
+        "source_artifact": "canonical_optimizable_envelope_v1",
+        "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
+        "source_field": "allowed_value_or_policy_domain",
+        "target_field": "typed_payload_semantics",
+        "transformation": null
+      },
+      {
+        "classification": "MISSING",
+        "lossiness": "TOTAL",
+        "reason": "Registry declares producer; no CURRENT module emits productive optimization envelope evidence.",
+        "source_artifact": "canonical_optimization_experiment_evidence_v1",
+        "source_authority": "P2_REGISTRY_ONLY",
+        "source_field": null,
+        "target_field": "producer_id",
+        "transformation": null
+      }
+    ],
+    "first_blocking_classification": "MISSING",
+    "first_blocking_field": "target_schema_validator",
+    "first_blocking_reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+    "mandatory_field_count": 11,
+    "owner_schema_equivalence_declared": false,
+    "producer_bridge_allowed": false,
+    "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
+    "target_contract": "EvidenceIntakeRecordV1 + CanonicalMasterV2EvidenceEnvelopeV1 (P1/P2 A intake)",
+    "target_evidence_kind": "optimization_envelope_evidence_v1",
+    "verdict": "BLOCKED"
+  },
   "owner_authorized_vs_mechanically_implemented": {
     "MECHANICALLY_IMPLEMENTED": false,
     "OWNER_AUTHORIZED": true,
@@ -102,7 +737,7 @@
   "owner_promotion_authority_used": true,
   "p5_all_paths_terminate_at_a": false,
   "p5_status": "BOUNDED_COMPLETE_BLOCKED",
-  "previous_reviewed_head_sha": "957486c2dd051542a43db2d16177854092bded87",
+  "previous_reviewed_head_sha": "71d0d897eaea6d066c366221a2e7d13ada946aa6",
   "producer_census": {
     "entries": [
       {
@@ -243,6 +878,8 @@
     "proof_13_opt_meta_blocked_documented": true,
     "proof_14_non_interference": true,
     "proof_15_producer_trading_authority_none": true,
+    "proof_16_crosswalks_document_blocked_bridges": true,
+    "proof_17_upstream_not_productive_reachable": true,
     "proof_1_mi_cannot_direct_b": true,
     "proof_2_mi_cannot_direct_dp": true,
     "proof_3_learning_cannot_direct_b": true,
@@ -254,6 +891,108 @@
     "proof_9_unregistered_reject_path": true
   },
   "schema_version": "master_v2_double_play_evidence_input_plane_p5_proof/v1",
+  "upstream_invocation_proofs": {
+    "meta_learning": {
+      "productive_reachable_proven": false,
+      "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+      "surfaces": [
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "build_meta_evidence_v1",
+          "module": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+          "notes": "RESEARCH_ONLY routing envelope; permitted_use_classification=RESEARCH_ONLY.",
+          "output_schema": "meta_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        },
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "classify_and_build_meta_evidence_v1",
+          "module": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+          "notes": "Dual-router research consumer path; no productive promotion.",
+          "output_schema": "meta_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        },
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "meta_learning_evidence_v1 ingest",
+          "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "notes": "Nested input to meta_evidence_v1; still research lineage.",
+          "output_schema": "meta_learning_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        }
+      ],
+      "target_p2_kind": "meta_learning_routed_evidence_v1",
+      "verdict": "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY"
+    },
+    "optimization": {
+      "productive_reachable_proven": false,
+      "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+      "surfaces": [
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "build_optimization_experiment_evidence_from_plane_v1",
+          "module": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+          "notes": "Invoked from offline experiment plane / phase-22 research stacks only.",
+          "output_schema": "canonical_optimization_experiment_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        },
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "build_optimization_experiment_evidence_from_plane_v1",
+          "module": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+          "notes": "MI offline research evidence path; not productive runtime.",
+          "output_schema": "canonical_optimization_experiment_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        },
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": true,
+          "OUTPUT_ARTIFACT_PROVEN": true,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "build_optimization_experiment_evidence_from_plane_v1",
+          "module": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+          "notes": "Deterministic offline replay; not productive producer.",
+          "output_schema": "canonical_optimization_experiment_evidence_v1",
+          "reachability_class": "RESEARCH_RUNNABLE"
+        },
+        {
+          "CURRENT": true,
+          "IMPLEMENTED": true,
+          "INVOCATION_PATH_PROVEN": false,
+          "OUTPUT_ARTIFACT_PROVEN": false,
+          "PRODUCTIVE_REACHABLE": false,
+          "builder": "N/A",
+          "module": "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
+          "notes": "Registry entry is not evidence emission.",
+          "output_schema": "optimization_envelope_evidence_v1",
+          "reachability_class": "REGISTRY_DECLARATION_ONLY"
+        }
+      ],
+      "target_p2_kind": "optimization_envelope_evidence_v1",
+      "verdict": "BLOCKED_NO_PRODUCTIVE_EMITTER"
+    }
+  },
   "verdict": "BOUNDED_COMPLETE_BLOCKED",
   "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
 }
