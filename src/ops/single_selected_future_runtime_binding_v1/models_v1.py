@@ -54,6 +54,9 @@ class BoundInstrumentV1:
     selection_state: str
     selected_future_count: int = SELECTED_FUTURE_COUNT
     max_positions_effective: int = MAX_POSITIONS_EFFECTIVE
+    ranking_policy_id: str = ""
+    ranking_policy_version: str = ""
+    upstream_rank_order_witness: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -61,6 +64,9 @@ class BoundInstrumentV1:
             "venue_native_id": self.venue_native_id,
             "ranking_snapshot_id": self.ranking_snapshot_id,
             "ranking_integrity_digest": self.ranking_integrity_digest,
+            "ranking_policy_id": self.ranking_policy_id,
+            "ranking_policy_version": self.ranking_policy_version,
+            "upstream_rank_order_witness": self.upstream_rank_order_witness,
             "universe_snapshot_id": self.universe_snapshot_id,
             "selection_id": self.selection_id,
             "selection_integrity_digest": self.selection_integrity_digest,

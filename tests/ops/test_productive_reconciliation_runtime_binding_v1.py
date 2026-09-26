@@ -84,7 +84,8 @@ def test_constants_bound_not_activated() -> None:
     assert CAPABILITY_ID == "CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1"
     assert PRODUCTIVE_RECONCILIATION_BOUND is True
     assert "productive_reconciliation_startup_gate" in CALL_GRAPH_V1
-    assert CALL_GRAPH_V1[0] == "persisted_single_selected_future"
+    assert CALL_GRAPH_V1[0] == "repository_config_integrity_check"
+    assert "persisted_single_selected_future" in CALL_GRAPH_V1
     assert CALL_GRAPH_V1 == REQUIRED_CALL_GRAPH
 
 
