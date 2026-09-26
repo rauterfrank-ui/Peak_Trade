@@ -120,6 +120,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_phase_19_orthogonal_materialization_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_phase_19_orthogonal_materialization_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_arithmetic_decimal | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_arithmetic_decimal | STATUS=OPEN (not proven) |  |
@@ -208,6 +209,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_18_existing_fact_market_context_materialization_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_18_existing_fact_market_context_materialization_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_19_orthogonal_context_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_19_orthogonal_context_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1 | STATUS=OPEN (not proven) |  |

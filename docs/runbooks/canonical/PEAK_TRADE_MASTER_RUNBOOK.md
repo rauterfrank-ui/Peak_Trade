@@ -1219,6 +1219,10 @@ POST, or substitute trading decisions.
   `CROSS_MARKET_STATE`; context-only; no WS redesign):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py`
+- Unified Blueprint Phase 20 behavior join (`MARKET_CONTEXT(t)` →
+  `REALIZED_BEHAVIOR(t+N)` via canonical N_BARS backbone; AUTHORITY=NONE):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

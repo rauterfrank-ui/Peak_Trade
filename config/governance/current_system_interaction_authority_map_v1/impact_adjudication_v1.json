@@ -1,16 +1,16 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "35b4fac28c3db404439f0806d80d0488312aebca",
+  "base_sha": "0df2aa4a216a7fdbac55e6e886b853f3102c4c0f",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/market_context_v1_phase_19_cross_market_anchor_binding_v1.json",
     "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
+    "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -21,21 +21,20 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_19_orthogonal_context_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
-    "src/ops/peak_trade_public_market_data_runtime_v1/facts_v1.py",
+    "src/governance/unified_blueprint_phase_20_behavior_join_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
     "tests/governance/test_unified_blueprint_phase_19_orthogonal_context_v1.py",
-    "tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py"
+    "tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py",
+    "tests/learning/test_market_context_realized_behavior_join_v1.py"
   ],
-  "changed_paths_sha256": "f442c6d96cfb480ec5948909c9f230fe1265a9a8da5f889e09df206cf78175c4",
+  "changed_paths_sha256": "4cf237e9464bc421f9fb5601c56e2b0879263901c45cf3a541d72bf4ad08b565",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
-    "tests/governance/test_unified_blueprint_phase_19_orthogonal_context_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
+    "tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 19 orthogonal DERIVATIVES_STATE and CROSS_MARKET_STATE; WP-A fact contracts; bounded anchor binding; AUTHORITY=NONE."
+  "reason": "Phase 20 MARKET_CONTEXT to REALIZED_BEHAVIOR N_BARS join; structured map source and derived views updated; AUTHORITY=NONE."
 }

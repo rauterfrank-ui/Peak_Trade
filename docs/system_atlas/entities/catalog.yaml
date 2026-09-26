@@ -8660,6 +8660,38 @@ entities:
       Context-only derivatives and bounded cross-market joins; no Cap 2.3 authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 20 behavior join v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_20_behavior_join_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_20_behavior_join_v1.json
+    notes: >-
+      Phase 20 MARKET_CONTEXT to REALIZED_BEHAVIOR N_BARS join closure;
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1
+    kind: RUNTIME_COMPONENT
+    name: MI/Learning Phase 20 realized behavior join
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py
+    evidence_sources:
+      - tests/learning/test_market_context_realized_behavior_join_v1.py
+    notes: >-
+      Typed REALIZED_BEHAVIOR_V1 from MARKET_CONTEXT_V1 and canonical N_BARS outcome;
+      no duplicate outcome SSOT. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

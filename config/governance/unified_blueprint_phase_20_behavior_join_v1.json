@@ -1,0 +1,55 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1",
+  "authorized_baseline_sha": "0df2aa4a216a7fdbac55e6e886b853f3102c4c0f",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_20_behavior_join_v1.py",
+  "phase_19_integration_config": "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_20_closure_status": "PROVEN_COMPLETE",
+  "behavior_family_status": {
+    "forward_behavior": "PROVEN_TYPED",
+    "excursion": "PROVEN_TYPED_CLOSE_PATH",
+    "realized_volatility": "PROVEN_TYPED",
+    "volatility_tails": "SEMANTICALLY_UNRESOLVED",
+    "transition": "SEMANTICALLY_UNRESOLVED",
+    "classical_mfe_mae": "SEMANTICALLY_UNRESOLVED"
+  },
+  "n_bars_census_adjudication": {
+    "horizon_identity": "PROVEN_CURRENT",
+    "pt1h_bar_semantics": "PROVEN_CURRENT_O4_BRIDGE",
+    "finalized_bar_semantics": "PROVEN_CURRENT",
+    "forward_return_log": "PROVEN_CURRENT_MEASUREMENT_EVIDENCE",
+    "close_path_excursion": "DERIVABLE_FROM_CURRENT",
+    "classical_mfe_mae": "SEMANTICALLY_UNRESOLVED",
+    "realized_volatility_close_to_close": "DERIVABLE_FROM_CURRENT",
+    "tail_shock_labels": "SEMANTICALLY_UNRESOLVED",
+    "regime_transition": "SEMANTICALLY_UNRESOLVED",
+    "outcome_ssot": "peak_trade.learning.ddo.n_bars_bar_evidence_supplier_v1",
+    "observation_owner": "peak_trade.learning.ddo.real_outcome_horizon_engine_v1"
+  },
+  "authority_invariants": {
+    "market_context_authority": "NONE",
+    "realized_behavior_authority": "NONE",
+    "forecast_is_not_decision": true,
+    "cross_market_is_context_only": true,
+    "no_second_market_truth": true,
+    "no_authority_expansion": true,
+    "no_duplicate_outcome_truth": true,
+    "mv2_dp_unchanged": true,
+    "multi_future_runtime_authorized": false,
+    "runtime_apply_authorized": false,
+    "phase_19_prerequisite_required": true
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+    "src/governance/unified_blueprint_phase_20_behavior_join_v1.py",
+    "tests/learning/test_market_context_realized_behavior_join_v1.py",
+    "tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Phase 21 Learning Integration (NOT authorized by Phase 20 OWNER_GO)",
+  "next_implementation_boundary": "Phase 21 learning integration under separate Owner authorization"
+}

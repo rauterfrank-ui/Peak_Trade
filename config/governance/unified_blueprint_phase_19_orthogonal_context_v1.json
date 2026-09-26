@@ -48,6 +48,6 @@
     "tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py",
     "tests/governance/test_unified_blueprint_phase_19_orthogonal_context_v1.py"
   ],
-  "first_unproven_dependency_after_closure": "Phase 20 behavior join (NOT authorized by Phase 19 OWNER_GO)",
-  "next_implementation_boundary": "Phase 20 behavior join under separate Owner authorization"
+  "first_unproven_dependency_after_closure": "Phase 21 Learning Integration (NOT authorized by Phase 19 OWNER_GO)",
+  "next_implementation_boundary": "Phase 21 learning integration under separate Owner authorization"
 }
