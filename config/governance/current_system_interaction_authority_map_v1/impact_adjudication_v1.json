@@ -30,7 +30,7 @@
     "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
     "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
   ],
-  "changed_paths_sha256": "25e3526984ab3d22f265096ede41378e492b56af4533c7d397eebcc6744339bc",
+  "changed_paths_sha256": "cb13b342941beabc6e02f466b9eca148f825b39878d659d0dc22cf2fde5bc973",
   "covered_candidate_paths": [
     "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
     "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",

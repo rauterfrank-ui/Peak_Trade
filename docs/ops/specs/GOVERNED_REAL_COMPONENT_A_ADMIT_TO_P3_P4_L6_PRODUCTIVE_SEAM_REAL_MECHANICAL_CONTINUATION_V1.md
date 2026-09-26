@@ -34,8 +34,8 @@ run_real_runtime_to_p5_evidence_adjudicator_a_continuation_v1 (real)
 
 Reuse:
 
-- `master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py`
-- `master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py`
+- `master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1&#47;binder_v1.py`
+- `master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1&#47;seam_v1.py`
 - `governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`
 
 ## Non-implications
