@@ -21,8 +21,9 @@ Owner-GO `PEAK_TRADE_B04_RANKING_FEATURE_CONTRACT_V1` materializes the
 B03-ratified Cap 2.2 ranking policy into versioned, deterministic
 contract/DTO types for raw inputs, normalized values, candidate bundles,
 score contributions, explainability witnesses, and provenance — without
-feature production (B05), productive economic rank activation (B06), Cap
-2.3 selection changes, or external effects.
+productive economic rank activation (B06), Cap 2.3 selection changes, or
+external effects. B05 Cap-2.1 feature production is a separate slice that
+consumes this contract for raw DTO population only.
 
 Subordinate to
 `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` and

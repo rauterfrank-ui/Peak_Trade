@@ -258,7 +258,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `155`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `157`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -299,6 +299,7 @@ Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
+| CAPABILITY:cap21_feature_production_v1 | CAPABILITY | Cap 2.1 Ranking Feature Production V1 (B05) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_11_13_5_live_canary | CAPABILITY | LIVE_CANARY_MINIMUM_EXPOSURE | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_1_1_reconciliation | CAPABILITY | Productive Reconciliation Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_2_1_gfu | CAPABILITY | Governed Futures Universe Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -429,10 +430,11 @@ Do not treat historical or forensic material as current runtime wiring. Implemen
 
 ### CURRENT_CANONICAL
 
-Architectural-kind count in this bucket: `20`.
+Architectural-kind count in this bucket: `21`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
+| CAPABILITY:cap21_feature_production_v1 | CAPABILITY | Cap 2.1 Ranking Feature Production V1 (B05) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_11_13_5_live_canary | CAPABILITY | LIVE_CANARY_MINIMUM_EXPOSURE | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_2_1_gfu | CAPABILITY | Governed Futures Universe Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_2_2_ranking | CAPABILITY | Productive Futures Ranking Producer | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -638,7 +640,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `170`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `171`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -738,9 +740,9 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=659
+ENTITY_TOTAL=660
 HUB_RELATION_COUNT=74
-STRUCTURAL_RELATION_COUNT=155
+STRUCTURAL_RELATION_COUNT=157
 RUNTIME_RELATION_COUNT=131
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=8
@@ -814,7 +816,7 @@ Remaining census domains:
 | ADAPTER | 4 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
-| CAPABILITY | 10 |
+| CAPABILITY | 11 |
 | CHILD | 1 |
 | CONTRACT | 46 |
 | DATA_CONTRACT | 8 |

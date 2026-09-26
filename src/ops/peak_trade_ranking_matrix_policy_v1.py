@@ -2,9 +2,9 @@
 
 Persists the Owner-ratified Cap 2.2 productive ranking policy matrix
 (PEAK_TRADE_RANKING_MATRIX_POLICY_V1). Grants CAP22_RANKING_POLICY_AUTHORITY
-only. Does not wire productive economic ranking, does not activate economic
-rank, does not implement B04/B05/B06 runtime, and does not grant selection,
-execution, live, testnet, or multi-future authority.
+only. Does not wire productive Cap 2.2 economic ranking runtime (B06), does
+not activate economic rank, and does not grant selection, execution, live,
+testnet, or multi-future authority. B04/B05 are separate bounded slices.
 """
 
 from __future__ import annotations
@@ -116,7 +116,7 @@ FINAL_WEIGHTS_RATIFIED = True
 
 RUNTIME_WIRING_ADDED_BY_THIS_SLICE = False
 B04_IMPLEMENTED = True
-B05_IMPLEMENTED = False
+B05_IMPLEMENTED = True
 B06_IMPLEMENTED = False
 
 RESIDUAL_TIE_BREAK: tuple[str, ...] = (
@@ -125,7 +125,6 @@ RESIDUAL_TIE_BREAK: tuple[str, ...] = (
 )
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
-    "b05_implemented",
     "b06_implemented",
     "cap22_productive_economic_runtime_wired",
     "cap23_selection_authority_added",
@@ -139,6 +138,7 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
 
 TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "b04_implemented",
+    "b05_implemented",
     "b03_ratified",
     "cap22_ranking_policy_authority",
     "cross_sectional_normalization_ratified",
