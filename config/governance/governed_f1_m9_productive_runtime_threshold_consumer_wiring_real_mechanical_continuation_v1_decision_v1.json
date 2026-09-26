@@ -1,0 +1,21 @@
+{
+  "workpackage_id": "GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json",
+  "threshold_runtime_consumer_wiring_authorized": true,
+  "ratified_threshold_numeric_max_age_seconds": 600,
+  "owner_threshold_record_digest_bound": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+  "real_p4_to_f1_m9_join_status": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL",
+  "productive_activation_authorized": false,
+  "continuous_run_authorized": false,
+  "external_effect_authorized": false,
+  "threshold_runtime_consumer_status": "PRESENCE_GATE_TRANSPORT_READY",
+  "threshold_seam_binding_status": "BOUND",
+  "presence_gate_binding_status": "BOUND",
+  "bounded_threshold_enforcement_status": "BOUNDED_CLOSURE_AUTHORIZED",
+  "downstream_mv2_interface_status": "INTEGRATED_OFFLINE_REPLAY_ALPHA_BOUNDARY",
+  "real_runtime_path_proven": true,
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION",
+  "next_genuine_blocker": "PRODUCTIVE_ACTIVATION_OWNER_GO",
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

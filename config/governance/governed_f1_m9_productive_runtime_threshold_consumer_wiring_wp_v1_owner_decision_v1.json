@@ -1,0 +1,18 @@
+{
+  "artifact_class": "GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_WP_OWNER_DECISION_V1",
+  "workpackage_id": "GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1",
+  "authorized_baseline_sha": "3b40523f3dfa0aa1c61c4f06abfc3eb0fc85f468",
+  "owner_decision": "AUTHORIZE_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING",
+  "authorizer_identity": "OWNER_GO_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING",
+  "f1_m9_productive_runtime_threshold_consumer_wiring_authorized": true,
+  "productive_target_id": "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+  "ratified_threshold_numeric_max_age_seconds": 600,
+  "owner_threshold_record_digest_bound": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+  "real_p4_to_f1_m9_join_status": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL",
+  "productive_activation_authorized": false,
+  "continuous_run_authorized": false,
+  "external_effect_authorized": false,
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
+  "continuation_module": "src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
+  "consumer_wiring_module": "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py"
+}

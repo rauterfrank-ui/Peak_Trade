@@ -42,7 +42,8 @@ POST-6887 threshold ratification proven
   → threshold value re-adjudication (e556ea63… durable record)
   → authorized productive parameter seam + presence-gate transport
   → bounded threshold enforcement readiness (#6802 decision; no global ENFORCEMENT_ENABLED)
-  → STOP before Productive Activation / orchestrator consumer wiring
+  → successor: F1/M9 productive runtime threshold consumer wiring WP (orchestrator/replay path)
+  → STOP before Productive Activation
 ```
 
 ## Non-implications

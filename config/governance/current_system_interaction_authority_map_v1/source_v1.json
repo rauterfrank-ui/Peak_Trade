@@ -1050,7 +1050,7 @@
     {
       "id": "f1_m9_scoped_owner_productive_runtime_apply_start",
       "tier": "INTERMEDIATE",
-      "role": "F1/M9 governed productive runtime apply start (600s post-#6887 lineage); AUTHORIZED_PRODUCTIVE_APPLY + derived RUNTIME_APPLY_STARTED; presence-gate transport; STOP before Productive Activation.",
+      "role": "F1/M9 governed productive runtime apply start (600s post-#6887 lineage); AUTHORIZED_PRODUCTIVE_APPLY + derived RUNTIME_APPLY_STARTED; presence-gate transport; successor consumer wiring WP closed separately.",
       "canonical_owner_ref": "f1_m9_productive_apply_execution_boundary_v1",
       "authority_class": "NONE",
       "lifecycle": "GOVERNED_RUNTIME_APPLY_START_CLOSED",
@@ -1071,6 +1071,32 @@
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
         "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032/productive_handoff/governed_productive_runtime_apply_start_evidence_v1.json"
+      ]
+    },
+    {
+      "id": "f1_m9_productive_runtime_threshold_consumer_wiring",
+      "tier": "INTERMEDIATE",
+      "role": "F1/M9 productive runtime threshold consumer wiring (600s); hardening v2 bridge + integrated offline replay → seam transport → presence gate → bounded MV2 enforcement; no Productive Activation.",
+      "canonical_owner_ref": "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
+      "authority_class": "NONE",
+      "lifecycle": "GOVERNED_THRESHOLD_RUNTIME_CONSUMER_WIRED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py",
+        "src/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
+        "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json"
       ]
     },
     {
@@ -4009,6 +4035,17 @@
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "F1/M9 productive runtime threshold consumer wiring: 600s ratified seam → transport → presence gate → bounded #6802 enforcement → MV2 alpha boundary on hardening v2 bridge and integrated offline replay; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
       ]
     }
   ]
