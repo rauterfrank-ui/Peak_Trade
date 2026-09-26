@@ -1,0 +1,190 @@
+{
+  "schema_version": "unified_blueprint_phase_26_final_closed_cycle_dod_matrix_v1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1",
+  "blueprint_authority": "NONE",
+  "adjudication_epistemic_class": "ADJUDICATED_CONCLUSION",
+  "authorized_baseline_sha": "6d44e30de03277c01a43f0e6feb90f4a84ef6c5a",
+  "closed_cycle_scope": "Phases 16-25 plus D02 Loop B and Phase 8-15 prerequisites on CURRENT main",
+  "requirements": [
+    {
+      "requirement_id": "LOOP_A_PROVEN",
+      "semantic_claim": "MARKET_CONTEXT(t) + forecast/outcome + REALIZED_BEHAVIOR(t+N) compose conditioned Learning evidence with writer/store/reader, PIT/horizon, provenance, and deterministic replay.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 21",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_21_learning_integration_v1.json",
+        "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+        "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
+        "tests/governance/test_unified_blueprint_phase_21_learning_integration_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "LOOP_B_PROVEN",
+      "semantic_claim": "Learning/MI evidence reaches Optimization input, experiment/search plane, challenger/OOS/robustness/failure evidence, Meta-Learning ingest, RESEARCH_CHOICE, and next bounded Optimization research evidence generation.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 22",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
+        "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
+        "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+        "tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py",
+        "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "LOOP_C_PROVEN",
+      "semantic_claim": "LEARNING_REPRESENTATION meta evidence routes to bounded research plan and offline evaluation producing typed next Learning representation evidence without productive mutation.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 24",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+        "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py",
+        "tests/governance/test_unified_blueprint_phase_24_representation_feedback_loop_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "META_ROUTING_TYPED",
+      "semantic_claim": "Meta dual routing is typed, deterministic, fail-closed: RESEARCH_CHOICE→Optimization only; LEARNING_REPRESENTATION→Learning only; UNKNOWN/MIXED→no automatic feedback.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 23",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json",
+        "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+        "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+        "tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "META_TO_LEARNING_EVIDENCE_ONLY",
+      "semantic_claim": "Meta→Learning adaptation input and Loop C closure remain evidence-only; no self-modifying learning or direct productive mutation.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 24",
+      "authority_classification": "NONE",
+      "replay_classification": "PROVENANCE_PRESERVED",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",
+        "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+        "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "MARKET_CONTEXT_TYPED",
+      "semantic_claim": "MARKET_CONTEXT_V1 is compositional, non-price, context-only with materialization and orthogonal extensions; no second market truth.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 17-19",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json",
+        "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json",
+        "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+        "tests/governance/test_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py",
+        "tests/governance/test_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py",
+        "tests/governance/test_unified_blueprint_phase_19_orthogonal_context_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "INCREMENTAL_OOS_EVIDENCE",
+      "semantic_claim": "Incremental information B0-B5 families are adjudicated with typed admitted/deferred/rejected/insufficient evidence (B5 deferred on CURRENT).",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 22",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/incremental_information_set_v1.py",
+        "tests/learning/test_phase_22_incremental_research_evidence_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "DP_ATTRIBUTION_EVIDENCE_ONLY",
+      "semantic_claim": "MV2/DP decision refs + MARKET_CONTEXT(t) + REALIZED_BEHAVIOR(t+N) compose attribution_evidence_v1 only; no decision mutation or trading gate.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 25",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
+        "tests/learning/test_phase_25_dp_attribution_evidence_v1.py",
+        "tests/governance/test_unified_blueprint_phase_25_dp_attribution_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "DETERMINISTIC_REPLAY",
+      "semantic_claim": "Closed-cycle evidence identities and governance proofs replay deterministically on CURRENT canonical inputs across Loops A/B/C, routing, and attribution.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 16-25",
+      "authority_classification": "NONE",
+      "replay_classification": "DETERMINISTIC_REPLAY_PROVEN",
+      "evidence_refs": [
+        "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
+        "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+        "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py",
+        "tests/learning/test_phase_25_dp_attribution_evidence_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "PROVENANCE_PRESERVED",
+      "semantic_claim": "Provenance chains remain explicit across context→behavior→learning→optimization→meta→next-evidence joins on proven paths.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 16-25",
+      "authority_classification": "NONE",
+      "replay_classification": "PROVENANCE_PRESERVED",
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "NO_SECOND_MARKET_TRUTH",
+      "semantic_claim": "MI/Learning/Meta stacks reference governed facts only; FORECAST_IS_NOT_DECISION and context-only cross-market semantics preserved.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 16-21",
+      "authority_classification": "NONE",
+      "replay_classification": "STATIC_INVARIANT",
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py",
+        "config/governance/unified_blueprint_phase_21_learning_integration_v1.json"
+      ],
+      "blocker_ref": null
+    },
+    {
+      "requirement_id": "NO_AUTHORITY_EXPANSION",
+      "semantic_claim": "No Learning/Optimization/Meta/Attribution trading owner, no automatic promotion, no direct productive write, MV2/DP unchanged on CURRENT pins.",
+      "status": "PROVEN_CURRENT",
+      "prerequisite_phase": "Phase 13-25",
+      "authority_classification": "NONE",
+      "replay_classification": "STATIC_INVARIANT",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+        "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
+        "src/governance/unified_blueprint_phase_15_final_dod_v1.py"
+      ],
+      "blocker_ref": null
+    }
+  ]
+}
