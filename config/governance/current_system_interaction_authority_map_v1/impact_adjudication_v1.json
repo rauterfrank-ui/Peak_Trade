@@ -16,6 +16,7 @@
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/ops/specs/EVIDENCE_INPUT_PLANE_P2_EVIDENCE_ADJUDICATOR_RUNTIME_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/MASTER_V2_DOUBLE_PLAY_MAP.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
@@ -38,7 +39,7 @@
     "src/governance/master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1/registry_v1.py",
     "tests/governance/test_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.py"
   ],
-  "changed_paths_sha256": "38e1f3ac5f0cbf30fc3215adc00e49c15a26a50130a77ad75fc1d31dcdbd3d83",
+  "changed_paths_sha256": "58b7700f4614b538cbd7eeff6e7c9592169fe893bc81fdad23be85243494c96b",
   "covered_candidate_paths": [
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
   ],
