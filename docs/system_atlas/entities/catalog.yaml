@@ -113,6 +113,7 @@ entities:
     # atlas_entity_review: REPO_CONVERGENCE_DOCS_ARCHIVE_O5_41_OUTER_SHELL_V1
     # atlas_entity_review: REPO_CONVERGENCE_MARKET_DASHBOARD_HISTORICAL_CHROME_233_OUTER_SHELL_V1
     # atlas_entity_review: REPO_CONVERGENCE_FORENSIC_203_OUTER_SHELL_V1
+    # atlas_entity_review: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1 PR_6847
     # CURRENT_SYSTEM_MAP_FINALIZATION_V1 (PR #6818): NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # map source baseline_sha rebound; tier/subdomain/gate/treasury/survival representation;
     # regenerated docs/governance/current_system_interaction_authority_map_v1/generated/* only;
@@ -610,6 +611,43 @@ entities:
       distinct from send authority). AUTHORITY=NONE. No selection, rerank,
       MV2/DP, pretrade, execution, wire, or multi-future authority. Cap 2.3
       sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
+
+  - id: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    kind: CAPABILITY
+    name: Market Intelligence Forecast/Calibration Offline Stack (Track D03)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md
+      - config/governance/market_intelligence_forecast_calibration_offline_stack_v1_policy_v1.json
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/__init__.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/probabilistic_forecast_payload_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/support_disposition_v1.py
+      - tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py
+    evidence_sources:
+      - docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md
+      - config/governance/market_intelligence_forecast_calibration_offline_stack_v1_policy_v1.json
+      - tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py
+    notes: >-
+      Track D03 offline MI stack: ForecastEvidence, CalibrationEvidence,
+      probabilistic payload composition, forecast/outcome join, support
+      disposition, research evidence export, optimization research intake,
+      and offline orchestrator. FORECAST_IS_NOT_DECISION;
+      CONFIDENCE_IS_NOT_AUTHORITY. Does not mutate N_BARS normative
+      semantics, productive DDO feedback seams, MV2/Double-Play, Cap 2.3,
+      execution, or promotion. AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:cap22_economic_md_dual_input_v1
     kind: CONTRACT

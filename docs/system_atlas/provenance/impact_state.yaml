@@ -3,23 +3,22 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
-modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
+introduced_by: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
+modified_by: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Productive DDO O4→N_BARS observation host reads WP-A FinalizedPt1hO4BarFactV1
-  history through WP-C converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1
-  remains a bounded writer to WP-A facts, not a competing productive O4 read path.
-  DDO observation-only; NO_N_BARS_TO_PROMOTION_BINDING unchanged; Cap 2.3 and
-  MV2/DP authority unchanged. ATLAS_AUTHORITY=NONE.
+  Track D03 MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1 adds an
+  offline ForecastEvidence/CalibrationEvidence composition stack adjacent to
+  learning_ddo N_BARS references and optimization_universe research intake.
+  FORECAST_IS_NOT_DECISION; no MV2/DP, Cap 2.3, execution, promotion, or
+  productive DDO feedback mutation. Interaction map source adds D03 domain
+  handoffs only; map_authority=NONE. ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CAPABILITY:market_data_private_state_runtime_convergence_v1
-  - CAPABILITY:peak_trade_public_market_data_runtime_v1
-  - HOST:wallclock_decision_economics_cycle
+  - CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+  - NAVIGATION_INDEX:map_of_truth
 changed_relations:
-  - REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane
-  - REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo
+  - REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []
