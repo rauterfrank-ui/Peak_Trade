@@ -75,7 +75,7 @@ F1_CAMPAIGN_ADJUDICATION: Final[str] = (
     "config/governance/pdf_v3_3_f1_campaign_completion_adjudication_v1.json"
 )
 M10_PROMOTION_BOUNDARY_SPEC: Final[str] = (
-    "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md"
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md"
 )
 OPTIMIZATION_INGRESS_DECISION: Final[str] = (
     "config/governance/optimization_proposal_governance_ingress_v1_decision_v1.json"
@@ -300,6 +300,12 @@ def prove_pdf_v3_3_m10_promotion_boundary_v1(*, repo_root: Path | None = None) -
     if (
         root / "tests/governance/test_optimization_proposal_governance_ingress_v1.py"
     ).is_file() is False:
+        return False
+    from src.governance.m10_promotion_boundary_v1 import prove_m10_promotion_boundary_v1
+
+    if not prove_m10_promotion_boundary_v1(repo_root=root):
+        return False
+    if not (root / "tests/governance/test_m10_promotion_boundary_v1.py").is_file():
         return False
     return True
 

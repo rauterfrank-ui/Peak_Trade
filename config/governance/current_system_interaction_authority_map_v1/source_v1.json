@@ -2771,12 +2771,15 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 12 productive lineage closure on origin/main @ 8e7d29613563eac1cbb5bd126067013590e23290 (AUTHORITY=NONE). Phase-11 portfolio registry remains enumeration root. Phase-12 registry src/experiments/canonical_optimization_productive_lineage_registry_v1.py assigns PRODUCTIVE_RELEVANT only to F1/M9 VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1 with replayable chain bound via pdf_v3_3_productive_consumer_binding_registry_v1.json to m9 productive target, governed configuration/seam, f1_m9 MV2 consumer, and double_play volatility presence gate; F2 cost grid and F5-FRESH are RESEARCH_ONLY_NO_CURRENT_PRODUCTIVE_TARGET with fail-closed productive apply. research_authorization_implies_productive_authorization=false; candidate/proposal/evidence do not imply authorization; runtime_apply_possible=false; optimizer direct write forbidden.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 13 M10 promotion boundary on origin/main @ 72853b6a1df83479023fc3c5261295ceb2ff1bb4 (AUTHORITY=NONE). Canonical boundary src/governance/m10_promotion_boundary_v1.py: typed promotion proposal → M10 governance validation → explicit Owner authorization (explicit_productive_authorization_v1) → authorized promotion record → STOP; no governed productive configuration materialization, runtime apply, or optimizer promotion authority. Phase-12 lineage (F1/M9 PRODUCTIVE_RELEVANT only) remains prerequisite; F2/F5-FRESH fail closed at M10. research_authorization_implies_promotion_authorization=false; productive_relevance_implies_promotion_authorization=false; proposal/evidence do not imply authorization; authorized_promotion_implies_runtime_apply=false.",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+        "src/governance/m10_promotion_boundary_v1.py",
+        "config/governance/m10_promotion_topology_adjudication_v1.json",
         "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json",
         "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
         "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
-        "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
+        "config/governance/explicit_productive_authorization_v1_owner_boundary_v1.json",
         "src/governance/pdf_v3_3_topic_completion_composition_v1.py"
       ]
     },

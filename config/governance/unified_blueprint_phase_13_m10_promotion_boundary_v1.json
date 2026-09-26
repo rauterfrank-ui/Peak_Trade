@@ -1,0 +1,39 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_V1",
+  "authorized_baseline_sha": "72853b6a1df83479023fc3c5261295ceb2ff1bb4",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.py",
+  "m10_boundary_module": "src/governance/m10_promotion_boundary_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_13_m10_promotion_boundary_status": "PROVEN_COMPLETE",
+  "authority_invariants": {
+    "research_authorization_implies_promotion_authorization_false": true,
+    "productive_relevance_implies_promotion_authorization_false": true,
+    "proposal_implies_authorization_false": true,
+    "evidence_implies_authorization_false": true,
+    "authorized_promotion_implies_runtime_apply_false": true,
+    "authorized_promotion_implies_deployment_false": true,
+    "authorized_promotion_implies_external_effect_false": true,
+    "no_self_deploy": true,
+    "risk_is_hard_boundary": true,
+    "mv2_dp_unchanged": true,
+    "cap_2_3_unchanged": true,
+    "phase_12_productive_lineage_closure_required": true,
+    "optimization_direct_productive_write_authorized": false,
+    "promotion_authorized_by_optimizer": false,
+    "runtime_apply_authorized_by_optimizer": false,
+    "m11_automation_authorized": false
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md",
+    "src/governance/m10_promotion_boundary_v1.py",
+    "config/governance/m10_promotion_boundary_v1_decision_v1.json",
+    "config/governance/m10_promotion_topology_adjudication_v1.json",
+    "tests/governance/test_m10_promotion_boundary_v1.py",
+    "tests/governance/test_unified_blueprint_phase_13_m10_promotion_boundary_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 14 — Decision Attribution (separate Owner authorization; not started by Phase 13)",
+  "next_implementation_boundary": "Phase 14 decision attribution only under separate Owner GO; M11 promotion automation remains outside default completion"
+}
