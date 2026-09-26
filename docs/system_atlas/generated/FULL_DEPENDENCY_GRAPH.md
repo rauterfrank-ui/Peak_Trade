@@ -538,6 +538,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:mv2_decision_packet
 
 - direct_upstream: `(none)`

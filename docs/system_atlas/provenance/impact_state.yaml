@@ -2,17 +2,20 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
-modified_by: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
+modified_by: GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  G2 governed runtime primary→offline observation projection v1: Paper/Shadow/Testnet
-  durable primary evidence mechanical projection into offline observation + learning ingress;
+  G2 runtime learning input → canonical optimization-universe learning input mechanical binding;
+  real path without DDO fixture state; M4–M8 full loop remains fixture-bounded separately;
   authority=NONE; no apply or external effect.
 changed_entities:
   - RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1
+  - RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
 changed_relations:
   - REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1
+  - REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+  - REL:s_g2_projection_feeds_runtime_learning_optimization_binding
 changed_closures: []
 changed_wiring: []
 changed_venue: []

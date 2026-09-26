@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,12 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1` |
+| `RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
 | `REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1` |
+| `REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
+| `REL:s_g2_projection_feeds_runtime_learning_optimization_binding` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- G2 governed runtime primary→offline observation projection v1: Paper/Shadow/Testnet durable primary evidence mechanical projection into offline observation + learning ingress; authority=NONE; no apply or external effect.
+- G2 runtime learning input → canonical optimization-universe learning input mechanical binding; real path without DDO fixture state; M4–M8 full loop remains fixture-bounded separately; authority=NONE; no apply or external effect.
 - introduced_by=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
-- modified_by=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
+- modified_by=GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

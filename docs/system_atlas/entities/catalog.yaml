@@ -8678,6 +8678,26 @@ entities:
       observation + runtime learning ingress only; authority=NONE; no apply or external effect.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed runtime learning input to optimization universe binding v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
+    source_paths:
+      - src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py
+    evidence_sources:
+      - src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py
+      - tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py
+      - docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md
+      - config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json
+      - config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_field_mapping_ledger_v1.json
+    notes: >-
+      Mechanical join: runtime_to_learning_input_v1 → learning_evidence_record_v1 → canonical
+      optimization learning input; no DDO fixture on real path; authority=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
     kind: RUNTIME_COMPONENT
     name: Governed productive configuration apply authority v1
