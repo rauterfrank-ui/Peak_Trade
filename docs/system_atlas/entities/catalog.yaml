@@ -8757,6 +8757,52 @@ entities:
       Typed incremental information-set identity and predecessor-only research evidence.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_23_meta_dual_routing_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 23 meta dual routing v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_23_meta_dual_routing_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json
+    notes: >-
+      Phase 23 META_EVIDENCE_V1 dual routing closure; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:meta_evidence_dual_router_v1
+    kind: RUNTIME_COMPONENT
+    name: Meta evidence dual router v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1
+    source_paths:
+      - src/experiments/canonical_meta_evidence_dual_router_v1.py
+      - src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py
+    evidence_sources:
+      - tests/experiments/test_canonical_meta_evidence_dual_router_v1.py
+      - tests/learning/test_meta_evidence_v1.py
+    notes: >-
+      Deterministic single-consumer Meta routing; no broadcast. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:meta_to_learning_research_adaptation_input_v1
+    kind: RUNTIME_COMPONENT
+    name: Meta to Learning research adaptation input v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1
+    source_paths:
+      - src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py
+    evidence_sources:
+      - tests/experiments/test_canonical_meta_evidence_dual_router_v1.py
+    notes: >-
+      Bounded LEARNING_REPRESENTATION research input only; no state mutation. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

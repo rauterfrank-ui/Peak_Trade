@@ -1231,6 +1231,11 @@ POST, or substitute trading decisions.
   predecessor comparisons via established Optimization plane; AUTHORITY=NONE):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py`
+- Unified Blueprint Phase 23 Meta-Learning dual routing (typed META_EVIDENCE_V1
+  RESEARCH_CHOICE / LEARNING_REPRESENTATION / fail-closed UNKNOWN-MIXED;
+  AUTHORITY=NONE):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md`
+  / `src/experiments/canonical_meta_evidence_dual_router_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

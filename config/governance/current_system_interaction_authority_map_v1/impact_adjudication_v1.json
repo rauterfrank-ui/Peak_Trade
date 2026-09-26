@@ -1,14 +1,14 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "716ac2cf3c9c67c36aae7fa5b022ed0db2bb3690",
+  "base_sha": "4535069657e8d2effe3c26e2a9e18b2c66d2d3a4",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
+    "config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -19,21 +19,22 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_22_incremental_research_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/incremental_information_set_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
-    "tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py",
-    "tests/learning/test_incremental_information_set_v1.py",
-    "tests/learning/test_phase_22_incremental_research_evidence_v1.py"
+    "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+    "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py",
+    "src/governance/unified_blueprint_phase_23_meta_dual_routing_v1.py",
+    "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+    "tests/experiments/test_canonical_meta_evidence_dual_router_v1.py",
+    "tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py",
+    "tests/learning/test_meta_evidence_v1.py"
   ],
-  "changed_paths_sha256": "e4b448e6a80f733c06e88e201bf9379d6f0ed12c5e6b6818c53914f17c0990db",
+  "changed_paths_sha256": "4638f81aa8b373e88b4f69dcafb41a540754f1be7e79acc69a9b48c091302cca",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
-    "tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_23_meta_dual_routing_v1.json",
+    "tests/governance/test_unified_blueprint_phase_23_meta_dual_routing_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 22 incremental information research (B0–B5); map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE."
+  "reason": "Phase 23 Meta-Learning dual routing (META_EVIDENCE_V1); typed single-consumer routes; UNKNOWN/MIXED fail-closed; map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE."
 }

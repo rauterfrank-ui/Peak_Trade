@@ -1,20 +1,20 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
-modified_by: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
+introduced_by: UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1
+modified_by: UNIFIED_BLUEPRINT_PHASE_23_META_DUAL_ROUTING_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Phase 22 incremental information research (B0–B5) on established Optimization
-  experiment plane; research disposition AUTHORITY=NONE; B5 true-L2 deferred.
+  Phase 23 Meta-Learning dual routing (META_EVIDENCE_V1); single-consumer typed
+  routes; UNKNOWN/MIXED fail-closed; AUTHORITY=NONE; LOOP_C not claimed.
 changed_entities:
-  - CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
-  - RUNTIME_COMPONENT:mi_phase_22_incremental_research_evidence_v1
-  - RUNTIME_COMPONENT:unified_blueprint_phase_22_incremental_research_v1
+  - RUNTIME_COMPONENT:unified_blueprint_phase_23_meta_dual_routing_v1
+  - RUNTIME_COMPONENT:meta_evidence_dual_router_v1
+  - RUNTIME_COMPONENT:meta_to_learning_research_adaptation_input_v1
 changed_relations:
-  - REL:s_map_navigates_unified_blueprint_phase_22_incremental_research_v1
-  - REL:s_mi_stack_contains_phase_22_incremental_research_evidence_v1
+  - REL:s_map_navigates_unified_blueprint_phase_23_meta_dual_routing_v1
+  - REL:s_phase_23_contains_meta_evidence_dual_router_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []
