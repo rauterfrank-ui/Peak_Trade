@@ -329,10 +329,10 @@ def list_portfolio_unknown_or_conflicted_family_keys_v1() -> tuple[str, ...]:
     )
 
 
-def _normalize_lookup_token(token: str | None) -> str | None:
-    if token is None:
+def _normalize_family_lookup_v1(raw_value: str | None) -> str | None:
+    if raw_value is None:
         return None
-    normalized = token.strip()
+    normalized = raw_value.strip()
     if not normalized or normalized == UNKNOWN_UNAVAILABLE:
         return None
     return normalized
@@ -343,8 +343,8 @@ def resolve_optimization_surface_portfolio_v1(
     family_gate_id: str | None = None,
     surface_id: str | None = None,
 ) -> MappingProxyType[str, Any]:
-    gate = _normalize_lookup_token(family_gate_id)
-    sid = _normalize_lookup_token(surface_id)
+    gate = _normalize_family_lookup_v1(family_gate_id)
+    sid = _normalize_family_lookup_v1(surface_id)
     if gate is not None:
         alias = _OPT_FAMILY_ALIASES.get(gate, gate)
         record = _BY_FAMILY_GATE.get(alias)
@@ -410,8 +410,8 @@ def evaluate_meta_optimization_family_portfolio_gate_v1(
     *,
     optimization_family: str,
 ) -> MetaOptimizationFamilyPortfolioGateV1:
-    token = _normalize_lookup_token(optimization_family)
-    if token is None:
+    family_lookup = _normalize_family_lookup_v1(optimization_family)
+    if family_lookup is None:
         return MetaOptimizationFamilyPortfolioGateV1(
             explicit_family_reference=False,
             research_choice_allowed=False,
@@ -419,14 +419,16 @@ def evaluate_meta_optimization_family_portfolio_gate_v1(
             payload={},
         )
 
-    resolution = resolve_optimization_surface_portfolio_v1(family_gate_id=token, surface_id=token)
+    resolution = resolve_optimization_surface_portfolio_v1(
+        family_gate_id=family_lookup, surface_id=family_lookup
+    )
     if resolution["resolution"] != "PORTFOLIO_RECORD":
         return MetaOptimizationFamilyPortfolioGateV1(
             explicit_family_reference=True,
             research_choice_allowed=False,
             reason=REASON_META_FAMILY_NOT_IN_CENSUS,
             payload={
-                "optimization_family": token,
+                "optimization_family": family_lookup,
                 "portfolio_resolution": resolution["resolution"],
             },
         )
@@ -440,7 +442,7 @@ def evaluate_meta_optimization_family_portfolio_gate_v1(
             research_choice_allowed=allowed,
             reason=reason,
             payload={
-                "optimization_family": token,
+                "optimization_family": family_lookup,
                 "surface_id": resolution.get("surface_id"),
                 "portfolio_classification": classification,
             },
@@ -451,7 +453,7 @@ def evaluate_meta_optimization_family_portfolio_gate_v1(
             research_choice_allowed=False,
             reason=REASON_META_FAMILY_DEFERRED,
             payload={
-                "optimization_family": token,
+                "optimization_family": family_lookup,
                 "portfolio_classification": classification,
             },
         )
@@ -460,7 +462,7 @@ def evaluate_meta_optimization_family_portfolio_gate_v1(
         research_choice_allowed=False,
         reason=REASON_META_FAMILY_EXCLUDED,
         payload={
-            "optimization_family": token,
+            "optimization_family": family_lookup,
             "portfolio_classification": classification,
         },
     )
