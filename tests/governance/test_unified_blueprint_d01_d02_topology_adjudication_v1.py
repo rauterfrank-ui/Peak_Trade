@@ -60,7 +60,9 @@ def test_mi_to_learning_implemented_requires_phase_8_evidence_refs() -> None:
                     **edge,
                     "implementation_status": "IMPLEMENTED",
                     "missing_dependency": None,
-                    "evidence_refs": ["tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"],
+                    "evidence_refs": [
+                        "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"
+                    ],
                 }
             )
         else:
