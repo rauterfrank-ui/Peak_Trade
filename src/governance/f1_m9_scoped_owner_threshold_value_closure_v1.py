@@ -53,8 +53,7 @@ def prove_f1_m9_scoped_owner_threshold_value_authority_v1(*, repo_root: Path | N
     if decision.get("numeric_max_age_decided_current") is not False:
         return False
     ratification_decision_path = (
-        root
-        / "config/governance/"
+        root / "config/governance/"
         "governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1_decision_v1.json"
     )
     ratification_complete = False
