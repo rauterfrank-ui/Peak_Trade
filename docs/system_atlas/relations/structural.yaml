@@ -2315,6 +2315,31 @@ relations:
       Phase 21 conditioned Learning evidence on established MI path; AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_22_incremental_research_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_22_incremental_research_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_22_incremental_research_v1.json
+    notes: >
+      Navigation only. Phase 22 incremental information research; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_mi_stack_contains_phase_22_incremental_research_evidence_v1
+    source: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mi_phase_22_incremental_research_evidence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py
+      - tests/learning/test_phase_22_incremental_research_evidence_v1.py
+    notes: >
+      Phase 22 B0–B5 incremental research evidence on established Optimization plane.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

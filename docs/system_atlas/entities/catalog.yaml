@@ -8724,6 +8724,39 @@ entities:
       Established MI learning ingest/store/export with Phase 17–20 conditioned refs.
       ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_22_incremental_research_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 22 incremental research v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_22_incremental_research_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_22_incremental_research_v1.json
+    notes: >-
+      Phase 22 B0–B5 incremental research closure; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:mi_phase_22_incremental_research_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: MI/Learning Phase 22 incremental research evidence
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/incremental_information_set_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py
+    evidence_sources:
+      - tests/learning/test_incremental_information_set_v1.py
+      - tests/learning/test_phase_22_incremental_research_evidence_v1.py
+    notes: >-
+      Typed incremental information-set identity and predecessor-only research evidence.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1
