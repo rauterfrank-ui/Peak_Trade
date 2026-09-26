@@ -2,6 +2,7 @@
 # Primary entity catalog. current_canonical requires external (non-Atlas) authority_sources.
 entities:
   - id: SYSTEM:peak_trade
+    # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 proof-only; no authority change.
     kind: SYSTEM
     name: Peak_Trade
     epistemic_class: CANONICAL_AUTHORITY
@@ -38,7 +39,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PENDING_CHANGE
+    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
     source_paths:
       - src/governance/bouchaud_microstructure_ohlcv_proxy_v1_offline_productive_linear_diagnostics_and_promotion_binding_completion_reconciliation_v0.py
       - src/governance/canonical_offline_linear_diagnostics_promotion_binding_completion_reconciliation_v0.py
@@ -101,6 +102,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 navigation-only reference update.
     # atlas_entity_review: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831
     # atlas_entity_review: C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1 PR_6830
     # atlas_entity_review: POST_6828_ARCHITECTURE_CLOSURE_V1 PR_6829
@@ -398,6 +400,7 @@ entities:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
 
   - id: CAPABILITY:cap_2_2_ranking
+    # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 proof-only; ranking authority unchanged.
     kind: CAPABILITY
     name: Productive Futures Ranking Producer
     epistemic_class: CANONICAL_AUTHORITY
@@ -443,7 +446,11 @@ entities:
       CAP22_BECOMES_NETWORK_OWNER=false.
       CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false.
       CAP22_PROSPECTIVE_COLLECTION_STARTED=false.
-      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+      B10 adds robustness/stress proof evidence for the current B03-B09
+      economic ranking semantics only; it does not change ranking policy,
+      features, weights, normalization, tie-breaks, selection, binding, or
+      activation authority. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_economic_md_input
     kind: CAPABILITY
@@ -451,6 +458,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
+    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
@@ -481,6 +489,9 @@ entities:
       No trading, selection, execution, live, or multi-future authority.
       Library formula reuse does not transfer CMC, Cap 5.2, selected-future,
       dashboard, research, canary, or Cap 2.1 authority.
+      B10 hardens non-finite mark validation to fail closed as existing
+      invalid-input semantics require; no producer scheduling, network,
+      selection, ranking-policy, binding, live, or execution authority changes.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:cap22_economic_md_dual_input_v1
@@ -567,7 +578,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: B05_CAP21_FEATURE_PRODUCTION_V1
+    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md
@@ -589,7 +600,10 @@ entities:
       PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false
       on the B05 production surface; INPUT2_MAX_AGE_SECONDS_RATIFIED=false;
       no selection/binding. Cap 2.2 B06 consumes these raw features for
-      economic score/order. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+      economic score/order. B10 reuses this authoritative feature-production
+      implementation for robustness/stress proof only; no feature formula,
+      lookback, config, or authority change. Atlas is not runtime authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
     kind: CAPABILITY
@@ -597,7 +611,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md
@@ -622,7 +636,10 @@ entities:
       score over B05 raw features. ECONOMIC_RANK_ACTIVATED=true;
       CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true;
       PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; Cap 2.3 sole selection owner;
-      no binding/live/external effects. ATLAS_AUTHORITY=NONE.
+      no binding/live/external effects. B10 adds fail-closed exclusion for
+      non-finite READY raw feature values and robustness/stress proof evidence
+      while preserving the ratified ranking formula, config, normalization,
+      tie-break semantics, and authority chain. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:future_profile_snapshot_v1
     kind: CAPABILITY
@@ -678,6 +695,37 @@ entities:
       Cap 2.3/Cap 2.4/Full Autonomy/MV2/Execution reranking or reselection
       authority. MAX_POSITIONS_EFFECTIVE remains 1; live/external effects
       remain unauthorized. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: CAPABILITY:cap22_robustness_and_stress_v1
+    kind: CAPABILITY
+    name: Cap 2.2 Robustness and Stress Proof V1 (B10)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    source_paths:
+      - src/ops/peak_trade_robustness_and_stress_v1/__init__.py
+      - src/ops/peak_trade_robustness_and_stress_v1/constants_v1.py
+      - src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py
+    evidence_sources:
+      - docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+      - tests/ops/test_peak_trade_robustness_and_stress_v1.py
+      - src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py
+    notes: >-
+      B10 proves robustness and stress behavior for the current B03-B09
+      Peak_Trade economic ranking semantics by consuming the authoritative
+      B05 feature-production SSOT and B06 ranking SSOT. It records
+      walk-forward, sensitivity, missing/stale/invalid-data, outlier,
+      determinism, fail-closed, authority-preservation, and single-feature
+      dominance evidence. It is evaluation/proof only: no ranking policy,
+      feature, weight, direction, normalization, window, lookback, missing-data
+      policy, tie-break, selection, binding, live, execution, multi-future, or
+      cross-universe authority is created or changed. Cap 2.3 remains the sole
+      productive selection owner with rescore/rerank counts at zero;
+      MAX_POSITIONS_EFFECTIVE remains 1; Future Profile remains
+      non-authoritative. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
     kind: CONTRACT
@@ -1616,6 +1664,7 @@ entities:
       Cap 2.4.
 
   - id: CAPABILITY:cap_2_3_single_selected_future
+    # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 selection owner preserved; no rescore/rerank.
     # B08_REVIEWED_CURRENT_PATH: Cap22 rank consumption; no rescore/rerank; sole selection owner preserved.
     kind: CAPABILITY
     name: Single Selected Future Policy
