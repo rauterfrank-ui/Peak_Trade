@@ -283,14 +283,19 @@
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
       ],
       "evidence_refs": [
         "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
         "tests/learning/test_market_context_v1.py",
+        "tests/learning/test_market_context_existing_fact_materialization_v1.py",
         "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
-        "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json"
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md",
+        "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json",
+        "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json"
       ]
     },
     {
@@ -2775,13 +2780,15 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 17 MARKET_CONTEXT_V1 normative non-price CMC contract closure (AUTHORITY=NONE). Phase 16 CMC census CLOSED; NORMATIVE_NON_PRICE_CMC_CONTRACT_OWNER_DECISION ratified. Post–Phase 15 DoD remains PROVEN_COMPLETE (13/13). Governed runtime apply/materialization beyond M10 authorized promotion remains separate Owner decision (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false; M11 outside default).",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 18 existing-fact MARKET_CONTEXT_V1 materialization (AUTHORITY=NONE) on Phase 17 contract. Phase 16/17 CMC census and normative closure remain CLOSED. Derivatives/cross-market families explicit MISSING (Phase 19). Post–Phase 15 DoD PROVEN_COMPLETE (13/13). Governed runtime apply beyond M10 authorized promotion remains separate Owner decision (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false; M11 outside default).",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json",
         "config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json",
         "config/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.json",
         "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
-        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
         "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
         "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md"
       ]
