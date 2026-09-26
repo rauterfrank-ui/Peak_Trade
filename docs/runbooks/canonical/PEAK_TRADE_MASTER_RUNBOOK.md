@@ -1227,6 +1227,10 @@ POST, or substitute trading decisions.
   evidence via established writer/store/export; AUTHORITY=NONE):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py`
+- Unified Blueprint Phase 22 incremental information research (B0–B5 typed
+  predecessor comparisons via established Optimization plane; AUTHORITY=NONE):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

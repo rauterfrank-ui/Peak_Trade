@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1`.
 
 ## Workflow
 
@@ -41,15 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1` |
+| `RUNTIME_COMPONENT:mi_phase_22_incremental_research_evidence_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_phase_22_incremental_research_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_phase_21_learning_integration_v1` |
-| `REL:s_mi_stack_contains_loop_a_conditioned_learning_evidence_v1` |
+| `REL:s_map_navigates_unified_blueprint_phase_22_incremental_research_v1` |
+| `REL:s_mi_stack_contains_phase_22_incremental_research_evidence_v1` |
 
 ## NEW_RELATIONS
 
@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Phase 21 Loop A conditioned Learning evidence integration on MI/Learning path; established writer/store/export unchanged; AUTHORITY=NONE.
-- introduced_by=UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
+- Phase 22 incremental information research (B0–B5) on established Optimization experiment plane; research disposition AUTHORITY=NONE; B5 true-L2 deferred.
+- introduced_by=UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
+- modified_by=UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
