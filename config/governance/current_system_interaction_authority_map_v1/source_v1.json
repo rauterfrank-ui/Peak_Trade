@@ -286,6 +286,7 @@
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
       ],
       "evidence_refs": [
@@ -293,13 +294,16 @@
         "tests/learning/test_market_context_v1.py",
         "tests/learning/test_market_context_existing_fact_materialization_v1.py",
         "tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py",
+        "tests/learning/test_market_context_realized_behavior_join_v1.py",
         "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
         "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json",
         "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json",
-        "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json"
+        "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
+        "config/governance/unified_blueprint_phase_20_behavior_join_v1.json"
       ]
     },
     {
@@ -2784,13 +2788,15 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 19 orthogonal context (DERIVATIVES_STATE + CROSS_MARKET_STATE; AUTHORITY=NONE) on Phase 18 materialization. Bounded ETH anchor binding; BTC excluded by canonical policy. Phase 20 behavior join NOT started. Post–Phase 15 DoD PROVEN_COMPLETE (13/13). Governed runtime apply beyond M10 remains separate Owner decision.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 20 behavior join (MARKET_CONTEXT(t) to REALIZED_BEHAVIOR(t+N) via canonical N_BARS backbone; AUTHORITY=NONE) on Phase 19 MARKET_CONTEXT_V1. Close-path excursion and realized vol typed; classical MFE/MAE and transition remain explicit unresolved. Phase 21 Learning Integration NOT started. Post–Phase 15 DoD PROVEN_COMPLETE (13/13). Governed runtime apply beyond M10 remains separate Owner decision.",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
         "config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json",
-        "config/governance/market_context_v1_phase_19_cross_market_anchor_binding_v1.json",
         "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md",
         "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md",
-        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
+        "src/governance/unified_blueprint_phase_20_behavior_join_v1.py",
         "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
         "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md"
       ]
