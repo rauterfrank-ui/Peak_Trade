@@ -2177,6 +2177,19 @@ relations:
       Navigation only. Post–Phase 15 bounded DoD remediation;
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_NORMATIVE_V1.md
+      - config/governance/governed_productive_configuration_apply_authority_v1_decision_v1.json
+    notes: >
+      Navigation only. Governed productive configuration apply authority (apply record only);
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_16_cmc_non_price_census_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

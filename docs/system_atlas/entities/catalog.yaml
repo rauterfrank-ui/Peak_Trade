@@ -8653,7 +8653,32 @@ entities:
       - config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json
     notes: >-
       Bounded post–Phase 15 closure for DATA_SUBSTRATE, FAILURE_MEMORY, and PARAMETER_LINEAGE;
-      runtime apply remains out of scope; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+      governed apply decision record ratified separately; real runtime materialization remains
+      out of scope; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed productive configuration apply authority v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
+    source_paths:
+      - src/governance/governed_productive_configuration_apply_authority_v1.py
+      - src/governance/governed_productive_configuration_apply_record_v1.py
+      - src/governance/governed_productive_configuration_apply_authority_closure_v1.py
+    evidence_sources:
+      - src/governance/governed_productive_configuration_apply_authority_v1.py
+      - src/governance/governed_productive_configuration_apply_record_v1.py
+      - src/governance/governed_productive_configuration_apply_authority_closure_v1.py
+      - tests/governance/test_governed_productive_configuration_apply_authority_v1.py
+      - docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_NORMATIVE_V1.md
+      - config/governance/governed_productive_configuration_apply_authority_v1_decision_v1.json
+      - config/governance/governed_runtime_apply_materialization_authority_ratification_v1_owner_decision_v1.json
+    notes: >-
+      Owner-ratified M10→typed apply-record adjudication (APPLY_ELIGIBLE/DENIED/AUTHORIZED only);
+      no runtime materialization, config mutation, or external effect. M10 remains promotion SSOT.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1
     kind: RUNTIME_COMPONENT

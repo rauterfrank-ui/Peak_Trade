@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1`.
 
 ## Workflow
 
@@ -40,14 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:m4_m8_optimization_meta_learning_evidence_return_closure_v1` |
-| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1` |
+| `RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1` |
+| `REL:s_map_navigates_governed_productive_configuration_apply_authority_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P5 final closure: M5/M6 + governed market_context binding → optimization_envelope_evidence_v1 and meta_learning_routed_evidence_v1 at Component A; all four producer classes INTEGRATED_AT_A; PRODUCER_TRADING_AUTHORITY=NONE; M4–M8 reuse unchanged; AUTHORITY=NONE.
-- introduced_by=P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
-- modified_by=P5_OPTIMIZATION_META_PRODUCER_FINAL_CLOSURE_V1
+- Governed productive configuration apply authority v1: M10 authorized promotion → typed apply-record only (no runtime materialization); post–Phase 15 remediation currency updated; AUTHORITY=NONE.
+- introduced_by=GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
+- modified_by=GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
