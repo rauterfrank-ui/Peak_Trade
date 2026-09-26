@@ -31,6 +31,7 @@ from src.governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.seam_v1 import (
     run_productive_l6_seam_binding_v1,
+    run_productive_l6_seam_from_prior_adjudication_v1,
 )
 
 __all__ = [
@@ -50,6 +51,7 @@ __all__ = [
     "WORKPACKAGE_ID",
     "prove_p4_l6_productive_seam_binding_v1",
     "run_productive_l6_seam_binding_v1",
+    "run_productive_l6_seam_from_prior_adjudication_v1",
     "scan_p4_package_non_interference_v1",
     "validate_p4_owner_decision_config_v1",
     "validate_productive_l6_seam_authority_contract_v1",

@@ -38,6 +38,8 @@ flowchart LR
   operator_profile_explainability_b11["operator_profile_explainability_b11 PROVEN_CURRENT"]
   optimization_universe["optimization_universe RESEARCH_ONLY"]
   order_intent["order_intent PARTIAL"]
+  p3_input_creator_binder["p3_input_creator_binder PARTIAL"]
+  p4_l6_productive_seam["p4_l6_productive_seam PARTIAL"]
   p5_layered_core["p5_layered_core PARTIAL"]
   peak_trade_public_market_data_runtime_wp_a["peak_trade_public_market_data_runtime_wp_a PROVEN_CURRENT"]
   portfolio_reservation["portfolio_reservation PARTIAL"]
@@ -101,10 +103,13 @@ flowchart LR
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
   ranking_cap22 --> selection_cap23
   ranking_cap22 --> operator_profile_explainability_b11
+  p5_layered_core --> p3_input_creator_binder
   g2_runtime_primary_offline_projection --> optimization_universe
+  g2_runtime_primary_offline_projection --> p4_l6_productive_seam
   g2_runtime_primary_offline_projection --> p5_layered_core
   optimization_universe --> meta_learning
   meta_learning --> optimization_universe
+  p3_input_creator_binder --> p4_l6_productive_seam
   meta_learning --> p5_layered_core
   optimization_universe --> p5_layered_core
   reconciliation_runtime_binding --> runtime_binding_cap24
@@ -159,6 +164,8 @@ flowchart LR
 | operator_profile_explainability_b11 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_operator_profile_explainability_v1 | `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`, `src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py` |
 | optimization_universe | FIRST_CLASS | RESEARCH_ONLY | NONE | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | order_intent | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | canonical_order_intent_owner_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| p3_input_creator_binder | INTERMEDIATE | PARTIAL | NONE | governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1 | `src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.py` |
+| p4_l6_productive_seam | INTERMEDIATE | PARTIAL | NONE | governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1 | `src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py` |
 | p5_layered_core | INTERMEDIATE | PARTIAL | PARTIAL | src.ops.p5_10_productive_activation_and_binding_v1 | `src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | peak_trade_public_market_data_runtime_wp_a | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_public_market_data_runtime_v1 | `tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
 | portfolio_reservation | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | portfolio_capital_reservation_budget_owner_v1 | `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py` |

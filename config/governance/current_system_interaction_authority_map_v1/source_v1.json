@@ -927,6 +927,50 @@
       ]
     },
     {
+      "id": "p3_input_creator_binder",
+      "tier": "INTERMEDIATE",
+      "role": "P3 Component B bounded input creator/binder from Component A ADMIT only; B_RUNTIME_IMPLEMENTATION_AUTHORIZED=false globally.",
+      "canonical_owner_ref": "governance.master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1",
+      "authority_class": "NONE",
+      "lifecycle": "BOUNDED_TYPED_BINDING_ONLY",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py"
+      ],
+      "evidence_refs": [
+        "src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py",
+        "tests/governance/test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.py"
+      ]
+    },
+    {
+      "id": "p4_l6_productive_seam",
+      "tier": "INTERMEDIATE",
+      "role": "P4 first approved L6 typed evidence productive seam binding; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "canonical_owner_ref": "governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1",
+      "authority_class": "NONE",
+      "lifecycle": "L6_TYPED_SEAM_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EVIDENCE_INPUT_PLANE_P4_L6_PRODUCTIVE_SEAM_BINDING_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py"
+      ],
+      "evidence_refs": [
+        "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
+        "tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py"
+      ]
+    },
+    {
       "id": "survival_suitability_composition",
       "tier": "INTERMEDIATE",
       "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Post-confirmation survival/suitability composition binding; not a closed single-owner string.",
@@ -2221,6 +2265,77 @@
       "evidence_refs": [
         "src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py",
         "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_component_a_admit_to_p3_binder",
+      "from_domain": "p5_layered_core",
+      "to_domain": "p3_input_creator_binder",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "bind_layer_input_from_adjudication_v1 (prior Component A ADMIT)",
+      "producer": "terminate_optimization_envelope_at_a_v1",
+      "consumer": "bind_layer_input_from_adjudication_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "BOUNDED_TYPED_BINDING_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1",
+      "provenance_binding": "P3_INPUT_CREATOR_BINDER_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; EVIDENCE_ADMIT_IMPLIES_PRODUCTIVE_ACTIVATION=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py",
+        "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_p3_binder_to_p4_l6_productive_seam",
+      "from_domain": "p3_input_creator_binder",
+      "to_domain": "p4_l6_productive_seam",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "run_productive_l6_seam_from_prior_adjudication_v1",
+      "producer": "bind_layer_input_from_adjudication_v1",
+      "consumer": "run_productive_l6_seam_from_prior_adjudication_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "BOUNDED_L6_TYPED_SEAM_BINDING_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "ADJUDICATION_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1",
+      "provenance_binding": "P4_L6_PRODUCTIVE_SEAM_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; PRODUCTIVE_ACTIVATION_AUTHORIZED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
+        "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_g2_to_p3_p4_l6_productive_seam_continuation",
+      "from_domain": "g2_runtime_primary_offline_projection",
+      "to_domain": "p4_l6_productive_seam",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1",
+      "producer": "run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1",
+      "consumer": "run_productive_l6_seam_from_prior_adjudication_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "BOUNDED_L6_TYPED_SEAM_BINDING_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1",
+      "provenance_binding": "P3_INPUT_CREATOR_BINDER_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; P4_L6_PRODUCTIVE_SEAM_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
       ]
     },
     {
@@ -3675,6 +3790,16 @@
         "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_component_a_to_p3_p4_l6_productive_seam_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real runtime Component A ADMIT continues through canonical P3 input creator binder and P4 L6 productive seam (prior ADMIT; no re-adjudication) with fail-closed lineage; EVIDENCE_ADMIT_IMPLIES_PRODUCTIVE_ACTIVATION=false; RUNTIME_APPLY_STARTED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
+        "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
       ]
     }
   ]

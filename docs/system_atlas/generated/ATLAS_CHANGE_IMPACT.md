@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1`.
 
 ## Workflow
 
@@ -40,15 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1` |
 | `RUNTIME_COMPONENT:governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1` |
-| `RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_meta_feedback_to_p5_adjudicator_a_real_continuation` |
-| `REL:s_map_navigates_governed_real_m4_m8_p5_adjudicator_a_continuation_v1` |
+| `REL:s_p5_adjudicator_a_to_p3_p4_l6_real_continuation` |
+| `REL:s_map_navigates_governed_real_component_a_p3_p4_l6_continuation_v1` |
 
 ## NEW_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Real runtime G2→M4–M8→M6/M7 path through P5 optimization_envelope and meta_learning_routed producer bridges into Evidence Adjudicator A; fail-closed lineage; authority=NONE.
-- introduced_by=GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1
-- modified_by=GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1
+- Real Component A ADMIT continues through canonical P3 input creator binder and P4 L6 productive seam (prior ADMIT); fail-closed lineage; EVIDENCE_ADMIT_IMPLIES_PRODUCTIVE_ACTIVATION=false.
+- introduced_by=GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1
+- modified_by=GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
