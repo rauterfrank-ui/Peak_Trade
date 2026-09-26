@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import math
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.peak_trade_economic_ranking_runtime_v1.constants_v1 import (
@@ -98,7 +99,11 @@ def _feature_ready_pair(
         return None, None, REASON_INVALID_FEATURE_CANDIDATE
     if vol.raw_value is None or amp.raw_value is None:
         return None, None, REASON_INVALID_FEATURE_CANDIDATE
-    return float(vol.raw_value), float(amp.raw_value), None
+    vol_value = float(vol.raw_value)
+    amp_value = float(amp.raw_value)
+    if not math.isfinite(vol_value) or not math.isfinite(amp_value):
+        return None, None, REASON_INVALID_FEATURE_CANDIDATE
+    return vol_value, amp_value, None
 
 
 def classify_and_rank_economic_candidates_v1(
