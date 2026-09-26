@@ -624,6 +624,32 @@ entities:
       PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; Cap 2.3 sole selection owner;
       no binding/live/external effects. ATLAS_AUTHORITY=NONE.
 
+  - id: CAPABILITY:future_profile_snapshot_v1
+    kind: CAPABILITY
+    name: Future Profile Snapshot V1 (B07)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: B07_FUTURE_PROFILE_SNAPSHOT_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    source_paths:
+      - src/ops/future_profile_snapshot_v1/__init__.py
+      - src/ops/future_profile_snapshot_v1/constants_v1.py
+      - src/ops/future_profile_snapshot_v1/models_v1.py
+      - src/ops/future_profile_snapshot_v1/producer_v1.py
+    evidence_sources:
+      - tests/ops/test_future_profile_snapshot_v1.py
+      - src/ops/future_profile_snapshot_v1/producer_v1.py
+    notes: >-
+      B07 implements FUTURE_PROFILE_SNAPSHOT_V1 as operator-facing
+      observability/description over current canonical Universe, Economic-MD,
+      B05 ranking-feature, B06 ranking snapshot, and optional Cap 2.3 selection
+      reference inputs. It preserves field authority classifications and
+      explicit missing/provenance state. It does not rank, rescore, select,
+      bind, trade, execute, activate multi-future runtime, or authorize live
+      external effects. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
     kind: CONTRACT
     name: Cap 2.2 offline policy candidates and evidence contract

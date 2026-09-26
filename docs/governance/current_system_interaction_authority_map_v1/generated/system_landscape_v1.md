@@ -15,6 +15,7 @@ flowchart LR
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
   full_autonomy_n5["full_autonomy_n5 PROVEN_CURRENT"]
+  future_profile_snapshot_b07["future_profile_snapshot_b07 PROVEN_CURRENT"]
   g17_typed_vol_cmc_bind["g17_typed_vol_cmc_bind PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
   governed_cycle["governed_cycle PROVEN_CURRENT"]
@@ -64,11 +65,13 @@ flowchart LR
   mv2_double_play --> execution_external_effect
   optimization_universe --> governance_promotion
   portfolio_reservation --> treasury_29p
+  ranking_cap22 --> future_profile_snapshot_b07
   ranking_cap22 --> selection_cap23
   reconciliation_runtime_binding --> runtime_binding_cap24
   reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
   safety --> mv2_double_play
+  selection_cap23 --> future_profile_snapshot_b07
   selection_cap23 --> runtime_binding_cap24
   capital_risk_sizing --> order_intent
   selection_cap23 --> step29m
@@ -87,6 +90,7 @@ flowchart LR
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | full_autonomy_n5 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 | `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| future_profile_snapshot_b07 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.future_profile_snapshot_v1 | `tests/ops/test_future_profile_snapshot_v1.py`, `src/ops/future_profile_snapshot_v1/producer_v1.py` |
 | g17_typed_vol_cmc_bind | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md` |
 | governance_promotion | INTERMEDIATE | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | governed_cycle | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | governed_continuous_cycle_orchestrator_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |

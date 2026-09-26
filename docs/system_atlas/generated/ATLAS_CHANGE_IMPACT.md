@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=7
-ATLAS_CHANGED_RELATION_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `B07_FUTURE_PROFILE_SNAPSHOT_V1`.
 
 ## Workflow
 
@@ -40,22 +40,20 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CAPABILITY:future_profile_snapshot_v1` |
 | `CAPABILITY:cap22_peak_trade_ranking_runtime_v1` |
-| `CAPABILITY:cap_2_2_ranking` |
 | `CAPABILITY:cap21_feature_production_v1` |
-| `CONTRACT:peak_trade_ranking_feature_contract_v1` |
-| `CONTRACT:peak_trade_ranking_matrix_policy_v1` |
 | `SELECTOR:productive_futures_ranking` |
+| `SELECTOR:single_selected_future_policy` |
 | `SYSTEM:peak_trade` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_cap22_depends_on_cap21_feature_production` |
-| `REL:s_cap22_ranking_runtime_depends_on_cap22` |
-| `REL:s_cap22_governed_by_peak_trade_ranking_feature_contract_v1` |
-| `REL:s_cap22_governed_by_peak_trade_ranking_matrix_policy_v1` |
+| `REL:s_future_profile_observes_cap21_feature_production` |
+| `REL:s_future_profile_observes_cap22_ranking_runtime` |
+| `REL:s_future_profile_observes_cap23_selection_reference` |
 
 ## NEW_RELATIONS
 
@@ -101,8 +99,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- B06 Cap 2.2 Peak_Trade economic ranking runtime v1 (B06 PR): CAPABILITY:cap22_peak_trade_ranking_runtime_v1 wires B03 score/order over B05 features into productive Cap 2.2; B06_IMPLEMENTED=true; ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false; Cap 2.3 sole selection owner unchanged; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
-- introduced_by=B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
-- modified_by=B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+- B07 Future Profile Snapshot v1 adds CAPABILITY:future_profile_snapshot_v1 as operator-facing observability over current canonical Universe, Economic-MD, B05 features, B06 ranking context, and optional Cap 2.3 selection reference inputs. FUTURE_PROFILE_SNAPSHOT_V1_IMPLEMENTED=true; PROFILE_CAN_RERANK=false; PROFILE_CAN_SELECT=false; PROFILE_CAN_BIND=false; CAP23_SOLE_SELECTION_OWNER=true; CROSS_UNIVERSE_AUTHORITY=NONE; MULTI_FUTURE_RUNTIME_AUTHORIZED=false; MAX_POSITIONS_EFFECTIVE=1; LIVE_EXTERNAL_EFFECT_AUTHORIZED=false; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
+- introduced_by=B07_FUTURE_PROFILE_SNAPSHOT_V1
+- modified_by=B07_FUTURE_PROFILE_SNAPSHOT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
