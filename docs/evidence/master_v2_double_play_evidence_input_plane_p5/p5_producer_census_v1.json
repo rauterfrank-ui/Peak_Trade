@@ -1,0 +1,79 @@
+{
+  "entries": [
+    {
+      "blocker": null,
+      "direct_b_bypass": false,
+      "direct_dp_bypass": false,
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/adapters_v1.py"
+      ],
+      "implementation_status": "PROVEN_CURRENT",
+      "integration_status": "INTEGRATED_AT_A",
+      "notes": "MARKET_CONTEXT_V1 descriptive ingress; TRADING_AUTHORITY=NONE.",
+      "producer_class": "market_intelligence",
+      "producer_id": "mi.market_context_descriptive.producer",
+      "producer_version": "1.0.0",
+      "promotion_required": false,
+      "promotion_status": "NOT_APPLICABLE",
+      "reachability": "CURRENT"
+    },
+    {
+      "blocker": null,
+      "direct_b_bypass": false,
+      "direct_dp_bypass": false,
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py"
+      ],
+      "implementation_status": "PROVEN_CURRENT",
+      "integration_status": "INTEGRATED_AT_A",
+      "notes": "Loop A conditioned evaluative evidence; TRADING_AUTHORITY=NONE.",
+      "producer_class": "learning",
+      "producer_id": "learning.conditioned_evaluative.producer",
+      "producer_version": "1.0.0",
+      "promotion_required": false,
+      "promotion_status": "NOT_APPLICABLE",
+      "reachability": "CURRENT"
+    },
+    {
+      "blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+      "direct_b_bypass": false,
+      "direct_dp_bypass": false,
+      "evidence_refs": [
+        "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
+        "src/experiments/canonical_optimization_experiment_evidence_v1.py"
+      ],
+      "implementation_status": "REGISTRY_ONLY",
+      "integration_status": "BLOCKED",
+      "notes": "P2 registry entry exists; no CURRENT artifact producer for optimization_envelope_evidence_v1; promotion admissions empty.",
+      "producer_class": "optimization",
+      "producer_id": "optimization.envelope_evidence.producer",
+      "producer_version": "1.0.0",
+      "promotion_required": true,
+      "promotion_status": "ABSENT",
+      "reachability": "NON_CURRENT"
+    },
+    {
+      "blocker": "MASTER_V2_EVIDENCE_PROMOTION_ADMISSION_ABSENT",
+      "direct_b_bypass": false,
+      "direct_dp_bypass": false,
+      "evidence_refs": [
+        "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+        "src/experiments/canonical_meta_learning_ingest_v1.py"
+      ],
+      "implementation_status": "PROVEN_CURRENT",
+      "integration_status": "BLOCKED",
+      "notes": "META_EVIDENCE_V1 routes research-only; Master V2 promotion-to-evidence admission not established for meta_learning_routed_evidence_v1.",
+      "producer_class": "meta_learning",
+      "producer_id": "meta_learning.routed_evidence.producer",
+      "producer_version": "1.0.0",
+      "promotion_required": true,
+      "promotion_status": "ABSENT",
+      "reachability": "PARTIAL"
+    }
+  ],
+  "promotion_admissions_loaded": 0,
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_producer_census/v1",
+  "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
+}
