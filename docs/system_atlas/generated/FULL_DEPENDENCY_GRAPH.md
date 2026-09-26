@@ -27,6 +27,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### CAPABILITY:cap21_feature_production_v1
+
+- direct_upstream: `CAPABILITY:cap_economic_md_input, CONTRACT:peak_trade_ranking_feature_contract_v1`
+- transitive_upstream: `CAPABILITY:cap_economic_md_input, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:peak_trade_ranking_feature_contract_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### CAPABILITY:cap_2_1_gfu
 
 - direct_upstream: `GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted`

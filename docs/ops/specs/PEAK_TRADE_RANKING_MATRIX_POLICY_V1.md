@@ -26,10 +26,11 @@ is subordinate to
 Typed validator:
 `src&#47;ops&#47;peak_trade_ranking_matrix_policy_v1.py`.
 
-This persist does **not** implement B04/B05/B06, does **not** wire
-productive economic ranking, does **not** activate economic rank, and
-does **not** grant Cap 2.3 selection, execution, live, testnet, or
-multi-future authority.
+This persist does **not** implement B06 productive economic rank wiring,
+does **not** activate economic rank, and does **not** grant Cap 2.3
+selection, execution, live, testnet, or multi-future authority. B04 typed
+feature contract and B05 Cap-2.1 raw-feature production are separate
+bounded slices.
 
 ```text
 DOCUMENT_CLASS=DOCS_AND_TYPED_CONTRACT_PEAK_TRADE_RANKING_MATRIX_POLICY

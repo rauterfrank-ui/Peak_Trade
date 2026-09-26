@@ -1,9 +1,9 @@
 """Peak Trade Ranking Feature Contract V1 (B04).
 
 Typed contract/DTO seam for B03-ratified Cap 2.2 economic ranking features.
-Schema and validation only: no feature production (B05), no productive
-economic rank activation (B06), no selection/binding authority, no live or
-external effects.
+Schema and validation only: feature production is owned by B05
+(`peak_trade_ranking_feature_production_v1`), no productive economic rank
+activation (B06), no selection/binding authority, no live or external effects.
 """
 
 from __future__ import annotations

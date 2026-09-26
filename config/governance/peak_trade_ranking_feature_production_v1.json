@@ -1,0 +1,24 @@
+{
+  "authority_effect": "NONE",
+  "b05_implemented": true,
+  "binding_effect": false,
+  "capability_id": "CAP21_FEATURE_PRODUCTION_V1",
+  "canonical_economic_md_producer": "src.ops.economic_md_input_producer_v1",
+  "cross_sectional_normalization_in_b05": false,
+  "economic_rank_activated": false,
+  "input2_max_age_seconds": "UNRATIFIED",
+  "input2_max_age_seconds_ratified": false,
+  "owner": "src.ops.peak_trade_ranking_feature_production_v1",
+  "owner_go_this_slice": "PEAK_TRADE_B05_CAP21_FEATURE_PRODUCTION_V1",
+  "production_version": "peak_trade_ranking_feature_production.v1",
+  "productive_economic_rank_activation": false,
+  "ranking_activation": false,
+  "ratified_economic_feature_policy_ids": [
+    "CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1",
+    "CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1"
+  ],
+  "runtime_authorization_effect": "NONE",
+  "runtime_wiring_added": false,
+  "schema_version": "peak_trade_ranking_feature_production_snapshot.v1",
+  "selection_authority_created": false
+}

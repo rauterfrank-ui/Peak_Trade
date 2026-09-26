@@ -153,7 +153,36 @@ relations:
       - src/ops/peak_trade_ranking_feature_contract_v1.py
     notes: >
       B04 contract/DTO seam for B03-ratified ranking features. Schema and
-      validation only; no B05/B06 runtime wiring. ATLAS_AUTHORITY=NONE.
+      validation only; B05 consumes for raw production; B06 not wired.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap21_feature_production_depends_on_economic_md_input
+    source: CAPABILITY:cap21_feature_production_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_economic_md_input
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py
+    notes: >
+      B05 depends on persisted Economic-MD Input-2 snapshots for raw feature
+      production only. No ranking activation. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap21_feature_production_governed_by_feature_contract
+    source: CAPABILITY:cap21_feature_production_v1
+    type: GOVERNED_BY
+    target: CONTRACT:peak_trade_ranking_feature_contract_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py
+    notes: >
+      B05 populates B04 raw ranking feature DTOs. No Cap 2.2 score/order
+      wiring. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
