@@ -57,6 +57,9 @@ _P2_BOUNDED_A_RUNTIME_PACKAGE_MARKER = (
 _P3_BOUNDED_B_RUNTIME_PACKAGE_MARKER = (
     "master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1"
 )
+_P4_PRODUCTIVE_L6_SEAM_PACKAGE_MARKER = (
+    "master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1"
+)
 
 
 def _fail(*codes: str) -> ContractValidationResultV1:
@@ -150,6 +153,8 @@ def scan_runtime_ab_implementation_v1(
         if _P2_BOUNDED_A_RUNTIME_PACKAGE_MARKER in rel:
             continue
         if _P3_BOUNDED_B_RUNTIME_PACKAGE_MARKER in rel:
+            continue
+        if _P4_PRODUCTIVE_L6_SEAM_PACKAGE_MARKER in rel:
             continue
         if "p0_evidence_seam_census" in py.name:
             continue
