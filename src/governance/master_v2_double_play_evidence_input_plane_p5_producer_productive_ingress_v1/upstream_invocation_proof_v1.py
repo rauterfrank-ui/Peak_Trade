@@ -88,6 +88,17 @@ def run_optimization_upstream_invocation_proof_v1() -> dict[str, Any]:
             reachability="REGISTRY_DECLARATION_ONLY",
             notes="Registry entry is not evidence emission.",
         ),
+        _surface(
+            module="src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+            builder="bridge_m5_to_optimization_envelope_evidence_v1",
+            output_schema="optimization_envelope_evidence_v1",
+            implemented=True,
+            current=True,
+            invocation_path_proven=True,
+            output_artifact_proven=True,
+            reachability="PRODUCTIVE_REACHABLE",
+            notes="M5 + governed binding → P5 envelope; terminates at Component A only.",
+        ),
     ]
     productive = any(s["PRODUCTIVE_REACHABLE"] for s in surfaces)
     return {
@@ -95,7 +106,7 @@ def run_optimization_upstream_invocation_proof_v1() -> dict[str, Any]:
         "target_p2_kind": "optimization_envelope_evidence_v1",
         "surfaces": surfaces,
         "productive_reachable_proven": productive,
-        "verdict": "BLOCKED_NO_PRODUCTIVE_EMITTER",
+        "verdict": "PROVEN_AT_A" if productive else "BLOCKED_NO_PRODUCTIVE_EMITTER",
     }
 
 
@@ -132,7 +143,18 @@ def run_meta_learning_upstream_invocation_proof_v1() -> dict[str, Any]:
             invocation_path_proven=True,
             output_artifact_proven=True,
             reachability="RESEARCH_RUNNABLE",
-            notes="Nested input to meta_evidence_v1; still research lineage.",
+            notes="M6 ingest output; routed via P5 binding bridge.",
+        ),
+        _surface(
+            module="src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+            builder="bridge_m6_to_meta_learning_routed_evidence_v1",
+            output_schema="meta_learning_routed_evidence_v1",
+            implemented=True,
+            current=True,
+            invocation_path_proven=True,
+            output_artifact_proven=True,
+            reachability="PRODUCTIVE_REACHABLE",
+            notes="M6 + governed binding → P5 routed evidence; terminates at Component A only.",
         ),
     ]
     productive = any(s["PRODUCTIVE_REACHABLE"] for s in surfaces)
@@ -141,7 +163,7 @@ def run_meta_learning_upstream_invocation_proof_v1() -> dict[str, Any]:
         "target_p2_kind": "meta_learning_routed_evidence_v1",
         "surfaces": surfaces,
         "productive_reachable_proven": productive,
-        "verdict": "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY",
+        "verdict": "PROVEN_AT_A" if productive else "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY",
     }
 
 

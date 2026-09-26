@@ -1,129 +1,110 @@
 {
   "candidate_source_artifacts": [
     "canonical_optimization_experiment_evidence_v1",
-    "canonical_optimizable_envelope_v1"
+    "optimization_envelope_evidence_v1",
+    "p5_m4_m8_governed_evidence_binding_context_v1"
   ],
-  "earliest_blocker": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
+  "earliest_blocker": null,
   "fields": [
     {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "NONE",
-      "source_field": null,
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Governed P5 producer artifact validator on CURRENT main.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "validate_optimization_envelope_evidence_v1",
       "target_field": "target_schema_validator",
-      "transformation": null
+      "transformation": "validate_module"
     },
     {
-      "classification": "CONFLICTING",
-      "lossiness": "TOTAL",
-      "reason": "Source schema canonical_optimization_experiment_evidence_v1 is OPTIMIZATION_EXPERIMENT evidence, not optimization_envelope_evidence_v1.",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
-      "source_field": "schema_version",
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Producer emits optimization_envelope_evidence_v1; does not equate raw canonical_optimization_experiment_evidence_v1.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "evidence_kind",
       "target_field": "evidence_kind",
-      "transformation": null
-    },
-    {
-      "classification": "CONFLICTING",
-      "lossiness": "TOTAL",
-      "reason": "Source schema canonical_optimizable_envelope_v1 is optimizable-surface envelope metadata, not optimization_envelope_evidence_v1.",
-      "source_artifact": "canonical_optimizable_envelope_v1",
-      "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
-      "source_field": "schema_version",
-      "target_field": "evidence_kind",
-      "transformation": null
-    },
-    {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "canonical_optimization_experiment_evidence_v1 has no InstrumentBindingV1 fields.",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
-      "source_field": null,
-      "target_field": "instrument.instrument_id",
-      "transformation": null
-    },
-    {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "surface_id is optimization-surface identity, not trading instrument_id.",
-      "source_artifact": "canonical_optimizable_envelope_v1",
-      "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
-      "source_field": "surface_id",
-      "target_field": "instrument.instrument_id",
-      "transformation": null
-    },
-    {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "Experiment evidence carries plane_identity only; no market_observation_epoch.",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
-      "source_field": null,
-      "target_field": "market_observation_epoch",
-      "transformation": null
-    },
-    {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "No authoritative observation timestamp on experiment evidence (wall-clock forbidden).",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
-      "source_field": null,
-      "target_field": "observed_at_unix",
-      "transformation": null
+      "transformation": "identity"
     },
     {
       "classification": "MECHANICAL_TRANSFORM",
       "lossiness": "NONE",
-      "reason": "Digest exists but remaining intake fields block bridge.",
+      "reason": "Instrument sourced from authoritative market_context_v1 via binding context.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "MARKET_CONTEXT_V1_BINDING",
+      "source_field": "instrument_ref",
+      "target_field": "instrument.instrument_id",
+      "transformation": "instrument_binding_from_ref_v1"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Epoch supplied in binding context; not inferred from M5 plane_identity.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "GOVERNED_BINDING_CONTEXT",
+      "source_field": "market_observation_epoch",
+      "target_field": "market_observation_epoch",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "NONE",
+      "reason": "Timestamp from market_context_v1 observed_at only.",
+      "source_artifact": "p5_m4_m8_governed_evidence_binding_context_v1",
+      "source_authority": "MARKET_CONTEXT_V1_BINDING",
+      "source_field": "observed_at",
+      "target_field": "observed_at_unix",
+      "transformation": "parse_iso8601_utc_to_unix"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "P5 envelope content_hash is A intake source digest.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P5_PRODUCER_CLOSURE",
+      "source_field": "content_hash",
+      "target_field": "source_evidence_digest",
+      "transformation": "identity"
+    },
+    {
+      "classification": "MECHANICAL_TRANSFORM",
+      "lossiness": "NONE",
+      "reason": "M5 research slices referenced by digest; no trading semantics added.",
       "source_artifact": "canonical_optimization_experiment_evidence_v1",
       "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
       "source_field": "reproducibility_digest",
-      "target_field": "source_evidence_digest",
-      "transformation": "copy_sha256_hex"
+      "target_field": "typed_payload_semantics",
+      "transformation": "opaque_digest_ref_only"
     },
     {
-      "classification": "SEMANTIC_TRANSFORM_REQUIRED",
-      "lossiness": "HIGH",
-      "reason": "evidence_slices encode M4 search/challenger/OOS research classes; not a governed optimization_envelope_evidence_v1 payload.",
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Producer id matches P2 registry optimization.envelope_evidence.producer.",
+      "source_artifact": "optimization_envelope_evidence_v1",
+      "source_authority": "P2_REGISTRY_ALIGNED",
+      "source_field": "producer_id",
+      "target_field": "producer_id",
+      "transformation": "identity"
+    },
+    {
+      "classification": "EXACT_SOURCE",
+      "lossiness": "NONE",
+      "reason": "Binding context locks M5 content_hash before envelope emission.",
       "source_artifact": "canonical_optimization_experiment_evidence_v1",
       "source_authority": "RESEARCH_OPTIMIZATION_EXPERIMENT",
-      "source_field": "evidence_slices",
-      "target_field": "typed_payload_semantics",
-      "transformation": null
-    },
-    {
-      "classification": "SEMANTIC_TRANSFORM_REQUIRED",
-      "lossiness": "HIGH",
-      "reason": "Optimizable envelope policy domain \u2260 P2 optimization envelope evidence semantics.",
-      "source_artifact": "canonical_optimizable_envelope_v1",
-      "source_authority": "RESEARCH_ENVELOPE_RESOLVER",
-      "source_field": "allowed_value_or_policy_domain",
-      "target_field": "typed_payload_semantics",
-      "transformation": null
-    },
-    {
-      "classification": "MISSING",
-      "lossiness": "TOTAL",
-      "reason": "Registry declares producer; no CURRENT module emits productive optimization envelope evidence.",
-      "source_artifact": "canonical_optimization_experiment_evidence_v1",
-      "source_authority": "P2_REGISTRY_ONLY",
-      "source_field": null,
-      "target_field": "producer_id",
-      "transformation": null
+      "source_field": "content_hash",
+      "target_field": "m5_lineage_lock",
+      "transformation": "binding_context.source_lineage_content_digest"
     }
   ],
-  "first_blocking_classification": "MISSING",
-  "first_blocking_field": "target_schema_validator",
-  "first_blocking_reason": "No repository module validates or emits schema optimization_envelope_evidence_v1; P2 registry kind exists without governed artifact contract.",
-  "mandatory_field_count": 11,
+  "first_blocking_classification": null,
+  "first_blocking_field": null,
+  "first_blocking_reason": null,
+  "mandatory_field_count": 9,
   "owner_schema_equivalence_declared": false,
-  "producer_bridge_allowed": false,
+  "producer_bridge_allowed": true,
   "schema_version": "master_v2_double_play_evidence_input_plane_p5_contract_crosswalk/v1",
   "target_contract": "EvidenceIntakeRecordV1 + CanonicalMasterV2EvidenceEnvelopeV1 (P1/P2 A intake)",
   "target_evidence_kind": "optimization_envelope_evidence_v1",
-  "verdict": "BLOCKED"
+  "verdict": "MECHANICALLY_ALLOWED"
 }

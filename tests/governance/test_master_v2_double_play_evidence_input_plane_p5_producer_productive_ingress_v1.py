@@ -110,7 +110,7 @@ def test_deterministic_mi_adjudication_digest() -> None:
     assert first.adjudication.adjudication_digest == second.adjudication.adjudication_digest
 
 
-def test_optimization_and_meta_blocked_at_promotion() -> None:
+def test_optimization_and_meta_wrong_schema_blocked_at_promotion() -> None:
     opt = terminate_optimization_envelope_at_a_v1(
         {"schema_version": "canonical_optimization_experiment_evidence_v1"},
         source_artifact_schema="canonical_optimization_experiment_evidence_v1",
@@ -160,46 +160,45 @@ def test_loop_a_cycle_includes_a_termination(tmp_path: Path) -> None:
     assert term["learning"]["disposition"] == ADMIT_DISPOSITION
 
 
-def test_optimization_lineage_classification_d() -> None:
+def test_optimization_lineage_classification_a_after_closure() -> None:
     lineage = run_optimization_lineage_census_v1(REPO_ROOT)
-    assert lineage["classification"] == "D"
-    assert lineage["productive_lineage_proven"] is False
-    assert lineage["promotion_to_a_mechanically_allowed"] is False
+    assert lineage["classification"] == "A"
+    assert lineage["productive_lineage_proven"] is True
+    assert lineage["promotion_to_a_mechanically_allowed"] is True
 
 
-def test_meta_learning_lineage_classification_c_research_only() -> None:
+def test_meta_learning_lineage_classification_b_after_closure() -> None:
     lineage = run_meta_learning_lineage_census_v1(REPO_ROOT)
-    assert lineage["classification"] == "C"
-    assert lineage["productive_lineage_proven"] is False
+    assert lineage["classification"] == "B"
+    assert lineage["productive_lineage_proven"] is True
     assert lineage["meta_evidence_v1_vs_p2_kind_relation"]["equated"] is False
 
 
-def test_closure_matrix_mi_learning_terminate_at_a() -> None:
+def test_closure_matrix_all_producers_terminate_at_a() -> None:
     matrix = build_p5_producer_closure_matrix_v1(REPO_ROOT)
     assert matrix["market_intelligence"]["TERMINATES_AT_A"] is True
     assert matrix["learning"]["TERMINATES_AT_A"] is True
-    assert matrix["optimization"]["TERMINATES_AT_A"] is False
-    assert matrix["meta_learning"]["TERMINATES_AT_A"] is False
+    assert matrix["optimization"]["TERMINATES_AT_A"] is True
+    assert matrix["meta_learning"]["TERMINATES_AT_A"] is True
 
 
-def test_optimization_contract_crosswalk_blocks_producer_bridge() -> None:
+def test_optimization_contract_crosswalk_allows_producer_bridge() -> None:
     crosswalk = run_optimization_contract_crosswalk_v1()
-    assert crosswalk["producer_bridge_allowed"] is False
-    assert crosswalk["first_blocking_field"] == "target_schema_validator"
-    assert crosswalk["verdict"] == "BLOCKED"
+    assert crosswalk["producer_bridge_allowed"] is True
+    assert crosswalk["verdict"] == "MECHANICALLY_ALLOWED"
 
 
-def test_meta_learning_contract_crosswalk_blocks_without_fabrication() -> None:
+def test_meta_learning_contract_crosswalk_allows_without_equating_meta_evidence_v1() -> None:
     crosswalk = run_meta_learning_contract_crosswalk_v1()
-    assert crosswalk["producer_bridge_allowed"] is False
+    assert crosswalk["producer_bridge_allowed"] is True
     assert crosswalk["meta_evidence_v1_equated_to_target"] is False
-    assert crosswalk["first_blocking_field"] == "evidence_kind"
+    assert crosswalk["verdict"] == "MECHANICALLY_ALLOWED"
 
 
-def test_upstream_invocation_not_productive_reachable() -> None:
+def test_upstream_invocation_productive_reachable_at_a() -> None:
     proofs = run_p5_upstream_invocation_proofs_v1()
-    assert proofs["optimization"]["productive_reachable_proven"] is False
-    assert proofs["meta_learning"]["productive_reachable_proven"] is False
+    assert proofs["optimization"]["productive_reachable_proven"] is True
+    assert proofs["meta_learning"]["productive_reachable_proven"] is True
 
 
 def test_authority_negative_proofs_none() -> None:
@@ -215,9 +214,9 @@ def test_census_and_proof_bundle() -> None:
     out = write_p5_proof_artifacts_v1(REPO_ROOT)
     assert (out / "p5_proof_bundle_v1.json").is_file()
     proof = prove_p5_producer_productive_ingress_v1(REPO_ROOT)
-    assert proof["verdict"] in {"BOUNDED_COMPLETE_BLOCKED", "PROVEN_COMPLETE", "FAIL_CLOSED"}
+    assert proof["verdict"] in {"PROVEN_COMPLETE", "FAIL_CLOSED"}
     assert proof["proof_obligations"]["proof_12_mi_and_learning_integrated"] is True
-    assert proof["proof_obligations"]["proof_16_crosswalks_document_blocked_bridges"] is True
-    assert proof["verdict"] == "BOUNDED_COMPLETE_BLOCKED"
+    assert proof["proof_obligations"]["proof_16_crosswalks_mechanically_allowed"] is True
+    assert proof["verdict"] == "PROVEN_COMPLETE"
     assert (out / "p5_optimization_contract_crosswalk_v1.json").is_file()
     assert (out / "p5_meta_learning_contract_crosswalk_v1.json").is_file()

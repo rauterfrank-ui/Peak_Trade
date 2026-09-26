@@ -27,24 +27,24 @@
     "DIRECT_TO_B": false,
     "DIRECT_TO_DP": false,
     "PRODUCER_PRESENT": true,
-    "PRODUCTIVE_LINEAGE_PROVEN": false,
-    "PROMOTION_ADMITTED": false,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
     "REGISTERED": true,
     "RUNTIME_REACHABLE": true,
-    "TERMINATES_AT_A": false,
+    "TERMINATES_AT_A": true,
     "TRADING_AUTHORITY": "NONE",
-    "blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING"
+    "blocker": null
   },
   "optimization": {
     "DIRECT_TO_B": false,
     "DIRECT_TO_DP": false,
-    "PRODUCER_PRESENT": false,
-    "PRODUCTIVE_LINEAGE_PROVEN": false,
-    "PROMOTION_ADMITTED": false,
+    "PRODUCER_PRESENT": true,
+    "PRODUCTIVE_LINEAGE_PROVEN": true,
+    "PROMOTION_ADMITTED": true,
     "REGISTERED": true,
-    "RUNTIME_REACHABLE": false,
-    "TERMINATES_AT_A": false,
+    "RUNTIME_REACHABLE": true,
+    "TERMINATES_AT_A": true,
     "TRADING_AUTHORITY": "NONE",
-    "blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER"
+    "blocker": null
   }
 }

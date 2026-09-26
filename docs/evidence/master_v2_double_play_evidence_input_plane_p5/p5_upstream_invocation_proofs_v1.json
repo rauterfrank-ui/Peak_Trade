@@ -1,6 +1,6 @@
 {
   "meta_learning": {
-    "productive_reachable_proven": false,
+    "productive_reachable_proven": true,
     "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
     "surfaces": [
       {
@@ -35,16 +35,28 @@
         "PRODUCTIVE_REACHABLE": false,
         "builder": "meta_learning_evidence_v1 ingest",
         "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
-        "notes": "Nested input to meta_evidence_v1; still research lineage.",
+        "notes": "M6 ingest output; routed via P5 binding bridge.",
         "output_schema": "meta_learning_evidence_v1",
         "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": true,
+        "builder": "bridge_m6_to_meta_learning_routed_evidence_v1",
+        "module": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+        "notes": "M6 + governed binding \u2192 P5 routed evidence; terminates at Component A only.",
+        "output_schema": "meta_learning_routed_evidence_v1",
+        "reachability_class": "PRODUCTIVE_REACHABLE"
       }
     ],
     "target_p2_kind": "meta_learning_routed_evidence_v1",
-    "verdict": "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY"
+    "verdict": "PROVEN_AT_A"
   },
   "optimization": {
-    "productive_reachable_proven": false,
+    "productive_reachable_proven": true,
     "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
     "surfaces": [
       {
@@ -94,9 +106,21 @@
         "notes": "Registry entry is not evidence emission.",
         "output_schema": "optimization_envelope_evidence_v1",
         "reachability_class": "REGISTRY_DECLARATION_ONLY"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": true,
+        "builder": "bridge_m5_to_optimization_envelope_evidence_v1",
+        "module": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+        "notes": "M5 + governed binding \u2192 P5 envelope; terminates at Component A only.",
+        "output_schema": "optimization_envelope_evidence_v1",
+        "reachability_class": "PRODUCTIVE_REACHABLE"
       }
     ],
     "target_p2_kind": "optimization_envelope_evidence_v1",
-    "verdict": "BLOCKED_NO_PRODUCTIVE_EMITTER"
+    "verdict": "PROVEN_AT_A"
   }
 }

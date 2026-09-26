@@ -143,15 +143,15 @@ _CENSUS_ENTRIES: Final[tuple[CensusEntryV1, ...]] = (
     ),
     CensusEntryV1(
         "P5_OPTIMIZATION_PRODUCER_BRIDGE",
-        CensusClassification.CONFLICTING,
-        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/contract_crosswalk_v1.py",
-        "Blocked until separate P5 final closure; target kind != M5 schema",
+        CensusClassification.REUSE_WITH_BINDING,
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+        "M5 + governed binding → optimization_envelope_evidence_v1 → A",
     ),
     CensusEntryV1(
         "P5_META_LEARNING_PRODUCER_BRIDGE",
-        CensusClassification.CONFLICTING,
-        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/contract_crosswalk_v1.py",
-        "meta_evidence_v1 != meta_learning_routed_evidence_v1; sequence lock",
+        CensusClassification.REUSE_WITH_BINDING,
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
+        "M6 meta_learning_evidence_v1 + binding → meta_learning_routed_evidence_v1 → A",
     ),
     CensusEntryV1(
         "PHASE23_META_EVIDENCE_DUAL_ROUTER",
@@ -294,15 +294,17 @@ def _fabricated_instrument_epoch_fields(meta: Mapping[str, Any]) -> bool:
     return any(token in ref for token in forbidden_tokens)
 
 
-def prove_p5_final_closure_still_blocked_v1() -> bool:
+def prove_p5_final_closure_mechanically_allowed_v1() -> bool:
     crosswalk = run_p5_contract_crosswalks_v1()
     opt = crosswalk.get("optimization") or {}
     meta = crosswalk.get("meta_learning") or {}
     return (
-        opt.get("producer_bridge_allowed") is False
-        and meta.get("producer_bridge_allowed") is False
+        opt.get("producer_bridge_allowed") is True
+        and meta.get("producer_bridge_allowed") is True
         and opt.get("target_evidence_kind") == P5_OPTIMIZATION_TARGET_KIND
         and meta.get("target_evidence_kind") == P5_META_TARGET_KIND
+        and opt.get("verdict") == "MECHANICALLY_ALLOWED"
+        and meta.get("verdict") == "MECHANICALLY_ALLOWED"
     )
 
 
@@ -328,13 +330,13 @@ def prove_m4_m8_optimization_meta_learning_evidence_return_closure_v1(
     decision = json.loads((root / DECISION_CONFIG).read_text(encoding="utf-8"))
     if decision.get("workpackage_id") != WORKPACKAGE_ID:
         return False
-    if decision.get("p5_final_closure_ready") is not False:
+    if decision.get("p5_final_closure_ready") is not True:
         return False
     if decision.get("optimization_productive_authority") != "NONE":
         return False
     if decision.get("external_effect_authorized") is not False:
         return False
-    if not prove_p5_final_closure_still_blocked_v1():
+    if not prove_p5_final_closure_mechanically_allowed_v1():
         return False
     return prove_m4_m8_runtime_lineage_v1(repo_root=root)
 
@@ -385,5 +387,5 @@ __all__ = [
     "prove_m4_m8_closure_evidence_files_v1",
     "prove_m4_m8_optimization_meta_learning_evidence_return_closure_v1",
     "prove_m4_m8_runtime_lineage_v1",
-    "prove_p5_final_closure_still_blocked_v1",
+    "prove_p5_final_closure_mechanically_allowed_v1",
 ]

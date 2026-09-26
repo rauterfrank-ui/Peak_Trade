@@ -16,7 +16,7 @@
   "m8_status": "PROVEN_DETERMINISTIC_MULTI_CYCLE_REPLAY",
   "closure_implemented": true,
   "runtime_lineage_proven_required": true,
-  "p5_final_closure_ready": false,
+  "p5_final_closure_ready": true,
   "p5_sequence_lock": "M4_M8_FIRST_THEN_P5_OPTIMIZATION_AND_META_PRODUCER_CLOSURE",
   "optimization_productive_authority": "NONE",
   "meta_evidence_authority": "NONE",

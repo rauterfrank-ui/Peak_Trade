@@ -17,8 +17,18 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     EVIDENCE_TYPE_VERSION,
     LEARNING_PRODUCER_ID,
     LEARNING_PRODUCER_VERSION,
+    META_LEARNING_PRODUCER_ID,
+    META_LEARNING_PRODUCER_VERSION,
     MI_PRODUCER_ID,
     MI_PRODUCER_VERSION,
+    OPTIMIZATION_PRODUCER_ID,
+    OPTIMIZATION_PRODUCER_VERSION,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.meta_learning_routed_evidence_v1 import (
+    validate_meta_learning_routed_evidence_v1,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.optimization_envelope_evidence_v1 import (
+    validate_optimization_envelope_evidence_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.models_v1 import (
     ProducerEvidenceTerminationContextV1,
@@ -174,5 +184,106 @@ def adapt_learning_conditioned_evaluative_v1(
         extra_fields={
             "p5_adapter": "learning_conditioned_evaluative_v1",
             "evaluability": validated.get("evaluability"),
+        },
+    )
+
+
+def adapt_optimization_envelope_evidence_v1(
+    artifact: Mapping[str, Any],
+    *,
+    termination: ProducerEvidenceTerminationContextV1,
+) -> EvidenceIntakeRecordV1:
+    validated = validate_optimization_envelope_evidence_v1(artifact)
+    digest = str(validated["reproducibility_digest"])
+    if not is_valid_sha256_hex(digest):
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value)
+    prov = validated.get("provenance")
+    if isinstance(prov, Mapping):
+        ctx_digest = str(prov.get("market_context_content_digest") or "")
+        if ctx_digest and not is_valid_sha256_hex(ctx_digest):
+            raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value)
+    envelope_id = str(validated["envelope_evidence_id"])
+    delivery_id = f"opt-del-{digest[:32]}"
+    ref = str(validated.get("instrument_ref") or "")
+    if (
+        termination.instrument.instrument_id != ref
+        and termination.instrument.venue_instrument_id != ref
+    ):
+        raise ProducerAdapterError(
+            ProducerIngressFailureCodeV1.INSTRUMENT_BINDING_DERIVATION_FAILED.value
+        )
+    if int(validated.get("market_observation_epoch", -1)) != termination.market_observation_epoch:
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.TERMINATION_CONTEXT_MISSING.value)
+    observed_at_unix = _parse_observed_at_unix(str(validated["observed_at"]))
+    return EvidenceIntakeRecordV1(
+        delivery_id=delivery_id,
+        envelope_id=envelope_id,
+        producer_id=OPTIMIZATION_PRODUCER_ID,
+        producer_version=OPTIMIZATION_PRODUCER_VERSION,
+        evidence_type_version=EVIDENCE_TYPE_VERSION,
+        producer_family=EvidenceProducerFamilyV1.OPTIMIZATION,
+        evidence_kind=BoundedL6EvidenceKindV1.OPTIMIZATION_ENVELOPE_EVIDENCE_V1,
+        instrument=termination.instrument,
+        market_observation_epoch=termination.market_observation_epoch,
+        observed_at_unix=observed_at_unix,
+        freshness_horizon_seconds=termination.freshness_horizon_seconds,
+        source_evidence_digest=str(validated["content_hash"]),
+        typed_payload_digest=str(validated["typed_payload_digest"]),
+        provenance_refs=(
+            f"opt:m5:{validated['source_optimization_experiment_evidence_digest']}",
+            f"opt:binding:{validated['binding_context_digest']}",
+        ),
+        lineage_refs=(str(validated["source_plane_identity"]),),
+        extra_fields={
+            "p5_adapter": "optimization_envelope_evidence_v1",
+            "source_m5_digest": validated["source_optimization_experiment_evidence_digest"],
+        },
+    )
+
+
+def adapt_meta_learning_routed_evidence_v1(
+    artifact: Mapping[str, Any],
+    *,
+    termination: ProducerEvidenceTerminationContextV1,
+) -> EvidenceIntakeRecordV1:
+    validated = validate_meta_learning_routed_evidence_v1(artifact)
+    digest = str(validated["reproducibility_digest"])
+    if not is_valid_sha256_hex(digest):
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value)
+    ref = str(validated.get("instrument_ref") or "")
+    if (
+        termination.instrument.instrument_id != ref
+        and termination.instrument.venue_instrument_id != ref
+    ):
+        raise ProducerAdapterError(
+            ProducerIngressFailureCodeV1.INSTRUMENT_BINDING_DERIVATION_FAILED.value
+        )
+    if int(validated.get("market_observation_epoch", -1)) != termination.market_observation_epoch:
+        raise ProducerAdapterError(ProducerIngressFailureCodeV1.TERMINATION_CONTEXT_MISSING.value)
+    observed_at_unix = _parse_observed_at_unix(str(validated["observed_at"]))
+    envelope_id = str(validated["routed_evidence_id"])
+    delivery_id = f"meta-del-{digest[:32]}"
+    return EvidenceIntakeRecordV1(
+        delivery_id=delivery_id,
+        envelope_id=envelope_id,
+        producer_id=META_LEARNING_PRODUCER_ID,
+        producer_version=META_LEARNING_PRODUCER_VERSION,
+        evidence_type_version=EVIDENCE_TYPE_VERSION,
+        producer_family=EvidenceProducerFamilyV1.META_LEARNING,
+        evidence_kind=BoundedL6EvidenceKindV1.META_LEARNING_ROUTED_EVIDENCE_V1,
+        instrument=termination.instrument,
+        market_observation_epoch=termination.market_observation_epoch,
+        observed_at_unix=observed_at_unix,
+        freshness_horizon_seconds=termination.freshness_horizon_seconds,
+        source_evidence_digest=str(validated["content_hash"]),
+        typed_payload_digest=str(validated["typed_payload_digest"]),
+        provenance_refs=(
+            f"meta:m6:{validated['source_meta_learning_evidence_id']}",
+            f"meta:binding:{validated['binding_context_digest']}",
+        ),
+        lineage_refs=(str(validated["source_optimization_experiment_evidence_digest"]),),
+        extra_fields={
+            "p5_adapter": "meta_learning_routed_evidence_v1",
+            "meta_evidence_authority": validated["meta_evidence_authority"],
         },
     )
