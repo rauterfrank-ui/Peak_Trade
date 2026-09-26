@@ -1,0 +1,51 @@
+{
+  "component_a_implemented": false,
+  "component_b_implemented": false,
+  "conflicting_layers": [
+    "L7_SCOPE_STATE"
+  ],
+  "new_contracts_requiring_owner_authority": [
+    "CanonicalMasterV2EvidenceEnvelopeV1 (Component A \u2014 not implemented)",
+    "CanonicalDpLayerInputBindingV1 (Component B \u2014 not implemented)",
+    "Any non-C1 external evidence type admission per layer"
+  ],
+  "proven_closed_layers": [
+    "L10_BULL_BEAR_STATE_SWITCH",
+    "L1_SELECTED_FUTURE",
+    "L2_MARKET_OBSERVATION",
+    "L3_INITIAL_DIRECTION",
+    "L4_INITIAL_STATE_INITIALIZATION",
+    "L5_NULLLINE",
+    "L7_SCOPE_STATE",
+    "L8_RUNNING_REFERENCE",
+    "L9_COUNTER_MOVE"
+  ],
+  "proven_eligible_b_binding_candidates": [
+    "L6_DYNAMIC_SCOPE_GENERATOR"
+  ],
+  "remains_blocked": [
+    "Component A/B implementation (explicitly out of P0 scope)",
+    "External-evidence admissibility for L6 beyond caller float (UNKNOWN)",
+    "L1 B-target without Cap 2.3/2.4 authority decision",
+    "scope_event_generator vs transition_state conflict resolution (out of scope)",
+    "FINAL_D_T_FORMULA_SELECTED=false"
+  ],
+  "reusable_contracts_proven_current": [
+    "DynamicScopeGeneratorInputV1 + DynamicScopeGeneratorV1 (L6)",
+    "SelectedFutureInputV1 (L1; subject to Cap 2.4 authority)",
+    "MarketObservationInputV1 / ObservationCandidateV1 (L2; C1 bounded)"
+  ],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p1_design_input/v1",
+  "sufficient_facts_for_ab_schema_design": [
+    "L1\u2013L10 owners and input dataclasses proven in contracts_v1.py",
+    "L6 replaceable generator protocol proven",
+    "No blanket external-evidence permission proven",
+    "Bypass census complete for intelligence\u2192layer direct calls"
+  ],
+  "unknown_layers": [
+    "L1_SELECTED_FUTURE",
+    "L2_MARKET_OBSERVATION",
+    "L6_DYNAMIC_SCOPE_GENERATOR",
+    "L7_SCOPE_STATE"
+  ]
+}

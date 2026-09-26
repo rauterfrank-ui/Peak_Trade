@@ -1,0 +1,673 @@
+{
+  "blueprint_baseline_sha": "2354c4439c3228265b8aaa51d06510db48af1469",
+  "cap_2_3_authority_changed_by_this_wp": false,
+  "cap_2_4_authority_changed_by_this_wp": false,
+  "census_layers": [
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "SelectedFutureInputV1 / InstrumentObservationKeyV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l2_market_observation_v1"
+      ],
+      "current_input_contracts": [
+        "SelectedFutureInputV1",
+        "SelectedFutureStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l1_selected_future_v1",
+      "current_producers": [
+        "orchestrator caller (SelectedFutureInputV1)",
+        "upstream Cap 2.4 BoundInstrumentV1 consumer path (outside L1 contract)"
+      ],
+      "epoch_binding_semantics": "ABSENT at L1",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L1_SELECTED_FUTURE",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: fail-fast ValueError; no fail-closed envelope",
+      "freshness_semantics": "ABSENT at L1",
+      "future_B_target_possible": "UNKNOWN",
+      "instrument_binding_semantics": "PROVEN_CURRENT: instrument_id must equal instrument_key.canonical_instrument_id (apply_l1_selected_future_v1 ValueError on mismatch)",
+      "layer_id": "L1_SELECTED_FUTURE",
+      "missing_input_semantics": "PROVEN_CURRENT: ValueError l1_instrument_id_canonical_mismatch",
+      "open_questions": [
+        "Whether future B may target L1 without duplicating Cap 2.4 binding authority."
+      ],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT at L1",
+      "required_change_class": "authority_decision: Cap 2.3/2.4 remain selection/binding owners; any B bind must not bypass them",
+      "semantic_responsibility": "instrument_selection_request \u2192 selected_future_binding; mutates=selected_future_state_only",
+      "state_mutation_effect": "PROVEN_CURRENT: selected_future_state_only per catalog",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "PROVEN_CURRENT: none; instrument binding only"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "MarketObservationInputV1 / C1 acceptance contracts",
+      "conflict_semantics": "PROVEN_CURRENT: non-DISTINCT observations do not advance chain",
+      "current_consumers": [
+        "l3_initial_direction_v1"
+      ],
+      "current_input_contracts": [
+        "MarketObservationInputV1",
+        "ObservationCandidateV1",
+        "ObservationAcceptanceStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l2_market_observation_v1",
+      "current_producers": [
+        "orchestrator initialization_observations sequence",
+        "distinct_market_observation_acceptor_v1 (C1)"
+      ],
+      "epoch_binding_semantics": "PROVEN_CURRENT: market_observation_epoch increments on DISTINCT commit",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L2_MARKET_OBSERVATION",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: skip non-DISTINCT; init incomplete \u2192 fail_closed",
+      "freshness_semantics": "UNKNOWN for external evidence; caller-supplied marks only",
+      "future_B_target_possible": "UNKNOWN",
+      "instrument_binding_semantics": "PROVEN_CURRENT: bound_instrument_key on acceptance state matches L1 selected",
+      "layer_id": "L2_MARKET_OBSERVATION",
+      "missing_input_semantics": "PROVEN_CURRENT: orchestrator fail_closed orchestrator_initialization_incomplete",
+      "open_questions": [
+        "Whether MASTER_V2_DOUBLE_PLAY_FUTURES_INPUT_READ_MODEL_V0 fields could map to ObservationCandidateV1 without new authority (not proven in layered orchestrator)."
+      ],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT for external intelligence at layer boundary",
+      "required_change_class": "contract_extension + owner authority for any non-C1 evidence types",
+      "semantic_responsibility": "selected_future + observation_candidate \u2192 accepted_market_observation; mutates=observation_acceptance_state_only",
+      "state_mutation_effect": "observation_acceptance_state_only",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "InitialDirectionInputV1",
+      "conflict_semantics": "PROVEN_CURRENT: neutral direction skips initialization",
+      "current_consumers": [
+        "l4_initial_state_v1"
+      ],
+      "current_input_contracts": [
+        "InitialDirectionInputV1",
+        "ElementaryDirectionResultV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l3_initial_direction_v1",
+      "current_producers": [
+        "elementary_direction_v1 via apply_l3"
+      ],
+      "epoch_binding_semantics": "ABSENT",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L3_INITIAL_DIRECTION",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: pure evaluator; no external envelope",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "PROVEN_CURRENT: bound_instrument_key required",
+      "layer_id": "L3_INITIAL_DIRECTION",
+      "missing_input_semantics": "PROVEN_CURRENT: non BULL/BEAR continues loop without L4",
+      "open_questions": [],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT",
+      "required_change_class": "semantic_redesign if external direction evidence admitted",
+      "semantic_responsibility": "consecutive_distinct_observations \u2192 elementary_direction_result; mutates=none_pure_evaluator",
+      "state_mutation_effect": "none_pure_evaluator",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "InitialStateInitializationInputV1",
+      "conflict_semantics": "PROVEN_CURRENT: fail_closed with fail_reasons tuple",
+      "current_consumers": [
+        "l5_nullline_v1"
+      ],
+      "current_input_contracts": [
+        "InitialStateInitializationInputV1",
+        "InitialRegimeStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l4_initial_state_v1",
+      "current_producers": [
+        "apply_l4_initial_state_initialization_v1"
+      ],
+      "epoch_binding_semantics": "ABSENT",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L4_INITIAL_STATE_INITIALIZATION",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: orchestrator returns fail_closed on L4 fail",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "PROVEN_CURRENT: from SelectedFutureStateV1",
+      "layer_id": "L4_INITIAL_STATE_INITIALIZATION",
+      "missing_input_semantics": "PROVEN_CURRENT: fail_closed flag on output",
+      "open_questions": [],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT",
+      "required_change_class": "authority_decision + semantic_redesign",
+      "semantic_responsibility": "non_neutral_elementary_direction \u2192 initial_bull_or_bear_regime; mutates=regime_authority_established_once",
+      "state_mutation_effect": "regime_authority_established_once",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "PROVEN_CURRENT: establishes initial BULL/BEAR only"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "NullLineInputV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l6_dynamic_scope_generator_v1"
+      ],
+      "current_input_contracts": [
+        "NullLineInputV1",
+        "NullLineStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l5_nullline_v1",
+      "current_producers": [
+        "apply_l5_nullline_v1"
+      ],
+      "epoch_binding_semantics": "PROVEN_CURRENT: provenance_mark_epoch from market_observation_epoch",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L5_NULLLINE",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: deterministic nullline from initialization_mark",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "PROVEN_CURRENT: instrument_id on NullLineStateV1",
+      "layer_id": "L5_NULLLINE",
+      "missing_input_semantics": "ABSENT",
+      "open_questions": [],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "PROVEN_CURRENT: provenance_mark_epoch field only",
+      "required_change_class": "semantic_redesign (Blueprint excludes NullLine redesign in P0 scope)",
+      "semantic_responsibility": "initialization_mark_at_regime_birth \u2192 nullline_price_basis; mutates=nullline_state_only_not_running_reference",
+      "state_mutation_effect": "nullline_state_only_not_running_reference",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [
+        "PROVEN_CURRENT: caller-supplied float proposed_d_t only; NOT PROVEN: MI/Learning/Optimization evidence types"
+      ],
+      "binding_contract": "DynamicScopeGeneratorInputV1 + replaceable DynamicScopeGeneratorV1 (explicit_external_d_t_passthrough/v1)",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l7_scope_state_v1"
+      ],
+      "current_input_contracts": [
+        "DynamicScopeGeneratorInputV1",
+        "DynamicScopeGeneratorOutputV1",
+        "DynamicScopeGeneratorV1 (Protocol)"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1",
+      "current_producers": [
+        "MechanicalStepSpecV1.proposed_d_t via orchestrator",
+        "ExplicitPassthroughDynamicScopeGeneratorV1 (default validation path)"
+      ],
+      "epoch_binding_semantics": "ABSENT on L6 input",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L6_DYNAMIC_SCOPE_GENERATOR",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "PROVEN_CURRENT",
+      "external_evidence_admissibility": "UNKNOWN",
+      "failure_semantics": "PROVEN_CURRENT: fail_closed + fail_reasons; downstream layers NOT_REACHED",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CURRENT",
+      "instrument_binding_semantics": "PROVEN_CURRENT: indirect via nullline.instrument_id context; no separate instrument field on L6 input",
+      "layer_id": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "missing_input_semantics": "PROVEN_CURRENT: naked_boundary_fail_closed_reasons_from_distance \u2192 fail_closed",
+      "open_questions": [
+        "Whether Component B may bind only through DynamicScopeGeneratorV1 protocol without new owner for D_t formula selection (FINAL_D_T_FORMULA_SELECTED=false)."
+      ],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "PROVEN_CURRENT: generator_id on output only; no evidence envelope",
+      "required_change_class": "contract_extension for adjudicated evidence \u2192 proposed_d_t binding; no semantic change to validation if D_t remains explicit float",
+      "semantic_responsibility": "nullline_context + external_d_t_proposal \u2192 validated_d_t_or_fail_closed; mutates=none_replaceable_generator",
+      "state_mutation_effect": "none_replaceable_generator",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "ScopeStateMaterializationInputV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l8_running_reference_v1",
+        "l10_bull_bear_switch_v1 (d_t)"
+      ],
+      "current_input_contracts": [
+        "ScopeStateMaterializationInputV1",
+        "ScopeStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l7_scope_state_v1",
+      "current_producers": [
+        "apply_l7_scope_state_materialization_v1"
+      ],
+      "epoch_binding_semantics": "PROVEN_CURRENT: nullline_provenance_epoch carried",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L7_SCOPE_STATE",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: fail_closed; scope None \u2192 orchestrator abort",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "UNKNOWN",
+      "instrument_binding_semantics": "PROVEN_CURRENT: instrument_id on ScopeStateV1",
+      "layer_id": "L7_SCOPE_STATE",
+      "missing_input_semantics": "PROVEN_CURRENT: fail_closed if generator output invalid",
+      "open_questions": [
+        "CONFLICTING topology: scope_event_generator / transition_state vs L7 scope_state is out of scope for repair (Blueprint \u00a75); may affect productive bind wiring only."
+      ],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "PROVEN_CURRENT: nullline_price + generator_id",
+      "required_change_class": "contract_extension only if L6 output remains sole D_t source",
+      "semantic_responsibility": "validated_d_t + nullline_provenance \u2192 materialized_scope_state; mutates=scope_state_only_no_regime_switch",
+      "state_mutation_effect": "scope_state_only_no_regime_switch",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "RunningReferenceStepInputV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l9_counter_move_v1",
+        "l10_bull_bear_switch_v1"
+      ],
+      "current_input_contracts": [
+        "RunningReferenceStepInputV1",
+        "RunningReferenceStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l8_running_reference_v1",
+      "current_producers": [
+        "apply_l8_running_reference_step_v1"
+      ],
+      "epoch_binding_semantics": "ABSENT",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L8_RUNNING_REFERENCE",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: deterministic R_t update from regime+mark",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "PROVEN_CURRENT: instrument_id on state",
+      "layer_id": "L8_RUNNING_REFERENCE",
+      "missing_input_semantics": "ABSENT",
+      "open_questions": [],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT",
+      "required_change_class": "semantic_redesign (Blueprint excludes L8 mechanics change)",
+      "semantic_responsibility": "regime + mark + prior_running_reference \u2192 updated_running_reference_r_t; mutates=running_reference_state_only_not_nullline",
+      "state_mutation_effect": "running_reference_state_only_not_nullline",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "CounterMoveInputV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "l10_bull_bear_switch_v1"
+      ],
+      "current_input_contracts": [
+        "CounterMoveInputV1",
+        "CounterMoveStateV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l9_counter_move_v1",
+      "current_producers": [
+        "apply_l9_counter_move_v1"
+      ],
+      "epoch_binding_semantics": "ABSENT",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L9_COUNTER_MOVE",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: pure formula CM_t",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "PROVEN_CURRENT: instrument_id on CounterMoveStateV1",
+      "layer_id": "L9_COUNTER_MOVE",
+      "missing_input_semantics": "ABSENT",
+      "open_questions": [],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT",
+      "required_change_class": "semantic_redesign (Blueprint excludes L9 mechanics change)",
+      "semantic_responsibility": "regime + mark + running_reference \u2192 counter_move_cm_t; mutates=none_pure_formula",
+      "state_mutation_effect": "none_pure_formula",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "NONE"
+    },
+    {
+      "allowed_evidence_types": [],
+      "binding_contract": "BullBearSwitchInputV1",
+      "conflict_semantics": "ABSENT",
+      "current_consumers": [
+        "orchestrator persisted regime + R_t reset"
+      ],
+      "current_input_contracts": [
+        "BullBearSwitchInputV1",
+        "BullBearSwitchOutputV1"
+      ],
+      "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l10_bull_bear_switch_v1",
+      "current_producers": [
+        "apply_l10_bull_bear_switch_v1"
+      ],
+      "epoch_binding_semantics": "ABSENT",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py:L10_BULL_BEAR_STATE_SWITCH",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/contracts_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/orchestrator_v1.py",
+        "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+      ],
+      "existing_external_evidence_seam": "ABSENT",
+      "external_evidence_admissibility": "PROVEN_CLOSED",
+      "failure_semantics": "PROVEN_CURRENT: SOLE_PRICE_SWITCH_RULE CM_t>=D_t; no external override path",
+      "freshness_semantics": "ABSENT",
+      "future_B_target_possible": "PROVEN_CLOSED",
+      "instrument_binding_semantics": "ABSENT on switch input",
+      "layer_id": "L10_BULL_BEAR_STATE_SWITCH",
+      "missing_input_semantics": "ABSENT",
+      "open_questions": [
+        "Parallel SideState/switch owners in double_play_composition remain outside L10; not equated in this census row."
+      ],
+      "owner_evidence": "PROVEN_CURRENT",
+      "provenance_semantics": "ABSENT",
+      "required_change_class": "authority_decision + semantic_redesign",
+      "semantic_responsibility": "cm_t + scope_d_t + prior_regime \u2192 regime_post + r_t_reset_flag; mutates=regime_switch_authority_sole_price_rule",
+      "state_mutation_effect": "regime_switch_authority_sole_price_rule",
+      "status": "PROVEN_CURRENT",
+      "topology_note": "Cap2.3 src/ops/single_selected_future_policy_v1/ \u2192 Cap2.4 src/ops/single_selected_future_runtime_binding_v1/ \u2192 Master V2 integrated offline replay / productive cycle \u2192 explicit L1\u2013L10 orchestrator (when layered bind enabled) \u2192 composition / entry_exit / CRS downstream (outside layered core).",
+      "trading_authority_effect": "PROVEN_CURRENT: sole layered-core regime switch authority (BULL/BEAR flip)"
+    }
+  ],
+  "component_a_implementation_detected": false,
+  "component_a_implementation_hits": [],
+  "component_b_implementation_detected": false,
+  "crs_authority_changed_by_this_wp": false,
+  "direct_external_to_dp_bypass_census": [
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no naked_mv2_dp_explicit_layered_core import (grep census v1)",
+        "src/experiments/**/*.py: no orchestrate_naked_layered_core import (grep census v1)"
+      ],
+      "notes": "Direct import/call from MI/Learning/Optimization/Meta-Learning/Research into explicit L1\u2013L10 layered-core apply/orchestrate surfaces.",
+      "path_id": "external_intelligent_producer_to_dp_layer_direct_call"
+    },
+    {
+      "classification": "PRESENT",
+      "evidence_refs": [
+        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+        "src/trading/master_v2/directional_assessment_v1.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+        "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+        "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+        "src/trading/master_v2/double_play_composition_matrix_v1.py"
+      ],
+      "notes": "PRESENT as DDO observe_after_producer_v0 capture hosts only; TRADING_AUTHORITY=NONE; RUNTIME_EFFECT=OBSERVATION_ONLY per double_play_input_evidence_v1.py module contract.",
+      "path_id": "producer_to_dp_state_mutation_via_learning_import"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no SideState write/import of compose_double_play (grep census v1)"
+      ],
+      "notes": "No learning/experiments module mutates SideState.",
+      "path_id": "producer_to_sidestate_mutation"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no apply_l10_bull_bear_switch import (grep census v1)"
+      ],
+      "notes": "Switch authority not imported from intelligence producers.",
+      "path_id": "producer_to_switch_decision"
+    },
+    {
+      "classification": "PRESENT",
+      "evidence_refs": [
+        "src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py",
+        "src/trading/master_v2/double_play_entry_exit_policy_v0.py"
+      ],
+      "notes": "PRESENT as DDO observation of EntryExitPolicyInput only; TRADING_AUTHORITY=NONE; does not call evaluate_* from learning.",
+      "path_id": "producer_to_entry_exit_decision"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no capital_risk / CRS sizing import into trading layers (grep census v1)"
+      ],
+      "notes": "CRS remains downstream of layered core in topology docs.",
+      "path_id": "producer_to_crs_risk_sizing_mutation"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no canonical_order_intent import (grep census v1)"
+      ],
+      "notes": "",
+      "path_id": "producer_to_order_intent"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no execution_admission import (grep census v1)"
+      ],
+      "notes": "",
+      "path_id": "producer_to_execution_admission"
+    },
+    {
+      "classification": "PROVEN_ABSENT",
+      "evidence_refs": [
+        "src/learning/**/*.py: no external_effect_gate / POST permit import (grep census v1)"
+      ],
+      "notes": "",
+      "path_id": "producer_to_permit_post_authority"
+    },
+    {
+      "classification": "PRESENT",
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md"
+      ],
+      "notes": "Informational attribution evidence only; MARKET_CONTEXT + MV2/DP refs; TRADING_AUTHORITY=NONE; not a layer input seam.",
+      "path_id": "mi_to_dp_attribution_information_path"
+    }
+  ],
+  "dp_semantics_changed_by_this_wp": false,
+  "evidence_reference_ledger": {
+    "material_claims": [
+      {
+        "claim": "L1\u2013L10 semantic owners are explicit layered core modules",
+        "evidence_refs": [
+          "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+          "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
+        ]
+      },
+      {
+        "claim": "Cap 2.3 selection authority is single_selected_future_policy_v1",
+        "evidence_refs": [
+          "src/ops/single_selected_future_policy_v1/producer_v1.py",
+          "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md"
+        ]
+      },
+      {
+        "claim": "Cap 2.4 binding authority is single_selected_future_runtime_binding_v1",
+        "evidence_refs": [
+          "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
+        ]
+      },
+      {
+        "claim": "DDO capture on trading producers is observation-only",
+        "evidence_refs": [
+          "src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py"
+        ]
+      },
+      {
+        "claim": "No intelligence producer directly imports L1\u2013L10 apply/orchestrate",
+        "evidence_refs": [
+          {
+            "classification": "PROVEN_ABSENT",
+            "evidence_refs": [
+              "src/learning/**/*.py: no naked_mv2_dp_explicit_layered_core import (grep census v1)",
+              "src/experiments/**/*.py: no orchestrate_naked_layered_core import (grep census v1)"
+            ],
+            "notes": "Direct import/call from MI/Learning/Optimization/Meta-Learning/Research into explicit L1\u2013L10 layered-core apply/orchestrate surfaces.",
+            "path_id": "external_intelligent_producer_to_dp_layer_direct_call"
+          }
+        ]
+      }
+    ],
+    "schema_version": "master_v2_double_play_evidence_input_plane_p0_ledger/v1"
+  },
+  "execution_authority_changed_by_this_wp": false,
+  "explicit_layered_core_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1",
+  "explicit_layered_core_version": "naked_mv2_dp_explicit_layered_core/v1",
+  "external_effect_authority_changed_by_this_wp": false,
+  "layer_count": 10,
+  "open_conflict_register": [
+    {
+      "affected_census_fields": "L7 open_questions; productive composition vs naked layered durable state",
+      "evidence_refs": [
+        "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+        "src/trading/master_v2/double_play_composition.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py"
+      ],
+      "id": "O-001",
+      "resolution_scope": "OUT_OF_P0_WP",
+      "status": "CONFLICTING",
+      "topic": "scope_event_generator_vs_transition_state"
+    },
+    {
+      "affected_census_fields": "L6 external_evidence_admissibility; allowed_evidence_types for MI/Learning",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ],
+      "id": "O-002",
+      "resolution_scope": "P1_OWNER_CONTRACT",
+      "status": "UNKNOWN",
+      "topic": "L6_external_intelligence_evidence_admissibility"
+    },
+    {
+      "affected_census_fields": "L1 future_B_target_possible",
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ],
+      "id": "O-003",
+      "resolution_scope": "P1_OWNER_AUTHORITY",
+      "status": "UNKNOWN",
+      "topic": "L1_future_B_without_cap24_duplication"
+    }
+  ],
+  "p1_design_input_block": {
+    "component_a_implemented": false,
+    "component_b_implemented": false,
+    "conflicting_layers": [
+      "L7_SCOPE_STATE"
+    ],
+    "new_contracts_requiring_owner_authority": [
+      "CanonicalMasterV2EvidenceEnvelopeV1 (Component A \u2014 not implemented)",
+      "CanonicalDpLayerInputBindingV1 (Component B \u2014 not implemented)",
+      "Any non-C1 external evidence type admission per layer"
+    ],
+    "proven_closed_layers": [
+      "L10_BULL_BEAR_STATE_SWITCH",
+      "L1_SELECTED_FUTURE",
+      "L2_MARKET_OBSERVATION",
+      "L3_INITIAL_DIRECTION",
+      "L4_INITIAL_STATE_INITIALIZATION",
+      "L5_NULLLINE",
+      "L7_SCOPE_STATE",
+      "L8_RUNNING_REFERENCE",
+      "L9_COUNTER_MOVE"
+    ],
+    "proven_eligible_b_binding_candidates": [
+      "L6_DYNAMIC_SCOPE_GENERATOR"
+    ],
+    "remains_blocked": [
+      "Component A/B implementation (explicitly out of P0 scope)",
+      "External-evidence admissibility for L6 beyond caller float (UNKNOWN)",
+      "L1 B-target without Cap 2.3/2.4 authority decision",
+      "scope_event_generator vs transition_state conflict resolution (out of scope)",
+      "FINAL_D_T_FORMULA_SELECTED=false"
+    ],
+    "reusable_contracts_proven_current": [
+      "DynamicScopeGeneratorInputV1 + DynamicScopeGeneratorV1 (L6)",
+      "SelectedFutureInputV1 (L1; subject to Cap 2.4 authority)",
+      "MarketObservationInputV1 / ObservationCandidateV1 (L2; C1 bounded)"
+    ],
+    "schema_version": "master_v2_double_play_evidence_input_plane_p1_design_input/v1",
+    "sufficient_facts_for_ab_schema_design": [
+      "L1\u2013L10 owners and input dataclasses proven in contracts_v1.py",
+      "L6 replaceable generator protocol proven",
+      "No blanket external-evidence permission proven",
+      "Bypass census complete for intelligence\u2192layer direct calls"
+    ],
+    "unknown_layers": [
+      "L1_SELECTED_FUTURE",
+      "L2_MARKET_OBSERVATION",
+      "L6_DYNAMIC_SCOPE_GENERATOR",
+      "L7_SCOPE_STATE"
+    ]
+  },
+  "schema_version": "master_v2_double_play_evidence_input_plane_p0_evidence_seam_census/v1",
+  "status_counts": {
+    "PROVEN_CURRENT": 10
+  },
+  "topology_trace_summary": "Cap2.3 SingleSelectedFutureSelectionV1 \u2192 Cap2.4 BoundInstrumentV1 \u2192 Full-Core / integrated_offline_trading_logic_replay_v1 \u2192 double_play_composition / entry_exit / CRS (downstream) ; parallel explicit L1\u2013L10 orchestrator path when productive layered bind enabled (PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED gate in productive_cycle_layered_core_bind_wiring_v1.py).",
+  "workpackage_id": "MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1"
+}

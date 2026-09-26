@@ -2528,3 +2528,16 @@ relations:
     notes: >
       Topology only. Implementation is not activation and is not Double Play
       consumption. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md
+      - docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json
+    notes: >
+      Navigation only. P0 L1-L10 external-evidence seam census;
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.

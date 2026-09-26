@@ -20,6 +20,7 @@ Not competing generations. Historical Vollautonomie ordering vs current Master R
 | id | kind | status | epistemic |
 | --- | --- | --- | --- |
 | FUNCTIONAL_CORE:double_play | FUNCTIONAL_CORE | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY |
+| RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1 | RUNTIME_COMPONENT | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SUBSYSTEM:master_v2 | SUBSYSTEM | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY |
 | TERM:master_v2 | TERM | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY |
 
@@ -39,6 +40,7 @@ Not competing generations. Historical Vollautonomie ordering vs current Master R
 | REL:s_dp_contains_dp_state | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_dp_contains_dp_suitability | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_suitability | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_dp_contains_dp_survival | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_survival | STATUS=ADJUDICATED | src/trading/master_v2/double_play_composition.py,docs/system_atlas/census/master_v2_semantic_map.yaml |
+| REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1 | NAVIGATION_INDEX:map_of_truth | NAVIGATES_TO | RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1 | STATUS=NAVIGATION_ONLY | docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md,docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md,docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json |
 | REL:s_master_v2_has_dp | SUBSYSTEM:master_v2 | HAS_FUNCTIONAL_CORE | FUNCTIONAL_CORE:double_play | STATUS=ADJUDICATED | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md,docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md |
 | REL:s_mv2_contains_dp_capital_slot | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_capital_slot | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
 | REL:s_mv2_contains_dp_composition | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=FORENSIC_RAW | docs/system_atlas/census/master_v2_semantic_map.yaml |
