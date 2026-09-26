@@ -1,0 +1,20 @@
+{
+  "artifact_class": "M10_PROMOTION_BOUNDARY_DECISION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_V1",
+  "bound_origin_main_sha": "72853b6a1df83479023fc3c5261295ceb2ff1bb4",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md",
+  "canonical_m10_boundary_module": "src/governance/m10_promotion_boundary_v1.py",
+  "phase_13_m10_promotion_boundary_status": "PROVEN_COMPLETE",
+  "optimization_promotion_authority": "NONE",
+  "optimization_direct_productive_write": false,
+  "authorized_promotion_implies_runtime_apply": false,
+  "authorized_promotion_implies_external_effect": false,
+  "explicit_authorization_owner": "explicit_productive_authorization_v1_owner_boundary_v1",
+  "explicit_authorization_config": "config/governance/explicit_productive_authorization_v1_owner_boundary_v1.json",
+  "reference_productive_path": "F1_M9_VOLATILITY_NUMERIC_MAX_AGE",
+  "successor_edges_not_in_phase_13": [
+    "governed_productive_configuration_v1",
+    "runtime_apply",
+    "m11_promotion_automation"
+  ]
+}
