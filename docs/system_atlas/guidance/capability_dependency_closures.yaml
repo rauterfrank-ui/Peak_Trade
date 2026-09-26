@@ -15,8 +15,10 @@ closures:
       - CAPABILITY:cap_2_2_ranking
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
     open: GFU membership of SUI XPERP / quoteCcy empty; spec vs _extract_base_quote contradiction
-    modified_by: PENDING_CHANGE
-    notes: Closure membership unchanged. Current-doc Kraken residual decommission does not alter productive-universe topology. Atlas is not trading authority.
+    modified_by: B03_GOVERNANCE_PERSISTENCE_V1
+    notes: >-
+      Closure membership unchanged. B03 ranking-matrix policy persist does
+      not alter Cap 2.1 universe topology. Atlas is not trading authority.
 
   - id: CLOSURE:productive_selection
     title: PRODUCTIVE_SELECTION
@@ -34,6 +36,7 @@ closures:
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
     notes: >-
       Optional same-universe Cap23 pin is inspect-only in this closure.
+      B03 ranking policy persist does not grant Cap 2.3 selection authority.
       No cross-universe ranking merge. ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding

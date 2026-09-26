@@ -126,6 +126,21 @@ relations:
       Navigation only. Map of Truth defines no semantics. Atlas is not
       runtime authority. Implemented not wired.
 
+  - id: REL:s_cap22_governed_by_peak_trade_ranking_matrix_policy_v1
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:peak_trade_ranking_matrix_policy_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_ranking_matrix_policy_v1.py
+    notes: >
+      B03 governance persist: productive Cap 2.2 ranking policy matrix
+      (semantics only). Not a runtime CONSUMES edge. Runtime remains
+      structural until B06. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
