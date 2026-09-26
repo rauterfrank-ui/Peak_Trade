@@ -1450,11 +1450,11 @@
     {
       "id": "wp_c_converged_o4_to_ddo_learning",
       "from_domain": "market_data_private_state_runtime_convergence_wp_c",
-      "to_domain": "learning_capture",
+      "to_domain": "learning_ddo",
       "flow_type": "DATA_FLOW",
       "contract_or_payload": "converged_o4_handoff_v1 for consumer o4_n_bars_learning; WP-A FinalizedPt1hO4BarFactV1 only; no forward_fill; no competing productive O4 session read",
       "producer": "market_data_private_state_runtime_convergence_wp_c",
-      "consumer": "learning_capture",
+      "consumer": "learning_ddo",
       "authority_effect": "NONE",
       "decision_effect": "OBSERVATION_ONLY_DDO_N_BARS_MATERIALIZATION",
       "direct_or_indirect": "INDIRECT",

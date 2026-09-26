@@ -54,7 +54,7 @@ flowchart LR
   selection_cap23 -->|step29m_consumes_selection| step29m
   treasury_29p -->|treasury_to_admission| capital_risk_sizing
   universe_cap21 -->|universe_to_ranking| ranking_cap22
-  market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_o4_to_ddo_learning| learning_capture
+  market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_o4_to_ddo_learning| learning_ddo
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_public_ranking_handoff| ranking_cap22
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_effective_authorization_readmodel| execution_external_effect
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_preserves_cap23_selection_owner| selection_cap23
@@ -930,7 +930,7 @@ flowchart LR
 - flow_type=DATA_FLOW
 - contract_or_payload=converged_o4_handoff_v1 for consumer o4_n_bars_learning; WP-A FinalizedPt1hO4BarFactV1 only; no forward_fill; no competing productive O4 session read
 - producer=market_data_private_state_runtime_convergence_wp_c
-- consumer=learning_capture
+- consumer=learning_ddo
 - authority_effect=NONE
 - decision_effect=OBSERVATION_ONLY_DDO_N_BARS_MATERIALIZATION
 - direct_or_indirect=INDIRECT
