@@ -687,7 +687,7 @@
     {
       "id": "governance_promotion",
       "tier": "INTERMEDIATE",
-      "role": "REPRESENTATION=GATE; promotion/apply ingress. Authorization, configuration, and parameter seam. Apply authority is none. Enforcement remains partial.",
+      "role": "REPRESENTATION=GATE; promotion/apply ingress. M10 promotion SSOT; governed apply decision record (no runtime apply); configuration and parameter seam. Enforcement remains partial.",
       "canonical_owner_ref": "optimization_proposal_governance_ingress_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "APPLY_NONE",
@@ -699,10 +699,13 @@
       "code_refs": [
         "src/governance/optimization_proposal_governance_ingress_v1.py",
         "src/governance/explicit_productive_authorization_v1.py",
+        "src/governance/m10_promotion_boundary_v1.py",
+        "src/governance/governed_productive_configuration_apply_authority_v1.py",
         "src/governance/governed_productive_configuration_v1.py",
         "src/governance/authorized_productive_parameter_seam_v1.py"
       ],
       "evidence_refs": [
+        "src/governance/governed_productive_configuration_apply_authority_v1.py",
         "src/governance/authorized_productive_parameter_seam_v1.py",
         "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
       ]

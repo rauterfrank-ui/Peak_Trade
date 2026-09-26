@@ -1,19 +1,19 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
-modified_by: P5_OPTIMIZATION_META_PRODUCER_FINAL_CLOSURE_V1
+introduced_by: GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
+modified_by: GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  P5 final closure: M5/M6 + governed market_context binding → optimization_envelope_evidence_v1
-  and meta_learning_routed_evidence_v1 at Component A; all four producer classes INTEGRATED_AT_A;
-  PRODUCER_TRADING_AUTHORITY=NONE; M4–M8 reuse unchanged; AUTHORITY=NONE.
+  Governed productive configuration apply authority v1: M10 authorized promotion → typed
+  apply-record only (no runtime materialization); post–Phase 15 remediation currency updated;
+  AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:m4_m8_optimization_meta_learning_evidence_return_closure_v1
-  - RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1
+  - RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
+  - RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1
 changed_relations:
-  - REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1
+  - REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

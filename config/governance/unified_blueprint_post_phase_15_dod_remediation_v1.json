@@ -15,13 +15,16 @@
   "bounded_scopes": {
     "data_substrate": "WP-A/WP-B canonical producers, WP-C converged consumer census (zero competing productive transport truth), O4/N_BARS public-plane convergence; optimization_universe documentary CONFLICTING resolved to RESEARCH_ONLY without authority grant",
     "failure_memory": "Canonical failure memory v1 on research/offline optimization-meta paths (D02 failure-memory edge, advanced search, automated offline research loop); not a fleet-wide productive runtime failure registry",
-    "parameter_lineage": "Auditable chain surface→candidate→evidence→governance→authorization→authorized promotion record→productive parameter seam→CURRENT typed consumer (F1 M9); governed runtime apply/materialization explicitly out of scope (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false)"
+    "parameter_lineage": "Auditable chain surface→candidate→evidence→governance→authorization→authorized promotion record→governed apply decision/record→productive parameter seam→CURRENT typed consumer (F1 M9); real runtime materialization/activation remains separately gated (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false)"
   },
   "runtime_apply_out_of_scope": {
     "authorized_promotion_implies_runtime_apply": false,
-    "runtime_apply_authority_owner_ratified": false,
-    "owner_decision_required_for_runtime_apply": true,
-    "minimal_decision_surface": "Who may perform governed runtime apply/materialization from an authorized promotion record into productive config, and under what apply-record schema/authority semantics"
+    "runtime_apply_authority_owner_ratified": true,
+    "runtime_apply_authority_id": "GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_V1",
+    "owner_decision_required_for_runtime_apply": false,
+    "real_runtime_materialization_performed": false,
+    "runtime_apply_started": false,
+    "minimal_decision_surface": "F1/M9 scoped Owner apply execution or real runtime materialization from APPLY_AUTHORIZED record (separate Owner GO)"
   },
   "authority_invariants": {
     "optimization_promotion_authority": "NONE",
@@ -42,6 +45,6 @@
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
     "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json"
   ],
-  "first_unproven_dependency_after_closure": "Governed runtime apply/materialization seam beyond M10 authorized promotion record (separate Owner decision; M11 optional automation remains outside default completion)",
-  "next_implementation_boundary": "Runtime apply authority owner and apply-record semantics only under explicit Owner GO; no implicit apply from promotion authorization"
+  "first_unproven_dependency_after_closure": "Real runtime materialization / F1_M9 scoped Owner apply execution from APPLY_AUTHORIZED record (M11 optional automation remains outside default completion)",
+  "next_implementation_boundary": "Explicit Owner GO for productive configuration mutation or F1_M9 scoped apply ledger execution; APPLY_AUTHORIZED record does not imply runtime apply"
 }
