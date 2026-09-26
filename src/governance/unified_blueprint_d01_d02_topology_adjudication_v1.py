@@ -216,9 +216,7 @@ def validate_d02_edges(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
                     errors.append("d02_multi_cycle_replay_m8 IMPLEMENTED but Phase 10 proof failed")
         elif m8_status == "PARTIAL":
             if not m8_replay.get("missing_dependency"):
-                errors.append(
-                    "d02_multi_cycle_replay_m8 PARTIAL must document missing_dependency"
-                )
+                errors.append("d02_multi_cycle_replay_m8 PARTIAL must document missing_dependency")
 
     if doc.get("d02_closure_status") != D02ClosureStatus.PROVEN_COMPLETE_ADJUDICATION_ONLY.value:
         errors.append("d02_closure_status must be PROVEN_COMPLETE_ADJUDICATION_ONLY")

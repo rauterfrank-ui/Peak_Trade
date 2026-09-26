@@ -1,39 +1,39 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+  "base_sha": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
-    "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+    "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/relations/structural.yaml",
-    "src/experiments/canonical_optimization_experiment_evidence_v1.py",
-    "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+    "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
     "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "src/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
-    "tests/experiments/test_canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
+    "src/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+    "tests/experiments/test_canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
     "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "tests/governance/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
-    "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py"
+    "tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+    "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py"
   ],
-  "changed_paths_sha256": "d18c4817b1bef49fdb51fc279463a65fa12e8b8a1eb438f4c70dbde00cb2c062",
+  "changed_paths_sha256": "49bacfbcbb354232e58e99160f40b48349af87c2f6d510c4c549eb6e3003cbff",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
-    "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
+    "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint Phase 9 closes d02_mi_to_optimization with MI-enriched M4 intake, D02 edge IMPLEMENTED, map loop edge refresh, and atlas/catalog update. AUTHORITY=NONE."
+  "reason": "Unified Blueprint Phase 10 closes d02_multi_cycle_replay_m8 with MI-crossing M5→M8 bounded offline multi-cycle replay, D02 edge IMPLEMENTED, map loop edge refresh, and atlas/catalog update. AUTHORITY=NONE."
 }
