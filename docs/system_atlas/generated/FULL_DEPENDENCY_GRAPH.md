@@ -657,6 +657,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1`
 - transitive_downstream: `RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1`
 
+### RUNTIME_COMPONENT:unified_blueprint_phase_25_dp_attribution_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1`
+- transitive_downstream: `RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1`
+
 ### SCRIPT:run_cap23_policy
 
 - direct_upstream: `CAPABILITY:cap_2_3_single_selected_future`

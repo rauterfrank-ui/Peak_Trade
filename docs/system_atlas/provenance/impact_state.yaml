@@ -1,22 +1,20 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
-modified_by: UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+introduced_by: UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
+modified_by: UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Phase 24 Loop C representation feedback; Phase 23 dual router reused;
-  bounded plan/offline eval/next Learning evidence; AUTHORITY=NONE; LOOP_C_PROVEN
-  bounded evidence cycle only.
+  Phase 25 DP Attribution (attribution_evidence_v1); MARKET_CONTEXT + MV2/DP
+  decision refs + REALIZED_BEHAVIOR PIT join; reuses Phase 14 compose;
+  AUTHORITY=NONE; no trading gate.
 changed_entities:
-  - RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1
-  - RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1
-  - RUNTIME_COMPONENT:learning_representation_research_adaptation_plan_v1
-  - RUNTIME_COMPONENT:learning_representation_offline_evaluation_v1
+  - RUNTIME_COMPONENT:unified_blueprint_phase_25_dp_attribution_v1
+  - RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1
 changed_relations:
-  - REL:s_map_navigates_unified_blueprint_phase_24_representation_feedback_loop_v1
-  - REL:s_phase_24_contains_loop_c_orchestrator_v1
+  - REL:s_map_navigates_unified_blueprint_phase_25_dp_attribution_v1
+  - REL:s_phase_25_contains_dp_attribution_evidence_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

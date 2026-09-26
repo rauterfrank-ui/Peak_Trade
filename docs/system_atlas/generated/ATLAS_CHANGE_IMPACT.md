@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1`.
 
 ## Workflow
 
@@ -40,17 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_24_representation_feedback_loop_v1` |
-| `RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1` |
-| `RUNTIME_COMPONENT:learning_representation_research_adaptation_plan_v1` |
-| `RUNTIME_COMPONENT:learning_representation_offline_evaluation_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_phase_25_dp_attribution_v1` |
+| `RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_phase_24_representation_feedback_loop_v1` |
-| `REL:s_phase_24_contains_loop_c_orchestrator_v1` |
+| `REL:s_map_navigates_unified_blueprint_phase_25_dp_attribution_v1` |
+| `REL:s_phase_25_contains_dp_attribution_evidence_v1` |
 
 ## NEW_RELATIONS
 
@@ -96,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Phase 24 Loop C representation feedback; Phase 23 dual router reused; bounded plan/offline eval/next Learning evidence; AUTHORITY=NONE; LOOP_C_PROVEN bounded evidence cycle only.
-- introduced_by=UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_V1
+- Phase 25 DP Attribution (attribution_evidence_v1); MARKET_CONTEXT + MV2/DP decision refs + REALIZED_BEHAVIOR PIT join; reuses Phase 14 compose; AUTHORITY=NONE; no trading gate.
+- introduced_by=UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
+- modified_by=UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
