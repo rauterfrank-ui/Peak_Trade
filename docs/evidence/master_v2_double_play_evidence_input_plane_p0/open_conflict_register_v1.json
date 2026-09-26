@@ -1,0 +1,38 @@
+{
+  "entries": [
+    {
+      "affected_census_fields": "L7 open_questions; productive composition vs naked layered durable state",
+      "evidence_refs": [
+        "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+        "src/trading/master_v2/double_play_composition.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py"
+      ],
+      "id": "O-001",
+      "resolution_scope": "OUT_OF_P0_WP",
+      "status": "CONFLICTING",
+      "topic": "scope_event_generator_vs_transition_state"
+    },
+    {
+      "affected_census_fields": "L6 external_evidence_admissibility; allowed_evidence_types for MI/Learning",
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ],
+      "id": "O-002",
+      "resolution_scope": "P1_OWNER_CONTRACT",
+      "status": "UNKNOWN",
+      "topic": "L6_external_intelligence_evidence_admissibility"
+    },
+    {
+      "affected_census_fields": "L1 future_B_target_possible",
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ],
+      "id": "O-003",
+      "resolution_scope": "P1_OWNER_AUTHORITY",
+      "status": "UNKNOWN",
+      "topic": "L1_future_B_without_cap24_duplication"
+    }
+  ],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p0_open_conflict/v1"
+}
