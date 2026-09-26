@@ -310,6 +310,9 @@
     "tests/governance/test_risk_sizing_productive_input_provenance_binding_v1.py",
     "src/ops/peak_trade_robustness_and_stress_v1/",
     "tests/ops/test_peak_trade_robustness_and_stress_v1.py",
-    "docs/evidence/peak_trade_robustness_and_stress_v1/"
+    "docs/evidence/peak_trade_robustness_and_stress_v1/",
+    "docs/evidence/peak_trade_operator_profile_explainability_v1/",
+    "src/ops/peak_trade_operator_profile_explainability_v1/",
+    "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
   ]
 }

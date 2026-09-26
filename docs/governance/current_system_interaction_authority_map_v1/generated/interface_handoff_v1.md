@@ -8,6 +8,7 @@ AUTHORITY=NONE
 flowchart LR
   governance_promotion -->|authorization_to_seam| m9_volatility_max_age
   cap22_research_backtest_live_parity_b09 -->|b09_parity_proof_preserves_selection_authority| selection_cap23
+  runtime_binding_cap24 -->|binding_cap24_to_operator_profile_b11| operator_profile_explainability_b11
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
   c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
   execution_external_effect -->|dashboard_read| presentation_dashboard
@@ -17,6 +18,7 @@ flowchart LR
   full_autonomy_n5 -->|fa_compose_governed_cycle_n1| governed_cycle
   full_autonomy_n5 -->|fa_compose_mv2_dp_handoff_join| mv2_double_play
   full_autonomy_n5 -->|fa_compose_portfolio_budget| portfolio_reservation
+  future_profile_snapshot_b07 -->|future_profile_b07_to_operator_profile_b11| operator_profile_explainability_b11
   g17_typed_vol_cmc_bind -->|g17_bind_into_mv2_cycle| mv2_double_play
   governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
   governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
@@ -33,10 +35,12 @@ flowchart LR
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
+  ranking_cap22 -->|ranking_witness_b06_to_operator_profile_b11| operator_profile_explainability_b11
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
   safety -->|safety_signals_into_integrated_replay| mv2_double_play
+  selection_cap23 -->|selection_cap23_to_operator_profile_b11| operator_profile_explainability_b11
   selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
   capital_risk_sizing -->|sizing_to_intent| order_intent
@@ -80,6 +84,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`
+
+## binding_cap24_to_operator_profile_b11
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=RuntimeBindingEvidenceV1 bound selected identity projected only
+- producer=runtime_binding_cap24
+- consumer=operator_profile_explainability_b11
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY_NO_BINDING
+- direct_or_indirect=DIRECT
+- identity_binding=BOUND_INSTRUMENT_MATCHES_CAP23_SELECTION
+- temporal_binding=NO_WALL_CLOCK_ECONOMIC_SEMANTICS
+- version_binding=RuntimeBindingEvidenceV1
+- provenance_binding=BINDING_CONFIG_AND_SELECTION_DIGEST_PROJECTED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
 
 ## binding_to_mv2
 
@@ -242,6 +264,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`
+
+## future_profile_b07_to_operator_profile_b11
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=FutureProfileSnapshotV1 selected instrument profile fields with authority classifications preserved
+- producer=future_profile_snapshot_b07
+- consumer=operator_profile_explainability_b11
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=SELECTED_INSTRUMENT_REFERENCE_MATCHES_CAP23_SELECTION
+- temporal_binding=SOURCE_TIMESTAMPS_PROJECTED_ONLY
+- version_binding=FUTURE_PROFILE_SNAPSHOT_V1
+- provenance_binding=PROFILE_INTEGRITY_DIGEST_PROJECTED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
 
 ## g17_bind_into_mv2_cycle
 
@@ -531,6 +571,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_policy_v1/constants_v1.py`
 
+## ranking_witness_b06_to_operator_profile_b11
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=ProductiveFuturesRankingSnapshotV1 and RankingFeatureExplainabilityWitnessV1 projected without recompute/rescore/rerank
+- producer=ranking_cap22
+- consumer=operator_profile_explainability_b11
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=SELECTED_CANDIDATE_ID_AND_RANK_MATCH_CAP23_SELECTION
+- temporal_binding=RANKING_EVENT_TIME_PROJECTED_ONLY
+- version_binding=B03_B04_B05_B06_POLICY_AND_WITNESS_IDENTITY
+- provenance_binding=RANKING_AND_EXPLAINABILITY_DIGESTS_PROJECTED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
+
 ## reconciliation_portfolio_truth_fa_cap24
 
 - lifecycle=PROVEN_CURRENT
@@ -602,6 +660,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, `src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py`
+
+## selection_cap23_to_operator_profile_b11
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=SingleSelectedFutureSelectionV1 identity, state, reason codes, and selection provenance projected only
+- producer=selection_cap23
+- consumer=operator_profile_explainability_b11
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY_NO_SELECTION
+- direct_or_indirect=DIRECT
+- identity_binding=CAP23_SELECTION_ID_AND_INSTRUMENT_ID
+- temporal_binding=SELECTED_AT_AND_VALIDITY_TIMESTAMPS_PROJECTED_ONLY
+- version_binding=SingleSelectedFutureSelectionV1
+- provenance_binding=SELECTION_INTEGRITY_DIGEST_PROJECTED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
 
 ## selection_reference_to_future_profile_b07
 

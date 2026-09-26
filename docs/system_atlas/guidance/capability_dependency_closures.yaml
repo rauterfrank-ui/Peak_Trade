@@ -33,13 +33,14 @@ closures:
       - CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
       - CAPABILITY:cap22_research_backtest_live_parity_v1
       - CAPABILITY:cap22_robustness_and_stress_v1
+      - CAPABILITY:operator_profile_explainability_v1
     upstream:
       - CAPABILITY:cap_2_2_ranking
       - SELECTOR:productive_futures_ranking
     downstream:
       - CAPABILITY:cap_2_4_runtime_binding
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
-    modified_by: B10_ROBUSTNESS_AND_STRESS_V1
+    modified_by: B11_OPERATOR_PROFILE_AND_EXPLAINABILITY_V1
     notes: >-
       B08 proves Cap 2.3 consumes Cap 2.2 rank and remains the sole productive
       selection owner without rescore/rerank. Optional same-universe Cap23 pin
@@ -51,27 +52,37 @@ closures:
       economics and preserves CAP23_RESCORE_COUNT=0,
       CAP23_RERANK_COUNT=0, CAP23_SOLE_SELECTION_OWNER=true,
       MAX_POSITIONS_EFFECTIVE=1, and PROFILE_ONLY_SELECTION_EFFECT=NONE.
-      B10 creates no selection authority and does not start B11.
+      B10 creates no selection authority. B11 adds operator-facing
+      observability over Cap 2.3 selection and upstream ranking/profile facts,
+      preserving B11_RESCORE_COUNT=0, B11_RERANK_COUNT=0,
+      B11_RESELECT_COUNT=0, PROFILE_ONLY_SELECTION_EFFECT=NONE, and
+      UNCLASSIFIED_SELECTION_EFFECT=NONE. B11 creates no selection authority
+      and does not start B12.
       ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding
+    # atlas_closure_review: B11_OPERATOR_PROFILE_AND_EXPLAINABILITY_V1 observes binding evidence only.
     title: NATIVE_INSTRUMENT_BINDING
     inspect:
       - CAPABILITY:cap_2_4_runtime_binding
       - BINDER:bound_instrument_v1
       - DATA_CONTRACT:bound_instrument_v1
       - SCHEMA:runtime_binding_v1
+      - CAPABILITY:operator_profile_explainability_v1
     upstream:
       - CAPABILITY:cap_2_3_single_selected_future
     downstream:
       - HOST:cap72_stateful_host
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
-    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    modified_by: B11_OPERATOR_PROFILE_AND_EXPLAINABILITY_V1
     notes: >-
       B08 preserves Cap 2.4 as the binding boundary for the Cap 2.3 selected
       identity and provenance witness. Cap23 governed pin does not mutate
       Cap 2.4. Binding still consumes the Cap 2.3 selection DTO.
-      Same-universe pin is not a Cap24 rewrite. ATLAS_AUTHORITY=NONE.
+      Same-universe pin is not a Cap24 rewrite. B11 observes Cap 2.4 binding
+      evidence for operator explainability only; it cannot bind, rebind,
+      override, execute, authorize live effects, or start B12.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:canary
     title: CANARY

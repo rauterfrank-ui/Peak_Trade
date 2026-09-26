@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "52ee90736188d3e7bd0254e0e190e40215870ac1",
+  "baseline_sha": "7ef056c1e387ea4eba73b7b008d9c700139d3496",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -165,6 +165,28 @@
         "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
         "tests/ops/test_peak_trade_robustness_and_stress_v1.py",
         "src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py"
+      ]
+    },
+    {
+      "id": "operator_profile_explainability_b11",
+      "tier": "INTERMEDIATE",
+      "role": "B11 operator-facing selected Future profile and explainability projection. Observability only over authoritative B07 profile, B06 ranking witness, Cap 2.3 selection, and Cap 2.4 binding evidence. No recompute, rescore, rerank, reselect, ranking, selection, binding, live, execution, or cross-universe authority.",
+      "canonical_owner_ref": "ops.peak_trade_operator_profile_explainability_v1",
+      "authority_class": "NONE",
+      "lifecycle": "OBSERVABILITY_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/peak_trade_operator_profile_explainability_v1/constants_v1.py",
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py"
+      ],
+      "evidence_refs": [
+        "docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json",
+        "tests/ops/test_peak_trade_operator_profile_explainability_v1.py",
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py"
       ]
     },
     {
@@ -984,6 +1006,98 @@
       "evidence_refs": [
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
         "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "binding_cap24_to_operator_profile_b11",
+      "from_domain": "runtime_binding_cap24",
+      "to_domain": "operator_profile_explainability_b11",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "RuntimeBindingEvidenceV1 bound selected identity projected only",
+      "producer": "runtime_binding_cap24",
+      "consumer": "operator_profile_explainability_b11",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY_NO_BINDING",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "BOUND_INSTRUMENT_MATCHES_CAP23_SELECTION",
+      "temporal_binding": "NO_WALL_CLOCK_ECONOMIC_SEMANTICS",
+      "version_binding": "RuntimeBindingEvidenceV1",
+      "provenance_binding": "BINDING_CONFIG_AND_SELECTION_DIGEST_PROJECTED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py",
+        "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
+      ]
+    },
+    {
+      "id": "selection_cap23_to_operator_profile_b11",
+      "from_domain": "selection_cap23",
+      "to_domain": "operator_profile_explainability_b11",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "SingleSelectedFutureSelectionV1 identity, state, reason codes, and selection provenance projected only",
+      "producer": "selection_cap23",
+      "consumer": "operator_profile_explainability_b11",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY_NO_SELECTION",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CAP23_SELECTION_ID_AND_INSTRUMENT_ID",
+      "temporal_binding": "SELECTED_AT_AND_VALIDITY_TIMESTAMPS_PROJECTED_ONLY",
+      "version_binding": "SingleSelectedFutureSelectionV1",
+      "provenance_binding": "SELECTION_INTEGRITY_DIGEST_PROJECTED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py",
+        "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
+      ]
+    },
+    {
+      "id": "ranking_witness_b06_to_operator_profile_b11",
+      "from_domain": "ranking_cap22",
+      "to_domain": "operator_profile_explainability_b11",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "ProductiveFuturesRankingSnapshotV1 and RankingFeatureExplainabilityWitnessV1 projected without recompute/rescore/rerank",
+      "producer": "ranking_cap22",
+      "consumer": "operator_profile_explainability_b11",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "SELECTED_CANDIDATE_ID_AND_RANK_MATCH_CAP23_SELECTION",
+      "temporal_binding": "RANKING_EVENT_TIME_PROJECTED_ONLY",
+      "version_binding": "B03_B04_B05_B06_POLICY_AND_WITNESS_IDENTITY",
+      "provenance_binding": "RANKING_AND_EXPLAINABILITY_DIGESTS_PROJECTED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py",
+        "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
+      ]
+    },
+    {
+      "id": "future_profile_b07_to_operator_profile_b11",
+      "from_domain": "future_profile_snapshot_b07",
+      "to_domain": "operator_profile_explainability_b11",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "FutureProfileSnapshotV1 selected instrument profile fields with authority classifications preserved",
+      "producer": "future_profile_snapshot_b07",
+      "consumer": "operator_profile_explainability_b11",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "SELECTED_INSTRUMENT_REFERENCE_MATCHES_CAP23_SELECTION",
+      "temporal_binding": "SOURCE_TIMESTAMPS_PROJECTED_ONLY",
+      "version_binding": "FUTURE_PROFILE_SNAPSHOT_V1",
+      "provenance_binding": "PROFILE_INTEGRITY_DIGEST_PROJECTED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py",
+        "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
       ]
     },
     {

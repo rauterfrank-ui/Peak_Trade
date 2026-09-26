@@ -28,6 +28,7 @@ flowchart LR
   m9_volatility_max_age["m9_volatility_max_age PARTIAL"]
   meta_learning["meta_learning RESEARCH_ONLY"]
   mv2_double_play["mv2_double_play PARTIAL"]
+  operator_profile_explainability_b11["operator_profile_explainability_b11 PROVEN_CURRENT"]
   optimization_universe["optimization_universe CONFLICTING"]
   order_intent["order_intent PARTIAL"]
   p5_layered_core["p5_layered_core PARTIAL"]
@@ -46,6 +47,7 @@ flowchart LR
   venue_plan_td_mode["venue_plan_td_mode PROVEN_CURRENT"]
   governance_promotion --> m9_volatility_max_age
   cap22_research_backtest_live_parity_b09 --> selection_cap23
+  runtime_binding_cap24 --> operator_profile_explainability_b11
   runtime_binding_cap24 --> mv2_double_play
   c1_confirmation --> governed_cycle
   execution_external_effect --> presentation_dashboard
@@ -55,6 +57,7 @@ flowchart LR
   full_autonomy_n5 --> governed_cycle
   full_autonomy_n5 --> mv2_double_play
   full_autonomy_n5 --> portfolio_reservation
+  future_profile_snapshot_b07 --> operator_profile_explainability_b11
   g17_typed_vol_cmc_bind --> mv2_double_play
   governed_cycle --> mv2_double_play
   governed_cycle --> venue_plan_td_mode
@@ -71,10 +74,12 @@ flowchart LR
   ranking_cap22 --> future_profile_snapshot_b07
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
   ranking_cap22 --> selection_cap23
+  ranking_cap22 --> operator_profile_explainability_b11
   reconciliation_runtime_binding --> runtime_binding_cap24
   reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
   safety --> mv2_double_play
+  selection_cap23 --> operator_profile_explainability_b11
   selection_cap23 --> future_profile_snapshot_b07
   selection_cap23 --> runtime_binding_cap24
   capital_risk_sizing --> order_intent
@@ -107,6 +112,7 @@ flowchart LR
 | m9_volatility_max_age | INTERMEDIATE | PARTIAL | PARTIAL | m9_volatility_numeric_max_age_numeric_productive_target_v1 | `src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | meta_learning | FIRST_CLASS | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_meta_learning_v1 | `src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | mv2_double_play | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | run_current_productive_master_v2_runtime_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| operator_profile_explainability_b11 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_operator_profile_explainability_v1 | `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`, `src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py` |
 | optimization_universe | FIRST_CLASS | CONFLICTING | CONFLICTING | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | order_intent | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | canonical_order_intent_owner_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | p5_layered_core | INTERMEDIATE | PARTIAL | PARTIAL | src.ops.p5_10_productive_activation_and_binding_v1 | `src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
