@@ -1211,6 +1211,10 @@ POST, or substitute trading decisions.
   compositional typed record; no trading/selection/promotion authority):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py`
+- Unified Blueprint Phase 18 existing-fact `MARKET_CONTEXT_V1` materialization
+  (offline MI/Learning; canonical facts SSOT; no runtime apply):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

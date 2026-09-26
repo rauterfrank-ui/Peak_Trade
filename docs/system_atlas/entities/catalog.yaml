@@ -8594,6 +8594,39 @@ entities:
       Compositional non-price market context for MI/Learning only; not MV2 trading CMC;
       MARKET_CONTEXT_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_18_existing_fact_market_context_materialization_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 18 existing-fact market context materialization v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json
+    notes: >-
+      Phase 18 existing-fact MARKET_CONTEXT_V1 materialization closure; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1
+    kind: RUNTIME_COMPONENT
+    name: MI/Learning existing-fact MARKET_CONTEXT_V1 materialization
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py
+    evidence_sources:
+      - tests/learning/test_market_context_existing_fact_materialization_v1.py
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py
+    notes: >-
+      Deterministic PIT-safe context materialization from governed canonical facts only;
+      MARKET_CONTEXT_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
-ATLAS_CHANGED_RELATION_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1`.
 
 ## Workflow
 
@@ -41,17 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `RUNTIME_COMPONENT:mi_market_context_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1` |
+| `RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_phase_18_existing_fact_market_context_materialization_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_phase_16_cmc_non_price_census_v1` |
-| `REL:s_map_navigates_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1` |
-| `REL:s_mi_stack_contains_market_context_v1` |
+| `REL:s_map_navigates_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1` |
+| `REL:s_mi_stack_contains_market_context_existing_fact_materialization_v1` |
 
 ## NEW_RELATIONS
 
@@ -97,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Phase 17 closure: MARKET_CONTEXT_V1 normative non-price CMC contract on MI/Learning path; Phase 16 census reproven; owner decision ratified; no trading/runtime authority. AUTHORITY=NONE.
-- introduced_by=UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_V1
+- Phase 18 closure: existing-fact MARKET_CONTEXT_V1 materialization on MI/Learning path; Phase 17 contract prerequisite; derivatives/cross-market explicit MISSING; no trading or runtime apply authority. AUTHORITY=NONE.
+- introduced_by=UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1
+- modified_by=UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

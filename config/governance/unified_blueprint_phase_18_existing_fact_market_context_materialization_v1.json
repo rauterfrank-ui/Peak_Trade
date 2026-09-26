@@ -1,0 +1,53 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_V1",
+  "authorized_baseline_sha": "a9b9b6d3c8e2ad1ad46ff2cb59192d00a66edbe6",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py",
+  "phase_17_integration_config": "config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_18_closure_status": "PROVEN_COMPLETE",
+  "market_context_materialization_status": "EXISTING_FACT_OFFLINE_PROVEN",
+  "family_materialization_status": {
+    "price_state": "MATERIALIZED_FROM_WP_A_MARK_OR_O4_BAR",
+    "flow_state": "MATERIALIZED_FROM_WP_A_TRADE_SIGNED_NOTIONAL_ONLY",
+    "liquidity_microstructure": "MATERIALIZED_FROM_BOUCHAUD_OHLCV_PROXY_REUSE",
+    "volatility_state": "MATERIALIZED_FROM_CANONICAL_VOLATILITY_CONTRACT",
+    "derivatives_state": "EXPLICIT_MISSING_PHASE_19",
+    "cross_market_state": "EXPLICIT_MISSING_PHASE_19"
+  },
+  "authority_invariants": {
+    "market_context_authority": "NONE",
+    "canonical_market_facts_remain_ssot": true,
+    "second_market_truth_created": false,
+    "trading_decision_authority_created": false,
+    "selection_authority_created": false,
+    "promotion_authority_created": false,
+    "risk_sizing_authority_created": false,
+    "external_effect_authority_created": false,
+    "runtime_apply_authorized": false,
+    "microstructure_proxy_l2_not_collapsed": true,
+    "missing_semantics_explicit": true,
+    "pit_no_lookahead": true,
+    "provenance_required": true,
+    "feature_versions_required": true,
+    "information_set_identity_required": true,
+    "deterministic_replay_required": true,
+    "n_bars_backbone_semantics_unchanged": true,
+    "mv2_dp_unchanged": true,
+    "phase_17_contract_required": true,
+    "implicit_producer_discovery_forbidden": true
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_mi_bridge_v1.py",
+    "src/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py",
+    "tests/learning/test_market_context_existing_fact_materialization_v1.py",
+    "tests/governance/test_unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Governed runtime apply/materialization seam beyond M10 authorized promotion record (unchanged; separate Owner GO)",
+  "next_implementation_boundary": "Phase 19 orthogonal context producers (derivatives/cross-market) or Phase 20 behavior join — not Phase 18"
+}
