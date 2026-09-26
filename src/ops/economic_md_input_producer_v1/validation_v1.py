@@ -37,6 +37,8 @@ def _parse_positive_decimal(raw: str | None) -> Optional[Decimal]:
         value = Decimal(str(raw).strip())
     except (InvalidOperation, ValueError, ArithmeticError):
         return None
+    if not value.is_finite():
+        return None
     return value
 
 

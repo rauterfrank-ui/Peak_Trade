@@ -197,7 +197,9 @@ relations:
       - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
     notes: >
       B06 Cap 2.2 economic ranking consumes B05 feature-production snapshots.
-      Cap 2.3 remains sole selection owner. ATLAS_AUTHORITY=NONE.
+      B10 also consumes B05 snapshots through the authoritative implementation
+      for robustness/stress proof only. Cap 2.3 remains sole selection owner.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap22_ranking_runtime_depends_on_cap22
     source: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
@@ -211,6 +213,8 @@ relations:
       - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
     notes: >
       B06 runtime package binds the productive Cap 2.2 ranking seam.
+      B10 reuses this B06 ranking runtime as the authoritative economic ranking
+      implementation for proof only; it creates no second ranking owner.
       ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_future_profile_observes_cap21_feature_production
@@ -320,6 +324,68 @@ relations:
       B09 asserts CAP23_RESCORE_COUNT=0, CAP23_RERANK_COUNT=0, and
       CAP23_SOLE_SELECTION_OWNER=true. It does not promote research/backtest/
       shadow/profile fields into selection authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_system_has_b10_robustness_and_stress
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap22_robustness_and_stress_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py
+      - tests/ops/test_peak_trade_robustness_and_stress_v1.py
+      - docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+    notes: >
+      B10 is a robustness/stress proof capability for the current B03-B09
+      economic ranking semantics. It creates no ranking-policy, selection,
+      binding, live, execution, multi-future, or cross-universe authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b10_robustness_depends_on_b05_feature_production
+    source: CAPABILITY:cap22_robustness_and_stress_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap21_feature_production_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py
+      - tests/ops/test_peak_trade_robustness_and_stress_v1.py
+    notes: >
+      B10 consumes the B05 authoritative feature-production implementation
+      instead of copying or reimplementing economic feature formulas.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b10_robustness_depends_on_b06_ranking_runtime
+    source: CAPABILITY:cap22_robustness_and_stress_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py
+      - tests/ops/test_peak_trade_robustness_and_stress_v1.py
+    notes: >
+      B10 consumes the B06 authoritative ranking runtime for score/order,
+      contribution, tie, and fail-closed behavior. It does not rescore, rerank,
+      retune, or create a second Cap 2.2 ranking owner. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b10_robustness_preserves_cap23_selection_owner
+    source: CAPABILITY:cap22_robustness_and_stress_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - tests/ops/test_peak_trade_robustness_and_stress_v1.py
+      - docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+    notes: >
+      B10 asserts CAP23_RESCORE_COUNT=0, CAP23_RERANK_COUNT=0, and
+      CAP23_SOLE_SELECTION_OWNER=true while keeping Profile-only fields inert.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking

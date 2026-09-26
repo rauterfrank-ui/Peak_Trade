@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-25T17:47:49.802264+00:00",
-  "git_sha": "39cccc09db7abe1c5a616083855688991ee88edd",
+  "generated_at_utc": "2026-09-26T05:06:21.197237+00:00",
+  "git_sha": "f33000f8909c4fad45a2050bcdcd0e1afa884e2c",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 3242,
+    "total_markdown_files": 3179,
     "ignored_files": 458,
-    "scanned_files": 2784,
-    "total_references": 15652
+    "scanned_files": 2721,
+    "total_references": 15401
   },
-  "missing_count": 225,
+  "missing_count": 243,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -26,6 +26,18 @@
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
       "line_number": 75,
       "target": "src/autonomous/monitors.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/INSTALLATION_QUICKSTART.md",
+      "line_number": 36,
+      "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/INSTALLATION_QUICKSTART.md",
+      "line_number": 137,
+      "target": "docs/ops/_archive/installation_roadmap/2026-01-12/README.md",
       "link_text": null
     },
     {
@@ -108,6 +120,12 @@
     },
     {
       "source_file": "docs/WORKFLOW_FRONTDOOR.md",
+      "line_number": 69,
+      "target": "./ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/WORKFLOW_FRONTDOOR.md",
       "line_number": 79,
       "target": "./ops/release/README.md",
       "link_text": null
@@ -116,6 +134,12 @@
       "source_file": "docs/WORKFLOW_FRONTDOOR.md",
       "line_number": 79,
       "target": "./ops/release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/WORKFLOW_FRONTDOOR.md",
+      "line_number": 110,
+      "target": "./ops/_archive/repo_cleanup/2026-01-12/README.md",
       "link_text": null
     },
     {
@@ -248,6 +272,18 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 22,
       "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 75,
+      "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 76,
+      "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
       "link_text": null
     },
     {
@@ -432,6 +468,18 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 64,
+      "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 65,
+      "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 95,
       "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
       "link_text": null
@@ -545,6 +593,18 @@
       "link_text": null
     },
     {
+      "source_file": "docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/canonical_chain_trace.md",
+      "line_number": 34,
+      "target": "docs/product/evidence/read_only_canonical_chain_and_zero_trade_blocker_reaudit_v1_20260717T235727Z/decision.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/first_real_blocker.md",
+      "line_number": 61,
+      "target": "docs/product/evidence/read_only_canonical_chain_and_zero_trade_blocker_reaudit_v1_20260717T235727Z/decision.json",
+      "link_text": null
+    },
+    {
       "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
       "line_number": 21,
       "target": "src/docs/trading_bot_notes.md",
@@ -552,14 +612,20 @@
     },
     {
       "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
-      "line_number": 171,
-      "target": "src/docs/trading_bot_notes.md",
+      "line_number": 170,
+      "target": "../ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
       "link_text": null
     },
     {
-      "source_file": "docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md",
-      "line_number": 136,
-      "target": "../../../forensic/FORENSIC_STRUCTURE_SCHEMA_V1_TRANSFORMER_IMPLEMENTATION_V1.md",
+      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 170,
+      "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 171,
+      "target": "src/docs/trading_bot_notes.md",
       "link_text": null
     },
     {
@@ -623,6 +689,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/governance/READ_ONLY_CANONICAL_CHAIN_AND_ZERO_TRADE_BLOCKER_REAUDIT_V1.md",
+      "line_number": 117,
+      "target": "docs/product/evidence/obl_b05_bollinger_long_semantic_decision_v1_20260717T231700Z/baseline_summary.json",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/BOUNDED_ACCEPTANCE_INDEX.md",
       "line_number": 24,
       "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
@@ -674,30 +746,6 @@
       "source_file": "docs/ops/UEBERSICHT_DATEN_GATES_DOCKER_GITHUB.md",
       "line_number": 224,
       "target": "src/trigger_training/session_store.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/FINAL_DOWNLOADS_CLEANUP_MANIFEST.md",
-      "line_number": 23,
-      "target": "docs/ops/concepts/WORKFLOW_OFFICER_V0_PLAN.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/downloads_final_cleanup_20260519T221506Z/historical_other_md/Peak_Trade_Workflow_Officer_Concept.md",
-      "line_number": 96,
-      "target": "src/ops/p39/registry_cli_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
-      "line_number": 136,
-      "target": "docs/runbooks/R_AND_D_RUNBOOK_ARMSTRONG_EL_KAROUI_V1.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
-      "line_number": 143,
-      "target": "docs/runbooks/R_AND_D_PLAYBOOK_ARMSTRONG_EL_KAROUI_V1.md",
       "link_text": null
     },
     {
@@ -1001,6 +1049,42 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 37,
+      "target": "../_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 37,
+      "target": "docs/ops/_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 173,
+      "target": "docs/ops/_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 229,
+      "target": "docs/ops/_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 392,
+      "target": "docs/ops/_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PHASE7_WORKFLOW_DOCS_FINISH_CLOSEOUT_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 448,
+      "target": "../_archive/repo_cleanup/2026-01-12/README.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md",
       "line_number": 24,
       "target": "../spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md",
@@ -1010,6 +1094,24 @@
       "source_file": "docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md",
       "line_number": 74,
       "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 282,
+      "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/DOC_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 283,
+      "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_WORKFLOW_DOCS_INTEGRATION_2026-01-12_CURSOR_MULTI_AGENT.md",
+      "line_number": 284,
+      "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/FIX_MATRIX_WORKFLOW_DOCS_INTEGRATION.md",
       "link_text": null
     },
     {
@@ -1028,6 +1130,12 @@
       "source_file": "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_5_FINAL_GENERIC_BINDING_EVIDENCE_EPHEMERAL_PERSISTENCE_ISOLATION_FIX_V1.md",
       "line_number": 36,
       "target": "docs/evidence/capability_phase_9_2_step_5_final_generic_binding_evidence_ephemeral_persistence_isolation_fix_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md",
+      "line_number": 11,
+      "target": "../_archive/downloads_intake_20260519T195748Z/README.md",
       "link_text": null
     },
     {

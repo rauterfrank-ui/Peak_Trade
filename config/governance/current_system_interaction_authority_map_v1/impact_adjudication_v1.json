@@ -1,15 +1,15 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "52ee90736188d3e7bd0254e0e190e40215870ac1",
+  "base_sha": "570e8b2d5809e241bd2490eb59e4d4f14c20fa2e",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/evidence/peak_trade_research_backtest_live_parity_v1/MANIFEST.sha256",
-    "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/evidence/peak_trade_robustness_and_stress_v1/MANIFEST.sha256",
+    "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md",
+    "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/BUILD_GUIDANCE.md",
@@ -19,27 +19,34 @@
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/guidance/capability_dependency_closures.yaml",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/ops/peak_trade_research_backtest_live_parity_v1/__init__.py",
-    "src/ops/peak_trade_research_backtest_live_parity_v1/constants_v1.py",
-    "src/ops/peak_trade_research_backtest_live_parity_v1/models_v1.py",
-    "src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py",
-    "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py"
+    "src/ops/economic_md_input_producer_v1/validation_v1.py",
+    "src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py",
+    "src/ops/peak_trade_robustness_and_stress_v1/__init__.py",
+    "src/ops/peak_trade_robustness_and_stress_v1/constants_v1.py",
+    "src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py",
+    "tests/ops/test_peak_trade_robustness_and_stress_v1.py"
   ],
-  "changed_paths_sha256": "1d3f069822b5e0d7d530fc65d2583e09d51597f9123b4bf003b40f3fd3f0884f",
-  "covered_candidate_paths": [],
+  "changed_paths_sha256": "357326e853adad4f5ec73b82a18e31a7546783eaeadb89656ef280dd37e9bd69",
+  "covered_candidate_paths": [
+    "docs/evidence/peak_trade_robustness_and_stress_v1/MANIFEST.sha256",
+    "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+    "src/ops/peak_trade_robustness_and_stress_v1/__init__.py",
+    "src/ops/peak_trade_robustness_and_stress_v1/constants_v1.py",
+    "src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py",
+    "tests/ops/test_peak_trade_robustness_and_stress_v1.py"
+  ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md",
-    "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/relations/structural.yaml",
-    "docs/system_atlas/guidance/capability_dependency_closures.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py"
+    "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "tests/ops/test_peak_trade_robustness_and_stress_v1.py",
+    "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py",
+    "tests/ops/test_peak_trade_ranking_feature_production_v1.py"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "B09 RESEARCH_BACKTEST_LIVE_PARITY_V1 records a bounded parity proof for B03-B08 Peak_Trade ranking economics: research/backtest/shadow/productive equivalent canonical inputs reuse the same B05 feature-production semantics and B06 rank/order semantics. Authority effect is NONE; Cap 2.3 remains sole productive selection owner; Cap 2.4 remains binding boundary; Future Profile, Full Autonomy, MV2/Double Play, DDO observation, and Execution gain no ranking, selection, binding, live, execution, or cross-universe authority. B10 is not started."
+  "reason": "B10 ROBUSTNESS_AND_STRESS_V1 adds a bounded robustness/stress proof surface for the current ratified Peak_Trade Cap 2.2 economic ranking. The structured map records B10 as authority_class NONE and proof-only: it reuses B05 feature production and B06 ranking runtime; it does not change ranking policy, feature formulas, weights, normalization, windows, missing-data policy, tie-break semantics, selection, binding, live, execution, or cross-universe authority. Cap 2.3 remains sole productive selection owner and Cap 2.4 remains binding boundary."
 }
