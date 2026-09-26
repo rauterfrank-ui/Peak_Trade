@@ -37,4 +37,4 @@ def test_loop_b_summary_reports_implemented_edge() -> None:
     assert summary["d02_loop_b_market_intelligence_offline_status"] == "IMPLEMENTED"
     assert summary["d02_loop_b_durable_mi_evidence_store_status"] == "PROVEN_COMPLETE"
     assert "separate Owner authorization" in str(summary["first_unproven_dependency_after_closure"])
-    assert "not started" in str(summary["first_unproven_dependency_after_closure"])
+    assert "Phase 11" in str(summary["first_unproven_dependency_after_closure"])

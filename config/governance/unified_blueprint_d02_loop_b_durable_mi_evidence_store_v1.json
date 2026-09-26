@@ -38,6 +38,6 @@
     "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
     "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
   ],
-  "first_unproven_dependency_after_closure": "No remaining PARTIAL Unified Blueprint D02 inter-loop edge on CURRENT; next blueprint surface (including Surface Portfolio Closure / productive lineage) requires separate Owner authorization and is not started",
-  "next_implementation_boundary": "Separate Owner authorization required; do not auto-start Phase 11 Surface Portfolio Closure or productive lineage"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 11 Surface Portfolio Closure (separate Owner authorization; closed only when portfolio registry proves complete on CURRENT)",
+  "next_implementation_boundary": "Phase 11 Surface Portfolio Closure under separate Owner GO; Phase 12 productive lineage not started by D02 Loop-B"
 }

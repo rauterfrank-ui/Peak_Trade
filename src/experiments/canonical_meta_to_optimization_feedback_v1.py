@@ -16,6 +16,9 @@ from src.experiments.canonical_advanced_search_v1 import (
     SCHEMA_VERSION as ADVANCED_SEARCH_SCHEMA_VERSION,
     SUPPORTED_SEARCH_METHODS,
 )
+from src.experiments.canonical_optimization_surface_portfolio_registry_v1 import (
+    evaluate_meta_optimization_family_portfolio_gate_v1,
+)
 from src.experiments.canonical_optimization_universe_v1 import (
     build_optimization_universe_capability_registry_v1,
 )
@@ -257,7 +260,27 @@ def build_bounded_research_feedback_decision_v1(
     opt_family = meta_evidence.get("optimization_family")
     predictive = meta_evidence.get("predictive_evidence_features")
     uncertainty = meta_evidence.get("uncertainty")
-    if pattern and opt_family == UNKNOWN_UNAVAILABLE:
+    portfolio_gate = evaluate_meta_optimization_family_portfolio_gate_v1(
+        optimization_family=str(opt_family or UNKNOWN_UNAVAILABLE)
+    )
+    if portfolio_gate.explicit_family_reference:
+        outcome = (
+            OUTCOME_APPLICABLE if portfolio_gate.research_choice_allowed else OUTCOME_FAIL_CLOSED
+        )
+        items.append(
+            _feedback_item(
+                disposition=DISPOSITION_PROPOSE_RESEARCH_HYPOTHESIS,
+                outcome=outcome,
+                reason=portfolio_gate.reason,
+                payload={
+                    **dict(portfolio_gate.payload),
+                    "phase_11_portfolio_gate": True,
+                    "predictive_evidence_features": predictive,
+                    "uncertainty": uncertainty,
+                },
+            )
+        )
+    elif pattern and opt_family == UNKNOWN_UNAVAILABLE:
         items.append(
             _feedback_item(
                 disposition=DISPOSITION_PROPOSE_RESEARCH_HYPOTHESIS,

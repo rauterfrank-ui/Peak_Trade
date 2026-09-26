@@ -310,6 +310,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "No remaining PARTIAL Unified Blueprint D02 inter-loop edge on CURRENT; next blueprint surface (including Surface Portfolio Closure / productive lineage) requires separate Owner authorization and is not started",
-  "next_implementation_boundary": "Separate Owner authorization required; do not auto-start Phase 11 Surface Portfolio Closure or productive lineage"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 11 Surface Portfolio Closure (Owner-authorized; see unified_blueprint_phase_11_surface_portfolio_closure_v1.json when PROVEN_COMPLETE)",
+  "next_implementation_boundary": "Phase 11 Surface Portfolio Closure then Phase 12 productive lineage; neither implied by D01/D02 topology alone"
 }

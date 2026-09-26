@@ -8483,6 +8483,25 @@ entities:
       Closes d02_multi_cycle_replay_m8 MI-crossing M5→M8 bounded offline research loop;
       META_EVIDENCE_AUTHORITY=NONE; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_11_surface_portfolio_closure_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 11 surface portfolio closure v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.py
+      - src/experiments/canonical_optimization_surface_portfolio_registry_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py
+      - tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json
+    notes: >-
+      Closes Unified Blueprint Phase 11 optimization surface portfolio census/classification/resolver;
+      AUTHORITY=NONE; universe membership does not imply authorization. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint D02 Loop-B durable MI evidence store v1
