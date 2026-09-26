@@ -1,0 +1,17 @@
+{
+  "configuration_runtime_applied": true,
+  "execution_evidence_digest": "42b0ddb195c48defe2afbc56f219e3b1da7510da4ca1ac6cfec33f37b2af2340",
+  "owner_apply_record_digest": "3f0895951d0708d017326a8b4f779c433d609d09d67459fe47f1239f214a2f95",
+  "owner_threshold_record_digest": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+  "phase_state": "RUNTIME_APPLY_START_COMPLETED",
+  "presence_gate_transport_ready": true,
+  "productive_activation_authorized": false,
+  "productive_apply_occurred": true,
+  "reason_codes": [
+    "F1_M9_RUNTIME_APPLY_START_CONTINUATION_COMPLETE"
+  ],
+  "runtime_apply_started": true,
+  "threshold_enforcement_mechanical_continuation": true,
+  "threshold_numeric_max_age_seconds": 600.0,
+  "threshold_value_authorized": true
+}

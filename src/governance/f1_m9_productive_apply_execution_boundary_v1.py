@@ -41,8 +41,8 @@ from src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1 i
     POLICY_CONSUMER_MODULE,
     PRODUCTIVE_TARGET_ID,
 )
-from src.governance.f1_m9_real_productive_apply_decision_binding_v1 import (
-    evaluate_real_productive_apply_decision_binding_v1,
+from src.governance.f1_m9_productive_runtime_apply_start_owner_binding_v1 import (
+    evaluate_real_productive_apply_with_runtime_apply_start_precedence_v1,
 )
 from src.governance.v32_d29_f1_m9_explicit_owner_productive_apply_policy_and_authority_edge_v1 import (
     AUTHORITY_EDGE_ID,
@@ -250,7 +250,7 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
         reason_codes.append("PRODUCTIVE_NUMERIC_VALUES_SET_MUST_REMAIN_ZERO")
 
     if request.execution_phase is F1M9ProductiveApplyExecutionPhaseV1.AUTHORIZED_PRODUCTIVE_APPLY:
-        pre_binding = evaluate_real_productive_apply_decision_binding_v1(
+        pre_binding = evaluate_real_productive_apply_with_runtime_apply_start_precedence_v1(
             owner_apply_authorization_record_digest=(
                 request.owner_apply_input.owner_apply_authorization_record_digest
             ),
@@ -355,7 +355,7 @@ def evaluate_f1_m9_productive_apply_execution_boundary_v1(
             )
 
     apply_digest = apply_result.owner_apply_authorization_record_digest
-    post_binding = evaluate_real_productive_apply_decision_binding_v1(
+    post_binding = evaluate_real_productive_apply_with_runtime_apply_start_precedence_v1(
         owner_apply_authorization_record_digest=apply_digest,
         repo_root=repo_root,
     )

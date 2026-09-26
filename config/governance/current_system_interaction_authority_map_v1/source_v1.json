@@ -1048,6 +1048,32 @@
       ]
     },
     {
+      "id": "f1_m9_scoped_owner_productive_runtime_apply_start",
+      "tier": "INTERMEDIATE",
+      "role": "F1/M9 governed productive runtime apply start (600s post-#6887 lineage); AUTHORIZED_PRODUCTIVE_APPLY + derived RUNTIME_APPLY_STARTED; presence-gate transport; STOP before Productive Activation.",
+      "canonical_owner_ref": "f1_m9_productive_apply_execution_boundary_v1",
+      "authority_class": "NONE",
+      "lifecycle": "GOVERNED_RUNTIME_APPLY_START_CLOSED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_productive_runtime_apply_start_owner_binding_v1.py",
+        "src/governance/f1_m9_productive_apply_execution_boundary_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
+        "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032/productive_handoff/governed_productive_runtime_apply_start_evidence_v1.json"
+      ]
+    },
+    {
       "id": "survival_suitability_composition",
       "tier": "INTERMEDIATE",
       "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Post-confirmation survival/suitability composition binding; not a closed single-owner string.",
@@ -3972,6 +3998,17 @@
         "config/governance/governed_f1_m9_scoped_owner_apply_execution_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
         "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py"
+      ]
+    },
+    {
+      "id": "f1_m9_scoped_owner_productive_runtime_apply_start_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6887 F1/M9 governed productive runtime apply start: AUTHORIZED_PRODUCTIVE_APPLY on digest 3f089595… lineage; RUNTIME_APPLY_STARTED derived from successful apply execution (not naked flip); threshold e556ea63… re-adjudicated; presence-gate transport + bounded enforcement readiness; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py"
       ]
     }
   ]
