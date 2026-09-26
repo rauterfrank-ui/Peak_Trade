@@ -52,7 +52,19 @@ def prove_f1_m9_scoped_owner_threshold_value_authority_v1(*, repo_root: Path | N
         return False
     if decision.get("numeric_max_age_decided_current") is not False:
         return False
-    if decision.get("concrete_threshold_value_authorized") is not False:
+    ratification_decision_path = (
+        root
+        / "config/governance/"
+        "governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1_decision_v1.json"
+    )
+    ratification_complete = False
+    if ratification_decision_path.is_file():
+        ratification = json.loads(ratification_decision_path.read_text(encoding="utf-8"))
+        ratification_complete = ratification.get("threshold_hot_path_ratified") is True
+    if ratification_complete:
+        if decision.get("concrete_threshold_value_authorized") is not True:
+            return False
+    elif decision.get("concrete_threshold_value_authorized") is not False:
         return False
     if CONCRETE_THRESHOLD_VALUE_AUTHORIZED is not False:
         return False
