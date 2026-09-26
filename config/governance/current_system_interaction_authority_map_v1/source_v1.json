@@ -265,6 +265,31 @@
       ]
     },
     {
+      "id": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "tier": "INTERMEDIATE",
+      "role": "Track D03 offline Market Intelligence forecast/calibration evidence stack: governed ForecastEvidence and CalibrationEvidence, explicit multi-horizon composition, offline orchestrator, additive research projection, and optimization research intake. authority_class NONE; no MV2/DP, Cap 2.3, execution, promotion, or productive DDO feedback mutation.",
+      "canonical_owner_ref": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+      "authority_class": "NONE",
+      "lifecycle": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+        "config/governance/market_intelligence_forecast_calibration_offline_stack_v1_policy_v1.json"
+      ],
+      "code_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md"
+      ]
+    },
+    {
       "id": "full_core_fresh_pretrade_runtime_get",
       "tier": "INTERMEDIATE",
       "role": "Existing Full-Core fresh pretrade runtime GET seam (FRESH_GET_PER_PRETRADE_DECISION). WP-B adapters terminate here without substituting required fresh GET authority.",
@@ -1469,6 +1494,52 @@
         "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
         "src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py"
+      ]
+    },
+    {
+      "id": "mi_offline_compose_ddo_n_bars_outcome",
+      "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "to_domain": "learning_ddo",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged",
+      "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "consumer": "learning_ddo",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_EVIDENCE_COMPOSE_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "FORECAST_EVIDENCE_ID_EXPLICIT_N_BAR_SPEC",
+      "temporal_binding": "FORECAST_CREATED_BEFORE_OUTCOME_BOUNDARY",
+      "version_binding": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1",
+      "provenance_binding": "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py"
+      ]
+    },
+    {
+      "id": "mi_offline_to_optimization_research_input",
+      "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "to_domain": "optimization_universe",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "market_intelligence_optimization_research_input_v1 offline ACK; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE; legacy learning export unchanged",
+      "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "consumer": "optimization_universe",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "MI_RESEARCH_EVIDENCE_ADDITIVE_PROJECTION",
+      "temporal_binding": "OFFLINE_ORCHESTRATOR_CYCLE",
+      "version_binding": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1",
+      "provenance_binding": "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py"
       ]
     },
     {
