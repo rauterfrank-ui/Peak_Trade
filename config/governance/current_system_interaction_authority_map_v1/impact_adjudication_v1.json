@@ -68,7 +68,7 @@
     "tests/ops/test_single_selected_future_policy_v1.py",
     "tests/ops/test_single_selected_future_runtime_binding_v1.py"
   ],
-  "changed_paths_sha256": "7319503e0ba2c1b66d85fad5c4805d906f945d0d3ebf3198aee0466a6a27c6bd",
+  "changed_paths_sha256": "f7cc231b6b58a0ea089aca10b8d85ae0c65ded5c98431fe1c72e9def3d496eb0",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md",

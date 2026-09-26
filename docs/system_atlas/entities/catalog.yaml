@@ -607,7 +607,12 @@ entities:
       - src/ops/peak_trade_economic_ranking_runtime_v1/constants_v1.py
       - src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py
       - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/synthesize_ready_features_v1.py
       - src/ops/productive_futures_ranking_producer_v1/ranking_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/__init__.py
+      - src/ops/productive_futures_ranking_producer_v1/models_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
       - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
     evidence_sources:
       - docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md
@@ -1712,11 +1717,20 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-    modified_by: PENDING_CHANGE
+    modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+    source_paths:
+      - src/ops/productive_futures_ranking_producer_v1/__init__.py
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/models_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/ranking_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py
     evidence_sources:
       - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
     notes: >-
       Cap23 governed pin consumes one full Cap 2.2 snapshot identity.
+      B06 wires Peak_Trade economic order into this selector surface.
       No cross-universe ranking merge, normalization, or candidate borrowing.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 

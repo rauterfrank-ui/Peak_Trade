@@ -1,8 +1,9 @@
-from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import synthesize_ready_feature_production_snapshot_v1
 #!/usr/bin/env python3
 """Generate durable Cap 5.1 evidence under docs/evidence/ (offline, no network)."""
 
 from __future__ import annotations
+
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import synthesize_ready_feature_production_snapshot_v1
 
 import json
 import shutil
