@@ -29,6 +29,7 @@ flowchart LR
   learning_ddo -->|learning_evidence_export_to_optimization| optimization_universe
   meta_learning -->|meta_search_backflow| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_compose_ddo_n_bars_outcome| learning_ddo
+  market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_multi_cycle_m5_m8_replay| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_optimization_research_input| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_typed_export_to_learning_path| learning_ddo
   mv2_double_play -->|mv2_executable_pre_external_terminal| execution_external_effect
@@ -477,6 +478,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py`
+
+## mi_offline_to_multi_cycle_m5_m8_replay
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false
+- producer=market_intelligence_forecast_calibration_offline_stack_d03
+- consumer=optimization_universe
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=MI_LINEAGE_AND_CYCLE_DIGEST_REPLAY_IDENTITY
+- temporal_binding=PRIOR_CYCLE_BOUNDED_RESEARCH_FEEDBACK_CARRY_FORWARD
+- version_binding=UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_V1
+- provenance_binding=tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json`, `tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py`, `src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py`
 
 ## mi_offline_to_optimization_research_input
 

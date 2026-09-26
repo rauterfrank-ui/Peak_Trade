@@ -2125,6 +2125,19 @@ relations:
       Navigation only. Phase 9 MI-enriched M4 optimization intake closure; AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json
+    notes: >
+      Navigation only. Phase 10 MI-crossing M5→M8 multi-cycle offline replay closure;
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_t016_learning_blueprint_provenance
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

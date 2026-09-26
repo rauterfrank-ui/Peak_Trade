@@ -8463,6 +8463,26 @@ entities:
       Closes d02_mi_to_optimization MI-enriched intake into canonical M4 experiment plane;
       PROPOSAL_ONLY; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 10 MI-crossing multi-cycle offline replay v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py
+      - src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py
+      - tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py
+      - tests/experiments/test_canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json
+    notes: >-
+      Closes d02_multi_cycle_replay_m8 MI-crossing M5→M8 bounded offline research loop;
+      META_EVIDENCE_AUTHORITY=NONE; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1
     kind: RUNTIME_COMPONENT
     name: Meta-learning optimization universe PDF v3.3 final completion adjudication v1

@@ -24,6 +24,9 @@ PHASE_8_INTEGRATION_CONFIG: Final[str] = (
 PHASE_9_INTEGRATION_CONFIG: Final[str] = (
     "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json"
 )
+PHASE_10_INTEGRATION_CONFIG: Final[str] = (
+    "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json"
+)
 MAP_SOURCE: Final[str] = (
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
 )
@@ -194,6 +197,28 @@ def validate_d02_edges(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
         elif mi_opt_status == "PARTIAL":
             if not mi_opt.get("missing_dependency"):
                 errors.append("d02_mi_to_optimization PARTIAL must document missing_dependency")
+
+    m8_replay = by_id.get("d02_multi_cycle_replay_m8")
+    if m8_replay:
+        m8_status = str(m8_replay.get("implementation_status") or "")
+        phase10_path = repo_root / PHASE_10_INTEGRATION_CONFIG
+        if m8_status == "IMPLEMENTED":
+            if not phase10_path.is_file():
+                errors.append("d02_multi_cycle_replay_m8 IMPLEMENTED but Phase 10 config missing")
+            else:
+                from src.governance.unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1 import (
+                    prove_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1,
+                )
+
+                if not prove_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1(
+                    repo_root=repo_root
+                ):
+                    errors.append("d02_multi_cycle_replay_m8 IMPLEMENTED but Phase 10 proof failed")
+        elif m8_status == "PARTIAL":
+            if not m8_replay.get("missing_dependency"):
+                errors.append(
+                    "d02_multi_cycle_replay_m8 PARTIAL must document missing_dependency"
+                )
 
     if doc.get("d02_closure_status") != D02ClosureStatus.PROVEN_COMPLETE_ADJUDICATION_ONLY.value:
         errors.append("d02_closure_status must be PROVEN_COMPLETE_ADJUDICATION_ONLY")
