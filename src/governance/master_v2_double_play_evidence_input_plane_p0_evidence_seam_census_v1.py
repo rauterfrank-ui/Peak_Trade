@@ -50,6 +50,9 @@ _P1_CONTRACT_PACKAGE_SUBPATH: Final[str] = (
 _P2_BOUNDED_A_RUNTIME_SUBPATH: Final[str] = (
     "master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1"
 )
+_P3_BOUNDED_B_RUNTIME_SUBPATH: Final[str] = (
+    "master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1"
+)
 
 _INTELLIGENCE_ROOTS: Final[tuple[str, ...]] = (
     "src/learning",
@@ -167,6 +170,8 @@ def _glob_ab_implementation(repo_root: Path) -> tuple[bool, tuple[str, ...]]:
         if _P1_CONTRACT_PACKAGE_SUBPATH in rel:
             continue
         if _P2_BOUNDED_A_RUNTIME_SUBPATH in rel:
+            continue
+        if _P3_BOUNDED_B_RUNTIME_SUBPATH in rel:
             continue
         if "p0_evidence_seam_census" in py.name:
             continue

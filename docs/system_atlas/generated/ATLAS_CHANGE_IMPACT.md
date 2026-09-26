@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1`.
 
 ## Workflow
 
@@ -41,13 +41,13 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1` |
+| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1` |
+| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P2 Master V2 / Double Play Evidence & Input Plane Component A bounded adjudicator runtime; isolated from productive DP binding; Map of Truth row; A_RUNTIME_REACHABLE=false; AUTHORITY=NONE.
-- introduced_by=P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1
-- modified_by=P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1
+- P3 Master V2 / Double Play Evidence & Input Plane Component B bounded input creator/binder runtime; isolated from productive L6 seam; Map of Truth row; B_RUNTIME_REACHABLE=false; AUTHORITY=NONE.
+- introduced_by=P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1
+- modified_by=P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

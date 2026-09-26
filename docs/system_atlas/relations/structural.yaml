@@ -2567,3 +2567,16 @@ relations:
     notes: >
       Navigation only. P2 Component A bounded adjudicator runtime;
       not productively reachable; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md
+      - docs/ops/specs/EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md
+    notes: >
+      Navigation only. P3 Component B bounded input creator/binder runtime;
+      not productively reachable; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.

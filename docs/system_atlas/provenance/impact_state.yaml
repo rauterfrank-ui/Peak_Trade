@@ -1,19 +1,19 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1
-modified_by: P2_MASTER_V2_EVIDENCE_ADJUDICATOR_RUNTIME_V1
+introduced_by: P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1
+modified_by: P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  P2 Master V2 / Double Play Evidence & Input Plane Component A bounded
-  adjudicator runtime; isolated from productive DP binding; Map of Truth row;
-  A_RUNTIME_REACHABLE=false; AUTHORITY=NONE.
+  P3 Master V2 / Double Play Evidence & Input Plane Component B bounded
+  input creator/binder runtime; isolated from productive L6 seam; Map of Truth row;
+  B_RUNTIME_REACHABLE=false; AUTHORITY=NONE.
 changed_entities:
   - NAVIGATION_INDEX:map_of_truth
-  - RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1
+  - RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1
 changed_relations:
-  - REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1
+  - REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []
