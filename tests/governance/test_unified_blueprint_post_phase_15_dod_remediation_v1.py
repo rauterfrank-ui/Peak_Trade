@@ -42,8 +42,9 @@ def test_remediation_preserves_runtime_apply_out_of_scope() -> None:
     assert doc["workpackage_id"] == WORKPACKAGE_ID
     out = doc["runtime_apply_out_of_scope"]
     assert out["authorized_promotion_implies_runtime_apply"] is False
-    assert out["runtime_apply_authority_owner_ratified"] is False
-    assert out["owner_decision_required_for_runtime_apply"] is True
+    assert out["runtime_apply_authority_owner_ratified"] is True
+    assert out["real_runtime_materialization_performed"] is False
+    assert out["runtime_apply_started"] is False
     inv = doc["authority_invariants"]
     assert inv["runtime_apply_started"] is False
     assert inv["m11_started"] is False

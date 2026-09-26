@@ -476,6 +476,18 @@ def _build_authorized_promotion_record_v1(
     return MappingProxyType(body)
 
 
+def verify_m10_authorized_promotion_record_digest_v1(record: Mapping[str, Any]) -> bool:
+    """Verify digest seal on an M10 authorized promotion record."""
+    stored = record.get("authorized_promotion_record_digest")
+    if not isinstance(stored, str) or not is_valid_sha256_hex(stored):
+        return False
+    digest_keys = tuple(
+        key for key in _AUTHORIZED_RECORD_KEYS if key != "authorized_promotion_record_digest"
+    )
+    body = {key: record[key] for key in digest_keys if key in record}
+    return compute_content_sha256(body) == stored
+
+
 def compute_m10_replay_bundle_digest_v1(
     *,
     promotion_proposal_id: str | None,
