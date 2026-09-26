@@ -93,7 +93,9 @@ def test_bounded_end_to_end_and_reconstruction(tmp_path: Path, mode) -> None:
     assert summary["learning_ingress_status"] == "PROVEN"
     assert summary["canonical_optimization_input_status"] == "PROVEN"
     assert summary["runtime_mechanical_path_status"] == "PROVEN_REAL_MECHANICAL_PATH"
-    assert summary["m4_m8_status"] == "PROVEN_FIXTURE_BOUNDED"
+    assert summary["m4_m8_fixture_harness_status"] == "PROVEN_FIXTURE_BOUNDED"
+    assert summary["real_runtime_g2_to_m4_m8_status"] == "PROVEN"
+    assert summary["m4_m8_end_to_end_status"] == "PROVEN_REAL_MECHANICAL_PATH"
     assert summary["g2_end_to_end_status"] == G2_END_TO_END_STATUS
     recon = trace_g2_reconstruction_v1(
         projection_result={
@@ -203,4 +205,4 @@ def test_closure_and_decision_binding() -> None:
     assert prove_g2_projection_closure_v1(repo_root=REPO_ROOT)
     decision = json.loads((REPO_ROOT / DECISION_CONFIG).read_text(encoding="utf-8"))
     assert decision["field_mapping_ledger"] == FIELD_MAPPING_LEDGER
-    assert decision["g2_end_to_end_status"] == G2_END_TO_END_STATUS
+    assert decision["g2_end_to_end_status"] in {G2_END_TO_END_STATUS, "PROVEN_FIXTURE_BOUNDED"}

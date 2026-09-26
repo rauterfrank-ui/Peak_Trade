@@ -120,6 +120,7 @@ REQUIRED_PARTIAL_IDS = (
     "post_6828_portfolio_treasury_equity_boundary_v1",
     "g2_runtime_primary_offline_observation_projection_v1",
     "g2_runtime_learning_input_to_optimization_universe_binding_v1",
+    "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",

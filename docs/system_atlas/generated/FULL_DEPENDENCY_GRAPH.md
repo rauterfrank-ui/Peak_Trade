@@ -540,8 +540,8 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 ### RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
 
-- direct_upstream: `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
-- transitive_upstream: `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
+- direct_upstream: `RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1, RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1, RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 

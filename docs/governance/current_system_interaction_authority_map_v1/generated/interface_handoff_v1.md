@@ -24,6 +24,7 @@ flowchart LR
   g2_runtime_primary_offline_projection -->|g2_m4_m8_fixture_continuation| optimization_universe
   bounded_runtime_primary_evidence -->|g2_primary_evidence_to_offline_projection| g2_runtime_primary_offline_projection
   g2_runtime_primary_offline_projection -->|g2_runtime_learning_to_optimization_input_binding| g2_runtime_learning_optimization_input_binding
+  g2_runtime_learning_optimization_input_binding -->|g2_runtime_to_m4_m8_real_mechanical_continuation| optimization_universe
   governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
   governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
   mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
@@ -353,7 +354,7 @@ flowchart LR
 - identity_binding=DDO_FIXTURE_LEARNING_STATE
 - temporal_binding=FIXTURE_BOUNDED
 - version_binding=m4_m8_evidence_return_loop_v1
-- provenance_binding=G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED
+- provenance_binding=G2_END_TO_END_FIXTURE_HARNESS_STATUS=PROVEN_FIXTURE_BOUNDED
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`
@@ -393,6 +394,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/meta/learning_loop/runtime_observation_feedback_v1.py`, `src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`
+
+## g2_runtime_to_m4_m8_real_mechanical_continuation
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1
+- producer=run_g2_runtime_to_m4_m8_evidence_return_continuation_v1
+- consumer=run_m4_m8_evidence_return_loop_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=canonical_m4_m8_evidence_return_loop_v1
+- provenance_binding=REAL_RUNTIME_G2_TO_M4_M8_STATUS=PROVEN; DDO_FIXTURE_LEARNING_STATE_USED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`, `src/experiments/canonical_m4_m8_evidence_return_loop_v1.py`, `tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`
 
 ## governed_cycle_t2_mv2_stack
 

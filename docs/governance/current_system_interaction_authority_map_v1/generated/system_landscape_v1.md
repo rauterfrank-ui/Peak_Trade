@@ -72,6 +72,7 @@ flowchart LR
   g2_runtime_primary_offline_projection --> optimization_universe
   bounded_runtime_primary_evidence --> g2_runtime_primary_offline_projection
   g2_runtime_primary_offline_projection --> g2_runtime_learning_optimization_input_binding
+  g2_runtime_learning_optimization_input_binding --> optimization_universe
   governed_cycle --> mv2_double_play
   governed_cycle --> venue_plan_td_mode
   mv2_double_play --> order_intent
