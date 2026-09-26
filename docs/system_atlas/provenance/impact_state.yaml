@@ -1,23 +1,19 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
-modified_by: GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1
+introduced_by: GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1
+modified_by: GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  G2 real mechanical continuation into canonical M4–M8 evidence return loop without DDO
-  fixture learning state on the real path; authority=NONE; no apply or external effect.
+  Real runtime G2→M4–M8→M6/M7 path through P5 optimization_envelope and meta_learning_routed
+  producer bridges into Evidence Adjudicator A; fail-closed lineage; authority=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+  - RUNTIME_COMPONENT:governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1
   - RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
-  - RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
 changed_relations:
-  - REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
-  - REL:s_map_navigates_governed_m4_m8_meta_optimization_feedback_continuation_v1
-  - REL:s_m4_m8_real_to_meta_optimization_feedback_continuation
-  - REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
-  - REL:s_g2_binding_to_m4_m8_real_continuation
+  - REL:s_meta_feedback_to_p5_adjudicator_a_real_continuation
+  - REL:s_map_navigates_governed_real_m4_m8_p5_adjudicator_a_continuation_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []
