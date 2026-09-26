@@ -1,36 +1,42 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "6d44e30de03277c01a43f0e6feb90f4a84ef6c5a",
+  "base_sha": "2354c4439c3228265b8aaa51d06510db48af1469",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_matrix_v1.json",
-    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/MANIFEST.sha256",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/SUMMARY.json",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/evidence_reference_ledger_v1.json",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/open_conflict_register_v1.json",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json",
+    "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md",
+    "docs/system_atlas/generated/MASTER_V2_DOUBLE_PLAY_MAP.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.py",
-    "tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py"
+    "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
+    "tests/governance/test_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py"
   ],
-  "changed_paths_sha256": "74cb09a70aa7776d33290e174ce1910ce8566978c649477f8bb88d738d7a9bd5",
-  "covered_candidate_paths": [],
+  "changed_paths_sha256": "e38f00eca12da0869c082aedc69e5d70f7c4a2816bff491bf2919e0de31b7cee",
+  "covered_candidate_paths": [
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
+  ],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
-    "tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_NORMATIVE_V1.md"
+    "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
+    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+    "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
+    "tests/governance/test_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 26 final closed-cycle DoD adjudication matrix; reproves Loops A/B/C and Phase 16-25; map source, atlas catalog/relations, derived views updated; AUTHORITY=NONE."
+  "reason": "P0 Master V2 / Double Play L1-L10 evidence-seam census; Map of Truth navigation; interaction map mv2_double_play evidence refs; System Atlas entity/relation/impact_state; AUTHORITY=NONE."
 }

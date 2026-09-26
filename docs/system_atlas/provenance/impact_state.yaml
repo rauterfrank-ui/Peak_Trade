@@ -1,18 +1,19 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
-modified_by: UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
+introduced_by: MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
+modified_by: MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Phase 26 final closed-cycle DoD adjudication matrix; reproves Loops A/B/C,
-  meta routing, incremental research, DP attribution; AUTHORITY=NONE.
+  P0 Master V2 / Double Play L1-L10 external-evidence seam census; Map of Truth
+  navigation row; read-only governance census runner and durable JSON; no A/B;
+  AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:unified_blueprint_phase_26_final_closed_cycle_dod_v1
+  - NAVIGATION_INDEX:map_of_truth
+  - RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1
 changed_relations:
-  - REL:s_map_navigates_unified_blueprint_phase_26_final_closed_cycle_dod_v1
-  - REL:s_phase_26_references_phase_25_closure_v1
+  - REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

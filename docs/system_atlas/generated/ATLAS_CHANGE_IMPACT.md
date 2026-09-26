@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1`.
 
 ## Workflow
 
@@ -40,14 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_26_final_closed_cycle_dod_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_phase_26_final_closed_cycle_dod_v1` |
-| `REL:s_phase_26_references_phase_25_closure_v1` |
+| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Phase 26 final closed-cycle DoD adjudication matrix; reproves Loops A/B/C, meta routing, incremental research, DP attribution; AUTHORITY=NONE.
-- introduced_by=UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_26_FINAL_CLOSED_CYCLE_DOD_V1
+- P0 Master V2 / Double Play L1-L10 external-evidence seam census; Map of Truth navigation row; read-only governance census runner and durable JSON; no A/B; AUTHORITY=NONE.
+- introduced_by=MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
+- modified_by=MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
