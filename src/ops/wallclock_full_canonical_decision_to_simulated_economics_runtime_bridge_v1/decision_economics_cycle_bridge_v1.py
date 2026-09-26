@@ -38,8 +38,8 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_n_bars_horizon_upstream_from_cycle_capture_v1 import (
     maybe_bind_ddo_n_bars_horizon_decision_from_cycle_capture_v1,
 )
-from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1 import (
-    maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1,
+from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_n_bars_public_plane_convergence_v1 import (
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_public_plane_convergence_v1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.ddo_o4_canonical_bar_producer_session_binding_v1 import (
     maybe_ingest_accepted_observation_into_ddo_o4_producer_v1,
@@ -482,8 +482,10 @@ class BridgeSessionStateV1:
     ddo_o4_n_bars_bar_evidence_snapshot: Optional[dict[str, Any]] = None
     ddo_o4_n_bars_bar_evidence_snapshot_locked: bool = False
     ddo_canonical_public_md_bar_producer: Optional[CanonicalPublicMdBarProducerV1] = None
+    public_md_store_root: Optional[str] = None
     ddo_n_bars_horizon_n_bars: int = 2
     last_ddo_o4_bar_producer_ingest: Optional[dict[str, Any]] = None
+    last_ddo_o4_public_plane_convergence: Optional[dict[str, Any]] = None
     ddo_n_bars_outcome_scalar_kind: str = "LOG_RETURN"
     ddo_n_bars_economic_score: Optional[str] = None
     last_ddo_n_bars_horizon_observation: Optional[dict[str, Any]] = None
@@ -1912,7 +1914,7 @@ def run_bridge_cycle_v1(
     decision_ref: str | None = None
     if state.ddo_n_bars_horizon_decision_event is not None:
         decision_ref = str(state.ddo_n_bars_horizon_decision_event.get("record_id") or "") or None
-    maybe_materialize_ddo_o4_n_bars_snapshot_from_canonical_producer_v1(
+    maybe_materialize_ddo_o4_n_bars_snapshot_from_public_plane_convergence_v1(
         state,
         decision_event_ref=decision_ref,
         n_bars=state.ddo_n_bars_horizon_n_bars,
