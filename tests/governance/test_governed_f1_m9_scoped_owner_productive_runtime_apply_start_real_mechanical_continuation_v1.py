@@ -35,6 +35,7 @@ from src.trading.master_v2.canonical_volatility_numeric_max_age_policy_contract_
     ENFORCEMENT_ENABLED,
     NUMERIC_MAX_AGE_DECIDED,
 )
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BOUND_APPLY = "3f0895951d0708d017326a8b4f779c433d609d09d67459fe47f1239f214a2f95"
 BOUND_THRESHOLD = "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109"
@@ -125,6 +126,4 @@ def test_global_invariants_and_closure_proof() -> None:
     assert PRODUCTIVE_NUMERIC_VALUES_SET == 0
     assert NUMERIC_MAX_AGE_DECIDED is False
     assert ENFORCEMENT_ENABLED is False
-    assert prove_governed_f1_m9_scoped_owner_productive_runtime_apply_start_v1(
-        repo_root=REPO_ROOT
-    )
+    assert prove_governed_f1_m9_scoped_owner_productive_runtime_apply_start_v1(repo_root=REPO_ROOT)

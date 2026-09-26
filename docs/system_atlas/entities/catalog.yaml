@@ -8851,8 +8851,8 @@ entities:
     kind: RUNTIME_COMPONENT
     name: Governed F1/M9 productive runtime apply start real mechanical continuation v1
     epistemic_class: FORENSIC_RAW
-    current_canonical: true
-    current_status: CURRENT_PARTIAL
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
     modified_by: GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1
     source_paths:
       - src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py
