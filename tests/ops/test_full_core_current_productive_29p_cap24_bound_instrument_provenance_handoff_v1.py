@@ -133,7 +133,9 @@ def _build_fresh_chain(tmp: Path, *, repository_sha: str = REPO_SHA) -> dict:
 
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
-        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(
+            uni.snapshot.to_dict()
+        ),
         repository_sha=repository_sha,
         producer_observed_at_unix=observed,
     )

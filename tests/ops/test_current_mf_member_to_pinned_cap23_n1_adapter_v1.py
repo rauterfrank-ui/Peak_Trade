@@ -613,7 +613,9 @@ def test_cap24_consumes_pinned_cap23_without_cap24_change(tmp_path: Path) -> Non
     uni_writer.release()
     ranking_result = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
-        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(
+            uni.snapshot.to_dict()
+        ),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )

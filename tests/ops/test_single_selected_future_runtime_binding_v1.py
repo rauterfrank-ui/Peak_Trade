@@ -181,7 +181,9 @@ def _build_chain(tmp: Path, rows: list[dict] | None = None) -> dict[str, Path | 
 
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
-        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(
+            uni.snapshot.to_dict()
+        ),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )
