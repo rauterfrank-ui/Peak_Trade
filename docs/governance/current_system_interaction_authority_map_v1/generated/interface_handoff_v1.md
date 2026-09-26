@@ -54,6 +54,9 @@ flowchart LR
   selection_cap23 -->|step29m_consumes_selection| step29m
   treasury_29p -->|treasury_to_admission| capital_risk_sizing
   universe_cap21 -->|universe_to_ranking| ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_public_ranking_handoff| ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c -->|wp_c_effective_authorization_readmodel| execution_external_effect
+  market_data_private_state_runtime_convergence_wp_c -->|wp_c_preserves_cap23_selection_owner| selection_cap23
 ```
 
 ## authorization_to_seam
@@ -919,3 +922,57 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/governed_futures_universe_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`
+
+## wp_c_converged_public_ranking_handoff
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Converged B05 handoff via WP-A finalized PT1M marks only; competing transport consumer truth forbidden; Cap 2.3 unchanged
+- producer=market_data_private_state_runtime_convergence_wp_c
+- consumer=ranking_cap22
+- authority_effect=NONE
+- decision_effect=CONVERGENCE_ADAPTER_ONLY_NO_RANKING_AUTHORITY
+- direct_or_indirect=INDIRECT
+- identity_binding=REUSES_WP_A_CANONICAL_FACTS
+- temporal_binding=OFFLINE_CI_HARNESS
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=tests/ops/test_market_data_private_state_runtime_convergence_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py`
+
+## wp_c_effective_authorization_readmodel
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=Operator-visible effective authorization; observation capability must not imply send authority; standing LIVE_* seams distinct from external effect
+- producer=market_data_private_state_runtime_convergence_wp_c
+- consumer=full_core_live_path_composition_root
+- authority_effect=NONE
+- decision_effect=READMODEL_ONLY_NO_AUTHORITY_MINT
+- direct_or_indirect=INDIRECT
+- identity_binding=NO_AUTHORITY_MINT
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py`
+
+## wp_c_preserves_cap23_selection_owner
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=CAP_2_3_SELECTION_OWNER_STATUS=UNCHANGED; WP-C may not select or rerank
+- producer=market_data_private_state_runtime_convergence_wp_c
+- consumer=selection_cap23
+- authority_effect=NONE
+- decision_effect=ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=NO_SELECTION_WRITER
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/constants_v1.py`

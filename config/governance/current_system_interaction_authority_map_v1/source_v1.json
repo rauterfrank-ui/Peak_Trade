@@ -240,6 +240,31 @@
       ]
     },
     {
+      "id": "market_data_private_state_runtime_convergence_wp_c",
+      "tier": "INTERMEDIATE",
+      "role": "WP-C runtime convergence / consumer closure: forensic census, governed handoffs onto WP-A/WP-B canonical facts/state, restart/reconciliation closure proofs, and effective authorization readmodel. No new selection, strategy, execution, wire, or multi-future authority.",
+      "canonical_owner_ref": "ops.market_data_private_state_runtime_convergence_v1",
+      "authority_class": "NONE",
+      "lifecycle": "OBSERVATION_ONLY",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md",
+        "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json"
+      ],
+      "code_refs": [
+        "src/ops/market_data_private_state_runtime_convergence_v1/constants_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/convergence_orchestrator_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md"
+      ]
+    },
+    {
       "id": "full_core_fresh_pretrade_runtime_get",
       "tier": "INTERMEDIATE",
       "role": "Existing Full-Core fresh pretrade runtime GET seam (FRESH_GET_PER_PRETRADE_DECISION). WP-B adapters terminate here without substituting required fresh GET authority.",
@@ -1351,6 +1376,75 @@
       "evidence_refs": [
         "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
         "src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "wp_c_converged_public_ranking_handoff",
+      "from_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "to_domain": "ranking_cap22",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "Converged B05 handoff via WP-A finalized PT1M marks only; competing transport consumer truth forbidden; Cap 2.3 unchanged",
+      "producer": "market_data_private_state_runtime_convergence_wp_c",
+      "consumer": "ranking_cap22",
+      "authority_effect": "NONE",
+      "decision_effect": "CONVERGENCE_ADAPTER_ONLY_NO_RANKING_AUTHORITY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "REUSES_WP_A_CANONICAL_FACTS",
+      "temporal_binding": "OFFLINE_CI_HARNESS",
+      "version_binding": "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1",
+      "provenance_binding": "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py"
+      ]
+    },
+    {
+      "id": "wp_c_effective_authorization_readmodel",
+      "from_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "to_domain": "execution_external_effect",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "Operator-visible effective authorization; observation capability must not imply send authority; standing LIVE_* seams distinct from external effect",
+      "producer": "market_data_private_state_runtime_convergence_wp_c",
+      "consumer": "full_core_live_path_composition_root",
+      "authority_effect": "NONE",
+      "decision_effect": "READMODEL_ONLY_NO_AUTHORITY_MINT",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "NO_AUTHORITY_MINT",
+      "temporal_binding": "NO_RUNTIME_ACTIVATION",
+      "version_binding": "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1",
+      "provenance_binding": "src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py"
+      ]
+    },
+    {
+      "id": "wp_c_preserves_cap23_selection_owner",
+      "from_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "to_domain": "selection_cap23",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "CAP_2_3_SELECTION_OWNER_STATUS=UNCHANGED; WP-C may not select or rerank",
+      "producer": "market_data_private_state_runtime_convergence_wp_c",
+      "consumer": "selection_cap23",
+      "authority_effect": "NONE",
+      "decision_effect": "ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "NO_SELECTION_WRITER",
+      "temporal_binding": "NO_RUNTIME_ACTIVATION",
+      "version_binding": "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1",
+      "provenance_binding": "src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/constants_v1.py"
       ]
     },
     {
