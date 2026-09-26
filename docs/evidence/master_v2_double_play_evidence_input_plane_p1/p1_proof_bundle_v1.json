@@ -1,0 +1,109 @@
+{
+  "baseline_sha": "43f98b74e39f1e85d2fda20eb4c90ce70f3e62de",
+  "canonical_schema_manifest": {
+    "canonical_dp_layer_input_binding_v1": {
+      "allowed_target_layers": [
+        "L6_DYNAMIC_SCOPE_GENERATOR"
+      ],
+      "b_may_collapse_to_proposed_d_t": false,
+      "b_may_compute_final_d_t": false,
+      "b_may_select_d_t_formula": false,
+      "dp_state_mutation_authority_fixed": "NONE",
+      "forbidden_fields": [
+        "proposed_d_t",
+        "d_t",
+        "final_d_t",
+        "computed_d_t",
+        "formula_id"
+      ],
+      "required_fields": [
+        "binding_id",
+        "target_layer",
+        "envelope_digest",
+        "instrument",
+        "market_observation_epoch",
+        "nullline_provenance_epoch",
+        "binding_evaluated_at_unix",
+        "trading_authority",
+        "dp_state_mutation_authority",
+        "producer_to_b_direct"
+      ],
+      "schema_version": "canonical_dp_layer_input_binding.v1",
+      "trading_authority_fixed": "NONE"
+    },
+    "canonical_master_v2_evidence_envelope_v1": {
+      "allowed_evidence_kinds": [
+        "learning_conditioned_evaluative_v1",
+        "meta_learning_routed_evidence_v1",
+        "mi_market_context_descriptive_v1",
+        "optimization_envelope_evidence_v1",
+        "research_promoted_evidence_v1"
+      ],
+      "allowed_producer_families": [
+        "learning",
+        "market_intelligence",
+        "meta_learning",
+        "optimization",
+        "research"
+      ],
+      "forbidden_fields": [
+        "proposed_d_t",
+        "d_t",
+        "final_d_t",
+        "computed_d_t",
+        "formula_id"
+      ],
+      "required_fields": [
+        "envelope_id",
+        "producer_family",
+        "evidence_kind",
+        "instrument",
+        "market_observation_epoch",
+        "observed_at_unix",
+        "freshness_horizon_seconds",
+        "source_evidence_digest",
+        "typed_payload_digest",
+        "provenance_refs",
+        "trading_authority",
+        "adjudication_path"
+      ],
+      "schema_version": "canonical_master_v2_evidence_envelope.v1",
+      "trading_authority_fixed": "NONE"
+    },
+    "l6_bounded_typed_external_evidence_input_v1": {
+      "forbidden_fields": [
+        "proposed_d_t",
+        "d_t",
+        "final_d_t",
+        "computed_d_t"
+      ],
+      "interpretation_authority_fixed": "L6_ONLY",
+      "required_fields": [
+        "input_id",
+        "target_layer",
+        "evidence_kind",
+        "instrument",
+        "market_observation_epoch",
+        "nullline_provenance_epoch",
+        "envelope_digest",
+        "binding_digest",
+        "source_evidence_digest",
+        "typed_payload_digest",
+        "provenance_refs",
+        "interpretation_authority"
+      ],
+      "schema_version": "l6_bounded_typed_external_evidence_input.v1",
+      "target_layer_fixed": "L6_DYNAMIC_SCOPE_GENERATOR"
+    }
+  },
+  "canonical_schema_manifest_digest": "d6b3981322ede3fde6f0bda54d6fc15571fa561819da373bbac245c1ba17d6c4",
+  "component_a_authority_contract_ok": true,
+  "component_b_authority_contract_ok": true,
+  "failure_codes": [],
+  "owner_decision_config_ok": true,
+  "runtime_ab_implementation_detected": false,
+  "runtime_ab_implementation_hits": [],
+  "schema_version": "master_v2_double_play_evidence_input_plane_p1_proof/v1",
+  "verdict": "PROVEN_COMPLETE",
+  "workpackage_id": "P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1"
+}

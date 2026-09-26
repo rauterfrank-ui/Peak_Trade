@@ -37,12 +37,15 @@ P1_DESIGN_INPUT_REL: Final[str] = (
     "docs/evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json"
 )
 
-_FORBIDDEN_AB_MODULE_MARKERS: Final[tuple[str, ...]] = (
+_FORBIDDEN_AB_RUNTIME_MARKERS: Final[tuple[str, ...]] = (
     "master_v2_evidence_adjudicator",
     "master_v2_double_play_input_creator",
     "master_v2_double_play_input_binder",
-    "CanonicalMasterV2EvidenceEnvelopeV1",
-    "CanonicalDpLayerInputBindingV1",
+    "run_component_a_runtime_v1",
+    "run_component_b_runtime_v1",
+)
+_P1_CONTRACT_PACKAGE_SUBPATH: Final[str] = (
+    "master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1"
 )
 
 _INTELLIGENCE_ROOTS: Final[tuple[str, ...]] = (
@@ -58,7 +61,16 @@ _LAYERED_CORE_IMPORT_MARKERS: Final[tuple[str, ...]] = (
     "orchestrate_naked_layered_core_v1",
 )
 
-_EPISTEMIC = frozenset({"PROVEN_CURRENT", "PROVEN_CLOSED", "ABSENT", "CONFLICTING", "UNKNOWN"})
+_EPISTEMIC = frozenset(
+    {
+        "PROVEN_CURRENT",
+        "PROVEN_CLOSED",
+        "PROVEN_BOUNDED_TYPED_ONLY",
+        "ABSENT",
+        "CONFLICTING",
+        "UNKNOWN",
+    }
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,15 +159,48 @@ def _scan_trading_imports_learning_decision_mutation(repo_root: Path) -> BypassC
 
 def _glob_ab_implementation(repo_root: Path) -> tuple[bool, tuple[str, ...]]:
     hits: list[str] = []
-    for marker in _FORBIDDEN_AB_MODULE_MARKERS:
-        for py in (repo_root / "src").rglob("*.py"):
-            try:
-                text = py.read_text(encoding="utf-8")
-            except OSError:
-                continue
-            if marker in text and "p0_evidence_seam_census" not in py.name:
-                hits.append(f"{py.relative_to(repo_root).as_posix()}:{marker}")
+    for py in (repo_root / "src").rglob("*.py"):
+        rel = py.relative_to(repo_root).as_posix()
+        if _P1_CONTRACT_PACKAGE_SUBPATH in rel:
+            continue
+        if "p0_evidence_seam_census" in py.name:
+            continue
+        try:
+            text = py.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        for marker in _FORBIDDEN_AB_RUNTIME_MARKERS:
+            if marker in text:
+                hits.append(f"{rel}:{marker}")
     return (len(hits) > 0, tuple(sorted(set(hits))))
+
+
+def _l6_external_evidence_admissibility_v1() -> str:
+    try:
+        from src.governance.master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1.constants_v1 import (  # noqa: PLC0415
+            L6_CENSUS_EXTERNAL_EVIDENCE_ADMISSIBILITY,
+            O_002_RATIFIED,
+        )
+
+        if O_002_RATIFIED:
+            return L6_CENSUS_EXTERNAL_EVIDENCE_ADMISSIBILITY
+    except ImportError:
+        pass
+    return "UNKNOWN"
+
+
+def _l6_allowed_evidence_types_v1() -> tuple[str, ...]:
+    if _l6_external_evidence_admissibility_v1() == "PROVEN_BOUNDED_TYPED_ONLY":
+        return (
+            "PROVEN_BOUNDED_TYPED_ONLY: L6BoundedTypedExternalEvidenceInputV1 via "
+            "CanonicalMasterV2EvidenceEnvelopeV1 + CanonicalDpLayerInputBindingV1",
+            "PRESERVED: caller-supplied float proposed_d_t (P4/O-R2 path unchanged)",
+            "FORBIDDEN: A/B collapse to proposed_d_t; B compute/select D_t formula",
+        )
+    return (
+        "PROVEN_CURRENT: caller-supplied float proposed_d_t only; "
+        "NOT PROVEN: MI/Learning/Optimization evidence types",
+    )
 
 
 def _layer_extension(layer_id: LayerIdV1) -> dict[str, Any]:
@@ -315,18 +360,17 @@ def _layer_extension(layer_id: LayerIdV1) -> dict[str, Any]:
                 "DynamicScopeGeneratorInputV1",
                 "DynamicScopeGeneratorOutputV1",
                 "DynamicScopeGeneratorV1 (Protocol)",
+                "L6BoundedTypedExternalEvidenceInputV1 (P1 contract; L6 interpretation P2+)",
             ),
             "current_producers": (
                 "MechanicalStepSpecV1.proposed_d_t via orchestrator",
                 "ExplicitPassthroughDynamicScopeGeneratorV1 (default validation path)",
+                "Component B typed binding (P1 contract only; runtime blocked)",
             ),
             "current_consumers": ("l7_scope_state_v1",),
             "existing_external_evidence_seam": "PROVEN_CURRENT",
-            "external_evidence_admissibility": "UNKNOWN",
-            "allowed_evidence_types": (
-                "PROVEN_CURRENT: caller-supplied float proposed_d_t only; "
-                "NOT PROVEN: MI/Learning/Optimization evidence types",
-            ),
+            "external_evidence_admissibility": _l6_external_evidence_admissibility_v1(),
+            "allowed_evidence_types": _l6_allowed_evidence_types_v1(),
             "binding_contract": (
                 "DynamicScopeGeneratorInputV1 + replaceable DynamicScopeGeneratorV1 "
                 "(explicit_external_d_t_passthrough/v1)"
@@ -351,13 +395,13 @@ def _layer_extension(layer_id: LayerIdV1) -> dict[str, Any]:
             "trading_authority_effect": "NONE",
             "future_B_target_possible": "PROVEN_CURRENT",
             "required_change_class": (
-                "contract_extension for adjudicated evidence → proposed_d_t binding; "
-                "no semantic change to validation if D_t remains explicit float"
+                "P1_RATIFIED: typed L6 evidence contract (Option B); "
+                "proposed_d_t seam preserved; no D_t formula selection"
             ),
             "status": "PROVEN_CURRENT",
             "open_questions": (
-                "Whether Component B may bind only through DynamicScopeGeneratorV1 protocol "
-                "without new owner for D_t formula selection (FINAL_D_T_FORMULA_SELECTED=false).",
+                "P2: L6 runtime consumer for L6BoundedTypedExternalEvidenceInputV1 "
+                "(interpretation authority remains L6-only).",
             ),
         },
         LayerIdV1.L7_SCOPE_STATE: {
@@ -600,6 +644,7 @@ def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any
         "SelectedFutureInputV1 (L1; subject to Cap 2.4 authority)",
         "MarketObservationInputV1 / ObservationCandidateV1 (L2; C1 bounded)",
     ]
+    p1_contracts_present = _l6_external_evidence_admissibility_v1() == "PROVEN_BOUNDED_TYPED_ONLY"
     return {
         "schema_version": "master_v2_double_play_evidence_input_plane_p1_design_input/v1",
         "proven_eligible_b_binding_candidates": sorted(set(eligible)),
@@ -607,11 +652,19 @@ def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any
         "unknown_layers": sorted(set(unknown)),
         "conflicting_layers": sorted(set(conflicting)),
         "reusable_contracts_proven_current": reusable,
-        "new_contracts_requiring_owner_authority": [
-            "CanonicalMasterV2EvidenceEnvelopeV1 (Component A — not implemented)",
-            "CanonicalDpLayerInputBindingV1 (Component B — not implemented)",
-            "Any non-C1 external evidence type admission per layer",
-        ],
+        "new_contracts_requiring_owner_authority": (
+            [
+                "CanonicalMasterV2EvidenceEnvelopeV1 (P1 contract schema — runtime blocked)",
+                "CanonicalDpLayerInputBindingV1 (P1 contract schema — runtime blocked)",
+                "L6BoundedTypedExternalEvidenceInputV1 (P1 L6 typed seam — runtime blocked)",
+            ]
+            if p1_contracts_present
+            else [
+                "CanonicalMasterV2EvidenceEnvelopeV1 (Component A — not implemented)",
+                "CanonicalDpLayerInputBindingV1 (Component B — not implemented)",
+                "Any non-C1 external evidence type admission per layer",
+            ]
+        ),
         "sufficient_facts_for_ab_schema_design": [
             "L1–L10 owners and input dataclasses proven in contracts_v1.py",
             "L6 replaceable generator protocol proven",
@@ -619,14 +672,15 @@ def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any
             "Bypass census complete for intelligence→layer direct calls",
         ],
         "remains_blocked": [
-            "Component A/B implementation (explicitly out of P0 scope)",
-            "External-evidence admissibility for L6 beyond caller float (UNKNOWN)",
+            "Component A/B runtime implementation (P1 contract only)",
+            "Productive L6 typed-evidence binding (PRODUCTIVE_L6_BINDING_AUTHORIZED=false)",
             "L1 B-target without Cap 2.3/2.4 authority decision",
             "scope_event_generator vs transition_state conflict resolution (out of scope)",
             "FINAL_D_T_FORMULA_SELECTED=false",
         ],
         "component_a_implemented": False,
         "component_b_implemented": False,
+        "p1_authority_contracts_materialized": p1_contracts_present,
     }
 
 
@@ -661,13 +715,17 @@ def run_master_v2_double_play_p0_evidence_seam_census_v1(
         {
             "id": "O-002",
             "topic": "L6_external_intelligence_evidence_admissibility",
-            "status": "UNKNOWN",
+            "status": "RATIFIED"
+            if _l6_external_evidence_admissibility_v1() != "UNKNOWN"
+            else "UNKNOWN",
             "affected_census_fields": (
                 "L6 external_evidence_admissibility; allowed_evidence_types for MI/Learning"
             ),
             "resolution_scope": "P1_OWNER_CONTRACT",
             "evidence_refs": [
                 "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py",
+                "src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/",
+                "config/governance/master_v2_double_play_evidence_input_plane_p1_owner_decision_v1.json",
             ],
         },
         {

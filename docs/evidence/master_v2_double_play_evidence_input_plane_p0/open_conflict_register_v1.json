@@ -15,11 +15,13 @@
     {
       "affected_census_fields": "L6 external_evidence_admissibility; allowed_evidence_types for MI/Learning",
       "evidence_refs": [
-        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/",
+        "config/governance/master_v2_double_play_evidence_input_plane_p1_owner_decision_v1.json"
       ],
       "id": "O-002",
       "resolution_scope": "P1_OWNER_CONTRACT",
-      "status": "UNKNOWN",
+      "status": "RATIFIED",
       "topic": "L6_external_intelligence_evidence_admissibility"
     },
     {

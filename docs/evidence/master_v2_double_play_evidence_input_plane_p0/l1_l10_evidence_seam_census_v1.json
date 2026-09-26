@@ -217,7 +217,9 @@
     },
     {
       "allowed_evidence_types": [
-        "PROVEN_CURRENT: caller-supplied float proposed_d_t only; NOT PROVEN: MI/Learning/Optimization evidence types"
+        "PROVEN_BOUNDED_TYPED_ONLY: L6BoundedTypedExternalEvidenceInputV1 via CanonicalMasterV2EvidenceEnvelopeV1 + CanonicalDpLayerInputBindingV1",
+        "PRESERVED: caller-supplied float proposed_d_t (P4/O-R2 path unchanged)",
+        "FORBIDDEN: A/B collapse to proposed_d_t; B compute/select D_t formula"
       ],
       "binding_contract": "DynamicScopeGeneratorInputV1 + replaceable DynamicScopeGeneratorV1 (explicit_external_d_t_passthrough/v1)",
       "conflict_semantics": "ABSENT",
@@ -227,12 +229,14 @@
       "current_input_contracts": [
         "DynamicScopeGeneratorInputV1",
         "DynamicScopeGeneratorOutputV1",
-        "DynamicScopeGeneratorV1 (Protocol)"
+        "DynamicScopeGeneratorV1 (Protocol)",
+        "L6BoundedTypedExternalEvidenceInputV1 (P1 contract; L6 interpretation P2+)"
       ],
       "current_owner": "trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1",
       "current_producers": [
         "MechanicalStepSpecV1.proposed_d_t via orchestrator",
-        "ExplicitPassthroughDynamicScopeGeneratorV1 (default validation path)"
+        "ExplicitPassthroughDynamicScopeGeneratorV1 (default validation path)",
+        "Component B typed binding (P1 contract only; runtime blocked)"
       ],
       "epoch_binding_semantics": "ABSENT on L6 input",
       "evidence_refs": [
@@ -243,7 +247,7 @@
         "docs/evidence/naked_mv2_dp_explicit_layered_core_v1/layer_separation_evidence_v1.json"
       ],
       "existing_external_evidence_seam": "PROVEN_CURRENT",
-      "external_evidence_admissibility": "UNKNOWN",
+      "external_evidence_admissibility": "PROVEN_BOUNDED_TYPED_ONLY",
       "failure_semantics": "PROVEN_CURRENT: fail_closed + fail_reasons; downstream layers NOT_REACHED",
       "freshness_semantics": "ABSENT",
       "future_B_target_possible": "PROVEN_CURRENT",
@@ -251,11 +255,11 @@
       "layer_id": "L6_DYNAMIC_SCOPE_GENERATOR",
       "missing_input_semantics": "PROVEN_CURRENT: naked_boundary_fail_closed_reasons_from_distance \u2192 fail_closed",
       "open_questions": [
-        "Whether Component B may bind only through DynamicScopeGeneratorV1 protocol without new owner for D_t formula selection (FINAL_D_T_FORMULA_SELECTED=false)."
+        "P2: L6 runtime consumer for L6BoundedTypedExternalEvidenceInputV1 (interpretation authority remains L6-only)."
       ],
       "owner_evidence": "PROVEN_CURRENT",
       "provenance_semantics": "PROVEN_CURRENT: generator_id on output only; no evidence envelope",
-      "required_change_class": "contract_extension for adjudicated evidence \u2192 proposed_d_t binding; no semantic change to validation if D_t remains explicit float",
+      "required_change_class": "P1_RATIFIED: typed L6 evidence contract (Option B); proposed_d_t seam preserved; no D_t formula selection",
       "semantic_responsibility": "nullline_context + external_d_t_proposal \u2192 validated_d_t_or_fail_closed; mutates=none_replaceable_generator",
       "state_mutation_effect": "none_replaceable_generator",
       "status": "PROVEN_CURRENT",
@@ -594,11 +598,13 @@
     {
       "affected_census_fields": "L6 external_evidence_admissibility; allowed_evidence_types for MI/Learning",
       "evidence_refs": [
-        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/",
+        "config/governance/master_v2_double_play_evidence_input_plane_p1_owner_decision_v1.json"
       ],
       "id": "O-002",
       "resolution_scope": "P1_OWNER_CONTRACT",
-      "status": "UNKNOWN",
+      "status": "RATIFIED",
       "topic": "L6_external_intelligence_evidence_admissibility"
     },
     {
@@ -620,10 +626,11 @@
       "L7_SCOPE_STATE"
     ],
     "new_contracts_requiring_owner_authority": [
-      "CanonicalMasterV2EvidenceEnvelopeV1 (Component A \u2014 not implemented)",
-      "CanonicalDpLayerInputBindingV1 (Component B \u2014 not implemented)",
-      "Any non-C1 external evidence type admission per layer"
+      "CanonicalMasterV2EvidenceEnvelopeV1 (P1 contract schema \u2014 runtime blocked)",
+      "CanonicalDpLayerInputBindingV1 (P1 contract schema \u2014 runtime blocked)",
+      "L6BoundedTypedExternalEvidenceInputV1 (P1 L6 typed seam \u2014 runtime blocked)"
     ],
+    "p1_authority_contracts_materialized": true,
     "proven_closed_layers": [
       "L10_BULL_BEAR_STATE_SWITCH",
       "L1_SELECTED_FUTURE",
@@ -639,8 +646,8 @@
       "L6_DYNAMIC_SCOPE_GENERATOR"
     ],
     "remains_blocked": [
-      "Component A/B implementation (explicitly out of P0 scope)",
-      "External-evidence admissibility for L6 beyond caller float (UNKNOWN)",
+      "Component A/B runtime implementation (P1 contract only)",
+      "Productive L6 typed-evidence binding (PRODUCTIVE_L6_BINDING_AUTHORIZED=false)",
       "L1 B-target without Cap 2.3/2.4 authority decision",
       "scope_event_generator vs transition_state conflict resolution (out of scope)",
       "FINAL_D_T_FORMULA_SELECTED=false"
@@ -660,7 +667,6 @@
     "unknown_layers": [
       "L1_SELECTED_FUTURE",
       "L2_MARKET_OBSERVATION",
-      "L6_DYNAMIC_SCOPE_GENERATOR",
       "L7_SCOPE_STATE"
     ]
   },
