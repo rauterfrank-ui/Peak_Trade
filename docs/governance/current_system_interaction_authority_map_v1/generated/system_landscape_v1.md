@@ -98,6 +98,7 @@ flowchart LR
   selection_cap23 --> step29m
   treasury_29p --> capital_risk_sizing
   universe_cap21 --> ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c --> learning_capture
   market_data_private_state_runtime_convergence_wp_c --> ranking_cap22
   market_data_private_state_runtime_convergence_wp_c --> execution_external_effect
   market_data_private_state_runtime_convergence_wp_c --> selection_cap23

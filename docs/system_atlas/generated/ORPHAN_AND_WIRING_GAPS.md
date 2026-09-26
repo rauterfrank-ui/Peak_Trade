@@ -41,7 +41,6 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_7_2_stateful_no_order | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_7_2_stateful_no_order | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_economic_md_input | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_economic_md_input | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:future_profile_snapshot_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:future_profile_snapshot_v1 | STATUS=OPEN (not proven) |  |
-| GAP_AUTO:NO_CONSUMER:CAPABILITY:market_data_private_state_runtime_convergence_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:market_data_private_state_runtime_convergence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:okx_eea_private_account_state_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:okx_eea_private_account_state_runtime_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:operator_profile_explainability_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:operator_profile_explainability_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:peak_trade_public_market_data_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:peak_trade_public_market_data_runtime_v1 | STATUS=OPEN (not proven) |  |

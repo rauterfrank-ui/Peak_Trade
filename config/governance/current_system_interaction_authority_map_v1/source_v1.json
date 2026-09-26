@@ -1448,6 +1448,30 @@
       ]
     },
     {
+      "id": "wp_c_converged_o4_to_ddo_learning",
+      "from_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "to_domain": "learning_capture",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "converged_o4_handoff_v1 for consumer o4_n_bars_learning; WP-A FinalizedPt1hO4BarFactV1 only; no forward_fill; no competing productive O4 session read",
+      "producer": "market_data_private_state_runtime_convergence_wp_c",
+      "consumer": "learning_capture",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVATION_ONLY_DDO_N_BARS_MATERIALIZATION",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "REUSES_WP_A_CANONICAL_PT1H_O4_FACTS",
+      "temporal_binding": "OFFLINE_AND_PRODUCTIVE_HOST_OBSERVATION",
+      "version_binding": "O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1",
+      "provenance_binding": "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py"
+      ]
+    },
+    {
       "id": "binding_to_mv2",
       "from_domain": "runtime_binding_cap24",
       "to_domain": "mv2_double_play",
@@ -2741,10 +2765,12 @@
     {
       "id": "learning_capture_hosts_and_ddo_durability",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 9ab34786 (src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1 (orchestrator decision_economics_cycle_bridge_v1). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
+      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 9ab34786 (src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
       "evidence_refs": [
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py",
+        "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "tests/learning/test_ddo_a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py"
       ]

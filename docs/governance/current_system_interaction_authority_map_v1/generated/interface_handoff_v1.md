@@ -54,6 +54,7 @@ flowchart LR
   selection_cap23 -->|step29m_consumes_selection| step29m
   treasury_29p -->|treasury_to_admission| capital_risk_sizing
   universe_cap21 -->|universe_to_ranking| ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_o4_to_ddo_learning| learning_capture
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_converged_public_ranking_handoff| ranking_cap22
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_effective_authorization_readmodel| execution_external_effect
   market_data_private_state_runtime_convergence_wp_c -->|wp_c_preserves_cap23_selection_owner| selection_cap23
@@ -922,6 +923,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/governed_futures_universe_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`
+
+## wp_c_converged_o4_to_ddo_learning
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=converged_o4_handoff_v1 for consumer o4_n_bars_learning; WP-A FinalizedPt1hO4BarFactV1 only; no forward_fill; no competing productive O4 session read
+- producer=market_data_private_state_runtime_convergence_wp_c
+- consumer=learning_capture
+- authority_effect=NONE
+- decision_effect=OBSERVATION_ONLY_DDO_N_BARS_MATERIALIZATION
+- direct_or_indirect=INDIRECT
+- identity_binding=REUSES_WP_A_CANONICAL_PT1H_O4_FACTS
+- temporal_binding=OFFLINE_AND_PRODUCTIVE_HOST_OBSERVATION
+- version_binding=O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
+- provenance_binding=tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py`, `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py`
 
 ## wp_c_converged_public_ranking_handoff
 
