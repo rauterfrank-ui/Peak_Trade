@@ -1,17 +1,17 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "3a50f1f944accf9a4dc9867d19016b3931227a5d",
+  "base_sha": "2d511513f42a2a6764e8334c84dcf5534fe8dab9",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
-    "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
+    "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
@@ -20,20 +20,25 @@
     "docs/system_atlas/relations/structural.yaml",
     "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
     "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "src/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
-    "tests/experiments/test_canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
+    "src/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
     "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
-    "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py"
+    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
+    "tests/learning/test_mi_offline_durable_evidence_store_v1.py",
+    "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
   ],
-  "changed_paths_sha256": "49bacfbcbb354232e58e99160f40b48349af87c2f6d510c4c549eb6e3003cbff",
+  "changed_paths_sha256": "d8cba22a4335c7017843a47207207d91d42997769eef63a0c555103c33e9045e",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
-    "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_MULTI_CYCLE_OFFLINE_REPLAY_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
+    "tests/learning/test_mi_offline_durable_evidence_store_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint Phase 10 closes d02_multi_cycle_replay_m8 with MI-crossing M5→M8 bounded offline multi-cycle replay, D02 edge IMPLEMENTED, map loop edge refresh, and atlas/catalog update. AUTHORITY=NONE."
+  "reason": "Unified Blueprint D02 Loop-B closes d02_loop_b_market_intelligence_offline with durable MI offline evidence store for Forecast/Calibration/Research, D02 edge IMPLEMENTED, map interface refresh, and atlas/catalog update. AUTHORITY=NONE."
 }

@@ -29,6 +29,7 @@ flowchart LR
   learning_ddo -->|learning_evidence_export_to_optimization| optimization_universe
   meta_learning -->|meta_search_backflow| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_compose_ddo_n_bars_outcome| learning_ddo
+  market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_durable_evidence_store_loop_b| market_intelligence_forecast_calibration_offline_stack_d03
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_multi_cycle_m5_m8_replay| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_optimization_research_input| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_typed_export_to_learning_path| learning_ddo
@@ -478,6 +479,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py`
+
+## mi_offline_durable_evidence_store_loop_b
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=mi_offline_durable_evidence_record_v1 append-only store for ForecastEvidence+CalibrationEvidence+MI_RESEARCH; idempotent identical replay; AUTHORITY=NONE
+- producer=market_intelligence_forecast_calibration_offline_stack_d03
+- consumer=market_intelligence_forecast_calibration_offline_stack_d03
+- authority_effect=NONE
+- decision_effect=OFFLINE_DURABLE_EVIDENCE_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=DURABLE_EVIDENCE_ID_FROM_FORECAST_CALIBRATION_RESEARCH_DIGESTS
+- temporal_binding=FORECAST_CREATED_BEFORE_OUTCOME_HORIZON_PRESERVED
+- version_binding=UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_V1
+- provenance_binding=tests/learning/test_mi_offline_durable_evidence_store_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json`, `tests/learning/test_mi_offline_durable_evidence_store_v1.py`, `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py`
 
 ## mi_offline_to_multi_cycle_m5_m8_replay
 

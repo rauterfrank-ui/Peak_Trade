@@ -27,6 +27,9 @@ PHASE_9_INTEGRATION_CONFIG: Final[str] = (
 PHASE_10_INTEGRATION_CONFIG: Final[str] = (
     "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json"
 )
+LOOP_B_DURABLE_STORE_CONFIG: Final[str] = (
+    "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json"
+)
 MAP_SOURCE: Final[str] = (
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
 )
@@ -217,6 +220,32 @@ def validate_d02_edges(doc: Mapping[str, Any], repo_root: Path) -> list[str]:
         elif m8_status == "PARTIAL":
             if not m8_replay.get("missing_dependency"):
                 errors.append("d02_multi_cycle_replay_m8 PARTIAL must document missing_dependency")
+
+    loop_b = by_id.get("d02_loop_b_market_intelligence_offline")
+    if loop_b:
+        loop_b_status = str(loop_b.get("implementation_status") or "")
+        loop_b_path = repo_root / LOOP_B_DURABLE_STORE_CONFIG
+        if loop_b_status == "IMPLEMENTED":
+            if not loop_b_path.is_file():
+                errors.append(
+                    "d02_loop_b_market_intelligence_offline IMPLEMENTED but Loop-B durable store config missing"
+                )
+            else:
+                from src.governance.unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1 import (
+                    prove_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1,
+                )
+
+                if not prove_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1(
+                    repo_root=repo_root
+                ):
+                    errors.append(
+                        "d02_loop_b_market_intelligence_offline IMPLEMENTED but Loop-B durable store proof failed"
+                    )
+        elif loop_b_status == "PARTIAL":
+            if not loop_b.get("missing_dependency"):
+                errors.append(
+                    "d02_loop_b_market_intelligence_offline PARTIAL must document missing_dependency"
+                )
 
     if doc.get("d02_closure_status") != D02ClosureStatus.PROVEN_COMPLETE_ADJUDICATION_ONLY.value:
         errors.append("d02_closure_status must be PROVEN_COMPLETE_ADJUDICATION_ONLY")

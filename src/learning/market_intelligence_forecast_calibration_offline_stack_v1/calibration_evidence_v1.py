@@ -206,3 +206,54 @@ def build_calibration_evidence_v1(
             "content_digest": digest,
         }
     )
+
+
+def validate_calibration_evidence_v1(
+    calibration_evidence: Mapping[str, Any],
+) -> MappingProxyType[str, Any]:
+    """Fail-closed revalidation of an existing CalibrationEvidence record."""
+    raw = require_mapping(calibration_evidence, "calibration_evidence")
+    if raw.get("schema_version") != SCHEMA_VERSION:
+        raise CalibrationEvidenceValidationError("CALIBRATION_SCHEMA_MISMATCH")
+    if raw.get("calibration_evidence_authority") != CALIBRATION_EVIDENCE_AUTHORITY:
+        raise CalibrationEvidenceValidationError("CALIBRATION_AUTHORITY_MUST_BE_NONE")
+    if raw.get("evidence_class") != EVIDENCE_CLASS_CALIBRATION:
+        raise CalibrationEvidenceValidationError("CALIBRATION_EVIDENCE_CLASS_MISMATCH")
+    required = (
+        "domain",
+        "forecast_evidence_id",
+        "n_bars",
+        "bar_spec_ref",
+        "forecast_kind",
+        "evaluability",
+        "calibration_method",
+        "calibration_result",
+        "calibration_evidence_id",
+        "content_digest",
+    )
+    missing = [key for key in required if key not in raw]
+    if missing:
+        raise CalibrationEvidenceValidationError("CALIBRATION_EVIDENCE_FIELDS_MISSING")
+    body_for_id: dict[str, Any] = {
+        "domain": raw["domain"],
+        "schema_version": raw["schema_version"],
+        "forecast_evidence_id": raw["forecast_evidence_id"],
+        "actual_outcome_ref": raw.get("actual_outcome_ref"),
+        "n_bars": raw["n_bars"],
+        "bar_spec_ref": raw["bar_spec_ref"],
+        "forecast_kind": raw["forecast_kind"],
+        "evaluability": raw["evaluability"],
+        "calibration_method": raw["calibration_method"],
+        "calibration_result": raw["calibration_result"],
+    }
+    if "provenance" in raw:
+        body_for_id["provenance"] = raw["provenance"]
+    expected_id = derive_calibration_evidence_id_v1(body=body_for_id)
+    if raw.get("calibration_evidence_id") != expected_id:
+        raise CalibrationEvidenceValidationError("CALIBRATION_EVIDENCE_ID_MISMATCH")
+    expected_digest = _calibration_digest({**body_for_id, "calibration_evidence_id": expected_id})
+    if raw.get("content_digest") != expected_digest:
+        raise CalibrationEvidenceValidationError("CALIBRATION_CONTENT_DIGEST_MISMATCH")
+    if not is_valid_sha256_hex_v0(str(raw["content_digest"])):
+        raise DdoValidationError("CALIBRATION_DIGEST_INVALID")
+    return MappingProxyType(dict(raw))

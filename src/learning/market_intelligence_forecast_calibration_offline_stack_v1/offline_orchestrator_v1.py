@@ -35,6 +35,10 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.fore
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.forecast_outcome_join_v1 import (
     assert_n_bars_observation_unmodified_v1,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_offline_durable_evidence_persist_v1 import (
+    MiOfflineDurableEvidencePersistRequestV1,
+    persist_mi_offline_durable_evidence_v1,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_optimization_research_input_v1 import (
     MarketIntelligenceOptimizationResearchInputRequestV1,
     validate_market_intelligence_optimization_research_input_v1,
@@ -95,6 +99,7 @@ class OfflineOrchestratorInputV1:
     failure_memory_request: CanonicalFailureMemoryRecordRequestV1 | None = None
     m4_experiment_plane_request: OptimizationUniverseExperimentPlaneRequestV1 | None = None
     run_mi_enriched_m4_closure: bool = False
+    mi_offline_durable_evidence_store_root: Any | None = None
 
 
 def run_market_intelligence_offline_orchestrator_cycle_v1(
@@ -116,6 +121,7 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
     calibrations: list[dict[str, Any]] = []
     projections: list[dict[str, Any]] = []
     mi_learning_exports: list[dict[str, Any]] = []
+    durable_persist_traces: list[dict[str, Any]] = []
 
     for scenario in request.scenarios:
         forecast = mint_forecast_evidence_v1(
@@ -158,6 +164,21 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
         forecasts.append(dict(forecast))
         calibrations.append(dict(calib))
         projections.append(dict(projection))
+        if request.mi_offline_durable_evidence_store_root is not None:
+            durable_persist_traces.append(
+                persist_mi_offline_durable_evidence_v1(
+                    request.mi_offline_durable_evidence_store_root,
+                    MiOfflineDurableEvidencePersistRequestV1(
+                        forecast_evidence=forecast,
+                        calibration_evidence=calib,
+                        research_evidence=projection,
+                        provenance={
+                            "orchestrator_id": ORCHESTRATOR_ID,
+                            "workpackage_id": WORKPACKAGE_ID,
+                        },
+                    ),
+                )
+            )
         mi_learning = compose_mi_to_learning_evidence_v1(
             forecast_evidence=forecast,
             evaluation_observation=obs,
@@ -235,6 +256,7 @@ def run_market_intelligence_offline_orchestrator_cycle_v1(
         "decision_attribution_query": dict(attribution),
         "legacy_learning_evidence": legacy_learning,
         "mi_learning_evidence_exports": mi_learning_exports,
+        "mi_offline_durable_evidence_persist": durable_persist_traces,
         "failure_memory_replay": failure_memory_trace,
         "runtime_reachability": False,
         "external_effect_authorized": False,

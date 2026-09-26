@@ -44,20 +44,22 @@ def test_mi_to_learning_marked_implemented_with_phase_8_proof() -> None:
     assert mi_edge["missing_dependency"] is None
 
 
-def test_d02_loop_b_is_next_unproven_dependency_in_summary() -> None:
+def test_no_partial_d02_edges_remain_after_loop_b_closure() -> None:
     summary = build_adjudication_summary_v1(repo_root=REPO_ROOT)
     assert "d02_mi_to_learning" in summary["PROVEN_COMPLETE_EDGES"]
     assert "d02_mi_to_optimization" in summary["PROVEN_COMPLETE_EDGES"]
     assert "d02_multi_cycle_replay_m8" in summary["PROVEN_COMPLETE_EDGES"]
-    assert "d02_loop_b" in str(summary["first_unproven_dependency_after_closure"])
+    assert "d02_loop_b_market_intelligence_offline" in summary["PROVEN_COMPLETE_EDGES"]
+    assert summary["PARTIAL_EDGES"] == []
+    assert "separate Owner authorization" in str(summary["first_unproven_dependency_after_closure"])
 
 
-def test_multi_cycle_replay_m8_implemented_after_phase_10() -> None:
+def test_loop_b_implemented_after_durable_store() -> None:
     doc = _doc()
     edges = {e["edge_id"]: e for e in doc["d02_inter_loop_edges"]}
-    m8 = edges["d02_multi_cycle_replay_m8"]
-    assert m8["implementation_status"] == "IMPLEMENTED"
-    assert m8.get("missing_dependency") is None
+    loop_b = edges["d02_loop_b_market_intelligence_offline"]
+    assert loop_b["implementation_status"] == "IMPLEMENTED"
+    assert loop_b.get("missing_dependency") is None
 
 
 def test_mi_to_learning_implemented_requires_phase_8_evidence_refs() -> None:
@@ -103,6 +105,7 @@ def test_mi_to_optimization_m4_implemented_after_phase_9() -> None:
         ("d02_mi_to_learning", "IMPLEMENTED"),
         ("d02_mi_to_optimization", "IMPLEMENTED"),
         ("d02_multi_cycle_replay_m8", "IMPLEMENTED"),
+        ("d02_loop_b_market_intelligence_offline", "IMPLEMENTED"),
     ],
 )
 def test_proven_edges_classified(edge_id: str, expected_status: str) -> None:

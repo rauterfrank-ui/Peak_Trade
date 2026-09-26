@@ -152,18 +152,21 @@
       "edge_id": "d02_loop_b_market_intelligence_offline",
       "loop": "Market Intelligence Loop (offline)",
       "producer": "market_state_refs + mint_forecast_evidence_v1",
-      "consumer": "CalibrationEvidence + MARKET_INTELLIGENCE_RESEARCH_EVIDENCE projection",
-      "payload_evidence_class": "FORECAST_EVIDENCE / CALIBRATION_EVIDENCE / MI_RESEARCH",
+      "consumer": "mi_offline_durable_evidence_store_v1 + CalibrationEvidence + MARKET_INTELLIGENCE_RESEARCH_EVIDENCE projection",
+      "payload_evidence_class": "FORECAST_EVIDENCE / CALIBRATION_EVIDENCE / MI_RESEARCH / MI_OFFLINE_DURABLE_EVIDENCE",
       "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
-      "authority_classification": "FORECAST_IS_NOT_DECISION; AUTHORITY=NONE",
-      "implementation_status": "PARTIAL",
-      "persistence_semantics": "Stateless offline orchestrator cycle; no durable MI evidence store",
-      "replay_semantics": "Deterministic contract tests; failure_memory replay hook in orchestrator only",
+      "authority_classification": "FORECAST_IS_NOT_DECISION; AUTHORITY=NONE; no market-fact ownership",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Append-only mi_offline_durable_evidence_store_v1 keyed by durable_evidence_id; idempotent identical replay; divergent duplicate fail-closed",
+      "replay_semantics": "tests/learning/test_mi_offline_durable_evidence_store_v1.py; Phase-10 durable persist binding",
       "evidence_refs": [
-        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
-        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
+        "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py",
+        "tests/learning/test_mi_offline_durable_evidence_store_v1.py",
+        "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
+        "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
       ],
-      "missing_dependency": "Materialized Market State/Behavior producer and durable MI evidence persistence not in CURRENT"
+      "missing_dependency": null
     },
     {
       "edge_id": "d02_learning_to_optimization",
@@ -307,6 +310,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint d02_loop_b durable MI evidence store completion (independent Owner authorization; not Phase 11 Surface Portfolio Closure)",
-  "next_implementation_boundary": "d02_loop_b durable MI store only; Phase 11 Surface Portfolio Closure and productive lineage remain separate authorization"
+  "first_unproven_dependency_after_closure": "No remaining PARTIAL Unified Blueprint D02 inter-loop edge on CURRENT; next blueprint surface (including Surface Portfolio Closure / productive lineage) requires separate Owner authorization and is not started",
+  "next_implementation_boundary": "Separate Owner authorization required; do not auto-start Phase 11 Surface Portfolio Closure or productive lineage"
 }

@@ -74,6 +74,7 @@ flowchart LR
   learning_ddo --> optimization_universe
   meta_learning --> optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 --> learning_ddo
+  market_intelligence_forecast_calibration_offline_stack_d03 --> market_intelligence_forecast_calibration_offline_stack_d03
   market_intelligence_forecast_calibration_offline_stack_d03 --> optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 --> optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 --> learning_ddo
