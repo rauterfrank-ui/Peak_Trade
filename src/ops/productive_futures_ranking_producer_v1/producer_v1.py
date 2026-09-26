@@ -58,6 +58,9 @@ from src.ops.productive_futures_ranking_producer_v1.single_writer_v1 import (
     DuplicateRankingWriterError,
     ProductiveRankingSingleWriterV1,
 )
+from src.ops.peak_trade_ranking_feature_production_v1.models_v1 import (
+    RankingFeatureProductionSnapshotV1,
+)
 
 
 def _rfc3339(unix: float) -> str:
@@ -197,6 +200,7 @@ def _validate_universe_dict_v1(
 def produce_productive_futures_ranking_v1(
     *,
     universe_snapshot: Mapping[str, Any] | None,
+    feature_production_snapshot: Mapping[str, Any] | RankingFeatureProductionSnapshotV1 | None,
     repository_sha: str,
     producer_observed_at_unix: float,
     max_universe_age_seconds: float = DEFAULT_MAX_UNIVERSE_AGE_SECONDS,
@@ -206,7 +210,7 @@ def produce_productive_futures_ranking_v1(
     dashboard_payload: Mapping[str, Any] | None = None,
     legacy_ranker_payload: Mapping[str, Any] | None = None,
 ) -> RankingProduceResultV1:
-    """Produce a deterministic ranking snapshot from a Cap 2.1 universe snapshot."""
+    """Produce a deterministic Cap 2.2 ranking snapshot from Cap 2.1 + B05 features."""
     wall_rfc = _rfc3339(producer_observed_at_unix)
     config_digest = compute_config_digest_v1(
         repository_sha=repository_sha,
@@ -234,6 +238,44 @@ def produce_productive_futures_ranking_v1(
             event_time=wall_rfc,
             snapshot_state=SNAPSHOT_STATE_INVALID_INPUT,
             failure_codes=(RankingFailureCodeV1.LEGACY_RANKER_INPUT_FORBIDDEN.value,),
+            ranking_snapshot_id=ranking_snapshot_id,
+        )
+        return RankingProduceResultV1(snap, False, True, snap.failure_codes)
+
+    if feature_production_snapshot is None:
+        snap = _failure_snapshot(
+            repository_sha=repository_sha,
+            config_digest=config_digest,
+            wall_rfc=wall_rfc,
+            event_time=wall_rfc,
+            snapshot_state=SNAPSHOT_STATE_INVALID_INPUT,
+            failure_codes=(
+                RankingFailureCodeV1.ECONOMIC_FEATURE_PRODUCTION_SNAPSHOT_MISSING.value,
+            ),
+            ranking_snapshot_id=ranking_snapshot_id,
+        )
+        return RankingProduceResultV1(snap, False, True, snap.failure_codes)
+
+    try:
+        if isinstance(feature_production_snapshot, RankingFeatureProductionSnapshotV1):
+            feature_snap = feature_production_snapshot
+        else:
+            feature_snap = RankingFeatureProductionSnapshotV1.from_dict(feature_production_snapshot)
+        from src.ops.peak_trade_ranking_feature_production_v1.producer_v1 import (
+            validate_ranking_feature_production_snapshot_v1,
+        )
+
+        validate_ranking_feature_production_snapshot_v1(feature_snap)
+    except Exception:  # noqa: BLE001
+        snap = _failure_snapshot(
+            repository_sha=repository_sha,
+            config_digest=config_digest,
+            wall_rfc=wall_rfc,
+            event_time=wall_rfc,
+            snapshot_state=SNAPSHOT_STATE_INVALID_INPUT,
+            failure_codes=(
+                RankingFailureCodeV1.ECONOMIC_FEATURE_PRODUCTION_SNAPSHOT_INVALID.value,
+            ),
             ranking_snapshot_id=ranking_snapshot_id,
         )
         return RankingProduceResultV1(snap, False, True, snap.failure_codes)
@@ -288,10 +330,13 @@ def produce_productive_futures_ranking_v1(
         return RankingProduceResultV1(snap, False, True, snap.failure_codes)
 
     universe_dict = universe.to_dict()
-    ranked, excluded, _exclusion_counts = classify_and_rank_candidates_v1(
+    economic = classify_and_rank_candidates_v1(
         universe_dict,
+        feature_production_snapshot=feature_snap,
         top_n=top20_limit,
     )
+    ranked = economic.ranked
+    excluded = economic.excluded
     reintro = assert_no_reintroduced_excluded_instruments_v1(
         universe_snapshot=universe_dict,
         ranked=ranked,
@@ -335,6 +380,15 @@ def produce_productive_futures_ranking_v1(
         config_digest=config_digest,
         repository_sha=repository_sha,
     )
+    auth = authority_block()
+    auth = {
+        **auth,
+        "economic_rank_state": economic.economic_rank_state,
+        "s_star_count": economic.s_star_count,
+        "economic_explainability_digest": economic.explainability.integrity_digest,
+        "feature_production_snapshot_id": feature_snap.production_snapshot_id,
+        "feature_production_digest": feature_snap.production_digest,
+    }
     snap = ProductiveFuturesRankingSnapshotV1(
         schema_version=SCHEMA_VERSION,
         capability_id=CAPABILITY_ID,
@@ -362,7 +416,7 @@ def produce_productive_futures_ranking_v1(
         multi_future_authority_created=False,
         dashboard_input_used=False,
         ranking_policy_provenance=RANKING_POLICY_PROVENANCE,
-        authority=authority_block(),
+        authority=auth,
         call_graph=CALL_GRAPH,
         failure_codes=tuple(failure_codes),
     ).with_integrity_digest()
@@ -378,6 +432,7 @@ def produce_productive_futures_ranking_v1(
 def produce_from_universe_state_root_v1(
     *,
     universe_state_root: Path,
+    feature_production_snapshot: Mapping[str, Any] | RankingFeatureProductionSnapshotV1 | None,
     repository_sha: str,
     producer_observed_at_unix: float,
     max_universe_age_seconds: float = DEFAULT_MAX_UNIVERSE_AGE_SECONDS,
@@ -416,6 +471,7 @@ def produce_from_universe_state_root_v1(
         return RankingProduceResultV1(snap, False, True, snap.failure_codes)
     return produce_productive_futures_ranking_v1(
         universe_snapshot=loaded.snapshot.to_dict(),
+        feature_production_snapshot=feature_production_snapshot,
         repository_sha=repository_sha,
         producer_observed_at_unix=producer_observed_at_unix,
         max_universe_age_seconds=max_universe_age_seconds,
@@ -429,6 +485,9 @@ def run_productive_futures_ranking_producer_v1(
     *,
     state_root: Path,
     universe_snapshot: Mapping[str, Any] | None = None,
+    feature_production_snapshot: Mapping[str, Any]
+    | RankingFeatureProductionSnapshotV1
+    | None = None,
     universe_state_root: Path | None = None,
     repository_sha: str,
     producer_observed_at_unix: float,
@@ -467,6 +526,7 @@ def run_productive_futures_ranking_producer_v1(
         if universe_snapshot is None and universe_state_root is not None:
             produced = produce_from_universe_state_root_v1(
                 universe_state_root=Path(universe_state_root),
+                feature_production_snapshot=feature_production_snapshot,
                 repository_sha=repository_sha,
                 producer_observed_at_unix=producer_observed_at_unix,
                 max_universe_age_seconds=max_universe_age_seconds,
@@ -476,6 +536,7 @@ def run_productive_futures_ranking_producer_v1(
         else:
             produced = produce_productive_futures_ranking_v1(
                 universe_snapshot=universe_snapshot,
+                feature_production_snapshot=feature_production_snapshot,
                 repository_sha=repository_sha,
                 producer_observed_at_unix=producer_observed_at_unix,
                 max_universe_age_seconds=max_universe_age_seconds,

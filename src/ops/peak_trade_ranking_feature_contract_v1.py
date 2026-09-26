@@ -31,7 +31,6 @@ from src.ops.peak_trade_ranking_matrix_policy_v1 import (
     POLICY_ID,
     POLICY_VERSION,
     PRODUCTIVE_ECONOMIC_RANK_ACTIVATION,
-    ECONOMIC_RANK_ACTIVATED,
     SCORE_CONSTRUCTION,
     SOLE_PRODUCTIVE_SELECTION_OWNER,
     CROSS_UNIVERSE_AUTHORITY,
@@ -66,6 +65,9 @@ RUNTIME_AUTHORIZATION_EFFECT = "NONE"
 SELECTION_AUTHORITY_CREATED = False
 BINDING_EFFECT = False
 RUNTIME_WIRING_ADDED = False
+# Contract seam pin: B04 itself does not activate Cap 2.2 economic ranking.
+# Cap 2.2 B06 sets ECONOMIC_RANK_ACTIVATED on the ranking producer / B03 matrix.
+ECONOMIC_RANK_ACTIVATED = False
 
 RATIFIED_ECONOMIC_FEATURE_POLICY_IDS: tuple[str, ...] = (
     VOLATILITY_POLICY_ID,
@@ -792,8 +794,9 @@ def validate_explainability_witness_v1(
         raise PeakTradeRankingFeatureContractError("BINDING_EFFECT_FORBIDDEN")
     if auth.get("PRODUCTIVE_ECONOMIC_RANK_ACTIVATION"):
         raise PeakTradeRankingFeatureContractError("PRODUCTIVE_ACTIVATION_FORBIDDEN")
-    if auth.get("ECONOMIC_RANK_ACTIVATED"):
-        raise PeakTradeRankingFeatureContractError("ECONOMIC_RANK_ACTIVATED_FORBIDDEN")
+    # ECONOMIC_RANK_ACTIVATED may be true once Cap 2.2 B06 wires ranking order.
+    # PRODUCTIVE_ECONOMIC_RANK_ACTIVATION remains forbidden until Input-2 max-age
+    # is Owner-ratified.
 
 
 def load_contract_config_v1() -> dict[str, Any]:

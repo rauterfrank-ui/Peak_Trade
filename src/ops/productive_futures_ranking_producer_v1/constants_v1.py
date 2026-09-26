@@ -10,18 +10,24 @@ OWNER = "ops.productive_futures_ranking_producer_v1"
 AUTHORITY_OWNER = OWNER
 SINGLE_WRITER_IDENTITY = "productive_futures_ranking_snapshot_writer_v1"
 
-RANKING_POLICY_ID = "productive_futures_universe_structural_ranking_v1"
+RANKING_POLICY_ID = "PEAK_TRADE_RANKING_MATRIX_POLICY_V1"
 RANKING_POLICY_VERSION = "v1"
 
-# Provenance: Cap 2.1 governed universe instrument structural gates only.
-# Explicitly excludes research cross-sectional formulas, dashboard heuristics,
-# and Master V2 / Double Play trading scores.
+# Provenance: B03 Peak_Trade ranking matrix + B04/B05 economic features.
+# Structural Cap 2.1 gates remain eligibility-only and are not summed into
+# the economic attractiveness score. Venue-native id is final tie fallback only.
 RANKING_POLICY_PROVENANCE = (
-    "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1 instrument fields "
-    "+ CAPABILITY_2_2 owner requirements (data-quality eligibility, deterministic "
-    "tie-break, Top-20 candidate context). No trading-alpha heuristic. "
-    "No arbitrary market-signal weights. Equal structural gate components only."
+    "PEAK_TRADE_RANKING_MATRIX_POLICY_V1 equal-weight midrank-percentile "
+    "composite over CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1 and "
+    "CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1 from Cap-2.1-eligible S_STAR; "
+    "B05 feature production + B04 contract; venue_native_id ASC final fallback only. "
+    "No PROFILE_ONLY promotion. No Cap 2.3 selection authority."
 )
+
+ECONOMIC_RANK_ACTIVATED = True
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED = True
+PRODUCTIVE_ECONOMIC_RANK_ACTIVATION = False
+B06_IMPLEMENTED = True
 
 TOP20_CANDIDATE_CONTEXT_LIMIT = 20
 MAX_POSITIONS_EFFECTIVE = 1
@@ -72,7 +78,8 @@ CALL_GRAPH = (
     "validate_universe_bindings",
     "stale_and_integrity_checks",
     "structural_eligibility_classification",
-    "deterministic_score_and_tie_break",
+    "consume_b05_feature_production_snapshot",
+    "b03_economic_score_and_order",
     "top20_candidate_context",
     "atomic_persistence",
     "snapshot_verification",

@@ -21,13 +21,6 @@ from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
     ProductiveFuturesRankingSnapshotV1,
     RankedCandidateV1,
 )
-from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
-    load_and_validate_ranking_snapshot_v1,
-)
-from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
-    produce_productive_futures_ranking_v1,
-    run_productive_futures_ranking_producer_v1,
-)
 
 __all__ = [
     "CAPABILITY_ID",
@@ -43,3 +36,25 @@ __all__ = [
     "produce_productive_futures_ranking_v1",
     "run_productive_futures_ranking_producer_v1",
 ]
+
+
+def __getattr__(name: str):
+    if name == "load_and_validate_ranking_snapshot_v1":
+        from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
+            load_and_validate_ranking_snapshot_v1,
+        )
+
+        return load_and_validate_ranking_snapshot_v1
+    if name == "produce_productive_futures_ranking_v1":
+        from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
+            produce_productive_futures_ranking_v1,
+        )
+
+        return produce_productive_futures_ranking_v1
+    if name == "run_productive_futures_ranking_producer_v1":
+        from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
+            run_productive_futures_ranking_producer_v1,
+        )
+
+        return run_productive_futures_ranking_producer_v1
+    raise AttributeError(name)

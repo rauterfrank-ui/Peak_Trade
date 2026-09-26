@@ -417,13 +417,14 @@ entities:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
     notes: >-
       B03 governance persist: PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies
-      Cap 2.2 ranking policy semantics (balanced movement structure;
-      policy-only). Current productive ranking runtime remains Cap-2.1-only
-      structural ranking until B06 wires fail-closed.
-      PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false.
-      Future economic dual-input is authorized by
-      CONTRACT:cap22_economic_md_dual_input_v1 and is not wired.
-      The separate Economic-MD producer is implemented not scheduled.
+      Cap 2.2 ranking policy semantics (balanced movement structure).
+      B06 Cap 2.2 Peak_Trade economic ranking runtime is wired
+      (ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true)
+      using B05 raw features and B04 contracts. PRODUCTIVE_ECONOMIC_RANK_ACTIVATION
+      remains false until INPUT2_MAX_AGE_SECONDS is Owner-ratified.
+      Cap 2.3 remains sole productive selection owner.
+      Future economic dual-input architecture remains in
+      CONTRACT:cap22_economic_md_dual_input_v1.
       Offline policy candidates and evidence requirements are persisted by
       CONTRACT:cap22_offline_policy_candidates_and_evidence_v1.
       Offline MVR spread formula and comparison keys are persisted by
@@ -585,10 +586,43 @@ entities:
     notes: >-
       B05 Cap-2.1 / Input-2 raw ranking feature production from Economic-MD
       snapshots into B04 raw DTOs. B05_IMPLEMENTED=true;
-      PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false;
-      INPUT2_MAX_AGE_SECONDS_RATIFIED=false; no rank/selection/binding;
-      cross-sectional normalization deferred to Cap 2.2 / B06.
-      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+      PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false
+      on the B05 production surface; INPUT2_MAX_AGE_SECONDS_RATIFIED=false;
+      no selection/binding. Cap 2.2 B06 consumes these raw features for
+      economic score/order. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    kind: CAPABILITY
+    name: Cap 2.2 Peak_Trade Economic Ranking Runtime V1 (B06)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md
+      - docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md
+    source_paths:
+      - src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/constants_v1.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/score_construction_v1.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/synthesize_ready_features_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/ranking_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/__init__.py
+      - src/ops/productive_futures_ranking_producer_v1/models_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+    evidence_sources:
+      - docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md
+      - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+    notes: >-
+      B06 wires Cap 2.2 productive ranking order to B03 Peak_Trade economic
+      score over B05 raw features. ECONOMIC_RANK_ACTIVATED=true;
+      CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true;
+      PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; Cap 2.3 sole selection owner;
+      no binding/live/external effects. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
     kind: CONTRACT
@@ -1683,11 +1717,20 @@ entities:
     epistemic_class: ADJUDICATED
     current_canonical: false
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-    modified_by: PENDING_CHANGE
+    modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+    source_paths:
+      - src/ops/productive_futures_ranking_producer_v1/__init__.py
+      - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/models_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/ranking_v1.py
+      - src/ops/productive_futures_ranking_producer_v1/reason_codes_v1.py
     evidence_sources:
       - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
     notes: >-
       Cap23 governed pin consumes one full Cap 2.2 snapshot identity.
+      B06 wires Peak_Trade economic order into this selector surface.
       No cross-universe ranking merge, normalization, or candidate borrowing.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 

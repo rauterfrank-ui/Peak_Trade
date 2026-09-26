@@ -106,6 +106,10 @@ from src.ops.single_selected_future_policy_v1.reason_codes_v1 import SelectionFa
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE as CAP24_MAX_POSITIONS,
 )
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
+
 
 REPO_SHA = "22e6174ce1bcfa94d1256ebfe6bce6525df23022"
 OBSERVED_UNIX = 1_700_000_100.0
@@ -170,6 +174,7 @@ def _ranking(rows: list[dict], *, source_event: str = SOURCE_EVENT) -> dict:
     ).snapshot.to_dict()
     return produce_productive_futures_ranking_v1(
         universe_snapshot=uni,
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     ).snapshot.to_dict()

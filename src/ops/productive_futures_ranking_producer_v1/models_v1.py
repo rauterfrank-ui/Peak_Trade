@@ -269,6 +269,12 @@ def authority_block() -> dict[str, Any]:
         "RANKING_POLICY_ID": RANKING_POLICY_ID,
         "RANKING_POLICY_VERSION": RANKING_POLICY_VERSION,
         "TOP20_IS_CONTEXT_ONLY": True,
+        "ECONOMIC_RANK_ACTIVATED": True,
+        "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED": True,
+        "PRODUCTIVE_ECONOMIC_RANK_ACTIVATION": False,
+        "B06_IMPLEMENTED": True,
+        "CAP23_SOLE_SELECTION_OWNER": True,
+        "INPUT2_MAX_AGE_SECONDS_RATIFIED": False,
     }
 
 
@@ -279,13 +285,22 @@ def compute_config_digest_v1(
     top20_limit: int = TOP20_CANDIDATE_CONTEXT_LIMIT,
     venue: str = VENUE,
 ) -> str:
+    from src.ops.peak_trade_ranking_matrix_policy_v1 import (
+        compute_ranking_matrix_policy_digest_v1,
+    )
+
     payload = {
+        "b06_implemented": True,
         "capability_id": CAPABILITY_ID,
         "schema_version": SCHEMA_VERSION,
         "producer_version": PRODUCER_VERSION,
         "ranking_policy_id": RANKING_POLICY_ID,
         "ranking_policy_version": RANKING_POLICY_VERSION,
+        "ranking_matrix_policy_digest": compute_ranking_matrix_policy_digest_v1(),
         "score_component_keys": list(SCORE_COMPONENT_KEYS),
+        "economic_rank_activated": True,
+        "cap22_productive_economic_runtime_wired": True,
+        "productive_economic_rank_activation": False,
         "venue": venue,
         "max_universe_age_seconds": float(max_universe_age_seconds),
         "top20_candidate_context_limit": int(top20_limit),
