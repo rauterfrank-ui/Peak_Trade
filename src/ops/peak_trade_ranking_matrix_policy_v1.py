@@ -115,7 +115,7 @@ FINAL_SCORE_FORMULA_RATIFIED = True
 FINAL_WEIGHTS_RATIFIED = True
 
 RUNTIME_WIRING_ADDED_BY_THIS_SLICE = False
-B04_IMPLEMENTED = False
+B04_IMPLEMENTED = True
 B05_IMPLEMENTED = False
 B06_IMPLEMENTED = False
 
@@ -125,7 +125,6 @@ RESIDUAL_TIE_BREAK: tuple[str, ...] = (
 )
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
-    "b04_implemented",
     "b05_implemented",
     "b06_implemented",
     "cap22_productive_economic_runtime_wired",
@@ -139,6 +138,7 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
 )
 
 TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
+    "b04_implemented",
     "b03_ratified",
     "cap22_ranking_policy_authority",
     "cross_sectional_normalization_ratified",

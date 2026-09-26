@@ -531,7 +531,31 @@ entities:
       POLICY_RATIFIED=true; RUNTIME_ACTIVATED=false;
       PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false;
       INPUT2_MAX_AGE_SECONDS_RATIFIED=false.
-      No B04/B05/B06 runtime wiring. Cap 2.3 remains sole selection owner.
+      No B05/B06 runtime wiring. B04 feature contract typed seam only.
+      Cap 2.3 remains sole selection owner.
+      Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:peak_trade_ranking_feature_contract_v1
+    kind: CONTRACT
+    name: Peak Trade Ranking Feature Contract V1 (B04)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: B04_RANKING_FEATURE_CONTRACT_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md
+    source_paths:
+      - src/ops/peak_trade_ranking_feature_contract_v1.py
+    evidence_sources:
+      - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md
+      - config/governance/peak_trade_ranking_feature_contract_v1.json
+      - src/ops/peak_trade_ranking_feature_contract_v1.py
+    notes: >-
+      B04 typed ranking feature contract/DTO seam bound to B03 policy.
+      B04_IMPLEMENTED=true; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false;
+      ECONOMIC_RANK_ACTIVATED=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false;
+      Cap 2.3 sole selection owner unchanged. No B05/B06 runtime wiring.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1

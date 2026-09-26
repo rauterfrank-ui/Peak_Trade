@@ -92,7 +92,7 @@ def test_validate_accepts_canonical_declaration() -> None:
         "input2_max_age_seconds_ratified": False,
         "cap23_selection_authority_added": False,
         "runtime_wiring_added_by_this_slice": False,
-        "b04_implemented": False,
+        "b04_implemented": True,
         "b05_implemented": False,
         "b06_implemented": False,
         "cap22_productive_economic_runtime_wired": False,
@@ -131,8 +131,8 @@ def test_no_runtime_wiring_in_ranking_producer() -> None:
     assert "balanced_movement_score" not in text
 
 
-def test_no_b04_b05_b06_flags_true() -> None:
-    assert B04_IMPLEMENTED is False
+def test_b04_implemented_b05_b06_not_implemented() -> None:
+    assert B04_IMPLEMENTED is True
     assert B05_IMPLEMENTED is False
     assert B06_IMPLEMENTED is False
     assert RUNTIME_WIRING_ADDED_BY_THIS_SLICE is False

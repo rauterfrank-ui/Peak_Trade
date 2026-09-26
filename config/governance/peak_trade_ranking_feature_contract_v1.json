@@ -1,0 +1,27 @@
+{
+  "authority_effect": "NONE",
+  "b04_implemented": true,
+  "binding_effect": false,
+  "canonical_serialization_version": "peak_trade_ranking_feature_contract_canonical_json_v1",
+  "contract_id": "PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1",
+  "contract_version": "peak_trade_ranking_feature_contract/v1",
+  "economic_rank_activated": false,
+  "feature_contract_digest": "46b30c1ce5c6889a3773f4035e072fa7dd98a1350a9cc0e8bb4e77e6a5c8abe5",
+  "input2_max_age_seconds": "UNRATIFIED",
+  "input2_max_age_seconds_ratified": false,
+  "owner": "src.ops.peak_trade_ranking_feature_contract_v1",
+  "owner_go_this_slice": "PEAK_TRADE_B04_RANKING_FEATURE_CONTRACT_V1",
+  "productive_economic_rank_activation": false,
+  "ratified_economic_feature_policy_ids": [
+    "CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1",
+    "CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1"
+  ],
+  "ranking_policy_id": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+  "ranking_policy_version": "v1",
+  "runtime_authorization_effect": "NONE",
+  "runtime_wiring_added": false,
+  "schema_version": "peak_trade_ranking_feature_witness.v1",
+  "score_construction_id": "EQUAL_WEIGHT_CROSS_SECTIONAL_MIDRANK_PERCENTILE_COMPOSITE_V1",
+  "selection_authority_created": false,
+  "structural_eligibility_ranking_authority": false
+}
