@@ -15,7 +15,10 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     DIRECT_PRODUCER_TO_DP_BYPASS,
     IMPLEMENTS_P5_PRODUCER_PRODUCTIVE_INGRESS,
     PRODUCER_TRADING_AUTHORITY,
+    build_p5_producer_closure_matrix_v1,
     prove_p5_producer_productive_ingress_v1,
+    run_meta_learning_lineage_census_v1,
+    run_optimization_lineage_census_v1,
     run_p5_producer_census_v1,
     scan_producer_class_bypass_v1,
     terminate_learning_conditioned_evaluative_at_a_v1,
@@ -151,6 +154,28 @@ def test_loop_a_cycle_includes_a_termination(tmp_path: Path) -> None:
     assert term is not None
     assert term["market_intelligence"]["disposition"] == ADMIT_DISPOSITION
     assert term["learning"]["disposition"] == ADMIT_DISPOSITION
+
+
+def test_optimization_lineage_classification_d() -> None:
+    lineage = run_optimization_lineage_census_v1(REPO_ROOT)
+    assert lineage["classification"] == "D"
+    assert lineage["productive_lineage_proven"] is False
+    assert lineage["promotion_to_a_mechanically_allowed"] is False
+
+
+def test_meta_learning_lineage_classification_c_research_only() -> None:
+    lineage = run_meta_learning_lineage_census_v1(REPO_ROOT)
+    assert lineage["classification"] == "C"
+    assert lineage["productive_lineage_proven"] is False
+    assert lineage["meta_evidence_v1_vs_p2_kind_relation"]["equated"] is False
+
+
+def test_closure_matrix_mi_learning_terminate_at_a() -> None:
+    matrix = build_p5_producer_closure_matrix_v1(REPO_ROOT)
+    assert matrix["market_intelligence"]["TERMINATES_AT_A"] is True
+    assert matrix["learning"]["TERMINATES_AT_A"] is True
+    assert matrix["optimization"]["TERMINATES_AT_A"] is False
+    assert matrix["meta_learning"]["TERMINATES_AT_A"] is False
 
 
 def test_census_and_proof_bundle() -> None:

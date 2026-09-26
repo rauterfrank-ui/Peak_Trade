@@ -20,6 +20,9 @@ OWNER_DECISION_CONFIG: Final[str] = (
 PROMOTION_ADMISSION_CONFIG: Final[str] = (
     "config/governance/master_v2_double_play_evidence_input_plane_p5_evidence_promotion_admissions_v1.json"
 )
+OWNER_PROMOTION_AUTHORITY_DECISION: Final[str] = (
+    "config/governance/master_v2_double_play_evidence_input_plane_p5_owner_promotion_authority_decision_v1.json"
+)
 BASELINE_SHA: Final[str] = "ae63905816c2d4033c0674587b87bbf823477e19"
 
 PRODUCER_TRADING_AUTHORITY: Final[str] = "NONE"

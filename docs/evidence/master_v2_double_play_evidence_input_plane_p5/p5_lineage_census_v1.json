@@ -1,0 +1,85 @@
+{
+  "meta_learning": {
+    "authority_markers": {
+      "no_automatic_promotion": true,
+      "optimization_direct_productive_write": "FORBIDDEN"
+    },
+    "classification": "C",
+    "classification_label": "CURRENT_RESEARCH_ONLY_RUNTIME_NOT_PRODUCTIVE_LINEAGE",
+    "current_meta_learning_runtime_surfaces": [
+      {
+        "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
+        "output_schema": "meta_learning_evidence_v1",
+        "productive_authority": "NONE",
+        "role": "offline_meta_learning_ingest"
+      },
+      {
+        "module": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+        "output_schema": "meta_evidence_v1",
+        "permitted_use": "RESEARCH_ONLY",
+        "productive_authority": "NONE",
+        "role": "typed_routing_envelope"
+      },
+      {
+        "module": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+        "output_schema": "canonical_meta_evidence_dual_router_v1",
+        "productive_authority": "NONE",
+        "role": "research_consumer_routing"
+      }
+    ],
+    "direct_b_or_dp_wiring": false,
+    "downstream_consumers": [
+      "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "src/experiments/canonical_meta_to_learning_research_adaptation_input_v1.py"
+    ],
+    "earliest_blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+    "instrument_epoch_in_artifact": false,
+    "instrument_epoch_notes": "meta_learning_evidence_v1 carries observed_regime_or_context_ref only; no InstrumentBindingV1 / market_observation_epoch without external fabrication.",
+    "meta_evidence_v1_vs_p2_kind_relation": {
+      "equated": false,
+      "reason": "meta_evidence_v1 is Phase-23 RESEARCH_ONLY routing envelope; meta_learning_routed_evidence_v1 is P1/P2 Master V2 bounded L6 evidence kind. Conversion requires explicit semantic binding not established on CURRENT main."
+    },
+    "p2_registered_evidence_kind": "meta_learning_routed_evidence_v1",
+    "p2_registered_producer_id": "meta_learning.routed_evidence.producer",
+    "productive_lineage_proven": false,
+    "promotion_to_a_mechanically_allowed": false
+  },
+  "optimization": {
+    "classification": "D",
+    "classification_label": "NO_CURRENT_PRODUCER_FOR_P2_REGISTERED_KIND",
+    "current_optimization_runtime_surfaces": [
+      {
+        "module": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
+        "output_schema": "canonical_optimization_experiment_evidence_v1",
+        "productive_authority": "NONE",
+        "role": "offline_experiment_plane"
+      },
+      {
+        "module": "src/experiments/canonical_optimizable_envelope_v1.py",
+        "output_schema": "canonical_optimizable_envelope_v1",
+        "productive_authority": "NONE",
+        "role": "research_envelope_resolver_not_p2_kind"
+      },
+      {
+        "module": "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
+        "output_schema": "canonical_optimization_productive_lineage_registry_v1",
+        "productive_authority": "NONE",
+        "role": "lineage_census_not_evidence_emission"
+      }
+    ],
+    "direct_b_or_dp_wiring": false,
+    "downstream_consumers": [
+      "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+      "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py"
+    ],
+    "earliest_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+    "p2_registered_evidence_kind": "optimization_envelope_evidence_v1",
+    "p2_registered_producer_id": "optimization.envelope_evidence.producer",
+    "productive_lineage_proven": false,
+    "promotion_to_a_mechanically_allowed": false,
+    "schema_equivalence_notes": "No repository module validates or emits schema optimization_envelope_evidence_v1. canonical_optimizable_envelope_v1 and canonical_optimization_experiment_evidence_v1 are distinct governed contracts; mapping either to P2 kind would invent semantics.",
+    "schema_equivalence_to_p2_kind": "NOT_PROVEN"
+  },
+  "schema_version": "master_v2_double_play_evidence_input_plane_p5_lineage_census/v1",
+  "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
+}

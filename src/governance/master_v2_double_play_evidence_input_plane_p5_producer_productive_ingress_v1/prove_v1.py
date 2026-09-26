@@ -20,7 +20,12 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.constants_v1 import (
     BASELINE_SHA,
+    OWNER_PROMOTION_AUTHORITY_DECISION,
     WORKPACKAGE_ID,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.lineage_census_v1 import (
+    build_p5_producer_closure_matrix_v1,
+    run_p5_lineage_census_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.ingress_v1 import (
     terminate_learning_conditioned_evaluative_at_a_v1,
@@ -38,6 +43,7 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 P5_EVIDENCE_REL: Final[str] = (
     "docs/evidence/master_v2_double_play_evidence_input_plane_p5/p5_proof_bundle_v1.json"
 )
+PREVIOUS_REVIEWED_HEAD_SHA: Final[str] = "957486c2dd051542a43db2d16177854092bded87"
 
 
 def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
@@ -112,15 +118,43 @@ def prove_p5_producer_productive_ingress_v1(repo_root: Path | None = None) -> di
             else "FAIL_CLOSED"
         )
     )
-    earliest_blocker = blocked[0]["blocker"] if blocked else None
+    opt_blocker = next(
+        (e["blocker"] for e in blocked if e.get("producer_class") == "optimization"),
+        None,
+    )
+    meta_blocker = next(
+        (e["blocker"] for e in blocked if e.get("producer_class") == "meta_learning"),
+        None,
+    )
+    lineage = run_p5_lineage_census_v1(root)
+    closure_matrix = build_p5_producer_closure_matrix_v1(root)
+    owner_promotion_path = root / OWNER_PROMOTION_AUTHORITY_DECISION
+    owner_promotion_loaded = owner_promotion_path.is_file()
+    owner_promotion_authority_used = owner_promotion_loaded and not all_at_a
     return {
         "schema_version": "master_v2_double_play_evidence_input_plane_p5_proof/v1",
         "workpackage_id": WORKPACKAGE_ID,
         "baseline_sha": BASELINE_SHA,
+        "previous_reviewed_head_sha": PREVIOUS_REVIEWED_HEAD_SHA,
         "verdict": verdict,
         "p5_status": verdict,
         "p5_all_paths_terminate_at_a": all_at_a,
-        "earliest_genuine_blocker": earliest_blocker,
+        "earliest_genuine_blocker": opt_blocker,
+        "optimization_blocker": opt_blocker,
+        "meta_learning_blocker": meta_blocker,
+        "owner_promotion_authority_decision_ref": OWNER_PROMOTION_AUTHORITY_DECISION,
+        "owner_promotion_authority_loaded": owner_promotion_loaded,
+        "owner_promotion_authority_used": owner_promotion_authority_used,
+        "owner_authorized_vs_mechanically_implemented": {
+            "OWNER_AUTHORIZED": owner_promotion_loaded,
+            "MECHANICALLY_IMPLEMENTED": all_at_a,
+            "RUNTIME_REACHABLE_AT_A": all(
+                row.get("TERMINATES_AT_A") for row in closure_matrix.values()
+            ),
+            "PROVEN_COMPLETE": verdict == "PROVEN_COMPLETE",
+        },
+        "lineage_census": lineage,
+        "producer_closure_matrix": closure_matrix,
         "producer_census": census,
         "authority_contract_ok": authority.ok,
         "owner_decision_config_ok": owner.ok,
@@ -142,6 +176,14 @@ def write_p5_proof_artifacts_v1(repo_root: Path | None = None) -> Path:
     )
     (out_dir / "p5_producer_census_v1.json").write_text(
         json.dumps(proof["producer_census"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_dir / "p5_lineage_census_v1.json").write_text(
+        json.dumps(proof["lineage_census"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (out_dir / "p5_producer_closure_matrix_v1.json").write_text(
+        json.dumps(proof["producer_closure_matrix"], indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     summary = {

@@ -28,6 +28,12 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     ProducerEvidenceTerminationContextV1,
     ProducerIngressTerminationResultV1,
 )
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.lineage_census_v1 import (
+    build_p5_producer_closure_matrix_v1,
+    run_meta_learning_lineage_census_v1,
+    run_optimization_lineage_census_v1,
+    run_p5_lineage_census_v1,
+)
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.producer_census_v1 import (
     run_p5_producer_census_v1,
 )
@@ -46,7 +52,11 @@ __all__ = [
     "ProducerEvidenceTerminationContextV1",
     "ProducerIngressTerminationResultV1",
     "WORKPACKAGE_ID",
+    "build_p5_producer_closure_matrix_v1",
     "prove_p5_producer_productive_ingress_v1",
+    "run_meta_learning_lineage_census_v1",
+    "run_optimization_lineage_census_v1",
+    "run_p5_lineage_census_v1",
     "run_p5_producer_census_v1",
     "scan_p5_package_non_interference_v1",
     "scan_producer_class_bypass_v1",

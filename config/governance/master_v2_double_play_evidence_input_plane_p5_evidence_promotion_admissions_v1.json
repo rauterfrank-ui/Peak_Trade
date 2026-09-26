@@ -1,6 +1,25 @@
 {
   "entries": [],
-  "notes": "Empty by design until Owner establishes explicit promotion-to-evidence admissions for optimization/meta_learning Master V2 ingress.",
+  "owner_promotion_authority_decision_ref": "config/governance/master_v2_double_play_evidence_input_plane_p5_owner_promotion_authority_decision_v1.json",
+  "schema_binding_dispositions": [
+    {
+      "block_reason": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+      "enabled": false,
+      "nearest_current_source_schema": "canonical_optimizable_envelope_v1",
+      "producer_family": "optimization",
+      "promoted_evidence_kind": "optimization_envelope_evidence_v1",
+      "promotion_record_id": "owner_p5_opt_envelope_schema_binding_deferred"
+    },
+    {
+      "block_reason": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+      "enabled": false,
+      "nearest_current_source_schema": "meta_evidence_v1",
+      "producer_family": "meta_learning",
+      "promoted_evidence_kind": "meta_learning_routed_evidence_v1",
+      "promotion_record_id": "owner_p5_meta_routed_schema_binding_deferred"
+    }
+  ],
+  "notes": "Digest entries remain empty until a CURRENT productive artifact + proven schema binding exists. Owner promotion authority does not override fail-closed lineage requirements.",
   "schema_version": "master_v2_double_play_evidence_input_plane_p5_evidence_promotion_admissions/v1",
   "workpackage_id": "P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1"
 }
