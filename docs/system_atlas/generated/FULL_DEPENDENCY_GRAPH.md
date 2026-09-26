@@ -125,6 +125,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `HOST:wallclock_decision_economics_cycle`
 - transitive_downstream: `(none)`
 
+### CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:mi_market_context_v1`
+- transitive_downstream: `RUNTIME_COMPONENT:mi_market_context_v1`
+
 ### CAPABILITY:okx_eea_private_account_state_runtime_v1
 
 - direct_upstream: `GATE:full_core_fresh_pretrade_runtime_get_v1`

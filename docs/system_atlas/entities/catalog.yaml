@@ -8542,6 +8542,58 @@ entities:
       Bounded post–Phase 15 closure for DATA_SUBSTRATE, FAILURE_MEMORY, and PARAMETER_LINEAGE;
       runtime apply remains out of scope; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 16 non-price CMC census v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_16_cmc_non_price_census_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.json
+    notes: >-
+      Phase 16 CURRENT non-price CMC producer/consumer census; records
+      NORMATIVE_NON_PRICE_CMC_CONTRACT_OWNER_DECISION blocker; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 17 normative non-price CMC contract v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json
+      - config/governance/normative_non_price_cmc_contract_owner_decision_v1.json
+    notes: >-
+      Phase 17 MARKET_CONTEXT_V1 normative closure on MI/Learning path;
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:mi_market_context_v1
+    kind: RUNTIME_COMPONENT
+    name: MI/Learning MARKET_CONTEXT_V1 compositional typed record
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py
+    evidence_sources:
+      - tests/learning/test_market_context_v1.py
+      - config/governance/normative_non_price_cmc_contract_owner_decision_v1.json
+    notes: >-
+      Compositional non-price market context for MI/Learning only; not MV2 trading CMC;
+      MARKET_CONTEXT_AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

@@ -118,6 +118,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:m9_s1_durable_market_session_evidence_accumulation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:m9_s1_operator_authorized_numeric_max_age_parameter_research_and_selection_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mutation_critical_control_state_storage_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_arithmetic_decimal | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_arithmetic_decimal | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_canonical_market_context | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_canonical_market_context | STATUS=OPEN (not proven) |  |
@@ -201,6 +202,8 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_16_cmc_non_price_census_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_17_normative_non_price_cmc_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1 | STATUS=OPEN (not proven) |  |

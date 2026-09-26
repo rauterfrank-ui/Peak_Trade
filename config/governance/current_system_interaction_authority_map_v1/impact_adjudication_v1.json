@@ -1,28 +1,44 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "06ba8e88b99930f87e5e019dc991b1c9c358a412",
+  "base_sha": "b9237c675f415f1c0b050b194d8f14ea26c4eebc",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json",
+    "config/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.json",
+    "config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml"
-  ],
-  "changed_paths_sha256": "37e20cb359b7234f15bd64bbad24d839d424682c9a796a8bd1a6abf67551a30d",
-  "covered_candidate_paths": [
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml"
-  ],
-  "evidence_refs": [
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py"
+    "docs/system_atlas/relations/structural.yaml",
+    "src/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.py",
+    "src/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+    "tests/governance/test_unified_blueprint_phase_16_cmc_non_price_census_v1.py",
+    "tests/governance/test_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py",
+    "tests/learning/test_market_context_v1.py"
+  ],
+  "changed_paths_sha256": "ae8dba72670a5a85833454b99a5d35489c4d04779d26cee6c22237a568e27a71",
+  "covered_candidate_paths": [],
+  "evidence_refs": [
+    "config/governance/unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.json",
+    "config/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.json",
+    "tests/governance/test_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "Phase 16 mechanical Master Runbook document-header BOUND_ORIGIN_MAIN_SHA rebind to origin/main 06ba8e88; Atlas RUNBOOK entity review only; interaction map structured source unchanged; AUTHORITY=NONE."
+  "verdict": "MAP_UPDATE_REQUIRED",
+  "reason": "Phase 17 MARKET_CONTEXT_V1 normative non-price CMC contract; Phase 16 CMC census; MI stack source_v1 navigation update; Atlas topology records; AUTHORITY=NONE."
 }
