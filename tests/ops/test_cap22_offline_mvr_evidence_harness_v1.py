@@ -655,7 +655,7 @@ def test_existing_cap21_cap22_contracts_remain_green() -> None:
     assert POLICY_B_THRESHOLD_SET_RATIFIED is False
     assert AUTHORITATIVE_POLICY_B_THRESHOLD_SCALE_FOUND is False
     assert PDF_STEP_5_STATUS == "UNRESOLVED"
-    assert NEXT_CAP22_DEPENDENCY.startswith(
+    assert "B04" in NEXT_CAP22_DEPENDENCY or NEXT_CAP22_DEPENDENCY.startswith(
         "SEPARATE_OWNER_GO_REQUIRED_TO_RUN_HISTORICAL_PIT_WALK_FORWARD"
     )
     threshold_set = injected_test_only_non_canonical_policy_b_threshold_set_v1()

@@ -98,9 +98,12 @@ EXECUTION_MAY_RERANK = False
 DOWNSTREAM_EXECUTION_MUST_NOT_RE_RANK = True
 SECOND_SELECTION_DECISION_DOWNSTREAM = False
 
-FINAL_SCORE_FORMULA_RATIFIED = False
-FINAL_WEIGHTS_RATIFIED = False
-CROSS_SECTIONAL_NORMALIZATION_RATIFIED = False
+PEAK_TRADE_RANKING_MATRIX_POLICY_ID = "PEAK_TRADE_RANKING_MATRIX_POLICY_V1"
+PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED = True
+FINAL_SCORE_FORMULA_RATIFIED = True
+FINAL_WEIGHTS_RATIFIED = True
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED = True
+PRODUCTIVE_ECONOMIC_RANK_ACTIVATION = False
 ECONOMIC_RANK_ACTIVATED = False
 
 RAW_CONTRACT_VOLUME_MVR_VERDICT = "DEFER"
@@ -140,13 +143,11 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
     "cap22_productive_economic_runtime_wired",
     "cmc_authority_transferred",
     "collection_skew_numeric_bound_ratified",
-    "cross_sectional_normalization_ratified",
     "economic_md_producer_productively_scheduled",
     "economic_rank_activated",
     "execution_may_recompute_economic_score",
     "execution_may_rerank",
-    "final_score_formula_ratified",
-    "final_weights_ratified",
+    "productive_economic_rank_activation",
     "library_reuse_authority_transfer",
     "multi_future_runtime_authorized",
     "pdf_step_7_runtime_implementation_allowed",
@@ -174,6 +175,7 @@ TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "spread_formula_ratified",
     "spread_must_be_derivable_from_persisted_raw_input",
     "structural_eligibility_is_not_economic_score",
+    "peak_trade_ranking_matrix_policy_ratified",
 )
 
 
@@ -241,6 +243,9 @@ def classify_cap22_mvr_input_scope_v1() -> dict[str, Any]:
         "cross_sectional_normalization_ratified": CROSS_SECTIONAL_NORMALIZATION_RATIFIED,
         "final_score_formula_ratified": FINAL_SCORE_FORMULA_RATIFIED,
         "final_weights_ratified": FINAL_WEIGHTS_RATIFIED,
+        "peak_trade_ranking_matrix_policy_id": PEAK_TRADE_RANKING_MATRIX_POLICY_ID,
+        "peak_trade_ranking_matrix_policy_ratified": PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED,
+        "productive_economic_rank_activation": PRODUCTIVE_ECONOMIC_RANK_ACTIVATION,
         "finalized_only": FINALIZED_ONLY,
         "future_leakage_forbidden": FUTURE_LEAKAGE_FORBIDDEN,
         "library_reuse_authority_transfer": LIBRARY_REUSE_AUTHORITY_TRANSFER,

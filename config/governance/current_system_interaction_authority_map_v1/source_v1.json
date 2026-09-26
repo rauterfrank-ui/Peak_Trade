@@ -29,7 +29,7 @@
     {
       "id": "ranking_cap22",
       "tier": "FIRST_CLASS",
-      "role": "Ranking producer. Top-20 is a context limit. Selection authority is false. Runtime activation is not allowed.",
+      "role": "Ranking producer. B03 ranking-matrix policy ratified (semantics only). Productive runtime remains structural-only until B06. Top-20 is context only. Selection authority is false.",
       "canonical_owner_ref": "ops.productive_futures_ranking_producer_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "NOT_ACTIVATED",
@@ -37,12 +37,17 @@
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
-      "contract_refs": [],
+      "contract_refs": [
+        "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md"
+      ],
       "code_refs": [
-        "src/ops/productive_futures_ranking_producer_v1/constants_v1.py"
+        "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "src/ops/peak_trade_ranking_matrix_policy_v1.py"
       ],
       "evidence_refs": [
         "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+        "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -2020,9 +2025,11 @@
     {
       "id": "ranking_activation",
       "epistemic_class": "PARTIAL",
-      "statement": "Ranking chain position exists and RUNTIME_ACTIVATION_ALLOWED is false.",
+      "statement": "Ranking chain position exists. B03 PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics only (B03_RATIFIED=true; CAP22_RANKING_POLICY_AUTHORITY=true; POLICY_RATIFIED=true). CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false; RUNTIME_ACTIVATION_ALLOWED=false; Cap 2.3 sole selection owner unchanged; CROSS_UNIVERSE_AUTHORITY=NONE.",
       "evidence_refs": [
-        "src/ops/productive_futures_ranking_producer_v1/constants_v1.py"
+        "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+        "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md"
       ]
     },
     {

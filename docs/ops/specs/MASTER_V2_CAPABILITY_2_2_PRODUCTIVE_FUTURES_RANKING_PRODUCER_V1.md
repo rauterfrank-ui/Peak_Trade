@@ -95,6 +95,34 @@ FINAL_SCORE_FORMULA_RATIFIED=false
 - Dashboard/UI/readmodel data is never ranking authority.
 - Research cross-sectional formulas are not productive ranking authority.
 
+## Peak Trade Ranking Matrix Policy V1 (B03 ratified; runtime not activated)
+
+Owner-GO `PEAK_TRADE_B03_GOVERNANCE_PERSISTENCE_V1` persists the
+productive Cap 2.2 ranking policy matrix. Subordinate contract:
+`docs&#47;ops&#47;specs&#47;PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`.
+
+Current productive ranking **runtime** remains the structural producer
+until B06 wires this policy fail-closed.
+
+```text
+PEAK_TRADE_RANKING_MATRIX_POLICY_ID=PEAK_TRADE_RANKING_MATRIX_POLICY_V1
+B03_RATIFIED=true
+POLICY_RATIFIED=true
+RUNTIME_ACTIVATED=false
+PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false
+ECONOMIC_RANK_ACTIVATED=false
+CAP22_RANKING_POLICY_AUTHORITY=true
+RANKING_OBJECTIVE=BALANCED_MOVEMENT_STRUCTURE
+SCORE_CONSTRUCTION=EQUAL_WEIGHT_CROSS_SECTIONAL_MIDRANK_PERCENTILE_COMPOSITE_V1
+FINAL_SCORE_FORMULA_RATIFIED=true
+FINAL_WEIGHTS_RATIFIED=true
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=true
+INPUT2_MAX_AGE_SECONDS=UNRATIFIED
+INPUT2_MAX_AGE_SECONDS_RATIFIED=false
+CURRENT_PRODUCTIVE_RANKING_POLICY=productive_futures_universe_structural_ranking_v1
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
+```
+
 ## Future economic ranking dual-input architecture (authorized, not wired)
 
 Owner-GO
@@ -121,8 +149,11 @@ ECONOMIC_MD_INPUT_CAPABILITY_AUTHORIZED=true
 ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
 ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
 ECONOMIC_RANK_ACTIVATED=false
-FINAL_SCORE_FORMULA_RATIFIED=false
-FINAL_WEIGHTS_RATIFIED=false
+PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED=true
+FINAL_SCORE_FORMULA_RATIFIED=true
+FINAL_WEIGHTS_RATIFIED=true
+CROSS_SECTIONAL_NORMALIZATION_RATIFIED=true
+PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false
 LIBRARY_REUSE_AUTHORITY_TRANSFER=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 ```
@@ -136,9 +167,10 @@ productively scheduled, and is not wired into Cap 2.2 ranking.
 
 Owner-GO
 `PEAK_TRADE_CAP_2_2_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_DOCS_ONLY_V1`
-persists the offline challenger set and the evidence contract required
-before any economic ranking policy may be ratified. Subordinate
-contract:
+persists the offline challenger set and offline evidence contract.
+Productive ranking matrix policy is ratified separately in
+`docs&#47;ops&#47;specs&#47;PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`.
+Subordinate offline contract:
 `docs&#47;ops&#47;specs&#47;CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md`.
 
 ```text
@@ -150,8 +182,8 @@ VOLATILITY_RANK_ONLY_VERDICT=BASELINE_ONLY
 NEGATIVE_STATUS_QUO_BASELINE=CURRENT_STRUCTURAL_THEN_VENUE_ID_ASC
 RECOMMENDED_OFFLINE_CHALLENGERS=HARD_SPREAD_GATE_THEN_VOLATILITY_RANK;VOLATILITY_TO_SPREAD_RATIO;LEXICOGRAPHIC_SPREAD_THEN_VOL
 NO_OFFLINE_POLICY_CLASS_HAS_PRODUCTIVE_AUTHORITY=true
-FINAL_SCORE_FORMULA_RATIFIED=false
-FINAL_WEIGHTS_RATIFIED=false
+OFFLINE_MVR_FINAL_SCORE_FORMULA_RATIFIED=false
+PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED=true
 ECONOMIC_RANK_ACTIVATED=false
 ECONOMIC_MD_PRODUCER_IMPLEMENTED=true
 ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false
@@ -159,7 +191,7 @@ CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false
 ```
 
 This section does **not** rewire the productive structural ranking
-producer and does **not** ratify a score formula.
+producer and does **not** grant offline challengers productive authority.
 
 ## Offline MVR spread definition and comparison keys (docs-only; not wired)
 
