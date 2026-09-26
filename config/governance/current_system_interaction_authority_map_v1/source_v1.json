@@ -2771,15 +2771,14 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 14 decision attribution on origin/main @ f2d96e9967adfd967990167925b0990c080d8c75 (AUTHORITY=NONE). Canonical boundary src/governance/unified_blueprint_decision_attribution_evidence_v1.py composes existing MV2/Double-Play decision references + realized N_BARS outcomes (+ optional MI refs) into typed EVIDENCE_ONLY attribution via DDO evaluation_engine_v0; optional proven consumer learning_outcome_evidence_ingest_v1. COMPOSE_REFERENCES_DONT_DUPLICATE_OWNERSHIP=true; Cap 2.3 selection owner remains CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1; MV2+DP remain sole trading-decision authority; attribution cannot promote, runtime-apply, or mutate decisions/selection.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 15 final DoD adjudication on origin/main @ 0d1ca4dd35cad92fbbe07da544e6bc6b0985b254 (AUTHORITY=NONE). Machine-readable matrix config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json adjudicates 13 DoD families from CURRENT evidence; aggregate UNIFIED_BLUEPRINT_DOD=PARTIAL (DATA_SUBSTRATE, PARAMETER_LINEAGE, FAILURE_MEMORY partial; M11 outside default). Phase 14 attribution boundary remains evidence-only. Global negative authority pins preserved (OPTIMIZATION_PROMOTION_AUTHORITY=NONE; AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false).",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_15_final_dod_v1.json",
+        "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
+        "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md",
         "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
-        "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
-        "config/governance/unified_blueprint_decision_attribution_topology_v1.json",
-        "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
-        "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
-        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
-        "src/governance/m10_promotion_boundary_v1.py"
+        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json"
       ]
     },
     {
