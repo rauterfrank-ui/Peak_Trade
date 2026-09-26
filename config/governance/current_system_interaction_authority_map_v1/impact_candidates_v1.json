@@ -317,6 +317,10 @@
     "src/ops/peak_trade_public_market_data_runtime_v1/",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
     "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
-    "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md"
+    "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md",
+    "src/ops/okx_eea_private_account_state_runtime_v1/",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+    "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json",
+    "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md"
   ]
 }

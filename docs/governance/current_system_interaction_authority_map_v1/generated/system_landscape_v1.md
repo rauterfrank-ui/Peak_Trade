@@ -17,6 +17,7 @@ flowchart LR
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
   full_autonomy_n5["full_autonomy_n5 PROVEN_CURRENT"]
+  full_core_fresh_pretrade_runtime_get["full_core_fresh_pretrade_runtime_get PROVEN_CURRENT"]
   future_profile_snapshot_b07["future_profile_snapshot_b07 PROVEN_CURRENT"]
   g17_typed_vol_cmc_bind["g17_typed_vol_cmc_bind PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
@@ -28,6 +29,7 @@ flowchart LR
   m9_volatility_max_age["m9_volatility_max_age PARTIAL"]
   meta_learning["meta_learning RESEARCH_ONLY"]
   mv2_double_play["mv2_double_play PARTIAL"]
+  okx_eea_private_account_state_runtime_wp_b["okx_eea_private_account_state_runtime_wp_b PARTIAL"]
   operator_profile_explainability_b11["operator_profile_explainability_b11 PROVEN_CURRENT"]
   optimization_universe["optimization_universe CONFLICTING"]
   order_intent["order_intent PARTIAL"]
@@ -75,6 +77,8 @@ flowchart LR
   optimization_universe --> governance_promotion
   cap22_research_backtest_live_parity_b09 --> ranking_selection_profile_closure_b12
   portfolio_reservation --> treasury_29p
+  okx_eea_private_account_state_runtime_wp_b --> full_core_fresh_pretrade_runtime_get
+  okx_eea_private_account_state_runtime_wp_b --> selection_cap23
   peak_trade_public_market_data_runtime_wp_a --> ranking_cap22
   peak_trade_public_market_data_runtime_wp_a --> selection_cap23
   ranking_cap22 --> future_profile_snapshot_b07
@@ -108,6 +112,7 @@ flowchart LR
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | full_autonomy_n5 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 | `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| full_core_fresh_pretrade_runtime_get | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 | `tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py`, `src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py` |
 | future_profile_snapshot_b07 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.future_profile_snapshot_v1 | `tests/ops/test_future_profile_snapshot_v1.py`, `src/ops/future_profile_snapshot_v1/producer_v1.py` |
 | g17_typed_vol_cmc_bind | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md` |
 | governance_promotion | INTERMEDIATE | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
@@ -119,6 +124,7 @@ flowchart LR
 | m9_volatility_max_age | INTERMEDIATE | PARTIAL | PARTIAL | m9_volatility_numeric_max_age_numeric_productive_target_v1 | `src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | meta_learning | FIRST_CLASS | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_meta_learning_v1 | `src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | mv2_double_play | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | run_current_productive_master_v2_runtime_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| okx_eea_private_account_state_runtime_wp_b | INTERMEDIATE | PARTIAL | NONE | ops.okx_eea_private_account_state_runtime_v1 | `tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
 | operator_profile_explainability_b11 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_operator_profile_explainability_v1 | `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`, `src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py` |
 | optimization_universe | FIRST_CLASS | CONFLICTING | CONFLICTING | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | order_intent | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | canonical_order_intent_owner_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |

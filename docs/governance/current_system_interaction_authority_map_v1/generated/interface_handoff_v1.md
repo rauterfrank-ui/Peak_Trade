@@ -34,6 +34,8 @@ flowchart LR
   optimization_universe -->|optimization_to_governance| governance_promotion
   cap22_research_backtest_live_parity_b09 -->|parity_b09_to_closure_b12| ranking_selection_profile_closure_b12
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
+  okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_adapts_fresh_pretrade_get| full_core_fresh_pretrade_runtime_get
+  okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_preserves_cap23_selection_owner| selection_cap23
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_adapter_to_ranking_cap22| ranking_cap22
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_preserves_cap23_selection_owner| selection_cap23
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
@@ -557,6 +559,42 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`
+
+## private_state_runtime_adapts_fresh_pretrade_get
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Non-authoritative WP-B observation hints only; FRESH_GET_PER_PRETRADE_DECISION owner unchanged; cached WP-B must not substitute required fresh GETs
+- producer=okx_eea_private_account_state_runtime_wp_b
+- consumer=full_core_fresh_pretrade_runtime_get
+- authority_effect=NONE
+- decision_effect=OBSERVATION_ADAPTER_ONLY_NO_PRETRADE_AUTHORITY_TRANSFER
+- direct_or_indirect=INDIRECT
+- identity_binding=REUSES_EXISTING_FRESH_PRETRADE_GET_OWNER
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
+- provenance_binding=src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py`
+
+## private_state_runtime_preserves_cap23_selection_owner
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=SELECTION_AUTHORITY=NONE; CAP23_SOLE_SELECTION_OWNER unchanged
+- producer=okx_eea_private_account_state_runtime_wp_b
+- consumer=selection_cap23
+- authority_effect=NONE
+- decision_effect=ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=NO_SELECTION_WRITER
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
+- provenance_binding=src/ops/okx_eea_private_account_state_runtime_v1/safety_boundary_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py`
 
 ## public_md_runtime_adapter_to_ranking_cap22
 

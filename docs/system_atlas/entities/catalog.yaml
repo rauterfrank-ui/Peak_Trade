@@ -533,6 +533,47 @@ entities:
       MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CAPABILITY:okx_eea_private_account_state_runtime_v1
+    kind: CAPABILITY
+    name: OKX EEA Private Account State Runtime (observation-only)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md
+      - config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json
+    source_paths:
+      - src/ops/okx_eea_private_account_state_runtime_v1/__init__.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/credentials_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/durable_store_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/event_pipeline_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/mutation_prohibition_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/quality_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/reconciliation_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/runtime_orchestrator_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/safety_boundary_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/state_contracts_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/ws_binding_v1.py
+      - src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py
+      - tests/ops/test_okx_eea_private_account_state_runtime_v1.py
+    evidence_sources:
+      - docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md
+      - config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json
+      - tests/ops/test_okx_eea_private_account_state_runtime_v1.py
+    notes: >-
+      Observation-only OKX EEA private state plane: OKX_EEA_PRIVATE_OBSERVATION_READ_V1
+      credential class, GET-only REST baseline/recovery, private WS login/subscribe only,
+      normalized account/balance/position/order/fill state, reconciliation/durability,
+      thin adapters into existing fresh-pretrade seams. No POST, WS order send/amend/cancel,
+      trade-credential fallback, account-equity sizing authority, selection, strategy,
+      execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false;
+      MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_economic_md_dual_input_v1
     kind: CONTRACT
     name: Cap 2.2 economic-MD dual-input architecture

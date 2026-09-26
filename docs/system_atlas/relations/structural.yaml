@@ -91,6 +91,35 @@ relations:
       semantics; does not transfer Economic-MD producer scheduling or ranking
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_system_has_private_account_state_runtime_v1
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:okx_eea_private_account_state_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md
+    evidence_sources:
+      - tests/ops/test_okx_eea_private_account_state_runtime_v1.py
+    notes: >
+      WP-B private account state runtime capability registration.
+      Observation/reconciliation only; no trading or selection authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_private_state_runtime_adapts_fresh_pretrade_get
+    source: CAPABILITY:okx_eea_private_account_state_runtime_v1
+    type: DEPENDS_ON
+    target: GATE:full_core_fresh_pretrade_runtime_get_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md
+    evidence_sources:
+      - src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+    notes: >
+      Thin non-authoritative observation hints into existing fresh-pretrade GET
+      seam; cached WP-B state must not substitute FRESH_GET_PER_PRETRADE_DECISION.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_system_has_economic_md_input
     source: SYSTEM:peak_trade
     type: HAS_CAPABILITY

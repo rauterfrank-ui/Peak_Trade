@@ -3,22 +3,23 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
-modified_by: PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+introduced_by: OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
+modified_by: OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  WP-A adds observation-only OKX EEA public market data runtime capability,
-  durability/replay surfaces, and governed consumer adapters. No selection,
-  execution, POST, credential, or multi-future trading authority.
-  Cap 2.2 ranking owner unchanged; Cap 2.3 sole selection owner unchanged.
-  ATLAS_AUTHORITY=NONE.
+  WP-B adds observation-only OKX EEA private account state runtime capability,
+  GET-only REST baseline/recovery, private WS observation transport, normalized
+  private state/reconciliation/durability, and thin governed pretrade adapters.
+  No POST, WS order send, trade-credential fallback, account-equity sizing
+  authority, selection, execution, or multi-future trading authority.
+  Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CAPABILITY:peak_trade_public_market_data_runtime_v1
+  - CAPABILITY:okx_eea_private_account_state_runtime_v1
   - SYSTEM:peak_trade
 changed_relations:
-  - REL:s_system_has_public_market_data_runtime_v1
-  - REL:s_public_md_runtime_reuses_economic_md_pt1m_validation
+  - REL:s_system_has_private_account_state_runtime_v1
+  - REL:s_private_state_runtime_adapts_fresh_pretrade_get
 changed_closures: []
 changed_wiring: []
 changed_venue: []
