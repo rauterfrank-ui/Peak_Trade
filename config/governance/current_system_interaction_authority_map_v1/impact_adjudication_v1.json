@@ -1,35 +1,34 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "72853b6a1df83479023fc3c5261295ceb2ff1bb4",
+  "base_sha": "f2d96e9967adfd967990167925b0990c080d8c75",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/m10_promotion_boundary_v1_decision_v1.json",
-    "config/governance/m10_promotion_topology_adjudication_v1.json",
-    "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+    "config/governance/unified_blueprint_decision_attribution_evidence_v1_decision_v1.json",
+    "config/governance/unified_blueprint_decision_attribution_topology_v1.json",
+    "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/m10_promotion_boundary_v1.py",
-    "src/governance/pdf_v3_3_topic_completion_composition_v1.py",
-    "src/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.py",
-    "tests/governance/test_m10_promotion_boundary_v1.py",
-    "tests/governance/test_unified_blueprint_phase_13_m10_promotion_boundary_v1.py"
+    "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+    "src/governance/unified_blueprint_phase_14_decision_attribution_v1.py",
+    "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_14_decision_attribution_v1.py"
   ],
-  "changed_paths_sha256": "dcf58063fe510b0a2e2d89790d549f64fdd0424f1b454d8f019e1af90473a0fe",
+  "changed_paths_sha256": "1ace47e910b611a28d6e9669ff9ec515611373bf7c818345cd781e2dc5e95dd9",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
-    "tests/governance/test_m10_promotion_boundary_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_13_M10_PROMOTION_BOUNDARY_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
+    "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint Phase 13 M10 promotion boundary closure; updates authority-map navigation statement, regenerated authority_view, atlas/catalog, and M10 topology adjudication. AUTHORITY=NONE."
+  "reason": "Unified Blueprint Phase 14 decision attribution boundary; updates authority-map navigation, atlas/catalog, and topology census. AUTHORITY=NONE."
 }

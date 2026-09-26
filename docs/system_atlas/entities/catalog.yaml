@@ -8483,6 +8483,25 @@ entities:
       Closes d02_multi_cycle_replay_m8 MI-crossing M5→M8 bounded offline research loop;
       META_EVIDENCE_AUTHORITY=NONE; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 14 decision attribution v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_14_decision_attribution_v1.py
+      - src/governance/unified_blueprint_decision_attribution_evidence_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_14_decision_attribution_v1.py
+      - tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_14_decision_attribution_v1.json
+    notes: >-
+      Phase 14 decision attribution evidence boundary (COMPOSE_REFERENCES_DONT_DUPLICATE_OWNERSHIP);
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1
