@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,17 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1` |
-| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNBOOK:canonical_master_runbook` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_d01_d02_topology_adjudication_v1` |
-| `REL:s_map_navigates_unified_blueprint_phase_8_mi_to_learning_integration_v1` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -96,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Unified Blueprint Phase 8 closes d02_mi_to_learning typed MI→Learning export path; updates D02 adjudication and interaction map edge mi_offline_typed_export_to_learning_path. AUTHORITY=NONE.
+- Phase 16 closure: Master Runbook document-header BOUND_ORIGIN_MAIN_SHA mechanical rebind to origin/main 06ba8e88; topology review only; no trading/runtime authority. AUTHORITY=NONE.
 - introduced_by=UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1
+- modified_by=PHASE_16_RUNBOOK_AUTHORITY_REBIND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
