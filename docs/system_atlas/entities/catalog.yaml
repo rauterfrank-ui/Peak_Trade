@@ -9100,6 +9100,27 @@ entities:
       Closes d02_loop_b_market_intelligence_offline durable Forecast/Calibration/Research
       evidence persistence; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:m4_m8_optimization_meta_learning_evidence_return_closure_v1
+    kind: RUNTIME_COMPONENT
+    name: M4–M8 optimization meta-learning evidence return closure v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: M4_M8_OPTIMIZATION_META_LEARNING_EVIDENCE_RETURN_CLOSURE
+    source_paths:
+      - src/governance/m4_m8_optimization_meta_learning_evidence_return_closure_v1.py
+      - src/experiments/canonical_m4_m8_evidence_return_loop_v1.py
+    evidence_sources:
+      - tests/governance/test_m4_m8_optimization_meta_learning_evidence_return_closure_v1.py
+      - tests/experiments/test_canonical_m4_m8_evidence_return_loop_v1.py
+      - docs/ops/specs/M4_M8_OPTIMIZATION_META_LEARNING_EVIDENCE_RETURN_CLOSURE_NORMATIVE_V1.md
+      - docs/ops/specs/PEAK_TRADE_META_LEARNING_OPTIMIZATION_UNIVERSE_CONCEPT_V3_4_CURRENT_MV2_DP_ALIGNMENT_ADDENDUM_V1.md
+      - config/governance/m4_m8_optimization_meta_learning_evidence_return_closure_v1_decision_v1.json
+    notes: >-
+      Concept v3.4 addendum closure for canonical M4–M8 forward+return loop and M8 replay;
+      P5 producer bridges explicitly out of scope (p5_final_closure_ready=false).
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1
     kind: RUNTIME_COMPONENT
     name: Meta-learning optimization universe PDF v3.3 final completion adjudication v1
