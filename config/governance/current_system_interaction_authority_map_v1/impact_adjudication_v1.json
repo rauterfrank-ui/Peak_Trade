@@ -1,14 +1,14 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "ee5815872fcce91c242f1b33c655558927d9e8fe",
+  "base_sha": "90183c9be6f1d8fa70e9cb59f900c1a6c85195ee",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",
+    "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -19,23 +19,19 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/experiments/canonical_learning_representation_offline_evaluation_v1.py",
-    "src/experiments/canonical_learning_representation_research_adaptation_plan_v1.py",
-    "src/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_24_representation_feedback_loop_evidence_v1.py",
-    "tests/experiments/test_canonical_learning_representation_offline_evaluation_v1.py",
-    "tests/experiments/test_canonical_learning_representation_research_adaptation_plan_v1.py",
-    "tests/governance/test_unified_blueprint_phase_24_representation_feedback_loop_v1.py",
-    "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py"
+    "src/governance/unified_blueprint_phase_25_dp_attribution_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_25_dp_attribution_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_25_dp_attribution_v1.py",
+    "tests/learning/test_phase_25_dp_attribution_evidence_v1.py"
   ],
-  "changed_paths_sha256": "6d7af005554cb881ba7482a6fb6a915caf0817d52d9e3235f2978ef6f2107b33",
+  "changed_paths_sha256": "52e5e8c44ce6dcf16db83400cc05b714873db4fe3a984fad5bbf322cb991c0b8",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",
-    "tests/governance/test_unified_blueprint_phase_24_representation_feedback_loop_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_24_REPRESENTATION_FEEDBACK_LOOP_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_25_dp_attribution_v1.json",
+    "tests/governance/test_unified_blueprint_phase_25_dp_attribution_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_25_DP_ATTRIBUTION_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 24 Loop C representation feedback; bounded plan/offline eval/next Learning evidence; map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE; LOOP_C_PROVEN bounded evidence cycle only."
+  "reason": "Phase 25 DP Attribution (attribution_evidence_v1); MARKET_CONTEXT + MV2/DP decision refs + REALIZED_BEHAVIOR PIT join; map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE; no trading gate."
 }
