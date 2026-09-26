@@ -257,20 +257,23 @@
     },
     {
       "edge_id": "d02_multi_cycle_replay_m8",
-      "loop": "Multi-cycle replay (Optimization/Meta)",
-      "producer": "federated M5-M8 offline replay",
-      "consumer": "deterministic multi-cycle loop closure witness",
-      "payload_evidence_class": "FEDERATED_BOUNDED_MULTI_CYCLE_OFFLINE_REPLAY_V1",
-      "owner": "src.experiments.canonical_federated_bounded_multi_cycle_offline_replay_v1",
-      "authority_classification": "M4_RE_EXECUTION_FORBIDDEN=true",
-      "implementation_status": "PARTIAL",
-      "persistence_semantics": "Fixture-bounded replay store in tests",
-      "replay_semantics": "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "loop": "Multi-cycle replay (MI to Optimization/Meta)",
+      "producer": "MI offline orchestrator + MI-enriched M4 closure",
+      "consumer": "canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1",
+      "payload_evidence_class": "UNIFIED_BLUEPRINT_PHASE_10_MI_CROSSING_BOUNDED_MULTI_CYCLE_OFFLINE_REPLAY_V1",
+      "owner": "src.experiments.canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1",
+      "authority_classification": "META_EVIDENCE_AUTHORITY=NONE; SEARCH_EXECUTION_AUTHORIZED=false",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Deterministic replay identity over cycle digests and MI lineage; optional failure-memory store hook per cycle",
+      "replay_semantics": "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
       "evidence_refs": [
-        "tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py",
-        "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py"
+        "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
+        "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
+        "tests/experiments/test_canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
+        "tests/learning/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+        "tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py"
       ],
-      "missing_dependency": "MI-crossing multi-cycle replay edge not closed in CURRENT"
+      "missing_dependency": null
     },
     {
       "edge_id": "d02_failure_memory",
@@ -304,6 +307,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 10 — MI-crossing multi-cycle offline replay and bounded automated offline research loop (d02_multi_cycle_replay_m8; separate Owner authorization)",
-  "next_implementation_boundary": "Phase 10 multi-cycle replay / automated loop only; d02_loop_b durable MI store completion remains independent"
+  "first_unproven_dependency_after_closure": "Unified Blueprint d02_loop_b durable MI evidence store completion (independent Owner authorization; not Phase 11 Surface Portfolio Closure)",
+  "next_implementation_boundary": "d02_loop_b durable MI store only; Phase 11 Surface Portfolio Closure and productive lineage remain separate authorization"
 }
