@@ -1,0 +1,42 @@
+"""Safety and authority pins for Track D03 offline MI stack (non-authorizing)."""
+
+from __future__ import annotations
+
+from typing import Final
+
+WORKPACKAGE_ID: Final[str] = "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1"
+STACK_DOMAIN: Final[str] = (
+    "peak_trade.learning.market_intelligence_forecast_calibration_offline_stack.v1"
+)
+
+MASTER_V2_DOUBLE_PLAY_SOLE_TRADING_AUTHORITY: Final[bool] = True
+CAP23_SOLE_PRODUCTIVE_SELECTION_OWNER: Final[bool] = True
+LEARNING_TRADING_AUTHORITY: Final[str] = "NONE"
+MARKET_INTELLIGENCE_TRADING_AUTHORITY: Final[str] = "NONE"
+OPTIMIZATION_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
+
+FORECAST_IS_NOT_DECISION: Final[bool] = True
+CONFIDENCE_IS_NOT_AUTHORITY: Final[bool] = True
+COMPOSE_REFERENCES_DONT_DUPLICATE_OWNERSHIP: Final[bool] = True
+NO_DUPLICATE_OUTCOME_TRUTH: Final[bool] = True
+
+GLOBAL_MARKET_INTELLIGENCE_DEFAULT_N: Final[None] = None
+FORECAST_HORIZON_MUST_BE_EXPLICIT: Final[bool] = True
+
+N_BARS_NORMATIVE_SEMANTICS_UNCHANGED: Final[bool] = True
+PRODUCTIVE_DDO_FEEDBACK_SEAM_UNCHANGED: Final[bool] = True
+PRODUCTIVE_PROMOTION_OPENED: Final[bool] = False
+NO_AUTOMATIC_PROMOTION: Final[bool] = True
+
+NO_OPTIMIZER_TO_CAP23_BINDING: Final[bool] = True
+NO_OPTIMIZER_TO_MV2_DP_MUTATION: Final[bool] = True
+NO_MARKET_INTELLIGENCE_TO_EXECUTION_DIRECT_PATH: Final[bool] = True
+NO_NEW_EXTERNAL_EFFECT_PATH: Final[bool] = True
+
+MULTI_FUTURE_RUNTIME_AUTHORIZED: Final[bool] = False
+MAX_POSITIONS_EFFECTIVE: Final[int] = 1
+EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
+RUNTIME_REACHABILITY: Final[bool] = False
+
+COUNTERFACTUAL_AUTHORITY: Final[str] = "NONE"
+IS_EVIDENCE_ONLY: Final[bool] = True
