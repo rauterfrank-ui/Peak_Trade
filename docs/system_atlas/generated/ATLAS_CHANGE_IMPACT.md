@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
+| `RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1` |
 | `RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1` |
 
 ## CHANGED_RELATIONS
@@ -48,6 +49,8 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
+| `REL:s_map_navigates_governed_m4_m8_meta_optimization_feedback_continuation_v1` |
+| `REL:s_m4_m8_real_to_meta_optimization_feedback_continuation` |
 | `REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1` |
 | `REL:s_g2_binding_to_m4_m8_real_continuation` |
 

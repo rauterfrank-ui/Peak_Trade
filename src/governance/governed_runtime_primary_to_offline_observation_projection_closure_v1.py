@@ -19,6 +19,10 @@ from src.governance.governed_productive_configuration_apply_authority_v1 import 
     PRIMARY_EVIDENCE_IMPLIES_APPLY,
     RUNTIME_APPLY_STARTED as M10_RUNTIME_APPLY_STARTED,
 )
+from src.governance.governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1 import (
+    REAL_FEEDBACK_END_TO_END_STATUS,
+    prove_real_meta_optimization_feedback_continuation_v1,
+)
 from src.governance.governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1 import (
     M4_M8_END_TO_END_STATUS,
     REAL_RUNTIME_G2_TO_M4_M8_STATUS,
@@ -120,6 +124,16 @@ def prove_g2_runtime_to_m4_m8_real_mechanical_v1(
         return False
     meta = (loop.get("cycle") or {}).get("meta_learning_evidence") or {}
     return meta.get("meta_evidence_authority") == "NONE"
+
+
+def prove_g2_runtime_to_meta_learning_optimization_feedback_real_mechanical_v1(
+    *,
+    projection_request: GovernedRuntimePrimaryProjectionRequestV1,
+) -> bool:
+    """Real path: G2 → M4–M8 → M6 meta-learning → M7 optimization feedback."""
+    return prove_real_meta_optimization_feedback_continuation_v1(
+        projection_request=projection_request
+    )
 
 
 def prove_g2_m4_m8_fixture_lineage_v1(*, repo_root: Path | None = None) -> bool:
@@ -256,6 +270,13 @@ def run_g2_bounded_end_to_end_with_projection_v1(
             if continuation.status == "CONTINUATION_COMPLETE"
             else "NOT_PROVEN"
         ),
+        "real_feedback_end_to_end_status": (
+            REAL_FEEDBACK_END_TO_END_STATUS
+            if prove_real_meta_optimization_feedback_continuation_v1(
+                projection_request=projection_request
+            )
+            else "NOT_PROVEN"
+        ),
         "g2_end_to_end_status": G2_END_TO_END_STATUS
         if projection.status == "PROJECTED" and continuation.status == "CONTINUATION_COMPLETE"
         else "PARTIAL_CURRENT",
@@ -294,6 +315,7 @@ __all__ = [
     "prove_g2_projection_closure_v1",
     "prove_g2_runtime_to_canonical_optimization_learning_input_v1",
     "prove_g2_runtime_to_m4_m8_real_mechanical_v1",
+    "prove_g2_runtime_to_meta_learning_optimization_feedback_real_mechanical_v1",
     "run_g2_bounded_end_to_end_with_projection_v1",
     "trace_g2_reconstruction_v1",
 ]

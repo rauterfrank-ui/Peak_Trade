@@ -10,9 +10,12 @@ note: >-
   fixture learning state on the real path; authority=NONE; no apply or external effect.
 changed_entities:
   - RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+  - RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   - RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
 changed_relations:
   - REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+  - REL:s_map_navigates_governed_m4_m8_meta_optimization_feedback_continuation_v1
+  - REL:s_m4_m8_real_to_meta_optimization_feedback_continuation
   - REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
   - REL:s_g2_binding_to_m4_m8_real_continuation
 changed_closures: []

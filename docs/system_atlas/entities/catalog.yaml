@@ -8716,6 +8716,24 @@ entities:
       Real G2 runtime-derived learning evidence → canonical M4–M8 evidence return loop;
       DDO fixture forbidden on real path; authority=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
+    kind: RUNTIME_COMPONENT
+    name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1
+    source_paths:
+      - src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py
+    evidence_sources:
+      - src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py
+      - docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json
+    notes: >-
+      Real runtime G2→M4–M8 cycle → M6 meta-learning ingest → M7 bounded optimization feedback;
+      fail-closed lineage; CLOSED_MECHANICAL_LEARNING_LOOP=true; authority=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
     kind: RUNTIME_COMPONENT
     name: Governed productive configuration apply authority v1

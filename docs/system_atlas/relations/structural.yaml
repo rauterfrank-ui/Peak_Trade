@@ -2240,6 +2240,31 @@ relations:
     notes: >
       Real path continues runtime-derived learning evidence into M4–M8 loop. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_m4_m8_real_to_meta_optimization_feedback_continuation
+    source: RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py
+    notes: >
+      Real M4–M8 evidence-return output → M6/M7 meta-learning and optimization feedback join.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_governed_m4_m8_meta_optimization_feedback_continuation_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json
+    notes: >
+      Navigation only. Real M4–M8 → meta-learning → optimization feedback; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

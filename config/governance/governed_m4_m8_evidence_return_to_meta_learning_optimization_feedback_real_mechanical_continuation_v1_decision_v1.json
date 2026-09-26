@@ -1,0 +1,20 @@
+{
+  "workpackage_id": "GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "continuation_authority": "NONE",
+  "primary_evidence_implies_productive_authorization": false,
+  "p5_evidence_intake_implies_runtime_apply": false,
+  "canonical_learning_input_implies_productive_activation": false,
+  "runtime_apply_started": false,
+  "real_runtime_materialization_performed": false,
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "g2_real_source_used": true,
+  "ddo_fixture_learning_state_used_on_real_path": false,
+  "real_m4_m8_to_meta_learning_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "real_meta_learning_to_optimization_feedback_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "real_feedback_end_to_end_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "closed_mechanical_learning_loop": true,
+  "closed_productive_optimization_loop": false,
+  "normative_spec": "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md"
+}
