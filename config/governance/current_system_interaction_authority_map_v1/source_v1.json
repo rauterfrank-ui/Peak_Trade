@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "eb4ec2062443e85541fa3732f4b42e86d9eeada3",
+  "baseline_sha": "d9f33a62f43f036932ed7c8bca648c71997dd162",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1019,6 +1019,32 @@
         "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
         "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py",
         "config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "f1_m9_scoped_owner_threshold_value_ratification",
+      "tier": "INTERMEDIATE",
+      "role": "F1/M9 Owner threshold value ratification (600 SECONDS); digest-sealed threshold record + adjudicator/ledger; STOP before Productive Activation.",
+      "canonical_owner_ref": "f1_m9_scoped_owner_threshold_value_authority_v1",
+      "authority_class": "NONE",
+      "lifecycle": "SCOPED_THRESHOLD_VALUE_RATIFIED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_RATIFICATION_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_owner_threshold_value_record_materialization_v1.py",
+        "src/governance/f1_m9_scoped_owner_threshold_value_authority_v1.py"
+      ],
+      "evidence_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1.py",
+        "config/governance/governed_f1_m9_scoped_owner_threshold_value_ratification_real_mechanical_continuation_v1_decision_v1.json",
+        "docs/evidence/canonical_volatility_max_age_productive_research_evidence_ledger_v1/campaigns/cv_maxage_f1_m9_prospective_candidate_selection_v1_2bab88a8289fb032/productive_handoff/owner_threshold_value_authorization_record_v1.json"
       ]
     },
     {
