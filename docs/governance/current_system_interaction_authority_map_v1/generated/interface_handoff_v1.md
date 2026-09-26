@@ -29,11 +29,13 @@ flowchart LR
   mv2_double_play -->|mv2_valid_no_trade_terminal| execution_external_effect
   optimization_universe -->|optimization_to_governance| governance_promotion
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
+  ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
   safety -->|safety_signals_into_integrated_replay| mv2_double_play
+  selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
   capital_risk_sizing -->|sizing_to_intent| order_intent
   selection_cap23 -->|step29m_consumes_selection| step29m
@@ -455,6 +457,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`
 
+## ranking_context_to_future_profile_b07
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=FUTURE_PROFILE_SNAPSHOT_V1 observes/references canonical B06 ranking snapshot and B05 feature snapshot values
+- producer=ranking_cap22
+- consumer=future_profile_snapshot_b07
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=CANDIDATE_INSTRUMENT_ID
+- temporal_binding=SOURCE_CAPTURE_TIMESTAMPS_PRESERVED
+- version_binding=FUTURE_PROFILE_SNAPSHOT_V1
+- provenance_binding=B05_B06_PROVENANCE_REFERENCED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/future_profile_snapshot_v1/producer_v1.py`, `tests/ops/test_future_profile_snapshot_v1.py`
+
 ## ranking_to_selection
 
 - lifecycle=PROVEN_CURRENT
@@ -544,6 +564,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py`, `src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py`
+
+## selection_reference_to_future_profile_b07
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=optional selected_future_id observability reference
+- producer=selection_cap23
+- consumer=future_profile_snapshot_b07
+- authority_effect=NONE
+- decision_effect=OBSERVABILITY_ONLY_NO_SELECTION
+- direct_or_indirect=DIRECT
+- identity_binding=SELECTION_REFERENCE_ONLY
+- temporal_binding=UNKNOWN
+- version_binding=FUTURE_PROFILE_SNAPSHOT_V1
+- provenance_binding=CAP23_REMAINS_SOLE_SELECTION_OWNER
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/future_profile_snapshot_v1/producer_v1.py`, `tests/ops/test_future_profile_snapshot_v1.py`
 
 ## selection_to_binding
 

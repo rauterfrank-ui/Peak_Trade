@@ -81,6 +81,28 @@
       ]
     },
     {
+      "id": "future_profile_snapshot_b07",
+      "tier": "INTERMEDIATE",
+      "role": "B07 Future Profile Snapshot is an operator-facing descriptive/audit snapshot over current canonical Universe, Economic-MD, B05 features, B06 ranking context, and optional Cap2.3 selection reference. It is observability only: no ranking, selection, binding, trading, execution, live, or cross-universe authority.",
+      "canonical_owner_ref": "ops.future_profile_snapshot_v1",
+      "authority_class": "NONE",
+      "lifecycle": "OBSERVABILITY_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/future_profile_snapshot_v1/constants_v1.py",
+        "src/ops/future_profile_snapshot_v1/models_v1.py",
+        "src/ops/future_profile_snapshot_v1/producer_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_future_profile_snapshot_v1.py",
+        "src/ops/future_profile_snapshot_v1/producer_v1.py"
+      ]
+    },
+    {
       "id": "runtime_binding_cap24",
       "tier": "FIRST_CLASS",
       "role": "Validate-and-bind consumer of an existing selected identity. Not a second selection writer.",
@@ -778,6 +800,52 @@
       "evidence_refs": [
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
         "src/ops/single_selected_future_policy_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "ranking_context_to_future_profile_b07",
+      "from_domain": "ranking_cap22",
+      "to_domain": "future_profile_snapshot_b07",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "FUTURE_PROFILE_SNAPSHOT_V1 observes/references canonical B06 ranking snapshot and B05 feature snapshot values",
+      "producer": "ranking_cap22",
+      "consumer": "future_profile_snapshot_b07",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CANDIDATE_INSTRUMENT_ID",
+      "temporal_binding": "SOURCE_CAPTURE_TIMESTAMPS_PRESERVED",
+      "version_binding": "FUTURE_PROFILE_SNAPSHOT_V1",
+      "provenance_binding": "B05_B06_PROVENANCE_REFERENCED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/future_profile_snapshot_v1/producer_v1.py",
+        "tests/ops/test_future_profile_snapshot_v1.py"
+      ]
+    },
+    {
+      "id": "selection_reference_to_future_profile_b07",
+      "from_domain": "selection_cap23",
+      "to_domain": "future_profile_snapshot_b07",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "optional selected_future_id observability reference",
+      "producer": "selection_cap23",
+      "consumer": "future_profile_snapshot_b07",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVABILITY_ONLY_NO_SELECTION",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "SELECTION_REFERENCE_ONLY",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "FUTURE_PROFILE_SNAPSHOT_V1",
+      "provenance_binding": "CAP23_REMAINS_SOLE_SELECTION_OWNER",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/future_profile_snapshot_v1/producer_v1.py",
+        "tests/ops/test_future_profile_snapshot_v1.py"
       ]
     },
     {

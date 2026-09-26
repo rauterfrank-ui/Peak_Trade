@@ -3,33 +3,31 @@
 # Live PRs are classified by scripts/ops/check_system_atlas_impact_v1.py.
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
-modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+introduced_by: B07_FUTURE_PROFILE_SNAPSHOT_V1
+modified_by: B07_FUTURE_PROFILE_SNAPSHOT_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  B06 Cap 2.2 Peak_Trade economic ranking runtime v1 (B06 PR):
-  CAPABILITY:cap22_peak_trade_ranking_runtime_v1 wires B03 score/order over B05
-  features into productive Cap 2.2; B06_IMPLEMENTED=true;
-  ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true;
-  PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false;
-  Cap 2.3 sole selection owner unchanged; TRADING_SEMANTICS_CHANGED=false;
-  ATLAS_AUTHORITY=NONE.
+  B07 Future Profile Snapshot v1 adds CAPABILITY:future_profile_snapshot_v1 as
+  operator-facing observability over current canonical Universe, Economic-MD,
+  B05 features, B06 ranking context, and optional Cap 2.3 selection reference
+  inputs. FUTURE_PROFILE_SNAPSHOT_V1_IMPLEMENTED=true; PROFILE_CAN_RERANK=false;
+  PROFILE_CAN_SELECT=false; PROFILE_CAN_BIND=false; CAP23_SOLE_SELECTION_OWNER=true;
+  CROSS_UNIVERSE_AUTHORITY=NONE; MULTI_FUTURE_RUNTIME_AUTHORIZED=false;
+  MAX_POSITIONS_EFFECTIVE=1; LIVE_EXTERNAL_EFFECT_AUTHORIZED=false;
+  TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
 changed_entities:
+  - CAPABILITY:future_profile_snapshot_v1
   - CAPABILITY:cap22_peak_trade_ranking_runtime_v1
-  - CAPABILITY:cap_2_2_ranking
   - CAPABILITY:cap21_feature_production_v1
-  - CONTRACT:peak_trade_ranking_feature_contract_v1
-  - CONTRACT:peak_trade_ranking_matrix_policy_v1
   - SELECTOR:productive_futures_ranking
+  - SELECTOR:single_selected_future_policy
   - SYSTEM:peak_trade
 changed_relations:
-  - REL:s_cap22_depends_on_cap21_feature_production
-  - REL:s_cap22_ranking_runtime_depends_on_cap22
-  - REL:s_cap22_governed_by_peak_trade_ranking_feature_contract_v1
-  - REL:s_cap22_governed_by_peak_trade_ranking_matrix_policy_v1
-changed_closures:
-  - CLOSURE:productive_universe
+  - REL:s_future_profile_observes_cap21_feature_production
+  - REL:s_future_profile_observes_cap22_ranking_runtime
+  - REL:s_future_profile_observes_cap23_selection_reference
+changed_closures: []
 changed_wiring: []
 changed_venue: []
 changed_census: []

@@ -97,6 +97,13 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### CAPABILITY:future_profile_snapshot_v1
+
+- direct_upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, SELECTOR:single_selected_future_policy`
+- transitive_upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_economic_md_input, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:peak_trade_ranking_feature_contract_v1, CONTRACT:peak_trade_ranking_matrix_policy_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, SELECTOR:single_selected_future_policy`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
 
 - direct_upstream: `(none)`

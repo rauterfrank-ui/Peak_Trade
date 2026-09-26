@@ -213,6 +213,50 @@ relations:
       B06 runtime package binds the productive Cap 2.2 ranking seam.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_future_profile_observes_cap21_feature_production
+    source: CAPABILITY:future_profile_snapshot_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap21_feature_production_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/future_profile_snapshot_v1/producer_v1.py
+      - tests/ops/test_future_profile_snapshot_v1.py
+    notes: >
+      B07 reuses B05 feature-production snapshot values in descriptive profile
+      fields without recomputation or promotion to new authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_future_profile_observes_cap22_ranking_runtime
+    source: CAPABILITY:future_profile_snapshot_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/future_profile_snapshot_v1/producer_v1.py
+      - tests/ops/test_future_profile_snapshot_v1.py
+    notes: >
+      B07 can include Cap 2.2 ranking context as audit provenance only. It does
+      not rescore, rerank, or alter ranking order. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_future_profile_observes_cap23_selection_reference
+    source: CAPABILITY:future_profile_snapshot_v1
+    type: DEPENDS_ON
+    target: SELECTOR:single_selected_future_policy
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/future_profile_snapshot_v1/producer_v1.py
+      - tests/ops/test_future_profile_snapshot_v1.py
+    notes: >
+      B07 may carry an optional selected-future reference for operator
+      observability. Cap 2.3 remains the sole productive selection owner;
+      B07 cannot select or bind. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
