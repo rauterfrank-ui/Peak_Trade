@@ -1,16 +1,14 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "6d4de46525d4348e053e7466e1c174ce5743fb31",
+  "base_sha": "716ac2cf3c9c67c36aae7fa5b022ed0db2bb3690",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
-    "config/governance/unified_blueprint_phase_21_learning_integration_v1.json",
+    "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -21,23 +19,21 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_21_learning_integration_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_ingest_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_learning_evidence_record_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py",
-    "tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py",
-    "tests/governance/test_unified_blueprint_phase_21_learning_integration_v1.py",
-    "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py"
+    "src/governance/unified_blueprint_phase_22_incremental_research_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/incremental_information_set_v1.py",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py",
+    "tests/learning/test_incremental_information_set_v1.py",
+    "tests/learning/test_phase_22_incremental_research_evidence_v1.py"
   ],
-  "changed_paths_sha256": "374b500dac5eca79a79286084a66a4a378b41fffaddd973bc5240443ccddfcb4",
+  "changed_paths_sha256": "e4b448e6a80f733c06e88e201bf9379d6f0ed12c5e6b6818c53914f17c0990db",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_21_learning_integration_v1.json",
-    "tests/governance/test_unified_blueprint_phase_21_learning_integration_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_22_incremental_research_v1.json",
+    "tests/governance/test_unified_blueprint_phase_22_incremental_research_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_22_INCREMENTAL_RESEARCH_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Phase 21 Loop A conditioned Learning evidence; map source and derived views updated; AUTHORITY=NONE."
+  "reason": "Phase 22 incremental information research (B0–B5); map source, atlas catalog/relations, and derived views updated; AUTHORITY=NONE."
 }
