@@ -1,0 +1,16 @@
+{
+  "workpackage_id": "GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "continuation_authority": "NONE",
+  "evidence_acceptance_implies_productive_authorization": false,
+  "runtime_apply_started": false,
+  "productive_configuration_produced": false,
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "real_upstream_source_used": true,
+  "ddo_fixture_state_used_on_real_path": false,
+  "p5_optimization_envelope_bridge_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "p5_meta_learning_routed_bridge_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "evidence_adjudicator_a_real_ingress_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "normative_spec": "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

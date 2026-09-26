@@ -23,6 +23,10 @@ from src.governance.governed_m4_m8_evidence_return_to_meta_learning_optimization
     REAL_FEEDBACK_END_TO_END_STATUS,
     prove_real_meta_optimization_feedback_continuation_v1,
 )
+from src.governance.governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1 import (
+    EVIDENCE_ADJUDICATOR_A_REAL_INGRESS_STATUS,
+    prove_real_p5_adjudicator_a_continuation_v1,
+)
 from src.governance.governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1 import (
     M4_M8_END_TO_END_STATUS,
     REAL_RUNTIME_G2_TO_M4_M8_STATUS,
@@ -134,6 +138,14 @@ def prove_g2_runtime_to_meta_learning_optimization_feedback_real_mechanical_v1(
     return prove_real_meta_optimization_feedback_continuation_v1(
         projection_request=projection_request
     )
+
+
+def prove_g2_runtime_to_p5_evidence_adjudicator_a_real_mechanical_v1(
+    *,
+    projection_request: GovernedRuntimePrimaryProjectionRequestV1,
+) -> bool:
+    """Real path: G2 → M4–M8 → P5 producer bridges → Evidence Adjudicator A."""
+    return prove_real_p5_adjudicator_a_continuation_v1(projection_request=projection_request)
 
 
 def prove_g2_m4_m8_fixture_lineage_v1(*, repo_root: Path | None = None) -> bool:
@@ -277,6 +289,11 @@ def run_g2_bounded_end_to_end_with_projection_v1(
             )
             else "NOT_PROVEN"
         ),
+        "evidence_adjudicator_a_real_ingress_status": (
+            EVIDENCE_ADJUDICATOR_A_REAL_INGRESS_STATUS
+            if prove_real_p5_adjudicator_a_continuation_v1(projection_request=projection_request)
+            else "NOT_PROVEN"
+        ),
         "g2_end_to_end_status": G2_END_TO_END_STATUS
         if projection.status == "PROJECTED" and continuation.status == "CONTINUATION_COMPLETE"
         else "PARTIAL_CURRENT",
@@ -316,6 +333,7 @@ __all__ = [
     "prove_g2_runtime_to_canonical_optimization_learning_input_v1",
     "prove_g2_runtime_to_m4_m8_real_mechanical_v1",
     "prove_g2_runtime_to_meta_learning_optimization_feedback_real_mechanical_v1",
+    "prove_g2_runtime_to_p5_evidence_adjudicator_a_real_mechanical_v1",
     "run_g2_bounded_end_to_end_with_projection_v1",
     "trace_g2_reconstruction_v1",
 ]

@@ -54,8 +54,11 @@ flowchart LR
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   ranking_cap22 -->|ranking_witness_b06_to_operator_profile_b11| operator_profile_explainability_b11
   g2_runtime_primary_offline_projection -->|real_runtime_g2_to_meta_optimization_feedback_continuation| optimization_universe
+  g2_runtime_primary_offline_projection -->|real_runtime_g2_to_p5_adjudicator_a_continuation| p5_layered_core
   optimization_universe -->|real_runtime_m4_m8_to_meta_learning_ingest| meta_learning
   meta_learning -->|real_runtime_meta_learning_to_optimization_feedback| optimization_universe
+  meta_learning -->|real_runtime_p5_meta_learning_routed_to_adjudicator_a| p5_layered_core
+  optimization_universe -->|real_runtime_p5_optimization_envelope_to_adjudicator_a| p5_layered_core
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
@@ -938,6 +941,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
 
+## real_runtime_g2_to_p5_adjudicator_a_continuation
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=run_real_runtime_to_p5_evidence_adjudicator_a_continuation_v1
+- producer=run_real_runtime_to_p5_evidence_adjudicator_a_continuation_v1
+- consumer=terminate_optimization_envelope_at_a_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_EVIDENCE_ADJUDICATION_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1
+- provenance_binding=EVIDENCE_ADJUDICATOR_A_REAL_INGRESS_STATUS=PROVEN_REAL_MECHANICAL_PATH
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`
+
 ## real_runtime_m4_m8_to_meta_learning_ingest
 
 - lifecycle=PROVEN_CURRENT
@@ -973,6 +994,42 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `src/experiments/canonical_meta_to_optimization_feedback_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
+
+## real_runtime_p5_meta_learning_routed_to_adjudicator_a
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=bridge_m6_to_meta_learning_routed_evidence_v1 → terminate_meta_learning_routed_at_a_v1
+- producer=bridge_m6_to_meta_learning_routed_evidence_v1
+- consumer=adjudicate_evidence_intake_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_EVIDENCE_ADJUDICATION_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=META_EVIDENCE_ID_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=meta_learning_routed_evidence_v1
+- provenance_binding=P5_META_LEARNING_ROUTED_BRIDGE_STATUS=PROVEN_REAL_MECHANICAL_PATH
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`
+
+## real_runtime_p5_optimization_envelope_to_adjudicator_a
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=bridge_m5_to_optimization_envelope_evidence_v1 → terminate_optimization_envelope_at_a_v1
+- producer=bridge_m5_to_optimization_envelope_evidence_v1
+- consumer=adjudicate_evidence_intake_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_EVIDENCE_ADJUDICATION_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=optimization_envelope_evidence_v1
+- provenance_binding=P5_OPTIMIZATION_ENVELOPE_BRIDGE_STATUS=PROVEN_REAL_MECHANICAL_PATH; EVIDENCE_ACCEPTANCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py`, `tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`
 
 ## reconciliation_portfolio_truth_fa_cap24
 
