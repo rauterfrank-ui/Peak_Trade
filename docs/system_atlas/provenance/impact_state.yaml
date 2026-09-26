@@ -1,20 +1,20 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
-modified_by: UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
+introduced_by: UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
+modified_by: UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Phase 20 MARKET_CONTEXT to REALIZED_BEHAVIOR N_BARS join on MI/Learning path;
-  canonical outcome backbone unchanged; no trading/runtime authority. AUTHORITY=NONE.
+  Phase 21 Loop A conditioned Learning evidence integration on MI/Learning path;
+  established writer/store/export unchanged; AUTHORITY=NONE.
 changed_entities:
   - CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
-  - RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1
-  - RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1
+  - RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1
+  - RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1
 changed_relations:
-  - REL:s_map_navigates_unified_blueprint_phase_20_behavior_join_v1
-  - REL:s_mi_stack_contains_market_context_realized_behavior_join_v1
+  - REL:s_map_navigates_unified_blueprint_phase_21_learning_integration_v1
+  - REL:s_mi_stack_contains_loop_a_conditioned_learning_evidence_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

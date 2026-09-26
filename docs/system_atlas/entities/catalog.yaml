@@ -8692,6 +8692,38 @@ entities:
       Typed REALIZED_BEHAVIOR_V1 from MARKET_CONTEXT_V1 and canonical N_BARS outcome;
       no duplicate outcome SSOT. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 21 Loop A learning integration v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_21_learning_integration_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_21_learning_integration_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_21_learning_integration_v1.json
+    notes: >-
+      Phase 21 Loop A conditioned Learning evidence closure; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1
+    kind: RUNTIME_COMPONENT
+    name: MI/Learning Loop A conditioned learning evidence
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
+    source_paths:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py
+    evidence_sources:
+      - tests/learning/test_loop_a_conditioned_learning_evidence_v1.py
+    notes: >-
+      Established MI learning ingest/store/export with Phase 17–20 conditioned refs.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1
