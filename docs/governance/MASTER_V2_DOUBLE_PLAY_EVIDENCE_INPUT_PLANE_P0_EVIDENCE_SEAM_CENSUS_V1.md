@@ -23,11 +23,11 @@ Design intent for future Components A/B remains **Blueprint-only** until P1+ Own
 
 | Artifact | Path |
 | --- | --- |
-| L1–L10 census (JSON) | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json`](../../evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json) |
-| Evidence reference ledger | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/evidence_reference_ledger_v1.json`](../../evidence/master_v2_double_play_evidence_input_plane_p0/evidence_reference_ledger_v1.json) |
-| Open / conflict register | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/open_conflict_register_v1.json`](../../evidence/master_v2_double_play_evidence_input_plane_p0/open_conflict_register_v1.json) |
-| P1 design-input block | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json`](../../evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json) |
-| Read-only census runner | [`src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py`](../../../src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py) |
+| L1–L10 census (JSON) | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json`](../evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json) |
+| Evidence reference ledger | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/evidence_reference_ledger_v1.json`](../evidence/master_v2_double_play_evidence_input_plane_p0/evidence_reference_ledger_v1.json) |
+| Open / conflict register | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/open_conflict_register_v1.json`](../evidence/master_v2_double_play_evidence_input_plane_p0/open_conflict_register_v1.json) |
+| P1 design-input block | [`docs/evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json`](../evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json) |
+| Read-only census runner | [`src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py`](../../src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py) |
 
 ## Authority invariants preserved (unchanged by P0)
 
@@ -88,7 +88,7 @@ Market Intelligence / Learning evidence types are admissible without P1 contract
 
 ## P1 design-input readiness
 
-See [`p1_design_input_block_v1.json`](../../evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json).
+See [`p1_design_input_block_v1.json`](../evidence/master_v2_double_play_evidence_input_plane_p0/p1_design_input_block_v1.json).
 P0 proves owners and contracts sufficient to **design** A/B schemas; implementation remains blocked.
 
 ## Verification
