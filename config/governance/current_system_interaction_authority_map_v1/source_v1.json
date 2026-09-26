@@ -2771,14 +2771,13 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 11 surface portfolio closure on origin/main @ 71a156bfe6c463b6cc3a421844ee917f9c154a45 (AUTHORITY=NONE). Canonical portfolio registry src/experiments/canonical_optimization_surface_portfolio_registry_v1.py durably classifies CURRENT families as AUTHORIZED_RESEARCH_SURFACE (F1/M9, F2 cost grid, F5-FRESH shadow freshness), DEFERRED (F5-SURV/CAP shadow calibration, funding-only axis), or EXCLUDED_CONSTITUTIONAL (F3, risk/sizing, OLS diagnostic, Optuna legacy, M4 synthetic context, meta plane). Research-active envelope surfaces remain exactly three isolated surface_ids; universe membership and registry presence do not imply authorization; candidate existence does not imply productive configuration; OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. M7 meta feedback applies Phase-11 portfolio gate on explicit optimization_family tokens. Prior optimizable-surface modules, surface-families prep, owner-grants materialization, and pdf_v3_3 classification config remain subordinate evidence. Productive apply/enforcement remains forbidden.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 12 productive lineage closure on origin/main @ 8e7d29613563eac1cbb5bd126067013590e23290 (AUTHORITY=NONE). Phase-11 portfolio registry remains enumeration root. Phase-12 registry src/experiments/canonical_optimization_productive_lineage_registry_v1.py assigns PRODUCTIVE_RELEVANT only to F1/M9 VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1 with replayable chain bound via pdf_v3_3_productive_consumer_binding_registry_v1.json to m9 productive target, governed configuration/seam, f1_m9 MV2 consumer, and double_play volatility presence gate; F2 cost grid and F5-FRESH are RESEARCH_ONLY_NO_CURRENT_PRODUCTIVE_TARGET with fail-closed productive apply. research_authorization_implies_productive_authorization=false; candidate/proposal/evidence do not imply authorization; runtime_apply_possible=false; optimizer direct write forbidden.",
       "evidence_refs": [
+        "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json",
+        "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
+        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
         "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
-        "src/experiments/canonical_optimization_surface_portfolio_registry_v1.py",
-        "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json",
-        "src/experiments/canonical_optimizable_envelope_v1.py",
-        "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
-        "src/governance/optimization_proposal_governance_ingress_v1.py"
+        "src/governance/pdf_v3_3_topic_completion_composition_v1.py"
       ]
     },
     {

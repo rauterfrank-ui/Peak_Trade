@@ -1,36 +1,34 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "71a156bfe6c463b6cc3a421844ee917f9c154a45",
+  "base_sha": "8e7d29613563eac1cbb5bd126067013590e23290",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
-    "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
     "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
+    "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/relations/structural.yaml",
-    "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
-    "src/experiments/canonical_optimization_surface_portfolio_registry_v1.py",
-    "src/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.py",
-    "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
-    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
-    "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py"
+    "src/experiments/canonical_optimization_productive_lineage_registry_v1.py",
+    "src/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.py",
+    "tests/experiments/test_canonical_optimization_productive_lineage_registry_v1.py",
+    "tests/governance/test_unified_blueprint_phase_12_productive_lineage_closure_v1.py"
   ],
-  "changed_paths_sha256": "7a66ae3ac772e58432eb04513004f438c40699bc3a4df48e174414ed3441dddc",
+  "changed_paths_sha256": "89237fb72d96d731e18842b70ba468e7857a7211903aef422039ec6169ae31d9",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
-    "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json",
+    "tests/experiments/test_canonical_optimization_productive_lineage_registry_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_12_PRODUCTIVE_LINEAGE_CLOSURE_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint Phase 11 closes optimization surface portfolio census/classification/resolver; updates authority-map navigation statement, D01/D02 next-boundary pointers, and atlas/catalog. AUTHORITY=NONE."
+  "reason": "Unified Blueprint Phase 12 productive lineage closure; updates authority-map navigation statement, D01/D02 next-boundary pointers, and atlas/catalog. AUTHORITY=NONE."
 }

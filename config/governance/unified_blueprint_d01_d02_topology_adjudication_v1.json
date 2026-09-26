@@ -310,6 +310,6 @@
     "no_new_external_effect_path": true,
     "d03_productive_ddo_feedback_seam_unchanged": true
   },
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 11 Surface Portfolio Closure (Owner-authorized; see unified_blueprint_phase_11_surface_portfolio_closure_v1.json when PROVEN_COMPLETE)",
-  "next_implementation_boundary": "Phase 11 Surface Portfolio Closure then Phase 12 productive lineage; neither implied by D01/D02 topology alone"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 12 Productive Lineage Closure (Owner-authorized; see unified_blueprint_phase_12_productive_lineage_closure_v1.json when PROVEN_COMPLETE)",
+  "next_implementation_boundary": "Phase 12 productive lineage then Phase 13/M10; neither implied by D01/D02 topology alone"
 }
