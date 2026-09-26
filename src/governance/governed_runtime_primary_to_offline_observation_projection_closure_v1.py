@@ -19,6 +19,11 @@ from src.governance.governed_productive_configuration_apply_authority_v1 import 
     PRIMARY_EVIDENCE_IMPLIES_APPLY,
     RUNTIME_APPLY_STARTED as M10_RUNTIME_APPLY_STARTED,
 )
+from src.governance.governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1 import (
+    REAL_MECHANICAL_PATH_STATUS,
+    bind_from_g2_projection_result_v1,
+    prove_binding_authority_invariants_v1,
+)
 from src.governance.governed_runtime_primary_to_offline_observation_projection_v1 import (
     DECISION_CONFIG,
     FIELD_MAPPING_LEDGER,
@@ -37,7 +42,9 @@ from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 G2_END_TO_END_STATUS: Final[str] = "PROVEN_FIXTURE_BOUNDED"
+G2_RUNTIME_TO_CANONICAL_OPTIMIZATION_INPUT_STATUS: Final[str] = "PROVEN"
 RECONSTRUCTION_CLASS_FIXTURE_BOUNDED: Final[str] = "BOUNDED_RECONSTRUCTION_PROVEN"
+RECONSTRUCTION_CLASS_REAL_MECHANICAL: Final[str] = "REAL_MECHANICAL_PATH_PROVEN"
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -59,7 +66,29 @@ def prove_g2_authority_invariants_v1() -> bool:
         PRIMARY_EVIDENCE_IMPLIES_APPLY is False
         and M10_RUNTIME_APPLY_STARTED is False
         and prove_p5_final_closure_mechanically_allowed_v1() is True
+        and prove_binding_authority_invariants_v1() is True
     )
+
+
+def prove_g2_runtime_to_canonical_optimization_learning_input_v1(
+    *,
+    projection_request: GovernedRuntimePrimaryProjectionRequestV1,
+) -> bool:
+    """Real mechanical path: G2 projection → governed binding → canonical optimization input."""
+    projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
+        projection_request
+    )
+    binding = bind_from_g2_projection_result_v1(projection)
+    if binding.status != "BOUND":
+        return False
+    if binding.path_classification != REAL_MECHANICAL_PATH_STATUS:
+        return False
+    ack = binding.canonical_optimization_ack or {}
+    if ack.get("status") != "ACCEPTED_OFFLINE_RESEARCH_INPUT":
+        return False
+    if binding.learning_evidence is None:
+        return False
+    return True
 
 
 def prove_g2_m4_m8_fixture_lineage_v1(*, repo_root: Path | None = None) -> bool:
@@ -148,6 +177,7 @@ def run_g2_bounded_end_to_end_with_projection_v1(
     projection = run_governed_runtime_primary_to_offline_observation_projection_v1(
         projection_request
     )
+    binding = bind_from_g2_projection_result_v1(projection)
     m4_ok = prove_g2_m4_m8_fixture_lineage_v1()
     reconstruction = trace_g2_reconstruction_v1(
         projection_result={
@@ -155,6 +185,12 @@ def run_g2_bounded_end_to_end_with_projection_v1(
             "projection_record_digest": projection.projection_record_digest,
         }
     )
+    if binding.status == "BOUND" and binding.lineage_chain:
+        reconstruction = {
+            **reconstruction,
+            "classification": RECONSTRUCTION_CLASS_REAL_MECHANICAL,
+            "optimization_input_binding_digest": binding.binding_record_digest,
+        }
     return {
         "projection_status": projection.status,
         "learning_ingress_status": (
@@ -165,6 +201,12 @@ def run_g2_bounded_end_to_end_with_projection_v1(
             )
             else "REJECTED"
         ),
+        "canonical_optimization_input_status": (
+            G2_RUNTIME_TO_CANONICAL_OPTIMIZATION_INPUT_STATUS
+            if binding.status == "BOUND"
+            else "REJECTED"
+        ),
+        "runtime_mechanical_path_status": binding.path_classification or "NOT_PROVEN",
         "m4_m8_status": "PROVEN_FIXTURE_BOUNDED" if m4_ok else "BLOCKED",
         "g2_end_to_end_status": G2_END_TO_END_STATUS
         if projection.status == "PROJECTED" and m4_ok
@@ -178,6 +220,7 @@ def run_g2_bounded_end_to_end_with_projection_v1(
                     if projection.provenance
                     else None
                 ),
+                "binding": binding.binding_record_digest,
             }
         ),
     }
@@ -185,11 +228,14 @@ def run_g2_bounded_end_to_end_with_projection_v1(
 
 __all__ = [
     "G2_END_TO_END_STATUS",
+    "G2_RUNTIME_TO_CANONICAL_OPTIMIZATION_INPUT_STATUS",
     "RECONSTRUCTION_CLASS_FIXTURE_BOUNDED",
+    "RECONSTRUCTION_CLASS_REAL_MECHANICAL",
     "prove_g2_authority_invariants_v1",
     "prove_g2_decision_files_v1",
     "prove_g2_m4_m8_fixture_lineage_v1",
     "prove_g2_projection_closure_v1",
+    "prove_g2_runtime_to_canonical_optimization_learning_input_v1",
     "run_g2_bounded_end_to_end_with_projection_v1",
     "trace_g2_reconstruction_v1",
 ]

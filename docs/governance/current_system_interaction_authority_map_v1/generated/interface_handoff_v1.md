@@ -20,8 +20,10 @@ flowchart LR
   full_autonomy_n5 -->|fa_compose_portfolio_budget| portfolio_reservation
   future_profile_snapshot_b07 -->|future_profile_b07_to_operator_profile_b11| operator_profile_explainability_b11
   g17_typed_vol_cmc_bind -->|g17_bind_into_mv2_cycle| mv2_double_play
+  g2_runtime_learning_optimization_input_binding -->|g2_binding_to_canonical_optimization_learning_input| optimization_universe
+  g2_runtime_primary_offline_projection -->|g2_m4_m8_fixture_continuation| optimization_universe
   bounded_runtime_primary_evidence -->|g2_primary_evidence_to_offline_projection| g2_runtime_primary_offline_projection
-  g2_runtime_primary_offline_projection -->|g2_projection_to_runtime_learning_ingress| optimization_universe
+  g2_runtime_primary_offline_projection -->|g2_runtime_learning_to_optimization_input_binding| g2_runtime_learning_optimization_input_binding
   governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
   governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
   mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
@@ -320,6 +322,42 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`
 
+## g2_binding_to_canonical_optimization_learning_input
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack
+- producer=bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1
+- consumer=validate_canonical_optimization_universe_learning_input_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_INPUT_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=LEARNING_EVIDENCE_RECORD_V1_RUNTIME_DERIVED
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=canonical_optimization_universe_learning_input_v1
+- provenance_binding=CANONICAL_LEARNING_INPUT_IMPLIES_PRODUCTIVE_ACTIVATION=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/experiments/canonical_optimization_universe_learning_input_v1.py`, `src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`
+
+## g2_m4_m8_fixture_continuation
+
+- lifecycle=PARTIAL
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)
+- producer=export_learning_evidence_from_state_v1
+- consumer=run_m4_m8_evidence_return_loop_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=DDO_FIXTURE_LEARNING_STATE
+- temporal_binding=FIXTURE_BOUNDED
+- version_binding=m4_m8_evidence_return_loop_v1
+- provenance_binding=G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`
+
 ## g2_primary_evidence_to_offline_projection
 
 - lifecycle=PROVEN_CURRENT
@@ -338,23 +376,23 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `scripts/ops/primary_evidence_retention_v0.py`
 
-## g2_projection_to_runtime_learning_ingress
+## g2_runtime_learning_to_optimization_input_binding
 
-- lifecycle=PARTIAL
+- lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=runtime_to_learning_input_v1 (LEARNING_INPUT_VALID); M4–M8 continuation fixture-bounded via existing DDO export path
+- contract_or_payload=runtime_to_learning_input_v1 (LEARNING_INPUT_VALID) + G2 provenance
 - producer=build_runtime_to_learning_input_v1
-- consumer=validate_canonical_optimization_universe_learning_input_v1
+- consumer=bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1
 - authority_effect=NONE
-- decision_effect=OFFLINE_RESEARCH_INPUT_ONLY
-- direct_or_indirect=INDIRECT
-- identity_binding=PROJECTION_RECORD_DIGEST_CHAIN
-- temporal_binding=FIXTURE_BOUNDED_FOR_M4_M8
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=PROJECTION_AND_RUNTIME_LEARNING_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
 - version_binding=runtime_to_learning_input_v1
-- provenance_binding=G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED
+- provenance_binding=REAL_RUNTIME_G2_TO_CANONICAL_OPTIMIZATION_INPUT_STATUS=PROVEN
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/meta/learning_loop/runtime_observation_feedback_v1.py`, `src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`
+- evidence=`src/meta/learning_loop/runtime_observation_feedback_v1.py`, `src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`
 
 ## governed_cycle_t2_mv2_stack
 

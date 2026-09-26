@@ -91,6 +91,8 @@ def test_bounded_end_to_end_and_reconstruction(tmp_path: Path, mode) -> None:
     )
     assert summary["projection_status"] == "PROJECTED"
     assert summary["learning_ingress_status"] == "PROVEN"
+    assert summary["canonical_optimization_input_status"] == "PROVEN"
+    assert summary["runtime_mechanical_path_status"] == "PROVEN_REAL_MECHANICAL_PATH"
     assert summary["m4_m8_status"] == "PROVEN_FIXTURE_BOUNDED"
     assert summary["g2_end_to_end_status"] == G2_END_TO_END_STATUS
     recon = trace_g2_reconstruction_v1(

@@ -662,14 +662,43 @@
       "code_refs": [
         "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
         "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
         "src/meta/learning_loop/runtime_observation_feedback_v1.py",
         "src/experiments/canonical_identity_bound_offline_observation_binding_v1.py"
       ],
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
         "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
         "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
-        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json"
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
+        "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "g2_runtime_learning_optimization_input_binding",
+      "tier": "INTERMEDIATE",
+      "role": "Governed mechanical binding from runtime_to_learning_input_v1 to canonical optimization-universe learning input without DDO fixture state.",
+      "canonical_owner_ref": "governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PROJECTION_BOUNDARY_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+        "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json"
       ]
     },
     {
@@ -1959,25 +1988,72 @@
       ]
     },
     {
-      "id": "g2_projection_to_runtime_learning_ingress",
+      "id": "g2_runtime_learning_to_optimization_input_binding",
       "from_domain": "g2_runtime_primary_offline_projection",
-      "to_domain": "optimization_universe",
+      "to_domain": "g2_runtime_learning_optimization_input_binding",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "runtime_to_learning_input_v1 (LEARNING_INPUT_VALID); M4–M8 continuation fixture-bounded via existing DDO export path",
+      "contract_or_payload": "runtime_to_learning_input_v1 (LEARNING_INPUT_VALID) + G2 provenance",
       "producer": "build_runtime_to_learning_input_v1",
-      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "consumer": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
       "authority_effect": "NONE",
-      "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
-      "direct_or_indirect": "INDIRECT",
-      "lifecycle": "PARTIAL",
-      "identity_binding": "PROJECTION_RECORD_DIGEST_CHAIN",
-      "temporal_binding": "FIXTURE_BOUNDED_FOR_M4_M8",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "PROJECTION_AND_RUNTIME_LEARNING_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
       "version_binding": "runtime_to_learning_input_v1",
-      "provenance_binding": "G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED",
+      "provenance_binding": "REAL_RUNTIME_G2_TO_CANONICAL_OPTIMIZATION_INPUT_STATUS=PROVEN",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
         "src/meta/learning_loop/runtime_observation_feedback_v1.py",
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
+      ]
+    },
+    {
+      "id": "g2_binding_to_canonical_optimization_learning_input",
+      "from_domain": "g2_runtime_learning_optimization_input_binding",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
+      "producer": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
+      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "LEARNING_EVIDENCE_RECORD_V1_RUNTIME_DERIVED",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "canonical_optimization_universe_learning_input_v1",
+      "provenance_binding": "CANONICAL_LEARNING_INPUT_IMPLIES_PRODUCTIVE_ACTIVATION=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+        "src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
+      ]
+    },
+    {
+      "id": "g2_m4_m8_fixture_continuation",
+      "from_domain": "g2_runtime_primary_offline_projection",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
+      "producer": "export_learning_evidence_from_state_v1",
+      "consumer": "run_m4_m8_evidence_return_loop_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PARTIAL",
+      "identity_binding": "DDO_FIXTURE_LEARNING_STATE",
+      "temporal_binding": "FIXTURE_BOUNDED",
+      "version_binding": "m4_m8_evidence_return_loop_v1",
+      "provenance_binding": "G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
         "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
         "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
       ]
@@ -3386,11 +3462,24 @@
     {
       "id": "g2_runtime_primary_offline_observation_projection_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1 only; M4–M8 proven fixture-bounded; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
+      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1; real mechanical path to canonical optimization learning input proven without DDO fixture; M4–M8 full loop remains fixture-bounded; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
         "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
-        "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
+        "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json",
+        "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
+      ]
+    },
+    {
+      "id": "g2_runtime_learning_input_to_optimization_universe_binding_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "G2 runtime learning ingress mechanically binds to canonical optimization-universe learning input without DDO fixture state; CANONICAL_LEARNING_INPUT_IMPLIES_PRODUCTIVE_ACTIVATION=false; RUNTIME_APPLY_STARTED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
+        "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json",
+        "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
       ]
     }
   ]
