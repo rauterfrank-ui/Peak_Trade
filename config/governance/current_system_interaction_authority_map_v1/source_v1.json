@@ -2083,6 +2083,77 @@
       ]
     },
     {
+      "id": "real_runtime_m4_m8_to_meta_learning_ingest",
+      "from_domain": "optimization_universe",
+      "to_domain": "meta_learning",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "M4–M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)",
+      "producer": "run_m4_m8_evidence_return_loop_v1",
+      "consumer": "ingest_meta_learning_evidence_from_return_input_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "meta_learning_ingest_v1",
+      "provenance_binding": "REAL_M4_M8_TO_META_LEARNING_STATUS=PROVEN_REAL_MECHANICAL_PATH",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+        "src/experiments/canonical_meta_learning_ingest_v1.py",
+        "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_meta_learning_to_optimization_feedback",
+      "from_domain": "meta_learning",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "meta_learning_evidence_v1 → bounded_research_feedback_decision_v1",
+      "producer": "validate_meta_to_optimization_feedback_input_v1",
+      "consumer": "validate_meta_to_optimization_feedback_input_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_FEEDBACK_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "META_EVIDENCE_ID_CHAIN",
+      "temporal_binding": "OFFLINE_RESEARCH_CYCLE",
+      "version_binding": "canonical_meta_to_optimization_feedback_v1",
+      "provenance_binding": "REAL_META_LEARNING_TO_OPTIMIZATION_FEEDBACK_STATUS=PROVEN_REAL_MECHANICAL_PATH; CLOSED_PRODUCTIVE_OPTIMIZATION_LOOP=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+        "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+        "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_runtime_g2_to_meta_optimization_feedback_continuation",
+      "from_domain": "g2_runtime_primary_offline_projection",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1",
+      "producer": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1",
+      "consumer": "validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1",
+      "provenance_binding": "REAL_FEEDBACK_END_TO_END_STATUS=PROVEN_REAL_MECHANICAL_PATH",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
       "id": "learning_capture",
       "from_domain": "mv2_double_play",
       "to_domain": "learning_ddo",
@@ -3514,6 +3585,16 @@
         "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "m4_m8_real_meta_optimization_feedback_continuation_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real runtime G2→M4–M8 cycle output reaches canonical M6 meta-learning ingest and M7 bounded optimization feedback with fail-closed lineage; CLOSED_MECHANICAL_LEARNING_LOOP=true; CLOSED_PRODUCTIVE_OPTIMIZATION_LOOP=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json",
+        "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
       ]
     }
   ]

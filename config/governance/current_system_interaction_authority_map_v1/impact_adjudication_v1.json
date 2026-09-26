@@ -1,20 +1,19 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+  "base_sha": "a220e44325947f10cf0f342a0971b4dcd568a5be",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "G2 real mechanical continuation into canonical M4–M8 evidence return loop without DDO fixture on real path; map/atlas currency; authority=NONE.",
+  "reason": "Real runtime M4\u2013M8 evidence-return output \u2192 M6 meta-learning \u2192 M7 optimization feedback mechanical continuation; map/atlas currency; authority=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
-    "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
+    "config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -25,26 +24,24 @@
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+    "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
     "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
-    "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
-    "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
+    "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
   ],
-  "changed_paths_sha256": "3b6c9737c2bccabb9a1d852bb55c974efb83d757dadeaea6ddb60b833cc41cf1",
+  "changed_paths_sha256": "327206a73a99e8a3daafc3893d4a5337d3c9627b6ad05deb347c4a65c4b218de",
   "covered_candidate_paths": [
-    "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
-    "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json",
+    "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+    "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
     "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
-    "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
-    "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
+    "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
-    "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
-    "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py"
+    "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py",
+    "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
   ]
 }

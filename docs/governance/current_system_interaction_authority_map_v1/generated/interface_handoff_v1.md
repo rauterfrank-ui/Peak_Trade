@@ -53,6 +53,9 @@ flowchart LR
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   ranking_cap22 -->|ranking_witness_b06_to_operator_profile_b11| operator_profile_explainability_b11
+  g2_runtime_primary_offline_projection -->|real_runtime_g2_to_meta_optimization_feedback_continuation| optimization_universe
+  optimization_universe -->|real_runtime_m4_m8_to_meta_learning_ingest| meta_learning
+  meta_learning -->|real_runtime_meta_learning_to_optimization_feedback| optimization_universe
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
@@ -916,6 +919,60 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
+
+## real_runtime_g2_to_meta_optimization_feedback_continuation
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1
+- producer=run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1
+- consumer=validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
+- provenance_binding=REAL_FEEDBACK_END_TO_END_STATUS=PROVEN_REAL_MECHANICAL_PATH
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
+
+## real_runtime_m4_m8_to_meta_learning_ingest
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=M4–M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)
+- producer=run_m4_m8_evidence_return_loop_v1
+- consumer=ingest_meta_learning_evidence_from_return_input_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_EVIDENCE_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=meta_learning_ingest_v1
+- provenance_binding=REAL_M4_M8_TO_META_LEARNING_STATUS=PROVEN_REAL_MECHANICAL_PATH
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `src/experiments/canonical_meta_learning_ingest_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
+
+## real_runtime_meta_learning_to_optimization_feedback
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=meta_learning_evidence_v1 → bounded_research_feedback_decision_v1
+- producer=validate_meta_to_optimization_feedback_input_v1
+- consumer=validate_meta_to_optimization_feedback_input_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_FEEDBACK_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=META_EVIDENCE_ID_CHAIN
+- temporal_binding=OFFLINE_RESEARCH_CYCLE
+- version_binding=canonical_meta_to_optimization_feedback_v1
+- provenance_binding=REAL_META_LEARNING_TO_OPTIMIZATION_FEEDBACK_STATUS=PROVEN_REAL_MECHANICAL_PATH; CLOSED_PRODUCTIVE_OPTIMIZATION_LOOP=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `src/experiments/canonical_meta_to_optimization_feedback_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
 
 ## reconciliation_portfolio_truth_fa_cap24
 

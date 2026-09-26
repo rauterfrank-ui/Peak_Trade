@@ -101,6 +101,9 @@ flowchart LR
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
   ranking_cap22 --> selection_cap23
   ranking_cap22 --> operator_profile_explainability_b11
+  g2_runtime_primary_offline_projection --> optimization_universe
+  optimization_universe --> meta_learning
+  meta_learning --> optimization_universe
   reconciliation_runtime_binding --> runtime_binding_cap24
   reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
