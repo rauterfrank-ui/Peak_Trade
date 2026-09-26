@@ -1,0 +1,102 @@
+{
+  "meta_learning": {
+    "productive_reachable_proven": false,
+    "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+    "surfaces": [
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "build_meta_evidence_v1",
+        "module": "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
+        "notes": "RESEARCH_ONLY routing envelope; permitted_use_classification=RESEARCH_ONLY.",
+        "output_schema": "meta_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "classify_and_build_meta_evidence_v1",
+        "module": "src/experiments/canonical_meta_evidence_dual_router_v1.py",
+        "notes": "Dual-router research consumer path; no productive promotion.",
+        "output_schema": "meta_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "meta_learning_evidence_v1 ingest",
+        "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
+        "notes": "Nested input to meta_evidence_v1; still research lineage.",
+        "output_schema": "meta_learning_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      }
+    ],
+    "target_p2_kind": "meta_learning_routed_evidence_v1",
+    "verdict": "BLOCKED_NO_PRODUCTIVE_PROMOTION_BOUNDARY"
+  },
+  "optimization": {
+    "productive_reachable_proven": false,
+    "schema_version": "master_v2_double_play_evidence_input_plane_p5_upstream_invocation_proof/v1",
+    "surfaces": [
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "build_optimization_experiment_evidence_from_plane_v1",
+        "module": "src/experiments/canonical_optimization_experiment_evidence_v1.py",
+        "notes": "Invoked from offline experiment plane / phase-22 research stacks only.",
+        "output_schema": "canonical_optimization_experiment_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "build_optimization_experiment_evidence_from_plane_v1",
+        "module": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/phase_22_incremental_research_evidence_v1.py",
+        "notes": "MI offline research evidence path; not productive runtime.",
+        "output_schema": "canonical_optimization_experiment_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": true,
+        "OUTPUT_ARTIFACT_PROVEN": true,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "build_optimization_experiment_evidence_from_plane_v1",
+        "module": "src/experiments/canonical_deterministic_multi_cycle_offline_replay_v1.py",
+        "notes": "Deterministic offline replay; not productive producer.",
+        "output_schema": "canonical_optimization_experiment_evidence_v1",
+        "reachability_class": "RESEARCH_RUNNABLE"
+      },
+      {
+        "CURRENT": true,
+        "IMPLEMENTED": true,
+        "INVOCATION_PATH_PROVEN": false,
+        "OUTPUT_ARTIFACT_PROVEN": false,
+        "PRODUCTIVE_REACHABLE": false,
+        "builder": "N/A",
+        "module": "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
+        "notes": "Registry entry is not evidence emission.",
+        "output_schema": "optimization_envelope_evidence_v1",
+        "reachability_class": "REGISTRY_DECLARATION_ONLY"
+      }
+    ],
+    "target_p2_kind": "optimization_envelope_evidence_v1",
+    "verdict": "BLOCKED_NO_PRODUCTIVE_EMITTER"
+  }
+}

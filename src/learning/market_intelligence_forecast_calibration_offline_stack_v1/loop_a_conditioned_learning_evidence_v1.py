@@ -212,6 +212,8 @@ def run_loop_a_conditioned_learning_cycle_v1(
     *,
     store_root: Path | str,
     inputs: ConditionedLearningComposeInputsV1,
+    terminate_evidence_at_adjudicator_a_v1: bool = True,
+    market_observation_epoch: int = 0,
 ) -> MappingProxyType[str, Any]:
     """Writer → durable store → reader/export (Loop A closure; offline only)."""
     from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_learning_evidence_ingest_v1 import (
@@ -238,6 +240,33 @@ def run_loop_a_conditioned_learning_cycle_v1(
     loaded = store.get(str(expected["mi_learning_evidence_id"]))
     record = loaded
     export = export_mi_learning_evidence_onto_learning_path_v1(loaded)
+    evidence_plane_termination: dict[str, Any] | None = None
+    if terminate_evidence_at_adjudicator_a_v1:
+        from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.adapters_v1 import (
+            default_termination_context_from_market_context_v1,
+        )
+        from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.ingress_v1 import (
+            terminate_loop_a_conditioned_cycle_at_a_v1,
+        )
+
+        termination = default_termination_context_from_market_context_v1(
+            inputs.market_context,
+            market_observation_epoch=market_observation_epoch,
+        )
+        term = terminate_loop_a_conditioned_cycle_at_a_v1(
+            market_context=inputs.market_context,
+            mi_learning_evidence=dict(loaded),
+            termination=termination,
+        )
+        evidence_plane_termination = {
+            key: {
+                "disposition": value.adjudication.disposition,
+                "producer_id": value.producer_id,
+                "reason_codes": list(value.adjudication.reason_codes),
+                "envelope_digest": value.adjudication.envelope_digest,
+            }
+            for key, value in term.items()
+        }
     return MappingProxyType(
         {
             "schema_version": LOOP_A_SCHEMA,
@@ -252,6 +281,7 @@ def run_loop_a_conditioned_learning_cycle_v1(
             "market_context_ref": expected.get("market_context_ref"),
             "realized_behavior_ref": expected.get("realized_behavior_ref"),
             "learning_export": dict(export),
+            "master_v2_evidence_plane_a_termination": evidence_plane_termination,
             "domain": STACK_DOMAIN,
             "workpackage_id": WORKPACKAGE_ID,
         }
