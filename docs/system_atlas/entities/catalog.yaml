@@ -70,6 +70,10 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: PHASE_16_RUNBOOK_AUTHORITY_REBIND_V1 (PR #6859):
+    # Document-header BOUND_ORIGIN_MAIN_SHA mechanical rebind b9d67077→06ba8e88;
+    # STALE_IF_HEAD_DIFFERS unchanged; § CURRENT revision pin 0ceb48d unchanged;
+    # no semantic authority inversion; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831
     # MASTER_RUNBOOK_CURRENT_AUTHORITY_REVALIDATION_AND_REBIND_V1 (PR #6707):
     # BOUND_ORIGIN_MAIN_SHA rebound to origin/main 0ceb48d; CURRENT section
@@ -80,7 +84,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
+    modified_by: PHASE_16_RUNBOOK_AUTHORITY_REBIND_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -97,7 +101,8 @@ entities:
       full_core_live_path_authority_v1, and
       governed_continuous_cycle_orchestrator_v1. Standing LIVE_* predicates
       do not imply EXTERNAL_EFFECT or venue POST. BOUND_ORIGIN_MAIN_SHA tracks
-      revalidated origin/main head. Separate CURRENT boundaries document
+      revalidated origin/main head (document header 06ba8e88 as of Phase 16 rebind).
+      Separate CURRENT boundaries document
       Learning/DDO, STEP29M, and Optimization Universe with authority NONE.
       Atlas is not canonical authority and not runtime authority.
 

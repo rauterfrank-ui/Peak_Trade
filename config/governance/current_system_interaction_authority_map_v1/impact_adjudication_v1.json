@@ -1,37 +1,28 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "11e0601b1b6f8124701247ae9bb98c195dd5646c",
+  "base_sha": "06ba8e88b99930f87e5e019dc991b1c9c358a412",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
-    "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
-    "config/governance/unified_blueprint_phase_15_final_dod_v1.json",
-    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/relations/structural.yaml",
-    "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
-    "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
-    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py",
-    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "dae8d8022ef67a52743d5bbe55d173b697eda1b8cec5bcd1b2d7b9e6555017e4",
-  "covered_candidate_paths": [],
+  "changed_paths_sha256": "37e20cb359b7234f15bd64bbad24d839d424682c9a796a8bd1a6abf67551a30d",
+  "covered_candidate_paths": [
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/impact_state.yaml"
+  ],
   "evidence_refs": [
-    "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
-    "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md"
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "tests/ops/test_current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py"
   ],
   "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Post-Phase 15 bounded DoD remediation; WP-A/B/C and substrate census updates; optimization_universe CONFLICTING to RESEARCH_ONLY adjudication; AUTHORITY=NONE."
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "Phase 16 mechanical Master Runbook document-header BOUND_ORIGIN_MAIN_SHA rebind to origin/main 06ba8e88; Atlas RUNBOOK entity review only; interaction map structured source unchanged; AUTHORITY=NONE."
 }
