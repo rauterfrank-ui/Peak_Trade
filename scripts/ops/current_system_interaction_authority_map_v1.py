@@ -126,6 +126,7 @@ REQUIRED_PARTIAL_IDS = (
     "real_component_a_to_p3_p4_l6_productive_seam_v1",
     "real_p4_l6_seam_to_runtime_apply_materialization_v1",
     "f1_m9_scoped_owner_apply_execution_real_continuation_v1",
+    "f1_m9_scoped_owner_productive_runtime_apply_start_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",

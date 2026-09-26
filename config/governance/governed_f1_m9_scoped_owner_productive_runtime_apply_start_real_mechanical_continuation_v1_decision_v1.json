@@ -1,0 +1,19 @@
+{
+  "workpackage_id": "GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
+  "governed_productive_runtime_apply_start_authorized": true,
+  "ratified_threshold_numeric_max_age_seconds": 600,
+  "owner_threshold_record_digest_bound": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+  "authorized_owner_apply_record_digest_bound": "3f0895951d0708d017326a8b4f779c433d609d09d67459fe47f1239f214a2f95",
+  "real_p4_to_f1_m9_join_status": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL",
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "runtime_apply_started": true,
+  "productive_apply_occurred": true,
+  "configuration_runtime_applied": true,
+  "threshold_enforcement_mechanical_continuation_proven": true,
+  "earliest_unclosed_boundary": "PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING",
+  "next_genuine_blocker": "PRODUCTIVE_ORCHESTRATOR_CONSUMER_BINDING_OR_PRODUCTIVE_ACTIVATION",
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md"
+}
