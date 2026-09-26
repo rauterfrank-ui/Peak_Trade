@@ -42,6 +42,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_economic_md_input | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_economic_md_input | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:future_profile_snapshot_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:future_profile_snapshot_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:operator_profile_explainability_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:operator_profile_explainability_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:CAPABILITY:peak_trade_public_market_data_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:peak_trade_public_market_data_runtime_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_private_runtime_read_and_runtime_permit_issuance_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:authenticated_productive_transport_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:authenticated_productive_transport_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1 | STATUS=OPEN (not proven) |  |

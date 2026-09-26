@@ -34,6 +34,8 @@ flowchart LR
   optimization_universe -->|optimization_to_governance| governance_promotion
   cap22_research_backtest_live_parity_b09 -->|parity_b09_to_closure_b12| ranking_selection_profile_closure_b12
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
+  peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_adapter_to_ranking_cap22| ranking_cap22
+  peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_preserves_cap23_selection_owner| selection_cap23
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
@@ -555,6 +557,42 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`
+
+## public_md_runtime_adapter_to_ranking_cap22
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Finalized PT1M mark-price candles via select_finalized_contiguous_pt1m_marks_v1; exactly 61 contiguous finalized observations for B05; no OHLCV or live mark substitution
+- producer=peak_trade_public_market_data_runtime_wp_a
+- consumer=ranking_cap22
+- authority_effect=NONE
+- decision_effect=OBSERVATION_ADAPTER_ONLY_NO_RANKING_AUTHORITY
+- direct_or_indirect=INDIRECT
+- identity_binding=REUSES_EXISTING_CAP22_RANKING_OWNER
+- temporal_binding=HISTORICAL_QUERY_WITHOUT_LIVE_WS
+- version_binding=PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+- provenance_binding=tests/ops/test_peak_trade_public_market_data_runtime_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py`
+
+## public_md_runtime_preserves_cap23_selection_owner
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=SELECTION_AUTHORITY=NONE; CAP23_SOLE_SELECTION_OWNER unchanged
+- producer=peak_trade_public_market_data_runtime_wp_a
+- consumer=selection_cap23
+- authority_effect=NONE
+- decision_effect=ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=NO_SELECTION_WRITER
+- temporal_binding=NO_RUNTIME_ACTIVATION
+- version_binding=PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+- provenance_binding=src/ops/peak_trade_public_market_data_runtime_v1/safety_boundary_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `src/ops/peak_trade_public_market_data_runtime_v1/constants_v1.py`
 
 ## ranking_context_to_future_profile_b07
 

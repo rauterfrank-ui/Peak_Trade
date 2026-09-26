@@ -494,6 +494,45 @@ entities:
       selection, ranking-policy, binding, live, or execution authority changes.
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CAPABILITY:peak_trade_public_market_data_runtime_v1
+    kind: CAPABILITY
+    name: OKX EEA Public Market Data Runtime (observation-only)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
+      - config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json
+    source_paths:
+      - src/ops/peak_trade_public_market_data_runtime_v1/__init__.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/constants_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/event_pipeline_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/facts_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/freshness_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/historical_query_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/rest_recovery_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/runtime_orchestrator_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/safety_boundary_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/ws_binding_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/ws_transport_v1.py
+      - tests/ops/test_peak_trade_public_market_data_runtime_v1.py
+    evidence_sources:
+      - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
+      - config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json
+      - tests/ops/test_peak_trade_public_market_data_runtime_v1.py
+    notes: >-
+      Observation-only OKX EEA public data plane: ratified WS binding (wseea),
+      REST bootstrap/gap recovery, canonical public facts, tiered durability,
+      historical query/replay, and governed consumer adapters (B05 61 PT1M marks,
+      O4 PT1H envelope, landscape readmodel). No credentials, POST, selection,
+      strategy, promotion, execution, wire, or multi-future trading authority.
+      MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_economic_md_dual_input_v1
     kind: CONTRACT
     name: Cap 2.2 economic-MD dual-input architecture

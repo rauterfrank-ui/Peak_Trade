@@ -258,7 +258,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `179`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `181`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -315,6 +315,7 @@ Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;
 | CAPABILITY:cap_economic_md_input | CAPABILITY | Persisted Multi-Instrument Economic Market Data Input | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:future_profile_snapshot_v1 | CAPABILITY | Future Profile Snapshot V1 (B07) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:operator_profile_explainability_v1 | CAPABILITY | Operator Profile and Explainability View V1 (B11) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| CAPABILITY:peak_trade_public_market_data_runtime_v1 | CAPABILITY | OKX EEA Public Market Data Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 
 Drill-down: [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
 
@@ -435,7 +436,7 @@ Do not treat historical or forensic material as current runtime wiring. Implemen
 
 ### CURRENT_CANONICAL
 
-Architectural-kind count in this bucket: `26`.
+Architectural-kind count in this bucket: `27`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -452,6 +453,7 @@ Architectural-kind count in this bucket: `26`.
 | CAPABILITY:cap_economic_md_input | CAPABILITY | Persisted Multi-Instrument Economic Market Data Input | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:future_profile_snapshot_v1 | CAPABILITY | Future Profile Snapshot V1 (B07) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:operator_profile_explainability_v1 | CAPABILITY | Operator Profile and Explainability View V1 (B11) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| CAPABILITY:peak_trade_public_market_data_runtime_v1 | CAPABILITY | OKX EEA Public Market Data Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | DOD:capability_closure_standard | DOD | Mandatory Capability Closure Standard | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | DOD:program_final | DOD | Program Definition of Done | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | FUNCTIONAL_CORE:double_play | FUNCTIONAL_CORE | Double Play | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -650,7 +652,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `176`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `177`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -750,9 +752,9 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=666
+ENTITY_TOTAL=667
 HUB_RELATION_COUNT=74
-STRUCTURAL_RELATION_COUNT=179
+STRUCTURAL_RELATION_COUNT=181
 RUNTIME_RELATION_COUNT=131
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=8
@@ -826,7 +828,7 @@ Remaining census domains:
 | ADAPTER | 4 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
-| CAPABILITY | 16 |
+| CAPABILITY | 17 |
 | CHILD | 1 |
 | CONTRACT | 46 |
 | DATA_CONTRACT | 8 |
