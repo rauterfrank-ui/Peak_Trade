@@ -1,19 +1,18 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
-modified_by: GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
+introduced_by: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
+modified_by: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Governed productive configuration apply authority v1: M10 authorized promotion → typed
-  apply-record only (no runtime materialization); post–Phase 15 remediation currency updated;
-  AUTHORITY=NONE.
+  G2 governed runtime primary→offline observation projection v1: Paper/Shadow/Testnet
+  durable primary evidence mechanical projection into offline observation + learning ingress;
+  authority=NONE; no apply or external effect.
 changed_entities:
-  - RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1
-  - RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1
+  - RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1
 changed_relations:
-  - REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
+  - REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []
