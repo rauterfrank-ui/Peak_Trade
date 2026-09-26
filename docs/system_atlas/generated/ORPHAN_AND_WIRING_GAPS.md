@@ -30,6 +30,7 @@
 | GAP_AUTO:NO_CONSUMER:ADAPTER:okx_execution_mock_v1 | DEFINED_BUT_NO_CONSUMER | ADAPTER:okx_execution_mock_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap21_feature_production_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap21_feature_production_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap22_peak_trade_ranking_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap22_peak_trade_ranking_runtime_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:CAPABILITY:cap22_research_backtest_live_parity_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap22_research_backtest_live_parity_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_11_13_5_live_canary | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_11_13_5_live_canary | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_1_1_reconciliation | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_1_1_reconciliation | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:cap_2_2_ranking | DEFINED_BUT_NO_CONSUMER | CAPABILITY:cap_2_2_ranking | STATUS=OPEN (not proven) |  |

@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "829aa1775ebd3196df197e286508b1aa0778ff16",
+  "baseline_sha": "52ee90736188d3e7bd0254e0e190e40215870ac1",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -118,6 +118,31 @@
       "evidence_refs": [
         "tests/ops/test_future_profile_snapshot_v1.py",
         "src/ops/future_profile_snapshot_v1/producer_v1.py"
+      ]
+    },
+    {
+      "id": "cap22_research_backtest_live_parity_b09",
+      "tier": "INTERMEDIATE",
+      "role": "B09 parity proof adapter for B03-B08 Peak_Trade ranking economics across productive, research, backtest, and shadow equivalent canonical inputs. Reuses B05/B06 only; no ranking, selection, binding, live, execution, or productive mode authority.",
+      "canonical_owner_ref": "ops.peak_trade_research_backtest_live_parity_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PARITY_PROOF_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md"
+      ],
+      "code_refs": [
+        "src/ops/peak_trade_research_backtest_live_parity_v1/constants_v1.py",
+        "src/ops/peak_trade_research_backtest_live_parity_v1/models_v1.py",
+        "src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py"
+      ],
+      "evidence_refs": [
+        "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
+        "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py",
+        "src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py"
       ]
     },
     {
@@ -845,6 +870,52 @@
       "evidence_refs": [
         "src/ops/future_profile_snapshot_v1/producer_v1.py",
         "tests/ops/test_future_profile_snapshot_v1.py"
+      ]
+    },
+    {
+      "id": "ranking_economics_to_b09_parity_proof",
+      "from_domain": "ranking_cap22",
+      "to_domain": "cap22_research_backtest_live_parity_b09",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "B05 feature snapshot + B06 economic ranking witness reused for parity proof",
+      "producer": "ranking_cap22",
+      "consumer": "cap22_research_backtest_live_parity_b09",
+      "authority_effect": "NONE",
+      "decision_effect": "PARITY_PROOF_ONLY_NO_RANKING_DECISION",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "B05_PRODUCTION_DIGEST_AND_B06_RANK_WITNESS",
+      "temporal_binding": "TRAILING_61_FINALIZED_PT1M_MARK_WINDOW_NO_LOOKAHEAD",
+      "version_binding": "B03_B04_B05_B06_POLICY_AND_CONFIG_IDENTITY",
+      "provenance_binding": "PARITY_PROOF_INTEGRITY_DIGEST",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py",
+        "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py"
+      ]
+    },
+    {
+      "id": "b09_parity_proof_preserves_selection_authority",
+      "from_domain": "cap22_research_backtest_live_parity_b09",
+      "to_domain": "selection_cap23",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "CAP23_RESCORE_COUNT=0; CAP23_RERANK_COUNT=0; CAP23_SOLE_SELECTION_OWNER=true",
+      "producer": "cap22_research_backtest_live_parity_b09",
+      "consumer": "selection_cap23",
+      "authority_effect": "NONE",
+      "decision_effect": "ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CAP23_SELECTED_IDENTITY_REMAINS_DOWNSTREAM_RESULT",
+      "temporal_binding": "NO_RUNTIME_ACTIVATION",
+      "version_binding": "PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1",
+      "provenance_binding": "B09_EVIDENCE_SUMMARY_AND_TEST_PROOF",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
+        "tests/ops/test_peak_trade_research_backtest_live_parity_v1.py"
       ]
     },
     {
@@ -1992,7 +2063,7 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX census closed on origin/main @ 9ab34786 (static import/reference scan; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization — all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
+      "statement": "NAVIGATION_INDEX census closed on origin/main @ 9ab34786 (static import/reference scan; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization \u2014 all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
       "evidence_refs": [
         "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
         "src/experiments/canonical_optimization_universe_v1.py",
@@ -2367,7 +2438,7 @@
     {
       "id": "post_6828_universe_ranking_selection_binding_domain_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1–2.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
+      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1\u20132.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
@@ -2377,7 +2448,7 @@
     {
       "id": "post_6828_c2_companion_blocking_boundary_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 (CONVERSION_READY=true; conversion algebra/binding proven; runtime Fraction→Units wiring absent).",
+      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 (CONVERSION_READY=true; conversion algebra/binding proven; runtime Fraction\u2192Units wiring absent).",
       "evidence_refs": [
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
@@ -2388,7 +2459,7 @@
     {
       "id": "c2_canonical_risk_sizing_authority_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; Fraction→Units runtime wiring still absent; AUTHORITY_EFFECT=NONE.",
+      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; Fraction\u2192Units runtime wiring still absent; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
         "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
@@ -2398,7 +2469,7 @@
     {
       "id": "c2_companion_conversion_dependency_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "C2 Companion conversion dependency closure v1: authoritative equity/reference-price/instrument-metadata producer bindings plus LINEAR fraction→units algebra (mark_price; leverage role NONE); CONVERSION_READY=true; read-only binding module only; Shadow/Live still pass raw fraction as quantity; AUTHORITY_EFFECT=NONE.",
+      "statement": "C2 Companion conversion dependency closure v1: authoritative equity/reference-price/instrument-metadata producer bindings plus LINEAR fraction\u2192units algebra (mark_price; leverage role NONE); CONVERSION_READY=true; read-only binding module only; Shadow/Live still pass raw fraction as quantity; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
         "config/governance/companion_fraction_to_units_contract_v1.json",

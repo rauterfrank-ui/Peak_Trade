@@ -28,18 +28,22 @@ closures:
       - OWNER_DECISION:cap23_exclusive_selection
       - SCHEMA:single_selected_future_selection_v1
       - CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+      - CAPABILITY:cap22_research_backtest_live_parity_v1
     upstream:
       - CAPABILITY:cap_2_2_ranking
       - SELECTOR:productive_futures_ranking
     downstream:
       - CAPABILITY:cap_2_4_runtime_binding
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
-    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    modified_by: B09_RESEARCH_BACKTEST_LIVE_PARITY_V1
     notes: >-
       B08 proves Cap 2.3 consumes Cap 2.2 rank and remains the sole productive
       selection owner without rescore/rerank. Optional same-universe Cap23 pin
       is inspect-only in this closure. B03 ranking policy persist does not grant
       Cap 2.3 selection authority. No cross-universe ranking merge.
+      B09 adds parity proof that research/backtest/shadow/productive mode
+      equivalents reuse the same B05/B06 economics before Cap 2.3 selection.
+      B09 creates no selection authority and does not start B10.
       ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding

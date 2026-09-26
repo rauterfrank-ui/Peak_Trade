@@ -650,6 +650,35 @@ entities:
       bind, trade, execute, activate multi-future runtime, or authorize live
       external effects. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
+  - id: CAPABILITY:cap22_research_backtest_live_parity_v1
+    kind: CAPABILITY
+    name: Cap 2.2 Research / Backtest / Shadow / Productive Parity V1 (B09)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: B09_RESEARCH_BACKTEST_LIVE_PARITY_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md
+    source_paths:
+      - src/ops/peak_trade_research_backtest_live_parity_v1/__init__.py
+      - src/ops/peak_trade_research_backtest_live_parity_v1/constants_v1.py
+      - src/ops/peak_trade_research_backtest_live_parity_v1/models_v1.py
+      - src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py
+    evidence_sources:
+      - docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json
+      - tests/ops/test_peak_trade_research_backtest_live_parity_v1.py
+      - src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py
+    notes: >-
+      B09 proves research/backtest/shadow/productive parity for B03-B08
+      Peak_Trade ranking economics by routing equivalent canonical inputs
+      through the existing B05 feature-production SSOT and B06 ranking SSOT.
+      It does not create research/backtest/shadow productive authority, does
+      not change ranking formulas/config/order/tie-breaks, and does not grant
+      Cap 2.3/Cap 2.4/Full Autonomy/MV2/Execution reranking or reselection
+      authority. MAX_POSITIONS_EFFECTIVE remains 1; live/external effects
+      remain unauthorized. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
     kind: CONTRACT
     name: Cap 2.2 offline policy candidates and evidence contract

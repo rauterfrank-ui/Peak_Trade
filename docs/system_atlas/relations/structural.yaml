@@ -257,6 +257,70 @@ relations:
       observability. Cap 2.3 remains the sole productive selection owner;
       B07 cannot select or bind. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_system_has_b09_research_backtest_live_parity
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:cap22_research_backtest_live_parity_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py
+      - tests/ops/test_peak_trade_research_backtest_live_parity_v1.py
+    notes: >
+      B09 is a parity proof/evidence adapter only. It creates no productive
+      ranking, selection, binding, execution, or live authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b09_parity_depends_on_b05_feature_production
+    source: CAPABILITY:cap22_research_backtest_live_parity_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap21_feature_production_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py
+      - tests/ops/test_peak_trade_research_backtest_live_parity_v1.py
+    notes: >
+      B09 routes equivalent canonical mode inputs through B05 feature
+      production. It does not implement or approximate a separate research,
+      backtest, shadow, or productive feature formula.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b09_parity_depends_on_b06_ranking_runtime
+    source: CAPABILITY:cap22_research_backtest_live_parity_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py
+      - tests/ops/test_peak_trade_research_backtest_live_parity_v1.py
+    notes: >
+      B09 reuses B06 score/order semantics and compares rank witnesses across
+      modes. It does not rescore, rerank, change tie-break order, or create
+      another Cap 2.2 ranking owner. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b09_parity_preserves_cap23_selection_owner
+    source: CAPABILITY:cap22_research_backtest_live_parity_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RESEARCH_BACKTEST_LIVE_PARITY_V1.md
+    evidence_sources:
+      - tests/ops/test_peak_trade_research_backtest_live_parity_v1.py
+    notes: >
+      B09 asserts CAP23_RESCORE_COUNT=0, CAP23_RERANK_COUNT=0, and
+      CAP23_SOLE_SELECTION_OWNER=true. It does not promote research/backtest/
+      shadow/profile fields into selection authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
