@@ -44,6 +44,9 @@ from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (
     prove_restart_load_v1,
     run_productive_futures_ranking_producer_v1,
 )
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
 from src.ops.productive_futures_ranking_producer_v1.reason_codes_v1 import (
     ALL_FAILURE_CODES,
     RankingFailureCodeV1,
@@ -163,12 +166,29 @@ def _many_perps(n: int) -> list[dict]:
     return rows
 
 
+def _features(uni, **kwargs):
+    return synthesize_ready_feature_production_snapshot_v1(uni, **kwargs)
+
+
+def _rank(uni, **kwargs):
+    feats = kwargs.pop("feature_production_snapshot", None)
+    if feats is None and uni is not None and isinstance(uni, dict):
+        feats = _features(uni)
+    return produce_productive_futures_ranking_v1(
+        universe_snapshot=uni,
+        feature_production_snapshot=feats,
+        repository_sha=kwargs.pop("repository_sha", REPO_SHA),
+        producer_observed_at_unix=kwargs.pop("producer_observed_at_unix", OBSERVED_UNIX),
+        **kwargs,
+    )
+
+
 def test_constants_and_authority_bounds() -> None:
     assert CAPABILITY_ID == "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1"
     assert PACKAGE_MARKER == "PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1=true"
     assert SCHEMA_VERSION == "productive_futures_ranking_snapshot.v1"
     assert PRODUCER_VERSION == "productive_futures_ranking_producer.v1"
-    assert RANKING_POLICY_ID == "productive_futures_universe_structural_ranking_v1"
+    assert RANKING_POLICY_ID == "PEAK_TRADE_RANKING_MATRIX_POLICY_V1"
     assert RANKING_POLICY_VERSION == "v1"
     assert ALPHA_ALLOWED_DEFAULT is False
     assert SELECTION_AUTHORITY_ADDED is False
@@ -182,11 +202,7 @@ def test_constants_and_authority_bounds() -> None:
 
 def test_valid_top20_from_universe() -> None:
     uni = _universe(_many_perps(25))
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(uni)
     assert result.ok is True
     assert result.snapshot.snapshot_state == SNAPSHOT_STATE_VALID
     assert result.snapshot.eligible_candidate_count == 25
@@ -206,17 +222,15 @@ def test_valid_top20_from_universe() -> None:
             "trading_status_live",
             "metadata_complete",
         }
-        assert cand.total_score == 6.0
+        assert "balanced_movement_score" in cand.tie_break_values
         assert "venue_native_id" in cand.tie_break_values
+        # Identical synthetic features → midrank percentiles 0.5 → score 0.5
+        assert cand.total_score == 0.5
 
 
 def test_less_than_20_eligible() -> None:
     uni = _universe([_perp("ETH-USDT-SWAP"), _perp("SOL-USDT-SWAP", base="SOL", ct_val_ccy="SOL")])
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(uni)
     assert result.snapshot.eligible_candidate_count == 2
     assert len(result.snapshot.ranked_candidates) == 2
     assert [c.rank for c in result.snapshot.ranked_candidates] == [1, 2]
@@ -226,11 +240,7 @@ def test_no_eligible_candidates_persisted_state() -> None:
     # Cap 2.1 empty-eligible universe still yields a snapshot with zero instruments.
     uni = _universe([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
     assert uni["eligible_instrument_count"] == 0
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(uni)
     assert result.snapshot.snapshot_state == SNAPSHOT_STATE_NO_ELIGIBLE
     assert result.snapshot.ranked_candidates == ()
     assert RankingFailureCodeV1.NO_ELIGIBLE_CANDIDATES.value in result.failure_codes
@@ -245,16 +255,8 @@ def test_deterministic_ranking_and_tie_break() -> None:
             _perp("ADA-USDT-SWAP", base="ADA", ct_val_ccy="ADA"),
         ]
     )
-    a = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
-    b = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX + 50.0,
-    )
+    a = _rank(uni)
+    b = _rank(uni, producer_observed_at_unix=OBSERVED_UNIX + 50.0)
     assert a.snapshot.integrity_digest == b.snapshot.integrity_digest
     assert [c.venue_native_id for c in a.snapshot.ranked_candidates] == [
         c.venue_native_id for c in b.snapshot.ranked_candidates
@@ -265,8 +267,10 @@ def test_deterministic_ranking_and_tie_break() -> None:
 
 
 def test_missing_universe_fail_closed() -> None:
+    empty_features = _features({"instruments": []})
     result = produce_productive_futures_ranking_v1(
         universe_snapshot=None,
+        feature_production_snapshot=empty_features,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )
@@ -274,9 +278,26 @@ def test_missing_universe_fail_closed() -> None:
     assert RankingFailureCodeV1.UNIVERSE_SNAPSHOT_MISSING.value in result.failure_codes
 
 
+def test_missing_feature_production_fail_closed() -> None:
+    uni = _universe([_perp()])
+    result = produce_productive_futures_ranking_v1(
+        universe_snapshot=uni,
+        feature_production_snapshot=None,
+        repository_sha=REPO_SHA,
+        producer_observed_at_unix=OBSERVED_UNIX,
+    )
+    assert result.ok is False
+    assert (
+        RankingFailureCodeV1.ECONOMIC_FEATURE_PRODUCTION_SNAPSHOT_MISSING.value
+        in result.failure_codes
+    )
+
+
 def test_invalid_universe_fail_closed() -> None:
+    empty_features = _features({"instruments": []})
     result = produce_productive_futures_ranking_v1(
         universe_snapshot={"not": "a universe"},
+        feature_production_snapshot=empty_features,
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )
@@ -286,11 +307,8 @@ def test_invalid_universe_fail_closed() -> None:
 
 def test_stale_universe_fail_closed() -> None:
     uni = _universe([_perp()])
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX + 200_000,
-        max_universe_age_seconds=60.0,
+    result = _rank(
+        uni, producer_observed_at_unix=OBSERVED_UNIX + 200_000, max_universe_age_seconds=60.0
     )
     assert result.ok is False
     assert result.snapshot.snapshot_state == SNAPSHOT_STATE_STALE_INPUT
@@ -300,22 +318,13 @@ def test_stale_universe_fail_closed() -> None:
 def test_digest_mismatch_fail_closed() -> None:
     uni = _universe([_perp()])
     uni["payload_digest"] = "0" * 64
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(uni)
     assert RankingFailureCodeV1.UNIVERSE_DIGEST_MISMATCH.value in result.failure_codes
 
 
 def test_repository_sha_mismatch() -> None:
     uni = _universe([_perp()])
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-        expected_universe_repository_sha="deadbeef",
-    )
+    result = _rank(uni, expected_universe_repository_sha="deadbeef")
     assert RankingFailureCodeV1.REPOSITORY_SHA_MISMATCH.value in result.failure_codes
 
 
@@ -331,11 +340,7 @@ def test_mark_price_and_metadata_exclusions() -> None:
     )
 
     rebuilt = GovernedFuturesUniverseSnapshotV1.from_dict(uni).with_payload_digest()
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=rebuilt.to_dict(),
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(rebuilt.to_dict())
     assert result.snapshot.snapshot_state == SNAPSHOT_STATE_NO_ELIGIBLE
     codes = result.snapshot.excluded_candidates[0].exclusion_reason_codes
     assert RankingFailureCodeV1.MARK_PRICE_UNSUPPORTED.value in codes
@@ -344,27 +349,13 @@ def test_mark_price_and_metadata_exclusions() -> None:
 
 def test_dashboard_and_legacy_ranker_independence() -> None:
     uni = _universe([_perp()])
-    dash = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-        dashboard_payload={"ranking": [{"id": "ETH", "score": 999}]},
-    )
+    dash = _rank(uni, dashboard_payload={"ranking": [{"id": "ETH", "score": 999}]})
     assert RankingFailureCodeV1.DASHBOARD_INPUT_FORBIDDEN.value in dash.failure_codes
 
-    legacy = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-        legacy_ranker_payload={"top": ["ETH-USDT-SWAP"]},
-    )
+    legacy = _rank(uni, legacy_ranker_payload={"top": ["ETH-USDT-SWAP"]})
     assert RankingFailureCodeV1.LEGACY_RANKER_INPUT_FORBIDDEN.value in legacy.failure_codes
 
-    good = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    good = _rank(uni)
     # Conflicting dashboard display must not alter productive ranking.
     assert good.snapshot.ranked_candidates[0].venue_native_id == "ETH-USDT-SWAP"
     assert good.snapshot.authority["DASHBOARD_AUTHORITY"] is False
@@ -377,6 +368,7 @@ def test_persistence_restart_idempotency_and_conflict(tmp_path: Path) -> None:
     out = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path / "ok",
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="sess-1",
@@ -393,6 +385,7 @@ def test_persistence_restart_idempotency_and_conflict(tmp_path: Path) -> None:
     out2 = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path / "ok",
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX + 10.0,
         session_id="sess-2",
@@ -431,9 +424,11 @@ def test_duplicate_writer_rejection(tmp_path: Path) -> None:
     second = ProductiveRankingSingleWriterV1(state_root=tmp_path, session_id="b")
     with pytest.raises(DuplicateRankingWriterError):
         second.acquire(now_unix=OBSERVED_UNIX)
+    uni = _universe([_perp()])
     out = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path,
-        universe_snapshot=_universe([_perp()]),
+        universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="c",
@@ -448,6 +443,7 @@ def test_persistence_failure_injection(tmp_path: Path) -> None:
     fail = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path / "fail",
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="wf",
@@ -458,6 +454,7 @@ def test_persistence_failure_injection(tmp_path: Path) -> None:
     partial = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path / "partial",
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="pw",
@@ -468,6 +465,7 @@ def test_persistence_failure_injection(tmp_path: Path) -> None:
     crash = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path / "crash",
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="cr",
@@ -481,6 +479,7 @@ def test_config_digest_mismatch_on_load(tmp_path: Path) -> None:
     out = run_productive_futures_ranking_producer_v1(
         state_root=tmp_path,
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="cfg",
@@ -528,11 +527,7 @@ def test_failure_semantics_catalog_complete() -> None:
 
 
 def test_restart_helper_identical(tmp_path: Path) -> None:
-    produced = produce_productive_futures_ranking_v1(
-        universe_snapshot=_universe([_perp()]),
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    produced = _rank(_universe([_perp()]))
     writer = ProductiveRankingSingleWriterV1(state_root=tmp_path, session_id="r")
     writer.acquire(now_unix=OBSERVED_UNIX)
     persist_ranking_bundle_atomic_v1(
@@ -549,11 +544,7 @@ def test_restart_helper_identical(tmp_path: Path) -> None:
 
 def test_event_time_bound() -> None:
     uni = _universe([_perp()])
-    result = produce_productive_futures_ranking_v1(
-        universe_snapshot=uni,
-        repository_sha=REPO_SHA,
-        producer_observed_at_unix=OBSERVED_UNIX,
-    )
+    result = _rank(uni)
     assert result.snapshot.event_time == uni["generated_at_event_time"]
 
 
@@ -567,10 +558,11 @@ def test_generate_durable_evidence(tmp_path: Path) -> None:
     out = run_productive_futures_ranking_producer_v1(
         state_root=productive,
         universe_snapshot=uni,
+        feature_production_snapshot=_features(uni),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
         session_id="evidence",
-        ranking_snapshot_id="pfr_evidence_cap22_v1",
+        ranking_snapshot_id="pfr_evidence_cap22_b06_economic_v1",
     )
     assert out["ok"] is True
     summary = {

@@ -2033,7 +2033,7 @@
     {
       "id": "ranking_activation",
       "epistemic_class": "PARTIAL",
-      "statement": "Ranking chain position exists. B03 PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics; B04 PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1 adds typed feature contract seam; B05 CAP21_FEATURE_PRODUCTION_V1 produces B03-ratified raw features from Economic-MD Input-2 into B04 DTOs (B05_IMPLEMENTED=true; B04_IMPLEMENTED=true; B03_RATIFIED=true). CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false; RUNTIME_ACTIVATION_ALLOWED=false; Cap 2.3 sole selection owner unchanged; CROSS_UNIVERSE_AUTHORITY=NONE; B06 not started.",
+      "statement": "Ranking chain position exists. B03 PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics; B04 PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1 adds typed feature contract seam; B05 CAP21_FEATURE_PRODUCTION_V1 produces B03-ratified raw features from Economic-MD Input-2 into B04 DTOs; B06 CAP22_PEAK_TRADE_RANKING_RUNTIME_V1 wires Cap 2.2 productive economic ranking order (B06_IMPLEMENTED=true; ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true). PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; INPUT2_MAX_AGE_SECONDS_RATIFIED=false; Cap 2.3 sole selection owner unchanged; CROSS_UNIVERSE_AUTHORITY=NONE; no live/external effects.",
       "evidence_refs": [
         "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
         "src/ops/peak_trade_ranking_matrix_policy_v1.py",

@@ -51,7 +51,8 @@ def test_freshness_pin_unratified_and_activation_false() -> None:
     assert INPUT2_MAX_AGE_SECONDS_RATIFIED is False
     assert INPUT2_MAX_AGE_SECONDS == "UNRATIFIED"
     assert PRODUCTIVE_ECONOMIC_RANK_ACTIVATION is False
-    assert ECONOMIC_RANK_ACTIVATED is False
+    # Cap 2.2 B06 wires economic order; productive activation remains pinned false.
+    assert ECONOMIC_RANK_ACTIVATED is True
 
 
 def test_cap23_sole_selection_owner_and_no_cross_universe() -> None:
@@ -79,6 +80,9 @@ def test_classify_exports_digest() -> None:
     assert summary["policy_digest"] == compute_ranking_matrix_policy_digest_v1()
     assert summary["runtime_wiring_added_by_this_slice"] is False
     assert summary["productive_economic_rank_activation"] is False
+    assert summary["b06_implemented"] is True
+    assert summary["economic_rank_activated"] is True
+    assert summary["cap22_productive_economic_runtime_wired"] is True
 
 
 def test_validate_accepts_canonical_declaration() -> None:
@@ -87,15 +91,15 @@ def test_validate_accepts_canonical_declaration() -> None:
         "b03_ratified": True,
         "policy_ratified": True,
         "runtime_activated": False,
-        "economic_rank_activated": False,
+        "economic_rank_activated": True,
         "productive_economic_rank_activation": False,
         "input2_max_age_seconds_ratified": False,
         "cap23_selection_authority_added": False,
         "runtime_wiring_added_by_this_slice": False,
         "b04_implemented": True,
         "b05_implemented": True,
-        "b06_implemented": False,
-        "cap22_productive_economic_runtime_wired": False,
+        "b06_implemented": True,
+        "cap22_productive_economic_runtime_wired": True,
         "empirically_estimated": False,
         "cross_sectional_normalization_ratified": True,
         "final_score_formula_ratified": True,
@@ -108,6 +112,8 @@ def test_validate_accepts_canonical_declaration() -> None:
         "score_construction_ratified": True,
         "volatility_policy_ratified": True,
         "amplitude_policy_ratified": True,
+        "sole_productive_selection_owner": True,
+        "structural_economic_separation": True,
     }
     result = validate_peak_trade_ranking_matrix_policy_declaration_v1(declaration)
     assert result["valid"] is True
@@ -122,40 +128,42 @@ def test_validate_rejects_fabricated_max_age() -> None:
     assert "INPUT2_MAX_AGE" in str(exc.value)
 
 
-def test_no_runtime_wiring_in_ranking_producer() -> None:
+def test_b06_runtime_wired_in_ranking_producer() -> None:
     root = Path(__file__).resolve().parents[2]
     producer = root / "src/ops/productive_futures_ranking_producer_v1/producer_v1.py"
     ranking = root / "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py"
     text = producer.read_text(encoding="utf-8") + ranking.read_text(encoding="utf-8")
-    assert "peak_trade_ranking_matrix_policy_v1" not in text
-    assert "balanced_movement_score" not in text
+    assert (
+        "peak_trade_economic_ranking_runtime_v1" in text or "b03_economic_score_and_order" in text
+    )
+    assert "balanced_movement_score" in text
 
 
-def test_b04_implemented_b05_implemented_b06_not() -> None:
+def test_b04_b05_b06_implemented_and_runtime_wired() -> None:
     assert B04_IMPLEMENTED is True
     assert B05_IMPLEMENTED is True
-    assert B06_IMPLEMENTED is False
+    assert B06_IMPLEMENTED is True
     assert RUNTIME_WIRING_ADDED_BY_THIS_SLICE is False
-    assert CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is False
+    assert CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is True
 
 
-def test_productive_futures_ranking_policy_unchanged() -> None:
+def test_productive_futures_ranking_policy_is_b03_matrix() -> None:
     from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (
         RANKING_POLICY_ID,
     )
 
-    assert RANKING_POLICY_ID == "productive_futures_universe_structural_ranking_v1"
+    assert RANKING_POLICY_ID == "PEAK_TRADE_RANKING_MATRIX_POLICY_V1"
 
 
-def test_dual_input_defers_runtime_and_points_at_b03_matrix() -> None:
+def test_dual_input_reflects_b06_cap22_wiring() -> None:
     from src.ops import cap22_economic_md_dual_input_contract_v1 as dual
 
     assert dual.PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED is True
     assert dual.PEAK_TRADE_RANKING_MATRIX_POLICY_ID == POLICY_ID
     assert dual.FINAL_SCORE_FORMULA_RATIFIED is True
     assert dual.CROSS_SECTIONAL_NORMALIZATION_RATIFIED is True
-    assert dual.ECONOMIC_RANK_ACTIVATED is False
-    assert dual.CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is False
+    assert dual.ECONOMIC_RANK_ACTIVATED is True
+    assert dual.CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is True
 
 
 def test_offline_mvr_scope_keeps_offline_score_flags_false() -> None:
@@ -168,7 +176,7 @@ def test_offline_mvr_scope_keeps_offline_score_flags_false() -> None:
     assert FINAL_SCORE_FORMULA_RATIFIED is False
 
 
-def test_historical_evidence_json_not_modified() -> None:
+def test_b06_evidence_binds_matrix_policy_id() -> None:
     evidence = (
         Path(__file__).resolve().parents[2]
         / "docs/evidence/capability_2_2_productive_futures_ranking_producer_v1/SUMMARY.json"
@@ -176,7 +184,7 @@ def test_historical_evidence_json_not_modified() -> None:
     if not evidence.is_file():
         pytest.skip("local evidence summary absent")
     text = evidence.read_text(encoding="utf-8")
-    assert "PEAK_TRADE_RANKING_MATRIX_POLICY_V1" not in text
+    assert "PEAK_TRADE_RANKING_MATRIX_POLICY_V1" in text
 
 
 def test_ranking_matrix_module_has_no_network_imports() -> None:

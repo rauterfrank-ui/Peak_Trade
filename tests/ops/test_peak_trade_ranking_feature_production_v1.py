@@ -344,7 +344,7 @@ def test_call_graph_present_and_forbidden_imports_absent() -> None:
                     assert forbidden.lower() not in lowered
 
 
-def test_productive_ranking_runtime_still_unwired() -> None:
+def test_productive_ranking_runtime_consumes_b05_features() -> None:
     from src.ops.productive_futures_ranking_producer_v1 import constants_v1 as ranking_c
 
     producer = (REPO / "src/ops/productive_futures_ranking_producer_v1/producer_v1.py").read_text(
@@ -354,8 +354,11 @@ def test_productive_ranking_runtime_still_unwired() -> None:
         encoding="utf-8"
     )
     text = producer + ranking
-    assert "peak_trade_ranking_feature_production_v1" not in text
-    assert ranking_c.RANKING_POLICY_ID == "productive_futures_universe_structural_ranking_v1"
+    assert "peak_trade_ranking_feature_production_v1" in text
+    assert ranking_c.RANKING_POLICY_ID == "PEAK_TRADE_RANKING_MATRIX_POLICY_V1"
+    assert ranking_c.ECONOMIC_RANK_ACTIVATED is True
+    assert ranking_c.CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED is True
+    assert ranking_c.PRODUCTIVE_ECONOMIC_RANK_ACTIVATION is False
 
 
 def test_round_trip_snapshot() -> None:

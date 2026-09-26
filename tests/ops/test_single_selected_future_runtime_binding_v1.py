@@ -84,6 +84,10 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
     REQUIRED_CALL_GRAPH,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import ENTRY_EXIT_POLICY_VERSION
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
+
 
 REPO_SHA = "ecb4484936b6079f90bde252abef77ff129aea8f"
 OBSERVED_UNIX = 1_700_000_100.0
@@ -177,6 +181,7 @@ def _build_chain(tmp: Path, rows: list[dict] | None = None) -> dict[str, Path | 
 
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )

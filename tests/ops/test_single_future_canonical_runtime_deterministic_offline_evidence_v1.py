@@ -66,6 +66,10 @@ from src.ops.single_selected_future_policy_v1.producer_v1 import (
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.constants_v1 import (
     RUNTIME_BRIDGE_LIVE_ACTIVATED,
 )
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REPO_SHA = "58af5100ef8c307f4dbe5e95fe4a13102272a1b0"
@@ -112,6 +116,7 @@ def fixture_roots(tmp_path: Path) -> dict[str, Path]:
 
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
         repository_sha=REPO_SHA,
         producer_observed_at_unix=OBSERVED_UNIX,
     )

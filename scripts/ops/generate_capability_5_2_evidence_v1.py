@@ -1,3 +1,4 @@
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import synthesize_ready_feature_production_snapshot_v1
 #!/usr/bin/env python3
 """Generate durable Cap 5.2 public-MD no-order shadow evidence under docs/evidence/."""
 
@@ -148,6 +149,7 @@ def main() -> int:
     print("producing ranking...", flush=True)
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
         repository_sha=repo_sha,
         producer_observed_at_unix=OBSERVED_UNIX,
     )

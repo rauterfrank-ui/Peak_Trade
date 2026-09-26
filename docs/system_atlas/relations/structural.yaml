@@ -137,9 +137,9 @@ relations:
     evidence_sources:
       - src/ops/peak_trade_ranking_matrix_policy_v1.py
     notes: >
-      B03 governance persist: productive Cap 2.2 ranking policy matrix
-      (semantics only). Not a runtime CONSUMES edge. Runtime remains
-      structural until B06. ATLAS_AUTHORITY=NONE.
+      B03 governance persist: productive Cap 2.2 ranking policy matrix.
+      B06 Cap 2.2 economic ranking runtime consumes this policy for order.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap22_governed_by_peak_trade_ranking_feature_contract_v1
     source: CAPABILITY:cap_2_2_ranking
@@ -153,7 +153,7 @@ relations:
       - src/ops/peak_trade_ranking_feature_contract_v1.py
     notes: >
       B04 contract/DTO seam for B03-ratified ranking features. Schema and
-      validation only; B05 consumes for raw production; B06 not wired.
+      validation; B05 produces raw values; B06 Cap 2.2 consumes for score/order.
       ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap21_feature_production_depends_on_economic_md_input
@@ -182,7 +182,36 @@ relations:
       - src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py
     notes: >
       B05 populates B04 raw ranking feature DTOs. No Cap 2.2 score/order
-      wiring. ATLAS_AUTHORITY=NONE.
+      on the B05 surface. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_depends_on_cap21_feature_production
+    source: CAPABILITY:cap_2_2_ranking
+    type: DEPENDS_ON
+    target: CAPABILITY:cap21_feature_production_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md
+    evidence_sources:
+      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+      - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+    notes: >
+      B06 Cap 2.2 economic ranking consumes B05 feature-production snapshots.
+      Cap 2.3 remains sole selection owner. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_cap22_ranking_runtime_depends_on_cap22
+    source: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_2_ranking
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_ECONOMIC_RANKING_RUNTIME_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_economic_ranking_runtime_v1/economic_rank_v1.py
+    notes: >
+      B06 runtime package binds the productive Cap 2.2 ranking seam.
+      ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking

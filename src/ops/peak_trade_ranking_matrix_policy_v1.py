@@ -108,8 +108,8 @@ OWNER_THRESHOLD_REQUIRED = True
 POLICY_RATIFIED = True
 RUNTIME_ACTIVATED = False
 PRODUCTIVE_ECONOMIC_RANK_ACTIVATION = False
-ECONOMIC_RANK_ACTIVATED = False
-CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED = False
+ECONOMIC_RANK_ACTIVATED = True
+CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED = True
 
 FINAL_SCORE_FORMULA_RATIFIED = True
 FINAL_WEIGHTS_RATIFIED = True
@@ -117,7 +117,7 @@ FINAL_WEIGHTS_RATIFIED = True
 RUNTIME_WIRING_ADDED_BY_THIS_SLICE = False
 B04_IMPLEMENTED = True
 B05_IMPLEMENTED = True
-B06_IMPLEMENTED = False
+B06_IMPLEMENTED = True
 
 RESIDUAL_TIE_BREAK: tuple[str, ...] = (
     "venue_native_id ASC",
@@ -125,10 +125,7 @@ RESIDUAL_TIE_BREAK: tuple[str, ...] = (
 )
 
 FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
-    "b06_implemented",
-    "cap22_productive_economic_runtime_wired",
     "cap23_selection_authority_added",
-    "economic_rank_activated",
     "empirically_estimated",
     "input2_max_age_seconds_ratified",
     "productive_economic_rank_activation",
@@ -139,9 +136,12 @@ FALSE_REQUIRED_FLAGS: tuple[str, ...] = (
 TRUE_REQUIRED_FLAGS: tuple[str, ...] = (
     "b04_implemented",
     "b05_implemented",
+    "b06_implemented",
     "b03_ratified",
+    "cap22_productive_economic_runtime_wired",
     "cap22_ranking_policy_authority",
     "cross_sectional_normalization_ratified",
+    "economic_rank_activated",
     "equal_importance_policy_axiom",
     "final_score_formula_ratified",
     "final_weights_ratified",
@@ -249,6 +249,10 @@ def classify_peak_trade_ranking_matrix_policy_v1() -> dict[str, Any]:
         "amplitude_policy_id": AMPLITUDE_POLICY_ID,
         "authority_scope": AUTHORITY_SCOPE,
         "b03_ratified": B03_RATIFIED,
+        "b04_implemented": B04_IMPLEMENTED,
+        "b05_implemented": B05_IMPLEMENTED,
+        "b06_implemented": B06_IMPLEMENTED,
+        "cap22_productive_economic_runtime_wired": CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED,
         "cap22_ranking_policy_authority": CAP22_RANKING_POLICY_AUTHORITY,
         "cap23_selection_authority_added": CAP23_SELECTION_AUTHORITY_ADDED,
         "contract_id": CONTRACT_ID,

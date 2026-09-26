@@ -4,21 +4,32 @@
     "ALPHA_ALLOWED": false,
     "ALPHA_AUTHORITY_ADDED": false,
     "AUTHORITY_OWNER": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+    "B06_IMPLEMENTED": true,
+    "CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED": true,
+    "CAP23_SOLE_SELECTION_OWNER": true,
     "DASHBOARD_AUTHORITY": false,
+    "ECONOMIC_RANK_ACTIVATED": true,
     "EXECUTION_AUTHORITY_ADDED": false,
+    "INPUT2_MAX_AGE_SECONDS_RATIFIED": false,
     "LEGACY_PARALLEL_AUTHORITY_ABSENT": true,
     "MULTI_FUTURE_RUNTIME_AUTHORIZED": false,
     "OWNER": "ops.productive_futures_ranking_producer_v1",
     "PRODUCER_VERSION": "productive_futures_ranking_producer.v1",
+    "PRODUCTIVE_ECONOMIC_RANK_ACTIVATION": false,
     "RANKING_AUTHORITY_OWNER_SINGLE": true,
     "RANKING_CANDIDATE_CONTEXT_AUTHORITY": true,
-    "RANKING_POLICY_ID": "productive_futures_universe_structural_ranking_v1",
+    "RANKING_POLICY_ID": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
     "RANKING_POLICY_VERSION": "v1",
     "SCHEMA_VERSION": "productive_futures_ranking_snapshot.v1",
     "SELECTION_AUTHORITY_ADDED": false,
     "TOP20_IS_CONTEXT_ONLY": true,
     "TOP_N_ACTIVE_SET_AUTHORITY": false,
-    "VENUE": "okx_eea"
+    "VENUE": "okx_eea",
+    "economic_explainability_digest": "d92cbf06155d5cbacc52629ef0f748f8d7f3e24f2d66fce5049774543aa9c423",
+    "economic_rank_state": "S_STAR_N_GE_2",
+    "feature_production_digest": "fefa4d24f49f42b15bb848bdc8b6072d42719d8fc9b4365d0db2182d202fc6e6",
+    "feature_production_snapshot_id": "synth_rfp_1",
+    "s_star_count": 22
   },
   "call_graph": [
     "productive_ranking_entry_point",
@@ -26,7 +37,8 @@
     "validate_universe_bindings",
     "stale_and_integrity_checks",
     "structural_eligibility_classification",
-    "deterministic_score_and_tie_break",
+    "consume_b05_feature_production_snapshot",
+    "b03_economic_score_and_order",
     "top20_candidate_context",
     "atomic_persistence",
     "snapshot_verification",
@@ -35,14 +47,14 @@
   ],
   "candidate_count_total": 22,
   "capability_id": "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
-  "config_digest": "cdb5afa297c156464d62ad00c8d13643fb2f9daca4cc9e91e5c1bc7478309784",
+  "config_digest": "c2a623fe61cd2927e552fefdb69bc2f4c3cf1f6985ae4cb5da164b95c884a33e",
   "dashboard_input_used": false,
   "eligible_candidate_count": 22,
   "event_time": "2023-11-14T22:13:20Z",
   "excluded_candidate_count": 0,
   "excluded_candidates": [],
   "failure_codes": [],
-  "integrity_digest": "65c6ae446d9b55b095f236271329392bd6d8e747caba1b145cd55f7fd49f3a9f",
+  "integrity_digest": "9f3ae22bb885a0121e0fb1cdc2517945fcf3b111eaab5b692fde9d0183a2f194",
   "multi_future_authority_created": false,
   "produced_at_wall_time": "2023-11-14T22:15:00Z",
   "producer_version": "productive_futures_ranking_producer.v1",
@@ -62,11 +74,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:ADA:USDT:USDT:ada-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "ADA-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "ADA-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "ADA-USDT-SWAP"
     },
     {
@@ -84,11 +99,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:APT:USDT:USDT:apt-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "APT-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "APT-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "APT-USDT-SWAP"
     },
     {
@@ -106,11 +124,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:ARB:USDT:USDT:arb-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "ARB-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "ARB-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "ARB-USDT-SWAP"
     },
     {
@@ -128,11 +149,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:ATOM:USDT:USDT:atom-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "ATOM-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "ATOM-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "ATOM-USDT-SWAP"
     },
     {
@@ -150,11 +174,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:AVAX:USDT:USDT:avax-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "AVAX-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "AVAX-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "AVAX-USDT-SWAP"
     },
     {
@@ -172,11 +199,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:BCH:USDT:USDT:bch-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "BCH-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "BCH-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "BCH-USDT-SWAP"
     },
     {
@@ -194,11 +224,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:DOT:USDT:USDT:dot-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "DOT-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "DOT-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "DOT-USDT-SWAP"
     },
     {
@@ -216,11 +249,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:ETH:USDT:USDT:eth-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "ETH-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "ETH-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "ETH-USDT-SWAP"
     },
     {
@@ -238,11 +274,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:FIL:USDT:USDT:fil-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "FIL-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "FIL-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "FIL-USDT-SWAP"
     },
     {
@@ -260,11 +299,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:INJ:USDT:USDT:inj-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "INJ-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "INJ-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "INJ-USDT-SWAP"
     },
     {
@@ -282,11 +324,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:LINK:USDT:USDT:link-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "LINK-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "LINK-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "LINK-USDT-SWAP"
     },
     {
@@ -304,11 +349,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:LTC:USDT:USDT:ltc-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "LTC-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "LTC-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "LTC-USDT-SWAP"
     },
     {
@@ -326,11 +374,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:NEAR:USDT:USDT:near-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "NEAR-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "NEAR-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "NEAR-USDT-SWAP"
     },
     {
@@ -348,11 +399,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:OP:USDT:USDT:op-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "OP-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "OP-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "OP-USDT-SWAP"
     },
     {
@@ -370,11 +424,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:SEI:USDT:USDT:sei-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "SEI-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "SEI-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "SEI-USDT-SWAP"
     },
     {
@@ -392,11 +449,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:SOL:USDT:USDT:sol-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "SOL-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "SOL-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "SOL-USDT-SWAP"
     },
     {
@@ -414,11 +474,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:SUI:USDT:USDT:sui-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "SUI-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "SUI-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "SUI-USDT-SWAP"
     },
     {
@@ -436,11 +499,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:TIA:USDT:USDT:tia-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "TIA-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "TIA-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "TIA-USDT-SWAP"
     },
     {
@@ -458,11 +524,14 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:TON:USDT:USDT:ton-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "TON-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "TON-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "TON-USDT-SWAP"
     },
     {
@@ -480,18 +549,21 @@
         "universe_eligibility": 1.0
       },
       "tie_break_values": {
+        "amplitude_percentile": "5.0000000000000000e-01",
+        "balanced_movement_score": "5.0000000000000000e-01",
         "canonical_instrument_id": "okx_eea:linear_perpetual:TRX:USDT:USDT:trx-usdt-swap",
-        "total_score": "6.000000",
-        "venue_native_id": "TRX-USDT-SWAP"
+        "economic_set_membership": "S_STAR",
+        "venue_native_id": "TRX-USDT-SWAP",
+        "volatility_percentile": "5.0000000000000000e-01"
       },
-      "total_score": 6.0,
+      "total_score": 0.5,
       "venue_native_id": "TRX-USDT-SWAP"
     }
   ],
-  "ranking_policy_id": "productive_futures_universe_structural_ranking_v1",
-  "ranking_policy_provenance": "CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1 instrument fields + CAPABILITY_2_2 owner requirements (data-quality eligibility, deterministic tie-break, Top-20 candidate context). No trading-alpha heuristic. No arbitrary market-signal weights. Equal structural gate components only.",
+  "ranking_policy_id": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+  "ranking_policy_provenance": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1 equal-weight midrank-percentile composite over CAP22_PT1M_MARK_LOG_RETURN_POPULATION_SIGMA_V1 and CAP22_PT1M_MARK_MID_RELATIVE_RANGE_V1 from Cap-2.1-eligible S_STAR; B05 feature production + B04 contract; venue_native_id ASC final fallback only. No PROFILE_ONLY promotion. No Cap 2.3 selection authority.",
   "ranking_policy_version": "v1",
-  "ranking_snapshot_id": "pfr_evidence_cap22_v1",
+  "ranking_snapshot_id": "pfr_evidence_cap22_b06_economic_v1",
   "repository_sha": "02095305f1ecaaa94e294ab73010ffdf33c905f0",
   "schema_version": "productive_futures_ranking_snapshot.v1",
   "selection_authority_created": false,

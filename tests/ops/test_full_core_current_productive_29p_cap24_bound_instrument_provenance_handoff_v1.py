@@ -78,6 +78,10 @@ from tests.ops.test_single_selected_future_runtime_binding_v1 import (
     _payload,
     _perp,
 )
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
+
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 _INTEGRITY = MockCurrentProductive29PIntegrityBackendV1()
@@ -129,6 +133,7 @@ def _build_fresh_chain(tmp: Path, *, repository_sha: str = REPO_SHA) -> dict:
 
     ranking = produce_productive_futures_ranking_v1(
         universe_snapshot=uni.snapshot.to_dict(),
+        feature_production_snapshot=synthesize_ready_feature_production_snapshot_v1(uni.snapshot.to_dict()),
         repository_sha=repository_sha,
         producer_observed_at_unix=observed,
     )
