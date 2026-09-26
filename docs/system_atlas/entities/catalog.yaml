@@ -756,6 +756,30 @@ entities:
       owner; MAX_POSITIONS_EFFECTIVE remains 1. Atlas is not runtime
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: EVIDENCE:ranking_selection_profile_blueprint_closure_v1
+    kind: EVIDENCE_ARTIFACT
+    name: Ranking / Selection / Future Profile Blueprint Closure V1 (B12)
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: B12_CANONICAL_TRUTH_SYNC_AND_CLOSURE_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    source_paths:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+    evidence_sources:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+      - docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json
+      - docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+      - docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json
+    notes: >-
+      B12 synchronizes CURRENT canonical truth for the completed B01-B11
+      Ranking / Selection / Future Profile workstream and records the bounded
+      closure verdict. It is evidence/status/navigation only and grants no
+      ranking, selection, binding, execution, live, multi-future, cross-universe,
+      optimizer, venue POST, or runtime authorization. Master Runbook remains
+      SSOT; Atlas authority remains NONE. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_offline_policy_candidates_and_evidence_v1
     kind: CONTRACT
     name: Cap 2.2 offline policy candidates and evidence contract

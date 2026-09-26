@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "7ef056c1e387ea4eba73b7b008d9c700139d3496",
+  "baseline_sha": "b9d67077a006675992b462e16608d5ba9e7dfc9c",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -187,6 +187,26 @@
         "docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json",
         "tests/ops/test_peak_trade_operator_profile_explainability_v1.py",
         "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py"
+      ]
+    },
+    {
+      "id": "ranking_selection_profile_closure_b12",
+      "tier": "INTERMEDIATE",
+      "role": "B12 canonical truth sync and bounded closure record for the completed B01-B11 Ranking / Selection / Future Profile workstream. Evidence/status only; no ranking, selection, binding, live, execution, multi-future, cross-universe, optimizer, venue POST, or runtime authorization effect.",
+      "canonical_owner_ref": "docs.evidence.peak_trade_canonical_truth_sync_and_closure_v1",
+      "authority_class": "NONE",
+      "lifecycle": "CLOSURE_RECORD_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [],
+      "evidence_refs": [
+        "docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json"
       ]
     },
     {
@@ -1098,6 +1118,75 @@
       "evidence_refs": [
         "src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py",
         "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
+      ]
+    },
+    {
+      "id": "parity_b09_to_closure_b12",
+      "from_domain": "cap22_research_backtest_live_parity_b09",
+      "to_domain": "ranking_selection_profile_closure_b12",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "B09 parity summary evidence",
+      "producer": "cap22_research_backtest_live_parity_b09",
+      "consumer": "ranking_selection_profile_closure_b12",
+      "authority_effect": "NONE",
+      "decision_effect": "EVIDENCE_STATUS_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "B09_PARITY_SUMMARY",
+      "temporal_binding": "EVIDENCE_TIMESTAMP_ONLY",
+      "version_binding": "peak_trade_research_backtest_live_parity.v1",
+      "provenance_binding": "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json"
+      ]
+    },
+    {
+      "id": "robustness_b10_to_closure_b12",
+      "from_domain": "cap22_robustness_and_stress_b10",
+      "to_domain": "ranking_selection_profile_closure_b12",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "B10 robustness and stress summary evidence",
+      "producer": "cap22_robustness_and_stress_b10",
+      "consumer": "ranking_selection_profile_closure_b12",
+      "authority_effect": "NONE",
+      "decision_effect": "EVIDENCE_STATUS_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "B10_ROBUSTNESS_SUMMARY",
+      "temporal_binding": "EVIDENCE_TIMESTAMP_ONLY",
+      "version_binding": "peak_trade_b10_robustness_and_stress.v1",
+      "provenance_binding": "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json"
+      ]
+    },
+    {
+      "id": "operator_profile_b11_to_closure_b12",
+      "from_domain": "operator_profile_explainability_b11",
+      "to_domain": "ranking_selection_profile_closure_b12",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "B11 operator profile and explainability summary evidence",
+      "producer": "operator_profile_explainability_b11",
+      "consumer": "ranking_selection_profile_closure_b12",
+      "authority_effect": "NONE",
+      "decision_effect": "EVIDENCE_STATUS_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "B11_OPERATOR_PROFILE_SUMMARY",
+      "temporal_binding": "EVIDENCE_TIMESTAMP_ONLY",
+      "version_binding": "peak_trade_operator_profile_explainability.v1",
+      "provenance_binding": "docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json",
+        "docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json"
       ]
     },
     {

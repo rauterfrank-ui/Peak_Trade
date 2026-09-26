@@ -35,6 +35,7 @@ flowchart LR
   portfolio_reservation["portfolio_reservation PARTIAL"]
   presentation_dashboard["presentation_dashboard PROVEN_CURRENT"]
   ranking_cap22["ranking_cap22 PROVEN_CURRENT"]
+  ranking_selection_profile_closure_b12["ranking_selection_profile_closure_b12 PROVEN_CURRENT"]
   reconciliation_runtime_binding["reconciliation_runtime_binding UNKNOWN"]
   research_surfaces_f1_f2_f5["research_surfaces_f1_f2_f5 RESEARCH_ONLY"]
   runtime_binding_cap24["runtime_binding_cap24 PROVEN_CURRENT"]
@@ -69,7 +70,9 @@ flowchart LR
   mv2_double_play --> execution_external_effect
   mv2_double_play --> capital_risk_sizing
   mv2_double_play --> execution_external_effect
+  operator_profile_explainability_b11 --> ranking_selection_profile_closure_b12
   optimization_universe --> governance_promotion
+  cap22_research_backtest_live_parity_b09 --> ranking_selection_profile_closure_b12
   portfolio_reservation --> treasury_29p
   ranking_cap22 --> future_profile_snapshot_b07
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
@@ -78,6 +81,7 @@ flowchart LR
   reconciliation_runtime_binding --> runtime_binding_cap24
   reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
+  cap22_robustness_and_stress_b10 --> ranking_selection_profile_closure_b12
   safety --> mv2_double_play
   selection_cap23 --> operator_profile_explainability_b11
   selection_cap23 --> future_profile_snapshot_b07
@@ -119,6 +123,7 @@ flowchart LR
 | portfolio_reservation | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | portfolio_capital_reservation_budget_owner_v1 | `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py` |
 | presentation_dashboard | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | canonical_read_model_and_market_dashboard_rebuild_v1 | `src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | ranking_cap22 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.productive_futures_ranking_producer_v1 | `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/models_v1.py`, `src/ops/productive_futures_ranking_producer_v1/policy_v1.py`, `src/ops/productive_futures_ranking_producer_v1/producer_v1.py`, `src/ops/productive_futures_ranking_producer_v1/ranking_v1.py`, `src/ops/peak_trade_ranking_matrix_policy_v1.py`, `src/ops/peak_trade_ranking_feature_contract_v1.py`, `src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py`, `docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| ranking_selection_profile_closure_b12 | INTERMEDIATE | PROVEN_CURRENT | NONE | docs.evidence.peak_trade_canonical_truth_sync_and_closure_v1 | `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`, `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json` |
 | reconciliation_runtime_binding | INTERMEDIATE | UNKNOWN | UNKNOWN | UNKNOWN | `src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py` |
 | research_surfaces_f1_f2_f5 | INTERMEDIATE | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py` |
 | runtime_binding_cap24 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_runtime_binding_v1 | `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/models_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py` |

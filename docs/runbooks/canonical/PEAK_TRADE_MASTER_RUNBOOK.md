@@ -6,7 +6,7 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b
+BOUND_ORIGIN_MAIN_SHA=b9d67077a006675992b462e16608d5ba9e7dfc9c
 STALE_IF_HEAD_DIFFERS=true
 ```
 
@@ -144,6 +144,88 @@ Governed Futures Universe
 → Safety boundary
 → canonical_order_intent_owner_v1
 → Host join / send-capable adapter / execution boundary
+```
+
+### CURRENT Ranking / Selection / Future Profile closure (B01-B12)
+
+The Ranking / Selection / Future Profile Blueprint workstream is closed for
+the CURRENT single-selected-future path. Closure is bounded to the
+Universe→Ranking→Selection→Binding observability and evidence chain; it does
+not activate multi-future runtime, Live external effects, venue POST, or a
+new productive optimizer.
+
+```text
+RANKING_SELECTION_PROFILE_BLUEPRINT_CLOSED=true
+B01_B12_COMPLETION_PROVEN=true
+B12_CANONICAL_TRUTH_SYNC_AND_CLOSURE_V1=IMPLEMENTED
+
+RANKING_FEATURES_RATIFIED=true
+RANKING_FEATURE_PRODUCTION_IMPLEMENTED=true
+CAP22_PEAK_TRADE_RANKING_IMPLEMENTED=true
+FUTURE_PROFILE_IMPLEMENTED=true
+CAP23_INTEGRATION_PROVEN=true
+RESEARCH_BACKTEST_LIVE_PARITY_PROVEN=true
+ROBUSTNESS_AND_STRESS_PROVEN=true
+OPERATOR_PROFILE_EXPLAINABILITY_IMPLEMENTED=true
+
+CAP23_SOLE_SELECTION_OWNER=true
+DOWNSTREAM_RESCORE_COUNT=0
+DOWNSTREAM_RERANK_COUNT=0
+DOWNSTREAM_RESELECT_COUNT=0
+
+PROFILE_ONLY_RANKING_EFFECT=NONE
+PROFILE_ONLY_SELECTION_EFFECT=NONE
+UNCLASSIFIED_RANKING_EFFECT=NONE
+UNCLASSIFIED_SELECTION_EFFECT=NONE
+
+NO_SILENT_ECONOMIC_FALLBACK=true
+NO_LOOKAHEAD_PRESERVED=true
+DETERMINISM_PROVEN=true
+
+CROSS_UNIVERSE_AUTHORITY=NONE
+MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+MAX_POSITIONS_EFFECTIVE=1
+LIVE_EXTERNAL_EFFECT_AUTHORIZED=false
+```
+
+Authoritative CURRENT implementation/evidence surfaces:
+
+- B03 ranking matrix policy:
+  `src/ops/peak_trade_ranking_matrix_policy_v1.py`
+- B04 ranking feature contract:
+  `src/ops/peak_trade_ranking_feature_contract_v1.py`
+- B05 feature production:
+  `src/ops/peak_trade_ranking_feature_production_v1/`
+- B06 Peak_Trade economic ranking runtime:
+  `src/ops/peak_trade_economic_ranking_runtime_v1/`
+- B07 Future Profile Snapshot:
+  `src/ops/future_profile_snapshot_v1/`
+- B08 Cap 2.3 selection / anti-churn and Cap 2.4 binding preservation:
+  `src/ops/single_selected_future_policy_v1/` and
+  `src/ops/single_selected_future_runtime_binding_v1/`
+- B09 parity proof:
+  `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`
+- B10 robustness/stress proof:
+  `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`
+- B11 operator profile/explainability proof:
+  `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`
+- B12 closure record:
+  `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`
+
+The B10 stale-input finding
+`UNRATIFIED_POLICY_GAP_INPUT2_MAX_AGE_SECONDS` remains a separate
+activation/policy backlog for input-2 max-age threshold ratification. It does
+not create ranking, selection, binding, execution, or Live authority; it does
+not reopen this closed single-selected-future Ranking / Selection / Future
+Profile workstream.
+
+```text
+ISOLATED_MF_ACTIVE_SET_BACKLOG_STATE=SEPARATE_BACKLOG_UNAUTHORIZED_FAIL_CLOSED
+PRODUCTIVE_MF_AUTHORIZATION=false
+N5_CARDINALITY_REOPENED=false
+B12_RUNTIME_AUTHORIZATION_EFFECT=NONE
+MAP_OF_TRUTH_AUTHORITY=NONE
+SYSTEM_ATLAS_AUTHORITY=NONE
 ```
 
 Forbidden authority inversions:

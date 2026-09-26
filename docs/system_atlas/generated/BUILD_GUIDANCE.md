@@ -46,7 +46,7 @@ If you change X, inspect the listed contracts and invariants.
 
 ### CLOSURE:native_instrument_binding — NATIVE_INSTRUMENT_BINDING
 
-- inspect: `CAPABILITY:cap_2_4_runtime_binding, BINDER:bound_instrument_v1, DATA_CONTRACT:bound_instrument_v1, SCHEMA:runtime_binding_v1, CAPABILITY:operator_profile_explainability_v1`
+- inspect: `CAPABILITY:cap_2_4_runtime_binding, BINDER:bound_instrument_v1, DATA_CONTRACT:bound_instrument_v1, SCHEMA:runtime_binding_v1, CAPABILITY:operator_profile_explainability_v1, EVIDENCE:ranking_selection_profile_blueprint_closure_v1`
 - upstream: `CAPABILITY:cap_2_3_single_selected_future`
 - downstream: `HOST:cap72_stateful_host`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md`
@@ -56,6 +56,7 @@ If you change X, inspect the listed contracts and invariants.
   - `DATA_CONTRACT:bound_instrument_v1` transitive upstream: `(none)`
   - `SCHEMA:runtime_binding_v1` transitive upstream: `(none)`
   - `CAPABILITY:operator_profile_explainability_v1` transitive upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_economic_md_input, CAPABILITY:future_profile_snapshot_v1, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:peak_trade_ranking_feature_contract_v1, CONTRACT:peak_trade_ranking_matrix_policy_v1, CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection, SELECTOR:single_selected_future_policy`
+  - `EVIDENCE:ranking_selection_profile_blueprint_closure_v1` transitive upstream: `(none)`
 
 ### CLOSURE:order_submit — ORDER_SUBMIT
 
@@ -90,7 +91,7 @@ If you change X, inspect the listed contracts and invariants.
 
 ### CLOSURE:productive_selection — PRODUCTIVE_SELECTION
 
-- inspect: `CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CAPABILITY:cap22_research_backtest_live_parity_v1, CAPABILITY:cap22_robustness_and_stress_v1, CAPABILITY:operator_profile_explainability_v1`
+- inspect: `CAPABILITY:cap_2_3_single_selected_future, SELECTOR:single_selected_future_policy, OWNER_DECISION:cap23_exclusive_selection, SCHEMA:single_selected_future_selection_v1, CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1, CAPABILITY:cap22_research_backtest_live_parity_v1, CAPABILITY:cap22_robustness_and_stress_v1, CAPABILITY:operator_profile_explainability_v1, EVIDENCE:ranking_selection_profile_blueprint_closure_v1`
 - upstream: `CAPABILITY:cap_2_2_ranking, SELECTOR:productive_futures_ranking`
 - downstream: `CAPABILITY:cap_2_4_runtime_binding`
 - evidence: `docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md`
@@ -103,6 +104,7 @@ If you change X, inspect the listed contracts and invariants.
   - `CAPABILITY:cap22_research_backtest_live_parity_v1` transitive upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_economic_md_input, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:peak_trade_ranking_feature_contract_v1, CONTRACT:peak_trade_ranking_matrix_policy_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
   - `CAPABILITY:cap22_robustness_and_stress_v1` transitive upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_economic_md_input, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:peak_trade_ranking_feature_contract_v1, CONTRACT:peak_trade_ranking_matrix_policy_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection`
   - `CAPABILITY:operator_profile_explainability_v1` transitive upstream: `CAPABILITY:cap21_feature_production_v1, CAPABILITY:cap22_peak_trade_ranking_runtime_v1, CAPABILITY:cap_2_1_gfu, CAPABILITY:cap_2_2_ranking, CAPABILITY:cap_2_3_single_selected_future, CAPABILITY:cap_2_4_runtime_binding, CAPABILITY:cap_economic_md_input, CAPABILITY:future_profile_snapshot_v1, CONTRACT:cap22_append_only_15m_pit_persistence_v1, CONTRACT:cap22_economic_md_dual_input_v1, CONTRACT:cap22_historical_evidence_time_semantics_v1, CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1, CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1, CONTRACT:cap22_offline_policy_candidates_and_evidence_v1, CONTRACT:peak_trade_ranking_feature_contract_v1, CONTRACT:peak_trade_ranking_matrix_policy_v1, CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1, GATE:btc_exclusion, INVARIANT:missing_metadata_never_defaulted, OWNER_DECISION:cap23_exclusive_selection, SELECTOR:single_selected_future_policy`
+  - `EVIDENCE:ranking_selection_profile_blueprint_closure_v1` transitive upstream: `(none)`
 
 ### CLOSURE:productive_universe — PRODUCTIVE_UNIVERSE
 

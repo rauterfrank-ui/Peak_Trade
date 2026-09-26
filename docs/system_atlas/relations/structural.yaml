@@ -464,6 +464,56 @@ relations:
       It cannot bind, rebind, override, execute, or authorize live effects.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_system_has_b12_blueprint_closure_record
+    source: SYSTEM:peak_trade
+    type: NAVIGATES_TO
+    target: EVIDENCE:ranking_selection_profile_blueprint_closure_v1
+    epistemic_status: NAVIGATION_ONLY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+    notes: >
+      B12 records the bounded closure verdict for the B01-B11 Ranking /
+      Selection / Future Profile workstream. It is status/evidence only and
+      creates no runtime authority. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b12_closure_observes_b09_parity
+    source: EVIDENCE:ranking_selection_profile_blueprint_closure_v1
+    type: NAVIGATES_TO
+    target: CAPABILITY:cap22_research_backtest_live_parity_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+      - docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json
+    notes: >
+      Navigation-only closure reference. B12 does not create parity runtime
+      authority or mode promotion. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b12_closure_observes_b10_robustness
+    source: EVIDENCE:ranking_selection_profile_blueprint_closure_v1
+    type: NAVIGATES_TO
+    target: CAPABILITY:cap22_robustness_and_stress_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+      - docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+    notes: >
+      Navigation-only closure reference. B12 does not retune, rescore, rerank,
+      or change robustness proof semantics. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b12_closure_observes_b11_operator_profile
+    source: EVIDENCE:ranking_selection_profile_blueprint_closure_v1
+    type: NAVIGATES_TO
+    target: CAPABILITY:operator_profile_explainability_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json
+      - docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json
+    notes: >
+      Navigation-only closure reference. B12 does not create operator-view,
+      selection, binding, live, or execution authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
