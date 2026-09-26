@@ -997,8 +997,12 @@ slippage_bps = 5.0
 [exchange.okx_europe_eea]
 enabled = false
 rest_host = "https://eea.okx.com"
+# DEMO_ONLY (wseeapap): not production authority for ratified WP-A/WP-B observation runtimes.
+# Production public/private WS authority: wseea.okx.com (see governance policy artifacts).
 public_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/public"
 private_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/private"
+public_ws_host_production_ratified = "wss://wseea.okx.com:8443/ws/v5/public"
+private_ws_host_production_ratified = "wss://wseea.okx.com:8443/ws/v5/private"
 websocket_port = 8443
 simulation_header_name = "x-simulated-trading"
 simulation_header_value = "1"

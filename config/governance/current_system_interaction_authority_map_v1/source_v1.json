@@ -215,6 +215,53 @@
       ]
     },
     {
+      "id": "okx_eea_private_account_state_runtime_wp_b",
+      "tier": "INTERMEDIATE",
+      "role": "Observation-only OKX EEA private account state plane: OKX_EEA_PRIVATE_OBSERVATION_READ_V1 credential class, GET-only REST baseline/recovery, private WS login/subscribe observation, normalized state/reconciliation/durability, and thin adapters into existing fresh-pretrade seams. No POST, WS order send, trade-credential fallback, or account-equity sizing authority.",
+      "canonical_owner_ref": "ops.okx_eea_private_account_state_runtime_v1",
+      "authority_class": "NONE",
+      "lifecycle": "OBSERVATION_ONLY",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md",
+        "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json"
+      ],
+      "code_refs": [
+        "src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py",
+        "src/ops/okx_eea_private_account_state_runtime_v1/runtime_orchestrator_v1.py",
+        "src/ops/okx_eea_private_account_state_runtime_v1/safety_boundary_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+        "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md"
+      ]
+    },
+    {
+      "id": "full_core_fresh_pretrade_runtime_get",
+      "tier": "INTERMEDIATE",
+      "role": "Existing Full-Core fresh pretrade runtime GET seam (FRESH_GET_PER_PRETRADE_DECISION). WP-B adapters terminate here without substituting required fresh GET authority.",
+      "canonical_owner_ref": "ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "FRESH_GET_PER_PRETRADE_DECISION",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md"
+      ],
+      "code_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py"
+      ]
+    },
+    {
       "id": "ranking_selection_profile_closure_b12",
       "tier": "INTERMEDIATE",
       "role": "B12 canonical truth sync and bounded closure record for the completed B01-B11 Ranking / Selection / Future Profile workstream. Evidence/status only; no ranking, selection, binding, live, execution, multi-future, cross-universe, optimizer, venue POST, or runtime authorization effect.",
@@ -1258,6 +1305,52 @@
       "evidence_refs": [
         "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
         "src/ops/peak_trade_public_market_data_runtime_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "private_state_runtime_adapts_fresh_pretrade_get",
+      "from_domain": "okx_eea_private_account_state_runtime_wp_b",
+      "to_domain": "full_core_fresh_pretrade_runtime_get",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "Non-authoritative WP-B observation hints only; FRESH_GET_PER_PRETRADE_DECISION owner unchanged; cached WP-B must not substitute required fresh GETs",
+      "producer": "okx_eea_private_account_state_runtime_wp_b",
+      "consumer": "full_core_fresh_pretrade_runtime_get",
+      "authority_effect": "NONE",
+      "decision_effect": "OBSERVATION_ADAPTER_ONLY_NO_PRETRADE_AUTHORITY_TRANSFER",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "REUSES_EXISTING_FRESH_PRETRADE_GET_OWNER",
+      "temporal_binding": "NO_RUNTIME_ACTIVATION",
+      "version_binding": "OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1",
+      "provenance_binding": "src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+        "src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py"
+      ]
+    },
+    {
+      "id": "private_state_runtime_preserves_cap23_selection_owner",
+      "from_domain": "okx_eea_private_account_state_runtime_wp_b",
+      "to_domain": "selection_cap23",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "SELECTION_AUTHORITY=NONE; CAP23_SOLE_SELECTION_OWNER unchanged",
+      "producer": "okx_eea_private_account_state_runtime_wp_b",
+      "consumer": "selection_cap23",
+      "authority_effect": "NONE",
+      "decision_effect": "ASSERTS_EXISTING_CAP23_SELECTION_OWNER_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "NO_SELECTION_WRITER",
+      "temporal_binding": "NO_RUNTIME_ACTIVATION",
+      "version_binding": "OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1",
+      "provenance_binding": "src/ops/okx_eea_private_account_state_runtime_v1/safety_boundary_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+        "src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py"
       ]
     },
     {

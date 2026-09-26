@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1`.
 
 ## Workflow
 
@@ -40,15 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:peak_trade_public_market_data_runtime_v1` |
+| `CAPABILITY:okx_eea_private_account_state_runtime_v1` |
 | `SYSTEM:peak_trade` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_system_has_public_market_data_runtime_v1` |
-| `REL:s_public_md_runtime_reuses_economic_md_pt1m_validation` |
+| `REL:s_system_has_private_account_state_runtime_v1` |
+| `REL:s_private_state_runtime_adapts_fresh_pretrade_get` |
 
 ## NEW_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP-A adds observation-only OKX EEA public market data runtime capability, durability/replay surfaces, and governed consumer adapters. No selection, execution, POST, credential, or multi-future trading authority. Cap 2.2 ranking owner unchanged; Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
-- introduced_by=PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
-- modified_by=PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+- WP-B adds observation-only OKX EEA private account state runtime capability, GET-only REST baseline/recovery, private WS observation transport, normalized private state/reconciliation/durability, and thin governed pretrade adapters. No POST, WS order send, trade-credential fallback, account-equity sizing authority, selection, execution, or multi-future trading authority. Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
+- introduced_by=OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
+- modified_by=OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
