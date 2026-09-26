@@ -1,45 +1,36 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "e8fd6d97515269fd672b6eb2608b1538fd6959b7",
+  "base_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/market_intelligence_forecast_calibration_offline_stack_v1_policy_v1.json",
+    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/ontology/discovered_terms.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/__init__.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_evidence_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/forecast_outcome_join_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/probabilistic_forecast_payload_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/support_disposition_v1.py",
-    "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
+    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "259ef0b0f38bdffdb1f37031458a50f37f02dca23626a994a928261664d1798f",
+  "changed_paths_sha256": "c12715843a2ce8829fb5f38214e077add9fecbc86080403dd2b80548b6e58ee1",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
-    "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Track D03 MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1 adds offline ForecastEvidence/CalibrationEvidence composition adjacent to learning_ddo N_BARS refs and optimization_universe research intake. authority_class NONE; FORECAST_IS_NOT_DECISION; System Atlas entity review for map navigation surfaces; no MV2/DP, Cap 2.3, execution, promotion, or productive DDO feedback mutation."
+  "reason": "Unified Blueprint D01 CURRENT-bound topology census and D02 inter-loop adjudication refresh navigation index to origin/main @ 32171b35; add learning export edge, loop_c MI offline, and explicit NOT_IMPLEMENTED MI→Learning (Phase 8). AUTHORITY=NONE; no trading/promotion/external effects."
 }

@@ -1,0 +1,304 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
+  "authorized_baseline_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "d01_closure_status": "PROVEN_COMPLETE",
+  "d02_closure_status": "PROVEN_COMPLETE_ADJUDICATION_ONLY",
+  "d01_topology_census": {
+    "bound_to": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1.source_v1.json",
+    "census_domains": [
+      {
+        "domain_id": "learning_ddo",
+        "role": "Learning / DDO observation, N_BARS evaluation, outcome ingest, learning state, evidence export",
+        "owner": "src.learning.deterministic_decision_outcome_v0",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md",
+          "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+          "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+          "tests/learning/test_learning_evidence_export_v1.py",
+          "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py"
+        ]
+      },
+      {
+        "domain_id": "o4_n_bars_public_plane_convergence",
+        "role": "O4 / N_BARS snapshot materialization via WP-A PT1H facts and WP-C converged_o4 handoff",
+        "owner": "ops.market_data_private_state_runtime_convergence_v1",
+        "authority_class": "NONE",
+        "map_status": "PROVEN_CURRENT",
+        "evidence_refs": [
+          "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
+          "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py"
+        ]
+      },
+      {
+        "domain_id": "optimization_universe",
+        "role": "Optimization Universe registry, experiment plane, research-only productive authority NONE",
+        "owner": "src.experiments.canonical_optimization_universe_v1",
+        "authority_class": "NONE",
+        "map_status": "CONFLICTING",
+        "evidence_refs": [
+          "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md",
+          "docs/ops/specs/OPTIMIZATION_UNIVERSE_EXPERIMENT_PLANE_NORMATIVE_V1.md",
+          "src/experiments/canonical_optimization_universe_v1.py",
+          "tests/experiments/test_canonical_optimization_universe_v1.py"
+        ]
+      },
+      {
+        "domain_id": "meta_learning",
+        "role": "Meta-learning ingest and meta-evidence export; no trading or search execution authority",
+        "owner": "src.experiments.canonical_meta_learning_ingest_v1",
+        "authority_class": "NONE",
+        "map_status": "RESEARCH_ONLY",
+        "evidence_refs": [
+          "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+          "src/experiments/canonical_meta_learning_ingest_v1.py",
+          "tests/experiments/test_canonical_meta_to_optimization_feedback_v1.py"
+        ]
+      },
+      {
+        "domain_id": "governance_promotion",
+        "role": "Governance / promotion ingress; proposal-only; no optimizer direct productive write",
+        "owner": "src.governance.optimization_proposal_governance_ingress_v1",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/OPTIMIZATION_PROPOSAL_GOVERNANCE_INGRESS_NORMATIVE_V1.md",
+          "src/governance/optimization_proposal_governance_ingress_v1.py"
+        ]
+      },
+      {
+        "domain_id": "peak_trade_public_market_data_runtime_wp_a",
+        "role": "Public Data Plane canonical facts/history (WP-A)",
+        "owner": "ops.peak_trade_public_market_data_runtime_v1",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md",
+          "tests/ops/test_peak_trade_public_market_data_runtime_v1.py"
+        ]
+      },
+      {
+        "domain_id": "okx_eea_private_account_state_runtime_wp_b",
+        "role": "Private State Plane observation/reconciliation (WP-B)",
+        "owner": "ops.okx_eea_private_account_state_runtime_v1",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md",
+          "tests/ops/test_okx_eea_private_account_state_runtime_v1.py"
+        ]
+      },
+      {
+        "domain_id": "market_data_private_state_runtime_convergence_wp_c",
+        "role": "Runtime convergence / consumer closure onto WP-A/WP-B (WP-C)",
+        "owner": "ops.market_data_private_state_runtime_convergence_v1",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md",
+          "tests/ops/test_market_data_private_state_runtime_convergence_v1.py"
+        ]
+      },
+      {
+        "domain_id": "market_intelligence_forecast_calibration_offline_stack_d03",
+        "role": "Track D03 offline ForecastEvidence / CalibrationEvidence / MI research projection",
+        "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+        "authority_class": "NONE",
+        "map_status": "PARTIAL",
+        "evidence_refs": [
+          "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+          "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+        ]
+      },
+      {
+        "domain_id": "step29m",
+        "role": "Offline post-selection economic evaluation boundary (not selection authority)",
+        "owner": "src.backtest.step29m_current_single_selected_future_dynamic_binding_v1",
+        "authority_class": "NONE",
+        "map_status": "PROVEN_CURRENT",
+        "evidence_refs": [
+          "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+          "src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py"
+        ]
+      }
+    ]
+  },
+  "d02_inter_loop_edges": [
+    {
+      "edge_id": "d02_loop_a_productive_learning_outcome",
+      "loop": "Productive Learning / Outcome Loop",
+      "producer": "real_outcome_horizon_engine + evaluate_offline_bundle_v0",
+      "consumer": "learning_state_record_v0 + learning_evidence_export_v1",
+      "payload_evidence_class": "LEARNING_EVIDENCE_EXPORT_V1 / evaluation_observation / outcome_record",
+      "owner": "src.learning.deterministic_decision_outcome_v0",
+      "authority_classification": "LEARNING_TRADING_AUTHORITY=NONE",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "AppendOnlyDdoLedgerV0 + learning_state_record scope",
+      "replay_semantics": "Fixture-bounded offline evaluation chain tests",
+      "evidence_refs": [
+        "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py",
+        "tests/learning/test_learning_evidence_export_v1.py",
+        "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py"
+      ],
+      "missing_dependency": null
+    },
+    {
+      "edge_id": "d02_loop_b_market_intelligence_offline",
+      "loop": "Market Intelligence Loop (offline)",
+      "producer": "market_state_refs + mint_forecast_evidence_v1",
+      "consumer": "CalibrationEvidence + MARKET_INTELLIGENCE_RESEARCH_EVIDENCE projection",
+      "payload_evidence_class": "FORECAST_EVIDENCE / CALIBRATION_EVIDENCE / MI_RESEARCH",
+      "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+      "authority_classification": "FORECAST_IS_NOT_DECISION; AUTHORITY=NONE",
+      "implementation_status": "PARTIAL",
+      "persistence_semantics": "Stateless offline orchestrator cycle; no durable MI evidence store",
+      "replay_semantics": "Deterministic contract tests; failure_memory replay hook in orchestrator only",
+      "evidence_refs": [
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py"
+      ],
+      "missing_dependency": "Materialized Market State/Behavior producer and durable MI evidence persistence not in CURRENT"
+    },
+    {
+      "edge_id": "d02_learning_to_optimization",
+      "loop": "Learning -> Optimization",
+      "producer": "learning_evidence_export_v1",
+      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "payload_evidence_class": "CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1",
+      "owner": "src.experiments.canonical_optimization_universe_learning_input_v1",
+      "authority_classification": "OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Export projection from learning_state_record; no productive apply",
+      "replay_semantics": "tests/experiments/test_canonical_optimization_universe_v1.py",
+      "evidence_refs": [
+        "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+        "tests/experiments/test_canonical_optimization_universe_v1.py"
+      ],
+      "missing_dependency": null
+    },
+    {
+      "edge_id": "d02_mi_to_learning",
+      "loop": "MI -> Learning",
+      "producer": "CalibrationEvidence / MI research projection",
+      "consumer": "learning_evidence_export_v1 / learning_state ingest",
+      "payload_evidence_class": "Typed MI calibration in learning export path",
+      "owner": "UNASSIGNED_PHASE_8",
+      "authority_classification": "LEARNING_IS_NOT_PROMOTION; productive DDO seam unchanged",
+      "implementation_status": "NOT_IMPLEMENTED",
+      "persistence_semantics": "Only legacy_learning_evidence_ref on MI projection; DDO reducers unchanged",
+      "replay_semantics": "NONE",
+      "evidence_refs": [
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_research_evidence_v1.py"
+      ],
+      "missing_dependency": "Unified Blueprint Phase 8 typed export/ingest of forecast/outcome/calibration into learning evidence path"
+    },
+    {
+      "edge_id": "d02_mi_to_optimization",
+      "loop": "MI -> Optimization",
+      "producer": "project_market_intelligence_research_evidence_v1",
+      "consumer": "validate_market_intelligence_optimization_research_input_v1",
+      "payload_evidence_class": "MARKET_INTELLIGENCE_OPTIMIZATION_RESEARCH_INPUT_V1 (ACK only)",
+      "owner": "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+      "authority_classification": "OFFLINE_RESEARCH_INPUT_ONLY; not M4 plane execution",
+      "implementation_status": "PARTIAL",
+      "persistence_semantics": "Orchestrator cycle ack list; no experiment plane bind",
+      "replay_semantics": "Offline orchestrator test only",
+      "evidence_refs": [
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+      ],
+      "missing_dependency": "M4 experiment/search consumption of MI-enriched research input (Phase 9)"
+    },
+    {
+      "edge_id": "d02_optimization_to_meta_learning",
+      "loop": "Optimization -> Meta-Learning",
+      "producer": "optimization experiment / federated M5 evidence",
+      "consumer": "ingest_meta_learning_evidence_from_return_input_v1",
+      "payload_evidence_class": "META_LEARNING_EVIDENCE / experiment return join",
+      "owner": "src.experiments.canonical_meta_learning_ingest_v1",
+      "authority_classification": "META_EVIDENCE_AUTHORITY=NONE",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Evidence-only projection; no learning_state mutation",
+      "replay_semantics": "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py (M5-M6 join segment)",
+      "evidence_refs": [
+        "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md",
+        "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json"
+      ],
+      "missing_dependency": null
+    },
+    {
+      "edge_id": "d02_meta_to_optimization",
+      "loop": "Meta-Learning -> Optimization",
+      "producer": "meta_learning_evidence_v1",
+      "consumer": "canonical_meta_to_optimization_feedback_v1",
+      "payload_evidence_class": "Bounded next research/search choice only",
+      "owner": "src.experiments.canonical_meta_to_optimization_feedback_v1",
+      "authority_classification": "META_LEARNING_IS_NOT_TRADING_SELECTION",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Feedback projection only; SEARCH_EXECUTION_AUTHORIZED=false",
+      "replay_semantics": "tests/experiments/test_canonical_meta_to_optimization_feedback_v1.py",
+      "evidence_refs": [
+        "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+        "tests/experiments/test_canonical_meta_to_optimization_feedback_v1.py"
+      ],
+      "missing_dependency": null
+    },
+    {
+      "edge_id": "d02_multi_cycle_replay_m8",
+      "loop": "Multi-cycle replay (Optimization/Meta)",
+      "producer": "federated M5-M8 offline replay",
+      "consumer": "deterministic multi-cycle loop closure witness",
+      "payload_evidence_class": "FEDERATED_BOUNDED_MULTI_CYCLE_OFFLINE_REPLAY_V1",
+      "owner": "src.experiments.canonical_federated_bounded_multi_cycle_offline_replay_v1",
+      "authority_classification": "M4_RE_EXECUTION_FORBIDDEN=true",
+      "implementation_status": "PARTIAL",
+      "persistence_semantics": "Fixture-bounded replay store in tests",
+      "replay_semantics": "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py",
+      "evidence_refs": [
+        "tests/experiments/test_canonical_deterministic_multi_cycle_offline_replay_v1.py",
+        "tests/experiments/test_canonical_federated_bounded_multi_cycle_offline_replay_v1.py"
+      ],
+      "missing_dependency": "MI-crossing multi-cycle replay edge not closed in CURRENT"
+    },
+    {
+      "edge_id": "d02_failure_memory",
+      "loop": "Failure Memory",
+      "producer": "build_canonical_failure_memory_record_v1",
+      "consumer": "CanonicalFailureMemoryStoreV1 assess_duplicate / append",
+      "payload_evidence_class": "CANONICAL_FAILURE_MEMORY_RECORD_V1",
+      "owner": "src.experiments.canonical_failure_memory_v1",
+      "authority_classification": "failure_memory_has_runtime_authority=false",
+      "implementation_status": "IMPLEMENTED",
+      "persistence_semantics": "Append-only store root; hypothesis_fingerprint dedup",
+      "replay_semantics": "tests/experiments/test_canonical_failure_memory_v1.py; MI orchestrator hook test",
+      "evidence_refs": [
+        "tests/experiments/test_canonical_failure_memory_v1.py",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+      ],
+      "missing_dependency": null
+    }
+  ],
+  "authority_invariants": {
+    "master_v2_double_play_sole_trading_decision_authority": true,
+    "cap_2_3_sole_productive_selection_owner": true,
+    "n_bars_normative_semantics_unchanged": true,
+    "forecast_is_not_decision": true,
+    "learning_is_not_promotion": true,
+    "optimization_is_not_promotion": true,
+    "optimization_direct_productive_write_forbidden": true,
+    "risk_sizing_not_optimizable": true,
+    "no_automatic_promotion": true,
+    "no_self_deploy": true,
+    "no_new_external_effect_path": true,
+    "d03_productive_ddo_feedback_seam_unchanged": true
+  },
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 8 — typed MI forecast/outcome/calibration export into existing learning_evidence_export_v1 path without productive DDO reducer mutation",
+  "next_implementation_boundary": "Phase 8 Learning integration only; Phase 9+ forbidden in same slice without separate authorization"
+}

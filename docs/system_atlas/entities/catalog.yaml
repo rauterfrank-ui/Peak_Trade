@@ -8402,6 +8402,24 @@ entities:
       Composes handoff, threshold value, bounded enforcement, MV2+DP alpha, offline order intent;
       stops before external wire/Live. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint D01/D02 topology adjudication v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1
+    source_paths:
+      - src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json
+    notes: >-
+      CURRENT-bound Unified Blueprint Phase 4 D01 census and Phase 5 D02 inter-loop
+      edge adjudication; AUTHORITY=NONE; documents NOT_IMPLEMENTED MI→Learning (Phase 8).
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1
     kind: RUNTIME_COMPONENT
     name: Meta-learning optimization universe PDF v3.3 final completion adjudication v1
