@@ -1,0 +1,365 @@
+{
+  "schema_version": "unified_blueprint_phase_15_final_dod_matrix_v1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_V1",
+  "blueprint_authority": "NONE",
+  "adjudication_epistemic_class": "ADJUDICATED_CONCLUSION",
+  "authorized_baseline_sha": "0d1ca4dd35cad92fbbe07da544e6bc6b0985b254",
+  "m11_outside_default_completion": true,
+  "dod_families": [
+    {
+      "dod_family": "DATA_SUBSTRATE",
+      "required_semantics": "Public/private facts and state canonicalized without competing transport truth; deterministic historical query/replay/reconciliation where required.",
+      "classification": "PARTIAL",
+      "producers_owners": [
+        "ops.peak_trade_public_market_data_runtime_v1",
+        "ops.okx_eea_private_account_state_runtime_v1",
+        "ops.market_data_private_state_runtime_convergence_v1"
+      ],
+      "consumers": [
+        "ops.market_data_private_state_runtime_convergence_v1",
+        "src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+        "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md",
+        "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md",
+        "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md",
+        "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
+        "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py"
+      ],
+      "authority_refs": [
+        "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json"
+      ],
+      "phase_bindings": ["D01", "WP-A", "WP-B", "WP-C"],
+      "unresolved_dependencies": [
+        "D01 census map_status PARTIAL for WP-A/WP-B/WP-C; optimization_universe domain CONFLICTING"
+      ],
+      "conflicts": [
+        "d01_topology_census.optimization_universe.map_status=CONFLICTING"
+      ],
+      "notes": "WP-C convergence and O4/N_BARS handoff are proven in bounded tests; full public/private canonicalization across all transport paths is not uniformly PROVEN_CURRENT per D01 census."
+    },
+    {
+      "dod_family": "MARKET_INTELLIGENCE",
+      "required_semantics": "Forecast/behavior/calibration/drift/coverage with provenance; forecast is evidence not decision.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "learning.market_intelligence_forecast_calibration_offline_stack_v1",
+        "src.governance.unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1"
+      ],
+      "consumers": [
+        "src.learning.deterministic_decision_outcome_v0",
+        "src.governance.unified_blueprint_decision_attribution_evidence_v1"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md",
+        "config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json",
+        "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
+        "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
+        "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/constants_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+        "tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+        "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 8", "Phase 10", "D02 Loop B", "D03"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Phases 8–10 and durable MI store closure proofs pass on CURRENT main; FORECAST_IS_NOT_DECISION pinned in MI constants."
+    },
+    {
+      "dod_family": "TEMPORAL_INTEGRITY",
+      "required_semantics": "No lookahead; explicit finalization; horizon identity; point-in-time semantics.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1",
+        "src.governance.unified_blueprint_decision_attribution_evidence_v1"
+      ],
+      "consumers": [
+        "src.learning.deterministic_decision_outcome_v0.evaluation_engine_v0"
+      ],
+      "evidence_refs": [
+        "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py",
+        "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py",
+        "tests/learning/test_ddo_o4_n_bars_productive_chain_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 14", "N_BARS", "DDO"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Bounded DDO + Phase 14 attribution guards enforce horizon/lookahead fail-closed semantics on proven paths."
+    },
+    {
+      "dod_family": "LEARNING_LOOP",
+      "required_semantics": "Forecast/outcome/system evidence reaches Learning state with proven producer→persistence→consumer chain.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.learning.deterministic_decision_outcome_v0.learning_outcome_evidence_ingest_v1",
+        "src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1"
+      ],
+      "consumers": [
+        "src.experiments.canonical_meta_learning_ingest_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_8_mi_to_learning_integration_v1.json",
+        "docs/ops/specs/LEARNING_OUTCOME_EVIDENCE_INGEST_AND_STATE_NORMATIVE_V1.md"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_8_mi_to_learning_integration_v1.py",
+        "tests/learning/test_learning_evidence_export_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 8", "D02 Loop A"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Phase 8 integration proof passes; learning trading authority remains NONE."
+    },
+    {
+      "dod_family": "OPTIMIZATION_LOOP",
+      "required_semantics": "Learning input→bounded search→challenger/OOS/robustness→typed optimization evidence return.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.experiments.canonical_optimization_experiment_evidence_v1",
+        "src.governance.unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1"
+      ],
+      "consumers": [
+        "src.governance.optimization_proposal_governance_ingress_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+        "src/governance/pdf_v3_3_topic_completion_composition_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
+        "tests/governance/test_optimization_proposal_governance_ingress_v1.py"
+      ],
+      "authority_refs": [
+        "config/governance/optimization_proposal_governance_ingress_v1_decision_v1.json"
+      ],
+      "phase_bindings": ["Phase 9", "PDF D7"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Phase 9 and federated evidence plane (D7) proofs pass; promotion authority remains NONE at ingress."
+    },
+    {
+      "dod_family": "META_LOOP",
+      "required_semantics": "Experiment/failure evidence→meta-evidence→bounded next research choice; authority-free.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.experiments.canonical_meta_learning_ingest_v1",
+        "src.experiments.canonical_meta_to_optimization_feedback_v1"
+      ],
+      "consumers": [
+        "src.experiments.canonical_federated_bounded_multi_cycle_offline_replay_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.json",
+        "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_10_mi_crossing_multi_cycle_offline_replay_v1.py",
+        "tests/experiments/test_canonical_meta_learning_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 10", "M5–M8"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Meta-return replay regression and Phase 10 proofs pass; meta cannot promote or apply live."
+    },
+    {
+      "dod_family": "FAILURE_MEMORY",
+      "required_semantics": "Rejected hypotheses and failure reasons durably represented and reusable on proven paths.",
+      "classification": "PARTIAL",
+      "producers_owners": [
+        "src.experiments.canonical_failure_memory_v1",
+        "src.experiments.canonical_failure_memory_store_v1"
+      ],
+      "consumers": [
+        "src.experiments.canonical_meta_learning_v1",
+        "src.learning.market_intelligence_forecast_calibration_offline_stack_v1"
+      ],
+      "evidence_refs": [
+        "src/experiments/canonical_failure_memory_v1.py",
+        "tests/experiments/test_canonical_advanced_search_v1.py",
+        "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/experiments/test_canonical_advanced_search_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["D02 Loop B", "Optimization Universe"],
+      "unresolved_dependencies": [
+        "No CURRENT proof that all productive failure classes are durably captured fleet-wide"
+      ],
+      "conflicts": [],
+      "notes": "Canonical failure memory v1 is typed and replay-tested on research/offline paths; fleet-wide durable failure registry is not proven."
+    },
+    {
+      "dod_family": "SURFACE_GOVERNANCE",
+      "required_semantics": "Optimization surfaces explicitly classified; universe membership does not grant authority.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.experiments.canonical_optimization_surface_portfolio_registry_v1",
+        "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json"
+      ],
+      "consumers": [
+        "src.governance.optimization_proposal_governance_ingress_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
+        "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 11", "PDF D17"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Phase 11 and PDF surface portfolio classification proofs pass."
+    },
+    {
+      "dod_family": "PRODUCTIVE_RELEVANCE",
+      "required_semantics": "Each productive-relevant surface has a concrete versioned CURRENT consumer.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src/experiments/canonical_optimization_productive_lineage_registry_v1"
+      ],
+      "consumers": [
+        "src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json",
+        "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_12_productive_lineage_closure_v1.py",
+        "tests/experiments/test_canonical_optimization_productive_lineage_registry_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 12", "PDF D19"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Bounded to CURRENT F1 M9 productive consumer binding (single proven productive-relevant surface)."
+    },
+    {
+      "dod_family": "PARAMETER_LINEAGE",
+      "required_semantics": "Auditable chain surface→candidate→evidence→governance→authorization→consumer where CURRENT implements it.",
+      "classification": "PARTIAL",
+      "producers_owners": [
+        "src.governance.m10_promotion_boundary_v1",
+        "src.experiments.canonical_optimization_productive_lineage_registry_v1"
+      ],
+      "consumers": [
+        "src.governance.m9_volatility_numeric_max_age_numeric_productive_target_v1"
+      ],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_12_productive_lineage_closure_v1.json",
+        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+        "config/governance/m10_promotion_boundary_v1_decision_v1.json",
+        "src/governance/m10_promotion_boundary_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_12_productive_lineage_closure_v1.py",
+        "tests/governance/test_unified_blueprint_phase_13_m10_promotion_boundary_v1.py",
+        "tests/governance/test_m10_promotion_boundary_v1.py"
+      ],
+      "authority_refs": [
+        "config/governance/pdf_v3_3_productive_consumer_binding_registry_v1.json"
+      ],
+      "phase_bindings": ["Phase 12", "Phase 13", "PDF D20"],
+      "unresolved_dependencies": [
+        "AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false by design; governed runtime apply seam not proven end-to-end"
+      ],
+      "conflicts": [],
+      "notes": "Chain proven through authorized promotion record and productive consumer seam; runtime apply intentionally stops at M10 boundary (Phase 13)."
+    },
+    {
+      "dod_family": "AUTHORITY",
+      "required_semantics": "Learning/Optimization/Meta/Attribution cannot create trading, promotion, self-deploy, or MV2/DP mutation authority.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.governance.optimization_proposal_governance_ingress_v1",
+        "src.governance.m10_promotion_boundary_v1",
+        "trading.master_v2.naked_mv2_double_play_core_authority_hardening_v1"
+      ],
+      "consumers": [],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json",
+        "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
+        "config/governance/optimization_proposal_governance_ingress_v1_decision_v1.json"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_m10_promotion_boundary_v1.py",
+        "tests/governance/test_optimization_proposal_governance_ingress_v1.py",
+        "tests/experiments/test_canonical_meta_learning_v1.py"
+      ],
+      "authority_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "phase_bindings": ["Phase 13", "Phase 14", "M10", "Ingress"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Global negative authority proof module validates CURRENT pins on main."
+    },
+    {
+      "dod_family": "TRADING_AUTHORITY",
+      "required_semantics": "Cap 2.3 sole selection owner; MV2+DP sole trading decision; attribution evidence-only.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "trading.master_v2.naked_mv2_double_play_core_authority_hardening_v1",
+        "src.governance.unified_blueprint_decision_attribution_evidence_v1"
+      ],
+      "consumers": [],
+      "evidence_refs": [
+        "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
+        "config/governance/f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1_decision_v1.json"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_phase_14_decision_attribution_v1.py",
+        "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 14", "Cap 2.3", "MV2", "Double Play"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "Phase 14 and PDF D29 post-return trading authority proofs pass without duplicating decision ownership."
+    },
+    {
+      "dod_family": "EXTERNAL_EFFECT",
+      "required_semantics": "MI/L/O/Meta/Attribution have no direct order/wire path; pretrade/execution adjudicated separately.",
+      "classification": "PROVEN",
+      "producers_owners": [
+        "src.governance.optimization_proposal_governance_ingress_v1",
+        "src.governance.unified_blueprint_decision_attribution_evidence_v1"
+      ],
+      "consumers": [],
+      "evidence_refs": [
+        "config/governance/m5_m8_bounded_meta_return_and_replay_completion_v1_decision_v1.json",
+        "config/governance/unified_blueprint_decision_attribution_evidence_v1_decision_v1.json",
+        "src/governance/pdf_v3_3_topic_completion_composition_v1.py"
+      ],
+      "test_proof_refs": [
+        "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py",
+        "tests/governance/test_m10_promotion_boundary_v1.py"
+      ],
+      "authority_refs": [],
+      "phase_bindings": ["Phase 14", "M10", "PDF wire_send=false"],
+      "unresolved_dependencies": [],
+      "conflicts": [],
+      "notes": "PDF completion flags require no wire send; M10 and attribution configs forbid external order effect from optimization/attribution paths."
+    }
+  ]
+}

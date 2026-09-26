@@ -200,6 +200,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_12_productive_lineage_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_12_productive_lineage_closure_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_14_decision_attribution_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_8_mi_to_learning_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1 | STATUS=OPEN (not proven) |  |

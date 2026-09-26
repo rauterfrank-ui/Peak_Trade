@@ -8502,6 +8502,24 @@ entities:
       Phase 14 decision attribution evidence boundary (COMPOSE_REFERENCES_DONT_DUPLICATE_OWNERSHIP);
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_phase_15_final_dod_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint Phase 15 final DoD adjudication v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_V1
+    source_paths:
+      - src/governance/unified_blueprint_phase_15_final_dod_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_phase_15_final_dod_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_15_final_dod_v1.json
+      - config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json
+    notes: >-
+      Phase 15 final Unified Blueprint DoD matrix and adjudication (UNKNOWN_NEVER_CLOSES_BY_PLAUSIBILITY);
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1
