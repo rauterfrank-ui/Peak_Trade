@@ -148,8 +148,10 @@ front. It is **not** a TOP20 ranking owner.
 
 ## 4. Offline evidence contract
 
-The following are required **before** any ranking policy may be
-ratified. This persist does **not** run that evidence.
+Productive Cap 2.2 ranking matrix policy is ratified in
+`docs&#47;ops&#47;specs&#47;PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`.
+The following offline evidence remains required for historical MVR
+challenger comparison. This persist does **not** run that evidence.
 
 ```text
 PIT_REPLAY_REQUIRED=true
@@ -237,7 +239,13 @@ imputation is not ratified.
 
 ## 9. Hard non-decisions
 
+Offline MVR scope flags below do **not** supersede
+`PEAK_TRADE_RANKING_MATRIX_POLICY_V1` productive policy authority.
+
 ```text
+PEAK_TRADE_RANKING_MATRIX_POLICY_RATIFIED=true
+PEAK_TRADE_RANKING_MATRIX_POLICY_ID=PEAK_TRADE_RANKING_MATRIX_POLICY_V1
+OFFLINE_MVR_FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_SCORE_FORMULA_RATIFIED=false
 FINAL_WEIGHTS_RATIFIED=false
 CROSS_SECTIONAL_NORMALIZATION_RATIFIED=false
