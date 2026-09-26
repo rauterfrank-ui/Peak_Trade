@@ -30,7 +30,7 @@ def test_phase_19_authority_invariants() -> None:
     assert not validate_phase_19_authority_invariants(doc)
 
 
-def test_phase_19_summary_points_to_phase_20_boundary() -> None:
+def test_phase_19_summary_points_to_phase_21_boundary() -> None:
     summary = build_phase_19_integration_summary_v1(repo_root=REPO_ROOT)
     assert summary["phase_19_closure_status"] == "PROVEN_COMPLETE"
-    assert "phase 20" in summary["next_implementation_boundary"].lower()
+    assert "phase 21" in summary["next_implementation_boundary"].lower()
