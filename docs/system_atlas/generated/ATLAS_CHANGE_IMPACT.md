@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1`.
 
 ## Workflow
 
@@ -41,13 +41,13 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1` |
+| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1` |
+| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P4 Master V2 / Double Play Evidence & Input Plane productive L6 typed seam binding; A→B→L6 admission; L6_PRODUCTIVE_BINDING=true; Map of Truth row; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; AUTHORITY=NONE.
-- introduced_by=P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1
-- modified_by=P4_MASTER_V2_DOUBLE_PLAY_FIRST_APPROVED_LAYER_SEAM_BINDING_V1
+- P5 Master V2 / Double Play producer productive ingress; MI+Learning terminate at Component A; optimization (D) and meta_learning (C research-only) blocked at lineage/promotion boundary; PRODUCER_TRADING_AUTHORITY=NONE; AUTHORITY=NONE.
+- introduced_by=P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
+- modified_by=P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
