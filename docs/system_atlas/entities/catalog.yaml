@@ -500,7 +500,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1
+    modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
@@ -514,6 +514,7 @@ entities:
       - src/ops/peak_trade_public_market_data_runtime_v1/facts_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/freshness_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/historical_query_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/o4_pt1h_bar_fact_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/rest_recovery_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/runtime_orchestrator_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/safety_boundary_v1.py
@@ -580,7 +581,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+    modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
@@ -594,12 +595,14 @@ entities:
       - src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py
       - src/ops/market_data_private_state_runtime_convergence_v1/restart_reconciliation_closure_v1.py
       - src/ops/market_data_private_state_runtime_convergence_v1/convergence_orchestrator_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
       - src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py
       - tests/ops/test_market_data_private_state_runtime_convergence_v1.py
     evidence_sources:
       - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
       - config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json
       - tests/ops/test_market_data_private_state_runtime_convergence_v1.py
+      - tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py
     notes: >-
       WP-C consumer closure: forensic census, governed handoffs onto WP-A/WP-B
       canonical facts/state, restart/reconciliation closure proofs, and
@@ -6215,13 +6218,15 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+    modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
     source_paths:
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_upstream_from_cycle_capture_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_snapshot_from_canonical_bar_producer_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_snapshot_materialization_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_canonical_bar_producer_session_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_evaluation_runtime_host_binding_v1.py
       - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py

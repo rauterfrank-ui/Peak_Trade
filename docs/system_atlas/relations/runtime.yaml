@@ -579,6 +579,21 @@ relations:
       Does not alter the productive cycle. PR 6634 also invokes learning outcome
       ingest after evaluation runtime; non-authorizing observation only.
 
+  - id: REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane
+    source: HOST:wallclock_decision_economics_cycle
+    type: CALLS
+    target: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
+    notes: >-
+      Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C
+      converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1 remains a
+      bounded writer to WP-A facts, not a competing productive O4 session read.
+      Fail-closed when history is insufficient. Observation-only.
+
   - id: REL:r_wallclock_calls_learning_outcome_ingest
     source: HOST:wallclock_decision_economics_cycle
     type: CALLS

@@ -28,6 +28,9 @@ from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
 from src.ops.peak_trade_public_market_data_runtime_v1.historical_query_v1 import (
     query_historical_facts_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.o4_pt1h_bar_fact_v1 import (
+    load_finalized_pt1h_o4_bar_elements_v1,
+)
 from src.ops.peak_trade_public_market_data_runtime_v1.rest_recovery_v1 import (
     bootstrap_rest_snapshot_v1,
     recover_pt1m_gaps_via_rest_v1,
@@ -107,7 +110,8 @@ class PublicMarketDataRuntimeV1:
             live_mark_captured_at=captured_at,
             ohlcv_freshness_state="fresh" if mark_fresh.publishable else "stale",
         )
-        o4 = o4_n_bars_envelope_from_historical_facts_v1([])
+        pt1h_bars = load_finalized_pt1h_o4_bar_elements_v1(self.store_root)
+        o4 = o4_n_bars_envelope_from_historical_facts_v1(pt1h_bars)
         research = research_optimizer_historical_adapter_v1(
             {"facts": hist.facts, "live_ws_required": hist.live_ws_required}
         )

@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1`.
 
 ## Workflow
 
@@ -41,16 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
-| `SYSTEM:peak_trade` |
+| `CAPABILITY:peak_trade_public_market_data_runtime_v1` |
+| `HOST:wallclock_decision_economics_cycle` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_system_has_md_private_runtime_convergence_v1` |
-| `REL:s_wp_c_convergence_depends_on_public_md_runtime` |
-| `REL:s_wp_c_convergence_depends_on_private_state_runtime` |
-| `REL:s_wp_c_preserves_cap23_selection_owner` |
+| `REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane` |
+| `REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo` |
 
 ## NEW_RELATIONS
 
@@ -96,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- WP-C adds runtime convergence / consumer closure capability: forensic census, governed public/private handoffs onto WP-A/WP-B canonical facts/state, restart/reconciliation closure proofs, and effective authorization readmodel (observation capability distinct from send authority). No selection, rerank, execution, wire, multi-future, or account-equity sizing authority acquired. Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
-- introduced_by=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
-- modified_by=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- Productive DDO O4→N_BARS observation host reads WP-A FinalizedPt1hO4BarFactV1 history through WP-C converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1 remains a bounded writer to WP-A facts, not a competing productive O4 read path. DDO observation-only; NO_N_BARS_TO_PROMOTION_BINDING unchanged; Cap 2.3 and MV2/DP authority unchanged. ATLAS_AUTHORITY=NONE.
+- introduced_by=O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
+- modified_by=O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

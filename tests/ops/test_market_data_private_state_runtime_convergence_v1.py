@@ -76,6 +76,16 @@ def _public_rest(_path: str, _params: Mapping[str, str]) -> dict[str, Any]:
     return {"code": "0", "data": [{"instId": "ETH-USDT-SWAP", "markPx": "1"}]}
 
 
+def test_o4_n_bars_learning_caller_closure_evidence() -> None:
+    from src.ops.market_data_private_state_runtime_convergence_v1.o4_n_bars_learning_caller_closure_v1 import (
+        build_o4_n_bars_learning_caller_closure_v1,
+    )
+
+    closure = build_o4_n_bars_learning_caller_closure_v1()
+    assert closure["productive_ddo_o4_source_is_wp_a_wp_c_canonical"] is True
+    assert closure["competing_productive_o4_truth"] is False
+
+
 def test_census_covers_minimum_consumer_surfaces() -> None:
     required = {
         "landscape_dashboard",

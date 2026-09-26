@@ -164,6 +164,21 @@ relations:
       REST baseline before WS delta; no second account/position/order/fill truth.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo
+    source: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    type: DEPENDS_ON
+    target: HOST:wallclock_decision_economics_cycle
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py
+    evidence_sources:
+      - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
+      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
+    notes: >
+      WP-C converged_o4_handoff_v1 is the sole productive O4→N_BARS read path for
+      wallclock DDO snapshot materialization; WP-A FinalizedPt1hO4BarFactV1 only.
+      Observation-only; NO_N_BARS_TO_PROMOTION_BINDING unchanged. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_wp_c_preserves_cap23_selection_owner
     source: CAPABILITY:market_data_private_state_runtime_convergence_v1
     type: DEPENDS_ON
