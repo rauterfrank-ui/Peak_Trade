@@ -1,5 +1,7 @@
 """B05 Cap 2.1 / Input-2 ranking feature production (raw B03 features only)."""
 
+from importlib import import_module
+
 from src.ops.peak_trade_ranking_feature_production_v1.constants_v1 import (
     B05_IMPLEMENTED,
     CAPABILITY_ID,
@@ -19,7 +21,7 @@ __all__ = [
 
 
 def __getattr__(name: str):
-    from src.ops.peak_trade_ranking_feature_production_v1 import producer_v1 as mod
+    mod = import_module("src.ops.peak_trade_ranking_feature_production_v1.producer_v1")
 
     if name in __all__ and hasattr(mod, name):
         return getattr(mod, name)
