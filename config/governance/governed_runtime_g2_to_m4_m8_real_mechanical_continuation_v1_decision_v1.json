@@ -1,0 +1,19 @@
+{
+  "workpackage_id": "GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "continuation_authority": "NONE",
+  "primary_evidence_implies_productive_authorization": false,
+  "p5_evidence_intake_implies_runtime_apply": false,
+  "canonical_learning_input_implies_productive_activation": false,
+  "runtime_apply_started": false,
+  "real_runtime_materialization_performed": false,
+  "productive_activation_authorized": false,
+  "external_effect": false,
+  "g2_real_source_used": true,
+  "ddo_fixture_learning_state_used_on_real_path": false,
+  "real_runtime_g2_to_m4_m8_status": "PROVEN",
+  "m4_m8_end_to_end_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "g2_end_to_end_status": "PROVEN_REAL_MECHANICAL",
+  "fixture_only_m4_m8_harness_retained": true,
+  "normative_spec": "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

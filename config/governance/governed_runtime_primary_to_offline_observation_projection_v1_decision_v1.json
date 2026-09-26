@@ -23,7 +23,7 @@
   "risk_authority_change": "NONE",
   "promotion_authority_change": "NONE",
   "runtime_apply_authority_change": "NONE",
-  "g2_end_to_end_status": "PROVEN_FIXTURE_BOUNDED",
+  "g2_end_to_end_status": "PROVEN_REAL_MECHANICAL",
   "cross_mode_normalization_status": "PARTIAL_CURRENT",
   "field_mapping_ledger": "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_field_mapping_ledger_v1.json",
   "normative_spec": "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md"

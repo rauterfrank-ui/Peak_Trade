@@ -2050,12 +2050,36 @@
       "identity_binding": "DDO_FIXTURE_LEARNING_STATE",
       "temporal_binding": "FIXTURE_BOUNDED",
       "version_binding": "m4_m8_evidence_return_loop_v1",
-      "provenance_binding": "G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED",
+      "provenance_binding": "G2_END_TO_END_FIXTURE_HARNESS_STATUS=PROVEN_FIXTURE_BOUNDED",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
         "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
         "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
+      ]
+    },
+    {
+      "id": "g2_runtime_to_m4_m8_real_mechanical_continuation",
+      "from_domain": "g2_runtime_learning_optimization_input_binding",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1",
+      "producer": "run_g2_runtime_to_m4_m8_evidence_return_continuation_v1",
+      "consumer": "run_m4_m8_evidence_return_loop_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN",
+      "temporal_binding": "OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE",
+      "version_binding": "canonical_m4_m8_evidence_return_loop_v1",
+      "provenance_binding": "REAL_RUNTIME_G2_TO_M4_M8_STATUS=PROVEN; DDO_FIXTURE_LEARNING_STATE_USED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
+        "src/experiments/canonical_m4_m8_evidence_return_loop_v1.py",
+        "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py"
       ]
     },
     {
@@ -3462,7 +3486,7 @@
     {
       "id": "g2_runtime_primary_offline_observation_projection_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1; real mechanical path to canonical optimization learning input proven without DDO fixture; M4–M8 full loop remains fixture-bounded; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
+      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1; real mechanical path to canonical optimization learning input and M4–M8 evidence return proven without DDO fixture on real path; fixture harness retained for isolated tests only; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
         "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
@@ -3480,6 +3504,16 @@
         "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
         "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json",
         "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
+      ]
+    },
+    {
+      "id": "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "G2 runtime-derived learning evidence continues into canonical M4–M8 evidence return loop without DDO fixture learning state on the real path; G2_REAL_SOURCE_USED=true; EXTERNAL_EFFECT=false.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
+        "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py"
       ]
     }
   ]

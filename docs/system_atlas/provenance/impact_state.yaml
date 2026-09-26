@@ -1,21 +1,20 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
-modified_by: GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
+introduced_by: GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
+modified_by: GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  G2 runtime learning input → canonical optimization-universe learning input mechanical binding;
-  real path without DDO fixture state; M4–M8 full loop remains fixture-bounded separately;
-  authority=NONE; no apply or external effect.
+  G2 real mechanical continuation into canonical M4–M8 evidence return loop without DDO
+  fixture learning state on the real path; authority=NONE; no apply or external effect.
 changed_entities:
-  - RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1
   - RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+  - RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
 changed_relations:
-  - REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1
   - REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
-  - REL:s_g2_projection_feeds_runtime_learning_optimization_binding
+  - REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
+  - REL:s_g2_binding_to_m4_m8_real_continuation
 changed_closures: []
 changed_wiring: []
 changed_venue: []

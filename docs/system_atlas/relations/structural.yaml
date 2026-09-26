@@ -2216,6 +2216,30 @@ relations:
       Real mechanical path: runtime_to_learning_input_v1 + G2 provenance → governed binding.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json
+    notes: >
+      Navigation only. G2 runtime → M4–M8 real mechanical continuation; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_g2_binding_to_m4_m8_real_continuation
+    source: RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py
+    notes: >
+      Real path continues runtime-derived learning evidence into M4–M8 loop. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

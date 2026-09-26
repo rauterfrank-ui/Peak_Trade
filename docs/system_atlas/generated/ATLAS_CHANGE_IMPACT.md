@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1`.
 
 ## Workflow
 
@@ -40,16 +40,16 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1` |
 | `RUNTIME_COMPONENT:governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
+| `RUNTIME_COMPONENT:governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1` |
 | `REL:s_map_navigates_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1` |
-| `REL:s_g2_projection_feeds_runtime_learning_optimization_binding` |
+| `REL:s_map_navigates_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1` |
+| `REL:s_g2_binding_to_m4_m8_real_continuation` |
 
 ## NEW_RELATIONS
 
@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- G2 runtime learning input → canonical optimization-universe learning input mechanical binding; real path without DDO fixture state; M4–M8 full loop remains fixture-bounded separately; authority=NONE; no apply or external effect.
-- introduced_by=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
-- modified_by=GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
+- G2 real mechanical continuation into canonical M4–M8 evidence return loop without DDO fixture learning state on the real path; authority=NONE; no apply or external effect.
+- introduced_by=GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1
+- modified_by=GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
