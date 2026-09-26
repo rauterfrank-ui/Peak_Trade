@@ -4,7 +4,7 @@
   "base_sha": "dbf4a0ddd1a288ccf20b9dc7dcfed752006ba5f2",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Governed productive configuration apply authority ratification adds M10→apply-record navigation edge on governance_promotion; structured source and derived views regenerated; no trading/external authority grant.",
+  "reason": "Governed productive configuration apply authority ratification: M10→apply-record navigation edge, System Atlas catalog/provenance updated; Interaction Map source regenerated; no trading/external authority grant.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -14,6 +14,14 @@
     "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_NORMATIVE_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/structural.yaml",
     "src/governance/governed_productive_configuration_apply_authority_closure_v1.py",
     "src/governance/governed_productive_configuration_apply_authority_v1.py",
     "src/governance/governed_productive_configuration_apply_record_v1.py",
@@ -21,7 +29,7 @@
     "tests/governance/test_governed_productive_configuration_apply_authority_v1.py",
     "tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py"
   ],
-  "changed_paths_sha256": "3ce74ea1ea71373c43a9361ff390deea3121322262db0fe6013a0d5630f6902b",
+  "changed_paths_sha256": "8cca1b169b8df238f6367ee310ea6ece3061dc230c41867781ab07310013b963",
   "covered_candidate_paths": [
     "config/governance/governed_productive_configuration_apply_authority_v1_decision_v1.json",
     "docs/ops/specs/GOVERNED_PRODUCTIVE_CONFIGURATION_APPLY_AUTHORITY_NORMATIVE_V1.md",
