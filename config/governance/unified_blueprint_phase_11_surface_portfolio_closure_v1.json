@@ -39,6 +39,6 @@
     "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
     "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py"
   ],
-  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 12 — Productive Lineage Closure (surface → candidate → evidence → governance/risk → explicit authorization → governed parameter → typed CURRENT consumer; separate Owner authorization; not started by Phase 11)",
-  "next_implementation_boundary": "Phase 12 productive lineage closure only under separate Owner GO; Phase 13/M10 promotion boundary remains unauthorized"
+  "first_unproven_dependency_after_closure": "Unified Blueprint Phase 12 — Productive Lineage Closure (Owner-authorized; see unified_blueprint_phase_12_productive_lineage_closure_v1.json when PROVEN_COMPLETE)",
+  "next_implementation_boundary": "Phase 12 under separate Owner GO; Phase 13/M10 not implied by Phase 11"
 }
