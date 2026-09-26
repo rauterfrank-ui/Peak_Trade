@@ -22,6 +22,9 @@ from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.cons
 SCHEMA_VERSION: Final[str] = "mi_learning_evidence_record_v1"
 EVIDENCE_CLASS_MI_LEARNING: Final[str] = "MARKET_INTELLIGENCE_LEARNING_EVIDENCE"
 MI_LEARNING_EVIDENCE_AUTHORITY: Final[str] = "NONE"
+LEARNING_PROMOTION_AUTHORITY: Final[str] = "NONE"
+LEARNING_DIRECT_PRODUCTIVE_WRITE: Final[str] = "FORBIDDEN"
+CONDITIONED_BINDING_SCHEMA: Final[str] = "conditioned_learning_evidence_v1"
 OUTCOME_FINALIZATION_FINALIZED: Final[str] = "FINALIZED"
 OUTCOME_FINALIZATION_INCOMPLETE: Final[str] = "INCOMPLETE"
 
@@ -82,6 +85,41 @@ def build_mi_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingP
     if raw.get("forecast_is_not_decision") is not True:
         raise MiLearningEvidenceValidationError("FORECAST_IS_NOT_DECISION_REQUIRED")
 
+    if raw.get("learning_promotion_authority") not in (None, LEARNING_PROMOTION_AUTHORITY):
+        raise MiLearningEvidenceValidationError("LEARNING_PROMOTION_AUTHORITY_MUST_BE_NONE")
+    if raw.get("learning_direct_productive_write") not in (
+        None,
+        LEARNING_DIRECT_PRODUCTIVE_WRITE,
+    ):
+        raise MiLearningEvidenceValidationError("LEARNING_DIRECT_PRODUCTIVE_WRITE_FORBIDDEN")
+
+    binding_schema = raw.get("conditioned_binding_schema")
+    if binding_schema is not None and binding_schema != CONDITIONED_BINDING_SCHEMA:
+        raise MiLearningEvidenceValidationError("CONDITIONED_BINDING_SCHEMA_MISMATCH")
+    if binding_schema == CONDITIONED_BINDING_SCHEMA:
+        require_record_id(raw.get("market_context_ref"), "market_context_ref")
+        require_record_id(raw.get("realized_behavior_ref"), "realized_behavior_ref")
+        ctx_digest = str(raw.get("market_context_content_digest") or "")
+        rb_digest = str(raw.get("realized_behavior_content_digest") or "")
+        if not is_valid_sha256_hex_v0(ctx_digest):
+            raise MiLearningEvidenceValidationError("MARKET_CONTEXT_CONTENT_DIGEST_INVALID")
+        if not is_valid_sha256_hex_v0(rb_digest):
+            raise MiLearningEvidenceValidationError("REALIZED_BEHAVIOR_CONTENT_DIGEST_INVALID")
+        snapshot = require_mapping(
+            raw.get("behavior_semantics_snapshot"), "behavior_semantics_snapshot"
+        )
+        for key in (
+            "forward_behavior_status",
+            "excursion_status",
+            "classical_mfe_mae_status",
+            "realized_volatility_status",
+            "transition_status",
+        ):
+            if key not in snapshot:
+                raise MiLearningEvidenceValidationError(
+                    f"BEHAVIOR_SEMANTICS_SNAPSHOT_MISSING:{key}"
+                )
+
     digest = str(raw.get("reproducibility_digest") or "")
     if not is_valid_sha256_hex_v0(digest):
         raise MiLearningEvidenceValidationError("REPRODUCIBILITY_DIGEST_INVALID")
@@ -140,4 +178,15 @@ def compute_mi_learning_reproducibility_digest_v1(body: Mapping[str, Any]) -> st
         "selected_instrument_ref": body.get("selected_instrument_ref"),
         "instrument_ref": body.get("instrument_ref"),
     }
+    if body.get("conditioned_binding_schema") == CONDITIONED_BINDING_SCHEMA:
+        canonical.update(
+            {
+                "conditioned_binding_schema": CONDITIONED_BINDING_SCHEMA,
+                "market_context_ref": body.get("market_context_ref"),
+                "market_context_content_digest": body.get("market_context_content_digest"),
+                "realized_behavior_ref": body.get("realized_behavior_ref"),
+                "realized_behavior_content_digest": body.get("realized_behavior_content_digest"),
+                "behavior_semantics_snapshot": body.get("behavior_semantics_snapshot"),
+            }
+        )
     return compute_content_hash_v0(canonical)

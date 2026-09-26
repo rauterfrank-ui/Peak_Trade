@@ -50,6 +50,6 @@
     "tests/learning/test_market_context_realized_behavior_join_v1.py",
     "tests/governance/test_unified_blueprint_phase_20_behavior_join_v1.py"
   ],
-  "first_unproven_dependency_after_closure": "Phase 21 Learning Integration (NOT authorized by Phase 20 OWNER_GO)",
-  "next_implementation_boundary": "Phase 21 learning integration under separate Owner authorization"
+  "first_unproven_dependency_after_closure": "Phase 22 Incremental Research (NOT authorized by Phase 20 OWNER_GO)",
+  "next_implementation_boundary": "Phase 22 incremental research under separate Owner authorization"
 }

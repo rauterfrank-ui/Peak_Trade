@@ -1223,6 +1223,10 @@ POST, or substitute trading decisions.
   `REALIZED_BEHAVIOR(t+N)` via canonical N_BARS backbone; AUTHORITY=NONE):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/realized_behavior_v1.py`
+- Unified Blueprint Phase 21 Loop A learning integration (conditioned MI learning
+  evidence via established writer/store/export; AUTHORITY=NONE):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY

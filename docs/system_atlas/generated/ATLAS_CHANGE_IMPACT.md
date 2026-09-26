@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1`.
 
 ## Workflow
 
@@ -41,15 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `RUNTIME_COMPONENT:mi_market_context_realized_behavior_join_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_phase_20_behavior_join_v1` |
+| `RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_unified_blueprint_phase_20_behavior_join_v1` |
-| `REL:s_mi_stack_contains_market_context_realized_behavior_join_v1` |
+| `REL:s_map_navigates_unified_blueprint_phase_21_learning_integration_v1` |
+| `REL:s_mi_stack_contains_loop_a_conditioned_learning_evidence_v1` |
 
 ## NEW_RELATIONS
 
@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Phase 20 MARKET_CONTEXT to REALIZED_BEHAVIOR N_BARS join on MI/Learning path; canonical outcome backbone unchanged; no trading/runtime authority. AUTHORITY=NONE.
-- introduced_by=UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
-- modified_by=UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_V1
+- Phase 21 Loop A conditioned Learning evidence integration on MI/Learning path; established writer/store/export unchanged; AUTHORITY=NONE.
+- introduced_by=UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
+- modified_by=UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

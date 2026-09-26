@@ -2290,6 +2290,31 @@ relations:
       Phase 20 REALIZED_BEHAVIOR join; N_BARS backbone unchanged; AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_21_learning_integration_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_21_learning_integration_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_21_learning_integration_v1.json
+    notes: >
+      Navigation only. Phase 21 Loop A learning integration; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_mi_stack_contains_loop_a_conditioned_learning_evidence_v1
+    source: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py
+      - tests/learning/test_loop_a_conditioned_learning_evidence_v1.py
+    notes: >
+      Phase 21 conditioned Learning evidence on established MI path; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

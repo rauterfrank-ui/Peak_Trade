@@ -1,0 +1,46 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_V1",
+  "authorized_baseline_sha": "6d4de46525d4348e053e7466e1c174ce5743fb31",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_21_learning_integration_v1.py",
+  "phase_20_integration_config": "config/governance/unified_blueprint_phase_20_behavior_join_v1.json",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_21_closure_status": "PROVEN_COMPLETE",
+  "loop_a_status": "PROVEN",
+  "conditioned_binding_status": {
+    "market_context_binding": "PROVEN_TYPED_REF",
+    "realized_behavior_binding": "PROVEN_TYPED_REF",
+    "forecast_calibration_binding": "PROVEN_CURRENT_MI_BRIDGE",
+    "learning_writer": "peak_trade.learning.market_intelligence_mi_learning_evidence_ingest_v1",
+    "learning_reader": "peak_trade.learning.market_intelligence_mi_learning_evidence_learning_export_v1",
+    "persistence": "MiLearningEvidenceStoreV1",
+    "optimization_boundary": "UNCHANGED_OFFLINE_RESEARCH_ONLY"
+  },
+  "authority_invariants": {
+    "market_context_authority": "NONE",
+    "realized_behavior_authority": "NONE",
+    "learning_trading_authority": "NONE",
+    "learning_promotion_authority": "NONE",
+    "learning_direct_productive_write": "FORBIDDEN",
+    "forecast_is_not_decision": true,
+    "learning_is_not_promotion": true,
+    "no_second_market_truth": true,
+    "no_authority_expansion": true,
+    "mv2_dp_unchanged": true,
+    "multi_future_runtime_authorized": false,
+    "runtime_apply_authorized": false,
+    "phase_20_prerequisite_required": true
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md",
+    "config/governance/unified_blueprint_phase_21_learning_integration_v1.json",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+    "src/governance/unified_blueprint_phase_21_learning_integration_v1.py",
+    "tests/learning/test_loop_a_conditioned_learning_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_21_learning_integration_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Phase 22 Incremental Research (NOT authorized by Phase 21 OWNER_GO)",
+  "next_implementation_boundary": "Phase 22 incremental research under separate Owner authorization"
+}

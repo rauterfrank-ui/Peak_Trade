@@ -332,6 +332,41 @@ def _materialize_transition_v1() -> Mapping[str, Any]:
     }
 
 
+def validate_realized_behavior_v1(payload: Mapping[str, Any]) -> MappingProxyType[str, Any]:
+    """Validate REALIZED_BEHAVIOR_V1 record identity (reference-only)."""
+    from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
+        is_valid_sha256_hex_v0,
+    )
+
+    raw = require_mapping(payload, "realized_behavior")
+    if raw.get("schema_version") != SCHEMA_VERSION:
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_SCHEMA_MISMATCH")
+    if raw.get("realized_behavior_authority") != REALIZED_BEHAVIOR_AUTHORITY:
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_AUTHORITY_MUST_BE_NONE")
+    behavior_id = raw.get("behavior_id")
+    content_digest = raw.get("content_digest")
+    if not isinstance(behavior_id, str) or not isinstance(content_digest, str):
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_IDENTITY_INVALID")
+    if not is_valid_sha256_hex_v0(content_digest):
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_CONTENT_DIGEST_INVALID")
+    excluded = frozenset(
+        {
+            "behavior_id",
+            "content_digest",
+            "quality_state",
+            "realized_behavior_authority",
+            "n_bars_outcome_owner",
+            "forecast_is_not_decision",
+        }
+    )
+    identity_body = {k: raw[k] for k in raw if k not in excluded}
+    if compute_content_hash_v0(identity_body) != content_digest:
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_CONTENT_DIGEST_MISMATCH")
+    if derive_behavior_id_v1(identity_body=identity_body) != behavior_id:
+        raise RealizedBehaviorError("REALIZED_BEHAVIOR_ID_MISMATCH")
+    return MappingProxyType(dict(raw))
+
+
 def derive_behavior_id_v1(*, identity_body: Mapping[str, Any]) -> str:
     digest = compute_content_hash_v0(dict(identity_body))
     return f"mi.realized_behavior.{digest[:48]}"
