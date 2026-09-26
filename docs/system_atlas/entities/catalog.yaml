@@ -8859,6 +8859,7 @@ entities:
       - src/governance/f1_m9_productive_runtime_apply_start_owner_binding_v1.py
       - src/governance/f1_m9_productive_runtime_apply_start_artifacts_v1.py
     evidence_sources:
+      - src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_evidence_v1.py
       - src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_closure_v1.py
       - tests/governance/test_governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py
       - docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md
