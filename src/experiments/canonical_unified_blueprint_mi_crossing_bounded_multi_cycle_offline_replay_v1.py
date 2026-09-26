@@ -47,6 +47,9 @@ from src.experiments.canonical_self_learning_optimization_return_input_v1 import
 from src.learning.deterministic_decision_outcome_v0.meta_learning_evidence_v1 import (
     SCHEMA_VERSION as M6_EVIDENCE_SCHEMA_VERSION,
 )
+from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.mi_offline_durable_evidence_record_v1 import (
+    SCHEMA_VERSION as MI_OFFLINE_DURABLE_EVIDENCE_SCHEMA_VERSION,
+)
 from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.offline_orchestrator_v1 import (
     ORCHESTRATOR_SCHEMA,
     OfflineOrchestratorInputV1,
@@ -90,6 +93,7 @@ BOUND_CONTRACT_VERSIONS: Final[Mapping[str, str]] = MappingProxyType(
         "m6_meta_learning_evidence": M6_EVIDENCE_SCHEMA_VERSION,
         "m7_meta_to_optimization_feedback": M7_FEEDBACK_SCHEMA_VERSION,
         "m10_mi_crossing_replay": SCHEMA_VERSION,
+        "mi_offline_durable_evidence": MI_OFFLINE_DURABLE_EVIDENCE_SCHEMA_VERSION,
     }
 )
 
@@ -189,6 +193,11 @@ def run_mi_crossing_offline_evidence_cycle_v1(
         raise MiCrossingOfflineMultiCycleReplayError("M7_SEARCH_METHOD_FAIL_CLOSED_NOT_PRESERVED")
 
     failure_memory_replay = orchestrator_result.get("failure_memory_replay")
+    durable_persist = list(orchestrator_result.get("mi_offline_durable_evidence_persist") or ())
+    if orch_req.mi_offline_durable_evidence_store_root is not None and not durable_persist:
+        raise MiCrossingOfflineMultiCycleReplayError("MI_OFFLINE_DURABLE_EVIDENCE_PERSIST_MISSING")
+    durable_ids = [str(item.get("durable_evidence_id")) for item in durable_persist]
+    durable_digests = [str(item.get("content_digest")) for item in durable_persist]
 
     cycle_body = {
         "cycle_index": cycle_input.cycle_index,
@@ -215,6 +224,8 @@ def run_mi_crossing_offline_evidence_cycle_v1(
             if failure_memory_replay is not None
             else None
         ),
+        "mi_offline_durable_evidence_ids": durable_ids,
+        "mi_offline_durable_evidence_digests": durable_digests,
     }
     cycle_digest = compute_content_sha256(_json_safe(cycle_body))
     return MappingProxyType(
@@ -232,6 +243,7 @@ def run_mi_crossing_offline_evidence_cycle_v1(
             "meta_learning_evidence": dict(meta_evidence),
             "bounded_research_feedback_decision": dict(feedback),
             "failure_memory_replay": failure_memory_replay,
+            "mi_offline_durable_evidence_persist": durable_persist,
             "search_method_selection_outcome": search_item.get("outcome"),
             "learning_state_mutation_performed": False,
             "search_executed": False,
