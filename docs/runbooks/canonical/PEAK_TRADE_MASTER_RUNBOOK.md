@@ -1204,6 +1204,13 @@ POST, or substitute trading decisions.
   `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`
 - Three-universe boundary and learning-evidence export (subordinate):
   `docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md`
+- Unified Blueprint Phase 16 non-price CMC census (navigation; AUTHORITY=NONE):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_16_CMC_NON_PRICE_CENSUS_NORMATIVE_V1.md`
+  / `src/governance/unified_blueprint_phase_16_cmc_non_price_census_v1.py`
+- Unified Blueprint Phase 17 normative non-price `MARKET_CONTEXT_V1` (MI/Learning
+  compositional typed record; no trading/selection/promotion authority):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY
