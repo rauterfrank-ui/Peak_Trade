@@ -2541,3 +2541,16 @@ relations:
     notes: >
       Navigation only. P0 L1-L10 external-evidence seam census;
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_V1.md
+      - docs/ops/specs/EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md
+    notes: >
+      Navigation only. P1 evidence input plane authority contracts;
+      O-002 RATIFIED; contract-only; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.

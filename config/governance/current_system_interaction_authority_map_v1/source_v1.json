@@ -388,20 +388,27 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
       "contract_refs": [
-        "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md"
+        "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
+        "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_V1.md",
+        "docs/ops/specs/EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md"
       ],
       "code_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
-        "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py"
+        "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/__init__.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
+        "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_V1.md",
         "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
-        "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py"
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p1/p1_proof_bundle_v1.json",
+        "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/__init__.py",
+        "tests/governance/test_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1.py"
       ]
     },
     {

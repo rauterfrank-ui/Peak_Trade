@@ -14,8 +14,7 @@ OWNER: Final[str] = (
     "governance.master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1"
 )
 NORMATIVE_SPEC: Final[str] = (
-    "docs/ops/specs/"
-    "MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md"
+    "docs/ops/specs/EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md"
 )
 OWNER_DECISION_CONFIG: Final[str] = (
     "config/governance/master_v2_double_play_evidence_input_plane_p1_owner_decision_v1.json"

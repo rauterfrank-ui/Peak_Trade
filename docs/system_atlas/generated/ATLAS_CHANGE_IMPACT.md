@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1`.
 
 ## Workflow
 
@@ -41,13 +41,13 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1` |
+| `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1` |
+| `REL:s_map_navigates_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P0 Master V2 / Double Play L1-L10 external-evidence seam census; Map of Truth navigation row; read-only governance census runner and durable JSON; no A/B; AUTHORITY=NONE.
-- introduced_by=MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
-- modified_by=MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1
+- P1 Master V2 / Double Play Evidence & Input Plane authority contracts and schemas; O-002 RATIFIED bounded typed L6 admissibility; Map of Truth row; contract-only A/B/L6 typed seam; no runtime activation; AUTHORITY=NONE.
+- introduced_by=P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1
+- modified_by=P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

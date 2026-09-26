@@ -107,6 +107,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1 PR_6871
     # atlas_entity_review: MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1 PR_6870
     # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 navigation-only reference update.
     # atlas_entity_review: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 PR_6831
@@ -6655,6 +6656,24 @@ entities:
     notes: >-
       P0 read-only external-evidence seam census for explicit L1-L10 layered core;
       no Component A/B; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1
+    kind: RUNTIME_COMPONENT
+    name: Master V2 Double Play evidence input plane P1 authority contracts v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1
+    source_paths:
+      - src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/
+    evidence_sources:
+      - tests/governance/test_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1.py
+      - docs/ops/specs/EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1.md
+      - docs/evidence/master_v2_double_play_evidence_input_plane_p1/p1_proof_bundle_v1.json
+      - config/governance/master_v2_double_play_evidence_input_plane_p1_owner_decision_v1.json
+    notes: >-
+      P1 contract-only A/B/L6 typed evidence schemas; O-002 RATIFIED;
+      no A/B runtime; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
     kind: CONTRACT
