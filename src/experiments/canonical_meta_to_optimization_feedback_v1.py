@@ -264,7 +264,9 @@ def build_bounded_research_feedback_decision_v1(
         optimization_family=str(opt_family or UNKNOWN_UNAVAILABLE)
     )
     if portfolio_gate.explicit_family_reference:
-        outcome = OUTCOME_APPLICABLE if portfolio_gate.research_choice_allowed else OUTCOME_FAIL_CLOSED
+        outcome = (
+            OUTCOME_APPLICABLE if portfolio_gate.research_choice_allowed else OUTCOME_FAIL_CLOSED
+        )
         items.append(
             _feedback_item(
                 disposition=DISPOSITION_PROPOSE_RESEARCH_HYPOTHESIS,

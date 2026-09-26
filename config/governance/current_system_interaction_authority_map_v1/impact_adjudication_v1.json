@@ -20,10 +20,10 @@
     "src/experiments/canonical_optimization_surface_portfolio_registry_v1.py",
     "src/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.py",
     "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
-    "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py",
-    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
+    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
+    "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py"
   ],
-  "changed_paths_sha256": "6c5155a92ade6926b1cb13123e909a250cdba2e7cbcaaa5e1751c1505715435a",
+  "changed_paths_sha256": "7a66ae3ac772e58432eb04513004f438c40699bc3a4df48e174414ed3441dddc",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
