@@ -387,6 +387,83 @@ relations:
       CAP23_SOLE_SELECTION_OWNER=true while keeping Profile-only fields inert.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_system_has_b11_operator_profile_explainability
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:operator_profile_explainability_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py
+      - tests/ops/test_peak_trade_operator_profile_explainability_v1.py
+      - docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json
+    notes: >
+      B11 is an operator-facing observability projection over existing
+      authoritative upstream facts. It creates no ranking, selection, binding,
+      execution, live, multi-future, or cross-universe authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b11_operator_view_depends_on_b07_future_profile
+    source: CAPABILITY:operator_profile_explainability_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:future_profile_snapshot_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py
+      - tests/ops/test_peak_trade_operator_profile_explainability_v1.py
+    notes: >
+      B11 projects B07 Future Profile fields and preserves field authority
+      classifications. PROFILE_ONLY and UNCLASSIFIED fields remain inert.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b11_operator_view_depends_on_b06_ranking_witness
+    source: CAPABILITY:operator_profile_explainability_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap22_peak_trade_ranking_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py
+      - tests/ops/test_peak_trade_operator_profile_explainability_v1.py
+    notes: >
+      B11 consumes the B06 ranking explainability witness and productive
+      ranking snapshot. It does not recompute features, rescore, rerank, or
+      create another ranking owner. ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b11_operator_view_depends_on_cap23_selection
+    source: CAPABILITY:operator_profile_explainability_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py
+      - tests/ops/test_peak_trade_operator_profile_explainability_v1.py
+    notes: >
+      B11 projects Cap 2.3 selected identity, reason codes, and provenance.
+      It cannot reselect. CAP23 remains sole productive selection owner.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_b11_operator_view_depends_on_cap24_binding
+    source: CAPABILITY:operator_profile_explainability_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_4_runtime_binding
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py
+      - tests/ops/test_peak_trade_operator_profile_explainability_v1.py
+    notes: >
+      B11 projects Cap 2.4 binding evidence for the already selected identity.
+      It cannot bind, rebind, override, execute, or authorize live effects.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY
