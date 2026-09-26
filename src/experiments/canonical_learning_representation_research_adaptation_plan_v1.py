@@ -14,7 +14,6 @@ from typing import Any, Final, Mapping
 from src.experiments.canonical_meta_to_learning_research_adaptation_input_v1 import (
     DISPOSITION_NO_ACTION_FAIL_CLOSED,
     DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT,
-    OUTCOME_APPLICABLE,
     SCHEMA_VERSION as ADAPTATION_INPUT_SCHEMA,
 )
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
@@ -26,14 +25,13 @@ PRODUCTIVE_APPLY_AUTHORIZED: Final[bool] = False
 LEARNING_STATE_MUTATION_AUTHORIZED: Final[bool] = False
 PLAN_NOT_AUTHORITY: Final[bool] = True
 
-FIXTURE_TOKEN_REDUNDANCY: Final[str] = "FIXTURE_REPRESENTATION_REDUNDANCY"
-FIXTURE_TOKEN_COVERAGE_WEAKNESS: Final[str] = "FIXTURE_COVERAGE_WEAKNESS"
-FIXTURE_TOKEN_DRIFT: Final[str] = "FIXTURE_REPRESENTATION_DRIFT"
-FIXTURE_TOKEN_FAILED_HYPOTHESIS: Final[str] = "FIXTURE_FAILED_REPRESENTATION_HYPOTHESIS"
-FIXTURE_TOKEN_REGIME: Final[str] = "FIXTURE_REGIME_CONDITIONALITY"
-FIXTURE_TOKEN_CONTEXT_FAMILY: Final[str] = "FIXTURE_CONTEXT_FAMILY_USEFULNESS"
-FIXTURE_TOKEN_DEFAULT: Final[str] = "FIXTURE_FEATURE_USEFULNESS"
-
+FIXTURE_LABEL_REDUNDANCY: Final[str] = "FIXTURE_REPRESENTATION_REDUNDANCY"
+FIXTURE_LABEL_COVERAGE_WEAKNESS: Final[str] = "FIXTURE_COVERAGE_WEAKNESS"
+FIXTURE_LABEL_DRIFT: Final[str] = "FIXTURE_REPRESENTATION_DRIFT"
+FIXTURE_LABEL_FAILED_HYPOTHESIS: Final[str] = "FIXTURE_FAILED_REPRESENTATION_HYPOTHESIS"
+FIXTURE_LABEL_REGIME: Final[str] = "FIXTURE_REGIME_CONDITIONALITY"
+FIXTURE_LABEL_CONTEXT_FAMILY: Final[str] = "FIXTURE_CONTEXT_FAMILY_USEFULNESS"
+FIXTURE_LABEL_DEFAULT: Final[str] = "FIXTURE_FEATURE_USEFULNESS"
 
 class RepresentationResearchPurpose(str, Enum):
     INVESTIGATE_FEATURE_USEFULNESS = "INVESTIGATE_FEATURE_USEFULNESS"
@@ -60,20 +58,20 @@ class LearningRepresentationResearchAdaptationPlanRequestV1:
 
 
 def classify_representation_research_purpose_v1(*, pattern_ref: str) -> str:
-    token = pattern_ref.strip()
-    if token == FIXTURE_TOKEN_REDUNDANCY:
+    pattern_label = pattern_ref.strip()
+    if pattern_label == FIXTURE_LABEL_REDUNDANCY:
         return RepresentationResearchPurpose.ASSESS_REDUNDANCY.value
-    if token == FIXTURE_TOKEN_COVERAGE_WEAKNESS:
+    if pattern_label == FIXTURE_LABEL_COVERAGE_WEAKNESS:
         return RepresentationResearchPurpose.ADDRESS_COVERAGE_WEAKNESS.value
-    if token == FIXTURE_TOKEN_DRIFT:
+    if pattern_label == FIXTURE_LABEL_DRIFT:
         return RepresentationResearchPurpose.ASSESS_REPRESENTATION_DRIFT.value
-    if token == FIXTURE_TOKEN_FAILED_HYPOTHESIS:
+    if pattern_label == FIXTURE_LABEL_FAILED_HYPOTHESIS:
         return RepresentationResearchPurpose.REVIEW_FAILED_HYPOTHESIS.value
-    if token == FIXTURE_TOKEN_REGIME:
+    if pattern_label == FIXTURE_LABEL_REGIME:
         return RepresentationResearchPurpose.ASSESS_REGIME_CONDITIONALITY.value
-    if token == FIXTURE_TOKEN_CONTEXT_FAMILY:
+    if pattern_label == FIXTURE_LABEL_CONTEXT_FAMILY:
         return RepresentationResearchPurpose.ASSESS_CONTEXT_FAMILY.value
-    if token.startswith("FIXTURE_"):
+    if pattern_label.startswith("FIXTURE_"):
         return RepresentationResearchPurpose.INVESTIGATE_FEATURE_USEFULNESS.value
     return RepresentationResearchPurpose.INVESTIGATE_FEATURE_USEFULNESS.value
 
@@ -104,19 +102,19 @@ def build_learning_representation_research_adaptation_plan_v1(
 
     if overall == DISPOSITION_NO_ACTION_FAIL_CLOSED:
         purpose = RepresentationResearchPurpose.NO_ACTION_FAIL_CLOSED.value
-        evaluation_fixture_token = "FIXTURE_FAIL_CLOSED"
+        evaluation_fixture_label = "FIXTURE_FAIL_CLOSED"
         plan_status = "PLAN_FAIL_CLOSED"
     elif overall == DISPOSITION_PROPOSE_REPRESENTATION_RESEARCH_CONTEXT:
         items = decision.get("adaptation_items") or []
-        pattern_ref = FIXTURE_TOKEN_DEFAULT
+        pattern_ref = FIXTURE_LABEL_DEFAULT
         lineage_ref = None
         if items and isinstance(items[0], Mapping):
             payload = items[0].get("payload") or {}
             if isinstance(payload, Mapping):
-                pattern_ref = str(payload.get("pattern_ref") or FIXTURE_TOKEN_DEFAULT)
+                pattern_ref = str(payload.get("pattern_ref") or FIXTURE_LABEL_DEFAULT)
                 lineage_ref = payload.get("learning_representation_lineage_ref")
         purpose = classify_representation_research_purpose_v1(pattern_ref=pattern_ref)
-        evaluation_fixture_token = pattern_ref
+        evaluation_fixture_label = pattern_ref
         plan_status = "PLAN_READY_OFFLINE_EVALUATION"
     else:
         raise LearningRepresentationResearchAdaptationPlanError(
@@ -129,7 +127,7 @@ def build_learning_representation_research_adaptation_plan_v1(
         "source_meta_evidence_id": source_meta_id,
         "adaptation_decision_identity": adaptation_decision_identity,
         "research_purpose": purpose,
-        "evaluation_fixture_token": evaluation_fixture_token,
+        "evaluation_fixture_label": evaluation_fixture_label,
         "plan_status": plan_status,
         "productive_apply_authorized": PRODUCTIVE_APPLY_AUTHORIZED,
         "learning_state_mutation_authorized": LEARNING_STATE_MUTATION_AUTHORIZED,
@@ -170,11 +168,11 @@ def validate_learning_representation_research_adaptation_plan_v1(
 
 
 __all__ = [
-    "FIXTURE_TOKEN_COVERAGE_WEAKNESS",
-    "FIXTURE_TOKEN_DEFAULT",
-    "FIXTURE_TOKEN_DRIFT",
-    "FIXTURE_TOKEN_FAILED_HYPOTHESIS",
-    "FIXTURE_TOKEN_REDUNDANCY",
+    "FIXTURE_LABEL_COVERAGE_WEAKNESS",
+    "FIXTURE_LABEL_DEFAULT",
+    "FIXTURE_LABEL_DRIFT",
+    "FIXTURE_LABEL_FAILED_HYPOTHESIS",
+    "FIXTURE_LABEL_REDUNDANCY",
     "LearningRepresentationResearchAdaptationPlanError",
     "LearningRepresentationResearchAdaptationPlanRequestV1",
     "RepresentationResearchPurpose",

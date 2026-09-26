@@ -28,7 +28,7 @@
     "tests/governance/test_unified_blueprint_phase_24_representation_feedback_loop_v1.py",
     "tests/learning/test_phase_24_representation_feedback_loop_evidence_v1.py"
   ],
-  "changed_paths_sha256": "pending_pre_commit",
+  "changed_paths_sha256": "6d7af005554cb881ba7482a6fb6a915caf0817d52d9e3235f2978ef6f2107b33",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/unified_blueprint_phase_24_representation_feedback_loop_v1.json",

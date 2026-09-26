@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
-    FIXTURE_TOKEN_REDUNDANCY,
+    FIXTURE_LABEL_REDUNDANCY,
     LearningRepresentationResearchAdaptationPlanError,
     LearningRepresentationResearchAdaptationPlanRequestV1,
     RepresentationResearchPurpose,
@@ -57,7 +57,7 @@ def test_plan_separate_from_productive_apply() -> None:
 
 def test_purpose_classification_deterministic() -> None:
     assert (
-        classify_representation_research_purpose_v1(pattern_ref=FIXTURE_TOKEN_REDUNDANCY)
+        classify_representation_research_purpose_v1(pattern_ref=FIXTURE_LABEL_REDUNDANCY)
         == RepresentationResearchPurpose.ASSESS_REDUNDANCY.value
     )
 

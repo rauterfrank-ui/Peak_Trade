@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
-    FIXTURE_TOKEN_REDUNDANCY,
+    FIXTURE_LABEL_REDUNDANCY,
 )
 from src.experiments.canonical_meta_learning_ingest_v1 import (
     MetaLearningIngestRequestV1,
@@ -106,7 +106,7 @@ def test_loop_c_deterministic_replay(tmp_path: Path) -> None:
 
 
 def test_rejection_path_preserves_typed_evidence(tmp_path: Path) -> None:
-    meta = _meta_learning_evidence(tmp_path, pattern=FIXTURE_TOKEN_REDUNDANCY)
+    meta = _meta_learning_evidence(tmp_path, pattern=FIXTURE_LABEL_REDUNDANCY)
     closure = run_loop_c_representation_feedback_closure_v1(
         LoopCRepresentationFeedbackRequestV1(meta_learning_evidence=meta)
     )

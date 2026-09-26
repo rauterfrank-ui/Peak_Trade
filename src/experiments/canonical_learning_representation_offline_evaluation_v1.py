@@ -11,10 +11,10 @@ from types import MappingProxyType
 from typing import Any, Final, Mapping
 
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
-    FIXTURE_TOKEN_COVERAGE_WEAKNESS,
-    FIXTURE_TOKEN_DRIFT,
-    FIXTURE_TOKEN_FAILED_HYPOTHESIS,
-    FIXTURE_TOKEN_REDUNDANCY,
+    FIXTURE_LABEL_COVERAGE_WEAKNESS,
+    FIXTURE_LABEL_DRIFT,
+    FIXTURE_LABEL_FAILED_HYPOTHESIS,
+    FIXTURE_LABEL_REDUNDANCY,
     SCHEMA_VERSION as PLAN_SCHEMA,
     RepresentationResearchPurpose,
     validate_learning_representation_research_adaptation_plan_v1,
@@ -49,22 +49,22 @@ class LearningRepresentationOfflineEvaluationRequestV1:
     requested_productive_apply: bool = False
 
 
-def _outcome_for_fixture(*, fixture_token: str, research_purpose: str) -> str:
-    if fixture_token == "FIXTURE_FAIL_CLOSED":
+def _outcome_for_fixture(*, fixture_label: str, research_purpose: str) -> str:
+    if fixture_label == "FIXTURE_FAIL_CLOSED":
         return OfflineEvaluationOutcome.FAIL_CLOSED_NO_EVALUATION.value
-    if fixture_token == FIXTURE_TOKEN_REDUNDANCY:
+    if fixture_label == FIXTURE_LABEL_REDUNDANCY:
         return OfflineEvaluationOutcome.REJECTED_REDUNDANCY.value
-    if fixture_token == FIXTURE_TOKEN_COVERAGE_WEAKNESS:
+    if fixture_label == FIXTURE_LABEL_COVERAGE_WEAKNESS:
         return OfflineEvaluationOutcome.REJECTED_COVERAGE_FAILURE.value
-    if fixture_token == FIXTURE_TOKEN_DRIFT:
+    if fixture_label == FIXTURE_LABEL_DRIFT:
         return OfflineEvaluationOutcome.REJECTED_DRIFT_INCOMPATIBILITY.value
-    if fixture_token == FIXTURE_TOKEN_FAILED_HYPOTHESIS:
+    if fixture_label == FIXTURE_LABEL_FAILED_HYPOTHESIS:
         return OfflineEvaluationOutcome.REJECTED_INSUFFICIENT_EVIDENCE.value
     if research_purpose == RepresentationResearchPurpose.NO_ACTION_FAIL_CLOSED.value:
         return OfflineEvaluationOutcome.FAIL_CLOSED_NO_EVALUATION.value
-    if fixture_token.endswith("_UNSTABLE_OOS"):
+    if fixture_label.endswith("_UNSTABLE_OOS"):
         return OfflineEvaluationOutcome.REJECTED_UNSTABLE_OOS.value
-    if fixture_token.endswith("_UNSUPPORTED_FAMILY"):
+    if fixture_label.endswith("_UNSUPPORTED_FAMILY"):
         return OfflineEvaluationOutcome.REJECTED_UNSUPPORTED_FAMILY.value
     return OfflineEvaluationOutcome.RESEARCH_EVIDENCE_SUPPORTED.value
 
@@ -79,7 +79,7 @@ def run_learning_representation_offline_evaluation_v1(
     if plan.get("schema_version") != PLAN_SCHEMA:
         raise LearningRepresentationOfflineEvaluationError("PLAN_SCHEMA_MISMATCH")
 
-    fixture_token = str(plan.get("evaluation_fixture_token") or "")
+    fixture_label = str(plan.get("evaluation_fixture_label") or "")
     purpose = str(plan.get("research_purpose") or "")
     plan_identity = str(plan.get("plan_identity") or "")
 
@@ -87,14 +87,14 @@ def run_learning_representation_offline_evaluation_v1(
         outcome = OfflineEvaluationOutcome.FAIL_CLOSED_NO_EVALUATION.value
         eval_status = "EVALUATION_SKIPPED_PLAN_FAIL_CLOSED"
     else:
-        outcome = _outcome_for_fixture(fixture_token=fixture_token, research_purpose=purpose)
+        outcome = _outcome_for_fixture(fixture_label=fixture_label, research_purpose=purpose)
         eval_status = "EVALUATION_COMPLETE"
 
     identity_body = {
         "schema_version": SCHEMA_VERSION,
         "domain": EVALUATION_DOMAIN,
         "plan_identity": plan_identity,
-        "evaluation_fixture_token": fixture_token,
+        "evaluation_fixture_label": fixture_label,
         "research_purpose": purpose,
         "evaluation_outcome": outcome,
         "evaluation_status": eval_status,

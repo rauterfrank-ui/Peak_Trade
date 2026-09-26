@@ -8,8 +8,8 @@ from src.experiments.canonical_learning_representation_offline_evaluation_v1 imp
     run_learning_representation_offline_evaluation_v1,
 )
 from src.experiments.canonical_learning_representation_research_adaptation_plan_v1 import (
-    FIXTURE_TOKEN_COVERAGE_WEAKNESS,
-    FIXTURE_TOKEN_REDUNDANCY,
+    FIXTURE_LABEL_COVERAGE_WEAKNESS,
+    FIXTURE_LABEL_REDUNDANCY,
     LearningRepresentationResearchAdaptationPlanRequestV1,
     build_learning_representation_research_adaptation_plan_v1,
 )
@@ -54,7 +54,7 @@ def test_supported_fixture_outcome() -> None:
 def test_rejection_typed_evidence_redundancy() -> None:
     evaluation = run_learning_representation_offline_evaluation_v1(
         LearningRepresentationOfflineEvaluationRequestV1(
-            research_plan=_plan(FIXTURE_TOKEN_REDUNDANCY)
+            research_plan=_plan(FIXTURE_LABEL_REDUNDANCY)
         )
     )
     assert evaluation["evaluation_outcome"] == OfflineEvaluationOutcome.REJECTED_REDUNDANCY.value
@@ -64,7 +64,7 @@ def test_rejection_typed_evidence_redundancy() -> None:
 def test_rejection_coverage_failure() -> None:
     evaluation = run_learning_representation_offline_evaluation_v1(
         LearningRepresentationOfflineEvaluationRequestV1(
-            research_plan=_plan(FIXTURE_TOKEN_COVERAGE_WEAKNESS)
+            research_plan=_plan(FIXTURE_LABEL_COVERAGE_WEAKNESS)
         )
     )
     assert (
