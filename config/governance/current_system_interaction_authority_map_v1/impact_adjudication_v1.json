@@ -4,6 +4,8 @@
   "base_sha": "150ddb069e75263e995bafd4e2edbead9a0d563a",
   "changed_paths": [
     "config/config.toml",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
@@ -35,7 +37,7 @@
     "src/ops/okx_eea_private_account_state_runtime_v1/ws_transport_v1.py",
     "tests/ops/test_okx_eea_private_account_state_runtime_v1.py"
   ],
-  "changed_paths_sha256": "17b4aba1642f7d7b220f5dcae1264d7175e144f9c24f6f768bb5e8d87a3643ab",
+  "changed_paths_sha256": "3e1d6cfd0f7c80a7fb39fd406dc50fd62223fecf5f63bf720984d7d8deb21637",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json",
@@ -48,7 +50,6 @@
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/structural.yaml",
     "src/ops/okx_eea_private_account_state_runtime_v1/__init__.py",
     "src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py",
     "src/ops/okx_eea_private_account_state_runtime_v1/consumer_adapters_v1.py",
