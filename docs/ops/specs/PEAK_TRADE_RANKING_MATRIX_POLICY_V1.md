@@ -198,6 +198,10 @@ WWW_OKX_PRODUCTIVE_INPUT2_AUTHORITY=NONE
 
 ## 12. Subordinate architecture contracts
 
+Ranking feature contract (B04 typed DTO seam, no runtime activation) is in
+`docs&#47;ops&#47;specs&#47;PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md` /
+`src&#47;ops&#47;peak_trade_ranking_feature_contract_v1.py`.
+
 Dual-input architecture remains in
 `docs&#47;ops&#47;specs&#47;CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md`.
 Offline MVR challenger evidence remains in

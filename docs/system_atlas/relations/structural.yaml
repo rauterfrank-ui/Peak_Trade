@@ -141,6 +141,20 @@ relations:
       (semantics only). Not a runtime CONSUMES edge. Runtime remains
       structural until B06. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_cap22_governed_by_peak_trade_ranking_feature_contract_v1
+    source: CAPABILITY:cap_2_2_ranking
+    type: GOVERNED_BY
+    target: CONTRACT:peak_trade_ranking_feature_contract_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_ranking_feature_contract_v1.py
+    notes: >
+      B04 contract/DTO seam for B03-ratified ranking features. Schema and
+      validation only; no B05/B06 runtime wiring. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_cap22_governed_by_offline_policy_candidates_and_evidence
     source: CAPABILITY:cap_2_2_ranking
     type: GOVERNED_BY

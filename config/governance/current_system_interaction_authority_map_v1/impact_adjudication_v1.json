@@ -1,15 +1,14 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "9911495cb95776be55d32f2628cbd1c8dd702b59",
+  "base_sha": "9117b02e6c1ba93732c3efa17d1bba47f77294ae",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/peak_trade_ranking_feature_contract_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md",
-    "docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md",
-    "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
+    "docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md",
     "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -18,24 +17,23 @@
     "docs/system_atlas/generated/FULL_DEPENDENCY_GRAPH.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/guidance/capability_dependency_closures.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/ops/cap22_economic_md_dual_input_contract_v1.py",
     "src/ops/cap22_offline_policy_candidates_and_evidence_contract_v1.py",
+    "src/ops/peak_trade_ranking_feature_contract_v1.py",
     "src/ops/peak_trade_ranking_matrix_policy_v1.py",
-    "tests/ops/test_cap22_offline_mvr_evidence_harness_v1.py",
+    "tests/ops/test_peak_trade_ranking_feature_contract_v1.py",
     "tests/ops/test_peak_trade_ranking_matrix_policy_v1.py"
   ],
-  "changed_paths_sha256": "94f121345302b1b1acd235e61b738d3ea29f5dcc3a6b09324be713ce153211c4",
+  "changed_paths_sha256": "9c85c2474fcc91ec9d48ecb8a9ee9cd7db2068da9f8ec63e4803758a66c68f5b",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md",
-    "src/ops/peak_trade_ranking_matrix_policy_v1.py",
+    "docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md",
+    "src/ops/peak_trade_ranking_feature_contract_v1.py",
     "docs/system_atlas/provenance/impact_state.yaml",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "B03 governance persist PR #6833: PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics only; map and Atlas navigation/truth-sync updated; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; AUTHORITY_EFFECT=NONE."
+  "reason": "B04 ranking feature contract PR: PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1 typed DTO seam for B03 policy; map and Atlas navigation/truth-sync updated; B04_IMPLEMENTED=true; PRODUCTIVE_ECONOMIC_RANK_ACTIVATION=false; ECONOMIC_RANK_ACTIVATED=false; AUTHORITY_EFFECT=NONE."
 }
