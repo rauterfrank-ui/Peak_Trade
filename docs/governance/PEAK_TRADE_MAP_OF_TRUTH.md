@@ -101,6 +101,11 @@ in the Master Runbook and the named packages.
 | Venue-plan tdMode and order-environment authority (navigation only) | `src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |
 | Single Selected Future binding | `src/ops/single_selected_future_runtime_binding_v1/` |
+| Peak_Trade Future Profile Snapshot (B07) | `src/ops/future_profile_snapshot_v1/` |
+| Peak_Trade research/backtest/live parity proof (B09) | `src/ops/peak_trade_research_backtest_live_parity_v1/` / `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json` |
+| Peak_Trade robustness and stress proof (B10) | `src/ops/peak_trade_robustness_and_stress_v1/` / `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json` |
+| Peak_Trade operator profile and explainability view (B11) | `src/ops/peak_trade_operator_profile_explainability_v1/` / `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json` |
+| Peak_Trade canonical truth sync and closure record (B12) | `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json` |
 | Elementary C1 mark direction identity | `src/trading/market_state/elementary_direction_v1.py` |
 | Governed universe | `src/ops/governed_futures_universe_producer_v1/` |
 | Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |

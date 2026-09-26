@@ -30,7 +30,9 @@ flowchart LR
   mv2_double_play -->|mv2_executable_pre_external_terminal| execution_external_effect
   mv2_double_play -->|mv2_to_sizing| capital_risk_sizing
   mv2_double_play -->|mv2_valid_no_trade_terminal| execution_external_effect
+  operator_profile_explainability_b11 -->|operator_profile_b11_to_closure_b12| ranking_selection_profile_closure_b12
   optimization_universe -->|optimization_to_governance| governance_promotion
+  cap22_research_backtest_live_parity_b09 -->|parity_b09_to_closure_b12| ranking_selection_profile_closure_b12
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
@@ -39,6 +41,7 @@ flowchart LR
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
+  cap22_robustness_and_stress_b10 -->|robustness_b10_to_closure_b12| ranking_selection_profile_closure_b12
   safety -->|safety_signals_into_integrated_replay| mv2_double_play
   selection_cap23 -->|selection_cap23_to_operator_profile_b11| operator_profile_explainability_b11
   selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
@@ -481,6 +484,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `evidence/ops/full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1/20260916T010000Z/SUMMARY.json`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1.md`
 
+## operator_profile_b11_to_closure_b12
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=B11 operator profile and explainability summary evidence
+- producer=operator_profile_explainability_b11
+- consumer=ranking_selection_profile_closure_b12
+- authority_effect=NONE
+- decision_effect=EVIDENCE_STATUS_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=B11_OPERATOR_PROFILE_SUMMARY
+- temporal_binding=EVIDENCE_TIMESTAMP_ONLY
+- version_binding=peak_trade_operator_profile_explainability.v1
+- provenance_binding=docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`
+
 ## optimization_to_governance
 
 - lifecycle=PROVEN_CURRENT
@@ -498,6 +519,24 @@ flowchart LR
 - promotion_required=TRUE
 - fail_closed=TRUE
 - evidence=`src/governance/optimization_proposal_governance_ingress_v1.py`
+
+## parity_b09_to_closure_b12
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=B09 parity summary evidence
+- producer=cap22_research_backtest_live_parity_b09
+- consumer=ranking_selection_profile_closure_b12
+- authority_effect=NONE
+- decision_effect=EVIDENCE_STATUS_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=B09_PARITY_SUMMARY
+- temporal_binding=EVIDENCE_TIMESTAMP_ONLY
+- version_binding=peak_trade_research_backtest_live_parity.v1
+- provenance_binding=docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`
 
 ## portfolio_to_enter
 
@@ -642,6 +681,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=UNKNOWN
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`
+
+## robustness_b10_to_closure_b12
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=B10 robustness and stress summary evidence
+- producer=cap22_robustness_and_stress_b10
+- consumer=ranking_selection_profile_closure_b12
+- authority_effect=NONE
+- decision_effect=EVIDENCE_STATUS_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=B10_ROBUSTNESS_SUMMARY
+- temporal_binding=EVIDENCE_TIMESTAMP_ONLY
+- version_binding=peak_trade_b10_robustness_and_stress.v1
+- provenance_binding=docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`
 
 ## safety_signals_into_integrated_replay
 
