@@ -1,0 +1,49 @@
+{
+  "schema_version": "normative_non_price_cmc_contract_owner_decision_v1",
+  "decision_id": "NORMATIVE_NON_PRICE_CMC_CONTRACT_OWNER_DECISION",
+  "decision_status": "RATIFIED",
+  "authorized_baseline_sha": "b9237c675f415f1c0b050b194d8f14ea26c4eebc",
+  "authority_effect": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "owner_go_token": "OWNER_GO_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_CLOSURE",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md",
+  "contract_owner_module": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+  "contract_id": "normative_non_price_market_context_v1",
+  "owner_decision_points": {
+    "market_context_v1_mi_learning_compositional": true,
+    "no_trading_selection_promotion_risk_sizing_external_authority": true,
+    "canonical_market_facts_remain_ssot": true,
+    "non_price_from_governed_fact_surfaces_only": true,
+    "explicit_missing_no_silent_fill": true,
+    "identity_provenance_quality_feature_version_required": true,
+    "point_in_time_normative_no_lookahead": true,
+    "n_bars_backbone_unchanged": true,
+    "cross_market_context_only": true,
+    "microstructure_reuse_first_proxy_l2_distinct": true,
+    "unknown_mixed_ownership_fail_closed": true,
+    "ws_transport_unchanged": true,
+    "mv2_double_play_sole_trading_decision_authority": true,
+    "live_wire_external_gates_unchanged_fail_closed": true
+  },
+  "target_record_shape_fields": [
+    "context_id",
+    "observed_at",
+    "instrument_ref",
+    "information_set_ref",
+    "price_state_ref",
+    "flow_state_ref",
+    "liquidity_microstructure_state_ref",
+    "derivatives_state_ref",
+    "volatility_state_ref",
+    "cross_market_state_ref",
+    "quality_state_ref",
+    "provenance_refs",
+    "feature_versions"
+  ],
+  "evidence_refs": [
+    "config/governance/normative_non_price_cmc_contract_owner_decision_v1.json",
+    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_v1.py",
+    "tests/learning/test_market_context_v1.py",
+    "tests/governance/test_unified_blueprint_phase_17_normative_non_price_cmc_contract_v1.py"
+  ]
+}
