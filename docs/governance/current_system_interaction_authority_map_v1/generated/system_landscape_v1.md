@@ -7,6 +7,7 @@ AUTHORITY=NONE
 ```mermaid
 flowchart LR
   accounting_runtime_binding["accounting_runtime_binding UNKNOWN"]
+  bounded_runtime_primary_evidence["bounded_runtime_primary_evidence PROVEN_CURRENT"]
   bull_bear_sidestate["bull_bear_sidestate PROVEN_CURRENT"]
   c1_confirmation["c1_confirmation PROVEN_CURRENT"]
   cap22_research_backtest_live_parity_b09["cap22_research_backtest_live_parity_b09 PROVEN_CURRENT"]
@@ -20,6 +21,7 @@ flowchart LR
   full_core_fresh_pretrade_runtime_get["full_core_fresh_pretrade_runtime_get PROVEN_CURRENT"]
   future_profile_snapshot_b07["future_profile_snapshot_b07 PROVEN_CURRENT"]
   g17_typed_vol_cmc_bind["g17_typed_vol_cmc_bind PROVEN_CURRENT"]
+  g2_runtime_primary_offline_projection["g2_runtime_primary_offline_projection PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
   governed_cycle["governed_cycle PROVEN_CURRENT"]
   host_join_send_adapter["host_join_send_adapter PROVEN_CURRENT"]
@@ -65,6 +67,8 @@ flowchart LR
   full_autonomy_n5 --> portfolio_reservation
   future_profile_snapshot_b07 --> operator_profile_explainability_b11
   g17_typed_vol_cmc_bind --> mv2_double_play
+  bounded_runtime_primary_evidence --> g2_runtime_primary_offline_projection
+  g2_runtime_primary_offline_projection --> optimization_universe
   governed_cycle --> mv2_double_play
   governed_cycle --> venue_plan_td_mode
   mv2_double_play --> order_intent
@@ -114,6 +118,7 @@ flowchart LR
 | id | tier | status | authority_class | owner | evidence |
 | --- | --- | --- | --- | --- | --- |
 | accounting_runtime_binding | INTERMEDIATE | UNKNOWN | UNKNOWN | UNKNOWN | `src/ops/productive_futures_accounting_runtime_binding_v1/constants_v1.py` |
+| bounded_runtime_primary_evidence | INTERMEDIATE | PROVEN_CURRENT | NONE | scripts.ops.primary_evidence_retention_v0 | `scripts/ops/primary_evidence_retention_v0.py`, `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` |
 | bull_bear_sidestate | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | trading.master_v2.double_play_state | `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py`, `src/trading/master_v2/double_play_state.py` |
 | c1_confirmation | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.stateful_confirmation_and_c1_productive_binding_v1 | `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | cap22_research_backtest_live_parity_b09 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_research_backtest_live_parity_v1 | `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`, `src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py` |
@@ -127,6 +132,7 @@ flowchart LR
 | full_core_fresh_pretrade_runtime_get | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 | `tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py`, `src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py` |
 | future_profile_snapshot_b07 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.future_profile_snapshot_v1 | `tests/ops/test_future_profile_snapshot_v1.py`, `src/ops/future_profile_snapshot_v1/producer_v1.py` |
 | g17_typed_vol_cmc_bind | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md` |
+| g2_runtime_primary_offline_projection | INTERMEDIATE | PROVEN_CURRENT | NONE | governed_runtime_primary_to_offline_observation_projection_v1 | `docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`, `config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json` |
 | governance_promotion | INTERMEDIATE | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/governed_productive_configuration_apply_authority_v1.py`, `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | governed_cycle | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | governed_continuous_cycle_orchestrator_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | host_join_send_adapter | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | n1_host_join_readiness_v1 | `src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py` |

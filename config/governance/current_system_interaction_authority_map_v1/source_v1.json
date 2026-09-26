@@ -625,6 +625,54 @@
       ]
     },
     {
+      "id": "bounded_runtime_primary_evidence",
+      "tier": "INTERMEDIATE",
+      "role": "Durable Paper/Shadow/Testnet primary evidence retention and validation (Preflight §2a.1). Does not authorize runtime, promotion, or apply.",
+      "canonical_owner_ref": "scripts.ops.primary_evidence_retention_v0",
+      "authority_class": "NONE",
+      "lifecycle": "EVIDENCE_RETENTION_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "scripts/ops/primary_evidence_retention_v0.py"
+      ],
+      "evidence_refs": [
+        "scripts/ops/primary_evidence_retention_v0.py",
+        "tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+      ]
+    },
+    {
+      "id": "g2_runtime_primary_offline_projection",
+      "tier": "INTERMEDIATE",
+      "role": "G2 governed projection: preexisting durable primary evidence → identity-bound offline observations + runtime_to_learning_input_v1 ingress only. Authority=NONE; no apply or external effect.",
+      "canonical_owner_ref": "governed_runtime_primary_to_offline_observation_projection_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PROJECTION_BOUNDARY_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
+        "src/meta/learning_loop/runtime_observation_feedback_v1.py",
+        "src/experiments/canonical_identity_bound_offline_observation_binding_v1.py"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json"
+      ]
+    },
+    {
       "id": "learning_ddo",
       "tier": "FIRST_CLASS",
       "role": "Observation-only capture. Trading authority is none. Host durability is unproven.",
@@ -1884,6 +1932,54 @@
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+      ]
+    },
+    {
+      "id": "g2_primary_evidence_to_offline_projection",
+      "from_domain": "bounded_runtime_primary_evidence",
+      "to_domain": "g2_runtime_primary_offline_projection",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out",
+      "producer": "validate_durable_primary_evidence_root",
+      "consumer": "run_governed_runtime_primary_to_offline_observation_projection_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_EVIDENCE_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "PRIMARY_MANIFEST_DIGEST_AND_RUN_ID",
+      "temporal_binding": "OBSERVATION_TIME_FROM_SOURCE",
+      "version_binding": "governed_runtime_primary_to_offline_observation_projection_v1",
+      "provenance_binding": "PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
+        "scripts/ops/primary_evidence_retention_v0.py"
+      ]
+    },
+    {
+      "id": "g2_projection_to_runtime_learning_ingress",
+      "from_domain": "g2_runtime_primary_offline_projection",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "runtime_to_learning_input_v1 (LEARNING_INPUT_VALID); M4–M8 continuation fixture-bounded via existing DDO export path",
+      "producer": "build_runtime_to_learning_input_v1",
+      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PARTIAL",
+      "identity_binding": "PROJECTION_RECORD_DIGEST_CHAIN",
+      "temporal_binding": "FIXTURE_BOUNDED_FOR_M4_M8",
+      "version_binding": "runtime_to_learning_input_v1",
+      "provenance_binding": "G2_END_TO_END_STATUS=PROVEN_FIXTURE_BOUNDED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/meta/learning_loop/runtime_observation_feedback_v1.py",
+        "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
+        "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
       ]
     },
     {
@@ -3285,6 +3381,16 @@
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
         "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md"
+      ]
+    },
+    {
+      "id": "g2_runtime_primary_offline_observation_projection_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1 only; M4–M8 proven fixture-bounded; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
+        "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py"
       ]
     }
   ]
