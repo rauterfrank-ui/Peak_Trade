@@ -8,7 +8,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
-EXPECTED_MAIN_SHA = "070f8940b1ec027f903e9f55a5718dfee8cd35ab"
+EXPECTED_MAIN_SHA = "eb4ec2062443e85541fa3732f4b42e86d9eeada3"
 
 
 def _load_source() -> dict:

@@ -40,15 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1` |
 | `RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1` |
-| `RUNTIME_COMPONENT:governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_p4_l6_seam_to_runtime_apply_materialization_real_continuation_v1` |
-| `REL:s_map_navigates_governed_p4_l6_runtime_apply_materialization_continuation_v1` |
+| `REL:s_f1_m9_scoped_owner_apply_execution_real_continuation_v1` |
+| `REL:s_map_navigates_governed_f1_m9_scoped_owner_apply_execution_continuation_v1` |
 
 ## NEW_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Real P4 L6 SEAM_BOUND continues through governed runtime apply materialization to typed materialization record; CONFIGURATION_MATERIALIZED != CONFIGURATION_APPLIED; no productive activation.
+- F1/M9 scoped Owner Apply execution proof after Real-P4 materialization boundary; Real-P4↔F1/M9 join not canonical; EXECUTION_PROOF only; STOP before Productive Activation.
 - introduced_by=GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1
-- modified_by=GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1
+- modified_by=GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

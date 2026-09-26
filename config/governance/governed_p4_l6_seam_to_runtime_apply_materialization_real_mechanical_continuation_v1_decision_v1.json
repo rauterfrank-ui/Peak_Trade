@@ -18,7 +18,7 @@
   "external_effect": false,
   "real_upstream_source_used": true,
   "ddo_fixture_state_used_on_real_path": false,
-  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION_AND_COMPONENT_B_AND_F1_M9_SCOPED_OWNER_APPLY_EXECUTION",
-  "next_genuine_blocker": "F1_M9_SCOPED_OWNER_APPLY_EXECUTION_OR_PRODUCTIVE_CONFIGURATION_RUNTIME_APPLIED",
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION_AND_THRESHOLD_HOT_PATH_VALUE_RATIFICATION",
+  "next_genuine_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OR_PRODUCTIVE_ACTIVATION",
   "normative_spec": "docs/ops/specs/GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1.md"
 }

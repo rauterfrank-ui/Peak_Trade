@@ -1,0 +1,19 @@
+{
+  "artifact_class": "GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_WP_OWNER_DECISION_V1",
+  "workpackage_id": "GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1",
+  "authorized_baseline_sha": "eb4ec2062443e85541fa3732f4b42e86d9eeada3",
+  "owner_decision": "AUTHORIZE_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_FROM_MATERIALIZATION_BOUNDARY",
+  "f1_m9_scoped_owner_apply_execution_authorized": true,
+  "real_p4_to_f1_m9_join_established": false,
+  "productive_activation_authorized": false,
+  "component_b_activated": false,
+  "external_effect_authorized": false,
+  "a_runtime_implementation_authorized_unchanged": false,
+  "b_runtime_implementation_authorized_unchanged": false,
+  "threshold_hot_path_value_ratification_required": true,
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md",
+  "continuation_module": "src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+  "join_module": "src/governance/real_p4_to_f1_m9_apply_lineage_join_v1.py",
+  "apply_adjudicator_module": "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+  "execution_boundary_module": "src/governance/f1_m9_productive_apply_execution_boundary_v1.py"
+}

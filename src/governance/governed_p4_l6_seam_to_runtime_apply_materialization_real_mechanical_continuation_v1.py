@@ -90,6 +90,7 @@ class RealP4RuntimeApplyMaterializationContinuationResultV1:
     p3_binding_result_digest: str | None
     materialization_decision_state: str | None
     materialization_record_digest: str | None
+    materialization_record: dict[str, Any] | None = None
     lineage_chain: tuple[str, ...] = field(default_factory=tuple)
     real_upstream_source_used: bool = False
     ddo_fixture_state_used: bool = False
@@ -245,6 +246,11 @@ def run_real_runtime_p4_l6_to_runtime_apply_materialization_continuation_v1(
         p3_binding_result_digest=p3_digest,
         materialization_decision_state=mat.decision_state.value,
         materialization_record_digest=record_digest,
+        materialization_record=(
+            dict(mat.materialization_record.materialization_record)
+            if mat.materialization_record
+            else None
+        ),
         lineage_chain=extended,
         real_upstream_source_used=True,
         ddo_fixture_state_used=False,

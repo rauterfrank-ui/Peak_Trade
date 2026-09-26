@@ -17,6 +17,7 @@ flowchart LR
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
+  f1_m9_scoped_owner_apply_execution["f1_m9_scoped_owner_apply_execution PARTIAL"]
   full_autonomy_n5["full_autonomy_n5 PROVEN_CURRENT"]
   full_core_fresh_pretrade_runtime_get["full_core_fresh_pretrade_runtime_get PROVEN_CURRENT"]
   future_profile_snapshot_b07["future_profile_snapshot_b07 PROVEN_CURRENT"]
@@ -76,6 +77,7 @@ flowchart LR
   bounded_runtime_primary_evidence --> g2_runtime_primary_offline_projection
   g2_runtime_primary_offline_projection --> g2_runtime_learning_optimization_input_binding
   g2_runtime_learning_optimization_input_binding --> optimization_universe
+  governance_promotion --> f1_m9_scoped_owner_apply_execution
   governed_cycle --> mv2_double_play
   governed_cycle --> venue_plan_td_mode
   mv2_double_play --> order_intent
@@ -104,6 +106,7 @@ flowchart LR
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
   ranking_cap22 --> selection_cap23
   ranking_cap22 --> operator_profile_explainability_b11
+  governed_runtime_apply_materialization --> f1_m9_scoped_owner_apply_execution
   p5_layered_core --> p3_input_creator_binder
   g2_runtime_primary_offline_projection --> optimization_universe
   g2_runtime_primary_offline_projection --> p4_l6_productive_seam
@@ -145,6 +148,7 @@ flowchart LR
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| f1_m9_scoped_owner_apply_execution | INTERMEDIATE | PARTIAL | NONE | f1_m9_scoped_owner_apply_authority_v1 | `src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`, `tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py`, `config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json` |
 | full_autonomy_n5 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1 | `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | full_core_fresh_pretrade_runtime_get | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 | `tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py`, `src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py` |
 | future_profile_snapshot_b07 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.future_profile_snapshot_v1 | `tests/ops/test_future_profile_snapshot_v1.py`, `src/ops/future_profile_snapshot_v1/producer_v1.py` |

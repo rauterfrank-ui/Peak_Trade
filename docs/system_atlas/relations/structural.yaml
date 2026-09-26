@@ -2334,6 +2334,30 @@ relations:
     notes: >
       Navigation only. Runtime apply materialization from P4 L6 seam; AUTHORITY=NONE.
 
+  - id: REL:s_f1_m9_scoped_owner_apply_execution_real_continuation_v1
+    source: RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
+    type: DEPENDS_ON
+    target: RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
+    epistemic_status: FORENSIC_RAW
+    evidence_sources:
+      - src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py
+      - tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py
+    notes: >
+      Real P4 boundary then F1/M9 per-ingress apply proof; separate planes; no merge.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_map_navigates_governed_f1_m9_scoped_owner_apply_execution_continuation_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md
+      - config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json
+    notes: >
+      Navigation only. F1/M9 scoped Owner Apply execution; AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_governed_productive_configuration_apply_authority_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO
