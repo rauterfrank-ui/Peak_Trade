@@ -474,6 +474,7 @@ class ExistingFactMaterializationRequestV1:
     ohlcv_facts: Sequence[GovernedCanonicalFactV1] | None = None
     volatility_mark_facts: Sequence[GovernedCanonicalFactV1] | None = None
     information_set_identity_body: Mapping[str, Any] | None = None
+    phase_19: Any | None = None
 
 
 def collect_fact_digests_from_request_v1(
@@ -489,6 +490,29 @@ def collect_fact_digests_from_request_v1(
     for seq in (request.trade_facts, request.ohlcv_facts, request.volatility_mark_facts):
         if seq:
             digests.extend(f.fact_digest for f in seq)
+    phase_19 = request.phase_19
+    if phase_19 is not None:
+        from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_phase_19_orthogonal_materialization_v1 import (
+            Phase19OrthogonalMaterializationInputsV1,
+        )
+
+        if not isinstance(phase_19, Phase19OrthogonalMaterializationInputsV1):
+            raise ExistingFactMaterializationError("PHASE_19_INPUTS_INVALID")
+        for part in (
+            phase_19.derivatives_mark_fact,
+            phase_19.derivatives_index_fact,
+            phase_19.derivatives_last_fact,
+            phase_19.funding_rate_fact,
+        ):
+            if part is not None:
+                digests.append(part.fact_digest)
+        if phase_19.open_interest_facts:
+            digests.extend(f.fact_digest for f in phase_19.open_interest_facts)
+        if phase_19.cross_market_selected_marks:
+            digests.extend(f.fact_digest for f in phase_19.cross_market_selected_marks)
+        if phase_19.cross_market_anchor_marks_by_ref:
+            for seq in phase_19.cross_market_anchor_marks_by_ref.values():
+                digests.extend(f.fact_digest for f in seq)
     return tuple(sorted(set(digests)))
 
 
@@ -519,6 +543,27 @@ def materialize_market_context_v1_from_existing_facts_v1(
         observed_at=observed_at,
     )
 
+    derivatives_slot = None
+    cross_market_slot = None
+    if request.phase_19 is not None:
+        from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_phase_19_orthogonal_materialization_v1 import (
+            CROSS_MARKET_FEATURE_VERSION,
+            DERIVATIVES_FEATURE_VERSION,
+            PHASE_19_SCHEMA,
+            derive_cross_market_state_slot_v1,
+            derive_derivatives_state_slot_v1,
+        )
+
+        derivatives_slot = derive_derivatives_state_slot_v1(
+            inputs=request.phase_19,
+            observed_at=observed_at,
+        )
+        cross_market_slot = derive_cross_market_state_slot_v1(
+            inputs=request.phase_19,
+            observed_at=observed_at,
+            instrument_ref=instrument_ref,
+        )
+
     fact_digests = collect_fact_digests_from_request_v1(request)
     info_body = request.information_set_identity_body
     if info_body is None:
@@ -536,6 +581,21 @@ def materialize_market_context_v1_from_existing_facts_v1(
         "liquidity_microstructure": MICROSTRUCTURE_FEATURE_VERSION,
         "volatility_state": VOLATILITY_FEATURE_VERSION,
     }
+    if request.phase_19 is not None:
+        from src.learning.market_intelligence_forecast_calibration_offline_stack_v1.market_context_phase_19_orthogonal_materialization_v1 import (
+            CROSS_MARKET_FEATURE_VERSION,
+            DERIVATIVES_FEATURE_VERSION,
+            PHASE_19_SCHEMA,
+        )
+
+        feature_versions["market_context_phase_19_orthogonal_materialization_v1"] = PHASE_19_SCHEMA
+        feature_versions["derivatives_state"] = DERIVATIVES_FEATURE_VERSION
+        feature_versions["cross_market_state"] = CROSS_MARKET_FEATURE_VERSION
+        if isinstance(info_body, dict):
+            info_body = {
+                **info_body,
+                "phase_19_orthogonal_schema": PHASE_19_SCHEMA,
+            }
 
     inputs = GovernedMarketContextInputsV1(
         observed_at=observed_at,
@@ -549,8 +609,8 @@ def materialize_market_context_v1_from_existing_facts_v1(
         flow_state=flow_slot,
         liquidity_microstructure_state=micro_slot,
         volatility_state=vol_slot,
-        derivatives_state=None,
-        cross_market_state=None,
+        derivatives_state=derivatives_slot,
+        cross_market_state=cross_market_slot,
         quality_state=None,
     )
     return compose_market_context_v1_from_governed_inputs(inputs)

@@ -1215,6 +1215,10 @@ POST, or substitute trading decisions.
   (offline MI/Learning; canonical facts SSOT; no runtime apply):
   `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md`
   / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_existing_fact_materialization_v1.py`
+- Unified Blueprint Phase 19 orthogonal context (`DERIVATIVES_STATE` +
+  `CROSS_MARKET_STATE`; context-only; no WS redesign):
+  `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md`
+  / `src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py`
 
 ```text
 RESEARCH_OR_CANDIDATE_SIGNAL != RUNTIME_AUTHORITY
