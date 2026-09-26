@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
+  "baseline_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1549,21 +1549,23 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "market_intelligence_optimization_research_input_v1 offline ACK; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE; legacy learning export unchanged",
+      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
       "authority_effect": "NONE",
       "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
       "direct_or_indirect": "INDIRECT",
       "lifecycle": "PROVEN_CURRENT",
-      "identity_binding": "MI_RESEARCH_EVIDENCE_ADDITIVE_PROJECTION",
-      "temporal_binding": "OFFLINE_ORCHESTRATOR_CYCLE",
-      "version_binding": "MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1",
-      "provenance_binding": "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+      "identity_binding": "MI_LINEAGE_REFS_IN_PLANE_CHAIN_AND_OPTIMIZATION_EXPERIMENT_EVIDENCE",
+      "temporal_binding": "OFFLINE_ORCHESTRATOR_MI_ENRICHED_M4_CLOSURE",
+      "version_binding": "UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_V1",
+      "provenance_binding": "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
-        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "config/governance/unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.json",
+        "tests/learning/test_unified_blueprint_phase_9_mi_to_optimization_m4_integration_v1.py",
+        "src/experiments/canonical_optimization_universe_mi_enriched_m4_intake_v1.py",
         "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_optimization_research_input_v1.py"
       ]
     },
@@ -2972,7 +2974,7 @@
     {
       "id": "unified_blueprint_d02_inter_loop_matrix",
       "epistemic_class": "PARTIAL",
-      "statement": "Unified Blueprint D02 CURRENT adjudication (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). IMPLEMENTED: d02_mi_to_learning (Phase 8 typed export; UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1). PARTIAL: d02_mi_to_optimization (offline intake ACK, not M4 execution); d02_multi_cycle_replay_m8 (no MI-crossing replay); d02_loop_b_market_intelligence_offline (durable MI evidence store still partial). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory.",
+      "statement": "Unified Blueprint D02 CURRENT adjudication (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). IMPLEMENTED: d02_mi_to_learning (Phase 8; UNIFIED_BLUEPRINT_PHASE_8_MI_TO_LEARNING_INTEGRATION_V1); d02_mi_to_optimization (Phase 9 MI-enriched M4 intake; UNIFIED_BLUEPRINT_PHASE_9_MI_TO_OPTIMIZATION_M4_INTEGRATION_V1). PARTIAL: d02_multi_cycle_replay_m8 (no MI-crossing replay); d02_loop_b_market_intelligence_offline (durable MI evidence store still partial). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory.",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
