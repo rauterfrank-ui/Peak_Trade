@@ -47,6 +47,9 @@ _FORBIDDEN_AB_RUNTIME_MARKERS: Final[tuple[str, ...]] = (
 _P1_CONTRACT_PACKAGE_SUBPATH: Final[str] = (
     "master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1"
 )
+_P2_BOUNDED_A_RUNTIME_SUBPATH: Final[str] = (
+    "master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1"
+)
 
 _INTELLIGENCE_ROOTS: Final[tuple[str, ...]] = (
     "src/learning",
@@ -162,6 +165,8 @@ def _glob_ab_implementation(repo_root: Path) -> tuple[bool, tuple[str, ...]]:
     for py in (repo_root / "src").rglob("*.py"):
         rel = py.relative_to(repo_root).as_posix()
         if _P1_CONTRACT_PACKAGE_SUBPATH in rel:
+            continue
+        if _P2_BOUNDED_A_RUNTIME_SUBPATH in rel:
             continue
         if "p0_evidence_seam_census" in py.name:
             continue
@@ -621,7 +626,9 @@ def run_direct_external_to_dp_bypass_census_v1(
     return tuple(entries)
 
 
-def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def _build_p1_design_input(
+    layers: Sequence[Mapping[str, Any]], *, repo_root: Path
+) -> dict[str, Any]:
     eligible: list[str] = []
     closed: list[str] = []
     unknown: list[str] = []
@@ -645,6 +652,7 @@ def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any
         "MarketObservationInputV1 / ObservationCandidateV1 (L2; C1 bounded)",
     ]
     p1_contracts_present = _l6_external_evidence_admissibility_v1() == "PROVEN_BOUNDED_TYPED_ONLY"
+    p2_a_runtime = (repo_root / "src" / "governance" / _P2_BOUNDED_A_RUNTIME_SUBPATH).is_dir()
     return {
         "schema_version": "master_v2_double_play_evidence_input_plane_p1_design_input/v1",
         "proven_eligible_b_binding_candidates": sorted(set(eligible)),
@@ -672,13 +680,22 @@ def _build_p1_design_input(layers: Sequence[Mapping[str, Any]]) -> dict[str, Any
             "Bypass census complete for intelligence→layer direct calls",
         ],
         "remains_blocked": [
-            "Component A/B runtime implementation (P1 contract only)",
+            *(
+                ["Component B runtime implementation (P1 contract only)"]
+                if p2_a_runtime
+                else ["Component A/B runtime implementation (P1 contract only)"]
+            ),
+            *(
+                ["Productive Component A downstream binding (A_RUNTIME_REACHABLE=false)"]
+                if p2_a_runtime
+                else []
+            ),
             "Productive L6 typed-evidence binding (PRODUCTIVE_L6_BINDING_AUTHORIZED=false)",
             "L1 B-target without Cap 2.3/2.4 authority decision",
             "scope_event_generator vs transition_state conflict resolution (out of scope)",
             "FINAL_D_T_FORMULA_SELECTED=false",
         ],
-        "component_a_implemented": False,
+        "component_a_implemented": p2_a_runtime,
         "component_b_implemented": False,
         "p1_authority_contracts_materialized": p1_contracts_present,
     }
@@ -777,7 +794,7 @@ def run_master_v2_double_play_p0_evidence_seam_census_v1(
         ],
     }
 
-    p1 = _build_p1_design_input(layers)
+    p1 = _build_p1_design_input(layers, repo_root=root)
 
     return {
         "schema_version": SCHEMA_VERSION,

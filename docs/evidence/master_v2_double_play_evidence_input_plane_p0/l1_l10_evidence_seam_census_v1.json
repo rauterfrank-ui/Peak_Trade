@@ -620,7 +620,7 @@
     }
   ],
   "p1_design_input_block": {
-    "component_a_implemented": false,
+    "component_a_implemented": true,
     "component_b_implemented": false,
     "conflicting_layers": [
       "L7_SCOPE_STATE"
@@ -646,7 +646,8 @@
       "L6_DYNAMIC_SCOPE_GENERATOR"
     ],
     "remains_blocked": [
-      "Component A/B runtime implementation (P1 contract only)",
+      "Component B runtime implementation (P1 contract only)",
+      "Productive Component A downstream binding (A_RUNTIME_REACHABLE=false)",
       "Productive L6 typed-evidence binding (PRODUCTIVE_L6_BINDING_AUTHORIZED=false)",
       "L1 B-target without Cap 2.3/2.4 authority decision",
       "scope_event_generator vs transition_state conflict resolution (out of scope)",
