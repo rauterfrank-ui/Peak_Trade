@@ -34,9 +34,15 @@ relations:
     target: SELECTOR:productive_futures_ranking
     epistemic_status: ADJUDICATED
     evidence_sources:
+      - src/ops/single_selected_future_policy_v1/models_v1.py
+      - src/ops/single_selected_future_policy_v1/policy_v1.py
       - src/ops/single_selected_future_policy_v1/producer_v1.py
       - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
     notes: >-
+      B08: Cap 2.3 consumes the authoritative upstream Cap 2.2 ranked order
+      and applies anti-churn/selection overlay only. It does not rescore,
+      rerank, reconstruct economic features, use Future Profile fields for
+      selection, or fall back to venue-native ordering.
       Optional pin still selects from the same full Cap 2.2 snapshot.
       No second ranking, no cross-universe candidate pool.
       ATLAS_AUTHORITY=NONE.
@@ -189,6 +195,11 @@ relations:
     epistemic_status: ADJUDICATED
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+    notes: >-
+      B08: Cap 2.4 binds the selected identity emitted by Cap 2.3 and carries
+      ranking/selection provenance forward. It does not rank, rerank, reselect,
+      or reinterpret instrument choice. ATLAS_AUTHORITY=NONE.
 
   - id: REL:r_host72_consumes_binding
     source: HOST:cap72_stateful_host
@@ -347,6 +358,7 @@ relations:
     epistemic_status: FORENSIC_RAW
     evidence_sources:
       - src/ops/single_selected_future_policy_v1/selection_v1.py
+      - src/ops/single_selected_future_policy_v1/models_v1.py
       - src/learning/deterministic_decision_outcome_v0/capture_v0.py
     notes: >-
       Host decorator observe_after_producer_v0 seam selection.single_future.

@@ -34,10 +34,13 @@ closures:
     downstream:
       - CAPABILITY:cap_2_4_runtime_binding
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     notes: >-
-      Optional same-universe Cap23 pin is inspect-only in this closure.
-      B03 ranking policy persist does not grant Cap 2.3 selection authority.
-      No cross-universe ranking merge. ATLAS_AUTHORITY=NONE.
+      B08 proves Cap 2.3 consumes Cap 2.2 rank and remains the sole productive
+      selection owner without rescore/rerank. Optional same-universe Cap23 pin
+      is inspect-only in this closure. B03 ranking policy persist does not grant
+      Cap 2.3 selection authority. No cross-universe ranking merge.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding
     title: NATIVE_INSTRUMENT_BINDING
@@ -51,10 +54,12 @@ closures:
     downstream:
       - HOST:cap72_stateful_host
     evidence: docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
+    modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     notes: >-
-      Cap23 governed pin does not mutate Cap 2.4. Binding still consumes the
-      Cap 2.3 selection DTO. Same-universe pin is not a Cap24 rewrite.
-      ATLAS_AUTHORITY=NONE.
+      B08 preserves Cap 2.4 as the binding boundary for the Cap 2.3 selected
+      identity and provenance witness. Cap23 governed pin does not mutate
+      Cap 2.4. Binding still consumes the Cap 2.3 selection DTO.
+      Same-universe pin is not a Cap24 rewrite. ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:canary
     title: CANARY

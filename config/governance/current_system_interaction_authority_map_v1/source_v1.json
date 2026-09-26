@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "070f8940b1ec027f903e9f55a5718dfee8cd35ab",
+  "baseline_sha": "829aa1775ebd3196df197e286508b1aa0778ff16",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -29,11 +29,11 @@
     {
       "id": "ranking_cap22",
       "tier": "FIRST_CLASS",
-      "role": "Ranking producer. B03 policy, B04 feature contract, and B05 Cap-2.1 raw-feature production (no Cap-2.2 economic rank activation). Productive ranking runtime remains structural-only until B06. Top-20 is context only. Selection authority is false.",
+      "role": "Cap 2.2 ranking owner. B06 activated the ratified Peak_Trade economic ranking. Selection authority is false.",
       "canonical_owner_ref": "ops.productive_futures_ranking_producer_v1",
       "authority_class": "CANONICAL_AUTHORITY",
-      "lifecycle": "NOT_ACTIVATED",
-      "status": "PARTIAL",
+      "lifecycle": "PRODUCTIVE_RANKING_ACTIVE",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -44,12 +44,20 @@
       ],
       "code_refs": [
         "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/models_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/policy_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
         "src/ops/peak_trade_ranking_matrix_policy_v1.py",
         "src/ops/peak_trade_ranking_feature_contract_v1.py",
         "src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py"
       ],
       "evidence_refs": [
         "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/models_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/policy_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
         "src/ops/peak_trade_ranking_matrix_policy_v1.py",
         "src/ops/peak_trade_ranking_feature_contract_v1.py",
         "src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py",
@@ -62,7 +70,7 @@
     {
       "id": "selection_cap23",
       "tier": "FIRST_CLASS",
-      "role": "Sole productive selection owner for the single selected future. Max positions effective is 1.",
+      "role": "Sole productive selection owner for the single selected future. Consumes Cap 2.2 ranked order/provenance and applies anti-churn as selection overlay only: no rescore, no rerank, no second ranking semantics. Max positions effective is 1.",
       "canonical_owner_ref": "ops.single_selected_future_policy_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "SOLE_PRODUCTIVE_SELECTION",
@@ -73,11 +81,21 @@
       "contract_refs": [],
       "code_refs": [
         "src/ops/single_selected_future_policy_v1/constants_v1.py",
+        "src/ops/single_selected_future_policy_v1/models_v1.py",
+        "src/ops/single_selected_future_policy_v1/policy_v1.py",
+        "src/ops/single_selected_future_policy_v1/producer_v1.py",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
       ],
       "evidence_refs": [
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
-        "src/ops/single_selected_future_policy_v1/constants_v1.py"
+        "src/ops/single_selected_future_policy_v1/constants_v1.py",
+        "src/ops/single_selected_future_policy_v1/models_v1.py",
+        "src/ops/single_selected_future_policy_v1/policy_v1.py",
+        "src/ops/single_selected_future_policy_v1/producer_v1.py",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+        "tests/ops/test_single_selected_future_policy_v1.py",
+        "docs/evidence/capability_2_3_single_selected_future_policy_v1/SUMMARY.json"
       ]
     },
     {
@@ -105,7 +123,7 @@
     {
       "id": "runtime_binding_cap24",
       "tier": "FIRST_CLASS",
-      "role": "Validate-and-bind consumer of an existing selected identity. Not a second selection writer.",
+      "role": "Validate-and-bind consumer of the existing Cap 2.3 selected identity and provenance witness. Not a ranking, reranking, or second selection writer.",
       "canonical_owner_ref": "ops.single_selected_future_runtime_binding_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "BIND_ONLY",
@@ -115,10 +133,14 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py"
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
       ],
       "evidence_refs": [
         "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/models_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
       ]
     },
