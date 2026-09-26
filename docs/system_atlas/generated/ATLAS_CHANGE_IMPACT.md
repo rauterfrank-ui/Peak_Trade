@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1`.
 
 ## Workflow
 
@@ -40,14 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
+| `RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1` |
 | `NAVIGATION_INDEX:map_of_truth` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1` |
+| `REL:s_map_navigates_unified_blueprint_d01_d02_topology_adjudication_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Track D03 MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1 adds an offline ForecastEvidence/CalibrationEvidence composition stack adjacent to learning_ddo N_BARS references and optimization_universe research intake. FORECAST_IS_NOT_DECISION; no MV2/DP, Cap 2.3, execution, promotion, or productive DDO feedback mutation. Interaction map source adds D03 domain handoffs only; map_authority=NONE. ATLAS_AUTHORITY=NONE.
-- introduced_by=MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
-- modified_by=MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
+- Unified Blueprint Phase 4 D01 and Phase 5 D02 CURRENT-bound topology adjudication. Refreshes interaction map navigation census to origin/main @ 32171b35; adds D02 inter-loop matrix with NOT_IMPLEMENTED MI→Learning (Phase 8). AUTHORITY=NONE.
+- introduced_by=UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1
+- modified_by=UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

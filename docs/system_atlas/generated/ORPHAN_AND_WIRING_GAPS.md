@@ -193,6 +193,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:test_health_runner | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:test_health_runner | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:treasury_separation_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:treasury_separation_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:u05_p1_futures_bound_interest_accrued_usdc_scoped_get_acquisition_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:u05_p1_futures_bound_interest_accrued_usdc_scoped_get_acquisition_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:v32_current_mv2_dp_concept_alignment_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:v32_d26_platform_unified_native_vs_candidate_baseline_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:v32_d28_d29_optimization_productive_join_policy_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:v32_d28_d29_optimization_productive_join_policy_adjudication_v1 | STATUS=OPEN (not proven) |  |

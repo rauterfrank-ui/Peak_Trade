@@ -71,6 +71,7 @@ flowchart LR
   order_intent --> execution_external_effect
   k1_credential_seam --> governed_cycle
   mv2_double_play --> learning_ddo
+  learning_ddo --> optimization_universe
   meta_learning --> optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 --> learning_ddo
   market_intelligence_forecast_calibration_offline_stack_d03 --> optimization_universe

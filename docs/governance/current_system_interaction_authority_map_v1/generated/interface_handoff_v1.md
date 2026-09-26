@@ -26,6 +26,7 @@ flowchart LR
   order_intent -->|intent_to_execution| execution_external_effect
   k1_credential_seam -->|k1_bind_governed_cycle_occupancy| governed_cycle
   mv2_double_play -->|learning_capture| learning_ddo
+  learning_ddo -->|learning_evidence_export_to_optimization| optimization_universe
   meta_learning -->|meta_search_backflow| optimization_universe
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_compose_ddo_n_bars_outcome| learning_ddo
   market_intelligence_forecast_calibration_offline_stack_d03 -->|mi_offline_to_optimization_research_input| optimization_universe
@@ -421,6 +422,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+
+## learning_evidence_export_to_optimization
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 fail-closed ack; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false
+- producer=learning_evidence_export_v1
+- consumer=validate_canonical_optimization_universe_learning_input_v1
+- authority_effect=NONE
+- decision_effect=OFFLINE_RESEARCH_INPUT_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=LEARNING_EVIDENCE_RECORD_V1
+- temporal_binding=EXPORT_FROM_LEARNING_STATE
+- version_binding=META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1
+- provenance_binding=UNIFIED_BLUEPRINT_D02_d02_learning_to_optimization
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`
 
 ## meta_search_backflow
 

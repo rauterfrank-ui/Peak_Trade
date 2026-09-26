@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "b9d67077a006675992b462e16608d5ba9e7dfc9c",
+  "baseline_sha": "32171b35e631cab767dca4f5fcd99b8a837caf23",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1774,6 +1774,31 @@
       ]
     },
     {
+      "id": "learning_evidence_export_to_optimization",
+      "from_domain": "learning_ddo",
+      "to_domain": "optimization_universe",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 fail-closed ack; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false",
+      "producer": "learning_evidence_export_v1",
+      "consumer": "validate_canonical_optimization_universe_learning_input_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "OFFLINE_RESEARCH_INPUT_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "LEARNING_EVIDENCE_RECORD_V1",
+      "temporal_binding": "EXPORT_FROM_LEARNING_STATE",
+      "version_binding": "META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1",
+      "provenance_binding": "UNIFIED_BLUEPRINT_D02_d02_learning_to_optimization",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+        "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+        "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+        "tests/experiments/test_canonical_optimization_universe_v1.py"
+      ]
+    },
+    {
       "id": "step29m_consumes_selection",
       "from_domain": "selection_cap23",
       "to_domain": "step29m",
@@ -2243,7 +2268,8 @@
       ],
       "purpose": "Observation after producer results as research input. Boundary slice stops before search.",
       "forward_edges": [
-        "learning_capture"
+        "learning_capture",
+        "learning_evidence_export_to_optimization"
       ],
       "return_edges": [],
       "closure_status": "PARTIAL",
@@ -2252,7 +2278,9 @@
       "promotion_boundary": "NO_SELF_DEPLOY",
       "external_effect": "NONE",
       "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+        "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -2273,8 +2301,34 @@
       "promotion_boundary": "CANNOT_PROMOTE",
       "external_effect": "NONE",
       "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/experiments/canonical_meta_learning_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "src/experiments/canonical_meta_learning_ingest_v1.py",
+        "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md"
+      ]
+    },
+    {
+      "id": "loop_c_market_intelligence_offline",
+      "members": [
+        "market_intelligence_forecast_calibration_offline_stack_d03",
+        "learning_ddo",
+        "optimization_universe"
+      ],
+      "purpose": "Offline MI forecast/calibration compose and research intake. MI→Learning typed export NOT_IMPLEMENTED (Phase 8).",
+      "forward_edges": [
+        "mi_offline_compose_ddo_n_bars_outcome",
+        "mi_offline_to_optimization_research_input"
+      ],
+      "return_edges": [],
+      "closure_status": "PARTIAL",
+      "productive_effect": "NONE",
+      "authority_boundary": "FORECAST_IS_NOT_DECISION",
+      "promotion_boundary": "NO_AUTOMATIC_PROMOTION",
+      "external_effect": "NONE",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
+        "docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md"
       ]
     },
     {
@@ -2572,7 +2626,7 @@
     {
       "id": "authority_flow_no_proven_current_instance",
       "epistemic_class": "UNKNOWN",
-      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main @ 9ab34786b13c26f1be5cb9b523975f265014e1cb: ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
+      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01 closure via UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1): ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
       "evidence_refs": [
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
         "src/governance/explicit_productive_authorization_v1.py",
@@ -2641,8 +2695,9 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX census closed on origin/main @ 9ab34786 (static import/reference scan; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization \u2014 all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
+      "statement": "NAVIGATION_INDEX census closed on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01 topology census; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization \u2014 all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. Track D03 MI offline stack registered adjacent to learning_ddo and optimization_universe intake (FORECAST_IS_NOT_DECISION). REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
       "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
         "src/experiments/canonical_optimization_universe_v1.py",
         "src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py",
@@ -2836,12 +2891,14 @@
     {
       "id": "learning_capture_hosts_and_ddo_durability",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 9ab34786 (src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
+      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01; src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Track D03 MI offline stack references N_BARS outcome refs only (no duplicate outcome truth). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
       "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py",
         "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
+        "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "tests/learning/test_ddo_a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py"
       ]
@@ -2878,10 +2935,22 @@
     {
       "id": "loops_a_and_b",
       "epistemic_class": "PARTIAL",
-      "statement": "Loop A stops before search. Loop B is evidence without a proven search-control closure.",
+      "statement": "Loop A (productive learning export → optimization learning input) is IMPLEMENTED; M4 search plane not opened by export alone. Loop B (optimization → meta → bounded feedback) is IMPLEMENTED for federated M5–M8 offline replay; meta_search_backflow map edge remains FORBIDDEN lifecycle. Unified Blueprint D02 matrix: see unified_blueprint_d02_inter_loop_matrix.",
       "evidence_refs": [
-        "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
-        "src/experiments/canonical_meta_learning_v1.py"
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+        "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
+        "src/experiments/canonical_meta_learning_ingest_v1.py",
+        "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md"
+      ]
+    },
+    {
+      "id": "unified_blueprint_d02_inter_loop_matrix",
+      "epistemic_class": "PARTIAL",
+      "statement": "Unified Blueprint Phase 5 D02 closed as CURRENT adjudication only (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). NOT_IMPLEMENTED: d02_mi_to_learning (Phase 8 typed export). PARTIAL: d02_mi_to_optimization (offline intake ACK, not M4 execution); d02_multi_cycle_replay_m8 (no MI-crossing replay). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory.",
+      "evidence_refs": [
+        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+        "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md"
       ]
     },
     {
