@@ -6732,24 +6732,24 @@ entities:
 
   - id: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1
     kind: RUNTIME_COMPONENT
-    name: Master V2 Double Play evidence input plane P5 producer productive ingress v1
+    name: Master V2 Double Play evidence input plane P5 producer productive ingress v1 (final closure)
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
+    modified_by: P5_OPTIMIZATION_META_PRODUCER_FINAL_CLOSURE_V1
     source_paths:
       - src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/
     evidence_sources:
       - tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py
+      - tests/governance/test_p5_m4_m8_optimization_meta_producer_final_closure_v1.py
       - docs/ops/specs/EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md
       - docs/evidence/master_v2_double_play_evidence_input_plane_p5/p5_proof_bundle_v1.json
       - config/governance/master_v2_double_play_evidence_input_plane_p5_owner_decision_v1.json
+      - config/governance/master_v2_double_play_evidence_input_plane_p5_evidence_promotion_admissions_v1.json
     notes: >-
-      P5 producer-class adapters terminating at Component A only;
-      PRODUCER_TRADING_AUTHORITY=NONE; MI+Learning INTEGRATED_AT_A;
-      optimization (classification D) and meta_learning (classification C research-only)
-      remain BLOCKED at lineage/promotion boundary — no productive edge to B/DP;
-      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+      P5 final closure: all four producer classes terminate at Component A via typed adapters;
+      Optimization/Meta bind M5/M6 through p5_m4_m8_governed_evidence_binding_context_v1;
+      PRODUCER_TRADING_AUTHORITY=NONE; no B/DP bypass; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
     kind: CONTRACT
@@ -9102,11 +9102,11 @@ entities:
 
   - id: RUNTIME_COMPONENT:m4_m8_optimization_meta_learning_evidence_return_closure_v1
     kind: RUNTIME_COMPONENT
-    name: M4–M8 optimization meta-learning evidence return closure v1
+    name: M4–M8 optimization meta-learning evidence return closure v1 (P5-ready)
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: M4_M8_OPTIMIZATION_META_LEARNING_EVIDENCE_RETURN_CLOSURE
+    modified_by: P5_OPTIMIZATION_META_PRODUCER_FINAL_CLOSURE_V1
     source_paths:
       - src/governance/m4_m8_optimization_meta_learning_evidence_return_closure_v1.py
       - src/experiments/canonical_m4_m8_evidence_return_loop_v1.py
@@ -9118,7 +9118,7 @@ entities:
       - config/governance/m4_m8_optimization_meta_learning_evidence_return_closure_v1_decision_v1.json
     notes: >-
       Concept v3.4 addendum closure for canonical M4–M8 forward+return loop and M8 replay;
-      P5 producer bridges explicitly out of scope (p5_final_closure_ready=false).
+      p5_final_closure_ready=true; P5 bridges consume M5/M6 without rebuilding M4–M8.
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1
