@@ -63,8 +63,10 @@ daemons, activate Component B, or authorize external effects.
 
 ## Next boundary
 
-Productive activation, Component B productive activation, F1/M9 scoped Owner apply execution,
-and external effects remain blocked without independent Owner authorization.
+F1/M9 scoped Owner Apply execution proof continues in
+`GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1` (separate
+per-ingress plane; no Real-P4 join). Productive activation, threshold hot-path ratification,
+Component B, and external effects remain blocked without independent Owner authorization.
 
 ## Verification
 

@@ -25,6 +25,7 @@ flowchart LR
   bounded_runtime_primary_evidence -->|g2_primary_evidence_to_offline_projection| g2_runtime_primary_offline_projection
   g2_runtime_primary_offline_projection -->|g2_runtime_learning_to_optimization_input_binding| g2_runtime_learning_optimization_input_binding
   g2_runtime_learning_optimization_input_binding -->|g2_runtime_to_m4_m8_real_mechanical_continuation| optimization_universe
+  governance_promotion -->|governance_promotion_to_f1_m9_scoped_owner_apply_execution| f1_m9_scoped_owner_apply_execution
   governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
   governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
   mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
@@ -53,6 +54,7 @@ flowchart LR
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   ranking_cap22 -->|ranking_witness_b06_to_operator_profile_b11| operator_profile_explainability_b11
+  governed_runtime_apply_materialization -->|real_p4_materialization_to_f1_m9_join_evaluate| f1_m9_scoped_owner_apply_execution
   p5_layered_core -->|real_runtime_component_a_admit_to_p3_binder| p3_input_creator_binder
   g2_runtime_primary_offline_projection -->|real_runtime_g2_to_meta_optimization_feedback_continuation| optimization_universe
   g2_runtime_primary_offline_projection -->|real_runtime_g2_to_p3_p4_l6_productive_seam_continuation| p4_l6_productive_seam
@@ -422,6 +424,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`, `src/experiments/canonical_m4_m8_evidence_return_loop_v1.py`, `tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py`
+
+## governance_promotion_to_f1_m9_scoped_owner_apply_execution
+
+- lifecycle=PARTIAL
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=evaluate_f1_m9_productive_apply_execution_boundary_v1
+- producer=execute_f1_m9_scoped_owner_apply_execution_proof_v1
+- consumer=evaluate_f1_m9_productive_apply_execution_boundary_v1
+- authority_effect=NONE
+- decision_effect=SCOPED_RUNTIME_APPLY_EXECUTION_PROOF_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=M10_INGRESS_AND_OWNER_APPLY_RECORD_DIGEST_CHAIN
+- temporal_binding=PER_INGRESS_AUTHORIZATION_EPOCH
+- version_binding=governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
+- provenance_binding=CONFIGURATION_RUNTIME_APPLIED=true on EXECUTION_PROOF; RUNTIME_APPLY_STARTED=false globally; PRODUCTIVE_ACTIVATION_AUTHORIZED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`, `src/governance/f1_m9_productive_apply_execution_boundary_v1.py`, `tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`
 
 ## governed_cycle_t2_mv2_stack
 
@@ -926,6 +946,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
+
+## real_p4_materialization_to_f1_m9_join_evaluate
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=evaluate_real_p4_to_f1_m9_apply_join_v1
+- producer=run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1
+- consumer=evaluate_real_p4_to_f1_m9_apply_join_v1
+- authority_effect=NONE
+- decision_effect=REAL_P4_F1_M9_JOIN_NOT_CANONICAL_FAIL_CLOSED
+- direct_or_indirect=INDIRECT
+- identity_binding=SEPARATE_PLANE_LINEAGE_NO_MERGE
+- temporal_binding=REAL_P4_MATERIALIZATION_THEN_F1_M9_PER_INGRESS
+- version_binding=governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
+- provenance_binding=JOIN_PERMITTED=false; LINEAGE_JOIN_VALID=false; CONFIGURATION_MATERIALIZED != F1_M9_RUNTIME_APPLIED_MERGE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/real_p4_to_f1_m9_apply_lineage_join_v1.py`, `tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py`, `docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md`
 
 ## real_runtime_component_a_admit_to_p3_binder
 

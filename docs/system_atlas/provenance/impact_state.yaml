@@ -2,18 +2,18 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1
-modified_by: GOVERNED_P4_L6_SEAM_TO_RUNTIME_APPLY_MATERIALIZATION_REAL_MECHANICAL_CONTINUATION_V1
+modified_by: GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Real P4 L6 SEAM_BOUND continues through governed runtime apply materialization to typed
-  materialization record; CONFIGURATION_MATERIALIZED != CONFIGURATION_APPLIED; no productive activation.
+  F1/M9 scoped Owner Apply execution proof after Real-P4 materialization boundary; Real-P4↔F1/M9
+  join not canonical; EXECUTION_PROOF only; STOP before Productive Activation.
 changed_entities:
+  - RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
   - RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1
-  - RUNTIME_COMPONENT:governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1
 changed_relations:
-  - REL:s_p4_l6_seam_to_runtime_apply_materialization_real_continuation_v1
-  - REL:s_map_navigates_governed_p4_l6_runtime_apply_materialization_continuation_v1
+  - REL:s_f1_m9_scoped_owner_apply_execution_real_continuation_v1
+  - REL:s_map_navigates_governed_f1_m9_scoped_owner_apply_execution_continuation_v1
 changed_closures: []
 changed_wiring: []
 changed_venue: []

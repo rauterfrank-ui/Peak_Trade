@@ -1,0 +1,20 @@
+{
+  "workpackage_id": "GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/governed_f1_m9_scoped_owner_apply_execution_wp_v1_owner_decision_v1.json",
+  "f1_m9_scoped_owner_apply_execution_authorized": true,
+  "real_p4_materialization_status": "PROVEN_REAL_MECHANICAL_PATH",
+  "f1_m9_apply_path_status": "PROVEN_CANONICAL_PER_INGRESS_EXECUTION_PROOF",
+  "real_p4_to_f1_m9_join_status": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL",
+  "value_ratification_required_for_threshold_hot_path": true,
+  "configuration_materialized_on_success": true,
+  "configuration_runtime_applied_on_success": true,
+  "runtime_apply_started": false,
+  "runtime_apply_completed": false,
+  "productive_activation_authorized": false,
+  "component_b_activated": false,
+  "external_effect": false,
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION_AND_THRESHOLD_HOT_PATH_VALUE_RATIFICATION",
+  "next_genuine_blocker": "F1_M9_SCOPED_OWNER_THRESHOLD_VALUE_AUTHORIZATION_OR_PRODUCTIVE_ACTIVATION",
+  "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md"
+}

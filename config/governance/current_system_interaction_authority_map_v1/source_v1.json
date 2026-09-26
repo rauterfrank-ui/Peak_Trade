@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+  "baseline_sha": "eb4ec2062443e85541fa3732f4b42e86d9eeada3",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -992,6 +992,33 @@
         "src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
         "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
         "tests/governance/test_governed_runtime_apply_materialization_v1.py"
+      ]
+    },
+    {
+      "id": "f1_m9_scoped_owner_apply_execution",
+      "tier": "INTERMEDIATE",
+      "role": "F1/M9 per-ingress scoped Owner Apply execution proof (EXECUTION_PROOF); Real-P4 materialization plane separate; join fail-closed; STOP before Productive Activation.",
+      "canonical_owner_ref": "f1_m9_scoped_owner_apply_authority_v1",
+      "authority_class": "NONE",
+      "lifecycle": "SCOPED_RUNTIME_APPLY_EXECUTION_PROOF",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+        "src/governance/f1_m9_scoped_owner_apply_authority_v1.py",
+        "src/governance/real_p4_to_f1_m9_apply_lineage_join_v1.py"
+      ],
+      "evidence_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+        "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+        "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py",
+        "config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json"
       ]
     },
     {
@@ -2384,6 +2411,54 @@
         "src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py",
         "src/governance/governed_runtime_apply_materialization_v1.py",
         "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "real_p4_materialization_to_f1_m9_join_evaluate",
+      "from_domain": "governed_runtime_apply_materialization",
+      "to_domain": "f1_m9_scoped_owner_apply_execution",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "evaluate_real_p4_to_f1_m9_apply_join_v1",
+      "producer": "run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1",
+      "consumer": "evaluate_real_p4_to_f1_m9_apply_join_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "REAL_P4_F1_M9_JOIN_NOT_CANONICAL_FAIL_CLOSED",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "SEPARATE_PLANE_LINEAGE_NO_MERGE",
+      "temporal_binding": "REAL_P4_MATERIALIZATION_THEN_F1_M9_PER_INGRESS",
+      "version_binding": "governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1",
+      "provenance_binding": "JOIN_PERMITTED=false; LINEAGE_JOIN_VALID=false; CONFIGURATION_MATERIALIZED != F1_M9_RUNTIME_APPLIED_MERGE",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/real_p4_to_f1_m9_apply_lineage_join_v1.py",
+        "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py",
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md"
+      ]
+    },
+    {
+      "id": "governance_promotion_to_f1_m9_scoped_owner_apply_execution",
+      "from_domain": "governance_promotion",
+      "to_domain": "f1_m9_scoped_owner_apply_execution",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "evaluate_f1_m9_productive_apply_execution_boundary_v1",
+      "producer": "execute_f1_m9_scoped_owner_apply_execution_proof_v1",
+      "consumer": "evaluate_f1_m9_productive_apply_execution_boundary_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "SCOPED_RUNTIME_APPLY_EXECUTION_PROOF_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PARTIAL",
+      "identity_binding": "M10_INGRESS_AND_OWNER_APPLY_RECORD_DIGEST_CHAIN",
+      "temporal_binding": "PER_INGRESS_AUTHORIZATION_EPOCH",
+      "version_binding": "governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1",
+      "provenance_binding": "CONFIGURATION_RUNTIME_APPLIED=true on EXECUTION_PROOF; RUNTIME_APPLY_STARTED=false globally; PRODUCTIVE_ACTIVATION_AUTHORIZED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_productive_apply_execution_boundary_v1.py",
+        "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py"
       ]
     },
     {
@@ -3859,6 +3934,18 @@
         "config/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_runtime_apply_materialization_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "f1_m9_scoped_owner_apply_execution_real_continuation_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real P4 L6 materialization boundary plus canonical F1/M9 per-ingress Owner Apply execution proof with explicit state phases; Real-P4↔F1/M9 join fail-closed (not canonical); CONFIGURATION_RUNTIME_APPLIED on EXECUTION_PROOF only; STOP before Productive Activation; RUNTIME_APPLY_STARTED=false globally.",
+      "evidence_refs": [
+        "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md",
+        "config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json",
+        "config/governance/governed_f1_m9_scoped_owner_apply_execution_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
+        "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py"
       ]
     }
   ]
