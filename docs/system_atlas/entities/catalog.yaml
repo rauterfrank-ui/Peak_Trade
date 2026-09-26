@@ -6693,6 +6693,24 @@ entities:
       P2 bounded Component A evidence adjudicator runtime; P1 envelope output only;
       A_RUNTIME_REACHABLE=false; no Component B; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1
+    kind: RUNTIME_COMPONENT
+    name: Master V2 Double Play evidence input plane P3 Component B input creator/binder v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: P3_MASTER_V2_DOUBLE_PLAY_INPUT_CREATOR_BINDER_RUNTIME_V1
+    source_paths:
+      - src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/
+    evidence_sources:
+      - tests/governance/test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.py
+      - docs/ops/specs/EVIDENCE_INPUT_PLANE_P3_INPUT_CREATOR_BINDER_RUNTIME_V1.md
+      - docs/evidence/master_v2_double_play_evidence_input_plane_p3/p3_proof_bundle_v1.json
+      - config/governance/master_v2_double_play_evidence_input_plane_p3_owner_decision_v1.json
+    notes: >-
+      P3 bounded Component B input creator/binder runtime; A-output consumption only;
+      B_RUNTIME_REACHABLE=false; no productive L6 seam; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:p4_l6_explicit_d_t_proposal_v1
     kind: CONTRACT
     name: P4 L6 explicit D_t proposal charter v1
