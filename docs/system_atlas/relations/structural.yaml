@@ -2138,6 +2138,19 @@ relations:
       Navigation only. Phase 10 MI-crossing M5→M8 multi-cycle offline replay closure;
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_11_surface_portfolio_closure_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_11_surface_portfolio_closure_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json
+    notes: >
+      Navigation only. Phase 11 optimization surface portfolio census/classification/resolver
+      closure; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

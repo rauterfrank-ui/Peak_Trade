@@ -1,44 +1,36 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "2d511513f42a2a6764e8334c84dcf5534fe8dab9",
+  "base_sha": "71a156bfe6c463b6cc3a421844ee917f9c154a45",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
     "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
+    "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_NORMATIVE_V1.md",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/relations/structural.yaml",
-    "src/experiments/canonical_unified_blueprint_mi_crossing_bounded_multi_cycle_offline_replay_v1.py",
-    "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "src/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/calibration_evidence_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_persist_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_record_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_offline_durable_evidence_store_v1.py",
-    "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/offline_orchestrator_v1.py",
-    "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
-    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py",
-    "tests/learning/test_mi_offline_durable_evidence_store_v1.py",
-    "tests/learning/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
+    "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+    "src/experiments/canonical_optimization_surface_portfolio_registry_v1.py",
+    "src/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.py",
+    "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
+    "tests/governance/test_unified_blueprint_phase_11_surface_portfolio_closure_v1.py",
+    "tests/governance/test_unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.py"
   ],
-  "changed_paths_sha256": "d8cba22a4335c7017843a47207207d91d42997769eef63a0c555103c33e9045e",
+  "changed_paths_sha256": "6c5155a92ade6926b1cb13123e909a250cdba2e7cbcaaa5e1751c1505715435a",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "config/governance/unified_blueprint_d02_loop_b_durable_mi_evidence_store_v1.json",
-    "tests/learning/test_mi_offline_durable_evidence_store_v1.py",
-    "docs/ops/specs/UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_NORMATIVE_V1.md"
+    "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
+    "tests/experiments/test_canonical_optimization_surface_portfolio_registry_v1.py",
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_11_SURFACE_PORTFOLIO_CLOSURE_NORMATIVE_V1.md"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Unified Blueprint D02 Loop-B closes d02_loop_b_market_intelligence_offline with durable MI offline evidence store for Forecast/Calibration/Research, D02 edge IMPLEMENTED, map interface refresh, and atlas/catalog update. AUTHORITY=NONE."
+  "reason": "Unified Blueprint Phase 11 closes optimization surface portfolio census/classification/resolver; updates authority-map navigation statement, D01/D02 next-boundary pointers, and atlas/catalog. AUTHORITY=NONE."
 }

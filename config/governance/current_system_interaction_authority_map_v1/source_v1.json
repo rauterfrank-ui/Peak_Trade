@@ -2771,14 +2771,14 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX census closed on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01 topology census; AUTHORITY=NONE). Registered optimizable surfaces: M9 VOLATILITY_NUMERIC_MAX_AGE (src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py), F2 cost grid, F5 freshness, F3 exclusion marker, federated surface projection, surface-families prep, owner-grants materialization \u2014 all OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. Unified promotion/read consumers (no productive apply): src/governance/optimization_proposal_governance_ingress_v1.py, src/governance/governed_productive_configuration_v1.py, src/governance/explicit_productive_authorization_v1.py, F1/M9 ingress chain under src/governance/f1_m9_*.py, v32_d28_d29 join policy modules, src/experiments/canonical_optimizable_envelope_v1.py. M9 age-policy evaluator evaluate_canonical_volatility_estimate_age_policy_v1 consumers: definer src/trading/master_v2/canonical_volatility_numeric_max_age_policy_contract_and_non_enforcing_telemetry_v1.py; productive reachability src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py and src/governance/authorized_productive_parameter_seam_v1.py; registry pin src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py; research-only src/trading/master_v2/canonical_volatility_numeric_max_age_parameter_research_design_and_evidence_accumulation_contract_v1.py. Optimization-universe registry digest consumers: src/experiments/canonical_optimization_universe_v1.py, src/governance/meta_learning_optimization_universe_pdf_v3_3_final_completion_adjudication_v1.py, src/experiments/canonical_meta_to_optimization_feedback_v1.py. Track D03 MI offline stack registered adjacent to learning_ddo and optimization_universe intake (FORECAST_IS_NOT_DECISION). REMAINING_PARTIAL: dynamic/runtime importers outside static scan; productive apply/enforcement remains forbidden (enforcement_enabled false; zero authorized targets CONFLICTING see zero_authorized_productive_targets).",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 11 surface portfolio closure on origin/main @ 71a156bfe6c463b6cc3a421844ee917f9c154a45 (AUTHORITY=NONE). Canonical portfolio registry src/experiments/canonical_optimization_surface_portfolio_registry_v1.py durably classifies CURRENT families as AUTHORIZED_RESEARCH_SURFACE (F1/M9, F2 cost grid, F5-FRESH shadow freshness), DEFERRED (F5-SURV/CAP shadow calibration, funding-only axis), or EXCLUDED_CONSTITUTIONAL (F3, risk/sizing, OLS diagnostic, Optuna legacy, M4 synthetic context, meta plane). Research-active envelope surfaces remain exactly three isolated surface_ids; universe membership and registry presence do not imply authorization; candidate existence does not imply productive configuration; OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE. M7 meta feedback applies Phase-11 portfolio gate on explicit optimization_family tokens. Prior optimizable-surface modules, surface-families prep, owner-grants materialization, and pdf_v3_3 classification config remain subordinate evidence. Productive apply/enforcement remains forbidden.",
       "evidence_refs": [
-        "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
-        "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
-        "src/experiments/canonical_optimization_universe_v1.py",
-        "src/experiments/canonical_m9_volatility_numeric_max_age_optimizable_surface_v1.py",
-        "src/governance/optimization_proposal_governance_ingress_v1.py",
-        "src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py"
+        "config/governance/unified_blueprint_phase_11_surface_portfolio_closure_v1.json",
+        "src/experiments/canonical_optimization_surface_portfolio_registry_v1.py",
+        "config/governance/pdf_v3_3_optimization_surface_portfolio_classification_v1.json",
+        "src/experiments/canonical_optimizable_envelope_v1.py",
+        "src/experiments/canonical_meta_to_optimization_feedback_v1.py",
+        "src/governance/optimization_proposal_governance_ingress_v1.py"
       ]
     },
     {
