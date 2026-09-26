@@ -141,6 +141,70 @@ class LastTradePriceFactV1:
 
 
 @dataclass(frozen=True)
+class IndexPriceFactV1:
+    instrument: InstrumentRefV1
+    index_px: str
+    timestamps: MarketTimestampV1
+    provenance: MarketFactProvenanceV1
+    quality: DataQualityStateV1
+    fact_kind: str = "IndexPriceFactV1"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "fact_kind": self.fact_kind,
+            "instrument": self.instrument.to_dict(),
+            "index_px": self.index_px,
+            "timestamps": self.timestamps.to_dict(),
+            "provenance": self.provenance.to_dict(),
+            "quality": self.quality.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class FundingRateFactV1:
+    instrument: InstrumentRefV1
+    funding_rate: str
+    funding_time_ms: int | None
+    timestamps: MarketTimestampV1
+    provenance: MarketFactProvenanceV1
+    quality: DataQualityStateV1
+    fact_kind: str = "FundingRateFactV1"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "fact_kind": self.fact_kind,
+            "instrument": self.instrument.to_dict(),
+            "funding_rate": self.funding_rate,
+            "funding_time_ms": self.funding_time_ms,
+            "timestamps": self.timestamps.to_dict(),
+            "provenance": self.provenance.to_dict(),
+            "quality": self.quality.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
+class OpenInterestFactV1:
+    instrument: InstrumentRefV1
+    open_interest: str
+    open_interest_unit_semantics: str
+    timestamps: MarketTimestampV1
+    provenance: MarketFactProvenanceV1
+    quality: DataQualityStateV1
+    fact_kind: str = "OpenInterestFactV1"
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "fact_kind": self.fact_kind,
+            "instrument": self.instrument.to_dict(),
+            "open_interest": self.open_interest,
+            "open_interest_unit_semantics": self.open_interest_unit_semantics,
+            "timestamps": self.timestamps.to_dict(),
+            "provenance": self.provenance.to_dict(),
+            "quality": self.quality.to_dict(),
+        }
+
+
+@dataclass(frozen=True)
 class BestBidAskFactV1:
     instrument: InstrumentRefV1
     bid_px: str

@@ -1,0 +1,22 @@
+{
+  "schema_id": "market_context_v1_phase_19_cross_market_anchor_binding_v1",
+  "binding_id": "MARKET_CONTEXT_V1_PHASE_19_CROSS_MARKET_ANCHOR_BINDING_V1",
+  "context_only": true,
+  "cap23_selection_authority": false,
+  "rerank_authorized": false,
+  "reselect_authorized": false,
+  "multi_future_runtime_authorized": false,
+  "admissible_anchor_instrument_refs": ["inst-eth-usdt-perp"],
+  "anchor_exclusions": [
+    {
+      "instrument_class": "BTC_XBT_PERP",
+      "reason": "CANONICAL_PATH_BTC_EXCLUSION_POLICY",
+      "evidence_ref": "config/governance/okx_audit_authority_ssot_v1.json"
+    }
+  ],
+  "default_horizon_id": "PT60M",
+  "default_lookback_bars": 60,
+  "bar_interval_semantics": "PT1M_FINALIZED_MARK",
+  "authority_effect": "NONE",
+  "runtime_authorization_effect": "NONE"
+}

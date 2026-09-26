@@ -2240,6 +2240,31 @@ relations:
       Phase 18 existing-fact materialization on MI/Learning path; AUTHORITY=NONE.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_phase_19_orthogonal_context_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_phase_19_orthogonal_context_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json
+    notes: >
+      Navigation only. Phase 19 orthogonal context closure; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_mi_stack_contains_market_context_phase_19_orthogonal_materialization_v1
+    source: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    type: CONTAINS
+    target: RUNTIME_COMPONENT:mi_market_context_phase_19_orthogonal_materialization_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_context_phase_19_orthogonal_materialization_v1.py
+      - tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py
+    notes: >
+      Phase 19 orthogonal materialization; context-only cross-market; AUTHORITY=NONE.
+      ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO
