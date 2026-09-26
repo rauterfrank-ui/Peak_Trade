@@ -20,6 +20,20 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 from src.meta.learning_loop.contract_safety_v1 import is_valid_sha256_hex
 
 
+def load_schema_binding_dispositions_v1(
+    repo_root: Path | None = None,
+) -> tuple[dict[str, object], ...]:
+    root = repo_root or Path(__file__).resolve().parents[3]
+    path = root / PROMOTION_ADMISSION_CONFIG
+    if not path.is_file():
+        return ()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    raw = payload.get("schema_binding_dispositions", ())
+    if not isinstance(raw, list):
+        return ()
+    return tuple(dict(item) for item in raw if isinstance(item, dict))
+
+
 def load_promotion_admissions_v1(
     repo_root: Path | None = None,
 ) -> tuple[PromotionAdmissionEntryV1, ...]:
@@ -52,6 +66,7 @@ def lookup_promotion_admission_v1(
     source_content_digest: str,
     promoted_evidence_kind: str,
     admissions: tuple[PromotionAdmissionEntryV1, ...],
+    schema_bindings: tuple[dict[str, object], ...] | None = None,
 ) -> tuple[bool, str | None]:
     if not is_valid_sha256_hex(source_content_digest):
         return False, ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value
@@ -63,4 +78,15 @@ def lookup_promotion_admission_v1(
             and entry.promoted_evidence_kind == promoted_evidence_kind
         ):
             return True, None
+    bindings = schema_bindings if schema_bindings is not None else ()
+    for disposition in bindings:
+        if disposition.get("enabled") is not True:
+            continue
+        if str(disposition.get("producer_family")) != producer_family.value:
+            continue
+        if str(disposition.get("promoted_evidence_kind")) != promoted_evidence_kind:
+            continue
+        if str(disposition.get("nearest_current_source_schema")) != source_artifact_schema:
+            continue
+        return True, None
     return False, ProducerIngressFailureCodeV1.PROMOTION_ADMISSION_ABSENT.value

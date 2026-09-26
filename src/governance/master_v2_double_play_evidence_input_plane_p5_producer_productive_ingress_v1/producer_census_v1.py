@@ -25,6 +25,7 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.promotion_admission_v1 import (
     load_promotion_admissions_v1,
+    load_schema_binding_dispositions_v1,
 )
 
 SCHEMA_VERSION: Final[str] = "master_v2_double_play_evidence_input_plane_p5_producer_census/v1"
@@ -33,10 +34,19 @@ SCHEMA_VERSION: Final[str] = "master_v2_double_play_evidence_input_plane_p5_prod
 def run_p5_producer_census_v1(repo_root: Path | None = None) -> dict[str, Any]:
     root = repo_root or Path(__file__).resolve().parents[3]
     admissions = load_promotion_admissions_v1(root)
+    schema_bindings = load_schema_binding_dispositions_v1(root)
     opt_lineage = run_optimization_lineage_census_v1(root)
     meta_lineage = run_meta_learning_lineage_census_v1(root)
-    opt_promotion = any(e.producer_family.value == "optimization" for e in admissions)
-    meta_promotion = any(e.producer_family.value == "meta_learning" for e in admissions)
+    opt_promotion = any(e.producer_family.value == "optimization" for e in admissions) or any(
+        d.get("enabled") is True and d.get("producer_family") == "optimization"
+        for d in schema_bindings
+    )
+    meta_promotion = any(e.producer_family.value == "meta_learning" for e in admissions) or any(
+        d.get("enabled") is True and d.get("producer_family") == "meta_learning"
+        for d in schema_bindings
+    )
+    opt_integrated = bool(opt_lineage.get("promotion_to_a_mechanically_allowed"))
+    meta_integrated = bool(meta_lineage.get("promotion_to_a_mechanically_allowed"))
     entries = (
         ProducerCensusEntryV1(
             producer_class="market_intelligence",
@@ -78,19 +88,18 @@ def run_p5_producer_census_v1(repo_root: Path | None = None) -> dict[str, Any]:
             producer_class="optimization",
             producer_id=OPTIMIZATION_PRODUCER_ID,
             producer_version=OPTIMIZATION_PRODUCER_VERSION,
-            reachability="NON_CURRENT",
-            implementation_status="REGISTRY_ONLY",
-            integration_status="BLOCKED",
+            reachability="CURRENT" if opt_integrated else "NON_CURRENT",
+            implementation_status="PROVEN_CURRENT" if opt_integrated else "REGISTRY_ONLY",
+            integration_status="INTEGRATED_AT_A" if opt_integrated else "BLOCKED",
             direct_b_bypass=False,
             direct_dp_bypass=False,
             promotion_required=True,
-            promotion_status="ABSENT" if not opt_promotion else "PARTIAL",
-            blocker=str(opt_lineage["earliest_blocker"]),
+            promotion_status="SCHEMA_BINDING" if opt_promotion and opt_integrated else "ABSENT",
+            blocker=opt_lineage.get("earliest_blocker"),
             evidence_refs=(
-                "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
                 "src/experiments/canonical_optimization_experiment_evidence_v1.py",
-                "src/experiments/canonical_optimizable_envelope_v1.py",
-                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/lineage_census_v1.py",
+                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py",
+                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
             ),
             notes=(
                 f"Lineage classification {opt_lineage['classification']}: "
@@ -102,19 +111,18 @@ def run_p5_producer_census_v1(repo_root: Path | None = None) -> dict[str, Any]:
             producer_class="meta_learning",
             producer_id=META_LEARNING_PRODUCER_ID,
             producer_version=META_LEARNING_PRODUCER_VERSION,
-            reachability="PARTIAL",
+            reachability="CURRENT" if meta_integrated else "PARTIAL",
             implementation_status="PROVEN_CURRENT",
-            integration_status="BLOCKED",
+            integration_status="INTEGRATED_AT_A" if meta_integrated else "BLOCKED",
             direct_b_bypass=False,
             direct_dp_bypass=False,
             promotion_required=True,
-            promotion_status="ABSENT" if not meta_promotion else "PARTIAL",
-            blocker=str(meta_lineage["earliest_blocker"]),
+            promotion_status="SCHEMA_BINDING" if meta_promotion and meta_integrated else "ABSENT",
+            blocker=meta_lineage.get("earliest_blocker"),
             evidence_refs=(
-                "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
                 "src/experiments/canonical_meta_learning_ingest_v1.py",
-                "src/experiments/canonical_meta_evidence_dual_router_v1.py",
-                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/lineage_census_v1.py",
+                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/meta_learning_routed_evidence_v1.py",
+                "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py",
             ),
             notes=(
                 f"Lineage classification {meta_lineage['classification']}: "

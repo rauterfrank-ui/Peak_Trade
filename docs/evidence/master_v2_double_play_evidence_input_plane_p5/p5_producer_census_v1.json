@@ -37,44 +37,42 @@
       "reachability": "CURRENT"
     },
     {
-      "blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+      "blocker": null,
       "direct_b_bypass": false,
       "direct_dp_bypass": false,
       "evidence_refs": [
-        "config/governance/master_v2_double_play_evidence_input_plane_p2_producer_registry_v1.json",
         "src/experiments/canonical_optimization_experiment_evidence_v1.py",
-        "src/experiments/canonical_optimizable_envelope_v1.py",
-        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/lineage_census_v1.py"
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py"
       ],
-      "implementation_status": "REGISTRY_ONLY",
-      "integration_status": "BLOCKED",
-      "notes": "Lineage classification D: NO_CURRENT_PRODUCER_FOR_P2_REGISTERED_KIND. No repository module validates or emits schema optimization_envelope_evidence_v1. canonical_optimizable_envelope_v1 and canonical_optimization_experiment_evidence_v1 are distinct governed contracts; mapping either to P2 kind would invent semantics.",
+      "implementation_status": "PROVEN_CURRENT",
+      "integration_status": "INTEGRATED_AT_A",
+      "notes": "Lineage classification A: P5_M5_BINDING_PRODUCER_AT_A. M5 canonical_optimization_experiment_evidence_v1 projects to optimization_envelope_evidence_v1 via governed binding; raw M5 is not equated to P2 kind.",
       "producer_class": "optimization",
       "producer_id": "optimization.envelope_evidence.producer",
       "producer_version": "1.0.0",
       "promotion_required": true,
-      "promotion_status": "ABSENT",
-      "reachability": "NON_CURRENT"
+      "promotion_status": "SCHEMA_BINDING",
+      "reachability": "CURRENT"
     },
     {
-      "blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+      "blocker": null,
       "direct_b_bypass": false,
       "direct_dp_bypass": false,
       "evidence_refs": [
-        "src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py",
         "src/experiments/canonical_meta_learning_ingest_v1.py",
-        "src/experiments/canonical_meta_evidence_dual_router_v1.py",
-        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/lineage_census_v1.py"
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/meta_learning_routed_evidence_v1.py",
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py"
       ],
       "implementation_status": "PROVEN_CURRENT",
-      "integration_status": "BLOCKED",
-      "notes": "Lineage classification C: CURRENT_RESEARCH_ONLY_RUNTIME_NOT_PRODUCTIVE_LINEAGE. meta_evidence_v1 is Phase-23 RESEARCH_ONLY routing envelope; meta_learning_routed_evidence_v1 is P1/P2 Master V2 bounded L6 evidence kind. Conversion requires explicit semantic binding not established on CURRENT main.",
+      "integration_status": "INTEGRATED_AT_A",
+      "notes": "Lineage classification B: P5_M6_BINDING_PRODUCER_AT_A. meta_evidence_v1 remains RESEARCH_ONLY; P5 closure routes meta_learning_routed_evidence_v1 from M6 meta_learning_evidence_v1 + binding.",
       "producer_class": "meta_learning",
       "producer_id": "meta_learning.routed_evidence.producer",
       "producer_version": "1.0.0",
       "promotion_required": true,
-      "promotion_status": "ABSENT",
-      "reachability": "PARTIAL"
+      "promotion_status": "SCHEMA_BINDING",
+      "reachability": "CURRENT"
     }
   ],
   "promotion_admissions_loaded": 0,

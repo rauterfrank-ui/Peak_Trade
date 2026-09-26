@@ -26,6 +26,14 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
     ProducerAdapterError,
     adapt_learning_conditioned_evaluative_v1,
     adapt_market_intelligence_market_context_v1,
+    adapt_meta_learning_routed_evidence_v1,
+    adapt_optimization_envelope_evidence_v1,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.meta_learning_routed_evidence_v1 import (
+    SCHEMA_VERSION as META_ROUTED_SCHEMA,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.optimization_envelope_evidence_v1 import (
+    SCHEMA_VERSION as OPT_ENVELOPE_SCHEMA,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.constants_v1 import (
     LEARNING_PRODUCER_ID,
@@ -41,6 +49,7 @@ from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_produ
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.promotion_admission_v1 import (
     load_promotion_admissions_v1,
+    load_schema_binding_dispositions_v1,
     lookup_promotion_admission_v1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.reason_codes_v1 import (
@@ -202,15 +211,18 @@ def terminate_optimization_envelope_at_a_v1(
     source_content_digest: str,
     termination: ProducerEvidenceTerminationContextV1 | None,
     repo_root: Path | None = None,
+    ledger: AdjudicationLedgerV1 | None = None,
 ) -> ProducerIngressTerminationResultV1:
     root = repo_root or Path(__file__).resolve().parents[3]
     admissions = load_promotion_admissions_v1(root)
+    schema_bindings = load_schema_binding_dispositions_v1(root)
     ok, reason = lookup_promotion_admission_v1(
         producer_family=EvidenceProducerFamilyV1.OPTIMIZATION,
         source_artifact_schema=source_artifact_schema,
         source_content_digest=source_content_digest,
         promoted_evidence_kind=BoundedL6EvidenceKindV1.OPTIMIZATION_ENVELOPE_EVIDENCE_V1.value,
         admissions=admissions,
+        schema_bindings=schema_bindings,
     )
     if not ok:
         return _reject_at_ingress(
@@ -222,12 +234,36 @@ def terminate_optimization_envelope_at_a_v1(
         return _reject_at_ingress(
             producer_class=EvidenceProducerFamilyV1.OPTIMIZATION,
             producer_id=OPTIMIZATION_PRODUCER_ID,
-            reason=ProducerIngressFailureCodeV1.ARTIFACT_MISSING.value,
+            reason=ProducerIngressFailureCodeV1.ARTIFACT_MISSING.value
+            if artifact is None
+            else ProducerIngressFailureCodeV1.TERMINATION_CONTEXT_MISSING.value,
         )
-    return _reject_at_ingress(
+    if str(artifact.get("schema_version") or "") != OPT_ENVELOPE_SCHEMA:
+        return _reject_at_ingress(
+            producer_class=EvidenceProducerFamilyV1.OPTIMIZATION,
+            producer_id=OPTIMIZATION_PRODUCER_ID,
+            reason=ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value,
+        )
+    try:
+        intake = adapt_optimization_envelope_evidence_v1(artifact, termination=termination)
+    except ProducerAdapterError as exc:
+        return _reject_at_ingress(
+            producer_class=EvidenceProducerFamilyV1.OPTIMIZATION,
+            producer_id=OPTIMIZATION_PRODUCER_ID,
+            reason=str(exc),
+        )
+    provenance = ProducerIngressProvenanceV1(
+        adapter_id="optimization_envelope_evidence_v1",
+        source_schema_version=OPT_ENVELOPE_SCHEMA,
+        source_content_digest=intake.source_evidence_digest,
         producer_class=EvidenceProducerFamilyV1.OPTIMIZATION,
-        producer_id=OPTIMIZATION_PRODUCER_ID,
-        reason=ProducerIngressFailureCodeV1.CURRENT_PRODUCTIVE_PRODUCER_ABSENT.value,
+    )
+    return _adjudicate_intake(
+        intake,
+        termination=termination,
+        repo_root=root,
+        ledger=ledger,
+        provenance=provenance,
     )
 
 
@@ -238,15 +274,18 @@ def terminate_meta_learning_routed_at_a_v1(
     source_content_digest: str,
     termination: ProducerEvidenceTerminationContextV1 | None,
     repo_root: Path | None = None,
+    ledger: AdjudicationLedgerV1 | None = None,
 ) -> ProducerIngressTerminationResultV1:
     root = repo_root or Path(__file__).resolve().parents[3]
     admissions = load_promotion_admissions_v1(root)
+    schema_bindings = load_schema_binding_dispositions_v1(root)
     ok, reason = lookup_promotion_admission_v1(
         producer_family=EvidenceProducerFamilyV1.META_LEARNING,
         source_artifact_schema=source_artifact_schema,
         source_content_digest=source_content_digest,
         promoted_evidence_kind=BoundedL6EvidenceKindV1.META_LEARNING_ROUTED_EVIDENCE_V1.value,
         admissions=admissions,
+        schema_bindings=schema_bindings,
     )
     if not ok:
         return _reject_at_ingress(
@@ -258,12 +297,36 @@ def terminate_meta_learning_routed_at_a_v1(
         return _reject_at_ingress(
             producer_class=EvidenceProducerFamilyV1.META_LEARNING,
             producer_id=META_LEARNING_PRODUCER_ID,
-            reason=ProducerIngressFailureCodeV1.ARTIFACT_MISSING.value,
+            reason=ProducerIngressFailureCodeV1.ARTIFACT_MISSING.value
+            if artifact is None
+            else ProducerIngressFailureCodeV1.TERMINATION_CONTEXT_MISSING.value,
         )
-    return _reject_at_ingress(
+    if str(artifact.get("schema_version") or "") != META_ROUTED_SCHEMA:
+        return _reject_at_ingress(
+            producer_class=EvidenceProducerFamilyV1.META_LEARNING,
+            producer_id=META_LEARNING_PRODUCER_ID,
+            reason=ProducerIngressFailureCodeV1.ARTIFACT_MALFORMED.value,
+        )
+    try:
+        intake = adapt_meta_learning_routed_evidence_v1(artifact, termination=termination)
+    except ProducerAdapterError as exc:
+        return _reject_at_ingress(
+            producer_class=EvidenceProducerFamilyV1.META_LEARNING,
+            producer_id=META_LEARNING_PRODUCER_ID,
+            reason=str(exc),
+        )
+    provenance = ProducerIngressProvenanceV1(
+        adapter_id="meta_learning_routed_evidence_v1",
+        source_schema_version=META_ROUTED_SCHEMA,
+        source_content_digest=intake.source_evidence_digest,
         producer_class=EvidenceProducerFamilyV1.META_LEARNING,
-        producer_id=META_LEARNING_PRODUCER_ID,
-        reason=ProducerIngressFailureCodeV1.CURRENT_PRODUCTIVE_PRODUCER_ABSENT.value,
+    )
+    return _adjudicate_intake(
+        intake,
+        termination=termination,
+        repo_root=root,
+        ledger=ledger,
+        provenance=provenance,
     )
 
 

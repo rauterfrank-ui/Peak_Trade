@@ -31,9 +31,9 @@ this document binding.
 | Field | Value |
 | --- | --- |
 | Canonical main | `4d8f3f1d80cd47ace4aa61d946241bf9f0cf3ed2` (PR #6875 merged) |
-| P5 posture | `BOUNDED_COMPLETE_BLOCKED` |
-| P5 Optimization → A | Blocked — upstream M4–M8 governed lineage required |
-| P5 Meta-Learning → A | Blocked — upstream M4–M8 return lineage required |
+| P5 posture | `PROVEN_COMPLETE` (final producer closure) |
+| P5 Optimization → A | M5 + governed binding → `optimization_envelope_evidence_v1` at A |
+| P5 Meta-Learning → A | M6 + governed binding → `meta_learning_routed_evidence_v1` at A |
 | Productive activation | false |
 | External effect | NONE / NOT AUTHORIZED |
 

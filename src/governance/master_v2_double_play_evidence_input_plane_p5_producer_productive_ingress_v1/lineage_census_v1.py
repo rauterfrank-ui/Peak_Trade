@@ -17,6 +17,12 @@ from src.experiments.canonical_optimizable_envelope_v1 import (
     OPTIMIZATION_PRODUCTIVE_AUTHORITY as ENVELOPE_OPT_AUTHORITY,
     SCHEMA_VERSION as OPT_ENVELOPE_SCHEMA,
 )
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.optimization_envelope_evidence_v1 import (
+    SCHEMA_VERSION as P5_OPT_ENVELOPE_SCHEMA,
+)
+from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.meta_learning_routed_evidence_v1 import (
+    SCHEMA_VERSION as P5_META_ROUTED_SCHEMA,
+)
 from src.governance.master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.constants_v1 import (
     META_LEARNING_PRODUCER_ID,
     OPTIMIZATION_PRODUCER_ID,
@@ -46,11 +52,16 @@ def run_optimization_lineage_census_v1(repo_root: Path | None = None) -> dict[st
     _ = repo_root or Path(__file__).resolve().parents[3]
     crosswalk = run_optimization_contract_crosswalk_v1()
     invocation = run_optimization_upstream_invocation_proof_v1()
+    bridge_allowed = bool(crosswalk.get("producer_bridge_allowed"))
     return {
         "p2_registered_evidence_kind": P2_OPT_KIND,
         "p2_registered_producer_id": OPTIMIZATION_PRODUCER_ID,
-        "classification": "D",
-        "classification_label": "NO_CURRENT_PRODUCER_FOR_P2_REGISTERED_KIND",
+        "classification": "A" if bridge_allowed else "D",
+        "classification_label": (
+            "P5_M5_BINDING_PRODUCER_AT_A"
+            if bridge_allowed
+            else "NO_CURRENT_PRODUCER_FOR_P2_REGISTERED_KIND"
+        ),
         "current_optimization_runtime_surfaces": [
             {
                 "module": "src/experiments/canonical_optimization_universe_experiment_plane_v1.py",
@@ -70,18 +81,29 @@ def run_optimization_lineage_census_v1(repo_root: Path | None = None) -> dict[st
                 "productive_authority": "NONE",
                 "role": "lineage_census_not_evidence_emission",
             },
+            {
+                "module": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/optimization_envelope_evidence_v1.py",
+                "output_schema": P5_OPT_ENVELOPE_SCHEMA,
+                "productive_authority": "NONE",
+                "role": "p5_producer_artifact_terminating_at_a",
+            },
         ],
-        "schema_equivalence_to_p2_kind": "NOT_PROVEN",
+        "schema_equivalence_to_p2_kind": "MECHANICAL_BINDING" if bridge_allowed else "NOT_PROVEN",
         "schema_equivalence_notes": (
-            "No repository module validates or emits schema optimization_envelope_evidence_v1. "
-            "canonical_optimizable_envelope_v1 and canonical_optimization_experiment_evidence_v1 "
-            "are distinct governed contracts; mapping either to P2 kind would invent semantics."
+            "M5 canonical_optimization_experiment_evidence_v1 projects to "
+            f"{P5_OPT_ENVELOPE_SCHEMA} via governed binding; raw M5 is not equated to P2 kind."
+            if bridge_allowed
+            else (
+                "No repository module validates or emits schema optimization_envelope_evidence_v1."
+            )
         ),
         "contract_crosswalk": crosswalk,
         "upstream_invocation_proof": invocation,
-        "productive_lineage_proven": False,
+        "productive_lineage_proven": bridge_allowed,
         "promotion_to_a_mechanically_allowed": crosswalk["producer_bridge_allowed"],
-        "earliest_blocker": "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
+        "earliest_blocker": None
+        if bridge_allowed
+        else "NO_CURRENT_PRODUCTIVE_OPTIMIZATION_ENVELOPE_EVIDENCE_PRODUCER",
         "first_unprovable_field": crosswalk.get("first_blocking_field"),
         "first_unprovable_reason": crosswalk.get("first_blocking_reason"),
         "downstream_consumers": [
@@ -96,11 +118,16 @@ def run_meta_learning_lineage_census_v1(repo_root: Path | None = None) -> dict[s
     _ = repo_root or Path(__file__).resolve().parents[3]
     crosswalk = run_meta_learning_contract_crosswalk_v1()
     invocation = run_meta_learning_upstream_invocation_proof_v1()
+    bridge_allowed = bool(crosswalk.get("producer_bridge_allowed"))
     return {
         "p2_registered_evidence_kind": P2_META_KIND,
         "p2_registered_producer_id": META_LEARNING_PRODUCER_ID,
-        "classification": "C",
-        "classification_label": "CURRENT_RESEARCH_ONLY_RUNTIME_NOT_PRODUCTIVE_LINEAGE",
+        "classification": "B" if bridge_allowed else "C",
+        "classification_label": (
+            "P5_M6_BINDING_PRODUCER_AT_A"
+            if bridge_allowed
+            else "CURRENT_RESEARCH_ONLY_RUNTIME_NOT_PRODUCTIVE_LINEAGE"
+        ),
         "current_meta_learning_runtime_surfaces": [
             {
                 "module": "src/experiments/canonical_meta_learning_ingest_v1.py",
@@ -121,25 +148,42 @@ def run_meta_learning_lineage_census_v1(repo_root: Path | None = None) -> dict[s
                 "productive_authority": "NONE",
                 "role": "research_consumer_routing",
             },
+            {
+                "module": "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/meta_learning_routed_evidence_v1.py",
+                "output_schema": P5_META_ROUTED_SCHEMA,
+                "productive_authority": "NONE",
+                "role": "p5_producer_artifact_terminating_at_a",
+            },
         ],
         "meta_evidence_v1_vs_p2_kind_relation": {
             "equated": False,
             "reason": (
-                "meta_evidence_v1 is Phase-23 RESEARCH_ONLY routing envelope; "
-                "meta_learning_routed_evidence_v1 is P1/P2 Master V2 bounded L6 evidence kind. "
-                "Conversion requires explicit semantic binding not established on CURRENT main."
+                "meta_evidence_v1 remains RESEARCH_ONLY; P5 closure routes "
+                f"{P5_META_ROUTED_SCHEMA} from M6 meta_learning_evidence_v1 + binding."
+                if bridge_allowed
+                else (
+                    "meta_evidence_v1 is Phase-23 RESEARCH_ONLY routing envelope; "
+                    "meta_learning_routed_evidence_v1 requires explicit binding."
+                )
             ),
         },
-        "instrument_epoch_in_artifact": False,
+        "instrument_epoch_in_artifact": bridge_allowed,
         "instrument_epoch_notes": (
-            "meta_learning_evidence_v1 carries observed_regime_or_context_ref only; "
-            "no InstrumentBindingV1 / market_observation_epoch without external fabrication."
+            "Instrument/epoch/time sourced from p5_m4_m8_governed_evidence_binding_context_v1 "
+            "(market_context_v1); not from observed_regime_or_context_ref."
+            if bridge_allowed
+            else (
+                "meta_learning_evidence_v1 carries observed_regime_or_context_ref only; "
+                "no InstrumentBindingV1 / market_observation_epoch without external fabrication."
+            )
         ),
         "contract_crosswalk": crosswalk,
         "upstream_invocation_proof": invocation,
-        "productive_lineage_proven": False,
+        "productive_lineage_proven": bridge_allowed,
         "promotion_to_a_mechanically_allowed": crosswalk["producer_bridge_allowed"],
-        "earliest_blocker": "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
+        "earliest_blocker": None
+        if bridge_allowed
+        else "MASTER_V2_EVIDENCE_PROMOTION_REQUIRES_PRODUCTIVE_LINEAGE_AND_ARTIFACT_BINDING",
         "first_unprovable_field": crosswalk.get("first_blocking_field"),
         "first_unprovable_reason": crosswalk.get("first_blocking_reason"),
         "authority_markers": {
@@ -186,7 +230,7 @@ def build_p5_producer_closure_matrix_v1(
             lineage.get("productive_lineage_proven", entry["reachability"] == "CURRENT")
         )
         if producer_class in {"optimization", "meta_learning"}:
-            productive = bool(lineage.get("productive_lineage_proven", False))
+            productive = bool(lineage.get("promotion_to_a_mechanically_allowed", False))
         return {
             "PRODUCER_PRESENT": entry["implementation_status"] != "REGISTRY_ONLY",
             "PRODUCTIVE_LINEAGE_PROVEN": productive,

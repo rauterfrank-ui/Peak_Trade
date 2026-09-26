@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:m4_m8_optimization_meta_learning_evidence_return_closure_v1` |
 | `RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1` |
 
 ## CHANGED_RELATIONS
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- P5 Master V2 / Double Play producer productive ingress; MI+Learning terminate at Component A; optimization (D) and meta_learning (C research-only) blocked at lineage/promotion boundary; PRODUCER_TRADING_AUTHORITY=NONE; AUTHORITY=NONE.
+- P5 final closure: M5/M6 + governed market_context binding → optimization_envelope_evidence_v1 and meta_learning_routed_evidence_v1 at Component A; all four producer classes INTEGRATED_AT_A; PRODUCER_TRADING_AUTHORITY=NONE; M4–M8 reuse unchanged; AUTHORITY=NONE.
 - introduced_by=P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
-- modified_by=P5_MASTER_V2_DOUBLE_PLAY_PRODUCER_PRODUCTIVE_INGRESS_V1
+- modified_by=P5_OPTIMIZATION_META_PRODUCER_FINAL_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

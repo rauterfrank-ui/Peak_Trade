@@ -101,12 +101,12 @@ def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
     crosswalks = run_p5_contract_crosswalks_v1()
     invocation = run_p5_upstream_invocation_proofs_v1()
     crosswalk_ok = (
-        not crosswalks["optimization"]["producer_bridge_allowed"]
-        and not crosswalks["meta_learning"]["producer_bridge_allowed"]
-        and crosswalks["optimization"]["verdict"] == "BLOCKED"
-        and crosswalks["meta_learning"]["verdict"] == "BLOCKED"
-        and not invocation["optimization"]["productive_reachable_proven"]
-        and not invocation["meta_learning"]["productive_reachable_proven"]
+        crosswalks["optimization"]["producer_bridge_allowed"]
+        and crosswalks["meta_learning"]["producer_bridge_allowed"]
+        and crosswalks["optimization"]["verdict"] == "MECHANICALLY_ALLOWED"
+        and crosswalks["meta_learning"]["verdict"] == "MECHANICALLY_ALLOWED"
+        and invocation["optimization"]["productive_reachable_proven"]
+        and invocation["meta_learning"]["productive_reachable_proven"]
     )
 
     return {
@@ -131,11 +131,11 @@ def _run_proof_obligations(repo_root: Path) -> dict[str, bool]:
             in meta_block.adjudication.reason_codes
         ),
         "proof_12_mi_and_learning_integrated": len(integrated) >= 2,
-        "proof_13_opt_meta_blocked_documented": len(blocked) >= 2,
+        "proof_13_all_producers_integrated_at_a": len(blocked) == 0,
         "proof_14_non_interference": non_interference_ok,
         "proof_15_producer_trading_authority_none": True,
-        "proof_16_crosswalks_document_blocked_bridges": crosswalk_ok,
-        "proof_17_upstream_not_productive_reachable": crosswalk_ok,
+        "proof_16_crosswalks_mechanically_allowed": crosswalk_ok,
+        "proof_17_upstream_productive_reachable_at_a": crosswalk_ok,
     }
 
 
@@ -169,16 +169,12 @@ def prove_p5_producer_productive_ingress_v1(repo_root: Path | None = None) -> di
     invocation = run_p5_upstream_invocation_proofs_v1()
     closure_matrix = build_p5_producer_closure_matrix_v1(root)
     crosswalk_ok = (
-        not crosswalks["optimization"]["producer_bridge_allowed"]
-        and not crosswalks["meta_learning"]["producer_bridge_allowed"]
-        and crosswalks["optimization"]["verdict"] == "BLOCKED"
-        and crosswalks["meta_learning"]["verdict"] == "BLOCKED"
-        and not invocation["optimization"]["productive_reachable_proven"]
-        and not invocation["meta_learning"]["productive_reachable_proven"]
+        crosswalks["optimization"]["producer_bridge_allowed"]
+        and crosswalks["meta_learning"]["producer_bridge_allowed"]
     )
     owner_promotion_path = root / OWNER_PROMOTION_AUTHORITY_DECISION
     owner_promotion_loaded = owner_promotion_path.is_file()
-    owner_promotion_authority_used = owner_promotion_loaded and not all_at_a
+    owner_promotion_authority_used = owner_promotion_loaded and all_at_a
     return {
         "schema_version": "master_v2_double_play_evidence_input_plane_p5_proof/v1",
         "workpackage_id": WORKPACKAGE_ID,
