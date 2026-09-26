@@ -123,6 +123,7 @@ REQUIRED_PARTIAL_IDS = (
     "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
     "m4_m8_real_meta_optimization_feedback_continuation_v1",
     "real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_v1",
+    "real_component_a_to_p3_p4_l6_productive_seam_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",

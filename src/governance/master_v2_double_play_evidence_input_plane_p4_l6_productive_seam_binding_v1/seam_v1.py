@@ -15,6 +15,7 @@ from src.governance.master_v2_double_play_evidence_input_plane_p2_evidence_adjud
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.models_v1 import (
     EvidenceIntakeAdjudicationContextV1,
+    MasterV2EvidenceAdjudicationResultV1,
 )
 from src.governance.master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.registry_v1 import (
     load_producer_registry_v1,
@@ -61,91 +62,45 @@ from src.governance.master_v2_double_play_evidence_input_plane_p4_l6_productive_
 )
 
 
-def _no_seam(
-    seam_id: str,
+def _dedup_seam_result_v1(
+    request: ProductiveL6SeamBindingRequestV1,
     *,
-    reason_codes: tuple[str, ...],
-) -> ProductiveL6SeamBindingResultV1:
-    return finalize_seam_result_digest_v1(
-        ProductiveL6SeamBindingResultV1(
-            seam_id=seam_id,
-            disposition=SEAM_NO_BIND_DISPOSITION,
-            reason_codes=reason_codes,
-            seam_result_digest="",
-        )
-    )
-
-
-def run_productive_l6_seam_binding_v1(
-    request: ProductiveL6SeamBindingRequestV1 | None,
-    *,
-    context: ProductiveL6SeamBindingContextV1,
-    repo_root: Path | None = None,
-    adjudication_ledger: AdjudicationLedgerV1 | None = None,
-    binding_ledger: BindingLedgerV1 | None = None,
-    seam_ledger: ProductiveL6SeamLedgerV1 | None = None,
-) -> ProductiveL6SeamBindingResultV1:
-    if not PRODUCTIVE_L6_BINDING_AUTHORIZED:
-        return _no_seam(
-            request.seam_id if request else "",
-            reason_codes=(ProductiveL6SeamFailureCodeV1.GATE_NOT_AUTHORIZED.value,),
-        )
-
-    if request is None:
-        return _no_seam("", reason_codes=(ProductiveL6SeamFailureCodeV1.REQUEST_MISSING.value,))
-
-    seam_ledger = seam_ledger or ProductiveL6SeamLedgerV1()
+    seam_ledger: ProductiveL6SeamLedgerV1,
+) -> ProductiveL6SeamBindingResultV1 | None:
     seam_id = request.seam_id
-
-    if seam_id in seam_ledger.seam_results:
-        fingerprint = compute_seam_request_fingerprint_digest_v1(request)
-        if seam_ledger.seam_fingerprints.get(seam_id) != fingerprint:
-            return _no_seam(
-                seam_id,
-                reason_codes=(ProductiveL6SeamFailureCodeV1.DUPLICATE_SEAM_DIVERGENT.value,),
-            )
-        prior = seam_ledger.seam_results[seam_id]
-        return ProductiveL6SeamBindingResultV1(
-            seam_id=prior.seam_id,
-            disposition=prior.disposition,
-            reason_codes=prior.reason_codes,
-            seam_result_digest=prior.seam_result_digest,
-            adjudication=prior.adjudication,
-            binding=prior.binding,
-            typed_layer_input=prior.typed_layer_input,
-            l6_admission=prior.l6_admission,
-            l6_generator_output=prior.l6_generator_output,
-            l6_consumption_evidence_id=prior.l6_consumption_evidence_id,
-            dedup_replay=True,
-        )
-
-    root = repo_root or Path(__file__).resolve().parents[3]
-    registry = load_producer_registry_v1(root)
-    adjudication_ctx = EvidenceIntakeAdjudicationContextV1(
-        evaluated_at_unix=context.evaluated_at_unix,
-        expected_instrument=context.expected_instrument,
-        expected_market_observation_epoch=context.expected_market_observation_epoch,
-    )
-    adjudication = adjudicate_evidence_intake_v1(
-        request.intake,
-        context=adjudication_ctx,
-        registry=registry,
-        ledger=adjudication_ledger or AdjudicationLedgerV1(),
-    )
-    if adjudication.disposition != ADMIT_DISPOSITION:
-        result = _no_seam(
+    if seam_id not in seam_ledger.seam_results:
+        return None
+    fingerprint = compute_seam_request_fingerprint_digest_v1(request)
+    if seam_ledger.seam_fingerprints.get(seam_id) != fingerprint:
+        return _no_seam(
             seam_id,
-            reason_codes=(ProductiveL6SeamFailureCodeV1.ADJUDICATION_NOT_ADMIT.value,),
+            reason_codes=(ProductiveL6SeamFailureCodeV1.DUPLICATE_SEAM_DIVERGENT.value,),
         )
-        result = ProductiveL6SeamBindingResultV1(
-            seam_id=result.seam_id,
-            disposition=result.disposition,
-            reason_codes=result.reason_codes,
-            seam_result_digest=result.seam_result_digest,
-            adjudication=adjudication,
-        )
-        return finalize_seam_result_digest_v1(result)
+    prior = seam_ledger.seam_results[seam_id]
+    return ProductiveL6SeamBindingResultV1(
+        seam_id=prior.seam_id,
+        disposition=prior.disposition,
+        reason_codes=prior.reason_codes,
+        seam_result_digest=prior.seam_result_digest,
+        adjudication=prior.adjudication,
+        binding=prior.binding,
+        typed_layer_input=prior.typed_layer_input,
+        l6_admission=prior.l6_admission,
+        l6_generator_output=prior.l6_generator_output,
+        l6_consumption_evidence_id=prior.l6_consumption_evidence_id,
+        dedup_replay=True,
+    )
 
+
+def _complete_productive_l6_seam_after_admit_v1(
+    request: ProductiveL6SeamBindingRequestV1,
+    *,
+    adjudication: MasterV2EvidenceAdjudicationResultV1,
+    context: ProductiveL6SeamBindingContextV1,
+    binding_ledger: BindingLedgerV1 | None,
+    seam_ledger: ProductiveL6SeamLedgerV1,
+) -> ProductiveL6SeamBindingResultV1:
+    seam_id = request.seam_id
     binding_ctx = LayerInputBindingContextV1(
         evaluated_at_unix=context.evaluated_at_unix,
         expected_instrument=context.expected_instrument,
@@ -219,3 +174,129 @@ def run_productive_l6_seam_binding_v1(
     seam_ledger.seam_results[seam_id] = result
     seam_ledger.seam_fingerprints[seam_id] = compute_seam_request_fingerprint_digest_v1(request)
     return result
+
+
+def run_productive_l6_seam_from_prior_adjudication_v1(
+    request: ProductiveL6SeamBindingRequestV1 | None,
+    *,
+    prior_adjudication: MasterV2EvidenceAdjudicationResultV1,
+    context: ProductiveL6SeamBindingContextV1,
+    binding_ledger: BindingLedgerV1 | None = None,
+    seam_ledger: ProductiveL6SeamLedgerV1 | None = None,
+) -> ProductiveL6SeamBindingResultV1:
+    """P4 seam using an already-produced Component A ADMIT (no re-adjudication)."""
+    if not PRODUCTIVE_L6_BINDING_AUTHORIZED:
+        return _no_seam(
+            request.seam_id if request else "",
+            reason_codes=(ProductiveL6SeamFailureCodeV1.GATE_NOT_AUTHORIZED.value,),
+        )
+    if request is None:
+        return _no_seam("", reason_codes=(ProductiveL6SeamFailureCodeV1.REQUEST_MISSING.value,))
+
+    seam_ledger = seam_ledger or ProductiveL6SeamLedgerV1()
+    dedup = _dedup_seam_result_v1(request, seam_ledger=seam_ledger)
+    if dedup is not None:
+        return dedup
+
+    if prior_adjudication.disposition != ADMIT_DISPOSITION:
+        result = _no_seam(
+            request.seam_id,
+            reason_codes=(ProductiveL6SeamFailureCodeV1.ADJUDICATION_NOT_ADMIT.value,),
+        )
+        result = ProductiveL6SeamBindingResultV1(
+            seam_id=result.seam_id,
+            disposition=result.disposition,
+            reason_codes=result.reason_codes,
+            seam_result_digest=result.seam_result_digest,
+            adjudication=prior_adjudication,
+        )
+        return finalize_seam_result_digest_v1(result)
+
+    if prior_adjudication.delivery_id != request.intake.delivery_id:
+        return _no_seam(
+            request.seam_id,
+            reason_codes=(ProductiveL6SeamFailureCodeV1.ADJUDICATION_NOT_ADMIT.value,),
+        )
+
+    return _complete_productive_l6_seam_after_admit_v1(
+        request,
+        adjudication=prior_adjudication,
+        context=context,
+        binding_ledger=binding_ledger,
+        seam_ledger=seam_ledger,
+    )
+
+
+def _no_seam(
+    seam_id: str,
+    *,
+    reason_codes: tuple[str, ...],
+) -> ProductiveL6SeamBindingResultV1:
+    return finalize_seam_result_digest_v1(
+        ProductiveL6SeamBindingResultV1(
+            seam_id=seam_id,
+            disposition=SEAM_NO_BIND_DISPOSITION,
+            reason_codes=reason_codes,
+            seam_result_digest="",
+        )
+    )
+
+
+def run_productive_l6_seam_binding_v1(
+    request: ProductiveL6SeamBindingRequestV1 | None,
+    *,
+    context: ProductiveL6SeamBindingContextV1,
+    repo_root: Path | None = None,
+    adjudication_ledger: AdjudicationLedgerV1 | None = None,
+    binding_ledger: BindingLedgerV1 | None = None,
+    seam_ledger: ProductiveL6SeamLedgerV1 | None = None,
+) -> ProductiveL6SeamBindingResultV1:
+    if not PRODUCTIVE_L6_BINDING_AUTHORIZED:
+        return _no_seam(
+            request.seam_id if request else "",
+            reason_codes=(ProductiveL6SeamFailureCodeV1.GATE_NOT_AUTHORIZED.value,),
+        )
+
+    if request is None:
+        return _no_seam("", reason_codes=(ProductiveL6SeamFailureCodeV1.REQUEST_MISSING.value,))
+
+    seam_ledger = seam_ledger or ProductiveL6SeamLedgerV1()
+    dedup = _dedup_seam_result_v1(request, seam_ledger=seam_ledger)
+    if dedup is not None:
+        return dedup
+
+    seam_id = request.seam_id
+    root = repo_root or Path(__file__).resolve().parents[3]
+    registry = load_producer_registry_v1(root)
+    adjudication_ctx = EvidenceIntakeAdjudicationContextV1(
+        evaluated_at_unix=context.evaluated_at_unix,
+        expected_instrument=context.expected_instrument,
+        expected_market_observation_epoch=context.expected_market_observation_epoch,
+    )
+    adjudication = adjudicate_evidence_intake_v1(
+        request.intake,
+        context=adjudication_ctx,
+        registry=registry,
+        ledger=adjudication_ledger or AdjudicationLedgerV1(),
+    )
+    if adjudication.disposition != ADMIT_DISPOSITION:
+        result = _no_seam(
+            seam_id,
+            reason_codes=(ProductiveL6SeamFailureCodeV1.ADJUDICATION_NOT_ADMIT.value,),
+        )
+        result = ProductiveL6SeamBindingResultV1(
+            seam_id=result.seam_id,
+            disposition=result.disposition,
+            reason_codes=result.reason_codes,
+            seam_result_digest=result.seam_result_digest,
+            adjudication=adjudication,
+        )
+        return finalize_seam_result_digest_v1(result)
+
+    return _complete_productive_l6_seam_after_admit_v1(
+        request,
+        adjudication=adjudication,
+        context=context,
+        binding_ledger=binding_ledger,
+        seam_ledger=seam_ledger,
+    )

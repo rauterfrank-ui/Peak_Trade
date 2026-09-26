@@ -1,19 +1,19 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "70391003deddcff50028a75f4fc22adfe2693e36",
+  "base_sha": "ebc10daffc173d2ff76e65e0d94d5ecb0b54c5df",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Real runtime P5 optimization_envelope and meta_learning_routed producer bridges into Evidence Adjudicator A with fail-closed lineage from G2\u2192M4\u2013M8 real path; authority=NONE.",
+  "reason": "Real runtime Component A ADMIT continues through canonical P3 input creator binder and P4 L6 productive seam (prior ADMIT) with fail-closed lineage; authority=NONE.",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1_decision_v1.json",
+    "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -24,24 +24,26 @@
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py",
+    "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
     "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
-    "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
+    "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/__init__.py",
+    "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
+    "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
   ],
-  "changed_paths_sha256": "00eebc9e284fe1b68bb802586fd25c641e691bc74ae50707f6e4bbe01f48ff4b",
+  "changed_paths_sha256": "cb13b342941beabc6e02f466b9eca148f825b39878d659d0dc22cf2fde5bc973",
   "covered_candidate_paths": [
-    "config/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1_decision_v1.json",
-    "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
+    "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py",
+    "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
     "src/governance/governed_runtime_primary_to_offline_observation_projection_closure_v1.py",
-    "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
+    "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py",
+    "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
-    "src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py",
-    "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
+    "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
+    "src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py",
+    "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
   ]
 }

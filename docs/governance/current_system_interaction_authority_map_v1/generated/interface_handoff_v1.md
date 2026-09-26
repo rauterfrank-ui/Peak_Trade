@@ -53,10 +53,13 @@ flowchart LR
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
   ranking_cap22 -->|ranking_witness_b06_to_operator_profile_b11| operator_profile_explainability_b11
+  p5_layered_core -->|real_runtime_component_a_admit_to_p3_binder| p3_input_creator_binder
   g2_runtime_primary_offline_projection -->|real_runtime_g2_to_meta_optimization_feedback_continuation| optimization_universe
+  g2_runtime_primary_offline_projection -->|real_runtime_g2_to_p3_p4_l6_productive_seam_continuation| p4_l6_productive_seam
   g2_runtime_primary_offline_projection -->|real_runtime_g2_to_p5_adjudicator_a_continuation| p5_layered_core
   optimization_universe -->|real_runtime_m4_m8_to_meta_learning_ingest| meta_learning
   meta_learning -->|real_runtime_meta_learning_to_optimization_feedback| optimization_universe
+  p3_input_creator_binder -->|real_runtime_p3_binder_to_p4_l6_productive_seam| p4_l6_productive_seam
   meta_learning -->|real_runtime_p5_meta_learning_routed_to_adjudicator_a| p5_layered_core
   optimization_universe -->|real_runtime_p5_optimization_envelope_to_adjudicator_a| p5_layered_core
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
@@ -923,6 +926,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`
 
+## real_runtime_component_a_admit_to_p3_binder
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=bind_layer_input_from_adjudication_v1 (prior Component A ADMIT)
+- producer=terminate_optimization_envelope_at_a_v1
+- consumer=bind_layer_input_from_adjudication_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_TYPED_BINDING_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1
+- provenance_binding=P3_INPUT_CREATOR_BINDER_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; EVIDENCE_ADMIT_IMPLIES_PRODUCTIVE_ACTIVATION=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/binder_v1.py`, `tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`
+
 ## real_runtime_g2_to_meta_optimization_feedback_continuation
 
 - lifecycle=PROVEN_CURRENT
@@ -940,6 +961,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
+
+## real_runtime_g2_to_p3_p4_l6_productive_seam_continuation
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1
+- producer=run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1
+- consumer=run_productive_l6_seam_from_prior_adjudication_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_L6_TYPED_SEAM_BINDING_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=RUNTIME_G2_LEARNING_EVIDENCE_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1
+- provenance_binding=P3_INPUT_CREATOR_BINDER_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; P4_L6_PRODUCTIVE_SEAM_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`
 
 ## real_runtime_g2_to_p5_adjudicator_a_continuation
 
@@ -994,6 +1033,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`, `src/experiments/canonical_meta_to_optimization_feedback_v1.py`, `tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py`
+
+## real_runtime_p3_binder_to_p4_l6_productive_seam
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=run_productive_l6_seam_from_prior_adjudication_v1
+- producer=bind_layer_input_from_adjudication_v1
+- consumer=run_productive_l6_seam_from_prior_adjudication_v1
+- authority_effect=NONE
+- decision_effect=BOUNDED_L6_TYPED_SEAM_BINDING_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=ADJUDICATION_DIGEST_CHAIN
+- temporal_binding=OBSERVATION_TIME_FROM_PRIMARY_PROVENANCE
+- version_binding=master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1
+- provenance_binding=P4_L6_PRODUCTIVE_SEAM_REAL_BIND_STATUS=PROVEN_REAL_MECHANICAL_PATH; PRODUCTIVE_ACTIVATION_AUTHORIZED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/seam_v1.py`, `tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py`
 
 ## real_runtime_p5_meta_learning_routed_to_adjudicator_a
 
