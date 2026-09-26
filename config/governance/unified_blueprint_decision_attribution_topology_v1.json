@@ -1,0 +1,64 @@
+{
+  "canonical_boundary_module": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+  "census_digest": "bed2f3bf4dd6e08e455b916629b0d80823cd48a75316f23147f258acc689c6ea",
+  "compose_references_dont_duplicate_ownership": true,
+  "entries": [
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/deterministic_decision_outcome_v0/evaluation_engine_v0.py",
+      "path_id": "evaluation_engine_v0",
+      "role": "OFFLINE_OUTCOME_ATTRIBUTION_PRODUCER"
+    },
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/deterministic_decision_outcome_v0/evaluation_records_v0.py",
+      "path_id": "attribution_record_v0",
+      "role": "TYPED_ATTRIBUTION_RECORD_SCHEMA"
+    },
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/deterministic_decision_outcome_v0/real_outcome_horizon_contracts_v1.py",
+      "path_id": "real_outcome_horizon_contracts_v1",
+      "role": "N_BARS_LOOKAHEAD_GUARD"
+    },
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py",
+      "path_id": "learning_outcome_evidence_ingest_v1",
+      "role": "PROVEN_LEARNING_STATE_CONSUMER"
+    },
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/decision_attribution_query_v1.py",
+      "path_id": "mi_decision_attribution_query_v1",
+      "role": "MI_EVIDENCE_REFERENCE_QUERY"
+    },
+    {
+      "authority": "NONE",
+      "classification": "CURRENT",
+      "duplicates_decision_authority": false,
+      "module": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+      "path_id": "unified_blueprint_decision_attribution_evidence_v1",
+      "role": "PHASE_14_CANONICAL_COMPOSE_BOUNDARY"
+    },
+    {
+      "authority": "NONE",
+      "classification": "HISTORICAL_DOMAIN_SCOPED",
+      "duplicates_decision_authority": false,
+      "module": "src/learning/deterministic_decision_outcome_v0/promotion_controller_v0.py",
+      "path_id": "learning_promotion_controller_v0",
+      "role": "NOT_PHASE_14_ATTRIBUTION_AUTHORITY"
+    }
+  ],
+  "schema_version": "unified_blueprint_decision_attribution_topology_v1"
+}

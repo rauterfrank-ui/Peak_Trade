@@ -1,0 +1,37 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_V1",
+  "authorized_baseline_sha": "f2d96e9967adfd967990167925b0990c080d8c75",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
+  "adjudication_module": "src/governance/unified_blueprint_phase_14_decision_attribution_v1.py",
+  "decision_attribution_boundary_module": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+  "blueprint_authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "phase_14_decision_attribution_status": "PROVEN_COMPLETE",
+  "authority_invariants": {
+    "compose_references_dont_duplicate_ownership": true,
+    "attribution_is_evidence_only": true,
+    "decision_authority_not_duplicated": true,
+    "no_self_deploy": true,
+    "mv2_dp_unchanged": true,
+    "cap_2_3_unchanged": true,
+    "phase_13_m10_boundary_required": true,
+    "lookahead_guard_required": true,
+    "fail_closed_identity_binding": true,
+    "attribution_creates_trading_decision": false,
+    "attribution_mutates_selection": false,
+    "promotion_authorized": false,
+    "runtime_apply_authorized": false,
+    "optimizer_direct_productive_write_authorized": false
+  },
+  "evidence_refs": [
+    "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
+    "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+    "config/governance/unified_blueprint_decision_attribution_evidence_v1_decision_v1.json",
+    "config/governance/unified_blueprint_decision_attribution_topology_v1.json",
+    "tests/governance/test_unified_blueprint_decision_attribution_evidence_v1.py",
+    "tests/governance/test_unified_blueprint_phase_14_decision_attribution_v1.py"
+  ],
+  "first_unproven_dependency_after_closure": "Phase 15+ Unified Blueprint steps and M11 promotion automation remain outside default completion; require separate Owner authorization",
+  "next_implementation_boundary": "No automatic follow-on; Phase 14 stops at typed attribution evidence and optional proven learning ingest"
+}

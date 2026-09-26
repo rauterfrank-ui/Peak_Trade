@@ -1,0 +1,12 @@
+{
+  "artifact_class": "UNIFIED_BLUEPRINT_DECISION_ATTRIBUTION_EVIDENCE_DECISION_V1",
+  "workpackage_id": "UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_V1",
+  "bound_origin_main_sha": "f2d96e9967adfd967990167925b0990c080d8c75",
+  "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_14_DECISION_ATTRIBUTION_NORMATIVE_V1.md",
+  "canonical_boundary_module": "src/governance/unified_blueprint_decision_attribution_evidence_v1.py",
+  "phase_14_decision_attribution_status": "PROVEN_COMPLETE",
+  "compose_references_dont_duplicate_ownership": true,
+  "attribution_authority": "NONE",
+  "decision_authority_duplicated": false,
+  "learning_consumer_module": "src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py"
+}
