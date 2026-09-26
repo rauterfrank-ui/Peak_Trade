@@ -32,6 +32,7 @@ flowchart LR
   optimization_universe["optimization_universe CONFLICTING"]
   order_intent["order_intent PARTIAL"]
   p5_layered_core["p5_layered_core PARTIAL"]
+  peak_trade_public_market_data_runtime_wp_a["peak_trade_public_market_data_runtime_wp_a PARTIAL"]
   portfolio_reservation["portfolio_reservation PARTIAL"]
   presentation_dashboard["presentation_dashboard PROVEN_CURRENT"]
   ranking_cap22["ranking_cap22 PROVEN_CURRENT"]
@@ -74,6 +75,8 @@ flowchart LR
   optimization_universe --> governance_promotion
   cap22_research_backtest_live_parity_b09 --> ranking_selection_profile_closure_b12
   portfolio_reservation --> treasury_29p
+  peak_trade_public_market_data_runtime_wp_a --> ranking_cap22
+  peak_trade_public_market_data_runtime_wp_a --> selection_cap23
   ranking_cap22 --> future_profile_snapshot_b07
   ranking_cap22 --> cap22_research_backtest_live_parity_b09
   ranking_cap22 --> selection_cap23
@@ -120,6 +123,7 @@ flowchart LR
 | optimization_universe | FIRST_CLASS | CONFLICTING | CONFLICTING | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | order_intent | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | canonical_order_intent_owner_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | p5_layered_core | INTERMEDIATE | PARTIAL | PARTIAL | src.ops.p5_10_productive_activation_and_binding_v1 | `src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| peak_trade_public_market_data_runtime_wp_a | INTERMEDIATE | PARTIAL | NONE | ops.peak_trade_public_market_data_runtime_v1 | `tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
 | portfolio_reservation | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | portfolio_capital_reservation_budget_owner_v1 | `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py` |
 | presentation_dashboard | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | canonical_read_model_and_market_dashboard_rebuild_v1 | `src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | ranking_cap22 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.productive_futures_ranking_producer_v1 | `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/models_v1.py`, `src/ops/productive_futures_ranking_producer_v1/policy_v1.py`, `src/ops/productive_futures_ranking_producer_v1/producer_v1.py`, `src/ops/productive_futures_ranking_producer_v1/ranking_v1.py`, `src/ops/peak_trade_ranking_matrix_policy_v1.py`, `src/ops/peak_trade_ranking_feature_contract_v1.py`, `src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py`, `docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |

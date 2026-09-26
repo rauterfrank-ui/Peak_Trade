@@ -62,6 +62,35 @@ relations:
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
 
+  - id: REL:s_system_has_public_market_data_runtime_v1
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:peak_trade_public_market_data_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
+    evidence_sources:
+      - tests/ops/test_peak_trade_public_market_data_runtime_v1.py
+    notes: >
+      WP-A public market data runtime capability registration.
+      Observation-only; no trading or selection authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_public_md_runtime_reuses_economic_md_pt1m_validation
+    source: CAPABILITY:peak_trade_public_market_data_runtime_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_economic_md_input
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
+    evidence_sources:
+      - src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py
+      - src/ops/economic_md_input_producer_v1/validation_v1.py
+    notes: >
+      B05 ranking adapter reuses select_finalized_contiguous_pt1m_marks_v1
+      semantics; does not transfer Economic-MD producer scheduling or ranking
+      authority. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_system_has_economic_md_input
     source: SYSTEM:peak_trade
     type: HAS_CAPABILITY

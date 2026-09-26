@@ -313,6 +313,10 @@
     "docs/evidence/peak_trade_robustness_and_stress_v1/",
     "docs/evidence/peak_trade_operator_profile_explainability_v1/",
     "src/ops/peak_trade_operator_profile_explainability_v1/",
-    "tests/ops/test_peak_trade_operator_profile_explainability_v1.py"
+    "tests/ops/test_peak_trade_operator_profile_explainability_v1.py",
+    "src/ops/peak_trade_public_market_data_runtime_v1/",
+    "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
+    "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+    "docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md"
   ]
 }
