@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1`.
 
 ## Workflow
 
@@ -40,14 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:governed_productive_configuration_apply_authority_v1` |
-| `RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1` |
+| `RUNTIME_COMPONENT:governed_runtime_primary_to_offline_observation_projection_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_governed_productive_configuration_apply_authority_v1` |
+| `REL:s_map_navigates_governed_runtime_primary_to_offline_observation_projection_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Governed productive configuration apply authority v1: M10 authorized promotion → typed apply-record only (no runtime materialization); post–Phase 15 remediation currency updated; AUTHORITY=NONE.
-- introduced_by=GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
-- modified_by=GOVERNED_RUNTIME_APPLY_MATERIALIZATION_AUTHORITY_RATIFICATION_V1
+- G2 governed runtime primary→offline observation projection v1: Paper/Shadow/Testnet durable primary evidence mechanical projection into offline observation + learning ingress; authority=NONE; no apply or external effect.
+- introduced_by=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
+- modified_by=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
