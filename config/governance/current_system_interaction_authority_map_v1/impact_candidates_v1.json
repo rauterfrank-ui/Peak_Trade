@@ -321,6 +321,10 @@
     "src/ops/okx_eea_private_account_state_runtime_v1/",
     "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
     "config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json",
-    "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md"
+    "docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md",
+    "src/ops/market_data_private_state_runtime_convergence_v1/",
+    "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+    "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json",
+    "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md"
   ]
 }

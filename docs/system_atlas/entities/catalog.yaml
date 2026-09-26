@@ -574,6 +574,40 @@ entities:
       execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false;
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
+  - id: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    kind: CAPABILITY
+    name: Market Data & Private State Runtime Convergence (WP-C)
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+      - config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json
+    source_paths:
+      - src/ops/market_data_private_state_runtime_convergence_v1/__init__.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/constants_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/effective_authorization_readmodel_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/restart_reconciliation_closure_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/convergence_orchestrator_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py
+      - tests/ops/test_market_data_private_state_runtime_convergence_v1.py
+    evidence_sources:
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+      - config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json
+      - tests/ops/test_market_data_private_state_runtime_convergence_v1.py
+    notes: >-
+      WP-C consumer closure: forensic census, governed handoffs onto WP-A/WP-B
+      canonical facts/state, restart/reconciliation closure proofs, and
+      operator-visible effective authorization readmodel (observation capability
+      distinct from send authority). AUTHORITY=NONE. No selection, rerank,
+      MV2/DP, pretrade, execution, wire, or multi-future authority. Cap 2.3
+      sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:cap22_economic_md_dual_input_v1
     kind: CONTRACT
     name: Cap 2.2 economic-MD dual-input architecture

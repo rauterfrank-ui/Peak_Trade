@@ -120,6 +120,64 @@ relations:
       seam; cached WP-B state must not substitute FRESH_GET_PER_PRETRADE_DECISION.
       ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_system_has_md_private_runtime_convergence_v1
+    source: SYSTEM:peak_trade
+    type: HAS_CAPABILITY
+    target: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+    evidence_sources:
+      - tests/ops/test_market_data_private_state_runtime_convergence_v1.py
+    notes: >
+      WP-C runtime convergence / consumer closure capability registration.
+      Closes governed consumer handoffs for WP-A/WP-B without new authority.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_wp_c_convergence_depends_on_public_md_runtime
+    source: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:peak_trade_public_market_data_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+    evidence_sources:
+      - src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/convergence_orchestrator_v1.py
+    notes: >
+      Public consumer convergence delegates to WP-A adapters and durable facts;
+      forbids competing transport-specific market truth when converged.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_wp_c_convergence_depends_on_private_state_runtime
+    source: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:okx_eea_private_account_state_runtime_v1
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+    evidence_sources:
+      - src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/restart_reconciliation_closure_v1.py
+    notes: >
+      Private consumer convergence delegates to WP-B normalized state/readmodels;
+      REST baseline before WS delta; no second account/position/order/fill truth.
+      ATLAS_AUTHORITY=NONE.
+
+  - id: REL:s_wp_c_preserves_cap23_selection_owner
+    source: CAPABILITY:market_data_private_state_runtime_convergence_v1
+    type: DEPENDS_ON
+    target: CAPABILITY:cap_2_3_single_selected_future
+    epistemic_status: CANONICAL_AUTHORITY
+    authority_sources:
+      - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
+    evidence_sources:
+      - src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py
+      - src/ops/market_data_private_state_runtime_convergence_v1/safety_boundary_v1.py
+    notes: >
+      Mechanical proof Cap 2.3 sole selection owner unchanged; WP-C may not
+      select or rerank. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_system_has_economic_md_input
     source: SYSTEM:peak_trade
     type: HAS_CAPABILITY

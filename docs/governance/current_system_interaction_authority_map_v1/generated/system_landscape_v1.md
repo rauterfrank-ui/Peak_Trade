@@ -27,6 +27,7 @@ flowchart LR
   k1_credential_seam["k1_credential_seam PROVEN_CURRENT"]
   learning_ddo["learning_ddo PARTIAL"]
   m9_volatility_max_age["m9_volatility_max_age PARTIAL"]
+  market_data_private_state_runtime_convergence_wp_c["market_data_private_state_runtime_convergence_wp_c PARTIAL"]
   meta_learning["meta_learning RESEARCH_ONLY"]
   mv2_double_play["mv2_double_play PARTIAL"]
   okx_eea_private_account_state_runtime_wp_b["okx_eea_private_account_state_runtime_wp_b PARTIAL"]
@@ -97,6 +98,9 @@ flowchart LR
   selection_cap23 --> step29m
   treasury_29p --> capital_risk_sizing
   universe_cap21 --> ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c --> ranking_cap22
+  market_data_private_state_runtime_convergence_wp_c --> execution_external_effect
+  market_data_private_state_runtime_convergence_wp_c --> selection_cap23
 ```
 
 | id | tier | status | authority_class | owner | evidence |
@@ -122,6 +126,7 @@ flowchart LR
 | k1_credential_seam | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | K1_NOT_TRADING_DECISION_OWNER | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | learning_ddo | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | src.learning.deterministic_decision_outcome_v0 | `src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | m9_volatility_max_age | INTERMEDIATE | PARTIAL | PARTIAL | m9_volatility_numeric_max_age_numeric_productive_target_v1 | `src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
+| market_data_private_state_runtime_convergence_wp_c | INTERMEDIATE | PARTIAL | NONE | ops.market_data_private_state_runtime_convergence_v1 | `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md` |
 | meta_learning | FIRST_CLASS | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_meta_learning_v1 | `src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | mv2_double_play | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | run_current_productive_master_v2_runtime_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | okx_eea_private_account_state_runtime_wp_b | INTERMEDIATE | PARTIAL | NONE | ops.okx_eea_private_account_state_runtime_v1 | `tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
