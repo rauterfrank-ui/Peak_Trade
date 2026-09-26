@@ -5,10 +5,11 @@
     "L7_SCOPE_STATE"
   ],
   "new_contracts_requiring_owner_authority": [
-    "CanonicalMasterV2EvidenceEnvelopeV1 (Component A \u2014 not implemented)",
-    "CanonicalDpLayerInputBindingV1 (Component B \u2014 not implemented)",
-    "Any non-C1 external evidence type admission per layer"
+    "CanonicalMasterV2EvidenceEnvelopeV1 (P1 contract schema \u2014 runtime blocked)",
+    "CanonicalDpLayerInputBindingV1 (P1 contract schema \u2014 runtime blocked)",
+    "L6BoundedTypedExternalEvidenceInputV1 (P1 L6 typed seam \u2014 runtime blocked)"
   ],
+  "p1_authority_contracts_materialized": true,
   "proven_closed_layers": [
     "L10_BULL_BEAR_STATE_SWITCH",
     "L1_SELECTED_FUTURE",
@@ -24,8 +25,8 @@
     "L6_DYNAMIC_SCOPE_GENERATOR"
   ],
   "remains_blocked": [
-    "Component A/B implementation (explicitly out of P0 scope)",
-    "External-evidence admissibility for L6 beyond caller float (UNKNOWN)",
+    "Component A/B runtime implementation (P1 contract only)",
+    "Productive L6 typed-evidence binding (PRODUCTIVE_L6_BINDING_AUTHORIZED=false)",
     "L1 B-target without Cap 2.3/2.4 authority decision",
     "scope_event_generator vs transition_state conflict resolution (out of scope)",
     "FINAL_D_T_FORMULA_SELECTED=false"
@@ -45,7 +46,6 @@
   "unknown_layers": [
     "L1_SELECTED_FUTURE",
     "L2_MARKET_OBSERVATION",
-    "L6_DYNAMIC_SCOPE_GENERATOR",
     "L7_SCOPE_STATE"
   ]
 }

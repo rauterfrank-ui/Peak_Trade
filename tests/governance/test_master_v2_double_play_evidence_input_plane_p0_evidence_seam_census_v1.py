@@ -33,7 +33,14 @@ def test_p0_census_covers_exactly_l1_l10_with_evidence() -> None:
         assert row["evidence_refs"]
         assert row["owner_evidence"] == "PROVEN_CURRENT"
         adm = row["external_evidence_admissibility"]
-        assert adm in {"PROVEN_CURRENT", "PROVEN_CLOSED", "ABSENT", "CONFLICTING", "UNKNOWN"}
+        assert adm in {
+            "PROVEN_CURRENT",
+            "PROVEN_CLOSED",
+            "PROVEN_BOUNDED_TYPED_ONLY",
+            "ABSENT",
+            "CONFLICTING",
+            "UNKNOWN",
+        }
         assert (
             "external" not in adm.lower()
             or adm != "PROVEN_CURRENT"
@@ -45,7 +52,7 @@ def test_no_blanket_external_evidence_permission() -> None:
     census = run_master_v2_double_play_p0_evidence_seam_census_v1(repo_root=REPO_ROOT)
     for row in census["census_layers"]:
         if row["layer_id"] == "L6_DYNAMIC_SCOPE_GENERATOR":
-            assert row["external_evidence_admissibility"] == "UNKNOWN"
+            assert row["external_evidence_admissibility"] == "PROVEN_BOUNDED_TYPED_ONLY"
             continue
         assert row["external_evidence_admissibility"] in {"PROVEN_CLOSED", "ABSENT", "UNKNOWN"}
 

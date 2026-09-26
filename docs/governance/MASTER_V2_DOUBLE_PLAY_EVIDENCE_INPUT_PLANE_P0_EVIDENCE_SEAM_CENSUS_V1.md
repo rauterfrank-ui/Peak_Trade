@@ -83,7 +83,7 @@ Market Intelligence / Learning evidence types are admissible without P1 contract
 
 1. **O-001 CONFLICTING:** `scope_event_generator` / `transition_state` vs naked layered
    `scope_state` — recorded only; out of scope per Blueprint §5.
-2. **O-002 UNKNOWN:** L6 external-intelligence admissibility vs passthrough float seam.
+2. **O-002 RATIFIED (P1):** L6 bounded typed external evidence only — see P1 authority contracts.
 3. **O-003 UNKNOWN:** L1 Component B targeting without Cap 2.4 authority duplication.
 
 ## P1 design-input readiness
