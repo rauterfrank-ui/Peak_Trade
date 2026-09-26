@@ -2164,6 +2164,19 @@ relations:
       Navigation only. Phase 15 final DoD adjudication matrix;
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: REL:s_map_navigates_unified_blueprint_post_phase_15_dod_remediation_v1
+    source: NAVIGATION_INDEX:map_of_truth
+    type: NAVIGATES_TO
+    target: RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1
+    epistemic_status: NAVIGATION_ONLY
+    evidence_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+      - docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json
+    notes: >
+      Navigation only. Post–Phase 15 bounded DoD remediation;
+      AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: REL:s_map_navigates_unified_blueprint_phase_13_m10_promotion_boundary_v1
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO

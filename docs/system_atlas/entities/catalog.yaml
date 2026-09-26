@@ -8520,6 +8520,23 @@ entities:
       Phase 15 final Unified Blueprint DoD matrix and adjudication (UNKNOWN_NEVER_CLOSES_BY_PLAUSIBILITY);
       AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:unified_blueprint_post_phase_15_dod_remediation_v1
+    kind: RUNTIME_COMPONENT
+    name: Unified Blueprint post–Phase 15 DoD remediation v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_V1
+    source_paths:
+      - src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py
+    evidence_sources:
+      - tests/governance/test_unified_blueprint_post_phase_15_dod_remediation_v1.py
+      - docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md
+      - config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json
+    notes: >-
+      Bounded post–Phase 15 closure for DATA_SUBSTRATE, FAILURE_MEMORY, and PARAMETER_LINEAGE;
+      runtime apply remains out of scope; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:unified_blueprint_phase_13_m10_promotion_boundary_v1
     kind: RUNTIME_COMPONENT
     name: Unified Blueprint Phase 13 M10 promotion boundary v1

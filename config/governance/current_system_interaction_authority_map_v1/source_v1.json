@@ -196,7 +196,7 @@
       "canonical_owner_ref": "ops.peak_trade_public_market_data_runtime_v1",
       "authority_class": "NONE",
       "lifecycle": "OBSERVATION_ONLY",
-      "status": "PARTIAL",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -221,7 +221,7 @@
       "canonical_owner_ref": "ops.okx_eea_private_account_state_runtime_v1",
       "authority_class": "NONE",
       "lifecycle": "OBSERVATION_ONLY",
-      "status": "PARTIAL",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -246,7 +246,7 @@
       "canonical_owner_ref": "ops.market_data_private_state_runtime_convergence_v1",
       "authority_class": "NONE",
       "lifecycle": "OBSERVATION_ONLY",
-      "status": "PARTIAL",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -609,11 +609,11 @@
     {
       "id": "optimization_universe",
       "tier": "FIRST_CLASS",
-      "role": "Research registry. Productive and promotion authority are none. M4 non-goals disagree with later M5-M10 modules.",
+      "role": "Research registry and experiment plane; prior CONFLICTING adjudicated documentary (M4-era non-goals vs Phase 9–13 integration); productive and promotion authority NONE.",
       "canonical_owner_ref": "src.experiments.canonical_optimization_universe_v1",
-      "authority_class": "CONFLICTING",
-      "lifecycle": "PRODUCTIVE_AUTHORITY_NONE",
-      "status": "CONFLICTING",
+      "authority_class": "NONE",
+      "lifecycle": "RESEARCH_ONLY",
+      "status": "RESEARCH_ONLY",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
@@ -2771,14 +2771,15 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 15 final DoD adjudication on origin/main @ 0d1ca4dd35cad92fbbe07da544e6bc6b0985b254 (AUTHORITY=NONE). Machine-readable matrix config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json adjudicates 13 DoD families from CURRENT evidence; aggregate UNIFIED_BLUEPRINT_DOD=PARTIAL (DATA_SUBSTRATE, PARAMETER_LINEAGE, FAILURE_MEMORY partial; M11 outside default). Phase 14 attribution boundary remains evidence-only. Global negative authority pins preserved (OPTIMIZATION_PROMOTION_AUTHORITY=NONE; AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false).",
+      "statement": "NAVIGATION_INDEX: Post–Phase 15 Unified Blueprint DoD remediation on origin/main @ 11e0601b1b6f8124701247ae9bb98c195dd5646c (AUTHORITY=NONE). Bounded closure for DATA_SUBSTRATE, FAILURE_MEMORY, and PARAMETER_LINEAGE via config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json; aggregate UNIFIED_BLUEPRINT_DOD=PROVEN_COMPLETE (13/13). Governed runtime apply/materialization beyond M10 authorized promotion remains separate Owner decision (AUTHORIZED_PROMOTION_IMPLIES_RUNTIME_APPLY=false; M11 outside default).",
       "evidence_refs": [
+        "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
+        "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md",
+        "src/governance/unified_blueprint_post_phase_15_dod_remediation_v1.py",
         "config/governance/unified_blueprint_phase_15_final_dod_v1.json",
         "config/governance/unified_blueprint_phase_15_final_dod_matrix_v1.json",
         "src/governance/unified_blueprint_phase_15_final_dod_v1.py",
-        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md",
-        "config/governance/unified_blueprint_phase_14_decision_attribution_v1.json",
-        "config/governance/unified_blueprint_phase_13_m10_promotion_boundary_v1.json"
+        "docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_15_FINAL_DOD_NORMATIVE_V1.md"
       ]
     },
     {

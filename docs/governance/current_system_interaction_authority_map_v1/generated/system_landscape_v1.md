@@ -27,16 +27,16 @@ flowchart LR
   k1_credential_seam["k1_credential_seam PROVEN_CURRENT"]
   learning_ddo["learning_ddo PARTIAL"]
   m9_volatility_max_age["m9_volatility_max_age PARTIAL"]
-  market_data_private_state_runtime_convergence_wp_c["market_data_private_state_runtime_convergence_wp_c PARTIAL"]
+  market_data_private_state_runtime_convergence_wp_c["market_data_private_state_runtime_convergence_wp_c PROVEN_CURRENT"]
   market_intelligence_forecast_calibration_offline_stack_d03["market_intelligence_forecast_calibration_offline_stack_d03 PARTIAL"]
   meta_learning["meta_learning RESEARCH_ONLY"]
   mv2_double_play["mv2_double_play PARTIAL"]
-  okx_eea_private_account_state_runtime_wp_b["okx_eea_private_account_state_runtime_wp_b PARTIAL"]
+  okx_eea_private_account_state_runtime_wp_b["okx_eea_private_account_state_runtime_wp_b PROVEN_CURRENT"]
   operator_profile_explainability_b11["operator_profile_explainability_b11 PROVEN_CURRENT"]
-  optimization_universe["optimization_universe CONFLICTING"]
+  optimization_universe["optimization_universe RESEARCH_ONLY"]
   order_intent["order_intent PARTIAL"]
   p5_layered_core["p5_layered_core PARTIAL"]
-  peak_trade_public_market_data_runtime_wp_a["peak_trade_public_market_data_runtime_wp_a PARTIAL"]
+  peak_trade_public_market_data_runtime_wp_a["peak_trade_public_market_data_runtime_wp_a PROVEN_CURRENT"]
   portfolio_reservation["portfolio_reservation PARTIAL"]
   presentation_dashboard["presentation_dashboard PROVEN_CURRENT"]
   ranking_cap22["ranking_cap22 PROVEN_CURRENT"]
@@ -134,16 +134,16 @@ flowchart LR
 | k1_credential_seam | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | K1_NOT_TRADING_DECISION_OWNER | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | learning_ddo | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | src.learning.deterministic_decision_outcome_v0 | `src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | m9_volatility_max_age | INTERMEDIATE | PARTIAL | PARTIAL | m9_volatility_numeric_max_age_numeric_productive_target_v1 | `src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
-| market_data_private_state_runtime_convergence_wp_c | INTERMEDIATE | PARTIAL | NONE | ops.market_data_private_state_runtime_convergence_v1 | `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md` |
+| market_data_private_state_runtime_convergence_wp_c | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.market_data_private_state_runtime_convergence_v1 | `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md` |
 | market_intelligence_forecast_calibration_offline_stack_d03 | INTERMEDIATE | PARTIAL | NONE | learning.market_intelligence_forecast_calibration_offline_stack_v1 | `tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py`, `docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md` |
 | meta_learning | FIRST_CLASS | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_meta_learning_v1 | `src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | mv2_double_play | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | run_current_productive_master_v2_runtime_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
-| okx_eea_private_account_state_runtime_wp_b | INTERMEDIATE | PARTIAL | NONE | ops.okx_eea_private_account_state_runtime_v1 | `tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
+| okx_eea_private_account_state_runtime_wp_b | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.okx_eea_private_account_state_runtime_v1 | `tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
 | operator_profile_explainability_b11 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_operator_profile_explainability_v1 | `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`, `src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py` |
-| optimization_universe | FIRST_CLASS | CONFLICTING | CONFLICTING | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| optimization_universe | FIRST_CLASS | RESEARCH_ONLY | NONE | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | order_intent | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | canonical_order_intent_owner_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | p5_layered_core | INTERMEDIATE | PARTIAL | PARTIAL | src.ops.p5_10_productive_activation_and_binding_v1 | `src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
-| peak_trade_public_market_data_runtime_wp_a | INTERMEDIATE | PARTIAL | NONE | ops.peak_trade_public_market_data_runtime_v1 | `tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
+| peak_trade_public_market_data_runtime_wp_a | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_public_market_data_runtime_v1 | `tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
 | portfolio_reservation | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | portfolio_capital_reservation_budget_owner_v1 | `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py` |
 | presentation_dashboard | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | canonical_read_model_and_market_dashboard_rebuild_v1 | `src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | ranking_cap22 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.productive_futures_ranking_producer_v1 | `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/models_v1.py`, `src/ops/productive_futures_ranking_producer_v1/policy_v1.py`, `src/ops/productive_futures_ranking_producer_v1/producer_v1.py`, `src/ops/productive_futures_ranking_producer_v1/ranking_v1.py`, `src/ops/peak_trade_ranking_matrix_policy_v1.py`, `src/ops/peak_trade_ranking_feature_contract_v1.py`, `src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py`, `docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |

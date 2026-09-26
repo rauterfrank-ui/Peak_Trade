@@ -44,18 +44,18 @@ def test_matrix_covers_all_dod_families_with_truthful_verdict() -> None:
     assert len(DOD_FAMILY_IDS) == 13
     assert sum(counts.values()) == 13
     verdict = compute_unified_blueprint_dod_verdict_v1(matrix)
-    assert verdict == UnifiedBlueprintDodVerdict.PARTIAL
-    assert counts["PARTIAL"] >= 1
-    assert counts["PROVEN"] >= 1
+    assert verdict == UnifiedBlueprintDodVerdict.PROVEN_COMPLETE
+    assert counts["PROVEN"] == 13
+    assert counts["PARTIAL"] == 0
     assert _doc()["unified_blueprint_dod_verdict"] == verdict.value
 
 
-def test_partial_families_are_data_substrate_parameter_lineage_failure_memory() -> None:
+def test_remediated_families_are_proven_after_post_phase_15_closure() -> None:
     matrix = load_final_dod_matrix_v1(repo_root=REPO_ROOT)
     by_id = {row["dod_family"]: row for row in matrix["dod_families"]}
-    assert by_id["DATA_SUBSTRATE"]["classification"] == "PARTIAL"
-    assert by_id["PARAMETER_LINEAGE"]["classification"] == "PARTIAL"
-    assert by_id["FAILURE_MEMORY"]["classification"] == "PARTIAL"
+    assert by_id["DATA_SUBSTRATE"]["classification"] == "PROVEN"
+    assert by_id["PARAMETER_LINEAGE"]["classification"] == "PROVEN"
+    assert by_id["FAILURE_MEMORY"]["classification"] == "PROVEN"
 
 
 def test_global_negative_authority_invariants() -> None:
@@ -69,6 +69,6 @@ def test_global_negative_authority_invariants() -> None:
 def test_phase_15_summary_records_m11_outside_default() -> None:
     summary = build_phase_15_integration_summary_v1(repo_root=REPO_ROOT)
     assert summary["phase_15_final_dod_adjudication_status"] == "PROVEN_COMPLETE"
-    assert summary["unified_blueprint_dod_verdict"] == "PARTIAL"
+    assert summary["unified_blueprint_dod_verdict"] == "PROVEN_COMPLETE"
     assert summary["cross_phase_0_14_reproof"]["all_pass"] is True
     assert summary["m11_outside_default_completion"] is True
