@@ -1100,6 +1100,30 @@
       ]
     },
     {
+      "id": "productive_activation_boundary_forensic_review",
+      "tier": "INTERMEDIATE",
+      "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
+      "canonical_owner_ref": "productive_activation_boundary_forensic_review_v1",
+      "authority_class": "NONE",
+      "lifecycle": "FORENSIC_REVIEW_COMPLETE_FAIL_CLOSED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/productive_activation_boundary_forensic_review_v1/proof_v1.py",
+        "src/governance/governed_productive_activation_boundary_forensic_review_closure_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_productive_activation_boundary_forensic_review_v1.py",
+        "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json"
+      ]
+    },
+    {
       "id": "survival_suitability_composition",
       "tier": "INTERMEDIATE",
       "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Post-confirmation survival/suitability composition binding; not a closed single-owner string.",
@@ -4046,6 +4070,17 @@
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
+      ]
+    },
+    {
+      "id": "productive_activation_boundary_forensic_review_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Productive Activation boundary forensic review post-#6889: named earliest unclosed boundary in F1/M9 decisions; no global activation owner; F1/M9 consumer path wired not activation; P5.10 bind distinct from cutover; PRE_EXTERNAL + standing POST/external-effect fail-closed; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_productive_activation_boundary_forensic_review_v1.py"
       ]
     }
   ]

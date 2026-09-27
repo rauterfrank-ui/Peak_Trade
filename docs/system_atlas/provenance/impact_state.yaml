@@ -1,21 +1,16 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
-modified_by: GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
+introduced_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
+modified_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  F1/M9 productive runtime threshold consumer wiring (600s); hardening v2 bridge and integrated
-  offline replay consume seam transport, presence gate, and bounded enforcement; no Productive
-  Activation.
+  Productive Activation boundary forensic review post-#6889; census + static proof only;
+  F1/M9 600s consumer path wired not activation; no POST/permit/continuous-run authorization.
 changed_entities:
-  - HOST:wallclock_decision_economics_cycle
-  - RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1
-  - RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1
-  - RUNTIME_COMPONENT:governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1
-  - RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1
-  - RUNTIME_COMPONENT:mv2_integrated_replay
+  - CONTRACT:productive_activation_boundary_forensic_review_v1
+  - RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

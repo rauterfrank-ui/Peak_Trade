@@ -7041,6 +7041,29 @@ entities:
       boundary after #6732; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true with
       REQUIRED_CLOSURE_COUNT=0; no permit/POST/wire authorization; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:productive_activation_boundary_forensic_review_v1
+    kind: CONTRACT
+    name: Productive Activation boundary forensic review v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
+    authority_sources:
+      - docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md
+    source_paths:
+      - docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md
+      - src/governance/productive_activation_boundary_forensic_review_v1/__init__.py
+      - src/governance/productive_activation_boundary_forensic_review_v1/constants_v1.py
+      - src/governance/productive_activation_boundary_forensic_review_v1/proof_v1.py
+      - tests/governance/test_productive_activation_boundary_forensic_review_v1.py
+    evidence_sources:
+      - docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md
+      - src/governance/productive_activation_boundary_forensic_review_v1/proof_v1.py
+      - config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json
+    notes: >-
+      Post-#6889 Owner-GO forensic census + static proof; consumer reachability does not mint
+      Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # Layered episode-store bootstrap at S7 compose for bilateral ARMED→ENTER persistence;
@@ -8547,6 +8570,24 @@ entities:
     notes: >-
       Owner GO continuation; reuses apply-start bound seam; STOP before Productive Activation.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
+    kind: RUNTIME_COMPONENT
+    name: Productive Activation boundary forensic review v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
+    source_paths:
+      - src/governance/productive_activation_boundary_forensic_review_v1/proof_v1.py
+      - src/governance/governed_productive_activation_boundary_forensic_review_closure_v1.py
+    evidence_sources:
+      - tests/governance/test_productive_activation_boundary_forensic_review_v1.py
+      - config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json
+      - docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md
+    notes: >-
+      Static proof binds F1/M9 consumer closure + PRE_EXTERNAL census; names PRODUCTIVE_ACTIVATION
+      as earliest unclosed boundary without minting activation. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1
     kind: RUNTIME_COMPONENT

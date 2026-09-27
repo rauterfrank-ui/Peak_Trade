@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1`.
 
 ## Workflow
 
@@ -40,12 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `HOST:wallclock_decision_economics_cycle` |
-| `RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1` |
-| `RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1` |
-| `RUNTIME_COMPONENT:governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1` |
-| `RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1` |
-| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `CONTRACT:productive_activation_boundary_forensic_review_v1` |
+| `RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -97,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- F1/M9 productive runtime threshold consumer wiring (600s); hardening v2 bridge and integrated offline replay consume seam transport, presence gate, and bounded enforcement; no Productive Activation.
-- introduced_by=GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
-- modified_by=GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1
+- Productive Activation boundary forensic review post-#6889; census + static proof only; F1/M9 600s consumer path wired not activation; no POST/permit/continuous-run authorization.
+- introduced_by=PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
+- modified_by=PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
