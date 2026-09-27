@@ -71,6 +71,12 @@ from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_trans
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1 import (
+    resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+    CurrentProductiveFullCorePreExternalClosureResultV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
     _assert_no_secrets,
     _persist_json,
@@ -92,7 +98,7 @@ THIS_SLICE = (
     "11.2.1.DM.FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_"
     "BOUND_SINGLE_USE_PERMIT_V1"
 )
-EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "ef317a10636bada3e2e570a39cc230a035bbfe7b"
+EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "04345330c0898ccf2682c88fd58c32f102a8001d"
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_actual_venue_post_with_fresh_envelope_"
     "bound_single_use_permit_v1"
@@ -193,6 +199,27 @@ def _enter_reconciliation_v1(
     blob = json.dumps(result.payload, sort_keys=True, default=str)[:4096]
     _assert_no_secrets({"preview": blob})
     return "READ_ONLY_POSITION_SNAPSHOT_RECORDED"
+
+
+def prove_pre_live_actual_venue_post_readiness_from_pre_external_closure_v1(
+    *,
+    owner_go: str,
+    baseline_origin_main_sha: str,
+    closure: CurrentProductiveFullCorePreExternalClosureResultV1,
+    store_root: Path | str,
+    k1_backend: OsNativeStoreLookupBackendV1 | None = None,
+) -> dict[str, str]:
+    """Resolve fresh EXECUTABLE envelope from PRE_EXTERNAL closure; pre-live only."""
+    envelope = resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1(
+        closure
+    )
+    return prove_pre_live_actual_venue_post_readiness_v1(
+        owner_go=owner_go,
+        baseline_origin_main_sha=baseline_origin_main_sha,
+        envelope=envelope,
+        store_root=store_root,
+        k1_backend=k1_backend,
+    )
 
 
 def prove_pre_live_actual_venue_post_readiness_v1(
@@ -438,5 +465,6 @@ __all__ = [
     "CurrentProductiveActualVenuePostError",
     "CurrentProductiveActualVenuePostResultV1",
     "execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
+    "prove_pre_live_actual_venue_post_readiness_from_pre_external_closure_v1",
     "prove_pre_live_actual_venue_post_readiness_v1",
 ]

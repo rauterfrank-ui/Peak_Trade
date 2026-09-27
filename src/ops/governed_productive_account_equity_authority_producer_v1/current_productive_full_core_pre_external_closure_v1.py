@@ -43,6 +43,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
 )
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     FullCoreFreshPretradeGetTransportV1,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
@@ -159,6 +162,7 @@ class CurrentProductiveFullCorePreExternalClosureResultV1:
     envelope_readiness: str = ""
     pre_external_effect_boundary_reached: str = ""
     capital_context_bound: str = ""
+    fresh_executable_enter_final_order_envelope: FinalOrderEnvelopeV1 | None = None
 
 
 def _utc_now_iso_v1() -> str:
@@ -344,6 +348,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             blockers_closed=tuple(blockers_closed),
             earliest_remaining_blocker=blocker,
             manifest_verify_rc=manifest_rc,
+            fresh_executable_enter_final_order_envelope=None,
         )
 
     try:
@@ -486,6 +491,9 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         master_v2_decision = str(getattr(cycle, "master_v2_decision", "") or "")
         envelope_created = bool(getattr(cycle, "envelope_created", False))
         envelope_identity = str(getattr(cycle, "envelope_identity", "") or "")
+        fresh_envelope = getattr(cycle, "final_order_envelope", None)
+        if fresh_envelope is not None and not isinstance(fresh_envelope, FinalOrderEnvelopeV1):
+            fresh_envelope = None
 
         if post_count != 0 or permit_created:
             raise CurrentProductiveFullCorePreExternalClosureError("EXTERNAL_EFFECT_OR_POST_LEAK")
@@ -534,6 +542,21 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             final_envelope_id = str(parts.get("envelope_id", "") or "")
             final_envelope_digest = str(parts.get("digest", "") or "")
 
+        runtime_envelope_available = (
+            TRUE_TOKEN
+            if fresh_envelope is not None
+            and decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            else FALSE_TOKEN
+        )
+        if (
+            terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            and decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+            and fresh_envelope is None
+        ):
+            earliest = "FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME"
+            wp2_status = "FAIL"
+
         claims = {
             "OWNER_GO": owner_go,
             "THIS_SLICE": THIS_SLICE,
@@ -575,6 +598,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             "FINAL_ENVELOPE_CREATED": TRUE_TOKEN if envelope_created else FALSE_TOKEN,
             "FINAL_ENVELOPE_ID": final_envelope_id,
             "FINAL_ENVELOPE_DIGEST": final_envelope_digest,
+            "FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_AVAILABLE": runtime_envelope_available,
             "PRE_EXTERNAL_EFFECT_BOUNDARY_REACHED": pre_external_reached,
             "CAPITAL_CONTEXT_BOUND": capital_context_bound,
             "VENUE_MUTATION_PERFORMED": FALSE_TOKEN,
@@ -584,6 +608,10 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         }
         _assert_no_secrets(claims)
         _persist_json(path=store / "claims.json", payload=claims)
+        if fresh_envelope is not None:
+            envelope_json = fresh_envelope.to_runtime_json_v1()
+            _assert_no_secrets(envelope_json)
+            _persist_json(path=store / "FINAL_ORDER_ENVELOPE.json", payload=envelope_json)
         _persist_json(
             path=store / "SUMMARY.json",
             payload={
@@ -642,6 +670,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             envelope_readiness=envelope_readiness,
             pre_external_effect_boundary_reached=pre_external_reached,
             capital_context_bound=capital_context_bound,
+            fresh_executable_enter_final_order_envelope=fresh_envelope,
         )
     finally:
         release_productive_credential_handle_v1(handle)

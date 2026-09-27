@@ -404,6 +404,7 @@ def _t2_from_s7(
                     venue_plan_status="BOUND",
                     final_envelope_id=str(envelope.envelope_id),
                     final_envelope_digest=str(envelope.envelope_digest),
+                    final_order_envelope=envelope,
                     permit_created=_FALSE,
                     post_count="0",
                     first_real_blocker="",
