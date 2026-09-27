@@ -70,6 +70,9 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1 (PR #6925):
+    # navigation-only review-SHA rebind; companion C2 runtime conversion scaffold;
+    # no shadow/live binding; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1 (PR #6924):
     # navigation-only review-SHA rebind; CSIA mechanical open-record closures;
     # execution_external_effect representation fix; non-blocking forensic/XPERP census markers;
@@ -92,7 +95,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1
+    modified_by: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -115,6 +118,9 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1 (PR #6925):
+    # CURRENT_REVIEWED_AT_SHA navigation rebind only; companion C2 runtime scaffold;
+    # map_authority=NONE; no MOT SSOT change; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
     # NAVIGATION_ONLY: CSIA source_v1.json frozen 9-row semantic topology closure (CL-001..CL-004);
     # regenerated docs/governance/current_system_interaction_authority_map_v1/generated/* only;
@@ -174,7 +180,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1
+    modified_by: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
@@ -5366,6 +5372,31 @@ entities:
       runtime witness for Full-Core B05 chain closure. Companion C2 remains
       UNRESOLVED; does not confer conversion readiness. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:companion_c2_fraction_to_units_runtime_completion_v1
+    # atlas_entity_review: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1 (PR #6925):
+    # fail-closed runtime conversion scaffold; COMPANION_RUNTIME_CONVERSION_ENABLED=false;
+    # no shadow_session/live_session binding; RUNTIME_SEMANTICS_CHANGED=false;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+    kind: RUNTIME_COMPONENT
+    name: Companion C2 Fraction→Units runtime completion scaffold v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    semantic_authority: false
+    modified_by: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
+    source_paths:
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/runtime_conversion_v1.py
+      - src/governance/companion_c2_fraction_to_units_runtime_completion_v1.py
+      - config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json
+      - docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md
+      - tests/ops/test_companion_c2_fraction_to_units_runtime_completion_v1.py
+      - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
+    notes: >-
+      Fail-closed companion C2 runtime conversion scaffold reusing read-binding and
+      algebra owners; passthrough fraction default; producer binding deferred to
+      scoped Owner-GO. Does not confer external effect or POST authority.
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # PR_6918 TRACK_A_FINAL_CLOSURE_FIXTURE: natural-enter Live-29P EPOCH + layered upscope fixture alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.

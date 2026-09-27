@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "842d8a1944e17345aeda2712f2fb30d49efa98e4",
+  "baseline_sha": "3899cc8518e1fc963369daa2ca3a165dab9d78c4",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -4349,13 +4349,13 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=842d8a1944e17345aeda2712f2fb30d49efa98e4 POST_6923 authority/open-evidence closure census WP; map baseline_sha rebound; navigation-only.",
+      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4 POST_6924 companion C2 runtime completion scaffold + navigation rebind WP; map baseline_sha rebound; navigation-only.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
-      "closure_note": "Review stamp rebound POST_6923 authority/open-evidence closure census; navigation-only."
+      "closure_note": "Review stamp rebound POST_6924 companion runtime scaffold WP; navigation-only."
     },
     {
       "id": "treasury_import_wording",
@@ -4810,7 +4810,21 @@
         "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py"
       ],
       "closure_adjudication_class": "PROVEN_CURRENT",
-      "closure_note": "C2 companion conversion dependency closure ratified (CONVERSION_READY=true); Companion Shadow/Live runtime Fraction→Units wiring absent — RUNTIME_WIRING_GAP not Full-Core bounded-kernel blocker."
+      "closure_note": "C2 companion conversion dependency closure ratified (CONVERSION_READY=true); runtime conversion scaffold v1 present; shadow/live producer binding still absent."
+    },
+    {
+      "id": "companion_c2_fraction_to_units_runtime_completion_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1: fail-closed runtime_conversion_v1 scaffold reuses read-binding + algebra; COMPANION_RUNTIME_CONVERSION_ENABLED=false; passthrough fraction preserved; shadow_session/live_session unbound; NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=false.",
+      "evidence_refs": [
+        "docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md",
+        "config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json",
+        "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/runtime_conversion_v1.py",
+        "tests/ops/test_companion_c2_fraction_to_units_runtime_completion_v1.py",
+        "tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Producer binding on shadow/live paths requires scoped Owner-GO; not activated in this WP."
     },
     {
       "id": "g2_runtime_primary_offline_observation_projection_v1",

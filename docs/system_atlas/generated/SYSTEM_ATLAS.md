@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `842d8a1944e17345aeda2712f2fb30d49efa98e4`. Worktree dirty records are not origin/main truth.
+Census SHA: `3899cc8518e1fc963369daa2ca3a165dab9d78c4`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -630,7 +630,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `126`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `127`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -700,8 +700,8 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=842d8a1944e17345aeda2712f2fb30d49efa98e4
-ENTITY_TOTAL=295
+CURRENT_ORIGIN_MAIN_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4
+ENTITY_TOTAL=296
 HUB_RELATION_COUNT=72
 STRUCTURAL_RELATION_COUNT=242
 RUNTIME_RELATION_COUNT=101
@@ -794,7 +794,7 @@ Remaining census domains:
 | OWNER_DECISION | 2 |
 | PHASE | 1 |
 | RUNBOOK | 2 |
-| RUNTIME_COMPONENT | 135 |
+| RUNTIME_COMPONENT | 136 |
 | SCHEMA | 5 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "842d8a1944e17345aeda2712f2fb30d49efa98e4"
+BASELINE_SHA = "3899cc8518e1fc963369daa2ca3a165dab9d78c4"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -103,6 +103,7 @@ REQUIRED_PARTIAL_IDS = (
     "whole_core_pre_external_egress_proof_closure_v1",
     "whole_core_productive_q0_q1_authority_ratification_v1",
     "c2_companion_conversion_dependency_closure_v1",
+    "companion_c2_fraction_to_units_runtime_completion_v1",
     "g2_runtime_primary_offline_observation_projection_v1",
     "g2_runtime_learning_input_to_optimization_universe_binding_v1",
     "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",

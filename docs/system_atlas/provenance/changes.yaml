@@ -78,6 +78,16 @@ changes:
       open-record closures; execution_external_effect representation fix; non-blocking
       forensic/XPERP census markers; navigation-only review-SHA rebind. RUNTIME_SEMANTICS_CHANGED=false.
       Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6924_companion_c2_runtime_completion_navigation_rebind
+    from: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
+    to: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6924 companion C2 runtime completion scaffold: fail-closed runtime module;
+      CSIA open record; baseline_sha/navigation rebind; no shadow/live producer binding.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
