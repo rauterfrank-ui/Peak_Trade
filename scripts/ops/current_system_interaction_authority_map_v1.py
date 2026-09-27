@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "32171b35e631cab767dca4f5fcd99b8a837caf23"
+BASELINE_SHA = "7bf14311fc30f38bffbfe09738c8135c2e99508b"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -70,15 +70,13 @@ REQUIRED_UNKNOWN_IDS = (
     "reselect_rerank_absence",
     "double_play_slot_crs_handoff",
     "sealed_venue_number_29p",
-    "kill_switch_full_core_safety_owner",
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
 )
-REQUIRED_CONFLICTING_IDS = ("limit_names_vs_equity_collapse",)
+REQUIRED_CONFLICTING_IDS: tuple[str, ...] = ()
 REQUIRED_PARTIAL_IDS = (
     "ranking_activation",
     "mv2_proof_baseline_sha",
-    "safety_owner_unclosed",
     "p5_bind_without_cutover",
     "portfolio_budget",
     "replay_provenance_drop",
