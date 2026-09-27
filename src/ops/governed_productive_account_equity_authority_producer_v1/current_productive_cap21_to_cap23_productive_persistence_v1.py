@@ -154,6 +154,8 @@ def run_cap21_to_cap23_persist_productive_v1(
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
+    assert_current_productive_cap22_ranking_policy_binding_v1()
+
     uni_root = store / "runtime_state" / "universe"
     rank_root = store / "runtime_state" / "ranking"
     sel_root = store / "runtime_state" / "selection"

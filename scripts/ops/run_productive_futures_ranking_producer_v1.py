@@ -25,6 +25,10 @@ from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (  # noq
 from src.ops.productive_futures_ranking_producer_v1.producer_v1 import (  # noqa: E402
     run_productive_futures_ranking_producer_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_reserved_productivity_root_guard_v1 import (  # noqa: E402
+    ReservedCap24ProductivityRootError,
+    assert_standalone_capability_state_root_not_reserved_cap24_v1,
+)
 
 
 def _git_sha() -> str:
@@ -49,6 +53,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--observed-at-unix", type=float, default=None)
     parser.add_argument("--max-universe-age-seconds", type=float, default=86400.0)
     args = parser.parse_args(argv)
+
+    try:
+        assert_standalone_capability_state_root_not_reserved_cap24_v1(args.state_root)
+    except ReservedCap24ProductivityRootError as exc:
+        print(json.dumps({"ok": False, "failure_codes": [exc.failure_code], "error": str(exc)}))
+        return 2
 
     if args.universe_snapshot_json is None and args.universe_state_root is None:
         parser.error("one of --universe-snapshot-json or --universe-state-root is required")
