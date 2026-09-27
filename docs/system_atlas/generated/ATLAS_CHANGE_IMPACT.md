@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1: companion C2 runtime conversion scaffold; CSIA open record; navigation review-SHA rebind to 3899cc8518e1fc963369daa2ca3a165dab9d78c4; map baseline_sha repair; no shadow/live binding; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1: CURRENT navigation/provenance rebind to 744a9c896f53d33b2d3c24977da1891a2e8549f1 after PR #6925 squash-merge; Master Runbook, Map of Truth, CSIA baseline_sha, Atlas census_meta; no runtime/authority/policy semantics change; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
+- modified_by=POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -1,19 +1,17 @@
 schema_version: system_atlas.v1
-origin_main_sha: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
-current_reviewed_at_sha: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
-origin_main_subject: 'docs(governance): final CURRENT authority closure limit/equity + layered safety (#6921)'
+origin_main_sha: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+current_reviewed_at_sha: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+origin_main_subject: 'POST_6924 companion C2 runtime completion scaffold v1 (#6925)'
 census_date_role: workpackage_bound_not_runtime_truth
 worktree_dirty: false
-navigation_rebind_sha: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
-navigation_rebind_kind: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
+navigation_rebind_sha: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+navigation_rebind_kind: POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1
 domain_census_payloads_bound_sha: null
 domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
 historical_domain_census_payload_count: 0
 historical_domain_census_stale_defect_if_head_differs: false
-worktree_note: 'POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1: fail-closed companion runtime conversion scaffold;
-  CSIA open record + navigation review-SHA rebind to squash-merge HEAD; no shadow/live binding; no POST/external effect.
-  RUNTIME_SEMANTICS_CHANGED=false; Atlas AUTHORITY=NONE.'
+worktree_note: 'POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1: CURRENT_REVIEWED_AT_SHA / origin_main_sha / CSIA baseline_sha mechanical rebind to squash-merge HEAD 744a9c896 after PR #6925; no runtime/authority/policy semantics change. RUNTIME_SEMANTICS_CHANGED=false; Atlas AUTHORITY=NONE.'
 okx_census_complete: true
 okx_current_tree_census_complete: true
 okx_historical_census_complete: false

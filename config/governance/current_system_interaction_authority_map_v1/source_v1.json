@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "3899cc8518e1fc963369daa2ca3a165dab9d78c4",
+  "baseline_sha": "744a9c896f53d33b2d3c24977da1891a2e8549f1",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -4349,13 +4349,13 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4 POST_6924 companion C2 runtime completion scaffold + navigation rebind WP; map baseline_sha rebound; navigation-only.",
+      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1 POST_6925 CURRENT navigation baseline rebind WP; map baseline_sha rebound; navigation-only.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
-      "closure_note": "Review stamp rebound POST_6924 companion runtime scaffold WP; navigation-only."
+      "closure_note": "Review stamp rebound POST_6925 navigation baseline rebind WP; navigation-only."
     },
     {
       "id": "treasury_import_wording",

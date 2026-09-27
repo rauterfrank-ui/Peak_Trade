@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `3899cc8518e1fc963369daa2ca3a165dab9d78c4`. Worktree dirty records are not origin/main truth.
+Census SHA: `744a9c896f53d33b2d3c24977da1891a2e8549f1`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -700,7 +700,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4
+CURRENT_ORIGIN_MAIN_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1
 ENTITY_TOTAL=296
 HUB_RELATION_COUNT=72
 STRUCTURAL_RELATION_COUNT=242
