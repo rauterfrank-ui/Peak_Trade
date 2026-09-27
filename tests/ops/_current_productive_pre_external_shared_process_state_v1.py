@@ -48,6 +48,9 @@ def reseed_workspace_canonical_f1_m9_runtime_ledgers_v1() -> None:
 
 def reset_current_productive_pre_external_shared_test_process_state_v1() -> None:
     """Drop cross-test producer/ledger caches so CURRENT PRE_EXTERNAL batches stay order-independent."""
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_base_binding_v1 import (
+        clear_current_productive_base_binding_state_v1,
+    )
     from src.ops.treasury_phase_2_read_only_reconciliation_v1 import (
         clear_treasury_reconciliation_idempotency_cache_v1,
     )
@@ -55,6 +58,7 @@ def reset_current_productive_pre_external_shared_test_process_state_v1() -> None
 
     oneshot_g17_join_v1._PRODUCED_G17_CACHE.clear()
     oneshot_g17_join_v1._F1_M9_LEDGER_CACHE = None
+    clear_current_productive_base_binding_state_v1()
     clear_treasury_reconciliation_idempotency_cache_v1()
 
 
