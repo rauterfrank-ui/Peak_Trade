@@ -22,6 +22,11 @@ def test_local_market_dashboard_controller_surface_contract() -> None:
     assert "market-dashboard.stdout.log" in text
     assert "market-dashboard.stderr.log" in text
     assert "KeepAlive" in text
+    assert "PERSISTENT_AUTOSTART_ENABLED=false" in text
+    assert re.search(
+        r"<key>RunAtLoad</key>\s*\n\s*<false/>",
+        text,
+    ), "Landscape host must not autostart at login"
     assert "cmd_start)" in text or "start) cmd_start" in text
     assert "stop) cmd_stop" in text
     assert "restart) cmd_restart" in text

@@ -532,9 +532,7 @@ entities:
       - src/ops/peak_trade_public_market_data_runtime_v1/safety_boundary_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/ws_binding_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/ws_transport_v1.py
-      - src/ops/peak_trade_public_market_data_runtime_v1/ws_network_connector_v1.py
       - tests/ops/test_peak_trade_public_market_data_runtime_v1.py
-      - tests/ops/test_peak_trade_public_market_data_ws_network_connector_v1.py
     evidence_sources:
       - docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md
       - config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json
@@ -548,32 +546,6 @@ entities:
       MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1.
       ATLAS_AUTHORITY=NONE.
 
-  - id: RUNTIME_COMPONENT:market_dashboard_landscape_v3_fresh_v1
-    kind: RUNTIME_COMPONENT
-    name: Market Dashboard Landscape V3 fresh presentation
-    epistemic_class: FORENSIC_RAW
-    current_canonical: false
-    current_status: CURRENT_NONCANONICAL
-    module_role: read_only_presentation_authority_none
-    modified_by: LANDSCAPE_V3_FRESH_BUILD_V1
-    source_paths:
-      - src/webui/market_dashboard_landscape_v3/
-      - src/webui/market_dashboard_landscape_shell_router_v3.py
-      - src/webui/landscape_dashboard_v3_persistent_local_host_v1/
-      - templates/peak_trade_dashboard/market_landscape_v3.html
-      - static/css/market_dashboard_landscape_v3.css
-      - static/js/market_dashboard_landscape_v3.js
-      - scripts/webui/landscape_v3_dashboard_persistent_local_host.sh
-    evidence_sources:
-      - docs/ops/market_dashboard/LANDSCAPE_V3_FRESH_BUILD_V1.md
-      - docs/webui/LANDSCAPE_V3_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md
-      - tests/webui/test_market_landscape_v3_architecture_guards_v1.py
-      - tests/webui/test_market_landscape_v3_routes_and_stream_v1.py
-    notes: >-
-      Fresh AUTHORITY=NONE Landscape V3 read-only presentation and Peak_Trade-hosted
-      WebSocket stream over CURRENT EEA public-MD runtime facts. Does not import V2
-      templates/JS/CSS or global OKX REST polling. DASHBOARD_AUTHORITY=NONE.
-      ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:okx_eea_private_account_state_runtime_v1
     kind: CAPABILITY
