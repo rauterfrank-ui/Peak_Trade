@@ -40,6 +40,9 @@ flowchart LR
   g2_runtime_primary_offline_projection["g2_runtime_primary_offline_projection PROVEN_CURRENT"]
   governance_promotion["governance_promotion PARTIAL"]
   governed_cycle["governed_cycle PROVEN_CURRENT"]
+  governed_productive_account_equity_authority_v1["governed_productive_account_equity_authority_v1 PROVEN_CURRENT"]
+  governed_productive_instrument_metadata_authority_v1["governed_productive_instrument_metadata_authority_v1 PROVEN_CURRENT"]
+  governed_productive_reference_price_authority_v1["governed_productive_reference_price_authority_v1 PROVEN_CURRENT"]
   governed_runtime_apply_materialization["governed_runtime_apply_materialization PARTIAL"]
   host_join_send_adapter["host_join_send_adapter PROVEN_CURRENT"]
   intent_compatibility_firewall["intent_compatibility_firewall UNKNOWN"]
@@ -78,14 +81,17 @@ flowchart LR
   universe_cap21["universe_cap21 PROVEN_CURRENT"]
   venue_plan_td_mode["venue_plan_td_mode PROVEN_CURRENT"]
   governance_promotion --> m9_volatility_max_age
+  governed_productive_account_equity_authority_v1 --> capital_risk_sizing
+  governed_productive_instrument_metadata_authority_v1 --> capital_risk_sizing
+  governed_productive_reference_price_authority_v1 --> capital_risk_sizing
   cap22_research_backtest_live_parity_b09 --> selection_cap23
   runtime_binding_cap24 --> operator_profile_explainability_b11
   runtime_binding_cap24 --> mv2_double_play
   c1_confirmation --> governed_cycle
   cap21_cap23_productive_persistence_v1 --> cap24_productivity_state_carrier_v1
-  execution_external_effect --> presentation_dashboard
+  governed_cycle --> presentation_dashboard
   eea_universe_inventory_acquisition_v1 --> cap21_cap23_productive_persistence_v1
-  treasury_29p --> capital_risk_sizing
+  governed_productive_account_equity_authority_v1 --> capital_risk_sizing
   f1_m9_productive_runtime_threshold_consumer_wiring --> mv2_double_play
   full_autonomy_n5 --> selection_cap23
   full_autonomy_n5 --> runtime_binding_cap24
@@ -93,6 +99,7 @@ flowchart LR
   full_autonomy_n5 --> mv2_double_play
   full_autonomy_n5 --> portfolio_reservation
   full_autonomy_n5 --> n5_durable_lane_assignment_persistence_v1
+  full_core_fresh_pretrade_runtime_get --> governed_productive_account_equity_authority_v1
   future_profile_snapshot_b07 --> operator_profile_explainability_b11
   g17_typed_vol_cmc_bind --> mv2_double_play
   g2_runtime_learning_optimization_input_binding --> optimization_universe
@@ -102,6 +109,7 @@ flowchart LR
   g2_runtime_learning_optimization_input_binding --> optimization_universe
   governance_promotion --> f1_m9_scoped_owner_apply_execution
   governed_cycle --> mv2_double_play
+  governed_cycle --> presentation_dashboard
   governed_cycle --> venue_plan_td_mode
   mv2_double_play --> order_intent
   order_intent --> execution_external_effect
@@ -198,6 +206,9 @@ flowchart LR
 | g2_runtime_primary_offline_projection | INTERMEDIATE | PROVEN_CURRENT | NONE | governed_runtime_primary_to_offline_observation_projection_v1 | `docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `src/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py`, `tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py`, `config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json`, `config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json` |
 | governance_promotion | INTERMEDIATE | PARTIAL | CANONICAL_AUTHORITY | optimization_proposal_governance_ingress_v1 | `src/governance/governed_productive_configuration_apply_authority_v1.py`, `src/governance/authorized_productive_parameter_seam_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json` |
 | governed_cycle | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | run_current_productive_governed_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py` |
+| governed_productive_account_equity_authority_v1 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.governed_productive_account_equity_authority_producer_v1 | `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json`, `config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json`, `tests/governance/test_final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.py` |
+| governed_productive_instrument_metadata_authority_v1 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.governed_productive_instrument_metadata_authority_producer_v1 | `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json`, `config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json` |
+| governed_productive_reference_price_authority_v1 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.governed_productive_reference_price_authority_producer_v1 | `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json`, `config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json` |
 | governed_runtime_apply_materialization | INTERMEDIATE | PARTIAL | NONE | governed_runtime_apply_materialization_v1 | `src/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_runtime_apply_materialization_v1.py` |
 | host_join_send_adapter | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | n1_host_join_readiness_v1 | `src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/constants_v1.py`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py` |
 | intent_compatibility_firewall | INTERMEDIATE | UNKNOWN | UNKNOWN | UNKNOWN | `src/governance/intent_compatibility_firewall_v1.py` |

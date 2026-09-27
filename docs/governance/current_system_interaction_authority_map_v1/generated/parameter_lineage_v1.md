@@ -182,6 +182,22 @@ Historical defaults stay historical. Model semantics are not aged into history.
 - conflicts=INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true on Full-Core B05 path (#6817); Companion C2 handoff still absent
 - evidence=`src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
 
+## reference_price_mark_productive_authority_v1
+
+- semantic_class=CURRENT_AUTHORITY
+- source_ref=src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py
+- canonical_owner_ref=ops.governed_productive_reference_price_authority_producer_v1
+- current_consumer_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+- current_decision_effect=Mark-price reference for CRS on enter-live-29p; not INDEX_PX.
+- authority_status=CURRENT_AUTHORITY
+- historical_default_status=NOT_HISTORICAL_DEFAULT
+- lifecycle=RATIFIED_PRODUCTIVE_BINDING
+- optimization_surface_status=NOT_AN_OPTIMIZATION_SURFACE
+- learning_evidence_status=NOT_LEARNING_EVIDENCE
+- productive_seam_status=ENTER_JOIN_CALL
+- conflicts=(none)
+- evidence=`src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py`, `config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json`, `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json`
+
 ## typed_29p_equity_to_four_crs_limits
 
 - semantic_class=CURRENT_AUTHORITY

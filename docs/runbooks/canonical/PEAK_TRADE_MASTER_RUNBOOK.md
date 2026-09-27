@@ -6,8 +6,8 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4
-BOUND_ORIGIN_MAIN_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4
+CURRENT_REVIEWED_AT_SHA=528246fc0463bbc99494439ea1b0b265cb64802a
+BOUND_ORIGIN_MAIN_SHA=528246fc0463bbc99494439ea1b0b265cb64802a
 STALE_IF_HEAD_DIFFERS=true
 REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
@@ -351,6 +351,10 @@ Required CURRENT input classes:
 - Native instrument metadata required by binding and sizing
 - Account / margin / capital observations only through governed producers
   when a capability path consumes them
+- Full-Core B05 productive input producers (navigation to packages only):
+  `ops.governed_productive_account_equity_authority_producer_v1`,
+  `ops.governed_productive_reference_price_authority_producer_v1`,
+  `ops.governed_productive_instrument_metadata_authority_producer_v1`
 - Config values from explicit owners; no silent defaults for decision-critical
   numerics
 

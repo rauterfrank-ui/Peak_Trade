@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "7bf14311fc30f38bffbfe09738c8135c2e99508b"
+BASELINE_SHA = "528246fc0463bbc99494439ea1b0b265cb64802a"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -273,14 +273,27 @@ def validate_schema(doc: dict, schema: dict | None = None) -> list[str]:
             errors.append(f"{label} bad semantic_class")
         _expect_str_list(family.get("evidence_refs"), f"{label}.evidence_refs", errors)
         _expect_str_list(family.get("conflicts"), f"{label}.conflicts", errors)
+    record_optional = ("closure_adjudication_class", "closure_note")
+    record_allowed = set(record_required) | set(record_optional)
+    closure_enum = set(
+        schema["$defs"]["open_record"]["properties"]["closure_adjudication_class"]["enum"]
+    )
     for index, record in enumerate(doc.get("open_epistemic_records", [])):
         label = f"open_record[{index}]"
         if not isinstance(record, dict):
             errors.append(f"{label} not object")
             continue
-        _expect_keys(record, record_required, label, errors)
+        missing = [key for key in record_required if key not in record]
+        extra = set(record) - record_allowed
+        if missing:
+            errors.append(f"{label} missing keys: {missing}")
+        if extra:
+            errors.append(f"{label} unexpected keys: {sorted(extra)}")
         if record.get("epistemic_class") not in OPEN_CLASSES:
             errors.append(f"{label} bad epistemic_class")
+        closure_class = record.get("closure_adjudication_class")
+        if closure_class is not None and closure_class not in closure_enum:
+            errors.append(f"{label} bad closure_adjudication_class")
         _expect_str_list(record.get("evidence_refs"), f"{label}.evidence_refs", errors)
     return errors
 
