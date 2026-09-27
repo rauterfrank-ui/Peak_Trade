@@ -28,7 +28,7 @@ OKX_CURRENT_TREE_CENSUS_COMPLETE=true
 | OKX_CHRONO:dashboard_intrabar | 2026-07-25 6f38df4d8 (#5548) | Dashboard OKX futures intrabar OHLCV path; not proven as a live WebSocket session | STATUS=FORENSIC_RAW | src/ops/okx_public_market_data_client_v1.py |
 | OKX_CHRONO:cap21_uly_base | 2026-08-02 02095305f Cap 2.1 GFU | _extract_base_quote uses uly for BASE only; quote never from uly (original behavior) | STATUS=ADJUDICATED | src/ops/governed_futures_universe_producer_v1/eligibility_v1.py |
 | OKX_CHRONO:hmac_signer | 2026-08-08 35519be26 (#5830) | sign_okx_request_v1 HMAC primitive (K1 venue-auth; historical K2 execute client removed) | STATUS=FORENSIC_RAW | src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py |
-| OKX_CHRONO:okx_named_deletions | census after unshallow | origin/main has zero deleted OKX-named paths (git log --diff-filter=D -- *okx*) | STATUS=ADJUDICATED | docs/system_atlas/census/okx_historical.yaml |
+| OKX_CHRONO:okx_named_deletions | census after unshallow | origin/main has zero deleted OKX-named paths (git log --diff-filter=D -- *okx*) | STATUS=ADJUDICATED | docs/system_atlas/census/okx_current_tree.yaml |
 | OKX_CHRONO:shallow_artifact_corrected | 2026-08-06 ec0e0272d was local shallow root, not first OKX introduction | Prior Atlas chronology that treated ec0e0272d as first OKX bulk-add is superseded | STATUS=ADJUDICATED | git fetch --unshallow; earliest commit 78979ed413 2025-12-02 |
 
 
