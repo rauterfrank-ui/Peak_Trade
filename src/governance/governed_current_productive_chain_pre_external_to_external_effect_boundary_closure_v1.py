@@ -17,6 +17,9 @@ from src.governance.governed_current_productive_activation_policy_closure_v1 imp
 from src.governance.governed_external_effect_authorization_policy_closure_v1 import (
     prove_governed_external_effect_authorization_policy_v1,
 )
+from src.governance.governed_external_effect_permit_mint_policy_closure_v1 import (
+    prove_governed_external_effect_permit_mint_policy_v1,
+)
 from src.governance.governed_standing_external_effect_lift_policy_closure_v1 import (
     prove_governed_standing_external_effect_lift_policy_v1,
 )
@@ -32,7 +35,7 @@ SCHEMA_VERSION: Final[str] = (
 )
 BOUNDED_ORCHESTRATION_TERMINAL: Final[str] = "PRE_EXTERNAL_EFFECT_BOUNDARY"
 CANONICAL_EXTERNAL_EFFECT_BOUNDARY: Final[str] = (
-    "STANDING_EXTERNAL_EFFECT_GATE_GOVERNED_LIFT_BOUND_ENVELOPE_PERMIT_FAIL_CLOSED"
+    "STANDING_LIFT_GOVERNED_PERMIT_MINT_POLICY_BOUND_CREDENTIAL_POST_FAIL_CLOSED"
 )
 
 
@@ -52,6 +55,8 @@ def prove_governed_current_productive_chain_pre_external_to_external_effect_boun
     if not prove_governed_external_effect_authorization_policy_v1(repo_root=root):
         return False
     if not prove_governed_standing_external_effect_lift_policy_v1(repo_root=root):
+        return False
+    if not prove_governed_external_effect_permit_mint_policy_v1(repo_root=root):
         return False
     forensic = prove_external_effect_boundary_forensic_review_v1(repo_root=root)
     return forensic.ok is True

@@ -1236,6 +1236,34 @@
       ]
     },
     {
+      "id": "external_effect_permit_mint_policy",
+      "tier": "INTERMEDIATE",
+      "role": "External Effect Permit Mint: governed policy admission on #6895 standing lift; runtime mint/credential/POST remain fail-closed.",
+      "canonical_owner_ref": "external_effect_permit_mint_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_PERMIT_MINT_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+        "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/external_effect_permit_mint_policy_v1.py",
+        "src/governance/external_effect_permit_mint_gate_binding_v1.py",
+        "src/governance/governed_external_effect_permit_mint_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_external_effect_permit_mint_policy_v1.py",
+        "config/governance/external_effect_permit_mint_policy_v1_record.json",
+        "config/governance/external_effect_permit_mint_owner_go_v1_decision.json",
+        "config/governance/external_effect_permit_mint_policy_v1_decision_v1.json"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review",
       "tier": "INTERMEDIATE",
       "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
@@ -4256,13 +4284,25 @@
     {
       "id": "standing_external_effect_lift_policy_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Standing External Effect Lift policy: governance.standing_external_effect_lift_policy_v1; governed gate standing true via parameterized evaluate; POST/permit/credential remain false; next blocker EXTERNAL_EFFECT_PERMIT_MINT_OWNER_GO.",
+      "statement": "Standing External Effect Lift policy: governance.standing_external_effect_lift_policy_v1; governed gate standing true via parameterized evaluate; permit mint policy bound separately (#6896); credential/POST remain false.",
       "evidence_refs": [
         "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
         "config/governance/standing_external_effect_lift_policy_v1_record.json",
         "config/governance/standing_external_effect_lift_owner_go_v1_decision.json",
         "config/governance/standing_external_effect_lift_policy_v1_decision_v1.json",
         "tests/governance/test_standing_external_effect_lift_policy_v1.py"
+      ]
+    },
+    {
+      "id": "external_effect_permit_mint_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "External Effect Permit Mint policy: governance.external_effect_permit_mint_policy_v1; governed permit-mint admission on standing lift; PERMIT_MINT_PERFORMED/credential/POST false; next blocker CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_OWNER_GO.",
+      "evidence_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+        "config/governance/external_effect_permit_mint_policy_v1_record.json",
+        "config/governance/external_effect_permit_mint_owner_go_v1_decision.json",
+        "config/governance/external_effect_permit_mint_policy_v1_decision_v1.json",
+        "tests/governance/test_external_effect_permit_mint_policy_v1.py"
       ]
     },
     {

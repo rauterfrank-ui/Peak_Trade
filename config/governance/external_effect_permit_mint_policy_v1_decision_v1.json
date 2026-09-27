@@ -1,0 +1,30 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1",
+  "owner_go": true,
+  "owner_go_decision_config": "config/governance/external_effect_permit_mint_owner_go_v1_decision.json",
+  "baseline_origin_main_sha": "03727c3cd09504beeedf4839b40dab3a26234331",
+  "external_effect_permit_mint_authorized": true,
+  "governed_permit_mint_authorized": true,
+  "permit_policy_authorized": true,
+  "permit_mint_authorized": true,
+  "permit_mint_capability_implemented": true,
+  "permit_mint_performed": false,
+  "credential_access_authorized": false,
+  "credential_access_performed": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "mint_implies_credential_access": false,
+  "mint_implies_real_venue_post": false,
+  "mint_implies_runtime_mint_performed": false,
+  "earliest_unclosed_boundary": "CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS",
+  "next_genuine_blocker": "CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_OWNER_GO",
+  "normative_spec": "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+  "bound_lineage": {
+    "standing_external_effect_lift_policy_record_config": "config/governance/standing_external_effect_lift_policy_v1_record.json",
+    "standing_external_effect_lift_policy_v1_decision_config": "config/governance/standing_external_effect_lift_policy_v1_decision_v1.json",
+    "permit_producer_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+    "permit_durable_consume_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py"
+  }
+}
