@@ -1,43 +1,37 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "e82e65ee6bf36ad9c3983919e388413234f8f4a9",
+  "base_sha": "589ce49bc44d6327decf7905a111391baf8bb5c7",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/wiring/entrypoints.yaml",
-    "scripts/ops/run_governed_futures_universe_producer_v1.py",
-    "scripts/ops/run_productive_futures_ranking_producer_v1.py",
-    "scripts/ops/run_single_selected_future_policy_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
-    "tests/ops/test_fam_a_productive_lineage_enforcement_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py"
   ],
-  "changed_paths_sha256": "997a5426c4985cf797b94601be3c574ae85f95b2858f96c320a15e09fe109cfd",
+  "changed_paths_sha256": "6f849cb59bde53ed75c7a3bceb31335fd612e60c3e6d59acaf0e56519008fdf4",
   "covered_candidate_paths": [
+    "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/wiring/entrypoints.yaml",
-    "scripts/ops/run_governed_futures_universe_producer_v1.py",
-    "scripts/ops/run_productive_futures_ranking_producer_v1.py",
-    "scripts/ops/run_single_selected_future_policy_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
-    "tests/ops/test_fam_a_productive_lineage_enforcement_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_fam_a_productive_lineage_enforcement_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6912: FAM-A productive Cap-2.x lineage enforcement (Cap22 binding assert at shared Cap21–Cap23 persist + reserved Cap24 productivity root guard on Cap-2.1/2.2/2.3 CLIs); Atlas/impact coupling only; map_authority=NONE; no CSIA source_v1 change.",
+  "reason": "PR #6913: S7 pre-persist outgoing_cursor contract gate; structured T2 failure propagation; Atlas/CSIA bookkeeping only; map_authority=NONE; no CSIA source_v1 change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

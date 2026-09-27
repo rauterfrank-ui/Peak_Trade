@@ -16,7 +16,7 @@ This view is topology change-coupling, not canonical authority.
 ```text
 ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_RELATION_COUNT=4
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,21 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `EP:gfu_producer` |
-| `EP:cap23_policy` |
-| `SCRIPT:run_gfu_producer` |
-| `SCRIPT:run_cap23_policy` |
-| `SCRIPT:run_cap22_ranking_producer` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
+| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
 
 ## NEW_RELATIONS
 
@@ -97,8 +100,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6912: FAM-A productive Cap-2.x lineage enforcement at persist/CLI boundaries (Cap22 binding assert + reserved Cap24 productivity root guard); navigation-only Atlas coupling; map_authority=NONE; no CSIA source change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
+- PR #6913: S7 pre-persist outgoing_cursor contract gate; structured T2 failure propagation; navigation-only Atlas coupling; map_authority=NONE; no CSIA source change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1
+- modified_by=T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
