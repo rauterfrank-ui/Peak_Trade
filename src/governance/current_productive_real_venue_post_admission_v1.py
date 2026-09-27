@@ -8,6 +8,7 @@ RUNTIME_AUTHORIZATION_EFFECT=POST_ADMISSION_EVALUATION_ONLY
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Final
 
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
@@ -16,11 +17,13 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
     current_productive_first_real_blocker_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
-    POST_GO_CONSUMED,
-    POST_GO_STATUS,
+from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
     POST_OWNER_GO,
+    load_durable_post_owner_go_consume_v1,
 )
+
+POST_GO_STATUS: Final[str] = "UNCONSUMED"
+POST_GO_CONSUMED: Final[bool] = False
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
     ExternalEffectPermitV1,
     permit_authorizes_one_shot_real_post_v1,
@@ -60,6 +63,7 @@ def evaluate_real_venue_post_admission_v1(
     post_owner_go: str | None,
     one_shot_real_post: bool,
     permit: ExternalEffectPermitV1 | None = None,
+    store_root: Path | str | None = None,
 ) -> RealVenuePostAdmissionResultV1:
     """Evaluate whether a real venue POST may proceed. Always fail-closed here."""
 
@@ -83,6 +87,16 @@ def evaluate_real_venue_post_admission_v1(
 
     if permit is not None and not permit_authorizes_one_shot_real_post_v1(permit):
         reasons.append("PERMIT_DOES_NOT_AUTHORIZE_ONE_SHOT_REAL_POST")
+
+    if go == POST_OWNER_GO:
+        if store_root is None:
+            reasons.append("DURABLE_POST_OWNER_GO_STORE_REQUIRED")
+        else:
+            durable_go = load_durable_post_owner_go_consume_v1(store_root=store_root)
+            if durable_go.get("consumed") is not True:
+                reasons.append("POST_OWNER_GO_NOT_DURABLE_CONSUMED")
+            elif str(durable_go.get("owner_go_token") or "") != POST_OWNER_GO:
+                reasons.append("POST_OWNER_GO_DURABLE_TOKEN_MISMATCH")
 
     granted = not reasons
     status = STATUS_POST_ADMISSION_DENIED

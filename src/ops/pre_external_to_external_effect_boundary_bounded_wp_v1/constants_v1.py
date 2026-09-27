@@ -70,7 +70,12 @@ INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES = (
     "current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/"
     "current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/"
+    "current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/"
+    "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+    "src/governance/current_productive_real_venue_post_admission_v1.py",
 )
 
 CANARY_WIRE_SEND_HARNESS_PREFIX = (

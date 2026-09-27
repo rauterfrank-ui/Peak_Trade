@@ -143,3 +143,46 @@ def persist_external_effect_durable_consume_v1(
     tmp.write_text(_canonical_json(bound) + "\n", encoding="utf-8")
     tmp.replace(path)
     return bound
+
+
+def finalize_external_effect_durable_consume_v1(
+    *,
+    store_root: Path | str,
+    permit_id: str,
+    envelope_id: str,
+    envelope_digest: str,
+    outcome: str,
+) -> dict[str, Any]:
+    """Transition SENT_INITIATED → COMPLETED without permitting resubmit."""
+    if store_root is None:
+        raise FullCoreExternalEffectDurableConsumeError("DURABLE_STORE_REQUIRED")
+    pid = str(permit_id or "").strip()
+    eid = str(envelope_id or "").strip()
+    digest = str(envelope_digest or "").strip()
+    if not pid or not eid or len(digest) != 64:
+        raise FullCoreExternalEffectDurableConsumeError("FINALIZE_IDENTITY_INVALID")
+    existing = load_external_effect_durable_consume_v1(store_root=store_root)
+    if existing.get("durable_consumed") is not True:
+        raise FullCoreExternalEffectDurableConsumeError("DURABLE_CONSUME_NOT_PRESENT")
+    record = existing.get("record") or {}
+    if str(record.get("durable_state") or "") != DURABLE_STATE_SENT_INITIATED:
+        raise FullCoreExternalEffectDurableConsumeError("DURABLE_STATE_NOT_SENT_INITIATED")
+    if str(record.get("permit_id") or "") != pid:
+        raise FullCoreExternalEffectDurableConsumeError("FINALIZE_PERMIT_ID_MISMATCH")
+    if str(record.get("envelope_id") or "") != eid:
+        raise FullCoreExternalEffectDurableConsumeError("FINALIZE_ENVELOPE_ID_MISMATCH")
+    if str(record.get("envelope_digest") or "") != digest:
+        raise FullCoreExternalEffectDurableConsumeError("FINALIZE_ENVELOPE_DIGEST_MISMATCH")
+    completed = dict(record)
+    completed["durable_state"] = DURABLE_STATE_COMPLETED
+    completed["outcome"] = str(outcome or "")
+    completed["completed_at_utc"] = _utc_now_iso_v1()
+    completed["resubmit_allowed"] = False
+    completed["retry_allowed"] = False
+    completed["second_submit_allowed"] = False
+    _assert_no_secrets(completed)
+    path = durable_consume_path_v1(Path(store_root))
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(_canonical_json(completed) + "\n", encoding="utf-8")
+    tmp.replace(path)
+    return completed
