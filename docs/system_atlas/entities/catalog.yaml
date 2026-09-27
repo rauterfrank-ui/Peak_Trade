@@ -614,6 +614,9 @@ entities:
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+    # atlas_entity_review: PR #6929 POST_6928 PRE_EXTERNAL same-process test isolation (test-only F1/M9
+    # ledger + base-binding reset); import coupling only; RUNTIME_SEMANTICS_CHANGED=false;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: RUNTIME_COMPONENT
     name: Current productive side-state / confirmation cursor seam
     epistemic_class: FORENSIC_RAW
@@ -5410,6 +5413,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6929 POST_6928 PRE_EXTERNAL same-process test isolation (Master-V2 cycle
+    # import binding + order-independence fixtures); test-only; RUNTIME_SEMANTICS_CHANGED=false;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: POST_6927 PR #6928: GAP-TRUE-01 PRE_EXTERNAL evidence test aligned to WP-2
     # DK/G17 layered seed; test-only import of fail-closed POST/transport constants; no runtime change;
     # RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
