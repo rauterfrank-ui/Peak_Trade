@@ -7314,6 +7314,26 @@ entities:
       K1 PRE-POST chain bound to DM pre-live proof; dual Owner-GO literals; no venue POST;
       PERMIT_CONSUMED_DURABLE=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_productive_one_shot_enter_e2e_runtime_handoff_v1
+    kind: CONTRACT
+    name: CURRENT productive Enter one-shot E2E runtime handoff v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1
+    authority_sources:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md
+    source_paths:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py
+      - scripts/ops/run_current_productive_one_shot_enter_e2e_prepare_v1.py
+      - scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py
+    evidence_sources:
+      - tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py
+    notes: >-
+      E2E prepare only: Cap-2.4 to PRE_EXTERNAL envelope to POST/K1 CLI handoff; no venue POST;
+      PERMIT_CONSUMED_DURABLE=false; POST baseline c93ea739. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1

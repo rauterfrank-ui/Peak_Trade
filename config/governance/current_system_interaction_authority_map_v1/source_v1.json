@@ -4166,6 +4166,16 @@
       ]
     },
     {
+      "id": "current_productive_one_shot_enter_e2e_runtime_handoff_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "CURRENT productive Enter one-shot E2E prepare handoff: Cap-2.4 provenance through Full-Core PRE_EXTERNAL to FINAL_ORDER_ENVELOPE.json and governed POST/K1 CLI commands; no venue POST and no durable permit consume; POST path baseline pin c93ea739 for POST slice only.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
+        "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+      ]
+    },
+    {
       "id": "whole_core_fresh_trusted_q0_enter_live_v1",
       "epistemic_class": "PARTIAL",
       "statement": "Full-Core enter-live F-02 closed: one read-only USDC availEq GET per ENTER via treasury single-source handoff; numeric Q0 bound on enter-live path; not Live POST; parallel direct GET module not active on same chain.",
