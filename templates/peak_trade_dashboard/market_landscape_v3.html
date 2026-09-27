@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-market-landscape-v3="true" data-authority="NONE" data-read-only="true">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peak Trade Landscape V3</title>
+  <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v3.css" />
+</head>
+<body>
+  <header class="v3-primary" data-mdl-region="PRIMARY_OPERATOR_STRIP">
+    <div class="v3-instrument">
+      <label for="v3-instrument-select">Instrument</label>
+      <select id="v3-instrument-select" disabled>
+        <option>ETH-USDT-SWAP</option>
+      </select>
+    </div>
+    <div id="v3-connectivity" class="v3-badge v3-badge-disconnected">DISCONNECTED</div>
+    <div id="v3-freshness" class="v3-meta">freshness: —</div>
+    <div id="v3-mark" class="v3-mark">mark: —</div>
+    <div id="v3-blockers" class="v3-blockers"></div>
+  </header>
+
+  <main class="v3-main">
+    <section class="v3-chart-panel" data-mdl-region="LIVE_CHART">
+      <canvas id="v3-chart-canvas" width="960" height="420" aria-label="Live PT1M mark chart"></canvas>
+      <div id="v3-chart-overlay" class="v3-chart-overlay hidden"></div>
+    </section>
+
+    <section class="v3-secondary" data-mdl-region="LANDSCAPE_SECTIONS">
+      <div id="v3-sections-root" class="v3-sections"></div>
+    </section>
+  </main>
+
+  <details class="v3-diagnostics" data-mdl-region="DIAGNOSTICS_DRAWER">
+    <summary>Diagnostics / Provenance</summary>
+    <pre id="v3-diagnostics-json"></pre>
+  </details>
+
+  <script>
+    window.PEAK_TRADE_LANDSCAPE_V3 = {
+      snapshotPath: {{ snapshot_path|tojson }},
+      streamPath: {{ stream_path|tojson }},
+      authority: "NONE",
+      readOnly: true,
+      directBrowserOkx: false
+    };
+  </script>
+  <script src="/static/js/market_dashboard_landscape_v3.js" defer></script>
+</body>
+</html>
