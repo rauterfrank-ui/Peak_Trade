@@ -6,8 +6,8 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=842d8a1944e17345aeda2712f2fb30d49efa98e4
-BOUND_ORIGIN_MAIN_SHA=842d8a1944e17345aeda2712f2fb30d49efa98e4
+CURRENT_REVIEWED_AT_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4
+BOUND_ORIGIN_MAIN_SHA=3899cc8518e1fc963369daa2ca3a165dab9d78c4
 STALE_IF_HEAD_DIFFERS=true
 REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
@@ -855,6 +855,25 @@ POST_ALLOWED=false
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 MAX_POSITIONS_EFFECTIVE=1
 ATLAS_AUTHORITY=NONE
+```
+
+### C2 Companion runtime completion scaffold
+
+Fail-closed runtime module only (`runtime_conversion_v1.py`). Default passthrough
+preserves legacy shadow/live `position_fraction` semantics. No
+`shadow_session.py` / `live_session.py` binding. Machine decision:
+`config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json`.
+Normative spec:
+`docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md`.
+
+```text
+COMPANION_RUNTIME_CONVERSION_ENABLED=false
+RUNTIME_CONVERSION_IMPLEMENTED=false
+SHADOW_SESSION_BINDING_PRESENT=false
+LIVE_SESSION_BINDING_PRESENT=false
+NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
 ```
 
 ------------------------------------------------------------------------

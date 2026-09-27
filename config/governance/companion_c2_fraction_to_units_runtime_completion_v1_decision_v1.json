@@ -1,0 +1,23 @@
+{
+  "workpackage_id": "COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1",
+  "normative_spec": "docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md",
+  "dependency_closure_owner_go": "OWNER_GO_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1",
+  "dependency_closure_owner_go_status": "CONSUMED",
+  "semantics": "COMPANION_C2_RUNTIME_CONVERSION_SCAFFOLD_FAIL_CLOSED_NO_SHADOW_LIVE_BINDING_NO_AUTHORITY_MINT",
+  "conversion_ready": true,
+  "companion_runtime_conversion_enabled": false,
+  "runtime_conversion_implemented": false,
+  "shadow_session_binding_present": false,
+  "live_session_binding_present": false,
+  "next_productive_conversion_slice_authorized": false,
+  "c2_authority_added": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "signal_to_orders_mutated": false,
+  "earliest_unclosed_boundary": "COMPANION_SHADOW_LIVE_PRODUCER_BINDING",
+  "next_genuine_blocker": "NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED plus scoped Owner-GO for shadow_session/live_session producer binding",
+  "runtime_module": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/runtime_conversion_v1.py",
+  "read_binding_module": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/read_binding_v1.py",
+  "algebra_module": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/conversion_algebra_v1.py"
+}
