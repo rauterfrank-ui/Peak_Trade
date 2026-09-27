@@ -195,6 +195,7 @@ from .market_dashboard_landscape_shell_router_v2 import (
     router as market_dashboard_landscape_shell_router_v2,
     set_market_landscape_shell_config,
 )
+
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
 TEMPLATE_DIR = BASE_DIR / "templates" / "peak_trade_dashboard"
