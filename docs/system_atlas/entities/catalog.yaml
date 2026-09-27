@@ -5410,6 +5410,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: POST_6927 PR #6928: GAP-TRUE-01 PRE_EXTERNAL evidence test aligned to WP-2
+    # DK/G17 layered seed; test-only import of fail-closed POST/transport constants; no runtime change;
+    # RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6918 TRACK_A_FINAL_CLOSURE_FIXTURE: natural-enter Live-29P EPOCH + layered upscope fixture alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6917 G17_TYPED_VOL_CMC_DUPLICATE_NOOP_REUSE: CMC bind reuses prior estimate on DUPLICATE_NOOP; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: governed-cycle orchestrator maps N1 join failures to structured T2 reason_code; ATLAS_AUTHORITY=NONE; POST_COUNT=0.

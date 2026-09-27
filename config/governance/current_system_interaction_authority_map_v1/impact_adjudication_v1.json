@@ -1,47 +1,32 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "133811fca55dec7b398496e07dc4b0212b70ac09",
+  "base_sha": "8f8d7c11a91d0728a45a31aa1980db8cc4a62400",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
-    "tests/ops/test_current_system_map_finalization_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py"
+    "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py"
   ],
-  "changed_paths_sha256": "546c8b0e3fb7dbd177547a8074771b6e3823cd2c804f87987e779d78fa4eba38",
+  "changed_paths_sha256": "9d65ab620978095d76d93f01d44702d6692b3930d20bd3b67d703d1828f1f124",
   "covered_candidate_paths": [
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
-    "tests/ops/test_current_system_map_finalization_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py"
+    "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py"
   ],
   "evidence_refs": [
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/provenance/changes.yaml",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
+    "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "POST_6926 PR #6927: DT/DU PRE_EXTERNAL G17 hot-path wiring; Runbook §11.2.1 CW–DU/MOT §3.1 representation; Atlas/CSIA diff-bound NO_MAP_IMPACT bookkeeping (candidate catalog + impact adjudication only). map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; no source_v1.json change.",
+  "reason": "POST_6927 PR #6928: GAP-TRUE-01 PRE_EXTERNAL evidence test aligned to WP-2 G17/DK layered seed (test-only); CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping. map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; no source_v1.json change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

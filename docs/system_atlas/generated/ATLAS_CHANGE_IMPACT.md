@@ -14,7 +14,7 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=UPDATED
+ATLAS_IMPACT=NONE_WITH_PROOF
 ATLAS_CHANGED_ENTITY_COUNT=0
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1 (PR #6927): Master Runbook §11.2.1 CW–DU persist reinsert; MOT §3.1 Full-Core derived-spec navigation; DT/DU PRE_EXTERNAL G17 hot-path wiring; Atlas/CSIA impact bookkeeping; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- POST_6927 PR #6928: GAP-TRUE-01 PRE_EXTERNAL evidence test contract alignment (WP-2 G17/DK seed); Atlas entity review for test import coupling only; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1
+- modified_by=POST_6927_GAP_TRUE_01_PRE_EXTERNAL_TEST_CONTRACT_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
