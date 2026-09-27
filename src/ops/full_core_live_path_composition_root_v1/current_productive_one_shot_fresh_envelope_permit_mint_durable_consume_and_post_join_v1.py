@@ -18,6 +18,9 @@ from pathlib import Path
 from typing import Any, Callable, Mapping
 from urllib.request import OpenerDirector
 
+from src.governance.current_productive_real_venue_post_admission_v1 import (
+    evaluate_real_venue_post_admission_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_os_native_store_acquisition_v1 import (
     REAL_KEYCHAIN_ACCESS_AUTHORIZED,
     REAL_KEYCHAIN_ACCESS_IMPLEMENTED,
@@ -310,6 +313,18 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     observed.permit_minted = True
     observed.events.append("PERMIT_MINTED")
     assert_one_shot_join_permit_constraints_v1(permit, envelope)
+    admission = evaluate_real_venue_post_admission_v1(
+        post_owner_go=post_owner_go,
+        one_shot_real_post=True,
+        permit=permit,
+        store_root=store_root,
+    )
+    if admission.post_admission_granted is not True:
+        codes = ",".join(admission.reason_codes) or admission.admission_status
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(
+            f"REAL_VENUE_POST_ADMISSION_DENIED:{codes}"
+        )
+    observed.events.append("POST_ADMISSION_GRANTED")
     send_handle = FullCoreSendCredentialHandleV1(
         handle_id="full-core-one-shot-join-send-handle",
         bound=True,
