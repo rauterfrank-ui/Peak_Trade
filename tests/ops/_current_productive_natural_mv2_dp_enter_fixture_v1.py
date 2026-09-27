@@ -151,6 +151,35 @@ def governed_c1_candles_payload_from_enter_closes_v1(
     return {"code": "0", "data": rows}
 
 
+def governed_c1_aligned_g17_dk_producer_v1(
+    *,
+    bound: BoundInstrumentV1,
+    anchor_event_ts_unix: float,
+    evidence_store_root: Path,
+) -> object:
+    """Canonical G17-DK producer with mark history aligned to governed C1 event time."""
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+        prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+    )
+
+    last_ms = int(float(anchor_event_ts_unix) * 1000)
+    rows: list[list[str]] = []
+    for index in range(61):
+        ts = str(last_ms - (60 - index) * 60_000)
+        px = str(100 + index)
+        rows.append([ts, px, px, px, px, "1"])
+    payload = {"code": "0", "msg": "", "data": list(reversed(rows))}
+    join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+        evidence_store_root=Path(evidence_store_root),
+        bound_instrument=bound,
+        mark_candles_payload=payload,
+        receive_or_capture_timestamp=str(last_ms),
+    )
+    if join.fail_closed or join.producer is None:
+        raise RuntimeError(join.reason_code or "G17_DK_ALIGNED_PRODUCER_FAIL_CLOSED")
+    return join.producer
+
+
 def governed_productive_c1_event_ts_unix_v1(*, offset_seconds: float = 120.0) -> float:
     """C1 observation time satisfying ``PREVIOUS_C1_VENUE_EVENT_TIME`` gate for governed cycles."""
     from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
@@ -635,10 +664,16 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     bound: BoundInstrumentV1,
     g17_typed_vol_producer: object,
     lane_state_root: Path,
-) -> tuple[Any, tuple[float, ...], float, float]:
+) -> tuple[Any, tuple[float, ...], float, float, object]:
     """Stop after layered ARM; leave store ready for one governed ENTER cycle."""
     enter_ts = governed_productive_c1_event_ts_unix_v1()
     path = strong_uptrend_closes_v1()
+    aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-seed",
+    )
+    g17_for_cycles = aligned_g17
     from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
         _cycle,
     )
@@ -646,7 +681,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     origin = _cycle(
         cycle_id="preext-long-origin",
         bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         mark_px=float(path[0]),
         event_ts_unix=enter_ts - 120.0,
         closes=path,
@@ -654,7 +689,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     upscope_candidate = _cycle(
         cycle_id="preext-long-upscope-candidate",
         bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         incoming_cursor=origin.outgoing_cursor,
         mark_px=float(path[-1]),
         event_ts_unix=enter_ts - 60.0,
@@ -680,7 +715,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     )
     arm_cycle = _compose_layered_lane_cycle_v1(
         pair=pair,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         closes=arm_closes,
         mark_px=arm_mark,
         event_ts_unix=arm_ts,
@@ -697,7 +732,8 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     enter_closes = tuple(list(arm_closes) + [arm_mark + NATURAL_ENTER_MARK_INCREMENT_V1])
     enter_mark = float(enter_closes[-1])
     enter_event_ts = arm_ts + NATURAL_ENTER_SHORT_AFTER_ARM_TS_DELTA_V1
-    return arm_cycle, enter_closes, enter_mark, enter_event_ts
+    _ = g17_typed_vol_producer
+    return arm_cycle, enter_closes, enter_mark, enter_event_ts, aligned_g17
 
 
 def run_natural_enter_long_sequence_for_governed_pre_external_v1(

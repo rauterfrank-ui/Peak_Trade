@@ -13,6 +13,7 @@ flowchart LR
   c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
   execution_external_effect -->|dashboard_read| presentation_dashboard
   treasury_29p -->|equity_value_unbound| capital_risk_sizing
+  f1_m9_productive_runtime_threshold_consumer_wiring -->|f1_m9_canonical_durable_bootstrap_to_master_v2_seam| mv2_double_play
   full_autonomy_n5 -->|fa_compose_cap23_produce_join| selection_cap23
   full_autonomy_n5 -->|fa_compose_cap24_bind_join| runtime_binding_cap24
   full_autonomy_n5 -->|fa_compose_governed_cycle_n1| governed_cycle
@@ -208,6 +209,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py`
+
+## f1_m9_canonical_durable_bootstrap_to_master_v2_seam
+
+- lifecycle=PARTIAL
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 then governed authorized_productive_parameter_seam for Master-V2 cycle admission
+- producer=current_productive_f1_m9_canonical_durable_bootstrap_v1
+- consumer=run_current_productive_master_v2_runtime_cycle_v1
+- authority_effect=NONE
+- decision_effect=DURABLE_APPLY_SEAM_PRESENCE_FOR_THRESHOLD_CONSUMER_WIRING
+- direct_or_indirect=DIRECT
+- identity_binding=CANONICAL_F1_M9_LEDGER_PATHS_AND_APPLY_START_ONLY
+- temporal_binding=600S_OWNER_THRESHOLD_LINEAGE
+- version_binding=current_productive_f1_m9_canonical_durable_bootstrap/v1
+- provenance_binding=NO_SECOND_AUTHORITY; NO_SYNTHETIC_SEAM; PRODUCTIVE_ACTIVATION_AUTHORIZED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py`, `src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py`, `tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py`, `tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py`
 
 ## fa_compose_cap23_produce_join
 

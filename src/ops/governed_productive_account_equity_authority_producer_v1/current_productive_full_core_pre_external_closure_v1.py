@@ -40,6 +40,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     RUNTIME_OWNER_GO,
     T2_RUNTIME_OWNER_GO,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+    prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+    mark_history_get_query_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
 )
@@ -497,14 +504,56 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         pair = _lane_pair_v1(lane_state_root=Path(lane_state_root), bound=bound_instrument)
         pairs = {"LANE_1": pair}
         invoke_kwargs = dict(mk)
-        if g17_typed_vol_producers is not None:
-            invoke_kwargs["g17_typed_vol_producers"] = g17_typed_vol_producers
+        resolved_g17_producers = g17_typed_vol_producers
+        if resolved_g17_producers is None:
+            mark_history_endpoint = (
+                f"{ENDPOINT_HISTORY_MARK_PRICE_CANDLES}?"
+                f"{urlencode(mark_history_get_query_v1(venue_native_id=str(bound_instrument.venue_native_id or '')))}"
+            )
+            mark_history_result = transport.get(
+                endpoint=mark_history_endpoint,
+                auth_required=False,
+                pretrade_decision_id=decision_epoch,
+            )
+            gets_performed = int(getattr(transport, "request_count", 0) or 0)
+            if mark_history_result.get_performed is not True or mark_history_result.payload is None:
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker="G17_MARK_HISTORY_GET_FAIL_CLOSED",
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            g17_join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                evidence_store_root=store,
+                bound_instrument=bound_instrument,
+                mark_candles_payload=mark_history_result.payload,
+                receive_or_capture_timestamp=str(int(float(mk["observed_unix"]) * 1000)),
+            )
+            if g17_join.fail_closed or not g17_join.estimate_present or g17_join.producer is None:
+                blocker = "G17_TYPED_VOL_HOT_PATH_FAIL_CLOSED:" + (
+                    g17_join.reason_code or "ESTIMATE_ABSENT"
+                )
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker=blocker,
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            resolved_g17_producers = {"LANE_1": g17_join.producer}
+        invoke_kwargs["g17_typed_vol_producers"] = resolved_g17_producers
 
         results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             pairs,
             live_29p_injected=live_29p_injected,
             portfolio_budget_owner=portfolio_budget_owner,
             candles_payload=dict(candles),
+            common_epoch_decision_epoch=decision_epoch,
             **invoke_kwargs,
         )
         lane_result = results["LANE_1"]

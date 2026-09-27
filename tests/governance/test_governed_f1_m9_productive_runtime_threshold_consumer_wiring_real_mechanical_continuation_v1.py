@@ -32,6 +32,7 @@ from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_
 )
 from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
     GovernedF1M9ThresholdConsumerWiringRequestV1,
+    resolve_runtime_applied_seam_for_consumer_wiring_v1,
     run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1,
 )
 from src.governance.governed_runtime_primary_to_offline_observation_projection_v1 import (
@@ -126,6 +127,21 @@ def test_decision_and_global_invariants() -> None:
     assert NUMERIC_MAX_AGE_DECIDED is False
     assert ENFORCEMENT_ENABLED is False
     assert prove_governed_f1_m9_productive_runtime_threshold_consumer_wiring_v1(repo_root=REPO_ROOT)
+
+
+def test_resolve_runtime_applied_seam_idempotent_after_durable_apply(tmp_path: Path) -> None:
+    ledger_root = tmp_path / "durable"
+    ledger_root.mkdir()
+    request = GovernedF1M9ThresholdConsumerWiringRequestV1(
+        apply_ledger_paths=_apply_ledger_paths(ledger_root),
+        threshold_ledger_paths=_threshold_ledger_paths(ledger_root),
+        repo_root=REPO_ROOT,
+    )
+    first = resolve_runtime_applied_seam_for_consumer_wiring_v1(request)
+    second = resolve_runtime_applied_seam_for_consumer_wiring_v1(request)
+    assert first is not None
+    assert second is not None
+    assert first.get("seam_digest") == second.get("seam_digest")
 
 
 def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:

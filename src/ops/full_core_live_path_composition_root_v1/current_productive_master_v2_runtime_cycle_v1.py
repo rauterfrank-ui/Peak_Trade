@@ -86,6 +86,13 @@ from trading.master_v2.canonical_market_context_v1 import (
     WarmupStatus,
     with_computed_input_digest,
 )
+from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+    evaluate_typed_volatility_binding_eligibility_v1,
+)
+from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyLedgerPathsV1
+from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
+    F1M9ThresholdValueAuthorizationLedgerPathsV1,
+)
 from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
 )
@@ -142,6 +149,75 @@ ENDPOINT_MARKET_CANDLES = "/api/v5/market/candles"
 ENDPOINT_MARKET_INDEX_TICKERS = "/api/v5/market/index-tickers"
 ENDPOINT_PUBLIC_OPEN_INTEREST = "/api/v5/public/open-interest"
 ENDPOINT_PUBLIC_FUNDING_RATE = "/api/v5/public/funding-rate"
+
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1(
+    *,
+    repo_root: Path,
+    apply_ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None,
+    threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None,
+) -> tuple[Mapping[str, Any] | None, str]:
+    from src.governance.current_productive_activation_policy_v1 import (
+        RUNTIME_SURFACE_F1_M9_INTEGRATED_OFFLINE_REPLAY,
+    )
+    from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
+        F1M9DurableLedgerPathsError,
+        resolve_canonical_f1_m9_productive_apply_ledger_paths_v1,
+        resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1,
+    )
+    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+        consumer_wiring_authorized_v1,
+    )
+    from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
+        GovernedF1M9ThresholdConsumerWiringRequestV1,
+        resolve_runtime_applied_seam_for_consumer_wiring_v1,
+    )
+
+    if not consumer_wiring_authorized_v1(repo_root=repo_root):
+        return None, ""
+    _ = RUNTIME_SURFACE_F1_M9_INTEGRATED_OFFLINE_REPLAY
+    try:
+        apply_paths = (
+            apply_ledger_paths
+            or resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=repo_root)
+        )
+        threshold_paths = (
+            threshold_ledger_paths
+            or resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1(
+                repo_root=repo_root
+            )
+        )
+    except F1M9DurableLedgerPathsError:
+        return None, "F1_M9_CANONICAL_DURABLE_LEDGER_PATHS_UNAVAILABLE"
+    wiring_request = GovernedF1M9ThresholdConsumerWiringRequestV1(
+        apply_ledger_paths=apply_paths,
+        threshold_ledger_paths=threshold_paths,
+        repo_root=repo_root,
+    )
+    seam = resolve_runtime_applied_seam_for_consumer_wiring_v1(wiring_request)
+    if seam is None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_f1_m9_canonical_durable_bootstrap_v1 import (
+            ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1,
+        )
+
+        bootstrap = ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1(
+            repo_root=repo_root,
+            apply_ledger_paths=apply_paths,
+            threshold_ledger_paths=threshold_paths,
+        )
+        if bootstrap.status == "REJECTED":
+            reason = (
+                bootstrap.blocking_reasons[0]
+                if bootstrap.blocking_reasons
+                else ("F1_M9_DURABLE_BOOTSTRAP_REJECTED")
+            )
+            return None, str(reason)
+        seam = resolve_runtime_applied_seam_for_consumer_wiring_v1(wiring_request)
+    if seam is None:
+        return None, "RUNTIME_APPLIED_SEAM_UNAVAILABLE"
+    return seam, ""
 
 
 class CurrentProductiveMasterV2RuntimeCycleError(ValueError):
@@ -467,6 +543,9 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     g17_typed_vol_producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None = None,
     productive_layered_core_bind_requested: bool = False,
     layered_core_store_root: Path | None = None,
+    f1_m9_productive_apply_ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None = None,
+    f1_m9_threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
+    repo_root: Path | None = None,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -624,6 +703,20 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             price_basis_ok=bool(mark_px > 0),
         )
     )
+    root = repo_root or _REPO_ROOT
+    governed_seam, seam_blocker = _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1(
+        repo_root=root,
+        apply_ledger_paths=f1_m9_productive_apply_ledger_paths,
+        threshold_ledger_paths=f1_m9_threshold_ledger_paths,
+    )
+    if seam_blocker:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=seam_blocker,
+            provenance=seam_blocker,
+            cursor_restore_status=restore.disposition.value,
+        )
+    typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
     replay_id = f"{cycle_id}-master-v2"
     input_material = {
         "cycle_id": cycle_id,
@@ -709,6 +802,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         confirmation_progress_venue=cap61_binding.venue,
         confirmation_progress_instrument=cap61_binding.instrument_key(),
         require_productive_typed_volatility_presence_gate=True,
+        productive_typed_volatility_binding_eligibility=typed_volatility_eligibility,
+        governed_authorized_productive_parameter_seam_record=governed_seam,
         explicit_runtime_scope_reset=False,
     )
     bind_input, bind_carry = prepare_productive_layered_core_replay_bind_v1(

@@ -9,6 +9,9 @@ from src.governance.f1_m9_productive_apply_execution_boundary_v1 import (
     load_execution_boundary_decision_v1,
 )
 from src.governance.f1_m9_productive_apply_ledger_v1 import F1M9ProductiveApplyLedgerPathsV1
+from src.governance.f1_m9_threshold_value_authorization_ledger_v1 import (
+    F1M9ThresholdValueAuthorizationLedgerPathsV1,
+)
 
 SCHEMA_VERSION: Final[str] = "f1_m9_productive_apply_durable_ledger_paths/v1"
 
@@ -44,8 +47,30 @@ def resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(
     )
 
 
+def resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1(
+    *,
+    repo_root: Path | None = None,
+) -> F1M9ThresholdValueAuthorizationLedgerPathsV1:
+    """Threshold ledgers co-located with canonical apply ledger parent (paths only)."""
+    apply_paths = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=repo_root)
+    parent = apply_paths.apply_ledger_path.parent
+    threshold_path = (parent / "threshold_value_authorization_ledger.jsonl").resolve()
+    rev_path = (parent / "threshold_value_authorization_revocation_ledger.jsonl").resolve()
+    root = (repo_root or Path(__file__).resolve().parents[2]).resolve()
+    try:
+        threshold_path.relative_to(root)
+        rev_path.relative_to(root)
+    except ValueError as exc:
+        raise F1M9DurableLedgerPathsError("DURABLE_THRESHOLD_LEDGER_PATH_OUTSIDE_REPO") from exc
+    return F1M9ThresholdValueAuthorizationLedgerPathsV1(
+        threshold_ledger_path=threshold_path,
+        threshold_revocation_ledger_path=rev_path,
+    )
+
+
 __all__ = [
     "F1M9DurableLedgerPathsError",
     "SCHEMA_VERSION",
     "resolve_canonical_f1_m9_productive_apply_ledger_paths_v1",
+    "resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1",
 ]
