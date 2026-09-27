@@ -19,6 +19,7 @@ flowchart LR
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
+  external_effect_authorization_policy["external_effect_authorization_policy PARTIAL"]
   external_effect_boundary_forensic_review["external_effect_boundary_forensic_review PARTIAL"]
   f1_m9_productive_runtime_threshold_consumer_wiring["f1_m9_productive_runtime_threshold_consumer_wiring PARTIAL"]
   f1_m9_scoped_owner_apply_execution["f1_m9_scoped_owner_apply_execution PARTIAL"]
@@ -157,6 +158,7 @@ flowchart LR
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| external_effect_authorization_policy | INTERMEDIATE | PARTIAL | PARTIAL | external_effect_authorization_policy_v1 | `tests/governance/test_external_effect_authorization_policy_v1.py`, `config/governance/external_effect_authorization_policy_v1_record.json`, `config/governance/external_effect_authorization_policy_owner_go_v1_decision.json`, `config/governance/external_effect_authorization_policy_v1_decision_v1.json` |
 | external_effect_boundary_forensic_review | INTERMEDIATE | PARTIAL | NONE | external_effect_boundary_forensic_review_v1 | `tests/governance/test_external_effect_boundary_forensic_review_v1.py`, `config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json`, `config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json` |
 | f1_m9_productive_runtime_threshold_consumer_wiring | INTERMEDIATE | PARTIAL | NONE | f1_m9_productive_runtime_threshold_consumer_wiring_v1 | `tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py`, `config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json`, `config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json` |
 | f1_m9_scoped_owner_apply_execution | INTERMEDIATE | PARTIAL | NONE | f1_m9_scoped_owner_apply_authority_v1 | `src/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`, `tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py`, `tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py`, `config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json` |

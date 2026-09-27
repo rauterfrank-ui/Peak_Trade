@@ -1,0 +1,31 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1",
+  "owner_go": true,
+  "owner_go_decision_config": "config/governance/external_effect_authorization_policy_owner_go_v1_decision.json",
+  "baseline_origin_main_sha": "b5e0fd94bbf7ba5f1742c98086e548d450ab4d2b",
+  "external_effect_authorization_policy_authorized": true,
+  "standing_external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "wire_send_permitted": false,
+  "permit_mint_authorized": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "credential_access_performed": false,
+  "real_keychain_access_authorized": false,
+  "pre_external_reachability_implies_external_effect": false,
+  "policy_implies_permit_mint": false,
+  "policy_implies_credential_access": false,
+  "policy_implies_real_venue_post": false,
+  "earliest_unclosed_boundary": "STANDING_EXTERNAL_EFFECT_LIFT",
+  "next_genuine_blocker": "EXTERNAL_EFFECT_STANDING_LIFT_OWNER_GO",
+  "normative_spec": "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
+  "bound_lineage": {
+    "external_effect_boundary_forensic_review_decision_config": "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+    "continuous_run_policy_record_config": "config/governance/current_continuous_run_policy_v1_record.json",
+    "productive_activation_policy_record_config": "config/governance/current_productive_activation_policy_v1_record.json",
+    "pre_external_boundary_spec": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md",
+    "external_effect_gate_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py",
+    "envelope_send_seam_module": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
+  }
+}

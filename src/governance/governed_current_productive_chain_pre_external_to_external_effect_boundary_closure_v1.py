@@ -14,6 +14,9 @@ from src.governance.governed_current_continuous_run_policy_closure_v1 import (
 from src.governance.governed_current_productive_activation_policy_closure_v1 import (
     prove_governed_current_productive_activation_policy_v1,
 )
+from src.governance.governed_external_effect_authorization_policy_closure_v1 import (
+    prove_governed_external_effect_authorization_policy_v1,
+)
 from src.governance.governed_external_effect_boundary_forensic_review_closure_v1 import (
     prove_governed_external_effect_boundary_forensic_review_v1,
 )
@@ -42,6 +45,8 @@ def prove_governed_current_productive_chain_pre_external_to_external_effect_boun
     if pre_external.ok is not True:
         return False
     if not prove_governed_external_effect_boundary_forensic_review_v1(repo_root=root):
+        return False
+    if not prove_governed_external_effect_authorization_policy_v1(repo_root=root):
         return False
     forensic = prove_external_effect_boundary_forensic_review_v1(repo_root=root)
     return forensic.ok is True

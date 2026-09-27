@@ -93,6 +93,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_volatility_presence_gate | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_volatility_presence_gate | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:elementary_direction_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:elementary_direction_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_effect_authorization_policy_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_effect_authorization_policy_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_bounded_threshold_enforcement_mv2_consumer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_governed_productive_apply_preparation_and_selection_policy_stack_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:f1_m9_post_real_campaign_productive_handoff_bounded_completion_v1 | STATUS=OPEN (not proven) |  |

@@ -1,46 +1,40 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "7330b6cb8a3cfccca9163028cbdf13e13910088c",
+  "base_sha": "b5e0fd94bbf7ba5f1742c98086e548d450ab4d2b",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
-    "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+    "config/governance/external_effect_authorization_policy_owner_go_v1_decision.json",
+    "config/governance/external_effect_authorization_policy_v1_decision_v1.json",
+    "config/governance/external_effect_authorization_policy_v1_record.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+    "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/governance/external_effect_boundary_forensic_review_v1/__init__.py",
-    "src/governance/external_effect_boundary_forensic_review_v1/constants_v1.py",
-    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+    "src/governance/external_effect_authorization_policy_gate_binding_v1.py",
+    "src/governance/external_effect_authorization_policy_v1.py",
     "src/governance/governed_current_productive_chain_pre_external_to_external_effect_boundary_closure_v1.py",
-    "src/governance/governed_external_effect_boundary_forensic_review_closure_v1.py",
-    "src/governance/productive_activation_boundary_forensic_review_v1/constants_v1.py",
-    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/constants_v1.py",
-    "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
-    "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py"
+    "src/governance/governed_external_effect_authorization_policy_closure_v1.py",
+    "tests/governance/test_external_effect_authorization_policy_v1.py"
   ],
-  "changed_paths_sha256": "a8900d5ff587c9559167dcd2d9cbfc6151eed493b343c2fccae48559bcb98210",
+  "changed_paths_sha256": "c93bf82a0ec6ada042c1634ac2a315fb910c1e2bb1cdbacb8cc61705e8e1a1dc",
   "covered_candidate_paths": [
-    "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
-    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
-    "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md"
   ],
   "evidence_refs": [
-    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
-    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
-    "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
+    "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
+    "src/governance/external_effect_authorization_policy_v1.py",
+    "tests/governance/test_external_effect_authorization_policy_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "External Effect boundary forensic review Owner-GO; chain closure PRE_EXTERNAL to standing gate; Atlas catalog tracks all material governance paths.",
+  "reason": "External Effect authorization policy Owner-GO; PRE_EXTERNAL to standing gate policy binding; map and Atlas catalog currency.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

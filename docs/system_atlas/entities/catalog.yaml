@@ -7109,6 +7109,29 @@ entities:
       no external effect, POST, permit mint authorization, or credential access.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:external_effect_authorization_policy_v1
+    kind: CONTRACT
+    name: External Effect authorization policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md
+      - src/governance/external_effect_authorization_policy_v1.py
+      - src/governance/external_effect_authorization_policy_gate_binding_v1.py
+      - config/governance/external_effect_authorization_policy_v1_record.json
+      - config/governance/external_effect_authorization_policy_v1_decision_v1.json
+    evidence_sources:
+      - tests/governance/test_external_effect_authorization_policy_v1.py
+      - src/governance/governed_external_effect_authorization_policy_closure_v1.py
+    notes: >-
+      Governed PRE_EXTERNAL to standing external-effect gate policy; binds gate/envelope seam;
+      standing EXTERNAL_EFFECT_AUTHORIZED/POST/permit/credential remain false.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
@@ -8671,6 +8694,23 @@ entities:
     notes: >-
       Continuous runtime admission validator and S6 orchestrator binding; per-cycle
       Productive Activation + F1/M9 revalidation. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:external_effect_authorization_policy_v1
+    kind: RUNTIME_COMPONENT
+    name: External Effect authorization policy v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1
+    source_paths:
+      - src/governance/external_effect_authorization_policy_v1.py
+      - src/governance/external_effect_authorization_policy_gate_binding_v1.py
+    evidence_sources:
+      - src/governance/governed_external_effect_authorization_policy_closure_v1.py
+      - tests/governance/test_external_effect_authorization_policy_v1.py
+    notes: >-
+      Policy admission at PRE_EXTERNAL → standing gate seam; gate binding re-evaluates
+      evaluate_external_effect_v1 without lifting standing flags. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
     kind: RUNTIME_COMPONENT
