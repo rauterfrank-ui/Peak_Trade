@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "528246fc0463bbc99494439ea1b0b265cb64802a"
+BASELINE_SHA = "842d8a1944e17345aeda2712f2fb30d49efa98e4"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -66,8 +66,6 @@ SEMANTIC_CLASS = {
 OPEN_CLASSES = ("UNKNOWN", "CONFLICTING", "PARTIAL")
 
 REQUIRED_UNKNOWN_IDS = (
-    "authority_flow_no_proven_current_instance",
-    "reselect_rerank_absence",
     "double_play_slot_crs_handoff",
     "sealed_venue_number_29p",
     "offline_instrument_literal_quantity_effect",
@@ -85,10 +83,7 @@ REQUIRED_PARTIAL_IDS = (
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
-    "account_equity_blocks",
     "account_equity_mapping_unbound",
-    "atlas_legacy_eradication_fixpoint_extension_v1",
-    "reference_price_authority_owner",
     "loops_a_and_b",
     "unified_blueprint_d02_inter_loop_matrix",
     "clean_trading_core_vs_p5",
@@ -107,9 +102,7 @@ REQUIRED_PARTIAL_IDS = (
     "whole_core_learning_q6_q8_none_ratification_v1",
     "whole_core_pre_external_egress_proof_closure_v1",
     "whole_core_productive_q0_q1_authority_ratification_v1",
-    "post_6828_universe_ranking_selection_binding_domain_v1",
-    "post_6828_c2_companion_blocking_boundary_v1",
-    "post_6828_portfolio_treasury_equity_boundary_v1",
+    "c2_companion_conversion_dependency_closure_v1",
     "g2_runtime_primary_offline_observation_projection_v1",
     "g2_runtime_learning_input_to_optimization_universe_binding_v1",
     "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
@@ -122,7 +115,6 @@ REQUIRED_PARTIAL_IDS = (
     "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
     "productive_activation_boundary_forensic_review_v1",
     "current_productive_activation_policy_v1",
-    "current_continuous_run_policy_v1",
     "external_effect_boundary_forensic_review_v1",
     "external_effect_authorization_policy_v1",
     "standing_external_effect_lift_policy_v1",
@@ -139,14 +131,8 @@ REQUIRED_PARTIAL_IDS = (
     "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
     "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
     "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
-    "b05_vs_singular_risk_owner",
-    "zero_authorized_productive_targets",
     "treasury_import_wording",
-    "live_authorized_cap2_vs_full_core",
     "m4_nongoals_vs_modules",
-    "mv2_decision_authority_map_tokens",
-    "c2_canonical_risk_sizing_authority_closure_v1",
-    "c2_companion_conversion_dependency_closure_v1",
 )
 
 

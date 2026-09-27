@@ -67,6 +67,17 @@ changes:
       Runbook, Map of Truth, and Atlas census_meta; B05 FIRST_CLASS CSIA domains;
       open-record closure adjudication metadata only. RUNTIME_SEMANTICS_CHANGED=false.
       Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6923_authority_open_evidence_closure_census_navigation_rebind
+    from: 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d
+    to: 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6923 authority/open-evidence closure census (#6924): CSIA mechanical
+      open-record closures; execution_external_effect representation fix; non-blocking
+      forensic/XPERP census markers; navigation-only review-SHA rebind. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

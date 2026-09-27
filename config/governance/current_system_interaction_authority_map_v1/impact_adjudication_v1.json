@@ -1,15 +1,11 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "528246fc0463bbc99494439ea1b0b265cb64802a",
+  "base_sha": "7c9e00b57a85a39841bfbedcc5c743fbcf5b955d",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/schema_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
@@ -22,19 +18,18 @@
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "b7b3e44c81beb1e29d77a26b197b160f1171200553e7c1a21800b912f7479bfa",
+  "changed_paths_sha256": "f861c606daa82c586911243c997e1a5440e50882f519fff415ea6bb13642b4d9",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
-    "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json",
+    "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "tests/ops/test_current_system_map_finalization_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "POST_6922 representation closure v1: B05 FIRST_CLASS CSIA domains/edges, open-record closure adjudication metadata, ratification JSON syntax repair, Runbook/MOT/Atlas review-SHA rebind; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
+  "reason": "POST_6923 authority/open-evidence closure census v1: mechanical CSIA record closures, execution_external_effect representation fix, Cap2 vs Full-Core LIVE layered-token closure, Atlas non-blocking forensic/XPERP markers and RUNBOOK catalog review; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

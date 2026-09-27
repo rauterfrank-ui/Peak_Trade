@@ -70,6 +70,10 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1 (PR #6924):
+    # navigation-only review-SHA rebind; CSIA mechanical open-record closures;
+    # execution_external_effect representation fix; non-blocking forensic/XPERP census markers;
+    # RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6922_REPRESENTATION_CLOSURE_V1 (PR #6923):
     # CURRENT_REVIEWED_AT_SHA / BOUND_ORIGIN_MAIN_SHA mechanical rebind to 528246fc;
     # B05 producer navigation + CSIA FIRST_CLASS representation only;
@@ -88,7 +92,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: POST_6922_REPRESENTATION_CLOSURE_V1
+    modified_by: POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
