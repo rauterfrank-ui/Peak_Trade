@@ -85,17 +85,22 @@ def _main() -> int:
         print(json.dumps(proof, sort_keys=True))
         return 0 if proof.get("PRE_LIVE_PROOF_COMPLETE") == "true" else 2
     if args.confirm_real_venue_post is not True:
-        print("FAIL_CLOSED: pass --confirm-real-venue-post to authorize the single POST", file=sys.stderr)
+        print(
+            "FAIL_CLOSED: pass --confirm-real-venue-post to authorize the single POST",
+            file=sys.stderr,
+        )
         return 2
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=envelope,
-        store_root=args.store_root,
-        evidence_root=args.evidence_root,
-        perform_real_venue_post=True,
-        k1_backend=None,
-        opener_factory=None,
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=args.store_root,
+            evidence_root=args.evidence_root,
+            perform_real_venue_post=True,
+            k1_backend=None,
+            opener_factory=None,
+        )
     )
     print(
         json.dumps(

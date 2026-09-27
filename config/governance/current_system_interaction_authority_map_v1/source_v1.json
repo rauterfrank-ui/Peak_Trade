@@ -4124,11 +4124,24 @@
     {
       "id": "whole_core_pre_external_egress_proof_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Pre-external to external-effect bounded WP: all sink markers classified; one-shot fresh-envelope POST join is INTENTIONALLY_ISOLATED_OWNER_GO only; PRE_EXTERNAL proof ok; standing POST/external effect remain false.",
+      "statement": "Pre-external to external-effect bounded WP: all sink markers classified; one-shot fresh-envelope POST join and actual Enter POST execute slice are INTENTIONALLY_ISOLATED_OWNER_GO only; PRE_EXTERNAL proof ok; standing POST/external effect remain false.",
       "evidence_refs": [
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; FIRST_BOUNDED milestone flag only after explicit governed runtime proof.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
+        "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_actual_venue_post_admission_v1_decision.json",
+        "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+        "src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py"
       ]
     },
     {

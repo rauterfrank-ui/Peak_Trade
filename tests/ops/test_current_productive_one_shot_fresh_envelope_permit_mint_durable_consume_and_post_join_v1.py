@@ -444,7 +444,10 @@ def test_callgraph_binds_existing_owners_and_not_a_second_port() -> None:
     assert "open_current_productive_k1_opaque_signing_handle_session_v1" in join_source
     assert "FullCoreProductiveHttpTradeOrderTransportV1" in join_source
     assert "construct_live_execution_port_v1" not in join_source
-    assert "one_shot_real_post=True" not in join_source.split("evaluate_real_venue_post_admission_v1", 1)[0]
+    assert (
+        "one_shot_real_post=True"
+        not in join_source.split("evaluate_real_venue_post_admission_v1", 1)[0]
+    )
     assert "eea.okx.com" not in join_source
     assert "urlopen" not in join_source
     consume_at = seam_source.index("persist_external_effect_durable_consume_v1(")

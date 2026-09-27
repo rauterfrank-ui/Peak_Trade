@@ -7039,7 +7039,8 @@ entities:
     notes: >-
       Owner-GO forensic census + static proof for PRE_EXTERNAL→external-effect authorization
       boundary after #6732; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true with
-      REQUIRED_CLOSURE_COUNT=0; no permit/POST/wire authorization; ATLAS_AUTHORITY=NONE.
+      REQUIRED_CLOSURE_COUNT=0; actual Enter POST execute slice classified isolated (#6900);
+      no standing permit/POST/wire authorization; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_activation_policy_v1
     kind: CONTRACT
@@ -7242,7 +7243,35 @@ entities:
       - src/governance/governed_current_productive_k1_opaque_signing_handle_pre_post_policy_closure_v1.py
     notes: >-
       Owner-GO K1 ephemeral handle, request signing, PRE-POST envelope on #6898; POST admission
-      fail-closed. ATLAS_AUTHORITY=NONE.
+      fail-closed. Actual Enter POST is a separate Owner-GO (#6900). ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+    kind: CONTRACT
+    name: CURRENT productive actual venue Enter POST (one-shot) v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
+    authority_sources:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
+    source_paths:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
+      - config/governance/current_productive_actual_venue_post_admission_v1_decision.json
+      - config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json
+      - src/governance/current_productive_actual_venue_post_admission_policy_v1.py
+      - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
+      - src/governance/current_productive_real_venue_post_admission_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+      - scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+    evidence_sources:
+      - tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+      - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
+    notes: >-
+      Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing,
+      eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1.
+      ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
