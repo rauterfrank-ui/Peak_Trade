@@ -7174,6 +7174,27 @@ entities:
       Governed permit-mint policy admission on #6895 standing lift; runtime mint performed false;
       credential/POST remain unauthorized. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:checkout_independent_credential_access_policy_v1
+    kind: CONTRACT
+    name: Checkout-independent credential access policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md
+      - src/governance/checkout_independent_credential_access_policy_v1.py
+      - src/governance/checkout_independent_credential_access_gate_binding_v1.py
+      - config/governance/checkout_independent_credential_access_policy_v1_record.json
+    evidence_sources:
+      - tests/governance/test_checkout_independent_credential_access_policy_v1.py
+      - src/governance/governed_checkout_independent_credential_access_policy_closure_v1.py
+    notes: >-
+      Governed credential-access policy admission on #6896 permit mint; no real secret load;
+      Keychain/POST remain unauthorized. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
