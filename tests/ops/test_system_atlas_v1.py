@@ -571,7 +571,7 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
 
 def test_census_navigation_rebind_atlas_legacy_eradication_v1(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    reviewed = "0779a6596b5b585473ef4212a804477e6733ad29"
+    reviewed = "528246fc0463bbc99494439ea1b0b265cb64802a"
     assert meta["current_reviewed_at_sha"] == reviewed
     assert meta["origin_main_sha"] == reviewed
     assert meta["navigation_rebind_sha"] == reviewed

@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- ATLAS_LEGACY_ERADICATION_V1 fixpoint extension: historical census payloads purged; 450 forensic legacy nodes removed (216 catalog + 234 DELETE_SAFE residual); 14 CURRENT_SUPPORT nodes retained; historical_terminology removed after terminology survival check; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- POST_6922_REPRESENTATION_CLOSURE_V1 (#6923): navigation-only review-SHA rebind and RUNBOOK:canonical_master_runbook catalog review stamp; prior legacy eradication fixpoint retained; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=ATLAS_LEGACY_ERADICATION_V1
+- modified_by=POST_6922_REPRESENTATION_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

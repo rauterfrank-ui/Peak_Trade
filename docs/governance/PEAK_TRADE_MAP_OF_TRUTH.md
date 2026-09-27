@@ -15,7 +15,7 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4
+CURRENT_REVIEWED_AT_SHA=528246fc0463bbc99494439ea1b0b265cb64802a
 ```
 
 **Role:** discovery / path resolution only.  
@@ -97,6 +97,9 @@ in the Master Runbook and the named packages.
 | Cap 7.2 host activation binding implementation | `src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py` |
 | Occupied-lane N=5 Full-Autonomy runtime completion | `src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/` |
 | `send_capable_adapter_v1` | `src/ops/governed_productive_account_equity_authority_producer_v1/` and Full-Core composition root |
+| B05 account-equity authority producer (Full-Core) | `src/ops/governed_productive_account_equity_authority_producer_v1/` |
+| B05 reference-price authority producer (Full-Core) | `src/ops/governed_productive_reference_price_authority_producer_v1/` |
+| B05 instrument-metadata authority producer (Full-Core) | `src/ops/governed_productive_instrument_metadata_authority_producer_v1/` |
 | K1 governed-cycle credential bind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py` |
 | K1 macOS Keychain backend kind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py` |
 | S5 exactly-one governed cycle (`run_current_productive_governed_cycle_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |

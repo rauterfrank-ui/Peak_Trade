@@ -11,7 +11,7 @@
     "decision_authority": {
         "owner_go": "OWNER_GO_FINAL_CURRENT_AUTHORITY_CLOSURE_V1",
         "owner_go_status": "CONSUMED",
-        "decision_authority_class": "SCOPED_OPERATOR_GO",
+        "decision_authority_class": "SCOPED_OPERATOR_GO"
     },
     "limit_equity_ratification": {
         "owner_decision": "RATIFY_CURRENT_PRODUCTIVE_EQUITY_BINDING",
@@ -32,10 +32,10 @@
             "scope_capital_limit": "typed_29p_available_for_sizing_account_equity",
             "per_trade_risk_limit": "typed_29p_available_for_sizing_account_equity",
             "total_capital_limit": "typed_29p_available_for_sizing_account_equity",
-            "daily_loss_remaining_budget": "typed_29p_available_for_sizing_account_equity",
+            "daily_loss_remaining_budget": "typed_29p_available_for_sizing_account_equity"
         },
         "historical_fixture_values_not_productive_authority": true,
-        "csia_open_record_closed": "limit_names_vs_equity_collapse",
+        "csia_open_record_closed": "limit_names_vs_equity_collapse"
     },
     "layered_safety_ratification": {
         "owner_decision": "RATIFY_EXISTING_LAYERED_SAFETY_AUTHORITY_MODEL",
@@ -50,9 +50,9 @@
             "replay_safety_veto_authority": "trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0.evaluate_offline_safety_kernel_boundary_v0",
             "durable_kill_switch_authority": "src.ops.gates.risk_gate.kill_switch_should_block_trading+StatePersistence via src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
             "kill_all_authority": "trading.master_v2.double_play SideState/composition (SideState.KILL_ALL)",
-            "flatten_authority": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+            "flatten_authority": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
         },
-        "csia_open_records_closed": ["safety_owner_unclosed", "kill_switch_full_core_safety_owner"],
+        "csia_open_records_closed": ["safety_owner_unclosed", "kill_switch_full_core_safety_owner"]
     },
     "markers": {
         "FINAL_CURRENT_AUTHORITY_CLOSURE_LIMIT_EQUITY_AND_LAYERED_SAFETY_RATIFICATION_V1": true,
@@ -65,7 +65,7 @@
         "LIVE_AUTHORIZED": false,
         "TESTNET_AUTHORIZED": false,
         "ATLAS_LEGACY_ERADICATION": false,
-        "REPOSITORY_WIDE_NUMERIC_CLEANUP": false,
+        "REPOSITORY_WIDE_NUMERIC_CLEANUP": false
     },
     "explicit_non_claims": [
         "NO_ATLAS_LEGACY_ERADICATION",
@@ -73,6 +73,6 @@
         "NO_NEW_LIMIT_POLICY",
         "NO_UMBRELLA_RUNTIME_SAFETY_OWNER",
         "NO_CAP_11_5_ACTIVATION",
-        "NO_CRS_FIELD_MERGE",
-    ],
+        "NO_CRS_FIELD_MERGE"
+    ]
 }

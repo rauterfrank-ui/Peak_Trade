@@ -56,6 +56,17 @@ changes:
       615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not
       freshly exhaustively rerun. Does not define WP-FA-08. Atlas is not
       trading authority.
+  - id: CHANGE:post_6922_representation_closure_navigation_rebind
+    from: 528246fc0463bbc99494439ea1b0b265cb64802a
+    to: 528246fc0463bbc99494439ea1b0b265cb64802a
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6922 representation closure (#6923): mechanical review-SHA rebind for
+      Runbook, Map of Truth, and Atlas census_meta; B05 FIRST_CLASS CSIA domains;
+      open-record closure adjudication metadata only. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
