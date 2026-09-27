@@ -52,8 +52,10 @@ flowchart LR
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_adapts_fresh_pretrade_get| full_core_fresh_pretrade_runtime_get
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_preserves_cap23_selection_owner| selection_cap23
+  okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_adapter_to_ranking_cap22| ranking_cap22
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_preserves_cap23_selection_owner| selection_cap23
+  peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
@@ -77,6 +79,7 @@ flowchart LR
   selection_cap23 -->|selection_cap23_to_operator_profile_b11| operator_profile_explainability_b11
   selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
+  current_productive_sidestate_confirmation_cursor_v1 -->|sidestate_cursor_to_mv2_cycle| mv2_double_play
   capital_risk_sizing -->|sizing_to_intent| order_intent
   ssf_cap72_host_live_execution_port_join_v1 -->|ssf_cap72_host_binding_to_live_execution_port| host_join_send_adapter
   selection_cap23 -->|step29m_consumes_selection| step29m
@@ -916,6 +919,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py`
 
+## private_state_runtime_to_wp_c_convergence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=converged_private_handoff_v1; WP-B normalized state only; no second productive truth
+- producer=okx_eea_private_account_state_runtime_wp_b
+- consumer=market_data_private_state_runtime_convergence_wp_c
+- authority_effect=NONE
+- decision_effect=CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT
+- direct_or_indirect=DIRECT
+- identity_binding=WP_C_CONSUMER_CENSUS_BOUND
+- temporal_binding=OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py`, `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py`
+
 ## public_md_runtime_adapter_to_ranking_cap22
 
 - lifecycle=PROVEN_CURRENT
@@ -951,6 +972,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `src/ops/peak_trade_public_market_data_runtime_v1/constants_v1.py`
+
+## public_md_runtime_to_wp_c_convergence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=converged_public_handoff_v1; WP-A canonical facts only; no competing transport consumer truth
+- producer=peak_trade_public_market_data_runtime_wp_a
+- consumer=market_data_private_state_runtime_convergence_wp_c
+- authority_effect=NONE
+- decision_effect=CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT
+- direct_or_indirect=DIRECT
+- identity_binding=WP_C_CONSUMER_CENSUS_BOUND
+- temporal_binding=OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py`, `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py`
 
 ## ranking_context_to_future_profile_b07
 
@@ -1365,6 +1404,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`
+
+## sidestate_cursor_to_mv2_cycle
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Durable cursor floor + side-state confirmation inputs for productive MV2 cycle
+- producer=current_productive_sidestate_confirmation_cursor_v1
+- consumer=mv2_double_play
+- authority_effect=NONE
+- decision_effect=CONTEXT_ONLY_NOT_DECISION_OWNER
+- direct_or_indirect=INDIRECT
+- identity_binding=CURSOR_FILENAME_AND_SIDE_STATE
+- temporal_binding=C1_VENUE_EVENT_TIME_FLOOR
+- version_binding=CURRENT_PRODUCTIVE_SIDESTATE_CONFIRMATION_CURSOR_V1
+- provenance_binding=tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py`, `tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py`
 
 ## sizing_to_intent
 

@@ -588,13 +588,31 @@ entities:
       execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false;
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+    kind: RUNTIME_COMPONENT
+    name: Current productive side-state / confirmation cursor seam
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
+      - tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py
+    evidence_sources:
+      - config/governance/current_system_interaction_authority_map_v1/source_v1.json
+      - tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py
+    notes: >-
+      Durable cursor floor + side-state confirmation seam for productive MV2 path.
+      Not a trading-decision, selection, or execution owner. CSIA domain
+      current_productive_sidestate_confirmation_cursor_v1. ATLAS_AUTHORITY=NONE.
+
   - id: CAPABILITY:market_data_private_state_runtime_convergence_v1
     kind: CAPABILITY
     name: Market Data & Private State Runtime Convergence (WP-C)
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: O4_N_BARS_PUBLIC_PLANE_CONVERGENCE_V1
+    modified_by: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
@@ -618,11 +636,12 @@ entities:
       - tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py
     notes: >-
       WP-C consumer closure: forensic census, governed handoffs onto WP-A/WP-B
-      canonical facts/state, restart/reconciliation closure proofs, and
-      operator-visible effective authorization readmodel (observation capability
-      distinct from send authority). AUTHORITY=NONE. No selection, rerank,
-      MV2/DP, pretrade, execution, wire, or multi-future authority. Cap 2.3
-      sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
+      canonical facts/state (CSIA edges public_md_runtime_to_wp_c_convergence and
+      private_state_runtime_to_wp_c_convergence), restart/reconciliation closure
+      proofs, and operator-visible effective authorization readmodel (observation
+      capability distinct from send authority). AUTHORITY=NONE. No selection,
+      rerank, MV2/DP, pretrade, execution, wire, or multi-future authority.
+      Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
     # atlas_entity_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911

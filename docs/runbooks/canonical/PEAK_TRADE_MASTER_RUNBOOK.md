@@ -6,7 +6,7 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-BOUND_ORIGIN_MAIN_SHA=06ba8e88b99930f87e5e019dc991b1c9c358a412
+BOUND_ORIGIN_MAIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
 STALE_IF_HEAD_DIFFERS=true
 ```
 
@@ -99,7 +99,9 @@ capital_risk_admissibility_owner_v1
 canonical_order_intent_owner_v1
 stateful_no_order_host_join_v1
 send_capable_adapter_v1
+run_current_productive_governed_cycle_v1
 governed_continuous_cycle_orchestrator_v1
+current_productive_sidestate_confirmation_cursor_v1
 ```
 
 ### Domain ownership (CURRENT)
@@ -118,6 +120,12 @@ governed_continuous_cycle_orchestrator_v1
 | Host join | `stateful_no_order_host_join_v1` |
 | Send-capable adapter | `send_capable_adapter_v1` |
 | Wire-send / external-effect boundary | `LIVE_EXECUTION_BOUNDARY` |
+| S5 one-cycle governed orchestration | `run_current_productive_governed_cycle_v1` (`current_productive_governed_cycle_orchestrator_v1.py`) |
+| S6 continuous-run policy orchestration | `current_continuous_run_policy_v1` + `current_productive_governed_continuous_cycle_orchestrator_v1.py` (requires Productive Activation; no external effect) |
+| Side-state / confirmation cursor seam | `current_productive_sidestate_confirmation_cursor_v1` (cursor floor; not a decision owner) |
+| Public market data plane (WP-A) | `ops.peak_trade_public_market_data_runtime_v1` |
+| Private account state plane (WP-B) | `ops.okx_eea_private_account_state_runtime_v1` |
+| WP-A/WP-B runtime convergence (WP-C) | `ops.market_data_private_state_runtime_convergence_v1` |
 | Full-Core live-path authority | `full_core_live_path_authority_v1` |
 | Bounded continuous sequencing | `governed_continuous_cycle_orchestrator_v1` |
 | Persistence | Durable single-writer state owners |
@@ -1100,7 +1108,7 @@ TREASURY_IS_TRADING_DECISION_OWNER=false
 Bound baseline for this SSOT revision:
 
 ```text
-BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b
+BOUND_ORIGIN_MAIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
 ```
 
 Every later mutation task must revalidate actual `origin/main`.
@@ -1112,11 +1120,22 @@ CURRENT_CLEAN_TRADING_CORE_STATUS=CLOSED
 EARLIEST_REMAINING_CORE_GAP=NONE
 TRADING_LOGIC_RECONSTRUCTION_REQUIRED=false
 FURTHER_CORE_ANALYSIS_REQUIRED=false
+TRACK_A_FINAL_STATUS=CLOSED_PROVEN_CURRENT
+TRACK_A_CLOSURE_BASELINE_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
+TRACK_A_REOPENED=false
+TRACK_A_OPEN_DEFECTS=NONE
 STATEFUL_NO_ORDER_HOST_JOIN_OWNER=stateful_no_order_host_join_v1
 SEND_CAPABLE_ADAPTER_OWNER=send_capable_adapter_v1
 FULL_CORE_LIVE_PATH_AUTHORITY=full_core_live_path_authority_v1
+S5_ONE_CYCLE_ORCHESTRATOR=run_current_productive_governed_cycle_v1
 CONTINUOUS_ORCHESTRATOR=governed_continuous_cycle_orchestrator_v1
 CONTINUOUS_RUN_AUTHORIZED=false
+S6_CONTINUOUS_RUN_POLICY=current_continuous_run_policy_v1
+WP_A_PUBLIC_MD_RUNTIME=ops.peak_trade_public_market_data_runtime_v1
+WP_B_PRIVATE_STATE_RUNTIME=ops.okx_eea_private_account_state_runtime_v1
+WP_C_RUNTIME_CONVERGENCE=ops.market_data_private_state_runtime_convergence_v1
+SIDESTATE_CONFIRMATION_CURSOR_SEAM=current_productive_sidestate_confirmation_cursor_v1
+POST_6910_6918_CURSOR_OWNERSHIP_CLOSURE=S7_persist_authoritative_floor_S6_reconcile_no_op_on_equal
 STEP_29Q_STATUS=PLAN_ONLY
 MAX_POSITIONS_EFFECTIVE=1
 MULTI_FUTURE_RUNTIME_AUTHORIZED=false
