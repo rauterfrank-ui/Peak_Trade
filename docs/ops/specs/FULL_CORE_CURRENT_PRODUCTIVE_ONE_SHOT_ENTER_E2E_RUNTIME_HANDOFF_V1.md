@@ -24,7 +24,7 @@ REAL_VENUE_POST_ATTEMPTED=false
 Owner-GO consume and external-effect consume ledgers. Do not reuse historical
 evidence packs or a store that already recorded `consumed=true`.
 
-`productivity_root` defaults to `runtime/current_productive/cap24_selection_state`.
+`productivity_root` defaults to `runtime&#47;current_productive&#47;cap24_selection_state`.
 
 Prepare (no POST):
 

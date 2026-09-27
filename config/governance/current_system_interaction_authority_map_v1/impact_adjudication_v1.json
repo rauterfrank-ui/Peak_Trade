@@ -1,38 +1,34 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "90da226ac0aa4933c7ce35959e4347123a3b98c6",
+  "base_sha": "4c07d9d6ffa01678423e2cc219c0584930397d0f",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
-    "scripts/ops/run_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/constants_v1.py",
-    "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-    "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py"
+    "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
+    "scripts/ops/run_current_productive_one_shot_enter_e2e_prepare_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
-  "changed_paths_sha256": "800d6018420efc3710ad2a69f1b74fa41135c51f85f4bdfe32b09437980bd1ce",
+  "changed_paths_sha256": "269fb7b4da6a22b9d29559d0e29733aaebd9e5eeeef53a0866f33958ab5a04d7",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
-    "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-    "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py"
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "K1 PRE-POST runtime binding to one-shot POST pre-live boundary (#6903): map/atlas currency, dual Owner-GO join module and ops wiring; POST baseline pin c93ea739 unchanged; no venue POST.",
+  "reason": "Enter one-shot E2E runtime prepare handoff (#6904): Cap-2.4 through PRE_EXTERNAL to POST/K1 CLI; map/atlas currency; no venue POST.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
