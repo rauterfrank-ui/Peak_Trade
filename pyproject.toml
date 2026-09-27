@@ -44,7 +44,6 @@ web = [
     "jinja2>=3.1.0",
     "httpx>=0.25.0",  # Required by FastAPI TestClient
     "prometheus-client>=0.19.0",
-    "websocket-client>=1.8.0",
 ]
 webui_browser = [
     "playwright>=1.40.0",  # Chrome-primary dashboard evidence harness (channel=chrome)

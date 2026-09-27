@@ -195,12 +195,6 @@ from .market_dashboard_landscape_shell_router_v2 import (
     router as market_dashboard_landscape_shell_router_v2,
     set_market_landscape_shell_config,
 )
-from .market_dashboard_landscape_shell_router_v3 import (
-    landscape_v3_app_startup,
-    router as market_dashboard_landscape_shell_router_v3,
-    set_market_landscape_v3_shell_config,
-)
-
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -538,14 +532,6 @@ def create_app() -> FastAPI:
     # Market Dashboard Landscape V2 — Phase 3 read-only shell (GET /market)
     set_market_landscape_shell_config(templates)
     app.include_router(market_dashboard_landscape_shell_router_v2)
-
-    # Landscape V3 fresh read-only shell (GET /market/v3 + presentation WebSocket)
-    set_market_landscape_v3_shell_config(templates)
-    app.include_router(market_dashboard_landscape_shell_router_v3)
-
-    @app.on_event("startup")
-    async def _landscape_v3_startup() -> None:
-        await landscape_v3_app_startup(app)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")

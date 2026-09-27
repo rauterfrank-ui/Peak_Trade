@@ -342,7 +342,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 | EP:flatten_execute | Flatten execute authority | GATED_MUTATION_PATH | may_exist_downstream_NOT_activated |
 | EP:full_core_live_path_offline | Offline Core-to-Live composition path | GATED_OFFLINE_COMPOSITION_PATH | none_hard_stop_before_wire |
 | EP:gfu_producer | Governed Futures Universe producer | PRODUCTIVE_OFFLINE_PRODUCER | Discovery is offline/injected payload in GFU producer itself; public MD client i |
-| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
+| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host (repo autostart off) | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
 
 ## 8. Safety / governance model
 
@@ -658,7 +658,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `239`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `238`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -758,7 +758,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=745
+ENTITY_TOTAL=744
 HUB_RELATION_COUNT=74
 STRUCTURAL_RELATION_COUNT=243
 RUNTIME_RELATION_COUNT=132
@@ -858,7 +858,7 @@ Remaining census domains:
 | PHASE | 99 |
 | REGISTRY | 1 |
 | RUNBOOK | 5 |
-| RUNTIME_COMPONENT | 248 |
+| RUNTIME_COMPONENT | 247 |
 | SCHEMA | 18 |
 | SCRIPT | 5 |
 | SELECTOR | 2 |

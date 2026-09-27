@@ -21,6 +21,8 @@ from src.webui.landscape_dashboard_persistent_local_host_v1.constants_v1 import 
     DASHBOARD_EXPOSURE,
     LANDSCAPE_DASHBOARD_FIXED_PORT,
     LAUNCHAGENT_LABEL,
+    PERSISTENT_HOST_ATTACHED,
+    PERMANENT_AUTOSTART_ENABLED,
     PORT_CONFLICT_STATUS,
     RESTART_ON_FAILURE,
     SUPERVISION_METHOD,
@@ -34,6 +36,8 @@ CONTROLLER = REPO_ROOT / CONTROLLER_SCRIPT_REL
 
 
 def test_canonical_bookmark_url_is_deterministic() -> None:
+    assert PERMANENT_AUTOSTART_ENABLED is False
+    assert PERSISTENT_HOST_ATTACHED is False
     assert CAPABILITY_ID == "LANDSCAPE_DASHBOARD_PERSISTENT_LOCAL_HOST_V1"
     assert DASHBOARD_BIND_ADDRESS == "127.0.0.1"
     assert DASHBOARD_EXPOSURE == "LOOPBACK_ONLY"
@@ -56,6 +60,11 @@ def test_controller_script_syntax_and_supervision_contract() -> None:
     assert "127.0.0.1" in text
     assert "0.0.0.0" not in text
     assert "KeepAlive" in text
+    assert "PERSISTENT_AUTOSTART_ENABLED=false" in text
+    assert re.search(
+        r"<key>RunAtLoad</key>\s*\n\s*<false/>",
+        text,
+    ), "dedicated Landscape V2 host must not autostart at login"
     assert "launchctl bootstrap" in text
     assert "install) cmd_install" in text
     assert "enable) cmd_enable" in text

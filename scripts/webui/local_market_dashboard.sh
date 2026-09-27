@@ -9,6 +9,7 @@
 #
 # No runtime / trading / authority effect.
 # LIVE_AUTHORIZED=false · ORDERS_ALLOWED=false · LOCALHOST_ONLY
+# PERSISTENT_AUTOSTART_ENABLED=false — operator host detached; explicit start only.
 #
 # Commands:
 #   ./scripts/webui/local_market_dashboard.sh start|stop|restart|status|open|logs
@@ -198,7 +199,7 @@ render_plist() {
   <key>Label</key>
   <string>${LABEL}</string>
   <key>RunAtLoad</key>
-  <true/>
+  <false/>
   <key>KeepAlive</key>
   <true/>
   <key>ThrottleInterval</key>
