@@ -1,29 +1,21 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "66fc9c9c13fd7cd00feed3279ab65bb722f66074",
+  "base_sha": "173d9af08f969e1f676f4f58c8c9e0d2a56aae06",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
-    "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py"
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
+    "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py"
   ],
-  "changed_paths_sha256": "240c245c3605235d4c51f5a88daafb0fecb50f181f779ee1f02c0d7cc528855f",
+  "changed_paths_sha256": "754af0594104a57fdc1eeb92211f5a0538ece34ddc0889687d5da518e1efb381",
   "covered_candidate_paths": [
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
-    "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py"
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
+    "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6917: G17 typed-vol CMC bind canonical reuse on DUPLICATE_NOOP; Atlas/CSIA bookkeeping only; map_authority=NONE; no CSIA source_v1 change.",
+  "reason": "Track A final closure repair: natural-enter fixture alignment only; map_authority=NONE; no CSIA source_v1 change; NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

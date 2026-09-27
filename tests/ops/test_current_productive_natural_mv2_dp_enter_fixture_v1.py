@@ -226,6 +226,7 @@ def test_bilateral_natural_enter_crs_binds_only_at_enter_live_29p_join_v1() -> N
         join_current_productive_enter_live_29p_before_venue_plan_v1,
     )
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        EPOCH,
         _balance_payload,
         _injected,
     )
@@ -245,7 +246,7 @@ def test_bilateral_natural_enter_crs_binds_only_at_enter_live_29p_join_v1() -> N
             replay=replay,
             bound_instrument=bound,
             injected=_injected(payload=_balance_payload()),
-            decision_epoch="2026-09-16T00:00:00Z",
+            decision_epoch=EPOCH,
         )
         assert join.decision_class == DECISION_ENTER
         assert join.status == STATUS_PASS
