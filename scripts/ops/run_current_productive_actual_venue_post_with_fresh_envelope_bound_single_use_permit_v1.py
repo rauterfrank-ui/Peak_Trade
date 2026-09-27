@@ -64,8 +64,18 @@ def _main() -> int:
         action="store_true",
         help="Required to perform the single authorized HTTP POST",
     )
+    parser.add_argument(
+        "--k1-backend",
+        choices=("none", "macos"),
+        default="none",
+        help="Pre-live / POST join K1 lookup backend (macos requires canonical K1 Owner-GO scope)",
+    )
     args = parser.parse_args()
 
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 import (
+        K1_OPAQUE_SIGNING_OWNER_GO,
+        resolve_macos_security_framework_k1_lookup_backend_v1,
+    )
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
         EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
         OWNER_GO,
@@ -73,20 +83,41 @@ def _main() -> int:
         prove_pre_live_actual_venue_post_readiness_v1,
     )
 
+    def _resolve_k1_backend():
+        if args.k1_backend == "macos":
+            return resolve_macos_security_framework_k1_lookup_backend_v1(
+                k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO
+            )
+        return None
+
     envelope = _load_envelope(args.envelope_json)
     if args.pre_live_only:
+        k1_backend = _resolve_k1_backend()
+        if k1_backend is None:
+            print(
+                "FAIL_CLOSED: --pre-live-only requires --k1-backend macos for PRE_LIVE_PROOF_COMPLETE",
+                file=sys.stderr,
+            )
+            return 2
         proof = prove_pre_live_actual_venue_post_readiness_v1(
             owner_go=OWNER_GO,
             baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
             envelope=envelope,
             store_root=args.store_root,
-            k1_backend=None,
+            k1_backend=k1_backend,
         )
         print(json.dumps(proof, sort_keys=True))
         return 0 if proof.get("PRE_LIVE_PROOF_COMPLETE") == "true" else 2
     if args.confirm_real_venue_post is not True:
         print(
             "FAIL_CLOSED: pass --confirm-real-venue-post to authorize the single POST",
+            file=sys.stderr,
+        )
+        return 2
+    k1_backend = _resolve_k1_backend()
+    if k1_backend is None:
+        print(
+            "FAIL_CLOSED: real POST requires --k1-backend macos",
             file=sys.stderr,
         )
         return 2
@@ -98,7 +129,7 @@ def _main() -> int:
             store_root=args.store_root,
             evidence_root=args.evidence_root,
             perform_real_venue_post=True,
-            k1_backend=None,
+            k1_backend=k1_backend,
             opener_factory=None,
         )
     )

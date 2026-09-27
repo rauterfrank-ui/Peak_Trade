@@ -7295,6 +7295,25 @@ entities:
       closes FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME; no POST;
       POST_GO_CONSUMED=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1
+    kind: CONTRACT
+    name: K1 runtime binding to one-shot actual venue POST pre-live boundary v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1
+    authority_sources:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md
+    source_paths:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py
+      - src/governance/current_productive_k1_pre_post_productive_chain_v1.py
+    evidence_sources:
+      - tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py
+    notes: >-
+      K1 PRE-POST chain bound to DM pre-live proof; dual Owner-GO literals; no venue POST;
+      PERMIT_CONSUMED_DURABLE=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1

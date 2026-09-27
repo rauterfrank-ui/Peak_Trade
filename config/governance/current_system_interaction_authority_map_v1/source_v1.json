@@ -1339,7 +1339,8 @@
         "src/governance/k1_opaque_signing_handle_governed_construction_v1.py",
         "src/governance/current_productive_k1_pre_post_request_envelope_v1.py",
         "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
       ],
       "evidence_refs": [
         "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
@@ -4152,6 +4153,16 @@
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
         "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "K1 PRE-POST productive chain runtime-bound to DM pre-live readiness; dual Owner-GO literals (K1 PRE-POST + actual POST); ephemeral Keychain only; no durable POST-GO consume and no venue POST; baseline pin c93ea739.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
+        "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
       ]
     },
     {

@@ -71,6 +71,8 @@ INTENTIONALLY_ISOLATED_OWNER_GO_POST_SLICES = (
     "src/ops/full_core_live_path_composition_root_v1/"
     "current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/"
+    "current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/"
     "current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",

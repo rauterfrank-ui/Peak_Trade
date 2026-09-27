@@ -34,5 +34,8 @@ Owner records:
 `config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json`,
 `config/governance/current_productive_actual_venue_post_admission_v1_decision.json`.
 
+K1 runtime binding (pre-live, no POST):
+`docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md`
+
 Code:
 `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py`
