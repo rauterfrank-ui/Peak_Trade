@@ -432,6 +432,16 @@ def _advance_persisted_c1_cursor_floor_v1(
     cursor_store_root: Path,
     venue_event_time: float,
 ) -> None:
+    """Reconcile S6 sequencing floor after a successful S5 cycle.
+
+    Durable sidestate cursor commits are owned by S7
+    (``persist_occupied_lane_mv2_dp_decision_state_cursor_v1`` via
+    ``compose_occupied_lane_mv2_dp_durable_cycle_v1``). Stub or non-persisting
+    T2 paths leave the floor unchanged; S6 then performs the minimal
+    ``venue_event_time`` bump. When the durable owner already committed the
+    accepted C1 epoch (``incoming == previous``), this is a no-op reconcile —
+    not duplicate-input acceptance (freshness gates run before S5).
+    """
     cursor, reason = load_current_productive_c1_cursor_or_reason_v1(cursor_store_root)
     if cursor is None:
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
@@ -446,10 +456,12 @@ def _advance_persisted_c1_cursor_floor_v1(
             raise TypeError("last_accepted_observation_identity")
         previous = float(identity["venue_event_time"])
         incoming = float(venue_event_time)
-        if incoming <= previous:
+        if incoming < previous:
             raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
                 REASON_STALE_OR_EQUAL_C1, "cursor_advance"
             )
+        if incoming == previous:
+            return
         identity["venue_event_time"] = incoming
     except CurrentProductiveGovernedContinuousCycleOrchestratorError:
         raise
