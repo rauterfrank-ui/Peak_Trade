@@ -75,7 +75,7 @@ entrypoints:
       schema only and still does not bind typed equity. Still no LiveExecutionPort construction.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
   - id: EP:landscape_dashboard_persistent_local_host_v1
-    name: Landscape Dashboard V2 persistent loopback host
+    name: Landscape Dashboard V2 persistent loopback host (repo autostart off)
     path: scripts/webui/landscape_dashboard_persistent_local_host.sh
     entrypoint_class: OPERATOR_LOCAL_LOOPBACK_SERVICE
     epistemic_status: FORENSIC_RAW
@@ -88,5 +88,6 @@ entrypoints:
         failure_mode: refuse non-loopback bind
     missing_wiring: []
     notes: >-
-      LaunchAgent KeepAlive; canonical bookmark /market on 8765. Not coupled to
+      Optional LaunchAgent host; repo defaults disable autostart (RunAtLoad=false).
+      Canonical bookmark /market on 8765 when manually started. Not coupled to
       Full-Core or OKX for HTTP availability. ATLAS_AUTHORITY=NONE.

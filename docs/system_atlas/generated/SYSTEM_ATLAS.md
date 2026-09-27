@@ -342,7 +342,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 | EP:flatten_execute | Flatten execute authority | GATED_MUTATION_PATH | may_exist_downstream_NOT_activated |
 | EP:full_core_live_path_offline | Offline Core-to-Live composition path | GATED_OFFLINE_COMPOSITION_PATH | none_hard_stop_before_wire |
 | EP:gfu_producer | Governed Futures Universe producer | PRODUCTIVE_OFFLINE_PRODUCER | Discovery is offline/injected payload in GFU producer itself; public MD client i |
-| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
+| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host (repo autostart off) | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
 
 ## 8. Safety / governance model
 

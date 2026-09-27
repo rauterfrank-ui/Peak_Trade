@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,9 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:peak_trade_public_market_data_runtime_v1` |
+| `EP:landscape_dashboard_persistent_local_host_v1` |
+| `RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1` |
+| `RUNTIME_COMPONENT:market_dashboard_landscape_v3_fresh_v1` |
 
 ## CHANGED_RELATIONS
 
