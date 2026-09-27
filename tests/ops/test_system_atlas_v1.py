@@ -629,7 +629,10 @@ def test_census_navigation_rebind_distinct_from_domain_payloads(atlas: dict) -> 
     meta = atlas["records"]["census/census_meta.yaml"]
     assert meta["origin_main_sha"] == "d0edb85fc83a5415a8a652299144cd0fe6da7644"
     assert meta["navigation_rebind_sha"] == "d0edb85fc83a5415a8a652299144cd0fe6da7644"
-    assert meta["navigation_rebind_kind"] == "CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1_NAVIGATION_REBIND"
+    assert (
+        meta["navigation_rebind_kind"]
+        == "CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1_NAVIGATION_REBIND"
+    )
     assert meta["domain_census_payloads_bound_sha"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
     assert meta["origin_main_sha"] != meta["domain_census_payloads_bound_sha"]
     assert meta["domain_census_payloads_fresh_exhaustive_recensus"] is False
