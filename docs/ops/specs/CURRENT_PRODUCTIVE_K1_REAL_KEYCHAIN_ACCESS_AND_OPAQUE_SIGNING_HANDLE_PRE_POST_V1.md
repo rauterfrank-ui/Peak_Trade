@@ -49,6 +49,10 @@ K1_PRE_POST_POLICY -/-> POST_ADMISSION / REAL_VENUE_POST / PERMIT_CONSUME_SEND
 
 **OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1** — real venue POST with fresh envelope-bound single-use permit.
 
+Runtime binding (pre-live only, no POST):  
+`docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md`
+
 Code: `src/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py`  
 Construction: `src/governance/k1_opaque_signing_handle_governed_construction_v1.py`  
-PRE-POST: `src/governance/current_productive_k1_pre_post_request_envelope_v1.py`
+PRE-POST: `src/governance/current_productive_k1_pre_post_request_envelope_v1.py`  
+Runtime join: `src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py`
