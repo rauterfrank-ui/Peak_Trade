@@ -59,7 +59,6 @@ OWNER_WP_DECISION_CONFIG: Final[str] = (
 
 RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS: Final[int] = 600
 REAL_P4_TO_F1_M9_JOIN_STATUS: Final[str] = JOIN_STATUS_NOT_CANONICAL
-PRODUCTIVE_ACTIVATION_AUTHORIZED: Final[bool] = False
 CONTINUOUS_RUN_AUTHORIZED: Final[bool] = False
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 
@@ -83,6 +82,7 @@ class F1M9ProductiveRuntimeThresholdConsumerPathResultV1:
     configuration_runtime_applied: bool
     enforcement_applied: bool
     alpha_scope_entry_authority_allowed: bool
+    productive_runtime_admission: bool
     productive_activation_authorized: bool
     real_p4_to_f1_m9_join_status: str
     external_effect_authorized: bool
@@ -98,6 +98,7 @@ class F1M9ProductiveRuntimeThresholdConsumerPathResultV1:
                 self.presence_gate.to_dict() if self.presence_gate is not None else None
             ),
             "productive_activation_authorized": self.productive_activation_authorized,
+            "productive_runtime_admission": self.productive_runtime_admission,
             "real_p4_to_f1_m9_join_status": self.real_p4_to_f1_m9_join_status,
             "reason_codes": list(self.reason_codes),
             "seam_digest": self.seam_digest,
@@ -141,7 +142,8 @@ def _deny(
         configuration_runtime_applied=False,
         enforcement_applied=False,
         alpha_scope_entry_authority_allowed=False,
-        productive_activation_authorized=PRODUCTIVE_ACTIVATION_AUTHORIZED,
+        productive_runtime_admission=False,
+        productive_activation_authorized=False,
         real_p4_to_f1_m9_join_status=REAL_P4_TO_F1_M9_JOIN_STATUS,
         external_effect_authorized=EXTERNAL_EFFECT_AUTHORIZED,
     )
@@ -166,6 +168,7 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
     restart_status: VolatilityRestartStatusV1 = VolatilityRestartStatusV1.NOT_APPLICABLE,
     governed_seam_record: Mapping[str, Any] | None = None,
     require_governed_seam: bool = False,
+    runtime_surface: str | None = None,
     repo_root: Path | None = None,
 ) -> F1M9ProductiveRuntimeThresholdConsumerPathResultV1:
     """Wire ratified/applied F1/M9 threshold through transport, gate, and bounded enforcement."""
@@ -174,6 +177,24 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
 
     if require_governed_seam and not consumer_wiring_authorized_v1(repo_root=root):
         return _deny(["CONSUMER_WIRING_NOT_AUTHORIZED"])
+
+    runtime_admission_granted = False
+    activation_authorized = False
+    if require_governed_seam:
+        from src.governance.current_productive_activation_policy_v1 import (
+            evaluate_productive_runtime_admission_v1,
+        )
+
+        if not runtime_surface:
+            return _deny(["PRODUCTIVE_RUNTIME_SURFACE_REQUIRED"])
+        admission = evaluate_productive_runtime_admission_v1(
+            runtime_surface=runtime_surface,
+            repo_root=root,
+        )
+        if not admission.runtime_admission_granted:
+            return _deny(list(admission.reason_codes) or ["PRODUCTIVE_RUNTIME_ADMISSION_DENIED"])
+        runtime_admission_granted = True
+        activation_authorized = admission.productive_activation_authorized
 
     transport = resolve_governed_runtime_seam_for_presence_gate_v1(governed_seam_record)
     transport_ready = transport.transport_status == STATUS_TRANSPORT_READY
@@ -272,7 +293,8 @@ def evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
         configuration_runtime_applied=runtime_applied,
         enforcement_applied=enforcement.enforcement_applied,
         alpha_scope_entry_authority_allowed=alpha_allowed,
-        productive_activation_authorized=PRODUCTIVE_ACTIVATION_AUTHORIZED,
+        productive_runtime_admission=runtime_admission_granted,
+        productive_activation_authorized=activation_authorized,
         real_p4_to_f1_m9_join_status=REAL_P4_TO_F1_M9_JOIN_STATUS,
         external_effect_authorized=EXTERNAL_EFFECT_AUTHORIZED,
     )
@@ -286,7 +308,6 @@ __all__ = [
     "F1M9ProductiveRuntimeThresholdConsumerPathResultV1",
     "NORMATIVE_SPEC",
     "OWNER_WP_DECISION_CONFIG",
-    "PRODUCTIVE_ACTIVATION_AUTHORIZED",
     "RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS",
     "REAL_P4_TO_F1_M9_JOIN_STATUS",
     "SCHEMA_VERSION",

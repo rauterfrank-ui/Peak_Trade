@@ -1464,6 +1464,9 @@ def run_integrated_offline_trading_logic_replay_v1(
             protection_authority_required_v1,
         )
 
+        from src.governance.current_productive_activation_policy_v1 import (
+            RUNTIME_SURFACE_F1_M9_INTEGRATED_OFFLINE_REPLAY,
+        )
         from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
             consumer_wiring_authorized_v1,
             evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
@@ -1476,6 +1479,7 @@ def run_integrated_offline_trading_logic_replay_v1(
             eligibility=inp.productive_typed_volatility_binding_eligibility,
             governed_seam_record=inp.governed_authorized_productive_parameter_seam_record,
             require_governed_seam=require_governed_seam,
+            runtime_surface=RUNTIME_SURFACE_F1_M9_INTEGRATED_OFFLINE_REPLAY,
         )
         presence_gate = consumer_path.presence_gate
         if presence_gate is None:

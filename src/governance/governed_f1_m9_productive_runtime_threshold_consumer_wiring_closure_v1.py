@@ -6,10 +6,12 @@ import json
 from pathlib import Path
 from typing import Final
 
+from src.governance.current_productive_activation_policy_v1 import (
+    validate_productive_activation_policy_record_v1,
+)
 from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
     DECISION_CONFIG,
     OWNER_WP_DECISION_CONFIG,
-    PRODUCTIVE_ACTIVATION_AUTHORIZED,
     RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS,
     REAL_P4_TO_F1_M9_JOIN_STATUS,
     WORKPACKAGE_ID,
@@ -57,7 +59,8 @@ def prove_governed_f1_m9_productive_runtime_threshold_consumer_wiring_v1(
         return False
     if decision.get("real_p4_to_f1_m9_join_status") != REAL_P4_TO_F1_M9_JOIN_STATUS:
         return False
-    if PRODUCTIVE_ACTIVATION_AUTHORIZED is not False:
+    policy = validate_productive_activation_policy_record_v1(repo_root=root)
+    if policy.policy_authorized is not True:
         return False
     if PRODUCTIVE_NUMERIC_VALUES_SET != 0:
         return False

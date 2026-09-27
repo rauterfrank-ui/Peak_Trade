@@ -821,6 +821,9 @@ def run_hardened_bridge_cycle_v2(
     # Wire producer/binding reuse+restart labels into non-enforcing age telemetry.
     binding_reuse = VolatilityReuseStatusV1(str(typed_binding.telemetry.reuse_status))
     binding_restart = VolatilityRestartStatusV1(str(typed_binding.telemetry.restart_status))
+    from src.governance.current_productive_activation_policy_v1 import (
+        RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
+    )
     from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
         consumer_wiring_authorized_v1,
         evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
@@ -834,6 +837,7 @@ def run_hardened_bridge_cycle_v2(
         restart_status=binding_restart,
         governed_seam_record=state.governed_authorized_productive_parameter_seam_record,
         require_governed_seam=require_governed_seam,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
     )
     presence_gate = consumer_path.presence_gate
     if presence_gate is None:

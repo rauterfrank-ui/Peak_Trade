@@ -1,0 +1,36 @@
+{
+  "schema_version": "current_productive_activation_policy/v1",
+  "policy_id": "CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1",
+  "policy_owner": "governance.current_productive_activation_policy_v1",
+  "policy_authorized": true,
+  "owner_go": true,
+  "baseline_origin_main_sha": "958657754033f432dc723fc4f56412f2de9430dd",
+  "runtime_admission_envelope": "BOUNDED_PRE_EXTERNAL_PRODUCTIVE_RUNTIME",
+  "admitted_runtime_surfaces": [
+    "F1_M9_THRESHOLD_CONSUMER_HARDENING_V2_BRIDGE",
+    "F1_M9_THRESHOLD_CONSUMER_INTEGRATED_OFFLINE_REPLAY"
+  ],
+  "bound_lineage": {
+    "forensic_review_decision_config": "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",
+    "forensic_review_decision_config_digest": "04e78e6fdb588b5f1460db54350c3636775da11bea484b6bd822a448ba1822f8",
+    "f1_m9_consumer_wiring_decision_config": "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
+    "f1_m9_consumer_wiring_decision_config_digest": "5f03705fdc654246a84f6c637c67d8cf439c262821b6d24ca31351481d8d39b0",
+    "f1_m9_runtime_apply_start_decision_config": "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
+    "f1_m9_runtime_apply_start_decision_config_digest": "6a2b1c639d40a3bc2be59eb8a27277f47e479fc73ba23c11d71e92f9001e845b",
+    "ratified_threshold_numeric_max_age_seconds": 600,
+    "owner_threshold_record_digest": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+    "authorized_owner_apply_record_digest": "3f0895951d0708d017326a8b4f779c433d609d09d67459fe47f1239f214a2f95"
+  },
+  "explicit_non_implications": {
+    "continuous_run_authorized": false,
+    "external_effect_authorized": false,
+    "post_allowed": false,
+    "wire_send_permitted": false,
+    "real_venue_post_allowed": false,
+    "autonomy_can_mint_permit": false,
+    "autonomy_can_post": false,
+    "credential_access_performed": false
+  },
+  "semantic_definition": "Admission of governed productive runtime inside bounded PRE_EXTERNAL envelope only.",
+  "policy_record_digest": "692f70db6c42e3b859972ec2946be31eec4ac581096ca2c5e1fe71772eeea4d1"
+}
