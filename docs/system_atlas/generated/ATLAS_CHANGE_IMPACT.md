@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1` |
 | `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6908: canonical F1/M9 durable bootstrap on Master-V2; idempotent apply-start continuation; PRE_EXTERNAL WP2 G17 mark-history + common_epoch_decision_epoch on occupied-lane invoke join; no venue POST; no second authority.
+- PR #6909: occupied-lane N1 invoke cold-start binds MV2 cap61 last_finalized_event_ts_unix to injected venue C1 timeline before governed cycle (fixes false STALE_C1); PRE_EXTERNAL claims guard permits canonical SECTION_* symbolic authority labels; no threshold relaxation; no venue POST.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=ENDGAME_F1_M9_CANONICAL_DURABLE_BOOTSTRAP_AND_G17_WP2_V1
+- modified_by=POST6908_COLD_START_C1_FLOOR_AND_CLAIMS_GUARD_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

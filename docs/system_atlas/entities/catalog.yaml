@@ -1449,6 +1449,7 @@ entities:
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    # PR_6909 POST6908: invoke_join cold-start aligns MV2 cap61 floor to injected venue C1 (candle_last-60) before governed cycle; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6908 ENDGAME_F1_M9: invoke_join common_epoch_decision_epoch for T2 enter-live-29p WP1 epoch alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # ENTER Live-29P fail-closed before venue-plan when join status != PASS; observed_unix handoff;
