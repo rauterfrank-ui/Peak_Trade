@@ -11,6 +11,7 @@
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "src/governance/current_productive_actual_venue_post_admission_policy_v1.py",
     "src/governance/current_productive_real_venue_post_admission_v1.py",
@@ -24,13 +25,14 @@
     "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
   ],
-  "changed_paths_sha256": "0976f34d14aad2ded80a18b8bb8b4583e1bc4ba41fb0812823bb978e3a59ef2e",
+  "changed_paths_sha256": "b5a41ecb779c8a3bf5d933895a5830eca9110bd7565b703ac7d35a4547002a5e",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md"
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
   "evidence_refs": [
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
