@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- ATLAS_LEGACY_ERADICATION_V1: removed twelve historical domain census payloads and legacy-only catalog entities/edges; CURRENT productive model plus support dependencies retained; historical_terminology payload removed after CURRENT terminology survival check; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- ATLAS_LEGACY_ERADICATION_V1 fixpoint extension: historical census payloads purged; 450 forensic legacy nodes removed (216 catalog + 234 DELETE_SAFE residual); 14 CURRENT_SUPPORT nodes retained; historical_terminology removed after terminology survival check; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=ATLAS_LEGACY_ERADICATION_V1
 

@@ -16,10 +16,7 @@ DoD is not collapsed into tests. Capability Closure Standard is a related but di
 | id | name | scope | status | epistemic | authority |
 | --- | --- | --- | --- | --- | --- |
 | DOD:capability_closure_standard | Mandatory Capability Closure Standard | capability | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY | ['docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md'] |
-| DOD:cybersecurity_runbook | Cybersecurity Runbook Definition of Done | cybersecurity_runbook | CURRENT_NONCANONICAL | STATUS=ADJUDICATED | ['docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md', ' |
-| DOD:pr_queue_per_pr | Definition of Done pro PR | process | CURRENT_NONCANONICAL | STATUS=HISTORICAL | ['docs/ops/QUEUE_DURCHZIEHEN_STRATEGIE.md'] |
 | DOD:program_final | Program Definition of Done | program | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY | ['docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md'] |
-| DOD:roadmap_phase_generic | Historical phase/roadmap Definition of Done headings | documentation_historical | OPEN | STATUS=OPEN (not proven) | ['docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md', 'docs/PHASE_83_LIVE_GA |
 | DOD:vollautonomie_economic_validity | Definition of Done — Economic Validity | historical_runbook | SUPERSEDED | STATUS=HISTORICAL | ['docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md'] |
 | DOD:vollautonomie_safety_runtime | Definition of Done — Safety and Runtime | historical_runbook | SUPERSEDED | STATUS=HISTORICAL | ['docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md'] |
 | DOD:vollautonomie_trading_logic | Definition of Done — Trading Logic | historical_runbook | SUPERSEDED | STATUS=HISTORICAL | ['docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md'] |

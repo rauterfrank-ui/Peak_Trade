@@ -390,17 +390,17 @@ def test_incompleteness_register_covers_all_complete_flags(atlas: dict) -> None:
 
 
 def test_schema_json_files_are_inventoried(atlas: dict) -> None:
-    entities = iter_entities(atlas)
-    schema_sources = {
-        str(e.get("source") or "")
-        for e in entities
-        if str(e.get("kind")) == "SCHEMA" and str(e.get("schema_kind")) == "json_schema"
+    inventory = atlas["records"]["census/schema_field_inventory.yaml"]
+    schema_files = {
+        str(row.get("file") or "")
+        for row in inventory.get("schemas") or []
+        if str(row.get("file") or "").endswith(".schema.json")
     }
     files = sorted((REPO_ROOT / "docs" / "ops" / "schemas").glob("*.schema.json"))
     assert len(files) == 10
-    assert len(schema_sources) == 10
+    assert len(schema_files) == 10
     for path in files:
-        assert str(path.relative_to(REPO_ROOT)) in schema_sources
+        assert str(path.relative_to(REPO_ROOT)) in schema_files
 
 
 def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
@@ -537,14 +537,7 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
         if row.get("expansion") == "OPEN"
     ]
     assert {str(row.get("acronym")) for row in open_acronyms} == {
-        "EEA",
-        "OKX",
         "XPERP",
-        "C1",
-        "C2",
-        "C3",
-        "PRE",
-        "PENDING",
     }
     for row in open_acronyms:
         assert row.get("search_scope")

@@ -11,8 +11,9 @@ domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
 historical_domain_census_payload_count: 0
 historical_domain_census_stale_defect_if_head_differs: false
-worktree_note: 'ATLAS_LEGACY_ERADICATION_V1: removed twelve historical domain census payloads and 464 legacy-only
-  Atlas entities/edges; Atlas models CURRENT productive system plus CURRENT support dependencies only.
+worktree_note: 'ATLAS_LEGACY_ERADICATION_V1 fixpoint extension: removed twelve historical domain census payloads,
+  216 catalog legacy entities, and 234 adjudicated DELETE_SAFE residual ontology/venue/relation nodes; fourteen
+  CURRENT_SUPPORT retain nodes preserved; Atlas models CURRENT productive system plus support dependencies only.
   RUNTIME_SEMANTICS_CHANGED=false; Atlas AUTHORITY=NONE.'
 okx_census_complete: true
 okx_current_tree_census_complete: true
