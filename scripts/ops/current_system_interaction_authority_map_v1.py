@@ -144,6 +144,7 @@ REQUIRED_PARTIAL_IDS = (
     "current_productive_one_shot_enter_e2e_runtime_handoff_v1",
     "current_productive_eea_universe_inventory_cap22_ranking_policy_binding_v1",
     "current_productive_pre_external_wp1_cap21_public_inst_type_binding_v1",
+    "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",
