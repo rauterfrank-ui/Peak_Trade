@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- #6905 endgame fix: Cap-2.2 ranking policy binding PEAK_TRADE_RANKING_MATRIX_POLICY_V1 on CURRENT productive 29P/Cap-2.4 inventory chain; Cap21→Cap23 B05 feature synthesis; ops REPO_ROOT bootstrap; no venue POST; POST path baseline pin c93ea739 unchanged for POST slice.
+- Hotfix: CZ execute_network finally releases READ credential via canonical join helper (kw-only loader contract); closes terminal persist fail-closed after productive handoff; no venue POST.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=PR6905_ENDGAME_CURRENT_PRODUCTIVE_29P_CAP24_RANKING_POLICY_V1
+- modified_by=HOTFIX_CZ_29P_CREDENTIAL_RELEASE_KW_ONLY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

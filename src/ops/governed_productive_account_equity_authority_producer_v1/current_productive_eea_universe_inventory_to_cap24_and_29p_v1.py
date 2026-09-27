@@ -97,6 +97,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
     productive_fail_closed_credential_unavailable_v1 as _fail_closed_credential_unavailable_v1,
+    release_productive_credential_handle_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     CurrentProductiveCap21ToCap23PersistenceError,
@@ -576,7 +577,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         )
     finally:
         if handle is not None:
-            _fail_closed_credential_unavailable_v1(handle)
+            release_productive_credential_handle_v1(handle)
 
     get_evidence = handoff.get_evidence
     get_status = handoff.get_status

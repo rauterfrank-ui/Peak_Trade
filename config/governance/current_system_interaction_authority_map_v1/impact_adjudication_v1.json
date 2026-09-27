@@ -1,39 +1,26 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "aec206813150c202373d87c6e6c902719e68a6d7",
+  "base_sha": "48633ef04b19723e40c649ccb1561f5df9020c75",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_current_productive_cap24_selection_state_canonical_writer_v1.py",
-    "scripts/ops/run_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
     "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
   ],
-  "changed_paths_sha256": "aa1b2b234dfcf1ec67026b4d1d95e066fefb87e5cca319a3de04c126c25c1d04",
+  "changed_paths_sha256": "e7242e0ec293127f12805313e65f059f660395abd0ad37e8bd48552b95188aa4",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
     "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Endgame fix #6905: bind CURRENT productive Cap-2.2 ranking to PEAK_TRADE_RANKING_MATRIX_POLICY_V1, Cap21→Cap23 B05 synthesis, ops REPO_ROOT bootstrap; map/atlas currency; no venue POST.",
+  "reason": "Hotfix: CZ 29P execute_network credential release kw-only contract; map/atlas navigation currency only; no authority change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
