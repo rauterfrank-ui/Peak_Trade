@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,10 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:peak_trade_public_market_data_runtime_v1` |
-| `EP:landscape_dashboard_persistent_local_host_v1` |
-| `RUNTIME_COMPONENT:landscape_dashboard_persistent_local_host_v1` |
-| `RUNTIME_COMPONENT:market_dashboard_landscape_v3_fresh_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Owner GO: complete Landscape V3 eradication from CURRENT repository surfaces; remove V3-only EEA public WS network connector; detach Landscape V2 persistent host autostart; map_authority=NONE; no CSIA source_v1 change; POST_COUNT=0.
+- PR #6917: G17 productive typed-vol CMC bind aligns with canonical process-internal reuse on DUPLICATE_NOOP; navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=LANDSCAPE_V3_ERADICATION_DETACH_V2_HOST_V1
+- modified_by=G17_TYPED_VOL_CMC_DUPLICATE_NOOP_REUSE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
