@@ -37,6 +37,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FAILURE_MISSING_LANE_STATE,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_MISMATCHED_LANE_STATE,
+    FAILURE_OUTGOING_CURSOR_NOT_PRODUCED,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
     FAILURE_OCCUPANCY,
     FAILURE_PAIR_TYPE,
@@ -708,6 +709,44 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     return restored
 
 
+def _s7_upstream_cycle_diagnostics_v1(
+    cycle_result: CurrentProductiveMasterV2CycleResultV1,
+) -> str:
+    """Serialize producer diagnostics for S7 pre-persist fail-closed (no new authority)."""
+    parts: list[str] = []
+    blocker = str(cycle_result.input_blocker or "").strip()
+    if blocker:
+        parts.append(f"input_blocker={blocker}")
+    if cycle_result.fail_reasons:
+        joined = ",".join(str(x) for x in cycle_result.fail_reasons[:8])
+        parts.append(f"fail_reasons={joined}")
+    replay = cycle_result.replay
+    if replay is not None and replay.fail_reasons:
+        joined = ",".join(str(x) for x in tuple(replay.fail_reasons)[:8])
+        parts.append(f"replay_fail_reasons={joined}")
+    parts.append(f"cursor_restore_status={cycle_result.cursor_restore_status}")
+    parts.append(f"replay_pass={cycle_result.replay_pass}")
+    return "|".join(parts)
+
+
+def _require_s7_outgoing_cursors_before_persist_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    restored: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+) -> None:
+    """Fail closed before S7 persist when the productive cycle omitted outgoing_cursor."""
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    for lane_id in LANE_IDS:
+        if bound_seam.get(lane_id) is None:
+            continue
+        record = restored.get(lane_id)
+        if record is None:
+            continue
+        if record.cycle_result.outgoing_cursor is not None:
+            continue
+        detail = f"{lane_id}:{_s7_upstream_cycle_diagnostics_v1(record.cycle_result)}"
+        _fail(FAILURE_OUTGOING_CURSOR_NOT_PRODUCED, detail)
+
+
 def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     *,
@@ -726,9 +765,11 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
-    """Load, run the existing N=1 cycle, then persist the new outgoing cursor.
+    """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
 
-    Reuses S6 restore (load + cycle) and S6 persist. lane_state_root stays
+    Reuses S6 restore (load + cycle) and S6 persist. Persist runs only when every
+    occupied lane cycle produced a non-null outgoing_cursor; otherwise fail-closed
+    with upstream cycle diagnostics (no cursor fabrication). lane_state_root stays
     external addressing. Cap61 remains unbound. S6 restore itself is unchanged.
     """
     _assert_non_authority()
@@ -749,6 +790,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
     )
+    _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
     for lane_id in LANE_IDS:
         record = restored.get(lane_id)

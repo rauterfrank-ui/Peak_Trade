@@ -71,6 +71,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
     UNIVERSE_ISOLATION_ENFORCED,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
+    FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_governed_cycle_store_roots_v1,
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
@@ -333,15 +334,18 @@ def _t2_from_s7(
                 closes = extracted
             if last_ts is not None:
                 event_ts = float(last_ts)
-        composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            lane_pairs,
-            **{
-                **s7_base,
-                "finalized_closes": closes,
-                "last_finalized_event_ts_unix": event_ts,
-                "observed_unix": event_ts + 1.0,
-            },
-        )
+        try:
+            composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                lane_pairs,
+                **{
+                    **s7_base,
+                    "finalized_closes": closes,
+                    "last_finalized_event_ts_unix": event_ts,
+                    "observed_unix": event_ts + 1.0,
+                },
+            )
+        except FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError as exc:
+            _fail(exc.failure_code, exc.detail)
         if len(composed) != 1:
             _fail(FAILURE_OCCUPANCY, ",".join(sorted(composed)))
         invocation = next(iter(composed.values()))

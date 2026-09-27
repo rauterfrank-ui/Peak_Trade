@@ -62,6 +62,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FAILURE_INCOMING_CURSOR_FORBIDDEN,
     FAILURE_INVALID_STORE_ROOT,
     FAILURE_MISSING_LANE_STATE,
+    FAILURE_OUTGOING_CURSOR_NOT_PRODUCED,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_MISMATCHED_LANE_STATE,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
@@ -1747,8 +1748,9 @@ def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
     compose_source = inspect.getsource(compose_occupied_lane_mv2_dp_durable_cycle_v1)
     restore_source = inspect.getsource(restore_occupied_lane_mv2_dp_decision_state_cursor_v1)
     restore_idx = compose_source.find("restore_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    gate_idx = compose_source.find("_require_s7_outgoing_cursors_before_persist_v1(")
     persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
-    assert 0 <= restore_idx < persist_idx
+    assert 0 <= restore_idx < gate_idx < persist_idx
     assert "run_current_productive_master_v2_runtime_cycle_v1(" not in compose_source
     assert "productive_layered_core_bind_cycle_kwargs_v1(" not in compose_source
     assert "persist_enabled=True" in compose_source
@@ -1888,7 +1890,8 @@ def test_s7_corrupt_schema_and_n1_global_follow_existing_contract(tmp_path: Path
             g17_typed_vol_producers=_lane_g17_producers(pairs),
             **_carry_kwargs(cycle_id_prefix="s7-invalid"),  # type: ignore[arg-type]
         )
-    assert invalid_exc.value.failure_code == FAILURE_MISSING_LANE_STATE
+    assert invalid_exc.value.failure_code == FAILURE_OUTGOING_CURSOR_NOT_PRODUCED
+    assert "cursor_restore_status=fail_closed_invalid_sidestate" in invalid_exc.value.detail
     path.write_text("{", encoding="utf-8")
     with pytest.raises(CurrentProductiveCursorError) as exc:
         compose_occupied_lane_mv2_dp_durable_cycle_v1(
@@ -1908,6 +1911,87 @@ def test_s7_corrupt_schema_and_n1_global_follow_existing_contract(tmp_path: Path
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
     assert EXECUTION_CONCURRENCY_AUTHORIZED is False
     assert MAX_POSITIONS_EFFECTIVE == 1
+
+
+def test_s7_null_outgoing_pre_persist_gate_skips_persist(tmp_path: Path) -> None:
+    from unittest import mock
+
+    pairs, _first, _written = _seed_outgoing(tmp_path, ("LANE_4",))
+    path = Path(pairs["LANE_4"][0].lane_state_root) / CURSOR_FILENAME
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["side_state"] = "NOT_A_SIDESTATE"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    before_text = path.read_text(encoding="utf-8")
+    with mock.patch(
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
+        ".addressing_join_v1.persist_occupied_lane_mv2_dp_decision_state_cursor_v1",
+    ) as persist_mock:
+        with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+            compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                pairs,
+                g17_typed_vol_producers=_lane_g17_producers(pairs),
+                **_carry_kwargs(cycle_id_prefix="s7-null-gate"),  # type: ignore[arg-type]
+            )
+        persist_mock.assert_not_called()
+    assert exc.value.failure_code == FAILURE_OUTGOING_CURSOR_NOT_PRODUCED
+    assert exc.value.failure_code != FAILURE_MISSING_LANE_STATE
+    assert "fail_closed_invalid_sidestate" in exc.value.detail
+    assert path.read_text(encoding="utf-8") == before_text
+
+
+def test_s7_producer_blocked_cycle_preserves_fail_reasons_in_detail(tmp_path: Path) -> None:
+    pairs = {lane_id: _pair(tmp_path, lane_id) for lane_id in ("LANE_1",)}
+    blocked = invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
+        {"LANE_1": pairs["LANE_1"]},
+        **_invoke_kwargs(),  # type: ignore[arg-type]
+    )
+    assert blocked["LANE_1"].cycle_result.outgoing_cursor is None
+    assert (
+        blocked["LANE_1"].cycle_result.input_blocker or blocked["LANE_1"].cycle_result.fail_reasons
+    )
+    with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+        carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
+            pairs,
+            blocked,
+            **_carry_kwargs(cycle_id_prefix="s7-producer-blocked"),  # type: ignore[arg-type]
+        )
+    assert exc.value.failure_code == FAILURE_MISSING_LANE_STATE
+
+
+def test_s7_sequence_successful_compose_then_null_outgoing_gate(tmp_path: Path) -> None:
+    from unittest import mock
+
+    pairs, _first, _written = _seed_outgoing(tmp_path, ("LANE_3",))
+    composed_ok = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+        pairs,
+        g17_typed_vol_producers=_lane_g17_producers(pairs),
+        **_carry_kwargs(cycle_id_prefix="s7-seq-hold"),  # type: ignore[arg-type]
+    )
+    assert composed_ok["LANE_3"].cycle_result.outgoing_cursor is not None
+    assert composed_ok["LANE_3"].persist_enabled is True
+    path = Path(pairs["LANE_3"][0].lane_state_root) / CURSOR_FILENAME
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["side_state"] = "NOT_A_SIDESTATE"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+    with mock.patch(
+        "src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1"
+        ".addressing_join_v1.persist_occupied_lane_mv2_dp_decision_state_cursor_v1",
+    ) as persist_mock:
+        with pytest.raises(FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError) as exc:
+            compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                pairs,
+                g17_typed_vol_producers=_lane_g17_producers(pairs),
+                **_carry_kwargs(cycle_id_prefix="s7-seq-fail"),  # type: ignore[arg-type]
+            )
+        persist_mock.assert_not_called()
+    assert exc.value.failure_code == FAILURE_OUTGOING_CURSOR_NOT_PRODUCED
+
+
+def test_s7_compose_source_requires_outgoing_gate_before_persist() -> None:
+    compose_source = inspect.getsource(compose_occupied_lane_mv2_dp_durable_cycle_v1)
+    gate_idx = compose_source.find("_require_s7_outgoing_cursors_before_persist_v1(")
+    persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    assert 0 <= gate_idx < persist_idx
 
 
 def _existing_paths(root: Path) -> set[str]:
@@ -1959,8 +2043,9 @@ def test_s8_join_is_implemented_without_governed_cycle_invoke() -> None:
     compose_source = inspect.getsource(compose_occupied_lane_mv2_dp_durable_cycle_v1)
     restore_source = inspect.getsource(restore_occupied_lane_mv2_dp_decision_state_cursor_v1)
     restore_idx = compose_source.find("restore_occupied_lane_mv2_dp_decision_state_cursor_v1(")
+    gate_idx = compose_source.find("_require_s7_outgoing_cursors_before_persist_v1(")
     persist_idx = compose_source.find("persist_occupied_lane_mv2_dp_decision_state_cursor_v1(")
-    assert 0 <= restore_idx < persist_idx
+    assert 0 <= restore_idx < gate_idx < persist_idx
     assert "bind_occupied_lane_governed_cycle_store_roots_v1(" not in compose_source
     assert "persist_enabled=False" in restore_source
     assert "persist_occupied_lane_mv2_dp_decision_state_cursor_v1(" not in restore_source
