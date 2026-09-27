@@ -421,6 +421,21 @@
     "src/ops/market_data_private_state_runtime_convergence_v1/",
     "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
     "config/governance/market_data_private_state_runtime_convergence_v1_policy_v1.json",
-    "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md"
+    "docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md",
+    "src/webui/market_dashboard_landscape_v3/",
+    "src/webui/market_dashboard_landscape_shell_router_v3.py",
+    "src/webui/landscape_dashboard_v3_persistent_local_host_v1/",
+    "src/webui/app.py",
+    "docs/ops/market_dashboard/",
+    "docs/webui/",
+    "scripts/webui/landscape_v3_dashboard_persistent_local_host.sh",
+    "templates/peak_trade_dashboard/market_landscape_v3.html",
+    "static/css/market_dashboard_landscape_v3.css",
+    "static/js/market_dashboard_landscape_v3.js",
+    "tests/webui/",
+    "tests/ops/test_peak_trade_public_market_data_ws_network_connector_v1.py",
+    "pyproject.toml",
+    "uv.lock",
+    "requirements.txt"
   ]
 }
