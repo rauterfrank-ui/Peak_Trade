@@ -89,6 +89,7 @@ def test_gate_binding_matches_admission() -> None:
     assert bound.extra.get("governed_standing_lift") == "true"
     assert bound.extra.get("governed_permit_mint") == "true"
     assert bound.extra.get("governed_credential_access") == "true"
+    assert bound.extra.get("governed_credential_material_load") == "true"
     assert bound.permit_mint_authorized is True
     assert bound.credential_access_performed is False
 

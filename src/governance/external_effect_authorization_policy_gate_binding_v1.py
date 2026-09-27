@@ -17,6 +17,9 @@ from src.governance.external_effect_authorization_policy_v1 import (
 from src.governance.checkout_independent_credential_access_policy_v1 import (
     governed_credential_access_authorized_v1,
 )
+from src.governance.real_keychain_access_or_credential_material_load_policy_v1 import (
+    governed_credential_material_load_authorized_v1,
+)
 from src.governance.external_effect_permit_mint_policy_v1 import (
     governed_permit_mint_authorized_v1,
 )
@@ -75,6 +78,7 @@ def evaluate_policy_bound_external_effect_gate_v1(
     lift_standing = governed_standing_external_effect_authorized_v1(repo_root=root)
     permit_mint = governed_permit_mint_authorized_v1(repo_root=root)
     credential_access = governed_credential_access_authorized_v1(repo_root=root)
+    material_load = governed_credential_material_load_authorized_v1(repo_root=root)
     return PolicyBoundExternalEffectGateResultV1(
         policy_admission_granted=granted,
         gate_decision=gate,
@@ -93,6 +97,7 @@ def evaluate_policy_bound_external_effect_gate_v1(
             "governed_standing_lift": str(lift_standing).lower(),
             "governed_permit_mint": str(permit_mint).lower(),
             "governed_credential_access": str(credential_access).lower(),
+            "governed_credential_material_load": str(material_load).lower(),
         },
     )
 
