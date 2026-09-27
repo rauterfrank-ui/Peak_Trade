@@ -92,3 +92,19 @@ def test_layered_enter_pre_external_closure_with_process_isolation_contract_v1(
         tmp_path=tmp_path,
         cycle_id_prefix="order-indep-single",
     )
+
+
+def test_layered_enter_pre_external_closure_first_same_process_batch_v1(tmp_path: Path) -> None:
+    """Same-process batch step A (conftest isolation before test)."""
+    _run_layered_enter_pre_external_once_v1(
+        tmp_path=tmp_path,
+        cycle_id_prefix="order-indep-batch-a",
+    )
+
+
+def test_layered_enter_pre_external_closure_second_same_process_batch_v1(tmp_path: Path) -> None:
+    """Same-process batch step B after step A (conftest isolation between tests)."""
+    _run_layered_enter_pre_external_once_v1(
+        tmp_path=tmp_path,
+        cycle_id_prefix="order-indep-batch-b",
+    )

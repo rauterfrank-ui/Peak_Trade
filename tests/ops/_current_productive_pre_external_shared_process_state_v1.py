@@ -51,7 +51,6 @@ def reset_current_productive_pre_external_shared_test_process_state_v1() -> None
     from src.ops.treasury_phase_2_read_only_reconciliation_v1 import (
         clear_treasury_reconciliation_idempotency_cache_v1,
     )
-
     import tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 as oneshot_g17_join_v1
 
     oneshot_g17_join_v1._PRODUCED_G17_CACHE.clear()

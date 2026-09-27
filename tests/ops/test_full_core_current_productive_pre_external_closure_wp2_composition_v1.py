@@ -39,7 +39,9 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
 )
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+    governed_c1_aligned_g17_dk_producer_v1,
     governed_c1_candles_payload_from_enter_closes_v1,
+    governed_productive_c1_event_ts_unix_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
@@ -61,8 +63,6 @@ from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_pri
 from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
     _bound as _oneshot_bound,
     _cycle,
-    _cycle_a_with_confirmation_progress,
-    _produced_g17_producer,
     _strong_uptrend_closes,
 )
 from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
@@ -80,15 +80,39 @@ PRODUCTIVE_TRANSPORT_CLASS_TESTDOUBLE = True
 PRODUCTIVE_REAL_GET_PROVEN = False
 
 
-def test_stale_flat_mark_upscope_confirm_cycle_does_not_natural_enter() -> None:
+def test_stale_flat_mark_upscope_confirm_cycle_does_not_natural_enter(tmp_path: Path) -> None:
     """Negative: flat mark on UPSCOPE_CONFIRM cycle fails C3 alignment (pre-V32 assumption)."""
+    bound = _bound()
     path = _strong_uptrend_closes()
-    cycle_a = _cycle_a_with_confirmation_progress()
+    event_ts = governed_productive_c1_event_ts_unix_v1()
+    g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=event_ts,
+        evidence_store_root=tmp_path / "g17-stale-flat-probe",
+        mark_closes=path,
+    )
+    origin = _cycle(
+        cycle_id="wp2-stale-origin",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
+        mark_px=float(path[0]),
+        event_ts_unix=event_ts - 120.0,
+    )
+    cycle_a = _cycle(
+        cycle_id="wp2-stale-upscope-candidate",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
+        incoming_cursor=origin.outgoing_cursor,
+        mark_px=float(path[-1]),
+        event_ts_unix=event_ts - 60.0,
+    )
     cycle_b = _cycle(
         cycle_id="wp2-stale-flat-mark-probe",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
         incoming_cursor=cycle_a.outgoing_cursor,
         mark_px=float(path[-1]),
-        event_ts_unix=1_700_000_120.0,
+        event_ts_unix=event_ts,
     )
     assert cycle_b.decision_outcome not in {"enter_long", "enter_short"}
 
@@ -122,8 +146,14 @@ def test_wp2_execute_transport_bound_wp1_pass_governed_cycle_hold_fail_closed_sa
     bound = _bound()
     path = _strong_uptrend_closes()
     last_mark = float(path[-1])
-    candles = _mv2_aligned_candles(last_ts_ms=int(1_700_000_120_000), mark_px=last_mark)
-    g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
+    event_ts = governed_productive_c1_event_ts_unix_v1()
+    candles = _mv2_aligned_candles(last_ts_ms=int(event_ts * 1000), mark_px=last_mark)
+    g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=event_ts,
+        evidence_store_root=tmp_path / "g17-wp2-hold-compose",
+        mark_closes=path,
+    )
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
