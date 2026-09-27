@@ -49,12 +49,21 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     assert_current_productive_cap22_ranking_policy_binding_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
+    FullCoreK1BoundVenueAuthHandleV1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
+    productive_fail_closed_credential_unavailable_v1 as _productive_credential_loader_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     ALLOWED_OWNER_GOS,
     CANONICAL_PACK_RELPATH,
     OWNER_GO,
     CurrentProductiveEeaUniverseTo29PError,
     execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_read_credential_loader_v1 import (
+    ProductiveReadCredentialVaultBackendV1,
 )
 from src.ops.peak_trade_ranking_matrix_policy_v1 import POLICY_ID as RATIFIED_CAP22_POLICY_ID
 from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
@@ -306,6 +315,93 @@ def test_acquisition_soft_fails_empty_or_errored_swap_when_futures_present() -> 
     assert result.provenance["CAP21_NETWORK_OWNER"] is False
     assert result.provenance["INSTID_FORCED"] is False
     assert "VENUE_CODE_51000" in result.provenance["SOFT_FAILURE_CODES"]
+
+
+def test_execute_network_finally_releases_credential_handle_kw_only(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Regression: positional loader(handle) fail-closed broke CZ terminal persist (#6905 re-enter)."""
+    from types import SimpleNamespace
+
+    release_handle_ids: list[str] = []
+    positional_loader_calls = 0
+    k1_handle = FullCoreK1BoundVenueAuthHandleV1(
+        handle_id="cz-release-kw-only-test",
+        bound=True,
+        can_sign=True,
+    )
+
+    def _loader_spy(*args: object, **kwargs: object) -> object:
+        nonlocal positional_loader_calls
+        if args:
+            positional_loader_calls += 1
+        if kwargs.get("handle") is not None:
+            bound = kwargs["handle"]
+            assert isinstance(bound, FullCoreK1BoundVenueAuthHandleV1)
+            release_handle_ids.append(bound.handle_id)
+            return _productive_credential_loader_v1(handle=bound)
+        if "vault_file" in kwargs and "secret_reference" not in kwargs:
+            return ProductiveReadCredentialVaultBackendV1(vault_path=str(kwargs["vault_file"]))
+        if "secret_reference" in kwargs:
+            return k1_handle
+        return _productive_credential_loader_v1(*args, **kwargs)
+
+    handoff = SimpleNamespace(
+        get_evidence=SimpleNamespace(reason_codes=[]),
+        get_status="TRUSTED_PRESENT",
+        lab=SimpleNamespace(reason_codes=[]),
+        lab_status="UNTRUSTED",
+        adaptation=SimpleNamespace(status="ELIGIBLE"),
+        eligibility=object(),
+        observation=None,
+        raw_availeq="0",
+        p01_fact=None,
+        output=SimpleNamespace(u04_applied="false"),
+        produced=False,
+        claim=None,
+        capital=None,
+        admissibility=SimpleNamespace(reason_codes=[]),
+        evaluator_29p=False,
+        observed_instrument_id="",
+        instrument_bound=True,
+        lab_trusted=False,
+        bound_uid="test-uid",
+    )
+
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_eea_universe_inventory_to_cap24_and_29p_v1."
+        "_fail_closed_credential_unavailable_v1",
+        _loader_spy,
+    )
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_execute_network_credential_join_v1."
+        "productive_fail_closed_credential_unavailable_v1",
+        _loader_spy,
+    )
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_eea_universe_inventory_to_cap24_and_29p_v1."
+        "compose_current_productive_29p_common_epoch_handoff_v1",
+        lambda **_kwargs: handoff,
+    )
+
+    result = execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
+        owner_go=OWNER_GO,
+        origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
+        evidence_root=tmp_path / "store",
+        acquisition_transport=_eligible_transport(),
+        fresh_get_transport=None,
+        execute_network=True,
+        vault_file=tmp_path / "vault.json",
+        producer_observed_at_unix=1_700_000_100.0,
+        execution_integrity_backend=_INTEGRITY,
+    )
+    assert release_handle_ids == ["cz-release-kw-only-test"]
+    assert positional_loader_calls == 0
+    assert result.first_real_blocker == "LIVE_ACCOUNT_BOUND_NOT_TRUSTED_FOR_29P"
+    assert verify_manifest_sha256_v1(store_root=Path(result.store_root)) == 0
 
 
 def test_owner_go_and_sha_fail_closed(tmp_path: Path) -> None:
