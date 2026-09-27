@@ -137,6 +137,7 @@ REQUIRED_PARTIAL_IDS = (
     "external_effect_permit_mint_policy_v1",
     "checkout_independent_credential_access_policy_v1",
     "real_keychain_access_or_credential_material_load_policy_v1",
+    "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",

@@ -1320,6 +1320,35 @@
       ]
     },
     {
+      "id": "current_productive_k1_opaque_signing_handle_pre_post_policy",
+      "tier": "INTERMEDIATE",
+      "role": "K1 opaque signing handle PRE-POST: governed Keychain → request signing → PRE-POST envelope; POST admission fail-closed.",
+      "canonical_owner_ref": "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_K1_PRE_POST_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+        "src/governance/k1_opaque_signing_handle_governed_construction_v1.py",
+        "src/governance/current_productive_k1_pre_post_request_envelope_v1.py",
+        "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review",
       "tier": "INTERMEDIATE",
       "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
@@ -4376,13 +4405,25 @@
     {
       "id": "real_keychain_access_or_credential_material_load_policy_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; next K1 opaque signing handle Owner-GO.",
+      "statement": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; K1 PRE-POST bound separately (#6899).",
       "evidence_refs": [
         "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
         "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
         "config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json",
         "config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json",
         "tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "K1 opaque signing PRE-POST: Owner-GO ephemeral handle + request signing + envelope validation; real venue POST requires separate actual-POST Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json",
+        "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py"
       ]
     },
     {

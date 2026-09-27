@@ -59,6 +59,14 @@ secrets.toml
 !tests/governance/test_real_keychain_access*
 !config/governance/real_keychain_access*
 !docs/ops/specs/REAL_KEYCHAIN_ACCESS*
+!src/governance/current_productive_k1_opaque_signing_handle*
+!src/governance/k1_opaque_signing_handle*
+!src/governance/governed_current_productive_k1_opaque_signing_handle*
+!src/governance/current_productive_k1_pre_post*
+!src/governance/current_productive_real_venue_post_admission*
+!tests/governance/test_current_productive_k1_opaque_signing_handle*
+!config/governance/current_productive_k1_opaque_signing_handle*
+!docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN*
 
 # Logs
 *.log

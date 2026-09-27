@@ -1,0 +1,34 @@
+{
+  "schema_version": "current_productive_k1_opaque_signing_handle_pre_post_policy/v1",
+  "policy_id": "CURRENT_PRODUCTIVE_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_POLICY_V1",
+  "policy_owner": "governance.current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+  "current_productive_k1_opaque_signing_handle_pre_post_authorized": true,
+  "owner_go": true,
+  "baseline_origin_main_sha": "4e31703f888fec81cca97f51376429088e022f3d",
+  "pre_post_envelope": "GOVERNED_K1_OPAQUE_SIGNING_REQUEST_SIGNING_PRE_POST",
+  "ephemeral_keychain_consumer_id": "CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1",
+  "target_k1_opaque_signing_handle_module": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+  "target_governed_construction_module": "src/governance/k1_opaque_signing_handle_governed_construction_v1.py",
+  "target_pre_post_envelope_module": "src/governance/current_productive_k1_pre_post_request_envelope_v1.py",
+  "target_pre_post_gate_binding_module": "src/governance/current_productive_k1_opaque_signing_handle_pre_post_gate_binding_v1.py",
+  "bound_lineage": {
+    "real_keychain_access_or_credential_material_load_policy_record_config": "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+    "real_keychain_access_or_credential_material_load_policy_record_digest": "0c21de9b6d5b8144d02511a1673308945317537a424a18b18344fa60de76b8c7"
+  },
+  "explicit_non_implications": {
+    "standing_real_keychain_access_authorized": false,
+    "standing_real_keychain_access_implemented": false,
+    "material_loaded_true_reachable": false,
+    "credential_material_loaded_standing": false,
+    "permit_mint_performed": false,
+    "permit_durable_consumed": false,
+    "post_allowed": false,
+    "real_venue_post_allowed": false,
+    "real_venue_post_performed": false,
+    "autonomy_can_post": false,
+    "real_order_submission": false,
+    "live_funds_exposure": false
+  },
+  "semantic_definition": "Owner-GO K1 ephemeral Keychain \u2192 opaque signing handle \u2192 request signing \u2192 PRE-POST envelope validation; no POST.",
+  "policy_record_digest": "82d24c1ba965099dd5c1a1bebf4d24e5f8aca11503805ce211c64c67c636a241"
+}

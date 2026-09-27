@@ -114,7 +114,7 @@ def test_decision_records() -> None:
 
 def test_canonical_boundary_constant_updated() -> None:
     assert CANONICAL_EXTERNAL_EFFECT_BOUNDARY == (
-        "CREDENTIAL_MATERIAL_LOAD_GOVERNED_K1_SIGNING_POST_FAIL_CLOSED"
+        "K1_OPAQUE_SIGNING_PRE_POST_ENVELOPE_VALIDATED_REAL_VENUE_POST_ADMISSION_FAIL_CLOSED"
     )
 
 
