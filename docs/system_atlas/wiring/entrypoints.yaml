@@ -1,6 +1,8 @@
 # ATLAS_AUTHORITY=NONE
 entrypoints:
   - id: EP:gfu_producer
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: reserved Cap24 productivity root guard at CLI boundary; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true; MAP_AUTHORITY=NONE; POST_COUNT=0.
     name: Governed Futures Universe producer
     path: scripts/ops/run_governed_futures_universe_producer_v1.py
     entrypoint_class: PRODUCTIVE_OFFLINE_PRODUCER
@@ -18,6 +20,8 @@ entrypoints:
         failure_mode: MISSING_QUOTE_CURRENCY / exclusion codes
     missing_wiring: []
   - id: EP:cap23_policy
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: reserved Cap24 productivity root guard at CLI boundary; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true; MAP_AUTHORITY=NONE; POST_COUNT=0.
     name: Single selected future policy
     path: scripts/ops/run_single_selected_future_policy_v1.py
     entrypoint_class: PRODUCTIVE_OFFLINE_PRODUCER
