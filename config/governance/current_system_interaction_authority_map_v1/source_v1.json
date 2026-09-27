@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "d9f33a62f43f036932ed7c8bca648c71997dd162",
+  "baseline_sha": "12d4e1321d079520da0bd8d6e90b2f5b6d6ecc46",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -401,6 +401,7 @@
         "docs/ops/specs/EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md"
       ],
       "code_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
@@ -411,7 +412,10 @@
         "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py"
       ],
       "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
+        "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
@@ -1063,6 +1067,7 @@
       ],
       "code_refs": [
         "src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py",
         "src/governance/f1_m9_productive_runtime_apply_start_owner_binding_v1.py",
         "src/governance/f1_m9_productive_apply_execution_boundary_v1.py"
       ],
@@ -2814,6 +2819,33 @@
       ]
     },
     {
+      "id": "f1_m9_canonical_durable_bootstrap_to_master_v2_seam",
+      "from_domain": "f1_m9_productive_runtime_threshold_consumer_wiring",
+      "to_domain": "mv2_double_play",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 then governed authorized_productive_parameter_seam for Master-V2 cycle admission",
+      "producer": "current_productive_f1_m9_canonical_durable_bootstrap_v1",
+      "consumer": "run_current_productive_master_v2_runtime_cycle_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "DURABLE_APPLY_SEAM_PRESENCE_FOR_THRESHOLD_CONSUMER_WIRING",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PARTIAL",
+      "identity_binding": "CANONICAL_F1_M9_LEDGER_PATHS_AND_APPLY_START_ONLY",
+      "temporal_binding": "600S_OWNER_THRESHOLD_LINEAGE",
+      "version_binding": "current_productive_f1_m9_canonical_durable_bootstrap/v1",
+      "provenance_binding": "NO_SECOND_AUTHORITY; NO_SYNTHETIC_SEAM; PRODUCTIVE_ACTIVATION_AUTHORIZED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py",
+        "src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
+        "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py"
+      ]
+    },
+    {
       "id": "learning_capture",
       "from_domain": "mv2_double_play",
       "to_domain": "learning_ddo",
@@ -4194,6 +4226,17 @@
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
         "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6908: Master-V2 cold-start invokes canonical F1/M9 durable bootstrap (existing apply-start continuation only); PRE_EXTERNAL WP2 uses G17 mark-history when producer absent; occupied-lane invoke join passes common_epoch_decision_epoch; no venue POST; no second authority.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py"
       ]
     },
     {
