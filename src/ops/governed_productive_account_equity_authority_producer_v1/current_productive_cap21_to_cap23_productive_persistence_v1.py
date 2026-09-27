@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -39,10 +40,48 @@ from src.ops.single_selected_future_policy_v1.models_v1 import (
 from src.ops.single_selected_future_policy_v1.producer_v1 import (
     run_single_selected_future_policy_v1,
 )
+from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
+    synthesize_ready_feature_production_snapshot_v1,
+)
+from src.ops.peak_trade_ranking_feature_production_v1.models_v1 import (
+    RankingFeatureProductionSnapshotV1,
+)
+from src.ops.peak_trade_ranking_matrix_policy_v1 import (
+    POLICY_ID as RATIFIED_CAP22_RANKING_POLICY_ID,
+)
+from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 
 
 class CurrentProductiveCap21ToCap23PersistenceError(RuntimeError):
     """Fail-closed Cap-2.1→2.3 persistence violation."""
+
+
+def assert_current_productive_cap22_ranking_policy_binding_v1() -> None:
+    """Fail-closed unless Cap-2.2 producer policy matches ratified B03 matrix policy."""
+
+    if RANKING_POLICY_ID != RATIFIED_CAP22_RANKING_POLICY_ID:
+        raise CurrentProductiveCap21ToCap23PersistenceError("RANKING_POLICY_DRIFT")
+
+
+def build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
+    *,
+    universe_snapshot: Mapping[str, Any],
+    collection_cycle_id: str,
+    economic_input_snapshot_id: str,
+    observed_at_event_time: str,
+) -> RankingFeatureProductionSnapshotV1:
+    """B05 feature snapshot for Cap-2.2 when only Cap-2.1 universe input is available.
+
+    Aligns with ``CAP22_CURRENT_PRODUCTIVE_INPUT=CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT_ONLY``
+    until persisted Economic-MD Input-2 is productively scheduled on this path.
+    """
+
+    return synthesize_ready_feature_production_snapshot_v1(
+        universe_snapshot,
+        collection_cycle_id=collection_cycle_id,
+        economic_input_snapshot_id=economic_input_snapshot_id,
+        observed_at_event_time=observed_at_event_time,
+    )
 
 
 @dataclass(frozen=True)
@@ -162,12 +201,25 @@ def run_cap21_to_cap23_persist_productive_v1(
     empty_fields["cap21_event_time"] = str(uni_snap.get("generated_at_event_time") or "")
     empty_fields["cap21_universe_size"] = str(uni_snap.get("eligible_instrument_count") or "")
 
+    uni_snapshot_dict = uni.get("snapshot")
+    if not isinstance(uni_snapshot_dict, Mapping):
+        return _result(ok=False, status="CAP21_SNAPSHOT_DICT_MISSING", selection=None)
+    observed_rfc = datetime.fromtimestamp(observed_unix, tz=timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    feature_snap = build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
+        universe_snapshot=uni_snapshot_dict,
+        collection_cycle_id=f"{session_id_prefix}-cap22-b05",
+        economic_input_snapshot_id=str(uni_snap.get("snapshot_id") or ""),
+        observed_at_event_time=observed_rfc,
+    )
     ranking = run_productive_futures_ranking_producer_v1(
         state_root=rank_root,
         universe_state_root=uni_root,
         repository_sha=repository_sha,
         producer_observed_at_unix=observed_unix,
         session_id=f"{session_id_prefix}-ranking",
+        feature_production_snapshot=feature_snap,
     )
     if ranking.get("ok") is not True:
         return _result(ok=False, status="CAP22_CURRENT_RANKING_FAIL_CLOSED", selection=None)

@@ -36,6 +36,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     CurrentProductiveCap21ToCap23PersistenceError,
+    assert_current_productive_cap22_ranking_policy_binding_v1,
     build_cap24_mark_prices_sidecar_from_acquisition_v1,
     run_cap21_to_cap23_persist_productive_v1,
 )
@@ -50,7 +51,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     assert_current_productive_29p_execution_identity_v1,
     assert_current_productive_29p_repository_sha_for_execution_v1,
 )
-from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
     load_and_validate_ranking_snapshot_v1,
 )
@@ -133,8 +133,10 @@ def _assert_protected_surfaces_v1() -> None:
         raise CurrentProductiveCap24SelectionStateWriterError(
             "RECONSTRUCTION_P01_RUNTIME_INSTANCE_MUST_REMAIN_FALSE"
         )
-    if RANKING_POLICY_ID != "productive_futures_universe_structural_ranking_v1":
-        raise CurrentProductiveCap24SelectionStateWriterError("RANKING_POLICY_DRIFT")
+    try:
+        assert_current_productive_cap22_ranking_policy_binding_v1()
+    except CurrentProductiveCap21ToCap23PersistenceError as exc:
+        raise CurrentProductiveCap24SelectionStateWriterError(str(exc)) from exc
     if SELECTION_AUTHORITY_OWNER != CAP23_ID:
         raise CurrentProductiveCap24SelectionStateWriterError("SELECTION_OWNER_DRIFT")
     if int(MAX_POSITIONS_EFFECTIVE) != 1:

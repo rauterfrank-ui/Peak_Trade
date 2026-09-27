@@ -2,12 +2,13 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-modified_by: PR6901_BASELINE_PIN_CURRENCY_POST_MERGE_C93EA739_V1
+modified_by: PR6905_ENDGAME_CURRENT_PRODUCTIVE_29P_CAP24_RANKING_POLICY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Baseline pin currency for #6900/#6901 bounded Enter POST path: EXPECTED_BASELINE_ORIGIN_MAIN_SHA
-  c93ea739 (PR6901 merge squash); no POST; standing external-effect pins false.
+  #6905 endgame fix: Cap-2.2 ranking policy binding PEAK_TRADE_RANKING_MATRIX_POLICY_V1 on CURRENT
+  productive 29P/Cap-2.4 inventory chain; Cap21→Cap23 B05 feature synthesis; ops REPO_ROOT bootstrap;
+  no venue POST; POST path baseline pin c93ea739 unchanged for POST slice.
 changed_entities:
   - CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
   - CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
