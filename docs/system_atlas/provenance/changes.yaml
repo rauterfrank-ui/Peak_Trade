@@ -109,6 +109,16 @@ changes:
       persist reinsert; MOT §3.1 navigation; DT/DU PRE_EXTERNAL G17 hot-path runtime wiring;
       CSIA/Atlas bookkeeping only. CURRENT_REVIEWED_AT_SHA unchanged (744a9c896). RUNTIME_SEMANTICS_CHANGED=false.
       Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6927_gap_true_01_pre_external_test_contract_repair_v1
+    from: 8f8d7c11a91d0728a45a31aa1980db8cc4a62400
+    to: 8f8d7c11a91d0728a45a31aa1980db8cc4a62400
+    type: TEST_CONTRACT_ALIGNMENT
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py
+    notes: >-
+      POST_6927 PR #6928: GAP-TRUE-01 evidence test ↔ WP-2 PRE_EXTERNAL G17/DK seed contract;
+      CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping only. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
