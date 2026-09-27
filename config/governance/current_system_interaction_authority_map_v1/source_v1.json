@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "2e1a64c98bd811c55f62e5d983ae38b480f207e4",
+  "baseline_sha": "7bf14311fc30f38bffbfe09738c8135c2e99508b",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -578,24 +578,30 @@
     {
       "id": "safety",
       "tier": "FIRST_CLASS",
-      "role": "Offline safety boundary is visible on the cycle. A single productive safety owner is not closed. Kill-switch current binding is unknown.",
-      "canonical_owner_ref": "UNCLOSED_SEE_OPEN_RECORD:safety_owner_unclosed",
-      "authority_class": "PARTIAL",
-      "lifecycle": "BOUNDARY_VISIBLE_OWNER_UNCLOSED",
-      "status": "PARTIAL",
+      "role": "Layered CURRENT safety authorities ratified (no umbrella runtime owner): replay safety-kernel veto, durable kill-switch FILEGATE, KILL_ALL SideState block, flatten exact-object plan. Cap 11.5 is not productive safety SSOT.",
+      "canonical_owner_ref": "LAYERED:DECISION=MASTER_V2_PLUS_DOUBLE_PLAY;REPLAY_SAFETY_VETO=trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0;DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1;KILL_ALL=DoublePlay.SideState;FLATTEN=current_productive_exact_object_flatten_plan_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "LAYERED_SAFETY_RATIFIED",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
-      "contract_refs": [],
+      "contract_refs": [
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
+      ],
       "code_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
-        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py"
+        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+        "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
       ]
     },
     {
@@ -3992,14 +3998,14 @@
     },
     {
       "family_id": "typed_29p_equity_to_four_crs_limits",
-      "semantic_class": "CONFLICTING",
+      "semantic_class": "CURRENT_AUTHORITY",
       "source_ref": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
-      "canonical_owner_ref": "UNRESOLVED",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1 (N=1 productive bind seam; CRS dimensions remain distinct)",
       "current_consumer_ref": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-      "current_decision_effect": "Formula wires four CRS limits to typed 29P equity. The scalar is not CURRENT_AUTHORITY while the equity owner is unresolved.",
-      "authority_status": "UNRESOLVED",
+      "current_decision_effect": "Ratified productive N=1 bind: four CRS bound values := typed 29P available-for-sizing equity on enter-live-29p path. CRS math keeps four distinct dimensions; no new limit policy.",
+      "authority_status": "CURRENT_AUTHORITY",
       "historical_default_status": "NOT_HISTORICAL_DEFAULT",
-      "lifecycle": "CURRENT_WIRING_AUTHORITY_UNRESOLVED",
+      "lifecycle": "RATIFIED_PRODUCTIVE_N1_BINDING",
       "optimization_surface_status": "NOT_AN_OPTIMIZATION_SURFACE",
       "learning_evidence_status": "NOT_LEARNING_EVIDENCE",
       "productive_seam_status": "ENTER_JOIN_CALL",
@@ -4007,12 +4013,10 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
       ],
-      "conflicts": [
-        "ACCOUNT_EQUITY_AUTHORITY_OWNER unresolved",
-        "limit names versus equity collapse"
-      ]
+      "conflicts": []
     },
     {
       "family_id": "m9_numeric_max_age_seconds",
@@ -4081,15 +4085,6 @@
         "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
         "src/trading/master_v2/double_play_composition_matrix_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
-    },
-    {
-      "id": "kill_switch_full_core_safety_owner",
-      "epistemic_class": "UNKNOWN",
-      "statement": "OWNER_DECISION_REQUIRED=true. Remaining single Owner question: establish one canonical full-core productive safety owner string vs Cap 11.5 kill-switch boundary without displacing Cap 11.5. Map does not assign owner.",
-      "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
       ]
     },
     {
@@ -4230,16 +4225,6 @@
       ]
     },
     {
-      "id": "limit_names_vs_equity_collapse",
-      "epistemic_class": "CONFLICTING",
-      "statement": "OWNER_DECISION_REQUIRED=true. Remaining conflict only: limit naming vs equity collapse onto four CRS limits vs offline dynamic fail-closed descriptions. B05/CRS ratification does not close this semantic wording collapse.",
-      "evidence_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-        "src/governance/capital_risk_sizing_v1.py"
-      ]
-    },
-    {
       "id": "mv2_decision_authority_map_tokens",
       "epistemic_class": "PARTIAL",
       "statement": "STALE_CONFLICT: MASTER_V2_DECISION_AUTHORITY_MAP_V1 is NAVIGATION_ONLY with LIVE_AUTHORIZED=false; Full-Core constants carry scoped standing predicates. Map does not merge LIVE semantics.",
@@ -4269,15 +4254,6 @@
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
-      ]
-    },
-    {
-      "id": "safety_owner_unclosed",
-      "epistemic_class": "PARTIAL",
-      "statement": "Safety boundary visible on productive cycle with CONSTRAINT_FLOW handoffs mapped. OWNER_DECISION_REQUIRED remains via kill_switch_full_core_safety_owner (single closed productive safety owner string not ratified).",
-      "evidence_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
     {

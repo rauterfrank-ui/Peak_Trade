@@ -60,11 +60,20 @@ def test_unknown_stays_unknown() -> None:
     assert MAP.project_status("UNKNOWN") == "UNKNOWN"
 
 
-def test_conflicting_stays_conflicting() -> None:
-    view = MAP.render_views(_doc())["authority"]
-    assert "id=limit_names_vs_equity_collapse class=CONFLICTING" in view
-    assert "OWNER_DECISION_REQUIRED=true" in view
-    assert MAP.project_status("CONFLICTING") == "CONFLICTING"
+def test_limit_equity_and_safety_open_records_closed() -> None:
+    doc = _doc()
+    record_ids = {record["id"] for record in doc["open_epistemic_records"]}
+    assert "limit_names_vs_equity_collapse" not in record_ids
+    assert "safety_owner_unclosed" not in record_ids
+    assert "kill_switch_full_core_safety_owner" not in record_ids
+    view = MAP.render_views(doc)["authority"]
+    assert "limit_names_vs_equity_collapse" not in view
+    assert "kill_switch_full_core_safety_owner" not in view
+    lineage = MAP.render_views(doc)["parameter_lineage"]
+    section = lineage.split("## typed_29p_equity_to_four_crs_limits", 1)[1].split("## ", 1)[0]
+    assert "semantic_class=CURRENT_AUTHORITY" in section
+    landscape = MAP.render_views(doc)["system_landscape"]
+    assert "LAYERED:DECISION=MASTER_V2_PLUS_DOUBLE_PLAY" in landscape
 
 
 def test_partial_stays_partial() -> None:

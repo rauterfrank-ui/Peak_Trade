@@ -118,7 +118,7 @@ current_productive_sidestate_confirmation_cursor_v1
 | Decision | Master V2 + Double Play integrated decision path |
 | SideState / EntryExit | Double Play SideState / EntryExit owners |
 | Risk / capital admissibility | `capital_risk_admissibility_owner_v1` |
-| Safety | Offline safety-kernel boundary owner |
+| Safety | Layered CURRENT authorities (decision / replay veto / durable kill-switch / KILL_ALL / flatten); no umbrella runtime owner |
 | Order intent | `canonical_order_intent_owner_v1` |
 | Host join | `stateful_no_order_host_join_v1` |
 | Send-capable adapter | `send_capable_adapter_v1` |
@@ -711,6 +711,45 @@ C2_BLOCKS_CURRENT_Q0_Q1=false
 C2_BLOCKS_TREASURY=false
 COMPANION_C2_TOUCHED=false
 NETWORK_ACCESS_AUTHORIZED=READ_ONLY_GET_ON_ENTER_ONLY
+EXTERNAL_EFFECT_AUTHORIZED=false
+POST_ALLOWED=false
+ATLAS_AUTHORITY=NONE
+```
+
+### Final CURRENT authority closure — Limit/Equity N=1 bind + Layered Safety (v1)
+
+Owner-GO **OWNER_GO_FINAL_CURRENT_AUTHORITY_CLOSURE_V1** (one-shot; **CONSUMED**)
+ratifies existing productive semantics only. Machine contract:
+`config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json`.
+Derived spec:
+`docs/governance/FINAL_CURRENT_AUTHORITY_CLOSURE_LIMIT_EQUITY_AND_LAYERED_SAFETY_RATIFICATION_V1.md`.
+
+No new limit policy. No CRS field merge. No runtime behavior change. No Cap
+11.5 activation. No Atlas legacy eradication.
+
+```text
+OWNER_GO=OWNER_GO_FINAL_CURRENT_AUTHORITY_CLOSURE_V1
+OWNER_GO_STATUS=CONSUMED
+FOUR_CRS_DIMENSIONS_SEMANTICALLY_DISTINCT=true
+FOUR_CRS_DIMENSIONS_MATHEMATICALLY_DISTINCT=true
+PRODUCTIVE_N1_FOUR_SLOT_BINDING_RATIFIED=true
+PRODUCTIVE_BINDING_SOURCE_AUTHORITY=ops.governed_productive_account_equity_authority_producer_v1
+NO_NEW_LIMIT_POLICY=true
+NO_CRS_FIELD_REMOVAL=true
+NO_CRS_DIMENSION_COLLAPSE=true
+LAYERED_SAFETY_MODEL_RATIFIED=true
+DECISION_AUTHORITY=MASTER_V2_PLUS_DOUBLE_PLAY
+REPLAY_SAFETY_VETO_AUTHORITY=trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0
+DURABLE_KILL_SWITCH_AUTHORITY=src.ops.gates.risk_gate+durable_filegate_join_v1
+KILL_ALL_AUTHORITY=DoublePlay.SideState
+FLATTEN_AUTHORITY=current_productive_exact_object_flatten_plan_v1
+NEW_UMBRELLA_RUNTIME_SAFETY_OWNER=false
+MV2_DP_CAN_OVERRIDE_SAFETY=false
+SAFETY_CAN_VETO_MV2_DP=true
+KILL_ALL_EQUALS_FLATTEN=false
+CAP_11_5_PRODUCTIVE_SAFETY_SSOT=false
+CAP_11_5_ACTIVATION=false
+RUNTIME_BEHAVIOR_CHANGED=false
 EXTERNAL_EFFECT_AUTHORIZED=false
 POST_ALLOWED=false
 ATLAS_AUTHORITY=NONE
