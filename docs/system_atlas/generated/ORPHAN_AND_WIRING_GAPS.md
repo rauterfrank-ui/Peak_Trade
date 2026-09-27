@@ -225,6 +225,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:send_time_position_reobservation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:send_time_position_reobservation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:standing_external_effect_lift_policy_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:standing_external_effect_lift_policy_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:strategy_switch_sanity_check | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:strategy_switch_sanity_check | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:test_health_runner | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:test_health_runner | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:treasury_separation_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:treasury_separation_gate_v1 | STATUS=OPEN (not proven) |  |

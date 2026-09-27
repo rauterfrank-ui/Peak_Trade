@@ -61,6 +61,7 @@ flowchart LR
   runtime_binding_cap24["runtime_binding_cap24 PROVEN_CURRENT"]
   safety["safety PARTIAL"]
   selection_cap23["selection_cap23 PROVEN_CURRENT"]
+  standing_external_effect_lift_policy["standing_external_effect_lift_policy PARTIAL"]
   step29m["step29m PROVEN_CURRENT"]
   survival_suitability_composition["survival_suitability_composition PARTIAL"]
   treasury_29p["treasury_29p PARTIAL"]
@@ -200,6 +201,7 @@ flowchart LR
 | runtime_binding_cap24 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_runtime_binding_v1 | `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/models_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py` |
 | safety | FIRST_CLASS | PARTIAL | PARTIAL | UNCLOSED_SEE_OPEN_RECORD:safety_owner_unclosed | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | selection_cap23 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_policy_v1 | `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_policy_v1/constants_v1.py`, `src/ops/single_selected_future_policy_v1/models_v1.py`, `src/ops/single_selected_future_policy_v1/policy_v1.py`, `src/ops/single_selected_future_policy_v1/producer_v1.py`, `src/ops/single_selected_future_policy_v1/selection_v1.py`, `tests/ops/test_single_selected_future_policy_v1.py`, `docs/evidence/capability_2_3_single_selected_future_policy_v1/SUMMARY.json` |
+| standing_external_effect_lift_policy | INTERMEDIATE | PARTIAL | PARTIAL | standing_external_effect_lift_policy_v1 | `tests/governance/test_standing_external_effect_lift_policy_v1.py`, `config/governance/standing_external_effect_lift_policy_v1_record.json`, `config/governance/standing_external_effect_lift_owner_go_v1_decision.json`, `config/governance/standing_external_effect_lift_policy_v1_decision_v1.json` |
 | step29m | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.backtest.step29m_current_single_selected_future_dynamic_binding_v1 | `src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | survival_suitability_composition | INTERMEDIATE | PARTIAL | PARTIAL | trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1 | `src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py`, `src/trading/master_v2/double_play_composition_matrix_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | treasury_29p | FIRST_CLASS | PARTIAL | NAVIGATION_INDEX | TREASURY_PHASE_BINDINGS_NAVIGATION_ONLY | `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md`, `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json` |
