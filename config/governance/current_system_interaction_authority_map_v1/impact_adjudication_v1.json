@@ -15,7 +15,6 @@
     "docs/system_atlas/wiring/entrypoints.yaml",
     "docs/webui/LANDSCAPE_V3_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md",
     "pyproject.toml",
-    "requirements.txt",
     "scripts/webui/landscape_dashboard_persistent_local_host.sh",
     "scripts/webui/landscape_v3_dashboard_persistent_local_host.sh",
     "scripts/webui/local_market_dashboard.sh",
@@ -47,7 +46,7 @@
     "tests/webui/test_market_landscape_v3_routes_and_stream_v1.py",
     "uv.lock"
   ],
-  "changed_paths_sha256": "b486d614812598196e328eca370bf102a519e7ae88c80f9e47f8e973929c0b84",
+  "changed_paths_sha256": "e28f4aed069fd9965f48ebf27f4408e73f29c0bcb7e49eebc17fabba2e37c693",
   "covered_candidate_paths": [
     "docs/ops/market_dashboard/LANDSCAPE_V3_FRESH_BUILD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -60,7 +59,6 @@
     "docs/system_atlas/wiring/entrypoints.yaml",
     "docs/webui/LANDSCAPE_V3_DASHBOARD_PERSISTENT_LOCAL_HOST_V1.md",
     "pyproject.toml",
-    "requirements.txt",
     "scripts/webui/landscape_dashboard_persistent_local_host.sh",
     "scripts/webui/landscape_v3_dashboard_persistent_local_host.sh",
     "scripts/webui/local_market_dashboard.sh",
