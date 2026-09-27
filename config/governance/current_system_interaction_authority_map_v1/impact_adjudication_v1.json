@@ -14,6 +14,8 @@
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
@@ -25,7 +27,7 @@
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "62e62168a510edc708d06acab9db5c660ef290aebf916398e435513994ce8d10",
+  "changed_paths_sha256": "3b59986ef0c28ced8437c5e945f2b60673061e540ce64a65878da12927f5aece",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -38,7 +40,7 @@
     "tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "POST_6924 companion C2 Fraction→Units runtime completion scaffold v1: fail-closed runtime_conversion_v1 module, CSIA open record, baseline_sha/navigation rebind repair; no shadow/live binding; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
+  "reason": "POST_6924 companion C2 Fraction→Units runtime completion scaffold v1: fail-closed runtime_conversion_v1 module, CSIA open record, Atlas catalog entity, baseline_sha/navigation rebind repair; no shadow/live binding; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

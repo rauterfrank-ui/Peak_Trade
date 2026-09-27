@@ -5373,6 +5373,31 @@ entities:
       UNRESOLVED; does not confer conversion readiness. Atlas is not trading
       authority. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:companion_c2_fraction_to_units_runtime_completion_v1
+    # atlas_entity_review: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1 (PR #6925):
+    # fail-closed runtime conversion scaffold; COMPANION_RUNTIME_CONVERSION_ENABLED=false;
+    # no shadow_session/live_session binding; RUNTIME_SEMANTICS_CHANGED=false;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+    kind: RUNTIME_COMPONENT
+    name: Companion C2 Fraction→Units runtime completion scaffold v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+    semantic_authority: false
+    modified_by: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1
+    source_paths:
+      - src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/runtime_conversion_v1.py
+      - src/governance/companion_c2_fraction_to_units_runtime_completion_v1.py
+      - config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json
+      - docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md
+      - tests/ops/test_companion_c2_fraction_to_units_runtime_completion_v1.py
+      - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
+    notes: >-
+      Fail-closed companion C2 runtime conversion scaffold reusing read-binding and
+      algebra owners; passthrough fraction default; producer binding deferred to
+      scoped Owner-GO. Does not confer external effect or POST authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
     # PR_6918 TRACK_A_FINAL_CLOSURE_FIXTURE: natural-enter Live-29P EPOCH + layered upscope fixture alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6917 G17_TYPED_VOL_CMC_DUPLICATE_NOOP_REUSE: CMC bind reuses prior estimate on DUPLICATE_NOOP; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
