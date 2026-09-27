@@ -1,43 +1,46 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "79a8b581e66346b7d40cf402cbc8f1f05f156678",
+  "base_sha": "7330b6cb8a3cfccca9163028cbdf13e13910088c",
   "changed_paths": [
-    "config/governance/current_continuous_run_policy_owner_go_v1_decision.json",
-    "config/governance/current_continuous_run_policy_v1_record.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+    "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md",
+    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/governance/current_continuous_run_policy_v1.py",
-    "src/governance/current_continuous_run_runtime_binding_v1.py",
-    "src/governance/governed_current_continuous_run_policy_closure_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
-    "tests/governance/test_current_continuous_run_policy_v1.py"
+    "src/governance/external_effect_boundary_forensic_review_v1/__init__.py",
+    "src/governance/external_effect_boundary_forensic_review_v1/constants_v1.py",
+    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+    "src/governance/governed_current_productive_chain_pre_external_to_external_effect_boundary_closure_v1.py",
+    "src/governance/governed_external_effect_boundary_forensic_review_closure_v1.py",
+    "src/governance/productive_activation_boundary_forensic_review_v1/constants_v1.py",
+    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/constants_v1.py",
+    "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
+    "tests/ops/test_pre_external_to_external_effect_boundary_bounded_wp_v1.py"
   ],
-  "changed_paths_sha256": "f8b4d0c5d112f59eea922c9156ceefff1835569fd32b5de247d89e8afa979f4a",
+  "changed_paths_sha256": "a8900d5ff587c9559167dcd2d9cbfc6151eed493b343c2fccae48559bcb98210",
   "covered_candidate_paths": [
-    "config/governance/current_continuous_run_policy_v1_record.json",
-    "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md",
+    "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/governance/current_continuous_run_policy_v1.py",
-    "tests/governance/test_current_continuous_run_policy_v1.py"
+    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+    "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md",
-    "src/governance/current_continuous_run_policy_v1.py",
-    "tests/governance/test_current_continuous_run_policy_v1.py"
+    "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+    "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+    "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "CURRENT Continuous Run policy Owner-GO; policy-governed S6 orchestrator binding with per-cycle Productive Activation + F1/M9 revalidation; Atlas + map updated; authority=PARTIAL admission only.",
+  "reason": "External Effect boundary forensic review Owner-GO; chain closure PRE_EXTERNAL to standing gate; continuous-run adjudication post-#6892; no external effect authorization.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
