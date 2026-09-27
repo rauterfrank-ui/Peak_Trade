@@ -1100,6 +1100,31 @@
       ]
     },
     {
+      "id": "current_productive_activation_policy",
+      "tier": "INTERMEDIATE",
+      "role": "CURRENT Productive Activation policy: bounded PRE_EXTERNAL runtime admission; F1/M9 consumer gate; no continuous run or external effect.",
+      "canonical_owner_ref": "current_productive_activation_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_RUNTIME_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/governance/governed_current_productive_activation_policy_closure_v1.py",
+        "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_current_productive_activation_policy_v1.py",
+        "config/governance/current_productive_activation_policy_v1_record.json",
+        "config/governance/current_productive_activation_policy_owner_go_v1_decision.json"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review",
       "tier": "INTERMEDIATE",
       "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
@@ -4073,9 +4098,20 @@
       ]
     },
     {
+      "id": "current_productive_activation_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "CURRENT Productive Activation policy: singular owner governance.current_productive_activation_policy_v1; lineage-bound record; runtime admission at F1/M9 consumer surfaces; 600s/e556ea63… preserved; continuous run, external effect, POST, permit remain false.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md",
+        "config/governance/current_productive_activation_policy_v1_record.json",
+        "config/governance/current_productive_activation_policy_owner_go_v1_decision.json",
+        "tests/governance/test_current_productive_activation_policy_v1.py"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Productive Activation boundary forensic review post-#6889: named earliest unclosed boundary in F1/M9 decisions; no global activation owner; F1/M9 consumer path wired not activation; P5.10 bind distinct from cutover; PRE_EXTERNAL + standing POST/external-effect fail-closed; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "statement": "Productive Activation boundary forensic review post-#6890: census + static proof; activation authority superseded by current_productive_activation_policy_v1; P5.10 bind distinct; PRE_EXTERNAL fail-closed.",
       "evidence_refs": [
         "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md",
         "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",

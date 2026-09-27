@@ -1,16 +1,17 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
-modified_by: PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1
+introduced_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
+modified_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Productive Activation boundary forensic review post-#6889; census + static proof only;
-  F1/M9 600s consumer path wired not activation; no POST/permit/continuous-run authorization.
+  CURRENT Productive Activation policy v1; runtime admission bound to F1/M9 consumer surfaces;
+  600s lineage preserved; continuous run and external effect remain unauthorized.
 changed_entities:
-  - CONTRACT:productive_activation_boundary_forensic_review_v1
-  - RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
+  - CONTRACT:current_productive_activation_policy_v1
+  - RUNTIME_COMPONENT:current_productive_activation_policy_v1
+  - RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

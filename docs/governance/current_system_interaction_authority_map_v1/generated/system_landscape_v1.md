@@ -13,6 +13,7 @@ flowchart LR
   cap22_research_backtest_live_parity_b09["cap22_research_backtest_live_parity_b09 PROVEN_CURRENT"]
   cap22_robustness_and_stress_b10["cap22_robustness_and_stress_b10 PROVEN_CURRENT"]
   capital_risk_sizing["capital_risk_sizing PARTIAL"]
+  current_productive_activation_policy["current_productive_activation_policy PARTIAL"]
   double_play_capital_slot["double_play_capital_slot UNKNOWN"]
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
@@ -148,6 +149,7 @@ flowchart LR
 | cap22_research_backtest_live_parity_b09 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_research_backtest_live_parity_v1 | `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`, `src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py` |
 | cap22_robustness_and_stress_b10 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_robustness_and_stress_v1 | `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `tests/ops/test_peak_trade_robustness_and_stress_v1.py`, `src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py` |
 | capital_risk_sizing | FIRST_CLASS | PARTIAL | PARTIAL | src.governance.capital_risk_sizing_v1 (mv2_governance_intent_bound quantity algebra only) | `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`, `config/governance/risk_sizing_owner_inventory_ssot_v1.json`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `src/governance/capital_risk_sizing_v1.py` |
+| current_productive_activation_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_productive_activation_policy_v1 | `tests/governance/test_current_productive_activation_policy_v1.py`, `config/governance/current_productive_activation_policy_v1_record.json`, `config/governance/current_productive_activation_policy_owner_go_v1_decision.json` |
 | double_play_capital_slot | INTERMEDIATE | UNKNOWN | UNKNOWN | NONE | `src/trading/master_v2/double_play_capital_slot.py` |
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |

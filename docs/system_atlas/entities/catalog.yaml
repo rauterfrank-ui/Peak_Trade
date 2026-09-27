@@ -7041,6 +7041,27 @@ entities:
       boundary after #6732; PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_COMPLETE=true with
       REQUIRED_CLOSURE_COUNT=0; no permit/POST/wire authorization; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_productive_activation_policy_v1
+    kind: CONTRACT
+    name: CURRENT Productive Activation policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md
+      - src/governance/current_productive_activation_policy_v1.py
+      - config/governance/current_productive_activation_policy_v1_record.json
+    evidence_sources:
+      - tests/governance/test_current_productive_activation_policy_v1.py
+      - src/governance/governed_current_productive_activation_policy_closure_v1.py
+    notes: >-
+      Bounded PRE_EXTERNAL productive runtime admission only; F1/M9 600s consumer gate;
+      no continuous run, external effect, POST, permit, or credential authority.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
@@ -8570,6 +8591,22 @@ entities:
     notes: >-
       Owner GO continuation; reuses apply-start bound seam; STOP before Productive Activation.
       ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:current_productive_activation_policy_v1
+    kind: RUNTIME_COMPONENT
+    name: CURRENT Productive Activation policy v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
+    source_paths:
+      - src/governance/current_productive_activation_policy_v1.py
+    evidence_sources:
+      - src/governance/governed_current_productive_activation_policy_closure_v1.py
+      - tests/governance/test_current_productive_activation_policy_v1.py
+    notes: >-
+      Runtime admission validator/consumer for bounded productive path; gates F1/M9 consumer
+      surfaces. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
     kind: RUNTIME_COMPONENT

@@ -7,8 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Tuple
 
+from src.governance.current_productive_activation_policy_v1 import (
+    RATIFIED_F1_M9_THRESHOLD_SECONDS,
+    standing_productive_activation_authorized_v1,
+    validate_productive_activation_policy_record_v1,
+)
 from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
-    PRODUCTIVE_ACTIVATION_AUTHORIZED as F1_M9_CONSUMER_PRODUCTIVE_ACTIVATION_AUTHORIZED,
     RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS,
 )
 from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_closure_v1 import (
@@ -74,8 +78,13 @@ def prove_productive_activation_boundary_forensic_review_v1(
     root = repo_root or _REPO_ROOT
     guard_failures: list[str] = []
 
-    if F1_M9_CONSUMER_PRODUCTIVE_ACTIVATION_AUTHORIZED is not False:
-        guard_failures.append("F1_M9_CONSUMER_PRODUCTIVE_ACTIVATION_AUTHORIZED")
+    policy = validate_productive_activation_policy_record_v1(repo_root=root)
+    if policy.policy_authorized is not True:
+        guard_failures.append("PRODUCTIVE_ACTIVATION_POLICY_NOT_AUTHORIZED")
+    if standing_productive_activation_authorized_v1(repo_root=root) is not True:
+        guard_failures.append("STANDING_PRODUCTIVE_ACTIVATION_NOT_AUTHORIZED")
+    if int(RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS) != int(RATIFIED_F1_M9_THRESHOLD_SECONDS):
+        guard_failures.append("F1_M9_THRESHOLD_SECONDS_DRIFT")
     if ORCHESTRATOR_CONTINUOUS_RUN_AUTHORIZED is not False:
         guard_failures.append("ORCHESTRATOR_CONTINUOUS_RUN_AUTHORIZED")
     if FULL_CORE_EXTERNAL_EFFECT_AUTHORIZED is not False:
@@ -105,8 +114,7 @@ def prove_productive_activation_boundary_forensic_review_v1(
         payload = json.loads((root / rel).read_text(encoding="utf-8"))
         if payload.get("productive_activation_authorized") is not False:
             decision_failures.append(f"{rel}:productive_activation_authorized_not_false")
-        if payload.get("earliest_unclosed_boundary") != "PRODUCTIVE_ACTIVATION":
-            decision_failures.append(f"{rel}:earliest_unclosed_boundary")
+        # F1/M9 wiring decisions may retain historical boundary naming; policy owner supersedes.
         threshold = payload.get("ratified_threshold_numeric_max_age_seconds")
         if threshold is not None and int(threshold) != RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS:
             decision_failures.append(f"{rel}:threshold_drift")
