@@ -1,39 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" data-market-landscape-v3="true" data-authority="NONE" data-read-only="true">
+<html lang="en" data-market-landscape-v3="true" data-landscape-composition="continuous" data-authority="NONE" data-read-only="true">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Peak Trade Landscape V3</title>
   <link rel="stylesheet" href="/static/css/market_dashboard_landscape_v3.css" />
 </head>
-<body>
-  <header class="v3-primary" data-mdl-region="PRIMARY_OPERATOR_STRIP">
-    <div class="v3-instrument">
-      <label for="v3-instrument-select">Instrument</label>
-      <select id="v3-instrument-select" disabled>
-        <option>ETH-USDT-SWAP</option>
-      </select>
+<body class="v3-landscape-surface">
+  <header class="v3-landscape-top" data-mdl-region="PRIMARY_OPERATOR_STRIP">
+    <div class="v3-top-line">
+      <div class="v3-instrument">
+        <span class="v3-label">Instrument</span>
+        <strong id="v3-instrument-id">—</strong>
+      </div>
+      <div id="v3-connectivity" class="v3-connectivity v3-state-disconnected">DISCONNECTED</div>
+      <div id="v3-freshness" class="v3-meta">Freshness —</div>
+      <div id="v3-mark" class="v3-meta">Mark —</div>
+      <div id="v3-system-state" class="v3-meta">System —</div>
     </div>
-    <div id="v3-connectivity" class="v3-badge v3-badge-disconnected">DISCONNECTED</div>
-    <div id="v3-freshness" class="v3-meta">freshness: —</div>
-    <div id="v3-mark" class="v3-mark">mark: —</div>
-    <div id="v3-blockers" class="v3-blockers"></div>
+    <div id="v3-blockers" class="v3-blockers" aria-live="polite"></div>
   </header>
 
-  <main class="v3-main">
-    <section class="v3-chart-panel" data-mdl-region="LIVE_CHART">
-      <canvas id="v3-chart-canvas" width="960" height="420" aria-label="Live PT1M mark chart"></canvas>
-      <div id="v3-chart-overlay" class="v3-chart-overlay hidden"></div>
-    </section>
+  <section class="v3-landscape-chart" data-mdl-region="LIVE_CHART">
+    <canvas id="v3-chart-canvas" width="1280" height="480" aria-label="Live PT1M mark chart"></canvas>
+    <div id="v3-chart-overlay" class="v3-chart-overlay hidden" aria-hidden="true"></div>
+  </section>
 
-    <section class="v3-secondary" data-mdl-region="LANDSCAPE_SECTIONS">
-      <div id="v3-sections-root" class="v3-sections"></div>
-    </section>
-  </main>
+  <section class="v3-status-rail" data-mdl-region="PRIMARY_STATUS_RAIL" aria-label="Primary status rail">
+    <div id="v3-status-rail" class="v3-status-rail-row"></div>
+  </section>
 
-  <details class="v3-diagnostics" data-mdl-region="DIAGNOSTICS_DRAWER">
+  <div id="v3-bands-root" class="v3-landscape-bands" data-mdl-region="ANALYTICAL_LANDSCAPE_BANDS"></div>
+
+  <details class="v3-diagnostics-drawer" data-mdl-region="DIAGNOSTICS_DRAWER">
     <summary>Diagnostics / Provenance</summary>
     <pre id="v3-diagnostics-json"></pre>
+    <pre id="v3-diagnostics-transport" class="v3-diagnostics-transport"></pre>
   </details>
 
   <script>
@@ -42,7 +44,8 @@
       streamPath: {{ stream_path|tojson }},
       authority: "NONE",
       readOnly: true,
-      directBrowserOkx: false
+      directBrowserOkx: false,
+      composition: "continuous"
     };
   </script>
   <script src="/static/js/market_dashboard_landscape_v3.js" defer></script>
