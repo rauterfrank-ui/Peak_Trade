@@ -92,6 +92,8 @@ def _f1_m9_cycle_ledger_kwargs_v1() -> dict[str, object]:
         "f1_m9_productive_apply_ledger_paths": _F1_M9_LEDGER_CACHE["apply_ledger_paths"],
         "f1_m9_threshold_ledger_paths": _F1_M9_LEDGER_CACHE["threshold_ledger_paths"],
     }
+
+
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
