@@ -1,7 +1,7 @@
 """CURRENT_PRODUCTIVE thin join: JOIN-2 G17 producer -> existing CMC typed bind.
 
 Owner lock for this S2-BIND MS2 slice only (prospective, not historical rewrite):
-ESTIMATE_ABSENT_CMC_POLICY=BIND_ONLY_WHEN_PRODUCED
+ESTIMATE_ABSENT_CMC_POLICY=BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE
 INGEST_SAMPLE=false
 PRESENCE_GATE_IN_THIS_WP=false
 
@@ -30,7 +30,22 @@ PACKAGE_MARKER = "FULL_CORE_G17_TYPED_VOL_CMC_BIND_V1=true"
 BIND_OWNER = (
     "ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1"
 )
-ESTIMATE_ABSENT_CMC_POLICY = "BIND_ONLY_WHEN_PRODUCED"
+ESTIMATE_ABSENT_CMC_POLICY = "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE"
+_REJECT_NO_BINDING_OUTCOMES: frozenset[TypedRuntimeProducerOutcomeV1] = frozenset(
+    {
+        TypedRuntimeProducerOutcomeV1.OUT_OF_ORDER_REJECTED,
+        TypedRuntimeProducerOutcomeV1.INVALID_SAMPLE_REJECTED,
+        TypedRuntimeProducerOutcomeV1.HISTORY_GAP_REJECTED,
+        TypedRuntimeProducerOutcomeV1.PERSISTENCE_REJECTED,
+        TypedRuntimeProducerOutcomeV1.MATERIALIZATION_REJECTED,
+    }
+)
+_REUSE_ALLOWED_OUTCOMES: frozenset[TypedRuntimeProducerOutcomeV1] = frozenset(
+    {
+        TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP,
+        TypedRuntimeProducerOutcomeV1.PRODUCED,
+    }
+)
 INGEST_SAMPLE = False
 PRESENCE_GATE_IN_THIS_WP = False
 CMC_BINDING_PERFORMED = True
@@ -66,9 +81,11 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
     *,
     producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None,
 ) -> CurrentProductiveG17CmcBindResultV1:
-    """Bind typed G17 estimate into CMC only when this-cycle outcome is PRODUCED.
+    """Bind typed G17 estimate into CMC per productive runtime typed-binding v1.
 
-    Absent estimate returns the same context object unchanged.
+    JOIN-2 already ingested finalized PT1M marks upstream; this join performs
+    cycle-without-new-sample semantics and may reuse a prior PRODUCED estimate
+    on DUPLICATE_NOOP when the producer output port still carries it.
     """
     if producer is None:
         return CurrentProductiveG17CmcBindResultV1(
@@ -83,14 +100,29 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
             "G17_CMC_BIND_PRODUCER_TYPE_INVALID",
             type(producer).__name__,
         )
+    _ = producer.on_runtime_cycle_without_sample_v1()
     port = producer.output_port_v1()
-    outcome = str(port.outcome.value)
+    outcome_enum = port.outcome
+    outcome = str(outcome_enum.value)
     estimate_present = port.estimate is not None
-    if (
-        port.outcome is not TypedRuntimeProducerOutcomeV1.PRODUCED
-        or port.estimate is None
-        or port.ready_for_binding_handoff is not True
+    if outcome_enum in _REJECT_NO_BINDING_OUTCOMES:
+        return CurrentProductiveG17CmcBindResultV1(
+            context=context,
+            bind_performed=False,
+            producer=producer,
+            outcome=outcome,
+            estimate_present=estimate_present,
+        )
+    bind_estimate = None
+    if outcome_enum is TypedRuntimeProducerOutcomeV1.PRODUCED and port.estimate is not None:
+        bind_estimate = port.estimate
+    elif (
+        outcome_enum in _REUSE_ALLOWED_OUTCOMES
+        and port.ready_for_binding_handoff is True
+        and port.estimate is not None
     ):
+        bind_estimate = port.estimate
+    if bind_estimate is None:
         return CurrentProductiveG17CmcBindResultV1(
             context=context,
             bind_performed=False,
@@ -100,7 +132,7 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
         )
     bound = bind_typed_canonical_volatility_estimate_into_market_context_v1(
         context,
-        port.estimate,
+        bind_estimate,
     )
     return CurrentProductiveG17CmcBindResultV1(
         context=bound,

@@ -43,6 +43,9 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionS
 from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
     TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    g17_ingest_kwargs_from_extracted_sample_v1,
+)
 from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
     _apply,
     _sixty_one_samples,
@@ -131,7 +134,7 @@ def _closes() -> tuple[float, ...]:
 def test_owner_lock_tokens_and_non_transfer() -> None:
     assert PACKAGE_MARKER.endswith("=true")
     assert BIND_OWNER.endswith("current_productive_g17_typed_vol_cmc_bind_v1")
-    assert ESTIMATE_ABSENT_CMC_POLICY == "BIND_ONLY_WHEN_PRODUCED"
+    assert ESTIMATE_ABSENT_CMC_POLICY == "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE"
     assert INGEST_SAMPLE is False
     assert PRESENCE_GATE_IN_THIS_WP is False
     assert CMC_BINDING_PERFORMED is True
@@ -375,6 +378,28 @@ def test_master_v2_cycle_none_producer_fail_closes_typed_presence() -> None:
     assert cycle.input_blocker == ""
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons
     assert cycle.decision_outcome not in {"enter_long", "enter_short"}
+
+
+def test_duplicate_noop_reuses_prior_estimate_for_cmc_and_presence_gate(
+    tmp_path: Path,
+) -> None:
+    samples = _sixty_one_samples()
+    created = _apply(tmp_path, samples=samples)
+    producer = created.producer
+    assert producer is not None
+    dup = producer.ingest_finalized_pt1m_mark_sample_v1(
+        **g17_ingest_kwargs_from_extracted_sample_v1(samples[-1])
+    )
+    assert dup.outcome is TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP
+    assert producer.output_port_v1().estimate is not None
+    bound = apply_current_productive_g17_typed_vol_cmc_bind_v1(_context(), producer=producer)
+    assert bound.bind_performed is True
+    assert bound.context.canonical_volatility_estimate is not None
+    cycle = run_current_productive_master_v2_runtime_cycle_v1(
+        **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer)
+    )
+    assert cycle.input_blocker == ""
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
 
 
 def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
