@@ -4187,6 +4187,16 @@
       ]
     },
     {
+      "id": "current_productive_pre_external_wp1_cap21_public_inst_type_binding_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PRE_EXTERNAL WP1 binds OKX public instType from Cap-2.1 universe lineage via _resolve_public_inst_type_for_bound_instrument_v1 and cap24_productivity_root before common-epoch compose; no silent FUTURES default; parser and venue code semantics unchanged; no venue POST.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ]
+    },
+    {
       "id": "whole_core_fresh_trusted_q0_enter_live_v1",
       "epistemic_class": "PARTIAL",
       "statement": "Full-Core enter-live F-02 closed: one read-only USDC availEq GET per ENTER via treasury single-source handoff; numeric Q0 bound on enter-live path; not Live POST; parallel direct GET module not active on same chain.",

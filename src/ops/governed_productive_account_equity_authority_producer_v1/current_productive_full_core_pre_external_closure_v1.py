@@ -56,8 +56,12 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
 from src.ops.governed_productive_account_equity_authority_producer_v1.constants_v1 import (
     CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_CREATED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_cap24_bound_instrument_provenance_handoff_v1 import (
+    default_current_productive_cap24_runtime_state_root_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     CurrentProductive29PCommonEpochHandoffError,
+    _resolve_public_inst_type_for_bound_instrument_v1,
     compose_current_productive_29p_common_epoch_handoff_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
@@ -255,6 +259,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     market_kwargs: Mapping[str, Any] | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    cap24_productivity_root: Path | None = None,
 ) -> CurrentProductiveFullCorePreExternalClosureResultV1:
     """Run WP-1+2 closure to PRE_EXTERNAL or earliest blocker."""
     if owner_go not in ALLOWED_OWNER_GOS:
@@ -387,10 +392,33 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         decision_epoch = _utc_now_iso_v1()
         common_epoch_id = decision_epoch
         wp1_status = "IN_PROGRESS"
+        prod_root = (
+            Path(cap24_productivity_root)
+            if cap24_productivity_root is not None
+            else default_current_productive_cap24_runtime_state_root_v1()
+        )
+        try:
+            resolved_inst_type = _resolve_public_inst_type_for_bound_instrument_v1(
+                bound=bound_instrument,
+                productivity_root=prod_root,
+                cap21_public_inst_type=None,
+            )
+        except CurrentProductive29PCommonEpochHandoffError as exc:
+            wp1_status = "FAIL"
+            return _fail(
+                wp1=wp1_status,
+                wp2="NOT_STARTED",
+                blocker=str(exc),
+                status_fields={
+                    "COMMON_EPOCH_STATUS": "NOT_REACHED",
+                    "CAP21_PUBLIC_INST_TYPE_BINDING": "FAIL_CLOSED",
+                },
+            )
         handoff = compose_current_productive_29p_common_epoch_handoff_v1(
             decision_epoch=decision_epoch,
             bound_instrument=bound_instrument,
             fresh_get_transport=transport,
+            inst_type=resolved_inst_type,
         )
         gets_performed = int(getattr(transport, "request_count", 0) or 0)
 

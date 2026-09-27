@@ -231,11 +231,13 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
     _assert_post_store_fresh_v1(post_root)
 
     epoch = str(binding_epoch or _utc_now_iso_v1())
+    cap24_prod_root = productivity_root
+    if cap24_prod_root is None:
+        cap24_prod_root = default_current_productive_cap24_runtime_state_root_v1()
+
     bound = bound_instrument_override
     if bound is None:
-        prod_root = productivity_root
-        if prod_root is None:
-            prod_root = default_current_productive_cap24_runtime_state_root_v1()
+        prod_root = cap24_prod_root
         try:
             handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
                 productivity_root=prod_root,
@@ -265,6 +267,7 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
                 market_kwargs=market_kwargs,
                 g17_typed_vol_producers=g17_typed_vol_producers,
                 execution_integrity_backend=execution_integrity_backend,
+                cap24_productivity_root=cap24_prod_root,
             )
         )
     except CurrentProductiveFullCorePreExternalClosureError as exc:

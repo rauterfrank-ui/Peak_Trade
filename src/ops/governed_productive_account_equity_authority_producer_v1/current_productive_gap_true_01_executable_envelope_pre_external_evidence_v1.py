@@ -115,6 +115,7 @@ def execute_current_productive_gap_true_01_executable_envelope_pre_external_evid
     g17_typed_vol_producers: Mapping[str, object],
     evidence_root: Path | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    cap24_productivity_root: Path | None = None,
 ) -> CurrentProductiveGapTrue01EvidenceResultV1:
     """Persist GAP-TRUE-01 closure evidence after caller-prepared natural ENTER inputs."""
     if owner_go != OWNER_GO:
@@ -143,6 +144,7 @@ def execute_current_productive_gap_true_01_executable_envelope_pre_external_evid
         market_kwargs=dict(market_kwargs),
         g17_typed_vol_producers=g17_typed_vol_producers,
         execution_integrity_backend=execution_integrity_backend,
+        cap24_productivity_root=cap24_productivity_root,
     )
     _validate_gap_true_01_closure_v1(closure)
 
