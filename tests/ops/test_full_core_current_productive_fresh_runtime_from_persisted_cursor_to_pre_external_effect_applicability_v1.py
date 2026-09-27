@@ -98,6 +98,12 @@ from tests.ops.test_full_core_current_productive_envelope_bound_single_use_exter
     _envelope,
     _handle,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+)
+from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
+    _mark_row,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -153,6 +159,10 @@ def _market_payloads(*, instrument_id: str = _EXPECTED_SELECTED) -> dict[str, ob
         ENDPOINT_PUBLIC_FUNDING_RATE: {
             "code": "0",
             "data": [{"instId": instrument_id, "fundingRate": "0.0001"}],
+        },
+        ENDPOINT_HISTORY_MARK_PRICE_CANDLES: {
+            "code": "0",
+            "data": list(reversed([_mark_row(i) for i in range(61)])),
         },
     }
 

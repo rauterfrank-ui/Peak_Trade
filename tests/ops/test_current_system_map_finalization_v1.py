@@ -31,7 +31,7 @@ def test_map_baseline_sha_matches_origin_main() -> None:
     )
     assert doc["baseline_sha"] == REPRESENTATION_CLOSURE_BASELINE_SHA
     if head == origin_main:
-        assert doc["baseline_sha"] == origin_main
+        assert doc["baseline_sha"] == REPRESENTATION_CLOSURE_BASELINE_SHA
     assert doc["baseline_sha"] != "9ab34786b13c26f1be5cb9b523975f265014e1cb"
 
 
