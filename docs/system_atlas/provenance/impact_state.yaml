@@ -1,16 +1,15 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-modified_by: FINAL_CURRENT_AUTHORITY_CLOSURE_V1
+introduced_by: ATLAS_LEGACY_ERADICATION_V1
+modified_by: ATLAS_LEGACY_ERADICATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  FINAL_CURRENT_AUTHORITY_CLOSURE_V1: navigation-only Atlas/census review rebind after
-  Owner ratification of productive CRS four-slot equity bind and layered safety authorities;
-  CSIA closure of limit_names_vs_equity_collapse, safety_owner_unclosed, and
-  kill_switch_full_core_safety_owner; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false;
-  POST_COUNT=0; no Atlas legacy eradication.
+  ATLAS_LEGACY_ERADICATION_V1: removed twelve historical domain census payloads and
+  legacy-only catalog entities/edges; CURRENT productive model plus support dependencies
+  retained; historical_terminology payload removed after CURRENT terminology survival check;
+  map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 changed_entities: []
 changed_relations: []
 changed_closures: []
@@ -18,16 +17,6 @@ changed_wiring: []
 changed_venue: []
 changed_census:
   - census/census_meta.yaml
-  - census/master_v2_module_inventory.yaml
-  - census/historical_architecture.yaml
-  - census/historical_terminology.yaml
-  - census/historical_wiring.yaml
-  - census/master_v2_semantic_map.yaml
-  - census/okx_endpoint_classification.yaml
-  - census/okx_field_census.yaml
-  - census/okx_fixture_census.yaml
-  - census/okx_historical.yaml
-  - census/okx_product_types.yaml
-  - census/repo_final_resolution.yaml
-  - census/schema_like_src.yaml
-  - census/dod_heading_inventory.yaml
+  - census/incompleteness.yaml
+changed_generated:
+  - generated/*

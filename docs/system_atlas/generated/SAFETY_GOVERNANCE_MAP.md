@@ -17,7 +17,6 @@
 | --- | --- | --- | --- |
 | GATE:btc_exclusion | GATE | True | CURRENT_CANONICAL |
 | GATE:flatten_execute_authority | GATE | True | CURRENT_NONCANONICAL |
-| GATE:flatten_live_wire | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_capital_admission_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_durable_filegate_join_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | True | CURRENT_NONCANONICAL |
@@ -28,21 +27,14 @@
 | GATE:full_core_live_path_restart_gate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:kill_switch_durable_filegate_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:live_authorized_false | GATE | True | CURRENT_CANONICAL |
 | GATE:max_positions_1 | GATE | True | CURRENT_CANONICAL |
-| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GATE:pl_tf_002_productive_read_only_get_complete_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GATE:position_observation_freshness | GATE | True | CURRENT_NONCANONICAL |
 | GATE:target_position_state | GATE | True | CURRENT_NONCANONICAL |
 | GATE:treasury_phase_1_offline_contracts_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | True | CURRENT_NONCANONICAL |
 | GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GATE:treasury_productive_read_only_venue_observation_v1 | GATE | True | CURRENT_NONCANONICAL |
-| GUARD:economic_diagnostic_optimization_boundary | GUARD | True | CURRENT_NONCANONICAL |
 
 ## Mutation-path chains (actual wiring; missing edges explicit)
 

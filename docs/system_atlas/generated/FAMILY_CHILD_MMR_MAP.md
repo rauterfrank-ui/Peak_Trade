@@ -18,14 +18,6 @@ These terms have multiple observed meanings. They are not a single hierarchy.
 | id | kind | status | do_not_confuse |
 | --- | --- | --- | --- |
 | CHILD:nested_structural_child | CHILD | FORENSIC_REFERENCE_ONLY |  |
-| FAMILY:dashboard_canonical_decision | FAMILY | CURRENT_NONCANONICAL | strategy visual-map Family; confirm-token FAMILY_*; OKX instFamily |
-| FAMILY:dashboard_double_play | FAMILY | CURRENT_NONCANONICAL |  |
-| FAMILY:dashboard_dynamic_scope | FAMILY | CURRENT_NONCANONICAL | Master V2 architectural Family; OKX instFamily |
-| FAMILY:dashboard_economic_summary | FAMILY | CURRENT_NONCANONICAL |  |
-| FAMILY:dashboard_execution_reconciliation | FAMILY | CURRENT_NONCANONICAL |  |
-| FAMILY:dashboard_regime_bull_bear | FAMILY | CURRENT_NONCANONICAL |  |
-| FAMILY:dashboard_risk_sizing_capital | FAMILY | CURRENT_NONCANONICAL |  |
-| FAMILY:dashboard_safety_authority | FAMILY | CURRENT_NONCANONICAL |  |
 | KIND:ACRONYM | TERM | OPEN |  |
 | KIND:CHILD | TERM | OPEN | SSOT_CHILD; HISTORICAL_CHILD_LEDGER; NestedStructuralChild; Falls-Parent/Child |
 | KIND:DOD | TERM | OPEN | Mandatory Capability Closure Standard; tests; acceptance criteria |
@@ -53,7 +45,6 @@ These terms have multiple observed meanings. They are not a single hierarchy.
 | TERM:double_play | TERM | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_id double_play |
 | TERM:dynamic_scope | TERM | CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT | dashboard family_id dynamic_scope |
 | TERM:fail_closed | TERM | CURRENT_CANONICAL |  |
-| TERM:falls_parent_child | TERM | FORENSIC_REFERENCE_ONLY |  |
 | TERM:family_polyvalent | TERM | OPEN | Child; SSOT child; OKX instFamily; OKX mmr |
 | TERM:flatten | TERM | CURRENT_NONCANONICAL |  |
 | TERM:focused_full_noop | TERM | CURRENT_NONCANONICAL |  |

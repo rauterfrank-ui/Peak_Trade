@@ -40,14 +40,6 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | DOD:vollautonomie_economic_validity | DOD | Definition of Done — Economic Validity | SUPERSEDED | STATUS=HISTORICAL |  |
 | DOD:vollautonomie_safety_runtime | DOD | Definition of Done — Safety and Runtime | SUPERSEDED | STATUS=HISTORICAL |  |
 | DOD:vollautonomie_trading_logic | DOD | Definition of Done — Trading Logic | SUPERSEDED | STATUS=HISTORICAL |  |
-| FAMILY:dashboard_canonical_decision | FAMILY | dashboard family_id canonical_decision | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | strategy visual-map Family; confirm-token FAMILY_*; OKX instFamily |
-| FAMILY:dashboard_double_play | FAMILY | dashboard family_id double_play | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
-| FAMILY:dashboard_dynamic_scope | FAMILY | dashboard family_id dynamic_scope | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | Master V2 architectural Family; OKX instFamily |
-| FAMILY:dashboard_economic_summary | FAMILY | dashboard family_id economic_summary | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
-| FAMILY:dashboard_execution_reconciliation | FAMILY | dashboard family_id execution_reconciliation | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
-| FAMILY:dashboard_regime_bull_bear | FAMILY | dashboard family_id regime_bull_bear_switch | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
-| FAMILY:dashboard_risk_sizing_capital | FAMILY | dashboard family_id risk_sizing_capital | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
-| FAMILY:dashboard_safety_authority | FAMILY | dashboard family_id safety_authority | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | KIND:ACRONYM | TERM | ACRONYM | OPEN | STATUS=ADJUDICATED |  |
 | KIND:CHILD | TERM | CHILD | OPEN | STATUS=OPEN (not proven) | SSOT_CHILD; HISTORICAL_CHILD_LEDGER; NestedStructuralChild; Falls-Parent/Child |
 | KIND:DOD | TERM | DOD | OPEN | STATUS=ADJUDICATED | Mandatory Capability Closure Standard; tests; acceptance criteria |
@@ -93,7 +85,6 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | TERM:double_play | TERM | Double Play | STILL_CURRENT_AND_CANONICALLY_SUPPORTED | STATUS=CANONICAL_AUTHORITY | ops.double_play.evaluate_double_play (quarantined projection); dashboard family_ |
 | TERM:dynamic_scope | TERM | Dynamic Scope | CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT | STATUS=ADJUDICATED | dashboard family_id dynamic_scope |
 | TERM:fail_closed | TERM | fail-closed | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |  |
-| TERM:falls_parent_child | TERM | Falls-Parent/Child forensic coupling | FORENSIC_REFERENCE_ONLY | STATUS=HISTORICAL |  |
 | TERM:family_polyvalent | TERM | Family | OPEN | STATUS=CONTRADICTED (both sides preserved) | Child; SSOT child; OKX instFamily; OKX mmr |
 | TERM:flatten | TERM | Flatten | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
 | TERM:focused_full_noop | TERM | FOCUSED / FULL / NO_OP | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW |  |
@@ -118,15 +109,4 @@ Seed vocabulary is not complete. Status OPEN means expansion/definition is unpro
 | TERM:trading_decision_core | TERM | TRADING_DECISION_CORE | SUPERSEDED | STATUS=HISTORICAL |  |
 | TERM:uly | TERM | uly | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | quoteCcy; instId; instFamily |
 | TERM:x_simulated_trading | TERM | x-simulated-trading | CURRENT_NONCANONICAL | STATUS=FORENSIC_RAW | LIVE_AUTHORIZED; TESTNET_AUTHORIZED |
-
-## Historical origin/main archaeology (scoped)
-
-SSOT_CHILD literal remains absent from origin/main history. OPEN expansions remain OPEN.
-
-| term | spelling | expansion | status | first_commit |
-| --- | --- | --- | --- | --- |
-| X-Perp | X-Perp | OPEN | CURRENT_NONCANONICAL | 8457850cbf10a4ec040d320ac9bb84d2fc63c844 |
-| SSOT_CHILD | SSOT_CHILD | OPEN | SEARCHED_BUT_NO_EVIDENCE_FOUND | none |
-| Gate-Familien | Gate-Familien | OPEN | HISTORICAL_ONLY | e94ff20c8ffb6f7e69152bcb9e2972165897cc43 |
-| NestedStructuralChild | NestedStructuralChild | OPEN | FORENSIC_REFERENCE_ONLY | b81d5181c04c2a3dc156d089fc8790ed4419782b |
 

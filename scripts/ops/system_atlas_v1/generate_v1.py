@@ -117,7 +117,6 @@ _HUB_ENTITY_IDS = frozenset(
         "SCRIPT:run_cap23_policy",
         "VENUE_ENDPOINT:okx_public_instruments",
         "VENUE_ENDPOINT:okx_trade_order",
-        "FORENSIC_REFERENCE:information_corpus_persistence_base",
         "PHASE:ddo_offline_foundation",
         "RUNTIME_COMPONENT:ddo_capture_v0",
         "RUNTIME_COMPONENT:ddo_ledger_v0",
@@ -249,21 +248,9 @@ def _file_like_repo_path(value: str) -> str | None:
 
 
 def historical_nonlive_repo_paths(atlas: dict[str, Any]) -> frozenset[str]:
-    """Repo file paths that historical wiring records as time-bounded observations.
-
-    These are not live markdown targets. Classification is model-driven and must
-    not consult the active checkout filesystem.
-    """
-    wiring = (atlas.get("records") or {}).get("census/historical_wiring.yaml") or {}
-    out: set[str] = set()
-    for edge in wiring.get("edges") or []:
-        if not isinstance(edge, dict):
-            continue
-        for key in ("source", "target"):
-            path = _file_like_repo_path(str(edge.get(key) or ""))
-            if path:
-                out.add(path)
-    return frozenset(out)
+    """CURRENT-only Atlas: no historical wiring census payload."""
+    _ = atlas
+    return frozenset()
 
 
 def _encode_nonlive_bare_repo_files_line(line: str, *, nonlive_paths: frozenset[str]) -> str:
@@ -548,64 +535,13 @@ def generate_views_v1(*, atlas: dict[str, Any], repo_root: Path) -> dict[str, st
     views["BUILD_GUIDANCE.md"] = _gen_guidance(closures, computed, emap)
     views["CONTRADICTION_REGISTER.md"] = _gen_contradictions(contradictions)
     views["MASTER_V2_DOUBLE_PLAY_MAP.md"] = _gen_mv2(entities, relations, fcm, computed)
-    arch = atlas["records"].get("census/historical_architecture.yaml") or {}
-    arch_rows = [
-        [
-            str(e.get("id")),
-            str(e.get("when") or ""),
-            str(e.get("pr") or ""),
-            str(e.get("what") or "")[:120],
-            str(e.get("current_status") or ""),
-        ]
-        for e in arch.get("events") or []
-    ]
-    views["MASTER_V2_DOUBLE_PLAY_MAP.md"] += (
-        _section("Git chronology (origin/main after unshallow)")
-        + "Owner-bound Master V2 / Double Play same-system relation is not reinterpreted.\n\n"
-        + _table(["id", "when", "pr", "what", "status"], arch_rows)
-    )
     views["FAMILY_CHILD_MMR_MAP.md"] = _gen_fcm(fcm, entities)
     views["FULL_DEPENDENCY_GRAPH.md"] = _gen_full_dep(entities, computed, relations)
-    wiring = atlas["records"].get("census/historical_wiring.yaml") or {}
-    w_rows = [
-        [
-            str(e.get("id")),
-            str(e.get("source") or ""),
-            str(e.get("relation") or ""),
-            str(e.get("target") or "")[:80],
-            str(e.get("valid_from") or ""),
-            str(e.get("valid_to") or ""),
-            _epi_label(str(e.get("epistemic_status") or "")),
-        ]
-        for e in wiring.get("edges") or []
-    ]
-    views["FULL_DEPENDENCY_GRAPH.md"] += _section(
-        "Historical wiring (time-bounded; origin/main git)"
-    ) + _table(
-        ["id", "source", "relation", "target", "from", "to", "epistemic"],
-        w_rows,
-    )
     views["DATA_LINEAGE_MAP.md"] = _gen_lineage(lineage)
     views["CONFIGURATION_WIRING.md"] = _gen_config(configs)
     views["ENTRYPOINT_RUNTIME_TRACES.md"] = _gen_traces(entrypoints)
     views["ORPHAN_AND_WIRING_GAPS.md"] = _gen_gaps(all_gaps)
     views["PROJECT_TERMINOLOGY.md"] = _gen_terminology(entities)
-    hist_terms = atlas["records"].get("census/historical_terminology.yaml") or {}
-    ht_rows = [
-        [
-            str(t.get("term")),
-            str(t.get("exact_historical_spelling") or ""),
-            str(t.get("expansion_if_proven") or "OPEN"),
-            str(t.get("status") or ""),
-            str(t.get("first_proven_usage") or "none"),
-        ]
-        for t in hist_terms.get("historical_terms") or []
-    ]
-    views["PROJECT_TERMINOLOGY.md"] += (
-        _section("Historical origin/main archaeology (scoped)")
-        + "SSOT_CHILD literal remains absent from origin/main history. OPEN expansions remain OPEN.\n\n"
-        + _table(["term", "spelling", "expansion", "status", "first_commit"], ht_rows)
-    )
     views["ACRONYM_REGISTER.md"] = _gen_acronyms(entities)
     views["DOD_MAP.md"] = _gen_dod(entities)
     views["SCHEMA_MAP.md"] = _gen_schemas(entities, atlas)
@@ -724,16 +660,11 @@ def _repo_atlas_flag_text(meta: dict[str, Any]) -> str:
 
 
 def _okx_product_type_rows(atlas: dict[str, Any]) -> list[list[str]]:
-    block = atlas["records"].get("census/okx_product_types.yaml") or {}
-    return [
-        [
-            str(row.get("product_type") or ""),
-            str(row.get("status") or ""),
-            str(row.get("canonical_support") or ""),
-            str(row.get("runtime_reachability") or ""),
-        ]
-        for row in (block.get("product_types") or [])
-    ]
+    identity = atlas["records"].get("venue/okx/identity.yaml") or {}
+    observed = [str(x) for x in (identity.get("product_types_observed") or [])]
+    if not observed:
+        return []
+    return [[pt, "CURRENT_MODEL", "venue/okx", "CURRENT"] for pt in observed]
 
 
 def _entity_row(entity: dict[str, Any]) -> list[str]:
@@ -1128,10 +1059,8 @@ def _gen_okx_map(
     feats = _okx_entities(entities, {"OKX_FEATURE"})
     eps = _okx_entities(entities, {"VENUE_ENDPOINT"})
     fields = _okx_entities(entities, {"VENUE_FIELD"})
-    ep_cls = atlas["records"].get("census/okx_endpoint_classification.yaml") or {}
-    field_c = atlas["records"].get("census/okx_field_census.yaml") or {}
-    fix_c = atlas["records"].get("census/okx_fixture_census.yaml") or {}
     auth = atlas["records"].get("venue/okx/authentication.yaml") or {}
+    okx_shapes = sum(1 for e in entities if str(e.get("kind")) == "OKX_RESPONSE_SHAPE")
     parts = [
         _HEADER,
         "# OKX Integration Map\n\n",
@@ -1140,22 +1069,11 @@ def _gen_okx_map(
         f"`OKX_CENSUS_COMPLETE={str(meta.get('okx_census_complete', False)).lower()}`  \n",
         f"`OKX_CENSUS_SCOPE={meta.get('okx_census_scope', 'OPEN')}`\n\n",
         "```text\n",
-        f"OKX_RAW_API_PATH_HIT_COUNT={ep_cls.get('okx_raw_api_path_hit_count', 'OPEN')}\n",
-        f"OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT={ep_cls.get('okx_unique_endpoint_candidate_count', 'OPEN')}\n",
-        f"OKX_MODELED_ENDPOINT_COUNT={ep_cls.get('okx_modeled_endpoint_count', 'OPEN')}\n",
-        f"OKX_GREP_NOISE_COUNT={ep_cls.get('okx_grep_noise_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_ENDPOINT_COUNT={ep_cls.get('okx_unclassified_endpoint_count', 'OPEN')}\n",
-        f"OKX_FIELD_TOKEN_COUNT={field_c.get('okx_field_token_count', 'OPEN')}\n",
-        f"OKX_MODELED_FIELD_COUNT={field_c.get('okx_modeled_field_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_MATERIAL_FIELD_COUNT={field_c.get('okx_unclassified_material_field_count', 'OPEN')}\n",
-        f"OKX_FIXTURE_CANDIDATE_COUNT={fix_c.get('okx_fixture_candidate_count', 'OPEN')}\n",
-        f"OKX_CONFIRMED_FIXTURE_COUNT={fix_c.get('okx_confirmed_fixture_count', 'OPEN')}\n",
-        f"OKX_RAW_RESPONSE_COUNT={fix_c.get('okx_raw_response_count', 'OPEN')}\n",
-        f"OKX_DISTINCT_RESPONSE_SHAPE_COUNT={fix_c.get('okx_distinct_response_shape_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_FIXTURE_COUNT={fix_c.get('okx_unclassified_fixture_count', 'OPEN')}\n",
-        f"OKX_FIXTURE_BYTES_OR_STRUCTURE_INSPECTED_COUNT={fix_c.get('okx_fixture_bytes_or_structure_inspected_count', 'OPEN')}\n",
-        f"OKX_UNINSPECTED_MATERIAL_FIXTURE_COUNT={fix_c.get('okx_uninspected_material_fixture_count', 'OPEN')}\n",
-        f"OKX_PRODUCT_TYPE_CENSUS_COMPLETE={str((atlas['records'].get('census/okx_product_types.yaml') or {}).get('okx_product_type_census_complete', False)).lower()}\n",
+        f"OKX_MODELED_ENDPOINT_COUNT={len(eps)}\n",
+        f"OKX_MODELED_FIELD_COUNT={len(fields)}\n",
+        f"OKX_FEATURE_COUNT={len(feats)}\n",
+        f"OKX_RESPONSE_SHAPE_COUNT={okx_shapes}\n",
+        f"OKX_PRODUCT_TYPE_CENSUS_COMPLETE={str(meta.get('okx_census_complete', False)).lower()}\n",
         "```\n\n",
         _section("Product types (Peak_Trade evidence)"),
         _table(
@@ -1289,37 +1207,17 @@ def _gen_okx_chronology(atlas: dict[str, Any]) -> str:
         ]
         for e in events
     ]
-    hist = atlas["records"].get("census/okx_historical.yaml") or {}
-    feat_rows = [
-        [
-            str(f.get("id")),
-            str(f.get("first_proven_date") or "OPEN"),
-            str(f.get("current_status") or ""),
-            str(f.get("feature_category") or ""),
-            str(f.get("auth_implementation") or "")[:80],
-        ]
-        for f in hist.get("features") or []
-    ]
-    uly = hist.get("uly_quote_adjudication") or {}
+    meta = atlas["records"].get("census/census_meta.yaml") or {}
     return (
         _HEADER
         + "# OKX Chronology\n\n"
         + _BANNER
-        + "Dates/PRs are listed only when git or document evidence supports them. "
-        "Document-internal dates are not introduction proof. "
-        "Shallow-clone artefact dates are superseded after unshallow.\n\n"
-        + f"GIT_IS_SHALLOW={str(hist.get('git_is_shallow', 'OPEN')).lower()}\n\n"
-        + f"OKX_FIRST_PROVEN_NAMED_IMPLEMENTATION={hist.get('first_proven_okx_named_implementation_commit', 'OPEN')}\n\n"
-        + f"OKX_NAMED_PATH_DELETIONS_ON_ORIGIN_MAIN={hist.get('okx_named_path_deletions_on_origin_main', 'OPEN')}\n\n"
-        + f"XPERP_HISTORICAL_ULY_HANDLER_FOUND={str(uly.get('handler_found', False)).lower()}\n\n"
-        + f"XPERP_HISTORICAL_QUOTE_MAPPING_FOUND={str(uly.get('quote_from_uly_found', False)).lower()}\n\n"
+        + "CURRENT venue chronology from modeled Atlas records. "
+        "Historical domain census payloads were eradicated (legacy-only).\n\n"
+        + f"GIT_IS_SHALLOW={str(meta.get('git_is_shallow', True)).lower()}\n\n"
+        + f"OKX_CURRENT_TREE_CENSUS_COMPLETE={str(meta.get('okx_current_tree_census_complete', False)).lower()}\n\n"
         + _table(["id", "when", "what", "epistemic", "evidence"], rows)
         + "\n"
-        + _section("Historical feature archaeology")
-        + _table(
-            ["id", "first_proven", "status", "category", "auth"],
-            feat_rows,
-        )
     )
 
 
@@ -1744,39 +1642,11 @@ def _gen_coverage(
         f"TERMINOLOGY_COLLISION_COUNT={len(collisions)}\n",
         f"UNRESOLVED_TERM_COUNT={sum(1 for e in entities if str(e.get('kind')) in {'TERM', 'ACRONYM', 'DOD', 'SCHEMA'} and e.get('epistemic_class') in {'OPEN', 'CONTRADICTED'})}\n",
         f"GIT_IS_SHALLOW={str(meta.get('git_is_shallow', True)).lower()}\n",
-        f"HISTORICAL_FETCH_PERFORMED={str(meta.get('historical_fetch_performed', False)).lower()}\n",
-        f"OKX_HISTORICAL_FEATURE_COUNT={len((atlas['records'].get('census/okx_historical.yaml') or {}).get('features') or [])}\n",
-        f"HISTORICAL_PROJECT_NATIVE_TERM_COUNT={(atlas['records'].get('census/historical_terminology.yaml') or {}).get('historical_project_native_term_count', 'OPEN')}\n",
-        f"HISTORICAL_WIRING_CHANGE_COUNT={(atlas['records'].get('census/historical_wiring.yaml') or {}).get('historical_wiring_change_count', 'OPEN')}\n",
-        f"SRC_SCHEMA_CANDIDATE_COUNT={(atlas['records'].get('census/schema_like_src.yaml') or {}).get('src_schema_candidate_count', 'OPEN')}\n",
-        f"SRC_ACCEPTED_SCHEMA_COUNT={(atlas['records'].get('census/schema_like_src.yaml') or {}).get('src_accepted_schema_count', 'OPEN')}\n",
-        f"SRC_DATA_CONTRACT_COUNT={(atlas['records'].get('census/schema_like_src.yaml') or {}).get('src_data_contract_count', 'OPEN')}\n",
-        f"SRC_TYPE_ONLY_COUNT={(atlas['records'].get('census/schema_like_src.yaml') or {}).get('src_type_only_count', 'OPEN')}\n",
-        f"SRC_UNADJUDICATED_SCHEMA_CANDIDATE_COUNT={(atlas['records'].get('census/schema_like_src.yaml') or {}).get('src_unadjudicated_schema_candidate_count', 'OPEN')}\n",
-        f"OKX_RAW_API_PATH_HIT_COUNT={(atlas['records'].get('census/okx_endpoint_classification.yaml') or {}).get('okx_raw_api_path_hit_count', 'OPEN')}\n",
-        f"OKX_UNIQUE_ENDPOINT_CANDIDATE_COUNT={(atlas['records'].get('census/okx_endpoint_classification.yaml') or {}).get('okx_unique_endpoint_candidate_count', 'OPEN')}\n",
-        f"OKX_GREP_NOISE_COUNT={(atlas['records'].get('census/okx_endpoint_classification.yaml') or {}).get('okx_grep_noise_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_ENDPOINT_COUNT={(atlas['records'].get('census/okx_endpoint_classification.yaml') or {}).get('okx_unclassified_endpoint_count', 'OPEN')}\n",
-        f"OKX_MODELED_ENDPOINT_COUNT={(atlas['records'].get('census/okx_endpoint_classification.yaml') or {}).get('okx_modeled_endpoint_count', 'OPEN')}\n",
-        f"OKX_FIELD_TOKEN_COUNT={(atlas['records'].get('census/okx_field_census.yaml') or {}).get('okx_field_token_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_MATERIAL_FIELD_COUNT={(atlas['records'].get('census/okx_field_census.yaml') or {}).get('okx_unclassified_material_field_count', 'OPEN')}\n",
-        f"OKX_MODELED_FIELD_COUNT={(atlas['records'].get('census/okx_field_census.yaml') or {}).get('okx_modeled_field_count', 'OPEN')}\n",
-        f"OKX_FIXTURE_CANDIDATE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_fixture_candidate_count', 'OPEN')}\n",
-        f"OKX_CONFIRMED_FIXTURE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_confirmed_fixture_count', 'OPEN')}\n",
-        f"OKX_RAW_RESPONSE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_raw_response_count', 'OPEN')}\n",
-        f"OKX_DISTINCT_RESPONSE_SHAPE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_distinct_response_shape_count', 'OPEN')}\n",
-        f"OKX_UNCLASSIFIED_FIXTURE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_unclassified_fixture_count', 'OPEN')}\n",
-        f"OKX_FIXTURE_BYTES_OR_STRUCTURE_INSPECTED_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_fixture_bytes_or_structure_inspected_count', 'OPEN')}\n",
-        f"OKX_UNINSPECTED_MATERIAL_FIXTURE_COUNT={(atlas['records'].get('census/okx_fixture_census.yaml') or {}).get('okx_uninspected_material_fixture_count', 'OPEN')}\n",
+        f"HISTORICAL_DOMAIN_CENSUS_PAYLOAD_COUNT={meta.get('historical_domain_census_payload_count', 0)}\n",
+        f"ATLAS_LEGACY_ERADICATION_V1=true\n",
         f"ACRONYM_CENSUS_INVENTORY_COMPLETE={str(meta.get('acronym_census_inventory_complete', False)).lower()}\n",
         f"ACRONYM_EXPANSIONS_RESOLVED={str(meta.get('acronym_expansions_resolved', False)).lower()}\n",
-        f"ATLAS_LOCALLY_RESOLVABLE_UNSEARCHED_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('locally_resolvable_unsearched_count', 'OPEN')}\n",
-        f"ATLAS_REQUIRES_OWNER_DECISION_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('requires_owner_decision_count', 'OPEN')}\n",
-        f"ATLAS_REQUIRES_RUNTIME_OBSERVATION_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('requires_runtime_observation_count', 'OPEN')}\n",
-        f"ATLAS_REQUIRES_IMPLEMENTATION_CHANGE_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('requires_implementation_change_count', 'OPEN')}\n",
-        f"ATLAS_REQUIRES_EXTERNAL_CORPUS_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('requires_external_corpus_count', 'OPEN')}\n",
-        f"ATLAS_UNRESOLVED_TERMINOLOGY_COUNT={(atlas['records'].get('census/repo_final_resolution.yaml') or {}).get('unresolved_terminology_count', 'OPEN')}\n",
-        f"OKX_PRODUCT_TYPE_CENSUS_COMPLETE={str((atlas['records'].get('census/okx_product_types.yaml') or {}).get('okx_product_type_census_complete', False)).lower()}\n",
+        f"OKX_PRODUCT_TYPE_CENSUS_COMPLETE={str(meta.get('okx_census_complete', False)).lower()}\n",
         f"OKX_DOCS_CENSUS_COMPLETE={str((meta.get('okx_surface_census') or {}).get('okx_docs_census_complete', False)).lower()}\n",
         f"OKX_TESTS_CENSUS_COMPLETE={str((meta.get('okx_surface_census') or {}).get('okx_tests_census_complete', False)).lower()}\n",
         f"OKX_CONFIG_CENSUS_COMPLETE={str((meta.get('okx_surface_census') or {}).get('okx_config_census_complete', False)).lower()}\n",
@@ -1891,21 +1761,19 @@ def _gen_schemas(entities: list[dict[str, Any]], atlas: dict[str, Any]) -> str:
         for e in entities
         if str(e.get("kind")) == "SCHEMA"
     ]
-    like = atlas["records"].get("census/schema_like_src.yaml") or {}
+    field_inv = atlas["records"].get("census/schema_field_inventory.yaml") or {}
+    schema_count = sum(1 for e in entities if str(e.get("kind")) == "SCHEMA")
     return (
         _HEADER
         + "# Schema Map\n\n"
         + _BANNER
         + "SCHEMA is not automatically DATA_CONTRACT or dataclass. Relations recorded only if proven.\n\n"
         + "```text\n"
-        + f"SRC_SCHEMA_CANDIDATE_COUNT={like.get('src_schema_candidate_count', 'OPEN')}\n"
-        + f"SRC_ACCEPTED_SCHEMA_COUNT={like.get('src_accepted_schema_count', 'OPEN')}\n"
-        + f"SRC_DATA_CONTRACT_COUNT={like.get('src_data_contract_count', 'OPEN')}\n"
-        + f"SRC_TYPE_ONLY_COUNT={like.get('src_type_only_count', 'OPEN')}\n"
-        + f"SRC_UNADJUDICATED_SCHEMA_CANDIDATE_COUNT={like.get('src_unadjudicated_schema_candidate_count', 'OPEN')}\n"
-        + f"SCHEMA_CENSUS_COMPLETE={str(like.get('schema_census_complete', False)).lower()}\n"
+        + f"SCHEMA_ENTITY_COUNT={schema_count}\n"
+        + f"SCHEMA_FIELD_INVENTORY_COMPLETE={str(field_inv.get('schema_field_inventory_complete', False)).lower()}\n"
+        + f"SCHEMA_CENSUS_COMPLETE={str((atlas['records'].get('census/census_meta.yaml') or {}).get('schema_census_complete', False)).lower()}\n"
         + "```\n\n"
-        + "Drill-down census: `docs/system_atlas/census/schema_like_src.yaml`, `docs/system_atlas/census/schema_field_inventory.yaml`.\n\n"
+        + "Drill-down census: `docs/system_atlas/census/schema_field_inventory.yaml`.\n\n"
         + _table(["id", "name", "schema_kind", "status", "epistemic", "evidence"], rows)
     )
 

@@ -11,17 +11,11 @@
 `ATLAS_MUST_CITE_AUTHORITY=true`  
 `ATLAS_MUST_NOT_CREATE_AUTHORITY=true`
 
-Dates/PRs are listed only when git or document evidence supports them. Document-internal dates are not introduction proof. Shallow-clone artefact dates are superseded after unshallow.
+CURRENT venue chronology from modeled Atlas records. Historical domain census payloads were eradicated (legacy-only).
 
 GIT_IS_SHALLOW=false
 
-OKX_FIRST_PROVEN_NAMED_IMPLEMENTATION=5c588999731757f19cfb2ef9b85055af0eca760e
-
-OKX_NAMED_PATH_DELETIONS_ON_ORIGIN_MAIN=0
-
-XPERP_HISTORICAL_ULY_HANDLER_FOUND=true
-
-XPERP_HISTORICAL_QUOTE_MAPPING_FOUND=false
+OKX_CURRENT_TREE_CENSUS_COMPLETE=true
 
 | id | when | what | epistemic | evidence |
 | --- | --- | --- | --- | --- |
@@ -37,18 +31,4 @@ XPERP_HISTORICAL_QUOTE_MAPPING_FOUND=false
 | OKX_CHRONO:okx_named_deletions | census after unshallow | origin/main has zero deleted OKX-named paths (git log --diff-filter=D -- *okx*) | STATUS=ADJUDICATED | docs/system_atlas/census/okx_historical.yaml |
 | OKX_CHRONO:shallow_artifact_corrected | 2026-08-06 ec0e0272d was local shallow root, not first OKX introduction | Prior Atlas chronology that treated ec0e0272d as first OKX bulk-add is superseded | STATUS=ADJUDICATED | git fetch --unshallow; earliest commit 78979ed413 2025-12-02 |
 
-
-## Historical feature archaeology
-
-| id | first_proven | status | category | auth |
-| --- | --- | --- | --- | --- |
-| OKX_FEATURE:p108_mocks_only_adapter | 2026-02-16 | CURRENT_NONCANONICAL | execution_adapter | none |
-| OKX_FEATURE:eea_xperp_offline_contracts | 2026-06-26 | CURRENT_NONCANONICAL | venue_binding | OPEN |
-| OKX_FEATURE:public_futures_md_ingest | 2026-07-01 | CURRENT_NONCANONICAL | market_data | OK-ACCESS headers appear in tree; not the later HMAC signer |
-| OKX_FEATURE:hmac_sign_okx_request_v1 | 2026-08-08 | CURRENT_NONCANONICAL | authentication | sign_okx_request_v1 HMAC-SHA256 |
-| OKX_FEATURE:cap21_uly_base_only | 2026-08-02 | CURRENT_NONCANONICAL | instrument_identity | none |
-| OKX_FEATURE:ws_hosts_configured | 2026-06-26 | CURRENT_NONCANONICAL | websocket_config | none proven live |
-| OKX_FEATURE:live_feed_stub_pre_okx | 2026-01-01 | CURRENT_NONCANONICAL | websocket_stub | none |
-| OKX_FEATURE:dashboard_intrabar_ohlcv | 2026-07-25 | CURRENT_NONCANONICAL | market_data_ui | public |
-| OKX_FEATURE:july17_read_only_audit | 2026-07-17 | SUPERSEDED | audit_document | claimed signed private REST absent (later superseded by HMAC client) |
 

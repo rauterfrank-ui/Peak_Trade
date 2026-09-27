@@ -114,19 +114,3 @@ Not competing generations. Historical Vollautonomie ordering vs current Master R
 | FCM:okx_mmr_field | VENUE:okx | HAS_MMR | VENUE_FIELD:mmr | okx_venue_field | STATUS=FORENSIC_RAW |
 | FCM:ssot_child | SYSTEM:peak_trade | HAS_SSOT_CHILD | TERM:ssot_child_unproven | unproven_kind | STATUS=OPEN (not proven) |
 
-## Git chronology (origin/main after unshallow)
-
-Owner-bound Master V2 / Double Play same-system relation is not reinterpreted.
-
-| id | when | pr | what | status |
-| --- | --- | --- | --- | --- |
-| HIST:ops_double_play_switch_gate | 2026-02-20 | #1531 | Deterministic switch-gate + double-play runbook (before Master V2 tree) | HISTORICAL_ONLY |
-| HIST:ops_double_play_specialists | 2026-02-20 | #1535 | src/ops/double_play bull/bear specialists scaffold (safe default off) | CURRENT_NONCANONICAL |
-| HIST:master_v2_tree | 2026-04-23 | #2822 | Master V2 canonical dry-flow tree introduced | STILL_CURRENT_AND_CANONICALLY_SUPPORTED |
-| HIST:dp_pure_stack | 2026-04-25 | #3035 | Double Play pure scope/state then survival/suitability/composition on Master V2 | STILL_CURRENT_AND_CANONICALLY_SUPPORTED |
-| HIST:webui_dp_dashboard_removed | 2026-07-17 | OPEN | Market-dashboard Double Play webui stack deleted | REMOVED |
-| HIST:cap21_gfu | 2026-08-02 | OPEN | Capability 2.1 GFU producer introduced (uly base-only from first commit) | CURRENT_NONCANONICAL |
-| HIST:dp_core_wiring_restored | 2026-08-29 | #6131 | Restore current-system Double-Play core wiring on Master V2 | CURRENT_NONCANONICAL |
-| HIST:selector_policy_reverted | 2026-08-30 | #6166 | Revert Master V2 minimal selector policy (#6165) | REJECTED |
-| HIST:wp_fa_07 | 2026-09-01 | #6209 | Bind DDO to existing experiment identity and offline drift contracts (WP-FA-07) | CURRENT_NONCANONICAL |
-

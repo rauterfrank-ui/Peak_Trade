@@ -14,15 +14,12 @@
 SCHEMA is not automatically DATA_CONTRACT or dataclass. Relations recorded only if proven.
 
 ```text
-SRC_SCHEMA_CANDIDATE_COUNT=1626
-SRC_ACCEPTED_SCHEMA_COUNT=5
-SRC_DATA_CONTRACT_COUNT=2
-SRC_TYPE_ONLY_COUNT=1618
-SRC_UNADJUDICATED_SCHEMA_CANDIDATE_COUNT=0
+SCHEMA_ENTITY_COUNT=18
+SCHEMA_FIELD_INVENTORY_COMPLETE=false
 SCHEMA_CENSUS_COMPLETE=true
 ```
 
-Drill-down census: `docs/system_atlas/census/schema_like_src.yaml`, `docs/system_atlas/census/schema_field_inventory.yaml`.
+Drill-down census: `docs/system_atlas/census/schema_field_inventory.yaml`.
 
 | id | name | schema_kind | status | epistemic | evidence |
 | --- | --- | --- | --- | --- | --- |
