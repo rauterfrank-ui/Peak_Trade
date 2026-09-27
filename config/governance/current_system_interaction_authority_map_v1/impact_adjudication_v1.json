@@ -22,7 +22,7 @@
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
     "tests/governance/test_current_continuous_run_policy_v1.py"
   ],
-  "changed_paths_sha256": "pending_regeneration",
+  "changed_paths_sha256": "f8b4d0c5d112f59eea922c9156ceefff1835569fd32b5de247d89e8afa979f4a",
   "covered_candidate_paths": [
     "config/governance/current_continuous_run_policy_v1_record.json",
     "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md",

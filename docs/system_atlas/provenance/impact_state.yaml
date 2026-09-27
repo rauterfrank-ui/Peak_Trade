@@ -1,17 +1,17 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
-modified_by: CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
+introduced_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
+modified_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  CURRENT Productive Activation policy v1; runtime admission bound to F1/M9 consumer surfaces;
-  600s lineage preserved; continuous run and external effect remain unauthorized.
+  CURRENT Continuous Run policy v1; governed S6 orchestrator binding with per-cycle
+  Productive Activation + F1/M9 revalidation; external effect remains unauthorized.
 changed_entities:
-  - CONTRACT:current_productive_activation_policy_v1
-  - RUNTIME_COMPONENT:current_productive_activation_policy_v1
-  - RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1
+  - CONTRACT:current_continuous_run_policy_v1
+  - RUNTIME_COMPONENT:current_continuous_run_policy_v1
+  - RUNTIME_COMPONENT:current_productive_governed_continuous_cycle_orchestrator_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
