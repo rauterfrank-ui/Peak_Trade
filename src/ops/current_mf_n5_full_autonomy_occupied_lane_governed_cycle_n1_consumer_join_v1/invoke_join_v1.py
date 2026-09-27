@@ -243,6 +243,21 @@ def _cursor_floor_or_zero(cursor_store_root: Path) -> float:
         return 0.0
 
 
+def _align_lane_s7_bootstrap_to_injected_c1_v1(
+    lane_s7: Mapping[str, Any],
+    candles_payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Bind MV2 cold-start cap61 floor strictly below injected governed-cycle C1."""
+    _closes, last_ts = extract_finalized_candle_closes_v1(candles_payload)
+    if last_ts is None:
+        return dict(lane_s7)
+    candle_last = float(last_ts)
+    aligned = dict(lane_s7)
+    aligned["last_finalized_event_ts_unix"] = candle_last - 60.0
+    aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
+    return aligned
+
+
 def _s7_kwargs(
     *,
     cycle_id_prefix: str,
@@ -523,6 +538,10 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         cursor_path = Path(cursor_store_root) / CURSOR_FILENAME
         bootstrap_used = False
         if not cursor_path.is_file():
+            lane_s7 = _align_lane_s7_bootstrap_to_injected_c1_v1(
+                lane_s7,
+                dict(candles_payload),
+            )
             compose_occupied_lane_mv2_dp_durable_cycle_v1(lane_pairs, **lane_s7)
             bootstrap_used = True
         expected_floor = _cursor_floor_or_zero(Path(cursor_store_root))

@@ -394,6 +394,26 @@ def test_forbidden_graph_and_v5_are_absent_from_join_calls() -> None:
     assert "run_current_productive_governed_cycle_v1(" not in ADDRESSING_JOIN_SOURCE
 
 
+def test_cold_start_aligns_mv2_floor_when_wall_last_finalized_ahead_of_c1(
+    tmp_path: Path,
+) -> None:
+    """Post-#6908 productive bind: observed_unix-60 must not outrun venue C1 close time."""
+    candle_last = float(C1_TS)
+    pairs, results = _invoke(
+        tmp_path,
+        ("LANE_1",),
+        cycle_id_prefix="n1-prod-time-bind",
+        last_ts=candle_last,
+        observed_unix=candle_last + 91.91008,
+        last_finalized_event_ts_unix=candle_last + 31.91008,
+    )
+    record = results["LANE_1"]
+    assert record.bootstrap_used is True
+    cycle = record.governed_cycle_result
+    assert cycle.disposition in SUCCESS_DISPOSITIONS, cycle.reason_code
+    assert cycle.reason_code != "STALE_C1"
+
+
 def test_n1_end_to_end_harness_hold_or_pre_external_effect(tmp_path: Path) -> None:
     pairs, results = _invoke(tmp_path, ("LANE_1",), cycle_id_prefix="n1-e2e")
     assert set(results) == {"LANE_1"}
