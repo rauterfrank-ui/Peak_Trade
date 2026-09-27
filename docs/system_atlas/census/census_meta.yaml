@@ -1,22 +1,24 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
-origin_main_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
-origin_main_subject: "test(ops): Track A final closure fixture repair (#6918)"
+origin_main_sha: 2e1a64c98bd811c55f62e5d983ae38b480f207e4
+current_reviewed_at_sha: 2e1a64c98bd811c55f62e5d983ae38b480f207e4
+origin_main_subject: "docs(governance): POST_6919 mechanical truth hygiene (#TBD)"
 census_date_role: "workpackage_bound_not_runtime_truth"
 worktree_dirty: false
-navigation_rebind_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
-navigation_rebind_kind: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1_NAVIGATION_REBIND
+navigation_rebind_sha: 2e1a64c98bd811c55f62e5d983ae38b480f207e4
+navigation_rebind_kind: POST_6919_MECHANICAL_TRUTH_HYGIENE_V1_NAVIGATION_REBIND
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+domain_census_payloads_content_origin_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
+historical_domain_census_payload_count: 12
+historical_domain_census_stale_defect_if_head_differs: false
 worktree_note: >-
-  Navigation rebind for CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1 at
-  origin/main SHA d0edb85fc83a5415a8a652299144cd0fe6da7644 (post #6918).
-  Domain census payloads remain bound to HISTORICAL_EVIDENCE_SHA
-  WP-FA-07 615de3b307132b73a60df33fd3bedfac811c8cce; domain_census_payloads_fresh_exhaustive_recensus=false.
-  This rebind updates navigation/coupling to CSIA WP-A/B→WP-C edges and
-  S5/S6/cursor representation only; not an exhaustive domain recensus.
-  CURRENT_REPO_SHA and HISTORICAL_EVIDENCE_SHA are distinct roles.
-  Atlas AUTHORITY=NONE.
+  POST_6919_MECHANICAL_TRUTH_HYGIENE_V1: CURRENT_REVIEWED_AT_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4
+  rebinding navigation/review only. Twelve domain census payloads remain
+  KEEP_NONCURRENT_REFERENCE with CONTENT_ORIGIN_SHA=615de3b307132b73a60df33fd3bedfac811c8cce
+  (WP-FA-07 evidence collection baseline); payload bytes were not exhaustively recensused.
+  CONTENT_ORIGIN_SHA and CURRENT_REVIEWED_AT_SHA are distinct roles.
+  Atlas AUTHORITY=NONE; no runtime authority; no CURRENT-runtime-reachability claim for payloads.
 okx_census_complete: true
 okx_current_tree_census_complete: true
 okx_historical_census_complete: true
@@ -108,8 +110,6 @@ named_gaps:
   - Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
   - Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
 source_files_scanned_note: >-
-  Fresh navigation rebind of origin_main_sha / CURRENT_REPO_SHA to
-  d0edb85fc83a5415a8a652299144cd0fe6da7644 (#6215). Domain census payloads
-  remain bound to HISTORICAL_EVIDENCE_SHA
-  615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not freshly
-  exhaustively rerun. Atlas AUTHORITY=NONE.
+  Navigation review rebind CURRENT_REVIEWED_AT_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4.
+  Domain census payload CONTENT_ORIGIN_SHA remains 615de3b307132b73a60df33fd3bedfac811c8cce
+  (WP-FA-07); stale_defect_if_head_differs=false on those payloads. Atlas AUTHORITY=NONE.

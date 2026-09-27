@@ -1,10 +1,17 @@
 # ATLAS_AUTHORITY=NONE
 # Material OKX field token census. Semantics only when proven. Seed list is not exhaustive.
 schema_version: system_atlas.v1
-origin_main_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
-navigation_rebind_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
+content_origin_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+current_reviewed_at_sha: 2e1a64c98bd811c55f62e5d983ae38b480f207e4
+origin_main_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+navigation_rebind_sha: 2e1a64c98bd811c55f62e5d983ae38b480f207e4
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
+census_payload_role: HISTORICAL_DOMAIN_CENSUS
+keep_noncurrent_reference: true
+atlas_runtime_authority: NONE
+current_runtime_reachability_claim: false
+stale_defect_if_head_differs: false
 okx_field_token_count: 42
 okx_modeled_field_count: 40
 okx_unclassified_material_field_count: 0

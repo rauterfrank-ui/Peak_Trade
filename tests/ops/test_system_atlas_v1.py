@@ -627,17 +627,24 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
 
 def test_census_navigation_rebind_distinct_from_domain_payloads(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    assert meta["origin_main_sha"] == "d0edb85fc83a5415a8a652299144cd0fe6da7644"
-    assert meta["navigation_rebind_sha"] == "d0edb85fc83a5415a8a652299144cd0fe6da7644"
+    reviewed = "2e1a64c98bd811c55f62e5d983ae38b480f207e4"
+    content = "615de3b307132b73a60df33fd3bedfac811c8cce"
+    assert meta["current_reviewed_at_sha"] == reviewed
+    assert meta["origin_main_sha"] == reviewed
+    assert meta["navigation_rebind_sha"] == reviewed
     assert (
-        meta["navigation_rebind_kind"]
-        == "CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1_NAVIGATION_REBIND"
+        meta["navigation_rebind_kind"] == "POST_6919_MECHANICAL_TRUTH_HYGIENE_V1_NAVIGATION_REBIND"
     )
-    assert meta["domain_census_payloads_bound_sha"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
+    assert meta["domain_census_payloads_bound_sha"] == content
     assert meta["origin_main_sha"] != meta["domain_census_payloads_bound_sha"]
     assert meta["domain_census_payloads_fresh_exhaustive_recensus"] is False
+    assert meta["historical_domain_census_payload_count"] == 12
+    assert meta["historical_domain_census_stale_defect_if_head_differs"] is False
     inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
-    assert inv["origin_main_sha"] == meta["origin_main_sha"]
+    assert inv["content_origin_sha"] == content
+    assert inv["current_reviewed_at_sha"] == reviewed
+    assert inv["census_payload_role"] == "HISTORICAL_DOMAIN_CENSUS"
+    assert inv["stale_defect_if_head_differs"] is False
     assert inv["domain_census_payloads_fresh_exhaustive_recensus"] is False
 
 
