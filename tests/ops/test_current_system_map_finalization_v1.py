@@ -8,7 +8,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
-REPRESENTATION_CLOSURE_BASELINE_SHA = "528246fc0463bbc99494439ea1b0b265cb64802a"
+REPRESENTATION_CLOSURE_BASELINE_SHA = "842d8a1944e17345aeda2712f2fb30d49efa98e4"
 
 
 def _load_source() -> dict:
@@ -103,17 +103,22 @@ def test_b05_first_class_producer_domains_present() -> None:
 
 def test_b05_epistemic_records_reflect_merged_closure() -> None:
     doc = _load_source()
+    record_ids = {r["id"] for r in doc["open_epistemic_records"]}
+    assert "account_equity_blocks" not in record_ids
+    assert "reference_price_authority_owner" not in record_ids
     records = {r["id"]: r for r in doc["open_epistemic_records"]}
-    assert (
-        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true"
-        in records["account_equity_blocks"]["statement"]
-    )
-    assert (
-        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true"
-        in records["reference_price_authority_owner"]["statement"]
-    )
     assert records["runbook_freshness_stamp"]["epistemic_class"] == "PARTIAL"
-    assert "528246fc" in records["runbook_freshness_stamp"]["statement"]
+    assert (
+        REPRESENTATION_CLOSURE_BASELINE_SHA[:8] in records["runbook_freshness_stamp"]["statement"]
+    )
     assert records["runbook_freshness_stamp"].get("closure_adjudication_class") == (
         "REPRESENTATION_ONLY"
     )
+
+
+def test_execution_external_effect_not_conflicting_authority() -> None:
+    domains = _domains_by_id(_load_source())
+    ext = domains["execution_external_effect"]
+    assert ext["authority_class"] != "CONFLICTING"
+    assert ext["status"] != "CONFLICTING"
+    assert ext["authority_class"] == "CANONICAL_AUTHORITY"

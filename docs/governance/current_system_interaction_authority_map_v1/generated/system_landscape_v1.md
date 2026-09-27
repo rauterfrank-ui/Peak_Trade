@@ -24,7 +24,7 @@ flowchart LR
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
   eea_universe_inventory_acquisition_v1["eea_universe_inventory_acquisition_v1 PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
-  execution_external_effect["execution_external_effect CONFLICTING"]
+  execution_external_effect["execution_external_effect PARTIAL"]
   external_effect_authorization_policy["external_effect_authorization_policy PARTIAL"]
   external_effect_boundary_forensic_review["external_effect_boundary_forensic_review PARTIAL"]
   external_effect_permit_mint_policy["external_effect_permit_mint_policy PARTIAL"]
@@ -190,7 +190,7 @@ flowchart LR
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
 | eea_universe_inventory_acquisition_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.current_productive_eea_universe_inventory_acquisition_v1 | `src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py`, `tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
-| execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| execution_external_effect | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `config/governance/external_effect_authorization_policy_v1_record.json`, `tests/governance/test_external_effect_boundary_forensic_review_v1.py`, `src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py` |
 | external_effect_authorization_policy | INTERMEDIATE | PARTIAL | PARTIAL | external_effect_authorization_policy_v1 | `tests/governance/test_external_effect_authorization_policy_v1.py`, `config/governance/external_effect_authorization_policy_v1_record.json`, `config/governance/external_effect_authorization_policy_owner_go_v1_decision.json`, `config/governance/external_effect_authorization_policy_v1_decision_v1.json` |
 | external_effect_boundary_forensic_review | INTERMEDIATE | PARTIAL | NONE | external_effect_boundary_forensic_review_v1 | `tests/governance/test_external_effect_boundary_forensic_review_v1.py`, `config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json`, `config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json` |
 | external_effect_permit_mint_policy | INTERMEDIATE | PARTIAL | PARTIAL | external_effect_permit_mint_policy_v1 | `tests/governance/test_external_effect_permit_mint_policy_v1.py`, `config/governance/external_effect_permit_mint_policy_v1_record.json`, `config/governance/external_effect_permit_mint_owner_go_v1_decision.json`, `config/governance/external_effect_permit_mint_policy_v1_decision_v1.json` |
