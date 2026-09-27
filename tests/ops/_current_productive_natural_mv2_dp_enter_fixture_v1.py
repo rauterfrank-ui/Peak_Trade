@@ -586,32 +586,14 @@ def run_layered_long_arm_then_enter_for_pre_external_v1(
     Seeds lane store through the arm cycle so a single subsequent governed invoke
     can consume the ARMED cursor.
     """
-    enter_ts = governed_productive_c1_event_ts_unix_v1()
-    path = strong_uptrend_closes_v1()
-    from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
-        _cycle,
-    )
-
-    origin = _cycle(
-        cycle_id="layered-long-origin",
-        bound_instrument=bound,
+    _origin, upscope_candidate, path = run_upscope_candidate_progress_cycles_v1(
+        bound=bound,
         g17_typed_vol_producer=g17_typed_vol_producer,
-        mark_px=float(path[0]),
-        event_ts_unix=enter_ts - 120.0,
-        closes=path,
     )
-    upscope_candidate = _cycle(
-        cycle_id="layered-long-upscope-candidate",
-        bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
-        incoming_cursor=origin.outgoing_cursor,
-        mark_px=float(path[-1]),
-        event_ts_unix=enter_ts - 60.0,
-        closes=path,
-    )
+    assert upscope_candidate.outgoing_cursor is not None
     arm_closes = natural_enter_long_closes_v1(path)
     arm_mark = float(arm_closes[-1])
-    arm_ts = enter_ts
+    arm_ts = NATURAL_ENTER_UPSCOPE_CONFIRM_TS_UNIX_V1
 
     pair = _lane_pair_v1(lane_state_root=lane_state_root, bound=bound)
     store_root = Path(pair[0].lane_state_root)
