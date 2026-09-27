@@ -69,6 +69,12 @@ class FinalOrderEnvelopeV1:
     issued_for_exact_action: str = ISSUED_FOR_EXACT_ACTION
     schema_version: str = ENVELOPE_SCHEMA_VERSION
 
+    def to_runtime_json_v1(self) -> dict[str, Any]:
+        payload = dict(self.to_canonical_payload_v1())
+        payload["envelope_id"] = self.envelope_id
+        payload["envelope_digest"] = self.envelope_digest
+        return payload
+
     def to_canonical_payload_v1(self) -> dict[str, Any]:
         return {
             "admission_ref": self.admission_ref,

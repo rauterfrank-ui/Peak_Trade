@@ -55,6 +55,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
 )
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
@@ -173,6 +176,7 @@ class CurrentProductiveGovernedCycleResultV1:
     lock_released: str
     ledger_state: str
     transitions: tuple[str, ...]
+    final_order_envelope: FinalOrderEnvelopeV1 | None = None
     extra: dict[str, str] = field(default_factory=dict)
 
 
@@ -766,6 +770,7 @@ def run_current_productive_governed_cycle_v1(
         venue_plan_status = str(getattr(t2_result, "venue_plan_status", "") or "")
         envelope_id = str(getattr(t2_result, "final_envelope_id", "") or "")
         envelope_digest = str(getattr(t2_result, "final_envelope_digest", "") or "")
+        final_order_envelope = getattr(t2_result, "final_order_envelope", None)
         permit_created = str(getattr(t2_result, "permit_created", FALSE_TOKEN)).lower() == "true"
         post_count = int(str(getattr(t2_result, "post_count", "0") or "0"))
         first_blocker = str(getattr(t2_result, "first_real_blocker", "") or "")
@@ -848,6 +853,9 @@ def run_current_productive_governed_cycle_v1(
             envelope_identity=(
                 f"envelope_id={envelope_id};digest={envelope_digest}" if envelope_id else ""
             ),
+            final_order_envelope=final_order_envelope
+            if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
+            else None,
             first_genuine_blocker=first_blocker,
             blocker_class=blocker_class,
             next_required_owner_decision=next_owner,
@@ -900,6 +908,7 @@ def _result(
     venue_plan_status: str = "",
     envelope_created: bool = False,
     envelope_identity: str = "",
+    final_order_envelope: FinalOrderEnvelopeV1 | None = None,
     first_genuine_blocker: str = "",
     blocker_class: str = "",
     next_required_owner_decision: str = "",
@@ -935,6 +944,7 @@ def _result(
         venue_plan_status=venue_plan_status,
         envelope_created=envelope_created,
         envelope_identity=envelope_identity,
+        final_order_envelope=final_order_envelope,
         permit_created=False,
         post_count=0,
         external_effect_count=0,

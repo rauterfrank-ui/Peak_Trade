@@ -2,7 +2,7 @@
   "workpackage_id": "FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
   "owner_go": true,
   "owner_go_token": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
-  "baseline_origin_main_sha": "ef317a10636bada3e2e570a39cc230a035bbfe7b",
+  "baseline_origin_main_sha": "04345330c0898ccf2682c88fd58c32f102a8001d",
   "post_allowed": false,
   "real_venue_post_allowed": false,
   "standing_post_authority_created": false,
