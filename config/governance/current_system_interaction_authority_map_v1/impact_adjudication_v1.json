@@ -14,7 +14,7 @@
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "20e827c95b269cd4897734618c717cc028d99bec61e3f87241aa3b25e948d571",
+  "changed_paths_sha256": "4ddad9a1cf3561c882dbe44c06ee29e6479282e99cafb98ec0bc749075290b4c",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
