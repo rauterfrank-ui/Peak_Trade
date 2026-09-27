@@ -126,7 +126,7 @@ def test_decision_records() -> None:
 
 def test_canonical_boundary_constant_updated() -> None:
     assert CANONICAL_EXTERNAL_EFFECT_BOUNDARY == (
-        "PERMIT_MINT_GOVERNED_CREDENTIAL_ACCESS_POLICY_BOUND_KEYCHAIN_MATERIAL_POST_FAIL_CLOSED"
+        "CREDENTIAL_MATERIAL_LOAD_GOVERNED_K1_SIGNING_POST_FAIL_CLOSED"
     )
 
 

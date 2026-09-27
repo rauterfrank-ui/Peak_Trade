@@ -54,6 +54,11 @@ secrets.toml
 !src/ops/k1_productive_macos_keychain_provisioning_authority_v1/**
 !tests/ops/test_k1_productive_macos_keychain_provisioning_authority_v1.py
 !docs/ops/specs/K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1.md
+!src/governance/real_keychain_access*
+!src/governance/governed_real_keychain_access*
+!tests/governance/test_real_keychain_access*
+!config/governance/real_keychain_access*
+!docs/ops/specs/REAL_KEYCHAIN_ACCESS*
 
 # Logs
 *.log

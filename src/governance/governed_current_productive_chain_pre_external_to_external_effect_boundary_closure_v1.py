@@ -20,6 +20,9 @@ from src.governance.governed_external_effect_authorization_policy_closure_v1 imp
 from src.governance.governed_checkout_independent_credential_access_policy_closure_v1 import (
     prove_governed_checkout_independent_credential_access_policy_v1,
 )
+from src.governance.governed_real_keychain_access_or_credential_material_load_policy_closure_v1 import (
+    prove_governed_real_keychain_access_or_credential_material_load_policy_v1,
+)
 from src.governance.governed_external_effect_permit_mint_policy_closure_v1 import (
     prove_governed_external_effect_permit_mint_policy_v1,
 )
@@ -38,7 +41,7 @@ SCHEMA_VERSION: Final[str] = (
 )
 BOUNDED_ORCHESTRATION_TERMINAL: Final[str] = "PRE_EXTERNAL_EFFECT_BOUNDARY"
 CANONICAL_EXTERNAL_EFFECT_BOUNDARY: Final[str] = (
-    "PERMIT_MINT_GOVERNED_CREDENTIAL_ACCESS_POLICY_BOUND_KEYCHAIN_MATERIAL_POST_FAIL_CLOSED"
+    "CREDENTIAL_MATERIAL_LOAD_GOVERNED_K1_SIGNING_POST_FAIL_CLOSED"
 )
 
 
@@ -62,6 +65,10 @@ def prove_governed_current_productive_chain_pre_external_to_external_effect_boun
     if not prove_governed_external_effect_permit_mint_policy_v1(repo_root=root):
         return False
     if not prove_governed_checkout_independent_credential_access_policy_v1(repo_root=root):
+        return False
+    if not prove_governed_real_keychain_access_or_credential_material_load_policy_v1(
+        repo_root=root
+    ):
         return False
     forensic = prove_external_effect_boundary_forensic_review_v1(repo_root=root)
     return forensic.ok is True

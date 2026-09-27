@@ -1292,6 +1292,34 @@
       ]
     },
     {
+      "id": "real_keychain_access_or_credential_material_load_policy",
+      "tier": "INTERMEDIATE",
+      "role": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; no signing/POST.",
+      "canonical_owner_ref": "real_keychain_access_or_credential_material_load_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_MATERIAL_LOAD_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
+        "docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/real_keychain_access_or_credential_material_load_policy_v1.py",
+        "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py",
+        "src/governance/real_keychain_access_or_credential_material_load_gate_binding_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+        "config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review",
       "tier": "INTERMEDIATE",
       "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
@@ -4336,13 +4364,25 @@
     {
       "id": "checkout_independent_credential_access_policy_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Checkout-independent credential access policy: governed admission on permit mint; REAL_SECRET_LOAD/Keychain/POST false; next REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_OWNER_GO.",
+      "statement": "Checkout-independent credential access policy: governed admission on permit mint; material load policy bound separately; POST/signing false.",
       "evidence_refs": [
         "docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md",
         "config/governance/checkout_independent_credential_access_policy_v1_record.json",
         "config/governance/checkout_independent_credential_access_owner_go_v1_decision.json",
         "config/governance/checkout_independent_credential_access_policy_v1_decision_v1.json",
         "tests/governance/test_checkout_independent_credential_access_policy_v1.py"
+      ]
+    },
+    {
+      "id": "real_keychain_access_or_credential_material_load_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; next K1 opaque signing handle Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+        "config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json",
+        "tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py"
       ]
     },
     {

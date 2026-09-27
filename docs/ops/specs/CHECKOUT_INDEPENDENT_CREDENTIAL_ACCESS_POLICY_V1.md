@@ -46,9 +46,10 @@ CREDENTIAL_ACCESS_POLICY => GOVERNED_CAPABILITY_ADMISSION (policy layer)
 CREDENTIAL_ACCESS_POLICY -/-> REAL_SECRET_LOAD / REAL_KEYCHAIN / MATERIAL_LOADED / POST / PERMIT_MINT_PERFORMED
 ```
 
-## Next Owner boundary
+## Next Owner boundary (superseded by material-load WP)
 
-**REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_OWNER_GO** — distinct from policy admission.
+Material load: `REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1`.  
+Next: **OWNER_GO_CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1**.
 
 Code: `src/governance/checkout_independent_credential_access_policy_v1.py`  
 Gate binding: `src/governance/checkout_independent_credential_access_gate_binding_v1.py`
