@@ -107,6 +107,10 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
+    # NAVIGATION_ONLY: CSIA source_v1.json frozen 9-row semantic topology closure (CL-001..CL-004);
+    # regenerated docs/governance/current_system_interaction_authority_map_v1/generated/* only;
+    # map_authority=NONE; no MOT SSOT change; no runtime authority.
     # atlas_entity_review: P1_MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_AUTHORITY_CONTRACTS_AND_SCHEMAS_V1 PR_6871
     # atlas_entity_review: MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1 PR_6870
     # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 navigation-only reference update.
@@ -620,6 +624,8 @@ entities:
       sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    # atlas_entity_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
+    # NAVIGATION_ONLY: CSIA regenerated authority_view symbol coupling only; no D03 capability semantic change.
     kind: CAPABILITY
     name: Market Intelligence Forecast/Calibration Offline Stack (Track D03)
     epistemic_class: CANONICAL_AUTHORITY

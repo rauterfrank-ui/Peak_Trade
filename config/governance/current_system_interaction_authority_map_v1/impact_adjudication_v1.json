@@ -1,33 +1,26 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "20e2a6483d2577a21cf27850d4f4ee6e54c3e346",
+  "base_sha": "6d8494752e5a0de81faf72f14f606a010943f42f",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/ontology/discovered_terms.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
-    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
+    "docs/system_atlas/relations/structural.yaml"
   ],
-  "changed_paths_sha256": "fdf769691c8f608207544cb9908a3a623bb52cbb4d603d554c73aae5e671b3da",
-  "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
-    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
-  ],
+  "changed_paths_sha256": "4b53a4372b85fd2458e37a508824a72fc1d9815c2226d56dcbf4841e4ccfd6e3",
+  "covered_candidate_paths": [],
   "evidence_refs": [
-    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
-    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6910: S6/S7 C1 cursor ownership seam — S7 durable persist owns floor; S6 advance no-op reconcile; map/atlas currency; no venue POST.",
+  "reason": "PR #6911: MAP_SEMANTIC_COVERAGE_CLOSURE frozen 9-row CSIA navigation closure (CL-001..CL-004); Atlas NAVIGATION_ONLY review coupling; map_authority=NONE; no runtime or enforcement change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
