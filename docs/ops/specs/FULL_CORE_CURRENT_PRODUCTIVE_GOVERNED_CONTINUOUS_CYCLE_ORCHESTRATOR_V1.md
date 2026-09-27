@@ -4,7 +4,7 @@ status: active
 scope: Full-Core CURRENT_PRODUCTIVE governed continuous-cycle sequencer offline bind; instantiates existing S5 five-token cycles; validation-only safety caps; no productive continuous run; no permit; no venue POST; STEP-29Q remains PLAN_ONLY
 capability: FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
-last_updated: 2026-09-17
+last_updated: 2026-09-27
 ---
 
 # Full Core Current Productive Governed Continuous Cycle Orchestrator V1
@@ -33,6 +33,15 @@ remains forbidden. Canonical policy does not set productive
 defaults and hard caps apply. This persist does not execute the
 continuous runtime. Offline tests require injected observation sources.
 Network GET and `execute_network=true` remain unauthorized.
+
+C1 cursor durable commits on the productive path are owned by S7
+(`compose_occupied_lane_mv2_dp_durable_cycle_v1` →
+`persist_occupied_lane_mv2_dp_decision_state_cursor_v1`). S6
+`_advance_persisted_c1_cursor_floor_v1` reconciles the sequencing floor only:
+when the persisted `venue_event_time` already equals the accepted C1 epoch it
+is a no-op; when S7 did not persist (stub/non-S7 T2 paths) S6 still performs
+the minimal monotonic bump. Duplicate or stale C1 inputs remain fail-closed at
+pre-S5 freshness gates.
 
 ```text
 PRIMARY_SEMANTIC_IDENTITY=governed_continuous_cycle_orchestrator_v1

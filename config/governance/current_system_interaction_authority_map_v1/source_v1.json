@@ -4251,6 +4251,16 @@
       ]
     },
     {
+      "id": "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6910: S7/MV2 durable occupied-lane C1 cursor persist owns the authoritative floor; S6 governed continuous orchestrator _advance_persisted_c1_cursor_floor_v1 reconciles with no-op when incoming venue_event_time equals persisted floor (eliminates STALE_OR_EQUAL_C1 after productive T2); stub-T2 sequencing bump unchanged; no threshold relaxation; no venue POST.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
+        "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
+      ]
+    },
+    {
       "id": "whole_core_fresh_trusted_q0_enter_live_v1",
       "epistemic_class": "PARTIAL",
       "statement": "Full-Core enter-live F-02 closed: one read-only USDC availEq GET per ENTER via treasury single-source handoff; numeric Q0 bound on enter-live path; not Live POST; parallel direct GET module not active on same chain.",

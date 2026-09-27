@@ -57,6 +57,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     bind_s6_governed_continuous_cycle_orchestrator_offline_v1,
     mint_continuous_run_id_v1,
     mint_s5_cycle_consume_instance_id_v1,
+    _advance_persisted_c1_cursor_floor_v1,
     run_current_productive_governed_continuous_cycle_run_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
@@ -98,6 +99,16 @@ from tests.ops.test_full_core_current_productive_governed_next_c1_trigger_and_ex
 )
 from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     _candles,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    cursor_last_accepted_c1_venue_event_time_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+    CURSOR_LINEAGE_ID,
+)
+from tests.ops.test_full_core_current_productive_scoped_one_shot_c1_observation_source_v1 import (
+    TRACKED_CURSOR,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -380,6 +391,47 @@ def test_second_cycle_reuse_of_consumed_instance_stops(
     assert result.reason_code == REASON_CONSUME_INSTANCE_REUSE
     assert s5_calls["n"] == 1
     _assert_zero_effect(result)
+
+
+def _seed_lane_cursor_store(tmp_path: Path, *, event_time: float = CURSOR_FLOOR) -> Path:
+    payload = json.loads(TRACKED_CURSOR.read_text(encoding="utf-8"))
+    payload["lineage_id"] = CURSOR_LINEAGE_ID
+    payload["venue_native_id"] = NATIVE_ID
+    payload["schema_name"] = "current_productive_sidestate_confirmation_cursor.v1"
+    payload["cap61_confirmation_state"]["observation_acceptance_state"][
+        "last_accepted_observation_identity"
+    ]["venue_event_time"] = event_time
+    store = tmp_path / "LANE_1"
+    store.mkdir(parents=True, exist_ok=True)
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return store
+
+
+def test_s6_cursor_advance_noop_when_s7_already_persisted_same_c1(tmp_path: Path) -> None:
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+
+
+def test_s6_cursor_advance_rejects_older_c1_after_s7_floor(tmp_path: Path) -> None:
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_B)
+    with pytest.raises(
+        CurrentProductiveGovernedContinuousCycleOrchestratorError,
+        match=REASON_STALE_OR_EQUAL_C1,
+    ):
+        _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+
+
+def test_s6_sequencing_reconciles_when_s7_already_committed_same_c1_floor(
+    tmp_path: Path,
+) -> None:
+    """Regression: pre-fix ``incoming == previous`` raised STALE_OR_EQUAL at cursor_advance."""
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_B)
+    loaded = json.loads((store / CURSOR_FILENAME).read_text(encoding="utf-8"))
+    assert cursor_last_accepted_c1_venue_event_time_v1(loaded) == C1_B
 
 
 def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
