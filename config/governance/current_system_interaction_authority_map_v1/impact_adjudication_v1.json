@@ -40,7 +40,7 @@
     "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "External Effect boundary forensic review Owner-GO; chain closure PRE_EXTERNAL to standing gate; continuous-run adjudication post-#6892; no external effect authorization.",
+  "reason": "External Effect boundary forensic review Owner-GO; chain closure PRE_EXTERNAL to standing gate; Atlas catalog tracks all material governance paths.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
