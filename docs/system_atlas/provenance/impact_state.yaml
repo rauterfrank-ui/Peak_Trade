@@ -2,25 +2,17 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-modified_by: T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR_V1
+modified_by: LANDSCAPE_V3_FRESH_BUILD_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6913: S7 pre-persist outgoing_cursor contract gate; structured T2 failure propagation;
-  navigation-only Atlas coupling; map_authority=NONE; no CSIA source change;
+  PR #6914: Landscape V3 fresh presentation + EEA public WS network connector inventory;
+  navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change;
   ENFORCEMENT_ONLY=true; POST_COUNT=0.
 changed_entities:
-  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
-  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
-  - CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-  - GATE:portfolio_capital_reservation_budget_v1
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-changed_relations:
-  - REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
-  - REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing
-  - REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff
-  - REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
+  - CAPABILITY:peak_trade_public_market_data_runtime_v1
+  - RUNTIME_COMPONENT:market_dashboard_landscape_v3_fresh_v1
+changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []

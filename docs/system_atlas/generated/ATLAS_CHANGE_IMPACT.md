@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,21 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
-| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
-| `GATE:portfolio_capital_reservation_budget_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `CAPABILITY:peak_trade_public_market_data_runtime_v1` |
+| `RUNTIME_COMPONENT:market_dashboard_landscape_v3_fresh_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
-| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
-| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -100,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6913: S7 pre-persist outgoing_cursor contract gate; structured T2 failure propagation; navigation-only Atlas coupling; map_authority=NONE; no CSIA source change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
+- PR #6914: Landscape V3 fresh presentation + EEA public WS network connector inventory; navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR_V1
+- modified_by=LANDSCAPE_V3_FRESH_BUILD_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
