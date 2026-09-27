@@ -7272,7 +7272,7 @@ entities:
       Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing,
       eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1.
       PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live.
-      ATLAS_AUTHORITY=NONE.
+      Baseline pin c93ea739 (post-#6901 merge currency). ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
     kind: CONTRACT
@@ -7293,7 +7293,7 @@ entities:
     notes: >-
       PRE_EXTERNAL typed FinalOrderEnvelopeV1 handoff to PR6900 one-shot POST join boundary;
       closes FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME; no POST;
-      POST_GO_CONSUMED=false. ATLAS_AUTHORITY=NONE.
+      POST_GO_CONSUMED=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT

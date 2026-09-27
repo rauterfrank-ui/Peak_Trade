@@ -165,3 +165,16 @@ def test_owner_go_mismatch_fail_closed(tmp_path: Path) -> None:
             store_root=tmp_path,
             k1_backend=_FakeKeychainBackend(),
         )
+
+
+def test_stale_parent_baseline_sha_mismatch_fail_closed(tmp_path: Path) -> None:
+    stale_parent = "04345330c0898ccf2682c88fd58c32f102a8001d"
+    assert stale_parent != EXPECTED_BASELINE_ORIGIN_MAIN_SHA
+    with pytest.raises(CurrentProductiveActualVenuePostError, match="BASELINE_SHA_MISMATCH"):
+        prove_pre_live_actual_venue_post_readiness_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=stale_parent,
+            envelope=_envelope(),
+            store_root=tmp_path,
+            k1_backend=_FakeKeychainBackend(),
+        )

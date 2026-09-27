@@ -159,6 +159,22 @@ def test_executable_closure_reaches_pre_live_boundary_without_post(tmp_path: Pat
     assert pre["OWNER_GO_CONSUMED"] == "false"
 
 
+def test_stale_parent_baseline_sha_mismatch_fail_closed() -> None:
+    stale_parent = "04345330c0898ccf2682c88fd58c32f102a8001d"
+    assert stale_parent != EXPECTED_BASELINE_ORIGIN_MAIN_SHA
+    closure = _executable_closure(envelope_present=True)
+    with pytest.raises(
+        FreshExecutableEnterFinalOrderEnvelopeRuntimeReachError,
+        match="BASELINE_SHA_MISMATCH",
+    ):
+        prove_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=stale_parent,
+            closure=closure,
+            store_root="/tmp/unused-reach-baseline-mismatch",
+        )
+
+
 def test_hold_closure_still_unavailable() -> None:
     closure = replace(
         _executable_closure(envelope_present=True),
