@@ -65,7 +65,11 @@ from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_
     _produced_g17_producer,
     _strong_uptrend_closes,
 )
+from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
+    write_cap21_productivity_root_for_inst_v1,
+)
 from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+    _TEST_INST,
     _bound,
     _origin_main_sha,
     _productive_transport,
@@ -120,6 +124,7 @@ def test_wp2_execute_transport_bound_wp1_pass_governed_cycle_hold_fail_closed_sa
     last_mark = float(path[-1])
     candles = _mv2_aligned_candles(last_ts_ms=int(1_700_000_120_000), mark_px=last_mark)
     g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
@@ -129,6 +134,7 @@ def test_wp2_execute_transport_bound_wp1_pass_governed_cycle_hold_fail_closed_sa
         execute_network=False,
         evidence_root=tmp_path / "evidence",
         candles_payload=candles,
+        cap24_productivity_root=cap24_root,
         market_kwargs={
             "cycle_id_prefix": "wp2-compose-hold",
             "mark_px": last_mark,
@@ -166,6 +172,7 @@ def test_wp2_untrusted_29p_avail_zero_blocks_wp1_admissibility(tmp_path: Path) -
         head=origin_sha,
     )
     bound = _bound()
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     transport = _productive_transport(avail_eq="0")
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
@@ -177,6 +184,7 @@ def test_wp2_untrusted_29p_avail_zero_blocks_wp1_admissibility(tmp_path: Path) -
         evidence_root=tmp_path / "evidence",
         candles_payload=_mv2_aligned_candles(last_ts_ms=1_700_000_120_000, mark_px=100.0),
         execution_integrity_backend=integrity,
+        cap24_productivity_root=cap24_root,
     )
     assert result.wp1_status == "FAIL"
     assert result.admissibility_29p_status == "false"
@@ -256,6 +264,7 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
         enter_closes=enter_closes,
         last_event_ts_unix=event_ts,
     )
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
@@ -265,6 +274,7 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
         execute_network=False,
         evidence_root=tmp_path / "evidence",
         candles_payload=candles,
+        cap24_productivity_root=cap24_root,
         market_kwargs={
             "cycle_id_prefix": "wp2-pre-ext-enter",
             "mark_px": mark_px,

@@ -46,10 +46,21 @@ from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 imp
     _identity_payloads,
     _transport,
 )
+from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
+    write_cap21_productivity_root_for_inst_v1,
+)
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
     _lane_g17,
     _market_kwargs,
     _mv2_aligned_candles,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    FreshPretradeGetItemSpecV1,
+    build_required_get_endpoint_v1,
+    collect_fresh_pretrade_runtime_get_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+    _resolve_public_inst_type_for_bound_instrument_v1,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -66,6 +77,22 @@ class ProductiveClassFreshGetTransportV1(CountingInjectedFreshGetTransportV1):
         super().__init__(*args, **kwargs)
         self.transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
         self.venue_live_contact = True
+
+
+class EndpointRecordingProductiveFreshGetTransportV1(ProductiveClassFreshGetTransportV1):
+    """Records requested GET endpoints for instType binding proofs."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.requested_endpoints: list[str] = []
+
+    def get(self, *, endpoint, auth_required, pretrade_decision_id):
+        self.requested_endpoints.append(str(endpoint))
+        return super().get(
+            endpoint=endpoint,
+            auth_required=auth_required,
+            pretrade_decision_id=pretrade_decision_id,
+        )
 
 
 def _bound() -> BoundInstrumentV1:
@@ -158,6 +185,81 @@ def test_handoff_builds_productive_carrier_from_common_epoch() -> None:
     assert injected.raw_acct_lv == "2"
 
 
+def test_wp1_resolves_swap_inst_type_from_cap21_lineage(tmp_path: Path) -> None:
+    prod = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    bound = _bound()
+    resolved = _resolve_public_inst_type_for_bound_instrument_v1(
+        bound=bound,
+        productivity_root=prod,
+        cap21_public_inst_type=None,
+    )
+    assert resolved == "SWAP"
+    spec = FreshPretradeGetItemSpecV1(
+        "INSTRUMENT_STATE",
+        ENDPOINT_PUBLIC_INSTRUMENTS,
+        False,
+        "instruments",
+    )
+    endpoint = build_required_get_endpoint_v1(
+        spec,
+        instrument_id=bound.venue_native_id,
+        td_mode="cross",
+        limit_px="",
+        inst_type=resolved,
+    )
+    assert "instType=SWAP" in endpoint
+    assert f"instId={_TEST_INST}" in endpoint
+
+
+def test_wp1_futures_inst_type_mismatch_fail_closed_venue_code_51001() -> None:
+    spec = FreshPretradeGetItemSpecV1(
+        "INSTRUMENT_STATE",
+        ENDPOINT_PUBLIC_INSTRUMENTS,
+        False,
+        "instruments",
+    )
+    requested = build_required_get_endpoint_v1(
+        spec,
+        instrument_id=_TEST_INST,
+        td_mode="cross",
+        limit_px="",
+        inst_type="FUTURES",
+    )
+    payloads = dict(_identity_payloads(instrument_id=_TEST_INST))
+    payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = {
+        "code": "51001",
+        "msg": "Instrument ID doesn't exist.",
+        "data": [],
+    }
+    transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
+    evidence = collect_fresh_pretrade_runtime_get_v1(
+        pretrade_decision_id=_EPOCH,
+        instrument_id=_TEST_INST,
+        td_mode="cross",
+        inst_type="FUTURES",
+        transport=transport,
+        require_collection=True,
+    )
+    assert evidence.evidence_status == "MALFORMED"
+    assert "INSTRUMENT_STATE_VENUE_CODE_NOT_EXACT_ZERO" in evidence.reason_codes
+    assert "instType=FUTURES" in requested
+    assert requested.endswith(f"instId={_TEST_INST}")
+
+
+def test_wp1_swap_inst_type_trusted_present_on_code_zero_instruments_fixture() -> None:
+    transport = _productive_transport()
+    evidence = collect_fresh_pretrade_runtime_get_v1(
+        pretrade_decision_id=_EPOCH,
+        instrument_id=_TEST_INST,
+        td_mode="cross",
+        inst_type="SWAP",
+        transport=transport,
+        require_collection=True,
+    )
+    assert evidence.evidence_status == "TRUSTED_PRESENT"
+    assert "INSTRUMENT_STATE_TRUSTED_PRESENT" in evidence.reason_codes
+
+
 def test_execute_wp1_and_wp2_terminates_without_post(tmp_path: Path) -> None:
     origin_sha = _origin_main_sha()
     integrity = MockCurrentProductive29PIntegrityBackendV1(
@@ -165,6 +267,7 @@ def test_execute_wp1_and_wp2_terminates_without_post(tmp_path: Path) -> None:
         head=origin_sha,
     )
     bound = _bound()
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     transport = _productive_transport()
     pairs_lane_root = tmp_path / "lanes"
     candles = _mv2_aligned_candles(last_ts_ms=1_700_000_000_000, mark_px=100.0)
@@ -183,6 +286,7 @@ def test_execute_wp1_and_wp2_terminates_without_post(tmp_path: Path) -> None:
         market_kwargs=mk,
         g17_typed_vol_producers=_lane_g17({"LANE_1": (slot, bound)}),
         execution_integrity_backend=integrity,
+        cap24_productivity_root=cap24_root,
     )
     assert result.wp1_status == "PASS"
     assert result.post_count == 0
@@ -249,3 +353,33 @@ def test_owner_go_mismatch_raises() -> None:
             evidence_root=Path("/tmp/unused-ev"),
             candles_payload={"code": "0", "data": []},
         )
+
+
+def test_pre_external_wp1_compose_path_uses_cap21_swap_inst_type(tmp_path: Path) -> None:
+    """Mirrors PRE_EXTERNAL WP1: resolve from Cap-21 lineage then compose with inst_type."""
+
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    bound = _bound()
+    resolved = _resolve_public_inst_type_for_bound_instrument_v1(
+        bound=bound,
+        productivity_root=cap24_root,
+        cap21_public_inst_type=None,
+    )
+    payloads = dict(_identity_payloads(instrument_id=_TEST_INST))
+    payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = {
+        "code": "0",
+        "data": [_productive_instruments_row_for_enter_metadata_v1()],
+    }
+    transport = EndpointRecordingProductiveFreshGetTransportV1(payloads=payloads)
+    handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+        decision_epoch=_EPOCH,
+        bound_instrument=bound,
+        fresh_get_transport=transport,
+        inst_type=resolved,
+    )
+    assert handoff.get_status == "TRUSTED_PRESENT"
+    instruments_calls = [
+        ep for ep in transport.requested_endpoints if ep.startswith(ENDPOINT_PUBLIC_INSTRUMENTS)
+    ]
+    assert instruments_calls
+    assert any("instType=SWAP" in ep for ep in instruments_calls)

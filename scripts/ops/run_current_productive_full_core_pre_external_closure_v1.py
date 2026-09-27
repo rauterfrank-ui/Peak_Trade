@@ -66,6 +66,7 @@ def _main() -> int:
         vault_file=args.vault_file,
         evidence_root=args.evidence_root,
         execution_integrity_backend=backend,
+        cap24_productivity_root=prod,
     )
     out = {
         "store_root": result.store_root,
