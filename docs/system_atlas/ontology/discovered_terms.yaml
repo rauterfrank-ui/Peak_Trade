@@ -47,6 +47,8 @@ terms:
     do_not_confuse_with: "Program Definition of Done; pytest"
 
   - id: TERM:map_of_truth
+    # atlas_term_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
+    # NAVIGATION_ONLY: CSIA map closure regenerated views; no TERM semantic change; ATLAS_AUTHORITY=NONE.
     # atlas_term_review: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1 PR_6847
     # atlas_term_review: B10_ROBUSTNESS_AND_STRESS_V1 navigation-only reference update.
     # atlas_term_review: REPO_CONVERGENCE_FGC01_DOCS_PRODUCT_EVIDENCE_V1

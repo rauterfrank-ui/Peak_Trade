@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,14 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `TERM:map_of_truth` |
+| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6910: S7 durable C1 cursor persist owns floor; S6 sequencing advance no-op reconciles equal venue_event_time after productive T2 (fixes STALE_OR_EQUAL_C1:cursor_advance); stub-T2 bump unchanged; no threshold relaxation; no venue POST.
+- PR #6911: CSIA CURRENT semantic topology coverage closure (frozen 9-row spec CL-001..CL-004); navigation/index representation only; map_authority=NONE; no runtime, enforcement, or MOT SSOT change.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=S6_S7_C1_CURSOR_OWNERSHIP_SEAM_V1
+- modified_by=MAP_SEMANTIC_COVERAGE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

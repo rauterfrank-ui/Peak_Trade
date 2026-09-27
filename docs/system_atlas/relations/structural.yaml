@@ -2073,6 +2073,8 @@ relations:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1
+    # atlas_relation_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
+    # NAVIGATION_ONLY: CSIA map regeneration symbol coupling; relation semantics unchanged.
     source: NAVIGATION_INDEX:map_of_truth
     type: NAVIGATES_TO
     target: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1

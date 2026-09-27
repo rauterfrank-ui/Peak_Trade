@@ -11,7 +11,9 @@ flowchart LR
   runtime_binding_cap24 -->|binding_cap24_to_operator_profile_b11| operator_profile_explainability_b11
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
   c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
+  cap21_cap23_productive_persistence_v1 -->|cap21_cap23_persist_to_cap24_productivity_carrier| cap24_productivity_state_carrier_v1
   execution_external_effect -->|dashboard_read| presentation_dashboard
+  eea_universe_inventory_acquisition_v1 -->|eea_acquisition_to_cap21_cap23_persist| cap21_cap23_productive_persistence_v1
   treasury_29p -->|equity_value_unbound| capital_risk_sizing
   f1_m9_productive_runtime_threshold_consumer_wiring -->|f1_m9_canonical_durable_bootstrap_to_master_v2_seam| mv2_double_play
   full_autonomy_n5 -->|fa_compose_cap23_produce_join| selection_cap23
@@ -19,6 +21,7 @@ flowchart LR
   full_autonomy_n5 -->|fa_compose_governed_cycle_n1| governed_cycle
   full_autonomy_n5 -->|fa_compose_mv2_dp_handoff_join| mv2_double_play
   full_autonomy_n5 -->|fa_compose_portfolio_budget| portfolio_reservation
+  full_autonomy_n5 -->|fa_n5_orchestrator_to_lane_persistence| n5_durable_lane_assignment_persistence_v1
   future_profile_snapshot_b07 -->|future_profile_b07_to_operator_profile_b11| operator_profile_explainability_b11
   g17_typed_vol_cmc_bind -->|g17_bind_into_mv2_cycle| mv2_double_play
   g2_runtime_learning_optimization_input_binding -->|g2_binding_to_canonical_optimization_learning_input| optimization_universe
@@ -75,6 +78,7 @@ flowchart LR
   selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
   capital_risk_sizing -->|sizing_to_intent| order_intent
+  ssf_cap72_host_live_execution_port_join_v1 -->|ssf_cap72_host_binding_to_live_execution_port| host_join_send_adapter
   selection_cap23 -->|step29m_consumes_selection| step29m
   treasury_29p -->|treasury_to_admission| capital_risk_sizing
   universe_cap21 -->|universe_to_ranking| ranking_cap22
@@ -174,6 +178,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`
 
+## cap21_cap23_persist_to_cap24_productivity_carrier
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Cap-2.3 decision authority unchanged; orchestrated snapshots published/read from runtime/current_productive/cap24_selection_state
+- producer=run_cap21_to_cap23_persist_productive_v1
+- consumer=cap24_productivity_state_carrier_v1
+- authority_effect=NONE
+- decision_effect=STATE_CARRIER_PUBLISH_READ_ONLY_FOR_PRODUCTIVE_CHAIN
+- direct_or_indirect=INDIRECT
+- identity_binding=CAP23_SELECTION_AUTHORITY_UNCHANGED
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py
+- provenance_binding=NO_SECOND_SELECTION_OWNER
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py`
+
 ## dashboard_read
 
 - lifecycle=PROVEN_CURRENT
@@ -191,6 +213,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`
+
+## eea_acquisition_to_cap21_cap23_persist
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=acquire_eea_universe_inventory_v1 → EeaUniverseAcquisitionResultV1 injected into run_cap21_to_cap23_persist_productive_v1; Cap-2.1 NO-NETWORK preserved
+- producer=acquire_eea_universe_inventory_v1
+- consumer=run_cap21_to_cap23_persist_productive_v1
+- authority_effect=NONE
+- decision_effect=INJECTED_PAYLOAD_HANDOFF_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=ACQUISITION_PROVENANCE
+- temporal_binding=SOURCE_EVENT_TIME
+- version_binding=src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
+- provenance_binding=CAP21_NO_NETWORK_INVARIANT
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py`
 
 ## equity_value_unbound
 
@@ -268,7 +308,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=CONSTRAINT_FLOW
-- contract_or_payload=invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; terminal PRE_EXTERNAL or HOLD_CLOSED
+- contract_or_payload=invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; T2/S7 per-lane dispatch (T2_S7_USED; non-V5 EG); terminal PRE_EXTERNAL or HOLD_CLOSED
 - producer=compose_occupied_lane_n1_host_join_readiness_v1
 - consumer=run_current_productive_governed_cycle_v1
 - authority_effect=NONE
@@ -280,7 +320,7 @@ flowchart LR
 - provenance_binding=AUTONOMY_CAN_POST_FALSE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`
+- evidence=`src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py`
 
 ## fa_compose_mv2_dp_handoff_join
 
@@ -317,6 +357,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`
+
+## fa_n5_orchestrator_to_lane_persistence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=consume_recovered_isolated_lane_topology_v1 → persist_durable_lane_assignment_v1 (recovery re-entry included)
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=persist_durable_lane_assignment_v1
+- authority_effect=NONE
+- decision_effect=LANE_CHECKPOINT_PERSIST_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=SINGLE_WRITER_LOCK
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+- provenance_binding=PRODUCTIVE_MF_AUTHORIZATION_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py`
 
 ## future_profile_b07_to_operator_profile_b11
 
@@ -1325,6 +1383,24 @@ flowchart LR
 - promotion_required=TRUE
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `src/governance/capital_risk_sizing_v1.py`
+
+## ssf_cap72_host_binding_to_live_execution_port
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=HostActivationBindingV1 → LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1; SSF Full-Core only; no POST/wire
+- producer=join_cap72_host_to_live_execution_port_v1
+- consumer=LiveExecutionPortV1
+- authority_effect=NONE
+- decision_effect=HOST_JOIN_NOT_EXECUTION_ELIGIBLE
+- direct_or_indirect=DIRECT
+- identity_binding=HOST_JOIN_OWNER=stateful_no_order_host_join_v1
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
+- provenance_binding=SSF_NOT_N5_LANE_LOCAL_ACTIVATION
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py`, `src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py`
 
 ## step29m_consumes_selection
 

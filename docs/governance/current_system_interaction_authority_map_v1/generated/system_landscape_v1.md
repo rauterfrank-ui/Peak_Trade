@@ -10,8 +10,10 @@ flowchart LR
   bounded_runtime_primary_evidence["bounded_runtime_primary_evidence PROVEN_CURRENT"]
   bull_bear_sidestate["bull_bear_sidestate PROVEN_CURRENT"]
   c1_confirmation["c1_confirmation PROVEN_CURRENT"]
+  cap21_cap23_productive_persistence_v1["cap21_cap23_productive_persistence_v1 PROVEN_CURRENT"]
   cap22_research_backtest_live_parity_b09["cap22_research_backtest_live_parity_b09 PROVEN_CURRENT"]
   cap22_robustness_and_stress_b10["cap22_robustness_and_stress_b10 PROVEN_CURRENT"]
+  cap24_productivity_state_carrier_v1["cap24_productivity_state_carrier_v1 PROVEN_CURRENT"]
   capital_risk_sizing["capital_risk_sizing PARTIAL"]
   checkout_independent_credential_access_policy["checkout_independent_credential_access_policy PARTIAL"]
   current_continuous_run_policy["current_continuous_run_policy PARTIAL"]
@@ -19,6 +21,7 @@ flowchart LR
   current_productive_k1_opaque_signing_handle_pre_post_policy["current_productive_k1_opaque_signing_handle_pre_post_policy PARTIAL"]
   double_play_capital_slot["double_play_capital_slot UNKNOWN"]
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
+  eea_universe_inventory_acquisition_v1["eea_universe_inventory_acquisition_v1 PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
   execution_external_effect["execution_external_effect CONFLICTING"]
   external_effect_authorization_policy["external_effect_authorization_policy PARTIAL"]
@@ -46,6 +49,7 @@ flowchart LR
   market_intelligence_forecast_calibration_offline_stack_d03["market_intelligence_forecast_calibration_offline_stack_d03 PARTIAL"]
   meta_learning["meta_learning RESEARCH_ONLY"]
   mv2_double_play["mv2_double_play PARTIAL"]
+  n5_durable_lane_assignment_persistence_v1["n5_durable_lane_assignment_persistence_v1 PROVEN_CURRENT"]
   okx_eea_private_account_state_runtime_wp_b["okx_eea_private_account_state_runtime_wp_b PROVEN_CURRENT"]
   operator_profile_explainability_b11["operator_profile_explainability_b11 PROVEN_CURRENT"]
   optimization_universe["optimization_universe RESEARCH_ONLY"]
@@ -65,6 +69,7 @@ flowchart LR
   runtime_binding_cap24["runtime_binding_cap24 PROVEN_CURRENT"]
   safety["safety PARTIAL"]
   selection_cap23["selection_cap23 PROVEN_CURRENT"]
+  ssf_cap72_host_live_execution_port_join_v1["ssf_cap72_host_live_execution_port_join_v1 PROVEN_CURRENT"]
   standing_external_effect_lift_policy["standing_external_effect_lift_policy PARTIAL"]
   step29m["step29m PROVEN_CURRENT"]
   survival_suitability_composition["survival_suitability_composition PARTIAL"]
@@ -76,7 +81,9 @@ flowchart LR
   runtime_binding_cap24 --> operator_profile_explainability_b11
   runtime_binding_cap24 --> mv2_double_play
   c1_confirmation --> governed_cycle
+  cap21_cap23_productive_persistence_v1 --> cap24_productivity_state_carrier_v1
   execution_external_effect --> presentation_dashboard
+  eea_universe_inventory_acquisition_v1 --> cap21_cap23_productive_persistence_v1
   treasury_29p --> capital_risk_sizing
   f1_m9_productive_runtime_threshold_consumer_wiring --> mv2_double_play
   full_autonomy_n5 --> selection_cap23
@@ -84,6 +91,7 @@ flowchart LR
   full_autonomy_n5 --> governed_cycle
   full_autonomy_n5 --> mv2_double_play
   full_autonomy_n5 --> portfolio_reservation
+  full_autonomy_n5 --> n5_durable_lane_assignment_persistence_v1
   future_profile_snapshot_b07 --> operator_profile_explainability_b11
   g17_typed_vol_cmc_bind --> mv2_double_play
   g2_runtime_learning_optimization_input_binding --> optimization_universe
@@ -140,6 +148,7 @@ flowchart LR
   selection_cap23 --> future_profile_snapshot_b07
   selection_cap23 --> runtime_binding_cap24
   capital_risk_sizing --> order_intent
+  ssf_cap72_host_live_execution_port_join_v1 --> host_join_send_adapter
   selection_cap23 --> step29m
   treasury_29p --> capital_risk_sizing
   universe_cap21 --> ranking_cap22
@@ -155,8 +164,10 @@ flowchart LR
 | bounded_runtime_primary_evidence | INTERMEDIATE | PROVEN_CURRENT | NONE | scripts.ops.primary_evidence_retention_v0 | `scripts/ops/primary_evidence_retention_v0.py`, `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` |
 | bull_bear_sidestate | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | trading.master_v2.double_play_state | `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py`, `src/trading/master_v2/double_play_state.py` |
 | c1_confirmation | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.stateful_confirmation_and_c1_productive_binding_v1 | `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
+| cap21_cap23_productive_persistence_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 | `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py`, `src/ops/single_selected_future_policy_v1/producer_v1.py` |
 | cap22_research_backtest_live_parity_b09 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_research_backtest_live_parity_v1 | `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `tests/ops/test_peak_trade_research_backtest_live_parity_v1.py`, `src/ops/peak_trade_research_backtest_live_parity_v1/parity_v1.py` |
 | cap22_robustness_and_stress_b10 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_robustness_and_stress_v1 | `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `tests/ops/test_peak_trade_robustness_and_stress_v1.py`, `src/ops/peak_trade_robustness_and_stress_v1/robustness_v1.py` |
+| cap24_productivity_state_carrier_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.single_selected_future_policy_v1 | `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py`, `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md` |
 | capital_risk_sizing | FIRST_CLASS | PARTIAL | PARTIAL | src.governance.capital_risk_sizing_v1 (mv2_governance_intent_bound quantity algebra only) | `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`, `config/governance/risk_sizing_owner_inventory_ssot_v1.json`, `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `src/governance/capital_risk_sizing_v1.py` |
 | checkout_independent_credential_access_policy | INTERMEDIATE | PARTIAL | PARTIAL | checkout_independent_credential_access_policy_v1 | `tests/governance/test_checkout_independent_credential_access_policy_v1.py`, `config/governance/checkout_independent_credential_access_policy_v1_record.json`, `config/governance/checkout_independent_credential_access_owner_go_v1_decision.json`, `config/governance/checkout_independent_credential_access_policy_v1_decision_v1.json` |
 | current_continuous_run_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_continuous_run_policy_v1 | `tests/governance/test_current_continuous_run_policy_v1.py`, `config/governance/current_continuous_run_policy_v1_record.json`, `config/governance/current_continuous_run_policy_owner_go_v1_decision.json` |
@@ -164,6 +175,7 @@ flowchart LR
 | current_productive_k1_opaque_signing_handle_pre_post_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_productive_k1_opaque_signing_handle_pre_post_policy_v1 | `tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json` |
 | double_play_capital_slot | INTERMEDIATE | UNKNOWN | UNKNOWN | NONE | `src/trading/master_v2/double_play_capital_slot.py` |
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
+| eea_universe_inventory_acquisition_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.current_productive_eea_universe_inventory_acquisition_v1 | `src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py`, `tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |
 | execution_external_effect | FIRST_CLASS | CONFLICTING | CONFLICTING | full_core_live_path_composition_root_v1 | `src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | external_effect_authorization_policy | INTERMEDIATE | PARTIAL | PARTIAL | external_effect_authorization_policy_v1 | `tests/governance/test_external_effect_authorization_policy_v1.py`, `config/governance/external_effect_authorization_policy_v1_record.json`, `config/governance/external_effect_authorization_policy_owner_go_v1_decision.json`, `config/governance/external_effect_authorization_policy_v1_decision_v1.json` |
@@ -191,6 +203,7 @@ flowchart LR
 | market_intelligence_forecast_calibration_offline_stack_d03 | INTERMEDIATE | PARTIAL | NONE | learning.market_intelligence_forecast_calibration_offline_stack_v1 | `tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py`, `tests/learning/test_market_context_v1.py`, `tests/learning/test_market_context_existing_fact_materialization_v1.py`, `tests/learning/test_market_context_phase_19_orthogonal_materialization_v1.py`, `tests/learning/test_market_context_realized_behavior_join_v1.py`, `tests/learning/test_loop_a_conditioned_learning_evidence_v1.py`, `docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md`, `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_17_NORMATIVE_NON_PRICE_CMC_CONTRACT_NORMATIVE_V1.md`, `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_18_EXISTING_FACT_MARKET_CONTEXT_MATERIALIZATION_NORMATIVE_V1.md`, `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_19_ORTHOGONAL_CONTEXT_NORMATIVE_V1.md`, `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_20_BEHAVIOR_JOIN_NORMATIVE_V1.md`, `docs/ops/specs/UNIFIED_BLUEPRINT_PHASE_21_LEARNING_INTEGRATION_NORMATIVE_V1.md`, `config/governance/normative_non_price_cmc_contract_owner_decision_v1.json`, `config/governance/unified_blueprint_phase_18_existing_fact_market_context_materialization_v1.json`, `config/governance/unified_blueprint_phase_19_orthogonal_context_v1.json`, `config/governance/unified_blueprint_phase_20_behavior_join_v1.json`, `config/governance/unified_blueprint_phase_21_learning_integration_v1.json` |
 | meta_learning | FIRST_CLASS | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_meta_learning_v1 | `src/experiments/canonical_meta_learning_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | mv2_double_play | FIRST_CLASS | PARTIAL | CANONICAL_AUTHORITY | run_current_productive_master_v2_runtime_cycle_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py`, `tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py`, `src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md`, `docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P1_AUTHORITY_CONTRACTS_V1.md`, `docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json`, `docs/evidence/master_v2_double_play_evidence_input_plane_p1/p1_proof_bundle_v1.json`, `docs/evidence/master_v2_double_play_evidence_input_plane_p2/p2_proof_bundle_v1.json`, `docs/evidence/master_v2_double_play_evidence_input_plane_p3/p3_proof_bundle_v1.json`, `docs/evidence/master_v2_double_play_evidence_input_plane_p4/p4_proof_bundle_v1.json`, `docs/evidence/master_v2_double_play_evidence_input_plane_p5/p5_proof_bundle_v1.json`, `src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1/__init__.py`, `src/governance/master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1/__init__.py`, `src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/__init__.py`, `src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/__init__.py`, `src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p1_authority_contracts_and_schemas_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py`, `tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py` |
+| n5_durable_lane_assignment_persistence_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.current_mf_n5_durable_lane_assignment_persistence_v1 | `src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/single_writer_v1.py`, `src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py` |
 | okx_eea_private_account_state_runtime_wp_b | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.okx_eea_private_account_state_runtime_v1 | `tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
 | operator_profile_explainability_b11 | INTERMEDIATE | PROVEN_CURRENT | NONE | ops.peak_trade_operator_profile_explainability_v1 | `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json`, `tests/ops/test_peak_trade_operator_profile_explainability_v1.py`, `src/ops/peak_trade_operator_profile_explainability_v1/operator_view_v1.py` |
 | optimization_universe | FIRST_CLASS | RESEARCH_ONLY | NONE | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
@@ -210,6 +223,7 @@ flowchart LR
 | runtime_binding_cap24 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_runtime_binding_v1 | `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/models_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py` |
 | safety | FIRST_CLASS | PARTIAL | PARTIAL | UNCLOSED_SEE_OPEN_RECORD:safety_owner_unclosed | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | selection_cap23 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_policy_v1 | `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_policy_v1/constants_v1.py`, `src/ops/single_selected_future_policy_v1/models_v1.py`, `src/ops/single_selected_future_policy_v1/policy_v1.py`, `src/ops/single_selected_future_policy_v1/producer_v1.py`, `src/ops/single_selected_future_policy_v1/selection_v1.py`, `tests/ops/test_single_selected_future_policy_v1.py`, `docs/evidence/capability_2_3_single_selected_future_policy_v1/SUMMARY.json` |
+| ssf_cap72_host_live_execution_port_join_v1 | INTERMEDIATE | PROVEN_CURRENT | NONE | stateful_no_order_host_join_v1 | `src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py`, `tests/ops/test_full_core_current_productive_cap72_host_join_to_live_execution_port_v1.py` |
 | standing_external_effect_lift_policy | INTERMEDIATE | PARTIAL | PARTIAL | standing_external_effect_lift_policy_v1 | `tests/governance/test_standing_external_effect_lift_policy_v1.py`, `config/governance/standing_external_effect_lift_policy_v1_record.json`, `config/governance/standing_external_effect_lift_owner_go_v1_decision.json`, `config/governance/standing_external_effect_lift_policy_v1_decision_v1.json` |
 | step29m | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | src.backtest.step29m_current_single_selected_future_dynamic_binding_v1 | `src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | survival_suitability_composition | INTERMEDIATE | PARTIAL | PARTIAL | trading.master_v2.post_confirmation_survival_suitability_composition_binding_v1 | `src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py`, `src/trading/master_v2/double_play_composition_matrix_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
