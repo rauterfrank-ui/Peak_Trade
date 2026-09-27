@@ -10592,6 +10592,10 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6905 ENDGAME_CURRENT_PRODUCTIVE_29P_CAP24_RANKING_POLICY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
+    # CAP22_RANKING_POLICY=PEAK_TRADE_RANKING_MATRIX_POLICY_V1; CAP21_TO_CAP23_B05_FEATURE_SYNTHESIS=true;
+    # REPO_ROOT_OPS_RUNNER_BOOTSTRAP=true; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0;
+    # owner=current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py|current_productive_cap21_to_cap23_productive_persistence_v1.py.
     # PR_6828 WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # governance ratification Q0/Q1/Q6/Q8; F-02 enter-live fresh trusted Q0 closed via Treasury C08 path;
     # C2 UNRESOLVED unchanged; TRADING_SEMANTICS_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false.
