@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6919_MECHANICAL_TRUTH_HYGIENE_V1: navigation-only census content_origin vs current_reviewed_at_sha split for 12 historical domain payloads; stale_defect_if_head_differs=false; CSIA partial reclassifications; bounded kernel completeness witness; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- FINAL_CURRENT_AUTHORITY_CLOSURE_V1: navigation-only Atlas/census review rebind after Owner ratification of productive CRS four-slot equity bind and layered safety authorities; CSIA closure of limit_names_vs_equity_collapse, safety_owner_unclosed, and kill_switch_full_core_safety_owner; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; no Atlas legacy eradication.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=POST_6919_MECHANICAL_TRUTH_HYGIENE_V1
+- modified_by=FINAL_CURRENT_AUTHORITY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
