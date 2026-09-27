@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6922_REPRESENTATION_CLOSURE_V1 (#6923): navigation-only review-SHA rebind and RUNBOOK:canonical_master_runbook catalog review stamp; prior legacy eradication fixpoint retained; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1 (#6924): navigation-only review-SHA rebind; CSIA mechanical open-record closures; execution_external_effect representation fix; Atlas non-blocking forensic/XPERP census markers; RUNBOOK:canonical_master_runbook catalog review stamp; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6922_REPRESENTATION_CLOSURE_V1
+- modified_by=POST_6923_AUTHORITY_OPEN_EVIDENCE_CLOSURE_CENSUS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

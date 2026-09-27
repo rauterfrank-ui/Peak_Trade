@@ -9,24 +9,27 @@
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "4ddad9a1cf3561c882dbe44c06ee29e6479282e99cafb98ec0bc749075290b4c",
+  "changed_paths_sha256": "f861c606daa82c586911243c997e1a5440e50882f519fff415ea6bb13642b4d9",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-    "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "tests/ops/test_current_system_map_finalization_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "POST_6923 authority/open-evidence closure census v1: mechanical CSIA record closures, execution_external_effect representation fix, Cap2 vs Full-Core LIVE layered-token closure, Atlas non-blocking forensic/XPERP markers; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
+  "reason": "POST_6923 authority/open-evidence closure census v1: mechanical CSIA record closures, execution_external_effect representation fix, Cap2 vs Full-Core LIVE layered-token closure, Atlas non-blocking forensic/XPERP markers and RUNBOOK catalog review; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
