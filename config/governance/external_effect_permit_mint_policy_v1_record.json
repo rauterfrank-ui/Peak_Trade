@@ -1,0 +1,27 @@
+{
+  "schema_version": "external_effect_permit_mint_policy/v1",
+  "policy_id": "EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1",
+  "policy_owner": "governance.external_effect_permit_mint_policy_v1",
+  "external_effect_permit_mint_authorized": true,
+  "owner_go": true,
+  "baseline_origin_main_sha": "03727c3cd09504beeedf4839b40dab3a26234331",
+  "mint_envelope": "GOVERNED_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_PERMIT_MINT",
+  "target_permit_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py",
+  "target_permit_durable_consume_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py",
+  "target_permit_mint_gate_binding_module": "src/governance/external_effect_permit_mint_gate_binding_v1.py",
+  "bound_lineage": {
+    "standing_external_effect_lift_policy_record_config": "config/governance/standing_external_effect_lift_policy_v1_record.json",
+    "standing_external_effect_lift_policy_record_digest": "6a8c32c5ed040367c74f8f204c27a1ead7408c94915776d148bdcf22aa45d7cc"
+  },
+  "explicit_non_implications": {
+    "permit_mint_performed": false,
+    "credential_access_authorized": false,
+    "credential_access_performed": false,
+    "post_allowed": false,
+    "real_venue_post_allowed": false,
+    "autonomy_can_mint_permit": false,
+    "autonomy_can_post": false
+  },
+  "semantic_definition": "Governed envelope-bound single-use permit mint policy admission on #6895 standing lift; runtime mint and credential/POST remain fail-closed.",
+  "policy_record_digest": "1d152187de0cb587cc3a35628aee48c79552926adb8aeaae827ddfac1e064ed0"
+}

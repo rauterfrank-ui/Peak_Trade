@@ -124,5 +124,5 @@ def test_invoke_external_effect_sink_raises_fail_closed() -> None:
 
 def test_canonical_boundary_constant() -> None:
     assert CANONICAL_EXTERNAL_EFFECT_BOUNDARY == (
-        "STANDING_EXTERNAL_EFFECT_GATE_GOVERNED_LIFT_BOUND_ENVELOPE_PERMIT_FAIL_CLOSED"
+        "STANDING_LIFT_GOVERNED_PERMIT_MINT_POLICY_BOUND_CREDENTIAL_POST_FAIL_CLOSED"
     )

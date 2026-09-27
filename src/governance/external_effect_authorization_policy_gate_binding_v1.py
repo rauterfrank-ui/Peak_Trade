@@ -14,6 +14,9 @@ from src.governance.external_effect_authorization_policy_v1 import (
     standing_external_effect_authorization_policy_authorized_v1,
     validate_external_effect_authorization_policy_record_v1,
 )
+from src.governance.external_effect_permit_mint_policy_v1 import (
+    governed_permit_mint_authorized_v1,
+)
 from src.governance.standing_external_effect_lift_policy_v1 import (
     governed_standing_external_effect_authorized_v1,
 )
@@ -67,6 +70,7 @@ def evaluate_policy_bound_external_effect_gate_v1(
     gate = admission.gate_decision or evaluate_external_effect_v1()
     granted = admission.policy_admission_granted is True
     lift_standing = governed_standing_external_effect_authorized_v1(repo_root=root)
+    permit_mint = governed_permit_mint_authorized_v1(repo_root=root)
     return PolicyBoundExternalEffectGateResultV1(
         policy_admission_granted=granted,
         gate_decision=gate,
@@ -79,9 +83,12 @@ def evaluate_policy_bound_external_effect_gate_v1(
         standing_external_effect_authorized=lift_standing,
         post_allowed=admission.post_allowed,
         real_venue_post_allowed=admission.real_venue_post_allowed,
-        permit_mint_authorized=admission.permit_mint_authorized,
+        permit_mint_authorized=permit_mint,
         credential_access_performed=admission.credential_access_performed,
-        extra={"governed_standing_lift": str(lift_standing).lower()},
+        extra={
+            "governed_standing_lift": str(lift_standing).lower(),
+            "governed_permit_mint": str(permit_mint).lower(),
+        },
     )
 
 

@@ -7153,6 +7153,27 @@ entities:
       Governed parameterized gate standing lift on #6894 policy; import-time constant false;
       envelope POST/permit/credential remain unauthorized. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:external_effect_permit_mint_policy_v1
+    kind: CONTRACT
+    name: External Effect Permit Mint policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md
+      - src/governance/external_effect_permit_mint_policy_v1.py
+      - src/governance/external_effect_permit_mint_gate_binding_v1.py
+      - config/governance/external_effect_permit_mint_policy_v1_record.json
+    evidence_sources:
+      - tests/governance/test_external_effect_permit_mint_policy_v1.py
+      - src/governance/governed_external_effect_permit_mint_policy_closure_v1.py
+    notes: >-
+      Governed permit-mint policy admission on #6895 standing lift; runtime mint performed false;
+      credential/POST remain unauthorized. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
