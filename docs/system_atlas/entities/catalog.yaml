@@ -2413,6 +2413,8 @@ entities:
       - src/trading/master_v2/regime_bull_bear_switch_evidence_readmodel_v1/constants_v1.py
 
   - id: SCRIPT:run_gfu_producer
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: fail-closed reserved Cap24 root guard before producer; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true.
     kind: SCRIPT
     name: run_governed_futures_universe_producer_v1
     epistemic_class: FORENSIC_RAW
@@ -2422,6 +2424,8 @@ entities:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
 
   - id: SCRIPT:run_cap23_policy
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: fail-closed reserved Cap24 root guard before producer; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true.
     kind: SCRIPT
     name: run_single_selected_future_policy_v1
     epistemic_class: FORENSIC_RAW
@@ -2429,6 +2433,19 @@ entities:
     current_status: CURRENT_NONCANONICAL
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+
+  - id: SCRIPT:run_cap22_ranking_producer
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: fail-closed reserved Cap24 root guard at productive ranking CLI; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true.
+    kind: SCRIPT
+    name: run_productive_futures_ranking_producer_v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    evidence_sources:
+      - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+    source_paths:
+      - scripts/ops/run_productive_futures_ranking_producer_v1.py
 
   - id: INVARIANT:missing_metadata_never_defaulted
     kind: INVARIANT
@@ -10606,6 +10623,8 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
+    # NAVIGATION_ONLY: Cap21–Cap23 shared persist assert + Cap24 reserved-root guard; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
     # PR_6910 S6_S7_C1_CURSOR_OWNERSHIP_SEAM: S7/MV2 durable C1 persist owns floor; S6 advance no-op on equal venue_event_time; STALE_OR_EQUAL_C1 eliminated; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6908 ENDGAME_F1_M9_CANONICAL_DURABLE_BOOTSTRAP_AND_G17_WP2: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # F1_M9=ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 on Master-V2 cold-start; APPLY_START_CONTINUATION=idempotent post-runtime_applied;
@@ -10996,6 +11015,7 @@ entities:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py
       - tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py
       - tests/ops/test_full_core_current_productive_29p_chain_baseline_contract_v1.py

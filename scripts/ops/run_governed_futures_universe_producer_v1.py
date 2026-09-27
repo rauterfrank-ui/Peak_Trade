@@ -26,6 +26,10 @@ from src.ops.governed_futures_universe_producer_v1.constants_v1 import (  # noqa
 from src.ops.governed_futures_universe_producer_v1.producer_v1 import (  # noqa: E402
     run_governed_futures_universe_producer_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_reserved_productivity_root_guard_v1 import (  # noqa: E402
+    ReservedCap24ProductivityRootError,
+    assert_standalone_capability_state_root_not_reserved_cap24_v1,
+)
 
 
 def _git_sha() -> str:
@@ -51,6 +55,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--repository-sha", type=str, default=None)
     parser.add_argument("--observed-at-unix", type=float, default=None)
     args = parser.parse_args(argv)
+
+    try:
+        assert_standalone_capability_state_root_not_reserved_cap24_v1(args.state_root)
+    except ReservedCap24ProductivityRootError as exc:
+        print(json.dumps({"ok": False, "failure_codes": [exc.failure_code], "error": str(exc)}))
+        return 2
 
     instruments = json.loads(args.instruments_json.read_text(encoding="utf-8"))
     marks = None

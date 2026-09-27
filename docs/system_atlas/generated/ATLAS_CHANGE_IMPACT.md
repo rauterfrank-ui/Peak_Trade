@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,15 +40,18 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `TERM:map_of_truth` |
-| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
+| `EP:gfu_producer` |
+| `EP:cap23_policy` |
+| `SCRIPT:run_gfu_producer` |
+| `SCRIPT:run_cap23_policy` |
+| `SCRIPT:run_cap22_ranking_producer` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -94,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6911: CSIA CURRENT semantic topology coverage closure (frozen 9-row spec CL-001..CL-004); navigation/index representation only; map_authority=NONE; no runtime, enforcement, or MOT SSOT change.
+- PR #6912: FAM-A productive Cap-2.x lineage enforcement at persist/CLI boundaries (Cap22 binding assert + reserved Cap24 productivity root guard); navigation-only Atlas coupling; map_authority=NONE; no CSIA source change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=MAP_SEMANTIC_COVERAGE_CLOSURE_V1
+- modified_by=FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
