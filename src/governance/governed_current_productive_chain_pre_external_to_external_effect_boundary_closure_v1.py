@@ -20,6 +20,9 @@ from src.governance.governed_external_effect_authorization_policy_closure_v1 imp
 from src.governance.governed_checkout_independent_credential_access_policy_closure_v1 import (
     prove_governed_checkout_independent_credential_access_policy_v1,
 )
+from src.governance.governed_current_productive_k1_opaque_signing_handle_pre_post_policy_closure_v1 import (
+    prove_governed_current_productive_k1_opaque_signing_handle_pre_post_policy_v1,
+)
 from src.governance.governed_real_keychain_access_or_credential_material_load_policy_closure_v1 import (
     prove_governed_real_keychain_access_or_credential_material_load_policy_v1,
 )
@@ -41,7 +44,7 @@ SCHEMA_VERSION: Final[str] = (
 )
 BOUNDED_ORCHESTRATION_TERMINAL: Final[str] = "PRE_EXTERNAL_EFFECT_BOUNDARY"
 CANONICAL_EXTERNAL_EFFECT_BOUNDARY: Final[str] = (
-    "CREDENTIAL_MATERIAL_LOAD_GOVERNED_K1_SIGNING_POST_FAIL_CLOSED"
+    "K1_OPAQUE_SIGNING_PRE_POST_ENVELOPE_VALIDATED_REAL_VENUE_POST_ADMISSION_FAIL_CLOSED"
 )
 
 
@@ -67,6 +70,10 @@ def prove_governed_current_productive_chain_pre_external_to_external_effect_boun
     if not prove_governed_checkout_independent_credential_access_policy_v1(repo_root=root):
         return False
     if not prove_governed_real_keychain_access_or_credential_material_load_policy_v1(
+        repo_root=root
+    ):
+        return False
+    if not prove_governed_current_productive_k1_opaque_signing_handle_pre_post_policy_v1(
         repo_root=root
     ):
         return False

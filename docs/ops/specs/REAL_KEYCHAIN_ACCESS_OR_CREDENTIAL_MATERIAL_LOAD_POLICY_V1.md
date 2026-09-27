@@ -46,7 +46,7 @@ MATERIAL_LOAD_POLICY -/-> REQUEST_SIGNING / K1_PARSE / POST / PERMIT_MINT_PERFOR
 
 ## Next Owner boundary
 
-**OWNER_GO_CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1** — K1 UTF-8 parse + opaque signing handle (distinct from material-load policy).
+Closed under **CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1** (#6899). See `docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md`.
 
 Code: `src/governance/real_keychain_access_or_credential_material_load_policy_v1.py`  
 Acquisition: `src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py`

@@ -16,6 +16,7 @@ flowchart LR
   checkout_independent_credential_access_policy["checkout_independent_credential_access_policy PARTIAL"]
   current_continuous_run_policy["current_continuous_run_policy PARTIAL"]
   current_productive_activation_policy["current_productive_activation_policy PARTIAL"]
+  current_productive_k1_opaque_signing_handle_pre_post_policy["current_productive_k1_opaque_signing_handle_pre_post_policy PARTIAL"]
   double_play_capital_slot["double_play_capital_slot UNKNOWN"]
   dynamic_scope["dynamic_scope PROVEN_CURRENT"]
   elementary_direction["elementary_direction PROVEN_CURRENT"]
@@ -159,6 +160,7 @@ flowchart LR
 | checkout_independent_credential_access_policy | INTERMEDIATE | PARTIAL | PARTIAL | checkout_independent_credential_access_policy_v1 | `tests/governance/test_checkout_independent_credential_access_policy_v1.py`, `config/governance/checkout_independent_credential_access_policy_v1_record.json`, `config/governance/checkout_independent_credential_access_owner_go_v1_decision.json`, `config/governance/checkout_independent_credential_access_policy_v1_decision_v1.json` |
 | current_continuous_run_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_continuous_run_policy_v1 | `tests/governance/test_current_continuous_run_policy_v1.py`, `config/governance/current_continuous_run_policy_v1_record.json`, `config/governance/current_continuous_run_policy_owner_go_v1_decision.json` |
 | current_productive_activation_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_productive_activation_policy_v1 | `tests/governance/test_current_productive_activation_policy_v1.py`, `config/governance/current_productive_activation_policy_v1_record.json`, `config/governance/current_productive_activation_policy_owner_go_v1_decision.json` |
+| current_productive_k1_opaque_signing_handle_pre_post_policy | INTERMEDIATE | PARTIAL | PARTIAL | current_productive_k1_opaque_signing_handle_pre_post_policy_v1 | `tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json`, `config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json` |
 | double_play_capital_slot | INTERMEDIATE | UNKNOWN | UNKNOWN | NONE | `src/trading/master_v2/double_play_capital_slot.py` |
 | dynamic_scope | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.dynamic_scope_persistence_binding_v1 | `src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py`, `src/trading/master_v2/double_play_state.py` |
 | elementary_direction | INTERMEDIATE | PROVEN_CURRENT | NAVIGATION_INDEX | src.trading.market_state.elementary_direction_v1 | `src/trading/market_state/elementary_direction_v1.py` |

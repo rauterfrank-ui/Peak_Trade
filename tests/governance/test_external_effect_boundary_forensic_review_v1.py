@@ -124,5 +124,5 @@ def test_invoke_external_effect_sink_raises_fail_closed() -> None:
 
 def test_canonical_boundary_constant() -> None:
     assert CANONICAL_EXTERNAL_EFFECT_BOUNDARY == (
-        "CREDENTIAL_MATERIAL_LOAD_GOVERNED_K1_SIGNING_POST_FAIL_CLOSED"
+        "K1_OPAQUE_SIGNING_PRE_POST_ENVELOPE_VALIDATED_REAL_VENUE_POST_ADMISSION_FAIL_CLOSED"
     )
