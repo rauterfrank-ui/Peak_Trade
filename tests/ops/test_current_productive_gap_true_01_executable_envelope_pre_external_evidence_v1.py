@@ -41,25 +41,11 @@ from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import 
     _origin_main_sha,
     _productive_transport,
 )
-import tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 as _oneshot_g17_join_v1
-from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
-    _PRODUCED_G17_CACHE,
-)
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _handle,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-
-
-@pytest.fixture(autouse=True)
-def _reset_shared_productive_test_producer_caches():
-    """Drop cross-test G17/F1-M9 caches so PRE_EXTERNAL batches stay order-independent."""
-    _PRODUCED_G17_CACHE.clear()
-    _oneshot_g17_join_v1._F1_M9_LEDGER_CACHE = None
-    yield
-    _PRODUCED_G17_CACHE.clear()
-    _oneshot_g17_join_v1._F1_M9_LEDGER_CACHE = None
 
 
 SPEC_PATH = (

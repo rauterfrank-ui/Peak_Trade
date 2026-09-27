@@ -251,12 +251,11 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
         head=origin_sha,
     )
     bound = _bound()
-    g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
     lanes_root = tmp_path / "lanes"
     _arm_cycle, enter_closes, mark_px, event_ts, aligned_g17 = (
         prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
             bound=bound,
-            g17_typed_vol_producer=g17,
+            g17_typed_vol_producer=object(),
             lane_state_root=lanes_root,
         )
     )

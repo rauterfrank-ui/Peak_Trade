@@ -156,6 +156,7 @@ def governed_c1_aligned_g17_dk_producer_v1(
     bound: BoundInstrumentV1,
     anchor_event_ts_unix: float,
     evidence_store_root: Path,
+    mark_closes: Sequence[float] | None = None,
 ) -> object:
     """Canonical G17-DK producer with mark history aligned to governed C1 event time."""
     from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
@@ -163,10 +164,19 @@ def governed_c1_aligned_g17_dk_producer_v1(
     )
 
     last_ms = int(float(anchor_event_ts_unix) * 1000)
+    if mark_closes is not None and len(mark_closes) > 0:
+        raw = tuple(float(x) for x in mark_closes)
+        if len(raw) >= 61:
+            price_series = raw[-61:]
+        else:
+            pad = [raw[0]] * (61 - len(raw))
+            price_series = tuple(pad + list(raw))
+    else:
+        price_series = tuple(100.0 + float(index) for index in range(61))
     rows: list[list[str]] = []
     for index in range(61):
         ts = str(last_ms - (60 - index) * 60_000)
-        px = str(100 + index)
+        px = str(price_series[index])
         rows.append([ts, px, px, px, px, "1"])
     payload = {"code": "0", "msg": "", "data": list(reversed(rows))}
     join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
@@ -654,6 +664,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
         bound=bound,
         anchor_event_ts_unix=enter_ts,
         evidence_store_root=Path(lane_state_root) / "g17-seed",
+        mark_closes=path,
     )
     g17_for_cycles = aligned_g17
     from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
@@ -714,8 +725,14 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     enter_closes = tuple(list(arm_closes) + [arm_mark + NATURAL_ENTER_MARK_INCREMENT_V1])
     enter_mark = float(enter_closes[-1])
     enter_event_ts = arm_ts + NATURAL_ENTER_SHORT_AFTER_ARM_TS_DELTA_V1
+    invoke_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_event_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-invoke",
+        mark_closes=enter_closes,
+    )
     _ = g17_typed_vol_producer
-    return arm_cycle, enter_closes, enter_mark, enter_event_ts, aligned_g17
+    return arm_cycle, enter_closes, enter_mark, enter_event_ts, invoke_g17
 
 
 def run_natural_enter_long_sequence_for_governed_pre_external_v1(
