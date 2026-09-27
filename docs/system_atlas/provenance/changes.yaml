@@ -98,6 +98,17 @@ changes:
       POST_6925 CURRENT navigation baseline rebind after squash-merge #6925: Master Runbook,
       Map of Truth, CSIA baseline_sha, Atlas census/provenance; no runtime/authority/policy change.
       RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6926_maximal_bounded_current_system_wp_v1
+    from: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+    to: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6926 maximal bounded CURRENT system WP (PR #6927): Master Runbook §11.2.1 CW–DU
+      persist reinsert; MOT §3.1 navigation; DT/DU PRE_EXTERNAL G17 hot-path runtime wiring;
+      CSIA/Atlas bookkeeping only. CURRENT_REVIEWED_AT_SHA unchanged (744a9c896). RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

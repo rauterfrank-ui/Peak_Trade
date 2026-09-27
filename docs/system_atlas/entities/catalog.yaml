@@ -70,6 +70,9 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1 (PR #6927):
+    # §11.2.1 CW–DU persist reinsert + DT/DU PRE_EXTERNAL G17 hot-path wiring;
+    # navigation/representation only; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1:
     # CURRENT_REVIEWED_AT_SHA / BOUND_ORIGIN_MAIN_SHA mechanical rebind to 744a9c896;
     # navigation-only after PR #6925 squash-merge; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
@@ -98,7 +101,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1
+    modified_by: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
     evidence_sources:
@@ -121,6 +124,9 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1 (PR #6927):
+    # MOT §3.1 Full-Core derived-spec navigation + 11.2.1.DL/DM labels; map_authority=NONE;
+    # RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1:
     # CURRENT_REVIEWED_AT_SHA navigation rebind to 744a9c896; map_authority=NONE; no MOT SSOT change.
     # atlas_entity_review: POST_6924_COMPANION_C2_RUNTIME_COMPLETION_V1 (PR #6925):
@@ -185,7 +191,7 @@ entities:
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
     semantic_authority: false
-    modified_by: POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1
+    modified_by: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1
     authority_sources:
       - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     evidence_sources:
