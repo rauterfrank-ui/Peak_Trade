@@ -1460,28 +1460,38 @@ def run_integrated_offline_trading_logic_replay_v1(
         from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
             TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
             demote_trading_gate_for_typed_presence_failure_v1,
-            evaluate_double_play_runtime_typed_volatility_presence_gate_v1,
             evaluate_protection_authority_when_typed_absent_v1,
             protection_authority_required_v1,
         )
 
-        from src.governance.governed_productive_runtime_parameter_seam_join_v1 import (
-            resolve_governed_runtime_seam_for_presence_gate_v1,
+        from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+            consumer_wiring_authorized_v1,
+            evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
         )
 
-        _seam_transport = resolve_governed_runtime_seam_for_presence_gate_v1(
-            inp.governed_authorized_productive_parameter_seam_record
-        )
-        presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
-            bound_context,
+        require_governed_seam = consumer_wiring_authorized_v1()
+        consumer_path = evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
+            market_context=bound_context,
             binding_outcome=binding.eligibility.binding_outcome,
             eligibility=inp.productive_typed_volatility_binding_eligibility,
-            authorized_productive_parameter_seam=_seam_transport.seam_for_consumer,
+            governed_seam_record=inp.governed_authorized_productive_parameter_seam_record,
+            require_governed_seam=require_governed_seam,
         )
+        presence_gate = consumer_path.presence_gate
+        if presence_gate is None:
+            reasons = tuple(consumer_path.reason_codes) or ("PRESENCE_GATE_UNAVAILABLE",)
+            evidence = _blocked_evidence(inp, fail_reasons=reasons)
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
         # Eligibility result is consumed via presence_gate.eligibility (never discarded).
         _ = presence_gate.eligibility
+        alpha_allowed = consumer_path.alpha_scope_entry_authority_allowed
 
-        if not presence_gate.alpha_scope_entry_authority_allowed:
+        if not alpha_allowed:
             reasons = presence_gate.reason_codes or (TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,)
             needs_protection = protection_authority_required_v1(
                 position_state=inp.position_state,

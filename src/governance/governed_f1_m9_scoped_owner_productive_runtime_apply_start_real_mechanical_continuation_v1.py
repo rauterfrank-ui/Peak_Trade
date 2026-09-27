@@ -6,7 +6,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, Mapping
 
 from src.governance.authorized_productive_parameter_seam_v1 import (
     AuthorizedProductiveParameterSeamBindRequestV1,
@@ -152,6 +152,7 @@ class GovernedF1M9RuntimeApplyStartResultV1:
     threshold_enforcement_mechanical_continuation: bool
     presence_gate_transport_ready: bool
     apply_start_evidence: Any
+    bound_seam_record: Mapping[str, Any] | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -170,6 +171,12 @@ class GovernedF1M9RuntimeApplyStartResultV1:
             "status": self.status,
             "threshold_enforcement_mechanical_continuation": (
                 self.threshold_enforcement_mechanical_continuation
+            ),
+            "bound_seam_record_digest": (
+                str(self.bound_seam_record.get("seam_digest"))
+                if isinstance(self.bound_seam_record, Mapping)
+                and self.bound_seam_record.get("seam_digest")
+                else None
             ),
         }
 
@@ -409,6 +416,7 @@ def run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_
         threshold_enforcement_mechanical_continuation=enforcement_ok,
         presence_gate_transport_ready=presence_ready,
         apply_start_evidence=evidence,
+        bound_seam_record=dict(seam.seam_record),
     )
 
 
@@ -443,6 +451,7 @@ def _reject(reasons: tuple[str, ...]) -> GovernedF1M9RuntimeApplyStartResultV1:
         threshold_enforcement_mechanical_continuation=False,
         presence_gate_transport_ready=False,
         apply_start_evidence=evidence,
+        bound_seam_record=None,
     )
 
 

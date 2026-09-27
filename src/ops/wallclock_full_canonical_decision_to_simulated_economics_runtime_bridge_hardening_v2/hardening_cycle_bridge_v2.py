@@ -128,7 +128,6 @@ from trading.master_v2.canonical_volatility_pt1m_mark_observation_finalizer_v1 i
 )
 from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
     demote_trading_gate_for_typed_presence_failure_v1,
-    evaluate_double_play_runtime_typed_volatility_presence_gate_v1,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
@@ -554,6 +553,7 @@ class HardenedBridgeSessionStateV2:
     exit_policy_binding: HostExitPolicyBindingV1 = field(default_factory=HostExitPolicyBindingV1)
     # Optional: pre-bound authorized productive parameter seam (transport-only join).
     governed_authorized_productive_parameter_seam_record: Mapping[str, Any] | None = None
+    last_f1_m9_threshold_consumer_wiring: dict[str, Any] | None = None
 
     def append_mid(self, mid: float) -> None:
         self.mid_prices.append(float(mid))
@@ -821,22 +821,26 @@ def run_hardened_bridge_cycle_v2(
     # Wire producer/binding reuse+restart labels into non-enforcing age telemetry.
     binding_reuse = VolatilityReuseStatusV1(str(typed_binding.telemetry.reuse_status))
     binding_restart = VolatilityRestartStatusV1(str(typed_binding.telemetry.restart_status))
-    from src.governance.governed_productive_runtime_parameter_seam_join_v1 import (
-        resolve_governed_runtime_seam_for_presence_gate_v1,
+    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+        consumer_wiring_authorized_v1,
+        evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1,
     )
 
-    runtime_seam_transport = resolve_governed_runtime_seam_for_presence_gate_v1(
-        state.governed_authorized_productive_parameter_seam_record
-    )
-    presence_gate = evaluate_double_play_runtime_typed_volatility_presence_gate_v1(
-        market_context,
+    require_governed_seam = consumer_wiring_authorized_v1()
+    consumer_path = evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
+        market_context=market_context,
         eligibility=typed_binding.typed_binding_eligibility,
         reuse_status=binding_reuse,
         restart_status=binding_restart,
-        authorized_productive_parameter_seam=runtime_seam_transport.seam_for_consumer,
+        governed_seam_record=state.governed_authorized_productive_parameter_seam_record,
+        require_governed_seam=require_governed_seam,
     )
+    presence_gate = consumer_path.presence_gate
+    if presence_gate is None:
+        raise RuntimeError("PRODUCTIVE_THRESHOLD_CONSUMER_PRESENCE_GATE_UNAVAILABLE")
+    state.last_f1_m9_threshold_consumer_wiring = consumer_path.to_dict()
     effective_trading_gate = safety.trading_gate_enum
-    if not presence_gate.alpha_scope_entry_authority_allowed:
+    if not consumer_path.alpha_scope_entry_authority_allowed:
         effective_trading_gate = demote_trading_gate_for_typed_presence_failure_v1(
             safety.trading_gate_enum
         )

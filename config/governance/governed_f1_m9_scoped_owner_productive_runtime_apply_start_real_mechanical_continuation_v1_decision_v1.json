@@ -13,7 +13,8 @@
   "productive_apply_occurred": true,
   "configuration_runtime_applied": true,
   "threshold_enforcement_mechanical_continuation_proven": true,
-  "earliest_unclosed_boundary": "PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING",
-  "next_genuine_blocker": "PRODUCTIVE_ORCHESTRATOR_CONSUMER_BINDING_OR_PRODUCTIVE_ACTIVATION",
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION",
+  "next_genuine_blocker": "PRODUCTIVE_ACTIVATION_OWNER_GO",
+  "threshold_runtime_consumer_wiring_decision": "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
   "normative_spec": "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md"
 }
