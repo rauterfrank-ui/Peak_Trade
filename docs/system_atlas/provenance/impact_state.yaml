@@ -2,19 +2,32 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-modified_by: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
+modified_by: POST_6919_MECHANICAL_TRUTH_HYGIENE_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1: navigation-only rebind to
-  origin/main d0edb85; CSIA WP-A/B→WP-C ingest edges; S5/S6/cursor representation;
-  sidestate cursor Atlas entity; census_meta SHA rebind; map_authority=NONE;
-  RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
-changed_entities:
-  - RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
-  - CAPABILITY:market_data_private_state_runtime_convergence_v1
+  POST_6919_MECHANICAL_TRUTH_HYGIENE_V1: navigation-only census content_origin vs
+  current_reviewed_at_sha split for 12 historical domain payloads;
+  stale_defect_if_head_differs=false; CSIA partial reclassifications; bounded kernel
+  completeness witness; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false;
+  POST_COUNT=0.
+changed_entities: []
 changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []
-changed_census: []
+changed_census:
+  - census/census_meta.yaml
+  - census/master_v2_module_inventory.yaml
+  - census/historical_architecture.yaml
+  - census/historical_terminology.yaml
+  - census/historical_wiring.yaml
+  - census/master_v2_semantic_map.yaml
+  - census/okx_endpoint_classification.yaml
+  - census/okx_field_census.yaml
+  - census/okx_fixture_census.yaml
+  - census/okx_historical.yaml
+  - census/okx_product_types.yaml
+  - census/repo_final_resolution.yaml
+  - census/schema_like_src.yaml
+  - census/dod_heading_inventory.yaml

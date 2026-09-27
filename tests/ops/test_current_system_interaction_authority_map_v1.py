@@ -62,7 +62,8 @@ def test_unknown_stays_unknown() -> None:
 
 def test_conflicting_stays_conflicting() -> None:
     view = MAP.render_views(_doc())["authority"]
-    assert "id=live_authorized_cap2_vs_full_core class=CONFLICTING" in view
+    assert "id=limit_names_vs_equity_collapse class=CONFLICTING" in view
+    assert "OWNER_DECISION_REQUIRED=true" in view
     assert MAP.project_status("CONFLICTING") == "CONFLICTING"
 
 

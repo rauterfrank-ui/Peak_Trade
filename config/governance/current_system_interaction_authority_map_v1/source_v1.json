@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "d0edb85fc83a5415a8a652299144cd0fe6da7644",
+  "baseline_sha": "2e1a64c98bd811c55f62e5d983ae38b480f207e4",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -643,7 +643,7 @@
     {
       "id": "bounded_runtime_primary_evidence",
       "tier": "INTERMEDIATE",
-      "role": "Durable Paper/Shadow/Testnet primary evidence retention and validation (Preflight \u00a72a.1). Does not authorize runtime, promotion, or apply.",
+      "role": "Durable Paper/Shadow/Testnet primary evidence retention and validation (Preflight §2a.1). Does not authorize runtime, promotion, or apply.",
       "canonical_owner_ref": "scripts.ops.primary_evidence_retention_v0",
       "authority_class": "NONE",
       "lifecycle": "EVIDENCE_RETENTION_ONLY",
@@ -664,7 +664,7 @@
     {
       "id": "g2_runtime_primary_offline_projection",
       "tier": "INTERMEDIATE",
-      "role": "G2 governed projection: preexisting durable primary evidence \u2192 identity-bound offline observations + runtime_to_learning_input_v1 ingress only. Authority=NONE; no apply or external effect.",
+      "role": "G2 governed projection: preexisting durable primary evidence → identity-bound offline observations + runtime_to_learning_input_v1 ingress only. Authority=NONE; no apply or external effect.",
       "canonical_owner_ref": "governed_runtime_primary_to_offline_observation_projection_v1",
       "authority_class": "NONE",
       "lifecycle": "PROJECTION_BOUNDARY_ONLY",
@@ -760,7 +760,7 @@
     {
       "id": "optimization_universe",
       "tier": "FIRST_CLASS",
-      "role": "Research registry and experiment plane; prior CONFLICTING adjudicated documentary (M4-era non-goals vs Phase 9\u201313 integration); productive and promotion authority NONE.",
+      "role": "Research registry and experiment plane; prior CONFLICTING adjudicated documentary (M4-era non-goals vs Phase 9–13 integration); productive and promotion authority NONE.",
       "canonical_owner_ref": "src.experiments.canonical_optimization_universe_v1",
       "authority_class": "NONE",
       "lifecycle": "RESEARCH_ONLY",
@@ -1119,7 +1119,7 @@
     {
       "id": "f1_m9_productive_runtime_threshold_consumer_wiring",
       "tier": "INTERMEDIATE",
-      "role": "F1/M9 productive runtime threshold consumer wiring (600s); hardening v2 bridge + integrated offline replay \u2192 seam transport \u2192 presence gate \u2192 bounded MV2 enforcement; no Productive Activation.",
+      "role": "F1/M9 productive runtime threshold consumer wiring (600s); hardening v2 bridge + integrated offline replay → seam transport → presence gate → bounded MV2 enforcement; no Productive Activation.",
       "canonical_owner_ref": "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
       "authority_class": "NONE",
       "lifecycle": "GOVERNED_THRESHOLD_RUNTIME_CONSUMER_WIRED",
@@ -1223,7 +1223,7 @@
     {
       "id": "external_effect_authorization_policy",
       "tier": "INTERMEDIATE",
-      "role": "External Effect authorization policy: governed PRE_EXTERNAL \u2192 standing gate seam binding; standing flags remain fail-closed.",
+      "role": "External Effect authorization policy: governed PRE_EXTERNAL → standing gate seam binding; standing flags remain fail-closed.",
       "canonical_owner_ref": "external_effect_authorization_policy_v1",
       "authority_class": "PARTIAL",
       "lifecycle": "POLICY_AUTHORIZED_GATE_SEAM_BOUND",
@@ -1365,7 +1365,7 @@
     {
       "id": "current_productive_k1_opaque_signing_handle_pre_post_policy",
       "tier": "INTERMEDIATE",
-      "role": "K1 opaque signing handle PRE-POST: governed Keychain \u2192 request signing \u2192 PRE-POST envelope; POST admission fail-closed.",
+      "role": "K1 opaque signing handle PRE-POST: governed Keychain → request signing → PRE-POST envelope; POST admission fail-closed.",
       "canonical_owner_ref": "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
       "authority_class": "PARTIAL",
       "lifecycle": "POLICY_AUTHORIZED_K1_PRE_POST_BOUND",
@@ -1460,7 +1460,7 @@
     {
       "id": "host_join_send_adapter",
       "tier": "INTERMEDIATE",
-      "role": "Host-join readiness and send-capable adapter pins are not external effect. N5 n1_host_join_readiness compose surface; SSF Cap-7.2\u2192LiveExecutionPort transition represented separately (ssf_cap72_host_live_execution_port_join_v1).",
+      "role": "Host-join readiness and send-capable adapter pins are not external effect. N5 n1_host_join_readiness compose surface; SSF Cap-7.2→LiveExecutionPort transition represented separately (ssf_cap72_host_live_execution_port_join_v1).",
       "canonical_owner_ref": "n1_host_join_readiness_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "NOT_EXTERNAL_EFFECT",
@@ -1643,7 +1643,7 @@
     {
       "id": "cap21_cap23_productive_persistence_v1",
       "tier": "INTERMEDIATE",
-      "role": "Shared Cap-2.1\u21922.3 productive persistence orchestration (run_cap21_to_cap23_persist_productive_v1). Consumes injected acquisition payloads; invokes existing Cap-2.1/2.2/2.3 producers only. No network I/O here.",
+      "role": "Shared Cap-2.1→2.3 productive persistence orchestration (run_cap21_to_cap23_persist_productive_v1). Consumes injected acquisition payloads; invokes existing Cap-2.1/2.2/2.3 producers only. No network I/O here.",
       "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1",
       "authority_class": "NONE",
       "lifecycle": "PERSISTENCE_ORCHESTRATION_ONLY",
@@ -1663,7 +1663,7 @@
     {
       "id": "ssf_cap72_host_live_execution_port_join_v1",
       "tier": "INTERMEDIATE",
-      "role": "REPRESENTATION=SSF_FULL_CORE_CAP72_TRANSITION; SSF path host_binding_v1\u2192LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1. Uses canonical HOST_JOIN_OWNER semantics; not LIVE_AUTHORIZED, not POST, not wire-send. Distinct from N5 lane-local Cap-7.2 activation (see full_autonomy_n5 annotation).",
+      "role": "REPRESENTATION=SSF_FULL_CORE_CAP72_TRANSITION; SSF path host_binding_v1→LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1. Uses canonical HOST_JOIN_OWNER semantics; not LIVE_AUTHORIZED, not POST, not wire-send. Distinct from N5 lane-local Cap-7.2 activation (see full_autonomy_n5 annotation).",
       "canonical_owner_ref": "stateful_no_order_host_join_v1",
       "authority_class": "NONE",
       "lifecycle": "HOST_JOIN_NOT_EXTERNAL_EFFECT",
@@ -1709,7 +1709,7 @@
     {
       "id": "cap24_productivity_state_carrier_v1",
       "tier": "INTERMEDIATE",
-      "role": "REPRESENTATION=STATE_CARRIER; productive filesystem carrier runtime/current_productive/cap24_selection_state. Cap-2.3 remains sole selection decision authority; writers are cap21\u2192cap23 orchestration only (EEA execute, cap24 canonical writer Owner-GO). No rerank/reselect authority.",
+      "role": "REPRESENTATION=STATE_CARRIER; productive filesystem carrier runtime/current_productive/cap24_selection_state. Cap-2.3 remains sole selection decision authority; writers are cap21→cap23 orchestration only (EEA execute, cap24 canonical writer Owner-GO). No rerank/reselect authority.",
       "canonical_owner_ref": "ops.single_selected_future_policy_v1",
       "authority_class": "NONE",
       "lifecycle": "PRODUCTIVITY_ROOT_CARRIER",
@@ -2291,7 +2291,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 \u2192 run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
+      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
       "authority_effect": "NONE",
@@ -2316,7 +2316,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure \u2192 M5 return \u2192 M6 meta ingest \u2192 M7 feedback \u2192 deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false",
+      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
       "authority_effect": "NONE",
@@ -2620,7 +2620,7 @@
       "from_domain": "g2_runtime_learning_optimization_input_binding",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) \u2192 CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
+      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
       "producer": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
       "consumer": "validate_canonical_optimization_universe_learning_input_v1",
       "authority_effect": "NONE",
@@ -2644,7 +2644,7 @@
       "from_domain": "g2_runtime_primary_offline_projection",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "M4\u2013M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
+      "contract_or_payload": "M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
       "producer": "export_learning_evidence_from_state_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
       "authority_effect": "NONE",
@@ -2667,7 +2667,7 @@
       "from_domain": "g2_runtime_learning_optimization_input_binding",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "runtime-derived learning_evidence_record_v1 \u2192 bounded offline M4 plane \u2192 run_m4_m8_evidence_return_loop_v1",
+      "contract_or_payload": "runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1",
       "producer": "run_g2_runtime_to_m4_m8_evidence_return_continuation_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
       "authority_effect": "NONE",
@@ -2691,7 +2691,7 @@
       "from_domain": "optimization_universe",
       "to_domain": "meta_learning",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "M4\u2013M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)",
+      "contract_or_payload": "M4–M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)",
       "producer": "run_m4_m8_evidence_return_loop_v1",
       "consumer": "ingest_meta_learning_evidence_from_return_input_v1",
       "authority_effect": "NONE",
@@ -2715,7 +2715,7 @@
       "from_domain": "meta_learning",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "meta_learning_evidence_v1 \u2192 bounded_research_feedback_decision_v1",
+      "contract_or_payload": "meta_learning_evidence_v1 → bounded_research_feedback_decision_v1",
       "producer": "validate_meta_to_optimization_feedback_input_v1",
       "consumer": "validate_meta_to_optimization_feedback_input_v1",
       "authority_effect": "NONE",
@@ -2762,7 +2762,7 @@
       "from_domain": "optimization_universe",
       "to_domain": "p5_layered_core",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "bridge_m5_to_optimization_envelope_evidence_v1 \u2192 terminate_optimization_envelope_at_a_v1",
+      "contract_or_payload": "bridge_m5_to_optimization_envelope_evidence_v1 → terminate_optimization_envelope_at_a_v1",
       "producer": "bridge_m5_to_optimization_envelope_evidence_v1",
       "consumer": "adjudicate_evidence_intake_v1",
       "authority_effect": "NONE",
@@ -2786,7 +2786,7 @@
       "from_domain": "meta_learning",
       "to_domain": "p5_layered_core",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "bridge_m6_to_meta_learning_routed_evidence_v1 \u2192 terminate_meta_learning_routed_at_a_v1",
+      "contract_or_payload": "bridge_m6_to_meta_learning_routed_evidence_v1 → terminate_meta_learning_routed_at_a_v1",
       "producer": "bridge_m6_to_meta_learning_routed_evidence_v1",
       "consumer": "adjudicate_evidence_intake_v1",
       "authority_effect": "NONE",
@@ -3511,7 +3511,7 @@
       "from_domain": "eea_universe_inventory_acquisition_v1",
       "to_domain": "cap21_cap23_productive_persistence_v1",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "acquire_eea_universe_inventory_v1 \u2192 EeaUniverseAcquisitionResultV1 injected into run_cap21_to_cap23_persist_productive_v1; Cap-2.1 NO-NETWORK preserved",
+      "contract_or_payload": "acquire_eea_universe_inventory_v1 → EeaUniverseAcquisitionResultV1 injected into run_cap21_to_cap23_persist_productive_v1; Cap-2.1 NO-NETWORK preserved",
       "producer": "acquire_eea_universe_inventory_v1",
       "consumer": "run_cap21_to_cap23_persist_productive_v1",
       "authority_effect": "NONE",
@@ -3534,7 +3534,7 @@
       "from_domain": "ssf_cap72_host_live_execution_port_join_v1",
       "to_domain": "host_join_send_adapter",
       "flow_type": "CONSTRAINT_FLOW",
-      "contract_or_payload": "HostActivationBindingV1 \u2192 LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1; SSF Full-Core only; no POST/wire",
+      "contract_or_payload": "HostActivationBindingV1 → LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1; SSF Full-Core only; no POST/wire",
       "producer": "join_cap72_host_to_live_execution_port_v1",
       "consumer": "LiveExecutionPortV1",
       "authority_effect": "NONE",
@@ -3557,7 +3557,7 @@
       "from_domain": "full_autonomy_n5",
       "to_domain": "n5_durable_lane_assignment_persistence_v1",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "consume_recovered_isolated_lane_topology_v1 \u2192 persist_durable_lane_assignment_v1 (recovery re-entry included)",
+      "contract_or_payload": "consume_recovered_isolated_lane_topology_v1 → persist_durable_lane_assignment_v1 (recovery re-entry included)",
       "producer": "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
       "consumer": "persist_durable_lane_assignment_v1",
       "authority_effect": "NONE",
@@ -3725,7 +3725,7 @@
         "learning_ddo",
         "optimization_universe"
       ],
-      "purpose": "Offline MI forecast/calibration compose with durable MI offline evidence store (Loop B), typed MI\u2192Learning export (Phase 8), optimization research intake (Phase 9 M4), and MI-crossing multi-cycle M5\u2192M8 replay (Phase 10).",
+      "purpose": "Offline MI forecast/calibration compose with durable MI offline evidence store (Loop B), typed MI→Learning export (Phase 8), optimization research intake (Phase 9 M4), and MI-crossing multi-cycle M5→M8 replay (Phase 10).",
       "forward_edges": [
         "mi_offline_compose_ddo_n_bars_outcome",
         "mi_offline_typed_export_to_learning_path",
@@ -4086,7 +4086,7 @@
     {
       "id": "kill_switch_full_core_safety_owner",
       "epistemic_class": "UNKNOWN",
-      "statement": "Kill-switch Cap 11.5 is not established as the current full-core safety owner.",
+      "statement": "OWNER_DECISION_REQUIRED=true. Remaining single Owner question: establish one canonical full-core productive safety owner string vs Cap 11.5 kill-switch boundary without displacing Cap 11.5. Map does not assign owner.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
@@ -4107,7 +4107,7 @@
     {
       "id": "optimization_surface_consumer_list",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 26 Final Closed-Cycle DoD (Loops A/B/C + meta routing + incremental research + DP attribution adjudication matrix; reproves Phase 16\u201325; AUTHORITY=NONE). Phase 25 DP Attribution PROVEN. Phase 24 Loop C PROVEN. Governed runtime apply beyond M10 remains separate Owner decision.",
+      "statement": "NAVIGATION_INDEX: Unified Blueprint Phase 26 Final Closed-Cycle DoD (Loops A/B/C + meta routing + incremental research + DP attribution adjudication matrix; reproves Phase 16–25; AUTHORITY=NONE). Phase 25 DP Attribution PROVEN. Phase 24 Loop C PROVEN. Governed runtime apply beyond M10 remains separate Owner decision.",
       "evidence_refs": [
         "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_v1.json",
         "config/governance/unified_blueprint_phase_26_final_closed_cycle_dod_matrix_v1.json",
@@ -4160,7 +4160,7 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "Map source baseline_sha rebound to origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab (post-#6817 merge). Runbook BOUND_ORIGIN_MAIN_SHA navigation stamp may lag HEAD; map rebind does not adjudicate runbook authority or refresh runbook stamps.",
+      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=2e1a64c98bd811c55f62e5d983ae38b480f207e4 with CONTENT_ORIGIN_SHA semantics documented. Map baseline_sha rebound; navigation-only.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
@@ -4193,8 +4193,8 @@
     },
     {
       "id": "zero_authorized_productive_targets",
-      "epistemic_class": "CONFLICTING",
-      "statement": "ZERO_AUTHORIZED_PRODUCTIVE_TARGETS true conflicts with the M9 decision false while apply remains none.",
+      "epistemic_class": "PARTIAL",
+      "statement": "STALE_RECORD: M9 owner decision config zero_authorized_productive_targets=false with authorized_productive_target_count=1; prior CONFLICTING projection stale. apply remains none; not a runtime authority collision.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
@@ -4202,8 +4202,8 @@
     },
     {
       "id": "treasury_import_wording",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Treasury treasury_29p lifecycle subdomain remains navigation-bound from B05 Q0 ownership; Full-Core enter-live uses bounded single-source C08 transport (current_productive_treasury_single_source_capital_handoff_v1) without Treasury trading/quantity/reservation authority.",
+      "epistemic_class": "PARTIAL",
+      "statement": "DOCUMENTATION_WORDING_ONLY: treasury_29p lifecycle subdomain navigation vs Full-Core C08 single-source handoff wording differ; no competing trading authority. Bounded enter-live transport uses current_productive_treasury_single_source_capital_handoff_v1 without Treasury quantity/reservation authority.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
@@ -4212,8 +4212,8 @@
     },
     {
       "id": "live_authorized_cap2_vs_full_core",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token. NAVIGATION_INDEX: compare src/ops/governed_futures_universe_producer_v1/constants_v1.py vs src/ops/full_core_live_path_composition_root_v1/constants_v1.py; related spec drift mv2_decision_authority_map_tokens. Map does not merge LIVE semantics.",
+      "epistemic_class": "PARTIAL",
+      "statement": "DOCUMENTATION_WORDING_ONLY: scoped LIVE_AUTHORIZED tokens differ by module (Cap-2.1 universe producer false vs Full-Core composition standing predicates true); not one merged token. No runtime semantics change from map projection.",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
         "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
@@ -4222,8 +4222,8 @@
     },
     {
       "id": "m4_nongoals_vs_modules",
-      "epistemic_class": "CONFLICTING",
-      "statement": "M4 non-goals disagree with later M5 through M10 modules that exist.",
+      "epistemic_class": "PARTIAL",
+      "statement": "HISTORICAL_REFERENCE: M4 non-goals vs later M5–M10 research modules coexist as historical program layering; not a CURRENT productive authority collision.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/experiments/canonical_meta_learning_v1.py"
@@ -4232,7 +4232,7 @@
     {
       "id": "limit_names_vs_equity_collapse",
       "epistemic_class": "CONFLICTING",
-      "statement": "Limit names, the equity collapse onto four CRS limits, and offline dynamic fail-closed are three descriptions.",
+      "statement": "OWNER_DECISION_REQUIRED=true. Remaining conflict only: limit naming vs equity collapse onto four CRS limits vs offline dynamic fail-closed descriptions. B05/CRS ratification does not close this semantic wording collapse.",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
@@ -4241,8 +4241,8 @@
     },
     {
       "id": "mv2_decision_authority_map_tokens",
-      "epistemic_class": "CONFLICTING",
-      "statement": "MASTER_V2_DECISION_AUTHORITY_MAP_V1 says LIVE_AUTHORIZED false and CURRENT_RUNTIME_TRUTH beside NAVIGATION_ONLY, against the full-core pin.",
+      "epistemic_class": "PARTIAL",
+      "statement": "STALE_CONFLICT: MASTER_V2_DECISION_AUTHORITY_MAP_V1 is NAVIGATION_ONLY with LIVE_AUTHORIZED=false; Full-Core constants carry scoped standing predicates. Map does not merge LIVE semantics.",
       "evidence_refs": [
         "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
@@ -4274,7 +4274,7 @@
     {
       "id": "safety_owner_unclosed",
       "epistemic_class": "PARTIAL",
-      "statement": "Safety boundary is visible on the productive cycle and CONSTRAINT_FLOW handoffs into integrated replay and before order-intent plan bind are mapped; a single closed productive safety owner string and full-core kill-switch owner remain unclosed (see kill_switch_full_core_safety_owner).",
+      "statement": "Safety boundary visible on productive cycle with CONSTRAINT_FLOW handoffs mapped. OWNER_DECISION_REQUIRED remains via kill_switch_full_core_safety_owner (single closed productive safety owner string not ratified).",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -4315,7 +4315,7 @@
     {
       "id": "learning_capture_hosts_and_ddo_durability",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01; src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4\u2192N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Track D03 MI offline stack references N_BARS outcome refs only (no duplicate outcome truth). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
+      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01; src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Track D03 MI offline stack references N_BARS outcome refs only (no duplicate outcome truth). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
@@ -4359,7 +4359,7 @@
     {
       "id": "loops_a_and_b",
       "epistemic_class": "PARTIAL",
-      "statement": "Loop A (productive learning export \u2192 optimization learning input) is IMPLEMENTED; M4 search plane not opened by export alone. Loop B (optimization \u2192 meta \u2192 bounded feedback) is IMPLEMENTED for federated M5\u2013M8 offline replay; meta_search_backflow map edge remains FORBIDDEN lifecycle. Unified Blueprint D02 matrix: see unified_blueprint_d02_inter_loop_matrix.",
+      "statement": "Loop A (productive learning export → optimization learning input) is IMPLEMENTED; M4 search plane not opened by export alone. Loop B (optimization → meta → bounded feedback) is IMPLEMENTED for federated M5–M8 offline replay; meta_search_backflow map edge remains FORBIDDEN lifecycle. Unified Blueprint D02 matrix: see unified_blueprint_d02_inter_loop_matrix.",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
@@ -4370,7 +4370,7 @@
     {
       "id": "unified_blueprint_d02_inter_loop_matrix",
       "epistemic_class": "PARTIAL",
-      "statement": "Unified Blueprint D02 CURRENT adjudication (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). IMPLEMENTED: d02_mi_to_learning (Phase 8); d02_mi_to_optimization (Phase 9); d02_multi_cycle_replay_m8 (Phase 10); d02_loop_b_market_intelligence_offline (durable MI offline evidence store; UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_V1). IMPLEMENTED: productive learning outcome loop, learning\u2192optimization input, optimization\u2192meta, meta\u2192optimization feedback, failure memory. No remaining PARTIAL D02 inter-loop edge; next blueprint surface requires separate Owner authorization.",
+      "statement": "Unified Blueprint D02 CURRENT adjudication (UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1). IMPLEMENTED: d02_mi_to_learning (Phase 8); d02_mi_to_optimization (Phase 9); d02_multi_cycle_replay_m8 (Phase 10); d02_loop_b_market_intelligence_offline (durable MI offline evidence store; UNIFIED_BLUEPRINT_D02_LOOP_B_DURABLE_MI_EVIDENCE_STORE_V1). IMPLEMENTED: productive learning outcome loop, learning→optimization input, optimization→meta, meta→optimization feedback, failure memory. No remaining PARTIAL D02 inter-loop edge; next blueprint surface requires separate Owner authorization.",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
@@ -4526,7 +4526,7 @@
     {
       "id": "current_productive_eea_universe_inventory_cap22_ranking_policy_binding_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "REPRESENTATION=ALTERNATE_EXECUTABLE_ENTRY plus Cap-2.1\u21922.3 pipeline: execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 (Owner-GO CLI main) is not a governed_cycle child. Distinct EEA READ acquisition (eea_universe_inventory_acquisition_v1) injects payloads; Cap-2.1 producer remains NO-NETWORK; Cap-2.2 ranking bound to PEAK_TRADE_RANKING_MATRIX_POLICY_V1 (B03) with B05 synthesis; no reselection, venue POST, or external effect.",
+      "statement": "REPRESENTATION=ALTERNATE_EXECUTABLE_ENTRY plus Cap-2.1→2.3 pipeline: execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 (Owner-GO CLI main) is not a governed_cycle child. Distinct EEA READ acquisition (eea_universe_inventory_acquisition_v1) injects payloads; Cap-2.1 producer remains NO-NETWORK; Cap-2.2 ranking bound to PEAK_TRADE_RANKING_MATRIX_POLICY_V1 (B03) with B05 synthesis; no reselection, venue POST, or external effect.",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
@@ -4609,7 +4609,7 @@
     {
       "id": "post_6828_universe_ranking_selection_binding_domain_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1\u20132.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
+      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1–2.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
@@ -4619,7 +4619,7 @@
     {
       "id": "post_6828_c2_companion_blocking_boundary_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 (CONVERSION_READY=true; conversion algebra/binding proven; runtime Fraction\u2192Units wiring absent).",
+      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 (CONVERSION_READY=true; conversion algebra/binding proven; runtime Fraction→Units wiring absent).",
       "evidence_refs": [
         "config/governance/post_6828_architecture_closure_v1.json",
         "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
@@ -4630,7 +4630,7 @@
     {
       "id": "c2_canonical_risk_sizing_authority_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; Fraction\u2192Units runtime wiring still absent; AUTHORITY_EFFECT=NONE.",
+      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; Fraction→Units runtime wiring still absent; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
         "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
@@ -4640,7 +4640,7 @@
     {
       "id": "c2_companion_conversion_dependency_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "C2 Companion conversion dependency closure v1: authoritative equity/reference-price/instrument-metadata producer bindings plus LINEAR fraction\u2192units algebra (mark_price; leverage role NONE); CONVERSION_READY=true; read-only binding module only; Shadow/Live still pass raw fraction as quantity; AUTHORITY_EFFECT=NONE.",
+      "statement": "C2 Companion conversion dependency closure v1: authoritative equity/reference-price/instrument-metadata producer bindings plus LINEAR fraction→units algebra (mark_price; leverage role NONE); CONVERSION_READY=true; read-only binding module only; Shadow/Live still pass raw fraction as quantity; AUTHORITY_EFFECT=NONE.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
         "config/governance/companion_fraction_to_units_contract_v1.json",
@@ -4663,7 +4663,7 @@
     {
       "id": "g2_runtime_primary_offline_observation_projection_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1; real mechanical path to canonical optimization learning input and M4\u2013M8 evidence return proven without DDO fixture on real path; fixture harness retained for isolated tests only; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
+      "statement": "G2 WP: durable Paper/Shadow/Testnet primary evidence projects into identity-bound offline observations and runtime_to_learning_input_v1; real mechanical path to canonical optimization learning input and M4–M8 evidence return proven without DDO fixture on real path; fixture harness retained for isolated tests only; PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false; M10 apply boundary untouched.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
         "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
@@ -4686,7 +4686,7 @@
     {
       "id": "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "G2 runtime-derived learning evidence continues into canonical M4\u2013M8 evidence return loop without DDO fixture learning state on the real path; G2_REAL_SOURCE_USED=true; EXTERNAL_EFFECT=false.",
+      "statement": "G2 runtime-derived learning evidence continues into canonical M4–M8 evidence return loop without DDO fixture learning state on the real path; G2_REAL_SOURCE_USED=true; EXTERNAL_EFFECT=false.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
@@ -4696,7 +4696,7 @@
     {
       "id": "m4_m8_real_meta_optimization_feedback_continuation_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Real runtime G2\u2192M4\u2013M8 cycle output reaches canonical M6 meta-learning ingest and M7 bounded optimization feedback with fail-closed lineage; CLOSED_MECHANICAL_LEARNING_LOOP=true; CLOSED_PRODUCTIVE_OPTIMIZATION_LOOP=false.",
+      "statement": "Real runtime G2→M4–M8 cycle output reaches canonical M6 meta-learning ingest and M7 bounded optimization feedback with fail-closed lineage; CLOSED_MECHANICAL_LEARNING_LOOP=true; CLOSED_PRODUCTIVE_OPTIMIZATION_LOOP=false.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json",
@@ -4706,7 +4706,7 @@
     {
       "id": "real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Real runtime G2\u2192M4\u2013M8\u2192M6/M7 path continues through P5 optimization_envelope_evidence_v1 and meta_learning_routed_evidence_v1 into Evidence Adjudicator A with fail-closed lineage; EVIDENCE_ACCEPTANCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false.",
+      "statement": "Real runtime G2→M4–M8→M6/M7 path continues through P5 optimization_envelope_evidence_v1 and meta_learning_routed_evidence_v1 into Evidence Adjudicator A with fail-closed lineage; EVIDENCE_ACCEPTANCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1_decision_v1.json",
@@ -4737,7 +4737,7 @@
     {
       "id": "f1_m9_scoped_owner_apply_execution_real_continuation_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Real P4 L6 materialization boundary plus canonical F1/M9 per-ingress Owner Apply execution proof with explicit state phases; Real-P4\u2194F1/M9 join fail-closed (not canonical); CONFIGURATION_RUNTIME_APPLIED on EXECUTION_PROOF only; STOP before Productive Activation; RUNTIME_APPLY_STARTED=false globally.",
+      "statement": "Real P4 L6 materialization boundary plus canonical F1/M9 per-ingress Owner Apply execution proof with explicit state phases; Real-P4↔F1/M9 join fail-closed (not canonical); CONFIGURATION_RUNTIME_APPLIED on EXECUTION_PROOF only; STOP before Productive Activation; RUNTIME_APPLY_STARTED=false globally.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_APPLY_EXECUTION_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1_decision_v1.json",
@@ -4749,7 +4749,7 @@
     {
       "id": "f1_m9_scoped_owner_productive_runtime_apply_start_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6887 F1/M9 governed productive runtime apply start: AUTHORIZED_PRODUCTIVE_APPLY on digest 3f089595\u2026 lineage; RUNTIME_APPLY_STARTED derived from successful apply execution (not naked flip); threshold e556ea63\u2026 re-adjudicated; presence-gate transport + bounded enforcement readiness; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "statement": "Post-#6887 F1/M9 governed productive runtime apply start: AUTHORIZED_PRODUCTIVE_APPLY on digest 3f089595… lineage; RUNTIME_APPLY_STARTED derived from successful apply execution (not naked flip); threshold e556ea63… re-adjudicated; presence-gate transport + bounded enforcement readiness; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_F1_M9_SCOPED_OWNER_PRODUCTIVE_RUNTIME_APPLY_START_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
@@ -4760,7 +4760,7 @@
     {
       "id": "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "F1/M9 productive runtime threshold consumer wiring: 600s ratified seam \u2192 transport \u2192 presence gate \u2192 bounded #6802 enforcement \u2192 MV2 alpha boundary on hardening v2 bridge and integrated offline replay; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
+      "statement": "F1/M9 productive runtime threshold consumer wiring: 600s ratified seam → transport → presence gate → bounded #6802 enforcement → MV2 alpha boundary on hardening v2 bridge and integrated offline replay; REAL_P4_F1_M9_JOIN_NOT_CANONICAL; PRODUCTIVE_ACTIVATION_AUTHORIZED=false.",
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_F1_M9_PRODUCTIVE_RUNTIME_THRESHOLD_CONSUMER_WIRING_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
@@ -4771,7 +4771,7 @@
     {
       "id": "current_productive_activation_policy_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "CURRENT Productive Activation policy: singular owner governance.current_productive_activation_policy_v1; lineage-bound record; runtime admission at F1/M9 consumer surfaces; 600s/e556ea63\u2026 preserved; continuous run, external effect, POST, permit remain false.",
+      "statement": "CURRENT Productive Activation policy: singular owner governance.current_productive_activation_policy_v1; lineage-bound record; runtime admission at F1/M9 consumer surfaces; 600s/e556ea63… preserved; continuous run, external effect, POST, permit remain false.",
       "evidence_refs": [
         "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md",
         "config/governance/current_productive_activation_policy_v1_record.json",
@@ -4793,7 +4793,7 @@
     {
       "id": "external_effect_boundary_forensic_review_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "External Effect boundary forensic review post-#6892: chain closure Productive Activation + Continuous Run \u2192 PRE_EXTERNAL \u2192 standing external-effect gate; POST/permit/credential access remain unauthorized; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION.",
+      "statement": "External Effect boundary forensic review post-#6892: chain closure Productive Activation + Continuous Run → PRE_EXTERNAL → standing external-effect gate; POST/permit/credential access remain unauthorized; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION.",
       "evidence_refs": [
         "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
         "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",

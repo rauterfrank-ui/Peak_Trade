@@ -74,14 +74,7 @@ REQUIRED_UNKNOWN_IDS = (
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
 )
-REQUIRED_CONFLICTING_IDS = (
-    "zero_authorized_productive_targets",
-    "treasury_import_wording",
-    "live_authorized_cap2_vs_full_core",
-    "m4_nongoals_vs_modules",
-    "limit_names_vs_equity_collapse",
-    "mv2_decision_authority_map_tokens",
-)
+REQUIRED_CONFLICTING_IDS = ("limit_names_vs_equity_collapse",)
 REQUIRED_PARTIAL_IDS = (
     "ranking_activation",
     "mv2_proof_baseline_sha",
@@ -148,6 +141,11 @@ REQUIRED_PARTIAL_IDS = (
     "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
     "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
     "b05_vs_singular_risk_owner",
+    "zero_authorized_productive_targets",
+    "treasury_import_wording",
+    "live_authorized_cap2_vs_full_core",
+    "m4_nongoals_vs_modules",
+    "mv2_decision_authority_map_tokens",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",
 )
