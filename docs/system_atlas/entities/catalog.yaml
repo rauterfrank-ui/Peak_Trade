@@ -1411,6 +1411,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: S7 pre-persist gate on non-null outgoing_cursor;
+    # FAILURE_OUTGOING_CURSOR_NOT_PRODUCED preserves upstream cycle diagnostics; no cursor fabrication;
+    # ATLAS_AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # Layered episode-store bootstrap after S7 compose; TRADING_SEMANTICS_CHANGED=false;
     # EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
@@ -1455,6 +1458,7 @@ entities:
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: T2 compose failures map to structured join error (not T2_CYCLE_EXCEPTION); ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6909 POST6908: invoke_join cold-start aligns MV2 cap61 floor to injected venue C1 (candle_last-60) before governed cycle; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6908 ENDGAME_F1_M9: invoke_join common_epoch_decision_epoch for T2 enter-live-29p WP1 epoch alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
@@ -10623,6 +10627,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: governed-cycle orchestrator maps N1 join failures to structured T2 reason_code; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: FAM_A_PRODUCTIVE_LINEAGE_ENFORCEMENT_V1 PR_6912
     # NAVIGATION_ONLY: Cap21–Cap23 shared persist assert + Cap24 reserved-root guard; ATLAS_AUTHORITY=NONE; ENFORCEMENT_ONLY=true; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
     # PR_6910 S6_S7_C1_CURSOR_OWNERSHIP_SEAM: S7/MV2 durable C1 persist owns floor; S6 advance no-op on equal venue_event_time; STALE_OR_EQUAL_C1 eliminated; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
