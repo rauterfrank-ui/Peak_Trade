@@ -70,7 +70,7 @@ def test_gap_true_01_closes_with_executable_envelope_pre_external(tmp_path: Path
     bound = _bound()
     g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
     lanes_root = tmp_path / "lanes"
-    _arm, enter_closes, mark_px, event_ts = (
+    _arm, enter_closes, mark_px, event_ts, _aligned_g17 = (
         prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
             bound=bound,
             g17_typed_vol_producer=g17,

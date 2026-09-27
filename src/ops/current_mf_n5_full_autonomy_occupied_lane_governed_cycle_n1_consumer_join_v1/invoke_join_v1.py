@@ -302,6 +302,7 @@ def _t2_from_s7(
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None,
     candles_payload: Mapping[str, Any],
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    common_epoch_decision_epoch: str | None = None,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         observation = kwargs.get("observation")
@@ -333,7 +334,8 @@ def _t2_from_s7(
         if str(bound.venue_native_id or "").strip() != native_id:
             _fail(FAILURE_IDENTITY_MISMATCH, native_id)
         replay = invocation.cycle_result.replay
-        epoch = _iso_utc(float(s7_base["observed_unix"]))
+        bound_epoch = str(common_epoch_decision_epoch or "").strip()
+        epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         portfolio_slot = None
         if portfolio_budget_owner is not None:
             evidence = getattr(replay, "evidence", None)
@@ -454,6 +456,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    common_epoch_decision_epoch: str | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -531,6 +534,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             live_29p_injected=live_29p_injected,
             candles_payload=dict(candles_payload),
             portfolio_budget_owner=portfolio_budget_owner,
+            common_epoch_decision_epoch=common_epoch_decision_epoch,
         )
         cycle_result = run_current_productive_governed_cycle_v1(
             authorization=CurrentProductiveGovernedCycleAuthorizationV1(
