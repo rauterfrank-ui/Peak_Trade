@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "04345330c0898ccf2682c88fd58c32f102a8001d",
+  "base_sha": "c93ea739848963b0c971161d44538be19292317c",
   "changed_paths": [
     "config/governance/current_productive_actual_venue_post_admission_v1_decision.json",
     "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
@@ -11,40 +11,27 @@
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/governance/current_productive_actual_venue_post_admission_policy_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
-    "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
-    "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py"
+    "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
   ],
-  "changed_paths_sha256": "ab555f6f70d896ef66ebaede5fb8c49f9890710479b6c86fd715e33b7ced6f32",
+  "changed_paths_sha256": "8734b9f681d58e82064dcefbf2dd55fbf07ea9ef89619299016085aac154d742",
   "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "evidence_refs": [
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
     "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py"
+    "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR6901 runtime-reach join: typed EXECUTABLE Enter envelope handoff PRE_EXTERNAL to PR6900 one-shot POST boundary; atlas/map currency; no POST.",
+  "reason": "Baseline pin currency: EXPECTED_BASELINE_ORIGIN_MAIN_SHA aligned to PR6901 merge squash c93ea739 for #6900/#6901 bounded Enter POST path; map/atlas currency; no POST; no authority change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

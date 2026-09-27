@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR6901 threads typed EXECUTABLE Enter FinalOrderEnvelopeV1 from T2 through PRE_EXTERNAL to the PR6900 one-shot POST join boundary; no POST; standing external-effect pins false.
+- Baseline pin currency for #6900/#6901 bounded Enter POST path: EXPECTED_BASELINE_ORIGIN_MAIN_SHA c93ea739 (PR6901 merge squash); no POST; standing external-effect pins false.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=PR6901_FRESH_EXECUTABLE_ENTER_ENVELOPE_RUNTIME_REACH_V1
+- modified_by=PR6901_BASELINE_PIN_CURRENCY_POST_MERGE_C93EA739_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
