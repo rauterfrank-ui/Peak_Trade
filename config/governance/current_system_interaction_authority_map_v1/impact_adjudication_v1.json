@@ -1,34 +1,32 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "71dea03cf7ce1976f8631d5defb1e053f8d64a3f",
+  "base_sha": "20e2a6483d2577a21cf27850d4f4ee6e54c3e346",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
-    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
   ],
-  "changed_paths_sha256": "7ef4c0d228195f0366478c58aea103072ec346decbe929eb1afd6d2183790835",
+  "changed_paths_sha256": "d81807dc828acf238f8d38fa950e669f6c21d756d9960641c2f47fe41add2ba7",
   "covered_candidate_paths": [
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
-    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
-    "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+    "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
+    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6909: cold-start C1 floor bind + claims guard; map/atlas currency; no venue POST.",
+  "reason": "PR #6910: S6/S7 C1 cursor ownership seam — S7 durable persist owns floor; S6 advance no-op reconcile; map/atlas currency; no venue POST.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

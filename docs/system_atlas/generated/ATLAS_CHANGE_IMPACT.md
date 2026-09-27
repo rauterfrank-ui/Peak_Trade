@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6909: occupied-lane N1 invoke cold-start binds MV2 cap61 last_finalized_event_ts_unix to injected venue C1 timeline before governed cycle (fixes false STALE_C1); PRE_EXTERNAL claims guard permits canonical SECTION_* symbolic authority labels; no threshold relaxation; no venue POST.
+- PR #6910: S7 durable C1 cursor persist owns floor; S6 sequencing advance no-op reconciles equal venue_event_time after productive T2 (fixes STALE_OR_EQUAL_C1:cursor_advance); stub-T2 bump unchanged; no threshold relaxation; no venue POST.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=POST6908_COLD_START_C1_FLOOR_AND_CLAIMS_GUARD_V1
+- modified_by=S6_S7_C1_CURSOR_OWNERSHIP_SEAM_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
