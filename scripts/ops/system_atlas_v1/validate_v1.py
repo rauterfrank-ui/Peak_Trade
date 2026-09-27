@@ -300,6 +300,8 @@ _HISTORICAL_DOMAIN_CENSUS_PAYLOADS = (
 def _validate_historical_domain_census_payloads(
     atlas: dict[str, Any], meta: dict[str, Any]
 ) -> None:
+    if int(meta.get("historical_domain_census_payload_count") or 0) == 0:
+        return
     bound_sha = str(meta.get("domain_census_payloads_bound_sha") or "")
     reviewed = str(meta.get("current_reviewed_at_sha") or meta.get("origin_main_sha") or "")
     for rel in _HISTORICAL_DOMAIN_CENSUS_PAYLOADS:
@@ -319,7 +321,11 @@ def _validate_historical_domain_census_payloads(
 
 
 def _validate_master_v2_inventory(atlas: dict[str, Any], meta: dict[str, Any]) -> None:
+    if meta.get("master_v2_module_file_inventory_complete") is not True:
+        return
     inv = atlas["records"].get("census/master_v2_module_inventory.yaml") or {}
+    if not inv:
+        return
     files = list(inv.get("files") or [])
     specs = list(inv.get("capability_spec_files") or [])
     if int(inv.get("python_file_count") or 0) != len(files):

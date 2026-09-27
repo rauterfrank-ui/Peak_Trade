@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `ATLAS_LEGACY_ERADICATION_V1`.
 
 ## Workflow
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- FINAL_CURRENT_AUTHORITY_CLOSURE_V1: navigation-only Atlas/census review rebind after Owner ratification of productive CRS four-slot equity bind and layered safety authorities; CSIA closure of limit_names_vs_equity_collapse, safety_owner_unclosed, and kill_switch_full_core_safety_owner; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; no Atlas legacy eradication.
-- introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=FINAL_CURRENT_AUTHORITY_CLOSURE_V1
+- ATLAS_LEGACY_ERADICATION_V1 fixpoint extension: historical census payloads purged; 450 forensic legacy nodes removed (216 catalog + 234 DELETE_SAFE residual); 14 CURRENT_SUPPORT nodes retained; historical_terminology removed after terminology survival check; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- introduced_by=ATLAS_LEGACY_ERADICATION_V1
+- modified_by=ATLAS_LEGACY_ERADICATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

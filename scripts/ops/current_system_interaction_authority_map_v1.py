@@ -87,6 +87,7 @@ REQUIRED_PARTIAL_IDS = (
     "productive_capital_context_offline_helper",
     "account_equity_blocks",
     "account_equity_mapping_unbound",
+    "atlas_legacy_eradication_fixpoint_extension_v1",
     "reference_price_authority_owner",
     "loops_a_and_b",
     "unified_blueprint_d02_inter_loop_matrix",

@@ -4859,6 +4859,17 @@
         "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json",
         "tests/governance/test_productive_activation_boundary_forensic_review_v1.py"
       ]
+    },
+    {
+      "id": "atlas_legacy_eradication_fixpoint_extension_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6922 ATLAS_LEGACY_ERADICATION fixpoint extension: AUTHORITY=NONE removal of twelve historical census payloads and 450 forensic legacy Atlas nodes (216 catalog + 234 DELETE_SAFE residual) with fourteen CURRENT_SUPPORT retain nodes; atlas relation evidence decoupled from purged census files; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false.",
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/system_atlas/provenance/atlas_legacy_fixpoint_extension_v1_manifest.json",
+        "docs/system_atlas/provenance/impact_state.yaml",
+        "tests/ops/test_system_atlas_v1.py"
+      ]
     }
   ]
 }

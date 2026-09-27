@@ -1,26 +1,23 @@
-# ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
-origin_main_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
-current_reviewed_at_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
-origin_main_subject: "docs(governance): POST_6919 mechanical truth hygiene v1 (#6920)"
-census_date_role: "workpackage_bound_not_runtime_truth"
+origin_main_sha: 0779a6596b5b585473ef4212a804477e6733ad29
+current_reviewed_at_sha: 0779a6596b5b585473ef4212a804477e6733ad29
+origin_main_subject: 'docs(governance): final CURRENT authority closure limit/equity + layered safety (#6921)'
+census_date_role: workpackage_bound_not_runtime_truth
 worktree_dirty: false
-navigation_rebind_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
-navigation_rebind_kind: FINAL_CURRENT_AUTHORITY_CLOSURE_V1_NAVIGATION_REBIND
-domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
-domain_census_payloads_content_origin_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+navigation_rebind_sha: 0779a6596b5b585473ef4212a804477e6733ad29
+navigation_rebind_kind: ATLAS_LEGACY_ERADICATION_V1
+domain_census_payloads_bound_sha: null
+domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
-historical_domain_census_payload_count: 12
+historical_domain_census_payload_count: 0
 historical_domain_census_stale_defect_if_head_differs: false
-worktree_note: >-
-  FINAL_CURRENT_AUTHORITY_CLOSURE_V1: CURRENT_REVIEWED_AT_SHA=7bf14311fc30f38bffbfe09738c8135c2e99508b
-  rebinding navigation/review only after Owner ratification of productive CRS equity bind and layered
-  safety authorities (limit_names_vs_equity_collapse + safety_owner_unclosed + kill_switch_full_core_safety_owner).
-  Twelve domain census payloads remain KEEP_NONCURRENT_REFERENCE with CONTENT_ORIGIN_SHA=615de3b307132b73a60df33fd3bedfac811c8cce;
-  payload bytes were not exhaustively recensused. RUNTIME_SEMANTICS_CHANGED=false; Atlas AUTHORITY=NONE.
+worktree_note: 'ATLAS_LEGACY_ERADICATION_V1 fixpoint extension: removed twelve historical domain census payloads,
+  216 catalog legacy entities, and 234 adjudicated DELETE_SAFE residual ontology/venue/relation nodes; fourteen
+  CURRENT_SUPPORT retain nodes preserved; Atlas models CURRENT productive system plus support dependencies only.
+  RUNTIME_SEMANTICS_CHANGED=false; Atlas AUTHORITY=NONE.'
 okx_census_complete: true
 okx_current_tree_census_complete: true
-okx_historical_census_complete: true
+okx_historical_census_complete: false
 git_is_shallow: false
 git_is_partial_clone: false
 historical_fetch_required: false
@@ -30,26 +27,23 @@ master_v2_census_complete: true
 double_play_census_complete: true
 family_census_complete: true
 child_census_complete: true
-okx_census_scope: >-
-  current_origin_main_tree_literal_path_and_host_search plus bounded git
-  name-search for *okx* plus forensic persistence inventories plus
-  docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus
-  config/config.toml [exchange.okx_europe_eea]; not exhaustive blob-history
-  of every deleted non-okx-named module; in-repo fixture/docs/tests/config/product-type
-  inventories closed. External/temp forensic corpus is NOT_STARTED.
+okx_census_scope: current_origin_main_tree_literal_path_and_host_search plus bounded git name-search for *okx* plus forensic
+  persistence inventories plus docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md plus config/config.toml [exchange.okx_europe_eea];
+  not exhaustive blob-history of every deleted non-okx-named module; in-repo fixture/docs/tests/config/product-type inventories
+  closed. External/temp forensic corpus is NOT_STARTED.
 ssot_child_census_complete: true
 mmr_census_complete: true
 schema_file_inventory_complete: true
 schema_field_enumeration_complete: true
 master_v2_capability_spec_inventory_complete: true
-master_v2_module_file_inventory_complete: true
+master_v2_module_file_inventory_complete: false
 terminology_census_complete: true
 acronym_census_complete: false
 acronym_census_inventory_complete: true
 acronym_expansions_resolved: false
 dod_census_complete: true
 schema_census_complete: true
-historical_terminology_census_complete: true
+historical_terminology_census_complete: false
 system_atlas_primary_entrypoint: docs/system_atlas/generated/SYSTEM_ATLAS.md
 system_atlas_master_view_complete: true
 system_atlas_drilldown_links_valid: true
@@ -95,21 +89,18 @@ okx_surface_census:
   okx_script_named_file_count: 30
   okx_evidence_named_file_count: 121
 named_gaps:
-  - Family usages enumerated; no unified Families ontology (C-FAMILY-POLYVALENT-001)
-  - Vollautonomie vs Master Runbook Double Play order CONTRADICTED
-  - quoteCcy empty on EEA public instruments; uly not used for quote
-  - Canary/Flatten post-action and productive GFU membership of SUI XPERP unproven
-  - origin/main OKX-named deletions are zero; in-repo fixture structures inspected (147/147); external corpus NOT_STARTED
-  - WebSocket hosts configured; no proven live WS client
-  - Acronym expansions OPEN (EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING); terminology inventory is otherwise closed
-  - Remaining SCHEMA_VERSION tokens classified TYPE_ONLY/VERSION_TOKEN, not per-token SCHEMA entities
-  - Cap23 analytical exclusivity vs 11.13.5 canary hardcoded SUI (parallel authority)
-  - Master title V2.2 vs REVISION/Map V2.3 version-token mismatch
-  - Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED
-  - Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
-  - Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
-source_files_scanned_note: >-
-  Navigation review rebind CURRENT_REVIEWED_AT_SHA=7bf14311fc30f38bffbfe09738c8135c2e99508b
-  (FINAL_CURRENT_AUTHORITY_CLOSURE_V1). Domain census payload CONTENT_ORIGIN_SHA remains
-  615de3b307132b73a60df33fd3bedfac811c8cce
-  (WP-FA-07); stale_defect_if_head_differs=false on those payloads. Atlas AUTHORITY=NONE.
+- Family usages enumerated; no unified Families ontology (C-FAMILY-POLYVALENT-001)
+- Vollautonomie vs Master Runbook Double Play order CONTRADICTED
+- quoteCcy empty on EEA public instruments; uly not used for quote
+- Canary/Flatten post-action and productive GFU membership of SUI XPERP unproven
+- origin/main OKX-named deletions are zero; in-repo fixture structures inspected (147/147); external corpus NOT_STARTED
+- WebSocket hosts configured; no proven live WS client
+- Acronym expansions OPEN (EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING); terminology inventory is otherwise closed
+- Remaining SCHEMA_VERSION tokens classified TYPE_ONLY/VERSION_TOKEN, not per-token SCHEMA entities
+- Cap23 analytical exclusivity vs 11.13.5 canary hardcoded SUI (parallel authority)
+- Master title V2.2 vs REVISION/Map V2.3 version-token mismatch
+- Cyber header PRE_LIVE_GATE=PASS vs ratification JSON NOT_PASSED
+- Exact token HAS_FUNCTIONAL_CORE / FUNCTIONAL_CORE not found; Modul-Owner of one Trading Core is proven
+- Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
+source_files_scanned_note: ATLAS_LEGACY_ERADICATION_V1 @ 0779a6596b5b585473ef4212a804477e6733ad29. Historical domain census
+  payloads purged; CURRENT-only entity model. Atlas AUTHORITY=NONE.

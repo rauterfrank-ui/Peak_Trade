@@ -258,13 +258,6 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
-### FORENSIC_REFERENCE:information_corpus_persistence_base
-
-- direct_upstream: `(none)`
-- transitive_upstream: `(none)`
-- direct_downstream: `CHILD:nested_structural_child`
-- transitive_downstream: `CHILD:nested_structural_child`
-
 ### FUNCTIONAL_CORE:double_play
 
 - direct_upstream: `(none)`
@@ -524,20 +517,6 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
-### RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
-
-- direct_upstream: `RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`
-- transitive_upstream: `GATE:target_position_state, RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`
-- direct_downstream: `(none)`
-- transitive_downstream: `(none)`
-
-### RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
-
-- direct_upstream: `GATE:target_position_state`
-- transitive_upstream: `GATE:target_position_state`
-- direct_downstream: `(none)`
-- transitive_downstream: `(none)`
-
 ### RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1`
@@ -633,13 +612,6 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 
 - direct_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
 - transitive_upstream: `RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1`
-- direct_downstream: `(none)`
-- transitive_downstream: `(none)`
-
-### RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-
-- direct_upstream: `PHASE:section_11_14_live_accounting_reconstructed_adjudication, PHASE:section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication, PHASE:section_11_14_live_execution_code_exists_adjudication, PHASE:section_11_14_live_execution_path_reachable_adjudication, PHASE:section_11_14_live_fee_observed_adjudication, PHASE:section_11_14_live_fill_observed_adjudication, PHASE:section_11_14_live_handoff_complete_capture_seam_proof, PHASE:section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook, PHASE:section_11_14_live_handoff_future_authorized_contemporaneous_capture_window, PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract, PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation, PHASE:section_11_14_live_handoff_pos_producer_semantics_and_contract, PHASE:section_11_14_live_handoff_pos_semantics_canonical_binding, PHASE:section_11_14_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof, PHASE:section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding, PHASE:section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract, PHASE:section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind, PHASE:section_11_14_live_order_plan_observed_adjudication, PHASE:section_11_14_live_position_reconciled_adjudication, PHASE:section_11_14_live_private_read_only_proven_adjudication, PHASE:section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal, PHASE:section_11_14_live_restart_reconstructed_adjudication, PHASE:section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation, PHASE:section_11_14_live_restart_reconstructed_exhaustive_offline_census, PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication, PHASE:section_11_14_live_submit_ack_observed_adjudication, PHASE:section_11_14_live_submit_ack_observed_proof_criterion, PHASE:section_11_14_offline_evidence_ladder_surface, RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1`
-- transitive_upstream: `GATE:target_position_state, PHASE:section_11_14_live_accounting_reconstructed_adjudication, PHASE:section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication, PHASE:section_11_14_live_execution_code_exists_adjudication, PHASE:section_11_14_live_execution_path_reachable_adjudication, PHASE:section_11_14_live_fee_observed_adjudication, PHASE:section_11_14_live_fill_observed_adjudication, PHASE:section_11_14_live_handoff_complete_capture_seam_proof, PHASE:section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook, PHASE:section_11_14_live_handoff_future_authorized_contemporaneous_capture_window, PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract, PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation, PHASE:section_11_14_live_handoff_pos_producer_semantics_and_contract, PHASE:section_11_14_live_handoff_pos_semantics_canonical_binding, PHASE:section_11_14_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof, PHASE:section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding, PHASE:section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract, PHASE:section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind, PHASE:section_11_14_live_order_plan_observed_adjudication, PHASE:section_11_14_live_position_reconciled_adjudication, PHASE:section_11_14_live_private_read_only_proven_adjudication, PHASE:section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal, PHASE:section_11_14_live_restart_reconstructed_adjudication, PHASE:section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation, PHASE:section_11_14_live_restart_reconstructed_exhaustive_offline_census, PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication, PHASE:section_11_14_live_submit_ack_observed_adjudication, PHASE:section_11_14_live_submit_ack_observed_proof_criterion, PHASE:section_11_14_offline_evidence_ladder_surface, RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1, RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1`
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
@@ -754,14 +726,4 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - transitive_upstream: `(none)`
 - direct_downstream: `VENUE:okx_eea`
 - transitive_downstream: `VENUE:okx_eea`
-
-## Historical wiring (time-bounded; origin/main git)
-
-| id | source | relation | target | from | to | epistemic |
-| --- | --- | --- | --- | --- | --- | --- |
-| HW:ops_dp_specialists_introduced | src/ops/double_play | INTRODUCED | bull/bear specialists scaffold | 2026-02-20 | still present (quarantined) | STATUS=FORENSIC_RAW |
-| HW:master_v2_contains_dp_pure_stack | src/trading/master_v2 | CONTAINS | double_play_{state,survival,suitability,composition} | 2026-04-25 | current | STATUS=FORENSIC_RAW |
-| HW:webui_dp_dashboard_removed | src&#47;webui&#47;market_dashboard_readmodels_v1&#47;adapters&#47;double_play.py | REMOVED_CONSUMER | Double Play display | OPEN | 2026-07-17 | STATUS=FORENSIC_RAW |
-| HW:kraken_deactivated_okx_staged | config | SUPERSEDED_BY | disabled OKX target staging | 2026-06-27 | current (Kraken deactivated) | STATUS=FORENSIC_RAW |
-| HW:dp_core_wiring_restored | src&#47;trading&#47;master_v2&#47;double_play_core_wiring_v1.py | RESTORED | FUNCTIONAL_CORE:double_play facade | 2026-08-29 | current | STATUS=FORENSIC_RAW |
 
