@@ -46,6 +46,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
+    assert_current_productive_cap22_ranking_policy_binding_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     ALLOWED_OWNER_GOS,
     CANONICAL_PACK_RELPATH,
@@ -53,6 +56,8 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveEeaUniverseTo29PError,
     execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1,
 )
+from src.ops.peak_trade_ranking_matrix_policy_v1 import POLICY_ID as RATIFIED_CAP22_POLICY_ID
+from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
@@ -231,6 +236,8 @@ def _run(tmp_path: Path, **overrides):
 
 
 def test_flags_and_authority_bounds() -> None:
+    assert RANKING_POLICY_ID == RATIFIED_CAP22_POLICY_ID
+    assert_current_productive_cap22_ranking_policy_binding_v1()
     assert CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_ADAPTER_CREATED is True
     assert CURRENT_PRODUCTIVE_29P_CANARY_INSTRUMENT_AUTHORITY_IMPORTED is False
     assert SEALED_LEGACY_CENSUS_REOPENED is False

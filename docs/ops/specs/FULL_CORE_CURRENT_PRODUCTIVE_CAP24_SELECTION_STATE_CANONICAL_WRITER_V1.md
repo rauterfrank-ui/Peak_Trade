@@ -14,9 +14,12 @@ Derived spec. Non-SSOT. Closes orchestration gap
 `acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1`.
 
 Cap-2.1 / Cap-2.2 / Cap-2.3 remain sole selection/ranking authorities.
-This slice persists their outputs only via existing producers
-(`run_cap21_to_cap23_persist_productive_v1`). Cap-2.4 handoff remains
-consumer-only.
+Cap-2.2 policy binding is `PEAK_TRADE_RANKING_MATRIX_POLICY_V1` (B03 owner;
+producer constant must match via
+`assert_current_productive_cap22_ranking_policy_binding_v1`). This slice
+persists outputs only via existing producers
+(`run_cap21_to_cap23_persist_productive_v1`, including B05 feature input for
+Cap-2.1-only CURRENT productive input). Cap-2.4 handoff remains consumer-only.
 
 ```text
 THIS_SLICE=11.2.1.EK.FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER
