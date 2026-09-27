@@ -149,6 +149,7 @@ S5CycleRunnerV1 = Callable[..., CurrentProductiveGovernedCycleResultV1]
 TimeFnV1 = Callable[[], float]
 SleepFnV1 = Callable[[float], None]
 CancelFnV1 = Callable[[], bool]
+IterationAuthorityGateV1 = Callable[[int], None]
 
 
 class CurrentProductiveGovernedContinuousCycleOrchestratorError(ValueError):
@@ -497,6 +498,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     time_fn: TimeFnV1 | None = None,
     sleep_fn: SleepFnV1 | None = None,
     cancel_requested: CancelFnV1 | None = None,
+    iteration_authority_gate_v1: IterationAuthorityGateV1 | None = None,
 ) -> CurrentProductiveGovernedContinuousCycleRunResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
@@ -718,6 +720,21 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     owner_next="C1 failed cursor freshness. S5 was not invoked. Do not resume.",
                 )
             cycle_index = len(records) + 1
+            if iteration_authority_gate_v1 is not None:
+                try:
+                    iteration_authority_gate_v1(cycle_index)
+                except Exception as exc:
+                    return _stop(
+                        result_disposition=DISPOSITION_FAIL_CLOSED,
+                        result_reason="ITERATION_AUTHORITY_GATE_DENIED",
+                        result_terminal="AUTHORITY_VIOLATION",
+                        state=STATE_FAILED_STOP,
+                        blocker=str(exc),
+                        owner_next=(
+                            "Iteration authority gate denied before S5 cycle. "
+                            "Continuous run terminated. Do not resume."
+                        ),
+                    )
             consume_id = mint_s5_cycle_consume_instance_id_v1(
                 run_id=run_id,
                 cycle_index=cycle_index,

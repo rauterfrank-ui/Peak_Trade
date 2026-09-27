@@ -1,0 +1,47 @@
+{
+  "schema_version": "current_continuous_run_policy/v1",
+  "policy_id": "CURRENT_CONTINUOUS_RUN_POLICY_V1",
+  "policy_owner": "governance.current_continuous_run_policy_v1",
+  "policy_authorized": true,
+  "owner_go": true,
+  "baseline_origin_main_sha": "79a8b581e66346b7d40cf402cbc8f1f05f156678",
+  "orchestration_envelope": "BOUNDED_PRE_EXTERNAL_CONTINUOUS_PRODUCTIVE_CYCLES",
+  "target_orchestrator_surface": "GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1",
+  "target_orchestrator_module": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+  "target_runtime_binding_module": "src/governance/current_continuous_run_runtime_binding_v1.py",
+  "admitted_runtime_surfaces": [
+    "F1_M9_THRESHOLD_CONSUMER_HARDENING_V2_BRIDGE",
+    "F1_M9_THRESHOLD_CONSUMER_INTEGRATED_OFFLINE_REPLAY"
+  ],
+  "bound_lineage": {
+    "productive_activation_policy_record_config": "config/governance/current_productive_activation_policy_v1_record.json",
+    "productive_activation_policy_record_digest": "692f70db6c42e3b859972ec2946be31eec4ac581096ca2c5e1fe71772eeea4d1",
+    "productive_activation_owner_go_config": "config/governance/current_productive_activation_policy_owner_go_v1_decision.json",
+    "ratified_threshold_numeric_max_age_seconds": 600,
+    "owner_threshold_record_digest": "e556ea63f68df3651cf38ef4d49d675f94a0e20f67c5b72f9044f9492b9bf109",
+    "authorized_owner_apply_record_digest": "3f0895951d0708d017326a8b4f779c433d609d09d67459fe47f1239f214a2f95"
+  },
+  "lifecycle_semantics": {
+    "not_admitted": "CONTINUOUS_RUNTIME_ADMISSION_DENIED_FAIL_CLOSED",
+    "admitted": "CONTINUOUS_RUNTIME_ADMISSION_GRANTED",
+    "running": "CONTINUOUS_RUN_IN_PROGRESS",
+    "stop_requested": "STOP_REQUESTED_NO_ADDITIONAL_CYCLES",
+    "stopped": "CONTINUOUS_RUN_STOPPED_TERMINAL",
+    "failed": "CONTINUOUS_RUN_FAILED_FAIL_CLOSED"
+  },
+  "iteration_admission_semantics": "REVALIDATE_CONTINUOUS_AND_PRODUCTIVE_ACTIVATION_EACH_CYCLE",
+  "failure_semantics": "FAIL_CLOSED_STOP_NO_SILENT_RETRY",
+  "stop_semantics": "STOP_SCHEDULING_ADDITIONAL_CYCLES_BOUNDED_CYCLE_CONTRACT",
+  "cadence_dependency": "VALIDATION_BOUNDS_ONLY_NOT_PRODUCTIVE_TRADING_CADENCE",
+  "explicit_non_implications": {
+    "external_effect_authorized": false,
+    "post_allowed": false,
+    "wire_send_permitted": false,
+    "real_venue_post_allowed": false,
+    "autonomy_can_mint_permit": false,
+    "autonomy_can_post": false,
+    "credential_access_performed": false
+  },
+  "semantic_definition": "Governed repeated invocation of bounded productive runtime cycles; each cycle independently re-enters admission and terminates at PRE_EXTERNAL.",
+  "policy_record_digest": "42b5ee16a4307b6308451f73ee288afc76f70a12392dae3dad90eda8de963948"
+}

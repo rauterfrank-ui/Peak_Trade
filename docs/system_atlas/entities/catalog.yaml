@@ -7062,6 +7062,27 @@ entities:
       no continuous run, external effect, POST, permit, or credential authority.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_continuous_run_policy_v1
+    kind: CONTRACT
+    name: CURRENT Continuous Run policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md
+      - src/governance/current_continuous_run_policy_v1.py
+      - config/governance/current_continuous_run_policy_v1_record.json
+    evidence_sources:
+      - tests/governance/test_current_continuous_run_policy_v1.py
+      - src/governance/governed_current_continuous_run_policy_closure_v1.py
+    notes: >-
+      Governed repeated PRE_EXTERNAL-bounded productive cycles only; requires Productive
+      Activation lineage; F1/M9 600s per-cycle consumer; no external effect, POST, permit,
+      or credential authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
@@ -8607,6 +8628,23 @@ entities:
     notes: >-
       Runtime admission validator/consumer for bounded productive path; gates F1/M9 consumer
       surfaces. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:current_continuous_run_policy_v1
+    kind: RUNTIME_COMPONENT
+    name: CURRENT Continuous Run policy v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
+    source_paths:
+      - src/governance/current_continuous_run_policy_v1.py
+      - src/governance/current_continuous_run_runtime_binding_v1.py
+    evidence_sources:
+      - src/governance/governed_current_continuous_run_policy_closure_v1.py
+      - tests/governance/test_current_continuous_run_policy_v1.py
+    notes: >-
+      Continuous runtime admission validator and S6 orchestrator binding; per-cycle
+      Productive Activation + F1/M9 revalidation. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
     kind: RUNTIME_COMPONENT

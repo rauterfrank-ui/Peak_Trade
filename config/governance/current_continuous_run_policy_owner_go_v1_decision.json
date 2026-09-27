@@ -1,0 +1,15 @@
+{
+  "workpackage_id": "CURRENT_CONTINUOUS_RUN_POLICY_V1",
+  "owner_go": true,
+  "owner_go_token": "OWNER_GO_CONTINUOUS_RUN_POLICY",
+  "baseline_origin_main_sha": "79a8b581e66346b7d40cf402cbc8f1f05f156678",
+  "current_continuous_run_policy_owner_go": true,
+  "continuous_run_authorized": true,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "runtime_authorization_effect": "CONTINUOUS_RUNTIME_ADMISSION_ONLY",
+  "policy_record_config": "config/governance/current_continuous_run_policy_v1_record.json",
+  "normative_spec": "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md",
+  "earliest_unclosed_boundary": "EXTERNAL_EFFECT_AUTHORIZATION",
+  "next_genuine_blocker": "EXTERNAL_EFFECT_OWNER_GO"
+}
