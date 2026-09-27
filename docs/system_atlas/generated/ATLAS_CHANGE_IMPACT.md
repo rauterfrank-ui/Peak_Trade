@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6917: G17 productive typed-vol CMC bind aligns with canonical process-internal reuse on DUPLICATE_NOOP; navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change; ENFORCEMENT_ONLY=true; POST_COUNT=0.
+- PR #6918: Track A final closure natural-enter fixture alignment (EPOCH/CRS join + layered upscope cursor seed); navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change; TEST_FIXTURE_ONLY=true; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=G17_TYPED_VOL_CMC_DUPLICATE_NOOP_REUSE_V1
+- modified_by=TRACK_A_FINAL_CLOSURE_FIXTURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
