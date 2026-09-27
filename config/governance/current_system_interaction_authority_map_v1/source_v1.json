@@ -4135,13 +4135,23 @@
     {
       "id": "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; FIRST_BOUNDED milestone flag only after explicit governed runtime proof.",
+      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; PRE_EXTERNAL may supply typed envelope via PR6901 runtime-reach join.",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
         "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
         "config/governance/current_productive_actual_venue_post_admission_v1_decision.json",
         "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
         "src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PRE_EXTERNAL typed EXECUTABLE Enter FinalOrderEnvelopeV1 runtime handoff to PR6900 one-shot POST join boundary; closes envelope object discard at T2; no POST and POST-GO remains unconsumed.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
+        "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py"
       ]
     },
     {

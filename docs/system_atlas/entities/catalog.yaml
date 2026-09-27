@@ -7271,7 +7271,29 @@ entities:
     notes: >-
       Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing,
       eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1.
+      PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live.
       ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
+    kind: CONTRACT
+    name: Fresh EXECUTABLE Enter envelope runtime reach to one-shot POST join v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1
+    authority_sources:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md
+    source_paths:
+      - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+    evidence_sources:
+      - tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py
+    notes: >-
+      PRE_EXTERNAL typed FinalOrderEnvelopeV1 handoff to PR6900 one-shot POST join boundary;
+      closes FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME; no POST;
+      POST_GO_CONSUMED=false. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
@@ -10960,6 +10982,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py
       - src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py
       - src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
       - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,10 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:external_effect_boundary_forensic_review_v1` |
-| `RUNTIME_COMPONENT:external_effect_gate_v1` |
-| `RUNTIME_COMPONENT:pre_external_to_external_effect_boundary_bounded_wp_v1` |
+| `CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1` |
+| `CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- External Effect boundary forensic review v1; chain closure through PRE_EXTERNAL to standing external-effect gate; external effect authorization remains fail-closed.
+- PR6901 threads typed EXECUTABLE Enter FinalOrderEnvelopeV1 from T2 through PRE_EXTERNAL to the PR6900 one-shot POST join boundary; no POST; standing external-effect pins false.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
+- modified_by=PR6901_FRESH_EXECUTABLE_ENTER_ENVELOPE_RUNTIME_REACH_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
