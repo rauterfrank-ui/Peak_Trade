@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
+| `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6918: Track A final closure natural-enter fixture alignment (EPOCH/CRS join + layered upscope cursor seed); navigation-only Atlas coupling; map_authority=NONE; no CSIA source_v1 change; TEST_FIXTURE_ONLY=true; POST_COUNT=0.
+- CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1: navigation-only rebind to origin/main d0edb85; CSIA WP-A/B→WP-C ingest edges; S5/S6/cursor representation; sidestate cursor Atlas entity; census_meta SHA rebind; map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
-- modified_by=TRACK_A_FINAL_CLOSURE_FIXTURE_V1
+- modified_by=CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

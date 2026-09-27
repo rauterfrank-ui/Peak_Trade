@@ -96,8 +96,14 @@ in the Master Runbook and the named packages.
 | `send_capable_adapter_v1` | `src/ops/governed_productive_account_equity_authority_producer_v1/` and Full-Core composition root |
 | K1 governed-cycle credential bind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py` |
 | K1 macOS Keychain backend kind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py` |
-| Exactly-one governed cycle | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
-| `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |
+| S5 exactly-one governed cycle (`run_current_productive_governed_cycle_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
+| S6 continuous-run orchestrator (`governed_continuous_cycle_orchestrator_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` / `docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md` |
+| Side-state / confirmation cursor seam | `src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py` |
+| Productive Full-Core pre-external closure entry | `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py` |
+| WP-A public market data runtime | `src/ops/peak_trade_public_market_data_runtime_v1/` / `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
+| WP-B private account state runtime | `src/ops/okx_eea_private_account_state_runtime_v1/` / `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
+| WP-C public/private runtime convergence | `src/ops/market_data_private_state_runtime_convergence_v1/` / `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md` |
+| Post-#6828 architecture closure (navigation) | `config/governance/post_6828_architecture_closure_v1.json` / `docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md` |
 | Venue-plan tdMode and order-environment authority (navigation only) | `src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |
 | Single Selected Future binding | `src/ops/single_selected_future_runtime_binding_v1/` |

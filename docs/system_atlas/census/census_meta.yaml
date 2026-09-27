@@ -1,21 +1,20 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
-origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
-origin_main_subject: "feat(learning): complete DDO observation host decorators (WP-FS-B1) (#6215)"
+origin_main_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
+origin_main_subject: "test(ops): Track A final closure fixture repair (#6918)"
 census_date_role: "workpackage_bound_not_runtime_truth"
 worktree_dirty: false
-navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
-navigation_rebind_kind: FRESH_NAVIGATION_REBIND_NOT_DOMAIN_RECENSUS
+navigation_rebind_sha: d0edb85fc83a5415a8a652299144cd0fe6da7644
+navigation_rebind_kind: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1_NAVIGATION_REBIND
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
 worktree_note: >-
-  Fresh navigation rebind of origin_main_sha (CURRENT_REPO_SHA) to current
-  origin/main after WP-FS-B1 git merge #6215
-  SHA 14e8a58f32dcb6b521be6b2559b388bf27360194. Previously collected
-  domain census payloads remain bound to HISTORICAL_EVIDENCE_SHA
-  WP-FA-07 615de3b307132b73a60df33fd3bedfac811c8cce and have NOT been
-  freshly exhaustively rerun. Completeness flags are inherited navigation
-  closures from that payload SHA, not a claim of a new exhaustive recensus.
+  Navigation rebind for CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1 at
+  origin/main SHA d0edb85fc83a5415a8a652299144cd0fe6da7644 (post #6918).
+  Domain census payloads remain bound to HISTORICAL_EVIDENCE_SHA
+  WP-FA-07 615de3b307132b73a60df33fd3bedfac811c8cce; domain_census_payloads_fresh_exhaustive_recensus=false.
+  This rebind updates navigation/coupling to CSIA WP-A/B→WP-C edges and
+  S5/S6/cursor representation only; not an exhaustive domain recensus.
   CURRENT_REPO_SHA and HISTORICAL_EVIDENCE_SHA are distinct roles.
   Atlas AUTHORITY=NONE.
 okx_census_complete: true
@@ -110,7 +109,7 @@ named_gaps:
   - Flatten transport implemented but LIVE_WIRE_DISABLED; LIVE_FLATTEN_PROVABILITY not PROVEN
 source_files_scanned_note: >-
   Fresh navigation rebind of origin_main_sha / CURRENT_REPO_SHA to
-  14e8a58f32dcb6b521be6b2559b388bf27360194 (#6215). Domain census payloads
+  d0edb85fc83a5415a8a652299144cd0fe6da7644 (#6215). Domain census payloads
   remain bound to HISTORICAL_EVIDENCE_SHA
   615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not freshly
   exhaustively rerun. Atlas AUTHORITY=NONE.
