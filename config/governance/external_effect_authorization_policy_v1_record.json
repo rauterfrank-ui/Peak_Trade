@@ -1,0 +1,35 @@
+{
+  "schema_version": "external_effect_authorization_policy/v1",
+  "policy_id": "EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1",
+  "policy_owner": "governance.external_effect_authorization_policy_v1",
+  "policy_authorized": true,
+  "owner_go": true,
+  "baseline_origin_main_sha": "b5e0fd94bbf7ba5f1742c98086e548d450ab4d2b",
+  "authorization_envelope": "PRE_EXTERNAL_TO_STANDING_EXTERNAL_EFFECT_GATE_POLICY",
+  "target_external_effect_gate_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py",
+  "target_envelope_send_seam_module": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py",
+  "target_gate_binding_module": "src/governance/external_effect_authorization_policy_gate_binding_v1.py",
+  "gate_seam": "STANDING_EXTERNAL_EFFECT_GATE_AND_ENVELOPE_SEAM",
+  "boundary_terminal": "PRE_EXTERNAL_EFFECT_BOUNDARY",
+  "bound_lineage": {
+    "productive_activation_policy_record_config": "config/governance/current_productive_activation_policy_v1_record.json",
+    "productive_activation_policy_record_digest": "692f70db6c42e3b859972ec2946be31eec4ac581096ca2c5e1fe71772eeea4d1",
+    "continuous_run_policy_record_config": "config/governance/current_continuous_run_policy_v1_record.json",
+    "continuous_run_policy_record_digest": "42b5ee16a4307b6308451f73ee288afc76f70a12392dae3dad90eda8de963948",
+    "external_effect_boundary_forensic_review_decision_config": "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+    "external_effect_boundary_forensic_review_decision_digest": "fe077e1fe5da497a84f2219b801ab9037fe539f685ce33a055a5a956e3e930ed",
+    "pre_external_boundary_spec": "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md"
+  },
+  "explicit_non_implications": {
+    "standing_external_effect_authorized": false,
+    "post_allowed": false,
+    "wire_send_permitted": false,
+    "real_venue_post_allowed": false,
+    "autonomy_can_mint_permit": false,
+    "autonomy_can_post": false,
+    "credential_access_performed": false,
+    "permit_mint_authorized": false
+  },
+  "semantic_definition": "Governed semantic contract for PRE_EXTERNAL to standing external-effect gate seam; standing flags remain fail-closed.",
+  "policy_record_digest": "4fa8b5b34077d568d3575f83e1ad21e295e09d3bb7bf90a0b42e5631924653d0"
+}
