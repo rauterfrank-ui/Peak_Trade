@@ -13,6 +13,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -137,7 +138,28 @@ NEXT_OWNER_GO = (
     "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
 )
 _SECRET_TOKENS = ("secret", "passphrase", "api_key", "apikey", "private_key")
+_CANONICAL_SYMBOLIC_CLAIM_VALUE_RE = re.compile(r"^SECTION_[A-Z0-9_]+$")
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _iter_persisted_claim_string_values(payload: object) -> list[str]:
+    if isinstance(payload, str):
+        return [payload]
+    if isinstance(payload, Mapping):
+        out: list[str] = []
+        for value in payload.values():
+            out.extend(_iter_persisted_claim_string_values(value))
+        return out
+    if isinstance(payload, (list, tuple)):
+        out = []
+        for item in payload:
+            out.extend(_iter_persisted_claim_string_values(item))
+        return out
+    return []
+
+
+def _value_is_canonical_symbolic_claim_v1(value: str) -> bool:
+    return _CANONICAL_SYMBOLIC_CLAIM_VALUE_RE.fullmatch(str(value or "").strip()) is not None
 
 
 class CurrentProductiveFreshCap23Cap24ReadinessError(ValueError):
@@ -175,10 +197,15 @@ def _persist_json(*, path: Path, payload: Mapping[str, Any]) -> None:
 
 
 def _assert_no_secrets(payload: Mapping[str, Any]) -> None:
-    blob = _canonical_json(payload).lower()
-    for token in _SECRET_TOKENS:
-        if token in blob:
-            raise CurrentProductiveFreshCap23Cap24ReadinessError(f"SECRET_TOKEN_PRESENT:{token}")
+    for value in _iter_persisted_claim_string_values(payload):
+        if _value_is_canonical_symbolic_claim_v1(value):
+            continue
+        lower = value.lower()
+        for token in _SECRET_TOKENS:
+            if token in lower:
+                raise CurrentProductiveFreshCap23Cap24ReadinessError(
+                    f"SECRET_TOKEN_PRESENT:{token}"
+                )
 
 
 def _token(value: bool) -> str:

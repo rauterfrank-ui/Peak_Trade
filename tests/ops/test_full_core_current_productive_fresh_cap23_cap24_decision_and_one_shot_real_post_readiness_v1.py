@@ -67,6 +67,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     OWNER_GO,
     THIS_SLICE,
     CurrentProductiveFreshCap23Cap24ReadinessError,
+    _assert_no_secrets,
     execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
@@ -396,3 +397,22 @@ def test_ssot_docs_once_present() -> None:
     assert claims["TRANSPORT_ATTEMPTED"] == "false"
     assert claims["VENUE_MUTATION_PERFORMED"] == "false"
     assert verify_manifest_sha256_v1(store_root=pack) == 0
+
+
+def test_assert_no_secrets_accepts_canonical_private_get_auth_path_label() -> None:
+    _assert_no_secrets(
+        {
+            "PRIVATE_GET_AUTH_PATH": (
+                "SECTION_11_13_5_SECRETREF_VAULT_AND_K1_VENUE_AUTH_SESSION_V1"
+            ),
+        }
+    )
+
+
+def test_assert_no_secrets_rejects_credential_bearing_values() -> None:
+    with pytest.raises(CurrentProductiveFreshCap23Cap24ReadinessError) as exc:
+        _assert_no_secrets({"credential": "venue-passphrase-leak"})
+    assert "SECRET_TOKEN_PRESENT:passphrase" in str(exc.value)
+    with pytest.raises(CurrentProductiveFreshCap23Cap24ReadinessError) as exc2:
+        _assert_no_secrets({"note": "leaked-secret-value"})
+    assert "SECRET_TOKEN_PRESENT:secret" in str(exc2.value)

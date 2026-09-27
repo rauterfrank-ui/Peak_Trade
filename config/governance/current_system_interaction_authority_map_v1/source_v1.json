@@ -4240,6 +4240,17 @@
       ]
     },
     {
+      "id": "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6909: occupied-lane N1 invoke cold-start binds MV2 cap61 last_finalized_event_ts_unix to injected venue C1 timeline before governed cycle; PRE_EXTERNAL claims guard scans leaf string values and permits canonical SECTION_* symbolic authority labels; no STALE_C1 threshold relaxation; no venue POST.",
+      "evidence_refs": [
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+        "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+      ]
+    },
+    {
       "id": "whole_core_fresh_trusted_q0_enter_live_v1",
       "epistemic_class": "PARTIAL",
       "statement": "Full-Core enter-live F-02 closed: one read-only USDC availEq GET per ENTER via treasury single-source handoff; numeric Q0 bound on enter-live path; not Live POST; parallel direct GET module not active on same chain.",
