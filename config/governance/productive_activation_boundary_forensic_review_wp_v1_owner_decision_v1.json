@@ -1,0 +1,13 @@
+{
+  "workpackage_id": "PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1",
+  "owner_go": true,
+  "owner_go_token": "OWNER_GO_PRODUCTIVE_ACTIVATION_BOUNDARY_REVIEW",
+  "baseline_origin_main_sha": "d590b8142210680805f8dc159c5a2fb684e87737",
+  "productive_activation_boundary_forensic_review_authorized": true,
+  "productive_activation_authorized": false,
+  "continuous_run_authorized": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "runtime_authorization_effect": "NONE",
+  "scope": "forensic_review_and_static_proof_only"
+}

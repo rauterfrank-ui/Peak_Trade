@@ -1,0 +1,22 @@
+{
+  "workpackage_id": "PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1",
+  "owner_go": true,
+  "owner_wp_decision_config": "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+  "baseline_origin_main_sha": "d590b8142210680805f8dc159c5a2fb684e87737",
+  "forensic_review_complete": true,
+  "consumer_reachability_implies_productive_activation": false,
+  "f1_m9_600s_threshold_consumer_path_status": "WIRED_NOT_ACTIVATION",
+  "productive_activation_surface_class": "NAMED_EARLIEST_UNCLOSED_BOUNDARY_NOT_GLOBAL_BOOLEAN",
+  "productive_activation_authorized": false,
+  "continuous_run_authorized": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "wire_send_permitted_by_this_wp": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "credential_access_performed": false,
+  "earliest_unclosed_boundary": "PRODUCTIVE_ACTIVATION",
+  "next_genuine_blocker": "PRODUCTIVE_ACTIVATION_POLICY_OWNER_GO",
+  "normative_spec": "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md"
+}
