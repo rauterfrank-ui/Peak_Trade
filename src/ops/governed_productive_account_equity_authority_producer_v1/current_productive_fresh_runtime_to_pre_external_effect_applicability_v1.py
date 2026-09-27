@@ -701,9 +701,9 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                     )
                     ticker_payload = candles_payload = oi_payload = funding_payload = None
                     mark_history_payload = None
-                    ticker_err = candles_err = oi_err = funding_err = mark_history_err = (
-                        type(exc).__name__
-                    )
+                    ticker_err = candles_err = oi_err = funding_err = mark_history_err = type(
+                        exc
+                    ).__name__
             market_payloads = {
                 "ticker_error": ticker_err,
                 "candles_error": candles_err,
