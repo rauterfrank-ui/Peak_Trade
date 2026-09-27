@@ -7230,9 +7230,11 @@ entities:
     source_paths:
       - docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md
       - src/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py
+      - src/governance/current_productive_k1_opaque_signing_handle_pre_post_gate_binding_v1.py
       - src/governance/k1_opaque_signing_handle_governed_construction_v1.py
       - src/governance/current_productive_k1_pre_post_request_envelope_v1.py
       - src/governance/current_productive_k1_pre_post_productive_chain_v1.py
+      - src/governance/current_productive_real_venue_post_admission_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py
       - config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json
     evidence_sources:
