@@ -133,6 +133,7 @@ REQUIRED_PARTIAL_IDS = (
     "current_continuous_run_policy_v1",
     "external_effect_boundary_forensic_review_v1",
     "external_effect_authorization_policy_v1",
+    "standing_external_effect_lift_policy_v1",
     "b05_vs_singular_risk_owner",
     "c2_canonical_risk_sizing_authority_closure_v1",
     "c2_companion_conversion_dependency_closure_v1",

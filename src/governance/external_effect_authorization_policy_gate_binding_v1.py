@@ -14,6 +14,9 @@ from src.governance.external_effect_authorization_policy_v1 import (
     standing_external_effect_authorization_policy_authorized_v1,
     validate_external_effect_authorization_policy_record_v1,
 )
+from src.governance.standing_external_effect_lift_policy_v1 import (
+    governed_standing_external_effect_authorized_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
     ExternalEffectDecisionV1,
     evaluate_external_effect_v1,
@@ -63,6 +66,7 @@ def evaluate_policy_bound_external_effect_gate_v1(
     admission = evaluate_external_effect_policy_admission_v1(repo_root=root)
     gate = admission.gate_decision or evaluate_external_effect_v1()
     granted = admission.policy_admission_granted is True
+    lift_standing = governed_standing_external_effect_authorized_v1(repo_root=root)
     return PolicyBoundExternalEffectGateResultV1(
         policy_admission_granted=granted,
         gate_decision=gate,
@@ -72,11 +76,12 @@ def evaluate_policy_bound_external_effect_gate_v1(
         reason_codes=admission.reason_codes
         if granted
         else admission.reason_codes or (STATUS_ADMISSION_DENIED,),
-        standing_external_effect_authorized=admission.standing_external_effect_authorized,
+        standing_external_effect_authorized=lift_standing,
         post_allowed=admission.post_allowed,
         real_venue_post_allowed=admission.real_venue_post_allowed,
         permit_mint_authorized=admission.permit_mint_authorized,
         credential_access_performed=admission.credential_access_performed,
+        extra={"governed_standing_lift": str(lift_standing).lower()},
     )
 
 

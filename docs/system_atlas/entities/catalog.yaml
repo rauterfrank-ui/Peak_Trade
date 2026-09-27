@@ -7132,6 +7132,27 @@ entities:
       standing EXTERNAL_EFFECT_AUTHORIZED/POST/permit/credential remain false.
       ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:standing_external_effect_lift_policy_v1
+    kind: CONTRACT
+    name: Standing External Effect Lift policy v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1
+    authority_sources:
+      - docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md
+    source_paths:
+      - docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md
+      - src/governance/standing_external_effect_lift_policy_v1.py
+      - src/governance/standing_external_effect_lift_gate_binding_v1.py
+      - config/governance/standing_external_effect_lift_policy_v1_record.json
+    evidence_sources:
+      - tests/governance/test_standing_external_effect_lift_policy_v1.py
+      - src/governance/governed_standing_external_effect_lift_policy_closure_v1.py
+    notes: >-
+      Governed parameterized gate standing lift on #6894 policy; import-time constant false;
+      envelope POST/permit/credential remain unauthorized. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:productive_activation_boundary_forensic_review_v1
     kind: CONTRACT
     name: Productive Activation boundary forensic review v1
@@ -8711,6 +8732,23 @@ entities:
     notes: >-
       Policy admission at PRE_EXTERNAL → standing gate seam; gate binding re-evaluates
       evaluate_external_effect_v1 without lifting standing flags. ATLAS_AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:standing_external_effect_lift_policy_v1
+    kind: RUNTIME_COMPONENT
+    name: Standing External Effect Lift policy v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1
+    source_paths:
+      - src/governance/standing_external_effect_lift_policy_v1.py
+      - src/governance/standing_external_effect_lift_gate_binding_v1.py
+    evidence_sources:
+      - src/governance/governed_standing_external_effect_lift_policy_closure_v1.py
+      - tests/governance/test_standing_external_effect_lift_policy_v1.py
+    notes: >-
+      Lift admission and dual gate evaluation (import standing vs governed lift standing).
+      ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:productive_activation_boundary_forensic_review_v1
     kind: RUNTIME_COMPONENT

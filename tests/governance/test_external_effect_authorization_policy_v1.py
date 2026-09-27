@@ -85,7 +85,8 @@ def test_gate_binding_matches_admission() -> None:
     bound = evaluate_policy_bound_external_effect_gate_v1(repo_root=REPO_ROOT)
     assert bound.policy_admission_granted is True
     assert bound.gate_decision.external_effect_authorized is False
-    assert bound.standing_external_effect_authorized is False
+    assert bound.standing_external_effect_authorized is True
+    assert bound.extra.get("governed_standing_lift") == "true"
     assert bound.permit_mint_authorized is False
     assert bound.credential_access_performed is False
 
