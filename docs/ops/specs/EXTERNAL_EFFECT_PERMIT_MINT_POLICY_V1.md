@@ -44,9 +44,10 @@ PERMIT_MINT_POLICY => GOVERNED_PERMIT_MINT_ADMISSION (policy layer)
 PERMIT_MINT_POLICY -/-> PERMIT_MINT_PERFORMED / CREDENTIAL / POST / REAL_VENUE_POST / AUTONOMY_CAN_MINT_PERMIT
 ```
 
-## Next Owner boundary
+## Next Owner boundary (superseded by credential-access WP)
 
-**CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_OWNER_GO** — distinct from permit mint policy.
+Credential access policy admission: `CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1`.
+Next seam: **REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_OWNER_GO**.
 
 Code: `src/governance/external_effect_permit_mint_policy_v1.py`  
 Gate binding: `src/governance/external_effect_permit_mint_gate_binding_v1.py`
