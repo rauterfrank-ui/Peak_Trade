@@ -12,6 +12,7 @@
     "docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
@@ -24,13 +25,14 @@
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "204e78baefd85a1672c14625585f17b96d360c64cc276ef41feecc3c6c0bf582",
+  "changed_paths_sha256": "62e62168a510edc708d06acab9db5c660ef290aebf916398e435513994ce8d10",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json",
     "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py"
