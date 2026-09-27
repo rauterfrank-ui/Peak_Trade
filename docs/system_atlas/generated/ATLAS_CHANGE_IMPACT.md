@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CURRENT_CONTINUOUS_RUN_POLICY_V1`.
 
 ## Workflow
 
@@ -40,9 +40,9 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_productive_activation_policy_v1` |
-| `RUNTIME_COMPONENT:current_productive_activation_policy_v1` |
-| `RUNTIME_COMPONENT:f1_m9_productive_runtime_threshold_consumer_wiring_v1` |
+| `CONTRACT:current_continuous_run_policy_v1` |
+| `RUNTIME_COMPONENT:current_continuous_run_policy_v1` |
+| `RUNTIME_COMPONENT:current_productive_governed_continuous_cycle_orchestrator_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- CURRENT Productive Activation policy v1; runtime admission bound to F1/M9 consumer surfaces; 600s lineage preserved; continuous run and external effect remain unauthorized.
-- introduced_by=CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
-- modified_by=CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1
+- CURRENT Continuous Run policy v1; governed S6 orchestrator binding with per-cycle Productive Activation + F1/M9 revalidation; external effect remains unauthorized.
+- introduced_by=CURRENT_CONTINUOUS_RUN_POLICY_V1
+- modified_by=CURRENT_CONTINUOUS_RUN_POLICY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
