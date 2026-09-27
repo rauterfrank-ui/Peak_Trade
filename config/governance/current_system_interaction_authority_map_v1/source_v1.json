@@ -1151,6 +1151,33 @@
       ]
     },
     {
+      "id": "external_effect_boundary_forensic_review",
+      "tier": "INTERMEDIATE",
+      "role": "Post-#6892 External Effect boundary forensic census + simulated gate proof; PRE_EXTERNAL reachability does not mint external effect.",
+      "canonical_owner_ref": "external_effect_boundary_forensic_review_v1",
+      "authority_class": "NONE",
+      "lifecycle": "FORENSIC_REVIEW_COMPLETE_FAIL_CLOSED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+        "src/governance/governed_external_effect_boundary_forensic_review_closure_v1.py",
+        "src/governance/governed_current_productive_chain_pre_external_to_external_effect_boundary_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
+        "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json"
+      ]
+    },
+    {
       "id": "productive_activation_boundary_forensic_review",
       "tier": "INTERMEDIATE",
       "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
@@ -4143,6 +4170,17 @@
         "config/governance/current_continuous_run_policy_v1_record.json",
         "config/governance/current_continuous_run_policy_owner_go_v1_decision.json",
         "tests/governance/test_current_continuous_run_policy_v1.py"
+      ]
+    },
+    {
+      "id": "external_effect_boundary_forensic_review_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "External Effect boundary forensic review post-#6892: chain closure Productive Activation + Continuous Run → PRE_EXTERNAL → standing external-effect gate; POST/permit/credential access remain unauthorized; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION.",
+      "evidence_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
       ]
     },
     {

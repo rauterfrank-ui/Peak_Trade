@@ -1,17 +1,17 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
-modified_by: CURRENT_CONTINUOUS_RUN_POLICY_V1
+introduced_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
+modified_by: EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  CURRENT Continuous Run policy v1; governed S6 orchestrator binding with per-cycle
-  Productive Activation + F1/M9 revalidation; external effect remains unauthorized.
+  External Effect boundary forensic review v1; chain closure through PRE_EXTERNAL
+  to standing external-effect gate; external effect authorization remains fail-closed.
 changed_entities:
-  - CONTRACT:current_continuous_run_policy_v1
-  - RUNTIME_COMPONENT:current_continuous_run_policy_v1
-  - RUNTIME_COMPONENT:current_productive_governed_continuous_cycle_orchestrator_v1
+  - CONTRACT:external_effect_boundary_forensic_review_v1
+  - RUNTIME_COMPONENT:external_effect_gate_v1
+  - RUNTIME_COMPONENT:pre_external_to_external_effect_boundary_bounded_wp_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
