@@ -15,12 +15,13 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/check_clean_core_seal_v1.py",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
     "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
     "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py",
     "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py"
   ],
-  "changed_paths_sha256": "049944438fd29747d18aaac87bc1fda067d917e2bec213dfec9e8820ac6b6055",
+  "changed_paths_sha256": "242f0430e8defa5621f2086d2a3083307fc8c6f888b968fa772351f2e690d1f8",
   "covered_candidate_paths": [
     "docs/ops/specs/MV2_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1.md",
     "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
