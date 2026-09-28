@@ -383,3 +383,121 @@ def test_pre_external_wp1_compose_path_uses_cap21_swap_inst_type(tmp_path: Path)
     ]
     assert instruments_calls
     assert any("instType=SWAP" in ep for ep in instruments_calls)
+
+
+def _live_market_payloads_for_bind_v1(
+    *,
+    instrument_id: str = _TEST_INST,
+    mark_px: float = 0.2626,
+) -> dict[str, object]:
+    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+        ENDPOINT_PUBLIC_MARK_PRICE,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        ENDPOINT_MARKET_TICKER,
+        ENDPOINT_PUBLIC_FUNDING_RATE,
+        ENDPOINT_PUBLIC_OPEN_INTEREST,
+    )
+
+    px = f"{mark_px:.4f}"
+    return {
+        ENDPOINT_PUBLIC_MARK_PRICE: {
+            "code": "0",
+            "data": [{"instId": instrument_id, "markPx": px, "idxPx": px}],
+        },
+        ENDPOINT_MARKET_TICKER: {
+            "code": "0",
+            "data": [
+                {
+                    "instId": instrument_id,
+                    "bidPx": px,
+                    "askPx": px,
+                    "vol24h": "12345",
+                    "idxPx": px,
+                }
+            ],
+        },
+        ENDPOINT_PUBLIC_OPEN_INTEREST: {
+            "code": "0",
+            "data": [{"instId": instrument_id, "oi": "99999"}],
+        },
+        ENDPOINT_PUBLIC_FUNDING_RATE: {
+            "code": "0",
+            "data": [{"instId": instrument_id, "fundingRate": "0.0001"}],
+        },
+    }
+
+
+def test_bind_execute_network_mv2_market_kwargs_uses_live_mark_not_replay_default() -> None:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+        bind_execute_network_mv2_market_kwargs_v1,
+    )
+
+    mark_px = 0.2626
+    candles = _mv2_aligned_candles(last_ts_ms=1_700_000_000_000, mark_px=mark_px)
+    payloads = dict(_identity_payloads(instrument_id=_TEST_INST))
+    payloads.update(_live_market_payloads_for_bind_v1(mark_px=mark_px))
+    transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
+    bound = _bound()
+    mk, blocker = bind_execute_network_mv2_market_kwargs_v1(
+        transport=transport,
+        bound_instrument=bound,
+        candles_payload=candles,
+        decision_epoch=_EPOCH,
+        market_kwargs=None,
+        observed_unix=1_700_000_100.0,
+    )
+    assert blocker is None
+    assert mk["mark_px"] == mark_px
+    assert mk["finalized_closes"][-1] == mark_px
+    assert mk["mark_px"] != 100.0
+    assert tuple(mk["finalized_closes"]) != (98.0, 99.0, 100.0)
+
+
+def test_bind_execute_network_mv2_market_kwargs_missing_mark_fail_closed() -> None:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+        bind_execute_network_mv2_market_kwargs_v1,
+    )
+
+    candles = _mv2_aligned_candles(last_ts_ms=1_700_000_000_000, mark_px=0.2626)
+    payloads = dict(_identity_payloads(instrument_id=_TEST_INST))
+    transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
+    _mk, blocker = bind_execute_network_mv2_market_kwargs_v1(
+        transport=transport,
+        bound_instrument=_bound(),
+        candles_payload=candles,
+        decision_epoch=_EPOCH,
+        market_kwargs=None,
+        observed_unix=1_700_000_100.0,
+    )
+    assert blocker is not None
+    assert blocker.startswith("MASTER_V2_REQUIRED_GET_INCOMPLETE:")
+    assert "MARK_PX" in blocker
+
+
+def test_bind_execute_network_mv2_market_kwargs_wrong_instrument_mark_fail_closed() -> None:
+    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+        ENDPOINT_PUBLIC_MARK_PRICE,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+        bind_execute_network_mv2_market_kwargs_v1,
+    )
+
+    candles = _mv2_aligned_candles(last_ts_ms=1_700_000_000_000, mark_px=0.2626)
+    payloads = dict(_identity_payloads(instrument_id=_TEST_INST))
+    payloads.update(_live_market_payloads_for_bind_v1(mark_px=0.2626))
+    payloads[ENDPOINT_PUBLIC_MARK_PRICE] = {
+        "code": "0",
+        "data": [{"instId": "OTHER-USDT-SWAP", "markPx": "1.11", "idxPx": "1.11"}],
+    }
+    transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
+    _mk, blocker = bind_execute_network_mv2_market_kwargs_v1(
+        transport=transport,
+        bound_instrument=_bound(),
+        candles_payload=candles,
+        decision_epoch=_EPOCH,
+        market_kwargs=None,
+        observed_unix=1_700_000_100.0,
+    )
+    assert blocker is not None
+    assert "MARK_PX" in blocker

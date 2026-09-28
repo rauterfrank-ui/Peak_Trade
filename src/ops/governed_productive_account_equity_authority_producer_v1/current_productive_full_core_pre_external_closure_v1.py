@@ -47,13 +47,30 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m
     ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
     mark_history_get_query_v1,
 )
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+    ENDPOINT_PUBLIC_MARK_PRICE,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
+    ENDPOINT_MARKET_INDEX_TICKERS,
+    ENDPOINT_MARKET_TICKER,
+    ENDPOINT_PUBLIC_FUNDING_RATE,
+    ENDPOINT_PUBLIC_OPEN_INTEREST,
+    extract_finalized_candle_closes_v1,
+    extract_funding_rate_v1,
+    extract_index_px_from_index_tickers_payload_v1,
+    extract_mark_and_index_from_payload_v1,
+    extract_open_interest_v1,
+    extract_position_truth_v1,
+    extract_ticker_fields_v1,
+    resolve_index_px_primary_secondary_tertiary_v1,
+    resolve_index_ticker_inst_id_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_POSITIONS,
     FullCoreFreshPretradeGetTransportV1,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
 )
@@ -229,6 +246,148 @@ def _fetch_candles_payload_v1(
     if result.get_performed is not True or result.payload is None:
         raise CurrentProductiveFullCorePreExternalClosureError("C1_CANDLES_GET_FAIL_CLOSED")
     return result.payload if isinstance(result.payload, Mapping) else {"data": result.payload}
+
+
+def _transport_payload_v1(
+    transport: FullCoreFreshPretradeGetTransportV1,
+    *,
+    path: str,
+    query: Mapping[str, str],
+    auth_required: bool,
+    pretrade_decision_id: str,
+) -> tuple[Any, str]:
+    endpoint = f"{path}?{urlencode(dict(query))}" if query else path
+    result = transport.get(
+        endpoint=endpoint,
+        auth_required=auth_required,
+        pretrade_decision_id=pretrade_decision_id,
+    )
+    if result.get_performed is not True or result.payload is None:
+        return None, str(result.error_class or "GET_NOT_PERFORMED")
+    return result.payload, ""
+
+
+def bind_execute_network_mv2_market_kwargs_v1(
+    *,
+    transport: FullCoreFreshPretradeGetTransportV1,
+    bound_instrument: BoundInstrumentV1,
+    candles_payload: Mapping[str, Any],
+    decision_epoch: str,
+    market_kwargs: Mapping[str, Any] | None,
+    observed_unix: float,
+) -> tuple[dict[str, Any], str | None]:
+    """Bind MV2/Double-Play market inputs from governed live GETs (no replay defaults)."""
+
+    native_id = str(bound_instrument.venue_native_id or "").strip()
+    if not native_id:
+        return {}, "INSTRUMENT_IDENTITY_FAIL_CLOSED"
+
+    mk = dict(market_kwargs or {})
+    mk.pop("candles_payload", None)
+    mk.pop("g17_typed_vol_producers", None)
+    mk["observed_unix"] = observed_unix
+
+    positions_payload = None
+    payloads_by_path = getattr(transport, "payloads_by_path", None)
+    if isinstance(payloads_by_path, Mapping):
+        positions_payload = payloads_by_path.get(ENDPOINT_ACCOUNT_POSITIONS)
+
+    _pos_status, venue_flat, existing_side = extract_position_truth_v1(
+        positions_payload, native_id=native_id
+    )
+    mk.setdefault("venue_flat", venue_flat)
+    mk.setdefault("existing_position_side", existing_side)
+
+    mark_payload, mark_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_MARK_PRICE,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    ticker_payload, ticker_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_MARKET_TICKER,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    oi_payload, oi_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_OPEN_INTEREST,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+    funding_payload, funding_err = _transport_payload_v1(
+        transport,
+        path=ENDPOINT_PUBLIC_FUNDING_RATE,
+        query={"instId": native_id},
+        auth_required=False,
+        pretrade_decision_id=decision_epoch,
+    )
+
+    mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
+        mark_payload if isinstance(mark_payload, Mapping) else None,
+        native_id=native_id,
+    )
+    bid, ask, volume, index_from_ticker = extract_ticker_fields_v1(
+        ticker_payload, native_id=native_id
+    )
+    index_px = resolve_index_px_primary_secondary_tertiary_v1(
+        index_from_mark=index_from_mark,
+        index_from_ticker=index_from_ticker,
+        index_from_index_tickers=None,
+    )
+    if index_px is None:
+        index_inst = resolve_index_ticker_inst_id_v1(native_id)
+        index_payload, _index_err = _transport_payload_v1(
+            transport,
+            path=ENDPOINT_MARKET_INDEX_TICKERS,
+            query={"instId": index_inst},
+            auth_required=False,
+            pretrade_decision_id=decision_epoch,
+        )
+        index_px = extract_index_px_from_index_tickers_payload_v1(index_payload, wanted=index_inst)
+
+    oi = extract_open_interest_v1(oi_payload, native_id=native_id)
+    funding = extract_funding_rate_v1(funding_payload, native_id=native_id)
+    closes, last_ts = extract_finalized_candle_closes_v1(candles_payload)
+
+    missing: list[str] = []
+    if mark_px is None:
+        missing.append("MARK_PX")
+    if index_px is None:
+        missing.append("INDEX_PX")
+    if bid is None or ask is None:
+        missing.append("BID_ASK")
+    if volume is None:
+        missing.append("VOLUME")
+    if oi is None:
+        missing.append("OPEN_INTEREST")
+    if funding is None:
+        missing.append("FUNDING_RATE")
+    if not closes or last_ts is None:
+        missing.append("FINALIZED_CANDLES")
+    if mark_err or ticker_err or oi_err or funding_err:
+        missing.append("MARKET_GET_ERROR")
+    if missing:
+        return mk, "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
+
+    mk.update(
+        {
+            "mark_px": float(mark_px),
+            "index_px": float(index_px),
+            "bid_px": float(bid),
+            "ask_px": float(ask),
+            "volume": float(volume),
+            "open_interest": float(oi),
+            "funding_rate": float(funding),
+            "finalized_closes": closes,
+            "last_finalized_event_ts_unix": float(last_ts),
+        }
+    )
+    return mk, None
 
 
 def _lane_pair_v1(
@@ -483,23 +642,46 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             )
             gets_performed = int(getattr(transport, "request_count", 0) or 0)
 
-        mk = dict(market_kwargs or {})
-        mk.pop("candles_payload", None)
-        mk.pop("g17_typed_vol_producers", None)
-        mk.setdefault("origin_main_sha", base_sha)
-        mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
-        mk.setdefault("observed_unix", datetime.now(timezone.utc).timestamp())
-        mk.setdefault("mark_px", 100.0)
-        mk.setdefault("index_px", 100.0)
-        mk.setdefault("bid_px", 99.5)
-        mk.setdefault("ask_px", 100.5)
-        mk.setdefault("volume", 10.0)
-        mk.setdefault("open_interest", 20.0)
-        mk.setdefault("funding_rate", 0.0001)
-        mk.setdefault("finalized_closes", (98.0, 99.0, 100.0))
-        mk.setdefault("last_finalized_event_ts_unix", mk["observed_unix"] - 60.0)
-        mk.setdefault("venue_flat", True)
-        mk.setdefault("existing_position_side", ExistingPositionSide.NONE)
+        observed_unix = datetime.now(timezone.utc).timestamp()
+        if execute_network is True:
+            mk, market_bind_blocker = bind_execute_network_mv2_market_kwargs_v1(
+                transport=transport,
+                bound_instrument=bound_instrument,
+                candles_payload=dict(candles),
+                decision_epoch=decision_epoch,
+                market_kwargs=market_kwargs,
+                observed_unix=observed_unix,
+            )
+            if market_bind_blocker:
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker=market_bind_blocker,
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
+            mk.setdefault("origin_main_sha", base_sha)
+            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
+        else:
+            mk = dict(market_kwargs or {})
+            mk.pop("candles_payload", None)
+            mk.pop("g17_typed_vol_producers", None)
+            mk.setdefault("origin_main_sha", base_sha)
+            mk.setdefault("cycle_id_prefix", f"pre-ext-closure-{run_id}")
+            mk.setdefault("observed_unix", observed_unix)
+            mk.setdefault("mark_px", 100.0)
+            mk.setdefault("index_px", 100.0)
+            mk.setdefault("bid_px", 99.5)
+            mk.setdefault("ask_px", 100.5)
+            mk.setdefault("volume", 10.0)
+            mk.setdefault("open_interest", 20.0)
+            mk.setdefault("funding_rate", 0.0001)
+            mk.setdefault("finalized_closes", (98.0, 99.0, 100.0))
+            mk.setdefault("last_finalized_event_ts_unix", mk["observed_unix"] - 60.0)
+            mk.setdefault("venue_flat", True)
+            mk.setdefault("existing_position_side", ExistingPositionSide.NONE)
 
         pair = _lane_pair_v1(lane_state_root=Path(lane_state_root), bound=bound_instrument)
         pairs = {"LANE_1": pair}
