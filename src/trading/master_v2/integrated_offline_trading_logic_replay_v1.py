@@ -117,7 +117,6 @@ from trading.master_v2.single_lane_confirmation_activation_v1 import (
     active_single_lane_presence_v1,
     apply_single_lane_confirmation_lifecycle_v1,
     persist_single_lane_into_dual_carrier_v1,
-    prior_presence_from_dual_carrier_v1,
 )
 from trading.master_v2.double_play_composition_matrix_v1 import (
     DOUBLE_PLAY_COMPOSITION_MATRIX_LAYER_VERSION,
@@ -1724,7 +1723,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         ),
     )
     lifecycle = apply_single_lane_confirmation_lifecycle_v1(
-        prior_presence=prior_presence_from_dual_carrier_v1(prior_carrier),
+        prior_carrier=prior_carrier,
         elementary=elementary_direction,
         observation_acceptance_result=observation_acceptance_result,
         session_id=confirmation_session_id,
@@ -1786,6 +1785,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         venue=confirmation_venue,
         instrument=confirmation_instrument,
         padding_epoch=observation_acceptance_result.state_before.market_observation_epoch,
+        prior_carrier=lifecycle.carrier_after_lifecycle,
     )
 
     # C4: post-C3 Survival → Suitability → Composition binding.
