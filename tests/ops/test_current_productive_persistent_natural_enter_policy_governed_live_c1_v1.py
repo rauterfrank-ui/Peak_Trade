@@ -69,7 +69,7 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 )
 
 REPO = Path(__file__).resolve().parents[2]
-BASELINE_SHA = "45ddc791cf81606c5e2c3949e9d1dd1dcc04752d"
+BASELINE_SHA = "27c3cd4aa21e181282b19a89a9e2187b30ed93f4"
 
 
 def test_owner_go_decision_present_and_pins_unchanged() -> None:
@@ -105,6 +105,24 @@ class _MockTransport:
             get_performed=self._payload is not None,
             payload=self._payload,
         )
+
+
+def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Path) -> None:
+    payload = {"code": "0", "msg": "", "data": [["1", "1", "1", "1", "1", "1", "1", "USDT", "1"]]}
+    transport = _MockTransport(payload)
+    cold_lane = tmp_path / "cold_lane"
+    cold_lane.mkdir()
+    source = LiveFreshC1ContinuousObservationSourceV1(
+        cursor_store_root=cold_lane,
+        evidence_root=tmp_path / "evidence",
+        run_id="cold-bootstrap",
+        native_id=NATIVE_ID,
+        transport=transport,
+    )
+    obs = source.poll()
+    assert obs is not None
+    assert transport.calls == 1
+    assert source.get_count == 1
 
 
 def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Path) -> None:

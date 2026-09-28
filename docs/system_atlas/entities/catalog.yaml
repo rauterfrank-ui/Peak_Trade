@@ -4794,6 +4794,8 @@ entities:
     notes: >-
       Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0;
       N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE.
+      # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high;
+      # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
   - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
     kind: RUNTIME_COMPONENT
@@ -4803,6 +4805,7 @@ entities:
     current_status: CURRENT_NONCANONICAL
     modified_by: CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
     source_paths:
+      - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
@@ -4813,6 +4816,8 @@ entities:
     notes: >-
       Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET;
       S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+      # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4;
+      # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
@@ -5682,6 +5687,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6951 S6 continuous poll liveness (stale/empty Fresh-C1 wait not STALL);
+    # auth-free flat occupancy injection; cold-lane Cap24-bound C1 bootstrap; orchestration-only;
+    # RUNTIME_SEMANTICS_CHANGED=false for MV2/DP; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6937 whole-system causal closure — synthetic 29P→EEA/budget productive joins +
     # MV2 same-cycle DDO capture→offline export handoff (ACCEPTED_OFFLINE_RESEARCH_INPUT only);
     # PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; landscape/presentation dashboard OUT_OF_SCOPE;

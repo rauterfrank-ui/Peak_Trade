@@ -5010,10 +5010,11 @@
     {
       "id": "current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Owner-GO wiring: policy-governed persistent Natural-ENTER continuous run binds S6 to LiveFreshC1ContinuousObservationSourceV1 (public readonly Fresh-C1 GET via S4A authority) or test double; Owner-GO consume evidence; F1/M9 per-cycle admission; N1/S5/S7 to PRE_EXTERNAL; no POST/permit/credentials; CONTINUOUS_RUN_AUTHORIZED pin unchanged.",
+      "statement": "PR #6951: productive PRE_EXTERNAL-only entry script; cold-lane Cap24-bound Fresh-C1 bootstrap; S6 poll liveness during stale-C1 wait; auth-free flat occupancy; cursor-floor rebind after S7; LiveFreshC1ContinuousObservationSourceV1 unchanged authority; no POST/permit/credentials; CONTINUOUS_RUN_AUTHORIZED pin unchanged.",
       "evidence_refs": [
         "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
         "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
         "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"

@@ -602,6 +602,11 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     def _elapsed() -> float:
         return float(clock()) - started_at
 
+    def _touch_poll_liveness_v1() -> None:
+        """Active Fresh-C1 polling (incl. stale wait) is not a sequencer stall."""
+        nonlocal last_progress_at
+        last_progress_at = float(clock())
+
     def _stop(
         *,
         result_disposition: str,
@@ -689,6 +694,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 )
             observation = observation_source.poll()
             if observation is None:
+                _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
                 sleeper(float(authorization.wait_interval_seconds))
                 continue
@@ -709,14 +715,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             c1_obs = mapped.observation
             c1_time = float(c1_obs.venue_event_time)
             if c1_time <= float(last_accepted):
-                return _stop(
-                    result_disposition=DISPOSITION_FAIL_CLOSED,
-                    result_reason=REASON_STALE_OR_EQUAL_C1,
-                    result_terminal="STALE_C1",
-                    state=STATE_FAILED_STOP,
-                    blocker=REASON_STALE_OR_EQUAL_C1,
-                    owner_next="Stale or equal C1 was rejected. S5 was not invoked. Do not resume.",
-                )
+                _touch_poll_liveness_v1()
+                _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
+                sleeper(float(authorization.wait_interval_seconds))
+                continue
             freshness = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
                 owner_go=EH_SEAM_OWNER_GO,
                 cursor_store_root=Path(cursor_store_root),

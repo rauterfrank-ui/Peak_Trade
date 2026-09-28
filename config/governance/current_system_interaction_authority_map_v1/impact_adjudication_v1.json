@@ -1,46 +1,43 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "45ddc791cf81606c5e2c3949e9d1dd1dcc04752d",
+  "base_sha": "27c3cd4aa21e181282b19a89a9e2187b30ed93f4",
   "changed_paths": [
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
+    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
   ],
-  "changed_paths_sha256": "1b2c2acdf720ab378ea0c83c93907f530d1edf92ab59d02877595d30f2bb1cbc",
+  "changed_paths_sha256": "6f91a9e8fa5deaded4da0c181c375634c16def1f423ffca99f0c27f2b0a8e434",
   "covered_candidate_paths": [
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Owner-GO wiring WP: policy-governed persistent Natural-ENTER continuous run + public readonly Fresh-C1 GET in S6 poll; CSIA partial + Atlas entity; no venue POST.",
+  "reason": "PR #6951: productive PRE_EXTERNAL convergence wiring; CSIA PARTIAL statement refresh; Atlas entity review; orchestration-only (S6 liveness, cold-lane C1, auth-free occupancy, cursor-floor); no POST/credentials.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

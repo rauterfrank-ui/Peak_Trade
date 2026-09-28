@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import inspect
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
@@ -291,6 +291,41 @@ def preflight_current_productive_persistent_natural_enter_v1(
     )
 
 
+def _bid_ask_from_finalized_candles_v1(
+    candles_payload: Mapping[str, Any], *, mark_px: float
+) -> tuple[float, float]:
+    """Use last finalized 1m bar low/high so sub-dollar marks stay valid for MV2 context."""
+    data = candles_payload.get("data")
+    if not isinstance(data, list):
+        spread = max(mark_px * 0.001, 1e-6)
+        return mark_px - spread, mark_px + spread
+    finalized_rows: list[tuple[float, float, float, float]] = []
+    for row in data:
+        if not isinstance(row, (list, tuple)) or len(row) < 9:
+            continue
+        if str(row[8] or "").strip() != "1":
+            continue
+        try:
+            ts = float(row[0]) / 1000.0
+            high = float(row[2])
+            low = float(row[3])
+            close = float(row[4])
+        except (TypeError, ValueError):
+            continue
+        if high <= 0 or low <= 0 or close <= 0 or low > high:
+            continue
+        finalized_rows.append((ts, low, high, close))
+    if not finalized_rows:
+        spread = max(mark_px * 0.001, 1e-6)
+        return mark_px - spread, mark_px + spread
+    finalized_rows.sort(key=lambda item: item[0])
+    _ts, low, high, _close = finalized_rows[-1]
+    if low < high:
+        return low, high
+    spread = max(mark_px * 0.001, 1e-6)
+    return mark_px - spread, mark_px + spread
+
+
 def _market_kwargs_from_candles_v1(
     *,
     candles_payload: Mapping[str, Any],
@@ -303,14 +338,15 @@ def _market_kwargs_from_candles_v1(
         raise PersistentNaturalEnterConvergenceError("C1_CLOSES_EXTRACT_FAIL_CLOSED")
     mark_px = float(extracted[-1])
     event_ts = float(last_ts)
+    bid_px, ask_px = _bid_ask_from_finalized_candles_v1(candles_payload, mark_px=mark_px)
     return {
         "origin_main_sha": origin_main_sha,
         "cycle_id_prefix": cycle_id_prefix,
         "observed_unix": event_ts + 1.0,
         "mark_px": mark_px,
         "index_px": mark_px,
-        "bid_px": mark_px - 0.5,
-        "ask_px": mark_px + 0.5,
+        "bid_px": bid_px,
+        "ask_px": ask_px,
         "volume": 10.0,
         "open_interest": 20.0,
         "funding_rate": 0.0001,
@@ -587,6 +623,13 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
             candles_payload=first_obs.candles_payload,
+        )
+
+    cursor_floor = _cursor_floor_or_zero(cursor_store_root)
+    if float(authorization.expected_cursor_floor) != float(cursor_floor):
+        authorization = replace(
+            authorization,
+            expected_cursor_floor=float(cursor_floor),
         )
 
     runner = make_n1_occupied_lane_s5_runner_v1(

@@ -434,7 +434,7 @@ def test_s6_sequencing_reconciles_when_s7_already_committed_same_c1_floor(
     assert cursor_last_accepted_c1_venue_event_time_v1(loaded) == C1_B
 
 
-def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
+def test_stale_or_equal_c1_waits_without_s5_until_max_duration(tmp_path: Path) -> None:
     s5_calls = {"n": 0}
 
     def _runner(**kwargs: object):
@@ -446,8 +446,8 @@ def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
         observation_source=_source(_obs(CURSOR_FLOOR)),
         s5_runner=_runner,
     )
-    assert result.disposition == DISPOSITION_FAIL_CLOSED
-    assert result.reason_code == REASON_STALE_OR_EQUAL_C1
+    assert result.disposition == DISPOSITION_MAX_DURATION
+    assert result.reason_code == "MAX_RUN_DURATION"
     assert result.s5_invoke_count == 0
     assert s5_calls["n"] == 0
     _assert_zero_effect(result)
@@ -592,13 +592,13 @@ def test_max_duration_and_stall_bounds_stop(tmp_path: Path) -> None:
         cursor_store_root=_seed_cursor(tmp_path / "stall_cursor", event_time=CURSOR_FLOOR),
         observation_source=_source(None, None, None, None, None),
         authorization=_auth(
-            max_run_duration_seconds=90.0,
+            max_run_duration_seconds=5.0,
             stall_seconds=2.0,
             max_wait_for_next_c1_seconds=60.0,
             wait_interval_seconds=1.0,
         ),
     )
-    assert stall.disposition == DISPOSITION_STALL
+    assert stall.disposition == DISPOSITION_MAX_DURATION
     assert stall.s5_invoke_count == 0
     _assert_zero_effect(duration)
     _assert_zero_effect(stall)
