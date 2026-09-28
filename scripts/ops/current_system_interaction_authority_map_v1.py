@@ -130,6 +130,7 @@ REQUIRED_PARTIAL_IDS = (
     "current_productive_eea_universe_inventory_cap22_ranking_policy_binding_v1",
     "current_productive_pre_external_wp1_cap21_public_inst_type_binding_v1",
     "current_productive_pre_external_execute_network_mv2_market_handoff_v1",
+    "selected_future_persistent_scope_confirmation_authority_v1",
     "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
     "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
     "current_productive_s6_s7_c1_cursor_ownership_seam_v1",

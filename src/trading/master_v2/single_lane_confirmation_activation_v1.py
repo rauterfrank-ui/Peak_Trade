@@ -57,6 +57,7 @@ class SingleLaneLifecycleReasonV1(str, Enum):
     ACTIVATE_NEW_SEQUENCE = "activate_new_sequence"
     DISCARD_NO_LANE = "discard_no_lane"
     SWITCH_ACTIVATE_NEW_SEQUENCE = "switch_activate_new_sequence"
+    SWITCH_RESUME_PERSISTENT_LANE = "switch_resume_persistent_lane"
     IDENTITY_CHANGE_WITHOUT_DISTINCT = "identity_change_without_distinct"
     NON_DISTINCT_NO_ACTIVATION = "non_distinct_no_activation"
 
@@ -199,28 +200,93 @@ def _new_sequence_state(
     )
 
 
+def _empty_dual_carrier_v1(
+    *,
+    session_id: str,
+    venue: str,
+    instrument: InstrumentObservationKeyV1,
+    padding_epoch: Optional[MarketObservationEpoch] = None,
+) -> DirectionalConfirmationSideStateCarrierV1:
+    return initial_directional_confirmation_side_state_carrier_v1(
+        session_id=session_id,
+        venue=venue,
+        instrument=instrument,
+        initial_market_observation_epoch=padding_epoch,
+    )
+
+
+def _resolve_prior_carrier_v1(
+    prior_carrier: Optional[DirectionalConfirmationSideStateCarrierV1],
+    *,
+    session_id: str,
+    venue: str,
+    instrument: InstrumentObservationKeyV1,
+) -> DirectionalConfirmationSideStateCarrierV1:
+    if prior_carrier is not None:
+        return prior_carrier
+    return _empty_dual_carrier_v1(
+        session_id=session_id,
+        venue=venue,
+        instrument=instrument,
+    )
+
+
+def _progress_for_side_v1(
+    carrier: DirectionalConfirmationSideStateCarrierV1,
+    side: ConfirmationSideV1,
+) -> ConfirmationProgressStateV1:
+    if side is ConfirmationSideV1.LONG:
+        return carrier.bull_confirmation_state
+    return carrier.bear_confirmation_state
+
+
+def _carrier_with_side_v1(
+    carrier: DirectionalConfirmationSideStateCarrierV1,
+    *,
+    side: ConfirmationSideV1,
+    progress: ConfirmationProgressStateV1,
+) -> DirectionalConfirmationSideStateCarrierV1:
+    if side is ConfirmationSideV1.LONG:
+        return DirectionalConfirmationSideStateCarrierV1(
+            bull_confirmation_state=progress,
+            bear_confirmation_state=carrier.bear_confirmation_state,
+        )
+    return DirectionalConfirmationSideStateCarrierV1(
+        bull_confirmation_state=carrier.bull_confirmation_state,
+        bear_confirmation_state=progress,
+    )
+
+
 def prior_presence_from_dual_carrier_v1(
     prior_carrier: Optional[DirectionalConfirmationSideStateCarrierV1],
+    *,
+    active_evaluation_side: Optional[ConfirmationSideV1] = None,
 ) -> SingleLaneConfirmationPresenceV1:
-    """Decode Cap-61 dual padding into typed presence. Never treats padding as authority."""
+    """Decode active evaluation lane from carrier for one cycle.
+
+    When ``active_evaluation_side`` is omitted, picks the sole authoritative slot
+    if exactly one exists; otherwise returns Inactive (dual persistent state
+    requires explicit lane selection from elementary direction).
+    """
     if prior_carrier is None:
         return inactive_single_lane_presence_v1()
     bull_auth = _slot_holds_authoritative_progress(prior_carrier.bull_confirmation_state)
     bear_auth = _slot_holds_authoritative_progress(prior_carrier.bear_confirmation_state)
-    if bull_auth and bear_auth:
-        # Dual productive authority is forbidden on this path; fail closed to absence.
+    side = active_evaluation_side
+    if side is None:
+        if bull_auth and not bear_auth:
+            side = ConfirmationSideV1.LONG
+        elif bear_auth and not bull_auth:
+            side = ConfirmationSideV1.SHORT
+        else:
+            return inactive_single_lane_presence_v1()
+    progress = _progress_for_side_v1(prior_carrier, side)
+    if not _slot_holds_authoritative_progress(progress):
         return inactive_single_lane_presence_v1()
-    if bull_auth:
-        return active_single_lane_presence_v1(
-            selected_side=ConfirmationSideV1.LONG,
-            confirmation_progress=prior_carrier.bull_confirmation_state,
-        )
-    if bear_auth:
-        return active_single_lane_presence_v1(
-            selected_side=ConfirmationSideV1.SHORT,
-            confirmation_progress=prior_carrier.bear_confirmation_state,
-        )
-    return inactive_single_lane_presence_v1()
+    return active_single_lane_presence_v1(
+        selected_side=side,
+        confirmation_progress=progress,
+    )
 
 
 def persist_single_lane_into_dual_carrier_v1(
@@ -230,32 +296,34 @@ def persist_single_lane_into_dual_carrier_v1(
     venue: str,
     instrument: InstrumentObservationKeyV1,
     padding_epoch: Optional[MarketObservationEpoch] = None,
+    prior_carrier: Optional[DirectionalConfirmationSideStateCarrierV1] = None,
 ) -> DirectionalConfirmationSideStateCarrierV1:
-    """Cap-61 schema adapter. Opposite/inactive slots are non-authoritative padding."""
-    padding = initial_directional_confirmation_side_state_carrier_v1(
+    """Cap-61 schema adapter: merge active lane progress; never erase persistent opposite side."""
+    base = _resolve_prior_carrier_v1(
+        prior_carrier,
         session_id=session_id,
         venue=venue,
         instrument=instrument,
-        initial_market_observation_epoch=padding_epoch,
     )
     if not presence.is_active or presence.confirmation_progress is None:
-        return padding
+        return base
     if presence.selected_side is ConfirmationSideV1.LONG:
         return DirectionalConfirmationSideStateCarrierV1(
             bull_confirmation_state=presence.confirmation_progress,
-            bear_confirmation_state=padding.bear_confirmation_state,
+            bear_confirmation_state=base.bear_confirmation_state,
         )
     if presence.selected_side is ConfirmationSideV1.SHORT:
         return DirectionalConfirmationSideStateCarrierV1(
-            bull_confirmation_state=padding.bull_confirmation_state,
+            bull_confirmation_state=base.bull_confirmation_state,
             bear_confirmation_state=presence.confirmation_progress,
         )
-    return padding
+    return base
 
 
 @dataclass(frozen=True)
 class SingleLaneLifecycleResultV1:
     presence: SingleLaneConfirmationPresenceV1
+    carrier_after_lifecycle: DirectionalConfirmationSideStateCarrierV1
     elementary_direction: Optional[ElementaryDirectionV1]
     identity_status: ElementaryDirectionStatusV1
     selected_side: Optional[ConfirmationSideV1]
@@ -272,20 +340,63 @@ class SingleLaneLifecycleResultV1:
 
 def apply_single_lane_confirmation_lifecycle_v1(
     *,
-    prior_presence: SingleLaneConfirmationPresenceV1,
+    prior_carrier: Optional[DirectionalConfirmationSideStateCarrierV1] = None,
+    prior_presence: Optional[SingleLaneConfirmationPresenceV1] = None,
     elementary: ElementaryDirectionResultV1,
     observation_acceptance_result: ObservationAcceptanceResultV1,
     session_id: str,
     venue: str,
     instrument: InstrumentObservationKeyV1,
 ) -> SingleLaneLifecycleResultV1:
-    """Apply the ratified OD1 activation table. Does not evaluate C3."""
+    """Apply OD1 active-lane routing with persistent dual-side Cap-61 carrier. Does not evaluate C3."""
     distinct = is_distinct_admission_v1(observation_acceptance_result)
     selected = selected_lane_from_elementary_direction_v1(elementary)
+    prior = _resolve_prior_carrier_v1(
+        prior_carrier,
+        session_id=session_id,
+        venue=venue,
+        instrument=instrument,
+    )
+    if prior_presence is None and prior_carrier is not None:
+        prior_presence = prior_presence_from_dual_carrier_v1(
+            prior_carrier,
+            active_evaluation_side=selected,
+        )
+    if prior_presence is None:
+        prior_presence = inactive_single_lane_presence_v1()
+    elif prior_carrier is None and prior_presence.is_active:
+        prior = persist_single_lane_into_dual_carrier_v1(
+            presence=prior_presence,
+            session_id=session_id,
+            venue=venue,
+            instrument=instrument,
+            prior_carrier=prior,
+        )
     prior_side = prior_presence.selected_side if prior_presence.is_active else None
     evaluated_direction = (
         elementary.direction if elementary.status is ElementaryDirectionStatusV1.EVALUATED else None
     )
+
+    def _result(
+        *,
+        presence: SingleLaneConfirmationPresenceV1,
+        carrier: DirectionalConfirmationSideStateCarrierV1,
+        reason: SingleLaneLifecycleReasonV1,
+        discarded: bool,
+        activated: bool,
+        selected_side: Optional[ConfirmationSideV1],
+    ) -> SingleLaneLifecycleResultV1:
+        return SingleLaneLifecycleResultV1(
+            presence=presence,
+            carrier_after_lifecycle=carrier,
+            elementary_direction=evaluated_direction,
+            identity_status=elementary.status,
+            selected_side=selected_side,
+            activated_new_sequence=activated,
+            discarded_prior_authority=discarded,
+            distinct_admission=distinct,
+            reason_code=reason.value,
+        )
 
     def _inactive(
         *,
@@ -293,55 +404,58 @@ def apply_single_lane_confirmation_lifecycle_v1(
         discarded: bool,
         activated: bool = False,
     ) -> SingleLaneLifecycleResultV1:
-        return SingleLaneLifecycleResultV1(
+        return _result(
             presence=inactive_single_lane_presence_v1(),
-            elementary_direction=evaluated_direction,
-            identity_status=elementary.status,
+            carrier=prior,
+            reason=reason,
+            discarded=discarded,
+            activated=activated,
             selected_side=None,
-            activated_new_sequence=activated,
-            discarded_prior_authority=discarded,
-            distinct_admission=distinct,
-            reason_code=reason.value,
         )
 
     def _active(
         *,
         side: ConfirmationSideV1,
         state: ConfirmationProgressStateV1,
+        carrier: DirectionalConfirmationSideStateCarrierV1,
         reason: SingleLaneLifecycleReasonV1,
         discarded: bool,
         activated: bool,
     ) -> SingleLaneLifecycleResultV1:
-        return SingleLaneLifecycleResultV1(
+        return _result(
             presence=active_single_lane_presence_v1(
                 selected_side=side,
                 confirmation_progress=state,
             ),
-            elementary_direction=evaluated_direction,
-            identity_status=elementary.status,
+            carrier=carrier,
+            reason=reason,
+            discarded=discarded,
+            activated=activated,
             selected_side=side,
-            activated_new_sequence=activated,
-            discarded_prior_authority=discarded,
-            distinct_admission=distinct,
-            reason_code=reason.value,
         )
 
     if elementary.status is not ElementaryDirectionStatusV1.EVALUATED:
         return _inactive(
             reason=SingleLaneLifecycleReasonV1.REJECTED_NO_LANE,
-            discarded=prior_presence.is_active,
+            discarded=False,
         )
 
     if selected is None:
         return _inactive(
             reason=SingleLaneLifecycleReasonV1.NEUTRAL_NO_LANE,
-            discarded=prior_presence.is_active,
+            discarded=False,
         )
 
     if prior_side is selected and prior_presence.is_active:
+        carrier = _carrier_with_side_v1(
+            prior,
+            side=selected,
+            progress=prior_presence.authoritative_confirmation_progress(),
+        )
         return _active(
             side=selected,
             state=prior_presence.authoritative_confirmation_progress(),
+            carrier=carrier,
             reason=SingleLaneLifecycleReasonV1.CONTINUE_SELECTED_LANE,
             discarded=False,
             activated=False,
@@ -351,30 +465,44 @@ def apply_single_lane_confirmation_lifecycle_v1(
         if prior_side is not None and prior_side is not selected:
             return _inactive(
                 reason=SingleLaneLifecycleReasonV1.IDENTITY_CHANGE_WITHOUT_DISTINCT,
-                discarded=True,
+                discarded=False,
             )
         return _inactive(
             reason=SingleLaneLifecycleReasonV1.NON_DISTINCT_NO_ACTIVATION,
-            discarded=prior_presence.is_active,
+            discarded=False,
         )
 
-    discarded = prior_presence.is_active and prior_side is not selected
+    side_progress = _progress_for_side_v1(prior, selected)
+    if _slot_holds_authoritative_progress(side_progress):
+        carrier = _carrier_with_side_v1(prior, side=selected, progress=side_progress)
+        return _active(
+            side=selected,
+            state=side_progress,
+            carrier=carrier,
+            reason=SingleLaneLifecycleReasonV1.SWITCH_RESUME_PERSISTENT_LANE,
+            discarded=False,
+            activated=False,
+        )
+
+    new_state = _new_sequence_state(
+        selected_side=selected,
+        observation_acceptance_result=observation_acceptance_result,
+        session_id=session_id,
+        venue=venue,
+        instrument=instrument,
+    )
+    carrier = _carrier_with_side_v1(prior, side=selected, progress=new_state)
     reason = (
         SingleLaneLifecycleReasonV1.SWITCH_ACTIVATE_NEW_SEQUENCE
-        if discarded
+        if prior_side is not None and prior_side is not selected
         else SingleLaneLifecycleReasonV1.ACTIVATE_NEW_SEQUENCE
     )
     return _active(
         side=selected,
-        state=_new_sequence_state(
-            selected_side=selected,
-            observation_acceptance_result=observation_acceptance_result,
-            session_id=session_id,
-            venue=venue,
-            instrument=instrument,
-        ),
+        state=new_state,
+        carrier=carrier,
         reason=reason,
-        discarded=discarded,
+        discarded=False,
         activated=True,
     )
 

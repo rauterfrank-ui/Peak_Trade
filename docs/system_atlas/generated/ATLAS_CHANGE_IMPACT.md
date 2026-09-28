@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6932 productive PRE_EXTERNAL execute_network MV2 market handoff: bind mark_px from public mark-price and finalized_closes from C1; fail-closed MASTER_V2_REQUIRED_GET_INCOMPLETE; replay defaults only execute_network=false; CSIA MAP_UPDATE_REQUIRED partial statement; atlas entity review on composition root + runtime-reach contract; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); no Master-V2/Double-Play change; map_authority=NONE; POST_COUNT=0.
+- PR #6933 SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1: OD1 evaluation-lane routing only; Cap 6.1 dual-side confirmation cursor persistence across elementary direction changes; scope/L10 candidate invalidation UNRESOLVED; CSIA MAP_UPDATE_REQUIRED partial statement; atlas entity review on master_v2 cluster; CLEAN_CORE_SEAL replay join projection; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); no selection rebind; map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6932_PRODUCTIVE_PRE_EXTERNAL_EXECUTE_NETWORK_MV2_MARKET_HANDOFF_V1
+- modified_by=SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -243,7 +243,6 @@
           "_canonical_scope_event_to_scope_event",
           "_resolve_c3_confirmation_binding_v1",
           "evaluate_elementary_direction_from_observation_acceptance_v1",
-          "prior_presence_from_dual_carrier_v1",
           "apply_single_lane_confirmation_lifecycle_v1",
           "evaluate_directional_assessment_with_confirmation_progress_v1",
           "active_single_lane_presence_v1",
@@ -278,7 +277,6 @@
         "_resolve_c3_confirmation_binding_v1",
         "evaluate_elementary_direction_from_observation_acceptance_v1",
         "apply_single_lane_confirmation_lifecycle_v1",
-        "prior_presence_from_dual_carrier_v1",
         "evaluate_directional_assessment_with_confirmation_progress_v1",
         "active_single_lane_presence_v1",
         "evaluate_survival_assessment_v1",
@@ -300,7 +298,7 @@
         "compute_entry_exit_policy_input_digest",
         "evaluate_double_play_entry_exit_policy_v0"
       ],
-      "ast_sha256": "18822dbcbb6da2fc236e6eb6d0885e2b0f2a801fdd10e9f148a03c96408f04f6"
+      "ast_sha256": "90f89ec65cb906d47bc519c33cc4a361f6cd489cee9ece620751f5e779d13f64"
     },
     {
       "id": "SEAL_CORE_17",

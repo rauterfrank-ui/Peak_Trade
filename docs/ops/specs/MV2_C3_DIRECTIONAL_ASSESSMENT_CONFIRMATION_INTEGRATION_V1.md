@@ -87,6 +87,14 @@ Identical acceptor-result fingerprint → `IDEMPOTENT_REPLAY`, no progress.
 Long updates mutate only bull state; short updates mutate only bear state.
 Opposite side remains value-identical.
 
+### Selected-Future persistent scope (Owner V1)
+
+Canonical policy:
+[`SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md`](SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md).
+
+OD1 routes **active evaluation lane** only; elementary direction change MUST NOT
+erase opposite-side `ConfirmationProgressStateV1` in the Cap 6.1 dual carrier.
+
 ## 5. Signal Mapping
 
 Existing DA signal strength and thresholds are reused unchanged:

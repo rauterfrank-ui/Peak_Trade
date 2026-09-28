@@ -1,18 +1,24 @@
 {
   "OWNER_APPROVED_ALONE_IS_INSUFFICIENT": true,
   "TOKEN_ALONE_IS_INSUFFICIENT": true,
-  "allowed_paths": [],
-  "allowed_surface_classes": [],
+  "allowed_paths": [
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
+    "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py"
+  ],
+  "allowed_surface_classes": [
+    "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_V1"
+  ],
   "authority_effect": "NONE",
   "authorization_token": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1",
-  "authorized_evidence_digest": "",
+  "authorized_evidence_digest": "759b0a68db7fc4df12d5fe76220a1983b3687bda761c27c0d924c3191314c619",
   "authorized_path_prefixes": [],
   "authorized_scope_class": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_V1",
   "blanket_allowlist": false,
   "bound_authority_spec": "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md",
   "bound_boundary_contract": "config/governance/economic_diagnostic_optimization_boundary_v0.json",
   "bound_boundary_guard": "src/governance/economic_diagnostic_optimization_boundary_v0.py",
-  "bound_diff_base_sha": "",
+  "bound_diff_base_sha": "dc727b5ab8885ebd230b428496e5a57173356279",
   "branch_protection_bypass": false,
   "branch_specific_exception": false,
   "broad_master_v2_grant": false,
@@ -82,7 +88,7 @@
     "RUNTIME_EFFECT": "NONE",
     "SCHEDULER_EFFECT": "NONE"
   },
-  "grant_active": false,
+  "grant_active": true,
   "human_adjudicated_slice_claims": {
     "C4_CANDIDATE_CARDINALITY_LE_1": true,
     "C4_SOLE_SELECTED_SIDE_PRODUCER": true,
@@ -120,7 +126,10 @@
     "TESTNET_CAPABILITY_INCREASED": false
   },
   "required_check_waiver": false,
-  "required_runtime_paths": [],
+  "required_runtime_paths": [
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+    "src/trading/master_v2/single_lane_confirmation_activation_v1.py"
+  ],
   "required_semantic_invariants": {
     "ACTIVE_SIDE_TO_SCOPE_DIRECTION_CHANGED": false,
     "ARMED_LAST_ACTIVE_SIDE_CHANGED": false,
@@ -156,5 +165,5 @@
   "runtime_activation": false,
   "runtime_effect": "NONE",
   "scope_id": "EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1",
-  "slice_grant_id": ""
+  "slice_grant_id": "SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_OD1_SLICE_V1"
 }
