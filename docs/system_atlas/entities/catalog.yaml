@@ -6095,6 +6095,8 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+      - tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py
