@@ -4673,6 +4673,7 @@ entities:
       - scripts/ops/run_post_6941_authority_map_atlas_pre_external_intent_to_execution_seam_v1.py
     evidence_sources:
       - src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py
+      - src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/intent_to_execution_seam_sink_probe_v1.py
       - config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json
       - docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_FROM_POST_6941_MAIN_V1.md
       - tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py
