@@ -119,6 +119,16 @@ changes:
       POST_6927 PR #6928: GAP-TRUE-01 evidence test ↔ WP-2 PRE_EXTERNAL G17/DK seed contract;
       CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping only. RUNTIME_SEMANTICS_CHANGED=false.
       Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6929_pre_external_same_process_test_isolation_v1
+    from: dc438f370495fadd42032a98db31824e239e7271
+    to: dc438f370495fadd42032a98db31824e239e7271
+    type: TEST_ISOLATION
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/_current_productive_pre_external_test_process_isolation_v1.py
+    notes: >-
+      PR #6929 POST_6928: PRE_EXTERNAL same-process test isolation (F1/M9 ledger, Master-V2 import
+      binding, 29P base-binding cache reset); CSIA/Atlas diff-bound NO_MAP_IMPACT only.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

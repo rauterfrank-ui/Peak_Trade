@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6927 PR #6928: GAP-TRUE-01 PRE_EXTERNAL evidence test contract alignment (WP-2 G17/DK seed); Atlas entity review for test import coupling only; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- PR #6929 POST_6928: PRE_EXTERNAL same-process test isolation (F1/M9 ledger split-brain, Master-V2 import binding, 29P base-binding cache reset); test-only; Atlas entity review for import coupling; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6927_GAP_TRUE_01_PRE_EXTERNAL_TEST_CONTRACT_REPAIR_V1
+- modified_by=POST_6929_PRE_EXTERNAL_SAME_PROCESS_TEST_ISOLATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

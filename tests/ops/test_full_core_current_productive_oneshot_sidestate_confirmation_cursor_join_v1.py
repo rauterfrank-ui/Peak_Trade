@@ -79,6 +79,14 @@ _F1_M9_LEDGER_CACHE: dict[str, object] | None = None
 
 
 def _f1_m9_cycle_ledger_kwargs_v1() -> dict[str, object]:
+    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+        active_pre_external_test_f1_m9_cycle_ledger_kwargs_v1,
+    )
+
+    active = active_pre_external_test_f1_m9_cycle_ledger_kwargs_v1()
+    if active is not None:
+        return active
+
     global _F1_M9_LEDGER_CACHE
     if _F1_M9_LEDGER_CACHE is None:
         from tests.ops._current_productive_f1_m9_durable_seam_fixture_v1 import (
