@@ -67,6 +67,11 @@ secrets.toml
 !tests/governance/test_current_productive_k1_opaque_signing_handle*
 !config/governance/current_productive_k1_opaque_signing_handle*
 !docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN*
+!src/governance/post_6943*
+!scripts/ops/run_post_6943*
+!tests/governance/test_post_6943*
+!config/governance/post_6943*
+!docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_REAL_KEYCHAIN_MATERIAL_LOAD_SCOPED_PERFORM*
 
 # Logs
 *.log
