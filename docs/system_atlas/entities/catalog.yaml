@@ -72,6 +72,9 @@ entities:
     notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNBOOK:canonical_master_runbook
+    # atlas_entity_review: PR #6953 E2E convergence WP — §11.2.1.CR persist (consumption-time record);
+    # gap_dag EARLIEST aligned to Treasury enter-live CURRENT pin; mechanical test/harness fixes only;
+    # data_safety_admission conjunct on standing gates; no Live/POST authority expansion; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1 (PR #6927):
     # §11.2.1 CW–DU persist reinsert + DT/DU PRE_EXTERNAL G17 hot-path wiring;
     # navigation/representation only; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
@@ -5689,6 +5692,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6953 — enter-live treasury P01/eligibility handoff export; portfolio seam;
+    # live_admission_gap_dag EARLIEST→Treasury handoff GET; execution_admission data_safety inputs on
+    # standing gates; harness-only; MV2/DP unchanged; EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: PR #6951 S6 continuous poll liveness (stale/empty Fresh-C1 wait not STALL);
     # auth-free flat occupancy injection; cold-lane Cap24-bound C1 bootstrap; orchestration-only;
     # RUNTIME_SEMANTICS_CHANGED=false for MV2/DP; ATLAS_AUTHORITY=NONE; POST_COUNT=0.

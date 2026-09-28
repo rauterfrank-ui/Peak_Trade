@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,8 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNBOOK:canonical_master_runbook` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
@@ -94,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6952 Owner-GO baseline lineage bind for live main after #6951; ancestor validation + MV2/DP drift gate; wiring-only; PRE_EXTERNAL-only; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6953 mechanical E2E convergence: enter-live treasury/portfolio seam; standing-gate data_safety admission inputs; gap_dag Treasury pin; §11.2.1.CR navigation persist; harness/tests only; MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6952_POST_MERGE_OWNER_GO_BASELINE_LINEAGE_V1
+- modified_by=PR_6953_E2E_CONVERGENCE_CURRENT_PRODUCTIVE_MECHANICAL_FIXPOINT_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

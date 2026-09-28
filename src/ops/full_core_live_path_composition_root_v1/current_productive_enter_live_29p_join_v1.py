@@ -495,6 +495,18 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=fail_reasons,
         )
 
+    p01_fact = handoff.p01_fact
+    eligibility = handoff.eligibility_fact
+    if p01_fact is None or eligibility is None:
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="P01_OR_ELIGIBILITY_MISSING_AFTER_TREASURY_HANDOFF",
+            replay=replay,
+            get_count=get_count,
+            producer_output_status="FAIL_CLOSED",
+            reasons=("P01_OR_ELIGIBILITY_MISSING_AFTER_TREASURY_HANDOFF",),
+        )
+
     admissibility = handoff.step_29p_admissibility
     if admissibility.risk_admissible is not True:
         eval_reasons = tuple(str(code) for code in admissibility.reason_codes)
@@ -716,7 +728,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             fresh_pretrade_get_status=get_status,
             live_account_bound_status=lab_status,
             fresh_evidence_fetched=True,
-            fresh_evidence_validated=trusted and produced,
+            fresh_evidence_validated=produced,
         )
         portfolio_reservation_disposition = str(seam.disposition.value)
         if seam.disposition is ReserveDispositionV1.IDEMPOTENT_REPLAY:

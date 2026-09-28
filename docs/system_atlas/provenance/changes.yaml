@@ -263,6 +263,16 @@ changes:
       PR #6951: productive PRE_EXTERNAL-only runner; S6 stale-C1 poll liveness; cold-lane bootstrap;
       auth-free occupancy; baseline Owner-GO rebind 27c3cd4; productive evidence run without POST;
       MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6953_e2e_convergence_current_productive_mechanical_fixpoint_v1
+    from: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6
+    to: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py
+    notes: >-
+      PR #6953: mechanical E2E convergence — treasury handoff→enter-live portfolio seam; data_safety_admission
+      on standing gates; gap_dag Treasury CURRENT pin; §11.2.1.CR runbook persist; test harness only;
+      MV2/Double Play immutable; POST_COUNT=0; AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:pr_6952_post_merge_owner_go_baseline_lineage_v1
     from: 7b706117695e0ef79d1510ae98c335dd5bc8630b
     to: 7b706117695e0ef79d1510ae98c335dd5bc8630b

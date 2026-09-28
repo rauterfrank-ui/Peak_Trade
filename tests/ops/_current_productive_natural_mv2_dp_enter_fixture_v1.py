@@ -651,6 +651,35 @@ def run_layered_long_arm_then_enter_for_pre_external_v1(
     return arm_cycle, enter_cycle, enter_closes, enter_mark, enter_event_ts
 
 
+def bootstrap_minimal_productive_p5_store_for_lane_slot_v1(
+    *,
+    slot: IsolatedLaneSlotV1,
+    bound: BoundInstrumentV1,
+    g17_typed_vol_producer: object,
+) -> None:
+    """Seed P5.10 episode store so occupied-lane MV2/DP compose does not fail-closed."""
+    _origin, upscope_candidate, path = run_upscope_candidate_progress_cycles_v1(
+        bound=bound,
+        g17_typed_vol_producer=g17_typed_vol_producer,
+    )
+    if upscope_candidate.outgoing_cursor is None:
+        return
+    store_root = Path(slot.lane_state_root)
+    persist_current_productive_sidestate_confirmation_cursor_v1(
+        upscope_candidate.outgoing_cursor,
+        store_root=store_root,
+    )
+    closes = natural_enter_long_closes_v1(path)
+    ensure_productive_layered_core_episode_store_v1(
+        store_root=store_root,
+        bound_instrument=bound,
+        mark_price_m_t=float(closes[-1]),
+        finalized_closes=closes,
+        last_finalized_event_ts_unix=NATURAL_ENTER_UPSCOPE_CONFIRM_TS_UNIX_V1,
+        outgoing_cursor=upscope_candidate.outgoing_cursor,
+    )
+
+
 def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     *,
     bound: BoundInstrumentV1,

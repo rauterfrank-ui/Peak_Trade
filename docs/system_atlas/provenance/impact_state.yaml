@@ -2,24 +2,22 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6952_POST_MERGE_OWNER_GO_BASELINE_LINEAGE_V1
+modified_by: PR_6953_E2E_CONVERGENCE_CURRENT_PRODUCTIVE_MECHANICAL_FIXPOINT_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6952 Owner-GO baseline lineage bind for live main after #6951; ancestor validation + MV2/DP drift
-  gate; wiring-only; PRE_EXTERNAL-only; POST_COUNT=0; AUTHORITY=NONE.
+  PR #6953 mechanical E2E convergence: enter-live treasury/portfolio seam; standing-gate data_safety
+  admission inputs; gap_dag Treasury pin; §11.2.1.CR navigation persist; harness/tests only;
+  MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
-  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+  - RUNBOOK:canonical_master_runbook
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []
-changed_census:
-  - census/census_meta.yaml
+changed_census: []
 changed_generated:
   - generated/SYSTEM_ATLAS.md
-  - generated/COVERAGE_REPORT.md
-  - generated/ORPHAN_AND_WIRING_GAPS.md
   - generated/ATLAS_CHANGE_IMPACT.md
+  - generated/COVERAGE_REPORT.md

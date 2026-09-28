@@ -43,6 +43,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveU04P01EligibilityHostInputsV1,
     CurrentProductiveU04ReservationTypedEvidenceV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_producer_v1 import (
+    CurrentProductiveAccountEligibilityFactV1,
+    CurrentProductiveP01ReductionFactV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 import (
     bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1,
 )
@@ -86,6 +90,8 @@ class CurrentProductiveTreasurySingleSourceCapitalHandoffV1:
     capital_admission: CapitalAdmissionEvidenceV1
     step_29p_claim: Step29PCapitalRiskAdmissibilityClaimV1
     step_29p_admissibility: Step29PCapitalRiskAdmissibilityV1
+    p01_fact: CurrentProductiveP01ReductionFactV1 | None
+    eligibility_fact: CurrentProductiveAccountEligibilityFactV1 | None
     reason_codes: Tuple[str, ...]
     fail_closed: bool
 
@@ -262,6 +268,8 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         capital_admission=capital,
         step_29p_claim=claim,
         step_29p_admissibility=admissibility,
+        p01_fact=p01,
+        eligibility_fact=eligibility,
         reason_codes=tuple(dict.fromkeys(reasons)),
         fail_closed=fail_closed,
     )
@@ -342,6 +350,8 @@ def _fail_closed(
         capital_admission=capital,
         step_29p_claim=claim,
         step_29p_admissibility=adm,
+        p01_fact=None,
+        eligibility_fact=None,
         reason_codes=reasons,
         fail_closed=True,
     )
