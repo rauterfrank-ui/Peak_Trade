@@ -743,6 +743,7 @@
       ],
       "evidence_refs": [
         "scripts/ops/primary_evidence_retention_v0.py",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
         "tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
       ]
     },
@@ -4538,6 +4539,23 @@
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
       "closure_note": "Probative E2E stops at missing independent durable primary evidence until bounded PAPER/SHADOW/TESTNET execute admission."
+    },
+    {
+      "id": "post_6939_paper_g2_primary_run_metadata",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6939/#6940 whole-system learning path: legitimate bounded_runtime_primary_evidence producer (PAPER lane) → run_paper_only_bounded_observation_adapter_v0 → scheduler_start_boundary_guard_v0 admission → terminal HOLD_NO_PAPER_RUN when SCHEDULER_EXECUTION_AUTHORIZED=false. Adapter closeout can emit G2-admissible RUN_METADATA only after genuine observation; scoped Owner-GO record authorizes bounded PAPER execute attempt only (not scheduler clearance). Downstream G2→M4–M8 remains IMPLEMENTED; fixture-control proves mechanics only—not this real PAPER runtime path. Case B preserved.",
+      "evidence_refs": [
+        "config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
+        "scripts/ops/scheduler_start_boundary_guard_v0.py",
+        "tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py",
+        "tests/ops/test_scheduler_boundary_hard_block_contract_v0.py",
+        "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+        "docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Adjudicated real post-6939 PAPER attempt (untracked evidence/ops/post_6939_bounded_paper_primary_g2_closure_v1/): PAPER_RUNTIME_STARTED=false; PAPER_OBSERVATION_STARTED=false; scheduler admission HOLD_NO_PAPER_RUN; PAPER_START_RC=2; SCHEDULER_EXECUTION_AUTHORIZED=false; PRIMARY_ARCHIVE_EXISTS=false; G2_INGRESS_ADMITTED=false. SHELL_PROCESS_RESULT (wrapper/bootstrap exit) MUST NOT override PAPER_START_RESULT. Next edge: scoped bounded PAPER scheduler authorization only (not pre-authorized in #6940)."
     },
     {
       "id": "m9_m10_enforcement",

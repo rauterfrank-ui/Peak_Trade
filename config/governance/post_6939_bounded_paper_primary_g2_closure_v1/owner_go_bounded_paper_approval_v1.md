@@ -1,0 +1,24 @@
+# Scoped Owner-GO — Post-6939 Bounded PAPER Primary Evidence (v1)
+
+**Status:** SCOPED_OWNER_GO_RECORD — authorizes bounded PAPER observation execute only for WP
+`POST-6939 AUTHORITY-MAP-&#47;SYSTEM-ATLAS-GUIDED WHOLE-SYSTEM BOUNDED PAPER PRIMARY-EVIDENCE → G2 → M4–M8 CAUSAL CLOSURE V1`
+
+**Baseline SHA at authorization:** `2cffef01a7b8b933ee6a61577280d492ed842153`
+
+**Scope boundaries:** PAPER bounded observation only; no LIVE; no TESTNET; no SHADOW; no venue POST;
+no productive optimization apply/promotion; no external effect; Case B preserved.
+
+```
+OPERATOR_NAME=Owner
+OWNER_GO_WP=POST_6939_BOUNDED_PAPER_PRIMARY_G2_M8_CAUSAL_CLOSURE_V1
+BASELINE_SHA=2cffef01a7b8b933ee6a61577280d492ed842153
+APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true
+START_PAPER_NOW=true
+START_SHADOW_NOW=false
+START_TESTNET_NOW=false
+START_SUPERVISOR_NOW=false
+LIVE_ALLOWED=false
+START_RUNTIME_NOW=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false
+```

@@ -1161,6 +1161,11 @@ def test_run_metadata_repo_head_sha_prefix_matches_wrapper_resolver(tmp_path: Pa
         resolver.assert_called_once_with(ROOT)
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert metadata["repo_head_sha_prefix"] == expected_prefix
+    assert metadata["source_execution_mode"] == "PAPER"
+    assert metadata["instrument"] == mod.PAPER_PRIMARY_INSTRUMENT_BINDING
+    assert metadata["venue"] == mod.PAPER_PRIMARY_VENUE_IDENTITY
+    assert metadata["trading_epoch"] == mod.PAPER_PRIMARY_TRADING_EPOCH
+    assert metadata["strategy_version"] == mod.ALLOWED_JOB
 
 
 def test_run_metadata_uses_wrapper_resolver_not_adapter_git_logic(tmp_path: Path) -> None:
