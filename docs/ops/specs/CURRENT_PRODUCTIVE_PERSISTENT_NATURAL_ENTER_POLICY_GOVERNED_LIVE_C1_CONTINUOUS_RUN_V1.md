@@ -39,7 +39,7 @@ or `CONTINUOUS_RUN_AUTHORIZED=true` module pin.
 
 `scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`
 
-Run-scoped evidence under `runtime/current_productive/` (untracked). Cold-lane bootstrap
+Run-scoped evidence under `runtime&#47;current_productive&#47;` (untracked). Cold-lane bootstrap
 uses Cap24-bound `native_id` for the first public Fresh-C1 GET before sidestate cursor
 persist; S6 then waits for strictly newer finalized 1m bars. Auth-free scope injects
 flat occupancy payloads (no credential positions GET).

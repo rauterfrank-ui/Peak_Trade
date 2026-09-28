@@ -253,6 +253,16 @@ changes:
     notes: >-
       Owner-GO wiring for bounded continuous run + public readonly Fresh-C1 GET in S6 poll;
       policy-governed admission; PRE_EXTERNAL terminal; module pins unchanged; no venue POST.
+  - id: CHANGE:pr_6951_live_fresh_c1_pre_external_convergence_wiring_v1
+    from: 27c3cd4aa21e181282b19a89a9e2187b30ed93f4
+    to: 27c3cd4aa21e181282b19a89a9e2187b30ed93f4
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+    notes: >-
+      PR #6951: productive PRE_EXTERNAL-only runner; S6 stale-C1 poll liveness; cold-lane bootstrap;
+      auth-free occupancy; baseline Owner-GO rebind 27c3cd4; productive evidence run without POST;
+      MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

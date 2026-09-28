@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,9 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Owner-GO wiring: policy-governed live Fresh-C1 continuous run; S6 observation poll; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6951 orchestration wiring: productive entry script; S6 poll liveness; cold-lane bootstrap; PRE_EXTERNAL-only; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
+- modified_by=PR_6951_LIVE_FRESH_C1_PRE_EXTERNAL_CONVERGENCE_WIRING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
