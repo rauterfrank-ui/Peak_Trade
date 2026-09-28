@@ -143,6 +143,7 @@ REQUIRED_PARTIAL_IDS = (
     "selected_future_persistent_scope_confirmation_authority_v1",
     "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
     "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
+    "current_productive_persistent_natural_enter_convergence_v1",
     "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
     "treasury_import_wording",
     "m4_nongoals_vs_modules",
