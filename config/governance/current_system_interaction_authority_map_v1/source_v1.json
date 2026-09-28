@@ -4995,6 +4995,19 @@
       "closure_note": "Offline harness only; productive continuous Owner-GO and live C1/GET remain next gates."
     },
     {
+      "id": "post_6948_productive_continuous_run_authority_live_c1_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6948 navigation: maps productive continuous causal path (policy admission, runtime binding, S6, live Fresh-C1 GET seam, S5/S7, PRE_EXTERNAL); policy CONTINUOUS_RUNTIME_ADMISSION valid; RUNTIME_OWNER_GO and Fresh-C1 GET GO DEFINED_NOT_CONSUMED; no runtime/GET/POST.",
+      "evidence_refs": [
+        "docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "config/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1_decision_v1.json",
+        "tests/governance/test_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Owner decision required before productive continuous run with live C1 GET; module pins stay false."
+    },
+    {
       "id": "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
       "epistemic_class": "PARTIAL",
       "statement": "PR #6910: S7/MV2 durable occupied-lane C1 cursor persist owns the authoritative floor; S6 governed continuous orchestrator _advance_persisted_c1_cursor_floor_v1 reconciles with no-op when incoming venue_event_time equals persisted floor (eliminates STALE_OR_EQUAL_C1 after productive T2); stub-T2 sequencing bump unchanged; no threshold relaxation; no venue POST.",
