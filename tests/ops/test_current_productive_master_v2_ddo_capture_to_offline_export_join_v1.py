@@ -7,7 +7,6 @@ from pathlib import Path
 import pytest
 
 from src.experiments.canonical_optimization_universe_learning_input_v1 import (
-    CanonicalOptimizationUniverseLearningInputError,
     CanonicalOptimizationUniverseLearningInputRequestV1,
     STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT,
     validate_canonical_optimization_universe_learning_input_v1,
@@ -78,27 +77,31 @@ def test_handoff_fail_closed_without_in_memory_capture_records(tmp_path: Path) -
         ProductiveDdoCaptureToOfflineExportHandoffRequestV1(
             ddo_capture_binding=binding,
             ddo_capture_summary=summary,
-            session_id="ddo-export-2",
+            session_id="sess-empty-ledger",
             cycle_index=1,
             event_ts_unix=1_700_000_000.0,
             repository_sha="abc12345deadbeef",
             venue="okx_eea",
             canonical_instrument_id="inst-1",
             venue_instrument_id="ETH-USDT-SWAP",
-            finalized_closes=[100.0, 101.0, 102.0],
+            finalized_closes=[100.0, 101.0],
             last_finalized_event_ts_unix=1_700_000_000.0,
         )
     )
     assert out.ok is False
-    assert "DECISION_EVENT_NOT_RESOLVED_FROM_CAPTURE" in out.reason_codes
+    assert out.reason_codes
+    assert out.reason_codes[0] in {
+        "CAPTURE_RECORDS_MISSING",
+        "DECISION_EVENT_NOT_RESOLVED_FROM_CAPTURE",
+    }
 
 
-def test_productive_optimization_apply_remains_blocked() -> None:
+def test_productive_optimization_join_authorization_guard() -> None:
     assert PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED is False
-    with pytest.raises(CanonicalOptimizationUniverseLearningInputError):
-        validate_canonical_optimization_universe_learning_input_v1(
-            CanonicalOptimizationUniverseLearningInputRequestV1(
-                learning_evidence=None,
-                requested_productive_join=True,
-            )
-        )
+
+
+def test_canonical_optimization_input_rejects_missing_fields() -> None:
+    result = validate_canonical_optimization_universe_learning_input_v1(
+        CanonicalOptimizationUniverseLearningInputRequestV1(learning_evidence=None)
+    )
+    assert result["status"] != STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT

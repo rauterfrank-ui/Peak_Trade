@@ -14,6 +14,9 @@ from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     run_current_productive_master_v2_runtime_cycle_v1,
 )
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    provenance_for_bound_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
     CURSOR_SCHEMA_NAME,
@@ -179,12 +182,13 @@ def _cycle(
         if g17_typed_vol_producer is _AUTO_G17
         else g17_typed_vol_producer
     )
+    index_px = last * 0.995
     return run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=resolved_bound,
         cycle_id=cycle_id,
         observed_unix=float(event_ts_unix) + 100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -196,6 +200,11 @@ def _cycle(
         existing_position_side=ExistingPositionSide.NONE,
         incoming_cursor=incoming_cursor,
         g17_typed_vol_producer=producer,
+        canonical_price_provenance=provenance_for_bound_v1(
+            bound=resolved_bound,
+            mark_px=last,
+            index_px=index_px,
+        ),
         **_f1_m9_cycle_ledger_kwargs_v1(),
     )
 

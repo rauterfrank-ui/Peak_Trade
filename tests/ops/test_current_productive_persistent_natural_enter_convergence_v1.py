@@ -37,6 +37,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     CURSOR_FILENAME,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    observation_mark_payloads_for_bound_v1,
+)
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_c1_candles_payload_from_enter_closes_v1,
     governed_productive_c1_event_ts_unix_v1,
@@ -103,15 +106,23 @@ def _continuous_auth(
 
 
 def _observation_from_closes(
-    *, closes: tuple[float, ...], event_ts: float
+    *, closes: tuple[float, ...], event_ts: float, bound: BoundInstrumentV1 | None = None
 ) -> InjectedContinuousObservationV1:
     candles = governed_c1_candles_payload_from_enter_closes_v1(
         enter_closes=closes,
         last_event_ts_unix=event_ts,
     )
+    b = bound or _bound_lane_1()
+    mark_px = float(closes[-1]) + 1.0
+    index_px = mark_px * 0.995
+    mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
+        bound=b, mark_px=mark_px, index_px=index_px
+    )
     return InjectedContinuousObservationV1(
         candles_payload=candles,
         occupancy_payloads=_occupancy_absent(),
+        mark_price_payload=mark_payload,
+        index_tickers_payload=index_payload,
     )
 
 
@@ -182,11 +193,26 @@ def test_n1_bootstrap_uses_injected_c1_closes_not_stale_market_kwargs(tmp_path: 
         enter_closes=strong_uptrend_closes_v1(count=12),
         last_event_ts_unix=last_ts,
     )
+    bound = pairs["LANE_1"][1]
     kwargs = _market_kwargs(cycle_id_prefix="bootstrap-closes-regression", last_ts=last_ts)
-    kwargs["mark_px"] = 1.0
+    mark_px = 1.0
+    index_px = 0.995
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        build_provenance_from_resolved_cmc_mark_and_index_v1,
+    )
+
+    kwargs["mark_px"] = mark_px
+    kwargs["index_px"] = index_px
     kwargs["finalized_closes"] = (1.0, 2.0, 3.0)
     kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
     kwargs["candles_payload"] = candles
+    kwargs["canonical_price_provenance"] = build_provenance_from_resolved_cmc_mark_and_index_v1(
+        venue_native_id=str(bound.venue_native_id),
+        mark_px=mark_px,
+        index_px=index_px,
+        index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    )
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     assert results["LANE_1"].governed_cycle_result.post_count == 0
     assert (Path(pairs["LANE_1"][0].lane_state_root) / CURSOR_FILENAME).is_file()
@@ -271,6 +297,9 @@ def test_max_cycles_bound_enforced(tmp_path: Path) -> None:
         origin_main_sha=ORIGIN_SHA,
         g17_producers=g17,
         candles_payload=obs_boot.candles_payload,
+        mark_price_payload=obs_boot.mark_price_payload,
+        venue_native_id=native_id,
+        index_tickers_payload=obs_boot.index_tickers_payload,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     obs = ScriptedContinuousObservationSourceV1(
@@ -370,11 +399,21 @@ def test_cap24_writer_not_reinvoked_per_s6_cycle(tmp_path: Path) -> None:
     t1 = t0 + 60.0
     obs = ScriptedContinuousObservationSourceV1(
         [
-            _observation_from_closes(closes=path[:18], event_ts=t0),
+            _observation_from_closes(closes=path[:18], event_ts=t0, bound=bound),
             None,
-            _observation_from_closes(closes=path[:20], event_ts=t1),
+            _observation_from_closes(closes=path[:20], event_ts=t1, bound=bound),
             None,
         ]
+    )
+    obs_boot = _observation_from_closes(closes=path[:14], event_ts=t0 - 60.0, bound=bound)
+    bootstrap_s8_lane_via_s7_compose_v1(
+        composed_pairs=pairs,
+        origin_main_sha=ORIGIN_SHA,
+        g17_producers=g17,
+        candles_payload=obs_boot.candles_payload,
+        mark_price_payload=obs_boot.mark_price_payload,
+        venue_native_id=native_id,
+        index_tickers_payload=obs_boot.index_tickers_payload,
     )
     with patch(
         "src.ops.governed_productive_account_equity_authority_producer_v1."

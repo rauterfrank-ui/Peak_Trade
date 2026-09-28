@@ -49,6 +49,10 @@ from src.ops.p5_10b_layered_epoch_remaining_authority_closure_v1.contract_v1 imp
     execute_layered_epoch_canonical_sidestate_handoff_v1,
     map_scope_event_evidence_to_scope_event_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCanonicalPriceProvenanceError,
+    ProductiveCycleCanonicalPriceProvenanceV1,
+)
 from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.contract_v1 import (
     ProductiveCycleAuthorityBindRequestV1,
     ProductiveDecisionAuthorityModeV1,
@@ -114,13 +118,16 @@ def _inactive_carry() -> ProductiveLayeredCoreBindCarryV1:
     )
 
 
-def _observation_candidates_from_closes_v1(
+def _observation_candidates_from_cmc_mark_v1(
     *,
     instrument_key: InstrumentObservationKeyV1,
-    closes: Sequence[float],
+    cmc_mark_price_m_t: float,
     event_ts_unix: float,
 ) -> Tuple[ObservationCandidateV1, ...]:
-    if len(closes) < 2:
+    """Layered-core initialization observations use CMC-class mark, not candle.close."""
+
+    mark = float(cmc_mark_price_m_t)
+    if mark <= 0:
         return ()
     t0 = float(event_ts_unix) - 60.0
     t1 = float(event_ts_unix)
@@ -130,14 +137,14 @@ def _observation_candidates_from_closes_v1(
             canonical_instrument_id=instrument_key.canonical_instrument_id,
             venue_instrument_id=instrument_key.venue_instrument_id,
             venue_event_time=t0,
-            mark_price=float(closes[-2]),
+            mark_price=mark,
         ),
         ObservationCandidateV1(
             venue=instrument_key.venue,
             canonical_instrument_id=instrument_key.canonical_instrument_id,
             venue_instrument_id=instrument_key.venue_instrument_id,
             venue_event_time=t1,
-            mark_price=float(closes[-1]),
+            mark_price=mark,
         ),
     )
 
@@ -195,6 +202,8 @@ def prepare_productive_layered_core_replay_bind_v1(
     existing_position_side: ExistingPositionSide,
     side_state_from_cursor_restore: bool,
     side_state_from_venue_position: bool,
+    side_state_from_transition_carryforward: bool = False,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1 | None = None,
     existing_scope_present: bool,
 ) -> Tuple[IntegratedOfflineReplayInputV1, ProductiveLayeredCoreBindCarryV1]:
     """Attach layered-core seal for CZ-4 delegation when bind is requested and enabled."""
@@ -219,9 +228,23 @@ def prepare_productive_layered_core_replay_bind_v1(
     )
     store_root = Path(layered_core_store_root)
 
+    if side_state_from_venue_position:
+        return replay_input, _fail_carry("side_state_venue_observation_seed_forbidden")
+    if canonical_price_provenance is None:
+        return replay_input, _fail_carry("canonical_cmc_mark_provenance_required")
+    try:
+        canonical_price_provenance.validate_against_cycle_inputs_v1(
+            mark_px=float(mark_price_m_t),
+            index_px=float(replay_input.canonical_market_context.index_price),
+            venue_native_id=venue_native_id,
+        )
+    except ProductiveCanonicalPriceProvenanceError:
+        return replay_input, _fail_carry("canonical_cmc_mark_provenance_invalid")
+
     seed_class = classify_side_state_seed_v1(
         from_venue_position=side_state_from_venue_position,
         from_cursor_restore=side_state_from_cursor_restore,
+        from_transition_carryforward=side_state_from_transition_carryforward,
         claims_core_regime_authority=False,
     )
     if seed_class is SideStateSeedClassV1.CORE_REGIME_AUTHORITY_CLAIM:
@@ -235,10 +258,12 @@ def prepare_productive_layered_core_replay_bind_v1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
     )
-    observations = _observation_candidates_from_closes_v1(
+    # Layered-core init needs ≥2 distinct observation marks; finalized closes supply the
+    # 1m grid only. Authoritative mechanical M_t remains CMC (mark_price_m_t + provenance).
+    observations = _observation_candidates_from_finalized_closes_v1(
         instrument_key=instrument_key,
         closes=finalized_closes,
-        event_ts_unix=last_finalized_event_ts_unix,
+        last_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     restore_existing = True
     try:

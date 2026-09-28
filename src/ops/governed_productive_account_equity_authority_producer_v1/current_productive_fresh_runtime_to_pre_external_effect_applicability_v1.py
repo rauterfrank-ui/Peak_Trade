@@ -40,6 +40,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m
     ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
     mark_history_get_query_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_OKX_MARK_IDX_PX,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_TICKER,
@@ -799,6 +803,12 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                             "venue_flat": venue_flat,
                             "existing_position_side": existing_side,
                             "g17_typed_vol_producer": g17_producer,
+                            "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+                                venue_native_id=native_id,
+                                mark_px=float(mark_px),
+                                index_px=float(index_px),
+                                index_source=INDEX_SOURCE_OKX_MARK_IDX_PX,
+                            ),
                         }
                         if loaded_cursor is not None:
                             cycle_kwargs["incoming_cursor"] = loaded_cursor

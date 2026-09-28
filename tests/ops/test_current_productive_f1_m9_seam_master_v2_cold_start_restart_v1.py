@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
+
+
 from pathlib import Path
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
@@ -35,16 +41,18 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
     assert g17.producer is not None
     closes = tuple(100.0 + i * 0.01 for i in range(80))
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     ledger_kw = {
         "f1_m9_productive_apply_ledger_paths": f1_m9["apply_ledger_paths"],
         "f1_m9_threshold_ledger_paths": f1_m9["threshold_ledger_paths"],
     }
     cold = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="f1-m9-cold-start",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -57,6 +65,12 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
         incoming_cursor=None,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert cold.input_blocker == ""
     assert cold.outgoing_cursor is not None
@@ -64,11 +78,11 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
     assert cold.outgoing_cursor.trading_epoch == 2
 
     warm = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="f1-m9-restart",
         observed_unix=1_700_000_160.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -81,6 +95,12 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
         incoming_cursor=cold.outgoing_cursor,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert warm.input_blocker == ""
     assert warm.cursor_restore_status == "restored"
@@ -92,12 +112,14 @@ def test_missing_seam_fail_closed_without_g17(tmp_path: Path) -> None:
     f1_m9 = materialize_f1_m9_runtime_applied_seam_ledgers_v1(tmp_path / "f1_m9")
     closes = tuple(100.0 + i * 0.01 for i in range(80))
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="f1-m9-no-g17",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -110,6 +132,12 @@ def test_missing_seam_fail_closed_without_g17(tmp_path: Path) -> None:
         g17_typed_vol_producer=None,
         f1_m9_productive_apply_ledger_paths=f1_m9["apply_ledger_paths"],
         f1_m9_threshold_ledger_paths=f1_m9["threshold_ledger_paths"],
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert cycle.replay is not None
     assert cycle.replay.replay_pass is False

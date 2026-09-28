@@ -106,6 +106,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
     load_current_productive_sidestate_confirmation_cursor_v1,
     persist_current_productive_sidestate_confirmation_cursor_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCycleCanonicalPriceProvenanceV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CurrentProductiveMasterV2CycleResultV1,
     ExistingPositionSide,
@@ -409,6 +412,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     existing_position_side: ExistingPositionSide,
     incoming_cursor: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Lane-isolated bounded harness invoke of the existing N=1 MV2+DP cycle.
 
@@ -454,6 +458,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=None,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         invoked[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -486,6 +491,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Pass each occupied lane's prior outgoing cursor as the next incoming cursor.
 
@@ -556,6 +562,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=lane_cursor,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         carried[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -661,6 +668,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -706,6 +714,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=incoming,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -775,6 +784,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
 
@@ -800,6 +810,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
+        canonical_price_provenance=canonical_price_provenance,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
@@ -810,9 +821,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
             continue
         bound, store_root, _cursor_address = seam_item
         closes_for_bootstrap = tuple(finalized_closes)
-        mark_for_bootstrap = (
-            float(closes_for_bootstrap[-1]) if closes_for_bootstrap else float(mark_px)
-        )
+        mark_for_bootstrap = float(mark_px)
         bootstrap_failures = ensure_productive_layered_core_episode_store_v1(
             store_root=Path(store_root),
             bound_instrument=bound,

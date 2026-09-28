@@ -31,6 +31,10 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
 from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
     productive_layered_core_bind_cycle_kwargs_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_OKX_MARK_IDX_PX,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_TICKER,
@@ -687,6 +691,12 @@ def execute_current_productive_fresh_runtime_cycle_after_non_executable_decision
                             **productive_layered_core_bind_cycle_kwargs_v1(
                                 layered_core_store_root=cursor_store_root,
                                 incoming_cursor=loaded_cursor,
+                            ),
+                            canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+                                venue_native_id=native_id,
+                                mark_px=float(mark_px),
+                                index_px=float(index_px),
+                                index_source=INDEX_SOURCE_OKX_MARK_IDX_PX,
                             ),
                         )
                     except (TypeError, RuntimeError, ValueError) as exc:

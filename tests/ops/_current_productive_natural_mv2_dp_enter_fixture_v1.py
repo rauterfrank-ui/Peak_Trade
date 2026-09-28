@@ -36,6 +36,9 @@ from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_se
     ensure_productive_layered_core_episode_store_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    provenance_for_bound_v1,
+)
 from trading.master_v2.double_play_composition_matrix_v1 import CompositionStatus
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     EntryExitDirectionState,
@@ -510,12 +513,14 @@ def _compose_layered_lane_cycle_v1(
     event_ts_unix: float,
     cycle_id_prefix: str,
 ) -> Any:
+    index_px = float(mark_px) * 0.995
+    bound = pair[1]
     return compose_occupied_lane_mv2_dp_durable_cycle_v1(
         {"LANE_1": pair},
         cycle_id_prefix=cycle_id_prefix,
         observed_unix=float(event_ts_unix) + 1.0,
         mark_px=float(mark_px),
-        index_px=float(mark_px),
+        index_px=index_px,
         bid_px=float(mark_px) - 0.5,
         ask_px=float(mark_px) + 0.5,
         volume=10.0,
@@ -526,6 +531,11 @@ def _compose_layered_lane_cycle_v1(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producers={"LANE_1": g17_typed_vol_producer},
+        canonical_price_provenance=provenance_for_bound_v1(
+            bound=bound,
+            mark_px=float(mark_px),
+            index_px=index_px,
+        ),
     )["LANE_1"].cycle_result
 
 

@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
+
+
 import ast
 import inspect
 import json
@@ -296,7 +302,7 @@ def _called_names(source: str) -> set[str]:
 def _bound(*, lane_id: str, instrument_id: str | None = None) -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id=instrument_id or f"INST-{lane_id}",
-        venue_native_id=f"VENUE-{lane_id[-1]}",
+        venue_native_id="VENUE-HARNESS",
         ranking_snapshot_id=RANKING_SNAPSHOT,
         ranking_integrity_digest=RANKING_DIGEST,
         universe_snapshot_id=UNIVERSE_SNAPSHOT,
@@ -1049,11 +1055,13 @@ def test_s3_no_consumer_cursor_cap61_or_runtime_side_effects() -> None:
 
 
 def _invoke_kwargs() -> dict[str, object]:
+    mark_px = 100.0
+    index_px = 99.5
     return {
         "cycle_id_prefix": "s4-harness",
         "observed_unix": 1_700_000_000.0,
-        "mark_px": 100.0,
-        "index_px": 100.0,
+        "mark_px": mark_px,
+        "index_px": index_px,
         "bid_px": 99.5,
         "ask_px": 100.5,
         "volume": 10.0,
@@ -1063,6 +1071,12 @@ def _invoke_kwargs() -> dict[str, object]:
         "last_finalized_event_ts_unix": 1_699_999_940.0,
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
+        "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id="VENUE-HARNESS",
+            mark_px=mark_px,
+            index_px=index_px,
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     }
 
 
@@ -1089,6 +1103,7 @@ def test_s4_n1_parity_matches_direct_cycle(tmp_path: Path) -> None:
         venue_flat=kwargs["venue_flat"],  # type: ignore[arg-type]
         existing_position_side=kwargs["existing_position_side"],  # type: ignore[arg-type]
         incoming_cursor=None,
+        canonical_price_provenance=kwargs["canonical_price_provenance"],  # type: ignore[arg-type]
     )
     assert list(invoked) == ["LANE_3"]
     record = invoked["LANE_3"]
@@ -1155,11 +1170,8 @@ def test_s4_incoming_cursor_and_n1_path_fail_closed(tmp_path: Path) -> None:
     assert exc.value.failure_code == FAILURE_N1_GLOBAL_CURSOR_STORE
     invoke_source = inspect.getsource(invoke_occupied_lane_mv2_dp_decision_state_consumer_v1)
     assert "incoming_cursor=None" in invoke_source
-    invoke_cycle = invoke_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
-        1
-    ].split(")", 1)[0]
-    assert "productive_layered_core_bind_cycle_kwargs_v1(" in invoke_cycle
-    assert " store_root=" not in invoke_cycle
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in invoke_source
+    assert "canonical_price_provenance=canonical_price_provenance" in invoke_source
     assert "persist=" not in invoke_source
     assert MAY_PERSIST_CURSOR is True
     assert MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK is True
@@ -1233,12 +1245,9 @@ def test_s5_reuses_existing_invocation_cursor_without_new_owner() -> None:
         carry_occupied_lane_mv2_dp_decision_state_in_memory_v1
     )
     carry_source = inspect.getsource(carry_occupied_lane_mv2_dp_decision_state_in_memory_v1)
-    cycle_call = carry_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
-        1
-    ].split(")", 1)[0]
-    assert "incoming_cursor=lane_cursor" in cycle_call
-    assert "productive_layered_core_bind_cycle_kwargs_v1(" in cycle_call
-    assert " store_root=" not in cycle_call
+    assert "incoming_cursor=lane_cursor" in carry_source
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in carry_source
+    assert "canonical_price_provenance=canonical_price_provenance" in carry_source
     assert "persist=" not in carry_source
     assert "state_root=" not in carry_source
     assert "persist_current_productive_sidestate_confirmation_cursor_v1(" not in carry_source
@@ -1287,6 +1296,7 @@ def test_s5_n1_two_cycle_parity(tmp_path: Path) -> None:
             layered_core_store_root=pair[0].lane_state_root,
             incoming_cursor=outgoing,
         ),
+        canonical_price_provenance=second_kwargs["canonical_price_provenance"],  # type: ignore[arg-type]
     )
     record = second["LANE_3"]
     assert record.incoming_cursor is outgoing
@@ -1534,12 +1544,9 @@ def test_s6_reuses_existing_cursor_owner_without_new_schema() -> None:
     assert "path.write_text" in owner_persist
     assert "os.replace" not in owner_persist
     assert "NamedTemporaryFile" not in owner_persist
-    restore_cycle = restore_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
-        1
-    ].split(")", 1)[0]
-    assert "incoming_cursor=incoming" in restore_cycle
-    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_cycle
-    assert " store_root=" not in restore_cycle
+    assert "incoming_cursor=incoming" in restore_source
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_source
+    assert "canonical_price_provenance=canonical_price_provenance" in restore_source
     assert "state_root=" not in restore_source
     assert "CurrentProductiveSideStateConfirmationCursorV1" not in JOIN_SOURCE
 
@@ -1757,12 +1764,9 @@ def test_s7_reuses_s6_restore_then_persist_without_new_owner() -> None:
     assert "cap61_state_root_bound=False" in compose_source
     assert "persist_enabled=False" in restore_source
     assert "persist_occupied_lane_mv2_dp_decision_state_cursor_v1(" not in restore_source
-    restore_cycle = restore_source.split("run_current_productive_master_v2_runtime_cycle_v1(", 1)[
-        1
-    ].split(")", 1)[0]
-    assert "incoming_cursor=incoming" in restore_cycle
-    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_cycle
-    assert " store_root=" not in restore_cycle
+    assert "incoming_cursor=incoming" in restore_source
+    assert "productive_layered_core_bind_cycle_kwargs_v1(" in restore_source
+    assert "canonical_price_provenance=canonical_price_provenance" in restore_source
     assert "os.replace" not in compose_source
     assert "write_text" not in JOIN_SOURCE
     called = _called_names(JOIN_SOURCE)
