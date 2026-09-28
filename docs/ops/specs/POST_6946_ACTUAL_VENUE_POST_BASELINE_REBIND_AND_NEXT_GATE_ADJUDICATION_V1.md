@@ -20,7 +20,7 @@ ACTUAL_VENUE_POST_PERFORMED=false
 
 ## Pin contract semantics (adjudicated)
 
-Prior text required ``EXPECTED_BASELINE_ORIGIN_MAIN_SHA == live origin/main`` before
+Prior text required ``EXPECTED_BASELINE_ORIGIN_MAIN_SHA == live origin&#47;main`` before
 POST-slice mutation. That creates a **self-referential squash-merge loop**: any PR
 that updates the pin changes ``origin/main`` to a new SHA, immediately stale-ing
 the pin it just wrote.
