@@ -214,6 +214,16 @@ changes:
       PR #6937: synthetic treasury whole-system causal closure — 29P→EEA/budget productive joins plus MV2 same-cycle
       DDO capture→offline export to ACCEPTED_OFFLINE_RESEARCH_INPUT; landscape/presentation dashboard OUT_OF_SCOPE;
       PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:productive_learning_to_g2_primary_evidence_case_b_closure_v1
+    from: b3af49d714cf0f248a572b5799bb5edef4b45fa6
+    to: b3af49d714cf0f248a572b5799bb5edef4b45fa6
+    type: ADJUDICATION
+    epistemic_status: ADJUDICATED
+    evidence: src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py
+    notes: >-
+      Case B closure: productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence;
+      CSIA NOT_APPLICABLE edge + partial statement; Atlas entity; legitimate G2→M4–M8 reference only;
+      bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

@@ -132,6 +132,7 @@ flowchart LR
   okx_eea_private_account_state_runtime_wp_b --> full_core_fresh_pretrade_runtime_get
   okx_eea_private_account_state_runtime_wp_b --> selection_cap23
   okx_eea_private_account_state_runtime_wp_b --> market_data_private_state_runtime_convergence_wp_c
+  learning_ddo --> bounded_runtime_primary_evidence
   peak_trade_public_market_data_runtime_wp_a --> ranking_cap22
   peak_trade_public_market_data_runtime_wp_a --> selection_cap23
   peak_trade_public_market_data_runtime_wp_a --> market_data_private_state_runtime_convergence_wp_c

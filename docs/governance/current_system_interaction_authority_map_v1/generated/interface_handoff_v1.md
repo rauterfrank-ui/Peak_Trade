@@ -58,6 +58,7 @@ flowchart LR
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_adapts_fresh_pretrade_get| full_core_fresh_pretrade_runtime_get
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_preserves_cap23_selection_owner| selection_cap23
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
+  learning_ddo -->|productive_ddo_offline_export_to_g2_primary_evidence| bounded_runtime_primary_evidence
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_adapter_to_ranking_cap22| ranking_cap22
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_preserves_cap23_selection_owner| selection_cap23
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
@@ -532,7 +533,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out
+- contract_or_payload=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out | DISTINCT_FROM=productive_ddo_offline_export_to_g2_primary_evidence (Case B: productive DDO export not admissible as primary evidence)
 - producer=validate_durable_primary_evidence_root
 - consumer=run_governed_runtime_primary_to_offline_observation_projection_v1
 - authority_effect=NONE
@@ -544,7 +545,7 @@ flowchart LR
 - provenance_binding=PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `scripts/ops/primary_evidence_retention_v0.py`
+- evidence=`docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `scripts/ops/primary_evidence_retention_v0.py`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`
 
 ## g2_runtime_learning_to_optimization_input_binding
 
@@ -742,7 +743,7 @@ flowchart LR
 - provenance_binding=UNIFIED_BLUEPRINT_D02_d02_learning_to_optimization
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`
+- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md`
 
 ## meta_search_backflow
 
@@ -1031,6 +1032,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py`, `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py`
+
+## productive_ddo_offline_export_to_g2_primary_evidence
+
+- lifecycle=CONFLICTING
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=CASE_B_FORBIDDEN: productive MV2/N5 DDO offline export (ACCEPTED_OFFLINE_RESEARCH_INPUT) cannot become G2 primary evidence; anti-laundering | SEMANTIC_PAIR=productive_ddo_offline_export_to_g2_primary_evidence; DISTINCT_FROM=g2_primary_evidence_to_offline_projection
+- producer=current_productive_master_v2_ddo_capture_to_offline_export_join_v1
+- consumer=validate_durable_primary_evidence_root
+- authority_effect=NONE
+- decision_effect=BRIDGE_FORBIDDEN
+- direct_or_indirect=INDIRECT
+- identity_binding=PRODUCTIVE_DDO_HANDOFF_NOT_PRIMARY_MANIFEST
+- temporal_binding=UNKNOWN
+- version_binding=governed_productive_learning_to_g2_primary_evidence_causal_closure_v1
+- provenance_binding=LIFECYCLE_PROVENANCE_LAUNDERING_FORBIDDEN
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md`, `docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json`
 
 ## public_md_runtime_adapter_to_ranking_cap22
 

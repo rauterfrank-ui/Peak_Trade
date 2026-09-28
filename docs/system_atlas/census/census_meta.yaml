@@ -11,7 +11,7 @@ domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
 historical_domain_census_payload_count: 0
 historical_domain_census_stale_defect_if_head_differs: false
-worktree_note: 'PR #6937: whole-system causal closure (treasury joins + MV2 capture→offline export); CSIA/Atlas entity review; dashboard OUT_OF_SCOPE; PRODUCTIVE_OPTIMIZATION_JOIN=false; CURRENT_REVIEWED_AT_SHA unchanged 744a9c896; no venue POST; Atlas AUTHORITY=NONE.'
+worktree_note: 'PR #6937 baseline b3af49d71; WP productive-learning→G2 Case B closure (bridge forbidden; CSIA/Atlas navigation); PRODUCTIVE_OPTIMIZATION_JOIN=false; Atlas AUTHORITY=NONE.'
 okx_census_complete: true
 okx_current_tree_census_complete: true
 okx_historical_census_complete: false
