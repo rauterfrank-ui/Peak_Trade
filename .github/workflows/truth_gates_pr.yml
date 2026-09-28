@@ -70,6 +70,21 @@ jobs:
           base="${{ steps.base.outputs.base_ref }}"
           python3 scripts/ops/check_system_atlas_impact_v1.py --base "${base}"
 
+      - name: Validate Current Law Impact Map currency
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          python3 scripts/ops/current_law_impact_map_v1.py generate --check
+          python3 scripts/ops/current_law_impact_map_v1.py validate --diff-base "${base}"
+
+      - name: Run Current Law Impact checker (advisory)
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="${{ steps.base.outputs.base_ref }}"
+          python3 scripts/ops/check_current_law_impact_v1.py --base "${base}" --advisory-only
+
   repo_truth_claims:
     name: repo-truth-claims
     runs-on: ubuntu-latest

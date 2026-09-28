@@ -1,0 +1,15 @@
+{
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "authority_effect": "NONE",
+  "exhaustive": false,
+  "selector_modes_are_law_impact_authority": false,
+  "surfaces": [
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "src/ops/full_core_live_path_composition_root_v1/",
+    "src/ops/current_productive_",
+    "src/ops/governed_productive_",
+    "src/ops/p5_10_productive_activation_and_binding_v1/",
+    "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/",
+    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+  ]
+}
