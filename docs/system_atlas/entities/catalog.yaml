@@ -3820,6 +3820,9 @@ entities:
       Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
+    # atlas_entity_review: PR #6932 PRE_EXTERNAL execute_network MV2 market handoff wiring on closure owner;
+    # bind_execute_network_mv2_market_kwargs_v1; RUNTIME_SEMANTICS_CHANGED=true for execute_network market
+    # inputs only; no Master-V2/Double-Play change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
     # PR_6907 PRE_EXTERNAL_WP1_CAP21_PUBLIC_INST_TYPE_BINDING: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     kind: CONTRACT
     name: Fresh EXECUTABLE Enter envelope runtime reach to one-shot POST join v1
@@ -5423,6 +5426,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6932 PRE_EXTERNAL execute_network MV2 market handoff (public mark-price +
+    # C1 finalized closes extractors reused from master_v2_runtime_cycle_v1); upstream wiring only;
+    # RUNTIME_SEMANTICS_CHANGED=true for productive execute_network handoff; no venue POST; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: PR #6931 POST-first-real-attempt safety closure: baseline pin cf3aa15;
     # pre-POST freshness; HTTP POST outcome phases; read-only exact-order GET; UNKNOWN reconciliation
     # seam; fail-closed transport; CSIA MAP_UPDATE_REQUIRED; RUNTIME_SEMANTICS_CHANGED=true for POST

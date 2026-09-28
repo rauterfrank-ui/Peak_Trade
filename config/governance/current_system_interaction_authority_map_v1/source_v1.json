@@ -4726,6 +4726,18 @@
       "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
+      "id": "current_productive_pre_external_execute_network_mv2_market_handoff_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6932: PRE_EXTERNAL execute_network binds MV2 mark_px from /api/v5/public/mark-price and finalized_closes from governed C1 candles via sibling extractors; replay setdefault 100/(98,99,100) retained only for execute_network=false injected path; fail-closed MASTER_V2_REQUIRED_GET_INCOMPLETE; no Master-V2/Double-Play change; no venue POST.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
       "id": "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
       "epistemic_class": "PARTIAL",
       "statement": "PR #6908: Master-V2 cold-start invokes canonical F1/M9 durable bootstrap (existing apply-start continuation only); PRE_EXTERNAL WP2 uses G17 mark-history when producer absent; occupied-lane invoke join passes common_epoch_decision_epoch; no venue POST; no second authority.",

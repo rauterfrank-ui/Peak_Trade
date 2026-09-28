@@ -149,6 +149,17 @@ changes:
       PR #6931: POST-first-real-attempt safety closure — baseline cf3aa15, pre-POST freshness,
       HTTP POST outcome phases, read-only exact-order GET, UNKNOWN reconciliation; CSIA
       MAP_UPDATE_REQUIRED; no new Owner-GO venue POST in WP. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6932_productive_pre_external_execute_network_mv2_market_handoff_v1
+    from: 093b481458c86af5fa8a5105d202935fde30c521
+    to: 093b481458c86af5fa8a5105d202935fde30c521
+    type: RUNTIME_HANDOFF_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_full_core_current_productive_pre_external_closure_v1.py
+    notes: >-
+      PR #6932: PRE_EXTERNAL execute_network binds MV2 mark_px and finalized_closes from governed
+      live GETs; replay defaults only on execute_network=false; fail-closed on missing market fields;
+      CSIA MAP_UPDATE_REQUIRED partial statement; no Master-V2/Double-Play change; POST_COUNT=0.
+      Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
