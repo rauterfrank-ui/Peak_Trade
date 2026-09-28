@@ -17,6 +17,8 @@ def _needs_current_productive_pre_external_process_isolation_v1(nodeid: str) -> 
         "pre_external",
         "gap_true_01",
         "order_independence",
+        "one_shot_enter_e2e",
+        "e2e_runtime_handoff",
     )
     return any(needle in nodeid for needle in needles)
 

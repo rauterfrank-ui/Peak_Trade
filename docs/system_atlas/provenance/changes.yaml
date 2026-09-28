@@ -129,6 +129,16 @@ changes:
       PR #6929 POST_6928: PRE_EXTERNAL same-process test isolation (F1/M9 ledger, Master-V2 import
       binding, 29P base-binding cache reset); CSIA/Atlas diff-bound NO_MAP_IMPACT only.
       RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6930_pre_external_e2e_handoff_composition_proof_v1
+    from: fb7bc6e7a6bed4f1b8a1320f28e712fb7a682d7a
+    to: fb7bc6e7a6bed4f1b8a1320f28e712fb7a682d7a
+    type: TEST_COMPOSITION_PROOF
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py
+    notes: >-
+      POST_6930: WP-2 PRE_EXTERNAL layered ENTER composed into one-shot E2E handoff prepare;
+      same-process batch + conftest isolation needles; CSIA/Atlas diff-bound NO_MAP_IMPACT only.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
