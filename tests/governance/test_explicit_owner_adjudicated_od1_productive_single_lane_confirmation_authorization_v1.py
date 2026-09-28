@@ -187,21 +187,13 @@ class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
         assert auth["authorized_scope_class"] == OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS
         assert auth["authorization_token"] == OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == OD1_SINGLE_LANE_CONFIRMATION_MUTATION_PURPOSE
-        if auth["grant_active"] is False:
-            assert auth["allowed_paths"] == []
-            assert auth["required_runtime_paths"] == []
-            assert auth["allowed_surface_classes"] == []
-            assert auth["slice_grant_id"] == ""
-            assert auth["authorized_evidence_digest"] == ""
-            assert auth["bound_diff_base_sha"] == ""
-        else:
-            assert auth["allowed_paths"]
-            assert auth["required_runtime_paths"]
-            assert auth["allowed_surface_classes"] == [OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS]
-            assert auth["slice_grant_id"]
-            assert len(auth["authorized_evidence_digest"]) == 64
-            assert len(auth["bound_diff_base_sha"]) == 40
-            assert set(auth["required_runtime_paths"]).issubset(set(auth["allowed_paths"]))
+        assert auth["grant_active"] is False
+        assert auth["allowed_paths"] == []
+        assert auth["required_runtime_paths"] == []
+        assert auth["allowed_surface_classes"] == []
+        assert auth["slice_grant_id"] == ""
+        assert auth["authorized_evidence_digest"] == ""
+        assert auth["bound_diff_base_sha"] == ""
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
@@ -245,6 +237,9 @@ class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
         assert COMMITTED_SLICE_GRANT_ID in notes
         assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
         assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert "SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_OD1_SLICE_V1" in notes
+        assert "dc727b5ab8885ebd230b428496e5a57173356279" in notes
+        assert "759b0a68db7fc4df12d5fe76220a1983b3687bda761c27c0d924c3191314c619" in notes
         assert COMMITTED_ALLOWED_PATHS == [
             "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
             "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
