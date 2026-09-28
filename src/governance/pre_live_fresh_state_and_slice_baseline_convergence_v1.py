@@ -97,11 +97,11 @@ class PreLiveConvergenceProbeV1:
 def validate_scoped_owner_go_v1(
     *,
     repo_root: Path,
-    owner_go_token: str | None,
+    scoped_owner_go_literal: str | None,
 ) -> PreLiveConvergenceProbeV1:
     reasons: list[str] = []
-    token = str(owner_go_token or "").strip()
-    if token != OWNER_GO_TOKEN:
+    supplied = str(scoped_owner_go_literal or "").strip()
+    if supplied != OWNER_GO_TOKEN:
         reasons.append("SCOPED_OWNER_GO_TOKEN_MISMATCH_OR_MISSING")
     decision = load_json_v1(repo_root, DECISION_CONFIG)
     if decision.get("owner_go") is not True:
@@ -112,11 +112,11 @@ def validate_scoped_owner_go_v1(
 
 
 def validate_cap24_substep_owner_go_v1(
-    *, cap24_owner_go_token: str | None
+    *, cap24_owner_go_literal: str | None
 ) -> PreLiveConvergenceProbeV1:
-    token = str(cap24_owner_go_token or "").strip()
+    supplied = str(cap24_owner_go_literal or "").strip()
     allowed = {CAP24_WRITER_OWNER_GO, CAP24_OWNER_GO_TOKEN}
-    if token not in allowed:
+    if supplied not in allowed:
         return PreLiveConvergenceProbeV1(
             ok=False,
             reason_codes=("CAP24_CANONICAL_WRITE_OWNER_GO_MISMATCH",),
@@ -139,14 +139,19 @@ def fresh_runtime_roots_v1(*, repo_root: Path, baseline_sha: str) -> dict[str, P
 def execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
     *,
     repo_root: Path,
-    owner_go_token: str,
-    cap24_owner_go_token: str,
+    scoped_owner_go_literal: str,
+    cap24_owner_go_literal: str,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> dict[str, Any]:
-    go_probe = validate_scoped_owner_go_v1(repo_root=repo_root, owner_go_token=owner_go_token)
+    go_probe = validate_scoped_owner_go_v1(
+        repo_root=repo_root,
+        scoped_owner_go_literal=scoped_owner_go_literal,
+    )
     if go_probe.ok is not True:
         raise RuntimeError(json.dumps(go_probe.to_dict()))
-    cap24_go = validate_cap24_substep_owner_go_v1(cap24_owner_go_token=cap24_owner_go_token)
+    cap24_go = validate_cap24_substep_owner_go_v1(
+        cap24_owner_go_literal=cap24_owner_go_literal,
+    )
     if cap24_go.ok is not True:
         raise RuntimeError(json.dumps(cap24_go.to_dict()))
 
@@ -176,7 +181,7 @@ def execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
         raise RuntimeError("FRESH_ROOT_ISOLATION_PROBE_FAIL")
 
     cap24 = execute_current_productive_cap24_selection_state_canonical_write_v1(
-        owner_go=cap24_owner_go_token,
+        owner_go=cap24_owner_go_literal,
         origin_main_sha=live_sha,
         acquisition_result=build_injected_synthetic_eea_acquisition_v1(),
         productivity_root=roots["productivity_root"],

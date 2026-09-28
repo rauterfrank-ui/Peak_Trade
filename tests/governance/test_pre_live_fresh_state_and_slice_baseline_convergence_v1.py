@@ -35,7 +35,7 @@ def test_decision_config_present_and_baseline_aligned() -> None:
 
 
 def test_fail_closed_without_owner_go_token() -> None:
-    probe = validate_scoped_owner_go_v1(repo_root=REPO_ROOT, owner_go_token=None)
+    probe = validate_scoped_owner_go_v1(repo_root=REPO_ROOT, scoped_owner_go_literal=None)
     assert probe.ok is False
 
 
@@ -57,8 +57,8 @@ def test_convergence_on_tmp_productivity_root(monkeypatch: pytest.MonkeyPatch) -
     try:
         report = execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
             repo_root=REPO_ROOT,
-            owner_go_token=OWNER_GO_TOKEN,
-            cap24_owner_go_token=CAP24_OWNER_GO_TOKEN,
+            scoped_owner_go_literal=OWNER_GO_TOKEN,
+            cap24_owner_go_literal=CAP24_OWNER_GO_TOKEN,
             execution_integrity_backend=integrity,
         )
     finally:

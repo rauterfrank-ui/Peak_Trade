@@ -63,8 +63,8 @@ def main() -> int:
     PACK.mkdir(parents=True, exist_ok=True)
     report = execute_pre_live_fresh_state_and_slice_baseline_convergence_v1(
         repo_root=REPO,
-        owner_go_token=wp_token,
-        cap24_owner_go_token=cap24_token,
+        scoped_owner_go_literal=wp_token,
+        cap24_owner_go_literal=cap24_token,
     )
     report["E2E_RUN_ID"] = f"prelive-{_RUN_TS}-{uuid.uuid4().hex[:12]}"
     report["ORIGIN_MAIN_AT_RUN"] = _origin_sha()

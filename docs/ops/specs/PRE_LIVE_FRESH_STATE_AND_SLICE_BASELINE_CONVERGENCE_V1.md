@@ -39,18 +39,18 @@ external effects.
 
 ## Fresh roots
 
-Under `runtime/current_productive/pre_live_fresh_cap24/<baseline8>_<ts>/`:
+Under `runtime&#47;current_productive&#47;pre_live_fresh_cap24&#47;<baseline8>_<ts>&#47;`:
 
-- `cap24_productivity/` — Cap-24 writer output + manifest
-- `lane_state/` — reserved for downstream PRE_EXTERNAL / handoff binding
-- `post_durable_store/` — reserved for future POST durable artifacts
+- `cap24_productivity&#47;` — Cap-24 writer output + manifest
+- `lane_state&#47;` — reserved for downstream PRE_EXTERNAL / handoff binding
+- `post_durable_store&#47;` — reserved for future POST durable artifacts
 
 Historical `first_real_okx_europe_venue_post_*` stores MUST NOT be reused.
 
 ## Evidence
 
 Local runs write under
-`evidence/ops/pre_live_fresh_state_and_slice_baseline_convergence_v1/<ts>/`
+`evidence&#47;ops&#47;pre_live_fresh_state_and_slice_baseline_convergence_v1&#47;<ts>&#47;`
 (untracked by default).
 
 ```text
