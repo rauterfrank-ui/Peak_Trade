@@ -153,6 +153,11 @@ def _main() -> int:
     parser.add_argument("--lane-state-root", type=Path, required=True)
     parser.add_argument("--productivity-root", type=Path, required=True)
     parser.add_argument("--binding-epoch", default=None)
+    parser.add_argument(
+        "--wp-branch-evidence-run",
+        action="store_true",
+        help="Record execution at current HEAD while Owner-GO baseline stays origin/main",
+    )
     args = parser.parse_args()
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
@@ -185,6 +190,7 @@ def _main() -> int:
         FullCoreProductiveReadOnlyGetTransportV1,
     )
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+        PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS,
         GitCurrentProductive29PRuntimeIntegrityBackendV1,
         assert_current_productive_29p_execution_identity_v1,
     )
@@ -205,11 +211,24 @@ def _main() -> int:
         p.mkdir(parents=True, exist_ok=True)
 
     backend = GitCurrentProductive29PRuntimeIntegrityBackendV1(repo_root=REPO_ROOT)
-    origin_sha = backend.resolve_origin_main_sha_v1()
-    assert_current_productive_29p_execution_identity_v1(
-        declared_origin_main_sha=origin_sha,
-        integrity_backend=backend,
-    )
+    baseline_sha = backend.resolve_origin_main_sha_v1()
+    execution_head_sha = backend.resolve_head_sha_v1()
+    if args.wp_branch_evidence_run:
+        drift = backend.diff_origin_main_for_paths_v1(
+            PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS
+        )
+        if drift.strip():
+            out = {"status": "FAIL", "blocker": "PROTECTED_CHAIN_SURFACE_DRIFT"}
+            print(json.dumps(out, sort_keys=True))
+            return 2
+    else:
+        baseline_sha = assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=baseline_sha,
+            integrity_backend=backend,
+        )
+        execution_head_sha = baseline_sha
+    origin_sha = baseline_sha
+    repository_sha = execution_head_sha
     epoch = args.binding_epoch or _utc_iso()
 
     acq = acquire_eea_universe_inventory_v1(transport=UrllibEeaPublicUniverseGetTransportV1())
@@ -223,14 +242,14 @@ def _main() -> int:
         origin_main_sha=origin_sha,
         acquisition_result=acq,
         productivity_root=productivity_root,
-        repository_sha=origin_sha,
+        repository_sha=repository_sha,
         allow_default_productivity_root=False,
         decision_epoch=epoch,
         execution_integrity_backend=backend,
     )
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=productivity_root,
-        repository_sha=origin_sha,
+        repository_sha=repository_sha,
         binding_epoch=epoch,
     )
     bound = handoff.bound_instrument
@@ -238,7 +257,7 @@ def _main() -> int:
     pre = preflight_current_productive_persistent_natural_enter_v1(
         productivity_root=productivity_root,
         lane_state_root=lane_state_root,
-        repository_sha=origin_sha,
+        repository_sha=repository_sha,
         binding_epoch=epoch,
         authorization_native_id=native_id,
     )
@@ -316,8 +335,19 @@ def _main() -> int:
             1 for line in fresh_c1_ledger.read_text(encoding="utf-8").splitlines() if line.strip()
         )
 
+    cycle_summaries = [
+        {
+            "cycle_index": rec.cycle_index,
+            "s5_disposition": rec.s5_disposition,
+            "c1_venue_event_time": rec.c1_venue_event_time,
+        }
+        for rec in orch.cycle_records
+    ]
+    pre_external_reached = orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
+    natural_enter = outcome in {"enter_long", "enter_short"}
     report = {
         "BASELINE_SHA": origin_sha,
+        "EXECUTION_HEAD_SHA": execution_head_sha,
         "RUN_ID": run_id,
         "EVIDENCE_ROOT": str(evidence_root),
         "NATIVE_ID": native_id,
@@ -328,6 +358,10 @@ def _main() -> int:
         "S5_TERMINAL_CLASS": orch.terminal_class,
         "FIRST_GENUINE_BLOCKER": orch.first_genuine_blocker,
         "NATURAL_PRE_EXTERNAL_REACHED": str(natural_pre_external).lower(),
+        "PRE_EXTERNAL_REACHED": str(pre_external_reached).lower(),
+        "NATURAL_ENTER_OBSERVED": str(natural_enter).lower(),
+        "ENTER_SIDE": outcome if natural_enter else "",
+        "S5_CYCLE_SUMMARIES": cycle_summaries,
         "DPO": dpo,
         "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": str(CONTINUOUS_RUN_AUTHORIZED).lower(),
         "POST_COUNT": orch.post_count,

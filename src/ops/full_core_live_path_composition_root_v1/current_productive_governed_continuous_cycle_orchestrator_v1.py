@@ -602,6 +602,11 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     def _elapsed() -> float:
         return float(clock()) - started_at
 
+    def _touch_poll_liveness_v1() -> None:
+        """Active Fresh-C1 polling (incl. stale wait) is not a sequencer stall."""
+        nonlocal last_progress_at
+        last_progress_at = float(clock())
+
     def _stop(
         *,
         result_disposition: str,
@@ -689,6 +694,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 )
             observation = observation_source.poll()
             if observation is None:
+                _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
                 sleeper(float(authorization.wait_interval_seconds))
                 continue
@@ -709,6 +715,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             c1_obs = mapped.observation
             c1_time = float(c1_obs.venue_event_time)
             if c1_time <= float(last_accepted):
+                _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
                 sleeper(float(authorization.wait_interval_seconds))
                 continue
