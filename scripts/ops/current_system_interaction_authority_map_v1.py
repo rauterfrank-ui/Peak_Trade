@@ -88,6 +88,7 @@ REQUIRED_PARTIAL_IDS = (
     "post_6942_external_effect_authorization_full_chain_forensic_v1",
     "post_6943_real_keychain_material_load_scoped_perform_v1",
     "post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1",
+    "pre_live_fresh_state_and_slice_baseline_convergence_v1",
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",

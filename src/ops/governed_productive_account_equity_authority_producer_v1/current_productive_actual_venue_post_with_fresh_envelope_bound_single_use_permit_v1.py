@@ -87,6 +87,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_ex
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
     CurrentProductiveFullCorePreExternalClosureResultV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
+    assert_post_durable_store_root_isolation_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
     _assert_no_secrets,
     _persist_json,
@@ -250,6 +253,7 @@ def prove_pre_live_actual_venue_post_readiness_v1(
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
+    assert_post_durable_store_root_isolation_v1(store_root=store_root)
     if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is True:
         raise CurrentProductiveActualVenuePostError("POST_OWNER_GO_ALREADY_DURABLE_CONSUMED")
     permit = issue_external_effect_permit_v1(envelope, authority_ref=OWNER_GO)
@@ -308,6 +312,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
     root = Path(store_root)
+    assert_post_durable_store_root_isolation_v1(store_root=root)
     root.mkdir(parents=True, exist_ok=True)
     pre = prove_pre_live_actual_venue_post_readiness_v1(
         owner_go=owner_go,

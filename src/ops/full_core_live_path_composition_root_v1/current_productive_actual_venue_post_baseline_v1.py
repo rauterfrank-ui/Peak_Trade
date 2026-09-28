@@ -21,8 +21,8 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 if TYPE_CHECKING:
     from pathlib import Path
 
-# Post-#6930 PRE_EXTERNAL E2E handoff composition merge currency (cf3aa15f0).
-EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2"
+# Post-#6945 K1 PRE-POST scoped perform merge currency (1e859eaa).
+EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "1e859eaa79f48308cf7037656c6465191ed9993b"
 BASELINE_AUTHORITY_CLASS = "VERSIONED_POST_SLICE_MERGE_STABLE_ORIGIN_MAIN_PIN"
 
 

@@ -11,6 +11,9 @@ from src.governance.current_productive_real_venue_post_admission_v1 import (
     ADMISSION_OWNER,
     evaluate_real_venue_post_admission_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (
+    EXPECTED_BASELINE_ORIGIN_MAIN_SHA as BASELINE_ORIGIN_MAIN_SHA,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     POST_OWNER_GO,
 )
@@ -18,7 +21,6 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
 WORKPACKAGE_ID: Final[str] = (
     "FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
 )
-BASELINE_ORIGIN_MAIN_SHA: Final[str] = "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2"
 NORMATIVE_SPEC: Final[str] = (
     "docs/ops/specs/"
     "FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md"

@@ -122,7 +122,7 @@ class _HttpErrorOpener:
 
 
 def test_baseline_pin_is_post_6930_merge_currency() -> None:
-    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2"
+    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "1e859eaa79f48308cf7037656c6465191ed9993b"
 
 
 def test_direct_envelope_path_without_read_transport_blocks_post(tmp_path: Path) -> None:

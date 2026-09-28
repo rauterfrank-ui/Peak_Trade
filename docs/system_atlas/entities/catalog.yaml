@@ -4737,6 +4737,26 @@ entities:
       Scoped K1 Owner-GO PRE-POST perform; fresh K1 ephemeral Keychain load; request signing;
       stop before venue POST; AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:pre_live_fresh_state_and_slice_baseline_convergence_v1
+    kind: RUNTIME_COMPONENT
+    name: PRE-LIVE fresh state and POST-slice baseline convergence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1
+    source_paths:
+      - scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py
+    evidence_sources:
+      - src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py
+      - config/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1_decision_v1.json
+      - docs/ops/specs/PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1.md
+      - src/ops/governed_productive_account_equity_authority_producer_v1/pre_live_fresh_runtime_root_isolation_v1.py
+      - tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py
+      - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
+    notes: >-
+      POST-slice baseline pin 1e859eaa; fresh isolated Cap-24 root; fail-closed historical POST-store
+      isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
     name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
