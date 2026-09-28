@@ -4618,6 +4618,21 @@
       "closure_note": "Material-load perform boundary proven under scoped Owner-GO; K1 Owner-GO not consumed."
     },
     {
+      "id": "post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-6944 scoped K1 PRE-POST Owner-GO perform: ephemeral K1 Keychain consumer, opaque handle, request signing, PRE-POST envelope; stops at real venue POST admission; no venue HTTP POST; next blocker actual venue POST Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM_FROM_POST_6944_MAIN_V1.md",
+        "config/governance/post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1_decision_v1.json",
+        "src/governance/post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+        "scripts/ops/run_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+        "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+        "tests/governance/test_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "K1 PRE-POST perform under scoped Owner-GO; venue POST Owner-GO not consumed."
+    },
+    {
       "id": "m9_m10_enforcement",
       "epistemic_class": "PARTIAL",
       "statement": "M9 and M10 seam exists and enforcement_enabled is false.",

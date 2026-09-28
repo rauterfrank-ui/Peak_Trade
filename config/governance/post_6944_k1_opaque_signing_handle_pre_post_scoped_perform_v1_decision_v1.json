@@ -1,0 +1,16 @@
+{
+  "workpackage_id": "POST_6944_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM_V1",
+  "normative_spec": "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM_FROM_POST_6944_MAIN_V1.md",
+  "baseline_sha": "9f32275d158961fed2adec9dae6817fe99224dd9",
+  "scoped_owner_go_token": "OWNER_GO_CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1",
+  "k1_pre_post_admission_required": true,
+  "material_load_wp_6943_reperform_required": false,
+  "k1_owner_go_consumed": true,
+  "venue_post_owner_go_consumed": false,
+  "external_effect_permit_minted": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "venue_post_count": 0,
+  "real_external_effect_count": 0,
+  "next_genuine_blocker_after_successful_perform": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
+}
