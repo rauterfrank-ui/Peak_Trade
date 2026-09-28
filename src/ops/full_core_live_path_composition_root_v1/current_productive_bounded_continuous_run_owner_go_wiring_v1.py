@@ -8,6 +8,7 @@ RUNTIME_AUTHORIZATION_EFFECT=OWNER_GO_EVIDENCE_AND_ADMISSION_ONLY
 from __future__ import annotations
 
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Final, Mapping
@@ -32,6 +33,12 @@ FRESH_C1_GET_LEDGER_FILENAME: Final[str] = "fresh_c1_get_owner_go_consumptions_v
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
+# Fail-closed: Owner-GO lineage extension must not touch immutable trading surfaces.
+_IMMUTABLE_SURFACE_PATH_PREFIXES: Final[tuple[str, ...]] = (
+    "src/trading/master_v2/",
+    "trading/master_v2/",
+)
+
 
 class BoundedContinuousRunOwnerGoWiringError(ValueError):
     def __init__(self, reason_code: str, detail: str = "") -> None:
@@ -42,6 +49,48 @@ class BoundedContinuousRunOwnerGoWiringError(ValueError):
 
 def _utc_now_iso_v1() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+
+
+def _git_merge_base_is_ancestor_v1(
+    *, repo_root: Path, ancestor_sha: str, descendant_sha: str
+) -> bool:
+    proc = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(repo_root),
+            "merge-base",
+            "--is-ancestor",
+            ancestor_sha,
+            descendant_sha,
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return proc.returncode == 0
+
+
+def _changed_paths_between_commits_v1(
+    *, repo_root: Path, from_sha: str, to_sha: str
+) -> tuple[str, ...]:
+    proc = subprocess.run(
+        ["git", "-C", str(repo_root), "diff", "--name-only", from_sha, to_sha],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if proc.returncode != 0:
+        return ("GIT_DIFF_FAILED",)
+    return tuple(line.strip() for line in (proc.stdout or "").splitlines() if line.strip())
+
+
+def _immutable_surface_touched_v1(paths: tuple[str, ...]) -> bool:
+    for path in paths:
+        for prefix in _IMMUTABLE_SURFACE_PATH_PREFIXES:
+            if path.startswith(prefix) or "/double_play" in path:
+                return True
+    return False
 
 
 def load_bounded_continuous_run_owner_go_decision_v1(
@@ -71,9 +120,23 @@ def validate_bounded_continuous_run_owner_go_decision_v1(
     if decision.get("workpackage_id") != WORKPACKAGE_ID:
         reasons.append("WORKPACKAGE_ID_MISMATCH")
     if baseline_origin_main_sha:
-        bound = str(decision.get("baseline_origin_main_sha") or "")
-        if bound != baseline_origin_main_sha:
-            reasons.append("BASELINE_SHA_MISMATCH")
+        bound = str(decision.get("baseline_origin_main_sha") or "").strip().lower()
+        live = str(baseline_origin_main_sha or "").strip().lower()
+        if bound != live:
+            if not bound or not live:
+                reasons.append("BASELINE_SHA_MISMATCH")
+            elif not _git_merge_base_is_ancestor_v1(
+                repo_root=root, ancestor_sha=bound, descendant_sha=live
+            ):
+                reasons.append("BASELINE_SHA_MISMATCH")
+            else:
+                delta_paths = _changed_paths_between_commits_v1(
+                    repo_root=root, from_sha=bound, to_sha=live
+                )
+                if "GIT_DIFF_FAILED" in delta_paths:
+                    reasons.append("BASELINE_LINEAGE_DIFF_UNAVAILABLE")
+                elif _immutable_surface_touched_v1(delta_paths):
+                    reasons.append("BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT")
     tokens = decision.get("owner_go_tokens")
     if not isinstance(tokens, list):
         reasons.append("OWNER_GO_TOKENS_MISSING")
@@ -132,6 +195,12 @@ def persist_bounded_continuous_run_owner_go_consume_v1(
         "run_id": str(run_id),
         "binding_digest": str(binding_digest),
         "baseline_origin_main_sha": str(baseline_origin_main_sha),
+        "owner_go_decision_baseline_origin_main_sha": str(
+            load_bounded_continuous_run_owner_go_decision_v1(repo_root=_REPO_ROOT).get(
+                "baseline_origin_main_sha"
+            )
+            or ""
+        ),
         "consumed_at_utc": _utc_now_iso_v1(),
         "external_effect_authorized": False,
         "post_allowed": False,
