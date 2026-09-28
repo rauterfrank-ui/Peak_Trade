@@ -4682,6 +4682,25 @@ entities:
       invoke/envelope sinks fail-closed; fixpoint EXTERNAL_EFFECT_AUTHORIZATION operational Owner
       boundary; PAPER PARKED; AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:post_6942_external_effect_authorization_full_chain_forensic_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-6942 EXTERNAL_EFFECT_AUTHORIZATION full-chain forensic v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: POST_6942_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FORENSIC_V1
+    source_paths:
+      - scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py
+    evidence_sources:
+      - src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py
+      - config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json
+      - docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FROM_POST_6942_MAIN_V1.md
+      - tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py
+    notes: >-
+      Full external-effect authority lattice through material-load admissions; post-6941 sinks
+      preserved; first irreversible op Keychain/material load; venue POST Owner-GO separate;
+      AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
     name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1

@@ -1,12 +1,11 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f8a250ecf568edd216d62cae83c04a8931100e22",
+  "base_sha": "388a41e2e607c1d2026b5ed35f9c28a6a7314ada",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_FROM_POST_6941_MAIN_V1.md",
+    "config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json",
+    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FROM_POST_6942_MAIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -14,23 +13,22 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_post_6941_authority_map_atlas_pre_external_intent_to_execution_seam_v1.py",
-    "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",
-    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/intent_to_execution_seam_sink_probe_v1.py",
-    "tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py"
+    "scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py",
+    "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
+    "tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py"
   ],
-  "changed_paths_sha256": "f8057bdbab2597fcc2436a73a6da49816e285df12a3d7f45d8e46276c682f33f",
+  "changed_paths_sha256": "a85c0d1885326f2513393fb7054e8d69690928304692893d6226117b3ef511c3",
   "covered_candidate_paths": [
-    "scripts/ops/run_post_6941_authority_map_atlas_pre_external_intent_to_execution_seam_v1.py",
-    "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",
-    "tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py"
+    "scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py",
+    "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
+    "tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json",
+    "config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Post-6941 intent_to_execution seam adjudication: PRE_EXTERNAL synthetic E2E; policy-chain admissions runtime-proven; operational EXTERNAL_EFFECT_AUTHORIZATION fixpoint; POST_COUNT=0.",
+  "reason": "Post-6942 EXTERNAL_EFFECT_AUTHORIZATION full-chain forensic: policy admissions through material load runtime-proven; operational performance blocked at scoped Owner-GO; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

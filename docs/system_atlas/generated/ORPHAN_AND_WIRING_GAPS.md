@@ -129,6 +129,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6942_external_effect_authorization_full_chain_forensic_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6942_external_effect_authorization_full_chain_forensic_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
