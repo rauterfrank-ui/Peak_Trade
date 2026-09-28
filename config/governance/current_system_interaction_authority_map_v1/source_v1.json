@@ -4452,12 +4452,14 @@
     {
       "id": "p5_bind_without_cutover",
       "epistemic_class": "PARTIAL",
-      "statement": "P5 layered bind is enabled and authority cutover is false.",
+      "statement": "P5 layered bind is enabled; S7 scope-colocated episode store bootstrap is initialization-only after MV2 replay; authority cutover is false.",
       "evidence_refs": [
-        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py"
+        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py",
+        "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+        "tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "P5 ingress bound; productive authority cutover false."
+      "closure_note": "PR #6954: composition bootstrap seam only; no MV2/DP semantic change; cutover false."
     },
     {
       "id": "portfolio_budget",

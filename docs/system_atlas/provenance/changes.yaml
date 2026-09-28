@@ -263,6 +263,16 @@ changes:
       PR #6951: productive PRE_EXTERNAL-only runner; S6 stale-C1 poll liveness; cold-lane bootstrap;
       auth-free occupancy; baseline Owner-GO rebind 27c3cd4; productive evidence run without POST;
       MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6954_s7_scope_colocated_episode_bootstrap_v1
+    from: 95480ded1c2dc5b39f5c84515020248f57fd220e
+    to: 95480ded1c2dc5b39f5c84515020248f57fd220e
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py
+    notes: >-
+      PR #6954: S7 cold compose scope-colocated P5 episode store bootstrap uses initialization-only
+      persist (no duplicate mechanical step after MV2 replay); fixes intermittent JoinError on live
+      PRE_EXTERNAL observation; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:pr_6953_e2e_convergence_current_productive_mechanical_fixpoint_v1
     from: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6
     to: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6

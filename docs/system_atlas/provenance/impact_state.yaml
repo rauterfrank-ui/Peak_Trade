@@ -2,16 +2,14 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6953_E2E_CONVERGENCE_CURRENT_PRODUCTIVE_MECHANICAL_FIXPOINT_V1
+modified_by: PR_6954_S7_SCOPE_COLOCATED_EPISODE_BOOTSTRAP_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6953 mechanical E2E convergence: enter-live treasury/portfolio seam; standing-gate data_safety
-  admission inputs; gap_dag Treasury pin; §11.2.1.CR navigation persist; harness/tests only;
-  MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
+  PR #6954: P5.10 scope-colocated episode bootstrap seam (init-only after S7 MV2 replay);
+  regression tests; MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
 changed_entities:
-  - RUNBOOK:canonical_master_runbook
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - CONTRACT:p5_10_productive_activation_and_binding_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
