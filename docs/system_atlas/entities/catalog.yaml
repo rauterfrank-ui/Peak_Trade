@@ -4662,6 +4662,25 @@ entities:
       PRE_EXTERNAL; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION; PAPER/SHADOW/TESTNET not
       executed; AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:post_6948_productive_continuous_run_authority_live_c1_convergence_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-6948 productive continuous-run authority / Live-C1 convergence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1
+    source_paths:
+      - scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py
+    evidence_sources:
+      - src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py
+      - config/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1_decision_v1.json
+      - docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md
+      - tests/governance/test_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py
+    notes: >-
+      Post-PR-6948 navigation: productive continuous causal path vs Live Fresh-C1 GET;
+      policy CONTINUOUS_RUNTIME_ADMISSION valid; RUNTIME_OWNER_GO and Fresh-C1 GET GO
+      DEFINED_NOT_CONSUMED; Owner decision schema; no runtime/GET/POST; AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1
     kind: RUNTIME_COMPONENT
     name: Post-6941 PRE_EXTERNAL intent_to_execution seam adjudication v1
