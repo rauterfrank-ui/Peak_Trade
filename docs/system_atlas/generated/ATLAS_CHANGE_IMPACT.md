@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6940: paper adapter G2-admissible RUN_METADATA + scoped Owner-GO approval; CSIA partial post_6939_paper_g2_primary_run_metadata; Atlas entity; scheduler HOLD remains runtime blocker.
+- PR #6940 pre-merge closure: CSIA partial post_6939_paper_g2_primary_run_metadata records PAPER producer→adapter→scheduler→HOLD_NO_PAPER_RUN terminal; SCHEDULER_EXECUTION_AUTHORIZED=false; no primary archive; G2 real runtime not reached; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=PR_6940_POST_6939_PAPER_G2_PRIMARY_RUN_METADATA_V1
 

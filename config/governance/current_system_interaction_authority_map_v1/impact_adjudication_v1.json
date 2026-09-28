@@ -30,7 +30,7 @@
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6940: paper adapter G2 RUN_METADATA closeout + Owner-GO approval record; CSIA partial + Atlas entity; scheduler HOLD separate; PRODUCTIVE_OPTIMIZATION_JOIN=false; POST_COUNT=0.",
+  "reason": "PR #6940 pre-merge closure: PAPER producer\u2192adapter\u2192scheduler HOLD terminal adjudication in CSIA+Atlas; Case B preserved; no new runtime authority; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

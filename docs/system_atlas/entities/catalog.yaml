@@ -4638,7 +4638,10 @@ entities:
       - config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md
       - tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py
     notes: >-
-      Paper adapter closeout RUN_METADATA for G2 primary provenance; scheduler HOLD separate; AUTHORITY=NONE.
+      Whole-system terminal at scheduler HOLD_NO_PAPER_RUN after PAPER adapter admission check;
+      PAPER_RUNTIME_STARTED=false; START_RC=2; no OBSERVED_BOUNDED_RUNTIME primary archive;
+      G2→M4–M8 fixture-control only for mechanics; next Owner edge=scoped scheduler execution only;
+      AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
