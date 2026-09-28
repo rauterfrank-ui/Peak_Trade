@@ -115,6 +115,8 @@ class OneShotJoinResultV1:
     unknown_outcome: bool
     post_go_status: str
     step_29q_status: str
+    http_status: int = 0
+    post_outcome_phase: str = ""
 
 
 def _assert_standing_pins_v1() -> None:
@@ -348,6 +350,11 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         )
     except FullCoreEnvelopeBoundSendSeamError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    join_http = 0
+    join_phase = ""
+    if seam.post_submit_join is not None:
+        join_http = int(seam.post_submit_join.http_status)
+        join_phase = str(seam.post_submit_join.recon_class or "")
     return OneShotJoinResultV1(
         outcome=str(seam.outcome),
         permit_id=permit.permit_id,
@@ -359,6 +366,8 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         unknown_outcome=seam.unknown_outcome is True,
         post_go_status=POST_GO_STATUS,
         step_29q_status=STEP_29Q_PLAN_ONLY,
+        http_status=join_http,
+        post_outcome_phase=join_phase,
     )
 
 

@@ -31,6 +31,15 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
     TRADE_ORDER_PATH,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_outcome_v1 import (
+    HTTP_RESPONSE_RECEIVED,
+    NOT_ATTEMPTED,
+    RESPONSE_RECEIVED_PARSE_FAILED,
+    SEND_INITIATED,
+    TRANSPORT_FAILURE_BEFORE_RESPONSE,
+    UNKNOWN_EXTERNAL_STATE,
+    VENUE_RESPONSE_PARSED,
+)
 from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
     AUTHORIZED_HOST,
     FullCoreSendCredentialHandleV1,
@@ -58,6 +67,8 @@ class FullCoreTradeOrderPostResultV1:
     payload: Mapping[str, Any]
     transport_class: str
     unknown_outcome: bool = False
+    outcome_phase: str = NOT_ATTEMPTED
+    transport_error_class: str = ""
 
 
 class FullCoreProductiveTradeOrderPostTransportV1(Protocol):
@@ -177,11 +188,13 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         opener = factory()
         raw = b""
         status = 0
-        unknown = False
+        transport_error_class = ""
+        outcome_phase = NOT_ATTEMPTED
         try:
             socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
             self.post_count += 1
             self.methods_used.append("POST")
+            outcome_phase = SEND_INITIATED
             with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 raw = bytes(resp.read() or b"")
@@ -189,29 +202,92 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
                 if loc_host and loc_host != AUTHORIZED_HOST:
                     raise FullCoreProductiveHttpPostError("REDIRECT_OFF_HOST_FORBIDDEN")
             self.venue_live_contact = True
+            outcome_phase = HTTP_RESPONSE_RECEIVED
         except FullCoreProductiveHttpPostError:
             raise
-        except TimeoutError as exc:
-            unknown = True
-            raise FullCoreProductiveHttpPostError("UNKNOWN_OUTCOME") from exc
+        except TimeoutError:
+            transport_error_class = "TimeoutError"
+            return FullCoreTradeOrderPostResultV1(
+                post_attempted=True,
+                venue_live_contact=False,
+                method="POST",
+                endpoint=TRADE_ORDER_PATH,
+                http_status=0,
+                payload={},
+                transport_class=self.transport_class,
+                unknown_outcome=True,
+                outcome_phase=TRANSPORT_FAILURE_BEFORE_RESPONSE,
+                transport_error_class=transport_error_class,
+            )
         except HTTPError as exc:
             status = int(getattr(exc, "code", 0) or 0)
             raw = bytes(exc.read() or b"") if hasattr(exc, "read") else b""
-            unknown = True
+            transport_error_class = "HTTPError"
+            self.venue_live_contact = True
+            outcome_phase = HTTP_RESPONSE_RECEIVED
         except (URLError, OSError, socket.timeout) as exc:
-            unknown = True
-            raise FullCoreProductiveHttpPostError("UNKNOWN_OUTCOME") from exc
+            transport_error_class = type(exc).__name__
+            return FullCoreTradeOrderPostResultV1(
+                post_attempted=True,
+                venue_live_contact=False,
+                method="POST",
+                endpoint=TRADE_ORDER_PATH,
+                http_status=0,
+                payload={},
+                transport_class=self.transport_class,
+                unknown_outcome=True,
+                outcome_phase=TRANSPORT_FAILURE_BEFORE_RESPONSE,
+                transport_error_class=transport_error_class,
+            )
         finally:
             socket.setdefaulttimeout(None)
         parsed_payload: Mapping[str, Any]
+        parse_failed = False
         try:
             loaded = json.loads(raw.decode("utf-8") or "{}")
             parsed_payload = loaded if isinstance(loaded, dict) else {"raw": True}
+            if outcome_phase == HTTP_RESPONSE_RECEIVED:
+                outcome_phase = VENUE_RESPONSE_PARSED
         except (ValueError, UnicodeDecodeError):
             parsed_payload = {}
-            unknown = True
-        if unknown is True:
-            raise FullCoreProductiveHttpPostError("UNKNOWN_OUTCOME")
+            parse_failed = True
+            outcome_phase = RESPONSE_RECEIVED_PARSE_FAILED
+        if parse_failed:
+            return FullCoreTradeOrderPostResultV1(
+                post_attempted=True,
+                venue_live_contact=True,
+                method="POST",
+                endpoint=TRADE_ORDER_PATH,
+                http_status=status,
+                payload=parsed_payload,
+                transport_class=self.transport_class,
+                unknown_outcome=True,
+                outcome_phase=outcome_phase,
+                transport_error_class=transport_error_class or "PARSE_FAILURE",
+            )
+        from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_ack_mapper_v1 import (
+            classify_full_core_post_result_v1,
+        )
+
+        classification = classify_full_core_post_result_v1(
+            result=FullCoreTradeOrderPostResultV1(
+                post_attempted=True,
+                venue_live_contact=True,
+                method="POST",
+                endpoint=TRADE_ORDER_PATH,
+                http_status=status,
+                payload=parsed_payload,
+                transport_class=self.transport_class,
+                unknown_outcome=False,
+                outcome_phase=outcome_phase,
+            ),
+            sent_clordid=str(payload.get("clOrdId") or ""),
+            submit_count=1,
+        )
+        typed = str(classification.get("classification") or "")
+        unknown = typed == "UNKNOWN"
+        if unknown:
+            outcome_phase = UNKNOWN_EXTERNAL_STATE
         return FullCoreTradeOrderPostResultV1(
             post_attempted=True,
             venue_live_contact=True,
@@ -220,5 +296,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             http_status=status,
             payload=parsed_payload,
             transport_class=self.transport_class,
-            unknown_outcome=False,
+            unknown_outcome=unknown,
+            outcome_phase=outcome_phase,
+            transport_error_class=transport_error_class,
         )

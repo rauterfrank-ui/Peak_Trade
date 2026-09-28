@@ -63,6 +63,39 @@ class _TimeoutOpener:
         raise TimeoutError("bounded-test-timeout")
 
 
+class _TrustedReadTransport:
+    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
+        del auth_required, pretrade_decision_id
+        path = str(endpoint).split("?", 1)[0]
+        if "positions" in path:
+            payload = {"code": "0", "data": []}
+        elif "instruments" in path or "price-limit" in path:
+            payload = {
+                "code": "0",
+                "data": [{"instId": "0G-USDT-SWAP", "instType": "SWAP", "state": "live"}],
+            }
+        else:
+            payload = {"code": "0", "data": [{"instId": "0G-USDT-SWAP", "tdMode": "cross"}]}
+        from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+            FreshPretradeGetTransportResultV1,
+            TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+        )
+
+        return FreshPretradeGetTransportResultV1(
+            get_performed=True,
+            method="GET",
+            endpoint=endpoint,
+            http_status=200,
+            payload=payload,
+            auth_header_sent=True,
+            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            venue_live_contact=True,
+            historical_reuse=False,
+            error_class="",
+            data_safety_source_kind="REAL",
+        )
+
+
 @pytest.fixture(autouse=True)
 def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
     def _boom(*_args: Any, **_kwargs: Any) -> None:
@@ -137,6 +170,7 @@ def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None
             perform_real_venue_post=True,
             k1_backend=backend,
             opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=_TrustedReadTransport(),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
