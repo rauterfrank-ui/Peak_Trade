@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,8 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNBOOK:canonical_master_runbook` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6953 mechanical E2E convergence: enter-live treasury/portfolio seam; standing-gate data_safety admission inputs; gap_dag Treasury pin; §11.2.1.CR navigation persist; harness/tests only; MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6954: P5.10 scope-colocated episode bootstrap seam (init-only after S7 MV2 replay); regression tests; MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6953_E2E_CONVERGENCE_CURRENT_PRODUCTIVE_MECHANICAL_FIXPOINT_V1
+- modified_by=PR_6954_S7_SCOPE_COLOCATED_EPISODE_BOOTSTRAP_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

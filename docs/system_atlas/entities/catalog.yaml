@@ -3933,6 +3933,8 @@ entities:
       Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+    # atlas_entity_review: PR #6954 — S7 scope-colocated episode bootstrap init-only (no duplicate P5 mechanical step);
+    # composition/addressing seam only; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: PR #6937 — P5_10 bind seam unchanged; treasury/DDO joins are post-bind evidence/composition only;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6936 — P5_10 layered bind seam unchanged; DDO capture is post-bind MV2 evidence only;
@@ -3962,10 +3964,12 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - tests/ops/test_p5_10_productive_activation_and_binding_v1.py
       - tests/ops/test_productive_layered_core_bind_wiring_v1.py
+      - tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py
     evidence_sources:
       - docs/ops/specs/P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1.md
       - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py
       - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_layered_core_bind_wiring_v1.py
+      - tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py
     notes: >-
       Owner-GO productive bind: P5 seal, CZ-4 delegation, P5.10B POST_CANONICAL_NEXT_SIDE_STATE
       handoff via single seam; explicit caller wiring (store colocated with cursor + scope carrier

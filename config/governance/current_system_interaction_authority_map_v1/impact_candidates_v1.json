@@ -447,6 +447,7 @@
     "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
     "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
     "tests/ops/test_p5_10_productive_activation_and_binding_v1.py",
+    "tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py",
     "tests/ops/test_peak_trade_operator_profile_explainability_v1.py",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
     "tests/ops/test_peak_trade_public_market_data_ws_network_connector_v1.py",

@@ -25,7 +25,12 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
+    atomic_persist_episode_v1,
+    initialize_naked_layered_core_episode_v1,
     restore_episode_from_store_v1,
+)
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
+    ExplicitPassthroughDynamicScopeGeneratorV1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.orchestrator_v1 import (
     MechanicalStepSpecV1,
@@ -134,6 +139,28 @@ def _observation_candidates_from_closes_v1(
             venue_event_time=t1,
             mark_price=float(closes[-1]),
         ),
+    )
+
+
+def _observation_candidates_from_finalized_closes_v1(
+    *,
+    instrument_key: InstrumentObservationKeyV1,
+    closes: Sequence[float],
+    last_event_ts_unix: float,
+) -> Tuple[ObservationCandidateV1, ...]:
+    """One candidate per finalized close on a 1m grid ending at last_event_ts_unix."""
+    if len(closes) < 2:
+        return ()
+    n = len(closes)
+    return tuple(
+        ObservationCandidateV1(
+            venue=instrument_key.venue,
+            canonical_instrument_id=instrument_key.canonical_instrument_id,
+            venue_instrument_id=instrument_key.venue_instrument_id,
+            venue_event_time=float(last_event_ts_unix) - 60.0 * (n - 1 - i),
+            mark_price=float(close),
+        )
+        for i, close in enumerate(closes)
     )
 
 
@@ -394,6 +421,10 @@ def ensure_productive_layered_core_episode_store_v1(
     First productive sidestate cycles may run without layered bind (no incoming scope carrier).
     Once outgoing cursor carries ``existing_scope``, later cycles require a restorable episode
     under the same store root as the sidestate confirmation cursor owner.
+
+    Scope on the outgoing cursor was already produced by the upstream MV2 replay in the same S7
+    compose pass. Persist initialization-only episode state here (no duplicate L6–L10 mechanical
+    step) so live cold bootstrap cannot fail-closed on a second mechanical step from two closes.
     """
     if not PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED:
         return ()
@@ -419,27 +450,27 @@ def ensure_productive_layered_core_episode_store_v1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
     )
-    observations = _observation_candidates_from_closes_v1(
+    _ = mark_price_m_t
+    observations = _observation_candidates_from_finalized_closes_v1(
         instrument_key=instrument_key,
         closes=finalized_closes,
-        event_ts_unix=float(last_finalized_event_ts_unix),
+        last_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     if len(observations) < 2:
         return ("layered_core_bootstrap_observations_insufficient",)
 
-    result = run_p5_layered_core_authority_seam_v1(
-        store_root=root,
-        selected=selected,
-        mark_price_m_t=float(mark_price_m_t),
-        mechanical_step=MechanicalStepSpecV1(
-            mark_price_m_t=float(mark_price_m_t),
-            proposed_d_t=float(CANONICAL_UP_DISTANCE),
-        ),
-        restore_existing=False,
-        initialization_observations=observations,
-    )
-    if not result.ok:
-        return tuple(result.failure_codes or ("layered_core_bootstrap_seam_failed",))
+    try:
+        episode, init_failures = initialize_naked_layered_core_episode_v1(
+            selected=selected,
+            initialization_observations=observations,
+            first_mechanical_step=None,
+            scope_generator=ExplicitPassthroughDynamicScopeGeneratorV1(),
+        )
+    except NakedLayeredCoreDurableStateError as exc:
+        return (f"layered_core_bootstrap_init_fail_closed:{exc}",)
+    if init_failures:
+        return tuple(init_failures)
+    atomic_persist_episode_v1(root, episode)
     return ()
 
 
