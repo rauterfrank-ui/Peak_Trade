@@ -234,6 +234,16 @@ changes:
       PR #6948: offline persistent Natural-ENTER convergence (S8→S6→S7→PRE_EXTERNAL); fixed lane-root;
       N5 occupied-lane bootstrap C1/mark alignment; CSIA MAP_UPDATE_REQUIRED partial statement;
       CONTINUOUS_RUN_AUTHORIZED=false; POST unreachable; Atlas entity review; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6949_post_6948_productive_continuous_run_authority_live_c1_convergence_v1
+    from: 85581ee6ca095f8533e5f0b09299d8596d61cc81
+    to: 85581ee6ca095f8533e5f0b09299d8596d61cc81
+    type: ADJUDICATION
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/governance/test_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py
+    notes: >-
+      PR #6949 navigation WP after #6948: continuous-run authority vs Live-C1 GET convergence;
+      Owner decision schema; RUNTIME_OWNER_GO and Fresh-C1 GET GO DEFINED_NOT_CONSUMED;
+      CSIA MAP_UPDATE_REQUIRED; no runtime/GET/POST; Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

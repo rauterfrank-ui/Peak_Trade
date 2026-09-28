@@ -351,6 +351,13 @@ Ops preflight:
 `CONTINUOUS_RUN_AUTHORIZED=false` on module pin; productive execution remains
 governed by continuous-run policy elsewhere.
 
+Post-6948 navigation (non-authorizing): productive continuous-run authority vs
+Live Fresh-C1 GET convergence —
+`docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md`.
+Earliest remaining gate: scoped Owner-GO for
+`OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1` and Fresh-C1 GET
+(`OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1`); not venue POST.
+
 ------------------------------------------------------------------------
 
 ## CURRENT Data and Input Contracts

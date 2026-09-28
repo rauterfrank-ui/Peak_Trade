@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `RUNTIME_COMPONENT:post_6948_productive_continuous_run_authority_live_c1_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6948 offline persistent Natural-ENTER convergence harness; S8→S6→S7→PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6949 post-6948 navigation: productive continuous-run authority vs Live-C1 GET; Owner decision schema; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6948_CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1
+- modified_by=PR_6949_POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

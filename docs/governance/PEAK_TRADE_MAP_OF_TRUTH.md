@@ -105,6 +105,7 @@ in the Master Runbook and the named packages.
 | S5 exactly-one governed cycle (`run_current_productive_governed_cycle_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
 | S6 continuous-run orchestrator (`governed_continuous_cycle_orchestrator_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` / `docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md` |
 | Persistent Natural-ENTER convergence (fixed S8 lane + S6/S7 offline harness) | `src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py` / `docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md` |
+| Post-6948 productive continuous-run authority / Live-C1 convergence (navigation) | `src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py` / `docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md` |
 | Side-state / confirmation cursor seam | `src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py` |
 | Productive Full-Core pre-external closure entry | `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py` |
 | WP-A public market data runtime | `src/ops/peak_trade_public_market_data_runtime_v1/` / `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
