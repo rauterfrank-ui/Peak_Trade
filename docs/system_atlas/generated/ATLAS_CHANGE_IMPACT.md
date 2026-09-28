@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6937: whole-system causal closure (synthetic treasury→29P productive joins, MV2 capture→offline export); CSIA MAP_UPDATE_REQUIRED partial refresh; Atlas entity review on full_core/P5_10/elementary_direction navigation surfaces only; landscape/presentation dashboard OUT_OF_SCOPE; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
+- PR #6938: Case B closure — productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence; CSIA MAP_UPDATE_REQUIRED; Atlas entity + generated view regen (SYSTEM_ATLAS, COVERAGE, ORPHAN gaps); PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6937_WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_V1
+- modified_by=PR_6938_PRODUCTIVE_LEARNING_G2_PRIMARY_EVIDENCE_CASE_B_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
