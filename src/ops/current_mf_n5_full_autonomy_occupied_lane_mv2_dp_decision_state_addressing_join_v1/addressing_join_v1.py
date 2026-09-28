@@ -50,6 +50,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FIVE_LANE_CONTINUOUS_HOST_JOIN,
     FIVE_LANE_RUNTIME_CREATED,
     FULL_AUTONOMY_HOST_CHANGE_REQUIRED,
+    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+    ENABLE_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_V1,
     GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
     GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
     GLOBAL_N1_CURSOR_REJECTED,
@@ -198,6 +200,12 @@ def _assert_non_authority() -> None:
         or INSTRUMENT_ID_ALONE_SUFFICIENT
     ):
         _fail(FAILURE_AUTHORITY, "constant_violation")
+
+
+def _ddo_learning_capture_ledger_path_v1(store_root: str | Path) -> Path | None:
+    if not ENABLE_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_V1:
+        return None
+    return Path(store_root) / DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1
 
 
 def _require_identity_match(
@@ -441,6 +449,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=None,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=None,
@@ -542,6 +551,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=lane_cursor,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=lane_cursor,
@@ -691,6 +701,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=incoming,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=incoming,

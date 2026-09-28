@@ -33,6 +33,10 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
     apply_current_productive_g17_typed_vol_cmc_bind_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
+    build_productive_ddo_capture_binding_v1,
+    run_integrated_offline_replay_with_productive_ddo_capture_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
     CurrentProductiveCursorError,
@@ -238,6 +242,7 @@ class CurrentProductiveMasterV2CycleResultV1:
     cursor_restore_status: str = "missing"
     outgoing_cursor: Optional[CurrentProductiveSideStateConfirmationCursorV1] = None
     elementary_direction: Optional[ElementaryDirectionResultV1] = None
+    ddo_capture_summary: Optional[dict[str, Any]] = None
 
 
 def _finite_positive(value: object) -> float | None:
@@ -546,6 +551,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     f1_m9_productive_apply_ledger_paths: F1M9ProductiveApplyLedgerPathsV1 | None = None,
     f1_m9_threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
     repo_root: Path | None = None,
+    ddo_durable_evidence_ledger_path: Path | None = None,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -827,7 +833,28 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance=",".join(bind_carry.failure_codes),
             cursor_restore_status=restore.disposition.value,
         )
-    replay = run_integrated_offline_trading_logic_replay_v1(bind_input)
+    ddo_binding = (
+        build_productive_ddo_capture_binding_v1(ledger_path=ddo_durable_evidence_ledger_path)
+        if ddo_durable_evidence_ledger_path is not None
+        else None
+    )
+    repo = repo_root or _REPO_ROOT
+    repo_sha = _short_repository_sha_v1(repo)
+    ddo_summary: dict[str, Any] | None = None
+    if ddo_binding is not None:
+        replay, ddo_summary = run_integrated_offline_replay_with_productive_ddo_capture_v1(
+            bind_input,
+            ddo_capture_binding=ddo_binding,
+            repository_sha=repo_sha,
+            session_id=str(cycle_id),
+            cycle_index=int(now_tick),
+            event_ts_unix=float(last_finalized_event_ts_unix),
+            observation_acceptance_result=observation_acceptance_result,
+            features=features,
+            confirmation_binding=cap61_binding,
+        )
+    else:
+        replay = run_integrated_offline_trading_logic_replay_v1(bind_input)
     replay = finalize_productive_layered_core_replay_bind_v1(
         replay=replay,
         carry=bind_carry,
@@ -868,4 +895,18 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             cap61_binding=cap61_binding,
         ),
         elementary_direction=elementary_direction,
+        ddo_capture_summary=ddo_summary,
     )
+
+
+def _short_repository_sha_v1(repo_root: Path) -> str:
+    try:
+        import subprocess
+
+        return (
+            subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True)
+            .strip()[:40]
+            .lower()
+        )
+    except (OSError, subprocess.CalledProcessError):
+        return "unknown"
