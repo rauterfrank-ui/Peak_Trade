@@ -971,6 +971,7 @@ relations:
     is not runtime authority. ATLAS_AUTHORITY=NONE.
 
     '
+  # atlas_entity_review: PR #6936 — DEPENDS_ON unchanged; DDO ledger kwargs only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff
   source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
   type: DEPENDS_ON
@@ -984,6 +985,7 @@ relations:
     or Cap23/Cap24. The cursor file stays owned by the existing cursor module. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
     '
+  # atlas_entity_review: PR #6936 — DEPENDS_ON unchanged; store_root ledger path only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
   source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
   type: DEPENDS_ON

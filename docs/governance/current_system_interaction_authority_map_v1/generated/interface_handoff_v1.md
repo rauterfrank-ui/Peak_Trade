@@ -719,12 +719,12 @@ flowchart LR
 - decision_effect=MUST_NOT_MUTATE_PRODUCER
 - direct_or_indirect=DIRECT
 - identity_binding=UNKNOWN
-- temporal_binding=HOST_DURABILITY_UNPROVEN
+- temporal_binding=PRODUCTIVE_MV2_OPTIONAL_LEDGER_PARTIAL
 - version_binding=src/learning/deterministic_decision_outcome_v0/capture_v0.py
-- provenance_binding=HOST_LIST_NOT_CLOSED
+- provenance_binding=PARTIAL_HOST_LIST_MV2_AND_BRIDGE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 
 ## learning_evidence_export_to_optimization
 
