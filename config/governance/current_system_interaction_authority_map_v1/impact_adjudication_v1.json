@@ -1,41 +1,37 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "b3af49d714cf0f248a572b5799bb5edef4b45fa6",
+  "base_sha": "1a3ffd8ba081e732ecdb56258838ca528c0d3dc3",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
+    "config/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
-    "docs/system_atlas/census/census_meta.yaml",
+    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_productive_learning_to_g2_primary_evidence_causal_closure_e2e_v1.py",
-    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
-    "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
+    "scripts/ops/run_authority_map_atlas_guided_whole_system_causal_e2e_from_post_6938_main_v1.py",
+    "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+    "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py"
   ],
-  "changed_paths_sha256": "c91301be9a565003169328fc53d59939da13e9627c47dd394f7d57a156a18b1b",
+  "changed_paths_sha256": "359b7c0d5e55fe0e9e06cbcabe96623ba1d542c7980de15a56d1960a32b1b36f",
   "covered_candidate_paths": [
-    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
-    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
-    "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
+    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN_V1.md",
+    "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+    "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py"
   ],
   "evidence_refs": [
-    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
-    "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+    "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+    "config/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1_decision_v1.json",
+    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN_V1.md",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Case B semantic closure: productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot enter G2 bounded_runtime_primary_evidence; NOT_APPLICABLE map edge + ADJUDICATED partial statement; Atlas entity; reference G2\u2192M4\u2013M8 on legitimate primary archives only; bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0.",
+  "reason": "Post-6938 whole-system E2E: map/atlas-guided PAPER/SHADOW/TESTNET primary producer adjudication; Case B preserved; stops at missing independent durable primary evidence; fixture control for G2\u2192M4\u2013M8 only; PRODUCTIVE_OPTIMIZATION_JOIN=false; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

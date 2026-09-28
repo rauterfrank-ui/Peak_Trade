@@ -2,14 +2,15 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6938_PRODUCTIVE_LEARNING_G2_PRIMARY_EVIDENCE_CASE_B_CLOSURE_V1
+modified_by: WP_POST_6938_WHOLE_SYSTEM_G2_PRIMARY_CAUSAL_E2E_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6938: Case B closure — productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence;
-  CSIA MAP_UPDATE_REQUIRED; Atlas entity + generated view regen (SYSTEM_ATLAS, COVERAGE, ORPHAN gaps);
-  PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; map_authority=NONE; POST_COUNT=0.
-changed_entities: []
+  Post-#6938 whole-system E2E WP: map/atlas-guided primary-evidence producer adjudication;
+  Case B preserved; fixture control proves G2→M4–M8 mechanics; stops at missing independent
+  durable PAPER/SHADOW/TESTNET primary archive; AUTHORITY=NONE; POST_COUNT=0.
+changed_entities:
+  - RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
