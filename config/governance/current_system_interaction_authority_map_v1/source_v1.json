@@ -4555,7 +4555,22 @@
         "docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "Adjudicated real post-6939 PAPER attempt (untracked evidence/ops/post_6939_bounded_paper_primary_g2_closure_v1/): PAPER_RUNTIME_STARTED=false; PAPER_OBSERVATION_STARTED=false; scheduler admission HOLD_NO_PAPER_RUN; PAPER_START_RC=2; SCHEDULER_EXECUTION_AUTHORIZED=false; PRIMARY_ARCHIVE_EXISTS=false; G2_INGRESS_ADMITTED=false. SHELL_PROCESS_RESULT (wrapper/bootstrap exit) MUST NOT override PAPER_START_RESULT. Next edge: scoped bounded PAPER scheduler authorization only (not pre-authorized in #6940)."
+      "closure_note": "PAPER_STATUS=PARKED. Post-6939 attempt: scheduler HOLD terminal (START_RC=2). Post-6940 scoped scheduler execute started then CONTROLLED_ABORT (SIGTERM); partial artifacts ABORTED_INCOMPLETE_NON_QUALIFYING; not G2-primary. Learning branch parked; live-readiness WP continues on productive/PRE_EXTERNAL path only."
+    },
+    {
+      "id": "post_6940_live_readiness_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6940 live-readiness convergence: Map/Atlas-guided productive/live causal census with safe synthetic-treasury no-POST E2E; PRE_EXTERNAL reachable; external-effect standing fail-closed; earliest remaining blocker EXTERNAL_EFFECT_AUTHORIZATION at intent_to_execution; PAPER/SHADOW/TESTNET/G2 learning runtime not executed; trusted private GET/live-account path not authorized in WP.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_FROM_POST_6940_MAIN_V1.md",
+        "config/governance/post_6940_live_readiness_convergence_v1_decision_v1.json",
+        "src/governance/post_6940_live_readiness_convergence_v1.py",
+        "scripts/ops/run_post_6940_authority_map_atlas_live_readiness_convergence_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6940_live_readiness_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Mechanical live-readiness closure exhausted to PRE_EXTERNAL; venue POST requires scoped Owner-GO for external-effect authorization; PAPER remains PARKED."
     },
     {
       "id": "m9_m10_enforcement",

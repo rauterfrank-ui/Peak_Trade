@@ -4640,8 +4640,27 @@ entities:
     notes: >-
       Whole-system terminal at scheduler HOLD_NO_PAPER_RUN after PAPER adapter admission check;
       PAPER_RUNTIME_STARTED=false; START_RC=2; no OBSERVED_BOUNDED_RUNTIME primary archive;
-      G2→M4–M8 fixture-control only for mechanics; next Owner edge=scoped scheduler execution only;
+      G2→M4–M8 fixture-control only for mechanics; PAPER_STATUS=PARKED after post-6940 controlled abort;
       AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1
+    kind: RUNTIME_COMPONENT
+    name: Post-6940 live-readiness convergence v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: POST_6940_AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_V1
+    source_paths:
+      - scripts/ops/run_post_6940_authority_map_atlas_live_readiness_convergence_v1.py
+    evidence_sources:
+      - src/governance/post_6940_live_readiness_convergence_v1.py
+      - config/governance/post_6940_live_readiness_convergence_v1_decision_v1.json
+      - docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_FROM_POST_6940_MAIN_V1.md
+      - tests/governance/test_post_6940_live_readiness_convergence_v1.py
+    notes: >-
+      Productive/live Map/Atlas-guided convergence; synthetic treasury no-POST E2E proves
+      PRE_EXTERNAL; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION; PAPER/SHADOW/TESTNET not
+      executed; AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
