@@ -4588,6 +4588,21 @@
       "closure_note": "Fixpoint at operational external-effect sink; no permit mint, credential load, or venue POST in WP."
     },
     {
+      "id": "post_6942_external_effect_authorization_full_chain_forensic_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6942 EXTERNAL_EFFECT_AUTHORIZATION full-chain forensic: extends post-6941 through credential-access and material-load policy admissions, venue-POST admission fail-closed, and one-shot join standing boundary; full policy admissions runtime-proven; first irreversible operation REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD; scoped Owner-GO required before permit perform or venue POST; PAPER PARKED.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FROM_POST_6942_MAIN_V1.md",
+        "config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json",
+        "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
+        "scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Operational performance blocked at scoped Owner-GO; no Keychain, permit mint perform, or venue POST in WP."
+    },
+    {
       "id": "m9_m10_enforcement",
       "epistemic_class": "PARTIAL",
       "statement": "M9 and M10 seam exists and enforcement_enabled is false.",
