@@ -498,6 +498,7 @@ relations:
   notes: 'Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime: append occurs only when ledger_path is set on
     an enabled capture binding. In-memory captured_records still accumulate without a path.'
   # atlas_entity_review: PR #6936 — OBSERVES unchanged; DDO capture does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #6937 — OBSERVES unchanged; DDO offline export handoff does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_cycle_observes_elementary_direction
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: OBSERVES

@@ -724,7 +724,7 @@ flowchart LR
 - provenance_binding=PARTIAL_HOST_LIST_MV2_AND_BRIDGE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 
 ## learning_evidence_export_to_optimization
 
@@ -742,7 +742,7 @@ flowchart LR
 - provenance_binding=UNIFIED_BLUEPRINT_D02_d02_learning_to_optimization
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`
+- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`
 
 ## meta_search_backflow
 

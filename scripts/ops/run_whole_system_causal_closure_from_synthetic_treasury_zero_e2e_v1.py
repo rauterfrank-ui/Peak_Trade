@@ -514,7 +514,10 @@ def _probe_loop_a(n5_root: Path) -> dict[str, Any]:
             capture_ok = True
         if handoff_payload is not None:
             export_stats.append(handoff_payload)
-            if handoff_payload.get("optimization_ack_status") == STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT:
+            if (
+                handoff_payload.get("optimization_ack_status")
+                == STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT
+            ):
                 export_ok = True
                 export_reason = "ACCEPTED_OFFLINE_RESEARCH_INPUT"
     if capture_ok and not export_ok:
@@ -956,9 +959,7 @@ def main() -> int:
             "intent_to_execution" if pre_external else "mv2_executable_pre_external_terminal"
         ),
         "EXECUTION_BRANCH_BLOCKER": (
-            "OWNER_GO_REQUIRED_FOR_VENUE_POST"
-            if pre_external
-            else "PRODUCTIVE_GRAPH_INCOMPLETE"
+            "OWNER_GO_REQUIRED_FOR_VENUE_POST" if pre_external else "PRODUCTIVE_GRAPH_INCOMPLETE"
         ),
         "EXECUTION_BRANCH_BLOCKER_CLASS": "EXTERNAL_EFFECT_AUTHORITY",
         "LEARNING_BRANCH_FIRST_UNCLOSED_EDGE": (
