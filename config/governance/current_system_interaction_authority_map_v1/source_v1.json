@@ -4462,6 +4462,20 @@
       "closure_note": "PR #6954: composition bootstrap seam only; no MV2/DP semantic change; cutover false."
     },
     {
+      "id": "productive_canonical_price_provenance_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Productive MV2 cycle host requires explicit composition-root canonical mark/index provenance; ORDINARY_MARKET_CANDLE_CLOSE is forbidden as M_t; index_px must not collapse to mark_px; SideState venue observation seed is forbidden at P5 bind.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "PR #6955: SEM-DIV-00001/00002/00006 enforcement repair; composition-root adapter only; Master V2/Double Play code untouched; AUTHORITY=NONE."
+    },
+    {
       "id": "portfolio_budget",
       "epistemic_class": "PARTIAL",
       "statement": "Portfolio authority effect is none, restart is not reconstructable, and venue fill is not integrated.",

@@ -355,6 +355,7 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:elementary_direction_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6937 — whole-system causal closure does not consume elementary_direction; semantics unchanged;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6936 — MV2 cycle DDO capture join does not consume elementary_direction; semantics unchanged;
@@ -625,6 +626,7 @@ entities:
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: Post-6934/PR #6935 — governance replay proof for dual-carrier persistence; cursor seam semantics unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: Post-6933 governance closure — OD1 Economic Guard slice grant closed; productive cursor seam unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6929 POST_6928 PRE_EXTERNAL same-process test isolation (test-only F1/M9
@@ -1156,6 +1158,7 @@ entities:
       No Atlas edge to Cap 2.3 or Cap 2.4.
 
   - id: CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # PR_6829 POST_6828_ARCHITECTURE_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # domain_ratification_descriptor_v1 on handoff contract; ranking/selection semantics unchanged.
     kind: CONTRACT
@@ -1223,6 +1226,7 @@ entities:
       bridge. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6936 — lane store_root addressing unchanged; DDO ledger path derived under same root only;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
@@ -1439,6 +1443,7 @@ entities:
       remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6936 — transitive dependency only; handoff compose unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join
@@ -1477,6 +1482,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6936 — optional ddo_durable_evidence_ledger_path in cycle kwargs only; S6/S7 semantics unchanged;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: S7 pre-persist gate on non-null outgoing_cursor;
@@ -1527,6 +1533,7 @@ entities:
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: T2 compose failures map to structured join error (not T2_CYCLE_EXCEPTION); ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6909 POST6908: invoke_join cold-start aligns MV2 cap61 floor to injected venue C1 (candle_last-60) before governed cycle; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6908 ENDGAME_F1_M9: invoke_join common_epoch_decision_epoch for T2 enter-live-29p WP1 epoch alignment; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -3346,6 +3353,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     kind: CONTRACT
     name: P5.1 layered core authority seal and CZ-4 delegated replay v1
     epistemic_class: CANONICAL_AUTHORITY
@@ -3386,6 +3394,7 @@ entities:
       navigation only; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     kind: CONTRACT
     name: P5.2 productive cycle seam invoke and authority bind v1
     epistemic_class: CANONICAL_AUTHORITY
@@ -3933,6 +3942,7 @@ entities:
       Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6954 — S7 scope-colocated episode bootstrap init-only (no duplicate P5 mechanical step);
     # composition/addressing seam only; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: PR #6937 — P5_10 bind seam unchanged; treasury/DDO joins are post-bind evidence/composition only;
@@ -4263,6 +4273,7 @@ entities:
     notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 
   - id: RUNTIME_COMPONENT:mv2_integrated_replay
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6933 — replay passes prior_carrier through OD1 lifecycle + dual persist; no POST.
     kind: RUNTIME_COMPONENT
     name: Integrated offline trading-logic replay
@@ -4784,6 +4795,7 @@ entities:
       isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     kind: RUNTIME_COMPONENT
     name: CURRENT productive persistent Natural-ENTER convergence v1
     epistemic_class: FORENSIC_RAW
@@ -4804,7 +4816,9 @@ entities:
       # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high;
       # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
-  - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1  # atlas_review PR_6952
+  - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+    # atlas_review PR_6952
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     kind: RUNTIME_COMPONENT
     name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
     epistemic_class: FORENSIC_RAW
@@ -5696,6 +5710,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6953 — enter-live treasury P01/eligibility handoff export; portfolio seam;
     # live_admission_gap_dag EARLIEST→Treasury handoff GET; execution_admission data_safety inputs on
     # standing gates; harness-only; MV2/DP unchanged; EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
@@ -6156,6 +6171,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py
@@ -6291,6 +6307,7 @@ entities:
       - tests/ops/test_current_productive_g17_typed_vol_mark_history_checkpoint_v1.py
       - tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py
       - tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
+      - tests/ops/test_current_productive_semantic_enforcement_repair_v1.py
       - tests/ops/test_full_core_current_productive_execution_admission_remainder_v1.py
       - tests/ops/test_full_core_current_productive_de_dd_execution_ladder_baseline_v1.py
       - tests/ops/test_full_core_current_productive_dk_execute_network_credential_join_v1.py
@@ -8403,6 +8420,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:portfolio_capital_reservation_budget_v1
+    # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827: Q3 unchanged; TREASURY_BINDING_N5_CONFLICT=false.
     # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; admit_sized_slot_reservation_v1 still optional via ENTER Live-29P after MV2 capital context rebind; N>1 unauthorized; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
     kind: GATE
