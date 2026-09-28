@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1` |
-| `RUNTIME_COMPONENT:post_6943_real_keychain_material_load_scoped_perform_v1` |
-| `RUNTIME_COMPONENT:post_6942_external_effect_authorization_full_chain_forensic_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-6944 scoped K1 PRE-POST perform under OWNER_GO_CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1; opaque handle and request signing; stop before venue POST; AUTHORITY=NONE.
+- PR #6948 offline persistent Natural-ENTER convergence harness; S8→S6→S7→PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6944_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM_V1
+- modified_by=PR_6948_CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -1014,7 +1014,7 @@
     {
       "id": "governed_cycle",
       "tier": "INTERMEDIATE",
-      "role": "S5 exactly-one current productive governed cycle orchestrator (run_current_productive_governed_cycle_v1) to PRE_EXTERNAL_EFFECT or VALID_NO_TRADE_TERMINAL. HOLD_CLOSED is a valid completed disposition, not POST/failure. S6 bounded continuous progression is current_continuous_run_policy + current_productive_governed_continuous_cycle_orchestrator_v1 only; continuous run unauthorized without that policy.",
+      "role": "S5 exactly-one current productive governed cycle orchestrator (run_current_productive_governed_cycle_v1) to PRE_EXTERNAL_EFFECT or VALID_NO_TRADE_TERMINAL. HOLD_CLOSED is a valid completed disposition, not POST/failure. S6 bounded continuous progression is current_continuous_run_policy + current_productive_governed_continuous_cycle_orchestrator_v1 only; continuous run unauthorized without that policy. Offline persistent Natural-ENTER convergence (fixed S8 lane-root through S6/S7 to PRE_EXTERNAL) is current_productive_persistent_natural_enter_convergence_v1 with CONTINUOUS_RUN_AUTHORIZED=false and POST statically unreachable.",
       "canonical_owner_ref": "run_current_productive_governed_cycle_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "CONTINUOUS_RUN_UNAUTHORIZED",
@@ -1025,13 +1025,16 @@
       "contract_refs": [],
       "code_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
-        "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py"
       ]
     },
     {
@@ -4975,6 +4978,21 @@
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
       "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_persistent_natural_enter_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6948: offline persistent Natural-ENTER convergence binds fixed S8 lane-root through governed continuous S6 and occupied-lane S7 to PRE_EXTERNAL; S5 runner uses S6 evidence_root; cold lane bootstrap via S7 compose; N5 invoke/bootstrap aligns lane S7 closes and mark to injected C1; CONTINUOUS_RUN_AUTHORIZED=false; POST unreachable; not productive continuous authorization.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+        "scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Offline harness only; productive continuous Owner-GO and live C1/GET remain next gates."
     },
     {
       "id": "current_productive_s6_s7_c1_cursor_ownership_seam_v1",

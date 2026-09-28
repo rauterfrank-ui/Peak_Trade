@@ -809,11 +809,15 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         if record is None or seam_item is None:
             continue
         bound, store_root, _cursor_address = seam_item
+        closes_for_bootstrap = tuple(finalized_closes)
+        mark_for_bootstrap = (
+            float(closes_for_bootstrap[-1]) if closes_for_bootstrap else float(mark_px)
+        )
         bootstrap_failures = ensure_productive_layered_core_episode_store_v1(
             store_root=Path(store_root),
             bound_instrument=bound,
-            mark_price_m_t=float(mark_px),
-            finalized_closes=finalized_closes,
+            mark_price_m_t=mark_for_bootstrap,
+            finalized_closes=closes_for_bootstrap,
             last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
             outgoing_cursor=record.cycle_result.outgoing_cursor,
         )

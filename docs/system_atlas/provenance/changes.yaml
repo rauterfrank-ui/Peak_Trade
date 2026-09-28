@@ -224,6 +224,16 @@ changes:
       Case B closure: productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence;
       CSIA NOT_APPLICABLE edge + partial statement; Atlas entity; legitimate G2→M4–M8 reference only;
       bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6948_current_productive_persistent_natural_enter_convergence_v1
+    from: 419da45141aacc8a563e6314b0d1e5bf6cb68fe7
+    to: 419da45141aacc8a563e6314b0d1e5bf6cb68fe7
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
+    notes: >-
+      PR #6948: offline persistent Natural-ENTER convergence (S8→S6→S7→PRE_EXTERNAL); fixed lane-root;
+      N5 occupied-lane bootstrap C1/mark alignment; CSIA MAP_UPDATE_REQUIRED partial statement;
+      CONTINUOUS_RUN_AUTHORIZED=false; POST unreachable; Atlas entity review; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

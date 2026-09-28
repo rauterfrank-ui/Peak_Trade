@@ -244,19 +244,32 @@ def _cursor_floor_or_zero(cursor_store_root: Path) -> float:
         return 0.0
 
 
+def _align_lane_s7_closes_to_injected_c1_v1(
+    lane_s7: Mapping[str, Any],
+    candles_payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Align S7 MV2 inputs to injected governed-cycle C1 (closes + cap61 floor)."""
+    aligned = dict(lane_s7)
+    extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
+    if extracted:
+        aligned["finalized_closes"] = extracted
+        last_close = float(extracted[-1])
+        aligned["mark_px"] = last_close
+        aligned["index_px"] = last_close
+    if last_ts is None:
+        return aligned
+    candle_last = float(last_ts)
+    aligned["last_finalized_event_ts_unix"] = candle_last - 60.0
+    aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
+    return aligned
+
+
 def _align_lane_s7_bootstrap_to_injected_c1_v1(
     lane_s7: Mapping[str, Any],
     candles_payload: Mapping[str, Any],
 ) -> dict[str, Any]:
     """Bind MV2 cold-start cap61 floor strictly below injected governed-cycle C1."""
-    _closes, last_ts = extract_finalized_candle_closes_v1(candles_payload)
-    if last_ts is None:
-        return dict(lane_s7)
-    candle_last = float(last_ts)
-    aligned = dict(lane_s7)
-    aligned["last_finalized_event_ts_unix"] = candle_last - 60.0
-    aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
-    return aligned
+    return _align_lane_s7_closes_to_injected_c1_v1(lane_s7, candles_payload)
 
 
 def _s7_kwargs(
@@ -542,7 +555,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         cursor_path = Path(cursor_store_root) / CURSOR_FILENAME
         bootstrap_used = False
         if not cursor_path.is_file():
-            lane_s7 = _align_lane_s7_bootstrap_to_injected_c1_v1(
+            lane_s7 = _align_lane_s7_closes_to_injected_c1_v1(
                 lane_s7,
                 dict(candles_payload),
             )
