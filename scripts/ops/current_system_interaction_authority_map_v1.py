@@ -86,6 +86,7 @@ REQUIRED_PARTIAL_IDS = (
     "post_6940_live_readiness_convergence_v1",
     "post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
     "post_6942_external_effect_authorization_full_chain_forensic_v1",
+    "post_6943_real_keychain_material_load_scoped_perform_v1",
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
