@@ -4738,6 +4738,20 @@
       "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
+      "id": "selected_future_persistent_scope_confirmation_authority_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6933: Owner policy SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1 — OD1 single-lane activation is active evaluation-lane routing only; Cap 6.1 dual carrier preserves opposite-side confirmation cursor across elementary direction changes; scope/L10 candidate invalidation remains UNRESOLVED; no selection rebind, no venue POST, no external effect.",
+      "evidence_refs": [
+        "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
+        "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
+        "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
+        "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py",
+        "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
       "id": "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
       "epistemic_class": "PARTIAL",
       "statement": "PR #6908: Master-V2 cold-start invokes canonical F1/M9 durable bootstrap (existing apply-start continuation only); PRE_EXTERNAL WP2 uses G17 mark-history when producer absent; occupied-lane invoke join passes common_epoch_decision_epoch; no venue POST; no second authority.",

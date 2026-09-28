@@ -160,6 +160,17 @@ changes:
       live GETs; replay defaults only on execute_network=false; fail-closed on missing market fields;
       CSIA MAP_UPDATE_REQUIRED partial statement; no Master-V2/Double-Play change; POST_COUNT=0.
       Atlas AUTHORITY=NONE.
+  - id: CHANGE:selected_future_persistent_scope_confirmation_authority_v1
+    from: dc727b5ab8885ebd230b428496e5a57173356279
+    to: dc727b5ab8885ebd230b428496e5a57173356279
+    type: AUTHORITY_CONTRACT_AND_OD1_BINDING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py
+    notes: >-
+      PR #6933: Owner policy persistent Selected-Future Bull/Bear confirmation lifecycle; OD1
+      active-lane routing only; Cap 6.1 dual carrier preserves opposite-side cursor; scope/L10
+      invalidation UNRESOLVED; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review;
+      CLEAN_CORE_SEAL join projection update; no selection change; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
