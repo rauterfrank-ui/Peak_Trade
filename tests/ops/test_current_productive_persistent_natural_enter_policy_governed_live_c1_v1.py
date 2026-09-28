@@ -70,6 +70,7 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 
 REPO = Path(__file__).resolve().parents[2]
 BASELINE_SHA = "27c3cd4aa21e181282b19a89a9e2187b30ed93f4"
+POST_MERGE_MAIN_SHA = "7b706117695e0ef79d1510ae98c335dd5bc8630b"
 
 
 def test_owner_go_decision_present_and_pins_unchanged() -> None:
@@ -82,6 +83,14 @@ def test_owner_go_decision_present_and_pins_unchanged() -> None:
     sem = owner_go_consumption_semantics_v1()
     assert sem["module_pins_mutated"] == "false"
     assert CONTINUOUS_RUN_AUTHORIZED is False
+
+
+def test_owner_go_decision_accepts_post_merge_main_without_mv2_dp_drift() -> None:
+    ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
+        repo_root=REPO,
+        baseline_origin_main_sha=POST_MERGE_MAIN_SHA,
+    )
+    assert ok, reasons
 
 
 @dataclass

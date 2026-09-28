@@ -263,6 +263,16 @@ changes:
       PR #6951: productive PRE_EXTERNAL-only runner; S6 stale-C1 poll liveness; cold-lane bootstrap;
       auth-free occupancy; baseline Owner-GO rebind 27c3cd4; productive evidence run without POST;
       MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6952_post_merge_owner_go_baseline_lineage_v1
+    from: 7b706117695e0ef79d1510ae98c335dd5bc8630b
+    to: 7b706117695e0ef79d1510ae98c335dd5bc8630b
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      PR #6952: consume adjudicated Owner-GO when live origin/main is descendant of decision baseline;
+      fail-closed MV2/DP drift gate; enables post-#6951 productive C1 run on main; no POST/credentials;
+      ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
