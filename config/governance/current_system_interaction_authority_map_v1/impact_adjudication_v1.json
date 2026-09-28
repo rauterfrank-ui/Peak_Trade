@@ -5,6 +5,7 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FROM_POST_6942_MAIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -17,7 +18,7 @@
     "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
     "tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py"
   ],
-  "changed_paths_sha256": "a85c0d1885326f2513393fb7054e8d69690928304692893d6226117b3ef511c3",
+  "changed_paths_sha256": "7eb3b6645eab05902cc54a67ca4c62c1066e5d215642e7618103f13c65415a95",
   "covered_candidate_paths": [
     "scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py",
     "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
