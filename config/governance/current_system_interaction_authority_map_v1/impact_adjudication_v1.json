@@ -1,12 +1,13 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "2cffef01a7b8b933ee6a61577280d492ed842153",
+  "base_sha": "ad99257a7e0922192ca32d27f0acf029e9efae83",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md",
+    "config/governance/post_6940_live_readiness_convergence_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_FROM_POST_6940_MAIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -14,23 +15,22 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
-    "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
-    "tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py"
+    "scripts/ops/run_post_6940_authority_map_atlas_live_readiness_convergence_v1.py",
+    "src/governance/post_6940_live_readiness_convergence_v1.py",
+    "tests/governance/test_post_6940_live_readiness_convergence_v1.py"
   ],
-  "changed_paths_sha256": "ce42443b98e3e59fb7405c8e671f56cdc84fe0e4e675947697d4e49f3b7aa7ce",
+  "changed_paths_sha256": "pending_after_commit",
   "covered_candidate_paths": [
-    "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
-    "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
-    "tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py"
+    "scripts/ops/run_post_6940_authority_map_atlas_live_readiness_convergence_v1.py",
+    "src/governance/post_6940_live_readiness_convergence_v1.py",
+    "tests/governance/test_post_6940_live_readiness_convergence_v1.py"
   ],
   "evidence_refs": [
-    "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
-    "config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md",
+    "config/governance/post_6940_live_readiness_convergence_v1_decision_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6940 pre-merge closure: PAPER producer\u2192adapter\u2192scheduler HOLD terminal adjudication in CSIA+Atlas; Case B preserved; no new runtime authority; POST_COUNT=0.",
+  "reason": "Post-6940 live-readiness convergence WP: PAPER PARKED; PRE_EXTERNAL synthetic E2E; external-effect blocker adjudicated; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
