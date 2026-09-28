@@ -2653,11 +2653,37 @@
       ]
     },
     {
+      "id": "productive_ddo_offline_export_to_g2_primary_evidence",
+      "from_domain": "learning_ddo",
+      "to_domain": "bounded_runtime_primary_evidence",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "CASE_B_FORBIDDEN: productive MV2/N5 DDO offline export (ACCEPTED_OFFLINE_RESEARCH_INPUT) cannot become G2 primary evidence; anti-laundering | SEMANTIC_PAIR=productive_ddo_offline_export_to_g2_primary_evidence; DISTINCT_FROM=g2_primary_evidence_to_offline_projection",
+      "producer": "current_productive_master_v2_ddo_capture_to_offline_export_join_v1",
+      "consumer": "validate_durable_primary_evidence_root",
+      "authority_effect": "NONE",
+      "decision_effect": "BRIDGE_FORBIDDEN",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "CONFLICTING",
+      "identity_binding": "PRODUCTIVE_DDO_HANDOFF_NOT_PRIMARY_MANIFEST",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "governed_productive_learning_to_g2_primary_evidence_causal_closure_v1",
+      "provenance_binding": "LIFECYCLE_PROVENANCE_LAUNDERING_FORBIDDEN",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json"
+      ]
+    },
+    {
       "id": "g2_primary_evidence_to_offline_projection",
       "from_domain": "bounded_runtime_primary_evidence",
       "to_domain": "g2_runtime_primary_offline_projection",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out",
+      "contract_or_payload": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out | DISTINCT_FROM=productive_ddo_offline_export_to_g2_primary_evidence (Case B: productive DDO export not admissible as primary evidence)",
       "producer": "validate_durable_primary_evidence_root",
       "consumer": "run_governed_runtime_primary_to_offline_observation_projection_v1",
       "authority_effect": "NONE",
@@ -2673,7 +2699,8 @@
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
         "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
-        "scripts/ops/primary_evidence_retention_v0.py"
+        "scripts/ops/primary_evidence_retention_v0.py",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
       ]
     },
     {
@@ -3134,7 +3161,9 @@
         "src/experiments/canonical_optimization_universe_learning_input_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
         "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-        "tests/experiments/test_canonical_optimization_universe_v1.py"
+        "tests/experiments/test_canonical_optimization_universe_v1.py",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md"
       ]
     },
     {
@@ -4479,6 +4508,21 @@
       ],
       "closure_adjudication_class": "CURRENT_SUPPORT",
       "closure_note": "DDO/learning hosts; AUTHORITY=NONE."
+    },
+    {
+      "id": "productive_learning_to_g2_primary_semantic_boundary",
+      "epistemic_class": "PARTIAL",
+      "statement": "Case B: productive MV2/N5 DDO offline export terminating at ACCEPTED_OFFLINE_RESEARCH_INPUT is NOT admissible as bounded_runtime_primary_evidence for G2 projection. Legitimate G2 ingress requires independent durable Paper/Shadow/Testnet primary archives only. Productive lineage must not be relabeled as G2 primary evidence (anti-laundering).",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
+        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "SEMANTIC_ADJUDICATION=B; bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false."
     },
     {
       "id": "m9_m10_enforcement",

@@ -1,48 +1,35 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "055f4bf4a18b49a8e080b6d54a7e78a80c02bb25",
+  "base_sha": "b3af49d714cf0f248a572b5799bb5edef4b45fa6",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/ops/specs/WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_PRODUCTIVE_JOIN_V1.md",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
-    "tests/ops/_synthetic_treasury_step29p_handoff_fixture_v1.py",
-    "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "tests/ops/test_current_productive_step_29p_productive_causal_join_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "scripts/ops/run_productive_learning_to_g2_primary_evidence_causal_closure_e2e_v1.py",
+    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+    "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
   ],
-  "changed_paths_sha256": "47efde6136f1d12451068a27bae598c457b3ed7a9ab7afa340e123c4e9b04cef",
+  "changed_paths_sha256": "8effbc2be7603673f6672634876c2f96c7a07565ea709c1cf0e42a313bf03ab7",
   "covered_candidate_paths": [
-    "docs/ops/specs/WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_PRODUCTIVE_JOIN_V1.md",
-    "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
-    "tests/ops/_synthetic_treasury_step29p_handoff_fixture_v1.py",
-    "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "tests/ops/test_current_productive_step_29p_productive_causal_join_v1.py"
+    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+    "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
   ],
   "evidence_refs": [
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
-    "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/system_atlas/provenance/changes.yaml"
+    "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+    "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6937 whole-system causal closure: synthetic 29P→EEA/budget productive joins + MV2 same-cycle DDO capture→offline export (ACCEPTED_OFFLINE_RESEARCH_INPUT only); CSIA partial statement and learning_capture/learning_evidence_export edge evidence refresh; Atlas entity review on full_core/P5_10/elementary_direction navigation surfaces; landscape/presentation dashboard OUT_OF_SCOPE; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0.",
+  "reason": "Case B semantic closure: productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot enter G2 bounded_runtime_primary_evidence; NOT_APPLICABLE map edge + ADJUDICATED partial statement; Atlas entity; reference G2→M4–M8 on legitimate primary archives only; bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

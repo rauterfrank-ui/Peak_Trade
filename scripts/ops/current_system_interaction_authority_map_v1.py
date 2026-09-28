@@ -80,6 +80,7 @@ REQUIRED_PARTIAL_IDS = (
     "replay_provenance_drop",
     "sizing_to_intent_plan_only",
     "learning_capture_hosts_and_ddo_durability",
+    "productive_learning_to_g2_primary_semantic_boundary",
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
