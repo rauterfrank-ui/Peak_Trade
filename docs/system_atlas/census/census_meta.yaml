@@ -5,13 +5,13 @@ origin_main_subject: 'POST_6924 companion C2 runtime completion scaffold v1 (#69
 census_date_role: workpackage_bound_not_runtime_truth
 worktree_dirty: false
 navigation_rebind_sha: 744a9c896f53d33b2d3c24977da1891a2e8549f1
-navigation_rebind_kind: POST_6931_POST_FIRST_REAL_ATTEMPT_SAFETY_CLOSURE_V1
+navigation_rebind_kind: POST_6932_PRODUCTIVE_PRE_EXTERNAL_EXECUTE_NETWORK_MV2_MARKET_HANDOFF_V1
 domain_census_payloads_bound_sha: null
 domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
 historical_domain_census_payload_count: 0
 historical_domain_census_stale_defect_if_head_differs: false
-worktree_note: 'PR #6931 POST-first-real-attempt safety closure; CSIA MAP_UPDATE_REQUIRED + Atlas entity review; CURRENT_REVIEWED_AT_SHA unchanged 744a9c896; POST slice semantics only; no new Owner-GO venue POST in WP; Atlas AUTHORITY=NONE.'
+worktree_note: 'PR #6932 productive PRE_EXTERNAL execute_network MV2 market handoff wiring; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review; CURRENT_REVIEWED_AT_SHA unchanged 744a9c896; no Master-V2/Double-Play change; no venue POST; Atlas AUTHORITY=NONE.'
 okx_census_complete: true
 okx_current_tree_census_complete: true
 okx_historical_census_complete: false
