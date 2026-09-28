@@ -354,9 +354,12 @@ governed by continuous-run policy elsewhere.
 Post-6948 navigation (non-authorizing): productive continuous-run authority vs
 Live Fresh-C1 GET convergence —
 `docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md`.
-Earliest remaining gate: scoped Owner-GO for
-`OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1` and Fresh-C1 GET
-(`OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1`); not venue POST.
+Bounded Owner-GO wiring (decision record; not venue POST):
+`docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md`
+and
+`config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json`.
+Consumes scoped tokens via evidence only; `CONTINUOUS_RUN_AUTHORIZED` module pin
+remains false; terminal stop at PRE_EXTERNAL.
 
 ------------------------------------------------------------------------
 

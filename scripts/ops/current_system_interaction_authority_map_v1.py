@@ -85,6 +85,7 @@ REQUIRED_PARTIAL_IDS = (
     "post_6939_paper_g2_primary_run_metadata",
     "post_6940_live_readiness_convergence_v1",
     "post_6948_productive_continuous_run_authority_live_c1_convergence_v1",
+    "current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1",
     "post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
     "post_6942_external_effect_authorization_full_chain_forensic_v1",
     "post_6943_real_keychain_material_load_scoped_perform_v1",

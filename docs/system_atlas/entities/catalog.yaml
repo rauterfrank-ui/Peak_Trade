@@ -4795,6 +4795,25 @@ entities:
       Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0;
       N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+    kind: RUNTIME_COMPONENT
+    name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
+    source_paths:
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+    evidence_sources:
+      - config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
+      - docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md
+      - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET;
+      S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
     name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1

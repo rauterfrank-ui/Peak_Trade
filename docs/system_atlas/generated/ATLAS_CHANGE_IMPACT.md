@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:post_6948_productive_continuous_run_authority_live_c1_convergence_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6949 post-6948 navigation: productive continuous-run authority vs Live-C1 GET; Owner decision schema; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
+- Owner-GO wiring: policy-governed live Fresh-C1 continuous run; S6 observation poll; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6949_POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1
+- modified_by=CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
