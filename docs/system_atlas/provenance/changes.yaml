@@ -171,6 +171,17 @@ changes:
       active-lane routing only; Cap 6.1 dual carrier preserves opposite-side cursor; scope/L10
       invalidation UNRESOLVED; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review;
       CLEAN_CORE_SEAL join projection update; no selection change; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6933_od1_economic_guard_slice_grant_closure_v1
+    from: 43b3786ce5cd7a0d517ffebe1c158616b7e8c644
+    to: 43b3786ce5cd7a0d517ffebe1c158616b7e8c644
+    type: GOVERNANCE_GRANT_CLOSURE
+    epistemic_status: FORENSIC_RAW
+    evidence: config/governance/explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.json
+    notes: >-
+      Post PR #6933: deactivate temporary eighth-class OD1 Economic Guard slice grant
+      (grant_active=false); CSIA partial statement notes closed grant; merged Master-V2 OD1
+      implementation unchanged; Atlas entity review on CSIA-coupled navigation surfaces only;
+      POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

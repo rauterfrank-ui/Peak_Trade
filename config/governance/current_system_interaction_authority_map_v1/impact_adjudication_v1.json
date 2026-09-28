@@ -1,47 +1,29 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "dc727b5ab8885ebd230b428496e5a57173356279",
+  "base_sha": "43b3786ce5cd7a0d517ffebe1c158616b7e8c644",
   "changed_paths": [
-    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.json",
-    "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/MV2_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1.md",
-    "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/check_clean_core_seal_v1.py",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
-    "tests/governance/test_explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.py",
-    "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py",
-    "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py"
+    "docs/system_atlas/relations/structural.yaml",
+    "tests/governance/test_explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.py"
   ],
-  "changed_paths_sha256": "828d597db5ea5341ee1b91babb235b9b92a42d101276a681fb69b961b660e1e6",
-  "covered_candidate_paths": [
-    "docs/ops/specs/MV2_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1.md",
-    "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
-    "docs/system_atlas/census/census_meta.yaml",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
-  ],
+  "changed_paths_sha256": "a6aa8a801120089f9ef51be7a6f7a7354b3e19e35e47b9bd0f135a7c4d76cd11",
+  "covered_candidate_paths": [],
   "evidence_refs": [
+    "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md",
+    "config/governance/explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.json",
     "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
-    "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
-    "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py",
-    "docs/system_atlas/provenance/changes.yaml",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "docs/system_atlas/provenance/changes.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6933: SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1 — OD1 evaluation-lane routing; Cap 6.1 dual-side cursor persistence; CLEAN_CORE_SEAL replay join update; CSIA partial statement + Atlas entity review; scope/L10 invalidation UNRESOLVED; no selection/POST.",
+  "reason": "Post PR #6933 governance closure: deactivate eighth-class OD1 Economic Guard slice grant (grant_active=false, empty digest-bound fields); CSIA partial statement notes closed grant; Atlas entity review for CSIA-coupled surfaces; merged Master-V2 OD1 dual-carrier implementation unchanged; no trading/runtime mutation.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
