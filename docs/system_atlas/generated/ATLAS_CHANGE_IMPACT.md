@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post PR #6933 governance closure: eighth-class OD1 Economic Guard slice grant deactivated (grant_active=false); CSIA partial statement updated; merged Master-V2 OD1 dual-carrier code unchanged; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces only; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
+- Post PR #6934/PR #6935: refresh selected-future Owner policy bound_origin_main_sha; governance integrated-replay proof for post-#6933 dual-carrier persistence; CSIA partial statement updated; merged Master-V2 unchanged; OD1 slice grant remains inactive; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces only; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6933_OD1_ECONOMIC_GUARD_SLICE_GRANT_CLOSURE_V1
+- modified_by=POST_6934_SELECTED_FUTURE_DUAL_CARRIER_REPLAY_PROOF_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

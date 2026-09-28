@@ -182,6 +182,17 @@ changes:
       (grant_active=false); CSIA partial statement notes closed grant; merged Master-V2 OD1
       implementation unchanged; Atlas entity review on CSIA-coupled navigation surfaces only;
       POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6934_selected_future_dual_carrier_replay_proof_v1
+    from: e0ae34a73ab1aeeb9da44429fc0234c6bba47d29
+    to: e0ae34a73ab1aeeb9da44429fc0234c6bba47d29
+    type: GOVERNANCE_EVIDENCE_PROOF
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py
+    notes: >-
+      Post PR #6934 baseline: refresh selected-future Owner policy bound_origin_main_sha;
+      governance-hosted integrated-replay regression for post-#6933 dual-carrier bear cursor
+      persistence; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review on CSIA-coupled
+      navigation/MI/sidestate surfaces only; no Master-V2 mutation; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

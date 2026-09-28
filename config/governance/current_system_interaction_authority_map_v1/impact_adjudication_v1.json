@@ -6,17 +6,24 @@
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/structural.yaml",
     "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py"
   ],
-  "changed_paths_sha256": "e2cc58d8ac9a771678e744c0f631ea990f14112909a898dcec6333cc4030d15d",
+  "changed_paths_sha256": "4dd2b9519d76c6bb83e6ff2c0476b803d69639c04c9d267f2b5ba6d3eb5dce6c",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
     "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
-    "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py"
+    "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py",
+    "docs/system_atlas/provenance/changes.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Post PR #6934: refresh selected-future persistent-scope Owner policy bound_origin_main_sha; add governance-hosted integrated-replay regression proving post-#6933 dual-carrier bear cursor persistence on elementary bull; CSIA PARTIAL statement and authority view only; OD1 eighth-class grant remains inactive; no Master-V2 or runtime mutation.",
+  "reason": "Post PR #6934/PR #6935: refresh selected-future Owner policy bound_origin_main_sha; governance integrated-replay proof for post-#6933 dual-carrier persistence; CSIA MAP_UPDATE_REQUIRED partial statement + authority view; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces; no Master-V2 or runtime mutation; OD1 grant remains inactive.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }
