@@ -466,6 +466,13 @@
     "tests/research/test_failed_s01_session_recovery_governance_v1.py",
     "tests/research/test_r1_repository_sha_runtime_compatibility_v1.py",
     "tests/webui/",
-    "uv.lock"
+    "uv.lock",
+    "config/governance/current_law_impact_map_v1/",
+    "docs/governance/current_law_impact_map_v1/",
+    "scripts/ops/current_law_impact_map_v1.py",
+    "scripts/ops/check_current_law_impact_v1.py",
+    "scripts/ops/law_map_v1/",
+    "tests/ops/test_current_law_impact_map_v1.py",
+    ".github/workflows/truth_gates_pr.yml"
   ]
 }
