@@ -126,6 +126,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: Post-6933 governance closure — CSIA partial statement notes inactive OD1 slice grant only; navigation rebind unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: POST_6926_MAXIMAL_BOUNDED_CURRENT_SYSTEM_WP_V1 (PR #6927):
     # MOT §3.1 Full-Core derived-spec navigation + 11.2.1.DL/DM labels; map_authority=NONE;
     # RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
@@ -616,6 +617,7 @@ entities:
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+    # atlas_entity_review: Post-6933 governance closure — OD1 Economic Guard slice grant closed; productive cursor seam unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6929 POST_6928 PRE_EXTERNAL same-process test isolation (test-only F1/M9
     # ledger + base-binding reset); import coupling only; RUNTIME_SEMANTICS_CHANGED=false;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -674,6 +676,7 @@ entities:
       Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    # atlas_entity_review: Post-6933 governance closure — CSIA authority_view regeneration only; D03 offline MI stack semantics unchanged; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: MAP_SEMANTIC_COVERAGE_CLOSURE_V1 PR_6911
     # NAVIGATION_ONLY: CSIA regenerated authority_view symbol coupling only; no D03 capability semantic change.
     kind: CAPABILITY

@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6933 SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1: OD1 evaluation-lane routing only; Cap 6.1 dual-side confirmation cursor persistence across elementary direction changes; scope/L10 candidate invalidation UNRESOLVED; CSIA MAP_UPDATE_REQUIRED partial statement; atlas entity review on master_v2 cluster; CLEAN_CORE_SEAL replay join projection; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); no selection rebind; map_authority=NONE; POST_COUNT=0.
+- Post PR #6933 governance closure: eighth-class OD1 Economic Guard slice grant deactivated (grant_active=false); CSIA partial statement updated; merged Master-V2 OD1 dual-carrier code unchanged; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces only; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1
+- modified_by=POST_6933_OD1_ECONOMIC_GUARD_SLICE_GRANT_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
