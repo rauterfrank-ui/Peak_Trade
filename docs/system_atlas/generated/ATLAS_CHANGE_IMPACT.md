@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| _(none)_ |
+| `RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6938: Case B closure — productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence; CSIA MAP_UPDATE_REQUIRED; Atlas entity + generated view regen (SYSTEM_ATLAS, COVERAGE, ORPHAN gaps); PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; map_authority=NONE; POST_COUNT=0.
+- Post-#6938 whole-system E2E WP: map/atlas-guided primary-evidence producer adjudication; Case B preserved; fixture control proves G2→M4–M8 mechanics; stops at missing independent durable PAPER/SHADOW/TESTNET primary archive; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6938_PRODUCTIVE_LEARNING_G2_PRIMARY_EVIDENCE_CASE_B_CLOSURE_V1
+- modified_by=WP_POST_6938_WHOLE_SYSTEM_G2_PRIMARY_CAUSAL_E2E_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

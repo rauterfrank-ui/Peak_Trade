@@ -4525,6 +4525,21 @@
       "closure_note": "SEMANTIC_ADJUDICATION=B; bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false."
     },
     {
+      "id": "post_6938_whole_system_g2_primary_causal_e2e",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6938 whole-system continuation: legitimate G2 ingress requires independent durable Paper/Shadow/Testnet primary archives discovered or produced via bounded observation lanes; productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT remains inadmissible (Case B); fixture control may prove G2→M4–M8 mechanics only.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN_V1.md",
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "config/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1_decision_v1.json",
+        "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+        "scripts/ops/run_authority_map_atlas_guided_whole_system_causal_e2e_from_post_6938_main_v1.py",
+        "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Probative E2E stops at missing independent durable primary evidence until bounded PAPER/SHADOW/TESTNET execute admission."
+    },
+    {
       "id": "m9_m10_enforcement",
       "epistemic_class": "PARTIAL",
       "statement": "M9 and M10 seam exists and enforcement_enabled is false.",
