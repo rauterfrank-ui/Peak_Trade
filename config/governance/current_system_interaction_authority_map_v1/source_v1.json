@@ -608,7 +608,7 @@
     {
       "id": "treasury_29p",
       "tier": "FIRST_CLASS",
-      "role": "REPRESENTATION=TREASURY_LIFECYCLE_SUBDOMAIN; not Full-Core B05 equity authority. Treasury Phase 1-3 + C08 semantic closeout bound per runbook; C08 cannot mint risk admissibility; Full-Core account-equity chain closed separately (#6817).",
+      "role": "REPRESENTATION=TREASURY_LIFECYCLE_SUBDOMAIN; not Full-Core B05 equity authority. Treasury Phase 1-3 + C08 semantic closeout bound per runbook; C08 cannot mint risk admissibility; Full-Core account-equity chain closed separately (#6817). PR #6953 navigation: single-source handoff module wired to enter-live-29p join; gap_dag EARLIEST pin converged to Treasury handoff GET; no POST/credential authority.",
       "canonical_owner_ref": "TREASURY_PHASE_BINDINGS_NAVIGATION_ONLY",
       "authority_class": "NAVIGATION_INDEX",
       "lifecycle": "C08_SEMANTIC_CLOSEOUT_BOUND",
@@ -620,12 +620,14 @@
         "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md"
       ],
       "code_refs": [
-        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
       ],
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md",
-        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json"
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
       ]
     },
     {
