@@ -33,6 +33,10 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
     apply_current_productive_g17_typed_vol_cmc_bind_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_capture_to_offline_export_join_v1 import (
+    ProductiveDdoCaptureToOfflineExportHandoffRequestV1,
+    run_productive_ddo_capture_to_offline_export_handoff_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_learning_capture_join_v1 import (
     build_productive_ddo_capture_binding_v1,
     run_integrated_offline_replay_with_productive_ddo_capture_v1,
@@ -243,6 +247,7 @@ class CurrentProductiveMasterV2CycleResultV1:
     outgoing_cursor: Optional[CurrentProductiveSideStateConfirmationCursorV1] = None
     elementary_direction: Optional[ElementaryDirectionResultV1] = None
     ddo_capture_summary: Optional[dict[str, Any]] = None
+    ddo_offline_export_handoff: Optional[dict[str, Any]] = None
 
 
 def _finite_positive(value: object) -> float | None:
@@ -841,6 +846,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     repo = repo_root or _REPO_ROOT
     repo_sha = _short_repository_sha_v1(repo)
     ddo_summary: dict[str, Any] | None = None
+    ddo_export_handoff: dict[str, Any] | None = None
     if ddo_binding is not None:
         replay, ddo_summary = run_integrated_offline_replay_with_productive_ddo_capture_v1(
             bind_input,
@@ -853,6 +859,37 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             features=features,
             confirmation_binding=cap61_binding,
         )
+        if ddo_summary is not None and ddo_summary.get("ok") is True:
+            export_result = run_productive_ddo_capture_to_offline_export_handoff_v1(
+                ProductiveDdoCaptureToOfflineExportHandoffRequestV1(
+                    ddo_capture_binding=ddo_binding,
+                    ddo_capture_summary=ddo_summary,
+                    session_id=str(cycle_id),
+                    cycle_index=int(now_tick),
+                    event_ts_unix=float(last_finalized_event_ts_unix),
+                    repository_sha=repo_sha,
+                    venue="okx_eea",
+                    canonical_instrument_id=instrument_id,
+                    venue_instrument_id=venue_native_id or instrument_id,
+                    finalized_closes=closes,
+                    last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
+                )
+            )
+            ddo_export_handoff = {
+                "ok": export_result.ok,
+                "join_seam_id": export_result.join_seam_id,
+                "fail_closed": export_result.fail_closed,
+                "reason_codes": list(export_result.reason_codes),
+                "decision_event_ref": export_result.decision_event_ref,
+                "learning_state_record_ref": export_result.learning_state_record_ref,
+                "learning_evidence_record_id": export_result.learning_evidence_record_id,
+                "optimization_ack_status": export_result.optimization_ack_status,
+                "optimization_ack_reason": export_result.optimization_ack_reason,
+                "causal_parent_capture_record_ids": list(
+                    export_result.causal_parent_capture_record_ids
+                ),
+                "handoff_artifact_path": export_result.handoff_artifact_path,
+            }
     else:
         replay = run_integrated_offline_trading_logic_replay_v1(bind_input)
     replay = finalize_productive_layered_core_replay_bind_v1(
@@ -896,6 +933,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         ),
         elementary_direction=elementary_direction,
         ddo_capture_summary=ddo_summary,
+        ddo_offline_export_handoff=ddo_export_handoff,
     )
 
 

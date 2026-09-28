@@ -482,27 +482,53 @@ def _empty_portfolio() -> PortfolioTruthSnapshotV1:
 
 
 def _probe_loop_a(n5_root: Path) -> dict[str, Any]:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_ddo_capture_to_offline_export_join_v1 import (
+        HANDOFF_ARTIFACT_BASENAME,
+    )
+    from src.experiments.canonical_optimization_universe_learning_input_v1 import (
+        STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT,
+    )
+
     ledgers = sorted(n5_root.glob("LANE_*/ddo_learning_capture_v1.jsonl"))
     lane_stats: list[dict[str, Any]] = []
+    export_stats: list[dict[str, Any]] = []
     capture_ok = False
+    export_ok = False
+    export_reason = "NO_OFFLINE_EXPORT_HANDOFF_ARTIFACT"
     for path in ledgers:
+        lane_dir = path.parent
         lines = [ln for ln in path.read_text(encoding="utf-8").splitlines() if ln.strip()]
+        handoff_path = lane_dir / HANDOFF_ARTIFACT_BASENAME
+        handoff_payload: dict[str, Any] | None = None
+        if handoff_path.is_file():
+            handoff_payload = json.loads(handoff_path.read_text(encoding="utf-8"))
         lane_stats.append(
             {
-                "lane": path.parent.name,
+                "lane": lane_dir.name,
                 "ledger_path": str(path.relative_to(REPO)),
                 "record_lines": len(lines),
+                "offline_export_handoff": handoff_payload,
             }
         )
         if len(lines) >= 7:
             capture_ok = True
+        if handoff_payload is not None:
+            export_stats.append(handoff_payload)
+            if handoff_payload.get("optimization_ack_status") == STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT:
+                export_ok = True
+                export_reason = "ACCEPTED_OFFLINE_RESEARCH_INPUT"
+    if capture_ok and not export_ok:
+        export_reason = "CAPTURE_OK_BUT_OFFLINE_EXPORT_HANDOFF_NOT_ACCEPTED"
     return {
         "lanes_with_ledgers": len(ledgers),
         "lane_stats": lane_stats,
         "capture_ok": capture_ok and len(ledgers) >= 5,
-        "export_runtime_reached": False,
-        "export_reason": (
-            "NO_PRODUCTIVE_O4_HORIZON_AND_LEARNING_STATE_WIRING_IN_MV2_CYCLE_AFTER_CAPTURE"
+        "export_runtime_reached": export_ok and capture_ok,
+        "export_reason": export_reason if export_ok else export_reason,
+        "export_lane_artifacts_accepted": sum(
+            1
+            for row in export_stats
+            if row.get("optimization_ack_status") == STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT
         ),
     }
 
@@ -854,7 +880,11 @@ def main() -> int:
         },
         {
             "edge_id": "learning_evidence_export_to_optimization",
-            "disposition": ("AUTHORITY_BOUNDARY" if loop_a.get("capture_ok") else "NOT_REACHED"),
+            "disposition": (
+                "RUNTIME_PROVEN"
+                if loop_a.get("export_runtime_reached")
+                else ("AUTHORITY_BOUNDARY" if loop_a.get("capture_ok") else "NOT_REACHED")
+            ),
             "source_domain": "learning_ddo",
             "target_domain": "optimization_research",
             "root_cause": loop_a.get("export_reason"),
@@ -892,10 +922,16 @@ def main() -> int:
         "intent_to_execution" if pre_external else "STEP_29P_TO_EEA_PRODUCTIVE_JOIN"
     )
     equity_to_n5_proven = budget_join.ok and bool(n5.audit.portfolio_admitted)
-    if pre_external and loop_a.get("capture_ok") and not loop_a.get("export_runtime_reached"):
-        secondary = "learning_evidence_export_to_optimization"
-    else:
-        secondary = None
+    learning_capture_proven = bool(loop_a.get("capture_ok"))
+    learning_export_proven = bool(loop_a.get("export_runtime_reached"))
+    secondary = None
+    fixpoint_reached = (
+        pre_external
+        and learning_capture_proven
+        and learning_export_proven
+        and productive_join.ok
+        and equity_to_n5_proven
+    )
 
     report: dict[str, Any] = {
         "WP": "WHOLE_SYSTEM_CAUSAL_CLOSURE_FROM_SYNTHETIC_TREASURY_ZERO_E2E_V1",
@@ -906,7 +942,44 @@ def main() -> int:
         "MECHANICAL_REPAIRS_PERFORMED": [
             "current_productive_step_29p_to_eea_acquisition_productive_join_v1",
             "current_productive_step_29p_to_portfolio_budget_productive_join_v1",
+            "current_productive_master_v2_ddo_capture_to_offline_export_join_v1",
         ],
+        "OUT_OF_SCOPE_PRESENTATION_SURFACES": [
+            "LANDSCAPE_MARKET_DASHBOARD",
+            "PRESENTATION_INGRESS_EGRESS",
+        ],
+        "PRE_EXTERNAL_REACHED": pre_external,
+        "LEARNING_CAPTURE_RUNTIME_PROVEN": learning_capture_proven,
+        "LEARNING_CAPTURE_TO_OFFLINE_EXPORT_RUNTIME_PROVEN": learning_export_proven,
+        "OFFLINE_EXPORT_RESULT": loop_a.get("export_reason"),
+        "EXECUTION_BRANCH_FIRST_UNCLOSED_EDGE": (
+            "intent_to_execution" if pre_external else "mv2_executable_pre_external_terminal"
+        ),
+        "EXECUTION_BRANCH_BLOCKER": (
+            "OWNER_GO_REQUIRED_FOR_VENUE_POST"
+            if pre_external
+            else "PRODUCTIVE_GRAPH_INCOMPLETE"
+        ),
+        "EXECUTION_BRANCH_BLOCKER_CLASS": "EXTERNAL_EFFECT_AUTHORITY",
+        "LEARNING_BRANCH_FIRST_UNCLOSED_EDGE": (
+            "optimization_apply_or_promotion"
+            if learning_export_proven
+            else "learning_evidence_export_to_optimization"
+        ),
+        "LEARNING_BRANCH_BLOCKER": (
+            "PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false"
+            if learning_export_proven
+            else loop_a.get("export_reason")
+        ),
+        "LEARNING_BRANCH_BLOCKER_CLASS": (
+            "OPTIMIZATION_APPLY_AUTHORITY" if learning_export_proven else "MECHANICAL_OR_UPSTREAM"
+        ),
+        "ALL_IMMEDIATE_MECHANICAL_CLOSURES_EXHAUSTED": fixpoint_reached,
+        "FIRST_REMAINING_AUTHORITY_DECISION": (
+            "SCOPED_OWNER_GO_FOR_VENUE_POST_OR_PRODUCTIVE_OPTIMIZATION_APPLY"
+            if fixpoint_reached
+            else first_blocker
+        ),
         "BASELINE_SHA": origin,
         "MAP_VERSION_OR_SHA": map_sha,
         "ATLAS_VERSION_OR_SHA": atlas_sha,
@@ -991,7 +1064,7 @@ def main() -> int:
         "WHOLE_SYSTEM_AUTHORITY_REACHABILITY": (
             "PRE_EXTERNAL_EFFECT reachable; venue POST and optimization apply/promotion blocked."
         ),
-        "FIXPOINT_REACHED": pre_external,
+        "FIXPOINT_REACHED": fixpoint_reached,
         "PR_NUMBER": None,
         "PR_HEAD_SHA": None,
         "POST_COUNT": int(acquisition.post_count or 0),

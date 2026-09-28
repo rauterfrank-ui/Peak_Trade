@@ -21,7 +21,14 @@ they do not grant productive authority or external-effect rights.
 | 29P → EEA acquisition | `src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py` |
 | 29P → portfolio budget | `src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py` |
 | Whole-system E2E runner | `scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py` |
+| MV2 DDO capture → offline export | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py` |
+
+## Out of scope (this WP)
+
+Landscape Market Dashboard / presentation ingress-egress seams are **not** part of this
+whole-system causal closure. Do not treat missing dashboard wiring as a blocker.
 
 ## Tests
 
 - `tests/ops/test_current_productive_step_29p_productive_causal_join_v1.py`
+- `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`
