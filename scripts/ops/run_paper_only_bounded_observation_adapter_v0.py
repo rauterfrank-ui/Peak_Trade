@@ -96,6 +96,12 @@ REPO_HEAD_SHA_PREFIX_FAIL_CLOSED = "UNKNOWN_HEAD_MISSING"
 BOUNDED_ADAPTER_LANE_PAPER = "paper_only_bounded_observation_v0"
 DURABLE_CLOSEOUT_SCRIPT = _REPO_ROOT / "scripts" / "ops" / "durable_closeout_copy_verify_v0.py"
 
+# Canonical G2 primary-evidence RUN_METADATA bindings for paper bounded observation closeout.
+PAPER_PRIMARY_SOURCE_EXECUTION_MODE = "PAPER"
+PAPER_PRIMARY_INSTRUMENT_BINDING = "BTC-USDT-SWAP"
+PAPER_PRIMARY_VENUE_IDENTITY = "PAPER_SIM_FUTURES"
+PAPER_PRIMARY_TRADING_EPOCH = 1
+
 DurableCloseoutInvoker = Callable[[Sequence[str]], int]
 
 
@@ -1055,6 +1061,9 @@ def _write_closeout_artifacts(
 ) -> None:
     now = datetime.now(timezone.utc).isoformat()
     repo_head_sha_prefix = _read_git_sha_prefix(Path(plan.repo_root))
+    observation_time_utc = now.replace("+00:00", "Z")
+    if not observation_time_utc.endswith("Z"):
+        observation_time_utc = observation_time_utc + "Z"
     run_metadata = {
         "run_id": ctx.run_id,
         "adapter_version": plan.adapter_version,
@@ -1064,6 +1073,12 @@ def _write_closeout_artifacts(
         "poll_interval_seconds": plan.poll_interval_seconds,
         "review_verdict": review_payload.get("verdict"),
         "repo_head_sha_prefix": repo_head_sha_prefix,
+        "source_execution_mode": PAPER_PRIMARY_SOURCE_EXECUTION_MODE,
+        "instrument": PAPER_PRIMARY_INSTRUMENT_BINDING,
+        "venue": PAPER_PRIMARY_VENUE_IDENTITY,
+        "strategy_version": plan.job_name,
+        "trading_epoch": PAPER_PRIMARY_TRADING_EPOCH,
+        "observation_time_utc": observation_time_utc,
         "live_authority": False,
         "testnet_authority": False,
         "broker_authority": False,
