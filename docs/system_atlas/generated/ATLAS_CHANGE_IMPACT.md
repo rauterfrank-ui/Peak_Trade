@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6930: PRE_EXTERNAL WP-2 layered ENTER composed into one-shot E2E handoff prepare proof; same-process batch under ops conftest isolation; test-only; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- POST_6930: PRE_EXTERNAL WP-2 layered ENTER → one-shot E2E handoff prepare composition proof (transport-bound; no POST); same-process batch + conftest isolation needles; test-only; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=POST_6930_PRE_EXTERNAL_E2E_HANDOFF_COMPOSITION_PROOF_V1
 
