@@ -72,6 +72,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     CurrentProductiveGovernedCycleAuthorizationV1,
     CurrentProductiveGovernedCycleResultV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCanonicalPriceProvenanceError,
+    build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     extract_finalized_candle_closes_v1,
 )
@@ -326,9 +330,12 @@ def _bid_ask_from_finalized_candles_v1(
     return mark_px - spread, mark_px + spread
 
 
-def _market_kwargs_from_candles_v1(
+def _market_kwargs_from_observation_v1(
     *,
     candles_payload: Mapping[str, Any],
+    mark_price_payload: Mapping[str, Any],
+    venue_native_id: str,
+    index_tickers_payload: Mapping[str, Any] | None = None,
     cycle_id_prefix: str,
     origin_main_sha: str,
     g17_producers: Mapping[str, object],
@@ -336,7 +343,18 @@ def _market_kwargs_from_candles_v1(
     extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
     if not extracted or last_ts is None:
         raise PersistentNaturalEnterConvergenceError("C1_CLOSES_EXTRACT_FAIL_CLOSED")
-    mark_px = float(extracted[-1])
+    try:
+        provenance = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+            mark_price_payload=mark_price_payload,
+            venue_native_id=venue_native_id,
+            index_from_index_tickers=index_tickers_payload,
+        )
+    except ProductiveCanonicalPriceProvenanceError as exc:
+        raise PersistentNaturalEnterConvergenceError(
+            "CMC_MARK_OR_INDEX_PROVENANCE_FAIL_CLOSED", str(exc)
+        ) from exc
+    mark_px = float(provenance.mark_px)
+    index_px = float(provenance.index_px)
     event_ts = float(last_ts)
     bid_px, ask_px = _bid_ask_from_finalized_candles_v1(candles_payload, mark_px=mark_px)
     return {
@@ -344,7 +362,7 @@ def _market_kwargs_from_candles_v1(
         "cycle_id_prefix": cycle_id_prefix,
         "observed_unix": event_ts + 1.0,
         "mark_px": mark_px,
-        "index_px": mark_px,
+        "index_px": index_px,
         "bid_px": bid_px,
         "ask_px": ask_px,
         "volume": 10.0,
@@ -355,6 +373,7 @@ def _market_kwargs_from_candles_v1(
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producers": dict(g17_producers),
+        "canonical_price_provenance": provenance,
     }
 
 
@@ -379,6 +398,8 @@ def make_n1_occupied_lane_s5_runner_v1(
         perform_get: bool = False,
         eg_cycle_dispatch: Callable[..., Any] | None = None,
         t2_cycle_dispatch: Callable[..., Any] | None = None,
+        mark_price_payload: Mapping[str, Any] | None = None,
+        index_tickers_payload: Mapping[str, Any] | None = None,
         **_: Any,
     ) -> CurrentProductiveGovernedCycleResultV1:
         if execute_network or perform_get:
@@ -394,8 +415,14 @@ def make_n1_occupied_lane_s5_runner_v1(
                 f"expected={expected_cursor_root} actual={cursor_store_root}",
             )
         prefix = f"{cycle_id_prefix_base}:{Path(evidence_root).name}"
-        mk = _market_kwargs_from_candles_v1(
+        native_id = str(authorization.native_id or "").strip()
+        if mark_price_payload is None or not native_id:
+            raise PersistentNaturalEnterConvergenceError("CMC_MARK_PRICE_PAYLOAD_REQUIRED")
+        mk = _market_kwargs_from_observation_v1(
             candles_payload=candles_payload,
+            mark_price_payload=mark_price_payload,
+            venue_native_id=native_id,
+            index_tickers_payload=index_tickers_payload,
             cycle_id_prefix=prefix,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
@@ -407,7 +434,6 @@ def make_n1_occupied_lane_s5_runner_v1(
             if key not in {"origin_main_sha", "g17_typed_vol_producers"}
         }
         s7_base["g17_typed_vol_producers"] = {LANE_ID: g17_producers[LANE_ID]}
-        native_id = str(authorization.native_id or "").strip()
         t2_dispatch = _t2_from_s7(
             lane_pairs=lane_pairs,
             native_id=native_id,
@@ -464,13 +490,19 @@ def bootstrap_s8_lane_via_s7_compose_v1(
     origin_main_sha: str,
     g17_producers: Mapping[str, object],
     candles_payload: Mapping[str, Any],
+    mark_price_payload: Mapping[str, Any],
+    venue_native_id: str,
+    index_tickers_payload: Mapping[str, Any] | None = None,
     cycle_id_prefix: str = "persistent-natural-enter-bootstrap",
 ) -> None:
     """Cold-lane S7 compose only (cursor persist) without S5 governed-cycle ledger."""
     _ = origin_main_sha
     lane_pairs = {LANE_ID: composed_pairs[LANE_ID]}
-    mk = _market_kwargs_from_candles_v1(
+    mk = _market_kwargs_from_observation_v1(
         candles_payload=candles_payload,
+        mark_price_payload=mark_price_payload,
+        venue_native_id=venue_native_id,
+        index_tickers_payload=index_tickers_payload,
         cycle_id_prefix=cycle_id_prefix,
         origin_main_sha=origin_main_sha,
         g17_producers=g17_producers,
@@ -527,11 +559,16 @@ def run_offline_persistent_natural_enter_convergence_v1(
                 "BOOTSTRAP_OBSERVATION_REQUIRED",
                 "cold lane requires first injected C1 before S6",
             )
+        if first_obs.mark_price_payload is None:
+            raise PersistentNaturalEnterConvergenceError("BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED")
         bootstrap_s8_lane_via_s7_compose_v1(
             composed_pairs=pairs,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
             candles_payload=first_obs.candles_payload,
+            mark_price_payload=first_obs.mark_price_payload,
+            venue_native_id=str(bound.venue_native_id or "").strip(),
+            index_tickers_payload=first_obs.index_tickers_payload,
         )
     runner = make_n1_occupied_lane_s5_runner_v1(
         composed_pairs=pairs,
@@ -618,11 +655,16 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
                 "BOOTSTRAP_OBSERVATION_REQUIRED",
                 "cold lane requires first C1 before S6",
             )
+        if first_obs.mark_price_payload is None:
+            raise PersistentNaturalEnterConvergenceError("BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED")
         bootstrap_s8_lane_via_s7_compose_v1(
             composed_pairs=pairs,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
             candles_payload=first_obs.candles_payload,
+            mark_price_payload=first_obs.mark_price_payload,
+            venue_native_id=str(bound.venue_native_id or "").strip(),
+            index_tickers_payload=first_obs.index_tickers_payload,
         )
 
     cursor_floor = _cursor_floor_or_zero(cursor_store_root)

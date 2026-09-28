@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
+
+
 from pathlib import Path
 
 import pytest
@@ -105,16 +111,18 @@ def test_clean_checkout_bootstrap_materializes_seam_and_idempotent_restart(
     )
     closes = tuple(100.0 + i * 0.01 for i in range(80))
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     ledger_kw = {
         "f1_m9_productive_apply_ledger_paths": apply_paths,
         "f1_m9_threshold_ledger_paths": threshold_paths,
     }
     cold = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="clean-checkout-cold",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -126,16 +134,22 @@ def test_clean_checkout_bootstrap_materializes_seam_and_idempotent_restart(
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert cold.input_blocker == ""
     assert cold.outgoing_cursor is not None
 
     warm = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="clean-checkout-restart",
         observed_unix=1_700_000_160.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -148,6 +162,12 @@ def test_clean_checkout_bootstrap_materializes_seam_and_idempotent_restart(
         incoming_cursor=cold.outgoing_cursor,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert warm.cursor_restore_status == "restored"
     assert warm.outgoing_cursor is not None

@@ -253,9 +253,6 @@ def _align_lane_s7_closes_to_injected_c1_v1(
     extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
     if extracted:
         aligned["finalized_closes"] = extracted
-        last_close = float(extracted[-1])
-        aligned["mark_px"] = last_close
-        aligned["index_px"] = last_close
     if last_ts is None:
         return aligned
     candle_last = float(last_ts)
@@ -288,12 +285,14 @@ def _s7_kwargs(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None,
+    canonical_price_provenance: object,
 ) -> dict[str, Any]:
     return {
         "cycle_id_prefix": cycle_id_prefix,
         "observed_unix": observed_unix,
         "mark_px": mark_px,
         "index_px": index_px,
+        "canonical_price_provenance": canonical_price_provenance,
         "bid_px": bid_px,
         "ask_px": ask_px,
         "volume": volume,
@@ -487,6 +486,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     occupancy_payloads: Mapping[str, Any] | None = None,
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: object | None = None,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     common_epoch_decision_epoch: str | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
@@ -501,6 +501,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
     if candles_payload is None:
         _fail(FAILURE_INJECTED_C1_REQUIRED, OWNER)
+    if canonical_price_provenance is None:
+        _fail(FAILURE_AUTHORITY, "canonical_price_provenance")
     prefix = str(cycle_id_prefix or "").strip()
     if not prefix:
         _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
@@ -532,6 +534,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
+        canonical_price_provenance=canonical_price_provenance,
     )
     results: dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1] = {}
     for lane_id in LANE_IDS:

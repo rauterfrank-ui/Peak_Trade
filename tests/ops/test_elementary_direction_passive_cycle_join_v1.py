@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
+
+
 import ast
 from pathlib import Path
 
@@ -72,7 +78,8 @@ def test_cycle_computes_elementary_direction_but_does_not_feed_replay() -> None:
 
 def test_trading_core_owners_do_not_import_elementary_direction() -> None:
     forbidden = "elementary_direction"
-    for path in (_REPLAY_PATH, _ENTRY_PATH, _COMPOSITION_PATH, _STATE_PATH):
+    # Replay evaluates elementary direction in-cycle; entry/composition/state stay clean.
+    for path in (_ENTRY_PATH, _COMPOSITION_PATH, _STATE_PATH):
         text = path.read_text(encoding="utf-8")
         assert forbidden not in text
         assert "ElementaryDirectionV1" not in text
@@ -81,21 +88,23 @@ def test_trading_core_owners_do_not_import_elementary_direction() -> None:
 
 def test_first_cycle_exposes_neutral_without_changing_entry_owner() -> None:
     closes = (100.0, 101.0, 102.0)
+    bound = BoundInstrumentV1(
+        instrument_id="ETH-USD-SWAP-CANON",
+        venue_native_id="ETH-USD-SWAP",
+        ranking_snapshot_id="rank-elem-dir",
+        ranking_integrity_digest="rank-elem-dir-digest",
+        universe_snapshot_id="uni-elem-dir",
+        selection_id="sel-elem-dir",
+        selection_integrity_digest="sel-elem-dir-digest",
+        selection_state="SELECTED",
+    )
+    index_px = 101.49
     result = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=BoundInstrumentV1(
-            instrument_id="ETH-USD-SWAP-CANON",
-            venue_native_id="ETH-USD-SWAP",
-            ranking_snapshot_id="rank-elem-dir",
-            ranking_integrity_digest="rank-elem-dir-digest",
-            universe_snapshot_id="uni-elem-dir",
-            selection_id="sel-elem-dir",
-            selection_integrity_digest="sel-elem-dir-digest",
-            selection_state="SELECTED",
-        ),
+        bound_instrument=bound,
         cycle_id="elementary-direction-first-cycle",
         observed_unix=1_700_000_100.0,
         mark_px=102.0,
-        index_px=102.0,
+        index_px=index_px,
         bid_px=101.5,
         ask_px=102.5,
         volume=12_345.0,
@@ -105,6 +114,12 @@ def test_first_cycle_exposes_neutral_without_changing_entry_owner() -> None:
         last_finalized_event_ts_unix=1_700_000_000.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
+        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=102.0,
+            index_px=index_px,
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        ),
     )
     assert result.elementary_direction is not None
     assert result.elementary_direction.status is ElementaryDirectionStatusV1.EVALUATED

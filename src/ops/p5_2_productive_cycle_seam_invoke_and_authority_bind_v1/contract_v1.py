@@ -49,6 +49,7 @@ class AuthorityBindFailureCodeV1(str, Enum):
     )
     MISSING_CORE_STATE_LEGACY_FALLBACK_FORBIDDEN = "missing_core_state_legacy_fallback_forbidden"
     CZ4_REQUIRES_VALID_SEAL = "cz4_requires_valid_seal"
+    SIDE_STATE_OBSERVATION_SEED_FORBIDDEN = "side_state_observation_seed_forbidden"
 
 
 @dataclass(frozen=True)
@@ -78,10 +79,13 @@ def classify_side_state_seed_v1(
     *,
     from_venue_position: bool,
     from_cursor_restore: bool,
+    from_transition_carryforward: bool = False,
     claims_core_regime_authority: bool,
 ) -> SideStateSeedClassV1:
     if claims_core_regime_authority:
         return SideStateSeedClassV1.CORE_REGIME_AUTHORITY_CLAIM
+    if from_transition_carryforward:
+        return SideStateSeedClassV1.NONE
     if from_venue_position or from_cursor_restore:
         return SideStateSeedClassV1.OBSERVATION_OCCUPANCY_INPUT
     return SideStateSeedClassV1.NONE
@@ -112,6 +116,9 @@ def validate_productive_cycle_authority_bind_v1(
 
     if request.side_state_seed_class is SideStateSeedClassV1.CORE_REGIME_AUTHORITY_CLAIM:
         failures.append(AuthorityBindFailureCodeV1.VENUE_CURSOR_CANNOT_CLAIM_CORE_REGIME_AUTHORITY)
+
+    if request.side_state_seed_class is SideStateSeedClassV1.OBSERVATION_OCCUPANCY_INPUT:
+        failures.append(AuthorityBindFailureCodeV1.SIDE_STATE_OBSERVATION_SEED_FORBIDDEN)
 
     layered = (
         request.decision_authority_mode

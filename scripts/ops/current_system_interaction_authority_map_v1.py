@@ -76,6 +76,7 @@ REQUIRED_PARTIAL_IDS = (
     "ranking_activation",
     "mv2_proof_baseline_sha",
     "p5_bind_without_cutover",
+    "productive_canonical_price_provenance_v1",
     "portfolio_budget",
     "replay_provenance_drop",
     "sizing_to_intent_plan_only",

@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=15
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,31 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
+| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
 | `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `CONTRACT:p5_1_layered_core_seal_cz4_delegated_replay_v1` |
+| `CONTRACT:p5_2_productive_cycle_seam_invoke_and_authority_bind_v1` |
+| `CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +110,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6954: P5.10 scope-colocated episode bootstrap seam (init-only after S7 MV2 replay); regression tests; MV2/DP unchanged; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6955: Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance + fail-closed SideState/M_t/index wiring; tests/harness; src/trading/master_v2 untouched; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6954_S7_SCOPE_COLOCATED_EPISODE_BOOTSTRAP_V1
+- modified_by=PR_6955_SEMANTIC_ENFORCEMENT_REPAIR_V1_CSIA_ATLAS_CURRENCY
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

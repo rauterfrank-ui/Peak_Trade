@@ -135,6 +135,10 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 )
 from trading.master_v2.suitability_binding_v1 import SuitabilityRegimeStatus
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCanonicalPriceProvenanceError,
+    ProductiveCycleCanonicalPriceProvenanceV1,
+)
 from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_seam_v1 import (
     finalize_productive_layered_core_replay_bind_v1,
     prepare_productive_layered_core_replay_bind_v1,
@@ -557,6 +561,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     f1_m9_threshold_ledger_paths: F1M9ThresholdValueAuthorizationLedgerPathsV1 | None = None,
     repo_root: Path | None = None,
     ddo_durable_evidence_ledger_path: Path | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -565,6 +570,18 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             cycle_id=cycle_id,
             fail_reason="BINDING_MISSING",
             provenance=CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
+        )
+    try:
+        canonical_price_provenance.validate_against_cycle_inputs_v1(
+            mark_px=float(mark_px),
+            index_px=float(index_px),
+            venue_native_id=venue_native_id or instrument_id,
+        )
+    except ProductiveCanonicalPriceProvenanceError as exc:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=f"CANONICAL_PRICE_PROVENANCE_FAIL_CLOSED:{exc}",
+            provenance="CANONICAL_PRICE_PROVENANCE_FAIL_CLOSED",
         )
     restore = restore_current_productive_sidestate_confirmation_cursor_v1(
         incoming_cursor,
@@ -580,6 +597,13 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             cursor_restore_status=restore.disposition.value,
         )
     closes = tuple(float(x) for x in finalized_closes)
+    if canonical_price_provenance.mark_source == "ORDINARY_MARKET_CANDLE_CLOSE":
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason="CMC_MARK_CANDLE_CLOSE_RELABEL_FORBIDDEN",
+            provenance="CMC_MARK_CANDLE_CLOSE_RELABEL_FORBIDDEN",
+            cursor_restore_status=restore.disposition.value,
+        )
     if len(closes) < FEATURE_WINDOW_MIN:
         return _blocked_cycle_result(
             cycle_id=cycle_id,
@@ -665,23 +689,17 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     side_state = SideState.NEUTRAL_OBSERVE
     direction_state = EntryExitDirectionState.NEUTRAL
     position_mgmt = PositionManagementContext.FLAT
-    side_state_from_cursor_restore = restored is not None
+    side_state_from_transition_carryforward = False
+    side_state_from_cursor_restore = False
     side_state_from_venue_position = False
-    if existing_position_side is ExistingPositionSide.LONG:
-        side_state = SideState.LONG_ACTIVE
-        direction_state = EntryExitDirectionState.LONG_ACTIVE
-        position_mgmt = PositionManagementContext.LONG_POSITION
-        if restored is None:
-            side_state_from_venue_position = True
-    elif existing_position_side is ExistingPositionSide.SHORT:
-        side_state = SideState.SHORT_ACTIVE
-        direction_state = EntryExitDirectionState.SHORT_ACTIVE
-        position_mgmt = PositionManagementContext.SHORT_POSITION
-        if restored is None:
-            side_state_from_venue_position = True
-    elif restored is not None:
+    if restored is not None:
         side_state = restored.side_state
         direction_state = _side_state_to_entry_exit_direction(side_state)
+        side_state_from_transition_carryforward = True
+    if existing_position_side is ExistingPositionSide.LONG:
+        position_mgmt = PositionManagementContext.LONG_POSITION
+    elif existing_position_side is ExistingPositionSide.SHORT:
+        position_mgmt = PositionManagementContext.SHORT_POSITION
     if restored is None:
         confirmation_state = ScopeConfirmationStateV1(
             candidate_kind=None,
@@ -829,6 +847,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         existing_position_side=existing_position_side,
         side_state_from_cursor_restore=side_state_from_cursor_restore,
         side_state_from_venue_position=side_state_from_venue_position,
+        side_state_from_transition_carryforward=side_state_from_transition_carryforward,
+        canonical_price_provenance=canonical_price_provenance,
         existing_scope_present=existing_scope is not None,
     )
     if bind_carry.failure_codes:

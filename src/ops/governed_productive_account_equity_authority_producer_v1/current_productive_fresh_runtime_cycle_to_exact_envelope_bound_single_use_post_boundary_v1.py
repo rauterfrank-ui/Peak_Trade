@@ -50,6 +50,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     resolve_index_ticker_inst_id_v1,
     run_current_productive_master_v2_runtime_cycle_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_OKX_INDEX_TICKERS,
+    INDEX_SOURCE_OKX_MARK_IDX_PX,
+    INDEX_SOURCE_OKX_TICKER_IDX_PX,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_plan_v1 import (
     CURRENT_MASTER_V2_RUNTIME_CYCLE_ABSENT,
     try_bind_current_productive_venue_plan_v1,
@@ -381,6 +387,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
             bid, ask, volume, index_from_ticker = extract_ticker_fields_v1(
                 ticker_payload, native_id=native_id
             )
+            index_tickers_payload: dict[str, object] | None = None
+            index_from_index_tickers: float | None = None
             index_px = resolve_index_px_primary_secondary_tertiary_v1(
                 index_from_mark=index_from_mark,
                 index_from_ticker=index_from_ticker,
@@ -400,6 +408,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 index_from_index_tickers = extract_index_px_from_index_tickers_payload_v1(
                     index_payload, wanted=index_inst
                 )
+                if isinstance(index_payload, dict):
+                    index_tickers_payload = index_payload
                 index_px = resolve_index_px_primary_secondary_tertiary_v1(
                     index_from_mark=index_from_mark,
                     index_from_ticker=index_from_ticker,
@@ -446,31 +456,49 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
             elif not market_blocker and g17_producer is not None:
+                index_provenance_source = INDEX_SOURCE_OKX_INDEX_TICKERS
+                if index_from_mark is not None:
+                    index_provenance_source = INDEX_SOURCE_OKX_MARK_IDX_PX
+                if index_from_ticker is not None:
+                    index_provenance_source = INDEX_SOURCE_OKX_TICKER_IDX_PX
+                if index_from_index_tickers is not None:
+                    index_provenance_source = INDEX_SOURCE_OKX_INDEX_TICKERS
                 try:
-                    cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
-                        bound_instrument=bound,
-                        cycle_id=f"dk-{native_id}-{package_started}",
-                        observed_unix=observed_unix,
+                    price_provenance = build_provenance_from_resolved_cmc_mark_and_index_v1(
+                        venue_native_id=native_id,
                         mark_px=float(mark_px),
                         index_px=float(index_px),
-                        bid_px=float(bid),
-                        ask_px=float(ask),
-                        volume=float(volume),
-                        open_interest=float(oi),
-                        funding_rate=float(funding),
-                        finalized_closes=closes,
-                        last_finalized_event_ts_unix=float(last_ts),
-                        venue_flat=venue_flat,
-                        existing_position_side=existing_side,
-                        g17_typed_vol_producer=g17_producer,
+                        index_source=index_provenance_source,
                     )
-                except (TypeError, RuntimeError, ValueError) as exc:
-                    market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
+                except (TypeError, ValueError) as exc:
+                    market_blocker = f"CANONICAL_PRICE_PROVENANCE_FAIL_CLOSED:{type(exc).__name__}"
                 else:
-                    if cycle_result.input_blocker:
-                        market_blocker = cycle_result.input_blocker
-                    market_payloads["finalized_close_count"] = str(len(closes))
-                    market_payloads["mark_px_observed"] = str(mark_px)
+                    try:
+                        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+                            bound_instrument=bound,
+                            cycle_id=f"dk-{native_id}-{package_started}",
+                            observed_unix=observed_unix,
+                            mark_px=float(mark_px),
+                            index_px=float(index_px),
+                            bid_px=float(bid),
+                            ask_px=float(ask),
+                            volume=float(volume),
+                            open_interest=float(oi),
+                            funding_rate=float(funding),
+                            finalized_closes=closes,
+                            last_finalized_event_ts_unix=float(last_ts),
+                            venue_flat=venue_flat,
+                            existing_position_side=existing_side,
+                            g17_typed_vol_producer=g17_producer,
+                            canonical_price_provenance=price_provenance,
+                        )
+                    except (TypeError, RuntimeError, ValueError) as exc:
+                        market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"
+                    else:
+                        if cycle_result.input_blocker:
+                            market_blocker = cycle_result.input_blocker
+                        market_payloads["finalized_close_count"] = str(len(closes))
+                        market_payloads["mark_px_observed"] = str(mark_px)
     release_productive_credential_handle_v1(handle)
     handle = None
 

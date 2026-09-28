@@ -178,6 +178,8 @@ class CurrentProductiveGovernedContinuousCycleRunAuthorizationV1:
 class InjectedContinuousObservationV1:
     candles_payload: Mapping[str, Any]
     occupancy_payloads: Mapping[str, Any]
+    mark_price_payload: Mapping[str, Any] | None = None
+    index_tickers_payload: Mapping[str, Any] | None = None
 
 
 class ContinuousObservationSourceV1(Protocol):
@@ -806,6 +808,8 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     evidence_root=cycle_root / "s5",
                     candles_payload=observation.candles_payload,
                     occupancy_payloads=observation.occupancy_payloads,
+                    mark_price_payload=observation.mark_price_payload,
+                    index_tickers_payload=observation.index_tickers_payload,
                     execute_network=False,
                     perform_get=False,
                     eg_cycle_dispatch=eg_cycle_dispatch,
