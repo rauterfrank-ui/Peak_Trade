@@ -1,6 +1,6 @@
 {
   "workpackage_id": "FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
-  "baseline_origin_main_sha": "c93ea739848963b0c971161d44538be19292317c",
+  "baseline_origin_main_sha": "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2",
   "admission_owner": "governance.current_productive_real_venue_post_admission_v1",
   "post_admission_evaluator_bound": true,
   "one_shot_join_admission_integrated": true,

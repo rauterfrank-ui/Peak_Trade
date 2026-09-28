@@ -90,7 +90,7 @@ FAKE_OPAQUE = json.dumps(
     separators=(",", ":"),
 ).encode("utf-8")
 NEXT_BLOCKER = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
-BASELINE_SHA = "c93ea739848963b0c971161d44538be19292317c"
+BASELINE_SHA = "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2"
 
 
 class _FakeKeychainBackend:
@@ -318,8 +318,16 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
 ) -> None:
     opener = _TimeoutOpener()
     probe = OneShotJoinProbeV1()
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="UNKNOWN_OUTCOME"):
-        _attempt(tmp_path, probe=probe, opener=opener)
+    _persist_post_go(tmp_path)
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=_envelope(),
+        post_owner_go=POST_OWNER_GO,
+        store_root=tmp_path,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=lambda: opener,
+        probe=probe,
+    )
+    assert join.unknown_outcome is True
     assert probe.events == [
         "PERMIT_MINTED",
         "POST_ADMISSION_GRANTED",
@@ -484,8 +492,16 @@ def test_bypass_flags_are_false(tmp_path: Path) -> None:
     assert k1.http_post_attempts == 0
     opener = _TimeoutOpener()
     first = OneShotJoinProbeV1()
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="UNKNOWN_OUTCOME"):
-        _attempt(tmp_path / "once", probe=first, opener=opener)
+    _persist_post_go(tmp_path / "once")
+    first_join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=_envelope(),
+        post_owner_go=POST_OWNER_GO,
+        store_root=tmp_path / "once",
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=lambda: opener,
+        probe=first,
+    )
+    assert first_join.unknown_outcome is True
     second = OneShotJoinProbeV1()
     with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
         _attempt(tmp_path / "once", probe=second, opener=opener)

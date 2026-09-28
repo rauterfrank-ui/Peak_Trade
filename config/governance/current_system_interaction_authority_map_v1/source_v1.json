@@ -4651,7 +4651,7 @@
     {
       "id": "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; PRE_EXTERNAL may supply typed envelope via PR6901 runtime-reach join; EXPECTED_BASELINE_ORIGIN_MAIN_SHA c93ea739 (post-#6901 merge currency).",
+      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; PRE_EXTERNAL may supply typed envelope via PR6901 runtime-reach join; EXPECTED_BASELINE_ORIGIN_MAIN_SHA cf3aa15 (post-#6901 merge currency).",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
         "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
@@ -4665,7 +4665,7 @@
     {
       "id": "current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "PRE_EXTERNAL typed EXECUTABLE Enter FinalOrderEnvelopeV1 runtime handoff to PR6900 one-shot POST join boundary; closes envelope object discard at T2; no POST and POST-GO remains unconsumed; baseline pin c93ea739 aligned to PR6901 merge squash.",
+      "statement": "PRE_EXTERNAL typed EXECUTABLE Enter FinalOrderEnvelopeV1 runtime handoff to PR6900 one-shot POST join boundary; closes envelope object discard at T2; no POST and POST-GO remains unconsumed; baseline pin cf3aa15 aligned to PR6901 merge squash.",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
         "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
@@ -4677,7 +4677,7 @@
     {
       "id": "current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "K1 PRE-POST productive chain runtime-bound to DM pre-live readiness; dual Owner-GO literals (K1 PRE-POST + actual POST); ephemeral Keychain only; no durable POST-GO consume and no venue POST; baseline pin c93ea739.",
+      "statement": "K1 PRE-POST productive chain runtime-bound to DM pre-live readiness; dual Owner-GO literals (K1 PRE-POST + actual POST); ephemeral Keychain only; no durable POST-GO consume and no venue POST; baseline pin cf3aa15.",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
         "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
@@ -4689,7 +4689,7 @@
     {
       "id": "current_productive_one_shot_enter_e2e_runtime_handoff_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "CURRENT productive Enter one-shot E2E prepare handoff: Cap-2.4 provenance through Full-Core PRE_EXTERNAL to FINAL_ORDER_ENVELOPE.json and governed POST/K1 CLI commands; no venue POST and no durable permit consume; POST path baseline pin c93ea739 for POST slice only.",
+      "statement": "CURRENT productive Enter one-shot E2E prepare handoff: Cap-2.4 provenance through Full-Core PRE_EXTERNAL to FINAL_ORDER_ENVELOPE.json and governed POST/K1 CLI commands; no venue POST and no durable permit consume; POST path baseline pin cf3aa15 for POST slice only.",
       "evidence_refs": [
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
         "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",

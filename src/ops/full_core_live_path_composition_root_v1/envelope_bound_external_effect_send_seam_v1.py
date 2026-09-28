@@ -168,7 +168,15 @@ def attempt_envelope_bound_external_effect_send_v1(
             one_shot_real_post=one_shot,
         )
     except FullCoreProductiveHttpPostError as exc:
-        raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
+        msg = str(exc)
+        if msg in {
+            "REDIRECT_OFF_HOST_FORBIDDEN",
+            "HOST_NOT_EEA_OKX",
+            "WWW_OKX_FORBIDDEN",
+            "K1_SIGNING_HANDLE_UNAVAILABLE",
+        }:
+            raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
+        raise FullCoreEnvelopeBoundSendSeamError("UNKNOWN_OUTCOME") from exc
     except Exception as exc:
         raise FullCoreEnvelopeBoundSendSeamError("UNKNOWN_OUTCOME") from exc
     if not isinstance(result, FullCoreTradeOrderPostResultV1):

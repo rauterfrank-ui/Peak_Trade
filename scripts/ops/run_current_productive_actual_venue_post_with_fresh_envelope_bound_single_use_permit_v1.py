@@ -121,8 +121,22 @@ def _main() -> int:
             file=sys.stderr,
         )
         return 2
-    result = (
-        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
+        open_current_productive_k1_opaque_signing_handle_session_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+        FullCoreProductiveReadOnlyGetTransportV1,
+    )
+
+    with open_current_productive_k1_opaque_signing_handle_session_v1(
+        owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
+        backend=k1_backend,
+    ) as session:
+        read_transport = FullCoreProductiveReadOnlyGetTransportV1(
+            handle=session.signing_handle,
+            max_request_count=24,
+        )
+        result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
             owner_go=OWNER_GO,
             baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
             envelope=envelope,
@@ -131,8 +145,8 @@ def _main() -> int:
             perform_real_venue_post=True,
             k1_backend=k1_backend,
             opener_factory=None,
+            read_only_get_transport=read_transport,
         )
-    )
     print(
         json.dumps(
             {

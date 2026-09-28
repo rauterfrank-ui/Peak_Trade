@@ -82,7 +82,7 @@ def _sample_envelope():
 
 
 def test_baseline_pin_unchanged() -> None:
-    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "c93ea739848963b0c971161d44538be19292317c"
+    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2"
 
 
 def test_k1_runtime_binding_pre_live_boundary_fake_keychain(tmp_path: Path) -> None:

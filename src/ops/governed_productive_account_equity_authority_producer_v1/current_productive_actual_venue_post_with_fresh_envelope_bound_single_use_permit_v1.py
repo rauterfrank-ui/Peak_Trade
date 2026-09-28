@@ -71,6 +71,16 @@ from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_trans
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_baseline_v1 import (
+    EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+    CurrentProductiveActualVenuePostBaselineError,
+    assert_declared_baseline_matches_slice_pin_v1,
+    resolve_and_assert_live_post_execution_baseline_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1 import (
+    CurrentProductiveActualVenuePostPreMutationFreshnessError,
+    prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1 import (
     resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1,
 )
@@ -98,7 +108,6 @@ THIS_SLICE = (
     "11.2.1.DM.FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_"
     "BOUND_SINGLE_USE_PERMIT_V1"
 )
-EXPECTED_BASELINE_ORIGIN_MAIN_SHA = "c93ea739848963b0c971161d44538be19292317c"
 CANONICAL_PACK_RELPATH = (
     "evidence/ops/full_core_current_productive_actual_venue_post_with_fresh_envelope_"
     "bound_single_use_permit_v1"
@@ -233,8 +242,12 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     """Runtime pre-live checklist. Does not consume Owner-GO or POST."""
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
-    if str(baseline_origin_main_sha or "") != EXPECTED_BASELINE_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveActualVenuePostError("BASELINE_SHA_MISMATCH")
+    try:
+        assert_declared_baseline_matches_slice_pin_v1(
+            declared_baseline_origin_main_sha=baseline_origin_main_sha
+        )
+    except CurrentProductiveActualVenuePostBaselineError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
     if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is True:
@@ -283,10 +296,12 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
-    if str(baseline_origin_main_sha or "") != EXPECTED_BASELINE_ORIGIN_MAIN_SHA:
-        raise CurrentProductiveActualVenuePostError("BASELINE_SHA_MISMATCH")
     if perform_real_venue_post is not True:
         raise CurrentProductiveActualVenuePostError("PERFORM_REAL_VENUE_POST_REQUIRED")
+    resolve_and_assert_live_post_execution_baseline_v1(
+        declared_baseline_origin_main_sha=baseline_origin_main_sha,
+        repo_root=_REPO_ROOT,
+    )
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
     root = Path(store_root)
@@ -300,6 +315,17 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     )
     if pre.get("PRE_LIVE_PROOF_COMPLETE") != "true":
         raise CurrentProductiveActualVenuePostError("PRE_LIVE_PROOF_INCOMPLETE")
+    pre_mutation_id = f"actual-venue-post:{envelope.envelope_id}"
+    try:
+        freshness = prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1(
+            envelope=envelope,
+            read_only_get_transport=read_only_get_transport,
+            pretrade_decision_id=pre_mutation_id,
+        )
+    except CurrentProductiveActualVenuePostPreMutationFreshnessError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    if freshness.all_required_pre_post_gates_pass is not True:
+        raise CurrentProductiveActualVenuePostError("PRE_MUTATION_FRESHNESS_FAIL_CLOSED")
     persist_durable_post_owner_go_consume_v1(
         store_root=root,
         owner_go_token=OWNER_GO,
@@ -340,6 +366,8 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         post_outcome = str(join.outcome)
         permit_id = join.permit_id
         join_outcome = join.outcome
+        if join.http_status:
+            http_status = str(join.http_status)
         if join.unknown_outcome is True:
             post_outcome = "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
         elif real_performed:
