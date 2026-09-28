@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=3
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,6 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1` |
 | `RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1` |
 | `RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1` |
 
@@ -93,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-6940 live-readiness convergence: PAPER PARKED; productive PRE_EXTERNAL synthetic E2E; external-effect authorization earliest blocker; partial PAPER artifacts non-qualifying; AUTHORITY=NONE.
+- Post-6941 intent_to_execution seam adjudication: PRE_EXTERNAL synthetic E2E; policy-chain admissions runtime-proven; operational EXTERNAL_EFFECT_AUTHORIZATION fixpoint; PAPER PARKED; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6940_LIVE_READINESS_CONVERGENCE_V1
+- modified_by=POST_6941_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

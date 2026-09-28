@@ -1,0 +1,18 @@
+{
+  "workpackage_id": "POST_6941_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_V1",
+  "normative_spec": "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_FROM_POST_6941_MAIN_V1.md",
+  "baseline_sha": "f8a250ecf568edd216d62cae83c04a8931100e22",
+  "paper_status": "PARKED",
+  "pre_external_reached_under_synthetic_e2e": true,
+  "exact_next_edge": "intent_to_execution",
+  "first_real_blocker": "EXTERNAL_EFFECT_AUTHORIZATION",
+  "blocker_class": "OPERATIONAL_EXTERNAL_EFFECT_SINK_FAIL_CLOSED",
+  "blocker_subtype": "ENVELOPE_BOUND_ACTUAL_POST_REQUIRES_SCOPED_OWNER_GO",
+  "policy_chain_admissions_runtime_proven": true,
+  "permit_mint_performed": false,
+  "credential_access_performed": false,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "venue_post_count": 0,
+  "real_external_effect_count": 0
+}

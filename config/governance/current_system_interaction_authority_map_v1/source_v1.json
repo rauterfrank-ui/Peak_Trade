@@ -4573,6 +4573,21 @@
       "closure_note": "Mechanical live-readiness closure exhausted to PRE_EXTERNAL; venue POST requires scoped Owner-GO for external-effect authorization; PAPER remains PARKED."
     },
     {
+      "id": "post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6941 intent_to_execution seam forensic adjudication: synthetic-treasury PRE_EXTERNAL plus runtime probe of canonical external-effect policy chain (policy→lift→permit-mint admission bindings); import-time invoke sink and envelope seam fail-closed without permit; policy admissions runtime-proven; operational blocker EXTERNAL_EFFECT_AUTHORIZATION (scoped Owner-GO for permit-backed venue POST, not missing admission wiring); PAPER PARKED.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_FROM_POST_6941_MAIN_V1.md",
+        "config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json",
+        "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",
+        "scripts/ops/run_post_6941_authority_map_atlas_pre_external_intent_to_execution_seam_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Fixpoint at operational external-effect sink; no permit mint, credential load, or venue POST in WP."
+    },
+    {
       "id": "m9_m10_enforcement",
       "epistemic_class": "PARTIAL",
       "statement": "M9 and M10 seam exists and enforcement_enabled is false.",
