@@ -1,49 +1,44 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "1e859eaa79f48308cf7037656c6465191ed9993b",
+  "base_sha": "fca07afa1fa74a94cdecde3876c9c30ad79ba828",
   "changed_paths": [
     "config/governance/current_productive_actual_venue_post_admission_v1_decision.json",
     "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/post_6946_actual_venue_post_baseline_rebind_v1_decision_v1.json",
     "config/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1_decision_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
+    "docs/ops/specs/POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1.md",
     "docs/ops/specs/PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
-    "src/governance/current_productive_actual_venue_post_admission_policy_v1.py",
     "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/pre_live_fresh_runtime_root_isolation_v1.py",
-    "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+    "tests/governance/test_post_6946_actual_venue_post_baseline_rebind_v1.py",
+    "tests/ops/test_current_productive_actual_venue_post_baseline_v1.py",
+    "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
     "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
-    "tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py"
+    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py"
   ],
-  "changed_paths_sha256": "d8649c68029a46e150e8b5028f83e9c853c4c056ff3316f82dd3aa62dfda836b",
+  "changed_paths_sha256": "52dce14eab5f12c58be74017abca91c0280d5dadc5b49728378acbdef3782126",
   "covered_candidate_paths": [
-    "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
-    "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
-    "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1_decision_v1.json",
+    "config/governance/post_6946_actual_venue_post_baseline_rebind_v1_decision_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PRE-LIVE WP: POST-slice baseline convergence to 1e859eaa, fresh Cap-24 isolation, historical POST-store guards; no venue POST.",
+  "reason": "POST-6946 rebind WP: recorded baseline fca07afa, live integrity and protected POST-surface drift gate, map navigation updates; no venue POST.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

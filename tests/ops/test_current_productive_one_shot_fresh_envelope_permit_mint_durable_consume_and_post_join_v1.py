@@ -90,7 +90,7 @@ FAKE_OPAQUE = json.dumps(
     separators=(",", ":"),
 ).encode("utf-8")
 NEXT_BLOCKER = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
-BASELINE_SHA = "1e859eaa79f48308cf7037656c6465191ed9993b"
+BASELINE_SHA = "fca07afa1fa74a94cdecde3876c9c30ad79ba828"
 
 
 class _FakeKeychainBackend:

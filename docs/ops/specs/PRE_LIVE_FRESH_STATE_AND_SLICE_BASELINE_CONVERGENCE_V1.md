@@ -18,11 +18,13 @@ later POST, and stop before Actual-Venue-POST Owner-GO / venue HTTP POST.
 ## Baseline pin authority
 
 `EXPECTED_BASELINE_ORIGIN_MAIN_SHA` in
-`current_productive_actual_venue_post_baseline_v1.py` is a
-**VERSIONED_POST_SLICE_MERGE_STABLE_ORIGIN_MAIN_PIN**. It MUST match live
-`origin/main` and synchronized `HEAD` before POST-slice mutation.
-Legitimate updates occur only via merge-stable closure on `origin/main` (here:
-post-#6945 → `1e859eaa79f48308cf7037656c6465191ed9993b`).
+`current_productive_actual_venue_post_baseline_v1.py` is a **recorded**
+merge-stable baseline for API/decision alignment. Live POST-slice execution binds
+to trusted `origin/main` with synchronized `HEAD` and fail-closed protected-surface
+drift checks (see
+`POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1.md`).
+Recorded pin updates occur via governed rebind WPs (post-#6946 →
+`fca07afa1fa74a94cdecde3876c9c30ad79ba828`).
 
 Decision JSON baseline fields and admission policy MUST track the module pin
 (single runtime source for the constant; policy imports the module).
@@ -54,5 +56,5 @@ Local runs write under
 (untracked by default).
 
 ```text
-BASELINE_ORIGIN_MAIN_SHA=1e859eaa79f48308cf7037656c6465191ed9993b
+RECORDED_POST_SLICE_BASELINE_SHA=fca07afa1fa74a94cdecde3876c9c30ad79ba828
 ```

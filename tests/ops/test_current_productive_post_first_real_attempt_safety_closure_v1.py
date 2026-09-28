@@ -47,11 +47,19 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     STILL_UNKNOWN,
     reconcile_unknown_post_attempt_read_only_v1,
 )
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+)
 from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
     _FakeKeychainBackend,
     _TimeoutOpener,
     _envelope,
 )
+
+
+def _clean_post_integrity() -> MockCurrentProductive29PIntegrityBackendV1:
+    sha = EXPECTED_BASELINE_ORIGIN_MAIN_SHA
+    return MockCurrentProductive29PIntegrityBackendV1(origin_main=sha, head=sha, drift="")
 
 
 class _TrustedReadTransport:
@@ -121,8 +129,8 @@ class _HttpErrorOpener:
         )
 
 
-def test_baseline_pin_is_post_6930_merge_currency() -> None:
-    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "1e859eaa79f48308cf7037656c6465191ed9993b"
+def test_baseline_pin_is_post_6946_recorded_rebind() -> None:
+    assert EXPECTED_BASELINE_ORIGIN_MAIN_SHA == "fca07afa1fa74a94cdecde3876c9c30ad79ba828"
 
 
 def test_direct_envelope_path_without_read_transport_blocks_post(tmp_path: Path) -> None:
@@ -136,6 +144,7 @@ def test_direct_envelope_path_without_read_transport_blocks_post(tmp_path: Path)
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             read_only_get_transport=None,
+            execution_integrity_backend=_clean_post_integrity(),
         )
     assert not (
         tmp_path / "full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"
@@ -165,6 +174,7 @@ def test_timeout_preserves_transport_failure_without_retry(tmp_path: Path) -> No
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
             read_only_get_transport=_TrustedReadTransport(),
+            execution_integrity_backend=_clean_post_integrity(),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
