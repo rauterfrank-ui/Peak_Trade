@@ -2,14 +2,15 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: POST_6940_LIVE_READINESS_CONVERGENCE_V1
+modified_by: POST_6941_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Post-6940 live-readiness convergence: PAPER PARKED; productive PRE_EXTERNAL synthetic E2E;
-  external-effect authorization earliest blocker; partial PAPER artifacts non-qualifying;
+  Post-6941 intent_to_execution seam adjudication: PRE_EXTERNAL synthetic E2E; policy-chain
+  admissions runtime-proven; operational EXTERNAL_EFFECT_AUTHORIZATION fixpoint; PAPER PARKED;
   AUTHORITY=NONE.
 changed_entities:
+  - RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1
   - RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1
   - RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1
 changed_relations: []
