@@ -54,6 +54,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     _assert_no_secrets,
     _persist_json,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
+    assert_post_durable_store_root_isolation_v1,
+    validate_productivity_root_isolation_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
     OWNER_GO as PRE_EXTERNAL_OWNER_GO,
     CurrentProductiveFullCorePreExternalClosureError,
@@ -127,6 +131,7 @@ def _resolve_origin_main_sha_v1(
 
 
 def _assert_post_store_fresh_v1(store_root: Path) -> None:
+    assert_post_durable_store_root_isolation_v1(store_root=store_root)
     durable = load_durable_post_owner_go_consume_v1(store_root=store_root)
     if durable.get("consumed") is True:
         raise CurrentProductiveOneShotEnterE2ERuntimeHandoffError(
@@ -234,6 +239,14 @@ def prepare_current_productive_one_shot_enter_e2e_runtime_handoff_v1(
     cap24_prod_root = productivity_root
     if cap24_prod_root is None:
         cap24_prod_root = default_current_productive_cap24_runtime_state_root_v1()
+        iso = validate_productivity_root_isolation_v1(
+            productivity_root=cap24_prod_root,
+            explicit_binding_required=True,
+        )
+        if iso["OK"] is not True:
+            raise CurrentProductiveOneShotEnterE2ERuntimeHandoffError(
+                str(iso.get("REASON_CODES") or "DEFAULT_CAP24_BINDING_REQUIRED")
+            )
 
     bound = bound_instrument_override
     if bound is None:

@@ -175,6 +175,7 @@ def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) 
     lanes_root = tmp_path / "lanes"
     lanes_root.mkdir()
     post_store = tmp_path / "post_durable"
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
 
     with patch(
         "src.ops.governed_productive_account_equity_authority_producer_v1."
@@ -187,7 +188,7 @@ def test_prepare_handoff_from_pre_external_closure_without_post(tmp_path: Path) 
             pre_external_owner_go=PRE_EXTERNAL_OWNER_GO,
             post_owner_go=POST_OWNER_GO,
             k1_owner_go=K1_OPAQUE_SIGNING_OWNER_GO,
-            productivity_root=None,
+            productivity_root=cap24_root,
             lane_state_root=lanes_root,
             post_durable_store_root=post_store,
             origin_main_sha=origin_sha,
