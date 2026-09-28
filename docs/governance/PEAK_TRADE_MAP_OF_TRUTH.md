@@ -235,7 +235,7 @@ Derived specs for Master Runbook §11.2.1 persist slices. Navigation only.
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md` |
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md` |
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1.md` |
-| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_ARCHITECTURE_V1.md` |
+| 11.2.1.CR FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_ARCHITECTURE | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_ARCHITECTURE_V1.md` |
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md` |
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_BINDING_V1.md` |
 | Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1.md` |

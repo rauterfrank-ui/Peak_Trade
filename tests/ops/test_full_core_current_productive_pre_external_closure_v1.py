@@ -49,6 +49,10 @@ from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 imp
 from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
     write_cap21_productivity_root_for_inst_v1,
 )
+from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+    governed_c1_candles_payload_from_enter_closes_v1,
+    prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
+)
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
     _lane_g17,
     _market_kwargs,
@@ -270,9 +274,18 @@ def test_execute_wp1_and_wp2_terminates_without_post(tmp_path: Path) -> None:
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     transport = _productive_transport()
     pairs_lane_root = tmp_path / "lanes"
-    candles = _mv2_aligned_candles(last_ts_ms=1_700_000_000_000, mark_px=100.0)
+    _arm_cycle, enter_closes, _mark_px, event_ts, aligned_g17 = (
+        prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
+            bound=bound,
+            g17_typed_vol_producer=object(),
+            lane_state_root=pairs_lane_root,
+        )
+    )
+    candles = governed_c1_candles_payload_from_enter_closes_v1(
+        enter_closes=enter_closes,
+        last_event_ts_unix=event_ts,
+    )
     mk = _market_kwargs(cycle_id_prefix="pre-ext-closure")
-    slot = _dummy_slot(tmp_path)
     mk.pop("g17_typed_vol_producers", None)
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
@@ -284,7 +297,7 @@ def test_execute_wp1_and_wp2_terminates_without_post(tmp_path: Path) -> None:
         evidence_root=tmp_path / "evidence",
         candles_payload=candles,
         market_kwargs=mk,
-        g17_typed_vol_producers=_lane_g17({"LANE_1": (slot, bound)}),
+        g17_typed_vol_producers={"LANE_1": aligned_g17},
         execution_integrity_backend=integrity,
         cap24_productivity_root=cap24_root,
     )

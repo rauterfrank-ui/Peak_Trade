@@ -59,6 +59,7 @@ from trading.master_v2.deterministic_scope_event_generator_v1 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+EPOCH = "2026-09-17T06:50:00Z"
 RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 MOT_PATH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = (
@@ -231,7 +232,7 @@ def _join_enter_live_29p(*, replay):
         replay=replay,
         bound_instrument=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch="2026-09-16T00:00:00Z",
+        decision_epoch=EPOCH,
     )
 
 

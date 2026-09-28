@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Any
+
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.system_atlas_v1.constants_v1 import (
     ATLAS_PATH_PREFIXES,
@@ -371,3 +376,20 @@ def _validate_reconciliation_if_present(atlas: dict[str, Any]) -> None:
         validate_reconciliation_tree_v1(repo_root=repo_root)
     except ReconciliationValidationError as exc:
         raise AtlasValidationError(f"RECONCILIATION_INVALID:{exc}") from exc
+
+
+def main() -> int:
+    from scripts.ops.system_atlas_v1.load_v1 import load_atlas_v1
+
+    atlas = load_atlas_v1(repo_root=_REPO_ROOT)
+    try:
+        validate_atlas_v1(atlas)
+    except AtlasValidationError as exc:
+        print(f"ATLAS_VALIDATION_FAIL:{exc}", file=sys.stderr)
+        return 2
+    print("ATLAS_VALIDATE_OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

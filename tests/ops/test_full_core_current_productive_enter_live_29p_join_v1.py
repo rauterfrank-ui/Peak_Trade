@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
@@ -91,6 +93,11 @@ EPOCH = "2026-09-17T06:50:00Z"
 DISTINCTIVE_EQUITY = "777.77"
 
 
+def _sha256_payload(payload: dict[str, object]) -> str:
+    text = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
 def _instruments_payload(*, inst_id: str = "inst-eth-usdt-perp") -> dict[str, object]:
     return {
         "code": "0",
@@ -147,12 +154,13 @@ def _injected(
     get_status: str = FreshPretradeGetStatusV1.TRUSTED_PRESENT.value,
     raw_acct_lv: str = "2",
 ) -> CurrentProductiveEnterLive29PInjectedGetV1:
+    resolved_payload = payload if payload is not None else _balance_payload()
     return CurrentProductiveEnterLive29PInjectedGetV1(
         payload=payload,
         get_performed=get_performed,
         http_status=http_status,
         error_class=error_class,
-        body_sha256="a" * 64,
+        body_sha256=_sha256_payload(resolved_payload),
         observed_at=EPOCH,
         age_seconds=age_seconds,
         live_account_bound_status=lab,
@@ -214,7 +222,9 @@ def test_created_flag_pins_and_docs() -> None:
         / "current_productive_enter_live_29p_join_v1.py"
     ).read_text(encoding="utf-8")
     assert "join_current_productive_enter_live_29p_before_venue_plan_v1" in owner
-    assert EF_HEADING not in RUNBOOK.read_text(encoding="utf-8")
+    runbook = RUNBOOK.read_text(encoding="utf-8")
+    assert EF_HEADING in runbook
+    assert "EVALUATE_STEP_29P_JOINED_THIS_WP=true" in runbook
     assert "EVALUATE_STEP_29P_JOINED_THIS_WP=true" in spec
     assert (
         "FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT" in spec

@@ -60,6 +60,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     OwnerOneShotPermitStatusV1,
     PRETRADE_SOURCE_FRESH_GET,
     PretradeFreshnessStatusV1,
+    DataSafetyAdmissionStatusV1,
     evaluate_execution_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_admission_gap_dag_v1 import (
@@ -269,6 +270,7 @@ def _admission_inputs_v1() -> ExecutionAdmissionInputsV1:
         capital_admission_status=CapitalAdmissionStatusV1.TRUSTED_PRESENT.value,
         capital_authority_class=CAPITAL_AUTHORITY_RISK_ADMISSIBLE,
         step_29p_risk_admissible=True,
+        data_safety_admission_status=DataSafetyAdmissionStatusV1.SATISFIED.value,
     )
 
 

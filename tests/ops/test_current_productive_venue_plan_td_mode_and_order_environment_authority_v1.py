@@ -247,7 +247,7 @@ def test_productive_venue_plan_binding_consumes_ratified_authority() -> None:
 
 def test_runbook_records_new_authority_without_repairing_header_sha() -> None:
     text = _RUNBOOK.read_text(encoding="utf-8")
-    assert "BOUND_ORIGIN_MAIN_SHA=0ceb48d970b6d76df0aecd82eebee9570b5e453b" in text
+    assert "BOUND_ORIGIN_MAIN_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1" in text
     assert "EPISTEMIC_CLASS=NEW_OWNER_AUTHORITY" in text
     assert "NOT_A_HISTORICAL_PREEXISTING_FACT=true" in text
     assert "VENUE_PLAN_BINDING_IMPLEMENTED=true" in text

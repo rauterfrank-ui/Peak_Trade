@@ -44,9 +44,16 @@ from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_productive_c1_event_ts_unix_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+    invoke_occupied_lane_governed_cycle_n1_consumer_v1,
+)
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+    C1_TS,
     _invoke,
+    _lane_g17,
+    _market_kwargs,
     _mv2_aligned_candles,
+    _pair,
 )
 from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 import (
     _EPOCH,
@@ -155,11 +162,17 @@ def test_wp2_execute_transport_bound_wp1_pass_governed_cycle_hold_fail_closed_sa
         mark_closes=path,
     )
     cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    lanes_root = tmp_path / "lanes"
+    prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
+        bound=bound,
+        g17_typed_vol_producer=g17,
+        lane_state_root=lanes_root,
+    )
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
         bound_instrument=bound,
-        lane_state_root=tmp_path / "lanes",
+        lane_state_root=lanes_root,
         fresh_get_transport=_productive_transport(),
         execute_network=False,
         evidence_root=tmp_path / "evidence",
@@ -238,7 +251,22 @@ def test_wp2_enter_join_denies_venue_plan_when_29p_not_pass() -> None:
 
 def test_wp2_consumer_compose_layered_store_then_c1_orchestrator_consumed(tmp_path: Path) -> None:
     """Real consumer join + S7/P5.10 path; terminal HOLD when MV2 does not ENTER."""
-    pairs, results = _invoke(tmp_path, ("LANE_1",), cycle_id_prefix="wp2-consumer-compose")
+    from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+        bootstrap_minimal_productive_p5_store_for_lane_slot_v1,
+    )
+
+    pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    slot, bound = pairs["LANE_1"]
+    g17_map = _lane_g17(pairs)
+    bootstrap_minimal_productive_p5_store_for_lane_slot_v1(
+        slot=slot,
+        bound=bound,
+        g17_typed_vol_producer=g17_map["LANE_1"],
+    )
+    last_ts = float(C1_TS)
+    kwargs = _market_kwargs(cycle_id_prefix="wp2-consumer-compose", last_ts=last_ts)
+    kwargs["g17_typed_vol_producers"] = g17_map
+    results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     record = results["LANE_1"]
     cycle = record.governed_cycle_result
     assert record.t2_s7_used is True
