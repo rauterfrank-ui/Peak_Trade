@@ -3853,6 +3853,7 @@ entities:
       PERMIT_CONSUMED_DURABLE=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_one_shot_enter_e2e_runtime_handoff_v1
+    # atlas_entity_review: POST_6930 WP-2 PRE_EXTERNAL full compose → E2E handoff prepare proof; test-only;
     # PR_6907 PRE_EXTERNAL_WP1_CAP21_PUBLIC_INST_TYPE_BINDING: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     kind: CONTRACT
     name: CURRENT productive Enter one-shot E2E runtime handoff v1

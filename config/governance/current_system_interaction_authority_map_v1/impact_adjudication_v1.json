@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "dc438f370495fadd42032a98db31824e239e7271",
+  "base_sha": "fb7bc6e7a6bed4f1b8a1320f28e712fb7a682d7a",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -9,41 +9,27 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
-    "tests/ops/_current_productive_pre_external_shared_process_state_v1.py",
-    "tests/ops/_current_productive_pre_external_test_isolation_apply_v1.py",
-    "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py",
     "tests/ops/conftest.py",
-    "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
-    "tests/ops/test_current_productive_pre_external_order_independence_v1.py",
-    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py",
-    "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py"
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
-  "changed_paths_sha256": "d4973576252745b672d3b0b455344753166b0b6d737d020611aa41e2a1eb1bc1",
+  "changed_paths_sha256": "cbf38266be2e14685cb03d0364c3a84c081632a2f6563de00311fc2d7b375439",
   "covered_candidate_paths": [
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
-    "tests/ops/_current_productive_pre_external_shared_process_state_v1.py",
-    "tests/ops/_current_productive_pre_external_test_isolation_apply_v1.py",
-    "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py",
     "tests/ops/conftest.py",
-    "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
-    "tests/ops/test_current_productive_pre_external_order_independence_v1.py",
-    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py",
-    "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py"
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/entities/catalog.yaml",
-    "tests/ops/_current_productive_pre_external_test_process_isolation_v1.py"
+    "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6929 POST_6928: PRE_EXTERNAL same-process test isolation (test-only); CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping. map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; no source_v1.json change.",
+  "reason": "POST_6930: PRE_EXTERNAL WP-2 layered ENTER → one-shot E2E handoff prepare composition proof (test-only); CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping. map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; no source_v1.json change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
