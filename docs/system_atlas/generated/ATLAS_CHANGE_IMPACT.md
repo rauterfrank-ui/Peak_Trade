@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6951 orchestration wiring: productive entry script; S6 poll liveness; cold-lane bootstrap; PRE_EXTERNAL-only; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; AUTHORITY=NONE.
+- PR #6952 Owner-GO baseline lineage bind for live main after #6951; ancestor validation + MV2/DP drift gate; wiring-only; PRE_EXTERNAL-only; POST_COUNT=0; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6951_LIVE_FRESH_C1_PRE_EXTERNAL_CONVERGENCE_WIRING_V1
+- modified_by=PR_6952_POST_MERGE_OWNER_GO_BASELINE_LINEAGE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

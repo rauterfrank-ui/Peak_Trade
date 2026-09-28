@@ -4818,6 +4818,8 @@ entities:
       S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
       # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4;
       # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+      # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate);
+      # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
