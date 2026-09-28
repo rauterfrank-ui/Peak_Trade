@@ -434,7 +434,7 @@ def test_s6_sequencing_reconciles_when_s7_already_committed_same_c1_floor(
     assert cursor_last_accepted_c1_venue_event_time_v1(loaded) == C1_B
 
 
-def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
+def test_stale_or_equal_c1_waits_without_s5_until_bound(tmp_path: Path) -> None:
     s5_calls = {"n": 0}
 
     def _runner(**kwargs: object):
@@ -446,8 +446,8 @@ def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
         observation_source=_source(_obs(CURSOR_FLOOR)),
         s5_runner=_runner,
     )
-    assert result.disposition == DISPOSITION_FAIL_CLOSED
-    assert result.reason_code == REASON_STALE_OR_EQUAL_C1
+    assert result.disposition == DISPOSITION_STALL
+    assert result.reason_code == "STALL"
     assert result.s5_invoke_count == 0
     assert s5_calls["n"] == 0
     _assert_zero_effect(result)

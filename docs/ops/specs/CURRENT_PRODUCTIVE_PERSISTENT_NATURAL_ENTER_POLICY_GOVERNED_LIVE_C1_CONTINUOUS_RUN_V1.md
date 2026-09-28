@@ -10,7 +10,7 @@ last_updated: 2026-09-28
 
 ```text
 WORKPACKAGE_ID=CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
-BASELINE_ORIGIN_MAIN_SHA=45ddc791cf81606c5e2c3949e9d1dd1dcc04752d
+BASELINE_ORIGIN_MAIN_SHA=27c3cd4aa21e181282b19a89a9e2187b30ed93f4
 CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN=false
 RUNTIME_AUTHORIZATION_EFFECT=BOUNDED_PRE_EXTERNAL_ONLY
 ```
@@ -34,6 +34,15 @@ S8 Cap24 handoff → `run_policy_governed_persistent_natural_enter_live_c1_conti
 
 No EXTERNAL_EFFECT, POST, permit mint, credentials, Actual-Venue-POST GO reuse,
 or `CONTINUOUS_RUN_AUTHORIZED=true` module pin.
+
+## Productive entry (PRE_EXTERNAL only)
+
+`scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`
+
+Run-scoped evidence under `runtime/current_productive/` (untracked). Cold-lane bootstrap
+uses Cap24-bound `native_id` for the first public Fresh-C1 GET before sidestate cursor
+persist; S6 then waits for strictly newer finalized 1m bars. Auth-free scope injects
+flat occupancy payloads (no credential positions GET).
 
 ## Verification
 
