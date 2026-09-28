@@ -2,6 +2,7 @@
   "authority_effect": "NONE",
   "base_sha": "95480ded1c2dc5b39f5c84515020248f57fd220e",
   "changed_paths": [
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
@@ -12,7 +13,7 @@
     "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
     "tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py"
   ],
-  "changed_paths_sha256": "a2ac3acf72cf1d6cab9ed221ddf28b80451c4ff1308dd5bd456bd66d323b4891",
+  "changed_paths_sha256": "5647b4db64bb303e0b710b68ffe51a3cdd7a57a2fc9f018f4444582c154a198e",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
