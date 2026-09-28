@@ -4797,13 +4797,13 @@ entities:
       # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high;
       # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
-  - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+  - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1  # atlas_review PR_6952
     kind: RUNTIME_COMPONENT
     name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
+    modified_by: PR_6952_POST_MERGE_OWNER_GO_BASELINE_LINEAGE_V1
     source_paths:
       - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
