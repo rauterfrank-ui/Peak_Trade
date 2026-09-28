@@ -1,7 +1,7 @@
 {
   "artifact_class": "SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1",
   "workpackage_id": "SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_CLOSURE_MAXIMAL_BOUNDED_WP_V1",
-  "bound_origin_main_sha": "dc727b5ab8885ebd230b428496e5a57173356279",
+  "bound_origin_main_sha": "e0ae34a73ab1aeeb9da44429fc0234c6bba47d29",
   "owner_go": true,
   "authority_spec": "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
   "runtime_effect": "NONE",

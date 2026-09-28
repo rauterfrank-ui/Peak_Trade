@@ -4740,7 +4740,7 @@
     {
       "id": "selected_future_persistent_scope_confirmation_authority_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "PR #6933: Owner policy SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1 — OD1 single-lane activation is active evaluation-lane routing only; Cap 6.1 dual carrier preserves opposite-side confirmation cursor across elementary direction changes; scope/L10 candidate invalidation remains UNRESOLVED; no selection rebind, no venue POST, no external effect. Post-merge governance: eighth-class EXPLICIT_OWNER_ADJUDICATED_OD1 productive slice grant closed (grant_active=false); merged Master-V2 implementation remains current; new OD1 mutation requires a fresh digest-bound slice.",
+      "statement": "PR #6933/#6934: Owner policy SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1 — OD1 single-lane activation is active evaluation-lane routing only; Cap 6.1 dual carrier preserves opposite-side confirmation cursor across elementary direction changes; scope/L10 candidate invalidation remains UNRESOLVED; no selection rebind, no venue POST, no external effect. Post-#6934: bound_origin_main_sha refreshed on policy record; PR #6935 adds governance-hosted integrated-replay proof that inactive bear candidate/1 survives elementary bull on merged dual-carrier replay; eighth-class OD1 slice grant remains closed (grant_active=false); new Master-V2 mutation requires a fresh digest-bound slice.",
       "evidence_refs": [
         "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
         "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md",
