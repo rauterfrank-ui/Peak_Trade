@@ -4754,7 +4754,7 @@ entities:
       - tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py
       - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
     notes: >-
-      POST-slice baseline pin 1e859eaa; fresh isolated Cap-24 root; fail-closed historical POST-store
+      POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store
       isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1

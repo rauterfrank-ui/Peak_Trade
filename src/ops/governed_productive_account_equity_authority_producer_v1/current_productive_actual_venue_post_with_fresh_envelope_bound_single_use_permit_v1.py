@@ -90,6 +90,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_account_equity_authority_producer_v1.pre_live_fresh_runtime_root_isolation_v1 import (
     assert_post_durable_store_root_isolation_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
+    CurrentProductive29PRuntimeIntegrityBackendV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1 import (
     _assert_no_secrets,
     _persist_json,
@@ -297,6 +300,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     k1_backend: OsNativeStoreLookupBackendV1 | None = None,
     opener_factory: Callable[[], OpenerDirector] | None = None,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
+    execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -306,6 +310,7 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         resolve_and_assert_live_post_execution_baseline_v1(
             declared_baseline_origin_main_sha=baseline_origin_main_sha,
             repo_root=_REPO_ROOT,
+            integrity_backend=execution_integrity_backend,
         )
     except CurrentProductiveActualVenuePostBaselineError as exc:
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc

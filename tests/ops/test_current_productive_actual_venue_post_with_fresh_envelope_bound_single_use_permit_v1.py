@@ -36,6 +36,9 @@ from src.governance.current_productive_actual_venue_post_admission_policy_v1 imp
 from src.governance.governed_current_productive_actual_venue_post_admission_closure_v1 import (
     prove_governed_current_productive_actual_venue_post_admission_v1,
 )
+from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+    MockCurrentProductive29PIntegrityBackendV1,
+)
 
 FAKE_OPAQUE = json.dumps(
     {"apiKey": "ak-test", "secretKey": "sk-test", "passphrase": "pp-test"},
@@ -157,6 +160,11 @@ def test_pre_live_proof_without_owner_go_consume(tmp_path: Path) -> None:
     assert proof["SECRET_DISCLOSED"] == "false"
 
 
+def _clean_post_integrity() -> MockCurrentProductive29PIntegrityBackendV1:
+    sha = EXPECTED_BASELINE_ORIGIN_MAIN_SHA
+    return MockCurrentProductive29PIntegrityBackendV1(origin_main=sha, head=sha, drift="")
+
+
 def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None:
     envelope = _envelope()
     backend = _FakeKeychainBackend()
@@ -171,6 +179,7 @@ def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None
             k1_backend=backend,
             opener_factory=lambda: _TimeoutOpener(),
             read_only_get_transport=_TrustedReadTransport(),
+            execution_integrity_backend=_clean_post_integrity(),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"

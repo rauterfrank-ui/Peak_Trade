@@ -3,7 +3,7 @@
   "normative_spec": "docs/ops/specs/PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1.md",
   "owner_go": true,
   "owner_go_token": "PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1",
-  "baseline_origin_main_sha": "1e859eaa79f48308cf7037656c6465191ed9993b",
+  "baseline_origin_main_sha": "fca07afa1fa74a94cdecde3876c9c30ad79ba828",
   "cap24_canonical_write_owner_go_token": "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
   "venue_post_owner_go_consumed": false,
   "external_effect_permit_minted": false,
