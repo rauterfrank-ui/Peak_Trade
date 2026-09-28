@@ -204,6 +204,16 @@ changes:
       addressing join ledger path; CSIA MAP_UPDATE_REQUIRED partial statement + learning_capture edge refresh;
       Atlas entity review on touched MV2/N5/full_core navigation surfaces; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false;
       no promotion/M10; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6937_whole_system_causal_closure_synthetic_treasury_v1
+    from: 055f4bf4a18b49a8e080b6d54a7e78a80c02bb25
+    to: 055f4bf4a18b49a8e080b6d54a7e78a80c02bb25
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py
+    notes: >-
+      PR #6937: synthetic treasury whole-system causal closure — 29P→EEA/budget productive joins plus MV2 same-cycle
+      DDO capture→offline export to ACCEPTED_OFFLINE_RESEARCH_INPUT; landscape/presentation dashboard OUT_OF_SCOPE;
+      PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

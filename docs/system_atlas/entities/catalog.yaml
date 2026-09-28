@@ -352,6 +352,8 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:elementary_direction_v1
+    # atlas_entity_review: PR #6937 — whole-system causal closure does not consume elementary_direction; semantics unchanged;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6936 — MV2 cycle DDO capture join does not consume elementary_direction; semantics unchanged;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6804 MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
@@ -3928,6 +3930,8 @@ entities:
       Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+    # atlas_entity_review: PR #6937 — P5_10 bind seam unchanged; treasury/DDO joins are post-bind evidence/composition only;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6936 — P5_10 layered bind seam unchanged; DDO capture is post-bind MV2 evidence only;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
@@ -5448,6 +5452,10 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6937 whole-system causal closure — synthetic 29P→EEA/budget productive joins +
+    # MV2 same-cycle DDO capture→offline export handoff (ACCEPTED_OFFLINE_RESEARCH_INPUT only);
+    # PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; landscape/presentation dashboard OUT_OF_SCOPE;
+    # no venue POST; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6936 Loop-A productive MV2 optional DDO learning capture join (observe-only ledger bind);
     # CSIA MAP_UPDATE_REQUIRED partial refresh; RUNTIME_SEMANTICS_CHANGED=true for learning_capture host wiring only;
     # no venue POST; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -5901,7 +5909,10 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py

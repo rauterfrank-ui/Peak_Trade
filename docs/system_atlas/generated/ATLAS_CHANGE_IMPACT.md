@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6936: Loop-A productive MV2 optional DDO learning capture join (observe-only); CSIA partial statement + learning_capture edge refresh; Atlas entity review on MV2/N5/full_core navigation surfaces; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
+- PR #6937: whole-system causal closure (synthetic treasury→29P productive joins, MV2 capture→offline export); CSIA MAP_UPDATE_REQUIRED partial refresh; Atlas entity review on full_core/P5_10/elementary_direction navigation surfaces only; landscape/presentation dashboard OUT_OF_SCOPE; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6936_LOOP_A_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_JOIN_V1
+- modified_by=PR_6937_WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
