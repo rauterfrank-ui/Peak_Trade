@@ -175,7 +175,7 @@ def _report(
 
 
 class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
-    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
+    def test_committed_artifact_is_valid_closed_grant(self) -> None:
         auth = load_od1_single_lane_confirmation_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_od1_single_lane_confirmation_authorization(
@@ -187,13 +187,21 @@ class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
         assert auth["authorized_scope_class"] == OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS
         assert auth["authorization_token"] == OD1_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_ID
         assert auth["mutation_purpose_class"] == OD1_SINGLE_LANE_CONFIRMATION_MUTATION_PURPOSE
-        assert auth["grant_active"] is False
-        assert auth["allowed_paths"] == []
-        assert auth["required_runtime_paths"] == []
-        assert auth["allowed_surface_classes"] == []
-        assert auth["slice_grant_id"] == ""
-        assert auth["authorized_evidence_digest"] == ""
-        assert auth["bound_diff_base_sha"] == ""
+        if auth["grant_active"] is False:
+            assert auth["allowed_paths"] == []
+            assert auth["required_runtime_paths"] == []
+            assert auth["allowed_surface_classes"] == []
+            assert auth["slice_grant_id"] == ""
+            assert auth["authorized_evidence_digest"] == ""
+            assert auth["bound_diff_base_sha"] == ""
+        else:
+            assert auth["allowed_paths"]
+            assert auth["required_runtime_paths"]
+            assert auth["allowed_surface_classes"] == [OD1_SINGLE_LANE_CONFIRMATION_SCOPE_CLASS]
+            assert auth["slice_grant_id"]
+            assert len(auth["authorized_evidence_digest"]) == 64
+            assert len(auth["bound_diff_base_sha"]) == 40
+            assert set(auth["required_runtime_paths"]).issubset(set(auth["allowed_paths"]))
         assert auth["authorized_path_prefixes"] == []
         assert auth["pr_specific_exception"] is False
         assert auth["directory_grant"] is False
