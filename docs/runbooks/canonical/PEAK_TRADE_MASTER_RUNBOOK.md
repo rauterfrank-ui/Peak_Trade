@@ -340,6 +340,17 @@ Continuous authorization is not cycle authorization, not GET authorization,
 not permit mint, and not POST authorization. Historical label `EH.S6` / `S6`
 is compatibility/navigation only.
 
+### Persistent Natural-ENTER convergence (fixed lane + S7)
+
+Navigation-only offline/preflight harness binding fixed S8 occupied-lane roots to
+bounded S6 sequencing and S7 durable cursor persist (no per-cycle Cap23/Cap24 writers,
+no POST). Spec:
+`docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md`.
+Ops preflight:
+`scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py`.
+`CONTINUOUS_RUN_AUTHORIZED=false` on module pin; productive execution remains
+governed by continuous-run policy elsewhere.
+
 ------------------------------------------------------------------------
 
 ## CURRENT Data and Input Contracts
