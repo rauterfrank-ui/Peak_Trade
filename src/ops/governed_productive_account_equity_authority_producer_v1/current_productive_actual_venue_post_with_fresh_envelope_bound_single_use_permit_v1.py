@@ -298,10 +298,13 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
     if perform_real_venue_post is not True:
         raise CurrentProductiveActualVenuePostError("PERFORM_REAL_VENUE_POST_REQUIRED")
-    resolve_and_assert_live_post_execution_baseline_v1(
-        declared_baseline_origin_main_sha=baseline_origin_main_sha,
-        repo_root=_REPO_ROOT,
-    )
+    try:
+        resolve_and_assert_live_post_execution_baseline_v1(
+            declared_baseline_origin_main_sha=baseline_origin_main_sha,
+            repo_root=_REPO_ROOT,
+        )
+    except CurrentProductiveActualVenuePostBaselineError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
     root = Path(store_root)
