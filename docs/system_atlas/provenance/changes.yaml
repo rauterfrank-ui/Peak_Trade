@@ -244,6 +244,15 @@ changes:
       PR #6949 navigation WP after #6948: continuous-run authority vs Live-C1 GET convergence;
       Owner decision schema; RUNTIME_OWNER_GO and Fresh-C1 GET GO DEFINED_NOT_CONSUMED;
       CSIA MAP_UPDATE_REQUIRED; no runtime/GET/POST; Atlas AUTHORITY=NONE.
+  - id: CHANGE:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+    from: 45ddc791cf81606c5e2c3949e9d1dd1dcc04752d
+    to: 45ddc791cf81606c5e2c3949e9d1dd1dcc04752d
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      Owner-GO wiring for bounded continuous run + public readonly Fresh-C1 GET in S6 poll;
+      policy-governed admission; PRE_EXTERNAL terminal; module pins unchanged; no venue POST.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

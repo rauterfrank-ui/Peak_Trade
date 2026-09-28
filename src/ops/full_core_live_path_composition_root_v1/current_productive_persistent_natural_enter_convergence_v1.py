@@ -44,8 +44,19 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_v
     POST_OWNER_GO,
     load_durable_post_owner_go_consume_v1,
 )
+from src.governance.current_continuous_run_runtime_binding_v1 import (
+    ContinuousRunRuntimeBindingError,
+    PolicyGovernedContinuousRunResultV1,
+    run_policy_governed_current_productive_continuous_cycle_run_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_run_owner_go_wiring_v1 import (
+    assert_module_pins_unchanged_v1,
+    persist_bounded_continuous_run_owner_go_consume_v1,
+    validate_bounded_continuous_run_owner_go_decision_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     CONTINUOUS_RUN_AUTHORIZED,
+    DISPOSITION_PRE_EXTERNAL_EFFECT,
     HARD_CAP_MAX_CYCLES_PER_RUN,
     HARD_CAP_MAX_RUN_DURATION_SECONDS,
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
@@ -54,6 +65,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     InjectedContinuousObservationV1,
     RUNTIME_OWNER_GO as S6_RUNTIME_OWNER_GO,
     ScriptedContinuousObservationSourceV1,
+    mint_continuous_run_id_v1,
     run_current_productive_governed_continuous_cycle_run_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
@@ -506,6 +518,119 @@ def run_offline_persistent_natural_enter_convergence_v1(
     )
 
 
+def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
+    *,
+    authorization: CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
+    origin_main_sha: str,
+    lane_state_root: Path,
+    bound: BoundInstrumentV1,
+    g17_producers: Mapping[str, object],
+    observation_source: ContinuousObservationSourceV1,
+    evidence_root: Path,
+    f1_m9_cycle_evaluator: Callable[[int], Any],
+    repo_root: Path | None = None,
+    bootstrap_observation: InjectedContinuousObservationV1 | None = None,
+    lock_root: Path | None = None,
+    cycle_id_prefix_base: str = "persistent-natural-enter-live-c1",
+    time_fn: Callable[[], float] | None = None,
+    sleep_fn: Callable[[float], None] | None = None,
+) -> PolicyGovernedContinuousRunResultV1:
+    """S8→policy binding→S6 (live or test observation source)→N1/S5/S7→PRE_EXTERNAL."""
+    assert_module_pins_unchanged_v1()
+    if CONTINUOUS_RUN_AUTHORIZED is True:
+        raise PersistentNaturalEnterConvergenceError(
+            "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN_FORBIDDEN_TRUE"
+        )
+    ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
+        repo_root=repo_root,
+        baseline_origin_main_sha=origin_main_sha,
+    )
+    if not ok:
+        raise PersistentNaturalEnterConvergenceError("OWNER_GO_DECISION_DENIED", ",".join(reasons))
+    if authorization.continuous_owner_go != S6_RUNTIME_OWNER_GO:
+        raise PersistentNaturalEnterConvergenceError("S6_RUNTIME_OWNER_GO_MISMATCH")
+    if int(authorization.max_cycles_per_run) > MAX_CYCLES_PER_RUN_CAP:
+        raise PersistentNaturalEnterConvergenceError("MAX_CYCLES_EXCEEDS_HARD_CAP")
+    if float(authorization.max_run_duration_seconds) > MAX_RUN_DURATION_CAP:
+        raise PersistentNaturalEnterConvergenceError("MAX_DURATION_EXCEEDS_HARD_CAP")
+    if f1_m9_cycle_evaluator is None:
+        raise PersistentNaturalEnterConvergenceError("F1_M9_CYCLE_EVALUATOR_REQUIRED")
+
+    pairs = build_s8_occupied_lane_pairs_v1(
+        lane_state_root=Path(lane_state_root),
+        bound=bound,
+    )
+    addressed = bind_occupied_lane_governed_cycle_store_roots_v1(pairs)
+    cursor_store_root = Path(addressed[LANE_ID][0])
+    if cursor_store_root.resolve() != Path(pairs[LANE_ID][0].lane_state_root).resolve():
+        raise PersistentNaturalEnterConvergenceError("FIXED_LANE_ROOT_VIOLATION")
+
+    run_id = mint_continuous_run_id_v1(authorization)
+    persist_bounded_continuous_run_owner_go_consume_v1(
+        evidence_root=Path(evidence_root),
+        run_id=run_id,
+        baseline_origin_main_sha=origin_main_sha,
+        binding_digest=run_id,
+    )
+
+    if not (cursor_store_root / CURSOR_FILENAME).is_file():
+        first_obs = bootstrap_observation
+        if first_obs is None:
+            first_obs = observation_source.poll()
+        if first_obs is None:
+            raise PersistentNaturalEnterConvergenceError(
+                "BOOTSTRAP_OBSERVATION_REQUIRED",
+                "cold lane requires first C1 before S6",
+            )
+        bootstrap_s8_lane_via_s7_compose_v1(
+            composed_pairs=pairs,
+            origin_main_sha=origin_main_sha,
+            g17_producers=g17_producers,
+            candles_payload=first_obs.candles_payload,
+        )
+
+    runner = make_n1_occupied_lane_s5_runner_v1(
+        composed_pairs=pairs,
+        g17_producers=g17_producers,
+        cycle_id_prefix_base=cycle_id_prefix_base,
+    )
+    lock = lock_root or (Path(evidence_root) / "continuous_lock")
+    root = repo_root or Path(__file__).resolve().parents[3]
+    try:
+        result = run_policy_governed_current_productive_continuous_cycle_run_v1(
+            authorization=authorization,
+            origin_main_sha=origin_main_sha,
+            cursor_store_root=cursor_store_root,
+            lock_root=Path(lock),
+            evidence_root=Path(evidence_root),
+            observation_source=observation_source,
+            repo_root=root,
+            f1_m9_cycle_evaluator=f1_m9_cycle_evaluator,
+            require_f1_m9_each_cycle=True,
+            s5_runner=runner,
+            time_fn=time_fn,
+            sleep_fn=sleep_fn,
+        )
+    except ContinuousRunRuntimeBindingError as exc:
+        raise PersistentNaturalEnterConvergenceError(exc.reason_code, exc.detail) from exc
+
+    orch = result.orchestrator_result
+    if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:
+        raise PersistentNaturalEnterConvergenceError("EXTERNAL_EFFECT_LEAK")
+    if orch.disposition not in {
+        DISPOSITION_PRE_EXTERNAL_EFFECT,
+        "MAX_CYCLES_BOUND_STOP",
+        "MAX_DURATION_BOUND_STOP",
+        "STALL_BOUND_STOP",
+        "WAIT_BOUND",
+        "HOLD_CONTINUE_CLOSED",
+    }:
+        raise PersistentNaturalEnterConvergenceError(
+            "UNEXPECTED_TERMINAL_DISPOSITION", str(orch.disposition)
+        )
+    return result
+
+
 def read_sidestate_continuity_snapshot_v1(cursor_store_root: Path) -> dict[str, int | None]:
     return {
         "trading_epoch": _read_trading_epoch_v1(cursor_store_root),
@@ -532,4 +657,5 @@ __all__ = [
     "preflight_current_productive_persistent_natural_enter_v1",
     "read_sidestate_continuity_snapshot_v1",
     "run_offline_persistent_natural_enter_convergence_v1",
+    "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
 ]
