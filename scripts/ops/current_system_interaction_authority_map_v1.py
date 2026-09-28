@@ -82,6 +82,7 @@ REQUIRED_PARTIAL_IDS = (
     "learning_capture_hosts_and_ddo_durability",
     "productive_learning_to_g2_primary_semantic_boundary",
     "post_6938_whole_system_g2_primary_causal_e2e",
+    "post_6939_paper_g2_primary_run_metadata",
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",

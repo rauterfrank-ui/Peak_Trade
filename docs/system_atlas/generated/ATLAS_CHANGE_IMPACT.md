@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1` |
+| `RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-#6938 whole-system E2E WP: map/atlas-guided primary-evidence producer adjudication; Case B preserved; fixture control proves G2→M4–M8 mechanics; stops at missing independent durable PAPER/SHADOW/TESTNET primary archive; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6940: paper adapter G2-admissible RUN_METADATA + scoped Owner-GO approval; CSIA partial post_6939_paper_g2_primary_run_metadata; Atlas entity; scheduler HOLD remains runtime blocker.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=WP_POST_6938_WHOLE_SYSTEM_G2_PRIMARY_CAUSAL_E2E_V1
+- modified_by=PR_6940_POST_6939_PAPER_G2_PRIMARY_RUN_METADATA_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

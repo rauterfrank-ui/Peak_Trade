@@ -126,6 +126,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |

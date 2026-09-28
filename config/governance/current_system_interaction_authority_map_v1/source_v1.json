@@ -743,6 +743,7 @@
       ],
       "evidence_refs": [
         "scripts/ops/primary_evidence_retention_v0.py",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
         "tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
       ]
     },
@@ -4538,6 +4539,20 @@
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
       "closure_note": "Probative E2E stops at missing independent durable primary evidence until bounded PAPER/SHADOW/TESTNET execute admission."
+    },
+    {
+      "id": "post_6939_paper_g2_primary_run_metadata",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6939: paper bounded-observation adapter closeout emits G2-admissible RUN_METADATA (source_execution_mode=PAPER and primary provenance fields); scoped Owner-GO approval record; scheduler HOLD remains separate admission gate.",
+      "evidence_refs": [
+        "config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
+        "tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py",
+        "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Bounded PAPER execute blocked at scheduler HOLD_NO_PAPER_RUN; no OBSERVED_BOUNDED_RUNTIME archive yet."
     },
     {
       "id": "m9_m10_enforcement",
