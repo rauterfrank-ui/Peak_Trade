@@ -352,6 +352,8 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:elementary_direction_v1
+    # atlas_entity_review: PR #6936 — MV2 cycle DDO capture join does not consume elementary_direction; semantics unchanged;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6804 MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # HIT=evidence_source_path_master_v2_runtime_cycle; ELEMENTARY_DIRECTION_SEMANTICS_UNCHANGED=true;
     # INDEX_PX_JOIN_DOES_NOT_FEED_DIRECTION=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false;
@@ -1216,6 +1218,8 @@ entities:
       bridge. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+    # atlas_entity_review: PR #6936 — lane store_root addressing unchanged; DDO ledger path derived under same root only;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 isolated lane-instance topology
     epistemic_class: CANONICAL_AUTHORITY
@@ -1430,6 +1434,7 @@ entities:
       remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+    # atlas_entity_review: PR #6936 — transitive dependency only; handoff compose unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join
     epistemic_class: CANONICAL_AUTHORITY
@@ -1467,6 +1472,8 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+    # atlas_entity_review: PR #6936 — optional ddo_durable_evidence_ledger_path in cycle kwargs only; S6/S7 semantics unchanged;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: S7 pre-persist gate on non-null outgoing_cursor;
     # FAILURE_OUTGOING_CURSOR_NOT_PRODUCED preserves upstream cycle diagnostics; no cursor fabrication;
     # ATLAS_AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
@@ -1491,6 +1498,7 @@ entities:
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
       - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py
+      - tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py
     notes: >-
       S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE
       harness-only path bind: reuse S3 lane_state_root as cursor_store_root
@@ -3920,6 +3928,8 @@ entities:
       Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+    # atlas_entity_review: PR #6936 — P5_10 layered bind seam unchanged; DDO capture is post-bind MV2 evidence only;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6815 FULL_CORE_PRE_EXTERNAL_CLOSURE_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
     # Layered episode-store bootstrap at S7 compose for bilateral ARMED→ENTER persistence;
     # P5_10_BIND_SEMANTICS_UNCHANGED=true; TRADING_SEMANTICS_CHANGED=false; ACTIVATION_CHANGED=false;
@@ -5438,6 +5448,9 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6936 Loop-A productive MV2 optional DDO learning capture join (observe-only ledger bind);
+    # CSIA MAP_UPDATE_REQUIRED partial refresh; RUNTIME_SEMANTICS_CHANGED=true for learning_capture host wiring only;
+    # no venue POST; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6932 PRE_EXTERNAL execute_network MV2 market handoff (public mark-price +
     # C1 finalized closes extractors reused from master_v2_runtime_cycle_v1); upstream wiring only;
     # RUNTIME_SEMANTICS_CHANGED=true for productive execute_network handoff; no venue POST; ATLAS_AUTHORITY=NONE.
@@ -5887,6 +5900,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py

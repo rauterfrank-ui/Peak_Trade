@@ -132,6 +132,8 @@ S8_INTENDED_EGRESS = "dict[lane_id, (cursor_store_root, lock_root, evidence_root
 S8_CONSUMPTION_SEAM = "pre_invoke_governed_cycle_path_params"
 GOVERNED_CYCLE_LOCK_ROOT_DIRNAME = "governed_cycle_lock"
 GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME = "governed_cycle_evidence"
+DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1 = "ddo_learning_capture_v1.jsonl"
+ENABLE_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_V1 = True
 MAY_INVOKE_GOVERNED_CYCLE = False
 PERSIST_SURFACE = (
     "ops.full_core_live_path_composition_root_v1."

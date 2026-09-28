@@ -1,29 +1,35 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "e0ae34a73ab1aeeb9da44429fc0234c6bba47d29",
+  "base_sha": "6f893759b7b69c6ca06d67de66f032060bc41741",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
     "docs/system_atlas/census/census_meta.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/runtime.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/constants_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py"
   ],
-  "changed_paths_sha256": "4dd2b9519d76c6bb83e6ff2c0476b803d69639c04c9d267f2b5ba6d3eb5dce6c",
+  "changed_paths_sha256": "04d3f298d955749f25c02903bb8b8020e33063e21d3e8b390ce85e02a6fff901",
   "covered_candidate_paths": [],
   "evidence_refs": [
-    "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
-    "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
-    "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+    "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/system_atlas/provenance/changes.yaml"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "Post PR #6934/PR #6935: refresh selected-future Owner policy bound_origin_main_sha; governance integrated-replay proof for post-#6933 dual-carrier persistence; CSIA MAP_UPDATE_REQUIRED partial statement + authority view; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces; no Master-V2 or runtime mutation; OD1 grant remains inactive.",
+  "reason": "PR #6936 Loop-A: optional observe-only DDO learning capture bind on Full-Core productive MV2 cycle + N5 ledger path; CSIA MAP_UPDATE_REQUIRED partial statement and learning_capture edge refresh; Atlas entity review on touched navigation surfaces; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED"
 }

@@ -415,6 +415,7 @@
     "tests/ops/test_current_system_map_finalization_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py",
+    "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
     "tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
     "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py",
     "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",

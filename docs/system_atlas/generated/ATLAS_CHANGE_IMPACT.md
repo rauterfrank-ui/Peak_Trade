@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post PR #6934/PR #6935: refresh selected-future Owner policy bound_origin_main_sha; governance integrated-replay proof for post-#6933 dual-carrier persistence; CSIA partial statement updated; merged Master-V2 unchanged; OD1 slice grant remains inactive; Atlas entity review on CSIA-coupled navigation/MI/sidestate surfaces only; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
+- PR #6936: Loop-A productive MV2 optional DDO learning capture join (observe-only); CSIA partial statement + learning_capture edge refresh; Atlas entity review on MV2/N5/full_core navigation surfaces; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6934_SELECTED_FUTURE_DUAL_CARRIER_REPLAY_PROOF_V1
+- modified_by=PR_6936_LOOP_A_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_JOIN_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
