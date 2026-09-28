@@ -8,6 +8,8 @@
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/schema_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
@@ -18,17 +20,18 @@
     "scripts/ops/law_map_v1/impact_v1.py",
     "tests/ops/test_current_law_impact_map_v1.py"
   ],
-  "changed_paths_sha256": "61a48559082243c2bafbd941178eef23a7f841795fbf0877c8040dc901060c16",
+  "changed_paths_sha256": "d3b5550552d390a9015ef970abfbe4601365c2b70cfd885edd5e54a2da343094",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+    ".github/workflows/truth_gates_pr.yml",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json"
   ],
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "tests/ops/test_current_law_impact_map_v1.py",
-    "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "tests/ops/test_current_law_impact_map_v1.py"
   ],
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "Initial CURRENT_LAW_IMPACT_MAP_V1 foundation + non-exhaustive bootstrap index; AUTHORITY=NONE; no Master V2/DP mutation."
+  "reason": "PR #6956: initial CURRENT_LAW_IMPACT_MAP_V1 source + derived views + CSIA coupling commit; change-bound currency; AUTHORITY=NONE."
 }

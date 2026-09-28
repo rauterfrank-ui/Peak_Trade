@@ -10,6 +10,9 @@
     "src/ops/governed_productive_",
     "src/ops/p5_10_productive_activation_and_binding_v1/",
     "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/",
-    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    ".github/workflows/truth_gates_pr.yml"
   ]
 }
