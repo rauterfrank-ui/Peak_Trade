@@ -18,7 +18,9 @@ def _main() -> int:
     parser.add_argument("--client-order-id", required=True)
     parser.add_argument("--instrument-id", required=True)
     parser.add_argument("--inst-type", default="SWAP")
-    parser.add_argument("--pretrade-decision-id", default="unknown-post-read-only-reconciliation-v1")
+    parser.add_argument(
+        "--pretrade-decision-id", default="unknown-post-read-only-reconciliation-v1"
+    )
     args = parser.parse_args()
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 import (

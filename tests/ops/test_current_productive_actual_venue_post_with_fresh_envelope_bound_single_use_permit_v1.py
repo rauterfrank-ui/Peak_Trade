@@ -160,16 +160,18 @@ def test_pre_live_proof_without_owner_go_consume(tmp_path: Path) -> None:
 def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None:
     envelope = _envelope()
     backend = _FakeKeychainBackend()
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=envelope,
-        store_root=tmp_path,
-        evidence_root=tmp_path / "evidence",
-        perform_real_venue_post=True,
-        k1_backend=backend,
-        opener_factory=lambda: _TimeoutOpener(),
-        read_only_get_transport=_TrustedReadTransport(),
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=tmp_path,
+            evidence_root=tmp_path / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=backend,
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=_TrustedReadTransport(),
+        )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
     assert result.real_venue_post_attempted == "true"

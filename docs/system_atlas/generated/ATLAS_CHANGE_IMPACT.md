@@ -14,7 +14,7 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
+ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=0
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- POST_6930: PRE_EXTERNAL WP-2 layered ENTER → one-shot E2E handoff prepare composition proof (transport-bound; no POST); same-process batch + conftest isolation needles; test-only; CSIA NO_MAP_IMPACT adjudication rebind; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- PR #6931 POST-first-real-attempt safety closure: baseline pin cf3aa15; pre-POST freshness; transport outcome phases; read-only exact-order GET; UNKNOWN reconciliation seam; CSIA MAP_UPDATE_REQUIRED on source_v1.json partial statements; atlas entity review on composition root + actual-venue-post contract; CURRENT_REVIEWED_AT_SHA unchanged (744a9c896); map_authority=NONE; no new Owner-GO venue POST in WP; POST_COUNT=0 in WP.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6930_PRE_EXTERNAL_E2E_HANDOFF_COMPOSITION_PROOF_V1
+- modified_by=POST_6931_POST_FIRST_REAL_ATTEMPT_SAFETY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

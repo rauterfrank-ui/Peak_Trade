@@ -139,6 +139,16 @@ changes:
       POST_6930: WP-2 PRE_EXTERNAL layered ENTER composed into one-shot E2E handoff prepare;
       same-process batch + conftest isolation needles; CSIA/Atlas diff-bound NO_MAP_IMPACT only.
       RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6931_post_first_real_attempt_safety_closure_v1
+    from: cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2
+    to: cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2
+    type: RUNTIME_SAFETY_CLOSURE
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
+    notes: >-
+      PR #6931: POST-first-real-attempt safety closure — baseline cf3aa15, pre-POST freshness,
+      HTTP POST outcome phases, read-only exact-order GET, UNKNOWN reconciliation; CSIA
+      MAP_UPDATE_REQUIRED; no new Owner-GO venue POST in WP. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

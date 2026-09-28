@@ -3782,6 +3782,8 @@ entities:
       fail-closed. Actual Enter POST is a separate Owner-GO (#6900). ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+    # atlas_entity_review: PR #6931 POST-first-real-attempt safety closure (baseline cf3aa15;
+    # pre-POST freshness; transport outcome; UNKNOWN read-only recon); ATLAS_AUTHORITY=NONE.
     kind: CONTRACT
     name: CURRENT productive actual venue Enter POST (one-shot) v1
     epistemic_class: CANONICAL_AUTHORITY
@@ -3800,15 +3802,22 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_outcome_v1.py
       - scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+      - scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py
     evidence_sources:
       - tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
+      - tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
       - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
     notes: >-
       Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing,
       eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1.
       PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live.
-      Baseline pin c93ea739 (post-#6901 merge currency). ATLAS_AUTHORITY=NONE.
+      PR6931: pre-POST freshness before GO consume; transport outcome phases; UNKNOWN read-only recon.
+      Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
     # PR_6907 PRE_EXTERNAL_WP1_CAP21_PUBLIC_INST_TYPE_BINDING: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
@@ -3831,7 +3840,7 @@ entities:
       PRE_EXTERNAL typed FinalOrderEnvelopeV1 handoff to PR6900 one-shot POST join boundary;
       closes FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_UNAVAILABLE_AT_RUNTIME; WP1 Cap-21
       public instType binding via cap24_productivity_root (#6907); no POST;
-      POST_GO_CONSUMED=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
+      POST_GO_CONSUMED=false; baseline pin cf3aa15. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1
     kind: CONTRACT
@@ -3850,7 +3859,7 @@ entities:
       - tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py
     notes: >-
       K1 PRE-POST chain bound to DM pre-live proof; dual Owner-GO literals; no venue POST;
-      PERMIT_CONSUMED_DURABLE=false; baseline pin c93ea739. ATLAS_AUTHORITY=NONE.
+      PERMIT_CONSUMED_DURABLE=false; baseline pin cf3aa15. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_productive_one_shot_enter_e2e_runtime_handoff_v1
     # atlas_entity_review: POST_6930 WP-2 PRE_EXTERNAL full compose → E2E handoff prepare proof; test-only;
@@ -5414,6 +5423,10 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6931 POST-first-real-attempt safety closure: baseline pin cf3aa15;
+    # pre-POST freshness; HTTP POST outcome phases; read-only exact-order GET; UNKNOWN reconciliation
+    # seam; fail-closed transport; CSIA MAP_UPDATE_REQUIRED; RUNTIME_SEMANTICS_CHANGED=true for POST
+    # slice only; no new Owner-GO POST in WP; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: PR #6929 POST_6928 PRE_EXTERNAL same-process test isolation (Master-V2 cycle
     # import binding + order-independence fixtures); test-only; RUNTIME_SEMANTICS_CHANGED=false;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -5872,6 +5885,9 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py
       - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py
       - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_outcome_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py
       - src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py

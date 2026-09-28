@@ -137,7 +137,9 @@ def test_direct_envelope_path_without_read_transport_blocks_post(tmp_path: Path)
             k1_backend=_FakeKeychainBackend(),
             read_only_get_transport=None,
         )
-    assert not (tmp_path / "full_core_current_productive_actual_venue_post_owner_go_consume_v1.json").is_file()
+    assert not (
+        tmp_path / "full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"
+    ).is_file()
 
 
 def test_unknown_position_freshness_fail_closed() -> None:
@@ -152,16 +154,18 @@ def test_unknown_position_freshness_fail_closed() -> None:
 
 
 def test_timeout_preserves_transport_failure_without_retry(tmp_path: Path) -> None:
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=_envelope(),
-        store_root=tmp_path,
-        evidence_root=tmp_path / "ev",
-        perform_real_venue_post=True,
-        k1_backend=_FakeKeychainBackend(),
-        opener_factory=lambda: _TimeoutOpener(),
-        read_only_get_transport=_TrustedReadTransport(),
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=_envelope(),
+            store_root=tmp_path,
+            evidence_root=tmp_path / "ev",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=_TrustedReadTransport(),
+        )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
     assert result.second_post_performed == "false"
