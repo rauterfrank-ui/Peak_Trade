@@ -15,6 +15,8 @@
   ],
   "changed_paths_sha256": "3106fdb7472d0fe3a9ff29676868fe8c40f321b6915fb9071f6ca3a2b70d5b2e",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py",
