@@ -17,6 +17,7 @@ PRICE_CLASS_INDEX = "INDEX_PRICE"
 
 MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD = "OKX_PUBLIC_MARK_PRICE_PAYLOAD"
 MARK_SOURCE_CAP24_MARK_SIDECAR = "CAP24_MARK_PRICES_BY_NATIVE_ID_V1"
+MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE = "EXPLICIT_SYNTHETIC_FIXTURE_MARK"
 INDEX_SOURCE_OKX_MARK_IDX_PX = "OKX_MARK_PAYLOAD_IDX_PX"
 INDEX_SOURCE_OKX_TICKER_IDX_PX = "OKX_TICKER_IDX_PX"
 INDEX_SOURCE_OKX_INDEX_TICKERS = "OKX_INDEX_TICKERS_IDX_PX"
@@ -157,6 +158,13 @@ def build_provenance_from_resolved_cmc_mark_and_index_v1(
         raise ProductiveCanonicalPriceProvenanceError("NONPOSITIVE_PRICE_FORBIDDEN")
     if mark_source in FORBIDDEN_MARK_SOURCES:
         raise ProductiveCanonicalPriceProvenanceError("CMC_MARK_SOURCE_FORBIDDEN")
+    if (
+        str(mark_source) == MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD
+        and str(index_source) == INDEX_SOURCE_EXPLICIT_TEST_FIXTURE
+    ):
+        raise ProductiveCanonicalPriceProvenanceError(
+            "SYNTHETIC_INDEX_OKX_MARK_SOURCE_COLLAPSE_FORBIDDEN"
+        )
     return ProductiveCycleCanonicalPriceProvenanceV1(
         mark_price_class=PRICE_CLASS_CMC_MARK,
         mark_source=str(mark_source),
@@ -186,7 +194,7 @@ def build_explicit_test_fixture_price_provenance_v1(
         raise ProductiveCanonicalPriceProvenanceError("NONPOSITIVE_PRICE_FORBIDDEN")
     return ProductiveCycleCanonicalPriceProvenanceV1(
         mark_price_class=PRICE_CLASS_CMC_MARK,
-        mark_source=MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD,
+        mark_source=MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE,
         mark_px=float(mark_px),
         index_price_class=PRICE_CLASS_INDEX,
         index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
@@ -198,6 +206,23 @@ def build_explicit_test_fixture_price_provenance_v1(
     )
 
 
+def build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+    *,
+    venue_native_id: str,
+    mark_px: float,
+    index_px: float,
+) -> ProductiveCycleCanonicalPriceProvenanceV1:
+    """Truthful provenance for governed synthetic close-chain marks (offline paths)."""
+
+    return build_provenance_from_resolved_cmc_mark_and_index_v1(
+        venue_native_id=venue_native_id,
+        mark_px=float(mark_px),
+        index_px=float(index_px),
+        mark_source=MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE,
+        index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    )
+
+
 __all__ = [
     "FINALIZATION_CURRENT",
     "FORBIDDEN_MARK_SOURCES",
@@ -206,6 +231,7 @@ __all__ = [
     "INDEX_SOURCE_OKX_MARK_IDX_PX",
     "INDEX_SOURCE_OKX_TICKER_IDX_PX",
     "MARK_SOURCE_CAP24_MARK_SIDECAR",
+    "MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE",
     "MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD",
     "PRICE_CLASS_CMC_MARK",
     "PRICE_CLASS_INDEX",
@@ -213,5 +239,6 @@ __all__ = [
     "ProductiveCycleCanonicalPriceProvenanceV1",
     "build_cmc_mark_provenance_from_okx_mark_price_payload_v1",
     "build_explicit_test_fixture_price_provenance_v1",
+    "build_provenance_from_governed_synthetic_close_mark_and_index_v1",
     "build_provenance_from_resolved_cmc_mark_and_index_v1",
 ]

@@ -1792,6 +1792,23 @@
       ],
       "reproof_required": false,
       "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00004",
+      "adjudication": "PROVEN_CURRENT",
+      "producer_ref": "sobj_canonical_price_provenance",
+      "consumer_ref": "current_productive_native_full_cycle_host_v1",
+      "statement": "L019/DIV-001 closed: governed synthetic close-chain mark_px uses EXPLICIT_SYNTHETIC_FIXTURE mark_source; OKX public mark_source with EXPLICIT_TEST_FIXTURE index collapse forbidden at builder.",
+      "expected_canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ],
+      "reproof_required": false,
+      "unknown_relation_id": null
     }
   ],
   "unclassified_current_surfaces": [

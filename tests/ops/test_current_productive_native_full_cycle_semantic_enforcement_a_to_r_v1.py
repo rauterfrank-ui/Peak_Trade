@@ -28,8 +28,19 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
     TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE,
+    MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD,
+    ProductiveCanonicalPriceProvenanceError,
+    build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_PRE_EXTERNAL_EFFECT,
+)
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    okx_public_mark_price_payload_v1,
 )
 from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 import (
     MismatchInstrumentTransportV1,
@@ -242,6 +253,40 @@ def test_Q_fail_closed_instrument_mismatch(tmp_path: Path) -> None:
     )
 
 
+def test_S_synthetic_close_mark_provenance_not_venue_public(
+    module_native_pre_external_result,
+) -> None:
+    host_text = HOST_SRC.read_text(encoding="utf-8")
+    advance_text = ADVANCE_SRC.read_text(encoding="utf-8")
+    assert "build_provenance_from_governed_synthetic_close_mark_and_index_v1" in host_text
+    assert "build_provenance_from_governed_synthetic_close_mark_and_index_v1" in advance_text
+    assert "build_provenance_from_resolved_cmc_mark_and_index_v1" not in host_text
+    assert "build_provenance_from_resolved_cmc_mark_and_index_v1" not in advance_text
+    synthetic = build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+        venue_native_id=_INST,
+        mark_px=101.0,
+        index_px=100.495,
+    )
+    assert synthetic.mark_source == MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE
+    assert synthetic.mark_source != MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD
+    with pytest.raises(ProductiveCanonicalPriceProvenanceError) as exc:
+        build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id=_INST,
+            mark_px=101.0,
+            index_px=100.495,
+            index_source="EXPLICIT_TEST_FIXTURE_INDEX",
+        )
+    assert "SYNTHETIC_INDEX_OKX_MARK_SOURCE_COLLAPSE_FORBIDDEN" in str(exc.value)
+    okx = build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+        mark_price_payload=okx_public_mark_price_payload_v1(
+            native_id=_INST, mark_px=101.0, index_px=100.5
+        ),
+        venue_native_id=_INST,
+    )
+    assert okx.mark_source == MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD
+    _ = module_native_pre_external_result
+
+
 def test_R_fail_closed_missing_capital_29p_admission(tmp_path: Path) -> None:
     payloads = dict(_identity_payloads(instrument_id=_INST, avail_eq=AVAIL_EQ))
     payloads[ENDPOINT_ACCOUNT_BALANCE] = {"code": "0", "data": []}
@@ -278,11 +323,12 @@ SEMANTIC_ENFORCEMENT_A_TO_R_MATRIX: dict[str, str] = {
     "P": "test_P_fail_closed_stale_observation",
     "Q": "test_Q_fail_closed_instrument_mismatch",
     "R": "test_R_fail_closed_missing_capital_29p_admission",
+    "S": "test_S_synthetic_close_mark_provenance_not_venue_public",
 }
 
 
 def test_semantic_enforcement_matrix_documents_all_invariants() -> None:
-    assert set(SEMANTIC_ENFORCEMENT_A_TO_R_MATRIX.keys()) == set("ABCDEFGHIJKLMNOPQR")
+    assert set(SEMANTIC_ENFORCEMENT_A_TO_R_MATRIX.keys()) == set("ABCDEFGHIJKLMNOPQRS")
     mod = ast.parse(Path(__file__).read_text(encoding="utf-8"))
     defined = {
         node.name

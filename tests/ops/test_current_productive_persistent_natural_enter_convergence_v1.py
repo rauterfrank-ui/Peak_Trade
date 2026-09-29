@@ -198,8 +198,7 @@ def test_n1_bootstrap_uses_injected_c1_closes_not_stale_market_kwargs(tmp_path: 
     mark_px = 1.0
     index_px = 0.995
     from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-        INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-        build_provenance_from_resolved_cmc_mark_and_index_v1,
+        build_provenance_from_governed_synthetic_close_mark_and_index_v1,
     )
 
     kwargs["mark_px"] = mark_px
@@ -207,12 +206,11 @@ def test_n1_bootstrap_uses_injected_c1_closes_not_stale_market_kwargs(tmp_path: 
     kwargs["finalized_closes"] = (1.0, 2.0, 3.0)
     kwargs["g17_typed_vol_producers"] = _lane_g17(pairs)
     kwargs["candles_payload"] = candles
-    kwargs["canonical_price_provenance"] = build_provenance_from_resolved_cmc_mark_and_index_v1(
-        venue_native_id=str(bound.venue_native_id),
-        mark_px=mark_px,
-        index_px=index_px,
-        index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    )
+    kwargs["canonical_price_provenance"] = build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id),
+            mark_px=mark_px,
+            index_px=index_px,
+        )
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     assert results["LANE_1"].governed_cycle_result.post_count == 0
     assert (Path(pairs["LANE_1"][0].lane_state_root) / CURSOR_FILENAME).is_file()

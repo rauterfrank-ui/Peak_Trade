@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    build_provenance_from_resolved_cmc_mark_and_index_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
 
 
@@ -65,11 +64,10 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
         incoming_cursor=None,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert cold.input_blocker == ""
@@ -95,11 +93,10 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
         incoming_cursor=cold.outgoing_cursor,
         g17_typed_vol_producer=g17.producer,
         **ledger_kw,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert warm.input_blocker == ""
@@ -132,11 +129,10 @@ def test_missing_seam_fail_closed_without_g17(tmp_path: Path) -> None:
         g17_typed_vol_producer=None,
         f1_m9_productive_apply_ledger_paths=f1_m9["apply_ledger_paths"],
         f1_m9_threshold_ledger_paths=f1_m9["threshold_ledger_paths"],
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert cycle.replay is not None

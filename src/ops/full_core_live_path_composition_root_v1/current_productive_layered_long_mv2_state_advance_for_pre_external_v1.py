@@ -24,8 +24,7 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
     lane_state_root_for,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    build_provenance_from_resolved_cmc_mark_and_index_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_controlled_external_market_observation_v1 import (
     NATURAL_ENTER_MARK_INCREMENT_V1,
@@ -84,11 +83,10 @@ def _lane_pair_v1(
 
 def _provenance_v1(*, bound: BoundInstrumentV1, mark_px: float) -> object:
     index_px = float(mark_px) * 0.995
-    return build_provenance_from_resolved_cmc_mark_and_index_v1(
+    return build_provenance_from_governed_synthetic_close_mark_and_index_v1(
         venue_native_id=str(bound.venue_native_id),
         mark_px=float(mark_px),
         index_px=index_px,
-        index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
     )
 
 

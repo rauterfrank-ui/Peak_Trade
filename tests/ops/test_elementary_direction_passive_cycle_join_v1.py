@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    build_provenance_from_resolved_cmc_mark_and_index_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
 
 
@@ -114,11 +113,10 @@ def test_first_cycle_exposes_neutral_without_changing_entry_owner() -> None:
         last_finalized_event_ts_unix=1_700_000_000.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=102.0,
             index_px=index_px,
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert result.elementary_direction is not None
