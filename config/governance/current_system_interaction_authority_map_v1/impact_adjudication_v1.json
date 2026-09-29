@@ -3,12 +3,14 @@
   "base_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_census_graph_v1/README.md",
     "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/bounded_productive_kernel_completeness_witness_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
@@ -17,25 +19,15 @@
     "scripts/ops/current_system_interaction_authority_map_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "9c6da3da40177cb21f1c3cb8e4805d033665abe8c9beb56ca8bfc7f54b048623",
-  "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/bounded_productive_kernel_completeness_witness_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/system_atlas/census/census_meta.yaml",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "tests/ops/test_system_atlas_v1.py"
-  ],
+  "changed_paths_sha256": "ef4d2a29f6458c6fd2e566ce97bc92929cf2ad1d4a0361ec7e112de55d128eef",
+  "covered_candidate_paths": [],
   "evidence_refs": [
     "config/governance/current_system_census_graph_v1/source_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/od_29p_normative_pack_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1: navigation-only rebind of review stamps, census graph fixpoint alignment, and CSIA baseline_sha/runbook_freshness_stamp; no domain role, edge decision_effect, or authority_class mutation.",
+  "reason": "ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1: structured CSIA source baseline_sha/runbook_freshness stamp update plus regenerated authority_view; navigation-only semantics preserved.",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "verdict": "MAP_UPDATE_REQUIRED"
 }
