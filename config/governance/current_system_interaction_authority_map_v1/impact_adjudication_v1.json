@@ -3,6 +3,8 @@
   "authority_effect": "NONE",
   "base_sha": "279244ea9ad457ce2dd779eacde58f30150c56a3",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
@@ -23,7 +25,7 @@
     "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
     "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
   ],
-  "changed_paths_sha256": "ba92531011ba2dd25d50cf8512e9fb6745a0414ae438465eb0291de7daf4a36f",
+  "changed_paths_sha256": "ca5b7dd93c02cee4e86becf1563a48cae696aad27cb73f86b8ccb815eb8a0a24",
   "covered_candidate_paths": [
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
@@ -35,5 +37,5 @@
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Native full-cycle host v6.1: CSIA domain current_productive_native_full_cycle_host_v1; atlas catalog entity and regenerated views; compose-only orchestration AUTHORITY=NONE."
+  "reason": "Native full-cycle host v6.1: CSIA domain current_productive_native_full_cycle_host_v1; atlas catalog entity and regenerated views; LAW map currency rebinding; compose-only orchestration AUTHORITY=NONE."
 }
