@@ -18,22 +18,27 @@
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
+    "scripts/ops/verify_registry_pointer_artifacts.py",
     "src/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-    "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py"
+    "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+    "tests/ops/test_verify_registry_pointer_artifacts_smoke.py"
   ],
-  "changed_paths_sha256": "c68e5a672254e744ed6fbff752b1fa17d922d19174c86f0ae157e70cff7b0f3e",
+  "changed_paths_sha256": "203dc436deb105ce6a67d0342acafb161bb3818e2e007eeebcad40c064f54540",
   "covered_candidate_paths": [
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
     "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
-    "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py"
+    "scripts/ops/verify_registry_pointer_artifacts.py",
+    "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+    "tests/ops/test_verify_registry_pointer_artifacts_smoke.py"
   ],
   "evidence_refs": [
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
     "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
     "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-    "tests/ops/test_remaining_29_evidence_exhaustion_v1.py"
+    "tests/ops/test_remaining_29_evidence_exhaustion_v1.py",
+    "tests/ops/test_verify_registry_pointer_artifacts_smoke.py"
   ],
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND: bind UCS-0032 to numeric venue adjudication; post-#6960 baseline; unk_sealed_venue_number_29p remains UNKNOWN."
+  "reason": "OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND plus PR CI hygiene (docs token, registry unavailable skip under --allow-expired); map/atlas regeneration only."
 }
