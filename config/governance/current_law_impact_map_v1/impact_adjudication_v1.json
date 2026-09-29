@@ -16,6 +16,7 @@
     "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
@@ -24,7 +25,7 @@
     "src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
     "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "9349d80308507bc055e7184dda204dd8e35feb6f66a13b5f3b7427d3de04737e",
+  "changed_paths_sha256": "8387e6e655b23bd6d575801190a6d684a1d193224d1a7c7e9846708296b2f51d",
   "covered_candidate_paths": [
     "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
     "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
