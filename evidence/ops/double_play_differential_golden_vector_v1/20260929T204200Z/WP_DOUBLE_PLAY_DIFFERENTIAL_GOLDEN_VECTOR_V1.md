@@ -13,10 +13,10 @@ PRODUCTION_CODE_MUTATED=false
 
 | Check | Result |
 | --- | --- |
-| `CURRENT origin/main` | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` (matches WP-1) |
+| `CURRENT origin&#47;main` | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` (matches WP-1) |
 | `HISTORICAL_TARGET_SHA` | `23dccab71eac79c8d39498bbe5bfc84bd54ebf9d` |
 | WP-1 artifacts | Present and parsed |
-| Worktree | Clean; historical via detached worktree `wt_historical/` (no main checkout) |
+| Worktree | Clean; historical via detached worktree `wt_historical&#47;` (no main checkout) |
 | `BASELINE_DRIFT` | **false** |
 
 ## 2. Imported WP-1 Minimal Divergence Set (exact)
@@ -253,4 +253,4 @@ WP-2 **behaviorally confirms** WP-1: DP **core** remains equivalent; **proven re
 
 Machine-readable: `WP_DOUBLE_PLAY_DIFFERENTIAL_GOLDEN_VECTOR_V1.json`
 
-Harness artifacts (evidence-only): `wp2_side_executor_v1.py`, `wp2_orchestrate_v1.py`, `side_current.json`, `side_historical.json`, `wt_historical/` (detached read-only tree).
+Harness artifacts (evidence-only): `wp2_side_executor_v1.py`, `wp2_orchestrate_v1.py`, `side_current.json`, `side_historical.json`, `wt_historical&#47;` (detached read-only tree).

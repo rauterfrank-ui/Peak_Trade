@@ -1,7 +1,7 @@
 # WP — LIVE COLD S7 BOOTSTRAP INITIALIZATION GOLDEN VECTOR V1
 
 **MODE:** READ_ONLY_RUNTIME_DIFFERENTIAL_GOLDEN_VECTOR  
-**BASELINE:** `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` @ `wp3/double-play-compatibility-boundary-v1`  
+**BASELINE:** `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` @ `wp3&#47;double-play-compatibility-boundary-v1`  
 **Worktree:** WP-3 + ROOT_WIRING_01 uncommitted (unchanged by this WP)
 
 ## Executive summary
@@ -29,9 +29,9 @@ After ROOT_WIRING_01 closed `BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED`, live cold boo
 
 No new live GET run required; identical failure captured in:
 
-`evidence/ops/double_play_root_wiring_01_patch_golden_vector_reproof_v1/20260929T221500Z/runtime/run_stdout.json`
+`evidence&#47;ops&#47;double_play_root_wiring_01_patch_golden_vector_reproof_v1&#47;20260929T221500Z&#47;runtime&#47;run_stdout.json`
 
-- Instrument: `0G-USDT-SWAP`, mark snapshot `0.3283` (`runtime/wp4_natural_enter_pre_external_v1/20260929T221500Z/productivity/mark_prices_by_native_id_v1.json`)
+- Instrument: `0G-USDT-SWAP`, mark snapshot `0.3283` (`runtime&#47;wp4_natural_enter_pre_external_v1&#47;20260929T221500Z&#47;productivity&#47;mark_prices_by_native_id_v1.json`)
 - POST=0, productive cycles=0
 
 ## Causal isolation (read-only)

@@ -361,7 +361,9 @@ def vector_f1_fresh_stale(h: Mapping[str, Any]) -> dict[str, Any]:  # noqa: ARG0
         has_f1_consumer = True
     except ImportError:
         RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS = 600
-        consumer_wiring_authorized_v1 = lambda **_: False  # type: ignore
+
+        def consumer_wiring_authorized_v1(**_: object) -> bool:  # type: ignore[misc]
+            return False
     from src.governance.f1_m9_productive_apply_ledger_v1 import (
         F1M9ProductiveApplyLedgerPathsV1,
         initialize_empty_revocation_ledger_v1,

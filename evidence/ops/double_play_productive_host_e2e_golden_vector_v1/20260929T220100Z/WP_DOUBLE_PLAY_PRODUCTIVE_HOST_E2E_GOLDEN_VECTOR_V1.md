@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | MODE | READ_ONLY_FORENSIC_DIFFERENTIAL_GOLDEN_VECTOR |
-| BRANCH | `wp3/double-play-compatibility-boundary-v1` |
+| BRANCH | `wp3&#47;double-play-compatibility-boundary-v1` |
 | BASELINE_SHA | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` |
 | HISTORICAL_TARGET_SHA | `23dccab71eac79c8d39498bbe5bfc84bd54ebf9d` |
 | HISTORICAL_ENTER_EVIDENCE_SHA | `34e0f887f351137a3566fe73c400b2fa570ff668` |

@@ -17,7 +17,7 @@ REPOSITORY_MUTATED=false
 | `HISTORICAL_TREE` | `700f0264f62e62a028597787dea00de284617294` |
 | `HISTORICAL_ENTER_EVIDENCE_SHA` | `34e0f887f351137a3566fe73c400b2fa570ff668` |
 | `FIRST_POST_TARGET_DP_WIRING` | `d590b8142210680805f8dc159c5a2fb684e87737` (#6889 F1/M9 consumer wiring) |
-| `WORKTREE_STATUS` | Clean; `main` = `origin/main`; no checkout/reset performed |
+| `WORKTREE_STATUS` | Clean; `main` = `origin&#47;main`; no checkout/reset performed |
 
 ## 2. Evidence method
 

@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|-------|
-| `CURRENT_BRANCH` | `wp3/double-play-compatibility-boundary-v1` |
+| `CURRENT_BRANCH` | `wp3&#47;double-play-compatibility-boundary-v1` |
 | `CURRENT_HEAD` | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` |
 | `ORIGIN_MAIN_HEAD` | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` |
 | `HEAD_BEFORE` | `8475ebb948d246efd0c70a1cf4101fd3bf1b54db` |
@@ -13,8 +13,8 @@
 
 ## 2. Imported WP-1 / WP-2 Evidence
 
-- `evidence/ops/double_play_old_current_contract_diff_v1/20260929T193700Z/WP_DOUBLE_PLAY_OLD_CURRENT_CONTRACT_DIFF_V1.{md,json}`
-- `evidence/ops/double_play_differential_golden_vector_v1/20260929T204200Z/WP_DOUBLE_PLAY_DIFFERENTIAL_GOLDEN_VECTOR_V1.{md,json}`
+- `evidence&#47;ops&#47;double_play_old_current_contract_diff_v1&#47;20260929T193700Z&#47;WP_DOUBLE_PLAY_OLD_CURRENT_CONTRACT_DIFF_V1.{md,json}`
+- `evidence&#47;ops&#47;double_play_differential_golden_vector_v1&#47;20260929T204200Z&#47;WP_DOUBLE_PLAY_DIFFERENTIAL_GOLDEN_VECTOR_V1.{md,json}`
 
 WP-2: `BEHAVIORAL_ROOT_DIVERGENCES=3`, `CORE_DIVERGENCES=0`, `RESTORATION_REQUIRES_SAFETY_WEAKENING=false`.
 
@@ -171,4 +171,4 @@ Non–DP-compatibility (explicitly preserved):
 
 ## 20. Final Adjudication
 
-**WP3_STATUS=PASS** — OLD effective Double-Play host contract restored at proven boundaries without DP core mutation, safety weakening, or external effects. Patch ready for Owner review on branch `wp3/double-play-compatibility-boundary-v1` (uncommitted).
+**WP3_STATUS=PASS** — OLD effective Double-Play host contract restored at proven boundaries without DP core mutation, safety weakening, or external effects. Patch ready for Owner review on branch `wp3&#47;double-play-compatibility-boundary-v1` (uncommitted).

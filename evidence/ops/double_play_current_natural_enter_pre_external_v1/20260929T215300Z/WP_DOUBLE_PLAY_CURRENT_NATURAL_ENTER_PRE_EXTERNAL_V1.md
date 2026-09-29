@@ -2,7 +2,7 @@
 
 ## A. Pre-existing WP-3 facts (input only)
 
-Consumed from `evidence/ops/double_play_compatibility_boundary_patch_v1/20260929T214800Z/` and uncommitted worktree diff on branch `wp3/double-play-compatibility-boundary-v1` @ `8475ebb`:
+Consumed from `evidence&#47;ops&#47;double_play_compatibility_boundary_patch_v1&#47;20260929T214800Z&#47;` and uncommitted worktree diff on branch `wp3&#47;double-play-compatibility-boundary-v1` @ `8475ebb`:
 
 - `WP3_STATUS=PASS`, `BEHAVIORAL_ROOT_DIVERGENCES_AFTER=0`, `CORE_FILES_CHANGED=0`
 - Compatibility targets: F1/M9 boundary alpha, G17 produced-only bind, layered CMC-mark init
@@ -28,7 +28,7 @@ Verified via `./scripts/pt -c` on this worktree (no harness substitute for confi
 ## C. Runtime observations
 
 **Entrypoint:** `scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`  
-**Flags:** `--wp-branch-evidence-run` (WP-3 uncommitted on HEAD; protected 29P chain surfaces clean vs `origin/main`)
+**Flags:** `--wp-branch-evidence-run` (WP-3 uncommitted on HEAD; protected 29P chain surfaces clean vs `origin&#47;main`)
 
 **Bounds (canonical S6 hard caps):**
 
@@ -98,4 +98,4 @@ The entry script performs a separate G17 mark-history GET but does **not** attac
 ## Git / delivery
 
 - No commit, push, PR, or production/test edits in WP-4.
-- Runtime evidence: this directory + `runtime/wp4_natural_enter_pre_external_v1/20260929T215300Z/productivity/` (Cap24 selection state from real GET; not used for fixture ENTER).
+- Runtime evidence: this directory + `runtime&#47;wp4_natural_enter_pre_external_v1&#47;20260929T215300Z&#47;productivity&#47;` (Cap24 selection state from real GET; not used for fixture ENTER).
