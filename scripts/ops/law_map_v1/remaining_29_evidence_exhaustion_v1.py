@@ -19,8 +19,11 @@ R29_JSON = (
 RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 EQUITY_RAT = "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
 
-POST_MERGE_BASELINE_SHA = "570c437eb45295929128a13b2bc194bfb1fc063a"
+POST_MERGE_BASELINE_SHA = "5fbc61636b14e912f7148ef6bb91e4752db71a6a"
 OD_ADJ = "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+OD_NUMERIC = (
+    "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+)
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
 
 SOBJ_NAV_EXTERNAL = "sobj_nav_external_effect_seam"
@@ -186,12 +189,13 @@ def _build_rows() -> list[ExhaustionRow]:
                 "EXISTING_CURRENT_EVIDENCE_BINDABLE",
                 "PROVEN_CURRENT",
                 (
+                    OD_NUMERIC,
                     OD_ADJ,
                     "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
                 ),
                 None,
                 None,
-                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_lref="OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
                 bind_sobj=SOBJ_NAV_B05,
             ),
             row(
@@ -541,6 +545,12 @@ def _additive_lrefs() -> list[dict[str, Any]]:
             SOBJ_NAV_B05,
         ),
         (
+            "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
+            OD_NUMERIC,
+            "od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1",
+            SOBJ_NAV_B05,
+        ),
+        (
             "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
             RUNBOOK,
             "CURRENT Venue-Plan tdMode and Order-Environment Authority",
@@ -698,6 +708,20 @@ def apply_bindings(doc: dict[str, Any]) -> dict[str, Any]:
             "proof_refs": [
                 "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
                 OD_ADJ,
+            ],
+            "base_sha": POST_MERGE_BASELINE_SHA,
+            "head_sha": POST_MERGE_BASELINE_SHA,
+            "adjudication_status": "OWNER_ADJUDICATED_CURRENT",
+        }
+    )
+    reproof.append(
+        {
+            "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+            "law_ref_ids": ["OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"],
+            "affected_semantic_object_ids": ["sobj_nav_b05_account_equity_productive_chain"],
+            "proof_refs": [
+                "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+                OD_NUMERIC,
             ],
             "base_sha": POST_MERGE_BASELINE_SHA,
             "head_sha": POST_MERGE_BASELINE_SHA,

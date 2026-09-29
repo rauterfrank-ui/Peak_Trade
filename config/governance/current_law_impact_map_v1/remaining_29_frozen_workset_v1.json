@@ -2,7 +2,7 @@
   "authority": "NONE",
   "ssot": false,
   "navigation_evidence_only": true,
-  "post_merge_baseline_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+  "post_merge_baseline_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
   "frozen_remaining_workset_count": 29,
   "frozen_remaining_workset_sha256": "658f643ca5e724b9b0f09129e5179a21a291738a2597b7a8ba9f2a95b83e1bb6",
   "census_id": "REMAINING_29_EVIDENCE_EXHAUSTION_V1",
@@ -104,12 +104,13 @@
       "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
       "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
         "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
         "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py"
       ],
       "missing_canonical_fact": null,
       "owner_decision_boundary": null,
-      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_lref": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
       "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {

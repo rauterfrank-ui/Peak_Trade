@@ -6,7 +6,7 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+  "baseline_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
   "law_references": [
     {
       "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
@@ -368,6 +368,23 @@
       "evidence_refs": [
         "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
+      "canonical_source": "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
+      "canonical_anchor": "od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1",
+      "source_sha256": "f16f4e003b2c453d658c8d00c370727c179e1d476753b26215a4c5305237cee9",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
     {
@@ -1572,6 +1589,22 @@
   "conflicting_relations": [],
   "reproof_index": [
     {
+      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+      "law_ref_ids": [
+        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
       "id": "reproof_od_account_equity_sizing_source",
       "law_ref_ids": [
         "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
@@ -1585,6 +1618,22 @@
       ],
       "base_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
       "head_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {

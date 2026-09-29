@@ -1,7 +1,7 @@
 <!-- GENERATED FILE. DO NOT EDIT BY HAND. AUTHORITY=NONE SSOT=false NAVIGATION/EVIDENCE ONLY -->
 # Remaining-29 Evidence Exhaustion
 
-post_merge_baseline_sha=570c437eb45295929128a13b2bc194bfb1fc063a
+post_merge_baseline_sha=5fbc61636b14e912f7148ef6bb91e4752db71a6a
 frozen_remaining_workset_sha256=658f643ca5e724b9b0f09129e5179a21a291738a2597b7a8ba9f2a95b83e1bb6
 
 - UCS-0002 exhaustion=GENUINELY_CANONICAL_OWNER_BLOCKED domain=UNKNOWN_CURRENT surface=src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py
