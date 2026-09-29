@@ -425,6 +425,8 @@ def test_injected_path_mints_current_cap21_to_cap24_without_canary_or_manual_cho
     assert result.cap23_selected_instrument_id != CANARY_DEFAULT_INSTRUMENT_ID
     assert result.cap23_selected_instrument_id != DEFAULT_INSTRUMENT_ID
     assert result.cap24_bound_instrument_id
+    assert result.bound_instrument is not None
+    assert result.bound_instrument.venue_native_id == _EXPECTED_SELECTED
     assert result.p01_status == "DOES_NOT_APPLY"
     assert result.post_count == "0"
     assert claims["RESELECTION_AUTHORIZED_BY_THIS_GO"] == "true"

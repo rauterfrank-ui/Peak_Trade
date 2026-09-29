@@ -3902,6 +3902,27 @@ entities:
       K1 PRE-POST chain bound to DM pre-live proof; dual Owner-GO literals; no venue POST;
       PERMIT_CONSUMED_DURABLE=false; baseline pin cf3aa15. ATLAS_AUTHORITY=NONE.
 
+  - id: RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1
+    kind: RUNTIME_COMPONENT
+    name: CURRENT productive native full-cycle host v1
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: NATIVE_FULL_CYCLE_HOST_V6
+    authority_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+    source_paths:
+      - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_controlled_external_market_observation_v1.py
+    evidence_sources:
+      - tests/ops/test_current_productive_native_full_cycle_host_v1.py
+      - runtime/current_productive/e2e_10k_native_full_cycle_v6/run_native_v6.py
+    notes: >-
+      Single-invocation composition: EEA Cap21–Cap24 typed bound handoff, MV2 advance without
+      pre-armed test fixture, Full-Core PRE_EXTERNAL; TRADING/RANKING/SELECTION/APPLY/
+      EXTERNAL_EFFECT authority=NONE; no POST.
+
   - id: CONTRACT:current_productive_one_shot_enter_e2e_runtime_handoff_v1
     # atlas_entity_review: POST_6930 WP-2 PRE_EXTERNAL full compose → E2E handoff prepare proof; test-only;
     # PR_6907 PRE_EXTERNAL_WP1_CAP21_PUBLIC_INST_TYPE_BINDING: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;

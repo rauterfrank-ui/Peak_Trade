@@ -244,6 +244,7 @@ class CurrentProductiveEeaUniverseTo29PResultV1:
     post_count: str
     evidence_manifest: str
     manifest_verify_rc: int
+    bound_instrument: BoundInstrumentV1 | None = None
 
 
 def _utc_now_iso_v1() -> str:
@@ -845,6 +846,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         post_count="0",
         evidence_manifest=str(store / "MANIFEST.sha256"),
         manifest_verify_rc=manifest_rc,
+        bound_instrument=bound,
     )
 
 
@@ -954,6 +956,7 @@ def _persist_terminal_v1(
         post_count="0",
         evidence_manifest=str(store / "MANIFEST.sha256"),
         manifest_verify_rc=manifest_rc,
+        bound_instrument=None,
     )
 
 

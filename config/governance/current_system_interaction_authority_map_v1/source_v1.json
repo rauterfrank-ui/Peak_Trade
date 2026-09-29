@@ -1819,6 +1819,29 @@
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md"
       ]
+    },
+    {
+      "id": "current_productive_native_full_cycle_host_v1",
+      "tier": "INTERMEDIATE",
+      "role": "Compose-only native full-cycle host: EEA Cap21–Cap24 typed bound handoff, production MV2 state advance, Full-Core PRE_EXTERNAL closure. AUTHORITY=NONE; no rerank/reselect/sizing/trading/POST authority.",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1.current_productive_native_full_cycle_host_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PRODUCTIVE_COMPOSITION_ORCHESTRATION",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_controlled_external_market_observation_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "docs/system_atlas/entities/catalog.yaml"
+      ]
     }
   ],
   "edges": [

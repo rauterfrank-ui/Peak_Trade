@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,10 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1` |
-| `RUNTIME_COMPONENT:od_29p_normative_pack_v1` |
-| `RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1` |
+| `RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- OD-29P-NORMATIVE-PACK-V1 closes sealed 29P pack/epoch/venue-number pins; CSIA treasury_to_admission navigation alignment; atlas catalog entity for od_29p_normative_pack_v1; no GET/POST; AUTHORITY=NONE.
+- Native full-cycle host composition entry (RUNTIME_COMPONENT) and CSIA domain current_productive_native_full_cycle_host_v1; regenerated atlas views; no trading/ selection/sizing authority; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=OD_29P_NORMATIVE_PACK_V1_CANONICAL_CLOSURE
+- modified_by=NATIVE_FULL_CYCLE_HOST_V6_1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
