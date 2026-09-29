@@ -1568,6 +1568,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+    # atlas_entity_review: PR #6976 — canonical_price_provenance_by_lane handoff from N5 orchestrator Cap24 compose; per-lane mark/index aligned to bound.venue_native_id; fail-closed dual-provenance forbidden; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # PR_6913 T2_S7_OUTGOING_CURSOR_CONTRACT_REPAIR: T2 compose failures map to structured join error (not T2_CYCLE_EXCEPTION); ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # PR_6909 POST6908: invoke_join cold-start aligns MV2 cap61 floor to injected venue C1 (candle_last-60) before governed cycle; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -1714,6 +1715,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    # atlas_entity_review: PR #6976 — cap24_lane_canonical_price_provenance_compose_v1 derives per-lane ProductiveCycleCanonicalPriceProvenanceV1 from Cap24 mark sidecar + bound native id before N1 readiness; AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy productive runtime orchestrator
     epistemic_class: CANONICAL_AUTHORITY
@@ -1724,20 +1726,24 @@ entities:
       - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
     source_paths:
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
     evidence_sources:
       - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py
+      - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py
       - src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py
+      - tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py
       - tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py
     notes: >-
       PRODUCTIVE_FULL_AUTONOMY_N5_RUNTIME_ORCHESTRATOR composes existing
       current_mf_n5 join owners from finished ranking/membership through
       Cap23/Cap24/ingest/MV2+DP handoff, sequential governed cycles, and
-      shared portfolio budget owner (PR #6621 seam). Terminal rollup is
-      PRE_EXTERNAL readiness by default. AUTONOMY_TRADING_DECISION_AUTHORITY=false.
+      shared portfolio budget owner (PR #6621 seam). Cap24 mark sidecar
+      provenance is composed per occupied lane before N1/MV2 consumer handoff.
+      Terminal rollup is PRE_EXTERNAL readiness by default. AUTONOMY_TRADING_DECISION_AUTHORITY=false.
       MF_PRODUCTIVE_JOIN=false. HOST_JOIN=false.
       PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED productively.
       target_cardinality 2..5 is architectural/test harness only.

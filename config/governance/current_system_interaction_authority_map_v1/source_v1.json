@@ -498,10 +498,14 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py"
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py"
       ],
       "evidence_refs": [
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
         "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -4513,14 +4517,16 @@
       "epistemic_class": "PARTIAL",
       "statement": "Productive MV2 cycle host requires explicit composition-root canonical mark/index provenance; ORDINARY_MARKET_CANDLE_CLOSE is forbidden as M_t; index_px must not collapse to mark_px; SideState venue observation seed is forbidden at P5 bind.",
       "evidence_refs": [
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
         "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+        "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
         "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "PR #6955: SEM-DIV-00001/00002/00006 enforcement repair; composition-root adapter only; Master V2/Double Play code untouched; AUTHORITY=NONE."
+      "closure_note": "PR #6976: N5 FA orchestrator derives per-lane Cap24 mark-sidecar provenance aligned to bound.venue_native_id before MV2 consumer handoff; Full-Core adapter unchanged; AUTHORITY=NONE."
     },
     {
       "id": "portfolio_budget",

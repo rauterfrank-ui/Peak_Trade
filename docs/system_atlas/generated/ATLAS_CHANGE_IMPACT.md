@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=16
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,32 +40,18 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
-| `BINDER:bound_instrument_v1` |
-| `CAPABILITY:cap_1_1_reconciliation` |
-| `CAPABILITY:cap_2_4_runtime_binding` |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
-| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
-| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
-| `CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1` |
-| `RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
-| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
-| `RUNTIME_COMPONENT:ddo_capture_v0` |
-| `RUNTIME_COMPONENT:elementary_direction_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `SELECTOR:single_selected_future_policy` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_cap24_binds` |
-| `REL:r_ddo_capture_observes_binding` |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
-| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
-| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
+| `REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff` |
+| `REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness` |
+| `REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget` |
 
 ## NEW_RELATIONS
 
@@ -111,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1: persisted universe landscape snapshot + census/CSIA/runbook/MOT convergence at dfcf4d04; intent_to_execution CONSTRAINT_FLOW; PR #6974 reconciliation→MV2 admission navigation; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6976: N5 FA orchestrator Cap24 per-lane canonical price provenance compose; consumer join canonical_price_provenance_by_lane; CSIA navigation refresh; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1
+- modified_by=N5_CAP24_MARK_TO_PER_LANE_CANONICAL_PRICE_PROVENANCE_COMPOSE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
