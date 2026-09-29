@@ -23,11 +23,13 @@ from src.ops.ranking_universe_to_full_core_ssf_handoff_contract_v1 import (
 from src.ops.whole_system_connection_closure_bounded_wp_v1.constants_v1 import (
     INTENTIONALLY_LEGACY_CYCLE_CALLERS,
     PRODUCTIVE_CURSOR_BACKED_CYCLE_CALLERS,
+    PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS,
     SOLE_TRADING_DECISION_AUTHORITY,
 )
 
 _CYCLE_INVOKE = "run_current_productive_master_v2_runtime_cycle_v1("
 _BIND_KWARGS = "productive_layered_core_bind_cycle_kwargs_v1("
+_COMPOSE_OCCUPIED_LANE_CYCLE = "compose_occupied_lane_mv2_dp_durable_cycle_v1("
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 _CYCLE_MODULE = (
     _REPO_ROOT / "src/ops/full_core_live_path_composition_root_v1/"
@@ -117,10 +119,13 @@ def prove_whole_system_connection_closure_v1() -> WholeSystemConnectionProofResu
 
     productive_expected = frozenset(PRODUCTIVE_CURSOR_BACKED_CYCLE_CALLERS)
     legacy_expected = frozenset(INTENTIONALLY_LEGACY_CYCLE_CALLERS)
+    occupied_lane_composed_expected = frozenset(PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS)
     cycle_module_rel = _rel(_CYCLE_MODULE)
     observed = _scan_src_cycle_callers() - {cycle_module_rel}
 
-    unknown = sorted(observed - productive_expected - legacy_expected)
+    unknown = sorted(
+        observed - productive_expected - legacy_expected - occupied_lane_composed_expected
+    )
     miswired: list[str] = []
     for rel_path in sorted(productive_expected):
         path = _REPO_ROOT / rel_path
@@ -129,6 +134,13 @@ def prove_whole_system_connection_closure_v1() -> WholeSystemConnectionProofResu
             miswired.append(f"{rel_path}:missing_cycle_invoke")
         elif _BIND_KWARGS not in text:
             miswired.append(f"{rel_path}:missing_layered_bind_kwargs")
+    for rel_path in sorted(occupied_lane_composed_expected):
+        path = _REPO_ROOT / rel_path
+        text = path.read_text(encoding="utf-8")
+        if _CYCLE_INVOKE not in text:
+            miswired.append(f"{rel_path}:missing_cycle_invoke")
+        elif _COMPOSE_OCCUPIED_LANE_CYCLE not in text:
+            miswired.append(f"{rel_path}:missing_occupied_lane_compose_cycle")
 
     ok = (
         not guard_failures

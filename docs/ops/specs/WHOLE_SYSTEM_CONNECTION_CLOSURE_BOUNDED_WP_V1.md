@@ -39,6 +39,7 @@ does not flip cutover flags, select a final `d_t` formula, or activate external 
 | Gap class | Disposition |
 | --- | --- |
 | Cursor-backed productive MV2 cycle callers | **REQUIRED_CLOSURE=done** via explicit `productive_layered_core_bind_cycle_kwargs_v1` (store + scope gate) |
+| Native full-cycle MV2 state advance (`current_productive_layered_long_mv2_state_advance_for_pre_external_v1`) | **CURRENT_PRODUCTIVE_NATIVE_FULL_CYCLE_MV2_STATE_ADVANCE** — origin/upscope via `run_current_productive_master_v2_runtime_cycle_v1`; ARM via `compose_occupied_lane_mv2_dp_durable_cycle_v1` (no bind-kwargs seam in-module) |
 | Cursor-less historical evidence executors (v1/v2/flatten/envelope) | **INTENTIONALLY_LEGACY** — no synthetic scope carrier |
 | `FINAL_D_T_FORMULA_SELECTED=false` | **INTENTIONALLY_ISOLATED** — no kanonische numerische Formel; O-R2 `missing_authorized_d_t_fail_closed` remains contract-only; P5.10 seam uses P4 **transport** only |
 | P5.10B mechanical completion (T8–T14) | **ALREADY_ADJUDICATED** — B2/B4 contracts; productive handoff passes `mechanical_next_side_state=None` until mechanical tick class is productively required |

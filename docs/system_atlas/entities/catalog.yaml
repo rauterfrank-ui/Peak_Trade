@@ -3570,6 +3570,8 @@ entities:
       (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
+    # atlas_entity_review: PR #6969 — classify native full-cycle MV2 state-advance caller in static proof only;
+    # PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: Whole-system connection closure bounded WP v1
     epistemic_class: CANONICAL_AUTHORITY
