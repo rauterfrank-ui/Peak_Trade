@@ -3902,14 +3902,15 @@ entities:
       K1 PRE-POST chain bound to DM pre-live proof; dual Owner-GO literals; no venue POST;
       PERMIT_CONSUMED_DURABLE=false; baseline pin cf3aa15. ATLAS_AUTHORITY=NONE.
 
-  - id: ORCHESTRATION:current_productive_native_full_cycle_host_v1
-    kind: ORCHESTRATION
+  - id: RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1
+    kind: RUNTIME_COMPONENT
     name: CURRENT productive native full-cycle host v1
-    epistemic_class: COMPOSITION
+    epistemic_class: NAVIGATION_ONLY
     current_canonical: true
     current_status: CURRENT_CANONICAL
     modified_by: NATIVE_FULL_CYCLE_HOST_V6
-    authority_sources: []
+    authority_sources:
+      - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
     source_paths:
       - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py
