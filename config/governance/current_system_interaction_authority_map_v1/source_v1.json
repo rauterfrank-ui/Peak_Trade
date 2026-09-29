@@ -4707,16 +4707,17 @@
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); numeric CURRENT venue observation bind and fresh trusted GET execution remain absent; Companion C2 remains unbound.",
+      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); 29P fresh-trusted numeric venue bind adjudicated at contract level (OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND); productive GET execution, U01/P01 mint preconditions, and Companion C2 remain unbound.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "PARTIAL retained for numeric venue bind only; sizing source semantics adjudicated under OD_ACCOUNT_EQUITY_SIZING_SOURCE."
+      "closure_note": "PARTIAL retained for live GET execution and C2; sizing source under OD_ACCOUNT_EQUITY_SIZING_SOURCE; numeric observation bind under OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND."
     },
     {
       "id": "loops_a_and_b",

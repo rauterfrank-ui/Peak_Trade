@@ -405,6 +405,16 @@ def main(
             print(f"ERR: {detail}. Re-run with --allow-expired for PR hygiene.", file=sys.stderr)
             return 1
 
+        if status == STATUS_UNAVAILABLE_UNKNOWN and args.allow_expired and not records:
+            detail = (
+                f"pinned historical artifacts for run_id={run_id} are unavailable "
+                "(empty metadata list after retention purge); not a product/verification regression"
+            )
+            print("REGISTRY_POINTER_UNAVAILABLE_ALLOWED=true")
+            print(f"INFO: {detail}; skipping download and invariant verification")
+            _gha_warning("REGISTRY_POINTER_UNAVAILABLE", detail)
+            return 0
+
         if status != STATUS_AVAILABLE:
             print(
                 "ERR: registry pointer artifacts are not available "
