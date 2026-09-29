@@ -256,12 +256,15 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
         identities: dict[str, str] = {}
         bound = None
         cap_status = first_blocker
+        mv2_reconciliation_admission = None
     else:
-        cap_status, identities, bound, _selection = _run_cap21_to_cap24_v1(
-            acquisition=acquisition_result,
-            store=store,
-            repo_sha=repo_sha,
-            observed_unix=observed_unix,
+        cap_status, identities, bound, _selection, mv2_reconciliation_admission = (
+            _run_cap21_to_cap24_v1(
+                acquisition=acquisition_result,
+                store=store,
+                repo_sha=repo_sha,
+                observed_unix=observed_unix,
+            )
         )
         first_blocker = cap_status if cap_status != "PASS" else ""
 
@@ -455,6 +458,8 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                     g17_producer = g17_join.producer
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
+            elif mv2_reconciliation_admission is None and not market_blocker:
+                market_blocker = "MASTER_V2_RECONCILIATION_ADMISSION_MISSING"
             elif not market_blocker and g17_producer is not None:
                 index_provenance_source = INDEX_SOURCE_OKX_INDEX_TICKERS
                 if index_from_mark is not None:
@@ -491,6 +496,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                             existing_position_side=existing_side,
                             g17_typed_vol_producer=g17_producer,
                             canonical_price_provenance=price_provenance,
+                            master_v2_reconciliation_admission=mv2_reconciliation_admission,
                         )
                     except (TypeError, RuntimeError, ValueError) as exc:
                         market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"

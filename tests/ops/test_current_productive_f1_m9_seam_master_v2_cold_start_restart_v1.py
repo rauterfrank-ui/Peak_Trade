@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_test_master_v2_reconciliation_admission_v1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
@@ -69,6 +73,9 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
             mark_px=float(last),
             index_px=float(index_px),
         ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     )
     assert cold.input_blocker == ""
     assert cold.outgoing_cursor is not None
@@ -97,6 +104,9 @@ def test_fresh_lane_cold_start_then_restart_preserves_cursor_lineage(tmp_path: P
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
+        ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
         ),
     )
     assert warm.input_blocker == ""
@@ -133,6 +143,9 @@ def test_missing_seam_fail_closed_without_g17(tmp_path: Path) -> None:
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
+        ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
         ),
     )
     assert cycle.replay is not None

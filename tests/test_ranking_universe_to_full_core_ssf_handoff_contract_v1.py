@@ -316,6 +316,7 @@ def test_master_v2_consumes_bound_identity_and_must_not_reidentify() -> None:
     signature = inspect.signature(run_current_productive_master_v2_runtime_cycle_v1)
     bound_param = signature.parameters["bound_instrument"]
     assert bound_param.annotation in {BoundInstrumentV1, "BoundInstrumentV1"}
+    assert "master_v2_reconciliation_admission" in signature.parameters
     source = MASTER_V2_SOURCE.read_text(encoding="utf-8")
     assert "bound_instrument.instrument_id" in source
     assert "bound_instrument.venue_native_id" in source

@@ -641,6 +641,7 @@ def run_single_selected_future_runtime_binding_gate_v1(
             "hard_stop": gate.hard_stop,
             "blockers": list(gate.blockers),
             "master_v2_reconciliation_state": gate.master_v2_reconciliation_state,
+            "evidence_digest": gate.evidence.digest(),
         }
         recon_alpha = bool(gate.alpha_enabled)
         if gate.hard_stop or not gate.alpha_enabled:

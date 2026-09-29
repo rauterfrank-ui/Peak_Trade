@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_test_master_v2_reconciliation_admission_v1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
@@ -280,6 +284,9 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
             mark_px=float(last),
             index_px=float(index_px),
         ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     )
     assert cycle.input_blocker == ""
     assert cycle.replay is not None
@@ -332,6 +339,9 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
             mark_px=float(last),
             index_px=float(index_px),
         ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     )
     with_restored = run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=bound,
@@ -353,6 +363,9 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
+        ),
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
         ),
     )
     assert without_producer.input_blocker == ""
@@ -401,6 +414,9 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
             mark_px=last,
             index_px=index_px,
         ),
+        "master_v2_reconciliation_admission": non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     }
 
 
@@ -427,7 +443,7 @@ def test_duplicate_noop_reuses_prior_estimate_for_cmc_and_presence_gate(
     assert bound.bind_performed is True
     assert bound.context.canonical_volatility_estimate is not None
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer)
+        **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer),
     )
     assert cycle.input_blocker == ""
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
@@ -447,7 +463,7 @@ def test_master_v2_cycle_produced_estimate_does_not_presence_fail(
     )
     assert created.producer is not None
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        **_cycle_kwargs("g17-presence-produced", producer=created.producer)
+        **_cycle_kwargs("g17-presence-produced", producer=created.producer),
     )
     assert cycle.input_blocker == ""
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons

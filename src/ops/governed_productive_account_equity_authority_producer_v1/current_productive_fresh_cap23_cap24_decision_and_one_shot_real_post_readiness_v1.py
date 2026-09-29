@@ -103,6 +103,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+    ProductiveMasterV2ReconciliationAdmissionV1,
+    build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -280,7 +284,13 @@ def _run_cap21_to_cap24_v1(
     store: Path,
     repo_sha: str,
     observed_unix: float,
-) -> tuple[str, dict[str, str], BoundInstrumentV1 | None, SingleSelectedFutureSelectionV1 | None]:
+) -> tuple[
+    str,
+    dict[str, str],
+    BoundInstrumentV1 | None,
+    SingleSelectedFutureSelectionV1 | None,
+    ProductiveMasterV2ReconciliationAdmissionV1 | None,
+]:
     empty = {
         "cap21_snapshot_id": "",
         "cap21_event_time": "",
@@ -301,7 +311,7 @@ def _run_cap21_to_cap24_v1(
         session_id_prefix="current-productive-dj",
     )
     if cap21_23.ok is not True or cap21_23.selection is None:
-        return cap21_23.status, empty, None, cap21_23.selection
+        return cap21_23.status, empty, None, cap21_23.selection, None
     selection = cap21_23.selection
     empty["cap21_snapshot_id"] = cap21_23.cap21_snapshot_id
     empty["cap21_event_time"] = cap21_23.cap21_event_time
@@ -342,12 +352,22 @@ def _run_cap21_to_cap24_v1(
     )
     bound = gate.bound
     if bound is None or not isinstance(bound, BoundInstrumentV1) or gate.ok is not True:
-        return "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED", empty, None, selection
+        return "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED", empty, None, selection, None
     bound = require_current_productive_29p_bound_instrument_v1(bound)
     if bound.venue_native_id == CANARY_DEFAULT_INSTRUMENT_ID:
         raise CurrentProductiveFreshCap23Cap24ReadinessError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
     empty["cap24_bound_instrument_id"] = bound.instrument_id
-    return "PASS", empty, bound, selection
+    admission = build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1(
+        reconciliation_result=gate.reconciliation_result,
+        session_id="current-productive-dj-binding",
+        repository_sha=repo_sha,
+        bound_instrument_id=str(bound.instrument_id),
+        binding_gate_ok=bool(gate.ok),
+        binding_alpha_enabled=bool(gate.alpha_enabled),
+    )
+    if admission is None:
+        return "CAP24_RECONCILIATION_ADMISSION_FAIL_CLOSED", empty, bound, selection, None
+    return "PASS", empty, bound, selection, admission
 
 
 def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1(
@@ -396,7 +416,7 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
         selection = None
         cap_status = first_blocker
     else:
-        cap_status, identities, bound, selection = _run_cap21_to_cap24_v1(
+        cap_status, identities, bound, selection, _admission = _run_cap21_to_cap24_v1(
             acquisition=acquisition_result,
             store=store,
             repo_sha=repo_sha,

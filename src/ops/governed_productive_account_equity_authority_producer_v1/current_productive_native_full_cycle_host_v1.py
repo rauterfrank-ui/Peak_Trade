@@ -174,9 +174,14 @@ def execute_current_productive_native_full_cycle_host_v1(
         raise CurrentProductiveNativeFullCycleHostError("BOUND_INSTRUMENT_TYPED_HANDOFF_MISSING")
 
     try:
+        if eea.master_v2_reconciliation_admission is None:
+            raise CurrentProductiveNativeFullCycleHostError(
+                "MASTER_V2_RECONCILIATION_ADMISSION_MISSING"
+            )
         mv2_advance = advance_layered_long_mv2_state_for_pre_external_v1(
             bound=bound,
             lane_state_root=lanes,
+            master_v2_reconciliation_admission=eea.master_v2_reconciliation_admission,
             origin_main_sha=base_sha,
             g17_evidence_root=store / "g17_controlled",
         )

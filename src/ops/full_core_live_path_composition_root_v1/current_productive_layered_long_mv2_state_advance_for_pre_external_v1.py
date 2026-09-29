@@ -33,6 +33,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_controll
     natural_enter_long_closes_v1,
     strong_uptrend_closes_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+    ProductiveMasterV2ReconciliationAdmissionV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     run_current_productive_master_v2_runtime_cycle_v1,
 )
@@ -98,6 +101,7 @@ def _offline_mv2_cycle_v1(
     closes: Sequence[float],
     mark_px: float,
     event_ts_unix: float,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
     incoming_cursor: object | None = None,
 ) -> object:
     index_px = float(mark_px) * 0.995
@@ -119,6 +123,7 @@ def _offline_mv2_cycle_v1(
         incoming_cursor=incoming_cursor,
         g17_typed_vol_producer=g17_typed_vol_producer,
         canonical_price_provenance=_provenance_v1(bound=bound, mark_px=float(mark_px)),
+        master_v2_reconciliation_admission=master_v2_reconciliation_admission,
     )
 
 
@@ -158,11 +163,14 @@ def advance_layered_long_mv2_state_for_pre_external_v1(
     *,
     bound: BoundInstrumentV1,
     lane_state_root: Path,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
     origin_main_sha: str = "",
     g17_evidence_root: Path | None = None,
 ) -> LayeredLongMv2StateAdvanceForPreExternalV1:
     """Run origin → upscope → arm chain; stop before governed ENTER cycle."""
     _ = origin_main_sha
+    if master_v2_reconciliation_admission is None:
+        raise LayeredLongMv2StateAdvanceError("MASTER_V2_RECONCILIATION_ADMISSION_MISSING")
     enter_ts = governed_productive_c1_event_ts_unix_v1()
     path = strong_uptrend_closes_v1()
     g17_root = g17_evidence_root or (Path(lane_state_root) / "g17-controlled")
@@ -182,6 +190,7 @@ def advance_layered_long_mv2_state_for_pre_external_v1(
         closes=path,
         mark_px=float(path[0]),
         event_ts_unix=enter_ts - 120.0,
+        master_v2_reconciliation_admission=master_v2_reconciliation_admission,
     )
     upscope = _offline_mv2_cycle_v1(
         bound=bound,
@@ -190,6 +199,7 @@ def advance_layered_long_mv2_state_for_pre_external_v1(
         closes=path,
         mark_px=float(path[-1]),
         event_ts_unix=enter_ts - 60.0,
+        master_v2_reconciliation_admission=master_v2_reconciliation_admission,
         incoming_cursor=origin.outgoing_cursor,
     )
     if upscope.outgoing_cursor is None:

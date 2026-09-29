@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_test_master_v2_reconciliation_admission_v1,
+)
+
 from pathlib import Path
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import SEAM_MASTER_V2_EVIDENCE
@@ -57,12 +61,15 @@ def _cycle_kwargs(*, cycle_id: str, tmp_path: Path) -> dict:
             mark_px=last,
             index_px=index_px,
         ),
+        "master_v2_reconciliation_admission": non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     }
 
 
 def test_master_v2_cycle_records_ddo_capture_when_ledger_bound(tmp_path: Path) -> None:
     result = run_current_productive_master_v2_runtime_cycle_v1(
-        **_cycle_kwargs(cycle_id="ddo-cap-1", tmp_path=tmp_path)
+        **_cycle_kwargs(cycle_id="ddo-cap-1", tmp_path=tmp_path),
     )
     summary = result.ddo_capture_summary
     assert summary is not None
