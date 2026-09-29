@@ -1,4 +1,5 @@
 {
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "authority_effect": "NONE",
   "base_sha": "ce6c06a22155cafb53cc19df3d71fd2dbba0c768",
   "changed_paths": [
@@ -22,27 +23,15 @@
   "changed_paths_sha256": "d3b5550552d390a9015ef970abfbe4601365c2b70cfd885edd5e54a2da343094",
   "covered_candidate_paths": [
     ".github/workflows/truth_gates_pr.yml",
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_law_impact_map_v1/schema_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "docs/governance/current_law_impact_map_v1/generated/LAW_CHANGE_IMPACT.md",
-    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
-    "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
-    "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
-    "scripts/ops/check_current_law_impact_v1.py",
-    "scripts/ops/current_law_impact_map_v1.py",
-    "scripts/ops/law_map_v1/__init__.py",
-    "scripts/ops/law_map_v1/impact_v1.py",
-    "tests/ops/test_current_law_impact_map_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json"
   ],
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "tests/ops/test_current_law_impact_map_v1.py"
   ],
-  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6956: CURRENT_LAW_IMPACT_MAP_V1 foundation only; CSIA candidate catalog extended for navigation-only law-map surfaces; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "LAW_MAP_UPDATE_REQUIRED",
+  "reason": "PR #6956: initial CURRENT_LAW_IMPACT_MAP_V1 source + derived views + CSIA coupling commit; change-bound currency; AUTHORITY=NONE."
 }

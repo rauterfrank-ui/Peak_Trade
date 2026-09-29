@@ -1,0 +1,623 @@
+{
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "schema_version": "1",
+  "authority_effect": "NONE",
+  "map_authority": "NONE",
+  "law_reference_is_normative": false,
+  "bootstrap_exhaustive": false,
+  "normalize_unknown_to_current": false,
+  "baseline_sha": "ce6c06a22155cafb53cc19df3d71fd2dbba0c768",
+  "law_references": [
+    {
+      "law_id": "MV2-LAYER-L1_SELECTED_FUTURE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L1_SELECTED_FUTURE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L1_SELECTED_FUTURE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l1_selected_future"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L2_MARKET_OBSERVATION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L2_MARKET_OBSERVATION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L2_MARKET_OBSERVATION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l2_market_observation"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L3_INITIAL_DIRECTION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L3_INITIAL_DIRECTION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L3_INITIAL_DIRECTION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l3_initial_direction"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L4_INITIAL_STATE_INITIALIZATION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L4_INITIAL_STATE_INITIALIZATION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L4_INITIAL_STATE_INITIALIZATION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l4_initial_state_initialization"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L5_NULLLINE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L5_NULLLINE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L5_NULLLINE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l5_nullline"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L6_DYNAMIC_SCOPE_GENERATOR",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l6_dynamic_scope_generator"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L7_SCOPE_STATE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L7_SCOPE_STATE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L7_SCOPE_STATE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l7_scope_state"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L8_RUNNING_REFERENCE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L8_RUNNING_REFERENCE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L8_RUNNING_REFERENCE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l8_running_reference"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L9_COUNTER_MOVE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L9_COUNTER_MOVE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L9_COUNTER_MOVE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l9_counter_move"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L10_BULL_BEAR_STATE_SWITCH",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L10_BULL_BEAR_STATE_SWITCH",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l10_bull_bear_state_switch"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00001",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_natural_enter_rejects_candle_close_only_mark_without_payload",
+      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00001",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00002",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_cycle_rejects_forbidden_candle_close_mark_source",
+      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00002",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00006",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_observation_sidestate_seed_class_rejected_on_bind",
+      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00006",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "PROD-CANONICAL-PRICE-PROVENANCE-V1",
+      "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+      "canonical_anchor": "ProductiveCanonicalPriceProvenanceError",
+      "source_sha256": "63d4eab4c12dacf66d30a480ec705c24939ecd3774b1ea934da9608848dc3c84",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "composition-root canonical mark/index provenance",
+      "semantic_object_ids": [
+        "sobj_canonical_price_provenance"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    }
+  ],
+  "semantic_objects": [
+    {
+      "id": "sobj_canonical_price_provenance",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PROD-CANONICAL-PRICE-PROVENANCE-V1",
+        "SEM-DIV-00001",
+        "SEM-DIV-00002"
+      ],
+      "csia_record_id": "productive_canonical_price_provenance_v1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_runtime_cycle_host",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PROD-CANONICAL-PRICE-PROVENANCE-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_persistent_natural_enter_convergence",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00001"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_p5_authority_bind",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00006"
+      ],
+      "evidence_refs": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_sem_div_enforcement_chain",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00001",
+        "SEM-DIV-00002",
+        "SEM-DIV-00006"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l1_selected_future",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L1_SELECTED_FUTURE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l2_market_observation",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L2_MARKET_OBSERVATION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l3_initial_direction",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L3_INITIAL_DIRECTION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l4_initial_state_initialization",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L4_INITIAL_STATE_INITIALIZATION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l5_nullline",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L5_NULLLINE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l6_dynamic_scope_generator",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L6_DYNAMIC_SCOPE_GENERATOR"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l7_scope_state",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L7_SCOPE_STATE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l8_running_reference",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L8_RUNNING_REFERENCE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l9_counter_move",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L9_COUNTER_MOVE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l10_bull_bear_state_switch",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py"
+      ]
+    }
+  ],
+  "impact_edges": [
+    {
+      "id": "edge_price_to_cycle",
+      "edge_class": "TRANSFORMS",
+      "from_id": "sobj_canonical_price_provenance",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_conv_to_price",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_persistent_natural_enter_convergence",
+      "to_id": "sobj_canonical_price_provenance",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ]
+    },
+    {
+      "id": "edge_cycle_constrains_bind",
+      "edge_class": "CONSTRAINS",
+      "from_id": "sobj_p5_authority_bind",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_sem_div_reproof",
+      "edge_class": "REQUIRES_REPROOF",
+      "from_id": "sobj_sem_div_enforcement_chain",
+      "to_id": "reproof_sem_div_6955",
+      "propagate_impact": false,
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "edge_l5_ref_law",
+      "edge_class": "REFERENCES_LAW",
+      "from_id": "sobj_mv2_layer_l5_nullline",
+      "to_id": "MV2-LAYER-L5_NULLLINE",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json"
+      ]
+    }
+  ],
+  "unknown_relations": [
+    {
+      "id": "unk_mt_l5_nullline_identity",
+      "unknown_class": "UNKNOWN_RELATION",
+      "statement": "Whether composition-root M_t/mark_px input is semantically identical to L5 nullline initialization_mark is OPEN; PR #6955 did not establish identity.",
+      "left_ref": "sobj_mv2_runtime_cycle_host:mark_px/M_t",
+      "right_ref": "sobj_mv2_layer_l5_nullline:nullline_price_basis",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "unk_double_play_slot_crs_handoff",
+      "unknown_class": "EVIDENCE_DISCOVERY_UNKNOWN",
+      "statement": "Double Play slot CRS handoff semantics remain open (CSIA UNKNOWN pin).",
+      "left_ref": "csia:double_play_slot_crs_handoff",
+      "right_ref": "sobj_sem_div_enforcement_chain",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "unk_sealed_venue_number_29p",
+      "unknown_class": "NORMATIVE_BOUND_UNKNOWN",
+      "statement": "Sealed venue number 29P normative binding remains open (CSIA UNKNOWN pin).",
+      "left_ref": "csia:sealed_venue_number_29p",
+      "right_ref": "N/A",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    }
+  ],
+  "conflicting_relations": [],
+  "reproof_index": [
+    {
+      "id": "reproof_sem_div_6955",
+      "law_ref_ids": [
+        "SEM-DIV-00001",
+        "SEM-DIV-00002",
+        "SEM-DIV-00006"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "proof_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "base_sha": "4e84cbf7385c37e89a1a55bbfd978685ffe3e575",
+      "head_sha": "ce6c06a22155cafb53cc19df3d71fd2dbba0c768",
+      "adjudication_status": "INDEXED_EVIDENCE_ONLY"
+    }
+  ]
+}
