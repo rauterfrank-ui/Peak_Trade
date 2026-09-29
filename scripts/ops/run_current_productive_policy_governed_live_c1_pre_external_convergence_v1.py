@@ -160,6 +160,14 @@ def _main() -> int:
         help="Record execution at current HEAD while Owner-GO baseline stays origin/main",
     )
     parser.add_argument(
+        "--integration-repair-evidence-at-head-v1",
+        action="store_true",
+        help=(
+            "Owner-GO integration-repair reproof: bind origin/main baseline with repository_sha=HEAD "
+            "without requiring HEAD==origin/main (protected-chain drift allowed on branch)."
+        ),
+    )
+    parser.add_argument(
         "--max-decision-cycles",
         type=int,
         default=4,
@@ -228,7 +236,13 @@ def _main() -> int:
     backend = GitCurrentProductive29PRuntimeIntegrityBackendV1(repo_root=REPO_ROOT)
     baseline_sha = backend.resolve_origin_main_sha_v1()
     execution_head_sha = backend.resolve_head_sha_v1()
-    if args.wp_branch_evidence_run:
+    if args.integration_repair_evidence_at_head_v1:
+        assert_current_productive_29p_execution_identity_v1(
+            declared_origin_main_sha=baseline_sha,
+            integrity_backend=backend,
+        )
+        repository_sha = execution_head_sha
+    elif args.wp_branch_evidence_run:
         drift = backend.diff_origin_main_for_paths_v1(
             PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS
         )
@@ -236,14 +250,15 @@ def _main() -> int:
             out = {"status": "FAIL", "blocker": "PROTECTED_CHAIN_SURFACE_DRIFT"}
             print(json.dumps(out, sort_keys=True))
             return 2
+        repository_sha = execution_head_sha
     else:
         baseline_sha = assert_current_productive_29p_execution_identity_v1(
             declared_origin_main_sha=baseline_sha,
             integrity_backend=backend,
         )
         execution_head_sha = baseline_sha
+        repository_sha = execution_head_sha
     origin_sha = baseline_sha
-    repository_sha = execution_head_sha
     epoch = args.binding_epoch or _utc_iso()
 
     acq = acquire_eea_universe_inventory_v1(transport=UrllibEeaPublicUniverseGetTransportV1())
