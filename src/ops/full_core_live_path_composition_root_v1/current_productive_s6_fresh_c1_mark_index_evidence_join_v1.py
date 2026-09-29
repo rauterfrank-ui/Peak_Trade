@@ -82,14 +82,6 @@ def collect_current_productive_s6_c1_poll_mark_index_evidence_v1(
     if acq.ok is not True:
         raise CurrentProductiveS6C1MarkIndexEvidenceError("EEA_MARK_ACQUISITION_FAIL_CLOSED")
     mark_payload = acq.mark_price_payload
-    try:
-        build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
-            mark_price_payload=mark_payload,
-            venue_native_id=native,
-            index_from_index_tickers=None,
-        )
-    except ProductiveCanonicalPriceProvenanceError as exc:
-        raise CurrentProductiveS6C1MarkIndexEvidenceError(str(exc)) from exc
 
     index_inst = resolve_index_ticker_inst_id_v1(native)
     index_endpoint = f"{ENDPOINT_MARKET_INDEX_TICKERS}?{urlencode({'instId': index_inst})}"
