@@ -80,6 +80,8 @@ class CurrentProductive29PRuntimeIntegrityBackendV1(Protocol):
 
     def diff_origin_main_for_paths_v1(self, paths: tuple[str, ...]) -> str: ...
 
+    def is_ancestor_sha_v1(self, *, ancestor_sha: str, descendant_sha: str) -> bool: ...
+
 
 @dataclass(frozen=True)
 class GitCurrentProductive29PRuntimeIntegrityBackendV1:
@@ -102,6 +104,29 @@ class GitCurrentProductive29PRuntimeIntegrityBackendV1:
                 f"PROTECTED_SURFACE_DIFF_FAILED:{err or proc.returncode}"
             )
         return proc.stdout or ""
+
+    def is_ancestor_sha_v1(self, *, ancestor_sha: str, descendant_sha: str) -> bool:
+        ancestor = str(ancestor_sha or "").strip().lower()
+        descendant = str(descendant_sha or "").strip().lower()
+        if len(ancestor) != 40 or len(descendant) != 40:
+            return False
+        if ancestor == descendant:
+            return True
+        proc = subprocess.run(
+            [
+                "git",
+                "-C",
+                str(self.repo_root),
+                "merge-base",
+                "--is-ancestor",
+                ancestor,
+                descendant,
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        return proc.returncode == 0
 
 
 def _git_rev_parse_v1(repo_root: Path, ref: str) -> str:
@@ -156,6 +181,44 @@ def assert_current_productive_29p_execution_identity_v1(
         if drift.strip():
             raise CurrentProductive29PChainBaselineError("PROTECTED_CHAIN_SURFACE_DRIFT")
     return resolved_main
+
+
+def assert_current_productive_29p_origin_main_binding_only_v1(
+    *,
+    declared_origin_main_sha: str,
+    integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+) -> str:
+    """Pin execution policy to live origin/main without requiring HEAD equality."""
+
+    declared = str(declared_origin_main_sha or "").strip().lower()
+    if len(declared) != 40:
+        raise CurrentProductive29PChainBaselineError("ORIGIN_MAIN_SHA_MISMATCH")
+    backend = integrity_backend or default_current_productive_29p_integrity_backend_v1()
+    resolved_main = backend.resolve_origin_main_sha_v1()
+    if declared != resolved_main:
+        raise CurrentProductive29PChainBaselineError("ORIGIN_MAIN_SHA_MISMATCH")
+    return resolved_main
+
+
+def assert_current_productive_29p_branch_evidence_repository_sha_v1(
+    *,
+    repository_sha: str,
+    pinned_origin_main_sha: str,
+    integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+) -> str:
+    """Allow repository_sha at HEAD when it descends from pinned origin/main (integration reproof)."""
+
+    repo_sha = str(repository_sha or "").strip().lower()
+    pinned = str(pinned_origin_main_sha or "").strip().lower()
+    if len(repo_sha) != 40 or len(pinned) != 40:
+        raise CurrentProductive29PChainBaselineError("REPOSITORY_SHA_BASELINE_MISMATCH")
+    backend = integrity_backend or default_current_productive_29p_integrity_backend_v1()
+    head = backend.resolve_head_sha_v1()
+    if repo_sha != head:
+        raise CurrentProductive29PChainBaselineError("REPOSITORY_SHA_BASELINE_MISMATCH")
+    if not backend.is_ancestor_sha_v1(ancestor_sha=pinned, descendant_sha=repo_sha):
+        raise CurrentProductive29PChainBaselineError("REPOSITORY_SHA_BASELINE_MISMATCH")
+    return repo_sha
 
 
 def assert_current_productive_29p_repository_sha_for_execution_v1(

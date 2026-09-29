@@ -277,6 +277,9 @@ def _main() -> int:
         allow_default_productivity_root=False,
         decision_epoch=epoch,
         execution_integrity_backend=backend,
+        integration_repair_branch_evidence_at_head_v1=bool(
+            args.integration_repair_evidence_at_head_v1
+        ),
     )
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=productivity_root,

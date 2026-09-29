@@ -11,7 +11,9 @@ import pytest
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
     HISTORICAL_CAP24_PERSISTED_REPOSITORY_BASELINE_SHAS,
     CurrentProductive29PChainBaselineError,
+    assert_current_productive_29p_branch_evidence_repository_sha_v1,
     assert_current_productive_29p_execution_identity_v1,
+    assert_current_productive_29p_origin_main_binding_only_v1,
     assert_current_productive_29p_repository_sha_for_execution_v1,
     resolve_cap24_persisted_repository_sha_v1,
 )
@@ -29,6 +31,7 @@ class _MockIntegrityBackend:
     origin_main: str
     head: str
     drift: str = ""
+    ancestor_pairs: frozenset[tuple[str, str]] = frozenset()
 
     def resolve_origin_main_sha_v1(self) -> str:
         return self.origin_main
@@ -38,6 +41,13 @@ class _MockIntegrityBackend:
 
     def diff_origin_main_for_paths_v1(self, paths: tuple[str, ...]) -> str:
         return self.drift
+
+    def is_ancestor_sha_v1(self, *, ancestor_sha: str, descendant_sha: str) -> bool:
+        a = str(ancestor_sha or "").strip().lower()
+        d = str(descendant_sha or "").strip().lower()
+        if a == d:
+            return True
+        return (a, d) in self.ancestor_pairs
 
 
 def test_trusted_origin_main_and_matching_head_pass() -> None:
@@ -170,3 +180,42 @@ def test_resolve_from_selection_historical_base(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     assert resolve_cap24_persisted_repository_sha_v1(productivity_root=prod) == _PRE_MERGE_BASE
+
+
+def test_origin_main_binding_only_allows_head_ahead() -> None:
+    backend = _MockIntegrityBackend(origin_main=_HYPOTHETICAL_X, head=_HYPOTHETICAL_Y)
+    assert (
+        assert_current_productive_29p_origin_main_binding_only_v1(
+            declared_origin_main_sha=_HYPOTHETICAL_X,
+            integrity_backend=backend,
+        )
+        == _HYPOTHETICAL_X
+    )
+
+
+def test_branch_evidence_repository_sha_requires_descendant_of_pinned() -> None:
+    backend = _MockIntegrityBackend(
+        origin_main=_HYPOTHETICAL_X,
+        head=_HYPOTHETICAL_Y,
+        ancestor_pairs=frozenset({(_HYPOTHETICAL_X, _HYPOTHETICAL_Y)}),
+    )
+    assert (
+        assert_current_productive_29p_branch_evidence_repository_sha_v1(
+            repository_sha=_HYPOTHETICAL_Y,
+            pinned_origin_main_sha=_HYPOTHETICAL_X,
+            integrity_backend=backend,
+        )
+        == _HYPOTHETICAL_Y
+    )
+
+
+def test_branch_evidence_repository_sha_rejects_non_descendant() -> None:
+    backend = _MockIntegrityBackend(origin_main=_HYPOTHETICAL_X, head=_HYPOTHETICAL_Y)
+    with pytest.raises(
+        CurrentProductive29PChainBaselineError, match="REPOSITORY_SHA_BASELINE_MISMATCH"
+    ):
+        assert_current_productive_29p_branch_evidence_repository_sha_v1(
+            repository_sha=_HYPOTHETICAL_Y,
+            pinned_origin_main_sha=_HYPOTHETICAL_X,
+            integrity_backend=backend,
+        )

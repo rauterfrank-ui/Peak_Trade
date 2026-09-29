@@ -48,7 +48,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_chain_baseline_contract_v1 import (
     CurrentProductive29PChainBaselineError,
     CurrentProductive29PRuntimeIntegrityBackendV1,
+    assert_current_productive_29p_branch_evidence_repository_sha_v1,
     assert_current_productive_29p_execution_identity_v1,
+    assert_current_productive_29p_origin_main_binding_only_v1,
     assert_current_productive_29p_repository_sha_for_execution_v1,
 )
 from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
@@ -246,6 +248,7 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     decision_epoch: str | None = None,
     allow_default_productivity_root: bool = False,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    integration_repair_branch_evidence_at_head_v1: bool = False,
 ) -> CurrentProductiveCap24SelectionStateWriteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductiveCap24SelectionStateWriterError("OWNER_GO_MISMATCH")
@@ -253,20 +256,28 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
         raise CurrentProductiveCap24SelectionStateWriterError("ACQUISITION_INPUT_NOT_OK")
     _assert_protected_surfaces_v1()
 
+    backend = execution_integrity_backend
     try:
-        trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
-            declared_origin_main_sha=origin_main_sha,
-            integrity_backend=execution_integrity_backend,
-        )
-    except CurrentProductive29PChainBaselineError as exc:
-        raise CurrentProductiveCap24SelectionStateWriterError(str(exc)) from exc
-
-    repo_sha = str(repository_sha or origin_main_sha).strip()
-    try:
-        assert_current_productive_29p_repository_sha_for_execution_v1(
-            repository_sha=repo_sha,
-            trusted_execution_identity=trusted_execution_identity,
-        )
+        if integration_repair_branch_evidence_at_head_v1 is True:
+            pinned_origin = assert_current_productive_29p_origin_main_binding_only_v1(
+                declared_origin_main_sha=origin_main_sha,
+                integrity_backend=backend,
+            )
+            repo_sha = assert_current_productive_29p_branch_evidence_repository_sha_v1(
+                repository_sha=str(repository_sha or "").strip(),
+                pinned_origin_main_sha=pinned_origin,
+                integrity_backend=backend,
+            )
+        else:
+            trusted_execution_identity = assert_current_productive_29p_execution_identity_v1(
+                declared_origin_main_sha=origin_main_sha,
+                integrity_backend=backend,
+            )
+            repo_sha = str(repository_sha or origin_main_sha).strip()
+            assert_current_productive_29p_repository_sha_for_execution_v1(
+                repository_sha=repo_sha,
+                trusted_execution_identity=trusted_execution_identity,
+            )
     except CurrentProductive29PChainBaselineError as exc:
         raise CurrentProductiveCap24SelectionStateWriterError(str(exc)) from exc
 
