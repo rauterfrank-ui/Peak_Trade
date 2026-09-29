@@ -16,13 +16,14 @@
     "LIVE_AUTHORIZED": false,
     "ORDERS_ENABLED": false,
     "RUNTIME_BRIDGE_ACTIVATED": false,
-    "OKX_AUDIT_REOPENED": false
+    "OKX_AUDIT_REOPENED": false,
+    "PROMETHEUS_RUNTIME_LISTENER_EXPECTED": false
   },
   "authority": "explicit_operator_decision",
   "permission_mode": "read_only",
   "canonical_topology": {
-    "prometheus_expected": true,
-    "prometheus_kind": "metrics_client_and_scrape_ssot_not_in_repo_compose_server",
+    "prometheus_expected": false,
+    "prometheus_kind": "runtime_detached_dependency_and_historical_refs_may_remain",
     "alertmanager_expected": false,
     "alert_routing_expected": true,
     "alert_routing_kind": "in_app_live_alerts_pipeline_escalation",
@@ -30,7 +31,7 @@
     "grafana_expected": false
   },
   "surface_status": {
-    "prometheus": "VERIFIED_REPO_ONLY",
+    "prometheus": "RUNTIME_DETACHED",
     "alertmanager": "REMOVED_AS_DESIGNED",
     "alert_routing": "VERIFIED_REPO_ONLY",
     "cloudwatch": "REMOVED_AS_DESIGNED",
@@ -64,23 +65,18 @@
     "trading_core_changed": false,
     "execution_semantics_changed": false,
     "economic_gate_changed": false,
-    "okx_audit_reopened": false
+    "okx_audit_reopened": false,
+    "prometheus_runtime_listener_expected": false
   },
   "classification_summary": {
-    "expected_active_component_count": 2,
+    "expected_active_component_count": 1,
     "live_matching_component_count": 0,
-    "repo_only_component_count": 2,
+    "repo_only_component_count": 1,
     "drift_component_count": 0,
     "access_denied_count": 0,
     "not_verifiable_count": 0
   },
   "expected_active_components": [
-    {
-      "id": "prometheus_metrics_surface",
-      "name": "prometheus_client metrics + scrape SSOT",
-      "classification": "VERIFIED_REPO_ONLY",
-      "evidence": "prometheus_client dependency; health_endpoint; PROMETHEUS_LOCAL_SCRAPE.yml; .local prometheus scrape configs; no in-repo compose prometheus server"
-    },
     {
       "id": "in_app_alert_routing",
       "name": "live_alerts + alert_pipeline + escalation",
@@ -108,6 +104,12 @@
       "id": "market_dashboard_product",
       "status": "REMOVED_AS_DESIGNED",
       "audited": false
+    },
+    {
+      "id": "prometheus_metrics_runtime_exporter",
+      "status": "RUNTIME_DETACHED",
+      "audited": false,
+      "evidence": "CURRENT prometheus runtime detachment v1: no in-process 9111, no metricsd listener, no ai_live_exporter 9110, no live web /metrics; prometheus_client dependency and historical docs may remain"
     }
   ],
   "next_action": "OPERATOR_OPTIONAL_STALE_REF_HYGIENE_FOR_GRAFANA_AND_MARKET_DASHBOARD_DOCS_OR_ACCEPT_RESIDUAL_GUARDS"

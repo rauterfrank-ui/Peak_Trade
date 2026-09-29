@@ -3,12 +3,8 @@ from __future__ import annotations
 import importlib
 import logging
 import os
-import time
 from pathlib import Path
 from typing import Optional
-
-from src.obs.metrics_config import get_metrics_port
-from src.ops.net.ports import ensure_tcp_port_free
 
 logger = logging.getLogger(__name__)
 
@@ -76,32 +72,14 @@ def start_metricsd(
     log_level: str = "INFO",
 ) -> bool:
     """
-    Start the Always-on Prometheus exporter daemon (Mode B).
+    Prometheus metricsd (CURRENT runtime detached).
 
-    - Exposes /metrics on port (default: 9111)
-    - Uses prometheus_client multiprocess mode (PROMETHEUS_MULTIPROC_DIR)
-    - Clears the multiproc dir on daemon start (best-effort; daemon only)
-    - Fail-open when prometheus_client is unavailable
+    Never binds a listener. Explicit CLI invocation exits without opening a port.
     """
-    try:
-        logging.basicConfig(level=getattr(logging, log_level.upper(), logging.INFO))
-        mp = Path(multiproc_dir)
-        mp.mkdir(parents=True, exist_ok=True)
-        _safe_clear_multiproc_dir(mp)
-        _maybe_set_multiproc_env(mp)
-
-        prom = importlib.import_module("prometheus_client")
-        registry = build_multiprocess_registry(multiproc_dir=mp)
-
-        # start_http_server runs in a background thread.
-        prom.start_http_server(int(port), registry=registry)  # type: ignore[attr-defined]
-        logger.info("metricsd started: port=%s multiproc_dir=%s", port, str(mp))
-        return True
-    except Exception:
-        if not fail_open:
-            raise
-        logger.warning("metricsd failed to start (ignored).", exc_info=True)
-        return False
+    del port, multiproc_dir, fail_open
+    logging.basicConfig(level=getattr(logging, log_level.upper(), logging.INFO))
+    logger.info("metricsd runtime inactive (Prometheus detached); no listener started.")
+    return False
 
 
 def run_forever(
@@ -112,20 +90,8 @@ def run_forever(
     log_level: str = "INFO",
 ) -> int:
     """
-    CLI-friendly runner: start metricsd and block forever.
+    CLI-friendly runner (CURRENT runtime detached): no listener, clean exit.
     """
-    port = get_metrics_port(port)
-    ensure_tcp_port_free(port, context="metricsd")
-    ok = start_metricsd(
-        port=port,
-        multiproc_dir=multiproc_dir,
-        fail_open=fail_open,
-        log_level=log_level,
-    )
-    if not ok:
-        return 2
-    try:
-        while True:
-            time.sleep(3600)
-    except KeyboardInterrupt:
-        return 0
+    del port, multiproc_dir, fail_open
+    start_metricsd(log_level=log_level)
+    return 0
