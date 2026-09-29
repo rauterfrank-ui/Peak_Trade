@@ -129,6 +129,7 @@ entities:
       Atlas is not canonical authority and not runtime authority.
 
   - id: NAVIGATION_INDEX:map_of_truth
+    # atlas_entity_review: Post-#6962 treasury U01 witness fail-closed (SEM-SURF-DIV-00004); CSIA/Law Map navigation only; MOT SSOT unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: OD_ACCOUNT_EQUITY_SIZING_SOURCE PR #6960 — CSIA account_equity_mapping_unbound PARTIAL scope narrowed (numeric bind only); navigation rebind unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: Post-6934/PR #6935 — CSIA PARTIAL statement refresh + governance integrated-replay proof only; navigation rebind unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: Post-6933 governance closure — CSIA partial statement notes inactive OD1 slice grant only; navigation rebind unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
@@ -627,6 +628,7 @@ entities:
       MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+    # atlas_entity_review: Post-#6962 treasury U01 witness fail-closed; cursor seam unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: OD_ACCOUNT_EQUITY_SIZING_SOURCE PR #6960 — CSIA source touch only; cursor seam unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: Post-6934/PR #6935 — governance replay proof for dual-carrier persistence; cursor seam semantics unchanged; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -689,6 +691,7 @@ entities:
       Cap 2.3 sole selection owner unchanged. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1
+    # atlas_entity_review: Post-#6962 treasury U01 witness fail-closed; CSIA authority_view touch only; D03 offline MI stack unchanged; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: OD_ACCOUNT_EQUITY_SIZING_SOURCE PR #6960 — CSIA source touch only; D03 offline MI stack unchanged; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: Post-6934/PR #6935 — CSIA authority_view touch only; D03 offline MI stack semantics unchanged; ATLAS_AUTHORITY=NONE.
     # atlas_entity_review: Post-6933 governance closure — CSIA authority_view regeneration only; D03 offline MI stack semantics unchanged; ATLAS_AUTHORITY=NONE.
@@ -4737,12 +4740,13 @@ entities:
       successor mint-precondition link in OD_U01_P01_29P_SIZING_MINT; no GET/POST; AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1
+    # atlas_entity_review: Post-#6962 SEM-SURF-DIV-00004 repaired — treasury U01 witness fail-closed; DL-U01-WIT-01 PROVEN; sealed epoch/pack UNKNOWN retained; AUTHORITY=NONE; POST_COUNT=0.
     kind: RUNTIME_COMPONENT
     name: OD_U01_P01_29P_SIZING_MINT canonical adjudication v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1
+    modified_by: POST_6962_TREASURY_U01_WITNESS_FAIL_CLOSED_V1
     source_paths:
       - src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py
     evidence_sources:
@@ -4751,7 +4755,8 @@ entities:
       - tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py
     notes: >-
       Non-authorizing OD adjudication for U01 eligibility, P01 standing directive, and
-      three-input 29P sizing-mint join; sealed normative epoch pack remains UNKNOWN; AUTHORITY=NONE.
+      three-input 29P sizing-mint join; SEM-SURF-DIV-00004 fail-closed at treasury handoff;
+      sealed normative epoch pack remains UNKNOWN; AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1
     kind: RUNTIME_COMPONENT
@@ -5764,6 +5769,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: Post-#6962 treasury single-source handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); enter-live still passes injected host inputs; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6953 — enter-live treasury P01/eligibility handoff export; portfolio seam;
     # live_admission_gap_dag EARLIEST→Treasury handoff GET; execution_admission data_safety inputs on
@@ -8474,6 +8480,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:portfolio_capital_reservation_budget_v1
+    # atlas_entity_review: Post-#6962 treasury U01 witness fail-closed; portfolio gate semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827: Q3 unchanged; TREASURY_BINDING_N5_CONFLICT=false.
     # CURRENT_PRODUCTIVE_29P_TO_NEXT_REAL_BLOCKER_REPAIR_V1 PR_6744: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE; admit_sized_slot_reservation_v1 still optional via ENTER Live-29P after MV2 capital context rebind; N>1 unauthorized; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
