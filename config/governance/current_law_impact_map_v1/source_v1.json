@@ -6,7 +6,7 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "e2a3dbdb202edb32f01a30da488538b40976b26a",
+  "baseline_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
   "law_references": [
     {
       "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
@@ -368,6 +368,23 @@
       "evidence_refs": [
         "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+      "canonical_anchor": "od_account_equity_sizing_source_canonical_adjudication_v1",
+      "source_sha256": "71e231d35613d02e2fd426c23d3a4ce2e7a382dc19879015581bccf9e798dac7",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
     {
@@ -1052,11 +1069,19 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -1501,17 +1526,6 @@
   ],
   "unknown_relations": [
     {
-      "id": "unk_account_equity_sizing_source",
-      "unknown_class": "NORMATIVE_BOUND_UNKNOWN",
-      "statement": "CURRENT productive available-for-sizing / account-equity source selection semantics remain PARTIAL in CSIA; no durable law-compliance adjudication indexed.",
-      "left_ref": "csia:account_equity_mapping_unbound",
-      "right_ref": "sobj_portfolio_capital_budget",
-      "evidence_refs": [
-        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
-      ]
-    },
-    {
       "id": "unk_cap24_l1_productive_mark_provenance",
       "unknown_class": "EVIDENCE_DISCOVERY_UNKNOWN",
       "statement": "Whether Cap 2.4 bound instrument identity and composition-root canonical mark/index provenance share one CURRENT freshness/instrument binding chain is not adjudicated in durable compliance evidence.",
@@ -1557,6 +1571,22 @@
   ],
   "conflicting_relations": [],
   "reproof_index": [
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+      "head_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
     {
       "id": "reproof_sem_div_6955",
       "law_ref_ids": [
@@ -1608,18 +1638,19 @@
     },
     {
       "id": "SEM-SURF-DIV-00003",
-      "adjudication": "UNKNOWN_CURRENT",
+      "adjudication": "PROVEN_CURRENT",
       "producer_ref": "csia:account_equity_mapping_unbound",
       "consumer_ref": "sobj_nav_b05_account_equity_productive_chain",
-      "statement": "CSIA open_epistemic record account_equity_mapping_unbound (PARTIAL) vs B05 ratification JSON chain-closure claims \u2014 sizing source selection remains not Law-Map adjudicated; maps to unk_account_equity_sizing_source.",
-      "expected_canonical_source": "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+      "statement": "OD_ACCOUNT_EQUITY_SIZING_SOURCE adjudicated: CSIA PARTIAL numeric venue bind scope reconciled with B05 Full-Core authority-owner + producer-wrap + DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01 transform binding; unk_account_equity_sizing_source resolved.",
+      "expected_canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
       "evidence_refs": [
-        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "docs/governance/OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
       ],
-      "reproof_required": true,
-      "unknown_relation_id": "unk_account_equity_sizing_source"
+      "reproof_required": false,
+      "unknown_relation_id": null
     }
   ],
   "unclassified_current_surfaces": [
@@ -1644,39 +1675,9 @@
       "reason": "UCS-0031 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Sealed venue 29P normative epoch semantics OPEN."
     },
     {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0032 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Trusted GET sizing value vs account-equity mapping CSIA PARTIAL (account_equity_mapping_unbound)."
-    },
-    {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
       "reason": "UCS-0034 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Risk capital vs treasury/B05 equity identity not proven."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0035 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Architecture module; CSIA account_equity_mapping_unbound remains OPEN."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0037 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Sizing source selection not adjudicated."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0038 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0039 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0040 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Direct selector for account-equity sizing source."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
@@ -1707,16 +1708,6 @@
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
       "reason": "UCS-0071 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Runbook/spec name ratification module as authority; adapter not primary DEFINITION_SCHEMA."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0073 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: U04/P01 sizing eligibility vs unbound account-equity mapping."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0074 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
     }
   ],
   "surface_census_meta": {

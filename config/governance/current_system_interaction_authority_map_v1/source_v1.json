@@ -4707,15 +4707,16 @@
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Account-equity source mapping is proven on Full-Core while numeric CURRENT venue bind and governed producer implementation remain absent; B05 Full-Core owner ratified separately from mapping; Companion C2 remains unbound (Full-Core mapping not transferable).",
+      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); numeric CURRENT venue observation bind and fresh trusted GET execution remain absent; Companion C2 remains unbound.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "Non-full-core mapping gaps; fail-closed."
+      "closure_note": "PARTIAL retained for numeric venue bind only; sizing source semantics adjudicated under OD_ACCOUNT_EQUITY_SIZING_SOURCE."
     },
     {
       "id": "loops_a_and_b",

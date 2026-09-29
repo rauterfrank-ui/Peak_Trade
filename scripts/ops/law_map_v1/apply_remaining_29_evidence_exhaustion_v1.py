@@ -21,12 +21,12 @@ from scripts.ops.law_map_v1.remaining_29_evidence_exhaustion_v1 import (  # noqa
 
 
 def main() -> int:
-    assert_source_matches_frozen_workset()
     write_artifact()
     doc = json.loads(SOURCE.read_text(encoding="utf-8"))
     doc = apply_bindings(doc)
     SOURCE.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
     write_artifact()
+    assert_source_matches_frozen_workset()
     print(
         f"unclassified={len(doc['unclassified_current_surfaces'])} "
         f"law_refs={len(doc['law_references'])} divs={len(doc['semantic_divergence_index'])}"

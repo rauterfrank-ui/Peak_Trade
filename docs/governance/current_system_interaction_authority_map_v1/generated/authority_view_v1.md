@@ -6,7 +6,7 @@ AUTHORITY=NONE
 
 Open epistemic records are projected, not closed.
 
-- id=account_equity_mapping_unbound class=PARTIAL statement=Account-equity source mapping is proven on Full-Core while numeric CURRENT venue bind and governed producer implementation remain absent; B05 Full-Core owner ratified separately from mapping; Companion C2 remains unbound (Full-Core mapping not transferable).
+- id=account_equity_mapping_unbound class=PARTIAL statement=Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); numeric CURRENT venue observation bind and fresh trusted GET execution remain absent; Companion C2 remains unbound.
 - id=c2_companion_conversion_dependency_closure_v1 class=PARTIAL statement=C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 satisfied on origin/main @ 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d: authoritative equity/reference-price/instrument-metadata bindings plus LINEAR fraction→units algebra proven read-only; runtime_conversion_implemented=false (Companion path only); Full-Core enter-live-29p uses governed B05 producers without Companion conversion handoff.
 - id=checkout_independent_credential_access_policy_v1 class=PARTIAL statement=Checkout-independent credential access policy: governed admission on permit mint; material load policy bound separately; POST/signing false.
 - id=clean_trading_core_vs_p5 class=PARTIAL statement=Clean trading core is marked closed while P5 cutover remains false.
