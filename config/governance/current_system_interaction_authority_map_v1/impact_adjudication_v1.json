@@ -2,8 +2,11 @@
   "authority_effect": "NONE",
   "base_sha": "8b423185949cd2b7d28546a993ce233f1c81f6cc",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -43,8 +46,11 @@
     "tests/ops/test_productive_master_v2_reconciliation_entry_enforcement_v1.py",
     "tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
   ],
-  "changed_paths_sha256": "67f7cfb35d5d907f654516ec43d45943a05870056c7a35093286cdd1dbca53c3",
+  "changed_paths_sha256": "ca6543de7226ff27f524eab0c18bd77c43792e4fead0b8953dd107e3273a7bab",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -86,10 +92,11 @@
   ],
   "evidence_refs": [
     "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md",
-    "docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md"
+    "docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md",
+    "config/governance/current_law_impact_map_v1/source_v1.json"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6974: productive MV2 upstream reconciliation admission + single-check contract; composition-root wiring and tests only; CSIA navigation surfaces unchanged; AUTHORITY=NONE.",
+  "reason": "PR #6974: MV2 upstream reconciliation admission + single-check contract; law-map SEM-DIV sha256 rebind navigation-only; CSIA source unchanged; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
