@@ -439,10 +439,12 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
         if item is None:
             continue
         bound, store_root, cursor_address = item
-        harness_admission = build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-            bound_instrument_id=str(bound.instrument_id),
-            session_id=f"{prefix}:{lane_id}",
-            repository_sha="bounded-harness-lane-isolated",
+        harness_admission = (
+            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
+                bound_instrument_id=str(bound.instrument_id),
+                session_id=f"{prefix}:{lane_id}",
+                repository_sha="bounded-harness-lane-isolated",
+            )
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
@@ -549,10 +551,12 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             continue
         bound, store_root, cursor_address = item
         lane_cursor = lane_cursors[lane_id]
-        harness_admission = build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-            bound_instrument_id=str(bound.instrument_id),
-            session_id=f"{prefix}:{lane_id}",
-            repository_sha="bounded-harness-lane-isolated",
+        harness_admission = (
+            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
+                bound_instrument_id=str(bound.instrument_id),
+                session_id=f"{prefix}:{lane_id}",
+                repository_sha="bounded-harness-lane-isolated",
+            )
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
@@ -707,10 +711,12 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
         bound, store_root, cursor_address = item
         payload = load_current_productive_sidestate_confirmation_cursor_v1(Path(store_root))
         incoming = _incoming_from_loaded_cursor(lane_id=lane_id, bound=bound, payload=payload)
-        harness_admission = build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-            bound_instrument_id=str(bound.instrument_id),
-            session_id=f"{prefix}:{lane_id}",
-            repository_sha="bounded-harness-lane-isolated",
+        harness_admission = (
+            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
+                bound_instrument_id=str(bound.instrument_id),
+                session_id=f"{prefix}:{lane_id}",
+                repository_sha="bounded-harness-lane-isolated",
+            )
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,

@@ -357,13 +357,15 @@ def _run_cap21_to_cap24_v1(
     if bound.venue_native_id == CANARY_DEFAULT_INSTRUMENT_ID:
         raise CurrentProductiveFreshCap23Cap24ReadinessError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
     empty["cap24_bound_instrument_id"] = bound.instrument_id
-    admission = build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1(
-        reconciliation_result=gate.reconciliation_result,
-        session_id="current-productive-dj-binding",
-        repository_sha=repo_sha,
-        bound_instrument_id=str(bound.instrument_id),
-        binding_gate_ok=bool(gate.ok),
-        binding_alpha_enabled=bool(gate.alpha_enabled),
+    admission = (
+        build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1(
+            reconciliation_result=gate.reconciliation_result,
+            session_id="current-productive-dj-binding",
+            repository_sha=repo_sha,
+            bound_instrument_id=str(bound.instrument_id),
+            binding_gate_ok=bool(gate.ok),
+            binding_alpha_enabled=bool(gate.alpha_enabled),
+        )
     )
     if admission is None:
         return "CAP24_RECONCILIATION_ADMISSION_FAIL_CLOSED", empty, bound, selection, None

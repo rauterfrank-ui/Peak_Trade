@@ -972,6 +972,7 @@ relations:
 
     '
   # atlas_entity_review: PR #6936 — DEPENDS_ON unchanged; DDO ledger kwargs only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #6974 — DEPENDS_ON unchanged; bounded harness reconciliation admission only; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff
   # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1; canonical_price_provenance threading only; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
@@ -987,6 +988,7 @@ relations:
 
     '
   # atlas_entity_review: PR #6936 — DEPENDS_ON unchanged; store_root ledger path only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #6974 — DEPENDS_ON unchanged; bounded harness reconciliation admission only; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
   # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1; canonical_price_provenance threading only; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1

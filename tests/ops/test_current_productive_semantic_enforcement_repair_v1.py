@@ -148,8 +148,9 @@ def test_cycle_rejects_forbidden_candle_close_mark_source() -> None:
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=_produced_g17_producer(instrument_id=bound.instrument_id),
         canonical_price_provenance=bad,
-
-        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(bound=bound)
+        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
+            bound=bound
+        ),
     )
     assert "CMC_MARK_SOURCE_FORBIDDEN" in str(result.fail_reasons)
 
@@ -175,7 +176,9 @@ def test_venue_occupancy_does_not_mint_long_active_side_state() -> None:
         existing_position_side=ExistingPositionSide.LONG,
         g17_typed_vol_producer=_produced_g17_producer(instrument_id=bound.instrument_id),
         canonical_price_provenance=provenance_for_bound_v1(
-            bound=bound, mark_px=mark, index_px=index,
+            bound=bound,
+            mark_px=mark,
+            index_px=index,
         ),
         master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
             bound=bound

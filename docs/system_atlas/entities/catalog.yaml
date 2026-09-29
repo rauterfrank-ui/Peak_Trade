@@ -2046,6 +2046,7 @@ entities:
       authority. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_1_1_reconciliation
+    # atlas_entity_review: PR #6974 — MV2 entry contract asserts single-check + upstream admission; Cap-1.1 remains reconciliation owner; AUTHORITY=NONE; POST_COUNT=0.
     kind: CAPABILITY
     name: Productive Reconciliation Runtime Binding
     epistemic_class: CANONICAL_AUTHORITY
@@ -2053,8 +2054,12 @@ entities:
     current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+      - docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md
     evidence_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_1_1_PRODUCTIVE_RECONCILIATION_RUNTIME_BINDING_V1.md
+      - docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md
+      - src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py
+      - src/ops/productive_reconciliation_runtime_binding_v1/master_v2_entry_reconciliation_contract_v1.py
     notes: CAPABILITY_AVAILABLE; ACTIVATION_STATE=BOUND_NOT_ACTIVATED; LIVE_AUTHORIZED=false. Implementation is not activation.
 
   - id: CAPABILITY:cap_3_1_futures_accounting
@@ -5824,6 +5829,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6974 — Productive reconciliation single-check + Master-V2 entry admission carrier; upstream Cap-1.1 provenance required; no second reconcile in MV2/DP; replay_reconciliation_state threading; AUTHORITY=NONE; POST_COUNT=0; RECONCILIATION_AUTHORITY_TRANSFER=false.
     # atlas_entity_review: Post-#6962 treasury single-source handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); enter-live still passes injected host inputs; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6953 — enter-live treasury P01/eligibility handoff export; portfolio seam;
@@ -6291,6 +6297,7 @@ entities:
       - src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py
+      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_reconciliation_admission_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py

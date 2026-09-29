@@ -47,7 +47,10 @@ from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 
 REPO = Path(__file__).resolve().parents[2]
-MV2_SRC = REPO / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+MV2_SRC = (
+    REPO
+    / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+)
 REPO_SHA = "5824af75e9c65592b362c935ac707064cfaea099"
 
 
@@ -77,9 +80,7 @@ def test_productive_gate_admission_allows_master_v2_replay_state(tmp_path: Path)
     assert admission.is_productive_upstream_provenance_v1() is True
     from trading.master_v2.double_play_entry_exit_policy_v0 import ReconciliationState
 
-    assert (
-        admission.integrated_replay_reconciliation_state_v1() is ReconciliationState.RECONCILED
-    )
+    assert admission.integrated_replay_reconciliation_state_v1() is ReconciliationState.RECONCILED
 
 
 def test_missing_productive_evidence_digest_blocks_admission_build() -> None:

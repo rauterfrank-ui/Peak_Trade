@@ -146,6 +146,7 @@ relations:
   - src/ops/single_selected_future_policy_v1/producer_v1.py
   notes: Calls existing run_single_selected_future_policy_v1 once per occupied lane with that lane's governed pin and lane_state_root.
     Join is not selection owner. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #6974 — BINDS unchanged; binding_gate reconciliation_result evidence_digest witness only; AUTHORITY=NONE.
 - id: REL:r_cap24_binds
   source: BINDER:bound_instrument_v1
   type: BINDS
@@ -297,6 +298,7 @@ relations:
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   notes: Host decorator observe_after_producer_v0 seam selection.single_future. No-op unless an enabled capture session is
     bound. Not PRODUCES/CONSUMES/CALLS. Cap23 governed pin does not confer DDO selection or routing authority.
+  # atlas_entity_review: PR #6974 — OBSERVES unchanged; binding_gate digest witness only; AUTHORITY=NONE.
 - id: REL:r_ddo_capture_observes_binding
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -499,6 +501,7 @@ relations:
     an enabled capture binding. In-memory captured_records still accumulate without a path.'
   # atlas_entity_review: PR #6936 — OBSERVES unchanged; DDO capture does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #6937 — OBSERVES unchanged; DDO offline export handoff does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #6974 — OBSERVES unchanged; MV2 admission gate does not alter elementary_direction relation; AUTHORITY=NONE.
 - id: REL:r_full_core_cycle_observes_elementary_direction
   # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1; canonical_price_provenance threading only; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1

@@ -504,10 +504,10 @@ def execute_current_productive_fresh_runtime_cycle_after_flatten_occupancy_absen
         else:
             cap_status, identities, bound, _selection, mv2_reconciliation_admission = (
                 _run_cap21_to_cap24_v1(
-                acquisition=acquisition_result,
-                store=store,
-                repo_sha=repo_sha,
-                observed_unix=observed_unix,
+                    acquisition=acquisition_result,
+                    store=store,
+                    repo_sha=repo_sha,
+                    observed_unix=observed_unix,
                 )
             )
             first_blocker = cap_status if cap_status != "PASS" else ""
