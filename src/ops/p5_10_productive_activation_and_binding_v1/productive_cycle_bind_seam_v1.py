@@ -171,6 +171,24 @@ def _observation_candidates_from_finalized_closes_v1(
     )
 
 
+def _layered_core_initialization_observations_v1(
+    *,
+    instrument_key: InstrumentObservationKeyV1,
+    finalized_closes: Sequence[float],
+    last_finalized_event_ts_unix: float,
+) -> Tuple[ObservationCandidateV1, ...]:
+    """Layered-core L1–L5 init observation series (historical host: finalized 1m close grid).
+
+    Canonical CMC ``mark_price_m_t`` remains authoritative for mechanical binding and
+    provenance elsewhere; this producer supplies the temporal mark sequence L3 consumes.
+    """
+    return _observation_candidates_from_finalized_closes_v1(
+        instrument_key=instrument_key,
+        closes=finalized_closes,
+        last_event_ts_unix=float(last_finalized_event_ts_unix),
+    )
+
+
 def _resolve_lifecycle_v1(
     *,
     store_root: Path,
@@ -258,12 +276,12 @@ def prepare_productive_layered_core_replay_bind_v1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
     )
-    # Layered-core init needs ≥2 distinct observation marks; finalized closes supply the
-    # 1m grid only. Authoritative mechanical M_t remains CMC (mark_price_m_t + provenance).
-    observations = _observation_candidates_from_finalized_closes_v1(
+    # Layered-core init needs ≥2 distinct observation marks on the 1m close grid.
+    # Authoritative mechanical M_t remains CMC (mark_price_m_t + provenance).
+    observations = _layered_core_initialization_observations_v1(
         instrument_key=instrument_key,
-        closes=finalized_closes,
-        last_event_ts_unix=float(last_finalized_event_ts_unix),
+        finalized_closes=finalized_closes,
+        last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     restore_existing = True
     try:
@@ -476,10 +494,10 @@ def ensure_productive_layered_core_episode_store_v1(
         instrument_key=instrument_key,
     )
     _ = mark_price_m_t
-    observations = _observation_candidates_from_finalized_closes_v1(
+    observations = _layered_core_initialization_observations_v1(
         instrument_key=instrument_key,
-        closes=finalized_closes,
-        last_event_ts_unix=float(last_finalized_event_ts_unix),
+        finalized_closes=finalized_closes,
+        last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     if len(observations) < 2:
         return ("layered_core_bootstrap_observations_insufficient",)

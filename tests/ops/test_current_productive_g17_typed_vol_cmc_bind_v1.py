@@ -440,13 +440,24 @@ def test_duplicate_noop_reuses_prior_estimate_for_cmc_and_presence_gate(
     assert dup.outcome is TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP
     assert producer.output_port_v1().estimate is not None
     bound = apply_current_productive_g17_typed_vol_cmc_bind_v1(_context(), producer=producer)
-    assert bound.bind_performed is True
-    assert bound.context.canonical_volatility_estimate is not None
+    from trading.master_v2.double_play_old_effective_host_contract_v1 import (
+        g17_cmc_bind_produced_only_v1,
+    )
+
+    if g17_cmc_bind_produced_only_v1():
+        assert bound.bind_performed is False
+        assert bound.context.canonical_volatility_estimate is None
+    else:
+        assert bound.bind_performed is True
+        assert bound.context.canonical_volatility_estimate is not None
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
         **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer),
     )
-    assert cycle.input_blocker == ""
-    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
+    if g17_cmc_bind_produced_only_v1():
+        assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons or cycle.input_blocker
+    else:
+        assert cycle.input_blocker == ""
+        assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
 
 
 def test_master_v2_cycle_produced_estimate_does_not_presence_fail(

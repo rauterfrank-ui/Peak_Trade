@@ -113,11 +113,16 @@ def apply_current_productive_g17_typed_vol_cmc_bind_v1(
             outcome=outcome,
             estimate_present=estimate_present,
         )
+    from trading.master_v2.double_play_old_effective_host_contract_v1 import (
+        g17_cmc_bind_produced_only_v1,
+    )
+
     bind_estimate = None
     if outcome_enum is TypedRuntimeProducerOutcomeV1.PRODUCED and port.estimate is not None:
         bind_estimate = port.estimate
     elif (
-        outcome_enum in _REUSE_ALLOWED_OUTCOMES
+        not g17_cmc_bind_produced_only_v1()
+        and outcome_enum in _REUSE_ALLOWED_OUTCOMES
         and port.ready_for_binding_handoff is True
         and port.estimate is not None
     ):

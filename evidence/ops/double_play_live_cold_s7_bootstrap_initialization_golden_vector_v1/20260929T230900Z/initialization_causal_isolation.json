@@ -1,0 +1,80 @@
+{
+  "wp3_cmc_flag": true,
+  "minimal_causal_input_set": [
+    "INIT_OBS_BUILDER_LIVE"
+  ],
+  "divergent_init_inputs_total": 1,
+  "tests": [
+    {
+      "test_id": "BASELINE_LIVE_CMC_WP3",
+      "substitution": "none (WP3 CMC builder)",
+      "init_result": "INITIALIZATION_INCOMPLETE",
+      "l3_trace": [
+        {
+          "index": 0,
+          "venue_event_time": 1759179940.0,
+          "mark_price": 0.3283,
+          "c1_classification": "distinct",
+          "l3_direction": "neutral",
+          "l3_reason": "first_observation"
+        },
+        {
+          "index": 1,
+          "venue_event_time": 1759180000.0,
+          "mark_price": 0.3283,
+          "c1_classification": "distinct",
+          "l3_direction": "neutral",
+          "l3_reason": "mark_unchanged"
+        }
+      ]
+    },
+    {
+      "test_id": "SUBSTITUTE_CLOSE_GRID_ONLY",
+      "substitution": "finalized_closes observation builder (committed HEAD semantics)",
+      "init_result": "INITIALIZED",
+      "l3_trace": [
+        {
+          "index": 0,
+          "venue_event_time": 1759179940.0,
+          "mark_price": 0.328,
+          "c1_classification": "distinct",
+          "l3_direction": "neutral",
+          "l3_reason": "first_observation"
+        },
+        {
+          "index": 1,
+          "venue_event_time": 1759180000.0,
+          "mark_price": 0.3283,
+          "c1_classification": "distinct",
+          "l3_direction": "bull",
+          "l3_reason": "mark_increased"
+        }
+      ]
+    },
+    {
+      "test_id": "SUBSTITUTE_VARIED_MARKS_ON_CMC_TIMES",
+      "substitution": "CMC time grid with close[-2]/close[-1] marks",
+      "init_result": "INITIALIZED",
+      "l3_trace": [
+        {
+          "index": 0,
+          "venue_event_time": 1759179940.0,
+          "mark_price": 0.328,
+          "c1_classification": "distinct",
+          "l3_direction": "neutral",
+          "l3_reason": "first_observation"
+        },
+        {
+          "index": 1,
+          "venue_event_time": 1759180000.0,
+          "mark_price": 0.3283,
+          "c1_classification": "distinct",
+          "l3_direction": "bull",
+          "l3_reason": "mark_increased"
+        }
+      ]
+    }
+  ],
+  "forensic_minimal_substitution_verdict": "PASS",
+  "initialization_complete_after_close_grid_substitution": true
+}
