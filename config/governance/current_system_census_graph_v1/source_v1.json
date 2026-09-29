@@ -12,7 +12,7 @@
   "not_a_universe_ratification": true,
   "not_a_replacement_for_canonical_authority_sources": true,
   "graph_loses_on_conflict": true,
-  "source_baseline_head": "d590b8142210680805f8dc159c5a2fb684e87737",
+  "source_baseline_head": "d26caea78d1a178fde0a9e91aee169d454eebcae",
   "census_version": "CURRENT_COMPLETE_SYSTEM_CENSUS_V1",
   "census_phase_1_status": "INCOMPLETE",
   "census_phase_2_status": "COMPLETE",
@@ -25,8 +25,8 @@
   ],
   "semantic_edge_definition": "Architecture/system semantic edges; not full Python import graph.",
   "authority_map_authority": "NONE",
-  "authority_map_baseline_sha": "d9f33a62f43f036932ed7c8bca648c71997dd162",
-  "authority_map_currentness": "STALE_BASELINE_SHA_VS_SOURCE_HEAD",
+  "authority_map_baseline_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
+  "authority_map_currentness": "ALIGNED_AT_ARCHITECTURE_NAVIGATION_FIXPOINT_V1",
   "reported_proven_current_universe_count": 12,
   "taxonomy_status": "OPEN_CURRENT",
   "taxonomy_issue": "Phase-2 report count/list mismatch: Cross-Boundaries, Offline/Research and Presentation surfaces listed alongside fachliche Universes.",
@@ -3755,9 +3755,11 @@
         "src/ops/economic_md_input_producer_v1/constants_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT",
-      "notes": null,
+      "notes": "Input-2 Economic-MD producer only; not Cap22 ranking authority owner (ranking remains ops.productive_futures_ranking_producer_v1). Real Economic-MD productive compose may remain absent; navigation does not claim activation.",
       "program_tags": [],
-      "secondary_roles": []
+      "secondary_roles": [
+        "ECONOMIC_MD_INPUT_NOT_RANKING_AUTHORITY"
+      ]
     },
     {
       "object_id": "SO-OPS-PKG:economic_summary_archive_sibling_exporter_v1",
@@ -6744,8 +6746,10 @@
         "src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT",
-      "notes": null,
-      "program_tags": [],
+      "notes": "Cap11.x productive reconciliation startup gate (reconciliation_runtime_binding CSIA domain); not venue-native truth adjudication; Cap11 venue-native observed truth remains bounded UNKNOWN where applicable.",
+      "program_tags": [
+        "CAP11_PRODUCTIVE_RECONCILIATION"
+      ],
       "secondary_roles": []
     },
     {
@@ -10583,17 +10587,19 @@
       "source_universe_or_plane": "treasury_29p",
       "target_universe_or_plane": "capital_risk_sizing",
       "flow_type": "DATA_FLOW",
-      "producer": "treasury_29p",
-      "consumer": "capital_admission",
-      "contract_or_payload": "conditional treasury decrease join",
+      "producer": "current_productive_treasury_single_source_capital_handoff_v1",
+      "consumer": "evaluate_step_29p_capital_risk_admissibility_v1",
+      "contract_or_payload": "treasury single-source handoff then capital admission then step29p admissibility; treasury does not mint risk_admissible",
       "transport": null,
-      "authority_effect": "CONFLICTING",
+      "authority_effect": "NONE",
       "runtime_reachability": null,
       "productive_reachability": true,
       "map_relationship": "CODE_AND_MAP",
       "current_evidence": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+        "config/governance/od_29p_normative_pack_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py",
+        "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT"
     },
@@ -11650,9 +11656,13 @@
       "inputs": [],
       "outputs": [],
       "must_not": [
-        "sole selection"
+        "sole selection",
+        "equate economic_md input producer with ranking authority owner"
       ],
-      "evidence_refs": []
+      "evidence_refs": [
+        "config/governance/peak_trade_ranking_feature_production_v1.json",
+        "src/ops/economic_md_input_producer_v1/constants_v1.py"
+      ]
     },
     {
       "topology_id": "TD-CAP23-SELECTION",
@@ -11792,7 +11802,9 @@
         "SO-OPS-PKG:governed_productive_reference_price_authority_producer_v1",
         "SO-OPS-PKG:okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1",
         "SO-OPS-PKG:portfolio_capital_reservation_budget_v1",
-        "SO-OPS-PKG:productive_typed_volatility_producer_and_cmc_hot_path_binding_v1"
+        "SO-OPS-PKG:productive_reconciliation_runtime_binding_v1",
+        "SO-OPS-PKG:productive_typed_volatility_producer_and_cmc_hot_path_binding_v1",
+        "SO-OPS-PKG:wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
       ],
       "start_boundary": "governed cycle entry",
       "end_boundary": "PRE_EXTERNAL_EFFECT",
@@ -11831,13 +11843,19 @@
       "start_boundary": "ranking handoff",
       "end_boundary": "TERMINAL_BOUNDARY_PRE_EXTERNAL",
       "authority_owner": "current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
-      "authority_source": "orchestrator_v1 docstring",
+      "authority_source": "orchestrator_v1 docstring; MF logical owner ops.mf_membership_rotation_controller_v1 (contract name); behavior ops.mf_membership_selector_and_rotation_runtime_contract_v1; state artifact ops.mf_membership_context_artifact_contract_v1 (single-file src/ops modules, not package census objects)",
       "inputs": [],
       "outputs": [],
       "must_not": [
-        "decide trades"
+        "decide trades",
+        "productive MF egress join without separate authorization",
+        "ratify MF Step 5 productively"
       ],
-      "evidence_refs": []
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md",
+        "src/ops/mf_membership_context_artifact_contract_v1.py",
+        "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py"
+      ]
     },
     {
       "topology_id": "TD-DDO-LEARNING",
@@ -12176,6 +12194,16 @@
       "id": "CD-006",
       "topic": "Edge reconciliation arithmetic",
       "detail": "Reported 31+44+1 map-category counts imply 76 map edges unless CONFLICTING is subset; only 75 map edges exist. Materialized tally in edge_reconciliation.materialized_map_relationship_tally."
+    },
+    {
+      "id": "CD-007",
+      "topic": "MF membership single-file contracts vs package census granularity",
+      "detail": "mf_membership_* contract modules live under src/ops/*.py without package directories; navigation references them via TD-N5 evidence_refs and Map of Truth pointers; not omitted architecture surfaces."
+    },
+    {
+      "id": "CD-008",
+      "topic": "treasury_to_admission census edge vs OD-29P normative pack",
+      "detail": "Census edge authority_effect realigned to NONE per config/governance/od_29p_normative_pack_v1.json treasury_to_admission_representation; prior census CONFLICTING label was stale vs CURRENT CSIA map."
     }
   ]
 }

@@ -2,7 +2,7 @@
   "artifact_class": "BOUNDED_PRODUCTIVE_KERNEL_COMPLETENESS_WITNESS_V1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "current_reviewed_at_sha": "2e1a64c98bd811c55f62e5d983ae38b480f207e4",
+  "current_reviewed_at_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
   "bounded_kernel_object_ids": [
     "universe_cap21",
     "ranking_cap22",

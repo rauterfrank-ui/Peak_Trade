@@ -454,7 +454,7 @@ def test_incompleteness_missing_reason_fails(atlas: dict) -> None:
 
 def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    assert meta["navigation_rebind_kind"] == "POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1"
+    assert meta["navigation_rebind_kind"] == "ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1"
     assert meta["historical_domain_census_payload_count"] == 0
     assert meta["okx_historical_census_complete"] is False
     assert meta["historical_terminology_census_complete"] is False
@@ -573,11 +573,11 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
 
 def test_census_navigation_rebind_atlas_legacy_eradication_v1(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    reviewed = "744a9c896f53d33b2d3c24977da1891a2e8549f1"
+    reviewed = "d26caea78d1a178fde0a9e91aee169d454eebcae"
     assert meta["current_reviewed_at_sha"] == reviewed
     assert meta["origin_main_sha"] == reviewed
     assert meta["navigation_rebind_sha"] == reviewed
-    assert meta["navigation_rebind_kind"] == "POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1"
+    assert meta["navigation_rebind_kind"] == "ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1"
     assert meta["domain_census_payloads_bound_sha"] is None
     assert meta["historical_domain_census_payload_count"] == 0
 

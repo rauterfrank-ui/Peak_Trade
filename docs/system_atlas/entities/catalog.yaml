@@ -661,7 +661,7 @@ entities:
     epistemic_class: CANONICAL_AUTHORITY
     current_canonical: true
     current_status: CURRENT_CANONICAL
-    modified_by: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
+    modified_by: ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1
     authority_sources:
       - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
       - docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md
