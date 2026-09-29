@@ -6,7 +6,8 @@
   "ssot_doc": "docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md",
   "owner_go": "OWNER_GO_OD_U01_P01_29P_SIZING_MINT_BOUNDED_WP_V1",
   "owner_go_status": "CONSUMED",
-  "baseline_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+  "baseline_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
+  "post_6962_corridor_repair": "TREASURY_U01_WITNESS_FAIL_CLOSED_SEM_SURF_DIV_00004",
   "prior_adjudications": [
     "OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1",
     "OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND_CANONICAL_ADJUDICATION_V1"
@@ -191,14 +192,14 @@
   "semantic_divergences": [
     {
       "id": "SEM-SURF-DIV-00004",
-      "status": "VIOLATED_CURRENT",
-      "statement": "Treasury handoff default host_inputs uses raw_acct_lv=2 without account/config witness when caller omits u04_p01_host_inputs.",
-      "producer": "build_default_full_core_u04_p01_eligibility_host_inputs_v1",
-      "consumer": "execute_current_productive_treasury_single_source_capital_handoff_v1",
-      "law_violated": "U01_MUST_BE_WITNESSED_FROM_ACCOUNT_CONFIG_ON_PRODUCTIVE_PATH",
-      "blast_radius": "DEFAULT_HOST_INPUT_PATH_AND_TESTS_NOT_ENTER_LIVE_INJECTED_PATH",
-      "runtime_reachability": "FAIL_CLOSED_WHEN_ENTER_LIVE_PASSES_INJECTED_RAW_ACCT_LV",
-      "repair_authority": "OD_EXTERNAL_EFFECT_OR_ENTER_LIVE_U01_WITNESS_BIND"
+      "status": "PROVEN_CURRENT",
+      "statement": "Treasury handoff no longer mints implicit raw_acct_lv=2; explicit u04_p01_host_inputs with non-empty U01 witness required (fail-closed).",
+      "producer": "execute_current_productive_treasury_single_source_capital_handoff_v1",
+      "consumer": "produce_current_productive_29p_risk_capital_v1",
+      "law_violated": "NONE_AFTER_REPAIR",
+      "blast_radius": "DIRECT_TREASURY_EXECUTE_CALLERS_WITHOUT_HOST_INPUTS",
+      "runtime_reachability": "ENTER_LIVE_UNCHANGED_EXPLICIT_WITNESS_VIA_INJECTED_RAW_ACCT_LV",
+      "repair_authority": "OD_U01_P01_29P_SIZING_MINT_TREASURY_WITNESS_FAIL_CLOSED_V1"
     }
   ],
   "domain_laws": {
@@ -218,7 +219,8 @@
     "DL-MINT-14": "PROVEN_CURRENT",
     "DL-MINT-15": "PROVEN_CURRENT",
     "DL-MINT-16": "UNKNOWN_CURRENT",
-    "DL-MINT-17": "PROVEN_CURRENT"
+    "DL-MINT-17": "PROVEN_CURRENT",
+    "DL-U01-WIT-01": "PROVEN_CURRENT"
   },
   "owner_decision_required": true,
   "owner_decision_exact_question": "OD_SEALED_VENUE_29P_NORMATIVE: bind sealed venue 29P normative common-epoch identity and venue number pack beyond join-decision_epoch equality.",

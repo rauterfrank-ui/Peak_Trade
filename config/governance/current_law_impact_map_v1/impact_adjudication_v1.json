@@ -1,46 +1,34 @@
 {
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+  "base_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/remaining_29_frozen_workset_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
     "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
-    "docs/governance/OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND_CANONICAL_ADJUDICATION_V1.md",
     "docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
-    "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
     "src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
-    "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+    "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+    "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
   ],
-  "changed_paths_sha256": "8387e6e655b23bd6d575801190a6d684a1d193224d1a7c7e9846708296b2f51d",
+  "changed_paths_sha256": "c66048955f7945feed8fc275652ad1db7c47689446a0622c5451b1facf7d4a9f",
   "covered_candidate_paths": [
     "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
-    "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
-    "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+    "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+    "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
   ],
   "evidence_refs": [
     "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
-    "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
-    "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
     "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
-    "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
-    "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
-    "tests/ops/test_remaining_29_evidence_exhaustion_v1.py"
+    "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
   ],
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "OD_U01_P01_29P_SIZING_MINT adjudication (CASE D); successor link from OD_29P numeric bind; map/atlas regeneration only."
+  "reason": "Post-#6962 Category-A repair: treasury U01 witness fail-closed (SEM-SURF-DIV-00004); OD/law-map sha refresh; sealed 29P epoch/pack remains UNKNOWN."
 }

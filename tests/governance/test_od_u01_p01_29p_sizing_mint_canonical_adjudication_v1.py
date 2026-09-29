@@ -14,6 +14,7 @@ from src.governance.od_account_equity_sizing_source_canonical_adjudication_v1 im
 from src.governance.od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 import (
     ADJUDICATION_CONFIG,
     DL_MINT_KEYS,
+    DOMAIN_LAW_KEYS,
     build_adjudication_report_v1,
     load_adjudication_v1,
     validate_adjudication_against_repo_v1,
@@ -47,10 +48,11 @@ def test_u01_p01_mint_adjudication_loads_and_validates() -> None:
 
 def test_dl_mint_laws_indexed() -> None:
     laws = json.loads((REPO / ADJUDICATION_CONFIG).read_text(encoding="utf-8"))["domain_laws"]
-    assert set(laws) == set(DL_MINT_KEYS)
+    assert set(laws) == set(DOMAIN_LAW_KEYS)
     assert laws["DL-MINT-08"] == "UNKNOWN_CURRENT"
     assert laws["DL-MINT-16"] == "UNKNOWN_CURRENT"
-    assert sum(v == "PROVEN_CURRENT" for v in laws.values()) == 15
+    assert laws["DL-U01-WIT-01"] == "PROVEN_CURRENT"
+    assert sum(1 for k in DL_MINT_KEYS if laws[k] == "PROVEN_CURRENT") == 15
 
 
 def test_u01_p01_align_with_6960_6961_without_reopening() -> None:
@@ -76,3 +78,15 @@ def test_semantic_ids_match_runtime_constants() -> None:
     assert payload["u01"]["adapter_schema_class"] == U01_ADAPTER_CLASS
     assert payload["p01"]["does_not_apply_when"] == "ALWAYS_CURRENT_PRODUCTIVE_STANDING_POLICY"
     assert P01_DOES_NOT_APPLY in json.dumps(payload["p01"])
+
+
+def test_sem_surf_div_00004_repaired_and_sealed_pack_still_unknown() -> None:
+    payload = json.loads((REPO / ADJUDICATION_CONFIG).read_text(encoding="utf-8"))
+    div04 = next(d for d in payload["semantic_divergences"] if d["id"] == "SEM-SURF-DIV-00004")
+    assert div04["status"] == "PROVEN_CURRENT"
+    assert payload["29p_common_epoch_binding_status"] == "UNKNOWN_CURRENT"
+    assert payload["29p_normative_pack_identity_status"] == "UNKNOWN_CURRENT"
+    assert payload["unk_sealed_venue_number_29p_status"] == "UNKNOWN_CURRENT"
+    assert payload["next_genuine_blocker"] == (
+        "OD_SEALED_VENUE_29P_NORMATIVE_COMMON_EPOCH_AND_VENUE_NUMBER"
+    )
