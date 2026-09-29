@@ -22,8 +22,8 @@ def test_frozen_remaining_count_and_partition() -> None:
     rows = _build_rows()
     assert len(rows) == 29
     c = Counter(r.exhaustion_disposition for r in rows)
-    assert c["EXISTING_CURRENT_EVIDENCE_BINDABLE"] == 10
-    assert c["GENUINELY_CANONICAL_OWNER_BLOCKED"] == 19
+    assert c["EXISTING_CURRENT_EVIDENCE_BINDABLE"] == 18
+    assert c["GENUINELY_CANONICAL_OWNER_BLOCKED"] == 11
     assert sum(c.values()) == 29
 
 
@@ -43,8 +43,10 @@ def test_artifact_on_disk() -> None:
 def test_source_after_apply() -> None:
     doc = json.loads(SOURCE.read_text())
     assert doc["baseline_sha"] == POST_MERGE_BASELINE_SHA
-    assert len(doc["unclassified_current_surfaces"]) == 19
-    assert any(d["id"] == "SEM-SURF-DIV-00003" for d in doc["semantic_divergence_index"])
+    assert len(doc["unclassified_current_surfaces"]) == 11
+    div = next(d for d in doc["semantic_divergence_index"] if d["id"] == "SEM-SURF-DIV-00003")
+    assert div["adjudication"] == "PROVEN_CURRENT"
+    assert not any(u["id"] == "unk_account_equity_sizing_source" for u in doc["unknown_relations"])
     for row in doc["unclassified_current_surfaces"]:
         assert "EXHAUSTION=" in row["reason"]
 

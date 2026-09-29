@@ -19,7 +19,8 @@ R29_JSON = (
 RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 EQUITY_RAT = "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
 
-POST_MERGE_BASELINE_SHA = "e2a3dbdb202edb32f01a30da488538b40976b26a"
+POST_MERGE_BASELINE_SHA = "570c437eb45295929128a13b2bc194bfb1fc063a"
+OD_ADJ = "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
 
 SOBJ_NAV_EXTERNAL = "sobj_nav_external_effect_seam"
@@ -64,10 +65,15 @@ def _frozen_remaining_paths() -> list[str]:
 
 
 def assert_source_matches_frozen_workset() -> None:
+    rows = _build_rows()
+    expected = sorted(
+        r.surface
+        for r in rows
+        if r.exhaustion_disposition == "GENUINELY_CANONICAL_OWNER_BLOCKED"
+    )
     doc = json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
     live = sorted(r["path"] for r in doc.get("unclassified_current_surfaces", []))
-    frozen = _frozen_remaining_paths()
-    if live != frozen:
+    if live != expected:
         raise RuntimeError(
             "source unclassified_current_surfaces drift vs frozen remaining-29 workset"
         )
@@ -179,15 +185,16 @@ def _build_rows() -> list[ExhaustionRow]:
             row(
                 "UCS-0032",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
                 (
-                    EQUITY_RAT,
+                    OD_ADJ,
                     "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
                 ),
-                "Trusted GET sizing value vs account-equity mapping CSIA PARTIAL (account_equity_mapping_unbound).",
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                None,
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0033",
@@ -219,52 +226,57 @@ def _build_rows() -> list[ExhaustionRow]:
             row(
                 "UCS-0035",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT, RUNBOOK),
-                "Architecture module; CSIA account_equity_mapping_unbound remains OPEN.",
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ, RUNBOOK),
+                None,
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0037",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
-                "Sizing source selection not adjudicated.",
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
+                None,
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0038",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
                 None,
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0039",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
                 None,
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0040",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
-                "Direct selector for account-equity sizing source.",
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
+                None,
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0042",
@@ -435,22 +447,24 @@ def _build_rows() -> list[ExhaustionRow]:
             row(
                 "UCS-0073",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
-                "U04/P01 sizing eligibility vs unbound account-equity mapping.",
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
+                None,
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0074",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
-                (EQUITY_RAT,),
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "PROVEN_CURRENT",
+                (OD_ADJ,),
                 None,
-                OWNER_DECISION_ACCOUNT_EQUITY,
-                pins=("unk_account_equity_sizing_source",),
+                None,
+                bind_lref="OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0076",
@@ -522,6 +536,12 @@ def build_artifact() -> dict[str, Any]:
 
 def _additive_lrefs() -> list[dict[str, Any]]:
     specs = [
+        (
+            "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+            OD_ADJ,
+            "od_account_equity_sizing_source_canonical_adjudication_v1",
+            SOBJ_NAV_B05,
+        ),
         (
             "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
             RUNBOOK,
@@ -614,7 +634,7 @@ def _merge_code_surface(sobjs: list[dict[str, Any]], sid: str, path: str) -> Non
         if path not in surfaces:
             surfaces.append(path)
             so["code_surfaces"] = sorted(surfaces)
-            return
+        return
     raise KeyError(sid)
 
 
@@ -643,27 +663,48 @@ def apply_bindings(doc: dict[str, Any]) -> dict[str, Any]:
 
     new_div = {
         "id": "SEM-SURF-DIV-00003",
-        "adjudication": "UNKNOWN_CURRENT",
+        "adjudication": "PROVEN_CURRENT",
         "producer_ref": "csia:account_equity_mapping_unbound",
         "consumer_ref": "sobj_nav_b05_account_equity_productive_chain",
         "statement": (
-            "CSIA open_epistemic record account_equity_mapping_unbound (PARTIAL) vs "
-            "B05 ratification JSON chain-closure claims — sizing source selection remains "
-            "not Law-Map adjudicated; maps to unk_account_equity_sizing_source."
+            "OD_ACCOUNT_EQUITY_SIZING_SOURCE adjudicated: CSIA PARTIAL numeric venue bind "
+            "scope reconciled with B05 Full-Core authority-owner + producer-wrap + "
+            "DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01 transform binding; "
+            "unk_account_equity_sizing_source resolved."
         ),
-        "expected_canonical_source": EQUITY_RAT,
+        "expected_canonical_source": OD_ADJ,
         "evidence_refs": [
-            "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+            OD_ADJ,
+            "docs/governance/OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1.md",
+            RUNBOOK,
             EQUITY_RAT,
-            "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         ],
-        "reproof_required": True,
-        "unknown_relation_id": "unk_account_equity_sizing_source",
+        "reproof_required": False,
+        "unknown_relation_id": None,
     }
     divs = doc.get("semantic_divergence_index", [])
-    if not any(d["id"] == new_div["id"] for d in divs):
-        divs.append(new_div)
-    doc["semantic_divergence_index"] = divs
+    divs = [d for d in divs if d.get("id") != new_div["id"]]
+    divs.append(new_div)
+    doc["semantic_divergence_index"] = sorted(divs, key=lambda x: x["id"])
+    doc["unknown_relations"] = [
+        u for u in doc.get("unknown_relations", []) if u.get("id") != "unk_account_equity_sizing_source"
+    ]
+    reproof = doc.get("reproof_index", [])
+    reproof.append(
+        {
+            "id": "reproof_od_account_equity_sizing_source",
+            "law_ref_ids": ["OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"],
+            "affected_semantic_object_ids": ["sobj_nav_b05_account_equity_productive_chain"],
+            "proof_refs": [
+                "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+                OD_ADJ,
+            ],
+            "base_sha": POST_MERGE_BASELINE_SHA,
+            "head_sha": POST_MERGE_BASELINE_SHA,
+            "adjudication_status": "OWNER_ADJUDICATED_CURRENT",
+        }
+    )
+    doc["reproof_index"] = sorted(reproof, key=lambda x: x["id"])
     doc["baseline_sha"] = POST_MERGE_BASELINE_SHA
     return doc
 

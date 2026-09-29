@@ -2,9 +2,9 @@
   "authority": "NONE",
   "ssot": false,
   "navigation_evidence_only": true,
-  "post_merge_baseline_sha": "e2a3dbdb202edb32f01a30da488538b40976b26a",
+  "post_merge_baseline_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
   "frozen_remaining_workset_count": 29,
-  "frozen_remaining_workset_sha256": "8daa3a30c2f92b779144bce4098c7b8f975007d1f13082c6b453d3817efdbaa8",
+  "frozen_remaining_workset_sha256": "658f643ca5e724b9b0f09129e5179a21a291738a2597b7a8ba9f2a95b83e1bb6",
   "census_id": "REMAINING_29_EVIDENCE_EXHAUSTION_V1",
   "records": [
     {
@@ -100,19 +100,17 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
         "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py"
       ],
-      "missing_canonical_fact": "Trusted GET sizing value vs account-equity mapping CSIA PARTIAL (account_equity_mapping_unbound).",
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0033",
@@ -155,91 +153,81 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
-      "missing_canonical_fact": "Architecture module; CSIA account_equity_mapping_unbound remains OPEN.",
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0037",
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
-      "missing_canonical_fact": "Sizing source selection not adjudicated.",
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0038",
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
       "missing_canonical_fact": null,
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0039",
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
       "missing_canonical_fact": null,
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0040",
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
-      "missing_canonical_fact": "Direct selector for account-equity sizing source.",
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0042",
@@ -468,36 +456,32 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
-      "missing_canonical_fact": "U04/P01 sizing eligibility vs unbound account-equity mapping.",
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0074",
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
-      "unknown_pins": [
-        "unk_account_equity_sizing_source"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "PROVEN_CURRENT",
       "primary_evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
       ],
       "missing_canonical_fact": null,
-      "owner_decision_boundary": "OD_ACCOUNT_EQUITY_SIZING_SOURCE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0076",
