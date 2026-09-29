@@ -1,0 +1,1260 @@
+{
+  "authority": "NONE",
+  "ssot": false,
+  "navigation_evidence_only": true,
+  "frozen_baseline_sha": "71a5a9410c667919ef83ab82eb0c5c1177ad4870",
+  "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
+  "frozen_workset_count": 78,
+  "dispositions": [
+    {
+      "workset_id": "UCS-0001",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py"
+      ],
+      "unresolved_reason": "External-effect POST baseline indexing; venue POST authorization not adjudicated in Law Map.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0002",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py"
+      ],
+      "unresolved_reason": "No durable canonical spec or CSIA domain binding for immediate pre-POST freshness semantics.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0003",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py"
+      ],
+      "unresolved_reason": "Owner-GO consume ledger for POST; compliance adjudication external.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0004",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_CYCLE_ORCHESTRATION_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0005",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+        "tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0006",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "unresolved_reason": "Offline flatten plan module; durable tests index behavior, not productive semantic ownership.",
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0007",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_m9_vol_max_age",
+      "bound_lref": "M9-VOL-MAX-AGE-DECISION-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0008",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py"
+      ],
+      "unresolved_reason": "PRE_EXTERNAL envelope reach; POST join remains Owner-GO scoped.",
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0009",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_g17_typed_vol_bind",
+      "bound_lref": "G17-TYPED-VOL-CMC-BIND-V1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_G17_TYPED_VOL_CHAIN",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0010",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_g17_typed_vol_bind",
+      "bound_lref": "G17-TYPED-VOL-CMC-BIND-V1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_G17_TYPED_VOL_CHAIN",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0011",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_g17_typed_vol_bind",
+      "bound_lref": "G17-TYPED-VOL-CMC-BIND-V1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "unresolved_reason": "Persist/restore checkpoint; PERSISTS edge indexed separately.",
+      "root_cause_group": "RCG_PERSISTENCE_REPLAY_AMBIGUITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0012",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_full_core_cycle_orchestrator",
+      "bound_lref": "PROD-CANONICAL-PRICE-PROVENANCE-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_CYCLE_ORCHESTRATION_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0013",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py"
+      ],
+      "unresolved_reason": "C1 trigger orchestration wiring; no standalone canonical semantic owner beyond composition nav.",
+      "root_cause_group": "RCG_CYCLE_ORCHESTRATION_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0014",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py"
+      ],
+      "unresolved_reason": "K1 signing handle seam pre-POST; external-effect authorization not indexed as PROVEN.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0015",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0016",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py"
+      ],
+      "unresolved_reason": "Observation-only DDO export handoff; not productive trading semantic owner.",
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0017",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0018",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py"
+      ],
+      "unresolved_reason": "CRS capital_context rebind; account-equity source selection remains CSIA PARTIAL (unk_account_equity_sizing_source).",
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0019",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py"
+      ],
+      "unresolved_reason": "Relocated classify/gate tokens without durable canonical owner spec in CSIA domains list.",
+      "root_cause_group": "RCG_CYCLE_ORCHESTRATION_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0020",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
+      ],
+      "unresolved_reason": "Permit mint/consume join; external-effect authorization boundary preserved.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0021",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_c1_observation_sources",
+      "bound_lref": "PUBLIC-MD-RUNTIME-POLICY-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_OBSERVATION_SOURCE_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0022",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_c1_observation_sources",
+      "bound_lref": "PUBLIC-MD-RUNTIME-POLICY-V1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py",
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_OBSERVATION_SOURCE_WIRING",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0023",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_full_core_cycle_orchestrator",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py"
+      ],
+      "unresolved_reason": "Persist/restore cursor; dynamic override risk indexed via PERSISTS edge.",
+      "root_cause_group": "RCG_PERSISTENCE_REPLAY_AMBIGUITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0024",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "tests/ops/test_current_productive_step_29p_productive_causal_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0025",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_portfolio_capital_budget",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0026",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
+      ],
+      "unresolved_reason": "Treasury lifecycle vs B05 equity authority distinction preserved in CSIA.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0027",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py"
+      ],
+      "unresolved_reason": "Module declares NEW_OWNER_AUTHORITY; no canonical compliance adjudicator indexed (CANONICAL_COMPLIANCE_ADJUDICATOR=UNKNOWN_CURRENT).",
+      "root_cause_group": "RCG_VENUE_PLAN_IDENTITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0028",
+      "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
+      "disposition": "UNCLASSIFIED_IDENTITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py"
+      ],
+      "unresolved_reason": "Venue plan bind seam lacks CSIA domain code_ref; identity vs Cap24/MV2 replay owner not proven.",
+      "root_cause_group": "RCG_VENUE_PLAN_IDENTITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0029",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_cap24_runtime_binding",
+      "bound_lref": "CAP24-RUNTIME-BINDING-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
+        "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+      ],
+      "unresolved_reason": "Cap24\u2194productive mark provenance chain remains OPEN (unk_cap24_l1_productive_mark_provenance).",
+      "root_cause_group": "RCG_CAP24_PRODUCTIVE_MARK_PROVENANCE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0030",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "tests/ops/test_full_core_current_productive_29p_chain_baseline_contract_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0031",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py"
+      ],
+      "unresolved_reason": "29P epoch handoff; sealed venue 29P normative binding OPEN (unk_sealed_venue_number_29p).",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0032",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py"
+      ],
+      "unresolved_reason": "Trusted GET witness for sizing value; account-equity mapping CSIA record account_equity_mapping_unbound.",
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0033",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "tests/ops/test_full_core_current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py"
+      ],
+      "unresolved_reason": "Live account/instrument scope; live authorization not Law-Map adjudicated.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0034",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+      "disposition": "UNCLASSIFIED_IDENTITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py"
+      ],
+      "unresolved_reason": "Risk capital model vs treasury/B05 equity semantics not identity-proven.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0035",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py"
+      ],
+      "unresolved_reason": "Architecture documentation module; canonical account-equity sizing source selection unresolved.",
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0036",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0037",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py"
+      ],
+      "unresolved_reason": "Typed binding models; CSIA account_equity_mapping_unbound \u2014 sizing source not adjudicated.",
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0038",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0039",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0040",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "unresolved_reason": "Direct carrier for account-equity source selection; maps to unk_account_equity_sizing_source.",
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0041",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_cap21_universe",
+      "bound_lref": "CAP21-GOVERNED-UNIVERSE-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+        "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
+      ],
+      "unresolved_reason": "Serializes Cap21-23 productive state; replay override semantics require reproof.",
+      "root_cause_group": "RCG_PERSISTENCE_REPLAY_AMBIGUITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0042",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py"
+      ],
+      "unresolved_reason": "Guard module without indexed canonical spec anchor in Law Map LREF catalog.",
+      "root_cause_group": "RCG_CAP24_PRODUCTIVE_MARK_PROVENANCE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0043",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+      "disposition": "BOUND_EXISTING_SOBJ",
+      "bound_sobj": "sobj_cap24_runtime_binding",
+      "bound_lref": "CAP24-RUNTIME-BINDING-V1",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_CAP24_PRODUCTIVE_MARK_PROVENANCE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0044",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py"
+      ],
+      "unresolved_reason": "Live execution port join; external-effect authorization not PROVEN in map.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0045",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py"
+      ],
+      "unresolved_reason": "29P handoff epoch semantics; sealed venue 29P pin OPEN.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0046",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "CAP24-RUNTIME-BINDING-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_CAP24_PRODUCTIVE_MARK_PROVENANCE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0047",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py"
+      ],
+      "unresolved_reason": "External-effect send seam; PRE_EXTERNAL boundary only unless Owner-GO consumed.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0048",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0049",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py"
+      ],
+      "unresolved_reason": "Credential join surface; credential loading authority not Law-Map adjudicated.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0050",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0051",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py"
+      ],
+      "unresolved_reason": "Admission remainder hook without durable canonical spec indexed.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0052",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_b05_account_equity_productive_chain",
+      "bound_lref": "CAP23-SINGLE-SELECTED-FUTURE-V1",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+      ],
+      "unresolved_reason": "POST readiness naming; actual POST remains unauthorized without external-effect proof.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0053",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_NON_EXECUTABLE_RUNTIME_HARNESS",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0054",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_NON_EXECUTABLE_RUNTIME_HARNESS",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0055",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_NON_EXECUTABLE_RUNTIME_HARNESS",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0056",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_NON_EXECUTABLE_RUNTIME_HARNESS",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0057",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0058",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py"
+      ],
+      "unresolved_reason": "Persisted cursor replay path; replay semantics partially indexed.",
+      "root_cause_group": "RCG_PERSISTENCE_REPLAY_AMBIGUITY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0059",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0060",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_full_core_composition_joins",
+      "bound_lref": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0061",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1.md",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0062",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py"
+      ],
+      "unresolved_reason": "Standing live-armed gate; activation authority not map-adjudicated.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0063",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0064",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0065",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0066",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+      "disposition": "NAVIGATION_ONLY",
+      "bound_sobj": "sobj_nav_external_effect_seam",
+      "bound_lref": null,
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_PRE_EXTERNAL_BOUNDARY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0067",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "tests/ops/test_full_core_current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py"
+      ],
+      "unresolved_reason": "P01 policy replacement vs 29P continuation; Owner policy boundary.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0068",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py"
+      ],
+      "unresolved_reason": "P01 policy module without indexed canonical LREF in current catalog.",
+      "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0069",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py"
+      ],
+      "unresolved_reason": "Evidence adjudication helper; not compliance adjudicator.",
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0070",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py"
+      ],
+      "unresolved_reason": "Submission authorization token; external-effect authority OPEN.",
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0071",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0072",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py",
+      "disposition": "UNCLASSIFIED_EVIDENCE_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0073",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0074",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0075",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
+      "disposition": "EVIDENCE_ONLY",
+      "bound_sobj": "sobj_evidence_only_productive_harness",
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_DURABLE_TEST_EVIDENCE_ONLY",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0076",
+      "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py",
+      "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
+      "bound_sobj": null,
+      "bound_lref": null,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0077",
+      "surface": "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+      "disposition": "BOUND_NEW_SOBJ",
+      "bound_sobj": "sobj_b05_instrument_metadata_authority_producer",
+      "bound_lref": "B05-INSTRUMENT-METADATA-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_RATIFIED_AUTHORITY_PRODUCER",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    },
+    {
+      "workset_id": "UCS-0078",
+      "surface": "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+      "disposition": "BOUND_NEW_SOBJ",
+      "bound_sobj": "sobj_b05_reference_price_authority_producer",
+      "bound_lref": "B05-REFERENCE-PRICE-RATIFICATION-V1",
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py"
+      ],
+      "unresolved_reason": null,
+      "root_cause_group": "RCG_B05_RATIFIED_AUTHORITY_PRODUCER",
+      "discovery_method": "discover_unclassified_current_productive_v1",
+      "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
+      "map_status_at_freeze": "UNCLASSIFIED_CURRENT"
+    }
+  ]
+}

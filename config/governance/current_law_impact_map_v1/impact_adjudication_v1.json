@@ -1,33 +1,34 @@
 {
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "f3e6e98089e611c89e2ef935d185944a9d221f21",
+  "base_sha": "71a5a9410c667919ef83ab82eb0c5c1177ad4870",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_law_impact_map_v1/schema_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_law_impact_map_v1/ucs_frozen_workset_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
-    "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/ucs_workset_disposition_v1.md",
     "scripts/ops/current_law_impact_map_v1.py",
-    "scripts/ops/law_map_v1/apply_surface_expansion_v1.py",
-    "scripts/ops/law_map_v1/surface_census_v1.py",
-    "tests/ops/test_current_law_impact_map_v1.py"
+    "scripts/ops/law_map_v1/apply_ucs_evidence_binding_v1.py",
+    "scripts/ops/law_map_v1/ucs_evidence_binding_v1.py",
+    "tests/ops/test_current_law_impact_map_v1.py",
+    "tests/ops/test_ucs_evidence_binding_v1.py"
   ],
-  "changed_paths_sha256": "b57386eaf4d9476ec858ea1bd3dd39c97dcd88f02c3e655a149545e56fd01422",
+  "changed_paths_sha256": "ebbb484586d55ee63918ac24f8f74662d45096c5997e87b724f014e1de6b53de",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json"
   ],
   "evidence_refs": [
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "scripts/ops/law_map_v1/surface_census_v1.py",
-    "tests/ops/test_current_law_impact_map_v1.py"
+    "config/governance/current_law_impact_map_v1/ucs_frozen_workset_v1.json",
+    "scripts/ops/law_map_v1/ucs_evidence_binding_v1.py",
+    "tests/ops/test_ucs_evidence_binding_v1.py"
   ],
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "PR #6957: CURRENT semantic surface expansion V1; source/schema/census expansion; AUTHORITY=NONE; bootstrap_exhaustive=false."
+  "reason": "UCS frozen 78-surface evidence-binding pass; navigation-only bindings; AUTHORITY=NONE; bootstrap_exhaustive=false."
 }
