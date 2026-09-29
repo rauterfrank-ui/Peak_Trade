@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=8
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,7 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `CONTRACT:ranking_universe_to_full_core_ssf_handoff_v1` |
 | `RUNTIME_COMPONENT:current_productive_native_full_cycle_host_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +99,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Native full-cycle host composition entry (RUNTIME_COMPONENT) and CSIA domain current_productive_native_full_cycle_host_v1; regenerated atlas views; no trading/ selection/sizing authority; AUTHORITY=NONE.
+- L019/DIV-001: truthful synthetic close-chain canonical mark provenance on native full-cycle host and composition-root adapter; atlas_entity_review on affected tracked entities; AUTHORITY=NONE; no MV2/DP core mutation.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=NATIVE_FULL_CYCLE_HOST_V6_1
+- modified_by=L019_DIV001_CANONICAL_PRICE_PROVENANCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
