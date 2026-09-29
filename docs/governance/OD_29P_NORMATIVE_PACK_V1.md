@@ -1,7 +1,7 @@
 # OD-29P-NORMATIVE-PACK-V1 — Canonical Closure
 
 **Status:** BINDING scoped Owner ratification (docs + static contract only)  
-**Baseline:** `origin/main @ 0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e`  
+**Baseline:** `origin&#47;main @ 0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e`  
 **Machine contract:** [`config/governance/od_29p_normative_pack_v1.json`](../../config/governance/od_29p_normative_pack_v1.json)
 
 ```text

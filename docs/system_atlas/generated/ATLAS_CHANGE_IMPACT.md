@@ -98,8 +98,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-#6962 Category-A repair: treasury capital handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); OD/Law Map/CSIA navigation alignment; sealed 29P common-epoch/pack UNKNOWN retained; no GET/POST; AUTHORITY=NONE.
+- Post-#6962 Category-A repair: treasury capital handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); OD/Law Map/CSIA navigation alignment; OD-29P-NORMATIVE-PACK-V1 closes sealed 29P pack/epoch/venue-number pins; treasury_to_admission CSIA alignment; no GET/POST; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=POST_6962_TREASURY_U01_WITNESS_FAIL_CLOSED_V1
+- modified_by=OD_29P_NORMATIVE_PACK_V1_CANONICAL_CLOSURE
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
