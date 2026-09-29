@@ -6,8 +6,59 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "f3e6e98089e611c89e2ef935d185944a9d221f21",
+  "baseline_sha": "71a5a9410c667919ef83ab82eb0c5c1177ad4870",
   "law_references": [
+    {
+      "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "6d28478c7f07a1f08e4f135bc73eea4cb2502044ada9ff2516cdf65aa2c8a8a4",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 account equity authority ratification (navigation)",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "B05-INSTRUMENT-METADATA-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "377b939814ee2a0ff3d7fdd4d2436710d0db5ec6be924aff2e214ac347bbcf25",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 instrument metadata authority ratification",
+      "semantic_object_ids": [
+        "sobj_b05_instrument_metadata_authority_producer"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "B05-REFERENCE-PRICE-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "b385f8875b23c0b058ce85898fd47eefb6eaed29ecafe81aea4a88b9093130a6",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 reference price authority ratification",
+      "semantic_object_ids": [
+        "sobj_b05_reference_price_authority_producer"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
     {
       "law_id": "CAP-SSF-HANDOFF-V1",
       "canonical_source": "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
@@ -94,6 +145,23 @@
       "evidence_refs": [
         "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
         "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1",
+      "source_sha256": "33138122c4f050948f2de0d667b6bac8773b6468887f93ad5513f104ebd51845",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "Full-Core PRE_EXTERNAL closure spec",
+      "semantic_object_ids": [
+        "sobj_nav_full_core_composition_joins"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ]
     },
@@ -393,6 +461,40 @@
   ],
   "semantic_objects": [
     {
+      "id": "sobj_b05_instrument_metadata_authority_producer",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-INSTRUMENT-METADATA-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_instrument_metadata_authority_v1"
+    },
+    {
+      "id": "sobj_b05_reference_price_authority_producer",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-REFERENCE-PRICE-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_reference_price_authority_v1"
+    },
+    {
       "id": "sobj_canonical_price_provenance",
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "PROVEN_CURRENT",
@@ -416,7 +518,8 @@
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
-        "src/ops/governed_futures_universe_producer_v1/constants_v1.py"
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -469,6 +572,8 @@
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
         "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
       ],
       "config_surfaces": [],
@@ -499,11 +604,37 @@
       "csia_record_id": "elementary_direction"
     },
     {
+      "id": "sobj_evidence_only_productive_harness",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
       "id": "sobj_full_core_cycle_orchestrator",
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -520,7 +651,10 @@
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -538,7 +672,8 @@
       "semantic_class": "NAVIGATION_ONLY",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
-        "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py"
+        "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py"
       ],
       "config_surfaces": [
         "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
@@ -739,6 +874,92 @@
       ]
     },
     {
+      "id": "sobj_nav_b05_account_equity_productive_chain",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-ACCOUNT-EQUITY-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_account_equity_authority_v1"
+    },
+    {
+      "id": "sobj_nav_c1_observation_sources",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PUBLIC-MD-RUNTIME-POLICY-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "peak_trade_public_market_data_runtime_wp_a"
+    },
+    {
+      "id": "sobj_nav_external_effect_seam",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "id": "sobj_nav_full_core_composition_joins",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "full_core_live_path_composition_root"
+    },
+    {
       "id": "sobj_p5_authority_bind",
       "semantic_class": "ENFORCEMENT_CONTRACT",
       "current_status": "PROVEN_CURRENT",
@@ -775,6 +996,7 @@
       "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
       "current_status": "UNKNOWN_CURRENT",
       "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
         "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
       ],
       "config_surfaces": [],
@@ -843,6 +1065,39 @@
   ],
   "impact_edges": [
     {
+      "id": "edge_b05_instrument_to_crs_nav",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_b05_instrument_metadata_authority_producer",
+      "to_id": "sobj_nav_b05_account_equity_productive_chain",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_b05_ref_price_to_crs_nav",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_b05_reference_price_authority_producer",
+      "to_id": "sobj_nav_b05_account_equity_productive_chain",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap21_persists_productive_state",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_cap21_universe",
+      "to_id": "sobj_cap22_ranking",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
       "id": "edge_cap21_to_cap22",
       "edge_class": "PRODUCES",
       "from_id": "sobj_cap21_universe",
@@ -879,6 +1134,16 @@
       ]
     },
     {
+      "id": "edge_cap_persist_to_cap23",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_cap21_universe",
+      "to_id": "sobj_cap23_selection",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ]
+    },
+    {
       "id": "edge_conv_to_price",
       "edge_class": "PRODUCES",
       "from_id": "sobj_persistent_natural_enter_convergence",
@@ -887,6 +1152,17 @@
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ]
+    },
+    {
+      "id": "edge_cursor_replay_pre_external",
+      "edge_class": "REPLAYS",
+      "from_id": "sobj_nav_full_core_composition_joins",
+      "to_id": "sobj_full_core_cycle_orchestrator",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
       ]
     },
     {
@@ -909,6 +1185,16 @@
       "evidence_refs": [
         "src/trading/market_state/elementary_direction_v1.py",
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ]
+    },
+    {
+      "id": "edge_g17_persists_mark_history",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_g17_typed_vol_bind",
+      "to_id": "sobj_g17_typed_vol_bind",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py"
       ]
     },
     {
@@ -965,6 +1251,17 @@
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
         "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "edge_orchestrator_persists_sidestate_cursor",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_full_core_cycle_orchestrator",
+      "to_id": "sobj_full_core_cycle_orchestrator",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py"
       ]
     },
     {
@@ -1132,402 +1429,159 @@
   ],
   "unclassified_current_surfaces": [
     {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0002 UNCLASSIFIED_EVIDENCE_GAP: No durable canonical spec or CSIA domain binding for immediate pre-POST freshness semantics."
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0019 UNCLASSIFIED_EVIDENCE_GAP: Relocated classify/gate tokens without durable canonical owner spec in CSIA domains list."
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0027 UNCLASSIFIED_AUTHORITY_GAP: Module declares NEW_OWNER_AUTHORITY; no canonical compliance adjudicator indexed (CANONICAL_COMPLIANCE_ADJUDICATOR=UNKNOWN_CURRENT)."
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0028 UNCLASSIFIED_IDENTITY_GAP: Venue plan bind seam lacks CSIA domain code_ref; identity vs Cap24/MV2 replay owner not proven."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0031 UNCLASSIFIED_AUTHORITY_GAP: 29P epoch handoff; sealed venue 29P normative binding OPEN (unk_sealed_venue_number_29p)."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0032 UNCLASSIFIED_AUTHORITY_GAP: Trusted GET witness for sizing value; account-equity mapping CSIA record account_equity_mapping_unbound."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0033 UNCLASSIFIED_AUTHORITY_GAP: Live account/instrument scope; live authorization not Law-Map adjudicated."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0034 UNCLASSIFIED_IDENTITY_GAP: Risk capital model vs treasury/B05 equity semantics not identity-proven."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0035 UNCLASSIFIED_AUTHORITY_GAP: Architecture documentation module; canonical account-equity sizing source selection unresolved."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0037 UNCLASSIFIED_AUTHORITY_GAP: Typed binding models; CSIA account_equity_mapping_unbound \u2014 sizing source not adjudicated."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0038 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0039 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0040 UNCLASSIFIED_AUTHORITY_GAP: Direct carrier for account-equity source selection; maps to unk_account_equity_sizing_source."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0042 UNCLASSIFIED_EVIDENCE_GAP: Guard module without indexed canonical spec anchor in Law Map LREF catalog."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0045 UNCLASSIFIED_AUTHORITY_GAP: 29P handoff epoch semantics; sealed venue 29P pin OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0049 UNCLASSIFIED_AUTHORITY_GAP: Credential join surface; credential loading authority not Law-Map adjudicated."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0050 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0051 UNCLASSIFIED_EVIDENCE_GAP: Admission remainder hook without durable canonical spec indexed."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0062 UNCLASSIFIED_AUTHORITY_GAP: Standing live-armed gate; activation authority not map-adjudicated."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0064 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0065 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0067 UNCLASSIFIED_AUTHORITY_GAP: P01 policy replacement vs 29P continuation; Owner policy boundary."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0068 UNCLASSIFIED_EVIDENCE_GAP: P01 policy module without indexed canonical LREF in current catalog."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0070 UNCLASSIFIED_AUTHORITY_GAP: Submission authorization token; external-effect authority OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0071 UNCLASSIFIED_EVIDENCE_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0072 UNCLASSIFIED_EVIDENCE_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0073 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0074 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
-    },
-    {
-      "path": "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "Material CURRENT productive module not indexed in Law Impact Map code_surfaces (census WP1)."
+      "reason": "UCS-0076 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
     }
   ],
   "surface_census_meta": {
-    "census_id": "CURRENT_SEMANTIC_SURFACE_EXPANSION_V1",
+    "census_id": "UCS_EVIDENCE_BINDING_V1",
     "authority": "NONE",
     "bootstrap_exhaustive": false,
-    "census_method": "CSIA_FIRST_CLASS_DOMAINS+PRODUCTIVE_CHAIN+CURRENT_PRODUCTIVE_GLOB",
+    "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
     "unclassified_sample_cap": 120,
-    "notes": "Navigation-only; not compliance adjudication."
+    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json.",
+    "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
+    "frozen_workset_count": 78
   }
 }

@@ -138,6 +138,7 @@ def test_surface_expansion_counts_and_census_meta() -> None:
     assert doc["surface_census_meta"]["authority"] == "NONE"
     assert doc["surface_census_meta"]["bootstrap_exhaustive"] is False
     assert len(doc.get("semantic_divergence_index", [])) >= 2
+    assert doc["surface_census_meta"]["census_id"] == "UCS_EVIDENCE_BINDING_V1"
 
 
 def test_divergence_index_forbids_violated_in_validator() -> None:
