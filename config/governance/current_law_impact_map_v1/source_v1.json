@@ -6,7 +6,7 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+  "baseline_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
   "law_references": [
     {
       "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
@@ -388,6 +388,23 @@
       ]
     },
     {
+      "law_id": "OD-29P-NORMATIVE-PACK-V1",
+      "canonical_source": "config/governance/od_29p_normative_pack_v1.json",
+      "canonical_anchor": "od_29p_normative_pack_v1",
+      "source_sha256": "06cd22287f78f383b89ed9ad65dfe4b9cbdb080613d897108be9b98fcf085ce6",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-29P-NORMATIVE-PACK-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
       "law_id": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
       "canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
       "canonical_anchor": "od_account_equity_sizing_source_canonical_adjudication_v1",
@@ -418,24 +435,6 @@
       ],
       "evidence_refs": [
         "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
-    },
-    {
-      "law_id": "OD-29P-NORMATIVE-PACK-V1",
-      "canonical_source": "config/governance/od_29p_normative_pack_v1.json",
-      "canonical_anchor": "od_29p_normative_pack_v1",
-      "source_sha256": "06cd22287f78f383b89ed9ad65dfe4b9cbdb080613d897108be9b98fcf085ce6",
-      "source_authority_class": "RUNBOOK",
-      "index_status": "INDEXED",
-      "law_reference_authority": "NONE",
-      "display_label": "OD-29P-NORMATIVE-PACK-V1",
-      "semantic_object_ids": [
-        "sobj_nav_b05_account_equity_productive_chain"
-      ],
-      "evidence_refs": [
-        "config/governance/od_29p_normative_pack_v1.json",
-        "docs/governance/OD_29P_NORMATIVE_PACK_V1.md",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -1124,6 +1123,7 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
@@ -1131,6 +1131,7 @@
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
@@ -1649,6 +1650,38 @@
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {
+      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+      "law_ref_ids": [
+        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_29p_normative_pack_v1",
+      "law_ref_ids": [
+        "OD-29P-NORMATIVE-PACK-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py",
+        "config/governance/od_29p_normative_pack_v1.json"
+      ],
+      "base_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "head_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
       "id": "reproof_od_account_equity_sizing_source",
       "law_ref_ids": [
         "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
@@ -1697,6 +1730,22 @@
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
       "id": "reproof_od_u01_p01_29p_sizing_mint",
       "law_ref_ids": [
         "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
@@ -1713,19 +1762,19 @@
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {
-      "id": "reproof_od_29p_normative_pack_v1",
+      "id": "reproof_od_u01_p01_29p_sizing_mint",
       "law_ref_ids": [
-        "OD-29P-NORMATIVE-PACK-V1"
+        "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
       ],
       "affected_semantic_object_ids": [
         "sobj_nav_b05_account_equity_productive_chain"
       ],
       "proof_refs": [
-        "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py",
-        "config/governance/od_29p_normative_pack_v1.json"
+        "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
       ],
-      "base_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
-      "head_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {
@@ -1753,7 +1802,7 @@
       "adjudication": "UNKNOWN_CURRENT",
       "producer_ref": "sobj_mv2_runtime_cycle_host",
       "consumer_ref": "sobj_mv2_layer_l5_nullline",
-      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark — identity OPEN (maps to unk_mt_l5_nullline_identity).",
+      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark \u2014 identity OPEN (maps to unk_mt_l5_nullline_identity).",
       "expected_canonical_source": "UNKNOWN",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -1828,11 +1877,6 @@
       "reason": "UCS-0028 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Cap24/MV2 replay vs venue-plan bind owner not identity-proven; no CSIA code_ref."
     },
     {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0031 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Sealed venue 29P normative epoch semantics OPEN."
-    },
-    {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
       "reason": "UCS-0034 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Risk capital vs treasury/B05 equity identity not proven."
@@ -1841,11 +1885,6 @@
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
       "reason": "UCS-0042 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No CURRENT spec/runbook DEFINITION_SCHEMA for guard semantics."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0045 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: 29P handoff epoch; sealed venue pin OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",

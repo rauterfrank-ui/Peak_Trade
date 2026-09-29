@@ -19,7 +19,7 @@ R29_JSON = (
 RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 EQUITY_RAT = "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
 
-POST_MERGE_BASELINE_SHA = "6268fab255353ceed84384051de1c045232f3a4c"
+POST_MERGE_BASELINE_SHA = "6093436031fb27ce2cc0c91074efbab71a9369a3"
 OD_ADJ = "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
 OD_NUMERIC = (
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"

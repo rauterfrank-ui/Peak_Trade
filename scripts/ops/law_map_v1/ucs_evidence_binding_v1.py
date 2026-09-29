@@ -51,7 +51,43 @@ SOBJ_EVIDENCE_HARNESS = "sobj_evidence_only_productive_harness"
 LREF_B05_REF = "B05-REFERENCE-PRICE-RATIFICATION-V1"
 LREF_B05_INST = "B05-INSTRUMENT-METADATA-RATIFICATION-V1"
 LREF_B05_EQUITY = "B05-ACCOUNT-EQUITY-RATIFICATION-V1"
+LREF_OD_ACCOUNT_EQUITY_SIZING = "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+LREF_OD_29P_NORMATIVE_PACK = "OD-29P-NORMATIVE-PACK-V1"
 LREF_PRE_EXTERNAL_CLOSURE = "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1"
+
+OD_ACCOUNT_EQUITY_SIZING_ADJ = (
+    "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+)
+OD_29P_NORMATIVE_PACK = "config/governance/od_29p_normative_pack_v1.json"
+
+# Navigation-only: historical discovery vs CURRENT adjudicated state (not runtime authority).
+NAV_UCS0018_ACCOUNT_EQUITY_SIZING_SOURCE_V1 = (
+    "HISTORICAL_DISCOVERY: CSIA PARTIAL unk_account_equity_sizing_source pin at CRS "
+    "capital_context rebind. CURRENT_ADJUDICATED: normative account-equity sizing-source "
+    "RESOLVED_NORMATIVE via OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 and "
+    "SEM-SURF-DIV-00003. Does not prove numeric venue observation or Treasury identity."
+)
+
+NAV_UCS0040_ACCOUNT_EQUITY_SIZING_SOURCE_V1 = (
+    "HISTORICAL_DISCOVERY: direct carrier pinned to unk_account_equity_sizing_source. "
+    "CURRENT_ADJUDICATED: normative account-equity sizing-source RESOLVED_NORMATIVE via "
+    "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 and SEM-SURF-DIV-00003. Does not "
+    "prove numeric venue observation or Treasury identity."
+)
+
+NAV_UCS0031_COMMON_EPOCH_NORMATIVE_V1 = (
+    "HISTORICAL_DISCOVERY: normative epoch semantics OPEN at UCS freeze. "
+    "CURRENT_ADJUDICATED: common-epoch normative closure via OD-29P-NORMATIVE-PACK-V1 "
+    "(L041-COMMON-EPOCH-NORMATIVE=PROVEN_CURRENT). Does not prove L025 numeric venue "
+    "bind, L038 Treasury identity, or productive external observation."
+)
+
+NAV_UCS0045_COMMON_EPOCH_NORMATIVE_V1 = (
+    "HISTORICAL_DISCOVERY: sealed venue pin OPEN at UCS freeze. CURRENT_ADJUDICATED: "
+    "common-epoch normative closure via OD-29P-NORMATIVE-PACK-V1 "
+    "(L041-COMMON-EPOCH-NORMATIVE=PROVEN_CURRENT). Does not prove L025 numeric venue "
+    "bind, L038 Treasury identity, or productive external observation."
+)
 
 REF_PRICE_RAT = "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json"
 INST_RAT = "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
@@ -305,7 +341,7 @@ def _build_disposition_table() -> list[DispositionRow]:
                 EQUITY_RAT,
                 "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
             ),
-            "CRS capital_context rebind; account-equity source selection remains CSIA PARTIAL (unk_account_equity_sizing_source).",
+            NAV_UCS0018_ACCOUNT_EQUITY_SIZING_SOURCE_V1,
             RCG_B05_EQUITY_AUTHORITY,
         ),
         (
@@ -462,12 +498,13 @@ def _build_disposition_table() -> list[DispositionRow]:
             "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
             "UNCLASSIFIED_AUTHORITY_GAP",
             None,
-            None,
+            LREF_OD_29P_NORMATIVE_PACK,
             (
+                OD_29P_NORMATIVE_PACK,
                 "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
                 "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
             ),
-            "29P epoch handoff; sealed normative pack ratified (OD-29P-NORMATIVE-PACK-V1).",
+            NAV_UCS0031_COMMON_EPOCH_NORMATIVE_V1,
             RCG_SEALED_29P,
         ),
         (
@@ -575,13 +612,14 @@ def _build_disposition_table() -> list[DispositionRow]:
             "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
             "UNCLASSIFIED_AUTHORITY_GAP",
             None,
-            LREF_B05_EQUITY,
+            LREF_OD_ACCOUNT_EQUITY_SIZING,
             (
+                OD_ACCOUNT_EQUITY_SIZING_ADJ,
                 EQUITY_RAT,
                 csia,
-                "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+                "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
             ),
-            "Direct carrier for account-equity source selection; maps to unk_account_equity_sizing_source.",
+            NAV_UCS0040_ACCOUNT_EQUITY_SIZING_SOURCE_V1,
             RCG_B05_EQUITY_AUTHORITY,
         ),
         (
@@ -637,11 +675,12 @@ def _build_disposition_table() -> list[DispositionRow]:
             "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
             "UNCLASSIFIED_AUTHORITY_GAP",
             None,
-            None,
+            LREF_OD_29P_NORMATIVE_PACK,
             (
+                OD_29P_NORMATIVE_PACK,
                 "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
             ),
-            "29P handoff epoch semantics; sealed venue 29P pin OPEN.",
+            NAV_UCS0045_COMMON_EPOCH_NORMATIVE_V1,
             RCG_SEALED_29P,
         ),
         (

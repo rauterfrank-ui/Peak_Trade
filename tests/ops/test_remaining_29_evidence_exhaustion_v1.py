@@ -43,7 +43,7 @@ def test_artifact_on_disk() -> None:
 def test_source_after_apply() -> None:
     doc = json.loads(SOURCE.read_text())
     assert doc["baseline_sha"] == POST_MERGE_BASELINE_SHA
-    assert len(doc["unclassified_current_surfaces"]) == 11
+    assert len(doc["unclassified_current_surfaces"]) == 9
     div = next(d for d in doc["semantic_divergence_index"] if d["id"] == "SEM-SURF-DIV-00003")
     assert div["adjudication"] == "PROVEN_CURRENT"
     assert not any(u["id"] == "unk_account_equity_sizing_source" for u in doc["unknown_relations"])
