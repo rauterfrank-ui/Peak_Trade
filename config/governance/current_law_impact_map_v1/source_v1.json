@@ -6,7 +6,7 @@
   "law_reference_is_normative": false,
   "bootstrap_exhaustive": false,
   "normalize_unknown_to_current": false,
-  "baseline_sha": "71a5a9410c667919ef83ab82eb0c5c1177ad4870",
+  "baseline_sha": "e2a3dbdb202edb32f01a30da488538b40976b26a",
   "law_references": [
     {
       "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
@@ -405,6 +405,23 @@
       ]
     },
     {
+      "law_id": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
+      "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "canonical_anchor": "CURRENT Venue-Plan tdMode and Order-Environment Authority",
+      "source_sha256": "4f7967ee48c938bd682a68155cf3fee0566a8d287aaaea0af2278771d32b82b8",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
+      "semantic_object_ids": [
+        "sobj_nav_full_core_composition_joins"
+      ],
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
       "law_id": "SEM-DIV-00001",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_natural_enter_rejects_candle_close_only_mark_without_payload",
@@ -456,6 +473,159 @@
         "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
         "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SPEC-29P-LIVE-ACCOUNT-BOUND-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1",
+      "source_sha256": "6e855708da42f6179dd533e5af1c408e8c0200cb115f6b9151b49327f65ff023",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-29P-LIVE-ACCOUNT-BOUND-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-EXECUTION-ADMISSION-REMAINDER-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1",
+      "source_sha256": "89a3fb3eb54cce130a655f944422b0490ecc3925cc4f47418d0ff3d9afda0973",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-EXECUTION-ADMISSION-REMAINDER-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-ARMED-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1",
+      "source_sha256": "d23781586003eecd91f7950633d25e024be5228fe6f822ba7a3b84dbe72be03f",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-ARMED-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-ENABLED-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1",
+      "source_sha256": "17c0e90c64008a80496d8caba9fb14a74b50cea2e2f7775a07b7cbf3449f8b3b",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-ENABLED-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-EXECUTION-PORT-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1",
+      "source_sha256": "29825d77f531c3c0a6d1562f0040abcf83199163db264c1851117affa36ca50c",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-EXECUTION-PORT-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-P01-POLICY-REPLACEMENT-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1",
+      "source_sha256": "a2d2056da08c73adc56cfd0b585c7b7524cb03aa2a5ff553c54538bea5d6b0e0",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-P01-POLICY-REPLACEMENT-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-SUBMISSION-AUTHORIZED-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1",
+      "source_sha256": "f1b994aa7fff52d9b051d103717a74f8ba4e27ff160d0460f338cc04ef76dafc",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-SUBMISSION-AUTHORIZED-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-U01-ACCOUNT-MODE-RATIFICATION-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1",
+      "source_sha256": "fa1ac3892e43e987d74e23e40727d75b2fa19be24d19ef8e5e01c20ba7a4f02c",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-U01-ACCOUNT-MODE-RATIFICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-WIRE-SEND-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1",
+      "source_sha256": "dc92be5a080e55ae2ea25220691b9f0f3d252f692096c88594fe81949bbcf5bc",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-WIRE-SEND-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     }
   ],
@@ -882,8 +1052,11 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -926,9 +1099,15 @@
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [],
@@ -945,6 +1124,7 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
@@ -1425,153 +1605,118 @@
       ],
       "reproof_required": true,
       "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00003",
+      "adjudication": "UNKNOWN_CURRENT",
+      "producer_ref": "csia:account_equity_mapping_unbound",
+      "consumer_ref": "sobj_nav_b05_account_equity_productive_chain",
+      "statement": "CSIA open_epistemic record account_equity_mapping_unbound (PARTIAL) vs B05 ratification JSON chain-closure claims \u2014 sizing source selection remains not Law-Map adjudicated; maps to unk_account_equity_sizing_source.",
+      "expected_canonical_source": "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+      ],
+      "reproof_required": true,
+      "unknown_relation_id": "unk_account_equity_sizing_source"
     }
   ],
   "unclassified_current_surfaces": [
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0002 UNCLASSIFIED_EVIDENCE_GAP: No durable canonical spec or CSIA domain binding for immediate pre-POST freshness semantics."
+      "reason": "UCS-0002 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No Master Runbook DEFINITION_SCHEMA_PATH or CURRENT spec naming this freshness seam."
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0019 UNCLASSIFIED_EVIDENCE_GAP: Relocated classify/gate tokens without durable canonical owner spec in CSIA domains list."
-    },
-    {
-      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0027 UNCLASSIFIED_AUTHORITY_GAP: Module declares NEW_OWNER_AUTHORITY; no canonical compliance adjudicator indexed (CANONICAL_COMPLIANCE_ADJUDICATOR=UNKNOWN_CURRENT)."
+      "reason": "UCS-0019 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Relocated classify/gate tokens without durable CURRENT spec owner in CSIA domains."
     },
     {
       "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0028 UNCLASSIFIED_IDENTITY_GAP: Venue plan bind seam lacks CSIA domain code_ref; identity vs Cap24/MV2 replay owner not proven."
+      "reason": "UCS-0028 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Cap24/MV2 replay vs venue-plan bind owner not identity-proven; no CSIA code_ref."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0031 UNCLASSIFIED_AUTHORITY_GAP: 29P epoch handoff; sealed venue 29P normative binding OPEN (unk_sealed_venue_number_29p)."
+      "reason": "UCS-0031 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Sealed venue 29P normative epoch semantics OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0032 UNCLASSIFIED_AUTHORITY_GAP: Trusted GET witness for sizing value; account-equity mapping CSIA record account_equity_mapping_unbound."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0033 UNCLASSIFIED_AUTHORITY_GAP: Live account/instrument scope; live authorization not Law-Map adjudicated."
+      "reason": "UCS-0032 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Trusted GET sizing value vs account-equity mapping CSIA PARTIAL (account_equity_mapping_unbound)."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0034 UNCLASSIFIED_IDENTITY_GAP: Risk capital model vs treasury/B05 equity semantics not identity-proven."
+      "reason": "UCS-0034 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Risk capital vs treasury/B05 equity identity not proven."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0035 UNCLASSIFIED_AUTHORITY_GAP: Architecture documentation module; canonical account-equity sizing source selection unresolved."
+      "reason": "UCS-0035 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Architecture module; CSIA account_equity_mapping_unbound remains OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0037 UNCLASSIFIED_AUTHORITY_GAP: Typed binding models; CSIA account_equity_mapping_unbound \u2014 sizing source not adjudicated."
+      "reason": "UCS-0037 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Sizing source selection not adjudicated."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0038 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
+      "reason": "UCS-0038 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0039 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
+      "reason": "UCS-0039 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0040 UNCLASSIFIED_AUTHORITY_GAP: Direct carrier for account-equity source selection; maps to unk_account_equity_sizing_source."
+      "reason": "UCS-0040 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Direct selector for account-equity sizing source."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0042 UNCLASSIFIED_EVIDENCE_GAP: Guard module without indexed canonical spec anchor in Law Map LREF catalog."
+      "reason": "UCS-0042 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No CURRENT spec/runbook DEFINITION_SCHEMA for guard semantics."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0045 UNCLASSIFIED_AUTHORITY_GAP: 29P handoff epoch semantics; sealed venue 29P pin OPEN."
+      "reason": "UCS-0045 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: 29P handoff epoch; sealed venue pin OPEN."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0049 UNCLASSIFIED_AUTHORITY_GAP: Credential join surface; credential loading authority not Law-Map adjudicated."
+      "reason": "UCS-0049 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Execute-network credential join; checkout_independent runbook defs name different surfaces."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0050 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0051 UNCLASSIFIED_EVIDENCE_GAP: Admission remainder hook without durable canonical spec indexed."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0062 UNCLASSIFIED_AUTHORITY_GAP: Standing live-armed gate; activation authority not map-adjudicated."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0064 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0065 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0067 UNCLASSIFIED_AUTHORITY_GAP: P01 policy replacement vs 29P continuation; Owner policy boundary."
+      "reason": "UCS-0050 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Credential loader authority not indexed in CURRENT runbook definition schema."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0068 UNCLASSIFIED_EVIDENCE_GAP: P01 policy module without indexed canonical LREF in current catalog."
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0070 UNCLASSIFIED_AUTHORITY_GAP: Submission authorization token; external-effect authority OPEN."
+      "reason": "UCS-0068 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No runbook DEFINITION_SCHEMA for p01_policy_v1; atlas navigation only."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0071 UNCLASSIFIED_EVIDENCE_GAP: see ucs_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0072 UNCLASSIFIED_EVIDENCE_GAP: see ucs_frozen_workset_v1.json"
+      "reason": "UCS-0071 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Runbook/spec name ratification module as authority; adapter not primary DEFINITION_SCHEMA."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0073 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
+      "reason": "UCS-0073 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: U04/P01 sizing eligibility vs unbound account-equity mapping."
     },
     {
       "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py",
       "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0074 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
-    },
-    {
-      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py",
-      "classification": "UNCLASSIFIED_CURRENT",
-      "reason": "UCS-0076 UNCLASSIFIED_AUTHORITY_GAP: see ucs_frozen_workset_v1.json"
+      "reason": "UCS-0074 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: see remaining_29_frozen_workset_v1.json"
     }
   ],
   "surface_census_meta": {
