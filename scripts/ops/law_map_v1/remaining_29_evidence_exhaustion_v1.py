@@ -67,9 +67,7 @@ def _frozen_remaining_paths() -> list[str]:
 def assert_source_matches_frozen_workset() -> None:
     rows = _build_rows()
     expected = sorted(
-        r.surface
-        for r in rows
-        if r.exhaustion_disposition == "GENUINELY_CANONICAL_OWNER_BLOCKED"
+        r.surface for r in rows if r.exhaustion_disposition == "GENUINELY_CANONICAL_OWNER_BLOCKED"
     )
     doc = json.loads(SOURCE_PATH.read_text(encoding="utf-8"))
     live = sorted(r["path"] for r in doc.get("unclassified_current_surfaces", []))
@@ -687,7 +685,9 @@ def apply_bindings(doc: dict[str, Any]) -> dict[str, Any]:
     divs.append(new_div)
     doc["semantic_divergence_index"] = sorted(divs, key=lambda x: x["id"])
     doc["unknown_relations"] = [
-        u for u in doc.get("unknown_relations", []) if u.get("id") != "unk_account_equity_sizing_source"
+        u
+        for u in doc.get("unknown_relations", [])
+        if u.get("id") != "unk_account_equity_sizing_source"
     ]
     reproof = doc.get("reproof_index", [])
     reproof.append(

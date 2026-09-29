@@ -3,7 +3,7 @@
 **Status:** BINDING scoped Owner-GO adjudication (docs + static contract only)  
 **Owner decision boundary:** `OD_ACCOUNT_EQUITY_SIZING_SOURCE`  
 **Machine contract:** [`config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json`](../../config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json)  
-**Baseline:** `origin/main @ 570c437eb45295929128a13b2bc194bfb1fc063a`
+**Baseline:** `origin&#47;main @ 570c437eb45295929128a13b2bc194bfb1fc063a`
 
 ```text
 OWNER_GO=OWNER_GO_OD_ACCOUNT_EQUITY_SIZING_SOURCE_BOUNDED_WP_V1
