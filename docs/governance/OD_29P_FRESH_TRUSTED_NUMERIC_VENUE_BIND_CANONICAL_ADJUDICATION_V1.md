@@ -37,7 +37,9 @@ algebra from #6960 apply.
 - No credential load or secret resolution.
 - Does not close `unk_sealed_venue_number_29p` (29P normative pack identity).
 - Does not authorize `OD_EXTERNAL_EFFECT` / live credential GET execution.
-- U01 eligibility and P01 directive mint preconditions remain separate blockers.
+- U01 eligibility, P01 directive, and three-input mint join are adjudicated in
+  `OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1` (successor WP); sealed
+  normative 29P pack / common epoch remains open.
 - Evidence packs may persist forensic GET artifacts; `VALUE_EPHEMERAL_NOT_DURABLE_ACROSS_RESTART=true` — replay must not mint fresh CURRENT sizing authority alone.
 
 ## F-02 / Treasury alignment
