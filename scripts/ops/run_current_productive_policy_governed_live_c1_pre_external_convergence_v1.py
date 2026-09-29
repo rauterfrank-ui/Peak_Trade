@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -158,7 +159,14 @@ def _main() -> int:
         action="store_true",
         help="Record execution at current HEAD while Owner-GO baseline stays origin/main",
     )
+    parser.add_argument(
+        "--max-decision-cycles",
+        type=int,
+        default=4,
+        help="Total productive decision cycles across bounded S6 batches (hard cap per batch=4)",
+    )
     args = parser.parse_args()
+    max_decision_cycles = max(1, int(args.max_decision_cycles))
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         _cursor_floor_or_zero,
@@ -176,6 +184,13 @@ def _main() -> int:
         HARD_CAP_MAX_RUN_DURATION_SECONDS,
         RUNTIME_OWNER_GO,
         CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
+        InjectedContinuousObservationV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+        CURSOR_FILENAME,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_s6_fresh_c1_mark_index_evidence_join_v1 import (
+        collect_current_productive_s6_c1_poll_mark_index_evidence_v1,
     )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
         PersistentNaturalEnterConvergenceError,
@@ -266,7 +281,7 @@ def _main() -> int:
         print(json.dumps(out, sort_keys=True))
         return 2
 
-    transport = FullCoreProductiveReadOnlyGetTransportV1(max_request_count=32)
+    transport = FullCoreProductiveReadOnlyGetTransportV1(max_request_count=4096)
     g17 = _resolve_g17_producer(
         bound=bound,
         transport=transport,
@@ -275,74 +290,127 @@ def _main() -> int:
     )
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state_root, bound=bound)
     cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
-    floor = _cursor_floor_or_zero(cursor_root)
+    f1_eval = _build_f1_m9_evaluator(ledger_root=evidence_root / "f1_m9")
 
-    auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
-        continuous_owner_go=RUNTIME_OWNER_GO,
-        native_id=native_id,
-        bar="1m",
-        expected_cursor_floor=float(floor),
-        max_cycles_per_run=HARD_CAP_MAX_CYCLES_PER_RUN,
-        max_run_duration_seconds=HARD_CAP_MAX_RUN_DURATION_SECONDS,
-        wait_interval_seconds=5.0,
-        max_wait_for_next_c1_seconds=60.0,
-        stall_seconds=60.0,
-    )
-    run_id = mint_continuous_run_id_v1(auth)
-    obs_source = LiveFreshC1ContinuousObservationSourceV1(
-        cursor_store_root=cursor_root,
-        evidence_root=evidence_root,
-        run_id=run_id,
-        native_id=native_id,
-        transport=transport,
-    )
+    total_cycles = 0
+    all_cycle_summaries: list[dict[str, Any]] = []
+    orch = None
+    run_id = ""
+    obs_source: LiveFreshC1ContinuousObservationSourceV1 | None = None
+    natural_pre_external = False
+    batch_index = 0
+    max_batches = (
+        max_decision_cycles + HARD_CAP_MAX_CYCLES_PER_RUN - 1
+    ) // HARD_CAP_MAX_CYCLES_PER_RUN
 
-    try:
-        result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
-            authorization=auth,
-            origin_main_sha=origin_sha,
-            lane_state_root=lane_state_root,
-            bound=bound,
-            g17_producers=g17,
-            observation_source=obs_source,
-            evidence_root=evidence_root,
-            f1_m9_cycle_evaluator=_build_f1_m9_evaluator(ledger_root=evidence_root / "f1_m9"),
-            repo_root=REPO_ROOT,
+    while (
+        total_cycles < max_decision_cycles
+        and batch_index < max_batches
+        and not natural_pre_external
+    ):
+        remaining = min(HARD_CAP_MAX_CYCLES_PER_RUN, max_decision_cycles - total_cycles)
+        floor = _cursor_floor_or_zero(cursor_root)
+        auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
+            continuous_owner_go=RUNTIME_OWNER_GO,
+            native_id=native_id,
+            bar="1m",
+            expected_cursor_floor=float(floor),
+            max_cycles_per_run=remaining,
+            max_run_duration_seconds=HARD_CAP_MAX_RUN_DURATION_SECONDS,
+            wait_interval_seconds=5.0,
+            max_wait_for_next_c1_seconds=60.0,
+            stall_seconds=60.0,
         )
-    except PersistentNaturalEnterConvergenceError as exc:
-        out = {
-            "status": "FAIL",
-            "blocker": exc.reason_code,
-            "detail": exc.detail,
-            "origin_main_sha": origin_sha,
-        }
+        run_id = mint_continuous_run_id_v1(auth)
+        batch_evidence = evidence_root / f"s6_batch_{batch_index}_{uuid.uuid4().hex[:8]}"
+        batch_evidence.mkdir(parents=True, exist_ok=True)
+        obs_source = LiveFreshC1ContinuousObservationSourceV1(
+            cursor_store_root=cursor_root,
+            evidence_root=batch_evidence,
+            run_id=run_id,
+            native_id=native_id,
+            transport=transport,
+        )
+        bootstrap: InjectedContinuousObservationV1 | None = None
+        if not (cursor_root / CURSOR_FILENAME).is_file():
+            first = obs_source.poll()
+            if first is None:
+                out = {"status": "FAIL", "blocker": "BOOTSTRAP_C1_POLL_EMPTY"}
+                print(json.dumps(out, sort_keys=True))
+                return 2
+            mark_index = collect_current_productive_s6_c1_poll_mark_index_evidence_v1(
+                transport=transport,
+                venue_native_id=native_id,
+                pretrade_decision_id=f"canonical-bootstrap-{batch_index}",
+            )
+            bootstrap = InjectedContinuousObservationV1(
+                candles_payload=first.candles_payload,
+                occupancy_payloads=first.occupancy_payloads,
+                mark_price_payload=mark_index.mark_price_payload,
+                index_tickers_payload=mark_index.index_tickers_payload,
+            )
+        try:
+            result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
+                authorization=auth,
+                origin_main_sha=origin_sha,
+                lane_state_root=lane_state_root,
+                bound=bound,
+                g17_producers=g17,
+                observation_source=obs_source,
+                evidence_root=batch_evidence,
+                f1_m9_cycle_evaluator=f1_eval,
+                repo_root=REPO_ROOT,
+                bootstrap_observation=bootstrap,
+                lock_root=batch_evidence / "continuous_lock",
+            )
+        except PersistentNaturalEnterConvergenceError as exc:
+            out = {
+                "status": "FAIL",
+                "blocker": exc.reason_code,
+                "detail": exc.detail,
+                "origin_main_sha": origin_sha,
+                "cycles_completed_total": total_cycles,
+            }
+            print(json.dumps(out, sort_keys=True))
+            return 2
+
+        orch = result.orchestrator_result
+        total_cycles += int(orch.cycles_completed)
+        for rec in orch.cycle_records:
+            all_cycle_summaries.append(
+                {
+                    "batch_index": batch_index,
+                    "cycle_index": rec.cycle_index,
+                    "s5_disposition": rec.s5_disposition,
+                    "c1_venue_event_time": rec.c1_venue_event_time,
+                }
+            )
+        dpo = _extract_latest_dpo_cycle2(lane_state_root)
+        outcome = str(dpo.get("decision_outcome") or "").lower()
+        natural_pre_external = (
+            orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
+            and outcome in {"enter_long", "enter_short"}
+            and str(dpo.get("execution_eligible") or "").lower() == "true"
+        )
+        batch_index += 1
+
+    if orch is None or obs_source is None:
+        out = {"status": "FAIL", "blocker": "NO_ORCHESTRATOR_RESULT"}
         print(json.dumps(out, sort_keys=True))
         return 2
 
-    orch = result.orchestrator_result
     dpo = _extract_latest_dpo_cycle2(lane_state_root)
     outcome = str(dpo.get("decision_outcome") or "").lower()
-    natural_pre_external = (
-        orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
-        and outcome in {"enter_long", "enter_short"}
-        and str(dpo.get("execution_eligible") or "").lower() == "true"
-    )
 
-    fresh_c1_ledger = evidence_root / "fresh_c1_get_owner_go_consumptions_v1.jsonl"
     fresh_c1_count = 0
-    if fresh_c1_ledger.is_file():
-        fresh_c1_count = sum(
-            1 for line in fresh_c1_ledger.read_text(encoding="utf-8").splitlines() if line.strip()
-        )
+    for batch_dir in evidence_root.glob("s6_batch_*"):
+        ledger = batch_dir / "fresh_c1_get_owner_go_consumptions_v1.jsonl"
+        if ledger.is_file():
+            fresh_c1_count += sum(
+                1 for line in ledger.read_text(encoding="utf-8").splitlines() if line.strip()
+            )
 
-    cycle_summaries = [
-        {
-            "cycle_index": rec.cycle_index,
-            "s5_disposition": rec.s5_disposition,
-            "c1_venue_event_time": rec.c1_venue_event_time,
-        }
-        for rec in orch.cycle_records
-    ]
+    cycle_summaries = all_cycle_summaries
     pre_external_reached = orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
     natural_enter = outcome in {"enter_long", "enter_short"}
     report = {
@@ -353,7 +421,9 @@ def _main() -> int:
         "NATIVE_ID": native_id,
         "LIVE_PUBLIC_C1_GET_EXECUTED": str(obs_source.get_count > 0).lower(),
         "OWNER_GO_FRESH_C1_GET_CONSUMPTION_COUNT": fresh_c1_count,
-        "CYCLE_COUNT": orch.cycles_completed,
+        "CYCLE_COUNT": total_cycles,
+        "MAX_DECISION_CYCLES": max_decision_cycles,
+        "S6_BATCH_COUNT": batch_index,
         "TERMINAL_DISPOSITION": orch.disposition,
         "S5_TERMINAL_CLASS": orch.terminal_class,
         "FIRST_GENUINE_BLOCKER": orch.first_genuine_blocker,

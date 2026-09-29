@@ -116,7 +116,34 @@ class _MockTransport:
         )
 
 
-def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Path) -> None:
+def _patch_c1_mark_index(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_s6_fresh_c1_mark_index_evidence_join_v1 as join_mod,
+    )
+
+    monkeypatch.setattr(
+        "src.ops.full_core_live_path_composition_root_v1."
+        "current_productive_s6_live_fresh_c1_continuous_observation_source_v1."
+        "collect_current_productive_s6_c1_poll_mark_index_evidence_v1",
+        lambda **kwargs: join_mod.CurrentProductiveS6C1MarkIndexEvidenceV1(
+            mark_price_payload={
+                "code": "0",
+                "data": [{"instId": kwargs["venue_native_id"], "markPx": "1.0", "idxPx": "1.0"}],
+            },
+            index_tickers_payload={"code": "0", "data": [{"idxPx": "1.0"}]},
+            mark_source=join_mod.MARK_SOURCE,
+            index_source=join_mod.INDEX_SOURCE,
+            venue_native_id=str(kwargs["venue_native_id"]),
+            instrument_match_proven=True,
+            mark_fresh=True,
+        ),
+    )
+
+
+def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_c1_mark_index(monkeypatch)
     payload = {"code": "0", "msg": "", "data": [["1", "1", "1", "1", "1", "1", "1", "USDT", "1"]]}
     transport = _MockTransport(payload)
     cold_lane = tmp_path / "cold_lane"
@@ -130,11 +157,15 @@ def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Pa
     )
     obs = source.poll()
     assert obs is not None
+    assert obs.mark_price_payload is not None
     assert transport.calls == 1
     assert source.get_count == 1
 
 
-def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Path) -> None:
+def test_live_fresh_c1_observation_source_poll_with_mock_transport(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _patch_c1_mark_index(monkeypatch)
     cursor = _seed_cursor(tmp_path / "lane", event_time=0.0)
     payload = {"code": "0", "msg": "", "data": [["1", "1", "1", "1", "1", "1", "1", "USDT", "1"]]}
     transport = _MockTransport(payload)
@@ -147,6 +178,7 @@ def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Pat
     )
     obs = source.poll()
     assert obs is not None
+    assert obs.mark_price_payload is not None
     assert transport.calls == 1
     assert (tmp_path / "evidence/fresh_c1_get_owner_go_consumptions_v1.jsonl").is_file()
 
@@ -206,6 +238,9 @@ def test_policy_governed_persistent_path_integrated(tmp_path: Path) -> None:
         origin_main_sha=BASELINE_SHA,
         g17_producers=g17,
         candles_payload=obs_boot.candles_payload,
+        mark_price_payload=obs_boot.mark_price_payload or {},
+        venue_native_id=native_id,
+        index_tickers_payload=obs_boot.index_tickers_payload,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     auth = _continuous_auth(native_id=native_id, max_cycles=1)

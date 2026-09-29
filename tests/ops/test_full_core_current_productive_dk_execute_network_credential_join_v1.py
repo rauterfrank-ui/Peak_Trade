@@ -45,16 +45,51 @@ def test_default_stub_fail_closed_without_nameerror() -> None:
         productive_fail_closed_credential_unavailable_v1(repo_root=_REPO)
 
 
-def test_bind_execute_network_missing_credentials_fail_closed() -> None:
+def test_bind_execute_network_missing_credentials_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_execute_network_credential_join_v1."
+        "try_bind_pl_tf_002_read_transport_for_execute_network_v1",
+        lambda **kwargs: (None, None),
+    )
     transport, status, handle = bind_productive_read_only_get_transport_for_execute_network_v1(
         execute_network=True,
         fresh_get_transport=None,
         vault_file=None,
         repo_root=_REPO,
+        origin_main_sha="8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
     )
     assert transport is None
     assert handle is None
     assert status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS
+
+
+def test_bind_execute_network_pltf002_join_when_vault_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    fake_transport = _fresh_get_transport()
+
+    class _Borrow:
+        pass
+
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_execute_network_credential_join_v1."
+        "try_bind_pl_tf_002_read_transport_for_execute_network_v1",
+        lambda **kwargs: (fake_transport, _Borrow()),
+    )
+    transport, status, handle = bind_productive_read_only_get_transport_for_execute_network_v1(
+        execute_network=True,
+        fresh_get_transport=None,
+        vault_file=None,
+        repo_root=_REPO,
+        origin_main_sha="8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+    )
+    assert transport is fake_transport
+    assert status == ""
+    assert handle is not None
 
 
 def test_bind_execute_network_false_not_reached() -> None:
@@ -123,7 +158,15 @@ def test_invalid_credential_class_fail_closed(monkeypatch: pytest.MonkeyPatch) -
     assert status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS
 
 
-def test_dk_execute_network_no_nameerror_fail_closed(tmp_path: Path) -> None:
+def test_dk_execute_network_no_nameerror_fail_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        "src.ops.governed_productive_account_equity_authority_producer_v1."
+        "current_productive_execute_network_credential_join_v1."
+        "try_bind_pl_tf_002_read_transport_for_execute_network_v1",
+        lambda **kwargs: (None, None),
+    )
     result = execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
         owner_go=OWNER_GO,
         origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,

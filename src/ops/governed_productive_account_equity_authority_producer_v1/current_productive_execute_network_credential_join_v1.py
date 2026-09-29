@@ -17,6 +17,11 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_pl_tf_002_read_join_v1 import (
+    ProductivePlTf002ReadSessionBorrowV1,
+    release_pl_tf_002_read_session_borrow_v1,
+    try_bind_pl_tf_002_read_transport_for_execute_network_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_read_credential_loader_v1 import (
     productive_execute_network_read_credential_loader_v1,
 )
@@ -39,6 +44,7 @@ def bind_productive_read_only_get_transport_for_execute_network_v1(
     fresh_get_transport: FullCoreFreshPretradeGetTransportV1 | None,
     vault_file: Path | str | None,
     repo_root: Path,
+    origin_main_sha: str | None = None,
 ) -> tuple[FullCoreFreshPretradeGetTransportV1 | None, str, Any]:
     """Bind read-only GET transport for execute_network=true.
 
@@ -49,26 +55,38 @@ def bind_productive_read_only_get_transport_for_execute_network_v1(
     if execute_network is not True or fresh_get_transport is not None:
         return fresh_get_transport, "NOT_REACHED", None
 
+    if vault_file is not None and str(vault_file).strip():
+        try:
+            resolved_vault = Path(str(vault_file))
+            backend = productive_fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
+            handle = productive_fail_closed_credential_unavailable_v1(
+                secret_reference=REQUIRED_SECRETREF_URI,
+                vault_backend=backend,
+                credential_class=REQUIRED_CREDENTIAL_CLASS,
+            )
+        except RuntimeError:
+            return None, CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS, None
+        transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle)
+        return transport, "", handle
+
+    pltf_transport, pltf_borrow = try_bind_pl_tf_002_read_transport_for_execute_network_v1(
+        origin_main_sha=str(origin_main_sha or ""),
+        repo_root=repo_root,
+    )
+    if pltf_transport is not None and pltf_borrow is not None:
+        return pltf_transport, "", pltf_borrow
+
     try:
-        resolved_vault = (
-            Path(str(vault_file))
-            if vault_file is not None and str(vault_file).strip()
-            else productive_fail_closed_credential_unavailable_v1(repo_root=repo_root)
-        )
-        backend = productive_fail_closed_credential_unavailable_v1(vault_file=resolved_vault)
-        handle = productive_fail_closed_credential_unavailable_v1(
-            secret_reference=REQUIRED_SECRETREF_URI,
-            vault_backend=backend,
-            credential_class=REQUIRED_CREDENTIAL_CLASS,
-        )
+        productive_fail_closed_credential_unavailable_v1(repo_root=repo_root)
     except RuntimeError:
         return None, CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS, None
-
-    transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle)
-    return transport, "", handle
+    return None, CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS, None
 
 
 def release_productive_credential_handle_v1(handle: Any) -> None:
+    if isinstance(handle, ProductivePlTf002ReadSessionBorrowV1):
+        release_pl_tf_002_read_session_borrow_v1(handle)
+        return
     if handle is not None:
         productive_fail_closed_credential_unavailable_v1(handle=handle)
 

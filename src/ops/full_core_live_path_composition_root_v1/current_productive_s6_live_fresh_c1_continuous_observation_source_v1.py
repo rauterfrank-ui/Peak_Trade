@@ -32,6 +32,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     bind_s4a_fresh_c1_get_runtime_authority_v1,
     load_current_productive_c1_cursor_or_reason_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_s6_fresh_c1_mark_index_evidence_join_v1 import (
+    CurrentProductiveS6C1MarkIndexEvidenceError,
+    collect_current_productive_s6_c1_poll_mark_index_evidence_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
 )
@@ -115,9 +119,19 @@ class LiveFreshC1ContinuousObservationSourceV1:
         candles_payload: Mapping[str, Any] = payload
         if "data" not in candles_payload:
             return None
+        try:
+            mark_index = collect_current_productive_s6_c1_poll_mark_index_evidence_v1(
+                transport=self.transport,
+                venue_native_id=str(self.native_id or ""),
+                pretrade_decision_id=f"continuous-run-{self.run_id}-poll-{poll_index}",
+            )
+        except CurrentProductiveS6C1MarkIndexEvidenceError as exc:
+            raise ValueError(f"C1_MARK_INDEX_ENRICHMENT_FAIL_CLOSED:{exc}") from exc
         return InjectedContinuousObservationV1(
             candles_payload=candles_payload,
             occupancy_payloads=productive_auth_free_flat_occupancy_payloads_v1(),
+            mark_price_payload=mark_index.mark_price_payload,
+            index_tickers_payload=mark_index.index_tickers_payload,
         )
 
 

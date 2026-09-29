@@ -529,6 +529,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
                 fresh_get_transport=transport,
                 vault_file=vault_file,
                 repo_root=_REPO_ROOT,
+                origin_main_sha=base_sha,
             )
         )
         if cred_status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS:

@@ -278,6 +278,7 @@ def execute_current_productive_fresh_runtime_cycle_to_exact_envelope_bound_v1(
                 fresh_get_transport=fresh_get_transport,
                 vault_file=vault_file,
                 repo_root=root,
+                origin_main_sha=trusted_execution_identity,
             )
         )
         if credential_join_status == CREDENTIAL_HANDLE_FAIL_CLOSED_STATUS:
