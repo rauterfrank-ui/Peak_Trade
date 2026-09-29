@@ -1,40 +1,24 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f648174ff4712b0a9b4f676aaefddc28fdadbb7d",
+  "base_sha": "92fc831f176a815d4e8d04ef881be73a5c3c1aad",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
-    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
-    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-    "tests/governance/test_risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.py",
-    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
-    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
+    "docs/ops/RUNBOOK_INDEX.md"
   ],
-  "changed_paths_sha256": "c55811fc5ca82b4dfcdb9aff96ce6b9ec18a3598c0ecf728ab3e7e0dbff08431",
+  "changed_paths_sha256": "d02b87cae5bcfd781da52075514c192a255bda6b4b6ff1174067ef7549d29828",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
-    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
-    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-    "tests/governance/test_risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.py",
-    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
-    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
+    "docs/ops/RUNBOOK_INDEX.md"
   ],
   "evidence_refs": [
-    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
-    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py"
+    "docs/ops/RUNBOOK_INDEX.md"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "reason": "Risk/Sizing governance semantic marker alignment only (AC1 encoding closure); no change to current_law_impact_map_v1 source or derived law-map views; candidate catalog extended for adjudicated Risk/Sizing surfaces.",
+  "reason": "PR #6971 removes stale navigation to deleted docs/ops/master_execution/CURRENT_CHECKPOINT.env only (AUTHORITY=NONE, NAVIGATION_ONLY); no change to current_law_impact_map_v1 source or derived law-map views; impact candidate catalog extended for docs/ops/RUNBOOK_INDEX.md.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

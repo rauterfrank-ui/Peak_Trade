@@ -28,6 +28,7 @@
     "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
     "src/ops/peak_trade_public_market_data_runtime_v1/",
     "src/ops/portfolio_capital_reservation_budget_v1/",
+    "docs/ops/RUNBOOK_INDEX.md",
     "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
     "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
