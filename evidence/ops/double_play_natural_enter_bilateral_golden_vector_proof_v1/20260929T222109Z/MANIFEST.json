@@ -1,0 +1,86 @@
+{
+  "wp": "PRESERVE_DP_BILATERAL_GOLDEN_VECTOR_PROOF_V1",
+  "preserved_at_utc": "2026-09-29T22:21:09Z",
+  "evidence_dir": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z",
+  "source_paths": [
+    "/tmp/peak_trade_dp_golden_vector_natural_enter_v1.json",
+    "/tmp/peak_trade_dp_golden_vector_natural_enter_v1.md",
+    "/tmp/peak_trade_dp_bear_short_symmetry_v1.json",
+    "/tmp/peak_trade_dp_bear_short_symmetry_v1.md"
+  ],
+  "destination_paths": [
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.md",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.md"
+  ],
+  "artifacts": [
+    {
+      "filename": "peak_trade_dp_golden_vector_natural_enter_v1.json",
+      "source_path": "/tmp/peak_trade_dp_golden_vector_natural_enter_v1.json",
+      "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.json",
+      "source_sha256": "9aa3e4583eff0250c61e25297c97ea00503fbc4ac0b1b48cd194841686aef779",
+      "destination_sha256": "9aa3e4583eff0250c61e25297c97ea00503fbc4ac0b1b48cd194841686aef779",
+      "byte_identical": true,
+      "size_bytes": 16464
+    },
+    {
+      "filename": "peak_trade_dp_golden_vector_natural_enter_v1.md",
+      "source_path": "/tmp/peak_trade_dp_golden_vector_natural_enter_v1.md",
+      "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.md",
+      "source_sha256": "80b84c4ccd36629644d34fc9063d7dd0adbdb2e50c9603b6fa9f80e0ce6d3af0",
+      "destination_sha256": "80b84c4ccd36629644d34fc9063d7dd0adbdb2e50c9603b6fa9f80e0ce6d3af0",
+      "byte_identical": true,
+      "size_bytes": 11697
+    },
+    {
+      "filename": "peak_trade_dp_bear_short_symmetry_v1.json",
+      "source_path": "/tmp/peak_trade_dp_bear_short_symmetry_v1.json",
+      "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.json",
+      "source_sha256": "032e84975ed847b4d7edf8dfbadbb4cf3883d5138bff2fa6ca7ecf0fe793375b",
+      "destination_sha256": "032e84975ed847b4d7edf8dfbadbb4cf3883d5138bff2fa6ca7ecf0fe793375b",
+      "byte_identical": true,
+      "size_bytes": 15272
+    },
+    {
+      "filename": "peak_trade_dp_bear_short_symmetry_v1.md",
+      "source_path": "/tmp/peak_trade_dp_bear_short_symmetry_v1.md",
+      "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.md",
+      "source_sha256": "778c3a283831bd1cd17da170d2ed8dafd3408574dcf868cf4bf18bec3e13065f",
+      "destination_sha256": "778c3a283831bd1cd17da170d2ed8dafd3408574dcf868cf4bf18bec3e13065f",
+      "byte_identical": true,
+      "size_bytes": 9708
+    }
+  ],
+  "SOURCE_DEST_SHA256_MATCH": true,
+  "long_proof_baseline_sha": "0688318245043065a32c6b68e072147291993a87",
+  "short_proof_baseline_sha": "0353b45e8623c0188359fcfb1e50ec8359bcc847",
+  "current_merged_main_reference": "0353b45e8623c0188359fcfb1e50ec8359bcc847",
+  "long_decision": "enter_long",
+  "short_decision": "enter_short",
+  "long_pre_external": true,
+  "short_pre_external": true,
+  "POST_COUNT": 0,
+  "strategy_changed": false,
+  "thresholds_changed": false,
+  "forced_signal_used": false,
+  "runtime_executed": false,
+  "proof_reexecuted": false,
+  "provenance_note": {
+    "long_evidence_origin": "PR-head/detached proof worktree at 0688318245043065a32c6b68e072147291993a87 (NOT silently renormalized to merged main)",
+    "short_evidence_origin": "isolated proof worktree at merged main 0353b45e8623c0188359fcfb1e50ec8359bcc847",
+    "cursor_header_contradiction": {
+      "observed_cursor_header_CURRENT_ORIGIN_MAIN_SHA": "10f601e6087c33334034b2e013a72ed46835e9e9",
+      "actual_short_proof_worktree_HEAD": "0353b45e8623c0188359fcfb1e50ec8359bcc847",
+      "rule": "Cursor-header CURRENT_ORIGIN_MAIN_SHA must NOT be used as proof baseline; proof baselines are the SHA values embedded in the preserved artifacts / worktree HEADs used for each run.",
+      "note": "At preservation time, git rev-parse origin/main resolves to 0353b45e8623c0188359fcfb1e50ec8359bcc847; local HEAD may differ from origin/main. The contradictory header value 10f601e6... is recorded only as a metadata conflict, not as authority."
+    }
+  },
+  "claims": {
+    "LONG_ENTER_PROVEN": true,
+    "SHORT_ENTER_PROVEN": true,
+    "LONG_PRE_EXTERNAL": true,
+    "SHORT_PRE_EXTERNAL": true,
+    "BILATERAL_NATURAL_ENTER_ARTIFACTS_PRESERVED": true
+  }
+}
