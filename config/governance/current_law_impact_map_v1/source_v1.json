@@ -169,7 +169,7 @@
       "law_id": "G17-TYPED-VOL-CMC-BIND-V1",
       "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
       "canonical_anchor": "apply_current_productive_g17_typed_vol_cmc_bind_v1",
-      "source_sha256": "f5eebff8f7f3561adcd77b1d85b3386400aeb427bd834a11b631ed113fb9886e",
+      "source_sha256": "e7e5b04308197a10fd90ed5bc9aac581c212681c3ae4896f0e6ee8c0b302d7a4",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -750,8 +750,30 @@
       "evidence_refs": [
         "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
         "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
-        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_double_play_old_effective_host_contract",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/double_play_old_effective_host_contract_v1.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
+      ],
+      "config_surfaces": [
+        "config/governance/double_play_old_effective_host_contract_v1_decision_v1.json",
+        "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
+      ],
+      "law_ref_ids": [],
+      "csia_record_id": "p5_bind_without_cutover",
+      "evidence_refs": [
+        "config/governance/double_play_old_effective_host_contract_v1_decision_v1.json",
+        "evidence/ops/double_play_post_merge_golden_vector_baseline_proof_v1/20260929T204600Z/WP_DOUBLE_PLAY_POST_MERGE_GOLDEN_VECTOR_BASELINE_PROOF_V1.json",
+        "tests/trading/master_v2/test_double_play_old_effective_host_contract_v1.py"
       ]
     },
     {

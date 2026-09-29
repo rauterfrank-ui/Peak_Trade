@@ -97,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6976: N5 FA orchestrator Cap24 per-lane canonical price provenance compose; consumer join canonical_price_provenance_by_lane; CSIA navigation refresh; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6978 post-merge governance currency closure: historically attested restoration authorization slice for old-effective host contract; CSIA/Atlas navigation refresh; AUTHORITY=NONE; POST_COUNT=0; no trading semantic mutation.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=N5_CAP24_MARK_TO_PER_LANE_CANONICAL_PRICE_PROVENANCE_COMPOSE_V1
+- modified_by=DOUBLE_PLAY_RESTORATION_GOVERNANCE_CURRENCY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

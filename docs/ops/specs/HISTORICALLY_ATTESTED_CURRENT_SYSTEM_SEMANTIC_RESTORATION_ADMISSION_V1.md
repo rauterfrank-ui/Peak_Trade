@@ -126,16 +126,22 @@ Committed authorization state (single active grant; no multi-grant model):
 
 ```text
 grant_active=true
-slice_grant_id=DOUBLE_PLAY_ASYMMETRIC_DYNAMIC_SCOPE_RECOVERY_BOUNDED_SLICE_V1
+slice_grant_id=DOUBLE_PLAY_OLD_EFFECTIVE_HOST_CONTRACT_RESTORATION_BOUNDED_SLICE_V1
 RESTORATION_TARGET_CONFORMANCE=true
 restoration_target_id=MASTER_V2_DOUBLE_PLAY_CONSERVED_REFERENCE_V1
 binds_to_current_a06_code=false
 allowed_paths=
+  src/trading/master_v2/double_play_old_effective_host_contract_v1.py
   src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
   tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py
+  tests/trading/master_v2/test_double_play_old_effective_host_contract_v1.py
 ```
 
-The prior `INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1`,
+Evidence attestation (post-merge baseline): merge SHA `2bed43a47735cc633e5e4da52ba02b4303747cd2`;
+`evidence&#47;ops&#47;double_play_post_merge_golden_vector_baseline_proof_v1&#47;20260929T204600Z&#47;`.
+
+The prior `DOUBLE_PLAY_ASYMMETRIC_DYNAMIC_SCOPE_RECOVERY_BOUNDED_SLICE_V1` and
+`INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1`,
 `SAFETY_KERNEL_BEFORE_INTENT_BOUNDED_SLICE_V1` and
 `CAPITAL_RISK_SIZING_INTENT_BOUNDED_SLICE_V1` exact-file grants are
 historical record only. They are not accumulated. A06 protected paths are not

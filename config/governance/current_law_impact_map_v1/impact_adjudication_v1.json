@@ -3,29 +3,30 @@
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
+    "docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
-    "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
-    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py"
+    "docs/system_atlas/relations/structural.yaml"
   ],
-  "changed_paths_sha256": "cc4f8df0ae22e4b7e5d9d5531524686ca33913599476b8d27849ea368773b553",
-  "base_sha": "a951fa04c4bbccba8ff35af25e388e6d033560f0",
+  "changed_paths_sha256": "903e1f42d9476efc8c1a02c25bf67dae13125f0d2fed03f584188cffe69e74ad",
+  "base_sha": "2bed43a47735cc633e5e4da52ba02b4303747cd2",
   "authority_effect": "NONE",
   "covered_candidate_paths": [],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "PR #6976: UCS sobj_canonical_price_provenance navigation binds N5 Cap24 per-lane compose evidence; LAW_MAP_UPDATE_REQUIRED; AUTHORITY=NONE.",
-  "selector_used_as_law_impact_authority": false,
+  "reason": "PR #6978 post-merge governance currency closure: law map G17 census SHA refresh + sobj_double_play_old_effective_host_contract navigation; AUTHORITY=NONE.",
+  "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py"
-  ]
+    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
+  ],
+  "selector_used_as_law_impact_authority": false
 }

@@ -4510,7 +4510,7 @@
         "tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "PR #6954: composition bootstrap seam only; no MV2/DP semantic change; cutover false."
+      "closure_note": "PR #6954: composition bootstrap seam only; no MV2/DP semantic change; cutover false. PR #6978: finalized-closes init observation grid via productive_cycle_bind_seam_v1; governance decision config/governance/double_play_old_effective_host_contract_v1_decision_v1.json; AUTHORITY=NONE."
     },
     {
       "id": "productive_canonical_price_provenance_v1",
@@ -4526,7 +4526,7 @@
         "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
-      "closure_note": "PR #6976: N5 FA orchestrator derives per-lane Cap24 mark-sidecar provenance aligned to bound.venue_native_id before MV2 consumer handoff; Full-Core adapter unchanged; AUTHORITY=NONE."
+      "closure_note": "PR #6976: N5 FA orchestrator derives per-lane Cap24 mark-sidecar provenance aligned to bound.venue_native_id before MV2 consumer handoff; Full-Core adapter unchanged. PR #6978: LiveFreshC1 public mark-price GET attachment (ROOT_WIRING_01); AUTHORITY=NONE."
     },
     {
       "id": "portfolio_budget",
