@@ -123,6 +123,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_surface_p | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_surface_p | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:od_account_equity_sizing_source_canonical_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:od_account_equity_sizing_source_canonical_adjudication_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | STATUS=OPEN (not proven) |  |

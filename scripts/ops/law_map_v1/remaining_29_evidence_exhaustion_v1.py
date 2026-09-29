@@ -19,11 +19,12 @@ R29_JSON = (
 RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 EQUITY_RAT = "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
 
-POST_MERGE_BASELINE_SHA = "5fbc61636b14e912f7148ef6bb91e4752db71a6a"
+POST_MERGE_BASELINE_SHA = "6268fab255353ceed84384051de1c045232f3a4c"
 OD_ADJ = "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
 OD_NUMERIC = (
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
 )
+OD_U01_P01_MINT = "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
 
 SOBJ_NAV_EXTERNAL = "sobj_nav_external_effect_seam"
@@ -551,6 +552,12 @@ def _additive_lrefs() -> list[dict[str, Any]]:
             SOBJ_NAV_B05,
         ),
         (
+            "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
+            OD_U01_P01_MINT,
+            "od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
+            SOBJ_NAV_B05,
+        ),
+        (
             "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
             RUNBOOK,
             "CURRENT Venue-Plan tdMode and Order-Environment Authority",
@@ -722,6 +729,20 @@ def apply_bindings(doc: dict[str, Any]) -> dict[str, Any]:
             "proof_refs": [
                 "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
                 OD_NUMERIC,
+            ],
+            "base_sha": POST_MERGE_BASELINE_SHA,
+            "head_sha": POST_MERGE_BASELINE_SHA,
+            "adjudication_status": "OWNER_ADJUDICATED_CURRENT",
+        }
+    )
+    reproof.append(
+        {
+            "id": "reproof_od_u01_p01_29p_sizing_mint",
+            "law_ref_ids": ["OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"],
+            "affected_semantic_object_ids": ["sobj_nav_b05_account_equity_productive_chain"],
+            "proof_refs": [
+                "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+                OD_U01_P01_MINT,
             ],
             "base_sha": POST_MERGE_BASELINE_SHA,
             "head_sha": POST_MERGE_BASELINE_SHA,

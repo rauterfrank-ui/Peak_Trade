@@ -4725,7 +4725,7 @@ entities:
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND_CANONICAL_ADJUDICATION_V1
+    modified_by: OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1
     source_paths:
       - src/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py
     evidence_sources:
@@ -4734,7 +4734,24 @@ entities:
       - tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py
     notes: >-
       Non-authorizing OD adjudication for 29P fresh-trusted USDC availEq numeric venue bind;
-      preserves unk_sealed_venue_number_29p UNKNOWN; no productive GET/POST; AUTHORITY=NONE.
+      successor mint-precondition link in OD_U01_P01_29P_SIZING_MINT; no GET/POST; AUTHORITY=NONE.
+
+  - id: RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1
+    kind: RUNTIME_COMPONENT
+    name: OD_U01_P01_29P_SIZING_MINT canonical adjudication v1
+    epistemic_class: FORENSIC_RAW
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    modified_by: OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1
+    source_paths:
+      - src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py
+    evidence_sources:
+      - config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json
+      - docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md
+      - tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py
+    notes: >-
+      Non-authorizing OD adjudication for U01 eligibility, P01 standing directive, and
+      three-input 29P sizing-mint join; sealed normative epoch pack remains UNKNOWN; AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1
     kind: RUNTIME_COMPONENT

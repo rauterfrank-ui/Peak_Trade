@@ -43,10 +43,12 @@
   "29p_normative_pack_identity_status": "UNKNOWN_CURRENT",
   "unk_sealed_venue_number_29p_status": "UNKNOWN_CURRENT",
   "productive_mint_preconditions": {
-    "u01_eligibility": "REQUIRED_NOT_RESOLVED_BY_THIS_WP",
-    "p01_directive": "REQUIRED_NOT_RESOLVED_BY_THIS_WP",
+    "u01_eligibility": "RESOLVED_NORMATIVE_OD_U01_P01_29P_SIZING_MINT_V1",
+    "p01_directive": "RESOLVED_NORMATIVE_OD_U01_P01_29P_SIZING_MINT_V1",
+    "three_input_mint_join": "RESOLVED_NORMATIVE_OD_U01_P01_29P_SIZING_MINT_V1",
     "live_get_execution": "REQUIRES_SEPARATE_SCOPED_OWNER_GO_AND_CREDENTIAL_AUTHORITY"
   },
+  "successor_u01_p01_mint_adjudication": "OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1",
   "domain_laws": {
     "DL-NUMERIC-01": "PROVEN_CURRENT",
     "DL-NUMERIC-02": "PROVEN_CURRENT",
