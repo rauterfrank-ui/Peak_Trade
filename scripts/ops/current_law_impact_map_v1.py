@@ -51,6 +51,7 @@ MAP_SURFACE_PATHS = (
     "docs/governance/current_law_impact_map_v1/",
     "tests/ops/test_current_law_impact_map_v1.py",
     "tests/ops/test_ucs_evidence_binding_v1.py",
+    "tests/ops/test_remaining_29_evidence_exhaustion_v1.py",
 )
 
 REQUIRED_UNKNOWN_IDS = (
