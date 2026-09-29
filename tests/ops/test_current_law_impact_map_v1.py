@@ -130,6 +130,30 @@ def test_runtime_untracked_not_in_diff() -> None:
     assert result.stdout.strip() == ""
 
 
+def test_surface_expansion_counts_and_census_meta() -> None:
+    doc = _doc()
+    assert len(doc["law_references"]) >= 22
+    assert len(doc["semantic_objects"]) >= 26
+    assert len(doc.get("unclassified_current_surfaces", [])) > 0
+    assert doc["surface_census_meta"]["authority"] == "NONE"
+    assert doc["surface_census_meta"]["bootstrap_exhaustive"] is False
+    assert len(doc.get("semantic_divergence_index", [])) >= 2
+
+
+def test_divergence_index_forbids_violated_in_validator() -> None:
+    doc = copy.deepcopy(_doc())
+    doc["semantic_divergence_index"][0]["adjudication"] = "VIOLATED_CURRENT"
+    errors = MAP.validate_semantic_divergence_index(doc)
+    assert any("VIOLATED_CURRENT forbidden" in e for e in errors)
+
+
+def test_generated_surface_census_view_present() -> None:
+    views = MAP.render_views(_doc())
+    assert "surface_census" in views
+    assert "SEM-SURF-DIV-00001" in views["surface_census"]
+    assert "UNCLASSIFIED" in views["surface_census"]
+
+
 def test_impact_engine_tier1_unclassified() -> None:
     from scripts.ops.law_map_v1.impact_v1 import evaluate_changed_paths
 

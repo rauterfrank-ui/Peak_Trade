@@ -5,6 +5,13 @@
 LAW_REFERENCE_AUTHORITY=NONE
 LAW_REFERENCE_IS_NORMATIVE=false
 
+- law_id=CAP-SSF-HANDOFF-V1 source=docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md anchor=RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 sha256=641f4b763b39… index_status=INDEXED
+- law_id=CAP21-GOVERNED-UNIVERSE-V1 source=src/ops/governed_futures_universe_producer_v1/constants_v1.py anchor=GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1 sha256=465371e80921… index_status=INDEXED
+- law_id=CAP22-PRODUCTIVE-RANKING-V1 source=docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md anchor=MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1 sha256=64148629a14e… index_status=INDEXED
+- law_id=CAP23-SINGLE-SELECTED-FUTURE-V1 source=src/ops/single_selected_future_policy_v1/constants_v1.py anchor=SINGLE_SELECTED_FUTURE_POLICY_V1 sha256=d5651c05276a… index_status=INDEXED
+- law_id=CAP24-RUNTIME-BINDING-V1 source=src/ops/single_selected_future_runtime_binding_v1/constants_v1.py anchor=SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1 sha256=660b2b6bbb42… index_status=INDEXED
+- law_id=G17-TYPED-VOL-CMC-BIND-V1 source=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py anchor=apply_current_productive_g17_typed_vol_cmc_bind_v1 sha256=f5eebff8f7f3… index_status=INDEXED
+- law_id=M9-VOL-MAX-AGE-DECISION-V1 source=config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json anchor=m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1 sha256=7eeb4e818bc4… index_status=INDEXED
 - law_id=MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L10_BULL_BEAR_STATE_SWITCH sha256=430348b6cd93… index_status=INDEXED
 - law_id=MV2-LAYER-L1_SELECTED_FUTURE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L1_SELECTED_FUTURE sha256=430348b6cd93… index_status=INDEXED
 - law_id=MV2-LAYER-L2_MARKET_OBSERVATION source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L2_MARKET_OBSERVATION sha256=430348b6cd93… index_status=INDEXED
@@ -16,6 +23,7 @@ LAW_REFERENCE_IS_NORMATIVE=false
 - law_id=MV2-LAYER-L8_RUNNING_REFERENCE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L8_RUNNING_REFERENCE sha256=430348b6cd93… index_status=INDEXED
 - law_id=MV2-LAYER-L9_COUNTER_MOVE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L9_COUNTER_MOVE sha256=430348b6cd93… index_status=INDEXED
 - law_id=PROD-CANONICAL-PRICE-PROVENANCE-V1 source=src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py anchor=ProductiveCanonicalPriceProvenanceError sha256=63d4eab4c12d… index_status=INDEXED
+- law_id=PUBLIC-MD-RUNTIME-POLICY-V1 source=config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json anchor=peak_trade_public_market_data_runtime_v1_policy_v1 sha256=fc2b9165d324… index_status=INDEXED
 - law_id=SEM-DIV-00001 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_natural_enter_rejects_candle_close_only_mark_without_payload sha256=dd3160b0504a… index_status=INDEXED
 - law_id=SEM-DIV-00002 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_cycle_rejects_forbidden_candle_close_mark_source sha256=dd3160b0504a… index_status=INDEXED
 - law_id=SEM-DIV-00006 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_observation_sidestate_seed_class_rejected_on_bind sha256=dd3160b0504a… index_status=INDEXED

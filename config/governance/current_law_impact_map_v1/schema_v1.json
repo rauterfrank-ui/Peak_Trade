@@ -18,7 +18,10 @@
     "impact_edges",
     "unknown_relations",
     "conflicting_relations",
-    "reproof_index"
+    "reproof_index",
+    "semantic_divergence_index",
+    "unclassified_current_surfaces",
+    "surface_census_meta"
   ],
   "properties": {
     "map_id": {"const": "CURRENT_LAW_IMPACT_MAP_V1"},
@@ -55,6 +58,27 @@
     "reproof_index": {
       "type": "array",
       "items": {"$ref": "#/$defs/reproof_index_entry"}
+    },
+    "semantic_divergence_index": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/semantic_divergence_record"}
+    },
+    "unclassified_current_surfaces": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unclassified_surface_record"}
+    },
+    "surface_census_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["census_id", "authority", "bootstrap_exhaustive", "census_method"],
+      "properties": {
+        "census_id": {"type": "string"},
+        "authority": {"const": "NONE"},
+        "bootstrap_exhaustive": {"const": false},
+        "census_method": {"type": "string"},
+        "unclassified_sample_cap": {"type": "integer"},
+        "notes": {"type": "string"}
+      }
     }
   },
   "$defs": {
@@ -193,6 +217,42 @@
         "status": {"enum": ["OPEN", "EXTERNALLY_ADJUDICATED"]},
         "external_adjudication_ref": {"type": "string"},
         "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "semantic_divergence_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "adjudication",
+        "producer_ref",
+        "consumer_ref",
+        "statement",
+        "evidence_refs",
+        "reproof_required"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^SEM-SURF-DIV-[0-9]{5}$"},
+        "adjudication": {
+          "enum": ["PROVEN_CURRENT", "VIOLATED_CURRENT", "UNKNOWN_CURRENT", "CONFLICTING_CURRENT"]
+        },
+        "producer_ref": {"type": "string"},
+        "consumer_ref": {"type": "string"},
+        "statement": {"type": "string"},
+        "expected_canonical_source": {"type": "string"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"},
+        "reproof_required": {"type": "boolean"},
+        "unknown_relation_id": {"type": ["string", "null"]}
+      }
+    },
+    "unclassified_surface_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "classification", "reason"],
+      "properties": {
+        "path": {"type": "string"},
+        "classification": {"const": "UNCLASSIFIED_CURRENT"},
+        "reason": {"type": "string"}
       }
     },
     "reproof_index_entry": {

@@ -39,6 +39,7 @@ DERIVED_VIEWS = {
     "law_reference_index": DERIVED_DIR / "law_reference_index_v1.md",
     "semantic_object_index": DERIVED_DIR / "semantic_object_index_v1.md",
     "unknown_and_conflict": DERIVED_DIR / "unknown_and_conflict_v1.md",
+    "surface_census": DERIVED_DIR / "surface_census_v1.md",
     "law_change_impact": DERIVED_DIR / "LAW_CHANGE_IMPACT.md",
 }
 
@@ -167,6 +168,31 @@ def validate_unknown_and_conflict(doc: dict) -> list[str]:
     return errors
 
 
+def validate_semantic_divergence_index(doc: dict) -> list[str]:
+    errors: list[str] = []
+    for row in doc.get("semantic_divergence_index", []):
+        if row.get("adjudication") == "VIOLATED_CURRENT":
+            errors.append(
+                f"divergence {row.get('id')} VIOLATED_CURRENT forbidden without external compliance owner"
+            )
+        if not row.get("evidence_refs"):
+            errors.append(f"divergence {row.get('id')} missing evidence_refs")
+    return errors
+
+
+def validate_unclassified_surfaces(doc: dict) -> list[str]:
+    errors: list[str] = []
+    for row in doc.get("unclassified_current_surfaces", []):
+        if row.get("classification") != "UNCLASSIFIED_CURRENT":
+            errors.append(f"unclassified surface bad class for {row.get('path')}")
+    meta = doc.get("surface_census_meta") or {}
+    if meta.get("authority") != "NONE":
+        errors.append("surface_census_meta authority must be NONE")
+    if meta.get("bootstrap_exhaustive") is not False:
+        errors.append("surface_census_meta bootstrap_exhaustive must be false")
+    return errors
+
+
 def validate_edges(doc: dict) -> list[str]:
     errors: list[str] = []
     sobj_ids = {item["id"] for item in doc.get("semantic_objects", [])}
@@ -222,6 +248,28 @@ def render_views(doc: dict) -> dict[str, str]:
         )
     for conf in doc.get("conflicting_relations", []):
         unk_lines.append(f"- CONFLICT id={conf['id']} status={conf['status']}")
+    census_lines = [
+        _banner("surface_census"),
+        "# Surface Census (navigation only)",
+        "",
+        "AUTHORITY=NONE",
+        f"unclassified_count={len(doc.get('unclassified_current_surfaces', []))}",
+        f"divergence_count={len(doc.get('semantic_divergence_index', []))}",
+        "",
+    ]
+    meta = doc.get("surface_census_meta") or {}
+    census_lines.append(f"census_id={meta.get('census_id', 'UNKNOWN')}")
+    census_lines.append("")
+    for div in doc.get("semantic_divergence_index", []):
+        census_lines.append(
+            f"- {div['id']} adjudication={div['adjudication']} producer={div['producer_ref']} "
+            f"consumer={div['consumer_ref']}"
+        )
+    census_lines.append("")
+    for row in doc.get("unclassified_current_surfaces", [])[:40]:
+        census_lines.append(f"- UNCLASSIFIED {row['path']}")
+    if len(doc.get("unclassified_current_surfaces", [])) > 40:
+        census_lines.append("- ...(truncated in view; see source JSON)")
     impact_lines = [
         _banner("law_change_impact"),
         "# Law Change Impact (generated navigation)",
@@ -236,6 +284,7 @@ def render_views(doc: dict) -> dict[str, str]:
         "law_reference_index": "\n".join(law_lines) + "\n",
         "semantic_object_index": "\n".join(sobj_lines) + "\n",
         "unknown_and_conflict": "\n".join(unk_lines) + "\n",
+        "surface_census": "\n".join(census_lines) + "\n",
         "law_change_impact": "\n".join(impact_lines) + "\n",
     }
 
@@ -375,6 +424,8 @@ def validate_repository(repo_root: Path, diff_base: str | None) -> list[str]:
     errors.extend(validate_semantic_objects(doc, repo_root))
     errors.extend(validate_unknown_and_conflict(doc))
     errors.extend(validate_edges(doc))
+    errors.extend(validate_semantic_divergence_index(doc))
+    errors.extend(validate_unclassified_surfaces(doc))
     errors.extend(derived_drift(doc, repo_root))
     candidates = _load_json(repo_root / CANDIDATES_PATH.relative_to(REPO_ROOT))
     if candidates.get("exhaustive") is not False:
