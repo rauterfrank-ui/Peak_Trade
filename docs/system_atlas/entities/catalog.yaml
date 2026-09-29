@@ -339,6 +339,30 @@ entities:
       MUST_INTEGRATE_CANONICAL_COUNT=0.
       Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 
+  - id: NAVIGATION_INDEX:current_universe_landscape_snapshot_v1
+    # atlas_entity_review: FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1 — persisted
+    # PROVEN_CURRENT architecture fixpoint navigation; links census + authority map;
+    # AUTHORITY=NONE; no runtime authorization; POST_COUNT=0.
+    kind: NAVIGATION_INDEX
+    name: CURRENT Universe Landscape Snapshot V1
+    epistemic_class: NAVIGATION_ONLY
+    current_canonical: false
+    current_status: CURRENT_NONCANONICAL
+    semantic_authority: false
+    modified_by: FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1
+    authority_sources:
+      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+    evidence_sources:
+      - docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md
+      - config/governance/current_universe_landscape_snapshot_v1/source_v1.json
+      - config/governance/current_system_census_graph_v1/source_v1.json
+      - config/governance/current_system_interaction_authority_map_v1/source_v1.json
+    notes: >-
+      Persisted adjudicated CURRENT Universe/Plane landscape at architecture
+      fixpoint (MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0). Not runtime authority.
+      PR #6974 reconciliation→MV2 admission semantics recorded. Atlas is not
+      canonical authority. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:elementary_direction_primitive_v1
     kind: CONTRACT
     name: Elementary Direction Primitive V1

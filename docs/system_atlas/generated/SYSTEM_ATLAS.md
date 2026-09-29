@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `d26caea78d1a178fde0a9e91aee169d454eebcae`. Worktree dirty records are not origin/main truth.
+Census SHA: `dfcf4d04b8400763bee6ab0b465fa182927dea75`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -253,7 +253,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `242`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `244`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -501,10 +501,11 @@ Architectural-kind count in this bucket: `38`.
 
 ### ADJUDICATED
 
-Architectural-kind count in this bucket: `2`.
+Architectural-kind count in this bucket: `3`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
+| NAVIGATION_INDEX:current_universe_landscape_snapshot_v1 | NAVIGATION_INDEX | CURRENT Universe Landscape Snapshot V1 | ADJUDICATED | STATUS=NAVIGATION_ONLY |
 | NAVIGATION_INDEX:map_of_truth | NAVIGATION_INDEX | Map of Truth | ADJUDICATED | STATUS=NAVIGATION_ONLY |
 | VENUE:okx | VENUE | OKX | ADJUDICATED | STATUS=ADJUDICATED |
 
@@ -700,10 +701,10 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae
-ENTITY_TOTAL=313
+CURRENT_ORIGIN_MAIN_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
+ENTITY_TOTAL=314
 HUB_RELATION_COUNT=72
-STRUCTURAL_RELATION_COUNT=242
+STRUCTURAL_RELATION_COUNT=244
 RUNTIME_RELATION_COUNT=101
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=8
@@ -788,7 +789,7 @@ Remaining census domains:
 | GATE | 19 |
 | HOST | 2 |
 | INVARIANT | 1 |
-| NAVIGATION_INDEX | 1 |
+| NAVIGATION_INDEX | 2 |
 | OBSERVER | 1 |
 | OKX_FEATURE | 1 |
 | OWNER_DECISION | 2 |

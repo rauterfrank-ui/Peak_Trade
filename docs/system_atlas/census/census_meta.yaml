@@ -1,11 +1,11 @@
 schema_version: system_atlas.v1
-origin_main_sha: d26caea78d1a178fde0a9e91aee169d454eebcae
-current_reviewed_at_sha: d26caea78d1a178fde0a9e91aee169d454eebcae
-origin_main_subject: 'POST_6924 companion C2 runtime completion scaffold v1 (#6925)'
+origin_main_sha: dfcf4d04b8400763bee6ab0b465fa182927dea75
+current_reviewed_at_sha: dfcf4d04b8400763bee6ab0b465fa182927dea75
+origin_main_subject: 'Productive reconciliation single-check + Master-V2 entry v1 (#6974)'
 census_date_role: workpackage_bound_not_runtime_truth
 worktree_dirty: false
-navigation_rebind_sha: d26caea78d1a178fde0a9e91aee169d454eebcae
-navigation_rebind_kind: ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1
+navigation_rebind_sha: dfcf4d04b8400763bee6ab0b465fa182927dea75
+navigation_rebind_kind: FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1
 domain_census_payloads_bound_sha: null
 domain_census_payloads_content_origin_sha: null
 domain_census_payloads_fresh_exhaustive_recensus: false
