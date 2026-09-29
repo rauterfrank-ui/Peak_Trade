@@ -1,36 +1,40 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "fe1a10d180de69bcac3d32780dc20ead9f84d45a",
+  "base_sha": "f648174ff4712b0a9b4f676aaefddc28fdadbb7d",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py",
-    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "tests/governance/test_risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.py",
+    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
+    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "3106fdb7472d0fe3a9ff29676868fe8c40f321b6915fb9071f6ca3a2b70d5b2e",
+  "changed_paths_sha256": "c55811fc5ca82b4dfcdb9aff96ce6b9ec18a3598c0ecf728ab3e7e0dbff08431",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py",
-    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
+    "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+    "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
+    "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "tests/governance/test_risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.py",
+    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py",
+    "tests/governance/test_risk_sizing_owner_topology_adjudication_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
-    "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py",
-    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
+    "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
+    "docs/governance/RISK_SIZING_OWNER_INVENTORY_SSOT_V1.md",
+    "tests/governance/test_risk_sizing_owner_inventory_ssot_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6969 classifies native full-cycle MV2 state-advance host in whole-system connection static proof only; no change to CSIA source_v1.json or derived map views; candidate catalog extended for bounded WP surfaces.",
+  "reason": "Risk/Sizing governance semantic marker alignment only (AC1 encoding closure); no change to CSIA source_v1.json or derived map views; candidate catalog extended for adjudicated Risk/Sizing surfaces.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

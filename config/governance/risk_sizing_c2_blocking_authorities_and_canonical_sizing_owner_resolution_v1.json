@@ -312,5 +312,13 @@
     "flip_conversion_ready_without_proof": "FAIL",
     "elevate_observation_or_identity_to_metadata_authority": "FAIL",
     "start_consolidation_or_q4": "FAIL"
+  },
+  "supersession_v1": {
+    "preserved_as_historical_forensic_snapshot": true,
+    "superseded_for_productive_canonical_sizing_owner_interpretation_by": "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+    "historical_blocker_d_canonical_risk_sizing_owner": "UNRESOLVED",
+    "current_productive_mv2_final_quantity_owner": "src.governance.capital_risk_sizing_v1",
+    "current_productive_mv2_final_quantity_owner_status": "RESOLVED",
+    "deferred_decision_owner_adjudication_repo_wide_status": "SUPERSEDED_BY_CONSUMED_OWNER_GO_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1"
   }
 }

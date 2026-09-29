@@ -139,6 +139,10 @@ REQUIRED_DOC_MARKERS: tuple[str, ...] = (
     "CONSOLIDATION_STATUS=NOT_STARTED",
     "RISK_SIZING_CLAIMED_CONSOLIDATED=false",
     "CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1",
+    "CANONICAL_PRODUCTIVE_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1",
+    "PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT=1",
+    "REPOSITORY_SIZING_IMPLEMENTATION_COUNT=5",
+    "REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED=false",
     "SINGULAR_REPO_WIDE_OWNER_REQUIRED=true",
     f"MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER={EXPECTED_MV2_OWNER}",
     "CONVERSION_READY=false",
@@ -205,6 +209,7 @@ REQUIRED_OWNER_FIELDS = (
     "inventory_only",
     "authoritative_size_decision",
     "authority_owner_status",
+    "productive_mv2_final_quantity_authority_status",
     "consolidation_status",
     "decommission_status",
 )
@@ -291,6 +296,10 @@ def test_ssot_json_parseable_and_pins_inventory_not_consolidation() -> None:
     assert markers["CONSOLIDATION_STATUS"] == "NOT_STARTED"
     assert markers["RISK_SIZING_CLAIMED_CONSOLIDATED"] is False
     assert markers["CANONICAL_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
+    assert markers["CANONICAL_PRODUCTIVE_RISK_SIZING_OWNER"] == EXPECTED_MV2_OWNER
+    assert markers["PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT"] == 1
+    assert markers["REPOSITORY_SIZING_IMPLEMENTATION_COUNT"] == EXPECTED_PRODUCTIVE_OWNER_COUNT
+    assert markers["REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED"] is False
     assert markers["CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE"] == EXPECTED_MV2_OWNER
     assert markers["PRODUCTIVE_RISK_SIZING_DECISION_OWNER_COUNT"] == EXPECTED_PRODUCTIVE_OWNER_COUNT
     assert markers["DUPLICATE_PRODUCTIVE_RISK_SIZING_DECISION_OWNERS"] is False
@@ -472,6 +481,12 @@ def test_owner_and_bypass_surface_contract_semantics_and_count() -> None:
         "CANONICAL_RISK_SIZING_OWNER": EXPECTED_MV2_OWNER,
         "CANONICAL_RISK_SIZING_OWNER_SCOPE": "productive_authoritative_full_core_mv2_governance_intent_bound",
         "CANONICAL_RISK_SIZING_OWNER_MV2_SCOPE": EXPECTED_MV2_OWNER,
+        "CANONICAL_PRODUCTIVE_RISK_SIZING_OWNER": EXPECTED_MV2_OWNER,
+        "PRODUCTIVE_SCOPE": "full_core_mv2_governance_intent_bound",
+        "PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT": 1,
+        "REPOSITORY_SIZING_IMPLEMENTATION_COUNT": EXPECTED_PRODUCTIVE_OWNER_COUNT,
+        "CANONICAL_ALL_SIZING_REPOSITORY_OWNER": "UNASSIGNED",
+        "REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED": False,
         "CANONICAL_EXECUTION_AUTHORITY_OWNER": "UNRESOLVED",
         "CONSOLIDATION_STATUS": "NOT_STARTED",
         "DECOMMISSION_STATUS": "NOT_STARTED",
@@ -516,7 +531,12 @@ def test_owner_surfaces_exact_unique_and_non_authorizing() -> None:
         assert owner["decommissioned"] is False
         assert owner["inventory_only"] is True
         assert owner["authoritative_size_decision"] is True
-        assert owner["authority_owner_status"] == "UNRESOLVED"
+        if stable_id == EXPECTED_MV2_OWNER:
+            assert owner["authority_owner_status"] == "RESOLVED"
+            assert owner["productive_mv2_final_quantity_authority_status"] == "RESOLVED"
+        else:
+            assert owner["authority_owner_status"] == "UNRESOLVED"
+            assert owner["productive_mv2_final_quantity_authority_status"] == "NOT_OWNER"
         assert owner["consolidation_status"] == "NOT_STARTED"
         assert owner["decommission_status"] == "NOT_STARTED"
         assert owner["primary_symbols"] == inventory["primary_symbols"]

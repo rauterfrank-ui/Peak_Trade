@@ -13,7 +13,13 @@ RISK_SIZING_CLAIMED_CONSOLIDATED=false
 CANONICAL_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1
 CANONICAL_RISK_SIZING_OWNER_SCOPE=productive_authoritative_full_core_mv2_governance_intent_bound
 CANONICAL_RISK_SIZING_OWNER_COUNT=1
+CANONICAL_PRODUCTIVE_RISK_SIZING_OWNER=src.governance.capital_risk_sizing_v1
+PRODUCTIVE_SCOPE=full_core_mv2_governance_intent_bound
+PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT=1
+REPOSITORY_SIZING_IMPLEMENTATION_COUNT=5
+CANONICAL_ALL_SIZING_REPOSITORY_OWNER=UNASSIGNED
 SINGULAR_REPO_WIDE_OWNER_REQUIRED=true
+REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED=false
 MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER=src.governance.capital_risk_sizing_v1
 STEP29P_ADMISSIBILITY_AUTHORITY_BOUNDARY=capital_risk_admissibility_owner_v1
 PORTFOLIO_RESERVATION_AUTHORITY_BOUNDARY=portfolio_capital_reservation_budget_v1
@@ -68,18 +74,20 @@ SEE_ALSO=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_REMAINING_P0_QUARANTINE_V1.m
 
 ## 1. Executive Summary
 
-Repo-wide forensic inventory shows **five productive Risk/Sizing decision owners** that independently decide position size / quantity on different paths. For the **MV2 / governance / intent-bound chain only**, CRS (`src.governance.capital_risk_sizing_v1`) is uniquely pinned as owner via adapters that delegate without duplicating math.
+Forensic inventory lists **five scoped sizing implementations** (`REPOSITORY_SIZING_IMPLEMENTATION_COUNT=5`) on non-competing paths. For the **CURRENT productive MV2 / Full-Core governance-intent-bound FINAL_QUANTITY decision**, exactly one canonical owner is ratified: CRS (`src.governance.capital_risk_sizing_v1`) via consumed Owner-GO `OWNER_GO_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1` (machine contract: `risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json`).
 
-**Repo-wide canonical owner: `UNRESOLVED`.**  
-Reason: Classic Backtest, Offline-Eval sizing contract, Execution `execute_from_signals`, and Live/Shadow `position_fraction` still decide size **without** CRS. Obligation `OBL_B05_CAPITAL_RISK_SIZING_OWNER_SPLIT` remains open (`REQUIRES_RUNTIME_GO`). Do not assert consolidation.
+There is **no** canonical owner of “all sizing everywhere in the repository” (`CANONICAL_ALL_SIZING_REPOSITORY_OWNER=UNASSIGNED`). Classic Backtest, Offline-Eval, Execution kernel, and Live/Shadow companion paths may coexist when they do **not** own or bypass productive MV2 FINAL_QUANTITY authority. `SINGULAR_REPO_WIDE_OWNER_REQUIRED` is a legacy field name; CURRENT meaning is **one canonical productive MV2 FINAL_QUANTITY owner**, not one mandatory repository-wide sizing implementation (`REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED=false`).
+
+Optional repository consolidation (decommission/rewire of parallel scoped paths) remains a **separate** program (`CONSOLIDATION_STATUS=NOT_STARTED`); it is **not** required to close productive authority.
 
 | Metric | Value |
 |---|---|
-| Productive size decision owners | `5` |
-| CRS bypass paths (productive size without CRS) | `5` |
-| MV2/governance-chain owner | `src.governance.capital_risk_sizing_v1` |
-| Repo-wide unique canonical | `UNRESOLVED` |
-| Consolidation | `NOT_STARTED` |
+| Repository sizing implementations (inventory) | `5` |
+| Productive MV2 FINAL_QUANTITY owner count | `1` (CRS) |
+| CRS bypass paths relative to MV2 productive host | `0` unauthorized |
+| MV2/governance-chain FINAL_QUANTITY owner | `src.governance.capital_risk_sizing_v1` |
+| Canonical all-sizing repository owner | `UNASSIGNED` |
+| Consolidation program | `NOT_STARTED` |
 
 ## 2. Owner Matrix
 
@@ -176,7 +184,7 @@ This frozen set does **not**:
 - change order intent, order submission, or Legacy Order Intent surface contracts
 - assert economic quality of any size path
 
-`role=canonical_decision_owner` for CRS is **MV2-scope classification only**. Repo-wide `CANONICAL_RISK_SIZING_OWNER` remains `UNRESOLVED`.
+`role=canonical_decision_owner` for CRS is the **productive MV2 / Full-Core FINAL_QUANTITY** owner (ratified scoped canonical). It does **not** claim ownership of all five inventory sizing implementations.
 
 Per-owner freeze pins (inventory-backed IDs / paths / symbols only):
 
