@@ -1,0 +1,518 @@
+{
+  "wp": "DOUBLE_PLAY_BEAR_SHORT_SYMMETRY_PROOF_V1",
+  "generated_at_utc": "2026-09-29T22:19:04Z",
+  "baseline_sha": "0353b45e8623c0188359fcfb1e50ec8359bcc847",
+  "worktree": "/Users/frnkhrz/Peak_Trade/.wt_dp_bear_short_symmetry_v1",
+  "worktree_isolated": true,
+  "POST_ALLOWED": false,
+  "EXTERNAL_EFFECT_AUTHORIZED": false,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "POST_COUNT": 0,
+  "STRATEGY_CHANGED": false,
+  "THRESHOLDS_CHANGED": false,
+  "FORCED_SIGNAL_USED": false,
+  "REPO_FILES_CHANGED": false,
+  "LONG_VECTOR_BEAR_NONE_EXPECTED": true,
+  "BEAR_NONE_CAUSE": "integrated_offline_trading_logic_replay_v1: single-lane C3 \u2014 bull_assessment/bear_assessment init None; only selected_side receives selected_c3.assessment (LONG\u2192bull, else\u2192bear). Opposite assessment stays None. Fixture assert_complete_decision_ssot_layer_trace_v1 requires bear_assessment is None when expected_selected_side=LONG (and bull_assessment is None when SHORT).",
+  "code_anchors": {
+    "producer": "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py (bull_assessment=None/bear_assessment=None; selected_side branch)",
+    "consumer_assert": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::assert_complete_decision_ssot_layer_trace_v1",
+    "checks": {
+      "init_both_none": true,
+      "long_assigns_bull_only": true,
+      "else_assigns_bear": true,
+      "selected_lane_not_dual": true,
+      "fixture_asserts_bear_none_on_long": true,
+      "fixture_asserts_bull_none_on_short": true
+    }
+  },
+  "short_coverage_inventory": {
+    "canonical_natural_enter_short": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_short_sequence_for_bound_v1",
+    "assert_owner": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::assert_natural_enter_short_cycle_v1",
+    "tests": [
+      "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py::test_double_play_decision_ssot_layer_model_and_bilateral_complete_traces_v1",
+      "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py::test_current_mv2_dp_natural_short_entry_v1",
+      "tests/ops/test_current_productive_natural_mv2_dp_enter_fixture_v1.py::test_layered_short_arm_persist_restore_then_enter_short"
+    ],
+    "non_enter_or_insufficient": [
+      "evidence/.../wp2 B_BEAR_ENTER_SHORT (historically enter_short=false / NOT_REACHED)",
+      "NO FORENSIC_PRODUCTIVE_ENTER_SHORT in e2e_forensic_harness_v1"
+    ]
+  },
+  "FORENSIC_PRODUCTIVE_ENTER_SHORT_PRESENT": false,
+  "SHORT_GOLDEN_VECTOR_FOUND": true,
+  "SHORT_GOLDEN_VECTOR_SOURCE": "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_short_sequence_for_bound_v1",
+  "short_run": {
+    "epochs": [
+      {
+        "epoch": "origin",
+        "cycle_id": "natural-short-origin",
+        "decision_outcome": "no_action",
+        "disposition": "",
+        "BEAR_INPUTS": {
+          "closes_tail": [
+            1070.0,
+            1060.0,
+            1050.0,
+            1040.0,
+            1030.0,
+            1020.0,
+            1010.0,
+            1000.0
+          ],
+          "closes_len": 64,
+          "mark_px": 1630.0,
+          "scope_event": "noop",
+          "momentum": {
+            "rsi": 0.0,
+            "roc": -0.38650306748466257
+          },
+          "mark_price_cmc": 1630.0
+        },
+        "BULL": null,
+        "BEAR": null,
+        "BEAR_SIGNAL": null,
+        "BEAR_THRESHOLDS": {
+          "observe": 0.001,
+          "candidate": 0.005,
+          "confirmation": 0.01
+        },
+        "BEAR_CANDIDATE": null,
+        "CONFIRMATION_BEFORE": null,
+        "CONFIRMATION_AFTER": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "observe",
+            "distinct": 0
+          }
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "neutral_observe",
+          "outgoing_cursor": "neutral_observe",
+          "transition": {
+            "allowed": true,
+            "reason_code": "NOOP"
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "no_action",
+          "previous_direction_state": "neutral",
+          "reason_codes": [
+            "no_action"
+          ]
+        },
+        "COMPOSITION": "no_action",
+        "FINAL_DECISION": "no_action",
+        "FINAL_SIDE": "neutral_observe"
+      },
+      {
+        "epoch": "downscope_candidate",
+        "cycle_id": "natural-short-downscope-candidate",
+        "decision_outcome": "reduce",
+        "disposition": "",
+        "BEAR_INPUTS": {
+          "closes_tail": [
+            1070.0,
+            1060.0,
+            1050.0,
+            1040.0,
+            1030.0,
+            1020.0,
+            1010.0,
+            1000.0
+          ],
+          "closes_len": 64,
+          "mark_px": 1000.0,
+          "scope_event": "downscope_candidate",
+          "momentum": {
+            "rsi": 0.0,
+            "roc": -0.38650306748466257
+          },
+          "mark_price_cmc": 1000.0
+        },
+        "BULL": null,
+        "BEAR": {
+          "side": "short",
+          "status": "candidate",
+          "signal_strength": 0.63,
+          "confidence": 1.0,
+          "thresholds": {
+            "observe": 0.001,
+            "candidate": 0.005,
+            "confirmation": 0.01
+          },
+          "comparison": {
+            "vs_observe": true,
+            "vs_candidate": true,
+            "vs_confirmation": true
+          },
+          "reason_codes": [
+            "c3_confirmation_progress",
+            "ACCEPTED_DISTINCT_PROGRESS",
+            "assessment_signal_confirmed",
+            "confirmation_state_candidate"
+          ],
+          "feature_refs": [
+            "feat-momentum-v1"
+          ]
+        },
+        "BEAR_SIGNAL": 0.63,
+        "BEAR_THRESHOLDS": {
+          "observe": 0.001,
+          "candidate": 0.005,
+          "confirmation": 0.01
+        },
+        "BEAR_CANDIDATE": {
+          "side": "SHORT",
+          "state": "candidate",
+          "signal": 0.63
+        },
+        "CONFIRMATION_BEFORE": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "observe",
+            "distinct": 0
+          }
+        },
+        "CONFIRMATION_AFTER": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "candidate",
+            "distinct": 1
+          }
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "neutral_observe",
+          "outgoing_cursor": "neutral_observe",
+          "transition": {
+            "allowed": true,
+            "reason_code": "CANDIDATE_ACK"
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "reduce",
+          "previous_direction_state": "neutral",
+          "reason_codes": [
+            "adverse_scope_exit",
+            "adverse_scope_exit_matched"
+          ]
+        },
+        "COMPOSITION": "observe",
+        "FINAL_DECISION": "reduce",
+        "FINAL_SIDE": "neutral_observe"
+      },
+      {
+        "epoch": "short_arm",
+        "cycle_id": "natural-short-arm",
+        "decision_outcome": "reduce",
+        "disposition": "",
+        "BEAR_INPUTS": {
+          "closes_tail": [
+            1060.0,
+            1050.0,
+            1040.0,
+            1030.0,
+            1020.0,
+            1010.0,
+            1000.0,
+            995.0
+          ],
+          "closes_len": 65,
+          "mark_px": 995.0,
+          "scope_event": "downscope_confirmed",
+          "momentum": {
+            "rsi": 0.0,
+            "roc": -0.3895705521472393
+          },
+          "mark_price_cmc": 995.0
+        },
+        "BULL": null,
+        "BEAR": {
+          "side": "short",
+          "status": "confirmed",
+          "signal_strength": 0.6381909547738693,
+          "confidence": 1.0,
+          "thresholds": {
+            "observe": 0.001,
+            "candidate": 0.005,
+            "confirmation": 0.01
+          },
+          "comparison": {
+            "vs_observe": true,
+            "vs_candidate": true,
+            "vs_confirmation": true
+          },
+          "reason_codes": [
+            "c3_confirmation_progress",
+            "ACCEPTED_DISTINCT_CONFIRMED",
+            "assessment_signal_confirmed",
+            "confirmation_state_confirmed"
+          ],
+          "feature_refs": [
+            "feat-momentum-v1"
+          ]
+        },
+        "BEAR_SIGNAL": 0.6381909547738693,
+        "BEAR_THRESHOLDS": {
+          "observe": 0.001,
+          "candidate": 0.005,
+          "confirmation": 0.01
+        },
+        "BEAR_CANDIDATE": {
+          "side": "SHORT",
+          "state": "confirmed",
+          "signal": 0.6381909547738693
+        },
+        "CONFIRMATION_BEFORE": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "candidate",
+            "distinct": 1
+          }
+        },
+        "CONFIRMATION_AFTER": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "confirmed",
+            "distinct": 2
+          }
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "short_armed_neutral_start",
+          "outgoing_cursor": "short_armed_neutral_start",
+          "transition": {
+            "allowed": true,
+            "reason_code": "NEUTRAL_TO_SHORT_ARMED"
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "reduce",
+          "previous_direction_state": "short_armed",
+          "reason_codes": [
+            "adverse_scope_exit",
+            "adverse_scope_exit_matched"
+          ]
+        },
+        "COMPOSITION": "short_selected",
+        "FINAL_DECISION": "reduce",
+        "FINAL_SIDE": "short_armed_neutral_start"
+      },
+      {
+        "epoch": "enter_short",
+        "cycle_id": "natural-enter-short",
+        "decision_outcome": "enter_short",
+        "disposition": "",
+        "BEAR_INPUTS": {
+          "closes_tail": [
+            1050.0,
+            1040.0,
+            1030.0,
+            1020.0,
+            1010.0,
+            1000.0,
+            995.0,
+            990.0
+          ],
+          "closes_len": 66,
+          "mark_px": 990.0,
+          "scope_event": "upscope_candidate",
+          "momentum": {
+            "rsi": 0.0,
+            "roc": -0.39263803680981596
+          },
+          "mark_price_cmc": 990.0
+        },
+        "BULL": null,
+        "BEAR": {
+          "side": "short",
+          "status": "confirmed",
+          "signal_strength": 0.6464646464646465,
+          "confidence": 1.0,
+          "thresholds": {
+            "observe": 0.001,
+            "candidate": 0.005,
+            "confirmation": 0.01
+          },
+          "comparison": {
+            "vs_observe": true,
+            "vs_candidate": true,
+            "vs_confirmation": true
+          },
+          "reason_codes": [
+            "c3_confirmation_progress",
+            "ACCEPTED_DISTINCT_HOLD_CONFIRMED",
+            "assessment_signal_confirmed",
+            "confirmation_state_confirmed"
+          ],
+          "feature_refs": [
+            "feat-momentum-v1"
+          ]
+        },
+        "BEAR_SIGNAL": 0.6464646464646465,
+        "BEAR_THRESHOLDS": {
+          "observe": 0.001,
+          "candidate": 0.005,
+          "confirmation": 0.01
+        },
+        "BEAR_CANDIDATE": {
+          "side": "SHORT",
+          "state": "confirmed",
+          "signal": 0.6464646464646465
+        },
+        "CONFIRMATION_BEFORE": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "confirmed",
+            "distinct": 2
+          }
+        },
+        "CONFIRMATION_AFTER": {
+          "bull": {
+            "state": "observe",
+            "distinct": 0
+          },
+          "bear": {
+            "state": "confirmed",
+            "distinct": 2
+          }
+        },
+        "SIDESTATE_SWITCH": {
+          "next_side_state": "short_armed_neutral_start",
+          "outgoing_cursor": "short_armed_neutral_start",
+          "transition": {
+            "allowed": true,
+            "reason_code": "CANDIDATE_ACK"
+          }
+        },
+        "ENTRY_POLICY": {
+          "decision_outcome": "enter_short",
+          "previous_direction_state": "short_armed",
+          "reason_codes": [
+            "entry_short_eligible"
+          ]
+        },
+        "COMPOSITION": "short_selected",
+        "FINAL_DECISION": "enter_short",
+        "FINAL_SIDE": "SHORT"
+      }
+    ],
+    "decision_ssot_layers": [
+      "C1_OBSERVATION_ACCEPTANCE",
+      "C2_CONFIRMATION_PROGRESS",
+      "C3_DIRECTIONAL_ASSESSMENT_STATUS",
+      "SURVIVAL_DOMAIN",
+      "SUITABILITY_DOMAIN",
+      "COMPOSITION_CONFIRMED_ADMISSIBILITY",
+      "DOUBLE_PLAY_STATE_TRANSITION",
+      "ENTRY_EXIT_POLICY"
+    ],
+    "FINAL_DECISION": "enter_short",
+    "FINAL_SIDE": "SHORT",
+    "ENTRY_SHORT_OBSERVED": true,
+    "PRE_EXTERNAL_REACHED": true,
+    "BEAR_CANDIDATE_OBSERVED": true,
+    "BEAR_CONFIRMATION_PROGRESS": true,
+    "MAX_BEAR_CONFIRMATION": "confirmed:2",
+    "FIRST_SHORT_DIVERGENCE": "NONE",
+    "SHORT_PATH_DETERMINISTICALLY_PROVEN": true,
+    "mark_px": 990.0,
+    "tmp_unused": "/var/folders/j7/823by_lx7jl026wrk5jpnkmh0000gn/T/dp_bear_short_ug8z8dql"
+  },
+  "BEAR_CANDIDATE_OBSERVED": true,
+  "BEAR_CONFIRMATION_PROGRESS": true,
+  "MAX_BEAR_CONFIRMATION": "confirmed:2",
+  "ENTRY_SHORT_OBSERVED": true,
+  "PRE_EXTERNAL_REACHED": true,
+  "SHORT_PATH_DETERMINISTICALLY_PROVEN": true,
+  "FIRST_SHORT_DIVERGENCE": "NONE",
+  "ENTER_EPOCH": {
+    "BEAR_INPUTS": {
+      "closes_tail": [
+        1050.0,
+        1040.0,
+        1030.0,
+        1020.0,
+        1010.0,
+        1000.0,
+        995.0,
+        990.0
+      ],
+      "closes_len": 66,
+      "mark_px": 990.0,
+      "scope_event": "upscope_candidate",
+      "momentum": {
+        "rsi": 0.0,
+        "roc": -0.39263803680981596
+      },
+      "mark_price_cmc": 990.0
+    },
+    "BEAR_SIGNAL": 0.6464646464646465,
+    "BEAR_THRESHOLDS": {
+      "observe": 0.001,
+      "candidate": 0.005,
+      "confirmation": 0.01
+    },
+    "BEAR_CANDIDATE": {
+      "side": "SHORT",
+      "state": "confirmed",
+      "signal": 0.6464646464646465
+    },
+    "CONFIRMATION_BEFORE": {
+      "bull": {
+        "state": "observe",
+        "distinct": 0
+      },
+      "bear": {
+        "state": "confirmed",
+        "distinct": 2
+      }
+    },
+    "CONFIRMATION_AFTER": {
+      "bull": {
+        "state": "observe",
+        "distinct": 0
+      },
+      "bear": {
+        "state": "confirmed",
+        "distinct": 2
+      }
+    },
+    "SIDESTATE_SWITCH": {
+      "next_side_state": "short_armed_neutral_start",
+      "outgoing_cursor": "short_armed_neutral_start",
+      "transition": {
+        "allowed": true,
+        "reason_code": "CANDIDATE_ACK"
+      }
+    },
+    "ENTRY_POLICY": {
+      "decision_outcome": "enter_short",
+      "previous_direction_state": "short_armed",
+      "reason_codes": [
+        "entry_short_eligible"
+      ]
+    },
+    "FINAL_DECISION": "enter_short",
+    "FINAL_SIDE": "SHORT",
+    "BULL_ON_SHORT_PATH": null
+  },
+  "STATUS": "SHORT_PATH_PROVEN"
+}
