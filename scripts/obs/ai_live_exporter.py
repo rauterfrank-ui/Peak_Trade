@@ -40,7 +40,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 try:
-    from prometheus_client import Gauge, start_http_server
+    from prometheus_client import Gauge
 
     _PROM_AVAILABLE = True
 except Exception:
@@ -631,21 +631,10 @@ class AILiveExporter:
             logger.error("prometheus_client not available. Install: pip install prometheus-client")
             return 1
 
-        try:
-            start_http_server(self.port)
-        except Exception as e:
-            logger.error("failed to start /metrics server: %s", e)
-            return 1
-
-        if self.port == 9110:
-            logger.info(
-                "serving /metrics on :%s (Prometheus-local expects job=ai_live at :9110)", self.port
-            )
-        else:
-            logger.warning(
-                "serving /metrics on :%s (Prometheus-local expects :9110; update scrape target if you override)",
-                self.port,
-            )
+        logger.info(
+            "ai_live_exporter runtime inactive (Prometheus detached); no /metrics listener on port=%s",
+            self.port,
+        )
 
         warned_missing = False
         empty_reads = 0

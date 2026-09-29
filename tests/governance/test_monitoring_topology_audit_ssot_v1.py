@@ -77,23 +77,25 @@ def test_ssot_topology_excludes_grafana_alertmanager_cloudwatch() -> None:
     assert topo["grafana_expected"] is False
     assert topo["alertmanager_expected"] is False
     assert topo["cloudwatch_expected"] is False
-    assert topo["prometheus_expected"] is True
+    assert topo["prometheus_expected"] is False
     assert topo["alert_routing_expected"] is True
     assert payload["markers"]["GRAFANA_EXPECTED"] is False
     assert payload["markers"]["GRAFANA_AUDITED"] is False
+    assert payload["markers"]["PROMETHEUS_RUNTIME_LISTENER_EXPECTED"] is False
     assert payload["surface_status"]["grafana"] == "REMOVED_AS_DESIGNED"
     assert payload["surface_status"]["alertmanager"] == "REMOVED_AS_DESIGNED"
     assert payload["surface_status"]["cloudwatch"] == "REMOVED_AS_DESIGNED"
-    assert payload["surface_status"]["prometheus"] == "VERIFIED_REPO_ONLY"
+    assert payload["surface_status"]["prometheus"] == "RUNTIME_DETACHED"
     assert payload["surface_status"]["alert_routing"] == "VERIFIED_REPO_ONLY"
+    assert payload["safety_status"]["prometheus_runtime_listener_expected"] is False
 
 
 def test_active_components_only_allowed_classifications() -> None:
     payload = _load()
     expected = payload["expected_active_components"]
     summary = payload["classification_summary"]
-    assert summary["expected_active_component_count"] == len(expected) == 2
-    assert summary["repo_only_component_count"] == 2
+    assert summary["expected_active_component_count"] == len(expected) == 1
+    assert summary["repo_only_component_count"] == 1
     assert summary["live_matching_component_count"] == 0
     assert summary["drift_component_count"] == 0
     assert summary["access_denied_count"] == 0
@@ -102,7 +104,9 @@ def test_active_components_only_allowed_classifications() -> None:
         assert e["classification"] in ACTIVE_CLASSIFICATIONS
         assert e["id"] != "grafana"
     ids = {e["id"] for e in expected}
-    assert ids == {"prometheus_metrics_surface", "in_app_alert_routing"}
+    assert ids == {"in_app_alert_routing"}
+    removed_ids = {e["id"] for e in payload["removed_as_designed"]}
+    assert "prometheus_metrics_runtime_exporter" in removed_ids
 
 
 def test_stale_reference_counts_pinned() -> None:

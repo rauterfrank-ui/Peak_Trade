@@ -1,24 +1,34 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "92fc831f176a815d4e8d04ef881be73a5c3c1aad",
+  "base_sha": "4972302b3641997a44fb415ceb92342aacbaa670",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/RUNBOOK_INDEX.md"
+    "config/governance/monitoring_topology_audit_ssot_v1.json",
+    "scripts/obs/ai_live_exporter.py",
+    "src/live/web/app.py",
+    "src/obs/metrics_server.py",
+    "src/obs/metricsd.py",
+    "tests/governance/test_monitoring_topology_audit_ssot_v1.py"
   ],
-  "changed_paths_sha256": "d02b87cae5bcfd781da52075514c192a255bda6b4b6ff1174067ef7549d29828",
+  "changed_paths_sha256": "9c4cd2d46d9333adade507eededb46a43e872aed4123c4ad38bcb4c7823650c7",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/RUNBOOK_INDEX.md"
+    "config/governance/monitoring_topology_audit_ssot_v1.json",
+    "scripts/obs/ai_live_exporter.py",
+    "src/live/web/app.py",
+    "src/obs/metrics_server.py",
+    "src/obs/metricsd.py",
+    "tests/governance/test_monitoring_topology_audit_ssot_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/RUNBOOK_INDEX.md"
+    "config/governance/monitoring_topology_audit_ssot_v1.json"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "reason": "PR #6971 removes stale navigation to deleted docs/ops/master_execution/CURRENT_CHECKPOINT.env only (AUTHORITY=NONE, NAVIGATION_ONLY); no change to current_law_impact_map_v1 source or derived law-map views; impact candidate catalog extended for docs/ops/RUNBOOK_INDEX.md.",
+  "reason": "OWNER_GO prometheus runtime detachment v1: disable operative Prometheus listeners and align monitoring topology SSOT (AUTHORITY=NONE); no change to current_law_impact_map_v1 source or law semantics; impact candidate catalog extended for detached runtime surfaces.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
