@@ -14,11 +14,9 @@
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/structural.yaml",
-    "evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/WP_DOUBLE_PLAY_PRODUCTIVE_HOST_E2E_GOLDEN_VECTOR_V1.json",
-    "evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/golden_vector_contract_matrix.json"
+    "docs/system_atlas/relations/structural.yaml"
   ],
-  "changed_paths_sha256": "c914963562c319ac79254c63d5493c4b9d9a4495697a7bc8b494171dbf4d657d",
+  "changed_paths_sha256": "903e1f42d9476efc8c1a02c25bf67dae13125f0d2fed03f584188cffe69e74ad",
   "base_sha": "2bed43a47735cc633e5e4da52ba02b4303747cd2",
   "authority_effect": "NONE",
   "covered_candidate_paths": [],
