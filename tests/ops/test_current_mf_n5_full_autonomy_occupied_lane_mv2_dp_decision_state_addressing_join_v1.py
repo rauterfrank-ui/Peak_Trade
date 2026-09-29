@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_harness_master_v2_reconciliation_admission_v1,
+)
+
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
@@ -1102,6 +1106,11 @@ def test_s4_n1_parity_matches_direct_cycle(tmp_path: Path) -> None:
         existing_position_side=kwargs["existing_position_side"],  # type: ignore[arg-type]
         incoming_cursor=None,
         canonical_price_provenance=kwargs["canonical_price_provenance"],  # type: ignore[arg-type]
+        master_v2_reconciliation_admission=non_productive_harness_master_v2_reconciliation_admission_v1(
+            bound=pair[1],
+            session_id="s4-harness:LANE_3",
+            repository_sha="bounded-harness-lane-isolated",
+        ),
     )
     assert list(invoked) == ["LANE_3"]
     record = invoked["LANE_3"]
@@ -1295,6 +1304,11 @@ def test_s5_n1_two_cycle_parity(tmp_path: Path) -> None:
             incoming_cursor=outgoing,
         ),
         canonical_price_provenance=second_kwargs["canonical_price_provenance"],  # type: ignore[arg-type]
+        master_v2_reconciliation_admission=non_productive_harness_master_v2_reconciliation_admission_v1(
+            bound=pair[1],
+            session_id="s5-cycle-2:LANE_3",
+            repository_sha="bounded-harness-lane-isolated",
+        ),
     )
     record = second["LANE_3"]
     assert record.incoming_cursor is outgoing
@@ -1504,6 +1518,11 @@ def _direct_next_cycle(
         **productive_layered_core_bind_cycle_kwargs_v1(
             layered_core_store_root=layered_core_store_root,
             incoming_cursor=incoming,
+        ),
+        master_v2_reconciliation_admission=non_productive_harness_master_v2_reconciliation_admission_v1(
+            bound=bound,
+            session_id=cycle_id,
+            repository_sha="bounded-harness-lane-isolated",
         ),
         **raw,  # type: ignore[arg-type]
     )

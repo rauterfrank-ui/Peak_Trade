@@ -141,6 +141,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+    ProductiveMasterV2ReconciliationAdmissionV1,
+    build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -245,6 +249,7 @@ class CurrentProductiveEeaUniverseTo29PResultV1:
     evidence_manifest: str
     manifest_verify_rc: int
     bound_instrument: BoundInstrumentV1 | None = None
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None
 
 
 def _utc_now_iso_v1() -> str:
@@ -400,6 +405,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         else _REPO_ROOT / "evidence" / "ops" / EVIDENCE_DIRNAME / run_id
     )
     store.mkdir(parents=True, exist_ok=True)
+    mv2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None
 
     if acquisition_result is None:
         try:
@@ -512,6 +518,16 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
     bound = require_current_productive_29p_bound_instrument_v1(bound)
     if bound.venue_native_id == CANARY_DEFAULT_INSTRUMENT_ID:
         raise CurrentProductiveEeaUniverseTo29PError("CANARY_INSTRUMENT_AUTHORITY_IMPORTED")
+    mv2_reconciliation_admission = (
+        build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1(
+            reconciliation_result=gate.reconciliation_result,
+            session_id="current-productive-eea-binding",
+            repository_sha=repo_sha,
+            bound_instrument_id=str(bound.instrument_id),
+            binding_gate_ok=bool(gate.ok),
+            binding_alpha_enabled=bool(gate.alpha_enabled),
+        )
+    )
 
     expected_uid = str(expected_account_identity or REUSED_BINDING_ACCOUNT_SCOPE)
     handle = None
@@ -847,6 +863,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         evidence_manifest=str(store / "MANIFEST.sha256"),
         manifest_verify_rc=manifest_rc,
         bound_instrument=bound,
+        master_v2_reconciliation_admission=mv2_reconciliation_admission,
     )
 
 

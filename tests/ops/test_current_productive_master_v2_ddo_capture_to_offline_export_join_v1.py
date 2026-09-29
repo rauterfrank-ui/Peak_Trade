@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
+    non_productive_test_master_v2_reconciliation_admission_v1,
+)
+
 from pathlib import Path
 
 import pytest
@@ -28,7 +32,7 @@ from tests.ops.test_current_productive_master_v2_ddo_learning_capture_join_v1 im
 
 def test_mv2_cycle_offline_export_handoff_accepted(tmp_path: Path) -> None:
     result = run_current_productive_master_v2_runtime_cycle_v1(
-        **_cycle_kwargs(cycle_id="ddo-export-1", tmp_path=tmp_path)
+        **_cycle_kwargs(cycle_id="ddo-export-1", tmp_path=tmp_path),
     )
     handoff = result.ddo_offline_export_handoff
     assert handoff is not None
@@ -66,7 +70,7 @@ def test_handoff_fail_closed_without_capture_summary(tmp_path: Path) -> None:
 
 def test_handoff_fail_closed_without_in_memory_capture_records(tmp_path: Path) -> None:
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        **_cycle_kwargs(cycle_id="ddo-export-2", tmp_path=tmp_path)
+        **_cycle_kwargs(cycle_id="ddo-export-2", tmp_path=tmp_path),
     )
     summary = cycle.ddo_capture_summary
     assert summary is not None

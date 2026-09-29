@@ -571,6 +571,7 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
     identities: dict[str, str] = {}
     bound = None
     cap_status = "NOT_REACHED"
+    mv2_reconciliation_admission = None
     first_blocker = occupancy_blocker
     if occupancy_blocker:
         if acquisition_result is None:
@@ -603,11 +604,13 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
             first_blocker = "EEA_UNIVERSE_ACQUISITION_FAIL_CLOSED"
             cap_status = first_blocker
         else:
-            cap_status, identities, bound, _selection = _run_cap21_to_cap24_v1(
-                acquisition=acquisition_result,
-                store=store,
-                repo_sha=repo_sha,
-                observed_unix=observed_unix,
+            cap_status, identities, bound, _selection, mv2_reconciliation_admission = (
+                _run_cap21_to_cap24_v1(
+                    acquisition=acquisition_result,
+                    store=store,
+                    repo_sha=repo_sha,
+                    observed_unix=observed_unix,
+                )
             )
             first_blocker = cap_status if cap_status != "PASS" else ""
 
@@ -774,6 +777,8 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                     g17_producer = g17_join.producer
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
+            elif mv2_reconciliation_admission is None and not market_blocker:
+                market_blocker = "MASTER_V2_RECONCILIATION_ADMISSION_MISSING"
             elif not market_blocker and g17_producer is not None:
                 loaded_cursor = incoming_cursor
                 if loaded_cursor is None and cursor_store_root is not None:
@@ -809,6 +814,7 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                                 index_px=float(index_px),
                                 index_source=INDEX_SOURCE_OKX_MARK_IDX_PX,
                             ),
+                            "master_v2_reconciliation_admission": mv2_reconciliation_admission,
                         }
                         if loaded_cursor is not None:
                             cycle_kwargs["incoming_cursor"] = loaded_cursor

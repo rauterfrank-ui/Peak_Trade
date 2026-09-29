@@ -1,0 +1,30 @@
+# MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1
+
+---
+docs_token: DOCS_TOKEN_MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_V1
+STATUS: CURRENT_RATIFIED
+AUTHORITY: ops.productive_reconciliation_runtime_binding_v1
+RUNTIME_AUTHORIZATION_EFFECT: NONE
+---
+
+```text
+CONTRACT_ID=PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_MASTER_V2_ENTRY_V1
+RECONCILIATION_OWNER=ops.productive_reconciliation_runtime_binding_v1
+PRODUCTIVE_PORTFOLIO_RECONCILIATION_SINGLE_CHECK=true
+PRODUCTIVE_MASTER_V2_ENTRY_REQUIRES_UPSTREAM_SUCCESSFUL_RECONCILIATION=true
+MASTER_V2_RECHECK_REQUIRED=false
+DOUBLE_PLAY_RECHECK_REQUIRED=false
+DOWNSTREAM_RECONCILIATION_STATE_MAY_BE_PROPAGATED=true
+RECONCILIATION_AUTHORITY_TRANSFER=false
+ADMISSION_CARRIER=ProductiveMasterV2ReconciliationAdmissionV1
+PRODUCTIVE_ENTRY_ENFORCEMENT=run_current_productive_master_v2_runtime_cycle_v1
+PRE_EXTERNAL_TERMINAL=true
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+CODE=src/ops/productive_reconciliation_runtime_binding_v1/master_v2_entry_reconciliation_contract_v1.py
+TEST_PLAN=tests/ops/test_productive_master_v2_reconciliation_entry_enforcement_v1.py
+```
+
+Portfolio reconciliation runs once at the Cap-1.1 / Cap-2.4 admission seam. Master V2 and Double Play consume downstream replay state only when `ProductiveMasterV2ReconciliationAdmissionV1` proves upstream success; they do not re-run portfolio reconciliation or receive reconciliation authority.

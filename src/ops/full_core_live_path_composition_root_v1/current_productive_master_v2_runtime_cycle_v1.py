@@ -139,6 +139,17 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_canonica
     ProductiveCanonicalPriceProvenanceError,
     ProductiveCycleCanonicalPriceProvenanceV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+    ProductiveMasterV2ReconciliationAdmissionError,
+    ProductiveMasterV2ReconciliationAdmissionV1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.master_v2_entry_reconciliation_contract_v1 import (
+    MASTER_V2_RECHECK_REQUIRED,
+    RECONCILIATION_AUTHORITY_TRANSFER,
+)
+
+assert MASTER_V2_RECHECK_REQUIRED is False
+assert RECONCILIATION_AUTHORITY_TRANSFER is False
 from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_seam_v1 import (
     finalize_productive_layered_core_replay_bind_v1,
     prepare_productive_layered_core_replay_bind_v1,
@@ -562,6 +573,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     repo_root: Path | None = None,
     ddo_durable_evidence_ledger_path: Path | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -582,6 +594,16 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             cycle_id=cycle_id,
             fail_reason=f"CANONICAL_PRICE_PROVENANCE_FAIL_CLOSED:{exc}",
             provenance="CANONICAL_PRICE_PROVENANCE_FAIL_CLOSED",
+        )
+    try:
+        replay_reconciliation_state = (
+            master_v2_reconciliation_admission.integrated_replay_reconciliation_state_v1()
+        )
+    except ProductiveMasterV2ReconciliationAdmissionError as exc:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=f"MASTER_V2_RECONCILIATION_ADMISSION_FAIL_CLOSED:{exc}",
+            provenance="MASTER_V2_RECONCILIATION_ADMISSION_FAIL_CLOSED",
         )
     restore = restore_current_productive_sidestate_confirmation_cursor_v1(
         incoming_cursor,
@@ -800,7 +822,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         side_state=side_state,
         direction_state=direction_state,
         position_state=position_state,
-        reconciliation_state=ReconciliationState.RECONCILED,
+        reconciliation_state=replay_reconciliation_state,
         trading_gate=exit_trading_gate,
         safety_mode=exit_safety_mode,
         existing_position_side=existing_position_side,
