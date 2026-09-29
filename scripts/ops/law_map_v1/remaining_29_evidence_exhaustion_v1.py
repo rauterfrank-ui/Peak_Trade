@@ -24,9 +24,7 @@ OD_ADJ = "config/governance/od_account_equity_sizing_source_canonical_adjudicati
 OD_NUMERIC = (
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
 )
-OD_U01_P01_MINT = (
-    "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
-)
+OD_U01_P01_MINT = "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
 
 SOBJ_NAV_EXTERNAL = "sobj_nav_external_effect_seam"

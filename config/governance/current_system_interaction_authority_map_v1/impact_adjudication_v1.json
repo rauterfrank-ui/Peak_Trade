@@ -14,13 +14,17 @@
     "docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
-    "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
     "src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
     "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "770720166b0cdd142910bc595381954e4227e8ba3b2107573fbdae64c23a5a90",
+  "changed_paths_sha256": "9349d80308507bc055e7184dda204dd8e35feb6f66a13b5f3b7427d3de04737e",
   "covered_candidate_paths": [
     "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
     "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
@@ -31,7 +35,7 @@
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py"
   ],
-  "selector_used_as_law_impact_authority": false,
+  "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
   "reason": "OD_U01_P01_29P_SIZING_MINT adjudication; CSIA account_equity partial statement alignment."
 }

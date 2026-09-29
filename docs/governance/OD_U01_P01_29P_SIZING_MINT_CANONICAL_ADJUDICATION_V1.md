@@ -25,7 +25,7 @@ epoch remains `UNKNOWN_CURRENT`.
 
 ## U01 (eligibility, not numeric)
 
-Raw venue field `acctLv` on `GET /api/v5/account/config` is adapted by
+Raw venue field `acctLv` on `GET &#47;api&#47;v5&#47;account&#47;config` is adapted by
 `CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_ADAPTER_V1`. Productive eligibility requires raw
 `2` → semantic `FUTURES_MODE`. Missing, unknown, unmapped, or `OPEN` fail closed.
 No eligibility fact ⇒ no sizing mint.
