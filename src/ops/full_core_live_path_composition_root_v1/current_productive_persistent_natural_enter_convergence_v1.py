@@ -59,6 +59,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     DISPOSITION_PRE_EXTERNAL_EFFECT,
     HARD_CAP_MAX_CYCLES_PER_RUN,
     HARD_CAP_MAX_RUN_DURATION_SECONDS,
+    HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1,
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     CurrentProductiveGovernedContinuousCycleRunResultV1,
     ContinuousObservationSourceV1,
@@ -624,7 +625,12 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         raise PersistentNaturalEnterConvergenceError("S6_RUNTIME_OWNER_GO_MISMATCH")
     if int(authorization.max_cycles_per_run) > MAX_CYCLES_PER_RUN_CAP:
         raise PersistentNaturalEnterConvergenceError("MAX_CYCLES_EXCEEDS_HARD_CAP")
-    if float(authorization.max_run_duration_seconds) > MAX_RUN_DURATION_CAP:
+    duration_cap = MAX_RUN_DURATION_CAP
+    if authorization.natural_enter_liveness_integration_reproof_v1 is True:
+        duration_cap = (
+            HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1
+        )
+    if float(authorization.max_run_duration_seconds) > duration_cap:
         raise PersistentNaturalEnterConvergenceError("MAX_DURATION_EXCEEDS_HARD_CAP")
     if f1_m9_cycle_evaluator is None:
         raise PersistentNaturalEnterConvergenceError("F1_M9_CYCLE_EVALUATOR_REQUIRED")

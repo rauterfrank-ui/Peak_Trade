@@ -190,6 +190,7 @@ def _main() -> int:
         DISPOSITION_PRE_EXTERNAL_EFFECT,
         HARD_CAP_MAX_CYCLES_PER_RUN,
         HARD_CAP_MAX_RUN_DURATION_SECONDS,
+        HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1,
         RUNTIME_OWNER_GO,
         CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
         InjectedContinuousObservationV1,
@@ -329,16 +330,25 @@ def _main() -> int:
     ):
         remaining = min(HARD_CAP_MAX_CYCLES_PER_RUN, max_decision_cycles - total_cycles)
         floor = _cursor_floor_or_zero(cursor_root)
+        integration_reproof = bool(args.integration_repair_evidence_at_head_v1)
+        if integration_reproof:
+            batch_duration_cap = (
+                HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1
+            )
+            batch_duration = min(float(remaining) * 75.0, batch_duration_cap)
+        else:
+            batch_duration = HARD_CAP_MAX_RUN_DURATION_SECONDS
         auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
             continuous_owner_go=RUNTIME_OWNER_GO,
             native_id=native_id,
             bar="1m",
             expected_cursor_floor=float(floor),
             max_cycles_per_run=remaining,
-            max_run_duration_seconds=HARD_CAP_MAX_RUN_DURATION_SECONDS,
+            max_run_duration_seconds=batch_duration,
             wait_interval_seconds=5.0,
             max_wait_for_next_c1_seconds=60.0,
             stall_seconds=60.0,
+            natural_enter_liveness_integration_reproof_v1=integration_reproof,
         )
         run_id = mint_continuous_run_id_v1(auth)
         batch_evidence = evidence_root / f"s6_batch_{batch_index}_{uuid.uuid4().hex[:8]}"

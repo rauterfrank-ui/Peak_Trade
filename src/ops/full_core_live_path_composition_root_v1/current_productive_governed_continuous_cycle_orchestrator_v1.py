@@ -136,6 +136,7 @@ DEFAULT_MAX_CYCLES_PER_RUN = 2
 HARD_CAP_MAX_CYCLES_PER_RUN = 4
 DEFAULT_MAX_RUN_DURATION_SECONDS = 90.0
 HARD_CAP_MAX_RUN_DURATION_SECONDS = 180.0
+HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1 = 720.0
 DEFAULT_WAIT_INTERVAL_SECONDS = 1.0
 HARD_CAP_WAIT_INTERVAL_SECONDS = 15.0
 DEFAULT_MAX_WAIT_FOR_NEXT_C1_SECONDS = 30.0
@@ -172,6 +173,7 @@ class CurrentProductiveGovernedContinuousCycleRunAuthorizationV1:
     wait_interval_seconds: float
     max_wait_for_next_c1_seconds: float
     stall_seconds: float
+    natural_enter_liveness_integration_reproof_v1: bool = False
 
 
 @dataclass(frozen=True)
@@ -373,10 +375,15 @@ def _validate_authorization(
         value=authorization.max_cycles_per_run,
         hard_cap=HARD_CAP_MAX_CYCLES_PER_RUN,
     )
+    duration_hard_cap = HARD_CAP_MAX_RUN_DURATION_SECONDS
+    if authorization.natural_enter_liveness_integration_reproof_v1 is True:
+        duration_hard_cap = (
+            HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1
+        )
     _require_positive_seconds(
         name="MAX_RUN_DURATION_SECONDS",
         value=authorization.max_run_duration_seconds,
-        hard_cap=HARD_CAP_MAX_RUN_DURATION_SECONDS,
+        hard_cap=duration_hard_cap,
     )
     _require_positive_seconds(
         name="WAIT_INTERVAL_SECONDS",

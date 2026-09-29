@@ -31,6 +31,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY,
     HARD_CAP_MAX_CYCLES_PER_RUN,
     HARD_CAP_MAX_RUN_DURATION_SECONDS,
+    HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1,
+    _validate_authorization,
     JOIN_SEAM_ID,
     OWNER_GO,
     POST_COMPOSED_INTO_CONTINUOUS_GO,
@@ -158,6 +160,17 @@ class _FakeClock:
         self.now += float(seconds)
 
 
+def test_integration_reproof_authorization_allows_extended_duration() -> None:
+    _validate_authorization(
+        _auth(
+            max_run_duration_seconds=720.0,
+            natural_enter_liveness_integration_reproof_v1=True,
+        )
+    )
+    with pytest.raises(CurrentProductiveGovernedContinuousCycleOrchestratorError):
+        _validate_authorization(_auth(max_run_duration_seconds=720.0))
+
+
 def _auth(**overrides: object) -> CurrentProductiveGovernedContinuousCycleRunAuthorizationV1:
     payload = {
         "continuous_owner_go": RUNTIME_OWNER_GO,
@@ -260,6 +273,7 @@ def test_created_flag_pins_and_docs() -> None:
     assert HARD_CAP_MAX_CYCLES_PER_RUN == 4
     assert DEFAULT_MAX_RUN_DURATION_SECONDS == 90.0
     assert HARD_CAP_MAX_RUN_DURATION_SECONDS == 180.0
+    assert HARD_CAP_MAX_RUN_DURATION_SECONDS_NATURAL_ENTER_LIVENESS_INTEGRATION_REPROOF_V1 == 720.0
     assert BOUNDS_CLASS == "VALIDATION_DEFAULTS_NOT_PRODUCTIVE_POLICY"
     bound = bind_s6_governed_continuous_cycle_orchestrator_offline_v1(owner_go=OWNER_GO)
     assert bound["disposition"] == DISPOSITION_PRESENT
