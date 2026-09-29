@@ -24,7 +24,7 @@ becomes the typed 29P risk-capital surface value under contract.
 
 ## Numeric chain (contractual)
 
-`GET /api/v5/account/balance` (authorized read-only, evidence-only in tests) →
+`GET &#47;api&#47;v5&#47;account&#47;balance` (authorized read-only, evidence-only in tests) →
 exactly one `details[ccy=USDC]` row → parse `availEq` (Decimal) → freshness/trust
 gates → conditional P01 → dimension `RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING`.
 

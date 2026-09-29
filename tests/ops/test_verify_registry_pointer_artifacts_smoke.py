@@ -254,7 +254,27 @@ def test_expired_artifacts_allow_expired_is_controlled_success(tmp_path: Path, c
     assert "2026-08-17T20:51:09Z" in captured.out
 
 
-def test_unknown_missing_artifacts_fail_closed(tmp_path: Path) -> None:
+def test_unknown_missing_artifacts_fail_closed_without_allow(tmp_path: Path) -> None:
+    v = _import_verifier()
+    pointer = tmp_path / "fixture.pointer"
+    _write_pointer(pointer, "26124538678")
+    downloaded: list[str] = []
+
+    code = v.main(
+        [
+            str(pointer),
+            "--download",
+            "--out-base",
+            str(tmp_path / "out"),
+        ],
+        fetch_artifacts=lambda _rid, _repo: [],
+        download_run=lambda run_id, _dest: downloaded.append(run_id),
+    )
+    assert code == 1
+    assert downloaded == []
+
+
+def test_unknown_missing_artifacts_allow_expired_pr_hygiene(tmp_path: Path, capsys) -> None:
     v = _import_verifier()
     pointer = tmp_path / "fixture.pointer"
     _write_pointer(pointer, "26124538678")
@@ -271,8 +291,11 @@ def test_unknown_missing_artifacts_fail_closed(tmp_path: Path) -> None:
         fetch_artifacts=lambda _rid, _repo: [],
         download_run=lambda run_id, _dest: downloaded.append(run_id),
     )
-    assert code == 1
+    captured = capsys.readouterr()
+    assert code == 0
     assert downloaded == []
+    assert "REGISTRY_POINTER_STATUS=UNAVAILABLE_UNKNOWN" in captured.out
+    assert "REGISTRY_POINTER_UNAVAILABLE_ALLOWED=true" in captured.out
 
 
 def test_auth_fetch_failure_is_not_classified_expired(tmp_path: Path, capsys) -> None:
