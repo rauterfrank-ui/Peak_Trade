@@ -1,41 +1,45 @@
 {
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "279244ea9ad457ce2dd779eacde58f30150c56a3",
+  "base_sha": "df1dd4e4ecf988230dcbbc88ed2d8678476574a8",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "runtime/current_productive/e2e_10k_native_full_cycle_v6/native_trace_engine_v6.py",
-    "runtime/current_productive/e2e_10k_native_full_cycle_v6/run_native_v6.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_controlled_external_market_observation_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
-    "tests/ops/test_current_productive_native_full_cycle_host_atlas_binding_v1.py",
-    "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py",
+    "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
+    "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py",
+    "tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
+    "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py",
+    "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
     "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
-    "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+    "tests/ops/test_elementary_direction_passive_cycle_join_v1.py",
+    "tests/ops/test_p5_10_productive_activation_and_binding_v1.py",
+    "tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
   ],
-  "changed_paths_sha256": "ca5b7dd93c02cee4e86becf1563a48cae696aad27cb73f86b8ccb815eb8a0a24",
+  "changed_paths_sha256": "342bd49284878a2076d2f7495b314d68c45d3903338184fffd6eadc8d801e39c",
   "covered_candidate_paths": [
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/system_atlas/entities/catalog.yaml"
   ],
   "evidence_refs": [
     "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
-    "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Native full-cycle host v6.1: CSIA domain current_productive_native_full_cycle_host_v1; atlas catalog entity and regenerated views; LAW map currency rebinding; compose-only orchestration AUTHORITY=NONE."
+  "reason": "L019/DIV-001: CSIA native host provenance refs + atlas entity review; AUTHORITY=NONE."
 }

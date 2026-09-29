@@ -443,7 +443,7 @@
       "law_id": "PROD-CANONICAL-PRICE-PROVENANCE-V1",
       "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
       "canonical_anchor": "ProductiveCanonicalPriceProvenanceError",
-      "source_sha256": "63d4eab4c12dacf66d30a480ec705c24939ecd3774b1ea934da9608848dc3c84",
+      "source_sha256": "cb7cd9839850753c39decd59c405d38159d1f8fd0de5862ebd5b49eeaad6adf0",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -494,7 +494,7 @@
       "law_id": "SEM-DIV-00001",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_natural_enter_rejects_candle_close_only_mark_without_payload",
-      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -512,7 +512,7 @@
       "law_id": "SEM-DIV-00002",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_cycle_rejects_forbidden_candle_close_mark_source",
-      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -530,7 +530,7 @@
       "law_id": "SEM-DIV-00006",
       "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
       "canonical_anchor": "test_observation_sidestate_seed_class_rejected_on_bind",
-      "source_sha256": "dd3160b0504a00a3f20b9c4151cea93719fc07fc6edec327902ed5a2fe57b541",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
       "source_authority_class": "ENFORCEMENT_TEST",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -1753,7 +1753,7 @@
       "adjudication": "UNKNOWN_CURRENT",
       "producer_ref": "sobj_mv2_runtime_cycle_host",
       "consumer_ref": "sobj_mv2_layer_l5_nullline",
-      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark \u2014 identity OPEN (maps to unk_mt_l5_nullline_identity).",
+      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark — identity OPEN (maps to unk_mt_l5_nullline_identity).",
       "expected_canonical_source": "UNKNOWN",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -1789,6 +1789,23 @@
         "docs/governance/OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1.md",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+      ],
+      "reproof_required": false,
+      "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00004",
+      "adjudication": "PROVEN_CURRENT",
+      "producer_ref": "sobj_canonical_price_provenance",
+      "consumer_ref": "current_productive_native_full_cycle_host_v1",
+      "statement": "L019/DIV-001 closed: governed synthetic close-chain mark_px uses EXPLICIT_SYNTHETIC_FIXTURE mark_source; OKX public mark_source with EXPLICIT_TEST_FIXTURE index collapse forbidden at builder.",
+      "expected_canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
       ],
       "reproof_required": false,
       "unknown_relation_id": null

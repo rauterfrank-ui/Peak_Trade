@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    build_provenance_from_resolved_cmc_mark_and_index_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
 
 
@@ -276,11 +275,10 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=created.producer,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert cycle.input_blocker == ""
@@ -329,11 +327,10 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         last_finalized_event_ts_unix=1_700_000_000.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     with_restored = run_current_productive_master_v2_runtime_cycle_v1(
@@ -352,11 +349,10 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=restored.producer,
-        canonical_price_provenance=build_provenance_from_resolved_cmc_mark_and_index_v1(
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=float(last),
             index_px=float(index_px),
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     )
     assert without_producer.input_blocker == ""
@@ -400,11 +396,10 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producer": producer,
-        "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id or bound.instrument_id),
             mark_px=last,
             index_px=index_px,
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     }
 

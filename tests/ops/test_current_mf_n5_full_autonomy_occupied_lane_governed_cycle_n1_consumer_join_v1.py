@@ -259,8 +259,7 @@ def _mv2_aligned_candles(*, last_ts_ms: int, mark_px: float) -> dict[str, object
 
 def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str, object]:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-        INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-        build_provenance_from_resolved_cmc_mark_and_index_v1,
+        build_provenance_from_governed_synthetic_close_mark_and_index_v1,
     )
 
     mark_px = 100.0
@@ -272,11 +271,10 @@ def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str,
         "observed_unix": float(PREVIOUS_C1_VENUE_EVENT_TIME) + 1.0,
         "mark_px": mark_px,
         "index_px": index_px,
-        "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id="VENUE-HARNESS",
             mark_px=mark_px,
             index_px=index_px,
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
         "bid_px": 99.5,
         "ask_px": 100.5,

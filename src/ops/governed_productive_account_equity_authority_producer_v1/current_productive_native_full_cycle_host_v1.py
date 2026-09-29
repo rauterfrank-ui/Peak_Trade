@@ -58,8 +58,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_
     verify_manifest_sha256_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
-    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
-    build_provenance_from_resolved_cmc_mark_and_index_v1,
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
@@ -203,11 +202,10 @@ def execute_current_productive_native_full_cycle_host_v1(
         "volume": 10.0,
         "open_interest": 20.0,
         "funding_rate": 0.0001,
-        "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
             venue_native_id=str(bound.venue_native_id),
             mark_px=mark_px,
             index_px=mark_px * 0.995,
-            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
         ),
     }
 

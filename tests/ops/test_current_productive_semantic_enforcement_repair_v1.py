@@ -10,9 +10,13 @@ import pytest
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
     FORBIDDEN_MARK_SOURCES,
+    INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+    MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE,
+    MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD,
     ProductiveCanonicalPriceProvenanceError,
     build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
     build_explicit_test_fixture_price_provenance_v1,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     run_current_productive_master_v2_runtime_cycle_v1,
@@ -52,6 +56,23 @@ CYCLE_SRC = (
     REPO
     / "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
 )
+
+
+def test_synthetic_fixture_mark_must_not_claim_okx_public_mark_source() -> None:
+    prov = build_explicit_test_fixture_price_provenance_v1(
+        venue_native_id="ADA-USDT-SWAP",
+        mark_px=100.0,
+        index_px=99.5,
+    )
+    assert prov.mark_source == MARK_SOURCE_EXPLICIT_SYNTHETIC_FIXTURE
+    assert prov.mark_source != MARK_SOURCE_OKX_PUBLIC_MARK_PAYLOAD
+    with pytest.raises(ProductiveCanonicalPriceProvenanceError):
+        build_provenance_from_resolved_cmc_mark_and_index_v1(
+            venue_native_id="ADA-USDT-SWAP",
+            mark_px=100.0,
+            index_px=99.5,
+            index_source=INDEX_SOURCE_EXPLICIT_TEST_FIXTURE,
+        )
 
 
 def test_natural_enter_rejects_candle_close_only_mark_without_payload() -> None:
