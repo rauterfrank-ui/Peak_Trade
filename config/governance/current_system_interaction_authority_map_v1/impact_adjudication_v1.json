@@ -1,5 +1,7 @@
 {
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -16,7 +18,7 @@
     "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
     "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
   ],
-  "changed_paths_sha256": "0760032cfbde57583686aaa458ec096c7d1d040418f804717c044e2399268fbf",
+  "changed_paths_sha256": "ee290f6eaf9276d2b8c13a1d61b0e5fb13d7c48dfcff033458b9ae3112bcce77",
   "base_sha": "7a3597e61966749a9e30d06f3514e23a9179fb9e",
   "authority_effect": "NONE",
   "covered_candidate_paths": [
@@ -32,8 +34,8 @@
   "reason": "PR #6980: Cap24 runtime binding witness epoch + Owner-GO baseline re-pin 7a3597e; CSIA partial + Atlas catalog/closures; integration-only; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
-    "evidence/ops/natural_enter_causal_blocker_resolution_loop_v1/20260929T213000Z/WP_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_LOOP_V1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/system_atlas/provenance/changes.yaml"
+    "docs/system_atlas/provenance/changes.yaml",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
   ]
 }
