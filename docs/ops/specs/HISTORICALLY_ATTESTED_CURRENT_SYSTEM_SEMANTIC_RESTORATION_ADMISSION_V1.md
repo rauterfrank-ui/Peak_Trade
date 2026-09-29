@@ -138,7 +138,7 @@ allowed_paths=
 ```
 
 Evidence attestation (post-merge baseline): merge SHA `2bed43a47735cc633e5e4da52ba02b4303747cd2`;
-`evidence/ops/double_play_post_merge_golden_vector_baseline_proof_v1/20260929T204600Z/`.
+`evidence&#47;ops&#47;double_play_post_merge_golden_vector_baseline_proof_v1&#47;20260929T204600Z&#47;`.
 
 The prior `DOUBLE_PLAY_ASYMMETRIC_DYNAMIC_SCOPE_RECOVERY_BOUNDED_SLICE_V1` and
 `INTEGRATED_REPLAY_SAFETY_BEFORE_INTENT_BOUNDED_SLICE_V1`,
