@@ -3,30 +3,28 @@
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
+    "docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
-    "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
-    "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py"
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "cc4f8df0ae22e4b7e5d9d5531524686ca33913599476b8d27849ea368773b553",
-  "base_sha": "a951fa04c4bbccba8ff35af25e388e6d033560f0",
+  "changed_paths_sha256": "0afb64af59591df5be06ab74abaddf95076ad35594d5411f2d6df043f1a9dbb4",
+  "base_sha": "2bed43a47735cc633e5e4da52ba02b4303747cd2",
   "authority_effect": "NONE",
   "covered_candidate_paths": [],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "PR #6976: N5 Cap24 per-lane canonical price provenance compose; CSIA full_autonomy_n5 and productive_canonical_price_provenance navigation refresh; AUTHORITY=NONE.",
+  "reason": "PR #6978 post-merge governance currency closure: historically attested restoration slice + CSIA navigation for old-effective host contract and canonical mark wiring; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/cap24_lane_canonical_price_provenance_compose_v1.py",
-    "docs/system_atlas/entities/catalog.yaml"
+    "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
+    "evidence/ops/double_play_post_merge_golden_vector_baseline_proof_v1/20260929T204600Z/WP_DOUBLE_PLAY_POST_MERGE_GOLDEN_VECTOR_BASELINE_PROOF_V1.json"
   ]
 }

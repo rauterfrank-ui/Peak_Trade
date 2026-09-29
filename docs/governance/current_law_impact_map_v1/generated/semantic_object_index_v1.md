@@ -11,6 +11,7 @@ AUTHORITY=NONE
 - id=sobj_cap22_ranking class=CURRENT_PRODUCTIVE_SEMANTIC current_status=UNKNOWN_CURRENT laws=CAP22-PRODUCTIVE-RANKING-V1
 - id=sobj_cap23_selection class=CURRENT_PRODUCTIVE_SEMANTIC current_status=UNKNOWN_CURRENT laws=CAP23-SINGLE-SELECTED-FUTURE-V1
 - id=sobj_cap24_runtime_binding class=CURRENT_PRODUCTIVE_SEMANTIC current_status=UNKNOWN_CURRENT laws=CAP24-RUNTIME-BINDING-V1,CAP-SSF-HANDOFF-V1
+- id=sobj_double_play_old_effective_host_contract class=CURRENT_PRODUCTIVE_SEMANTIC current_status=PROVEN_CURRENT laws=
 - id=sobj_elementary_direction class=CANONICAL_MODEL_SEMANTIC current_status=UNKNOWN_CURRENT laws=
 - id=sobj_evidence_only_productive_harness class=ENFORCEMENT_CONTRACT current_status=UNKNOWN_CURRENT laws=
 - id=sobj_full_core_cycle_orchestrator class=CURRENT_PRODUCTIVE_SEMANTIC current_status=UNKNOWN_CURRENT laws=PROD-CANONICAL-PRICE-PROVENANCE-V1
