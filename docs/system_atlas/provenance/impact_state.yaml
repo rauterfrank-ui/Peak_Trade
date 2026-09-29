@@ -2,13 +2,12 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: DOUBLE_PLAY_RESTORATION_GOVERNANCE_CURRENCY_CLOSURE_V1
+modified_by: PR_6980_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6978 post-merge governance currency closure: historically attested restoration
-  authorization slice for old-effective host contract; CSIA/Atlas navigation refresh;
-  AUTHORITY=NONE; POST_COUNT=0; no trading semantic mutation.
+  PR #6980: Cap24 runtime binding witness epoch + Owner-GO baseline re-pin 7a3597e;
+  productive PRE_EXTERNAL integration only; MV2/DP strategy unchanged; AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
   - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
   - CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1

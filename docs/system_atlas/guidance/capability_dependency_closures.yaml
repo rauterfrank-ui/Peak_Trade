@@ -24,6 +24,7 @@ closures:
       trading authority.
 
   - id: CLOSURE:productive_selection
+    # atlas_closure_review: PR #6980 — Cap24 witness epoch helper only; Cap-2.3 selection topology unchanged; AUTHORITY=NONE.
     # atlas_closure_review: PR #6974 — Cap-2.4 binding_gate evidence_digest only; selection topology unchanged; AUTHORITY=NONE.
     title: PRODUCTIVE_SELECTION
     inspect:
@@ -66,6 +67,7 @@ closures:
       ATLAS_AUTHORITY=NONE.
 
   - id: CLOSURE:native_instrument_binding
+    # atlas_closure_review: PR #6980 — cap24_runtime_binding_witness_epoch_v1; Cap-2.4 bind timing only; AUTHORITY=NONE.
     # atlas_closure_review: B11_OPERATOR_PROFILE_AND_EXPLAINABILITY_V1 observes binding evidence only.
     # atlas_closure_review: PR #6974 — Cap-2.4 reconciliation_result witness threading; binding boundary unchanged; AUTHORITY=NONE.
     title: NATIVE_INSTRUMENT_BINDING

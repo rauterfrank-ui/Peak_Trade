@@ -2056,6 +2056,7 @@ entities:
 
   # ATLAS_AUTHORITY=NONE — post-selection STEP29M dynamic binding (Cap 2.3 consumer)
   - id: CAPABILITY:cap_2_4_runtime_binding
+    # atlas_entity_review: PR #6980 cap24_runtime_binding_witness_epoch_v1; bind witness timing only; AUTHORITY=NONE.
     kind: CAPABILITY
     name: Single Selected Future Runtime Binding
     epistemic_class: CANONICAL_AUTHORITY
@@ -2064,11 +2065,13 @@ entities:
     modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
     source_paths:
       - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
     authority_sources:
       - docs/ops/specs/MASTER_V2_CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1.md
     evidence_sources:
       - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+      - src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py
       - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
     notes: >-
       Standing producer-spec role remains RUNTIME_BINDING_CONSUMER.
@@ -5010,6 +5013,8 @@ entities:
       # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
       # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate);
       # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+      # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only;
+      # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 
   - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
     kind: RUNTIME_COMPONENT
@@ -5886,6 +5891,9 @@ entities:
     # atlas_entity_review: PR #6953 — enter-live treasury P01/eligibility handoff export; portfolio seam;
     # live_admission_gap_dag EARLIEST→Treasury handoff GET; execution_admission data_safety inputs on
     # standing gates; harness-only; MV2/DP unchanged; EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #6980 Cap24 witness epoch resolver consumed by productive PRE_EXTERNAL runner;
+    # Owner-GO baseline re-pin; integration-only; RUNTIME_SEMANTICS_CHANGED=false for MV2/DP;
+    # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6951 S6 continuous poll liveness (stale/empty Fresh-C1 wait not STALL);
     # auth-free flat occupancy injection; cold-lane Cap24-bound C1 bootstrap; orchestration-only;
     # RUNTIME_SEMANTICS_CHANGED=false for MV2/DP; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
