@@ -12,7 +12,8 @@
   "not_a_universe_ratification": true,
   "not_a_replacement_for_canonical_authority_sources": true,
   "graph_loses_on_conflict": true,
-  "source_baseline_head": "d26caea78d1a178fde0a9e91aee169d454eebcae",
+  "source_baseline_head": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
+  "universe_landscape_snapshot_ref": "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
   "census_version": "CURRENT_COMPLETE_SYSTEM_CENSUS_V1",
   "census_phase_1_status": "INCOMPLETE",
   "census_phase_2_status": "COMPLETE",
@@ -10545,19 +10546,21 @@
       "target_object": "SO-OPS-PKG:full_core_live_path_composition_root_v1",
       "source_universe_or_plane": "order_intent",
       "target_universe_or_plane": "execution_external_effect",
-      "flow_type": "DECISION_FLOW",
+      "flow_type": "CONSTRAINT_FLOW",
       "producer": "order_intent",
       "consumer": "execution_external_effect",
-      "contract_or_payload": "standing non-implication pins",
+      "contract_or_payload": "standing non-implication pins; PRE_EXTERNAL_TERMINAL=true; POST_ALLOWED=false; EXTERNAL_EFFECT_AUTHORIZED=false; intent navigation does not grant venue POST",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
       "productive_reachability": true,
-      "map_relationship": "CONFLICTING",
+      "map_relationship": "CODE_AND_MAP",
       "current_evidence": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
+        "config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json"
       ],
-      "epistemic_status": "CONFLICTING_CURRENT"
+      "epistemic_status": "PROVEN_CURRENT"
     },
     {
       "edge_id": "portfolio_to_enter",
@@ -11603,13 +11606,13 @@
     "map_and_system_edge_count": 31,
     "system_only_edge_count": 9,
     "map_only_edge_count": 44,
-    "edge_conflict_count": 1,
-    "reconciliation_status": "DISCREPANCY_PRESERVED",
+    "edge_conflict_count": 0,
+    "reconciliation_status": "CURRENT_ALIGNED",
     "reconciliation_note": "Reported MAP_AND_SYSTEM+MAP_ONLY+CONFLICT counts reference census Phase-2 narrative; materialized map_relationship tallies may differ by 1 CODE_AND_MAP because only 75 map edges exist.",
     "materialized_map_relationship_tally": {
       "CODE_AND_MAP": 31,
       "MAP_ONLY": 43,
-      "CONFLICTING": 1,
+      "CONFLICTING": 0,
       "CODE_ONLY": 9
     }
   },
@@ -12204,6 +12207,11 @@
       "id": "CD-008",
       "topic": "treasury_to_admission census edge vs OD-29P normative pack",
       "detail": "Census edge authority_effect realigned to NONE per config/governance/od_29p_normative_pack_v1.json treasury_to_admission_representation; prior census CONFLICTING label was stale vs CURRENT CSIA map."
+    },
+    {
+      "id": "CD-009",
+      "topic": "intent_to_execution DECISION_FLOW vs PRE_EXTERNAL standing pins",
+      "detail": "Forensic fixpoint adjudicated CONSTRAINT_FLOW + PROVEN_CURRENT; CSIA retains decision_effect NO_POST and fail_closed TRUE; navigation edge must not imply external-effect authority."
     }
   ]
 }

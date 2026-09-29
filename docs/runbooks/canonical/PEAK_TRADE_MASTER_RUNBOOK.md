@@ -94,6 +94,26 @@ Runtime truth is owned by code, config, persistence, tests, and sealed
 evidence on current `origin/main`. This runbook owns operational semantic
 interpretation. Chat memory is not authority.
 
+### CURRENT Universe Landscape fixpoint (navigation anchor)
+
+Adjudicated **CURRENT** architecture at baseline `dfcf4d04b8400763bee6ab0b465fa182927dea75`
+(`ARCHITECTURE_CLOSURE=PROVEN_CURRENT`, `MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0`) is
+persisted for navigation — not runtime authorization — in:
+
+- [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](../../governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md)
+- [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json)
+
+Use the Authority Map and Census graph as complementary navigation (`AUTHORITY=NONE`;
+graph loses on conflict). Standing productive safety remains
+`PRE_EXTERNAL_TERMINAL=true`, `POST_ALLOWED=false`, `EXTERNAL_EFFECT_AUTHORIZED=false`.
+
+**Productive reconciliation → Master V2 (PR #6974, CURRENT):** Cap 1.1 reconciliation
+under `ops.productive_reconciliation_runtime_binding_v1` is the single productive
+portfolio reconciliation check. Master V2 productive entry requires upstream successful
+reconciliation evidence witnessed by `ProductiveMasterV2ReconciliationAdmissionV1`;
+admission does not re-run reconciliation and does not transfer reconciliation authority.
+Spec: [`docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md`](../../ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md).
+
 ### Primary semantic identities
 
 ```text
@@ -115,6 +135,7 @@ current_productive_sidestate_confirmation_cursor_v1
 | Ranking | Productive ranking producer |
 | Single Selected Future | `CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1` (compat id; selection owner) |
 | Instrument binding | `CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1` (compat id; binding owner) |
+| Productive portfolio reconciliation (Cap 1.1) | `ops.productive_reconciliation_runtime_binding_v1` (startup gate; not Cap-2.3 selection; not MV2 decision owner) |
 | Decision | Master V2 + Double Play integrated decision path |
 | SideState / EntryExit | Double Play SideState / EntryExit owners |
 | Risk / capital admissibility | `capital_risk_admissibility_owner_v1` |

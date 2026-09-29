@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
+  "baseline_sha": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -1591,20 +1591,27 @@
     {
       "id": "reconciliation_runtime_binding",
       "tier": "INTERMEDIATE",
-      "role": "Reconciliation runtime binding package exists. Productive authority versus Cap2.3 is not established.",
-      "canonical_owner_ref": "UNKNOWN",
-      "authority_class": "UNKNOWN",
-      "lifecycle": "AUTHORITY_VERSUS_CAP23_UNKNOWN",
-      "status": "UNKNOWN",
+      "role": "Cap 1.1 productive portfolio reconciliation startup gate owner (single-check). Not Cap-2.3 selection authority; not MV2 decision authority; not venue POST.",
+      "canonical_owner_ref": "ops.productive_reconciliation_runtime_binding_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "PRODUCTIVE_RECONCILIATION_SINGLE_CHECK",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md"
       ],
-      "contract_refs": [],
+      "contract_refs": [
+        "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md",
+        "src/ops/productive_reconciliation_runtime_binding_v1/master_v2_entry_reconciliation_contract_v1.py"
+      ],
       "code_refs": [
-        "src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py"
+        "src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py",
+        "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
       ],
       "evidence_refs": [
-        "src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py"
+        "src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "tests/ops/test_productive_master_v2_reconciliation_entry_enforcement_v1.py"
       ]
     },
     {
@@ -2619,8 +2626,8 @@
       "id": "intent_to_execution",
       "from_domain": "order_intent",
       "to_domain": "execution_external_effect",
-      "flow_type": "DECISION_FLOW",
-      "contract_or_payload": "standing non-implication pins",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "standing non-implication pins; PRE_EXTERNAL_TERMINAL; POST_ALLOWED=false; EXTERNAL_EFFECT_AUTHORIZED=false",
       "producer": "order_intent",
       "consumer": "execution_external_effect",
       "authority_effect": "NONE",
@@ -3629,12 +3636,36 @@
       "identity_binding": "PORTFOLIO_TRUTH_SNAPSHOT",
       "temporal_binding": "SESSION_START",
       "version_binding": "productive_reconciliation_runtime_binding_v1",
-      "provenance_binding": "AUTHORITY_VERSUS_CAP23_UNKNOWN",
+      "provenance_binding": "RECONCILIATION_OWNER_NOT_CAP23_SELECTION",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
         "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
         "src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py"
+      ]
+    },
+    {
+      "id": "reconciliation_admission_to_mv2_entry",
+      "from_domain": "runtime_binding_cap24",
+      "to_domain": "mv2_double_play",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "ProductiveMasterV2ReconciliationAdmissionV1 witness; PRODUCTIVE_PORTFOLIO_RECONCILIATION_SINGLE_CHECK=true; RECONCILIATION_AUTHORITY_TRANSFER=false; MASTER_V2_RECHECK_REQUIRED=false",
+      "producer": "build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1",
+      "consumer": "run_current_productive_master_v2_runtime_cycle_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "ADMISSION_WITNESS_NOT_RECONCILE",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "RECONCILIATION_RESULT_EVIDENCE_DIGEST",
+      "temporal_binding": "CAP24_BIND_THEN_MV2_ENTRY",
+      "version_binding": "ProductiveMasterV2ReconciliationAdmissionV1",
+      "provenance_binding": "RECONCILIATION_OWNER_ops.productive_reconciliation_runtime_binding_v1",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_reconciliation_admission_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md"
       ]
     },
     {

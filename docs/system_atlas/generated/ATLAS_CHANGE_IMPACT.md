@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=15
+ATLAS_CHANGED_ENTITY_COUNT=16
 ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,6 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
 | `BINDER:bound_instrument_v1` |
 | `CAPABILITY:cap_1_1_reconciliation` |
 | `CAPABILITY:cap_2_4_runtime_binding` |
@@ -110,8 +111,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6974: productive reconciliation single-check + Master-V2 upstream admission enforcement; atlas_entity_review on affected tracked entities/closures/relations; AUTHORITY=NONE; no reconciliation authority transfer to MV2/DP; POST_COUNT=0.
+- FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1: persisted universe landscape snapshot + census/CSIA/runbook/MOT convergence at dfcf4d04; intent_to_execution CONSTRAINT_FLOW; PR #6974 reconciliation→MV2 admission navigation; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_MASTER_V2_ENTRY_V1
+- modified_by=FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -69,7 +69,7 @@ flowchart LR
   ranking_cap22["ranking_cap22 PROVEN_CURRENT"]
   ranking_selection_profile_closure_b12["ranking_selection_profile_closure_b12 PROVEN_CURRENT"]
   real_keychain_access_or_credential_material_load_policy["real_keychain_access_or_credential_material_load_policy PARTIAL"]
-  reconciliation_runtime_binding["reconciliation_runtime_binding UNKNOWN"]
+  reconciliation_runtime_binding["reconciliation_runtime_binding PROVEN_CURRENT"]
   research_surfaces_f1_f2_f5["research_surfaces_f1_f2_f5 RESEARCH_ONLY"]
   runtime_binding_cap24["runtime_binding_cap24 PROVEN_CURRENT"]
   safety["safety PROVEN_CURRENT"]
@@ -152,6 +152,7 @@ flowchart LR
   p4_l6_productive_seam --> governed_runtime_apply_materialization
   meta_learning --> p5_layered_core
   optimization_universe --> p5_layered_core
+  runtime_binding_cap24 --> mv2_double_play
   reconciliation_runtime_binding --> runtime_binding_cap24
   reconciliation_runtime_binding --> runtime_binding_cap24
   runtime_binding_cap24 --> mv2_double_play
@@ -237,7 +238,7 @@ flowchart LR
 | ranking_cap22 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.productive_futures_ranking_producer_v1 | `src/ops/productive_futures_ranking_producer_v1/constants_v1.py`, `src/ops/productive_futures_ranking_producer_v1/models_v1.py`, `src/ops/productive_futures_ranking_producer_v1/policy_v1.py`, `src/ops/productive_futures_ranking_producer_v1/producer_v1.py`, `src/ops/productive_futures_ranking_producer_v1/ranking_v1.py`, `src/ops/peak_trade_ranking_matrix_policy_v1.py`, `src/ops/peak_trade_ranking_feature_contract_v1.py`, `src/ops/peak_trade_ranking_feature_production_v1/producer_v1.py`, `docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md`, `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md` |
 | ranking_selection_profile_closure_b12 | INTERMEDIATE | PROVEN_CURRENT | NONE | docs.evidence.peak_trade_canonical_truth_sync_and_closure_v1 | `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json`, `docs/evidence/peak_trade_research_backtest_live_parity_v1/SUMMARY.json`, `docs/evidence/peak_trade_robustness_and_stress_v1/SUMMARY.json`, `docs/evidence/peak_trade_operator_profile_explainability_v1/SUMMARY.json` |
 | real_keychain_access_or_credential_material_load_policy | INTERMEDIATE | PARTIAL | PARTIAL | real_keychain_access_or_credential_material_load_policy_v1 | `tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py`, `config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json`, `config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json`, `config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json` |
-| reconciliation_runtime_binding | INTERMEDIATE | UNKNOWN | UNKNOWN | UNKNOWN | `src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py` |
+| reconciliation_runtime_binding | INTERMEDIATE | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.productive_reconciliation_runtime_binding_v1 | `src/ops/productive_reconciliation_runtime_binding_v1/constants_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `tests/ops/test_productive_master_v2_reconciliation_entry_enforcement_v1.py` |
 | research_surfaces_f1_f2_f5 | INTERMEDIATE | RESEARCH_ONLY | RESEARCH_ONLY | src.experiments.canonical_optimization_universe_v1 | `src/experiments/canonical_optimization_universe_v1.py` |
 | runtime_binding_cap24 | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | ops.single_selected_future_runtime_binding_v1 | `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/models_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py` |
 | safety | FIRST_CLASS | PROVEN_CURRENT | CANONICAL_AUTHORITY | LAYERED:DECISION=MASTER_V2_PLUS_DOUBLE_PLAY;REPLAY_SAFETY_VETO=trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0;DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1;KILL_ALL=DoublePlay.SideState;FLATTEN=current_productive_exact_object_flatten_plan_v1 | `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py`, `src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py` |

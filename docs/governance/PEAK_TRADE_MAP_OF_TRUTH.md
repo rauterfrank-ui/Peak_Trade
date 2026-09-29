@@ -15,7 +15,7 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae
+CURRENT_REVIEWED_AT_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
 ```
 
 **Role:** discovery / path resolution only.  
@@ -185,6 +185,7 @@ authority and must not be read as activation or next-step instructions.
 | --- | --- |
 | [`config/governance/current_system_interaction_authority_map_v1/source_v1.json`](../../config/governance/current_system_interaction_authority_map_v1/source_v1.json) | **Navigation only:** structured source for CURRENT System Interaction & Authority Map (`AUTHORITY=NONE`, `map_authority=NONE`); derived read-only views under [`docs/governance/current_system_interaction_authority_map_v1/generated/`](current_system_interaction_authority_map_v1/generated/); not operational SSOT |
 | [`config/governance/current_system_census_graph_v1/source_v1.json`](../../config/governance/current_system_census_graph_v1/source_v1.json) | **Navigation only:** CURRENT Complete System Census graph index (`AUTHORITY=NONE`); package/surface topology and semantic edges; not runtime authority |
+| [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md) / [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json) | **Navigation only:** persisted CURRENT Universe/Plane landscape at architecture fixpoint (`AUTHORITY=NONE`); links to census, authority map, and evidence; not runtime authority |
 | [`docs/system_atlas/generated/SYSTEM_ATLAS.md`](../system_atlas/generated/SYSTEM_ATLAS.md) | **Navigation only:** System Atlas generated views (`ATLAS_AUTHORITY=NONE`); reconcile with CSIA and census graph before use |
 | [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Historical/runtime discovery aid; reconcile against Master Runbook + CURRENT code before use |
 | [`docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md) | Short navigation contract; not a second SSOT |
@@ -205,6 +206,10 @@ CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_SOURCE=config/governance/current_sys
 CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_GENERATED_VIEWS=docs/governance/current_system_interaction_authority_map_v1/generated/
 CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_ROLE=NAVIGATION_ONLY
 CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1_AUTHORITY=NONE
+CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1=docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md
+CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_SOURCE=config/governance/current_universe_landscape_snapshot_v1/source_v1.json
+CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_ROLE=NAVIGATION_ONLY
+CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_AUTHORITY=NONE
 DDO_AUTHORITY_EFFECT=NONE
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_NAV=docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY

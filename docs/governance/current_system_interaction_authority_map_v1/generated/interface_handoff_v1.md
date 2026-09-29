@@ -77,6 +77,7 @@ flowchart LR
   p4_l6_productive_seam -->|real_runtime_p4_l6_seam_to_runtime_apply_materialization| governed_runtime_apply_materialization
   meta_learning -->|real_runtime_p5_meta_learning_routed_to_adjudicator_a| p5_layered_core
   optimization_universe -->|real_runtime_p5_optimization_envelope_to_adjudicator_a| p5_layered_core
+  runtime_binding_cap24 -->|reconciliation_admission_to_mv2_entry| mv2_double_play
   reconciliation_runtime_binding -->|reconciliation_portfolio_truth_fa_cap24| runtime_binding_cap24
   reconciliation_runtime_binding -->|reconciliation_startup_before_cap24_bind| runtime_binding_cap24
   runtime_binding_cap24 -->|replay_provenance_drop| mv2_double_play
@@ -676,8 +677,8 @@ flowchart LR
 ## intent_to_execution
 
 - lifecycle=PROVEN_CURRENT
-- flow_type=DECISION_FLOW
-- contract_or_payload=standing non-implication pins
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=standing non-implication pins; PRE_EXTERNAL_TERMINAL; POST_ALLOWED=false; EXTERNAL_EFFECT_AUTHORIZED=false
 - producer=order_intent
 - consumer=execution_external_effect
 - authority_effect=NONE
@@ -1375,6 +1376,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`, `src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/p5_m4_m8_producer_bridge_v1.py`, `tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py`
 
+## reconciliation_admission_to_mv2_entry
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=ProductiveMasterV2ReconciliationAdmissionV1 witness; PRODUCTIVE_PORTFOLIO_RECONCILIATION_SINGLE_CHECK=true; RECONCILIATION_AUTHORITY_TRANSFER=false; MASTER_V2_RECHECK_REQUIRED=false
+- producer=build_productive_master_v2_reconciliation_admission_from_cap24_reconciliation_result_v1
+- consumer=run_current_productive_master_v2_runtime_cycle_v1
+- authority_effect=NONE
+- decision_effect=ADMISSION_WITNESS_NOT_RECONCILE
+- direct_or_indirect=DIRECT
+- identity_binding=RECONCILIATION_RESULT_EVIDENCE_DIGEST
+- temporal_binding=CAP24_BIND_THEN_MV2_ENTRY
+- version_binding=ProductiveMasterV2ReconciliationAdmissionV1
+- provenance_binding=RECONCILIATION_OWNER_ops.productive_reconciliation_runtime_binding_v1
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_reconciliation_admission_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md`
+
 ## reconciliation_portfolio_truth_fa_cap24
 
 - lifecycle=PROVEN_CURRENT
@@ -1406,7 +1425,7 @@ flowchart LR
 - identity_binding=PORTFOLIO_TRUTH_SNAPSHOT
 - temporal_binding=SESSION_START
 - version_binding=productive_reconciliation_runtime_binding_v1
-- provenance_binding=AUTHORITY_VERSUS_CAP23_UNKNOWN
+- provenance_binding=RECONCILIATION_OWNER_NOT_CAP23_SELECTION
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py`, `src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py`

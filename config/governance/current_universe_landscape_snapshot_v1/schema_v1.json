@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "current_universe_landscape_snapshot_v1",
+  "type": "object",
+  "required": [
+    "artifact_id",
+    "authority_effect",
+    "surfaces",
+    "architecture_fixpoint"
+  ]
+}
